@@ -1,0 +1,15 @@
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLayout
+@import views.html.helper.CSPNonce
+
+@this(
+        appConfig: AppConfig,
+        hmrcLayout: HmrcLayout
+)
+@(pageTitle: Option[String] = None)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
+
+@hmrcLayout(
+    pageTitle = pageTitle,
+    nonce = CSPNonce.get,
+    isWelshTranslationAvailable = appConfig.welshLanguageSupportEnabled
+)(contentBlock)
