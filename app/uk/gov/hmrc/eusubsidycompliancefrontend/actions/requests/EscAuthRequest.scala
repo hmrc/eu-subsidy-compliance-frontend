@@ -14,19 +14,8 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.config
+package uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests
 
-import javax.inject.{Inject, Singleton}
-import play.api.Configuration
+import play.api.mvc.{Request, WrappedRequest}
 
-@Singleton
-class AppConfig @Inject()
-  (
-    config: Configuration
-  ) {
-  val welshLanguageSupportEnabled: Boolean = config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
-
-  val ggSignInUrl:        String = config.get[String](s"urls.ggSignInUrl")
-  val ggSignOutUrl:       String = config.get[String](s"urls.ggSignOutUrl")
-  val eccEscSubscribeUrl: String = config.get[String](s"urls.eccEscSubscribeUrl")
-}
+case class EscAuthRequest[A](authorityId: String, groupId: String, request: Request[A], eoriNumber: String) extends WrappedRequest[A](request)
