@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
-import play.api.libs.json.{Reads, Writes}
+import play.api.libs.json.{Format, Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.mongo.cache.{CacheIdType, DataKey, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
@@ -51,4 +51,9 @@ class JourneyStore @Inject()(
 
   override def put[A](in: A)(implicit eori: EORI, writes: Writes[A]): Future[A] =
     put[A](eori)(DataKey(in.getClass.getSimpleName), in).map(_=> in)
+
+  def update[A: ClassTag](f: Option[A] => Option[A])(implicit eori: EORI, format: Format[A]): Future[Option[A]] = {
+    get.map(f).flatMap(put(_))
+  }
+
 }

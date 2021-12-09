@@ -16,14 +16,16 @@
 
 package utils
 
-import play.api.libs.json.{JsValue, Json, Reads, Writes}
+import play.api.libs.json._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
 class UnsafePersistence extends Store {
+
+  implicit lazy val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
   private var store: Map[EORI, JsValue] = Map.empty
 
@@ -35,4 +37,10 @@ class UnsafePersistence extends Store {
     Future.successful(in)
   }
 
+  override def update[A: ClassTag](
+    f: Option[A] => Option[A]
+  )(
+    implicit eori: EORI,
+    format: Format[A]
+  ): Future[Option[A]] = get.map(f).flatMap(put(_))
 }

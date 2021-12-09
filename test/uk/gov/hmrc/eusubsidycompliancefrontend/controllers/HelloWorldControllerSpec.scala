@@ -22,6 +22,8 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.HelloWorldPage
 import utils.UnsafePersistence
 
+import scala.concurrent.ExecutionContext
+
 class HelloWorldControllerSpec
   extends BaseControllerSpec
 {
