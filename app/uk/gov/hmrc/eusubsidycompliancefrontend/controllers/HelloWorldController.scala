@@ -46,7 +46,7 @@ class HelloWorldController @Inject()(
     implicit val foo: EORI = request.eoriNumber
 
     // TODO in all but the first steps we have to get the model first
-    store.put[UndertakingJourneyModel](UndertakingJourneyModel(eori = foo))
+    store.put(UndertakingJourneyModel(eori = foo))
 
     Future.successful(Ok(helloWorldPage(foo)))
   }
