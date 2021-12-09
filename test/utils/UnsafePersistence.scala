@@ -14,9 +14,25 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests
+package utils
 
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.libs.json.{JsValue, Json, Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
 
-case class EscAuthRequest[A](authorityId: String, groupId: String, request: Request[A], eoriNumber: EORI) extends WrappedRequest[A](request)
+import scala.concurrent.Future
+import scala.reflect.ClassTag
+
+class UnsafePersistence extends Store {
+
+  private var store: Map[EORI, JsValue] = Map.empty
+
+  override def get[A : ClassTag](implicit eori: EORI, reads: Reads[A]): Future[Option[A]] =
+    Future.successful(store.get(eori).flatMap(x => Json.fromJson[A](x).asOpt))
+
+  override def put[A](in: A)(implicit eori: EORI, writes: Writes[A]): Future[A] = {
+    store = store + (eori -> Json.toJson(in))
+    Future.successful(in)
+  }
+
+}

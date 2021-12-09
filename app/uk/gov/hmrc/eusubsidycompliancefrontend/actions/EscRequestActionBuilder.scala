@@ -26,8 +26,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
-
 import javax.inject.{Inject, Singleton}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -58,9 +59,9 @@ class EscRequestActionBuilder @Inject()(
         case Some(information) ~ Some(groupId) ~ enrolments =>
           enrolments.getEnrolment("HMRC-ESC-ORG")
             .map(x => x.getIdentifier("EORINumber"))
-            .map(y => y.map(z => z.value)) match {
-            case Some(Some(eori)) => block(EscAuthRequest(information.providerId, groupId, request, eori))
-            case _ => ??? // TODO: What happens in this scenario?
+            .flatMap(y => y.map(z => z.value)).map(x => EORI(x)) match {
+            case Some(eori) => block(EscAuthRequest(information.providerId, groupId, request, eori))
+            case _ => throw new IllegalStateException("no eori provided")
           }
         case _ ~ _ => Future.failed(throw InternalError())
       }(hc(request), executionContext)

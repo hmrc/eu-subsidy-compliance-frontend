@@ -5,6 +5,8 @@ val appName = "eu-subsidy-compliance-frontend"
 
 val silencerVersion = "1.7.3"
 
+PlayKeys.playDefaultPort := 9093
+
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .settings(

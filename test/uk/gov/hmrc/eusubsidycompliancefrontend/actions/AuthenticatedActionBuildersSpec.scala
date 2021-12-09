@@ -20,10 +20,11 @@ import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc._
 import play.api.test.Helpers.stubMessagesControllerComponents
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait AuthenticatedActionBuilders extends MockitoSugar
+trait AuthenticatedActionBuildersSpec extends MockitoSugar
    {
   implicit lazy val ec:           ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
   def preAuthenticatedActionBuilders(): EscActionBuilders = new EscActionBuilders(mock[EscRequestActionBuilder]) {
@@ -32,7 +33,7 @@ trait AuthenticatedActionBuilders extends MockitoSugar
         override def parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.anyContent
 
         override def invokeBlock[A](request: Request[A], block: EscAuthRequest[A] => Future[Result]): Future[Result] =
-          block(EscAuthRequest("testAuthorityId", "testGroupId", request, "eori"))
+          block(EscAuthRequest("testAuthorityId", "testGroupId", request, EORI("GB123456789012")))
 
         override protected def executionContext: ExecutionContext = ec
       }
