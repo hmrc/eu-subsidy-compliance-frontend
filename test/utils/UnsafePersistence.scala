@@ -42,5 +42,8 @@ class UnsafePersistence extends Store {
   )(
     implicit eori: EORI,
     format: Format[A]
-  ): Future[Option[A]] = get.map(f).flatMap(put(_))
+  ): Future[A] =
+    get.map(f)
+      .flatMap(x => x.fold(throw new IllegalStateException("trying to update non-existent model"))(put(_)))
+
 }

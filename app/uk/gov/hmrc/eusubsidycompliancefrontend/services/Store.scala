@@ -19,6 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import com.google.inject.ImplementedBy
 import play.api.libs.json.{Format, Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.mongo.cache.DataKey
 
 import scala.concurrent.Future
 import scala.reflect.ClassTag
@@ -30,6 +31,6 @@ trait Store {
 
   def put[A](in: A)(implicit eori: EORI, writes: Writes[A]): Future[A]
 
-  def update[A: ClassTag](f: Option[A] => Option[A])(implicit eori: EORI, format: Format[A]): Future[Option[A]]
+  def update[A: ClassTag](f: Option[A] => Option[A])(implicit eori: EORI, format: Format[A]): Future[A]
 
 }

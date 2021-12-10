@@ -52,8 +52,8 @@ class JourneyStore @Inject()(
   override def put[A](in: A)(implicit eori: EORI, writes: Writes[A]): Future[A] =
     put[A](eori)(DataKey(in.getClass.getSimpleName), in).map(_=> in)
 
-  def update[A: ClassTag](f: Option[A] => Option[A])(implicit eori: EORI, format: Format[A]): Future[Option[A]] = {
-    get.map(f).flatMap(put(_))
-  }
+  def update[A: ClassTag](f: Option[A] => Option[A])(implicit eori: EORI, format: Format[A]): Future[A] =
+    get.map(f)
+      .flatMap(x => x.fold(throw new IllegalStateException("trying to update non-existent model"))(put(_)))
 
 }

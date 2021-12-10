@@ -49,7 +49,7 @@ class HelloWorldController @Inject()(
     store.put(UndertakingJourneyModel(eori = foo))
 
     // TODO .. like so, here we pass in the copy function to update the underlying case class
-    store.update[UndertakingJourneyModel]({x => x.map(_.copy(eori = EORI("XI123456789012")))})
+    store.update[UndertakingJourneyModel]({x => x.map(_.copy(eori = EORI("XI123456789013")))})
 
     Future.successful(Ok(helloWorldPage(foo)))
   }
