@@ -16,24 +16,41 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{Store, UndertakingJourneyModel}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.HelloWorldPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class HelloWorldController @Inject()(
   mcc: MessagesControllerComponents,
   helloWorldPage: HelloWorldPage,
-  escActionBuilders: EscActionBuilders)
-  extends FrontendController(mcc) with I18nSupport {
+  escActionBuilders: EscActionBuilders,
+  store: Store
+)(
+  implicit executionContext: ExecutionContext
+) extends
+  FrontendController(mcc)
+  with I18nSupport
+{
   import escActionBuilders._
 
   def helloWorld: Action[AnyContent] = escAuthentication.async { implicit request =>
-    Future.successful(Ok(helloWorldPage()))
+
+    implicit val foo: EORI = request.eoriNumber
+
+    // TODO in all but the first steps we have to get the model first
+    store.put(UndertakingJourneyModel(eori = foo))
+
+    // TODO .. like so, here we pass in the copy function to update the underlying case class
+    store.update[UndertakingJourneyModel]({x => x.map(_.copy(eori = EORI("XI123456789013")))})
+
+    Future.successful(Ok(helloWorldPage(foo)))
   }
 }

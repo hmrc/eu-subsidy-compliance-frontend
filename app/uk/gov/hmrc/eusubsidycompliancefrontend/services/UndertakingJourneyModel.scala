@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,14 +12,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.Text
+package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-@this(layout: Layout)
+import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
-@layout(pageTitle = Some(pageTitle)) {
-    <h1 class="govuk-heading-xl">@{Text(heading).asHtml}</h1>
-    <p class="govuk-body">@{Text(message).asHtml}</p>
+case class UndertakingJourneyModel(
+  // TODO model each step in the journey
+  eori: EORI
+) extends Journey {
+
+  // TODO override Journey where needed e.g. steps, n.g. this is where you need shapeless for toList
+  override def steps: List[Option[FormPage[_]]] = List.empty
+
+}
+
+object UndertakingJourneyModel {
+  implicit val format: Format[UndertakingJourneyModel] = Json.format[UndertakingJourneyModel]
 }

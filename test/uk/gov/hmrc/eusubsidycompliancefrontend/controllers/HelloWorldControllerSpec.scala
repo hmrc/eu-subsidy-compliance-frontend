@@ -16,25 +16,17 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.Application
 import play.api.http.Status
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.AuthenticatedActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.HelloWorldPage
+import utils.UnsafePersistence
 
-class HelloWorldControllerSpec extends AnyWordSpec with Matchers with GuiceOneAppPerSuite with AuthenticatedActionBuilders {
-  override def fakeApplication(): Application =
-    new GuiceApplicationBuilder()
-      .configure(
-        "metrics.jvm"     -> false,
-        "metrics.enabled" -> false
-      )
-      .build()
+import scala.concurrent.ExecutionContext
+
+class HelloWorldControllerSpec
+  extends BaseControllerSpec
+{
 
   private val fakeRequest = FakeRequest("GET", "/")
   private val template = app.injector.instanceOf[HelloWorldPage]
@@ -42,7 +34,8 @@ class HelloWorldControllerSpec extends AnyWordSpec with Matchers with GuiceOneAp
   private val controller = new HelloWorldController(
     stubMessagesControllerComponents(),
     template,
-    preAuthenticatedActionBuilders
+    preAuthenticatedActionBuilders(),
+    new UnsafePersistence
   )
 
   "GET /" should {

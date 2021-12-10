@@ -14,9 +14,23 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests
+package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import play.api.mvc.{Request, WrappedRequest}
+import com.google.inject.ImplementedBy
+import play.api.libs.json.{Format, Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.mongo.cache.DataKey
 
-case class EscAuthRequest[A](authorityId: String, groupId: String, request: Request[A], eoriNumber: EORI) extends WrappedRequest[A](request)
+import scala.concurrent.Future
+import scala.reflect.ClassTag
+
+@ImplementedBy(classOf[JourneyStore])
+trait Store {
+
+  def get[A: ClassTag](implicit eori: EORI, reads: Reads[A]): Future[Option[A]]
+
+  def put[A](in: A)(implicit eori: EORI, writes: Writes[A]): Future[A]
+
+  def update[A: ClassTag](f: Option[A] => Option[A])(implicit eori: EORI, format: Format[A]): Future[A]
+
+}
