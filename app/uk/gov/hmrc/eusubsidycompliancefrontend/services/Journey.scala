@@ -38,7 +38,7 @@ trait Journey {
 
   def steps: List[Option[FormPage[_]]]
 
-  val formPages: List[FormPage[_]] =
+  def formPages: List[FormPage[_]] =
     steps
       .filter(_.nonEmpty)
       .flatten
@@ -50,19 +50,19 @@ trait Journey {
   def previous(implicit request: Request[_]): journey.Uri =
     formPages
       .zipWithIndex
-      .find(_._2 == currentIndex -1)
-      .fold(throw new IllegalArgumentException()){
+      .find(_._2 == currentIndex - 1)
+      .fold(throw new IllegalArgumentException("no previous page")) {
         _._1.uri
       }
 
   def next(implicit request: Request[_]): Future[Result] =
     formPages
-      .find(_.value.isEmpty)
+      .find(_.value.isEmpty) // TODO this doesn't work if you are rerunning (editing) the journey
       .map { fp =>
         Future.successful(
           Redirect(fp.uri)
             .withSession(request.session))
-      }.getOrElse(throw new IllegalStateException(""))
+      }.getOrElse(throw new IllegalStateException("no next page"))
 
   def isEmptyFormPage(
     indexedFormPage: (FormPage[_],Int)

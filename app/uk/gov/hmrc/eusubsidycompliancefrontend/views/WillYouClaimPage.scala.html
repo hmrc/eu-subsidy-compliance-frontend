@@ -1,0 +1,81 @@
+@*
+ * Copyright 2021 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.services.journey
+
+@this(
+        layout: Layout,
+        formHelper: FormWithCSRF,
+        button: components.Button,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios : GovukRadios
+)
+
+
+@(form: Form[_], previous: journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(
+    pageTitle = Some(messages("willyouclaim.title")),
+    backLinkEnabled = true,
+    backLink = Some(previous)
+) {
+
+    @formHelper(action = controllers.routes.EligibilityController.postWillYouClaim) {
+        @form.errors.map { err =>
+            @govukErrorSummary(ErrorSummary(
+                errorList = Seq(
+                    ErrorLink(
+                        href = Some(s"#${err.key}"),
+                        content = Text(s"${messages(err.key++"." ++err.message)}")
+                    )
+                ),
+                title = Text(messages("common.error.summary.title"))
+            ))
+        }
+
+        @govukRadios(Radios(
+            errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+                content = Text(messages("willyouclaim.error.required"))
+            ))} else None,
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("willyouclaim.title")),
+                    classes = "govuk-fieldset__legend--l",
+                    isPageHeading = true
+                ))
+            )),
+            hint = None,
+            idPrefix = Some("willyouclaim"),
+            name = "willyouclaim",
+            items = Seq(
+                RadioItem(
+                    content = Text(messages("common.yes")),
+                    value = Some("true"),
+                    checked = form.data.exists(_._2 == "true")
+                ),
+                RadioItem(
+                    content = Text(messages("common.no")),
+                    value = Some("false"),
+                    checked = form.data.exists(_._2 == "false")
+                )
+            )
+        ))
+
+        @button("common.continue")
+    }
+}

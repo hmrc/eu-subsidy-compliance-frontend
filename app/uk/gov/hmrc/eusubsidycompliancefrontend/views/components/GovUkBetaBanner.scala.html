@@ -14,14 +14,23 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 
-@this(layout: Layout)
+@this(govukPhaseBanner : GovukPhaseBanner)
 
-@(eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(content: String)(implicit messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some("eu-subsidy-compliance-frontend")) {
-    <h1 class="govuk-heading-xl">eu-subsidy-compliance-frontend</h1>
-    <p class="govuk-body">Welcome @{eori}. @{messages("service.text")}</p>
-}
+@govukPhaseBanner(PhaseBanner(
+    tag = Some(Tag(
+      content = Text(content)
+    )),
+    content = HtmlContent(
+         s"""<span>
+                ${messages("common.alpha-info.p1")}
+                <a href="${appConfig.betaFeedbackUrlNoAuth}" target=_blank>${Messages("common.alpha-info.link")}</a>
+                ${messages("common.alpha-info.p2")}
+            </span>"""
+
+    )
+  ))
