@@ -13,3 +13,8 @@ POST       /main-business-check               uk.gov.hmrc.eusubsidycompliancefro
 GET        /will-you-claim-customs-waivers    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getWillYouClaim
 POST       /will-you-claim-customs-waivers    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postWillYouClaim
 
+GET        /not-eligible                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getNotEligible
+GET        /not-eligible-to-lead              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getNotEligibleToLead
+
+GET        /terms-conditions                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getTerms
+POST       /terms-conditions                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postTerms
