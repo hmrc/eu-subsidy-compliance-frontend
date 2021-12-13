@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+package uk.gov.hmrc.eusubsidycompliancefrontend
 
-@this(layout: Layout)
+import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 
-@(eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+package object controllers {
 
-@layout(pageTitle = Some("eu-subsidy-compliance-frontend")) {
-    <h1 class="govuk-heading-xl">eu-subsidy-compliance-frontend</h1>
-    <p class="govuk-body">Welcome @{eori}. @{messages("service.text")}</p>
+  implicit val undertakingFormat: Format[Undertaking] = Json.format[Undertaking]
+
 }

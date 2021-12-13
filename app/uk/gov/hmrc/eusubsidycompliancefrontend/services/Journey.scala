@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import play.api.Logger
+import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.mvc.Results.Redirect
 
@@ -38,31 +39,34 @@ trait Journey {
 
   def steps: List[Option[FormPage[_]]]
 
-  val formPages: List[FormPage[_]] =
+  def formPages: List[FormPage[_]] =
     steps
       .filter(_.nonEmpty)
       .flatten
 
   // TODO strip/add the server path prefix instead of endsWith
+  // TODO especially as this may not work for listings
   def currentIndex(implicit request: Request[_]): Int =
     formPages.indexWhere(x => request.uri.endsWith(x.uri))
 
   def previous(implicit request: Request[_]): journey.Uri =
     formPages
       .zipWithIndex
-      .find(_._2 == currentIndex -1)
-      .fold(throw new IllegalArgumentException()){
+      .find(_._2 == currentIndex - 1)
+      .fold(throw new IllegalArgumentException(s"no previous page")) {
         _._1.uri
       }
 
   def next(implicit request: Request[_]): Future[Result] =
     formPages
-      .find(_.value.isEmpty)
-      .map { fp =>
+      .zipWithIndex
+      .find(_._2 == currentIndex + 1)
+      .fold(throw new IllegalArgumentException(s"no next page")) { x =>
+        val uri = x._1.uri
         Future.successful(
-          Redirect(fp.uri)
+          Redirect(uri)
             .withSession(request.session))
-      }.getOrElse(throw new IllegalStateException(""))
+      }
 
   def isEmptyFormPage(
     indexedFormPage: (FormPage[_],Int)
@@ -86,4 +90,9 @@ trait Journey {
     else None
   }
 
+}
+
+object Journey {
+  implicit val formPageBooleanValueFormat: OFormat[FormPage[Boolean]] =
+    Json.format[FormPage[Boolean]]
 }

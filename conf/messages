@@ -1,2 +1,19 @@
-service.name = eu-subsidy-compliance-frontend
+service.name = Report state aid payments for Northern Ireland businesses
 service.text = This is your new service
+
+common.continue=Save and Continue
+common.yes=Yes
+common.no=No
+
+customswaivers.title=Do you, or any business in your organisation, claim Customs Duty waivers?
+
+mainbusinesscheck.title=Do you want to become lead for this undertaking?
+
+willyouclaim.title=Will you, or any business in your organisation, claim Customs Duty waivers in the future?
+
+notEligible.title=You are not eligible to use this service
+
+notEligibleToLead.title=Please sign out
+
+eiligibilityTerms.title=You must accept the terms and conditions
+

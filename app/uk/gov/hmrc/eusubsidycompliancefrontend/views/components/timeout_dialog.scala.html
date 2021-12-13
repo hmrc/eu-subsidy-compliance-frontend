@@ -14,14 +14,13 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@(keepAliveUrl: String, timeout: String)
 
-@this(layout: Layout)
-
-@(eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
-@layout(pageTitle = Some("eu-subsidy-compliance-frontend")) {
-    <h1 class="govuk-heading-xl">eu-subsidy-compliance-frontend</h1>
-    <p class="govuk-body">Welcome @{eori}. @{messages("service.text")}</p>
-}
+<div id="timeout-dialog"
+   class="govuk-visually-hidden"
+   style="display: none;"
+   data-timeout="@{timeout}"
+   data-countdown="120"
+   data-keep-alive-url="@{keepAliveUrl}"
+   data-sign-out-url="/pay-vat-deferred-due-to-coronavirus/time-out">
+</div>

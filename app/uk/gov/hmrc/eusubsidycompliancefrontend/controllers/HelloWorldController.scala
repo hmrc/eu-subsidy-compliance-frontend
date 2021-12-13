@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{Store, UndertakingJourneyModel}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.HelloWorldPage
@@ -34,7 +35,8 @@ class HelloWorldController @Inject()(
   escActionBuilders: EscActionBuilders,
   store: Store
 )(
-  implicit executionContext: ExecutionContext
+  implicit val appConfig: AppConfig,
+  executionContext: ExecutionContext
 ) extends
   FrontendController(mcc)
   with I18nSupport

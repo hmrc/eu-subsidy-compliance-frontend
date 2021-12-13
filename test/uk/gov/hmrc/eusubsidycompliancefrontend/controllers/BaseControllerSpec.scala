@@ -24,6 +24,7 @@ import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.{Application, Configuration, Environment}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.AuthenticatedActionBuildersSpec
+import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.mongo.test.MongoSupport
 
 class BaseControllerSpec
@@ -36,6 +37,7 @@ class BaseControllerSpec
 
   lazy val environment: Environment = Environment.simple(new File("."))
   lazy val configuration = Configuration.load(environment)
+  implicit val appConfig: AppConfig = new AppConfig(configuration)
   override def fakeApplication(): Application =
     new GuiceApplicationBuilder()
       .configure(
