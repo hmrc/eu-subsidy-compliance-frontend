@@ -78,10 +78,19 @@ package object types extends SimpleJson {
     regex = """[A-Za-z0-9]{1,17}""" // n.b. no longer exact match for spec which accepts n of any char
   )
 
-  type Sector = String @@ Sector.Tag // TODO if using enumeratum do enumeratum otherwise sealed trait
-  object Sector extends RegexValidatedString(
-    regex = "0|1|2|3"
-  )
+//  type SectorFoo = String @@ SectorFoo.Tag // TODO if using enumeratum do enumeratum otherwise sealed trait
+//  object SectorFoo extends RegexValidatedString(
+//    regex = "0|1|2|3"
+//  )
+
+  object Sector extends Enumeration {
+    type Sector = Value
+    val other: types.Sector.Value = Value("0")
+    val transport: types.Sector.Value = Value("1")
+    val agriculture: types.Sector.Value = Value("2")
+    val aquaculture: types.Sector.Value = Value("3")
+    implicit val format: Format[Sector] = Json.formatEnum(Sector)
+  }
 
   type Postcode = String @@ Postcode.Tag
   object Postcode extends RegexValidatedString(

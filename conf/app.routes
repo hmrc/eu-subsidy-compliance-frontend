@@ -18,3 +18,14 @@ GET        /not-eligible-to-lead              uk.gov.hmrc.eusubsidycompliancefro
 
 GET        /terms-conditions                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getTerms
 POST       /terms-conditions                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postTerms
+
+GET        /eoricheck                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getEoriCheck
+POST       /eoricheck                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postEoriCheck
+
+GET        /incorrect-eori                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getIncorrectEori
+
+GET        /create-undertaking                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getCreateUndertaking
+POST       /create-undertaking                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postCreateUndertaking
+
+GET        /undertaking-name                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getUndertakingName
+POST       /undertaking-name                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postUndertakingName

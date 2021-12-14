@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.models
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 
-import java.time.LocalDate
+@this(layout: Layout)
 
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-case class Undertaking(
-  reference: Option[UndertakingRef],
-  name: UndertakingName,
-  industrySector: Sector,
-  industrySectorLimit: Option[IndustrySectorLimit],
-  lastSubsidyUsageUpdt: Option[LocalDate],
-  undertakingBusinessEntity: List[BusinessEntity]
-)
+@layout(pageTitle = Some(messages("incorrectEori.title"))) {
+    <h1 class="govuk-heading-xl">@messages("incorrectEori.title")</h1>
+}

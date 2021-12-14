@@ -64,8 +64,6 @@ class EligibilityController @Inject()(
   lazy val termsForm: Form[FormValues] = Form(
     mapping("terms" -> mandatory("terms"))(FormValues.apply)(FormValues.unapply))
 
-  case class FormValues(value: String)
-
   def getCustomsWaivers: Action[AnyContent] = escAuthentication.async { implicit request =>
 
     implicit val eori: EORI = request.eoriNumber
@@ -74,6 +72,7 @@ class EligibilityController @Inject()(
     // an undertaking, or a partially filled undertaking
     // If the user has completed this journey but not started an undertaking they will have to redo
     // this journey 30 days later
+    // TODO need to add a check if they are already a non-lead member of an undertaking (see page flow)
     for {
       a <- store.get[Undertaking]
       b <- if (a.isEmpty) connector.retrieveUndertaking(eori) else Future.successful(Option.empty)
@@ -92,7 +91,7 @@ class EligibilityController @Inject()(
           }
         Ok(customsWaiversPage(form))
       case _ =>
-        store.put(EligibilityJourney()) // initialise an empty journey
+        store.put(EligibilityJourney()) // TODO .map here?
         Ok(customsWaiversPage(customsWaiversForm))
     }
 
@@ -139,7 +138,7 @@ class EligibilityController @Inject()(
 
   def postWillYouClaim: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    getPrevious.flatMap { previous =>
+    getPrevious[EligibilityJourney](store).flatMap { previous =>
       willYouClaimForm.bindFromRequest().fold(
         errors => Future.successful(BadRequest(willYouClaimPage(errors, previous))),
         form => {
@@ -186,7 +185,7 @@ class EligibilityController @Inject()(
 
   def postMainBusinessCheck: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    getPrevious.flatMap { previous =>
+    getPrevious[EligibilityJourney](store).flatMap { previous =>
       mainBusinessCheckForm.bindFromRequest().fold(
         errors => Future.successful(BadRequest(mainBusinessCheckPage(errors, previous))),
         form => {
@@ -206,16 +205,16 @@ class EligibilityController @Inject()(
 
   def getTerms: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    getPrevious.flatMap { previous =>
+    getPrevious[EligibilityJourney](store).flatMap { previous =>
       Future.successful(Ok(termsPage(previous)))
     }
   }
 
   def postTerms: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    getPrevious.flatMap { previous =>
+    getPrevious[EligibilityJourney](store).flatMap { previous =>
       termsForm.bindFromRequest().fold(
-        errors => Future.successful(BadRequest(mainBusinessCheckPage(errors, previous))),
+        _ => throw new IllegalStateException("value hard-coded, form hacking?"),
         form => {
           store.update[EligibilityJourney]({ x =>
             x.map { y =>
@@ -229,13 +228,5 @@ class EligibilityController @Inject()(
       )
     }
   }
-
-
-  def getPrevious(implicit eori: EORI, request: Request[_]): Future[Uri] =
-    store.get[EligibilityJourney].map { x =>
-      x.fold(throw new IllegalStateException("journey should be there")){ y =>
-        y.previous
-      }
-    }
 
 }

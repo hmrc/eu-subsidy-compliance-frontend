@@ -17,3 +17,12 @@ notEligibleToLead.title=Please sign out
 
 eiligibilityTerms.title=You must accept the terms and conditions
 
+eoricheck.title=Is this the EORI number you want to register?
+
+incorrectEori.title=Your EORI and Government Gateway ID do not match
+
+createUndertaking.title=You must now create an undertaking
+
+undertakingName.title=What would you like to call this undertaking?
+undertakingName.heading=What would you like to call this undertaking?
+undertakingName.hint=This is for your own records.
