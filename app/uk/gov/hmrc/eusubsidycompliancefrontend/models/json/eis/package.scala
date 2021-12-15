@@ -23,6 +23,7 @@ import java.time._
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 
 package object eis {

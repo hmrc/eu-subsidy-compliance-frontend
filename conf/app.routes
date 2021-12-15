@@ -1,8 +1,8 @@
 # microservice specific routes
 
-->         /hmrc-frontend           hmrcfrontend.Routes
-GET        /                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HelloWorldController.helloWorld
-GET        /assets/*file            controllers.Assets.versioned(path = "/public", file: Asset)
+->         /hmrc-frontend                     hmrcfrontend.Routes
+GET        /                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HelloWorldController.helloWorld
+GET        /assets/*file                      controllers.Assets.versioned(path = "/public", file: Asset)
 
 GET        /do-you-claim-customs-waivers      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getCustomsWaivers
 POST       /do-you-claim-customs-waivers      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postCustomsWaivers
@@ -18,3 +18,23 @@ GET        /not-eligible-to-lead              uk.gov.hmrc.eusubsidycompliancefro
 
 GET        /terms-conditions                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getTerms
 POST       /terms-conditions                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postTerms
+
+GET        /eoricheck                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getEoriCheck
+POST       /eoricheck                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postEoriCheck
+
+GET        /incorrect-eori                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getIncorrectEori
+
+GET        /create-undertaking                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getCreateUndertaking
+POST       /create-undertaking                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postCreateUndertaking
+
+GET        /undertaking-name                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getUndertakingName
+POST       /undertaking-name                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postUndertakingName
+
+GET        /sector                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSector
+POST       /sector                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postSector
+
+GET        /contact                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getContact
+POST       /contact                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postContact
+
+GET        /check-your-answers                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getCheckAnswers
+POST       /check-your-answers                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postCheckAnswers

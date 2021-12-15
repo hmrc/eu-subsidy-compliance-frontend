@@ -93,6 +93,12 @@ trait Journey {
 }
 
 object Journey {
+  implicit val formPageBigDecimalFormat: OFormat[FormPage[BigDecimal]] =
+    Json.format[FormPage[BigDecimal]]
   implicit val formPageBooleanValueFormat: OFormat[FormPage[Boolean]] =
     Json.format[FormPage[Boolean]]
+  implicit val formPageIntFormat: OFormat[FormPage[Int]] =
+    Json.format[FormPage[Int]]
+  implicit val formPageStringValueFormat: OFormat[FormPage[String]] =
+    Json.format[FormPage[String]]
 }

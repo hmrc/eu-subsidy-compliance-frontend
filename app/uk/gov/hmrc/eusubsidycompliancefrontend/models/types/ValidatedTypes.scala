@@ -124,9 +124,6 @@ trait SimpleJson {
   implicit val undertakingNameFormat: Format[@@[String, types.UndertakingName.Tag]] =
     validatedStringFormat(UndertakingName, "undertakingName")
 
-  implicit val industrySectorFormat: Format[@@[String, types.Sector.Tag]] =
-    validatedStringFormat(Sector, "industrySector")
-
   implicit val eoriFormat: Format[@@[String, types.EORI.Tag]] =
     validatedStringFormat(EORI, "eori")
 
