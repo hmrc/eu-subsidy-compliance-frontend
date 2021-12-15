@@ -78,11 +78,6 @@ package object types extends SimpleJson {
     regex = """[A-Za-z0-9]{1,17}""" // n.b. no longer exact match for spec which accepts n of any char
   )
 
-//  type SectorFoo = String @@ SectorFoo.Tag // TODO if using enumeratum do enumeratum otherwise sealed trait
-//  object SectorFoo extends RegexValidatedString(
-//    regex = "0|1|2|3"
-//  )
-
   object Sector extends Enumeration {
     type Sector = Value
     val other: types.Sector.Value = Value("0")
@@ -105,7 +100,7 @@ package object types extends SimpleJson {
 
   type PhoneNumber = String @@ PhoneNumber.Tag
   object PhoneNumber extends RegexValidatedString(
-    regex = """.{1,24}"""
+    regex = """.{1,24}""" // TODO we should use a same regex here, currently using EIS'
   )
 
   type CountryCode = String @@ CountryCode.Tag

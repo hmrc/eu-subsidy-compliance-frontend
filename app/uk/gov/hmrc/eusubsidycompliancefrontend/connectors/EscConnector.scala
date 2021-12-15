@@ -40,7 +40,7 @@ class EscConnector @Inject()(
   val logger: Logger = Logger(this.getClass)
   val escURL: String = servicesConfig.baseUrl("esc")
   val retrieveUndertakingPath = "eu-subsidy-compliance/undertaking/"
-//  val createUndertakingPath = "eu-subsidy-compliance-stub/scp/createundertaking/v1"
+  val createUndertakingPath = "eu-subsidy-compliance/undertaking"
 
   def retrieveUndertaking(
     eori: EORI
@@ -60,6 +60,5 @@ class EscConnector @Inject()(
         value.some
     }
   }
-
 
 }

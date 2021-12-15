@@ -2,6 +2,7 @@ service.name = Report state aid payments for Northern Ireland businesses
 service.text = This is your new service
 
 common.continue=Save and Continue
+continue.button=Save and Continue
 common.yes=Yes
 common.no=No
 
@@ -26,3 +27,18 @@ createUndertaking.title=You must now create an undertaking
 undertakingName.title=What would you like to call this undertaking?
 undertakingName.heading=What would you like to call this undertaking?
 undertakingName.hint=This is for your own records.
+
+
+undertakingSector.title=What is the industry sector of ?
+
+sector.label.0=Other industry
+sector.label.1=Road freight transport for hire or reward
+sector.label.2=Primary production of agricultural products
+sector.label.3=Fishery and aquaculture products
+
+sector.hint.0=
+sector.hint.1=This sector includes couriers and hauliers who get paid by someone to transport their goods by road
+sector.hint.2=An ‘agricultural product’ can be products such as: live animals, meat and edible meat offal, dairy produce, birds' eggs, natural honey
+sector.hint.3=If any part of your business is involved in the production, processing or marketing of fishery and aquaculture products. A ‘fishery product’ means aquatic organisms resulting from any fishing activity or products derived from them.
+
+undertaking.cya.title=Check your answers

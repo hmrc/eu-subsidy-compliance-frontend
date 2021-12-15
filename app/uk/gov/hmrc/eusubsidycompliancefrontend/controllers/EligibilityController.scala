@@ -25,8 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.journey.Uri
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EligibilityJourney, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EligibilityJourney, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,6 +40,9 @@ class EligibilityController @Inject()(
   mainBusinessCheckPage: MainBusinessCheckPage,
   notEligibleToLeadPage: NotEligibleToLeadPage,
   termsPage: EligibilityTermsAndConditionsPage,
+  checkEoriPage: CheckEoriPage,
+  incorrectEoriPage: IncorrectEoriPage,
+  createUndertakingPage: CreateUndertakingPage,
   escActionBuilders: EscActionBuilders,
   store: Store,
   connector: EscConnector
@@ -63,6 +65,12 @@ class EligibilityController @Inject()(
 
   lazy val termsForm: Form[FormValues] = Form(
     mapping("terms" -> mandatory("terms"))(FormValues.apply)(FormValues.unapply))
+
+  lazy val eoriCheckForm : Form[FormValues] = Form(
+    mapping("eoricheck" -> mandatory("eoricheck"))(FormValues.apply)(FormValues.unapply))
+
+  lazy val createUndertakingForm: Form[FormValues] = Form(
+    mapping("createUndertaking" -> mandatory("createUndertaking"))(FormValues.apply)(FormValues.unapply))
 
   def getCustomsWaivers: Action[AnyContent] = escAuthentication.async { implicit request =>
 
@@ -179,7 +187,6 @@ class EligibilityController @Inject()(
               ))
             )
           }
-      case None => ??? // TODO throw some kind of exception or redirect to previous, shouldn't happen really...
     }
   }
 
@@ -220,13 +227,82 @@ class EligibilityController @Inject()(
             x.map { y =>
               y.copy(acceptTerms = y.acceptTerms.copy(value = Some(form.value.toBoolean)))
             }
-          }).flatMap { _ =>
-            // TODO - this should link to the beginning of the undertaking journey
-            Future.successful(Redirect(routes.HelloWorldController.helloWorld()))
-          }
+          }).flatMap(_.next)
         }
       )
     }
+  }
+
+  def getEoriCheck: Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    getPrevious[EligibilityJourney](store).flatMap { previous =>
+      store.get[EligibilityJourney].flatMap {
+        case Some(journey) =>
+          journey
+            .eoriCheck
+            .value
+            .fold(
+              Future.successful(
+                Ok(checkEoriPage(
+                  eoriCheckForm,
+                  eori,
+                  previous
+                ))
+              )
+            ) { x =>
+              Future.successful(
+                Ok(checkEoriPage(
+                  eoriCheckForm.fill(FormValues(x.toString)),
+                  eori,
+                  previous
+                ))
+              )
+            }
+      }
+    }
+  }
+
+  def postEoriCheck: Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    getPrevious[EligibilityJourney](store).flatMap { previous =>
+      eoriCheckForm.bindFromRequest().fold(
+        errors => Future.successful(BadRequest(checkEoriPage(errors, eori, previous))),
+        form => {
+          store.update[EligibilityJourney]({ x =>
+            x.map { y =>
+              y.copy(eoriCheck = y.eoriCheck.copy(value = Some(form.value.toBoolean)))
+            }
+          }).flatMap(_.next)
+        }
+      )
+    }
+  }
+
+  def getIncorrectEori: Action[AnyContent] = escAuthentication.async { implicit request =>
+    Future.successful(Ok(incorrectEoriPage()))
+  }
+
+  def getCreateUndertaking: Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    getPrevious[EligibilityJourney](store).flatMap { previous =>
+      Future.successful(Ok(createUndertakingPage(previous)))
+    }
+  }
+
+  def postCreateUndertaking: Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    createUndertakingForm.bindFromRequest().fold(
+      _ => throw new IllegalStateException("value hard-coded, form hacking?"),
+      form => {
+        store.update[EligibilityJourney]({ x =>
+          x.map { y =>
+            y.copy(createUndertaking = y.createUndertaking.copy(value = Some(form.value.toBoolean)))
+          }
+        }).flatMap { _ =>
+          Future.successful(Redirect(routes.UndertakingController.getUndertakingName()))
+        }
+      }
+    )
   }
 
 }

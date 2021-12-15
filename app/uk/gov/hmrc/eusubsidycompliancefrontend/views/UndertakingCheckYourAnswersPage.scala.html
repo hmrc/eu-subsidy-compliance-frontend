@@ -17,6 +17,10 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
+
 
 @this(
         layout: Layout,
@@ -27,19 +31,25 @@
 )
 
 
-@(previous: journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(name: UndertakingName, eori: EORI, sector: Sector, contacts: ContactDetails, previous: journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-    pageTitle = Some(messages("createUndertaking.title")),
+    pageTitle = Some(messages("undertaking.cya.title")),
     backLinkEnabled = true,
     backLink = Some(previous)
 ) {
 
-    @formHelper(action = controllers.routes.EligibilityController.postCreateUndertaking) {
+    @formHelper(action = controllers.routes.UndertakingController.postCheckAnswers) {
         @*TODO - this might need to be a GovukInput *@
-        <input type=hidden name=createUndertaking value=true>
+        <input type=hidden name=cya value=true>
 
-        <h1 class="govuk-heading-xl">@messages("createUndertaking.title")</h1>
+        <h1 class="govuk-heading-xl">@messages("undertaking.cya.title")</h1>
+
+
+        <p>name: @name</p>
+        <p>eori: @eori</p>
+        <p>sector: @{messages(s"sector.label.$sector")}</p>
+        <p>contacts: @contacts</p>
 
         @button("common.continue")
     }

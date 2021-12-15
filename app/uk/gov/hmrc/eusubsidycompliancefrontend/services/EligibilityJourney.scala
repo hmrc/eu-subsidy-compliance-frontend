@@ -27,10 +27,11 @@ case class EligibilityJourney(
   notEligible: FormPage[Boolean] = FormPage("not-eligible"),
   mainBusinessCheck: FormPage[Boolean] = FormPage("main-business-check"),
   signOut: FormPage[Boolean] = FormPage("not-eligible-to-lead"),
-  acceptTerms: FormPage[Boolean] = FormPage("terms-conditions")
+  acceptTerms: FormPage[Boolean] = FormPage("terms-conditions"),
+  eoriCheck: FormPage[Boolean] = FormPage("eoricheck"),
+  signOutBadEori: FormPage[Boolean] = FormPage("incorrect-eori"),
+  createUndertaking: FormPage[Boolean] = FormPage("create-undertaking"),
 ) extends Journey {
-
-  // TODO consider implicit func on FormPage[Boolean] to check value set and true
 
   override def steps: List[Option[FormPage[_]]] =
     EligibilityJourney
@@ -49,6 +50,10 @@ case class EligibilityJourney(
       .filterNot(x => x.fold(false) { y =>
         y.uri === "not-eligible-to-lead" &&
           this.mainBusinessCheck.value.getOrElse(false)
+      })
+      .filterNot(x => x.fold(false) { y =>
+        y.uri === "incorrect-eori" &&
+          this.eoriCheck.value.getOrElse(false)
       })
 
 }

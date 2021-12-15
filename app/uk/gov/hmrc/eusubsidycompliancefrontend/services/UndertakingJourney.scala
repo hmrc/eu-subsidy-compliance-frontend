@@ -16,19 +16,17 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import cats.implicits._
 import play.api.libs.json.{Format, Json, OFormat}
 import shapeless.syntax.std.tuple._
 import shapeless.syntax.typeable._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 
 case class UndertakingJourney(
-  eoriCheck: FormPage[Boolean] = FormPage("eoricheck"), // TODO - double check thinking, maybe part of eligibility
-  signOut: FormPage[Boolean] = FormPage("incorrect-eori"),
-  createUndertaking: FormPage[Boolean] = FormPage("create-undertaking"),
   name: FormPage[String] = FormPage("undertaking-name"),
-  sector: FormPage[Sector] = FormPage("sector")
-
+  sector: FormPage[Sector] = FormPage("sector"),
+  contact: FormPage[ContactDetails] = FormPage("contact"),
+  cya: FormPage[Boolean] = FormPage("check-your-answers")
 ) extends Journey {
 
   override def steps: List[Option[FormPage[_]]] =
@@ -37,10 +35,6 @@ case class UndertakingJourney(
       .map(_.toList)
       .fold(List.empty[Any])(identity)
       .map(_.cast[FormPage[_]])
-      .filterNot(x => x.fold(false) { y =>
-        y.uri === "incorrect-eori" &&
-          this.eoriCheck.value.getOrElse(false)
-      })
 
 }
 
@@ -50,6 +44,10 @@ object UndertakingJourney {
   import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.format
   implicit val formPageSectorFormat: OFormat[FormPage[Sector]] =
     Json.format[FormPage[Sector]]
+  implicit val formatContactDetails: OFormat[ContactDetails] =
+    Json.format[ContactDetails]
+  implicit val formPageContactFormat: OFormat[FormPage[ContactDetails]] =
+    Json.format[FormPage[ContactDetails]]
 
   implicit val format: Format[UndertakingJourney] = Json.format[UndertakingJourney]
 }

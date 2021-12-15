@@ -20,9 +20,8 @@ import play.api.libs.json.{Format, Json, Reads}
 import play.api.mvc.Request
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.format
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{Journey, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.journey.Uri
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{Journey, Store}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag

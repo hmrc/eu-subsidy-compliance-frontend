@@ -14,10 +14,10 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 
 @this(
         layout: Layout,
@@ -27,19 +27,16 @@
         govukRadios : GovukRadios
 )
 
+@(form: Form[_], previous: journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@(form: Form[_], eori: EORI, previous: journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
+@fieldName = @{"undertakingSector"}
 @layout(
-    pageTitle = Some(messages("eoricheck.title")),
+    pageTitle = Some(messages("undertakingSector.title")),
     backLinkEnabled = true,
     backLink = Some(previous)
 ) {
 
-    TODO @Hint(Some(eori))
-
-
-    @formHelper(action = controllers.routes.EligibilityController.postEoriCheck) {
+    @formHelper(action = controllers.routes.UndertakingController.postSector()) {
         @form.errors.map { err =>
             @govukErrorSummary(ErrorSummary(
                 errorList = Seq(
@@ -54,32 +51,33 @@
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("eoricheck.error.required"))
+                content = Text(messages("how-many-months.error.required"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("eoricheck.title")),
+                    content = Text(messages("undertakingSector.title")),
                     classes = "govuk-fieldset__legend--l",
                     isPageHeading = true
                 ))
             )),
-            hint = Some(Hint(Some(eori))),
-            idPrefix = Some("eoricheck"),
-            name = "eoricheck",
-            items = Seq(
-                RadioItem(
-                    content = Text(messages("common.yes")),
-                    value = Some("true"),
-                    checked = form.data.exists(_._2 == "true")
-                ),
-                RadioItem(
-                    content = Text(messages("common.no")),
-                    value = Some("false"),
-                    checked = form.data.exists(_._2 == "false")
+            idPrefix = Some(fieldName),
+            name = fieldName,
+            items = Sector.values.toList.reverse.map(item => {
+                        RadioItem(
+                            label = Some(Label(classes = "govuk-!-padding-top-0")),
+                            content = HtmlContent(s"""<span class="govuk-body govuk-!-font-size-36">${messages(s"sector.label.$item")}</span>"""),
+                            hint = Some(Hint(
+                                content = HtmlContent(s"""${messages(s"sector.hint.$item")}
+                                        <hr class="govuk-section-break govuk-section-break--visible" style="margin-top:10px"></hr>""")
+                            )),
+                            value = Some(item.toString),
+                            checked = form.data.get(fieldName).fold(false)(x => x == item.toString)
+                        )
+                    }
                 )
             )
-        ))
+        )
 
-        @button("common.continue")
+        @button("continue.button")
     }
 }
