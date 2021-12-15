@@ -28,23 +28,12 @@ trait DesHelpers {
   def http: HttpClient
   def servicesConfig: ServicesConfig
   private def headers = Seq(
-    HeaderNames.CONTENT_TYPE -> ContentTypes.JSON,
-    "Environment" -> servicesConfig.getConfString("eis.environment", ""),
-    "Authorization" -> s"Bearer ${servicesConfig.getConfString("eis.token", "")}"
+    HeaderNames.CONTENT_TYPE -> ContentTypes.JSON
   )
 
   def desGet[O](url: String)(implicit rds: HttpReads[O], hc: HeaderCarrier, ec: ExecutionContext): Future[O] =
-    http.GET[O](url, Seq.empty, headers)(rds, addHeaders, ec)
+    http.GET[O](url, Seq.empty, headers)
 
   def desPost[I, O](url: String, body: I)(implicit wts: Writes[I], rds: HttpReads[O], hc: HeaderCarrier, ec: ExecutionContext): Future[O] =
-    http.POST[I, O](url, body, headers)(wts, rds, addHeaders, ec)
-
-  def addHeaders(implicit hc: HeaderCarrier): HeaderCarrier = {
-    hc.copy(authorization = None)
-  }
-
-
+    http.POST[I, O](url, body, headers)
 }
-
-
-
