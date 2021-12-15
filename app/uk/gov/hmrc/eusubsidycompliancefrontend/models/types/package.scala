@@ -100,7 +100,7 @@ package object types extends SimpleJson {
 
   type PhoneNumber = String @@ PhoneNumber.Tag
   object PhoneNumber extends RegexValidatedString(
-    regex = """.{1,24}""" // TODO we should use a same regex here, currently using EIS'
+    regex = """.{1,24}""" // TODO we should use a sane regex here, currently using EIS'
   )
 
   type CountryCode = String @@ CountryCode.Tag
