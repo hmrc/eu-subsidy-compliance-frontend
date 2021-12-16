@@ -23,7 +23,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.mongo.cache.{CacheIdType, DataKey, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration.{DAYS, FiniteDuration}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
@@ -39,7 +39,7 @@ class JourneyStore @Inject()(
 ) extends MongoCacheRepository[EORI](
   mongoComponent   = mongoComponent,
   collectionName   = "journeyStore",
-  ttl              = configuration.get[FiniteDuration]("mongodb.journeyStore.expireAfter"),
+  ttl              = configuration.getOptional[FiniteDuration]("mongodb.journeyStore.expireAfter").getOrElse(FiniteDuration(30, DAYS)),
   timestampSupport = new CurrentTimestampSupport,
   cacheIdType      = EoriIdType
 ) with Store {
