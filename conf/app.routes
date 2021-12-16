@@ -38,3 +38,6 @@ POST       /contact                           uk.gov.hmrc.eusubsidycompliancefro
 
 GET        /check-your-answers                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getCheckAnswers
 POST       /check-your-answers                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postCheckAnswers
+
+GET        /confirmation/:undertakingRef/name uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmation(undertakingRef,name)
+POST       /confirmation                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmation

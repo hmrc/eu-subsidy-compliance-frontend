@@ -22,7 +22,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{Store, UndertakingJourneyModel}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.HelloWorldPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -48,10 +48,10 @@ class HelloWorldController @Inject()(
     implicit val foo: EORI = request.eoriNumber
 
     // TODO in all but the first steps we have to get the model first
-    store.put(UndertakingJourneyModel(eori = foo))
+//    store.put(UndertakingJourneyModel(eori = foo))
 
     // TODO .. like so, here we pass in the copy function to update the underlying case class
-    store.update[UndertakingJourneyModel]({x => x.map(_.copy(eori = EORI("XI123456789013")))})
+//    store.update[UndertakingJourneyModel]({x => x.map(_.copy(eori = EORI("XI123456789013")))})
 
     Future.successful(Ok(helloWorldPage(foo)))
   }

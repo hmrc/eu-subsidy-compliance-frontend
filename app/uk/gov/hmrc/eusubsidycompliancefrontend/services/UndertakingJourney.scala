@@ -16,10 +16,11 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
+import cats.implicits._
 import play.api.libs.json.{Format, Json, OFormat}
 import shapeless.syntax.std.tuple._
 import shapeless.syntax.typeable._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 
 case class UndertakingJourney(
@@ -50,4 +51,17 @@ object UndertakingJourney {
     Json.format[FormPage[ContactDetails]]
 
   implicit val format: Format[UndertakingJourney] = Json.format[UndertakingJourney]
+
+  def fromUndertaking(undertaking: Undertaking): UndertakingJourney = {
+    val empty = UndertakingJourney()
+    val cd: Option[ContactDetails] =
+      undertaking.undertakingBusinessEntity.filter(_.leadEORI).head.contacts
+    empty.copy(
+      name = empty.name.copy(value = undertaking.name.some),
+      sector = empty.sector.copy(value = undertaking.industrySector.some),
+      contact = empty.contact.copy(
+        value = cd
+      )
+    )
+  }
 }

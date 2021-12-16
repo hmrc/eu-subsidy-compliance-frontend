@@ -17,11 +17,11 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import cats.implicits._
-
 import javax.inject.{Inject, Singleton}
+import play.api.libs.json.{Json, OFormat}
 import play.api.{Logger, Mode}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -59,6 +59,19 @@ class EscConnector @Inject()(
       case Right(value) =>
         value.some
     }
+  }
+
+  def createUndertaking(
+    undertaking: Undertaking
+  )(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[UndertakingRef] = {
+    implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
+    desPost[Undertaking, UndertakingRef](
+      s"$escURL/$createUndertakingPath",
+      undertaking
+    )
   }
 
 }

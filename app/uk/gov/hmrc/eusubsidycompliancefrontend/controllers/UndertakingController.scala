@@ -24,8 +24,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, PhoneNumber, Sector, UndertakingName}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, PhoneNumber, Sector, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EligibilityJourney, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
@@ -40,7 +40,8 @@ class UndertakingController @Inject()(
   undertakingNamePage: UndertakingNamePage,
   undertakingSectorPage: UndertakingSectorPage,
   undertakingContactPage: UndertakingContactPage,
-  cyaPage: UndertakingCheckYourAnswersPage
+  cyaPage: UndertakingCheckYourAnswersPage,
+  confirmationPage: ConfirmationPage,
 )(
   implicit val appConfig: AppConfig,
   executionContext: ExecutionContext
@@ -240,12 +241,36 @@ class UndertakingController @Inject()(
           x.map { y =>
             y.copy(cya = y.cya.copy(value = Some(form.value.toBoolean)))
           }
-        }).flatMap { _ =>
-          // TODO send undertaking to BE, fwd to next step, copy Sector changes to other services
-          Future.successful(Redirect(routes.HelloWorldController.helloWorld()))
+        }).flatMap { journey: UndertakingJourney =>
+          for {
+            ref <- connector.createUndertaking(
+                    Undertaking(
+                      None,
+                      name = UndertakingName(journey.name.value.getOrElse(throw new IllegalThreadStateException(""))),
+                      industrySector = journey.sector.value.getOrElse(throw new IllegalThreadStateException("")),
+                      None,
+                      None,
+                      List(BusinessEntity(eori, leadEORI = true, journey.contact.value)
+                    )))
+
+          } yield {
+            Redirect(routes.UndertakingController.getConfirmation(ref, journey.name.value.getOrElse("")))
+          }
         }
       }
     )
+  }
 
+  def getConfirmation(
+    ref: String,
+    name: String
+  ): Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+      Future.successful(Ok(confirmationPage(UndertakingRef(ref), UndertakingName(name))))
+  }
+
+  def postConfirmation: Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    ???
   }
 }
