@@ -17,42 +17,35 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.HelloWorldPage
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class HelloWorldController @Inject()(
+class BusinessEntityController @Inject()(
   mcc: MessagesControllerComponents,
-  helloWorldPage: HelloWorldPage,
   escActionBuilders: EscActionBuilders,
-  store: Store
+  store: Store,
+  connector: EscConnector,
 )(
   implicit val appConfig: AppConfig,
   executionContext: ExecutionContext
 ) extends
-  FrontendController(mcc)
-  with I18nSupport
-{
+  BaseController(mcc) {
+
   import escActionBuilders._
 
-  def helloWorld: Action[AnyContent] = escAuthentication.async { implicit request =>
-
-    implicit val foo: EORI = request.eoriNumber
-
-    // TODO in all but the first steps we have to get the model first
-//    store.put(UndertakingJourneyModel(eori = foo))
-
-    // TODO .. like so, here we pass in the copy function to update the underlying case class
-//    store.update[UndertakingJourneyModel]({x => x.map(_.copy(eori = EORI("XI123456789013")))})
-
-    Future.successful(Ok(helloWorldPage(foo)))
+  def getAddBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
+    Future.successful(Ok("add business entities"))
   }
+
+  def postAddBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
+    ???
+  }
+
 }

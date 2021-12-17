@@ -24,9 +24,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, PhoneNumber, Sector, UndertakingName}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EligibilityJourney, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, PhoneNumber, Sector, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,7 +40,8 @@ class UndertakingController @Inject()(
   undertakingNamePage: UndertakingNamePage,
   undertakingSectorPage: UndertakingSectorPage,
   undertakingContactPage: UndertakingContactPage,
-  cyaPage: UndertakingCheckYourAnswersPage
+  cyaPage: UndertakingCheckYourAnswersPage,
+  confirmationPage: ConfirmationPage,
 )(
   implicit val appConfig: AppConfig,
   executionContext: ExecutionContext
@@ -49,45 +50,17 @@ class UndertakingController @Inject()(
 
   import escActionBuilders._
 
-  lazy val eoriCheckForm : Form[FormValues] = Form(
-    mapping("eoricheck" -> mandatory("eoricheck"))(FormValues.apply)(FormValues.unapply))
-
-  lazy val createUndertakingForm: Form[FormValues] = Form(
-    mapping("createUndertaking" -> mandatory("createUndertaking"))(FormValues.apply)(FormValues.unapply))
-
-  lazy val undertakingNameForm: Form[FormValues] = Form(
-    mapping("undertakingName" -> mandatory("undertakingName"))(FormValues.apply)(FormValues.unapply))
-
-  lazy val undertakingSectorForm: Form[FormValues] = Form(
-    mapping("undertakingSector" -> mandatory("undertakingSector"))(FormValues.apply)(FormValues.unapply))
-
-  case class OneOf(a: Option[String], b: Option[String]){
-    def toContactDetails =
-      ContactDetails(
-        a.map(PhoneNumber(_)),
-        b.map(PhoneNumber(_))
-      )
+  def firstEmptyPage: Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.get[UndertakingJourney].map {
+      case Some(journey) =>
+        journey
+          .firstEmpty
+          .fold(
+            Redirect(routes.BusinessEntityController.getAddBusinessEntity())
+          )(identity)
+    }
   }
-
-  val undertakingContactForm: Form[OneOf] = Form(
-    mapping(
-      "phone" -> optional(text),
-      "mobile"  -> optional(text)
-    )(OneOf.apply)(OneOf.unapply).verifying(
-      "one.or.other.mustbe.present",
-      fields => fields match {
-        case OneOf(Some(a), Some(b)) if a.matches(PhoneNumber.regex) && b.matches(PhoneNumber.regex)  => true
-        case OneOf(_, Some(b)) if b.matches(PhoneNumber.regex) => true
-        case OneOf(Some(a),_) if a.matches(PhoneNumber.regex) => true
-        case _ => false
-      }
-    )
-
-  )
-
-  lazy val cyaForm: Form[FormValues] = Form(
-    mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
-
 
   def getUndertakingName: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -240,12 +213,107 @@ class UndertakingController @Inject()(
           x.map { y =>
             y.copy(cya = y.cya.copy(value = Some(form.value.toBoolean)))
           }
-        }).flatMap { _ =>
-          // TODO send undertaking to BE, fwd to next step, copy Sector changes to other services
-          Future.successful(Redirect(routes.HelloWorldController.helloWorld()))
+        }).flatMap { journey: UndertakingJourney =>
+          for {
+            ref <- connector.createUndertaking(
+                    Undertaking(
+                      None,
+                      name = UndertakingName(journey.name.value.getOrElse(throw new IllegalThreadStateException(""))),
+                      industrySector = journey.sector.value.getOrElse(throw new IllegalThreadStateException("")),
+                      None,
+                      None,
+                      List(BusinessEntity(eori, leadEORI = true, journey.contact.value)
+                    )))
+
+          } yield {
+            Redirect(routes.UndertakingController.getConfirmation(ref, journey.name.value.getOrElse("")))
+          }
         }
       }
     )
-
   }
+
+  def getConfirmation(
+    ref: String,
+    name: String
+  ): Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+      Future.successful(Ok(confirmationPage(UndertakingRef(ref), UndertakingName(name))))
+  }
+
+  def postConfirmation: Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    confirmationForm.bindFromRequest().fold(
+      _ => throw new IllegalStateException("value hard-coded, form hacking?"),
+      form => {
+        store.update[UndertakingJourney]({ x =>
+          x.map { y =>
+            y.copy(confirmation = y.confirmation.copy(value = Some(form.value.toBoolean)))
+          }
+        }).flatMap{ _ =>
+          Future.successful(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
+        }
+      }
+    )
+  }
+
+  lazy val eoriCheckForm : Form[FormValues] = Form(
+    mapping("eoricheck" -> mandatory("eoricheck"))(FormValues.apply)(FormValues.unapply))
+
+  lazy val createUndertakingForm: Form[FormValues] = Form(
+    mapping("createUndertaking" -> mandatory("createUndertaking"))(FormValues.apply)(FormValues.unapply))
+
+  lazy val undertakingNameForm: Form[FormValues] = Form(
+    mapping("undertakingName" -> mandatory("undertakingName"))(FormValues.apply)(FormValues.unapply).verifying(
+      "regex.error",
+      fields => fields match {
+        case a if a.value.matches(UndertakingName.regex) => true
+        case _ => false
+      }
+    ))
+
+  lazy val undertakingSectorForm: Form[FormValues] = Form(
+    mapping("undertakingSector" -> mandatory("undertakingSector"))(FormValues.apply)(FormValues.unapply))
+
+  case class OneOf(a: Option[String], b: Option[String]){
+    def toContactDetails =
+      ContactDetails(
+        a.map(PhoneNumber(_)),
+        b.map(PhoneNumber(_))
+      )
+  }
+
+  val undertakingContactForm: Form[OneOf] = Form(
+    mapping(
+      "phone" -> optional(text),
+      "mobile"  -> optional(text)
+    )(OneOf.apply)(OneOf.unapply).verifying(
+      "one.or.other.mustbe.present",
+      fields => fields match {
+        case OneOf(Some(_), Some(_)) => true
+        case OneOf(_, Some(_)) => true
+        case OneOf(Some(_),_) => true
+        case _ => false
+      }
+    ).verifying(
+      "phone.regex.error",
+      fields => fields match {
+        case OneOf(Some(a),_) if !a.matches(PhoneNumber.regex) => false
+        case _ => true
+      }
+    ).verifying(
+      "mobile.regex.error",
+      fields => fields match {
+        case OneOf(_,Some(b)) if !b.matches(PhoneNumber.regex) => false
+        case _ => true
+      }
+    )
+  )
+
+  lazy val cyaForm: Form[FormValues] = Form(
+    mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
+
+  lazy val confirmationForm: Form[FormValues] = Form(
+    mapping("confirm" -> mandatory("confirm"))(FormValues.apply)(FormValues.unapply))
+
 }

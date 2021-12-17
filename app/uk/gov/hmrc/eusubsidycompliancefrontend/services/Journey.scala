@@ -77,6 +77,9 @@ trait Journey {
       formPage.value.isEmpty && index < currentIndex
   }
 
+  def isComplete:Boolean =
+    steps.last.exists(x => x.value.isDefined)
+
   def redirect(implicit request: Request[AnyContent]): Option[Future[Result]] = {
     val firstUnfilledFormUri: journey.Uri =
       formPages
@@ -89,6 +92,12 @@ trait Journey {
     }
     else None
   }
+
+  def firstEmpty(implicit request: Request[_]): Option[Result] =
+    formPages.find(x => x.value.isEmpty).map { x =>
+      val uri = x.uri
+        Redirect(uri).withSession(request.session)
+    }
 
 }
 

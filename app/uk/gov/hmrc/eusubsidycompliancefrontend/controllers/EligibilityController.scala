@@ -23,9 +23,8 @@ import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EligibilityJourney, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EligibilityJourney, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,6 +42,7 @@ class EligibilityController @Inject()(
   checkEoriPage: CheckEoriPage,
   incorrectEoriPage: IncorrectEoriPage,
   createUndertakingPage: CreateUndertakingPage,
+  accountPage: AccountPage,
   escActionBuilders: EscActionBuilders,
   store: Store,
   connector: EscConnector
@@ -54,55 +54,41 @@ class EligibilityController @Inject()(
 
   import escActionBuilders._
 
-  lazy val customsWaiversForm: Form[FormValues] = Form(
-    mapping("customswaivers" -> mandatory("customswaivers"))(FormValues.apply)(FormValues.unapply))
-
-  lazy val mainBusinessCheckForm: Form[FormValues] = Form(
-    mapping("mainbusinesscheck" -> mandatory("mainbusinesscheck"))(FormValues.apply)(FormValues.unapply))
-
-  lazy val willYouClaimForm: Form[FormValues] = Form(
-    mapping("willyouclaim" -> mandatory("willyouclaim"))(FormValues.apply)(FormValues.unapply))
-
-  lazy val termsForm: Form[FormValues] = Form(
-    mapping("terms" -> mandatory("terms"))(FormValues.apply)(FormValues.unapply))
-
-  lazy val eoriCheckForm : Form[FormValues] = Form(
-    mapping("eoricheck" -> mandatory("eoricheck"))(FormValues.apply)(FormValues.unapply))
-
-  lazy val createUndertakingForm: Form[FormValues] = Form(
-    mapping("createUndertaking" -> mandatory("createUndertaking"))(FormValues.apply)(FormValues.unapply))
+  def firstEmptyPage: Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.get[EligibilityJourney].map {
+      case Some(journey) =>
+        journey
+          .firstEmpty
+          .fold(
+            Redirect(routes.UndertakingController.getUndertakingName())
+          )(identity)
+    }
+  }
 
   def getCustomsWaivers: Action[AnyContent] = escAuthentication.async { implicit request =>
 
     implicit val eori: EORI = request.eoriNumber
 
-    // TODO auth will at some point handle some of this, i.e. we won't come here if there is
-    // an undertaking, or a partially filled undertaking
-    // If the user has completed this journey but not started an undertaking they will have to redo
-    // this journey 30 days later
-    // TODO need to add a check if they are already a non-lead member of an undertaking (see page flow)
-    for {
-      a <- store.get[Undertaking]
-      b <- if (a.isEmpty) connector.retrieveUndertaking(eori) else Future.successful(Option.empty)
-      c <- store.get[EligibilityJourney]
-    } yield (a, b, c) match {
-      case (Some(_), _, _) =>
-        // TODO redirect to account page
-        Ok("account page")
-      case (None, Some(undertaking), _) =>
-        // TODO initialise UndertakingJourneyModel and store that and the undertaking
-        Ok("account page")
-      case (_, _, Some(eligibilityJourney)) =>
-        val form: Form[FormValues] =
-          eligibilityJourney.customsWaivers.value.fold(customsWaiversForm) { x =>
-            customsWaiversForm.fill(FormValues(x.toString))
+    store.get[EligibilityJourney].flatMap {
+      case Some(journey) =>
+        journey
+          .customsWaivers
+          .value
+          .fold(
+            Future.successful(
+              Ok(customsWaiversPage(
+                customsWaiversForm
+              ))
+            )
+          ){x =>
+            Future.successful(
+              Ok(customsWaiversPage(
+                customsWaiversForm.fill(FormValues(x.toString))
+              ))
+            )
           }
-        Ok(customsWaiversPage(form))
-      case _ =>
-        store.put(EligibilityJourney()) // TODO .map here?
-        Ok(customsWaiversPage(customsWaiversForm))
     }
-
   }
 
   def postCustomsWaivers: Action[AnyContent] = escAuthentication.async { implicit request =>
@@ -304,5 +290,23 @@ class EligibilityController @Inject()(
       }
     )
   }
+
+  lazy val customsWaiversForm: Form[FormValues] = Form(
+    mapping("customswaivers" -> mandatory("customswaivers"))(FormValues.apply)(FormValues.unapply))
+
+  lazy val mainBusinessCheckForm: Form[FormValues] = Form(
+    mapping("mainbusinesscheck" -> mandatory("mainbusinesscheck"))(FormValues.apply)(FormValues.unapply))
+
+  lazy val willYouClaimForm: Form[FormValues] = Form(
+    mapping("willyouclaim" -> mandatory("willyouclaim"))(FormValues.apply)(FormValues.unapply))
+
+  lazy val termsForm: Form[FormValues] = Form(
+    mapping("terms" -> mandatory("terms"))(FormValues.apply)(FormValues.unapply))
+
+  lazy val eoriCheckForm : Form[FormValues] = Form(
+    mapping("eoricheck" -> mandatory("eoricheck"))(FormValues.apply)(FormValues.unapply))
+
+  lazy val createUndertakingForm: Form[FormValues] = Form(
+    mapping("createUndertaking" -> mandatory("createUndertaking"))(FormValues.apply)(FormValues.unapply))
 
 }
