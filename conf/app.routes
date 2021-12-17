@@ -1,8 +1,11 @@
 # microservice specific routes
 
 ->         /hmrc-frontend                     hmrcfrontend.Routes
-GET        /                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HelloWorldController.helloWorld
+GET        /                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
 GET        /assets/*file                      controllers.Assets.versioned(path = "/public", file: Asset)
+
+GET        /eligibility-first-empty           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.firstEmptyPage
+GET        /undertaking-first-empty           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.firstEmptyPage
 
 GET        /do-you-claim-customs-waivers      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getCustomsWaivers
 POST       /do-you-claim-customs-waivers      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postCustomsWaivers
@@ -41,3 +44,8 @@ POST       /check-your-answers                uk.gov.hmrc.eusubsidycompliancefro
 
 GET        /confirmation/:undertakingRef/name uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmation(undertakingRef,name)
 POST       /confirmation                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmation
+
+GET        /add-member                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getAddBusinessEntity
+POST       /add-member                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postAddBusinessEntity
+
+
