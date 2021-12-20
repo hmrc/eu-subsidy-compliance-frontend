@@ -163,11 +163,11 @@ class BusinessEntityController @Inject()(
 
   def postContact: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    getPrevious[UndertakingJourney](store).flatMap { previous =>
+    getPrevious[BusinessEntityJourney](store).flatMap { previous =>
       contactForm.bindFromRequest().fold(
         errors => Future.successful(BadRequest(businessEntityContactPage(errors, previous))),
         form => {
-          store.update[UndertakingJourney]({ x =>
+          store.update[BusinessEntityJourney]({ x =>
             x.map { y =>
               y.copy(contact = y.contact.copy(value = Some(form.toContactDetails)))
             }
@@ -176,9 +176,6 @@ class BusinessEntityController @Inject()(
       )
     }
   }
-
-
-
 
   lazy val addBusinessForm: Form[FormValues] = Form(
     mapping("addBusiness" -> mandatory("addBusiness"))(FormValues.apply)(FormValues.unapply))
