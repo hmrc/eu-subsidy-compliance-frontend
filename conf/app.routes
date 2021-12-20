@@ -48,4 +48,10 @@ POST       /confirmation                      uk.gov.hmrc.eusubsidycompliancefro
 GET        /add-member                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getAddBusinessEntity
 POST       /add-member                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postAddBusinessEntity
 
+GET        /add-business-entity-eori          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getEori
+POST       /add-business-entity-eori          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postEori
+
+GET        /add-business-entity-contact              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getContact
+POST       /add-business-entity-contact              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postContact
+
 
