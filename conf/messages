@@ -96,3 +96,14 @@ undertaking.cya.summary-list.eori.key=EORI number
 undertaking.cya.summary-list.sector.key=Industry sector
 undertaking.cya.summary-list.phone.key=Telephone number
 undertaking.cya.p=By sending these details you are confirming that, to the best of your knowledge, they are correct.
+
+undertaking.confirmation.title=You have successfully created your account
+undertaking.confirmation.h2=Undertaking — {0}
+undertaking.confirmation.ref.p1=Your account reference number
+undertaking.confirmation.p1=You are now the lead for this account.
+undertaking.confirmation.h2-2=What happens next
+undertaking.confirmation.p2=We have sent you a confirmation email, which includes the above account reference number.
+undertaking.confirmation.p3=You must tell HMRC about all de minimis state aid payments, and those of any businesses in {0}, received during the current tax year and previous 2 tax years, from all UK public authorities, including central and local government.
+undertaking.confirmation.p4=If you have any other businesses, you must add them to {0}.
+
+
