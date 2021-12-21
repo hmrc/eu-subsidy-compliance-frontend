@@ -19,13 +19,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.journey
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        button: components.Button,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios : GovukRadios
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: components.Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios : GovukRadios,
+    govukDetails : GovukDetails
 )
-
 
 @(form: Form[_], previous: journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -48,6 +48,14 @@
             ))
         }
 
+        <h1 class="govuk-heading-xl">@messages("mainbusinesscheck.title")</h1>
+        @govukDetails(Details(
+            summary = Text(messages("common.whatisanundertaking.details")),
+            content = Text(messages("common.whatisanundertaking.details.body"))
+        ))
+        <p class="govuk-body">@messages("mainbusinesscheck.p1")</p>
+        <p class="govuk-body">@messages("mainbusinesscheck.p2")</p>
+
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
                 content = Text(messages("mainbusinesscheck.error.required"))
@@ -55,7 +63,7 @@
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("mainbusinesscheck.title")),
-                    classes = "govuk-fieldset__legend--l",
+                    classes = "govuk-fieldset__legend--l govuk-visually-hidden",
                     isPageHeading = true
                 ))
             )),
@@ -73,7 +81,8 @@
                     value = Some("false"),
                     checked = form.data.exists(_._2 == "false")
                 )
-            )
+            ),
+            classes = "govuk-radios--inline"
         ))
 
         @button("common.continue")

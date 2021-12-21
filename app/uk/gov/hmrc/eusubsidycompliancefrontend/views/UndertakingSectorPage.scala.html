@@ -20,14 +20,14 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        button: components.Button,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios : GovukRadios
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: components.Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios : GovukRadios
 )
 
-@(form: Form[_], previous: journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], previous: journey.Uri, undertakingName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"undertakingSector"}
 @layout(
@@ -55,28 +55,27 @@
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("undertakingSector.title")),
-                    classes = "govuk-fieldset__legend--l",
+                    content = Text(messages("undertakingSector.title") + " " + undertakingName + "?"),
+                    classes = "govuk-fieldset__legend--xl",
                     isPageHeading = true
                 ))
+            )),
+            hint = Some(Hint(
+                content = Text(messages("undertakingSector.hint"))
             )),
             idPrefix = Some(fieldName),
             name = fieldName,
             items = Sector.values.toList.reverse.map(item => {
-                        RadioItem(
-                            label = Some(Label(classes = "govuk-!-padding-top-0")),
-                            content = HtmlContent(s"""<span class="govuk-body govuk-!-font-size-36">${messages(s"sector.label.$item")}</span>"""),
-                            hint = Some(Hint(
-                                content = HtmlContent(s"""${messages(s"sector.hint.$item")}
-                                        <hr class="govuk-section-break govuk-section-break--visible" style="margin-top:10px"></hr>""")
-                            )),
-                            value = Some(item.toString),
-                            checked = form.data.get(fieldName).fold(false)(x => x == item.toString)
-                        )
-                    }
+                RadioItem(
+                    content = Text(messages("sector.label." + item)),
+                    hint = Some(Hint(
+                        content = Text(messages("sector.hint." + item))
+                    )),
+                    value = Some(item.toString),
+                    checked = form.data.get(fieldName).fold(false)(x => x == item.toString)
                 )
-            )
-        )
+            })
+        ))
 
         @button("continue.button")
     }

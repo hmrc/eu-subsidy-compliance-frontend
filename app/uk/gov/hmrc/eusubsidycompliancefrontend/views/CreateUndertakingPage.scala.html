@@ -19,11 +19,11 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.journey
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        button: components.Button,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios : GovukRadios
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: components.Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios : GovukRadios
 )
 
 
@@ -36,11 +36,15 @@
 ) {
 
     @formHelper(action = controllers.routes.EligibilityController.postCreateUndertaking) {
-        @*TODO - this might need to be a GovukInput *@
-        <input type=hidden name=createUndertaking value=true>
 
         <h1 class="govuk-heading-xl">@messages("createUndertaking.title")</h1>
+        <h2 class="govuk-heading-m">@messages("createUndertaking.h2")</h2>
+        <p class="govuk-body">@messages("createUndertaking.p-1")</p>
+        <h2 class="govuk-heading-m">@messages("createUndertaking.h2-2")</h2>
+        <p class="govuk-body">@messages("createUndertaking.p-2")</p>
+        <p class="govuk-body">@messages("createUndertaking.p-3-1") <a class="govuk-link" href="#">@messages("createUndertaking.p-3-2")</a> @messages("createUndertaking.p-3-3")</p>
 
+        <input type=hidden name=createUndertaking value=true>
         @button("common.continue")
     }
 }

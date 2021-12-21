@@ -1,36 +1,84 @@
 service.name = Report state aid payments for Northern Ireland businesses
 service.text = This is your new service
 
+common.back=Back
+common.sign-out=[TODO] Sign out
 common.continue=Save and Continue
 common.accept=Accept and send
 continue.button=Save and Continue
 common.yes=Yes
 common.no=No
+common.warning=Warning
+common.alpha-info.p1=This is a new service – your
+common.alpha-info.link=feedback
+common.alpha-info.p2=will help us to improve it.
+common.error.summary.title=There is a problem
+common.whatisanundertaking.details=What is an undertaking?
+common.whatisanundertaking.details.body=Every company may be structured differently. You may be a sole trader, a limited company or partnership. You may be a larger business, with subsidiary companies within the organisation. However a business is structured, we need to group all subsidiary or parent companies together. This is referred to as an undertaking.
 
 customswaivers.title=Do you, or any business in your organisation, claim Customs Duty waivers?
+customswaivers.error.required=Select yes if this is the company you want to register
 
-mainbusinesscheck.title=Do you want to become lead for this undertaking?
+mainbusinesscheck.error.required=Select whether you will be responsible for reporting de minimis aid for this undertaking
+mainbusinesscheck.title=Will you be responsible for reporting de minimis aid for this undertaking?
+mainbusinesscheck.p1=As undertaking administrator(or lead or something), it will be your responsibility to report any de minimis state aid that you, or other businesses in your organisation, receive.
+mainbusinesscheck.p2=The undertaking administrator should have access to all the relevant information needed and the authority to report to HMRC.
 
 willyouclaim.title=Will you, or any business in your organisation, claim Customs Duty waivers in the future?
+willyouclaim.error.required=Select if you, or any business in your organisation, will claim Customs Duty waivers in the future
 
 notEligible.title=You are not eligible to use this service
+notEligible.p1=HMRC only requires you to report de-minimis state aid if you claim Customs Duty waivers.
+notEligible.p2=Find out more about Customs Duty waivers, who can and cannot claim them and other information related to importing, visit the <a class="govuk-link" href="https://www.gov.uk/government/collections/customs-declaration-service">Customs Declaration Service (CDS)</a>
 
 notEligibleToLead.title=Please sign out
+notEligibleToLead.h2=You must become the undertaking lead to create the account for this service.
+notEligibleToLead.p1=To report any de minimis state aid, you must contact the undertaking lead of your organsation.
+notEligibleToLead.p2=To find out more about customs waivers, who can claim them, and other information related to importing, visit the <a href="https://www.gov.uk/government/collections/customs-declaration-service" class="govuk-link">Customs Declaration Service (CDS)</a>
 
-eiligibilityTerms.title=You must accept the terms and conditions
+eligibilityTerms.title=You must accept the terms and conditions
+eligibilityTerms.h2=Terms and conditions
+eligibilityTerms.p1=By using this service, you will become part of an undertaking.
+eligibilityTerms.p2=If you are not already part of an undertaking, you will need to create one and become the undertaking lead. If you are not the lead, you should sign out now.
+eligibilityTerms.inset=The undertaking lead should have access to all the relevant information needed (EORI number, Customs Declaration Service login details) and the authority to report to HMRC.
+eligibilityTerms.p3=It is your responsibility as undertaking lead to add any other businesses in your organisation to the undertaking account. You must ensure all account details are correct and up to date.
+eligibilityTerms.warning=You must report any de minimis state aid your undertaking receives as soon as possible. If you do not report a de minimis state aid payment every 90 days (or notify HMRC that you have not received any payments in that 90-day period), you will be ineligible to claim Customs Duty waivers.
+eligibilityTerms.h2-2=Declaration
+eligibilityTerms.p4=I agree to the terms and conditions.
+eligibilityTerms.p5-1=If you do not agree to these terms and conditions, please
+eligibilityTerms.p5-2=[TODO SIGN OUT LINK] sign out
+eligibilityTerms.p5-3=now.
 
 eoricheck.title=Is this the EORI number you want to register?
+eoricheck.error.required=Select yes if this is the EORI number you want to register
 
 incorrectEori.title=Your EORI and Government Gateway ID do not match
+incorrectEori.p1=Please <a href="#" class="govuk-link">[TODO] sign out</a> of this session and log in with a different Government Gateway ID to use this service.
 
 createUndertaking.title=You must now create an undertaking
+createUndertaking.h2=What is an undertaking?
+createUndertaking.p-1=Every company may be structured differently. You may be a sole trader, a limited company or partnership. You may be a larger business, with subsidiary companies within the organisation. However a business is structured, we need to group all subsidiary or parent companies together. This is referred to as an undertaking.
+createUndertaking.h2-2=This will make you the undertaking lead for this account
+createUndertaking.p-2=The undertaking lead should have access to all the relevant information needed (EORI number, Customs Declaration Service login details) and the authority to report to HMRC.
+createUndertaking.p-3-1=If you are not the undertaking lead, you should
+createUndertaking.p-3-2=[TODO Sign Out Link] sign out
+createUndertaking.p-3-3=now.
 
 undertakingName.title=What would you like to call this undertaking?
 undertakingName.heading=What would you like to call this undertaking?
 undertakingName.hint=This is for your own records.
 
+undertakingSector.error.required=
+undertakingSector.title=What is the industry sector of
+undertakingSector.hint=If your business is involved in more than one sector, the lowest allowance will apply.
 
-undertakingSector.title=What is the industry sector of ?
+undertakingContact.title=What are the contact details for
+undertakingContact.title.end=?
+undertakingContact.p1=We will only contact you by telephone if there is an issue with the account.
+undertakingContact.phone.label=Telephone number
+undertakingContact.phone.hint=For international numbers include the country code.
+undertakingContact.mobile.label=Mobile number
+one.or.other.mustbe.present=Enter at least one contact number
 
 sector.label.0=Other industry
 sector.label.1=Road freight transport for hire or reward
@@ -45,3 +93,19 @@ sector.hint.3=If any part of your business is involved in the production, proces
 undertaking.cya.title=Check your answers
 
 addbusiness.title=Do you have any businesses to add to {0}
+
+undertaking.cya.h2=Account details
+undertaking.cya.summary-list.name.key=Name of undertaking
+undertaking.cya.summary-list.eori.key=EORI number
+undertaking.cya.summary-list.sector.key=Industry sector
+undertaking.cya.summary-list.phone.key=Telephone number
+undertaking.cya.p=By sending these details you are confirming that, to the best of your knowledge, they are correct.
+
+undertaking.confirmation.title=You have successfully created your account
+undertaking.confirmation.h2=Undertaking — {0}
+undertaking.confirmation.ref.p1=Your account reference number
+undertaking.confirmation.p1=You are now the lead for this account.
+undertaking.confirmation.h2-2=What happens next
+undertaking.confirmation.p2=We have sent you a confirmation email, which includes the above account reference number.
+undertaking.confirmation.p3=You must tell HMRC about all de minimis state aid payments, and those of any businesses in {0}, received during the current tax year and previous 2 tax years, from all UK public authorities, including central and local government.
+undertaking.confirmation.p4=If you have any other businesses, you must add them to {0}.

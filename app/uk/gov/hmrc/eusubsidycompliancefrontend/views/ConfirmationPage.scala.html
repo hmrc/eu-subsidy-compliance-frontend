@@ -23,15 +23,27 @@
 
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        button: components.Button,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios : GovukRadios
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: components.Button,
+    govukNotificationBanner : GovukNotificationBanner
 )
 
 
 @(ref: UndertakingRef, name: UndertakingName)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@html = {
+    <p class="govuk-notification-banner__heading">
+        @messages("undertaking.confirmation.title")
+    </p>
+    <p class="govuk-body"><strong>@messages("undertaking.confirmation.h2", name)</strong></p>
+    <p class="govuk-body">
+        @messages("undertaking.confirmation.ref.p1")<br>
+        @ref
+    </p>
+
+
+}
 
 @layout(
     pageTitle = Some(messages("undertaking.confirmation.title")),
@@ -40,13 +52,19 @@
 ) {
 
     @formHelper(action = controllers.routes.UndertakingController.postConfirmation) {
-        @*TODO - this might need to be a GovukInput *@
         <input type=hidden name=confirm value=true>
 
-        <h1 class="govuk-heading-xl">@messages("undertaking.confirmation.title")</h1>
 
-        <p>name: @name</p>
-        <p>ref: @ref</p>
+        @govukNotificationBanner(NotificationBanner(
+            content = HtmlContent(html),
+            bannerType = Some("success"),
+            disableAutoFocus = Some(true)
+        ))
+
+        <p class="govuk-body">@messages("undertaking.confirmation.p2")</p>
+        <h2 class="govuk-heading-m">@messages("undertaking.confirmation.h2-2")</h2>
+        <p class="govuk-body">@messages("undertaking.confirmation.p3", name)</p>
+        <p class="govuk-body">@messages("undertaking.confirmation.p4", name)</p>
 
         @button("common.continue")
     }

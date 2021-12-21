@@ -18,7 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
-import play.api.data.Forms._
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
@@ -115,14 +114,16 @@ class UndertakingController @Inject()(
             Future.successful(
               Ok(undertakingSectorPage(
                 undertakingSectorForm,
-                journey.previous
+                journey.previous,
+                journey.name.value.getOrElse("")
               ))
             )
           ){x =>
             Future.successful(
               Ok(undertakingSectorPage(
                 undertakingSectorForm.fill(FormValues(x.id.toString)),
-                journey.previous
+                journey.previous,
+                journey.name.value.getOrElse("")
               ))
             )
           }
@@ -133,7 +134,7 @@ class UndertakingController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     getPrevious[UndertakingJourney](store).flatMap { previous =>
       undertakingSectorForm.bindFromRequest().fold(
-        errors => Future.successful(BadRequest(undertakingSectorPage(errors, previous))),
+        errors => Future.successful(BadRequest(undertakingSectorPage(errors, previous, ""))),
         form => {
           store.update[UndertakingJourney]({ x =>
             x.map { y =>
@@ -156,14 +157,16 @@ class UndertakingController @Inject()(
             Future.successful(
               Ok(undertakingContactPage(
                 contactForm,
-                journey.previous
+                journey.previous,
+                journey.name.value.getOrElse("")
               ))
             )
           ){x =>
             Future.successful(
               Ok(undertakingContactPage(
                 contactForm.fill(OneOf(x.phone.map(_.toString), x.mobile.map(_.toString))),
-                journey.previous
+                journey.previous,
+                journey.name.value.getOrElse("")
               ))
             )
           }
@@ -173,8 +176,9 @@ class UndertakingController @Inject()(
   def postContact: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     getPrevious[UndertakingJourney](store).flatMap { previous =>
+
       contactForm.bindFromRequest().fold(
-        errors => Future.successful(BadRequest(undertakingContactPage(errors, previous))),
+        errors => Future.successful(BadRequest(undertakingContactPage(errors, previous, ""))),
         form => {
           store.update[UndertakingJourney]({ x =>
             x.map { y =>
