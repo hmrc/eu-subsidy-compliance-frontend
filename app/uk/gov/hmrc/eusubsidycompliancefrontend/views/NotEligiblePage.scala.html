@@ -21,5 +21,8 @@
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(messages("notEligible.title"))) {
-    <h1 class="govuk-heading-xl">@messages("notEligible.title")</h1>
+  <h1 class="govuk-heading-xl">@messages("notEligible.title")</h1>
+  <p class="govuk-body">@messages("notEligible.p1")</p>
+  <p class="govuk-body">@Html(messages("notEligible.p2"))</p>
+  <p class="govuk-body"><a class="govuk-link" href="#">@messages("common.sign-out")</a></p>
 }

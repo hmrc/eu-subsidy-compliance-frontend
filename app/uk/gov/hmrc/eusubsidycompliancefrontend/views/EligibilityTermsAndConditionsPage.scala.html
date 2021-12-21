@@ -19,28 +19,50 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.journey
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        button: components.Button,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios : GovukRadios
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: components.Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios : GovukRadios,
+    govukDetails : GovukDetails,
+    govukInsetText: GovukInsetText,
+    govukWarningText: GovukWarningText
 )
 
 
 @(previous: journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-    pageTitle = Some(messages("eiligibilityTerms.title")),
+    pageTitle = Some(messages("eligibilityTerms.title")),
     backLinkEnabled = true,
     backLink = Some(previous)
 ) {
 
     @formHelper(action = controllers.routes.EligibilityController.postTerms) {
-        @*TODO - this might need to be a GovukInput *@
+        <h1 class="govuk-heading-l">@messages("eligibilityTerms.title")</h1>
+        <h2 class="govuk-heading-m">@messages("eligibilityTerms.h2")</h2>
+
+        <p class="govuk-body">@messages("eligibilityTerms.p1")</p>
+        @govukDetails(Details(
+            summary = Text(messages("common.whatisanundertaking.details")),
+            content = Text(messages("common.whatisanundertaking.details.body"))
+        ))
+        <p class="govuk-body">@messages("eligibilityTerms.p2")</p>
+        @govukInsetText(InsetText(
+            content = Text(messages("eligibilityTerms.inset"))
+        ))
+        <p class="govuk-body">@messages("eligibilityTerms.p3")</p>
+        @govukWarningText(WarningText(
+            iconFallbackText = messages("common.warning"),
+            content = Text(messages("eligibilityTerms.warning"))
+        ))
+
+        <h2 class="govuk-heading-m">@messages("eligibilityTerms.h2-2")</h2>
+        <p class="govuk-body">@messages("eligibilityTerms.p4")</p>
+
         <input type=hidden name=terms value=true>
-
-        <h1 class="govuk-heading-xl">@messages("eiligibilityTerms.title")</h1>
-
         @button("common.continue")
+
+        <p class="govuk-body">@messages("eligibilityTerms.p5-1") <a class="govuk-link" href="#">@messages("eligibilityTerms.p5-2")</a> @messages("eligibilityTerms.p5-3")</p>
     }
 }

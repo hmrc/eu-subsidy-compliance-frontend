@@ -32,7 +32,7 @@
     pageTitle = Some(messages("undertakingName.title")),
     backLinkEnabled = false,
     backLink = None
-    ) {
+) {
 
     @formHelper(action = controllers.routes.UndertakingController.postUndertakingName()) {
         @form.errors.map { err =>
@@ -52,11 +52,10 @@
             name = "undertakingName",
             label = Label(
                 isPageHeading = true,
-                classes = "govuk-label--l",
+                classes = "govuk-label--xl",
                 content = Text(messages("undertakingName.heading"))
             ),
             hint = Some(Hint(content = Text(messages("undertakingName.hint")))),
-            classes = "govuk-input--width-10",
             errorMessage = if (form.hasErrors) {
                 Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
             } else None

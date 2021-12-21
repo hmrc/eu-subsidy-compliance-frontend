@@ -19,11 +19,11 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.journey
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        button: components.Button,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios : GovukRadios
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: components.Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios : GovukRadios
 )
 
 
@@ -55,7 +55,7 @@
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("willyouclaim.title")),
-                    classes = "govuk-fieldset__legend--l",
+                    classes = "govuk-fieldset__legend--xl",
                     isPageHeading = true
                 ))
             )),
@@ -73,7 +73,8 @@
                     value = Some("false"),
                     checked = form.data.exists(_._2 == "false")
                 )
-            )
+            ),
+            classes = "govuk-radios--inline"
         ))
 
         @button("common.continue")

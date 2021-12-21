@@ -26,11 +26,10 @@
       content = Text(content)
     )),
     content = HtmlContent(
-         s"""<span>
-                ${messages("common.alpha-info.p1")}
-                <a href="${appConfig.betaFeedbackUrlNoAuth}" target=_blank>${Messages("common.alpha-info.link")}</a>
-                ${messages("common.alpha-info.p2")}
-            </span>"""
-
+        s"""<span>
+            ${messages("common.alpha-info.p1")}
+            <a class="govuk-link" href="${appConfig.betaFeedbackUrlNoAuth}" target=_blank>${Messages("common.alpha-info.link")}</a>
+            ${messages("common.alpha-info.p2")}
+        </span>"""
     )
   ))
