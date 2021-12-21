@@ -21,5 +21,6 @@
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(messages("incorrectEori.title"))) {
-    <h1 class="govuk-heading-xl">@messages("incorrectEori.title")</h1>
+  <h1 class="govuk-heading-xl">@messages("incorrectEori.title")</h1>
+  <p class="govuk-body">@Html(messages("incorrectEori.p1"))</p>
 }

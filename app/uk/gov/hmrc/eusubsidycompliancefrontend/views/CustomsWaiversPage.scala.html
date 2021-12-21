@@ -19,18 +19,17 @@
 
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        button: components.Button,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios : GovukRadios
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: components.Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios : GovukRadios
 )
 
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(messages("customswaivers.title"))) {
-
 
     @formHelper(action = controllers.routes.EligibilityController.postCustomsWaivers) {
         @form.errors.map { err =>
@@ -52,7 +51,7 @@
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     content = Text(messages("customswaivers.title")),
-                    classes = "govuk-fieldset__legend--l",
+                    classes = "govuk-fieldset__legend--xl",
                     isPageHeading = true
                 ))
             )),
@@ -70,7 +69,8 @@
                     value = Some("false"),
                     checked = form.data.exists(_._2 == "false")
                 )
-            )
+            ),
+            classes = "govuk-radios--inline"
         ))
 
         @button("common.continue")

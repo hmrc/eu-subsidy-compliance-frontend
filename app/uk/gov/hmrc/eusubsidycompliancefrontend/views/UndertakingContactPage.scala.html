@@ -19,20 +19,20 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        button: components.Button,
-        govukErrorSummary: GovukErrorSummary,
-        govukInput : GovukInput
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: components.Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukInput : GovukInput
 )
 
-@(form: Form[_], previous: journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], previous: journey.Uri, undertakingName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
     pageTitle = Some(messages("undertakingContact.title")),
     backLinkEnabled = true,
     backLink = Some(previous)
-    ) {
+) {
 
     @formHelper(action = controllers.routes.UndertakingController.postContact()) {
         @form.errors.map { err =>
@@ -46,13 +46,16 @@
                 title = Text(messages("common.error.summary.title"))
             ))
         }
+
+        <h1 class="govuk-heading-xl">@{messages("undertakingContact.title") + " " + undertakingName + messages("undertakingContact.title.end")}</h1>
+        <p class="govuk-body">@messages("undertakingContact.p1")</p>
+
         @govukInput(Input(
             value = form.data.get("phone"),
             id = "phone",
             name = "phone",
             label = Label(
                 isPageHeading = false,
-                classes = "govuk-label--l",
                 content = Text(messages("undertakingContact.phone.label"))
             ),
             hint = Some(Hint(content = Text(messages("undertakingContact.phone.hint")))),
@@ -67,7 +70,6 @@
             name = "mobile",
             label = Label(
                 isPageHeading = false,
-                classes = "govuk-label--l",
                 content = Text(messages("undertakingContact.mobile.label"))
             ),
             hint = None,

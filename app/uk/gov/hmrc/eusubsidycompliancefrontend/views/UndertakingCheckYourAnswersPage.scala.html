@@ -23,11 +23,12 @@
 
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        button: components.Button,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios : GovukRadios
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: components.Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios : GovukRadios,
+    govukSummaryList : GovukSummaryList
 )
 
 
@@ -39,18 +40,98 @@
     backLink = Some(previous)
 ) {
 
-    @formHelper(action = controllers.routes.UndertakingController.postCheckAnswers) {
-        @*TODO - this might need to be a GovukInput *@
-        <input type=hidden name=cya value=true>
+    @defining(
+        contacts match {
+            case ContactDetails(Some(p), Some(m)) => p + "<br>" + m
+            case ContactDetails(None, Some(m)) => m
+            case ContactDetails(Some(p), None) => p
+            case _ => ""
+        }
+    ) { case (phone) =>
 
-        <h1 class="govuk-heading-xl">@messages("undertaking.cya.title")</h1>
+        @formHelper(action = controllers.routes.UndertakingController.postCheckAnswers) {
+            @*TODO - this might need to be a GovukInput *@
+            <input type=hidden name=cya value=true>
 
+            <h1 class="govuk-heading-l">@messages("undertaking.cya.title")</h1>
+            <h2 class="govuk-heading-m">@messages("undertaking.cya.h2")</h2>
 
-        <p>name: @name</p>
-        <p>eori: @eori</p>
-        <p>sector: @{messages(s"sector.label.$sector")}</p>
-        <p>contacts: @contacts</p>
+            @govukSummaryList(SummaryList(
+                rows = Seq(
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("undertaking.cya.summary-list.name.key"))
+                        ),
+                        value = Value(
+                            content = Text(name)
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = "#",
+                                    content = Text("Change"),
+                                    visuallyHiddenText = Some("name")
+                                )
+                            )
+                        ))
+                    ),
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("undertaking.cya.summary-list.eori.key"))
+                        ),
+                        value = Value(
+                            content = Text(eori)
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = "#",
+                                    content = Text("Change"),
+                                    visuallyHiddenText = Some("date of birth")
+                                )
+                            )
+                        ))
+                    ),
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("undertaking.cya.summary-list.sector.key"))
+                        ),
+                        value = Value(
+                            content = Text(messages(s"sector.label.$sector"))
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = "#",
+                                    content = Text("Change"),
+                                    visuallyHiddenText = Some("contact information")
+                                )
+                            )
+                        ))
+                    ),
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("undertaking.cya.summary-list.phone.key"))
+                        ),
+                        value = Value(
+                            content = HtmlContent(phone)
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = "#",
+                                    content = Text("Change"),
+                                    visuallyHiddenText = Some("contact details")
+                                )
+                            )
+                        ))
+                    )
+                )
+            ))
 
-        @button("common.continue")
+            <p class="govuk-body">@messages("undertaking.cya.p")</p>
+
+            @button("common.continue")
+        }
     }
 }
