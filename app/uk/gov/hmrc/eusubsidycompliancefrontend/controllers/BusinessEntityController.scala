@@ -24,8 +24,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, PhoneNumber, UndertakingName}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, PhoneNumber, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
@@ -39,7 +39,8 @@ class BusinessEntityController @Inject()(
   connector: EscConnector,
   addBusinessPage: AddBusinessPage,
   eoriPage: BusinessEntityEoriPage,
-  businessEntityContactPage: BusinessEntityContactPage
+  businessEntityContactPage: BusinessEntityContactPage,
+  businessEntityCyaPage: BusinessEntityCYAPage
 )(
   implicit val appConfig: AppConfig,
   executionContext: ExecutionContext
@@ -54,20 +55,23 @@ class BusinessEntityController @Inject()(
     for {
       a <- store.get[Undertaking]
       b <- store.get[BusinessEntityJourney]
-    } yield (a, b) match {
-      case (Some(undertaking), Some(journey)) =>
+      c <- connector.retrieveUndertaking(eori)
+    } yield (a, b, c) match {
+      case (Some(undertaking), Some(journey), Some(u)) =>
         journey
           .addBusiness
           .value
           .fold(
               Ok(addBusinessPage(
                 addBusinessForm,
-                undertaking.name
+                undertaking.name,
+                u.undertakingBusinessEntity
               ))
           ){x =>
               Ok(addBusinessPage(
                 addBusinessForm.fill(FormValues(x.toString)),
-                undertaking.name
+                undertaking.name,
+                u.undertakingBusinessEntity
               ))
           }
     }
@@ -78,7 +82,7 @@ class BusinessEntityController @Inject()(
     store.get[Undertaking].flatMap { undertaking =>
       val name: UndertakingName = undertaking.map(_.name).getOrElse(throw new IllegalStateException("missing undertaking name"))
       addBusinessForm.bindFromRequest().fold(
-        errors => Future.successful(BadRequest(addBusinessPage(errors, name))),
+        errors => Future.successful(BadRequest(addBusinessPage(errors, name, List.empty))),
         form => {
           store.update[BusinessEntityJourney]({ x =>
             x.map { y =>
@@ -176,6 +180,80 @@ class BusinessEntityController @Inject()(
       )
     }
   }
+
+  def getCheckYourAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.get[BusinessEntityJourney].flatMap { j =>
+
+      def page = j.fold(???)
+      {
+        journey =>
+          val foo = for {
+          x <- journey.eori.value
+          z <- journey.contact.value
+        } yield (x, z)
+          foo match {
+            case Some(a) => Ok(businessEntityCyaPage(a._1, a._2, journey.previous))
+            case _ => ???
+          }
+      }
+
+      Future.successful(page)
+    }
+  }
+
+  def postCheckYourAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+
+    for {
+      a <- store.get[Undertaking]
+      b <- store.get[BusinessEntityJourney]
+    } yield (a, b) match {
+      case (Some(undertaking), Some(journey)) =>
+        journey
+          .addBusiness
+          .value
+          .fold(???
+          ){
+            x => connector.addMember(UndertakingRef("abnaoffclfm"),
+              BusinessEntity(
+                EORI("GB111111111113"),
+                false,
+                Some(ContactDetails(Some(PhoneNumber("11111111")), Some(PhoneNumber("22222222"))))))
+          }
+    }
+
+    Future.successful(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
+  }
+
+//  def postCheckAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
+//    implicit val eori: EORI = request.eoriNumber
+//    cyaForm.bindFromRequest().fold(
+//      _ => throw new IllegalStateException("value hard-coded, form hacking?"),
+//      form => {
+//        store.update[UndertakingJourney]({ x =>
+//          x.map { y =>
+//            y.copy(cya = y.cya.copy(value = Some(form.value.toBoolean)))
+//          }
+//        }).flatMap { journey: UndertakingJourney =>
+//          for {
+//            ref <- connector.createUndertaking(
+//              Undertaking(
+//                None,
+//                name = UndertakingName(journey.name.value.getOrElse(throw new IllegalThreadStateException(""))),
+//                industrySector = journey.sector.value.getOrElse(throw new IllegalThreadStateException("")),
+//                None,
+//                None,
+//                List(BusinessEntity(eori, leadEORI = true, journey.contact.value)
+//                )))
+//
+//          } yield {
+//            Redirect(routes.UndertakingController.getConfirmation(ref, journey.name.value.getOrElse("")))
+//          }
+//        }
+//      }
+//    )
+//  }
 
   lazy val addBusinessForm: Form[FormValues] = Form(
     mapping("addBusiness" -> mandatory("addBusiness"))(FormValues.apply)(FormValues.unapply))

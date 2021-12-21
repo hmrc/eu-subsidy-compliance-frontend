@@ -2,6 +2,7 @@ service.name = Report state aid payments for Northern Ireland businesses
 service.text = This is your new service
 
 common.continue=Save and Continue
+common.accept=Accept and send
 continue.button=Save and Continue
 common.yes=Yes
 common.no=No
