@@ -43,6 +43,7 @@ class EscConnector @Inject()(
   val retrieveUndertakingPath = "eu-subsidy-compliance/undertaking/"
   val createUndertakingPath = "eu-subsidy-compliance/undertaking"
   val addMemberPath = "eu-subsidy-compliance/undertaking/member"
+  val removeMemberPath = "eu-subsidy-compliance/undertaking/member/remove"
 
   def retrieveUndertaking(
                            eori: EORI
@@ -83,6 +84,17 @@ class EscConnector @Inject()(
     implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
     desPost[BusinessEntity, UndertakingRef](
       s"$escURL/$addMemberPath/$undertakingRef",
+      businessEntity
+    )
+  }
+
+  def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[UndertakingRef] = {
+    implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
+    desPost[BusinessEntity, UndertakingRef](
+      s"$escURL/$removeMemberPath/$undertakingRef",
       businessEntity
     )
   }

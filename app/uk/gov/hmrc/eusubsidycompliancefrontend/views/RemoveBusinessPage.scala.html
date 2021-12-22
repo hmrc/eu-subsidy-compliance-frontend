@@ -30,12 +30,10 @@
 )
 
 
-@(form: Form[_], name: UndertakingName, businessEntity: List[BusinessEntity])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], bs: BusinessEntity)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("addbusiness.title", name.toString))) {
-
-
-    @formHelper(action = controllers.routes.BusinessEntityController.postAddBusinessEntity) {
+@layout(pageTitle = Some("add title")) {
+    @formHelper(action = controllers.routes.BusinessEntityController.postRemoveBusinessEntity(bs.businessEntityIdentifier)) {
         @form.errors.map { err =>
             @govukErrorSummary(ErrorSummary(
                 errorList = Seq(
@@ -48,42 +46,23 @@
             ))
         }
 
-        @{govukSummaryList(SummaryList(
-            rows = businessEntity.filter(a => !a.leadEORI).map(b => SummaryListRow(
-                Key(content = Text(b.businessEntityIdentifier)),
-                Value(),
-                actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = routes.BusinessEntityController.redirect(b.businessEntityIdentifier).toString,
-                            content = HtmlContent(s"<span aria-hidden='true'>${messages("common.change")}</span>"),
-                            visuallyHiddenText = Some(messages("common.change") + " " + messages(""))
-                        ),
-                        ActionItem(
-                            href = routes.BusinessEntityController.getRemoveBusinessEntity(b.businessEntityIdentifier).toString,
-                            content = HtmlContent(s"<span aria-hidden='true'>${messages("common.remove")}</span>"),
-                            visuallyHiddenText = Some(messages("common.remove") + " " + messages(""))
-                        )
-                    )
-                ))
-
-            ))
-        ))}
+        <h1>Remove business entity</h1>
+        <div>@bs</div>
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("addbusiness.error.required"))
+                content = Text(messages("removeBusiness.error.required"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("addbusiness.title", name.toString)),
+                    content = Text(messages("Do you want to remove business entity")),
                     classes = "govuk-fieldset__legend--l",
                     isPageHeading = true
                 ))
             )),
             hint = None,
-            idPrefix = Some("addBusiness"),
-            name = "addBusiness",
+            idPrefix = Some("removeBusiness"),
+            name = "removeBusiness",
             items = Seq(
                 RadioItem(
                     content = Text(messages("common.yes")),

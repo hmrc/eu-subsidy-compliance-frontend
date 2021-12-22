@@ -15,6 +15,8 @@ common.alpha-info.p2=will help us to improve it.
 common.error.summary.title=There is a problem
 common.whatisanundertaking.details=What is an undertaking?
 common.whatisanundertaking.details.body=Every company may be structured differently. You may be a sole trader, a limited company or partnership. You may be a larger business, with subsidiary companies within the organisation. However a business is structured, we need to group all subsidiary or parent companies together. This is referred to as an undertaking.
+common.change=Change
+common.remove=Remove
 
 customswaivers.title=Do you, or any business in your organisation, claim Customs Duty waivers?
 customswaivers.error.required=Select yes if this is the company you want to register
