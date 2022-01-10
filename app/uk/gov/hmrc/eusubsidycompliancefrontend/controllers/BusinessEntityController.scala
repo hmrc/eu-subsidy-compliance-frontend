@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -129,6 +129,21 @@ class BusinessEntityController @Inject()(
       eoriForm.bindFromRequest().fold(
         errors => Future.successful(BadRequest(eoriPage(errors, previous))),
         form => {
+
+//          for {
+//            foo <- connector.retrieveUndertaking(EORI(form.value))
+//            bar <- store.update[BusinessEntityJourney]({ x =>
+//              x.map { y =>
+//                y.copy(eori = y.eori.copy(value = Some(EORI(form.value))))
+//              }
+//            })
+//          } yield {
+//            foo match {
+//              case Some(_) =>
+//            }
+//
+//          }
+
           // TODO: Call retrieve to see if entity is in an undertaking
           // TODO: Or if entity is within this undertaking
           store.update[BusinessEntityJourney]({ x =>
@@ -185,27 +200,23 @@ class BusinessEntityController @Inject()(
 
   def getCheckYourAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[BusinessEntityJourney].flatMap { j =>
-
-      def page = j.fold(???)
-      {
-        journey =>
-          val foo = for {
-          x <- journey.eori.value
-          z <- journey.contact.value
-        } yield (x, z)
-          foo match {
-            case Some(a) => Ok(businessEntityCyaPage(a._1, a._2, journey.previous))
-            case _ => ???
-          }
-      }
-
-      Future.successful(page)
+    store.get[BusinessEntityJourney].flatMap {
+      case Some(journey) =>
+        Future.successful(
+          Ok(
+            businessEntityCyaPage(
+              eori,
+              journey.contact.value.getOrElse(throw new IllegalStateException("missing contact details"))
+            )
+          )
+        )
     }
   }
 
   def postCheckYourAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
+    // TODO try to get an undertaking for the eori of the added business, and only proceed if there isn't one
 
     for {
       a <- store.get[Undertaking]

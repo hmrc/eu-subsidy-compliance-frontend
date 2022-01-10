@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,12 +31,12 @@
 )
 
 
-@(eori: String, contactDetails: ContactDetails, previous: journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(eori: String, contactDetails: ContactDetails)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
     pageTitle = Some(messages("businessEntity.cya.title")),
-    backLinkEnabled = true,
-    backLink = Some(previous)
+    backLinkEnabled = false,
+    backLink = None
 ) {
     <h1 class="govuk-heading-xl">@messages("businessEntity.cya.title")</h1>
     <p>eori: @eori</p>
