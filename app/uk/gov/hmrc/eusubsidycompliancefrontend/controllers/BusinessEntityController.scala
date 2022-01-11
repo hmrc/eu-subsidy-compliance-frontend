@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.data.Forms._
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -130,28 +130,22 @@ class BusinessEntityController @Inject()(
         errors => Future.successful(BadRequest(eoriPage(errors, previous))),
         form => {
 
-//          for {
-//            foo <- connector.retrieveUndertaking(EORI(form.value))
-//            bar <- store.update[BusinessEntityJourney]({ x =>
-//              x.map { y =>
-//                y.copy(eori = y.eori.copy(value = Some(EORI(form.value))))
-//              }
-//            })
-//          } yield {
-//            foo match {
-//              case Some(_) =>
-//            }
-//
-//          }
-
-          // TODO: Call retrieve to see if entity is in an undertaking
-          // TODO: Or if entity is within this undertaking
-          store.update[BusinessEntityJourney]({ x =>
-            x.map { y =>
-              y.copy(eori = y.eori.copy(value = Some(EORI(form.value))))
+          for {
+            retrievedUndertaking <- connector.retrieveUndertaking(EORI(form.value))
+          } yield {
+            retrievedUndertaking match {
+              case Some(_) => {
+                Future(BadRequest(eoriPage(eoriForm.withError("businessEntityEori", "businessEntityEori.eoriInUse").fill(form), previous)))
+              }
+              case _ =>
+                store.update[BusinessEntityJourney]({ x =>
+                  x.map { y =>
+                    y.copy(eori = y.eori.copy(value = Some(EORI(form.value))))
+                  }
+                }).flatMap(_.next)
             }
-          }).flatMap(_.next)
-        }
+          }
+        }.flatten
       )
 
     }
@@ -247,29 +241,29 @@ class BusinessEntityController @Inject()(
     }
   }
 
-  def redirect(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
-    implicit val eori111: EORI = request.eoriNumber
+ def redirect(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
+   implicit val eori111: EORI = request.eoriNumber
 
-    for {
-      a <- store.get[Undertaking]
-      b <- store.get[BusinessEntityJourney]
-    } yield (a, b) match {
-      case (Some(undertaking), Some(journey)) =>
-        val be = undertaking.undertakingBusinessEntity.filter(x => x.businessEntityIdentifier==eoriEntered).head
-        store.update[BusinessEntityJourney]({ x => x.map(y =>
-          y.copy(
-            eori = y.eori.copy(value = Some(EORI(eoriEntered))),
-            contact = y.contact.copy(value = be.contacts)
-        ))
+   for {
+     a <- connector.retrieveUndertaking(eori111)
+     b <- store.get[BusinessEntityJourney]
+   } yield (a, b) match {
+     case (Some(undertaking), Some(journey)) =>
+       val be = undertaking.undertakingBusinessEntity.filter(x => x.businessEntityIdentifier==eoriEntered).head
+       store.update[BusinessEntityJourney]({ x => x.map(y =>
+         y.copy(
+           eori = y.eori.copy(value = Some(EORI(eoriEntered))),
+           contact = y.contact.copy(value = be.contacts)
+       ))
 
-        }) match {
-          case x => Redirect(routes.BusinessEntityController.getCheckYourAnswers())
-          case _ => ???
-        }
+       }) match {
+         case x => Redirect(routes.BusinessEntityController.getCheckYourAnswers())
+         case _ => ???
+       }
 
-      case _ => ???
-    }
-  }
+     case _ => ???
+   }
+ }
 
   def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber

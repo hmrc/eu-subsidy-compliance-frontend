@@ -111,3 +111,5 @@ undertaking.confirmation.h2-2=What happens next
 undertaking.confirmation.p2=We have sent you a confirmation email, which includes the above account reference number.
 undertaking.confirmation.p3=You must tell HMRC about all de minimis state aid payments, and those of any businesses in {0}, received during the current tax year and previous 2 tax years, from all UK public authorities, including central and local government.
 undertaking.confirmation.p4=If you have any other businesses, you must add them to {0}.
+
+businessEntityEori.eoriInUse.error=This EORI is in use.
