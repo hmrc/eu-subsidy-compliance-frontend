@@ -16,9 +16,9 @@ common.whatisanundertaking.details=What is an undertaking?
 common.whatisanundertaking.details.body=Every company may be structured differently. You may be a sole trader, a limited company or partnership. You may be a larger business, with subsidiary companies within the organisation. However a business is structured, we need to group all subsidiary or parent companies together. This is referred to as an undertaking.
 
 customswaivers.title=Do you, or any business in your organisation, claim Customs Duty waivers?
-customswaivers.error.required=Select yes if this is the company you want to register
+customswaivers.error.required=Select yes if you, or any business in your organisation, claim Customs Duty waivers
 
-mainbusinesscheck.error.required=Select whether you will be responsible for reporting de minimis aid for this undertaking
+mainbusinesscheck.error.required=Select if you will be responsible for reporting de minimis aid for this undertaking
 mainbusinesscheck.title=Will you be responsible for reporting de minimis aid for this undertaking?
 mainbusinesscheck.p1=As undertaking administrator(or lead or something), it will be your responsibility to report any de minimis state aid that you, or other businesses in your organisation, receive.
 mainbusinesscheck.p2=The undertaking administrator should have access to all the relevant information needed and the authority to report to HMRC.
@@ -77,7 +77,7 @@ undertakingContact.p1=We will only contact you by telephone if there is an issue
 undertakingContact.phone.label=Telephone number
 undertakingContact.phone.hint=For international numbers include the country code.
 undertakingContact.mobile.label=Mobile number
-one.or.other.mustbe.present=Enter at least one contact number
+one.or.other.mustbe.present=Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 808 157 0192
 
 sector.label.0=Other industry
 sector.label.1=Road freight transport for hire or reward

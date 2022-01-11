@@ -17,29 +17,34 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLayout
 @import views.html.helper.CSPNonce
+@import views.html.helper.CSPNonce
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.FullWidthMainContent
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.timeout_dialog
 
 @this(
   appConfig: AppConfig,
   hmrcLayout: HmrcLayout,
   beforeContentBlock: components.BeforeContent,
-  scripts: components.Scripts
+  scripts: components.Scripts,
+  defaultMainContent: FullWidthMainContent
 )
 @(pageTitle: Option[String] = None,
   backLinkEnabled: Boolean = false,
   backLink: Option[String] = None,
   headBlock: Option[Html] = None,
-  scriptsBlock: Option[Html] = None
+  scriptsBlock: Option[Html] = None,
+  mainContentLayout: Option[Html => Html] = Some(defaultMainContent(_))
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @beforeContentWrapper = {
-  @beforeContentBlock(backLinkEnabled, backLink)
-  @timeout_dialog(request.uri, appConfig.sessionTimeout)
+@beforeContentBlock(backLinkEnabled, backLink)
+@timeout_dialog(request.uri, appConfig.sessionTimeout)
 }
 
 @hmrcLayout(
   pageTitle = pageTitle,
   nonce = CSPNonce.get,
   isWelshTranslationAvailable = appConfig.welshLanguageSupportEnabled,
-  beforeContentBlock = Some(beforeContentWrapper)
+  beforeContentBlock = Some(beforeContentWrapper),
+  mainContentLayout = mainContentLayout
 )(contentBlock)
