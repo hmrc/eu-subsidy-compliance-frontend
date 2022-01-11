@@ -54,7 +54,7 @@ class BusinessEntityController @Inject()(
     implicit val eori: EORI = request.eoriNumber
 
     for {
-      a <- store.get[Undertaking]
+      a <- store.get[Undertaking] // TODO check why we get from the store and the hod
       b <- store.get[BusinessEntityJourney]
       c <- connector.retrieveUndertaking(eori)
     } yield (a, b, c) match {
@@ -241,27 +241,20 @@ class BusinessEntityController @Inject()(
     }
   }
 
- def redirect(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
+ def editBusinessEntity(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
    implicit val eori111: EORI = request.eoriNumber
 
    for {
      a <- connector.retrieveUndertaking(eori111)
-     b <- store.get[BusinessEntityJourney]
-   } yield (a, b) match {
-     case (Some(undertaking), Some(journey)) =>
-       val be = undertaking.undertakingBusinessEntity.filter(x => x.businessEntityIdentifier==eoriEntered).head
-       store.update[BusinessEntityJourney]({ x => x.map(y =>
-         y.copy(
-           eori = y.eori.copy(value = Some(EORI(eoriEntered))),
-           contact = y.contact.copy(value = be.contacts)
-       ))
-
-       }) match {
-         case x => Redirect(routes.BusinessEntityController.getCheckYourAnswers())
-         case _ => ???
-       }
-
-     case _ => ???
+     b <- store.put(BusinessEntityJourney.businessEntityJourneyForEori(a, EORI(eoriEntered)))
+   } yield b match {
+     case journey =>
+       Ok(
+         businessEntityCyaPage(
+           eoriEntered,
+           journey.contact.value.getOrElse(throw new IllegalStateException("missing contact details"))
+         )
+       )
    }
  }
 

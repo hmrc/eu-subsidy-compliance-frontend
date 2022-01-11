@@ -55,7 +55,7 @@
                 actions = Some(Actions(
                     items = Seq(
                         ActionItem(
-                            href = routes.BusinessEntityController.redirect(b.businessEntityIdentifier).toString,
+                            href = routes.BusinessEntityController.editBusinessEntity(b.businessEntityIdentifier).toString,
                             content = HtmlContent(s"<span aria-hidden='true'>${messages("common.change")}</span>"),
                             visuallyHiddenText = Some(messages("common.change") + " " + messages(""))
                         ),

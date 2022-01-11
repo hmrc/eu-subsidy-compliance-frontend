@@ -54,7 +54,7 @@ class AccountController @Inject()(
       y <- store.get[UndertakingJourney]
       undertakingJourney <- y.fold(store.put(UndertakingJourney.fromUndertakingOpt(retrievedUndertaking)))(Future.successful)
       z <- store.get[BusinessEntityJourney]
-      addBusinessJourney <- z.fold(store.put(BusinessEntityJourney.fromUndertakingOpt(retrievedUndertaking)))(Future.successful)
+      _ <- z.fold(store.put(BusinessEntityJourney.fromUndertakingOpt(retrievedUndertaking)))(Future.successful)
     } yield (retrievedUndertaking, eligibilityJourney, undertakingJourney) match {
       case (Some(undertaking), _, _) =>
         store.put(undertaking) // TODO make safe

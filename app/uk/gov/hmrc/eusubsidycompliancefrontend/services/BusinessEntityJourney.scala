@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import play.api.libs.json.{Format, Json, OFormat}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ContactDetails, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import shapeless.syntax.std.tuple._
 import shapeless.syntax.typeable._
@@ -42,6 +42,19 @@ object BusinessEntityJourney {
 
   // TODO populate the Journey[s] from the undertaking, probably need to map them by eori
   def fromUndertakingOpt(undertakingOpt: Option[Undertaking]): BusinessEntityJourney = BusinessEntityJourney()
+  def businessEntityJourneyForEori(undertakingOpt: Option[Undertaking], eori: EORI): BusinessEntityJourney = {
+    undertakingOpt match {
+      case Some(undertaking) =>
+        val empty = BusinessEntityJourney()
+        val b: Option[BusinessEntity] = undertaking.undertakingBusinessEntity.find(_.businessEntityIdentifier == eori)
+        val cd: Option[ContactDetails] = b.flatMap(_.contacts)
+        empty.copy(
+          empty.addBusiness.copy(value = Some(true)),
+          empty.eori.copy(value = Some(eori)),
+          empty.contact.copy(value = cd)
+        )
+    }
+  }
 
   import Journey._ // N.B. don't let intellij delete this
   import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.eoriFormat
