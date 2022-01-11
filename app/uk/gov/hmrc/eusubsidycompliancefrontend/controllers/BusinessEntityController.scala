@@ -217,27 +217,11 @@ class BusinessEntityController @Inject()(
       b <- store.get[BusinessEntityJourney]
     } yield (a, b) match {
       case (Some(undertaking), Some(journey)) => {
-        connector.addMember(
-          UndertakingRef(undertaking.reference.getOrElse(throw new IllegalStateException("undertakingRef should be defined"))),
-          BusinessEntity(
-            EORI(journey.eori.value.getOrElse(throw new IllegalStateException("eori should be defined"))),
-            false,
-            Some(ContactDetails(
-              journey.contact.value.getOrElse(throw new IllegalStateException("contact should be defined")).phone,
-              journey.contact.value.getOrElse(throw new IllegalStateException("contact should be defined")).mobile
-            ))
-          ))
-        // Clear BusinessEntityJourney
-        store.update[BusinessEntityJourney]({ x => x.map(y =>
-          y.copy(eori = y.eori.copy(value = None),
-            contact = y.contact.copy(value = Some(ContactDetails(None, None)))))
-        }) match {
-          case x => Redirect(routes.BusinessEntityController.getAddBusinessEntity())
-          case _ => ???
-        }
-          //
+        for {
+          _ <- connector.addMember(UndertakingRef(undertaking.reference.getOrElse(throw new IllegalStateException("undertakingRef should be defined"))), BusinessEntity(EORI(journey.eori.value.getOrElse(throw new IllegalStateException("eori should be defined"))), false, Some(ContactDetails(journey.contact.value.getOrElse(throw new IllegalStateException("contact should be defined")).phone, journey.contact.value.getOrElse(throw new IllegalStateException("contact should be defined")).mobile))))
+          _ <- store.put(BusinessEntityJourney())
+        } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
       }
-      case _ => ???
     }
   }
 

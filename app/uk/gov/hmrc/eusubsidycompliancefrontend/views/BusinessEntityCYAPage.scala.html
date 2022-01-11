@@ -41,6 +41,12 @@
     <h1 class="govuk-heading-xl">@messages("businessEntity.cya.title")</h1>
     <p>eori: @eori</p>
     <p>contactDetails: @contactDetails</p>
+    <a href="@controllers.routes.BusinessEntityController.getContact()">Change</a>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
 
     @formHelper(action = controllers.routes.BusinessEntityController.postCheckYourAnswers()) {
         @button("common.accept")
