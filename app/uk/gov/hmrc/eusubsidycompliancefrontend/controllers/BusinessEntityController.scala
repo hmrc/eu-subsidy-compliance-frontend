@@ -17,16 +17,15 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.data.{Form, FormError}
-import play.api.data.Forms._
+import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, PhoneNumber, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, FormPage, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -211,18 +210,28 @@ class BusinessEntityController @Inject()(
     implicit val eori: EORI = request.eoriNumber
 
     // TODO try to get an undertaking for the eori of the added business, and only proceed if there isn't one
-
     for {
       a <- store.get[Undertaking]
       b <- store.get[BusinessEntityJourney]
-    } yield (a, b) match {
-      case (Some(undertaking), Some(journey)) => {
-        for {
-          _ <- connector.addMember(UndertakingRef(undertaking.reference.getOrElse(throw new IllegalStateException("undertakingRef should be defined"))), BusinessEntity(EORI(journey.eori.value.getOrElse(throw new IllegalStateException("eori should be defined"))), false, Some(ContactDetails(journey.contact.value.getOrElse(throw new IllegalStateException("contact should be defined")).phone, journey.contact.value.getOrElse(throw new IllegalStateException("contact should be defined")).mobile))))
-          _ <- store.put(BusinessEntityJourney())
-        } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
-      }
-    }
+      _ <- store.put(BusinessEntityJourney())
+      ref = a.fold(throw new IllegalStateException("undertaking should be defined")){_.reference}
+      journey = b.fold(throw new IllegalStateException("journey should be defined")){identity}
+      _ <- connector.addMember(
+             UndertakingRef(
+               ref.getOrElse(throw new IllegalStateException("undertakingRef should be defined"))
+             ),
+             BusinessEntity(
+               EORI(journey.eori.value.getOrElse(throw new IllegalStateException("eori should be defined"))),
+               leadEORI = false,
+               Some(
+                 ContactDetails(
+                   journey.contact.value.getOrElse(throw new IllegalStateException("contact should be defined")).phone,
+                   journey.contact.value.getOrElse(throw new IllegalStateException("contact should be defined")).mobile
+                 )
+               )
+             )
+           )
+    } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
   }
 
  def editBusinessEntity(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
