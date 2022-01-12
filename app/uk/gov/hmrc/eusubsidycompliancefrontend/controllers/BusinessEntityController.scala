@@ -53,24 +53,24 @@ class BusinessEntityController @Inject()(
     implicit val eori: EORI = request.eoriNumber
 
     for {
-      a <- store.get[Undertaking] // TODO check why we get from the store and the hod
       b <- store.get[BusinessEntityJourney]
       c <- connector.retrieveUndertaking(eori)
-    } yield (a, b, c) match {
-      case (Some(undertaking), Some(journey), Some(u)) =>
+      _ <- store.put[Undertaking](c.getOrElse(throw new IllegalStateException("missing undertaking on hod")))
+    } yield (b, c) match {
+      case (Some(journey), Some(u)) =>
         journey
           .addBusiness
           .value
           .fold(
               Ok(addBusinessPage(
                 addBusinessForm,
-                undertaking.name,
+                u.name,
                 u.undertakingBusinessEntity
               ))
           ){x =>
               Ok(addBusinessPage(
                 addBusinessForm.fill(FormValues(x.toString)),
-                undertaking.name,
+                u.name,
                 u.undertakingBusinessEntity
               ))
           }
