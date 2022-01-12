@@ -209,29 +209,60 @@ class BusinessEntityController @Inject()(
   def postCheckYourAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    // TODO try to get an undertaking for the eori of the added business, and only proceed if there isn't one
-    for {
-      a <- store.get[Undertaking]
-      b <- store.get[BusinessEntityJourney]
-      _ <- store.put(BusinessEntityJourney())
-      ref = a.fold(throw new IllegalStateException("undertaking should be defined")){_.reference}
-      journey = b.fold(throw new IllegalStateException("journey should be defined")){identity}
-      _ <- connector.addMember(
-             UndertakingRef(
-               ref.getOrElse(throw new IllegalStateException("undertakingRef should be defined"))
-             ),
-             BusinessEntity(
-               EORI(journey.eori.value.getOrElse(throw new IllegalStateException("eori should be defined"))),
-               leadEORI = false,
-               Some(
-                 ContactDetails(
-                   journey.contact.value.getOrElse(throw new IllegalStateException("contact should be defined")).phone,
-                   journey.contact.value.getOrElse(throw new IllegalStateException("contact should be defined")).mobile
-                 )
-               )
-             )
-           )
-    } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
+    cyaForm.bindFromRequest().fold(
+      errors =>  throw new IllegalStateException("value hard-coded, form hacking?"),
+      form => {
+
+//        // TODO try to get an undertaking for the eori of the added business, and only proceed if there isn't one
+//        // TODO UX are figuring out the correct behaviour here so will come back to this
+//        for {
+//          retrievedUndertaking <- connector.retrieveUndertaking(EORI("GB123456789016"))
+//          b <- store.get[BusinessEntityJourney]
+//          journey = b.fold(throw new IllegalStateException("journey should be defined")) {
+//            identity
+//          }
+//          cd = Some(
+//            ContactDetails(
+//              journey.contact.value.getOrElse(throw new IllegalStateException("contact should be defined")).phone,
+//              journey.contact.value.getOrElse(throw new IllegalStateException("contact should be defined")).mobile
+//            )
+//          )
+//        } yield {
+//          retrievedUndertaking match {
+//            case Some(_) => {
+//              ??? //Future(BadRequest(businessEntityCyaPage(cyaForm.withError("businessEntityEori", "businessEntityEori.eoriInUse").fill(form))))
+//            }
+//          }
+//        }
+
+
+        for {
+          a <- store.get[Undertaking]
+          b <- store.get[BusinessEntityJourney]
+          _ <- store.put(BusinessEntityJourney())
+          ref = a.fold(throw new IllegalStateException("undertaking should be defined")) {
+            _.reference
+          }
+          journey = b.fold(throw new IllegalStateException("journey should be defined")) {
+            identity
+          }
+          _ <- connector.addMember(
+            UndertakingRef(
+              ref.getOrElse(throw new IllegalStateException("undertakingRef should be defined"))
+            ),
+            BusinessEntity(
+              EORI(journey.eori.value.getOrElse(throw new IllegalStateException("eori should be defined"))),
+              leadEORI = false,
+              Some(
+                ContactDetails(
+                  journey.contact.value.getOrElse(throw new IllegalStateException("contact should be defined")).phone,
+                  journey.contact.value.getOrElse(throw new IllegalStateException("contact should be defined")).mobile
+                )
+              )
+            )
+          )
+        } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
+      })
   }
 
  def editBusinessEntity(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
@@ -303,4 +334,8 @@ class BusinessEntityController @Inject()(
       case _ => false
     }
   ))
+
+  lazy val cyaForm: Form[FormValues] = Form(
+    mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
+
 }

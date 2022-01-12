@@ -49,6 +49,7 @@
     <br/>
 
     @formHelper(action = controllers.routes.BusinessEntityController.postCheckYourAnswers()) {
+        <input type=hidden name=cya value=true>
         @button("common.accept")
     }
 }
