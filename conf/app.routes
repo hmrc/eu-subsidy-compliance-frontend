@@ -48,4 +48,15 @@ POST       /confirmation                      uk.gov.hmrc.eusubsidycompliancefro
 GET        /add-member                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getAddBusinessEntity
 POST       /add-member                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postAddBusinessEntity
 
+GET        /add-business-entity-eori          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getEori
+POST       /add-business-entity-eori          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postEori
 
+GET        /add-business-entity-contact       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getContact
+POST       /add-business-entity-contact       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postContact
+
+GET        /check-your-answers-businesses     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getCheckYourAnswers
+POST       /check-your-answers-businesses     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postCheckYourAnswers
+
+GET        /change/:eori                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.editBusinessEntity(eori)
+GET        /remove/:eori                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveBusinessEntity(eori)
+POST       /remove/:eori                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveBusinessEntity(eori)

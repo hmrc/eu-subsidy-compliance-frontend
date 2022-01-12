@@ -20,6 +20,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 
 @this(
   layout: FullWidthLayout,
@@ -84,4 +85,6 @@
 
   <p>ref: @ref</p>
   <p>is lead: @isLead</p>
+  <a href="@routes.BusinessEntityController.getAddBusinessEntity()">Add member</a>
+
 }

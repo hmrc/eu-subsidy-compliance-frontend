@@ -17,12 +17,14 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
+import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EligibilityJourney, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,15 +46,18 @@ class AccountController @Inject()(
 
   def getAccountPage: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
+    implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
     for {
       retrievedUndertaking <- connector.retrieveUndertaking(eori)
       x <- store.get[EligibilityJourney]
       eligibilityJourney <- x.fold(store.put(EligibilityJourney()))(Future.successful)
       y <- store.get[UndertakingJourney]
       undertakingJourney <- y.fold(store.put(UndertakingJourney.fromUndertakingOpt(retrievedUndertaking)))(Future.successful)
+      z <- store.get[BusinessEntityJourney]
+      _ <- z.fold(store.put(BusinessEntityJourney.fromUndertakingOpt(retrievedUndertaking)))(Future.successful)
     } yield (retrievedUndertaking, eligibilityJourney, undertakingJourney) match {
       case (Some(undertaking), _, _) =>
+        store.put(undertaking) // TODO make safe
         val isLead = undertaking.undertakingBusinessEntity.find(_.businessEntityIdentifier == eori).exists(_.leadEORI)
         val ref = undertaking.reference.getOrElse(throw new IllegalStateException("no ref for retrieved undertaking"))
         Ok(accountPage(ref, isLead))

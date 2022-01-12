@@ -4,6 +4,7 @@ service.text = This is your new service
 common.back=Back
 common.sign-out=[TODO] Sign out
 common.continue=Save and Continue
+common.accept=Accept and send
 continue.button=Save and Continue
 common.yes=Yes
 common.no=No
@@ -14,6 +15,8 @@ common.alpha-info.p2=will help us to improve it.
 common.error.summary.title=There is a problem
 common.whatisanundertaking.details=What is an undertaking?
 common.whatisanundertaking.details.body=Every company may be structured differently. You may be a sole trader, a limited company or partnership. You may be a larger business, with subsidiary companies within the organisation. However a business is structured, we need to group all subsidiary or parent companies together. This is referred to as an undertaking.
+common.change=Change
+common.remove=Remove
 
 customswaivers.title=Do you, or any business in your organisation, claim Customs Duty waivers?
 customswaivers.error.required=Select yes if you, or any business in your organisation, claim Customs Duty waivers
@@ -90,6 +93,9 @@ sector.hint.2=An ‘agricultural product’ can be products such as: live animal
 sector.hint.3=If any part of your business is involved in the production, processing or marketing of fishery and aquaculture products. A ‘fishery product’ means aquatic organisms resulting from any fishing activity or products derived from them.
 
 undertaking.cya.title=Check your answers
+
+addbusiness.title=Do you have any businesses to add to {0}
+
 undertaking.cya.h2=Account details
 undertaking.cya.summary-list.name.key=Name of undertaking
 undertaking.cya.summary-list.eori.key=EORI number
@@ -105,6 +111,8 @@ undertaking.confirmation.h2-2=What happens next
 undertaking.confirmation.p2=We have sent you a confirmation email, which includes the above account reference number.
 undertaking.confirmation.p3=You must tell HMRC about all de minimis state aid payments, and those of any businesses in {0}, received during the current tax year and previous 2 tax years, from all UK public authorities, including central and local government.
 undertaking.confirmation.p4=If you have any other businesses, you must add them to {0}.
+
+businessEntityEori.eoriInUse.error=This EORI is in use.
 
 account-homepage.warning=You must report any de minimis aid (except Customs Duty waivers) {0} receives as soon as possible. If you do not report a de minimis aid payment every 90 days (or notify HMRC that you have not received any payments in that 90-day period), you will be ineligible to claim Customs Duty waivers
 account-homepage.inset=Your next entry is due by {0}. You can report de minimis aid payment, or let HMRC know that you have not received any, by following the links in the Payments received section below.

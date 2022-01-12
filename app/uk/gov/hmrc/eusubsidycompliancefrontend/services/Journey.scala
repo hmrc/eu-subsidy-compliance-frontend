@@ -96,7 +96,7 @@ trait Journey {
   def firstEmpty(implicit request: Request[_]): Option[Result] =
     formPages.find(x => x.value.isEmpty).map { x =>
       val uri = x.uri
-        Redirect(uri).withSession(request.session)
+      Redirect(uri).withSession(request.session)
     }
 
 }

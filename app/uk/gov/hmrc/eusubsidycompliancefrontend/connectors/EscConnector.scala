@@ -17,10 +17,11 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import cats.implicits._
+
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{Json, OFormat}
 import play.api.{Logger, Mode}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -41,17 +42,19 @@ class EscConnector @Inject()(
   val escURL: String = servicesConfig.baseUrl("esc")
   val retrieveUndertakingPath = "eu-subsidy-compliance/undertaking/"
   val createUndertakingPath = "eu-subsidy-compliance/undertaking"
+  val addMemberPath = "eu-subsidy-compliance/undertaking/member"
+  val removeMemberPath = "eu-subsidy-compliance/undertaking/member/remove"
 
   def retrieveUndertaking(
-    eori: EORI
-  )(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext
-  ): Future[Option[Undertaking]] = {
+                           eori: EORI
+                         )(
+                           implicit hc: HeaderCarrier,
+                           ec: ExecutionContext
+                         ): Future[Option[Undertaking]] = {
 
     import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.undertakingFormat
     import uk.gov.hmrc.http.HttpReadsInstances.readEitherOf
-    desGet[Either[UpstreamErrorResponse,Undertaking]](
+    desGet[Either[UpstreamErrorResponse, Undertaking]](
       s"$escURL/$retrieveUndertakingPath$eori"
     ).map {
       case Left(UpstreamErrorResponse(_, 404, _, _)) =>
@@ -62,11 +65,11 @@ class EscConnector @Inject()(
   }
 
   def createUndertaking(
-    undertaking: Undertaking
-  )(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext
-  ): Future[UndertakingRef] = {
+                         undertaking: Undertaking
+                       )(
+                         implicit hc: HeaderCarrier,
+                         ec: ExecutionContext
+                       ): Future[UndertakingRef] = {
     implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
     desPost[Undertaking, UndertakingRef](
       s"$escURL/$createUndertakingPath",
@@ -74,4 +77,25 @@ class EscConnector @Inject()(
     )
   }
 
+  def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[UndertakingRef] = {
+    implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
+    desPost[BusinessEntity, UndertakingRef](
+      s"$escURL/$addMemberPath/$undertakingRef",
+      businessEntity
+    )
+  }
+
+  def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[UndertakingRef] = {
+    implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
+    desPost[BusinessEntity, UndertakingRef](
+      s"$escURL/$removeMemberPath/$undertakingRef",
+      businessEntity
+    )
+  }
 }

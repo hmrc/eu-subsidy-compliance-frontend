@@ -18,7 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
-import play.api.data.Forms._
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
@@ -157,7 +156,7 @@ class UndertakingController @Inject()(
           .fold(
             Future.successful(
               Ok(undertakingContactPage(
-                undertakingContactForm,
+                contactForm,
                 journey.previous,
                 journey.name.value.getOrElse("")
               ))
@@ -165,7 +164,7 @@ class UndertakingController @Inject()(
           ){x =>
             Future.successful(
               Ok(undertakingContactPage(
-                undertakingContactForm.fill(OneOf(x.phone.map(_.toString), x.mobile.map(_.toString))),
+                contactForm.fill(OneOf(x.phone.map(_.toString), x.mobile.map(_.toString))),
                 journey.previous,
                 journey.name.value.getOrElse("")
               ))
@@ -177,7 +176,8 @@ class UndertakingController @Inject()(
   def postContact: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     getPrevious[UndertakingJourney](store).flatMap { previous =>
-      undertakingContactForm.bindFromRequest().fold(
+
+      contactForm.bindFromRequest().fold(
         errors => Future.successful(BadRequest(undertakingContactPage(errors, previous, ""))),
         form => {
           store.update[UndertakingJourney]({ x =>
@@ -278,41 +278,6 @@ class UndertakingController @Inject()(
 
   lazy val undertakingSectorForm: Form[FormValues] = Form(
     mapping("undertakingSector" -> mandatory("undertakingSector"))(FormValues.apply)(FormValues.unapply))
-
-  case class OneOf(a: Option[String], b: Option[String]){
-    def toContactDetails =
-      ContactDetails(
-        a.map(PhoneNumber(_)),
-        b.map(PhoneNumber(_))
-      )
-  }
-
-  val undertakingContactForm: Form[OneOf] = Form(
-    mapping(
-      "phone" -> optional(text),
-      "mobile"  -> optional(text)
-    )(OneOf.apply)(OneOf.unapply).verifying(
-      "one.or.other.mustbe.present",
-      fields => fields match {
-        case OneOf(Some(_), Some(_)) => true
-        case OneOf(_, Some(_)) => true
-        case OneOf(Some(_),_) => true
-        case _ => false
-      }
-    ).verifying(
-      "phone.regex.error",
-      fields => fields match {
-        case OneOf(Some(a),_) if !a.matches(PhoneNumber.regex) => false
-        case _ => true
-      }
-    ).verifying(
-      "mobile.regex.error",
-      fields => fields match {
-        case OneOf(_,Some(b)) if !b.matches(PhoneNumber.regex) => false
-        case _ => true
-      }
-    )
-  )
 
   lazy val cyaForm: Form[FormValues] = Form(
     mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
