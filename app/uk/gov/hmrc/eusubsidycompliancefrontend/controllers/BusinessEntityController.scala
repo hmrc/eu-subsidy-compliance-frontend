@@ -310,7 +310,7 @@ class BusinessEntityController @Inject()(
             form.value match {
               case "true" =>
                 connector.removeMember(
-                  UndertakingRef(undertaking.reference.getOrElse(throw new IllegalStateException("xxx"))),
+                  UndertakingRef(undertaking.reference.getOrElse(throw new IllegalStateException("no undertakingRef"))),
                   bs)
                 Future.successful(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
               case _ => Future(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
