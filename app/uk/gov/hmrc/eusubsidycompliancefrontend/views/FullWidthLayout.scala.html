@@ -15,7 +15,7 @@
  *@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLayout
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcHead, HmrcLayout}
 @import views.html.helper.CSPNonce
 @import views.html.helper.CSPNonce
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.FullWidthMainContent
@@ -24,6 +24,7 @@
 @this(
   appConfig: AppConfig,
   hmrcLayout: HmrcLayout,
+  hmrcHead: HmrcHead,
   beforeContentBlock: components.BeforeContent,
   scripts: components.Scripts,
   defaultMainContent: FullWidthMainContent
@@ -36,6 +37,10 @@
   mainContentLayout: Option[Html => Html] = Some(defaultMainContent(_))
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@head = {
+  <link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="all" rel="stylesheet" type="text/css" />
+}
+
 @beforeContentWrapper = {
 @beforeContentBlock(backLinkEnabled, backLink)
 @timeout_dialog(request.uri, appConfig.sessionTimeout)
@@ -43,6 +48,7 @@
 
 @hmrcLayout(
   pageTitle = pageTitle,
+  additionalHeadBlock = Some(hmrcHead(Some(head), CSPNonce.get)),
   nonce = CSPNonce.get,
   isWelshTranslationAvailable = appConfig.welshLanguageSupportEnabled,
   beforeContentBlock = Some(beforeContentWrapper),
