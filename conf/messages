@@ -19,9 +19,9 @@ common.change=Change
 common.remove=Remove
 
 customswaivers.title=Do you, or any business in your organisation, claim Customs Duty waivers?
-customswaivers.error.required=Select yes if this is the company you want to register
+customswaivers.error.required=Select yes if you, or any business in your organisation, claim Customs Duty waivers
 
-mainbusinesscheck.error.required=Select whether you will be responsible for reporting de minimis aid for this undertaking
+mainbusinesscheck.error.required=Select if you will be responsible for reporting de minimis aid for this undertaking
 mainbusinesscheck.title=Will you be responsible for reporting de minimis aid for this undertaking?
 mainbusinesscheck.p1=As undertaking administrator(or lead or something), it will be your responsibility to report any de minimis state aid that you, or other businesses in your organisation, receive.
 mainbusinesscheck.p2=The undertaking administrator should have access to all the relevant information needed and the authority to report to HMRC.
@@ -80,7 +80,7 @@ undertakingContact.p1=We will only contact you by telephone if there is an issue
 undertakingContact.phone.label=Telephone number
 undertakingContact.phone.hint=For international numbers include the country code.
 undertakingContact.mobile.label=Mobile number
-one.or.other.mustbe.present=Enter at least one contact number
+one.or.other.mustbe.present=Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 808 157 0192
 
 sector.label.0=Other industry
 sector.label.1=Road freight transport for hire or reward
@@ -113,3 +113,16 @@ undertaking.confirmation.p3=You must tell HMRC about all de minimis state aid pa
 undertaking.confirmation.p4=If you have any other businesses, you must add them to {0}.
 
 businessEntityEori.eoriInUse.error=This EORI is in use.
+
+account-homepage.warning=You must report any de minimis aid (except Customs Duty waivers) {0} receives as soon as possible. If you do not report a de minimis aid payment every 90 days (or notify HMRC that you have not received any payments in that 90-day period), you will be ineligible to claim Customs Duty waivers
+account-homepage.inset=Your next entry is due by {0}. You can report de minimis aid payment, or let HMRC know that you have not received any, by following the links in the Payments received section below.
+account-homepage.cards.card1.heading=Payments received
+account-homepage.cards.card1.link1=Add, amend or remove a payment
+account-homepage.cards.card1.link2=Submit a no claims notification
+account-homepage.cards.card2.heading=Account
+account-homepage.cards.card2.link1=View or amend your account details
+account-homepage.cards.card2.link2=View financial dashboard
+account-homepage.cards.card1.link2=Submit a no claims notification
+account-homepage.cards.card3.heading=Businesses in {0}
+account-homepage.cards.card3.link1=View your businesses or Add a business to your account [TODO: Link text depends on businesses added]
+account-homepage.cards.card3.link2=Promote another business to lead

@@ -22,30 +22,69 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 
-
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        button: components.Button,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios : GovukRadios
+  layout: FullWidthLayout,
+  formHelper: FormWithCSRF,
+  button: components.Button,
+  govukErrorSummary: GovukErrorSummary,
+  govukRadios : GovukRadios,
+  govukWarningText : GovukWarningText,
+  govukInsetText : GovukInsetText
 )
 
 
 @(ref: UndertakingRef, isLead: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-    pageTitle = Some(messages("account.title")),
-    backLinkEnabled = false,
-    backLink = None
+  pageTitle = Some(messages("account.title")),
+  backLinkEnabled = false,
+  backLink = None
 ) {
+  <h1 class="govuk-heading-xl">[TODO: NAME]</h1>
 
+  <p class="govuk-body"><strong>[TODO: SET LAYOUT TO FULL WIDTH]</strong></p>
 
-        <h1 class="govuk-heading-xl">@messages("account.title")</h1>
+  @govukWarningText(WarningText(
+    iconFallbackText = messages("common.warning"),
+    content = Text(messages("account-homepage.warning", "[TODO: NAME]"))
+  ))
 
-        <p>ref: @ref</p>
-        <p>is lead: @isLead</p>
-        <a href="@routes.BusinessEntityController.getAddBusinessEntity()">Add member</a>
+  @govukInsetText(InsetText(
+    content = Text(messages("account-homepage.inset", "[TODO: DATE]"))
+  ))
 
+  <div class="govuk-grid-column-one-third">
+    <div class="govuk-card govuk-card--contained govuk-card fixed-min-height-card">
+      <h2 class="govuk-heading-s">@messages("account-homepage.cards.card1.heading")</h2>
+      <ul class="govuk-list govuk-list--spaced">
+        <li><a href="#" class="govuk-link">[TODO: LINK HREF] @messages("account-homepage.cards.card1.link1")</a></li>
+        <li><a href="#" class="govuk-link">[TODO: LINK HREF] @messages("account-homepage.cards.card1.link2")</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="govuk-grid-column-one-third">
+    <div class="govuk-card govuk-card--contained govuk-card fixed-min-height-card">
+      <h2 class="govuk-heading-s">@messages("account-homepage.cards.card2.heading")</h2>
+      <ul class="govuk-list govuk-list--spaced">
+        <li><a href="#" class="govuk-link">[TODO: LINK HREF] @messages("account-homepage.cards.card2.link1")</a></li>
+        <li><a href="#" class="govuk-link">[TODO: LINK HREF] @messages("account-homepage.cards.card2.link2")</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="govuk-grid-column-one-third">
+    <div class="govuk-card govuk-card--contained govuk-card fixed-min-height-card">
+      <h2 class="govuk-heading-s">@messages("account-homepage.cards.card3.heading", "[TODO: NAME]")</h2>
+      <ul class="govuk-list govuk-list--spaced">
+        <li><a href="#" class="govuk-link">[TODO: LINK HREF] @messages("account-homepage.cards.card3.link1")</a></li>
+        <li><a href="#" class="govuk-link">[TODO: LINK HREF] @messages("account-homepage.cards.card3.link2")</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <p>ref: @ref</p>
+  <p>is lead: @isLead</p>
+  <a href="@routes.BusinessEntityController.getAddBusinessEntity()">Add member</a>
 
 }

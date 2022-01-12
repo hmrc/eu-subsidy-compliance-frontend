@@ -1,1 +1,7 @@
 @import "lib/govuk-frontend/govuk/base";
+
+.fixed-min-height-card {
+  background-color: #f8f8f8;
+  padding: 20px;
+  min-height: 150px;
+}
