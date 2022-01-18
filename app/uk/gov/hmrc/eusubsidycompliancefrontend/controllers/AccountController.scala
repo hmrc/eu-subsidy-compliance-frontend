@@ -58,9 +58,7 @@ class AccountController @Inject()(
     } yield (retrievedUndertaking, eligibilityJourney, undertakingJourney) match {
       case (Some(undertaking), _, _) =>
         store.put(undertaking) // TODO make safe
-        val isLead = undertaking.undertakingBusinessEntity.find(_.businessEntityIdentifier == eori).exists(_.leadEORI)
-        val ref = undertaking.reference.getOrElse(throw new IllegalStateException("no ref for retrieved undertaking"))
-        Ok(accountPage(ref, isLead))
+        Ok(accountPage(undertaking))
       case (_, eJourney, uJourney) if !eJourney.isComplete && uJourney == UndertakingJourney() =>
         Redirect(routes.EligibilityController.firstEmptyPage())
       case (_, _, uJourney) if !uJourney.isComplete =>
