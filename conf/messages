@@ -154,4 +154,6 @@ account-homepage.cards.card2.link2=View financial dashboard
 account-homepage.cards.card1.link2=Submit a no claims notification
 account-homepage.cards.card3.heading=Businesses in {0}
 account-homepage.cards.card3.link1=View your businesses or Add a business to your account [TODO: Link text depends on businesses added]
+account-homepage.cards.card3.link1View=View your businesses
+account-homepage.cards.card3.link1Add=Add a business to your account
 account-homepage.cards.card3.link2=Promote another business to lead

@@ -14,13 +14,9 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-@import uk.gov.hmrc.eusubsidycompliancefrontend.services.journey
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 
 @this(
   layout: FullWidthLayout,
@@ -32,15 +28,14 @@
   govukInsetText : GovukInsetText
 )
 
-
-@(ref: UndertakingRef, isLead: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(undertaking: Undertaking)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
   pageTitle = Some(messages("account.title")),
   backLinkEnabled = false,
   backLink = None
 ) {
-  <h1 class="govuk-heading-xl">[TODO: NAME]</h1>
+  <h1 class="govuk-heading-xl">@{undertaking.name}</h1>
 
   <p class="govuk-body"><strong>[TODO: SET LAYOUT TO FULL WIDTH]</strong></p>
 
@@ -75,16 +70,22 @@
 
   <div class="govuk-grid-column-one-third">
     <div class="govuk-card govuk-card--contained govuk-card fixed-min-height-card">
-      <h2 class="govuk-heading-s">@messages("account-homepage.cards.card3.heading", "[TODO: NAME]")</h2>
+      <h2 class="govuk-heading-s">@messages("account-homepage.cards.card3.heading", undertaking.name)</h2>
       <ul class="govuk-list govuk-list--spaced">
-        <li><a href="#" class="govuk-link">[TODO: LINK HREF] @messages("account-homepage.cards.card3.link1")</a></li>
+
+        <li>
+            @if(undertaking.undertakingBusinessEntity.length > 1){
+                <a href="@routes.BusinessEntityController.getAddBusinessEntity()" class="govuk-link">
+                    @messages("account-homepage.cards.card3.link1View")
+                </a>
+            }else{
+                <a href="@routes.BusinessEntityController.getAddBusinessEntity()" class="govuk-link">
+                    @messages("account-homepage.cards.card3.link1Add")
+                </a>
+            }
+        </li>
         <li><a href="#" class="govuk-link">[TODO: LINK HREF] @messages("account-homepage.cards.card3.link2")</a></li>
       </ul>
     </div>
   </div>
-
-  <p>ref: @ref</p>
-  <p>is lead: @isLead</p>
-  <a href="@routes.BusinessEntityController.getAddBusinessEntity()">Add member</a>
-
 }
