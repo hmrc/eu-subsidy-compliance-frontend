@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.implicits.catsSyntaxEq
+
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.data.Forms.mapping
@@ -84,11 +86,16 @@ class BusinessEntityController @Inject()(
       addBusinessForm.bindFromRequest().fold(
         errors => Future.successful(BadRequest(addBusinessPage(errors, name, List.empty))),
         form => {
-          store.update[BusinessEntityJourney]({ x =>
-            x.map { y =>
-              y.copy(addBusiness  = y.addBusiness.copy(value = Some(form.value.toBoolean)))
-            }
-          }).flatMap(_.next)
+          val enteredValue =  form.value
+          if(enteredValue === "true") {
+            store.update[BusinessEntityJourney]({ businessEntityOpt =>
+              businessEntityOpt.map(be => be.copy(addBusiness  = be.addBusiness.copy(value = Some(form.value.toBoolean))))
+            }).flatMap(_.next)
+          } else {
+            Future.successful(Redirect(routes.AccountController.getAccountPage()))
+          }
+
+
         }
       )
 
