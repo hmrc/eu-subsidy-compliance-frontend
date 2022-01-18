@@ -335,7 +335,7 @@ class BusinessEntityController @Inject()(
 
   lazy val eoriForm: Form[FormValues] = Form(
     mapping("businessEntityEori" -> mandatory("businessEntityEori"))(FormValues.apply)(FormValues.unapply).verifying(
-    "regex.error",
+    "businessEntityEori.regex.error",
     fields => fields match {
       case a if a.value.matches(EORI.regex) => true
       case _ => false

@@ -20,36 +20,81 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
 
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        button: components.Button,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios : GovukRadios
+  layout: Layout,
+  formHelper: FormWithCSRF,
+  button: components.Button,
+  govukErrorSummary: GovukErrorSummary,
+  govukRadios : GovukRadios,
+  govukSummaryList: GovukSummaryList
 )
-
 
 @(eori: String, contactDetails: ContactDetails)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-    pageTitle = Some(messages("businessEntity.cya.title")),
-    backLinkEnabled = false,
-    backLink = None
+  pageTitle = Some(messages("businessEntity.cya.title")),
+  backLinkEnabled = false,
+  backLink = None
 ) {
-    <h1 class="govuk-heading-xl">@messages("businessEntity.cya.title")</h1>
-    <p>eori: @eori</p>
-    <p>contactDetails: @contactDetails</p>
-    <a href="@controllers.routes.BusinessEntityController.getContact()">Change</a>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-    <br/>
+  @defining(
+    contactDetails match {
+      case ContactDetails(Some(p), Some(m)) => p + "<br>" + m
+      case ContactDetails(None, Some(m)) => m
+      case ContactDetails(Some(p), None) => p
+      case _ => ""
+    }
+    ) { case (phone) =>
+
+    @H1(messages("businessEntity.cya.title"))
+    @H2(messages("businessEntity.cya.h2"))
+
+    @govukSummaryList(SummaryList(
+      rows = Seq(
+        SummaryListRow(
+          key = Key(
+            content = Text(messages("businessEntity.cya.eori.label"))
+          ),
+          value = Value(
+            content = Text(eori)
+          ),
+          actions = Some(Actions(
+            items = Seq(
+              ActionItem(
+                href = controllers.routes.BusinessEntityController.getEori().toString,
+                content = Text("Change"),
+                visuallyHiddenText = Some("name")
+              )
+            )
+          ))
+        ),
+        SummaryListRow(
+          key = Key(
+            content = Text(messages("businessEntity.cya.contact.label"))
+          ),
+          value = Value(
+            content = HtmlContent(phone)
+          ),
+          actions = Some(Actions(
+            items = Seq(
+              ActionItem(
+                href = controllers.routes.BusinessEntityController.getContact().toString,
+                content = Text("Change"),
+                visuallyHiddenText = Some("name")
+              )
+            )
+          ))
+        )
+      )
+    ))
+
+    @P(messages("businessEntity.cya.p1"))
 
     @formHelper(action = controllers.routes.BusinessEntityController.postCheckYourAnswers()) {
-        <input type=hidden name=cya value=true>
-        @button("common.accept")
+      <input type=hidden name=cya value=true>
+      @button("common.accept")
     }
+  }
 }

@@ -18,65 +18,97 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingName
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.BusinessEntity
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1}
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        button: components.Button,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios : GovukRadios,
-        govukSummaryList: GovukSummaryList
+  layout: Layout,
+  formHelper: FormWithCSRF,
+  button: components.Button,
+  govukErrorSummary: GovukErrorSummary,
+  govukRadios : GovukRadios,
+  govukSummaryList: GovukSummaryList
 )
 
 
 @(form: Form[_], bs: BusinessEntity)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some("add title")) {
-    @formHelper(action = controllers.routes.BusinessEntityController.postRemoveBusinessEntity(bs.businessEntityIdentifier)) {
-        @form.errors.map { err =>
-            @govukErrorSummary(ErrorSummary(
-                errorList = Seq(
-                    ErrorLink(
-                        href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(err.key++"." ++err.message)}")
-                    )
-                ),
-                title = Text(messages("common.error.summary.title"))
-            ))
-        }
-
-        <h1>Remove business entity</h1>
-        <div>@bs</div>
-
-        @govukRadios(Radios(
-            errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("removeBusiness.error.required"))
-            ))} else None,
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("Do you want to remove business entity")),
-                    classes = "govuk-fieldset__legend--l",
-                    isPageHeading = true
-                ))
-            )),
-            hint = None,
-            idPrefix = Some("removeBusiness"),
-            name = "removeBusiness",
-            items = Seq(
-                RadioItem(
-                    content = Text(messages("common.yes")),
-                    value = Some("true"),
-                    checked = form.data.exists(_._2 == "true")
-                ),
-                RadioItem(
-                    content = Text(messages("common.no")),
-                    value = Some("false"),
-                    checked = form.data.exists(_._2 == "false")
-                )
-            )
-        ))
-
-        @button("common.continue")
+@layout(pageTitle = Some(messages("removeBusinessEntity.title"))) {
+  @formHelper(action = controllers.routes.BusinessEntityController.postRemoveBusinessEntity(bs.businessEntityIdentifier)) {
+    @form.errors.map { err =>
+      @govukErrorSummary(ErrorSummary(
+        errorList = Seq(
+          ErrorLink(
+            href = Some(s"#${err.key}"),
+            content = Text(s"${messages(err.key++"." ++err.message)}")
+          )
+        ),
+        title = Text(messages("common.error.summary.title"))
+      ))
     }
+
+    @H1(messages("removeBusinessEntity.title"))
+
+    @defining(
+      bs.contacts match {
+        case Some(ContactDetails(Some(p), Some(m))) => p + "<br>" + m
+        case Some(ContactDetails(None, Some(m))) => m
+        case Some(ContactDetails(Some(p), None)) => p
+        case _ => ""
+      }
+    ) { case (phone) =>
+      @govukSummaryList(SummaryList(
+        rows = Seq(
+          SummaryListRow(
+            key = Key(
+              content = Text(messages("businessEntity.cya.eori.label"))
+            ),
+            value = Value(
+              content = Text(bs.businessEntityIdentifier)
+            )
+          ),
+          SummaryListRow(
+            key = Key(
+              content = Text(messages("businessEntity.cya.contact.label"))
+            ),
+            value = Value(
+              content = HtmlContent(phone)
+            )
+          )
+        )
+      ))
+    }
+
+    @govukRadios(Radios(
+      classes = "govuk-radios--inline",
+      errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+        content = Text(messages("removeBusiness.error.required"))
+      ))} else None,
+      fieldset = Some(Fieldset(
+        legend = Some(Legend(
+          content = Text(messages("Do you want to remove business entity")),
+          classes = "govuk-fieldset__legend--m",
+          isPageHeading = false
+        ))
+      )),
+      hint = None,
+      idPrefix = Some("removeBusiness"),
+      name = "removeBusiness",
+      items = Seq(
+        RadioItem(
+          content = Text(messages("common.yes")),
+          value = Some("true"),
+          checked = form.data.exists(_._2 == "true")
+        ),
+        RadioItem(
+          content = Text(messages("common.no")),
+          value = Some("false"),
+          checked = form.data.exists(_._2 == "false")
+        )
+      )
+    ))
+
+    @button("common.continue")
+  }
 }

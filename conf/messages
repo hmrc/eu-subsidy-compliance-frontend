@@ -94,7 +94,36 @@ sector.hint.3=If any part of your business is involved in the production, proces
 
 undertaking.cya.title=Check your answers
 
-addbusiness.title=Do you have any businesses to add to {0}
+addBusiness.title=Add businesses within your organisation to {0}
+addBusiness.p1=This service is for businesses importing into Northern Ireland or claiming de minimis aid in the UK.
+addBusiness.p2=For this service, HMRC needs to group together related businesses within a company or organisation into a ‘single undertaking’. Businesses within an undertaking are identified by their EORI number.
+addBusiness.p3=You must add any business to this single undertaking that has claimed a Customs Duty waiver in this tax year, or the two previous tax years.
+addBusiness.p4=You do not need to add international businesses which do not qualify for the Customs Duty waiver or de minimis aid from the UK government.
+addBusiness.legend=Do you have any businesses to add to {0}
+addBusiness.error.required=Select yes if you need to add a business to {0}?
+
+addBusiness.businesses-added.title=Businesses in {0}
+addBusiness.businesses-added.legend=Do you need to add another business?
+
+businessEntityEori.title=What is the EORI number of the business you want to add?
+businessEntityEori.hint=This can only be a GB EORI number.
+businessEntityEori.regex.error=GB EORI number must be 12 or 15 digits
+businessEntityEori.eoriInUse=Enter a valid EORI number
+error.businessEntityEori.required=Enter a valid EORI number
+
+businessEntityContact.title=What are the contact details of the business you want to add?
+businessEntityContact.p1=We will only use this telephone number to contact the business if there is an issue with the account.
+businessEntityContact.phone.label=Telephone number
+businessEntityContact.phone.hint=For international numbers include the country code. 
+businessEntityContact.mobile.label=Mobile
+
+businessEntity.cya.title=Check your answers
+businessEntity.cya.h2=Other businesses in undertaking
+businessEntity.cya.eori.label=EORI number
+businessEntity.cya.contact.label=Contact details
+businessEntity.cya.p1=By sending these details you are confirming that, to the best of your knowledge, they are correct.
+
+removeBusinessEntity.title=Remove business entity
 
 undertaking.cya.h2=Account details
 undertaking.cya.summary-list.name.key=Name of undertaking

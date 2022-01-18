@@ -5,3 +5,13 @@
   padding: 20px;
   min-height: 150px;
 }
+
+.summary-list-no-value {
+  .govuk-summary-list__value {
+    width: 20%;
+  }
+
+  .govuk-summary-list__actions {
+    width: 40%;
+  }
+}
