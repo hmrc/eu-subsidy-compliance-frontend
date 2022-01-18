@@ -205,7 +205,7 @@ class BusinessEntityController @Inject()(
         Future.successful(
           Ok(
             businessEntityCyaPage(
-              eori,
+              journey.eori.value.getOrElse(throw new IllegalStateException("missing eori")),
               journey.contact.value.getOrElse(throw new IllegalStateException("missing contact details"))
             )
           )
