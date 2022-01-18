@@ -19,49 +19,51 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        button: components.Button,
-        govukErrorSummary: GovukErrorSummary,
-        govukInput : GovukInput
+  layout: Layout,
+  formHelper: FormWithCSRF,
+  button: components.Button,
+  govukErrorSummary: GovukErrorSummary,
+  govukInput : GovukInput
 )
 
 @(form: Form[_], previous: journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-    pageTitle = Some(messages("businessEntityEori.title")),
-    backLinkEnabled = true,
-    backLink = Some(previous)
-    ) {
+  pageTitle = Some(messages("businessEntityEori.title")),
+  backLinkEnabled = true,
+  backLink = Some(previous)
+  ) {
 
-    @formHelper(action = controllers.routes.BusinessEntityController.postEori) {
-        @form.errors.map { err =>
-            @govukErrorSummary(ErrorSummary(
-                errorList = Seq(
-                    ErrorLink(
-                        href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(err.message)}")
-                    )
-                ),
-                title = Text(messages("common.error.summary.title"))
-            ))
-        }
-        @govukInput(Input(
-            value = form.data.get("businessEntityEori"),
-            id = "businessEntityEori",
-            name = "businessEntityEori",
-            label = Label(
-                isPageHeading = true,
-                classes = "govuk-label--l",
-                content = Text(messages("businessEntityEori.heading"))
-            ),
-            hint = Some(Hint(content = Text(messages("businessEntityEori.hint")))),
-            classes = "govuk-input--width-10",
-            errorMessage = if (form.hasErrors) {
-                Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
-            } else None
-        ))
-
-        @button("continue.button")
+  @formHelper(action = controllers.routes.BusinessEntityController.postEori) {
+    @form.errors.map { err =>
+      @govukErrorSummary(ErrorSummary(
+        errorList = Seq(
+          ErrorLink(
+            href = Some(s"#${err.key}"),
+            content = Text(s"${messages(err.message)}")
+          )
+        ),
+        title = Text(messages("common.error.summary.title"))
+      ))
     }
+
+    @govukInput(Input(
+      value = form.data.get("businessEntityEori"),
+      id = "businessEntityEori",
+      name = "businessEntityEori",
+      label = Label(
+        isPageHeading = true,
+        classes = "govuk-label--xl",
+        content = Text(messages("businessEntityEori.title"))
+      ),
+      hint = Some(Hint(content = Text(messages("businessEntityEori.hint")))),
+      classes = "govuk-input--width-10",
+      prefix = Some(PrefixOrSuffix(content = Text("GB"))),
+      errorMessage = if (form.hasErrors) {
+        Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
+      } else None
+    ))
+
+    @button("continue.button")
+  }
 }

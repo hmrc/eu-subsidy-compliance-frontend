@@ -17,66 +17,68 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        button: components.Button,
-        govukErrorSummary: GovukErrorSummary,
-        govukInput : GovukInput
+  layout: Layout,
+  formHelper: FormWithCSRF,
+  button: components.Button,
+  govukErrorSummary: GovukErrorSummary,
+  govukInput : GovukInput
 )
 
 @(form: Form[_], previous: journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-    pageTitle = Some(messages("businessEntityContact.title")),
-    backLinkEnabled = true,
-    backLink = Some(previous)
+  pageTitle = Some(messages("businessEntityContact.title")),
+  backLinkEnabled = true,
+  backLink = Some(previous)
 ) {
 
-    @formHelper(action = controllers.routes.BusinessEntityController.postContact()) {
-        @form.errors.map { err =>
-            @govukErrorSummary(ErrorSummary(
-                errorList = Seq(
-                    ErrorLink(
-                        href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(err.message)}")
-                    )
-                ),
-                title = Text(messages("common.error.summary.title"))
-            ))
-        }
-        @govukInput(Input(
-            value = form.data.get("phone"),
-            id = "phone",
-            name = "phone",
-            label = Label(
-                isPageHeading = false,
-                classes = "govuk-label--l",
-                content = Text(messages("businessEntityContact.phone.label"))
-            ),
-            hint = Some(Hint(content = Text(messages("businessEntityContact.phone.hint")))),
-            classes = "govuk-input--width-10",
-            errorMessage = if (form.hasErrors) {
-                Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
-            } else None
-        ))
-        @govukInput(Input(
-            value = form.data.get("mobile"),
-            id = "mobile",
-            name = "mobile",
-            label = Label(
-                isPageHeading = false,
-                classes = "govuk-label--l",
-                content = Text(messages("businessEntityContact.mobile.label"))
-            ),
-            hint = None,
-            classes = "govuk-input--width-10",
-            errorMessage = if (form.hasErrors) {
-                Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
-            } else None
-        ))
-
-        @button("continue.button")
+  @formHelper(action = controllers.routes.BusinessEntityController.postContact()) {
+    @form.errors.map { err =>
+      @govukErrorSummary(ErrorSummary(
+        errorList = Seq(
+          ErrorLink(
+            href = Some(s"#${err.key}"),
+            content = Text(s"${messages(err.message)}")
+          )
+        ),
+        title = Text(messages("common.error.summary.title"))
+      ))
     }
+
+    @{H1(messages("businessEntityContact.title"))}
+    @{P(messages("businessEntityContact.p1"))}
+
+    @govukInput(Input(
+        value = form.data.get("phone"),
+        id = "phone",
+        name = "phone",
+        label = Label(
+            content = Text(messages("businessEntityContact.phone.label"))
+        ),
+        hint = Some(Hint(content = Text(messages("businessEntityContact.phone.hint")))),
+        classes = "govuk-input--width-20",
+        errorMessage = if (form.hasErrors) {
+            Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
+        } else None
+    ))
+    
+    @govukInput(Input(
+        value = form.data.get("mobile"),
+        id = "mobile",
+        name = "mobile",
+        label = Label(
+            content = Text(messages("businessEntityContact.mobile.label"))
+        ),
+        hint = None,
+        classes = "govuk-input--width-20",
+        errorMessage = if (form.hasErrors) {
+            Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
+        } else None
+    ))
+
+    @button("continue.button")
+  }
 }
