@@ -47,7 +47,6 @@ class EscConnectorImpl @Inject()(http: HttpClient,
                                  timeProvider: TimeProvider
                                 )(implicit ec: ExecutionContext
 ) extends EscConnector {
-
   val logger: Logger = Logger(this.getClass)
 
   val escURL: String = servicesConfig.baseUrl("esc")

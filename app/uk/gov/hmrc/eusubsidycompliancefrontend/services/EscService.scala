@@ -44,7 +44,9 @@ trait EscService {
 
 @Singleton
 class EscServiceImpl @Inject() (
+
                                  escConnector: EscConnector
+
                                )(implicit ec: ExecutionContext)
   extends EscService {
 
@@ -55,6 +57,7 @@ class EscServiceImpl @Inject() (
       case Right(value) =>
         if(value.status =!= OK) sys.error("Error in creating Undertaking")
         else
+
         value.parseJSON[UndertakingRef].fold(_ =>  sys.error("Error in parsing  UndertakingRef"), undertakingRef => undertakingRef)
     }
   }
@@ -78,6 +81,7 @@ class EscServiceImpl @Inject() (
         if(value.status =!= OK) sys.error("Error in adding member to the Business Entity")
         else
         value.parseJSON[UndertakingRef].fold(_ =>  sys.error("Error in parsing  Undertaking Ref"),undertakingRef => undertakingRef)
+
     }
   }
 

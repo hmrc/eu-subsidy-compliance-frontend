@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connector
 
-
 import com.typesafe.config.ConfigFactory
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
@@ -28,6 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import utils.CommonTestData._
+
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -122,7 +122,6 @@ class EscConnectorSpec
         () => connector.retrieveSubsidy(subsidyRetrieve)
       )
     }
-
   }
 
 }
