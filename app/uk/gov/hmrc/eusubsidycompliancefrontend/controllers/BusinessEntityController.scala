@@ -50,6 +50,7 @@ class BusinessEntityController @Inject()(
   BaseController(mcc) {
 
   import escActionBuilders._
+  val eoriPrefix = "GB"
 
   def getAddBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -137,16 +138,16 @@ class BusinessEntityController @Inject()(
         form => {
 
           for {
-            retrievedUndertaking <- connector.retrieveUndertaking(EORI(form.value))
+            retrievedUndertaking <- connector.retrieveUndertaking(EORI(s"$eoriPrefix${form.value}"))
           } yield {
             retrievedUndertaking match {
               case Some(_) => {
                 Future(BadRequest(eoriPage(eoriForm.withError("businessEntityEori", "businessEntityEori.eoriInUse").fill(form), previous)))
               }
               case _ =>
-                store.update[BusinessEntityJourney]({ x =>
-                  x.map { y =>
-                    y.copy(eori = y.eori.copy(value = Some(EORI(form.value))))
+                store.update[BusinessEntityJourney]({ businessEntityOpt =>
+                  businessEntityOpt.map { businessEntity =>
+                    businessEntity.copy(eori = businessEntity.eori.copy(value = Some(EORI(s"$eoriPrefix${form.value}"))))
                   }
                 }).flatMap(_.next)
             }
@@ -327,6 +328,7 @@ class BusinessEntityController @Inject()(
     }
   }}
 
+
   lazy val addBusinessForm: Form[FormValues] = Form(
     mapping("addBusiness" -> mandatory("addBusiness"))(FormValues.apply)(FormValues.unapply))
 
@@ -337,7 +339,7 @@ class BusinessEntityController @Inject()(
     mapping("businessEntityEori" -> mandatory("businessEntityEori"))(FormValues.apply)(FormValues.unapply).verifying(
     "businessEntityEori.regex.error",
     fields => fields match {
-      case a if a.value.matches(EORI.regex) => true
+      case a if s"$eoriPrefix${a.value}".matches(EORI.regex) => true
       case _ => false
     }
   ))
