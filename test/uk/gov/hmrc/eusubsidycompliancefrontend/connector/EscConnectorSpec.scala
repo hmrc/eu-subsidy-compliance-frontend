@@ -49,6 +49,7 @@ class EscConnectorSpec
                                  |""".stripMargin)
   )
 
+
   val mockTimeProvider = mock[TimeProvider]
 
   val connector = new EscConnectorImpl(mockHttp,  new ServicesConfig(config), mockTimeProvider)

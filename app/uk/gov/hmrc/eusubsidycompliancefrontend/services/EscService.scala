@@ -43,11 +43,7 @@ trait EscService {
 }
 
 @Singleton
-class EscServiceImpl @Inject() (
-
-                                 escConnector: EscConnector
-
-                               )(implicit ec: ExecutionContext)
+class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit ec: ExecutionContext)
   extends EscService {
 
   override def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] = {
