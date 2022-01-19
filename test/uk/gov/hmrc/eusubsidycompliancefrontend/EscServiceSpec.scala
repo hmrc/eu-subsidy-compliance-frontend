@@ -28,7 +28,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRe
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscServiceImpl, SubsidyJourney}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.CommonTestData._
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -259,6 +258,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         }
       }
     }
+
 
     "handling request to create subsidy" must {
 

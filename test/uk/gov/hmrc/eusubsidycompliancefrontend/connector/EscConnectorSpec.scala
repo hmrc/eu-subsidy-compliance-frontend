@@ -61,7 +61,6 @@ class EscConnectorSpec
   val responseHeaders = Map.empty[String, Seq[String]]
 
 
-
   "EscConnectorSpec" when {
 
     "handling request to create Undertaking" must {
@@ -75,7 +74,6 @@ class EscConnectorSpec
     }
 
     "handling request to retrieve Undertaking" must {
-
       val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/$eori1"
       behave like connectorBehaviour(
         mockGet(expectedUrl)(_),
@@ -85,7 +83,6 @@ class EscConnectorSpec
     }
 
     "handling request to add member in Business Entity Undertaking" must {
-
       val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/member/UR123456"
       behave like connectorBehaviour(
         mockPost(expectedUrl, Seq.empty, businessEntity3)(_),
@@ -95,7 +92,6 @@ class EscConnectorSpec
     }
 
     "handling request to remove member from Business Entity Undertaking" must {
-
       val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/member/remove/UR123456"
       behave like connectorBehaviour(
         mockPost(expectedUrl, Seq.empty, businessEntity3)(_),
