@@ -23,6 +23,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
+
 trait HttpSupport { this: MockFactory with Matchers ⇒
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
@@ -58,7 +59,6 @@ trait HttpSupport { this: MockFactory with Matchers ⇒
       })
       .returning(response.fold(Future.failed[A](new Exception("Test exception message")))(Future.successful))
 
-
   def mockPost[A](url: String, headers: Seq[(String, String)], body: A)(
     result: Option[HttpResponse]
   ): Unit =
@@ -76,4 +76,3 @@ trait HttpSupport { this: MockFactory with Matchers ⇒
         )(Future.successful)
       )
 }
-
