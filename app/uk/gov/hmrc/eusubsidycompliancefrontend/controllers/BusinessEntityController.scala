@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.catsSyntaxEq
+import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
@@ -138,7 +138,7 @@ class BusinessEntityController @Inject()(
         form => {
 
           for {
-            retrievedUndertaking <- connector.retrieveUndertaking(EORI(s"$eoriPrefix${form.value}"))
+            retrievedUndertaking <- connector.retrieveUndertaking(EORI(form.value))
           } yield {
             retrievedUndertaking match {
               case Some(_) => {
@@ -147,7 +147,7 @@ class BusinessEntityController @Inject()(
               case _ =>
                 store.update[BusinessEntityJourney]({ businessEntityOpt =>
                   businessEntityOpt.map { businessEntity =>
-                    businessEntity.copy(eori = businessEntity.eori.copy(value = Some(EORI(s"$eoriPrefix${form.value}"))))
+                    businessEntity.copy(eori = businessEntity.eori.copy(value = Some(EORI(form.value))))
                   }
                 }).flatMap(_.next)
             }
@@ -336,10 +336,10 @@ class BusinessEntityController @Inject()(
     mapping("removeBusiness" -> mandatory("removeBusiness"))(FormValues.apply)(FormValues.unapply))
 
   lazy val eoriForm: Form[FormValues] = Form(
-    mapping("businessEntityEori" -> mandatory("businessEntityEori"))(FormValues.apply)(FormValues.unapply).verifying(
+    mapping("businessEntityEori" -> mandatory("businessEntityEori"))(eoriEntered => FormValues(s"$eoriPrefix$eoriEntered"))(eori => eori.value.drop(2).some).verifying(
     "businessEntityEori.regex.error",
     fields => fields match {
-      case a if s"$eoriPrefix${a.value}".matches(EORI.regex) => true
+      case a if a.value.matches(EORI.regex) => true
       case _ => false
     }
   ))
