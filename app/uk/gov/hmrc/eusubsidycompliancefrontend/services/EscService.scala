@@ -53,7 +53,6 @@ class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit ec: Executi
       case Right(value) =>
         if(value.status =!= OK) sys.error("Error in creating Undertaking")
         else
-
         value.parseJSON[UndertakingRef].fold(_ =>  sys.error("Error in parsing  UndertakingRef"), undertakingRef => undertakingRef)
     }
   }
@@ -77,7 +76,6 @@ class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit ec: Executi
         if(value.status =!= OK) sys.error("Error in adding member to the Business Entity")
         else
         value.parseJSON[UndertakingRef].fold(_ =>  sys.error("Error in parsing  Undertaking Ref"),undertakingRef => undertakingRef)
-
     }
   }
 
