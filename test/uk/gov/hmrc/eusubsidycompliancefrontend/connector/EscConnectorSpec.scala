@@ -23,7 +23,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
 import play.api.test.Helpers._
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{EscConnector, EscConnectorImpl}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, IndustrySectorLimit, UndertakingName, UndertakingRef}
@@ -36,7 +36,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class EscConnectorSpec
   extends AnyWordSpec
     with Matchers
-    with MockFactory with HttpSupport {
+    with MockFactory with HttpSupport with ConnectorSpec {
 
   val (protocol, host, port) = ("http", "host", "123")
 
@@ -50,7 +50,7 @@ class EscConnectorSpec
                                  |""".stripMargin)
   )
 
-  val connector = new EscConnector(mockHttp,  new ServicesConfig(config))
+  val connector = new EscConnectorImpl(mockHttp,  new ServicesConfig(config))
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   val headers = Seq(("Content-Type","application/json"))
@@ -73,59 +73,47 @@ class EscConnectorSpec
 
   "EscConnectorSpec" when {
 
-    "handling request to retrieveUndertaking" must {
-      val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/$eori1"
-
-      "return None if http response is an error " in {
-        inSequence {
-          mockGet(expectedUrl)(Left(UpstreamErrorResponse(" not found", NOT_FOUND)).some)
-        }
-        val result = connector.retrieveUndertaking(eori1)
-        await(result) shouldBe None
-      }
-
-      "return the undertaking  if http response is not an error" in {
-        inSequence {
-          mockGet(expectedUrl)(Right(undertaking).some)
-        }
-        val result = connector.retrieveUndertaking(eori1)
-        await(result) shouldBe undertaking.some
-      }
-
-    }
-
-    "handling request to createUndertaking" must {
+    "handling request to create Undertaking" must {
       val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking"
+      behave like connectorBehaviour(
+        mockPost(expectedUrl, Seq.empty, undertaking)(_),
+        () => connector.createUndertaking(undertaking)
+      )
 
-      "create an Undertaking" in {
-        inSequence {
-          mockPost[Undertaking, UndertakingRef](expectedUrl, headers, undertaking)(UndertakingRef("UR123456").some)
-        }
-        await(connector.createUndertaking(undertaking)) shouldBe UndertakingRef("UR123456")
-      }
     }
 
-    "handling request to add member " must {
-      val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/member/UR123456"
-
-      "add a new member in  Undertaking" in {
-        inSequence {
-          mockPost[BusinessEntity, UndertakingRef](expectedUrl, headers, businessEntity1)(UndertakingRef("UR123456").some)
-        }
-        await(connector.addMember(UndertakingRef("UR123456"), businessEntity1)) shouldBe UndertakingRef("UR123456")
-      }
-    }
-
-    "handling request to remove member " must {
-      val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/member/remove/UR123456"
-
-      "add remove the member in  Undertaking" in {
-        inSequence {
-          mockPost[BusinessEntity, UndertakingRef](expectedUrl, headers, businessEntity1)(UndertakingRef("UR123456").some)
-        }
-        await(connector.removeMember(UndertakingRef("UR123456"), businessEntity1)) shouldBe UndertakingRef("UR123456")
-      }
-    }
+//    "handling request to createUndertaking" must {
+//      val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking"
+//
+//      "create an Undertaking" in {
+//        inSequence {
+//          mockPost[Undertaking, UndertakingRef](expectedUrl, headers, undertaking)(UndertakingRef("UR123456").some)
+//        }
+//        await(connector.createUndertaking(undertaking)) shouldBe UndertakingRef("UR123456")
+//      }
+//    }
+//
+//    "handling request to add member " must {
+//      val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/member/UR123456"
+//
+//      "add a new member in  Undertaking" in {
+//        inSequence {
+//          mockPost[BusinessEntity, UndertakingRef](expectedUrl, headers, businessEntity1)(UndertakingRef("UR123456").some)
+//        }
+//        await(connector.addMember(UndertakingRef("UR123456"), businessEntity1)) shouldBe UndertakingRef("UR123456")
+//      }
+//    }
+//
+//    "handling request to remove member " must {
+//      val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/member/remove/UR123456"
+//
+//      "add remove the member in  Undertaking" in {
+//        inSequence {
+//          mockPost[BusinessEntity, UndertakingRef](expectedUrl, headers, businessEntity1)(UndertakingRef("UR123456").some)
+//        }
+//        await(connector.removeMember(UndertakingRef("UR123456"), businessEntity1)) shouldBe UndertakingRef("UR123456")
+//      }
+//    }
   }
 
 }

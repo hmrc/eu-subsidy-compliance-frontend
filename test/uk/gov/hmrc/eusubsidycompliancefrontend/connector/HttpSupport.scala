@@ -23,6 +23,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
+
 trait HttpSupport { this: MockFactory with Matchers ⇒
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
@@ -52,28 +53,27 @@ trait HttpSupport { this: MockFactory with Matchers ⇒
           // are not satisfied - otherwise it is difficult to tell in the logs what went wrong
           u              shouldBe url
           q              shouldBe Seq.empty
-          r              shouldBe Seq(("Content-Type","application/json"))
+          r              shouldBe Seq.empty
           h.extraHeaders shouldBe Seq.empty
           true
       })
       .returning(response.fold(Future.failed[A](new Exception("Test exception message")))(Future.successful))
 
-  def mockPost[A, B](url: String, headers: Seq[(String, String)], body: A)(
-    result: Option[B]
+  def mockPost[A](url: String, headers: Seq[(String, String)], body: A)(
+    result: Option[HttpResponse]
   ): Unit =
     (mockHttp
       .POST(_: String, _: A, _: Seq[(String, String)])(
         _: Writes[A],
-        _: HttpReads[B],
+        _: HttpReads[HttpResponse],
         _: HeaderCarrier,
         _: ExecutionContext
       ))
       .expects(url, body, headers.toSeq, *, *, *, *)
       .returning(
-        result.fold[Future[B]](
+        result.fold[Future[HttpResponse]](
           Future.failed(new Exception("Test exception message"))
         )(Future.successful)
       )
 
 }
-

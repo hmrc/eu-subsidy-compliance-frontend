@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.catsSyntaxOptionId
 import com.google.inject.{ImplementedBy, Inject, Singleton}
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector1
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.HttpResponseOps.HttpResponseOps
@@ -39,7 +39,7 @@ trait EscService {
 
 @Singleton
 class EscServiceImpl @Inject() (
-                                 escConnector: EscConnector1
+                                 escConnector: EscConnector
                                )(implicit ec: ExecutionContext)
   extends EscService {
 

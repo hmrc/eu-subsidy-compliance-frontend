@@ -23,7 +23,7 @@ import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EligibilityJourney, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
@@ -32,7 +32,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class EligibilityController @Inject()(
   mcc: MessagesControllerComponents,
-  helloWorldPage: HelloWorldPage,
   customsWaiversPage: CustomsWaiversPage,
   willYouClaimPage: WillYouClaimPage,
   notEligiblePage: NotEligiblePage,
@@ -42,10 +41,8 @@ class EligibilityController @Inject()(
   checkEoriPage: CheckEoriPage,
   incorrectEoriPage: IncorrectEoriPage,
   createUndertakingPage: CreateUndertakingPage,
-  accountPage: AccountPage,
   escActionBuilders: EscActionBuilders,
-  store: Store,
-  connector: EscConnector
+  store: Store
 )(
   implicit val appConfig: AppConfig,
   executionContext: ExecutionContext
