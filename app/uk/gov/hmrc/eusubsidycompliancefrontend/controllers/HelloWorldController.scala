@@ -22,7 +22,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.HelloWorldPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -32,11 +31,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class HelloWorldController @Inject()(
   mcc: MessagesControllerComponents,
   helloWorldPage: HelloWorldPage,
-  escActionBuilders: EscActionBuilders,
-  store: Store
+  escActionBuilders: EscActionBuilders
 )(
-  implicit val appConfig: AppConfig,
-  executionContext: ExecutionContext
+  implicit val appConfig: AppConfig
 ) extends
   FrontendController(mcc)
   with I18nSupport

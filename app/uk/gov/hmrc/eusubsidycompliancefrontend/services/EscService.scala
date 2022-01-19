@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import cats.implicits.catsSyntaxOptionId
+import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{ImplementedBy, Inject, Singleton}
+import play.api.http.Status.{NOT_FOUND, OK}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
@@ -48,6 +49,8 @@ class EscServiceImpl @Inject() (
       case Left(Error(_)) =>
         sys.error("Error in creating Undertaking")
       case Right(value) =>
+        if(value.status =!= OK) sys.error("Error in creating Undertaking")
+        else
         value.parseJSON[UndertakingRef].fold(_ =>  sys.error("Error in parsing  UndertakingRef"), undertakingRef => undertakingRef)
     }
   }
@@ -55,21 +58,32 @@ class EscServiceImpl @Inject() (
   override def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]] = {
     escConnector.retrieveUndertaking(eori).map {
       case Left(Error(_)) => None
-      case Right(value) => value.parseJSON[Undertaking].fold(_ => None, _.some)
+      case Right(value) =>
+        value.status match {
+          case NOT_FOUND => value.parseJSON[Undertaking].fold(_ => None, _.some)
+          case OK =>  value.parseJSON[Undertaking].fold(_ => sys.error("Error in parsing Undertaking"), _.some)
+          case _ => sys.error("Error in retrieving Undertaking")
+        }
     }
   }
 
   override def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier): Future[UndertakingRef] = {
     escConnector.addMember(undertakingRef, businessEntity).map {
       case Left(Error(_)) =>  sys.error("Error in adding member to the Business Entity")
-      case Right(value) => value.parseJSON[UndertakingRef].fold(_ =>  sys.error("Error in parsing  Undertaking Ref"),undertakingRef => undertakingRef)
+      case Right(value) =>
+        if(value.status =!= OK) sys.error("Error in adding member to the Business Entity")
+        else
+        value.parseJSON[UndertakingRef].fold(_ =>  sys.error("Error in parsing  Undertaking Ref"),undertakingRef => undertakingRef)
     }
   }
 
   override def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier): Future[UndertakingRef] = {
     escConnector.removeMember(undertakingRef, businessEntity).map {
       case Left(Error(_)) =>  sys.error("Error in removing member from the Business Entity")
-      case Right(value) => value.parseJSON[UndertakingRef].fold(_ =>  sys.error("Error in parsing  Undertaking Ref"),undertakingRef => undertakingRef)
+      case Right(value) =>
+        if(value.status =!= OK) sys.error("Error in removing member from the Business Entity")
+        else
+        value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  Undertaking Ref"),undertakingRef => undertakingRef)
     }
   }
 }

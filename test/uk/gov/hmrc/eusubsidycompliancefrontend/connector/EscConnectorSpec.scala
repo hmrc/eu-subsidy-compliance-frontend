@@ -22,12 +22,11 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
-import play.api.test.Helpers._
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{EscConnector, EscConnectorImpl}
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnectorImpl
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, IndustrySectorLimit, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.time.LocalDate
@@ -53,7 +52,6 @@ class EscConnectorSpec
   val connector = new EscConnectorImpl(mockHttp,  new ServicesConfig(config))
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  val headers = Seq(("Content-Type","application/json"))
   val responseHeaders = Map.empty[String, Seq[String]]
 
   val eori1 = EORI("GB123456789012")
@@ -69,7 +67,7 @@ class EscConnectorSpec
     transport,
     IndustrySectorLimit(12.34).some,
     LocalDate.of(2021,1,18).some,
-    List(businessEntity1, businessEntity2, businessEntity3))
+    List(businessEntity1, businessEntity2))
 
   "EscConnectorSpec" when {
 
@@ -82,38 +80,33 @@ class EscConnectorSpec
 
     }
 
-//    "handling request to createUndertaking" must {
-//      val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking"
-//
-//      "create an Undertaking" in {
-//        inSequence {
-//          mockPost[Undertaking, UndertakingRef](expectedUrl, headers, undertaking)(UndertakingRef("UR123456").some)
-//        }
-//        await(connector.createUndertaking(undertaking)) shouldBe UndertakingRef("UR123456")
-//      }
-//    }
-//
-//    "handling request to add member " must {
-//      val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/member/UR123456"
-//
-//      "add a new member in  Undertaking" in {
-//        inSequence {
-//          mockPost[BusinessEntity, UndertakingRef](expectedUrl, headers, businessEntity1)(UndertakingRef("UR123456").some)
-//        }
-//        await(connector.addMember(UndertakingRef("UR123456"), businessEntity1)) shouldBe UndertakingRef("UR123456")
-//      }
-//    }
-//
-//    "handling request to remove member " must {
-//      val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/member/remove/UR123456"
-//
-//      "add remove the member in  Undertaking" in {
-//        inSequence {
-//          mockPost[BusinessEntity, UndertakingRef](expectedUrl, headers, businessEntity1)(UndertakingRef("UR123456").some)
-//        }
-//        await(connector.removeMember(UndertakingRef("UR123456"), businessEntity1)) shouldBe UndertakingRef("UR123456")
-//      }
-//    }
+    "handling request to retrieve Undertaking" must {
+      val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/$eori1"
+      behave like connectorBehaviour(
+        mockGet(expectedUrl)(_),
+        () => connector.retrieveUndertaking(eori1)
+      )
+
+    }
+
+    "handling request to add member in Business Entity Undertaking" must {
+      val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/member/UR123456"
+      behave like connectorBehaviour(
+        mockPost(expectedUrl, Seq.empty, businessEntity3)(_),
+        () => connector.addMember(UndertakingRef("UR123456"), businessEntity3)
+      )
+
+    }
+
+    "handling request to remove member from Business Entity Undertaking" must {
+      val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/member/remove/UR123456"
+      behave like connectorBehaviour(
+        mockPost(expectedUrl, Seq.empty, businessEntity3)(_),
+        () => connector.removeMember(UndertakingRef("UR123456"), businessEntity3)
+      )
+
+    }
+
   }
 
 }
