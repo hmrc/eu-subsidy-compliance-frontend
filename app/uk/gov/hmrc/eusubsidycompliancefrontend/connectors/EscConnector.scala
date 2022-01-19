@@ -34,11 +34,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class EscConnector @Inject()(
   val http: HttpClient,
-  val mode: Mode,
-  val servicesConfig: ServicesConfig,
-  val auditing: AuditConnector,
-  ec: ExecutionContext
-) extends DesHelpers {
+  val servicesConfig: ServicesConfig
+)(implicit ec: ExecutionContext) extends DesHelpers {
 
   val logger: Logger = Logger(this.getClass)
   val escURL: String = servicesConfig.baseUrl("esc")
@@ -53,8 +50,7 @@ class EscConnector @Inject()(
   def retrieveUndertaking(
                            eori: EORI
                          )(
-                           implicit hc: HeaderCarrier,
-                           ec: ExecutionContext
+                           implicit hc: HeaderCarrier
                          ): Future[Option[Undertaking]] = {
 
     import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.undertakingFormat
@@ -72,8 +68,7 @@ class EscConnector @Inject()(
   def createUndertaking(
                          undertaking: Undertaking
                        )(
-                         implicit hc: HeaderCarrier,
-                         ec: ExecutionContext
+                         implicit hc: HeaderCarrier
                        ): Future[UndertakingRef] = {
     implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
     desPost[Undertaking, UndertakingRef](
@@ -83,8 +78,7 @@ class EscConnector @Inject()(
   }
 
   def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext
+    implicit hc: HeaderCarrier
   ): Future[UndertakingRef] = {
     implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
     desPost[BusinessEntity, UndertakingRef](
@@ -94,8 +88,7 @@ class EscConnector @Inject()(
   }
 
   def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext
+    implicit hc: HeaderCarrier
   ): Future[UndertakingRef] = {
     implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
     desPost[BusinessEntity, UndertakingRef](

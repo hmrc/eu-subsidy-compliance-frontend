@@ -24,18 +24,18 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, EscService, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AccountController @Inject()(
-  mcc: MessagesControllerComponents,
-  escActionBuilders: EscActionBuilders,
-  store: Store,
-  connector: EscConnector,
-  accountPage: AccountPage
+                                   mcc: MessagesControllerComponents,
+                                   escActionBuilders: EscActionBuilders,
+                                   store: Store,
+                                   escService: EscService,
+                                   accountPage: AccountPage
 )(
   implicit val appConfig: AppConfig,
   executionContext: ExecutionContext
@@ -48,7 +48,7 @@ class AccountController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
     for {
-      retrievedUndertaking <- connector.retrieveUndertaking(eori)
+      retrievedUndertaking <- escService.retrieveUndertaking(eori)
       x <- store.get[EligibilityJourney]
       eligibilityJourney <- x.fold(store.put(EligibilityJourney()))(Future.successful)
       y <- store.get[UndertakingJourney]

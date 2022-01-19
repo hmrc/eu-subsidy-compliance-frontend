@@ -16,21 +16,18 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-import play.api.libs.json.{Json, OFormat}
+final case class Error(value: Either[String, Throwable]) extends AnyVal
 
-import java.time.LocalDate
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
+object Error {
 
-case class Undertaking(
-  reference: Option[UndertakingRef],
-  name: UndertakingName,
-  industrySector: Sector,
-  industrySectorLimit: Option[IndustrySectorLimit],
-  lastSubsidyUsageUpdt: Option[LocalDate],
-  undertakingBusinessEntity: List[BusinessEntity]
-)
+  def apply(message: String): Error = Error(Left(message))
 
-object Undertaking {
-  implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
+  def apply(error: Throwable): Error = Error(Right(error))
+
+  @SuppressWarnings(Array("org.wartremover.warts.Throw"))
+  implicit class ErrorOps(e: Error) {
+    def doThrow(message: String): Nothing =
+      e.value.fold(info => sys.error(s"$message::$info"), ex => throw new RuntimeException(message, ex))
+  }
 }
+

@@ -27,7 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,7 +37,7 @@ class BusinessEntityController @Inject()(
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
   store: Store,
-  connector: EscConnector,
+  escService: EscService,
   addBusinessPage: AddBusinessPage,
   eoriPage: BusinessEntityEoriPage,
   businessEntityContactPage: BusinessEntityContactPage,
@@ -57,7 +57,7 @@ class BusinessEntityController @Inject()(
 
     for {
       b <- store.get[BusinessEntityJourney]
-      c <- connector.retrieveUndertaking(eori)
+      c <- escService.retrieveUndertaking(eori)
       _ <- store.put[Undertaking](c.getOrElse(throw new IllegalStateException("missing undertaking on hod")))
     } yield (b, c) match {
       case (Some(journey), Some(u)) =>
@@ -138,7 +138,8 @@ class BusinessEntityController @Inject()(
         form => {
 
           for {
-            retrievedUndertaking <- connector.retrieveUndertaking(EORI(form.value))
+            retrievedUndertaking <- escService
+              .retrieveUndertaking(EORI(form.value))
           } yield {
             retrievedUndertaking match {
               case Some(_) => {
@@ -254,7 +255,7 @@ class BusinessEntityController @Inject()(
           journey = b.fold(throw new IllegalStateException("journey should be defined")) {
             identity
           }
-          _ <- connector.addMember(
+          _ <- escService.addMember(
             UndertakingRef(
               ref.getOrElse(throw new IllegalStateException("undertakingRef should be defined"))
             ),
@@ -277,7 +278,7 @@ class BusinessEntityController @Inject()(
    implicit val eori111: EORI = request.eoriNumber
 
    for {
-     a <- connector.retrieveUndertaking(eori111)
+     a <- escService.retrieveUndertaking(eori111)
      b <- store.put(BusinessEntityJourney.businessEntityJourneyForEori(a, EORI(eoriEntered)))
    } yield b match {
      case journey =>
@@ -294,7 +295,7 @@ class BusinessEntityController @Inject()(
     implicit val eori: EORI = request.eoriNumber
 
     for {
-      a <- connector.retrieveUndertaking(EORI(eoriEntered))
+      a <- escService.retrieveUndertaking(EORI(eoriEntered))
     } yield a match {
       case Some(undertaking) => {
         val bs = undertaking.undertakingBusinessEntity
@@ -307,7 +308,7 @@ class BusinessEntityController @Inject()(
 
   def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    connector.retrieveUndertaking(EORI(eoriEntered)).flatMap {
+    escService.retrieveUndertaking(EORI(eoriEntered)).flatMap {
       case Some(undertaking) => {
         val bs = undertaking.undertakingBusinessEntity
           .filter(a => a.businessEntityIdentifier == eoriEntered)
@@ -317,7 +318,7 @@ class BusinessEntityController @Inject()(
           form => {
             form.value match {
               case "true" =>
-                connector.removeMember(
+                escService.removeMember(
                   UndertakingRef(undertaking.reference.getOrElse(throw new IllegalStateException("no undertakingRef"))),
                   bs)
                 Future.successful(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
