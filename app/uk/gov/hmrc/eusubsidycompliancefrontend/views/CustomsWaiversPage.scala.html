@@ -19,11 +19,11 @@
 
 
 @this(
-    layout: Layout,
-    formHelper: FormWithCSRF,
-    button: components.Button,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios : GovukRadios
+  layout: Layout,
+  formHelper: FormWithCSRF,
+  button: components.Button,
+  govukErrorSummary: GovukErrorSummary,
+  govukRadios : GovukRadios
 )
 
 
@@ -31,48 +31,48 @@
 
 @layout(pageTitle = Some(messages("customswaivers.title"))) {
 
-    @formHelper(action = controllers.routes.EligibilityController.postCustomsWaivers) {
-        @form.errors.map { err =>
-            @govukErrorSummary(ErrorSummary(
-                errorList = Seq(
-                    ErrorLink(
-                        href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(err.key++"." ++err.message)}")
-                    )
-                ),
-                title = Text(messages("common.error.summary.title"))
-            ))
-        }
-
-        @govukRadios(Radios(
-            errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("customswaivers.error.required"))
-            ))} else None,
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text(messages("customswaivers.title")),
-                    classes = "govuk-fieldset__legend--xl",
-                    isPageHeading = true
-                ))
-            )),
-            hint = None,
-            idPrefix = Some("customswaivers"),
-            name = "customswaivers",
-            items = Seq(
-                RadioItem(
-                    content = Text(messages("common.yes")),
-                    value = Some("true"),
-                    checked = form.data.exists(_._2 == "true")
-                ),
-                RadioItem(
-                    content = Text(messages("common.no")),
-                    value = Some("false"),
-                    checked = form.data.exists(_._2 == "false")
-                )
-            ),
-            classes = "govuk-radios--inline"
-        ))
-
-        @button("common.continue")
+  @formHelper(action = controllers.routes.EligibilityController.postCustomsWaivers) {
+    @form.errors.map { err =>
+      @govukErrorSummary(ErrorSummary(
+        errorList = Seq(
+          ErrorLink(
+            href = Some(s"#${err.key}"),
+            content = Text(s"${messages(err.key++"." ++err.message)}")
+          )
+        ),
+        title = Text(messages("common.error.summary.title"))
+      ))
     }
+
+    @govukRadios(Radios(
+      errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+        content = Text(messages("customswaivers.error.required"))
+      ))} else None,
+      fieldset = Some(Fieldset(
+        legend = Some(Legend(
+          content = Text(messages("customswaivers.title")),
+          classes = "govuk-fieldset__legend--xl",
+          isPageHeading = true
+        ))
+      )),
+      hint = None,
+      idPrefix = Some("customswaivers"),
+      name = "customswaivers",
+      items = Seq(
+        RadioItem(
+          content = Text(messages("common.yes")),
+          value = Some("true"),
+          checked = form.data.exists(_._2 == "true")
+        ),
+        RadioItem(
+          content = Text(messages("common.no")),
+          value = Some("false"),
+          checked = form.data.exists(_._2 == "false")
+        )
+      ),
+      classes = "govuk-radios--inline"
+    ))
+
+    @button("common.continue")
+  }
 }
