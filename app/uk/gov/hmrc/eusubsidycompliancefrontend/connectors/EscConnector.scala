@@ -16,130 +16,138 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
-import cats.implicits._
 
-import javax.inject.{Inject, Singleton}
-import play.api.libs.json.{Json, OFormat}
-import play.api.{Logger, Mode}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidies, UndertakingSubsidyAmendment}
+import play.api.Logger
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidyAmendment}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import com.google.inject.{ImplementedBy, Inject, Singleton}
+import play.api.http.Status.NOT_FOUND
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.http.{HttpResponse, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-
-import java.time.LocalDate
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import scala.concurrent.{ExecutionContext, Future}
 
+@ImplementedBy(classOf[EscConnectorImpl])
+trait EscConnector {
+  def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
+  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
+  def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
+  def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
+  def createSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
+  def retrieveSubsidy(subsidyRetrieve : SubsidyRetrieve)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
+
+}
+
 @Singleton
-class EscConnector @Inject()(
-  val http: HttpClient,
-  val mode: Mode,
-  val servicesConfig: ServicesConfig,
-  val auditing: AuditConnector,
-  ec: ExecutionContext
-) extends DesHelpers {
+class EscConnectorImpl @Inject()(http: HttpClient,
+                                 servicesConfig: ServicesConfig,
+                                 timeProvider: TimeProvider
+                                )(implicit ec: ExecutionContext
+) extends EscConnector {
 
   val logger: Logger = Logger(this.getClass)
+
   val escURL: String = servicesConfig.baseUrl("esc")
-  val retrieveUndertakingPath = "eu-subsidy-compliance/undertaking/"
   val createUndertakingPath = "eu-subsidy-compliance/undertaking"
+  val retrieveUndertakingPath = "eu-subsidy-compliance/undertaking/"
   val addMemberPath = "eu-subsidy-compliance/undertaking/member"
   val removeMemberPath = "eu-subsidy-compliance/undertaking/member/remove"
-
   val updateSubsidyPath = "eu-subsidy-compliance/subsidy/update"
   val retrieveSubsidyPath = "eu-subsidy-compliance/subsidy/retrieve"
 
-  def retrieveUndertaking(
-                           eori: EORI
-                         )(
-                           implicit hc: HeaderCarrier,
-                           ec: ExecutionContext
-                         ): Future[Option[Undertaking]] = {
 
-    import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.undertakingFormat
-    import uk.gov.hmrc.http.HttpReadsInstances.readEitherOf
-    desGet[Either[UpstreamErrorResponse, Undertaking]](
-      s"$escURL/$retrieveUndertakingPath$eori"
-    ).map {
-      case Left(UpstreamErrorResponse(_, 404, _, _)) =>
-        Option.empty[Undertaking]
-      case Right(value) =>
-        value.some
+  override def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] = {
+    val createUndertakingUrl = s"$escURL/$createUndertakingPath"
+    http.
+      POST[Undertaking, HttpResponse](createUndertakingUrl, undertaking)
+      .map(Right(_))
+      .recover {
+        case e => Left(Error(e))
+      }
+  }
+
+  override def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] = {
+    {
+      val retrieveUndertakingUrl = s"$escURL/$retrieveUndertakingPath$eori"
+      http.
+        GET[HttpResponse](retrieveUndertakingUrl)
+        .map(Right(_))
+        .recover {
+          case _: NotFoundException => Right(HttpResponse(NOT_FOUND, ""))
+          case ex => Left(Error(ex))
+        }
     }
   }
 
-  def createUndertaking(
-                         undertaking: Undertaking
-                       )(
-                         implicit hc: HeaderCarrier,
-                         ec: ExecutionContext
-                       ): Future[UndertakingRef] = {
-    implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
-    desPost[Undertaking, UndertakingRef](
-      s"$escURL/$createUndertakingPath",
-      undertaking
-    )
+  override def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] = {
+   val addMemberUrl = s"$escURL/$addMemberPath/$undertakingRef"
+    http
+      .POST[BusinessEntity, HttpResponse](addMemberUrl, businessEntity)
+      .map(Right(_))
+      .recover {
+        case e => Left(Error(e))
+      }
   }
 
-  def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext
-  ): Future[UndertakingRef] = {
-    implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
-    desPost[BusinessEntity, UndertakingRef](
-      s"$escURL/$addMemberPath/$undertakingRef",
-      businessEntity
-    )
-  }
-
-  def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext
-  ): Future[UndertakingRef] = {
-    implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
-    desPost[BusinessEntity, UndertakingRef](
-      s"$escURL/$removeMemberPath/$undertakingRef",
-      businessEntity
-    )
+  override def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] = {
+    val removeMemberUrl = s"$escURL/$removeMemberPath/$undertakingRef"
+    http
+      .POST[BusinessEntity, HttpResponse](removeMemberUrl, businessEntity)
+      .map(Right(_))
+      .recover {
+        case e => Left(Error(e))
+      }
   }
 
   def createSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext
-  ): Future[UndertakingRef] = {
-   val update = SubsidyUpdate(
-     undertakingIdentifier = undertakingRef,
-     update = UndertakingSubsidyAmendment(
-       List(
-         NonHmrcSubsidy(
-           subsidyUsageTransactionId = None,
-           allocationDate = LocalDate.now(),
-           submissionDate= LocalDate.now(),
-           publicAuthority = Some(journey.publicAuthority.value.get),// this shouldn't be optional, is required in create API but not retrieve
-           traderReference = journey.traderRef.value.get,
-           nonHMRCSubsidyAmtEUR = SubsidyAmount(journey.claimAmount.value.get),
-           businessEntityIdentifier = journey.addClaimEori.value.get,
-           amendmentType = Some(EisSubsidyAmendmentType("1"))
-         )
-       )
-     )
-   )
-  desPost[SubsidyUpdate, UndertakingRef](
-    s"$escURL/$updateSubsidyPath",
-    update
-  )
+    implicit hc: HeaderCarrier
+  ): Future[Either[Error, HttpResponse]] = {
+   val subsidyUpdate = toSubsidyUpdate(journey, undertakingRef)
+    val createSubsidyUrl = s"$escURL/$updateSubsidyPath"
+    http
+      .POST[SubsidyUpdate, HttpResponse](createSubsidyUrl, subsidyUpdate)
+      .map(Right(_))
+      .recover {
+        case e => Left(Error(e))
+      }
+  }
+
+  override def retrieveSubsidy(subsidyRetrieve : SubsidyRetrieve)(
+    implicit hc: HeaderCarrier
+  ): Future[Either[Error, HttpResponse]] = {
+    val retrieveSubsidyPathUrl = s"$escURL/$retrieveSubsidyPath"
+    http
+      .POST[SubsidyRetrieve, HttpResponse](retrieveSubsidyPathUrl, subsidyRetrieve)
+      .map(Right(_))
+      .recover {
+        case e => Left(Error(e))
+      }
 
   }
 
-  def retrieveSubsidy(subsidyRetrieve : SubsidyRetrieve)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext
-  ): Future[UndertakingSubsidies] = {
-    implicit val undertakingSubsidiesFormat: OFormat[UndertakingSubsidies] = Json.format[UndertakingSubsidies]
-    desPost[SubsidyRetrieve, UndertakingSubsidies](
-      s"$escURL/$retrieveSubsidyPath",
-      subsidyRetrieve
+  private def toSubsidyUpdate(journey: SubsidyJourney, undertakingRef: UndertakingRef) = {
+    val currentDate = timeProvider.today
+    SubsidyUpdate(
+      undertakingIdentifier = undertakingRef,
+      update = UndertakingSubsidyAmendment(
+        List(
+          NonHmrcSubsidy(
+            subsidyUsageTransactionId = None,
+            allocationDate = currentDate,
+            submissionDate= currentDate,
+            publicAuthority = Some(journey.publicAuthority.value.getOrElse(sys.error(" publicAuthority is missing"))),// this shouldn't be optional, is required in create API but not retrieve
+            traderReference = journey.traderRef.value.getOrElse(sys.error(" trader ref is missing")),
+            nonHMRCSubsidyAmtEUR = SubsidyAmount(journey.claimAmount.value.getOrElse(sys.error(" claimAmount is missing"))),
+            businessEntityIdentifier = journey.addClaimEori.value.getOrElse(sys.error(" addClaimEori is missing")),
+            amendmentType = Some(EisSubsidyAmendmentType("1"))
+          )
+        )
+      )
     )
   }
+
 }
+

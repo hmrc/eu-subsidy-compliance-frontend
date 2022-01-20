@@ -30,6 +30,6 @@ case class UndertakingSubsidies(
 )
 
 // TODO reinstate (and remove one in json.eis if subsidyUsageTransactionID case can be aligned in SCP06 & 09
-//object UndertakingSubsidies {
-//  implicit val format: Format[UndertakingSubsidies] = Json.format[UndertakingSubsidies]
-//}
+object UndertakingSubsidies {
+  implicit val format: Format[UndertakingSubsidies] = Json.format[UndertakingSubsidies]
+}

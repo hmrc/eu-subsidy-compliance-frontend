@@ -22,10 +22,9 @@ import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, PhoneNumber, Sector, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,7 +34,7 @@ class UndertakingController @Inject()(
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
   store: Store,
-  connector: EscConnector,
+  escService: EscService,
   undertakingNamePage: UndertakingNamePage,
   undertakingSectorPage: UndertakingSectorPage,
   undertakingContactPage: UndertakingContactPage,
@@ -219,7 +218,7 @@ class UndertakingController @Inject()(
           }
         }).flatMap { journey: UndertakingJourney =>
           for {
-            ref <- connector.createUndertaking(
+            ref <- escService.createUndertaking(
                     Undertaking(
                       None,
                       name = UndertakingName(journey.name.value.getOrElse(throw new IllegalThreadStateException(""))),
