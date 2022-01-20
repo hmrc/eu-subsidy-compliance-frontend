@@ -52,7 +52,7 @@
     <div class="govuk-card govuk-card--contained govuk-card fixed-min-height-card">
       <h2 class="govuk-heading-s">@messages("account-homepage.cards.card1.heading")</h2>
       <ul class="govuk-list govuk-list--spaced">
-        <li><a href="#" class="govuk-link">[TODO: LINK HREF] @messages("account-homepage.cards.card1.link1")</a></li>
+        <li><a href="@routes.SubsidyController.getReportPayment()" class="govuk-link">@messages("account-homepage.cards.card1.link1")</a></li>
         <li><a href="#" class="govuk-link">[TODO: LINK HREF] @messages("account-homepage.cards.card1.link2")</a></li>
       </ul>
     </div>
@@ -74,15 +74,12 @@
       <ul class="govuk-list govuk-list--spaced">
 
         <li>
-            @if(undertaking.undertakingBusinessEntity.length > 1){
-                <a href="@routes.BusinessEntityController.getAddBusinessEntity()" class="govuk-link">
-                    @messages("account-homepage.cards.card3.link1View")
-                </a>
-            }else{
-                <a href="@routes.BusinessEntityController.getAddBusinessEntity()" class="govuk-link">
-                    @messages("account-homepage.cards.card3.link1Add")
-                </a>
-            }
+            <a href="@routes.BusinessEntityController.getAddBusinessEntity()" class="govuk-link">
+                @messages(if(undertaking.undertakingBusinessEntity.length > 1){
+                    "account-homepage.cards.card3.link1View"
+                }else {
+                    "account-homepage.cards.card3.link1Add"
+                })</a>
         </li>
         <li><a href="#" class="govuk-link">[TODO: LINK HREF] @messages("account-homepage.cards.card3.link2")</a></li>
       </ul>
