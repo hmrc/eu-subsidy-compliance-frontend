@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.catsSyntaxEq
+import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
@@ -50,6 +50,7 @@ class BusinessEntityController @Inject()(
   BaseController(mcc) {
 
   import escActionBuilders._
+  val eoriPrefix = "GB"
 
   def getAddBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -144,9 +145,9 @@ class BusinessEntityController @Inject()(
                 Future(BadRequest(eoriPage(eoriForm.withError("businessEntityEori", "businessEntityEori.eoriInUse").fill(form), previous)))
               }
               case _ =>
-                store.update[BusinessEntityJourney]({ x =>
-                  x.map { y =>
-                    y.copy(eori = y.eori.copy(value = Some(EORI(form.value))))
+                store.update[BusinessEntityJourney]({ businessEntityOpt =>
+                  businessEntityOpt.map { businessEntity =>
+                    businessEntity.copy(eori = businessEntity.eori.copy(value = Some(EORI(form.value))))
                   }
                 }).flatMap(_.next)
             }
@@ -327,6 +328,7 @@ class BusinessEntityController @Inject()(
     }
   }}
 
+
   lazy val addBusinessForm: Form[FormValues] = Form(
     mapping("addBusiness" -> mandatory("addBusiness"))(FormValues.apply)(FormValues.unapply))
 
@@ -334,7 +336,7 @@ class BusinessEntityController @Inject()(
     mapping("removeBusiness" -> mandatory("removeBusiness"))(FormValues.apply)(FormValues.unapply))
 
   lazy val eoriForm: Form[FormValues] = Form(
-    mapping("businessEntityEori" -> mandatory("businessEntityEori"))(FormValues.apply)(FormValues.unapply).verifying(
+    mapping("businessEntityEori" -> mandatory("businessEntityEori"))(eoriEntered => FormValues(s"$eoriPrefix$eoriEntered"))(eori => eori.value.drop(2).some).verifying(
     "businessEntityEori.regex.error",
     fields => fields match {
       case a if a.value.matches(EORI.regex) => true
