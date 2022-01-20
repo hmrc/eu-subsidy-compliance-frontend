@@ -26,7 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EligibilityJourney, Store, SubsidyJourney, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EligibilityJourney, EscService, Store, SubsidyJourney, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import java.time.format.DateTimeFormatter
@@ -39,7 +39,7 @@ class SubsidyController @Inject()(
                                    mcc: MessagesControllerComponents,
                                    escActionBuilders: EscActionBuilders,
                                    store: Store,
-                                   connector: EscConnector,
+                                   escService: EscService,
                                    reportPaymentPage: ReportPaymentPage,
                                    addClaimEoriPage: AddClaimEoriPage,
                                    addClaimAmountPage: AddClaimAmountPage,
@@ -62,7 +62,7 @@ class SubsidyController @Inject()(
         _ = if(journey.isEmpty) store.put(SubsidyJourney())
         undertaking <- store.get[Undertaking]
         reference = undertaking.getOrElse(throw new IllegalStateException("")).reference.getOrElse(throw new IllegalStateException(""))
-        subsidies <- connector.retrieveSubsidy(SubsidyRetrieve(reference, None)).map(e => Some(e)).recoverWith({case _ => Future.successful(Option.empty[UndertakingSubsidies])})
+        subsidies <- escService.retrieveSubsidy(SubsidyRetrieve(reference, None)).map(e => Some(e)).recoverWith({case _ => Future.successful(Option.empty[UndertakingSubsidies])})
       } yield (journey, subsidies) match {
       case (Some(journey), subsidies) => {
         journey
@@ -298,7 +298,7 @@ class SubsidyController @Inject()(
             for {
               underTaking <- store.get[Undertaking]
               ref = underTaking.getOrElse(throw new IllegalStateException("")).reference.getOrElse(throw new IllegalStateException(""))
-              _ <- connector.createSubsidy(ref, journey)
+              _ <- escService.createSubsidy(ref, journey)
             } yield {
               Redirect(routes.SubsidyController.getReportPayment())
             }

@@ -23,13 +23,12 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, IndustrySectorLimit, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscServiceImpl
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, SubsidyRetrieve, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscServiceImpl, SubsidyJourney}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import utils.CommonTestData._
 
-import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -61,29 +60,25 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       .expects(undertakingRef, businessEntity, *)
       .returning(Future.successful(result))
 
-  val eori1 = EORI("GB123456789012")
-  val eori2 = EORI("GB123456789013")
-  val eori3 = EORI("GB123456789014")
+ def mockCreateSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(result: Either[Error, HttpResponse]) = {
+   (mockEscConnector
+     .createSubsidy(_: UndertakingRef, _: SubsidyJourney)(_: HeaderCarrier))
+     .expects(undertakingRef, journey, *)
+     .returning(Future.successful(result))
+ }
 
-  val businessEntity1 = BusinessEntity(EORI(eori1), true, None)
-  val businessEntity2 = BusinessEntity(EORI(eori2), true, None)
-  val businessEntity3 = BusinessEntity(EORI(eori3), true, None)
+  def mockRetrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(result: Either[Error, HttpResponse]) =
+    (mockEscConnector
+      .retrieveSubsidy(_: SubsidyRetrieve)(_: HeaderCarrier))
+      .expects(subsidyRetrieve, *)
+      .returning(Future.successful(result))
 
-  val undertakingRef = UndertakingRef("UR123456")
   val undertakingRefJson = Json.toJson(undertakingRef)
-
-  val undertaking = Undertaking(undertakingRef.some,
-    UndertakingName("TestUndertaking"),
-    transport,
-    IndustrySectorLimit(12.34).some,
-    LocalDate.of(2021,1,18).some,
-    List(businessEntity1, businessEntity2))
-  val emptyHeaders = Map.empty[String, Seq[String]]
   val undertakingJson = Json.toJson(undertaking)
-
-  println(s"undertakingJson = ${undertakingJson}")
-
   val businessEntityJson = Json.toJson(businessEntity1)
+  val undertakingSubsidiesJson = Json.toJson(undertakingSubsidies)
+
+  val emptyHeaders = Map.empty[String, Seq[String]]
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -261,6 +256,92 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
           mockRemoveMember(undertakingRef, businessEntity3)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
           val result = service.removeMember(undertakingRef, businessEntity3)
           await(result) shouldBe(undertakingRef)
+        }
+      }
+    }
+
+    "handling request to create subsidy" must {
+
+      "return an error" when {
+
+        def isError() = {
+          val result = service.createSubsidy(undertakingRef, subsidyJourney)
+          assertThrows[RuntimeException](await(result))
+        }
+
+        "the http call fails" in {
+          mockCreateSubsidy(undertakingRef, subsidyJourney)(Left(Error("")))
+          isError()
+        }
+
+        "the http response doesn't come back with status 200(OK)" in {
+          mockCreateSubsidy(undertakingRef, subsidyJourney)(Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders)))
+          isError()
+        }
+
+        "there is no json in the response" in {
+          mockCreateSubsidy(undertakingRef, subsidyJourney)(Right(HttpResponse(OK, "hi")))
+          isError()
+        }
+
+        "the json in the response can't be parsed" in {
+          val json = Json.parse("""{ "a" : 1 }""")
+          mockCreateSubsidy(undertakingRef, subsidyJourney)(Right(HttpResponse(OK, json, emptyHeaders)))
+          isError()
+        }
+
+
+      }
+
+      "return successfully" when {
+
+        "the http call succeeds and the body of the response can be parsed" in {
+          mockCreateSubsidy(undertakingRef, subsidyJourney)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
+          val result = service.createSubsidy(undertakingRef, subsidyJourney)
+          await(result) shouldBe(undertakingRef)
+        }
+      }
+    }
+
+    "handling request to retrieve subsidy" must {
+
+      "return an error" when {
+
+        def isError() = {
+          val result = service.retrieveSubsidy(subsidyRetrieve)
+          assertThrows[RuntimeException](await(result))
+        }
+
+        "the http call fails" in {
+          mockRetrieveSubsidy(subsidyRetrieve)(Left(Error("")))
+          isError()
+        }
+
+        "the http response doesn't come back with status 200(OK)" in {
+          mockRetrieveSubsidy(subsidyRetrieve)(Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders)))
+          isError()
+        }
+
+        "there is no json in the response" in {
+          mockRetrieveSubsidy(subsidyRetrieve)(Right(HttpResponse(OK, "hi")))
+          isError()
+        }
+
+        "the json in the response can't be parsed" in {
+          val json = Json.parse("""{ "a" : 1 }""")
+          mockRetrieveSubsidy(subsidyRetrieve)(Right(HttpResponse(OK, json, emptyHeaders)))
+          isError()
+        }
+
+
+      }
+
+      "return successfully" when {
+
+        "the http call succeeds and the body of the response can be parsed" in {
+          mockRetrieveSubsidy(subsidyRetrieve)(Right(HttpResponse(OK, undertakingSubsidiesJson, emptyHeaders)))
+          val result = service.retrieveSubsidy(subsidyRetrieve)
+          await(result) shouldBe(undertakingSubsidies)
         }
       }
     }

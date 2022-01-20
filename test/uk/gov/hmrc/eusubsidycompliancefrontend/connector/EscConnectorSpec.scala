@@ -16,18 +16,18 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connector
 
-import cats.implicits.catsSyntaxOptionId
+
 import com.typesafe.config.ConfigFactory
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnectorImpl
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, IndustrySectorLimit, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import utils.CommonTestData._
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -49,29 +49,22 @@ class EscConnectorSpec
                                  |""".stripMargin)
   )
 
-  val connector = new EscConnectorImpl(mockHttp,  new ServicesConfig(config))
+  val mockTimeProvider = mock[TimeProvider]
+
+  val connector = new EscConnectorImpl(mockHttp,  new ServicesConfig(config), mockTimeProvider)
+
+  private def mockTimeProviderToday(today: LocalDate) =
+    (mockTimeProvider.today _).expects().returning(today)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   val responseHeaders = Map.empty[String, Seq[String]]
 
-  val eori1 = EORI("GB123456789012")
-  val eori2 = EORI("GB123456789013")
-  val eori3 = EORI("GB123456789014")
 
-  val businessEntity1 = BusinessEntity(EORI(eori1), true, None)
-  val businessEntity2 = BusinessEntity(EORI(eori2), true, None)
-  val businessEntity3 = BusinessEntity(EORI(eori3), true, None)
-
-  val undertaking = Undertaking(UndertakingRef("UR123456").some,
-    UndertakingName("TestUndertaking"),
-    transport,
-    IndustrySectorLimit(12.34).some,
-    LocalDate.of(2021,1,18).some,
-    List(businessEntity1, businessEntity2))
 
   "EscConnectorSpec" when {
 
     "handling request to create Undertaking" must {
+
       val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking"
       behave like connectorBehaviour(
         mockPost(expectedUrl, Seq.empty, undertaking)(_),
@@ -81,6 +74,7 @@ class EscConnectorSpec
     }
 
     "handling request to retrieve Undertaking" must {
+
       val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/$eori1"
       behave like connectorBehaviour(
         mockGet(expectedUrl)(_),
@@ -90,6 +84,7 @@ class EscConnectorSpec
     }
 
     "handling request to add member in Business Entity Undertaking" must {
+
       val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/member/UR123456"
       behave like connectorBehaviour(
         mockPost(expectedUrl, Seq.empty, businessEntity3)(_),
@@ -99,12 +94,33 @@ class EscConnectorSpec
     }
 
     "handling request to remove member from Business Entity Undertaking" must {
+
       val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/member/remove/UR123456"
       behave like connectorBehaviour(
         mockPost(expectedUrl, Seq.empty, businessEntity3)(_),
         () => connector.removeMember(UndertakingRef("UR123456"), businessEntity3)
       )
 
+    }
+
+    "handling request to create subsidy" must {
+
+      val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/subsidy/update"
+      behave like connectorBehaviourWithMockTime(
+        mockPost(expectedUrl, Seq.empty, subsidyUpdate)(_),
+        () => connector.createSubsidy(undertakingRef, subsidyJourney),
+        mockTimeProviderToday(_)
+      )
+
+    }
+
+    "handling request to retrieve subsidy" must {
+
+       val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/subsidy/retrieve"
+      behave like connectorBehaviour(
+        mockPost(expectedUrl, Seq.empty, subsidyRetrieve)(_),
+        () => connector.retrieveSubsidy(subsidyRetrieve)
+      )
     }
 
   }
