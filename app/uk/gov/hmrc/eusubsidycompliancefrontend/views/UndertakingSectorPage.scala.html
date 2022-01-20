@@ -38,6 +38,7 @@
 
     @formHelper(action = controllers.routes.UndertakingController.postSector()) {
         @form.errors.map { err =>
+            <pre>@err ( "FormError(undertakingSector,List(error.required),List())" )</pre>
             @govukErrorSummary(ErrorSummary(
                 errorList = Seq(
                     ErrorLink(
@@ -51,7 +52,7 @@
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("how-many-months.error.required"))
+                content = Text(messages("woah.error.required"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(

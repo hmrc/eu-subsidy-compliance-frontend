@@ -66,9 +66,9 @@ createUndertaking.p-3-1=If you are not the undertaking lead, you should
 createUndertaking.p-3-2=[TODO Sign Out Link] sign out
 createUndertaking.p-3-3=now.
 
-undertakingName.title=What would you like to call this undertaking?
-undertakingName.heading=What would you like to call this undertaking?
+undertakingName.title=What would you like to call this single undertaking?
 undertakingName.hint=This is for your own records.
+error.undertakingName.required=Enter a name for this single undertaking
 
 undertakingSector.error.required=
 undertakingSector.title=What is the industry sector of

@@ -19,48 +19,49 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        button: components.Button,
-        govukErrorSummary: GovukErrorSummary,
-        govukInput : GovukInput
+  layout: Layout,
+  formHelper: FormWithCSRF,
+  button: components.Button,
+  govukErrorSummary: GovukErrorSummary,
+  govukInput : GovukInput
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-    pageTitle = Some(messages("undertakingName.title")),
-    backLinkEnabled = false,
-    backLink = None
+  pageTitle = Some(messages("undertakingName.title")),
+  backLinkEnabled = false,
+  backLink = None
 ) {
 
-    @formHelper(action = controllers.routes.UndertakingController.postUndertakingName()) {
-        @form.errors.map { err =>
-            @govukErrorSummary(ErrorSummary(
-                errorList = Seq(
-                    ErrorLink(
-                        href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(err.message)}")
-                    )
-                ),
-                title = Text(messages("common.error.summary.title"))
-            ))
-        }
-        @govukInput(Input(
-            value = form.data.get("undertakingName"),
-            id = "undertakingName",
-            name = "undertakingName",
-            label = Label(
-                isPageHeading = true,
-                classes = "govuk-label--xl",
-                content = Text(messages("undertakingName.heading"))
-            ),
-            hint = Some(Hint(content = Text(messages("undertakingName.hint")))),
-            errorMessage = if (form.hasErrors) {
-                Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
-            } else None
-        ))
-
-        @button("continue.button")
+  @formHelper(action = controllers.routes.UndertakingController.postUndertakingName()) {
+    @form.errors.map { err =>
+      @govukErrorSummary(ErrorSummary(
+        errorList = Seq(
+          ErrorLink(
+            href = Some(s"#${err.key}"),
+            content = Text(s"${messages(err.message)}")
+          )
+        ),
+        title = Text(messages("common.error.summary.title"))
+      ))
     }
+
+    @govukInput(Input(
+      value = form.data.get("undertakingName"),
+      id = "undertakingName",
+      name = "undertakingName",
+      label = Label(
+        isPageHeading = true,
+        classes = "govuk-label--xl",
+        content = Text(messages("undertakingName.title"))
+      ),
+      hint = Some(Hint(content = Text(messages("undertakingName.hint")))),
+      errorMessage = if (form.hasErrors) {
+        Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
+      } else None
+    ))
+
+    @button("continue.button")
+  }
 }
