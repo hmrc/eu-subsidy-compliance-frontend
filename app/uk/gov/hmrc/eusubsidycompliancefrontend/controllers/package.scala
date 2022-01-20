@@ -22,7 +22,7 @@ import play.api.libs.json.{Format, Json, Reads}
 import play.api.mvc.Request
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ContactDetails, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, PhoneNumber}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.journey.Uri
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{Journey, Store}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -69,7 +69,15 @@ package object controllers {
     )
   )
 
+  case class OptionalEORI(
+    setValue: String,
+    value: Option[String]
+  )
 
+  case class OptionalTraderRef(
+     setValue: String,
+     value: Option[String]
+   )
 
   def getPrevious[A <: Journey : ClassTag](
     store: Store

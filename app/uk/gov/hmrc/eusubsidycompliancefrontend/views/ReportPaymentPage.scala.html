@@ -17,6 +17,8 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.Subsidy
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.UndertakingSubsidies
 
 @this(
     layout: Layout,
@@ -26,25 +28,23 @@
     govukRadios : GovukRadios
 )
 
-
-@(previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(subsidies: Option[UndertakingSubsidies] = None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
     pageTitle = Some(messages("createUndertaking.title")),
-    backLinkEnabled = true,
-    backLink = Some(previous)
+    backLinkEnabled = false,
+    backLink = None
 ) {
 
-    @formHelper(action = controllers.routes.EligibilityController.postCreateUndertaking) {
+    @* TODO build list *@
 
-        <h1 class="govuk-heading-xl">@messages("createUndertaking.title")</h1>
-        <h2 class="govuk-heading-m">@messages("createUndertaking.h2")</h2>
-        <p class="govuk-body">@messages("createUndertaking.p-1")</p>
-        <h2 class="govuk-heading-m">@messages("createUndertaking.h2-2")</h2>
-        <p class="govuk-body">@messages("createUndertaking.p-2")</p>
-        <p class="govuk-body">@messages("createUndertaking.p-3-1") <a class="govuk-link" href="#">@messages("createUndertaking.p-3-2")</a> @messages("createUndertaking.p-3-3")</p>
+    <h1>below</h1>
+    @subsidies
+    @formHelper(action = controllers.routes.SubsidyController.postReportPayment) {
 
-        <input type=hidden name=createUndertaking value=true>
+        <h1 class="govuk-heading-xl">Add amend or remove state aid ... TODO</h1>
+
+        <input type=hidden name=reportPayment value=true>
         @button("common.continue")
     }
 }

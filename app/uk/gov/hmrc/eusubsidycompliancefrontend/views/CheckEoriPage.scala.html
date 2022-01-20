@@ -17,7 +17,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-@import uk.gov.hmrc.eusubsidycompliancefrontend.services.journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 
 @this(
         layout: Layout,
@@ -28,7 +28,7 @@
 )
 
 
-@(form: Form[_], eori: EORI, previous: journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], eori: EORI, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
     pageTitle = Some(messages("eoricheck.title")),

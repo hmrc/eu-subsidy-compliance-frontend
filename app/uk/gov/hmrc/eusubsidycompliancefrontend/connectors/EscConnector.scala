@@ -21,12 +21,14 @@ import cats.implicits._
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{Json, OFormat}
 import play.api.{Logger, Mode}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidies, UndertakingSubsidyAmendment}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, UpstreamErrorResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -44,6 +46,9 @@ class EscConnector @Inject()(
   val createUndertakingPath = "eu-subsidy-compliance/undertaking"
   val addMemberPath = "eu-subsidy-compliance/undertaking/member"
   val removeMemberPath = "eu-subsidy-compliance/undertaking/member/remove"
+
+  val updateSubsidyPath = "eu-subsidy-compliance/subsidy/update"
+  val retrieveSubsidyPath = "eu-subsidy-compliance/subsidy/retrieve"
 
   def retrieveUndertaking(
                            eori: EORI
@@ -96,6 +101,45 @@ class EscConnector @Inject()(
     desPost[BusinessEntity, UndertakingRef](
       s"$escURL/$removeMemberPath/$undertakingRef",
       businessEntity
+    )
+  }
+
+  def createSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[UndertakingRef] = {
+   val update = SubsidyUpdate(
+     undertakingIdentifier = undertakingRef,
+     update = UndertakingSubsidyAmendment(
+       List(
+         NonHmrcSubsidy(
+           subsidyUsageTransactionId = None,
+           allocationDate = LocalDate.now(),
+           submissionDate= LocalDate.now(),
+           publicAuthority = Some(journey.publicAuthority.value.get),// this shouldn't be optional, is required in create API but not retrieve
+           traderReference = journey.traderRef.value.get,
+           nonHMRCSubsidyAmtEUR = SubsidyAmount(journey.claimAmount.value.get),
+           businessEntityIdentifier = journey.addClaimEori.value.get,
+           amendmentType = Some(EisSubsidyAmendmentType("1"))
+         )
+       )
+     )
+   )
+  desPost[SubsidyUpdate, UndertakingRef](
+    s"$escURL/$updateSubsidyPath",
+    update
+  )
+
+  }
+
+  def retrieveSubsidy(subsidyRetrieve : SubsidyRetrieve)(
+    implicit hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[UndertakingSubsidies] = {
+    implicit val undertakingSubsidiesFormat: OFormat[UndertakingSubsidies] = Json.format[UndertakingSubsidies]
+    desPost[SubsidyRetrieve, UndertakingSubsidies](
+      s"$escURL/$retrieveSubsidyPath",
+      subsidyRetrieve
     )
   }
 }

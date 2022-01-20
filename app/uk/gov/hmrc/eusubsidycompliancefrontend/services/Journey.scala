@@ -23,14 +23,9 @@ import play.api.mvc.Results.Redirect
 
 import scala.concurrent.Future
 
-object journey {
-  type Form[+T] = Option[T]
-  type Uri = String
-}
-
 case class FormPage[+T](
-  uri: journey.Uri,
-  value: journey.Form[T] = None
+  uri: Journey.Uri,
+  value: Journey.Form[T] = None
 )
 
 trait Journey {
@@ -49,7 +44,7 @@ trait Journey {
   def currentIndex(implicit request: Request[_]): Int =
     formPages.indexWhere(x => request.uri.endsWith(x.uri))
 
-  def previous(implicit request: Request[_]): journey.Uri =
+  def previous(implicit request: Request[_]): Journey.Uri =
     formPages
       .zipWithIndex
       .find(_._2 == currentIndex - 1)
@@ -81,7 +76,7 @@ trait Journey {
     steps.last.exists(x => x.value.isDefined)
 
   def redirect(implicit request: Request[AnyContent]): Option[Future[Result]] = {
-    val firstUnfilledFormUri: journey.Uri =
+    val firstUnfilledFormUri: Journey.Uri =
       formPages
         .zipWithIndex
         .find(isEmptyFormPage)
@@ -102,6 +97,10 @@ trait Journey {
 }
 
 object Journey {
+
+  type Form[+T] = Option[T]
+  type Uri = String
+
   implicit val formPageBigDecimalFormat: OFormat[FormPage[BigDecimal]] =
     Json.format[FormPage[BigDecimal]]
   implicit val formPageBooleanValueFormat: OFormat[FormPage[Boolean]] =

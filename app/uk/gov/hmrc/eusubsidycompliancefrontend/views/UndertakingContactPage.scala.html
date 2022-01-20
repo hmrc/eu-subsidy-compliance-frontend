@@ -15,7 +15,7 @@
  *@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-@import uk.gov.hmrc.eusubsidycompliancefrontend.services.journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 @this(
@@ -26,7 +26,7 @@
     govukInput : GovukInput
 )
 
-@(form: Form[_], previous: journey.Uri, undertakingName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], previous: Journey.Uri, undertakingName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
     pageTitle = Some(messages("undertakingContact.title")),

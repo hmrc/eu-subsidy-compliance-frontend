@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-@import uk.gov.hmrc.eusubsidycompliancefrontend.services.journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
@@ -32,7 +32,7 @@
 )
 
 
-@(name: UndertakingName, eori: EORI, sector: Sector, contacts: ContactDetails, previous: journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(name: UndertakingName, eori: EORI, sector: Sector, contacts: ContactDetails, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
     pageTitle = Some(messages("undertaking.cya.title")),
