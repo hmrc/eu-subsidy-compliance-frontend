@@ -45,7 +45,6 @@ class AccountController @Inject()(
 
   def getAccountPage: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
     for {
       retrievedUndertaking <- escService.retrieveUndertaking(eori)
       x <- store.get[EligibilityJourney]
