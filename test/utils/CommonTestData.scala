@@ -135,6 +135,7 @@ object CommonTestData {
     eori = FormPage("add-business-entity-eori", eori1.some),
     contact = FormPage("add-business-entity-contact", contactDetails),
     cya= FormPage("check-your-answers-businesses", true.some)
+
   )
 
   val validEmailAddress = EmailAddress("user@test.com")
