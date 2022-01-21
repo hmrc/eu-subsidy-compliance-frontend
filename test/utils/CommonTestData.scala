@@ -113,5 +113,6 @@ object CommonTestData {
     eori = FormPage("add-business-entity-eori", eori2.some),
     contact = FormPage("add-business-entity-contact", contactDetails),
     cya= FormPage("check-your-answers-businesses", true.some)
+
   )
 }

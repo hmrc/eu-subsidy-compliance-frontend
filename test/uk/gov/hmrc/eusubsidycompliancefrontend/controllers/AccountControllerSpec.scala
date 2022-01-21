@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-
 import cats.implicits.catsSyntaxOptionId
 import play.api.inject.bind
 import play.api.test.FakeRequest
