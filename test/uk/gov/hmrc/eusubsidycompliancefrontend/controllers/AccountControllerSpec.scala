@@ -44,12 +44,6 @@ with AuthAndSessionDataBehaviour {
 
   val controller = instanceOf[AccountController]
 
-//  def mockRetreiveUndertaking(eori: EORI)(result: Option[Undertaking]) =
-//    (mockEscService
-//      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-//      .expects(eori, *)
-//      .returning(Future.successful(result))
-
 
   def mockRetreiveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
     (mockEscService
