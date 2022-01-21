@@ -16,10 +16,12 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.implicits.catsSyntaxOptionId
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, JourneyStore, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, EscService, JourneyStore, Store, UndertakingJourney}
+import utils.CommonTestData._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -48,8 +50,10 @@ with AuthAndSessionDataBehaviour {
       "display the page" in {
 
         inSequence {
-          mockRetreiveUndertaking(eori)
-          mockGet(eori)()
+          mockRetreiveUndertaking(eori1)
+          mockGet[EligibilityJourney](eori1)(Right(eligibilityJourney.some))
+          mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
+          mockGet[BusinessEntityJourney](eori1)(Right(businessEntity1).some)
 
         }
 
