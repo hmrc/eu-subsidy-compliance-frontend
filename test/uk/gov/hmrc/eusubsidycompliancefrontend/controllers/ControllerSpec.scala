@@ -49,12 +49,16 @@ trait ControllerSpec extends PlaySupport {
 
   def checkPageIsDisplayed(
                             result: Future[Result],
+                            expectedTitle: String,
                             contentChecks: Document => Unit = _ => (),
                             expectedStatus: Int = OK
                           ): Unit = {
     (status(result), redirectLocation(result)) shouldBe (expectedStatus -> None)
 
     val doc = Jsoup.parse(contentAsString(result))
+
+    doc.select("h1").text shouldBe expectedTitle
+
 
     val bodyText = doc.select("body").text
     val regex    = """not_found_message\((.*?)\)""".r
@@ -67,11 +71,13 @@ trait ControllerSpec extends PlaySupport {
 
   def checkFormErrorIsDisplayed(
                                  result: Future[Result],
+                                 expectedTitle: String,
                                  formError: String,
                                  expectedStatus: Int = OK
                                ): Unit =
     checkPageIsDisplayed(
       result,
+      expectedTitle,
       { doc =>
         val errorSummary = doc.select(".govuk-error-summary")
         errorSummary.select("a").text() shouldBe formError
@@ -82,6 +88,14 @@ trait ControllerSpec extends PlaySupport {
       expectedStatus
     )
 
+
+  def testRadioButtonOptions(doc: Document, expectedRadioOptionsTexts: List[String]) = {
+    val radioOptions = doc.select(".govuk-radios__item")
+    radioOptions.size shouldBe expectedRadioOptionsTexts.size
+    expectedRadioOptionsTexts.zipWithIndex.map({ case (text, i) =>
+      radioOptions.get(i).text() shouldBe text
+    })
+  }
 
 
 }
