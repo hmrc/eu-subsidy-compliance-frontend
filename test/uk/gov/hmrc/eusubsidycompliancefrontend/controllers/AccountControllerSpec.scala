@@ -30,7 +30,6 @@ import utils.CommonTestData.{undertaking, _}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-
 class AccountControllerSpec  extends ControllerSpec
   with AuthSupport
   with JourneyStoreSupport
@@ -244,7 +243,6 @@ class AccountControllerSpec  extends ControllerSpec
             }
             checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity())
           }
-
         }
 
       }
