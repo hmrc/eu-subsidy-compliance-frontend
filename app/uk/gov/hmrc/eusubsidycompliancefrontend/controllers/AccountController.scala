@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.libs.json.{Json, OFormat}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
@@ -45,7 +45,7 @@ class AccountController @Inject()(
 
   def getAccountPage: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    for {
+   for {
       retrievedUndertaking <- escService.retrieveUndertaking(eori)
       x <- store.get[EligibilityJourney]
       eligibilityJourney <- x.fold(store.put(EligibilityJourney()))(Future.successful)
@@ -53,10 +53,9 @@ class AccountController @Inject()(
       undertakingJourney <- y.fold(store.put(UndertakingJourney.fromUndertakingOpt(retrievedUndertaking)))(Future.successful)
       z <- store.get[BusinessEntityJourney]
       _ <- z.fold(store.put(BusinessEntityJourney.fromUndertakingOpt(retrievedUndertaking)))(Future.successful)
+     _ <- if(retrievedUndertaking.isDefined) store.put(retrievedUndertaking.getOrElse(sys.error("Undertaking is Missing"))) else Future.successful(Unit)
     } yield (retrievedUndertaking, eligibilityJourney, undertakingJourney) match {
-      case (Some(undertaking), _, _) =>
-        store.put(undertaking) // TODO make safe
-        Ok(accountPage(undertaking))
+      case (Some(undertaking), _, _) => Ok(accountPage(undertaking))
       case (_, eJourney, uJourney) if !eJourney.isComplete && uJourney == UndertakingJourney() =>
         Redirect(routes.EligibilityController.firstEmptyPage())
       case (_, _, uJourney) if !uJourney.isComplete =>

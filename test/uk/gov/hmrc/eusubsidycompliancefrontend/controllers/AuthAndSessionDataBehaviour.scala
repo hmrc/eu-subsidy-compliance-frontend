@@ -29,7 +29,7 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
 
   val appName = "eu-subsidy-test"
 
-  val eori = EORI("GB123457889012")
+  val eori = EORI("GB123456789012")
 
   val predicate = Enrolment("HMRC-ESC-ORG")
   val ggSignInUrl = "http://ggSignInUrl:123"
