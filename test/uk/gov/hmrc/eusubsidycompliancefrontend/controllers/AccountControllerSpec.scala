@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+
 import cats.implicits.catsSyntaxOptionId
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -28,6 +29,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData.{undertaking, _}
 
 import scala.concurrent.Future
+
 
 class AccountControllerSpec  extends ControllerSpec
   with AuthSupport
@@ -285,6 +287,7 @@ class AccountControllerSpec  extends ControllerSpec
               checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity())
             }
           }
+
         }
 
 
