@@ -96,8 +96,6 @@ trait ControllerSpec extends PlaySupport {
     })
   }
 
-
-
 }
 
 @Singleton
