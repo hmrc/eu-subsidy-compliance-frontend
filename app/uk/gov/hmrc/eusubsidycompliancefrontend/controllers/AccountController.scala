@@ -46,13 +46,13 @@ class AccountController @Inject()(
   def getAccountPage: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
    for {
-      retrievedUndertaking <- escService.retrieveUndertaking(eori)
-      x <- store.get[EligibilityJourney]
-      eligibilityJourney <- x.fold(store.put(EligibilityJourney()))(Future.successful)
-      y <- store.get[UndertakingJourney]
-      undertakingJourney <- y.fold(store.put(UndertakingJourney.fromUndertakingOpt(retrievedUndertaking)))(Future.successful)
-      z <- store.get[BusinessEntityJourney]
-      _ <- z.fold(store.put(BusinessEntityJourney.fromUndertakingOpt(retrievedUndertaking)))(Future.successful)
+     retrievedUndertaking <- escService.retrieveUndertaking(eori)
+     eligibilityJourneyOpt <- store.get[EligibilityJourney]
+     eligibilityJourney <- eligibilityJourneyOpt.fold(store.put(EligibilityJourney()))(Future.successful)
+     undertakingJourneyOpt <- store.get[UndertakingJourney]
+     undertakingJourney <- undertakingJourneyOpt.fold(store.put(UndertakingJourney.fromUndertakingOpt(retrievedUndertaking)))(Future.successful)
+     businessEntityJourneyOpt <- store.get[BusinessEntityJourney]
+     _ <- businessEntityJourneyOpt.fold(store.put(BusinessEntityJourney.fromUndertakingOpt(retrievedUndertaking)))(Future.successful)
      _ <- if(retrievedUndertaking.isDefined) store.put(retrievedUndertaking.getOrElse(sys.error("Undertaking is Missing"))) else Future.successful(Unit)
     } yield (retrievedUndertaking, eligibilityJourney, undertakingJourney) match {
       case (Some(undertaking), _, _) => Ok(accountPage(undertaking))
