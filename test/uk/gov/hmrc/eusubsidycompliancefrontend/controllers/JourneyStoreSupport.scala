@@ -50,5 +50,4 @@ trait JourneyStoreSupport { this: MockFactory =>
         .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful))
 
 
-
 }
