@@ -59,7 +59,6 @@ trait ControllerSpec extends PlaySupport {
 
     doc.select("h1").text shouldBe expectedTitle
 
-
     val bodyText = doc.select("body").text
     val regex    = """not_found_message\((.*?)\)""".r
 
@@ -96,6 +95,7 @@ trait ControllerSpec extends PlaySupport {
       radioOptions.get(i).text() shouldBe text
     })
   }
+
 
 
 }
