@@ -129,10 +129,10 @@ case object DateFormValues {
 
   private def valuesAreInt(formInput: (String, String, String)): Boolean =
     formInput match  {
-      case (d: String, m: String, y: String) if trim(d) != "" && trim(m) != "" && trim(y) != "" =>
-        trim(d).forall(char => Character.isDigit(char)) &&
-          trim(m).forall(char => Character.isDigit(char))  &&
-          trim(y).forall(char => Character.isDigit(char))
+      case (d: String, m: String, y: String) =>
+        (trim(d).forall(char => Character.isDigit(char)) || trim(d) == "") &&
+          (trim(m).forall(char => Character.isDigit(char)) || trim(m) == "")  &&
+          (trim(y).forall(char => Character.isDigit(char)) || trim(y) == "")
       case _ => false
     }
 }
