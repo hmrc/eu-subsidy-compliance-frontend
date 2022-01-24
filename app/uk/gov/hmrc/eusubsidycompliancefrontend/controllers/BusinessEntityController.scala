@@ -21,7 +21,7 @@ import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
@@ -55,27 +55,19 @@ class BusinessEntityController @Inject()(
     implicit val eori: EORI = request.eoriNumber
 
     for {
-      b <- store.get[BusinessEntityJourney]
-      c <- escService.retrieveUndertaking(eori)
-      _ <- store.put[Undertaking](c.getOrElse(throw new IllegalStateException("missing undertaking on hod")))
-    } yield (b, c) match {
-      case (Some(journey), Some(u)) =>
-        journey
-          .addBusiness
-          .value
-          .fold(
-              Ok(addBusinessPage(
-                addBusinessForm,
-                u.name,
-                u.undertakingBusinessEntity
-              ))
-          ){x =>
-              Ok(addBusinessPage(
-                addBusinessForm.fill(FormValues(x.toString)),
-                u.name,
-                u.undertakingBusinessEntity
-              ))
-          }
+      businessEntityJourneyOpt <- store.get[BusinessEntityJourney]
+      undertakingOpt <- escService.retrieveUndertaking(eori)
+      _ <- store.put[Undertaking](undertakingOpt.getOrElse(throw new IllegalStateException("missing undertaking on hod")))
+    } yield (businessEntityJourneyOpt, undertakingOpt) match {
+      case (Some(journey), Some(undertaking)) =>
+        val form = journey.addBusiness.value.fold(addBusinessForm)(bool =>  addBusinessForm.fill(FormValues(bool.toString)))
+        Ok(addBusinessPage(
+          form,
+          undertaking.name,
+          undertaking.undertakingBusinessEntity
+        ))
+      case _ => sys.error(" Business Entity journey and Undertaking are missing from session. ")
+
     }
   }
 

@@ -110,7 +110,7 @@ object CommonTestData {
 
   val businessEntityJourney = BusinessEntityJourney(
     addBusiness = FormPage("add-member", true.some),
-    eori = FormPage("add-business-entity-eori", eori2.some),
+    eori = FormPage("add-business-entity-eori", eori1.some),
     contact = FormPage("add-business-entity-contact", contactDetails),
     cya= FormPage("check-your-answers-businesses", true.some)
   )

@@ -42,10 +42,10 @@ trait JourneyStoreSupport {this: MockFactory =>
         .expects(input, eori, *)
         .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful(_)))
 
-   def update[A](f: Option[A] => Option[A], eori: EORI)(result: Either[Error, A])(implicit ec: ExecutionContext) =
+   def mockUpdate[A](f: Option[A] => Option[A], eori: EORI)(result: Either[Error, A])(implicit ec: ExecutionContext) =
       (mockJourneyStore
         .update(_: Option[A] => Option[A])(_:ClassTag[A], _: EORI, _: Format[A]))
-        .expects(f, *, eori, * )
+        .expects(*, *, eori, * )
         .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful(_)))
 
 

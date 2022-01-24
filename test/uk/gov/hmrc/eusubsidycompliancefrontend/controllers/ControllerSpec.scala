@@ -72,7 +72,7 @@ trait ControllerSpec extends PlaySupport {
                                  result: Future[Result],
                                  expectedTitle: String,
                                  formError: String,
-                                 expectedStatus: Int = OK
+                                 expectedStatus: Int = BAD_REQUEST
                                ): Unit =
     checkPageIsDisplayed(
       result,
