@@ -39,7 +39,9 @@ trait EscConnector {
   def createSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
   def retrieveSubsidy(subsidyRetrieve : SubsidyRetrieve)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
 
+
 }
+
 
 @Singleton
 class EscConnectorImpl @Inject()(http: HttpClient,
@@ -47,7 +49,6 @@ class EscConnectorImpl @Inject()(http: HttpClient,
                                  timeProvider: TimeProvider
                                 )(implicit ec: ExecutionContext
 ) extends EscConnector {
-
   val logger: Logger = Logger(this.getClass)
 
   val escURL: String = servicesConfig.baseUrl("esc")

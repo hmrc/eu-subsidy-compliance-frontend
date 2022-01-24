@@ -75,5 +75,4 @@ trait HttpSupport { this: MockFactory with Matchers ⇒
           Future.failed(new Exception("Test exception message"))
         )(Future.successful)
       )
-
 }

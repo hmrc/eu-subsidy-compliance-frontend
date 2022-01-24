@@ -17,10 +17,10 @@
 package utils
 
 import cats.implicits.catsSyntaxOptionId
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidies, UndertakingSubsidyAmendment}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidies, UndertakingSubsidyAmendment}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, IndustrySectorLimit, SubsidyAmount, TraderRef, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{FormPage, SubsidyJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, IndustrySectorLimit, PhoneNumber, Sector, SubsidyAmount, TraderRef, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, FormPage, SubsidyJourney, UndertakingJourney}
 
 import java.time.LocalDate
 
@@ -81,6 +81,37 @@ object CommonTestData {
     SubsidyAmount(1234.56),
     nonHmrcSubsidyList,
     List.empty
+  )
 
+  val eligibilityJourneyNotComplete = EligibilityJourney(
+    customsWaivers = FormPage("do-you-claim-customs-waivers", true.some),
+    willYouClaim = FormPage("will-you-claim-customs-waivers", true.some),
+    notEligible = FormPage("not-eligible", false.some),
+    mainBusinessCheck= FormPage("main-business-check", true.some),
+    signOut= FormPage("not-eligible-to-lead", false.some),
+    acceptTerms = FormPage("terms-conditions", true.some)
+  )
+
+  val eligibilityJourneyComplete = eligibilityJourneyNotComplete.copy(
+  eoriCheck = FormPage("eoricheck", true.some),
+  signOutBadEori = FormPage("incorrect-eori", false.some),
+  createUndertaking = FormPage("create-undertaking", true.some)
+  )
+
+  val contactDetails = ContactDetails(PhoneNumber("111").some, None).some
+
+  val undertakingJourneyComplete =  UndertakingJourney(
+    name = FormPage("undertaking-name", "TestUndertaking".some),
+    sector = FormPage("sector",Sector(1).some),
+    contact = FormPage("contact", contactDetails),
+    cya = FormPage("check-your-answers", true.some),
+    confirmation = FormPage("confirmation", true.some)
+  )
+
+  val businessEntityJourney = BusinessEntityJourney(
+    addBusiness = FormPage("add-member", true.some),
+    eori = FormPage("add-business-entity-eori", eori2.some),
+    contact = FormPage("add-business-entity-contact", contactDetails),
+    cya= FormPage("check-your-answers-businesses", true.some)
   )
 }

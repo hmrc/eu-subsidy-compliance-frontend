@@ -30,7 +30,7 @@ case class EligibilityJourney(
   acceptTerms: FormPage[Boolean] = FormPage("terms-conditions"),
   eoriCheck: FormPage[Boolean] = FormPage("eoricheck"),
   signOutBadEori: FormPage[Boolean] = FormPage("incorrect-eori"),
-  createUndertaking: FormPage[Boolean] = FormPage("create-undertaking"),
+  createUndertaking: FormPage[Boolean] = FormPage("create-undertaking")
 ) extends Journey {
 
   override def steps: List[Option[FormPage[_]]] =

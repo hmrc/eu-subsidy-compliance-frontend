@@ -143,6 +143,8 @@ undertaking.confirmation.p4=If you have any other businesses, you must add them 
 
 businessEntityEori.eoriInUse.error=This EORI is in use.
 
+#account.title is temporary and can be changed later, as test were failing because of missing account.title
+account.title = Account page
 account-homepage.warning=You must report any de minimis aid (except Customs Duty waivers) {0} receives as soon as possible. If you do not report a de minimis aid payment every 90 days (or notify HMRC that you have not received any payments in that 90-day period), you will be ineligible to claim Customs Duty waivers
 account-homepage.inset=Your next entry is due by {0}. You can report de minimis aid payment, or let HMRC know that you have not received any, by following the links in the Payments received section below.
 account-homepage.cards.card1.heading=Payments received

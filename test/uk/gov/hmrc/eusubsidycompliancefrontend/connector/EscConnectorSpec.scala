@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connector
 
-
 import com.typesafe.config.ConfigFactory
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
@@ -28,6 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import utils.CommonTestData._
+
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -49,6 +49,7 @@ class EscConnectorSpec
                                  |""".stripMargin)
   )
 
+
   val mockTimeProvider = mock[TimeProvider]
 
   val connector = new EscConnectorImpl(mockHttp,  new ServicesConfig(config), mockTimeProvider)
@@ -58,7 +59,6 @@ class EscConnectorSpec
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   val responseHeaders = Map.empty[String, Seq[String]]
-
 
 
   "EscConnectorSpec" when {
@@ -74,7 +74,6 @@ class EscConnectorSpec
     }
 
     "handling request to retrieve Undertaking" must {
-
       val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/$eori1"
       behave like connectorBehaviour(
         mockGet(expectedUrl)(_),
@@ -84,7 +83,6 @@ class EscConnectorSpec
     }
 
     "handling request to add member in Business Entity Undertaking" must {
-
       val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/member/UR123456"
       behave like connectorBehaviour(
         mockPost(expectedUrl, Seq.empty, businessEntity3)(_),
@@ -94,7 +92,6 @@ class EscConnectorSpec
     }
 
     "handling request to remove member from Business Entity Undertaking" must {
-
       val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/member/remove/UR123456"
       behave like connectorBehaviour(
         mockPost(expectedUrl, Seq.empty, businessEntity3)(_),
@@ -122,7 +119,6 @@ class EscConnectorSpec
         () => connector.retrieveSubsidy(subsidyRetrieve)
       )
     }
-
   }
 
 }
