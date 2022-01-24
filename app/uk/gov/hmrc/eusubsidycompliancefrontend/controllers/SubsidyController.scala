@@ -344,6 +344,7 @@ class SubsidyController @Inject()(
   lazy val claimAmountForm : Form[BigDecimal] = Form( mapping("claim-amount" -> bigDecimal)(identity)(Some(_)))
 
   lazy val claimDateForm : Form[DateFormValues] = Form(
+    "claim-date" ->
     DateFormValues.vatRegDateMapping
       .verifying("error.date.invalid", a =>  a.isValidDate)
   )
