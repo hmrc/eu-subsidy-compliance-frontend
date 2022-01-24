@@ -62,20 +62,26 @@ class SubsidyController @Inject()(
         _ = if(journey.isEmpty) store.put(SubsidyJourney())
         undertaking <- store.get[Undertaking]
         reference = undertaking.getOrElse(throw new IllegalStateException("")).reference.getOrElse(throw new IllegalStateException(""))
+<<<<<<< HEAD
         subsidies <- escService.retrieveSubsidy(SubsidyRetrieve(reference, None)).map(e => Some(e)).recoverWith({case _ => Future.successful(Option.empty[UndertakingSubsidies])})
       } yield (journey, subsidies) match {
       case (Some(journey), subsidies) => {
+=======
+        subsidies <- connector.retrieveSubsidy(SubsidyRetrieve(reference, None)).map(e => Some(e)).recoverWith({case _ => Future.successful(Option.empty[UndertakingSubsidies])})
+      } yield (journey, subsidies, undertaking) match {
+      case (Some(journey), subsidies, Some(undertaking)) => {
+>>>>>>> WIP content/errors
         journey
           .reportPayment
           .value
           .fold(
-            Ok(reportPaymentPage(subsidies)) // TODO populate subsidy list
+            Ok(reportPaymentPage(subsidies, undertaking)) // TODO populate subsidy list
           ) { x =>
-            Ok(reportPaymentPage(subsidies))
+            Ok(reportPaymentPage(subsidies, undertaking))
           }
       }
-      case (None, None) => // initialise the empty Journey model
-        Ok(reportPaymentPage())
+      case (None, None, Some(undertaking)) => // initialise the empty Journey model
+        Ok(reportPaymentPage(None, undertaking))
     }
   }
 

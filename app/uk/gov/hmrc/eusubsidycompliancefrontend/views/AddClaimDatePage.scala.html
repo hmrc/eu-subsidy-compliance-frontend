@@ -20,74 +20,80 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components
 
 @this(
-    layout: Layout,
-    formHelper: FormWithCSRF,
-    button: components.Button,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios : GovukRadios,
-    govukInput : GovukInput,
-    govukDateInput: GovukDateInput
+  layout: Layout,
+  formHelper: FormWithCSRF,
+  button: components.Button,
+  govukErrorSummary: GovukErrorSummary,
+  govukRadios : GovukRadios,
+  govukInput : GovukInput,
+  govukDateInput: GovukDateInput
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 
 @layout(
-    pageTitle = Some(messages("createUndertaking.title")),
-    backLinkEnabled = false,
-    backLink = None
+  pageTitle = Some(messages("add-claim-date.title")),
+  backLinkEnabled = false,
+  backLink = None
 ) {
 
-    @* TODO error summary and field errors *@
-    @if(form.hasErrors) {
-        @govukErrorSummary(
-            ErrorSummary(
-                errorList = form.errors.map { err =>
-                    ErrorLink(
-                        href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(err.message)}"),
-                        attributes = Map("class" ->"govuk-link")
-                    )
-                },
-                title = Text(messages("common.error.summary.title"))
-            )
+@if(form.hasErrors) {
+  <pre>@form.errors.map { err =>
+    <span>Error be:</span>
+    @err.key
+    @err.message
+  }</pre>
+}
+
+  @* TODO error summary and field errors *@
+  @if(form.hasErrors) {
+    @govukErrorSummary(
+      ErrorSummary(
+        errorList = form.errors.map { err =>
+          ErrorLink(
+            href = Some(s"#${err.key}"),
+            content = Text(s"${messages("add-claim-date." + err.message)}"),
+            attributes = Map("class" ->"govuk-link")
+          )
+        },
+        title = Text(messages("common.error.summary.title"))
+      )
+    )
+  }
+
+  @formHelper(action = controllers.routes.SubsidyController.postClaimDate()) {
+    @govukDateInput(DateInput(
+      id = "claim-date",
+      errorMessage = if (form.hasErrors) {
+        Some(ErrorMessage(content = Text(messages("add-claim-date." + form.errors.head.message))))
+      } else None,
+      items = Seq(
+        InputItem(
+          name = "day",
+          classes = "govuk-input--width-2",
+          value = form.data.get("day")
+        ),
+        InputItem(
+          name = "month",
+          classes = "govuk-input--width-2",
+          value = form.data.get("month")
+        ),
+        InputItem(
+          name = "year",
+          classes = "govuk-input--width-4",
+          value = form.data.get("year")
         )
-    }
-
-    @formHelper(action = controllers.routes.SubsidyController.postClaimDate()) {
-
-      <h1 class="govuk-heading-xl">Add an eori or not ... TODO</h1>
-        @govukDateInput(DateInput(
-            id = "claim-date",
-            errorMessage = if (form.hasErrors) {
-                Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
-            } else None,
-            items = Seq(
-                InputItem(
-                    name = "day",
-                    classes = "govuk-input--width-2",
-                    value = form.data.get("day")
-                ),
-                InputItem(
-                    name = "month",
-                    classes = "govuk-input--width-2",
-                    value = form.data.get("month")
-                ),
-                InputItem(
-                    name = "year",
-                    classes = "govuk-input--width-4",
-                    value = form.data.get("year")
-                )
-            ),
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    content = Text("TODO: Claim date"),
-                    classes = "govuk-fieldset__legend--l",
-                    isPageHeading = true
-                ))
-            ))
+      ),
+      fieldset = Some(Fieldset(
+        legend = Some(Legend(
+          content = Text(messages("add-claim-date.title")),
+          classes = "govuk-fieldset__legend--xl",
+          isPageHeading = true
         ))
+      ))
+    ))
 
-      @button("common.continue")
-    }
+    @button("common.continue")
+  }
 }

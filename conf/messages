@@ -70,8 +70,8 @@ undertakingName.title=What would you like to call this single undertaking?
 undertakingName.hint=This is for your own records.
 error.undertakingName.required=Enter a name for this single undertaking
 
-undertakingSector.error.required=
-undertakingSector.title=What is the industry sector of
+undertakingSector.error.required=Select an industry sector
+undertakingSector.title=What is the industry sector of {0}?
 undertakingSector.hint=If your business is involved in more than one sector, the lowest allowance will apply.
 
 undertakingContact.title=What are the contact details for
@@ -89,7 +89,7 @@ sector.label.3=Fishery and aquaculture products
 
 sector.hint.0=
 sector.hint.1=This sector includes couriers and hauliers who get paid by someone to transport their goods by road
-sector.hint.2=An ‘agricultural product’ can be products such as: live animals, meat and edible meat offal, dairy produce, birds' eggs, natural honey
+sector.hint.2=An ‘agricultural product’ can be products such as: live animals, meat and edible meat offal, dairy produce, birds’ eggs, natural honey
 sector.hint.3=If any part of your business is involved in the production, processing or marketing of fishery and aquaculture products. A ‘fishery product’ means aquatic organisms resulting from any fishing activity or products derived from them.
 
 undertaking.cya.title=Check your answers
@@ -160,3 +160,22 @@ account-homepage.cards.card3.link1=View your businesses or Add a business to you
 account-homepage.cards.card3.link1View=View your businesses
 account-homepage.cards.card3.link1Add=Add a business to your account
 account-homepage.cards.card3.link2=Promote another business to lead
+
+report-payment.title=Report a de minimis aid payment
+report-payment.p1=You have not yet reported any payments.
+report-payment.p2=You will need to add the details of any payments of de minimis aid you received for:
+report-payment.ul1-li1=the previous 2 tax years (from 6 April 2019 to 5 April 2021)
+report-payment.ul1-li2=the current tax year (from 6 April 2021 to date)
+report-payment.p3=You will not need details of the Customs Duty waiver as HMRC will already have this information.
+
+add-claim-amount.title=What was the amount of the payment?
+add-claim-amount.p1=This type of aid is measured in euros, so you must convert any aid received from pound sterling into euros.
+
+add-claim-date.title=What date did you receive your payment?
+add-claim-date.error.date.emptyfields=Enter a real date, like 23 11 2019
+add-claim-date.error.day.missing=The date you received your payment must include a day, like 23 11 2019
+add-claim-date.error.day-and-month.missing=The date you received your payment must include a day and month, like 23 11 2019
+add-claim-date.error.day-and-year.missing=The date you received your payment must include a day and year, like 23 11 2019
+add-claim-date.error.month.missing=The date you received your payment must include a month, like 23 11 2019
+add-claim-date.error.month-and-year.missing=The date you received your payment must include a month and year, like 23 11 2019
+add-claim-date.error.year.missing=The date you received your payment must include a year, like 23 11 2019
