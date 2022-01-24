@@ -52,6 +52,14 @@ case object DateFormValues {
         case _                                                                                      => true
       })
     .verifying(
+      "error.date.invalidentry",
+      x =>
+        x match {
+          case x: (String, String, String) => valuesAreInt(x)
+          case _                                                                                      => false
+        }
+    )
+    .verifying(
       "error.day.missing",
       x =>
         x match {
@@ -106,6 +114,7 @@ case object DateFormValues {
       x =>
         x match {
           case (d: String, m: String, y: String) if trim(d) != "" && trim(m) != "" && trim(y) != "" =>
+            valuesAreInt((d,m,y)) &&
             LocalDate.of(trim(y).toInt, trim(m).toInt, trim(d).toInt)
               .isBefore(LocalDate.now(ZoneId.of("Europe/London")))
           case _ => true
@@ -117,4 +126,13 @@ case object DateFormValues {
     )
 
   implicit val format = Json.format[DateFormValues]
+
+  private def valuesAreInt(formInput: (String, String, String)): Boolean =
+    formInput match  {
+      case (d: String, m: String, y: String) if trim(d) != "" && trim(m) != "" && trim(y) != "" =>
+        trim(d).forall(char => Character.isDigit(char)) &&
+          trim(m).forall(char => Character.isDigit(char))  &&
+          trim(y).forall(char => Character.isDigit(char))
+      case _ => false
+    }
 }
