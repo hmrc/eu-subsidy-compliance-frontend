@@ -37,6 +37,7 @@
     id = "claim-trader-ref",
     name = "claim-trader-ref",
     inputType = "tel",
+    value = form.data.get("claim-trader-ref"),
     label = Label(
       content = Text("TODO trader ref")
     ),
@@ -50,7 +51,6 @@
     backLink = None
 ) {
 
-    @form
 
     @* TODO error summary and field errors *@
 
@@ -92,10 +92,12 @@
           RadioItem(
             content = Text("Yes"),
             value = Some("true"),
+            checked = form.data.get("should-store-trader-ref").contains("true"),
             conditionalHtml = Some(textHtml)
           ),
           RadioItem(
             content = Text("No"),
+            checked = form.data.get("should-store-trader-ref").contains("false"),
             value = Some("false")
           )
         )

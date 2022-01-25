@@ -63,6 +63,7 @@
         @govukInput(Input(
             id = "claim-amount",
             name = "claim-amount",
+            value = form.data.get("claim-amount"),
             errorMessage = if (form.hasErrors) {
                 Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
             } else None,

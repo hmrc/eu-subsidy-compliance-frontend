@@ -61,7 +61,8 @@
         @govukInput(Input(
             id = "claim-public-authority",
             name = "claim-public-authority",
-            classes = "govuk-!-width-one-third"
+            classes = "govuk-!-width-one-third",
+            value = form.data.get("claim-public-authority")
         ))
         @button("common.continue")
     }
