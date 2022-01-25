@@ -26,7 +26,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, JourneyTraverseService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,6 +38,7 @@ class BusinessEntityController @Inject()(
   escActionBuilders: EscActionBuilders,
   store: Store,
   escService: EscService,
+  journeyTraverseService: JourneyTraverseService,
   addBusinessPage: AddBusinessPage,
   eoriPage: BusinessEntityEoriPage,
   businessEntityContactPage: BusinessEntityContactPage,
@@ -61,6 +63,7 @@ class BusinessEntityController @Inject()(
     } yield (businessEntityJourneyOpt, undertakingOpt) match {
       case (Some(journey), Some(undertaking)) =>
         val form = journey.addBusiness.value.fold(addBusinessForm)(bool =>  addBusinessForm.fill(FormValues(bool.toString)))
+
         Ok(addBusinessPage(
           form,
           undertaking.name,
@@ -73,22 +76,23 @@ class BusinessEntityController @Inject()(
 
   def postAddBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
+    def handleValidAnswer(form: FormValues) = {
+      val enteredValue =  form.value
+      if(enteredValue === "true") {
+        store.update[BusinessEntityJourney]({ businessEntityOpt =>
+          businessEntityOpt.map(be => be.copy(addBusiness  = be.addBusiness.copy(value = Some(form.value.toBoolean))))
+        }).flatMap(_.next)
+      } else {
+        Future.successful(Redirect(routes.AccountController.getAccountPage()))
+      }
+
+    }
     store.get[Undertaking].flatMap { undertaking =>
       val name: UndertakingName = undertaking.map(_.name).getOrElse(throw new IllegalStateException("missing undertaking name"))
       addBusinessForm.bindFromRequest().fold(
         errors => Future.successful(BadRequest(addBusinessPage(errors, name, List.empty))),
-        form => {
-          val enteredValue =  form.value
-          if(enteredValue === "true") {
-            store.update[BusinessEntityJourney]({ businessEntityOpt =>
-              businessEntityOpt.map(be => be.copy(addBusiness  = be.addBusiness.copy(value = Some(form.value.toBoolean))))
-            }).flatMap(_.next)
-          } else {
-            Future.successful(Redirect(routes.AccountController.getAccountPage()))
-          }
-
-
-        }
+        form => handleValidAnswer(form)
       )
 
     }
@@ -96,57 +100,39 @@ class BusinessEntityController @Inject()(
 
   def getEori: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    getPrevious[BusinessEntityJourney](store).flatMap { previous =>
+    journeyTraverseService.getPrevious[BusinessEntityJourney].flatMap { previous =>
       store.get[BusinessEntityJourney].flatMap {
         case Some(journey) =>
-          journey
-            .eori
-            .value
-            .fold(
-              Future.successful(
-                Ok(eoriPage(
-                  eoriForm,
-                  previous
-                ))
-              )
-            ) { x =>
-              Future.successful(
-                Ok(eoriPage(
-                  eoriForm.fill(FormValues(x.toString)),
-                  previous
-                ))
-              )
-            }
+          val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori.toString)))
+          Future.successful(Ok(eoriPage(form, previous)))
+        case _ => sys.error(" Business Entity journey is missing from session.")
       }
     }
   }
 
   def postEori: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    getPrevious[BusinessEntityJourney](store).flatMap { previous =>
+
+    def handleValidEori(form: FormValues, previous: Uri ) =
+      for {
+        retrievedUndertaking <- escService.retrieveUndertaking(EORI(form.value))
+      } yield {
+        retrievedUndertaking match {
+          case Some(_) =>
+            Future(BadRequest(eoriPage(eoriForm.withError("businessEntityEori", "businessEntityEori.eoriInUse").fill(form), previous)))
+          case _ =>
+            store.update[BusinessEntityJourney]({ businessEntityOpt =>
+              businessEntityOpt.map { businessEntity =>
+                businessEntity.copy(eori = businessEntity.eori.copy(value = Some(EORI(form.value))))
+              }
+            }).flatMap(_.next)
+        }
+      }
+    journeyTraverseService.getPrevious[BusinessEntityJourney].flatMap { previous =>
       eoriForm.bindFromRequest().fold(
         errors => Future.successful(BadRequest(eoriPage(errors, previous))),
-        form => {
-
-          for {
-            retrievedUndertaking <- escService
-              .retrieveUndertaking(EORI(form.value))
-          } yield {
-            retrievedUndertaking match {
-              case Some(_) => {
-                Future(BadRequest(eoriPage(eoriForm.withError("businessEntityEori", "businessEntityEori.eoriInUse").fill(form), previous)))
-              }
-              case _ =>
-                store.update[BusinessEntityJourney]({ businessEntityOpt =>
-                  businessEntityOpt.map { businessEntity =>
-                    businessEntity.copy(eori = businessEntity.eori.copy(value = Some(EORI(form.value))))
-                  }
-                }).flatMap(_.next)
-            }
-          }
-        }.flatten
+        form => (handleValidEori(form, previous)).flatten
       )
-
     }
   }
 

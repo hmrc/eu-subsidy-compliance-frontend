@@ -30,6 +30,7 @@ object CommonTestData {
   val eori1 = EORI("GB123456789012")
   val eori2 = EORI("GB123456789013")
   val eori3 = EORI("GB123456789014")
+  val eori4 = EORI("GB123456789010")
 
   val businessEntity1 = BusinessEntity(EORI(eori1), true, None)
   val businessEntity2 = BusinessEntity(EORI(eori2), true, None)

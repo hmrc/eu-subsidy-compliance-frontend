@@ -23,7 +23,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, FormPage, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, FormPage, JourneyTraverseService, Store}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData._
 
@@ -33,17 +33,22 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class BusinessEntityControllerSpec  extends ControllerSpec
   with AuthSupport
   with JourneyStoreSupport
-  with AuthAndSessionDataBehaviour {
+  with AuthAndSessionDataBehaviour
+  with JourneySupport {
 
   val mockEscService = mock[EscService]
 
   override def overrideBindings           = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
-    bind[EscService].toInstance(mockEscService)
+    bind[EscService].toInstance(mockEscService),
+    bind[JourneyTraverseService].toInstance(mockJourneyTraverseService)
   )
 
+
   val controller = instanceOf[BusinessEntityController]
+
+  val invalidEOris = List("GB1234567890", "AB1234567890", "GB1234567890123")
 
   def mockRetreiveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
     (mockEscService
@@ -220,6 +225,172 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
       }
 
+
+    }
+
+    "handling request to get EORI Page" must {
+      def performAction() = controller.getEori(FakeRequest())
+
+      "throw technical error" when {
+        val exception = new Exception("oh no")
+
+        "call to get previous uri fails" in {
+          inSequence{
+            mockAuthWithNecessaryEnrolment()
+            mockGetPrevious[BusinessEntityJourney](eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+
+        }
+
+        "call to get business entity journey fails" in {
+          inSequence{
+            mockAuthWithNecessaryEnrolment()
+            mockGetPrevious[BusinessEntityJourney](eori1)(Right("/add-member"))
+            mockGet[BusinessEntityJourney](eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+
+        }
+
+        "call to get business entity journey came back empty" in {
+          inSequence{
+            mockAuthWithNecessaryEnrolment()
+            mockGetPrevious[BusinessEntityJourney](eori1)(Right("/add-member"))
+            mockGet[BusinessEntityJourney](eori1)(Right(None))
+          }
+          assertThrows[Exception](await(performAction()))
+
+        }
+
+
+      }
+
+      "display the page" when {
+
+        def test(businessEntityJourney: BusinessEntityJourney) = {
+          val previousUrl  = "add-member"
+          inSequence{
+            mockAuthWithNecessaryEnrolment()
+            mockGetPrevious[BusinessEntityJourney](eori1)(Right(previousUrl))
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+          }
+
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("businessEntityEori.title"),
+            {doc =>
+
+              doc.select(".govuk-back-link").attr("href") shouldBe(previousUrl)
+
+              val input = doc.select(".govuk-input").attr("value")
+              input shouldBe businessEntityJourney.eori.value.map(_.drop(2)).getOrElse("")
+
+              val button = doc.select("form")
+              button.attr("action") shouldBe routes.BusinessEntityController.postEori.url
+            }
+          )
+        }
+
+        "user hasn't already answered the question" in {
+          test(BusinessEntityJourney().copy(
+            addBusiness = FormPage("add-member", true.some)
+          ))
+        }
+
+        "user has already answered the question" in {
+          test(BusinessEntityJourney().copy(
+            addBusiness = FormPage("add-member", true.some),
+            eori = FormPage("add-business-entity-eori", eori1.some)
+          ))
+        }
+
+      }
+
+    }
+
+    "handling request to Post EORI page" must {
+
+      def performAction(data: (String, String)*) = controller
+        .postEori(
+          FakeRequest("POST",routes.BusinessEntityController.getEori().url)
+          .withFormUrlEncodedBody(data: _*))
+
+      "throw technical error" when {
+
+        val exception = new Exception("oh no")
+
+        "call to get previous uri fails" in {
+          inSequence{
+            mockAuthWithNecessaryEnrolment()
+            mockGetPrevious[BusinessEntityJourney](eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+
+        }
+
+        "call to retrieve undertaking fails" in {
+          inSequence{
+            mockAuthWithNecessaryEnrolment()
+            mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
+            mockRetreiveUndertaking(eori4)(Future.failed(exception))
+          }
+          assertThrows[Exception](await(performAction("businessEntityEori" -> "123456789010")))
+
+        }
+
+        "call to update business entity journey fails" in {
+
+          def update(opt: Option[BusinessEntityJourney]) =  opt.map { businessEntity =>
+            businessEntity.copy(eori = businessEntity.eori.copy(value = Some(EORI("123456789010"))))
+          }
+
+          val businessEntityJourney =  BusinessEntityJourney().copy(
+            addBusiness = FormPage("add-member", true.some),
+            eori = FormPage("add-business-entity-eori", eori1.some)
+          ).some
+          inSequence{
+            mockAuthWithNecessaryEnrolment()
+            mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
+            mockRetreiveUndertaking(eori4)(Future.successful(None))
+            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(Left(Error(exception)))
+          }
+
+          assertThrows[Exception](await(performAction("businessEntityEori" -> "123456789010")))
+
+        }
+
+
+
+      }
+
+      "show a form error" when {
+
+        def test(data: (String, String)*)(errorMessageKey: String) = {
+          inSequence{
+            mockAuthWithNecessaryEnrolment()
+            mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
+          }
+          checkFormErrorIsDisplayed(
+            performAction(data: _*),
+            messageFromMessageKey("businessEntityEori.title"),
+            messageFromMessageKey(errorMessageKey)
+          )
+        }
+
+        "No eori is submitted" in {
+          test("businessEntityEori" -> "")("error.businessEntityEori.required")
+        }
+
+        "invalid eori is submitted" in {
+          invalidEOris.foreach { eori =>
+            withClue(s" For eori :: $eori") {
+              test("businessEntityEori" -> eori)("businessEntityEori.regex.error")
+            }
+
+          }
+        }
+      }
 
     }
 
