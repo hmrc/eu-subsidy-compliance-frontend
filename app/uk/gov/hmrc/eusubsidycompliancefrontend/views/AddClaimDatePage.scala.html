@@ -67,15 +67,18 @@
             items = Seq(
                 InputItem(
                     name = "day",
-                    classes = "govuk-input--width-2"
+                    classes = "govuk-input--width-2",
+                    value = form.data.get("day")
                 ),
                 InputItem(
                     name = "month",
-                    classes = "govuk-input--width-2"
+                    classes = "govuk-input--width-2",
+                    value = form.data.get("month")
                 ),
                 InputItem(
                     name = "year",
-                    classes = "govuk-input--width-4"
+                    classes = "govuk-input--width-4",
+                    value = form.data.get("year")
                 )
             ),
             fieldset = Some(Fieldset(
