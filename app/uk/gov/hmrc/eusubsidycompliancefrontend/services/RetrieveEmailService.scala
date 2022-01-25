@@ -49,10 +49,12 @@ class RetrieveEmailServiceImpl @Inject() (retrieveEmailConnector: RetrieveEmailC
     }
   }
 
+
   //If the email is Undeliverable or invalid, it does give a status of OK sometimes but its response is different
   //this method is identifying that response and returning the email address
   private def getEmailAddress(emailAddressResponse: EmailAddressResponse) = emailAddressResponse match {
     case EmailAddressResponse(email, Some(_), None) => email.some
     case _ => None
   }
+
 }
