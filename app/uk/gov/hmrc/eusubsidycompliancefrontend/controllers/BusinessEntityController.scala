@@ -63,6 +63,7 @@ class BusinessEntityController @Inject()(
     } yield (businessEntityJourneyOpt, undertakingOpt) match {
       case (Some(journey), Some(undertaking)) =>
         val form = journey.addBusiness.value.fold(addBusinessForm)(bool =>  addBusinessForm.fill(FormValues(bool.toString)))
+
         Ok(addBusinessPage(
           form,
           undertaking.name,
