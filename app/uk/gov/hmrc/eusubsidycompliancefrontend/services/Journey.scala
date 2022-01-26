@@ -52,7 +52,8 @@ trait Journey {
         _._1.uri
       }
 
-  def next(implicit request: Request[_]): Future[Result] =
+  def next(implicit request: Request[_]): Future[Result] = {
+
     formPages
       .zipWithIndex
       .find(_._2 == currentIndex + 1)
@@ -62,6 +63,7 @@ trait Journey {
           Redirect(uri)
             .withSession(request.session))
       }
+  }
 
   def isEmptyFormPage(
     indexedFormPage: (FormPage[_],Int)

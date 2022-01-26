@@ -31,15 +31,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AccountControllerSpec  extends ControllerSpec
-with AuthSupport
-with JourneyStoreSupport
-with AuthAndSessionDataBehaviour {
+  with AuthSupport
+  with JourneyStoreSupport
+  with AuthAndSessionDataBehaviour {
   val mockEscService = mock[EscService]
 
   override def overrideBindings           = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
-      bind[EscService].toInstance(mockEscService)
+    bind[EscService].toInstance(mockEscService)
   )
 
   val controller = instanceOf[AccountController]
@@ -71,6 +71,7 @@ with AuthAndSessionDataBehaviour {
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
             checkPageIsDisplayed(
               performAction(),
+              messageFromMessageKey("account.title", undertaking.name),
               {doc =>
                 val htmlBody = doc.select(".govuk-grid-column-one-third").html()
                 htmlBody should include regex messageFromMessageKey(
@@ -78,10 +79,10 @@ with AuthAndSessionDataBehaviour {
                   routes.SubsidyController.getReportPayment().url
                 )
                 if(undertaking.undertakingBusinessEntity.length > 1)
-                htmlBody should include regex messageFromMessageKey(
-                  "account-homepage.cards.card3.link1View",
-                  routes.BusinessEntityController.getAddBusinessEntity().url
-                )
+                  htmlBody should include regex messageFromMessageKey(
+                    "account-homepage.cards.card3.link1View",
+                    routes.BusinessEntityController.getAddBusinessEntity().url
+                  )
                 else
                   htmlBody should include regex messageFromMessageKey(
                     "account-homepage.cards.card3.link1Add",
@@ -95,7 +96,7 @@ with AuthAndSessionDataBehaviour {
         }
 
         "there is a view link on the page" in {
-           test(undertaking)
+          test(undertaking)
         }
 
         "there is a add link on the page" in {
@@ -107,14 +108,14 @@ with AuthAndSessionDataBehaviour {
       "throw technical error" when {
         val exception = new Exception("oh no")
 
-         "there is error in retrieving the undertaking" in {
-           inSequence {
-             mockAuthWithNecessaryEnrolment()
-             mockRetreiveUndertaking(eori1)(Future.failed(exception))
-           }
-           assertThrows[Exception](await(performAction()))
+        "there is error in retrieving the undertaking" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.failed(exception))
+          }
+          assertThrows[Exception](await(performAction()))
 
-         }
+        }
 
         "there is an error in fetching eligibility journey data" in {
           inSequence {
@@ -210,16 +211,16 @@ with AuthAndSessionDataBehaviour {
 
         "There is no existing retrieve undertaking" when {
 
-           "eligibility Journey  is not complete and undertaking Journey is blank" in {
-             inSequence {
-               mockAuthWithNecessaryEnrolment()
-               mockRetreiveUndertaking(eori1)(Future.successful(None))
-               mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete.some))
-               mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
-               mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-             }
-             checkIsRedirect(performAction(), routes.EligibilityController.firstEmptyPage())
-           }
+          "eligibility Journey  is not complete and undertaking Journey is blank" in {
+            inSequence {
+              mockAuthWithNecessaryEnrolment()
+              mockRetreiveUndertaking(eori1)(Future.successful(None))
+              mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete.some))
+              mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
+              mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+            }
+            checkIsRedirect(performAction(), routes.EligibilityController.firstEmptyPage())
+          }
 
           "eligibility Journey  is complete and undertaking Journey is not complete" in {
             inSequence {

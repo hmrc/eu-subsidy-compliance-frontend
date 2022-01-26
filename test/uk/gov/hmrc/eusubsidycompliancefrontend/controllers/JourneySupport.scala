@@ -14,16 +14,27 @@
  * limitations under the License.
  */
 
-//package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
-//
-//import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
-//
-//trait JourneySupport { this: ControllerSpec =>
-//
-//  val mockJourney = mock[Journey]
-//
-//  val mockPreviousUri = "/previous"
-//  val mockNextCall = "/next"
-//
-//
-//}
+package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+
+import play.api.libs.json.Reads
+import play.api.mvc.Request
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{Journey, JourneyTraverseService}
+
+import scala.concurrent.Future
+import scala.reflect.ClassTag
+
+trait JourneySupport { this: ControllerSpec =>
+
+  val mockJourneyTraverseService = mock[JourneyTraverseService]
+
+  def mockGetPrevious[A <: Journey : ClassTag](eori: EORI)(result: Either[Error, Uri]) = {
+    (mockJourneyTraverseService
+      .getPrevious(_: ClassTag[A], _: EORI, _: Request[_], _: Reads[A]))
+      .expects(*, eori, *, *)
+      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful(_)))
+  }
+
+}
