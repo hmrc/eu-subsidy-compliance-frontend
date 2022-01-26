@@ -66,6 +66,7 @@
     @govukInput(Input(
       id = "claim-amount",
       name = "claim-amount",
+      prefix = Some(PrefixOrSuffix(content = Text("€"))),
       value = form.data.get("claim-amount"),
       errorMessage = if (form.hasErrors) {
         Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
