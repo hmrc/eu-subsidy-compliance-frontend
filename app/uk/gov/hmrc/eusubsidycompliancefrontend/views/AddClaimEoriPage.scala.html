@@ -40,7 +40,8 @@
     ),
     classes = "govuk-!-width-one-third",
     autocomplete = Some("tel"),
-    value = form.data.get("claim-eori")
+    value = form.data.get("claim-eori"),
+    prefix = Some(PrefixOrSuffix(content = Text("GB")))
   ))
 }
 

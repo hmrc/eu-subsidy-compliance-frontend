@@ -62,15 +62,9 @@ class SubsidyController @Inject()(
         _ = if(journey.isEmpty) store.put(SubsidyJourney())
         undertaking <- store.get[Undertaking]
         reference = undertaking.getOrElse(throw new IllegalStateException("")).reference.getOrElse(throw new IllegalStateException(""))
-<<<<<<< HEAD
         subsidies <- escService.retrieveSubsidy(SubsidyRetrieve(reference, None)).map(e => Some(e)).recoverWith({case _ => Future.successful(Option.empty[UndertakingSubsidies])})
-      } yield (journey, subsidies) match {
-      case (Some(journey), subsidies) => {
-=======
-        subsidies <- connector.retrieveSubsidy(SubsidyRetrieve(reference, None)).map(e => Some(e)).recoverWith({case _ => Future.successful(Option.empty[UndertakingSubsidies])})
       } yield (journey, subsidies, undertaking) match {
       case (Some(journey), subsidies, Some(undertaking)) => {
->>>>>>> WIP content/errors
         journey
           .reportPayment
           .value
@@ -320,8 +314,10 @@ class SubsidyController @Inject()(
   val claimEoriForm: Form[OptionalEORI] = Form(
     mapping(
       "should-claim-eori" -> mandatory("should-claim-eori"),
-      "claim-eori" -> optional(text)
-    )(OptionalEORI.apply)(OptionalEORI.unapply).transform[OptionalEORI](
+      "claim-eori" -> optional(text).verifying("claimEori.error.format", eori => eori.fold(false)(entered => s"GB$entered".matches(EORI.regex)))
+    )((a,b) => OptionalEORI(a, if(b.nonEmpty) Some(s"GB${b.get}") else b)
+    )(a => Some((a.setValue, a.value.fold(Option.empty[String])(e => Some(e.drop(2))))))
+      .transform[OptionalEORI](
       a => if (a.setValue == "false") a.copy(value = None) else a,
       b => b
     )
@@ -331,7 +327,8 @@ class SubsidyController @Inject()(
     mapping(
       "should-store-trader-ref" -> mandatory("should-claim-eori"),
       "claim-trader-ref" -> optional(text)
-    )(OptionalTraderRef.apply)(OptionalTraderRef.unapply).transform[OptionalTraderRef](
+    )(OptionalTraderRef.apply)(OptionalTraderRef.unapply)
+      .transform[OptionalTraderRef](
       a => if (a.setValue == "false") a.copy(value = None) else a,
       b => b
     )
@@ -341,7 +338,13 @@ class SubsidyController @Inject()(
     "claim-public-authority" -> mandatory("claim-public-authority")
   )
 
-  lazy val claimAmountForm : Form[BigDecimal] = Form( mapping("claim-amount" -> bigDecimal)(identity)(Some(_)))
+  lazy val claimAmountForm : Form[BigDecimal] = Form(
+    mapping("claim-amount" -> bigDecimal
+      .verifying("error.amount.incorrectFormat", e => e.scale == 2 || e.scale == 0)
+      .verifying("error.amount.tooBig", e => e.toString().length < 17)
+      .verifying("error.amount.tooSmall", e => e > 0.01)
+  )
+    (identity)(Some(_)))
 
   lazy val claimDateForm : Form[DateFormValues] = Form(
     DateFormValues.vatRegDateMapping

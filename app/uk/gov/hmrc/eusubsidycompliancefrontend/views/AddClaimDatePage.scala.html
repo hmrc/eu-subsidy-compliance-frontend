@@ -48,13 +48,13 @@
   @if(form.hasErrors) {
       @govukErrorSummary(
           ErrorSummary(
-              errorList = form.errors.map { err =>
-                  ErrorLink(
-                      href = Some(s"#${deriveErrorKey("add-claim-date." + err.message)}"),
-                      content = Text(s"${messages(err.message)}"),
-                      attributes = Map("class" ->"govuk-link")
-                  )
-              },
+              Seq(
+              ErrorLink(
+                  href = Some(s"#${deriveErrorKey("add-claim-date." + form.errors.head.message)}"),
+                  content = Text(s"${messages(form.errors.head.message)}"),
+                  attributes = Map("class" ->"govuk-link")
+              )
+              ),
               title = Text(messages("common.error.summary.title"))
           )
       )
