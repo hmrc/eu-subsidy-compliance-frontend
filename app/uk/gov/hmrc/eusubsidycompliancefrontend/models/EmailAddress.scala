@@ -16,10 +16,26 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-import play.api.libs.json.{Json, OFormat}
 
-case class EmailAddress (email: String)
+import play.api.libs.json.{Format, Json, OFormat}
+
+import java.time.LocalDateTime
+
+final case class EmailAddress(value: String) extends AnyVal
 
 object EmailAddress {
-  implicit val format: OFormat[EmailAddress] = Json.format[EmailAddress]
+  implicit val format: Format[EmailAddress] = Json.valueFormat[EmailAddress]
+}
+
+case class Undeliverable(eventId: String)
+
+object Undeliverable {
+  implicit val format: OFormat[Undeliverable] = Json.format[Undeliverable]
+}
+
+
+case class EmailAddressResponse (address: EmailAddress, timestamp: Option[LocalDateTime], undeliverable: Option[Undeliverable])
+
+object EmailAddressResponse {
+  implicit val format: OFormat[EmailAddressResponse] = Json.format[EmailAddressResponse]
 }

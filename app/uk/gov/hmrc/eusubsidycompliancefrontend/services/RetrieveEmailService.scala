@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import com.google.inject.{ImplementedBy, Inject, Singleton}
 import play.api.http.Status._
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.RetrieveEmailConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, Error, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, EmailAddressResponse, Error}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.HttpResponseOps.HttpResponseOps
 import uk.gov.hmrc.http.HeaderCarrier
@@ -43,9 +43,16 @@ class RetrieveEmailServiceImpl @Inject() (retrieveEmailConnector: RetrieveEmailC
       case Right(value) =>
         value.status match {
           case NOT_FOUND => None
-          case OK => value.parseJSON[EmailAddress].fold(_ => sys.error("Error in parsing Email Address"), _.some)
+          case OK => value.parseJSON[EmailAddressResponse].fold(_ => sys.error("Error in parsing Email Address"), getEmailAddress)
           case _ => sys.error("Error in retrieving Email Address")
         }
     }
+  }
+
+  //If the email is Undeliverable or invalid, it does give a status of OK sometimes but its response is different
+  //this method is identifying that response and returning the email address
+  private def getEmailAddress(emailAddressResponse: EmailAddressResponse) = emailAddressResponse match {
+    case EmailAddressResponse(email, Some(_), None) => email.some
+    case _ => None
   }
 }

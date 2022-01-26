@@ -21,9 +21,9 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, Error, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, EscService, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, EscService, RetrieveEmailService, Store, UndertakingJourney}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData.{undertaking, _}
 
@@ -35,11 +35,13 @@ class AccountControllerSpec  extends ControllerSpec
   with JourneyStoreSupport
   with AuthAndSessionDataBehaviour {
   val mockEscService = mock[EscService]
+  val mockRetrieveEmailService = mock[RetrieveEmailService]
 
   override def overrideBindings           = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
-    bind[EscService].toInstance(mockEscService)
+    bind[EscService].toInstance(mockEscService),
+    bind[RetrieveEmailService].toInstance(mockRetrieveEmailService)
   )
 
   val controller = instanceOf[AccountController]
@@ -50,6 +52,15 @@ class AccountControllerSpec  extends ControllerSpec
       .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
       .returning(result)
+
+  def mockRetrieveEmail(eori: EORI)(result: Either[Error, Option[EmailAddress]]) = {
+    (mockRetrieveEmailService
+      .retrieveEmailByEORI(_: EORI)(_: HeaderCarrier))
+      .expects(eori, *)
+      .returning{result
+        .fold(e => Future.failed(e.value
+          .fold(s => new Exception(s), identity)), Future.successful(_))}
+  }
 
   "AccountControllerSpec" when {
 
@@ -64,6 +75,7 @@ class AccountControllerSpec  extends ControllerSpec
         def test(undertaking: Undertaking) = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
             mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
@@ -108,9 +120,19 @@ class AccountControllerSpec  extends ControllerSpec
       "throw technical error" when {
         val exception = new Exception("oh no")
 
+        "there is error in retrieving the email" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+
+        }
+
         "there is error in retrieving the undertaking" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
             mockRetreiveUndertaking(eori1)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction()))
@@ -120,6 +142,7 @@ class AccountControllerSpec  extends ControllerSpec
         "there is an error in fetching eligibility journey data" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
             mockRetreiveUndertaking(eori1)(Future.successful(None))
             mockGet[EligibilityJourney](eori1)(Left(Error(exception)))
           }
@@ -130,6 +153,7 @@ class AccountControllerSpec  extends ControllerSpec
         "there is an error in storing eligibility journey data" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
             mockRetreiveUndertaking(eori1)(Future.successful(None))
             mockGet[EligibilityJourney](eori1)(Right(None))
             mockPut[EligibilityJourney](EligibilityJourney(), eori1)(Left(Error(exception)))
@@ -141,6 +165,7 @@ class AccountControllerSpec  extends ControllerSpec
         "there is an error in retrieving  undertaking  journey data" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
             mockRetreiveUndertaking(eori1)(Future.successful(None))
             mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete.some))
             mockGet[UndertakingJourney](eori1)(Left(Error(exception)))
@@ -154,6 +179,7 @@ class AccountControllerSpec  extends ControllerSpec
           val undertakingData = UndertakingJourney.fromUndertakingOpt(None)
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
             mockRetreiveUndertaking(eori1)(Future.successful(None))
             mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete.some))
             mockGet[UndertakingJourney](eori1)(Right(None))
@@ -167,6 +193,7 @@ class AccountControllerSpec  extends ControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
             mockRetreiveUndertaking(eori1)(Future.successful(None))
             mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
@@ -182,6 +209,7 @@ class AccountControllerSpec  extends ControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
             mockRetreiveUndertaking(eori1)(Future.successful(None))
             mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
@@ -195,6 +223,7 @@ class AccountControllerSpec  extends ControllerSpec
         "there is an error in storing Undertaking data" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
             mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
@@ -209,41 +238,57 @@ class AccountControllerSpec  extends ControllerSpec
 
       "redirect to next page" when {
 
-        "There is no existing retrieve undertaking" when {
-
-          "eligibility Journey  is not complete and undertaking Journey is blank" in {
-            inSequence {
-              mockAuthWithNecessaryEnrolment()
-              mockRetreiveUndertaking(eori1)(Future.successful(None))
-              mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete.some))
-              mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
-              mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-            }
-            checkIsRedirect(performAction(), routes.EligibilityController.firstEmptyPage())
+        "No email is retrieved from cds api" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(Right(None))
           }
+          checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateEmailAddress())
+        }
 
-          "eligibility Journey  is complete and undertaking Journey is not complete" in {
-            inSequence {
-              mockAuthWithNecessaryEnrolment()
-              mockRetreiveUndertaking(eori1)(Future.successful(None))
-              mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
-              mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
-              mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-            }
-            checkIsRedirect(performAction(), routes.UndertakingController.firstEmptyPage())
-          }
+         "email is retrieved from cds api" when {
 
-          "eligibility Journey  and undertaking Journey are  complete" in {
-            inSequence {
-              mockAuthWithNecessaryEnrolment()
-              mockRetreiveUndertaking(eori1)(Future.successful(None))
-              mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
-              mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-              mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+          "there is no existing retrieve undertaking" when {
+
+            "eligibility Journey  is not complete and undertaking Journey is blank" in {
+              inSequence {
+                mockAuthWithNecessaryEnrolment()
+                mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
+                mockRetreiveUndertaking(eori1)(Future.successful(None))
+                mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete.some))
+                mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
+                mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+              }
+              checkIsRedirect(performAction(), routes.EligibilityController.firstEmptyPage())
             }
-            checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity())
+
+            "eligibility Journey  is complete and undertaking Journey is not complete" in {
+              inSequence {
+                mockAuthWithNecessaryEnrolment()
+                mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
+                mockRetreiveUndertaking(eori1)(Future.successful(None))
+                mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
+                mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
+                mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+              }
+              checkIsRedirect(performAction(), routes.UndertakingController.firstEmptyPage())
+            }
+
+            "eligibility Journey  and undertaking Journey are  complete" in {
+              inSequence {
+                mockAuthWithNecessaryEnrolment()
+                mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
+                mockRetreiveUndertaking(eori1)(Future.successful(None))
+                mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
+                mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+                mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+              }
+              checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity())
+            }
           }
         }
+
+
 
       }
 

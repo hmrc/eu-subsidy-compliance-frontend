@@ -27,7 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.RetrieveEmailServiceImpl
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import utils.CommonTestData.{eori1, validEmailAddress}
+import utils.CommonTestData._
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -49,7 +49,9 @@ class RetrieveEmailServiceSpec extends AnyWordSpec with Matchers with MockFactor
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  val emailAddressJson = Json.toJson(validEmailAddress)
+  val validEmailResponseJson= Json.toJson(validEmailResponse)
+  val inValidEmailResponseJson= Json.toJson(inValidEmailResponse)
+  val undeliverableResponseJson = Json.toJson(undeliverableEmailResponse)
 
   "RetrieveEmailServiceSpec" when {
 
@@ -63,8 +65,8 @@ class RetrieveEmailServiceSpec extends AnyWordSpec with Matchers with MockFactor
           assertThrows[RuntimeException](await(result))
         }
 
-        "the http response doesn't come back with status 201(created)" in {
-          mockRetrieveEmail(eori1)(Right(HttpResponse(BAD_REQUEST, emailAddressJson, emptyHeaders)))
+        "the http response doesn't come back with status 200(OK) or 404" in {
+          mockRetrieveEmail(eori1)(Right(HttpResponse(BAD_REQUEST, validEmailResponseJson, emptyHeaders)))
           val result = service.retrieveEmailByEORI(eori1)
           assertThrows[RuntimeException](await(result))
         }
@@ -85,14 +87,26 @@ class RetrieveEmailServiceSpec extends AnyWordSpec with Matchers with MockFactor
 
         "return successfully" when {
 
-          "the http call return with 200 and the body of the response can be parsed" in {
-            mockRetrieveEmail(eori1)(Right(HttpResponse(OK, emailAddressJson, emptyHeaders)))
+          "the http call return with 200 and valid email address response" in {
+            mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
             val result = service.retrieveEmailByEORI(eori1)
             await(result) shouldBe(validEmailAddress.some)
           }
 
           "the http call return with 404 " in {
             mockRetrieveEmail(eori1)(Right(HttpResponse(NOT_FOUND," ")))
+            val result = service.retrieveEmailByEORI(eori1)
+            await(result) shouldBe(None)
+          }
+
+          "the http call return with 200 but the email is Undeliverable " in {
+            mockRetrieveEmail(eori1)(Right(HttpResponse(OK, undeliverableResponseJson, emptyHeaders)))
+            val result = service.retrieveEmailByEORI(eori1)
+            await(result) shouldBe(None)
+          }
+
+          "the http call return with 200 but the email is invalid " in {
+            mockRetrieveEmail(eori1)(Right(HttpResponse(OK, inValidEmailResponseJson, emptyHeaders)))
             val result = service.retrieveEmailByEORI(eori1)
             await(result) shouldBe(None)
           }

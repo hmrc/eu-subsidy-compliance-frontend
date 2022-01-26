@@ -17,12 +17,12 @@
 package utils
 
 import cats.implicits.catsSyntaxOptionId
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, EmailAddress, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidies, UndertakingSubsidyAmendment}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, EmailAddress, EmailAddressResponse, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undeliverable, Undertaking, UndertakingSubsidies, UndertakingSubsidyAmendment}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, IndustrySectorLimit, PhoneNumber, Sector, SubsidyAmount, TraderRef, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, FormPage, SubsidyJourney, UndertakingJourney}
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime}
 
 object CommonTestData {
   val currentDate = LocalDate.of(2021, 1, 20)
@@ -117,4 +117,15 @@ object CommonTestData {
   )
 
   val validEmailAddress = EmailAddress("user@test.com")
+  val inValidEmailAddress = EmailAddress("invalid@email.com")
+  val undeliverableEmailAddress = EmailAddress("undeliverable@address.com")
+
+  val dateTime = Some(LocalDateTime.of(2021, 1, 9, 10, 10))
+
+  val undeliverableEmailResponse = EmailAddressResponse(undeliverableEmailAddress,
+    dateTime,
+    Some(Undeliverable("eventid1"))
+  )
+  val validEmailResponse = EmailAddressResponse(validEmailAddress, dateTime, None)
+  val inValidEmailResponse = EmailAddressResponse(inValidEmailAddress, None, None)
 }

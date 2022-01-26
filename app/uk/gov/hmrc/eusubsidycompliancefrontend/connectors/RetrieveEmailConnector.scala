@@ -43,7 +43,7 @@ class RetrieveEmailConnectorImpl @Inject()(http: HttpClient,
 
   val cdsURL: String = servicesConfig.baseUrl("cds")
 
-  def getUri(eori: EORI) = s"$cdsURL/customs-data-store/${eori.toString}/verified-email"
+  def getUri(eori: EORI) = s"$cdsURL/customs-data-store/eori/${eori.toString}/verified-email"
   override def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] = {
     http
       .GET[HttpResponse](getUri(eori))
