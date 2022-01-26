@@ -53,7 +53,6 @@ class RetrieveEmailConnectorSpec  extends AnyWordSpec
 
   "RetrieveEmailConnectorSpec" when {
      "handling request to retrieve email address by eori" must {
-
        val expectedUrl = s"$protocol://$host:$port/customs-data-store/eori/${eori1.toString}/verified-email"
        behave like connectorBehaviour(
          mockGet(expectedUrl)(_),

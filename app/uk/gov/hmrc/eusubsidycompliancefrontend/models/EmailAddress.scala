@@ -38,5 +38,4 @@ case class EmailAddressResponse (address: EmailAddress, timestamp: Option[LocalD
 
 object EmailAddressResponse {
   implicit val format: OFormat[EmailAddressResponse] = Json.format[EmailAddressResponse]
-
 }

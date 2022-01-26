@@ -29,7 +29,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.RetrieveEmailServiceImpl
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.CommonTestData._
 
-
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -53,7 +52,6 @@ class RetrieveEmailServiceSpec extends AnyWordSpec with Matchers with MockFactor
   val validEmailResponseJson= Json.toJson(validEmailResponse)
   val inValidEmailResponseJson= Json.toJson(inValidEmailResponse)
   val undeliverableResponseJson = Json.toJson(undeliverableEmailResponse)
-
 
   "RetrieveEmailServiceSpec" when {
 
@@ -88,7 +86,6 @@ class RetrieveEmailServiceSpec extends AnyWordSpec with Matchers with MockFactor
         }
 
         "return successfully" when {
-
 
           "the http call return with 200 and valid email address response" in {
             mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))

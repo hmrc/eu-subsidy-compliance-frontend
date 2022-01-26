@@ -17,7 +17,6 @@
 package utils
 
 import cats.implicits.catsSyntaxOptionId
-
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, EmailAddress, EmailAddressResponse, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undeliverable, Undertaking, UndertakingSubsidies, UndertakingSubsidyAmendment}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, IndustrySectorLimit, PhoneNumber, Sector, SubsidyAmount, TraderRef, UndertakingName, UndertakingRef}
@@ -139,7 +138,6 @@ object CommonTestData {
   )
 
   val validEmailAddress = EmailAddress("user@test.com")
-
   val inValidEmailAddress = EmailAddress("invalid@email.com")
   val undeliverableEmailAddress = EmailAddress("undeliverable@address.com")
 
@@ -151,5 +149,4 @@ object CommonTestData {
   )
   val validEmailResponse = EmailAddressResponse(validEmailAddress, dateTime, None)
   val inValidEmailResponse = EmailAddressResponse(inValidEmailAddress, None, None)
-
 }
