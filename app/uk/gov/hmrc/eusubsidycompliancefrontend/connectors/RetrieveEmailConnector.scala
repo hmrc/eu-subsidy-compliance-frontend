@@ -39,7 +39,6 @@ class RetrieveEmailConnectorImpl @Inject()(http: HttpClient,
                                           )(implicit ec: ExecutionContext
                                           ) extends RetrieveEmailConnector {
 
-  val logger: Logger = Logger(this.getClass)
 
   val cdsURL: String = servicesConfig.baseUrl("cds")
 
