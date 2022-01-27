@@ -81,3 +81,5 @@ POST       /add-trader-ref                    uk.gov.hmrc.eusubsidycompliancefro
 
 GET        /check-your-answers-subsidy                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getCheckAnswers
 POST       /check-your-answers-subsidy                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postCheckAnswers
+
+GET       /update-email-address              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.updateEmailAddress
