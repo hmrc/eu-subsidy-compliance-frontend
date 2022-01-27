@@ -17,6 +17,9 @@
 package utils
 
 import cats.implicits.catsSyntaxOptionId
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.emailSend.EmailParameterType.SingleEORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.emailSend.EmailParameters.SingleEORIEmailParameter
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.emailSend.EmailSendRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, EmailAddress, EmailAddressResponse, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undeliverable, Undertaking, UndertakingSubsidies, UndertakingSubsidyAmendment}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, IndustrySectorLimit, PhoneNumber, Sector, SubsidyAmount, TraderRef, UndertakingName, UndertakingRef}
@@ -149,4 +152,8 @@ object CommonTestData {
   )
   val validEmailResponse = EmailAddressResponse(validEmailAddress, dateTime, None)
   val inValidEmailResponse = EmailAddressResponse(inValidEmailAddress, None, None)
+
+  val emailParameter   =
+    SingleEORIEmailParameter(eori1, undertaking.name, undertakingRef, "undertaking Created by Lead EORI")
+  val emailSendRequest = EmailSendRequest(List(EmailAddress("user@test.com")), "templateId1", emailParameter)
 }
