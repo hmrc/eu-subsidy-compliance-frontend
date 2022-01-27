@@ -16,8 +16,10 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.catsSyntaxOptionId
 
+import cats.implicits.catsSyntaxOptionId
+import cats.implicits.toTraverseOps
+import play.api.Configuration
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.data.Forms.mapping
@@ -27,6 +29,11 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, OneOf, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, JourneyTraverseService, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.emailSend.EmailParameters.SingleEORIEmailParameter
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.emailSend.EmailSendResult
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, RetrieveEmailService, SendEmailService, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,6 +44,9 @@ class UndertakingController @Inject()(
   escActionBuilders: EscActionBuilders,
   store: Store,
   escService: EscService,
+  sendEmailService: SendEmailService,
+  configuration: Configuration,
+  retrieveEmailService: RetrieveEmailService,
   journeyTraverseService: JourneyTraverseService,
   undertakingNamePage: UndertakingNamePage,
   undertakingSectorPage: UndertakingSectorPage,
@@ -54,6 +64,7 @@ class UndertakingController @Inject()(
 
   def firstEmptyPage: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
     store.get[UndertakingJourney].map {
       case Some(journey) =>
         journey
@@ -191,6 +202,8 @@ class UndertakingController @Inject()(
 
   def postCheckAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
+    val templateId =  configuration.get[String]("create-undertaking-template-en")
     cyaForm.bindFromRequest().fold(
       _ => throw new IllegalStateException("value hard-coded, form hacking?"),
       form =>
@@ -210,6 +223,12 @@ class UndertakingController @Inject()(
                       None,
                       List(BusinessEntity(eori, leadEORI = true, updatedJourney.contact.value)
                     )))
+            emailParameters = SingleEORIEmailParameter(eori, undertakingName, ref,  "undertaking Created by Lead EORI")
+            emailAddress <- retrieveEmailService.retrieveEmailByEORI(eori)
+            _ <- emailAddress match {
+              case Some(email) => sendEmailService.sendEmail(email, emailParameters, templateId)
+              case  None => Future.successful(EmailSendResult.EmailSentFailure)
+            }
 
           } yield Redirect(routes.UndertakingController.getConfirmation(ref, updatedJourney.name.value.getOrElse("")))
 
