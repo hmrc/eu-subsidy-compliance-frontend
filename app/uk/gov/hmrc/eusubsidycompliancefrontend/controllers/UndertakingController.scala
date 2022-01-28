@@ -233,7 +233,6 @@ class UndertakingController @Inject()(
 
   //This method creates undertaking, checks for the language, fetches the appropriate template as per the lang
   //call the retrieve email service and sends the email to retrieved email address
-
   private def createUndertakingAndSendEmail(undertaking: Undertaking, eori: EORI, undertakingJourney: UndertakingJourney)(implicit request: EscAuthRequest[_]) =     for {
     ref <- escService.createUndertaking(undertaking)
     lang <- getLanguage
