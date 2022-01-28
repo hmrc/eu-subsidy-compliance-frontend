@@ -34,6 +34,7 @@ object CommonTestData {
   val eori2 = EORI("GB123456789013")
   val eori3 = EORI("GB123456789014")
   val eori4 = EORI("GB123456789010")
+  val contactDetails = ContactDetails(PhoneNumber("111").some, None).some
 
   val contactDetails = ContactDetails(PhoneNumber("111").some, None).some
   val contactDetails1 = ContactDetails(PhoneNumber("1121").some, None).some
@@ -43,6 +44,8 @@ object CommonTestData {
   val businessEntity2 = BusinessEntity(EORI(eori2), true, None)
   val businessEntity3 = BusinessEntity(EORI(eori3), true, None)
   val businessEntity4 = BusinessEntity(EORI(eori4), false, contactDetails1)
+  val businessEntity5 = BusinessEntity(EORI(eori1), true, contactDetails)
+
 
 
   val undertakingRef = UndertakingRef("UR123456")
@@ -85,6 +88,13 @@ object CommonTestData {
     LocalDate.of(2021,1,18).some,
     List(businessEntity1, businessEntity4))
 
+  val undertakingCreated = Undertaking(None,
+    UndertakingName("TestUndertaking"),
+    transport,
+    None, None,
+    List(businessEntity5))
+
+
   val subsidyRetrieve = SubsidyRetrieve(
     undertakingRef, None
   )
@@ -113,7 +123,6 @@ object CommonTestData {
   signOutBadEori = FormPage("incorrect-eori", false.some),
   createUndertaking = FormPage("create-undertaking", true.some)
   )
-
 
 
   val undertakingJourneyComplete =  UndertakingJourney(
@@ -153,7 +162,6 @@ object CommonTestData {
   val validEmailResponse = EmailAddressResponse(validEmailAddress, dateTime, None)
   val inValidEmailResponse = EmailAddressResponse(inValidEmailAddress, None, None)
 
-  val emailParameter   =
-    SingleEORIEmailParameter(eori1, undertaking.name, undertakingRef, "undertaking Created by Lead EORI")
+  val emailParameter   = SingleEORIEmailParameter(eori1, undertaking.name, undertakingRef, "undertaking Created by Lead EORI")
   val emailSendRequest = EmailSendRequest(List(EmailAddress("user@test.com")), "templateId1", emailParameter)
 }

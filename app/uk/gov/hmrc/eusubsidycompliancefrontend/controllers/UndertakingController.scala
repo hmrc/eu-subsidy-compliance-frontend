@@ -31,7 +31,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, JourneyTrav
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.emailSend.EmailParameters.SingleEORIEmailParameter
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.emailSend.EmailSendResult
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{RetrieveEmailService, SendEmailService}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Language, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, RetrieveEmailService, SendEmailService, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import java.util.Locale
@@ -62,7 +64,7 @@ class UndertakingController @Inject()(
   import escActionBuilders._
 
   val  templateIdEN = configuration.get[String]("email-send.create-undertaking-template-en")
-  val  templateIdCY = configuration.get[String]("email-send.create-undertaking-template-en")
+  val  templateIdCY = configuration.get[String]("email-send.create-undertaking-template-cy")
 
   def firstEmptyPage: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -231,7 +233,8 @@ class UndertakingController @Inject()(
 
   //This method creates undertaking, checks for the language, fetches the appropriate template as per the lang
   //call the retrieve email service and sends the email to retrieved email address
-  private def createUndertakingAndSendEmail(undertaking: Undertaking, eori: EORI, undertakingJourney: UndertakingJourney)(implicit request: EscAuthRequest[_]): Future[Result] = for {
+
+  private def createUndertakingAndSendEmail(undertaking: Undertaking, eori: EORI, undertakingJourney: UndertakingJourney)(implicit request: EscAuthRequest[_]) =     for {
     ref <- escService.createUndertaking(undertaking)
     lang <- getLanguage
     templateId = getTemplateId(lang)
