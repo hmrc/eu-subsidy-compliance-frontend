@@ -63,19 +63,19 @@ class SubsidyController @Inject()(
         undertaking <- store.get[Undertaking]
         reference = undertaking.getOrElse(throw new IllegalStateException("")).reference.getOrElse(throw new IllegalStateException(""))
         subsidies <- escService.retrieveSubsidy(SubsidyRetrieve(reference, None)).map(e => Some(e)).recoverWith({case _ => Future.successful(Option.empty[UndertakingSubsidies])})
-      } yield (journey, subsidies) match {
-      case (Some(journey), subsidies) => {
+      } yield (journey, subsidies, undertaking) match {
+      case (Some(journey), subsidies, Some(undertaking)) => {
         journey
           .reportPayment
           .value
           .fold(
-            Ok(reportPaymentPage(subsidies)) // TODO populate subsidy list
+            Ok(reportPaymentPage(subsidies, undertaking)) // TODO populate subsidy list
           ) { x =>
-            Ok(reportPaymentPage(subsidies))
+            Ok(reportPaymentPage(subsidies, undertaking))
           }
       }
-      case (None, None) => // initialise the empty Journey model
-        Ok(reportPaymentPage())
+      case (None, None, Some(undertaking)) => // initialise the empty Journey model
+        Ok(reportPaymentPage(None, undertaking))
     }
   }
 
@@ -103,11 +103,11 @@ class SubsidyController @Inject()(
           .value
           .fold(
             Future.successful(
-              Ok(addClaimAmountPage(claimAmountForm))
+              Ok(addClaimAmountPage(claimAmountForm, journey.previous))
             )
           ) { x =>
             Future.successful(
-              Ok(addClaimAmountPage(claimAmountForm.fill(x)))
+              Ok(addClaimAmountPage(claimAmountForm.fill(x), journey.previous))
             )
           }
     }
@@ -115,16 +115,18 @@ class SubsidyController @Inject()(
 
   def postAddClaimAmount: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    claimAmountForm.bindFromRequest().fold(
-      formWithErrors => Future.successful(BadRequest(addClaimAmountPage(formWithErrors))),
-      form => {
-        store.update[SubsidyJourney]({ x =>
-          x.map { y =>
-            y.copy(claimAmount = y.claimAmount.copy(value = Some(form)))
-          }
-        }).flatMap(_.next)
-      }
-    )
+    getPrevious[SubsidyJourney](store).flatMap { previous =>
+      claimAmountForm.bindFromRequest().fold(
+        formWithErrors => Future.successful(BadRequest(addClaimAmountPage(formWithErrors, previous))),
+        form => {
+          store.update[SubsidyJourney]({ x =>
+            x.map { y =>
+              y.copy(claimAmount = y.claimAmount.copy(value = Some(form)))
+            }
+          }).flatMap(_.next)
+        }
+      )
+    }
   }
 
   def getClaimDate: Action[AnyContent] = escAuthentication.async { implicit request =>
@@ -136,11 +138,17 @@ class SubsidyController @Inject()(
           .value
           .fold(
             Future.successful(
-              Ok(addClaimDatePage(claimDateForm))
+              Ok(addClaimDatePage(
+                claimDateForm, 
+                journey.previous
+              ))
             )
           ) { x =>
             Future.successful(
-              Ok(addClaimDatePage(claimDateForm.fill(x)))
+              Ok(addClaimDatePage(
+                claimDateForm.fill(x),
+                journey.previous
+              ))
             )
           }
     }
@@ -148,16 +156,18 @@ class SubsidyController @Inject()(
 
   def postClaimDate: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    claimDateForm.bindFromRequest().fold(
-      formWithErrors => Future(BadRequest(addClaimDatePage(formWithErrors))),
-      form => {
-        store.update[SubsidyJourney]({ x =>
-          x.map { y =>
-            y.copy(claimDate = y.claimDate.copy(value = Some(form)))
-          }
-        }).flatMap(_.next)
-      }
-    )
+    getPrevious[SubsidyJourney](store).flatMap { previous =>
+      claimDateForm.bindFromRequest().fold(
+        formWithErrors => Future(BadRequest(addClaimDatePage(formWithErrors, previous))),
+        form => {
+          store.update[SubsidyJourney]({ x =>
+            x.map { y =>
+              y.copy(claimDate = y.claimDate.copy(value = Some(form)))
+            }
+          }).flatMap(_.next)
+        }
+      )
+    }
   }
 
   def getAddClaimEori: Action[AnyContent] = escAuthentication.async { implicit request =>
@@ -169,12 +179,12 @@ class SubsidyController @Inject()(
           .value
           .fold(
             Future.successful(
-              Ok(addClaimEoriPage(claimEoriForm))
+              Ok(addClaimEoriPage(claimEoriForm, journey.previous))
             )
           ) { x =>
             val a = x.fold("false")(_ => "true") // fix this
             Future.successful(
-              Ok(addClaimEoriPage(claimEoriForm.fill(OptionalEORI(a,x))))
+              Ok(addClaimEoriPage(claimEoriForm.fill(OptionalEORI(a,x)), journey.previous))
             )
           }
     }
@@ -184,7 +194,7 @@ class SubsidyController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     getPrevious[SubsidyJourney](store).flatMap { previous =>
       claimEoriForm.bindFromRequest().fold(
-        formWithErrors => Future.successful(BadRequest(addClaimEoriPage(formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(addClaimEoriPage(formWithErrors, previous))),
         form => {
           store.update[SubsidyJourney]({ x =>
             x.map { y =>
@@ -314,8 +324,10 @@ class SubsidyController @Inject()(
   val claimEoriForm: Form[OptionalEORI] = Form(
     mapping(
       "should-claim-eori" -> mandatory("should-claim-eori"),
-      "claim-eori" -> optional(text)
-    )(OptionalEORI.apply)(OptionalEORI.unapply).transform[OptionalEORI](
+      "claim-eori" -> optional(text).verifying("error.format", eori => eori.fold(false)(entered => s"GB$entered".matches(EORI.regex)))
+    )((a,b) => OptionalEORI(a, if(b.nonEmpty) Some(s"GB${b.get}") else b)
+    )(a => Some((a.setValue, a.value.fold(Option.empty[String])(e => Some(e.drop(2))))))
+      .transform[OptionalEORI](
       a => if (a.setValue == "false") a.copy(value = None) else a,
       b => b
     )
@@ -325,7 +337,8 @@ class SubsidyController @Inject()(
     mapping(
       "should-store-trader-ref" -> mandatory("should-claim-eori"),
       "claim-trader-ref" -> optional(text)
-    )(OptionalTraderRef.apply)(OptionalTraderRef.unapply).transform[OptionalTraderRef](
+    )(OptionalTraderRef.apply)(OptionalTraderRef.unapply)
+      .transform[OptionalTraderRef](
       a => if (a.setValue == "false") a.copy(value = None) else a,
       b => b
     )
@@ -335,7 +348,13 @@ class SubsidyController @Inject()(
     "claim-public-authority" -> mandatory("claim-public-authority")
   )
 
-  lazy val claimAmountForm : Form[BigDecimal] = Form( mapping("claim-amount" -> bigDecimal)(identity)(Some(_)))
+  lazy val claimAmountForm : Form[BigDecimal] = Form(
+    mapping("claim-amount" -> bigDecimal
+      .verifying("error.amount.incorrectFormat", e => e.scale == 2 || e.scale == 0)
+      .verifying("error.amount.tooBig", e => e.toString().length < 17)
+      .verifying("error.amount.tooSmall", e => e > 0.01)
+  )
+    (identity)(Some(_)))
 
   lazy val claimDateForm : Form[DateFormValues] = Form(
     DateFormValues.vatRegDateMapping

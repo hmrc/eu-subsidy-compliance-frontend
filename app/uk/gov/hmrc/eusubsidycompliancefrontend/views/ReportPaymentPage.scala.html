@@ -19,32 +19,42 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.Subsidy
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.UndertakingSubsidies
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @this(
-    layout: Layout,
-    formHelper: FormWithCSRF,
-    button: components.Button,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios : GovukRadios
+  layout: Layout,
+  formHelper: FormWithCSRF,
+  button: components.Button,
+  govukErrorSummary: GovukErrorSummary,
+  govukRadios : GovukRadios
 )
 
-@(subsidies: Option[UndertakingSubsidies] = None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(subsidies: Option[UndertakingSubsidies] = None, undertaking: Undertaking)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-    pageTitle = Some(messages("createUndertaking.title")),
-    backLinkEnabled = false,
-    backLink = None
+  pageTitle = Some(messages("report-payment.title")),
+  backLinkEnabled = false,
+  backLink = None
 ) {
 
-    @* TODO build list *@
+  @* TODO build list *@
+  @P("[TODO: BACK BUTTON]")
 
-    <h1>below</h1>
-    @subsidies
-    @formHelper(action = controllers.routes.SubsidyController.postReportPayment) {
+  @subsidies
+  @formHelper(action = controllers.routes.SubsidyController.postReportPayment) {
+    <span class="govuk-caption-xl">@undertaking.name</span>
+    @H1(messages("report-payment.title"))
+    @P(messages("report-payment.p1"))
+    @P(messages("report-payment.p2"))
 
-        <h1 class="govuk-heading-xl">Add amend or remove state aid ... TODO</h1>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>@messages("report-payment.ul1-li1")</li>
+      <li>@messages("report-payment.ul1-li2")</li>
+    </ul>
 
-        <input type=hidden name=reportPayment value=true>
-        @button("common.continue")
-    }
+    @P(messages("report-payment.p3"))
+    <input type=hidden name=reportPayment value=true>
+    @button("common.continue")
+  }
 }

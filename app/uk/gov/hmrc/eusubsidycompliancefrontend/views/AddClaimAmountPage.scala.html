@@ -19,61 +19,63 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.Subsidy
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @this(
-    layout: Layout,
-    formHelper: FormWithCSRF,
-    button: components.Button,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios : GovukRadios,
-    govukInput : GovukInput
+  layout: Layout,
+  formHelper: FormWithCSRF,
+  button: components.Button,
+  govukErrorSummary: GovukErrorSummary,
+  govukRadios : GovukRadios,
+  govukInput : GovukInput
 )
 
-
-@(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
+@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-    pageTitle = Some(messages("createUndertaking.title")),
-    backLinkEnabled = false,
-    backLink = None
+  pageTitle = Some(messages("createUndertaking.title")),
+  backLinkEnabled = true,
+  backLink = Some(previous)
 ) {
 
-    @if(form.hasErrors) {
-        @govukErrorSummary(
-            ErrorSummary(
-                errorList = form.errors.map { err =>
-                    ErrorLink(
-                        href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(err.message)}"),
-                        attributes = Map("class" ->"govuk-link")
-                    )
-                },
-                title = Text(messages("common.error.summary.title"))
-            )
-        )
-    }
+  @if(form.hasErrors) {
+    @govukErrorSummary(
+      ErrorSummary(
+        errorList = form.errors.map { err =>
+          ErrorLink(
+            href = Some(s"#${err.key}"),
+            content = Text(s"${messages(err.message)}"),
+            attributes = Map("class" ->"govuk-link")
+          )
+        },
+        title = Text(messages("common.error.summary.title"))
+      )
+    )
+  }
 
-    @* TODO error summary and field errors *@
+  @formHelper(action = controllers.routes.SubsidyController.postAddClaimAmount()) {
 
-    @formHelper(action = controllers.routes.SubsidyController.postAddClaimAmount()) {
+    @H1(messages("add-claim-amount.title"))
+    @P(messages("add-claim-amount.p1"))
+    @P(messages("add-claim-amount.p2"))
 
-      <h1 class="govuk-heading-xl">Add Claim Amount</h1>
+    @govukInput(Input(
+      id = "claim-amount",
+      name = "claim-amount",
+      prefix = Some(PrefixOrSuffix(content = Text("€"))),
+      value = form.data.get("claim-amount"),
+      errorMessage = if (form.hasErrors) {
+        Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
+      } else None,
+      label = Label(
+        classes = "govuk-visually-hidden",
+        isPageHeading = false,
+        content = Text(messages("add-claim-amount.title"))
+      ),
+      classes = "govuk-input--width-5",
+      autocomplete = Some("tel")
+    ))
 
-        @govukInput(Input(
-            id = "claim-amount",
-            name = "claim-amount",
-            value = form.data.get("claim-amount"),
-            errorMessage = if (form.hasErrors) {
-                Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
-            } else None,
-            label = Label(
-                content = Text("This can only be a GB EORI TODO use messages")
-            ),
-            classes = "govuk-!-width-one-third",
-            autocomplete = Some("tel")
-        ))
-
-      @button("common.continue")
-    }
+    @button("common.continue")
+  }
 }
