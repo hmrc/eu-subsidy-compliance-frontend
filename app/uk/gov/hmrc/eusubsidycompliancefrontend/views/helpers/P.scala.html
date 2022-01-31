@@ -15,4 +15,4 @@
  *@
 
 @(content: String, classes: Option[String] = None)(implicit messages: play.api.i18n.Messages)
-<p class=@classes.getOrElse("govuk-body")>@content</p>
+<p class=@classes.getOrElse("govuk-body")>@Html(content)</p>

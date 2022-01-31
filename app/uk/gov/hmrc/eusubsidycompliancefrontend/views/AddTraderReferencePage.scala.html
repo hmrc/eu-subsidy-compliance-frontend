@@ -21,82 +21,77 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
-    layout: Layout,
-    formHelper: FormWithCSRF,
-    button: components.Button,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios : GovukRadios,
-    govukInput : GovukInput
+  layout: Layout,
+  formHelper: FormWithCSRF,
+  button: components.Button,
+  govukErrorSummary: GovukErrorSummary,
+  govukRadios : GovukRadios,
+  govukInput : GovukInput
 )
 
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @textHtml = {
-@govukInput(Input(
+  @govukInput(Input(
     id = "claim-trader-ref",
     name = "claim-trader-ref",
-    inputType = "tel",
     value = form.data.get("claim-trader-ref"),
     label = Label(
-      content = Text("TODO trader ref")
+      content = Text(messages("add-claim-trader-reference.label"))
     ),
-    classes = "govuk-!-width-one-third"
+    classes = "govuk-input govuk-input--width-20"
   ))
 }
 
 @layout(
-    pageTitle = Some(messages("createUnding.title")),
+    pageTitle = Some(messages("add-claim-trader-reference.title")),
     backLinkEnabled = false,
     backLink = None
 ) {
-
-
-    @* TODO error summary and field errors *@
-
     @formHelper(action = controllers.routes.SubsidyController.postAddClaimReference()) {
 
-      <h1 class="govuk-heading-xl">Add trader ref</h1>
+      <p class="govuk-body">[TODO: Back button]</p>
 
-        @if(form.hasErrors) {
-            @govukErrorSummary(
-                ErrorSummary(
-                    errorList = form.errors.map { err =>
-                        ErrorLink(
-                            href = Some(s"#${err.key}"),
-                            content = Text(s"${messages(err.message)}"),
-                            attributes = Map("class" ->"govuk-link")
-                        )
-                    },
-                    title = Text(messages("common.error.summary.title"))
-                )
-            )
-        }
+      @if(form.hasErrors) {
+          @govukErrorSummary(
+              ErrorSummary(
+                  errorList = form.errors.map { err =>
+                      ErrorLink(
+                          href = Some(s"#${err.key}"),
+                          content = Text(s"${messages("add-claim-trader-reference." + err.message)}"),
+                          attributes = Map("class" ->"govuk-link")
+                      )
+                  },
+                  title = Text(messages("common.error.summary.title"))
+              )
+          )
+      }
 
       @govukRadios(Radios(
         fieldset = Some(Fieldset(
           legend = Some(Legend(
-            content = Text("TODO: do you want to add a trader ref"),
-            classes = "govuk-fieldset__legend--l",
+            content = Text(messages("add-claim-trader-reference.title")),
+            classes = "govuk-fieldset__legend--xl",
             isPageHeading = true
           ))
         )),
         hint = Some(Hint(
-          content = Text("this is for your own TODO")
+          content = Text(messages("add-claim-trader-reference.hint"))
         )),
         errorMessage = if (form.hasErrors) {
-            Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
+            Some(ErrorMessage(content = Text(messages("add-claim-trader-reference." + form.errors.head.message))))
         } else None,
         name = "should-store-trader-ref",
         items = Seq(
           RadioItem(
-            content = Text("Yes"),
+            content = Text(messages("common.yes")),
             value = Some("true"),
             checked = form.data.get("should-store-trader-ref").contains("true"),
             conditionalHtml = Some(textHtml)
           ),
           RadioItem(
-            content = Text("No"),
+            content = Text(messages("common.no")),
             checked = form.data.get("should-store-trader-ref").contains("false"),
             value = Some("false")
           )

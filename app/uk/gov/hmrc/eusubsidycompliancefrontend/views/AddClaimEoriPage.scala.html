@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
@@ -28,17 +29,18 @@
 )
 
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @textHtml = {
-@govukInput(Input(
+  @govukInput(Input(
     id = "claim-eori",
     name = "claim-eori",
     inputType = "tel",
     label = Label(
-      content = Text("This can only be a GB EORI TODO use messages")
+      content = Text(messages("add-claim-eori.label")),
+      classes = "govuk-label--s"
     ),
-    classes = "govuk-!-width-one-third",
+    classes = "govuk-input--width-20",
     autocomplete = Some("tel"),
     value = form.data.get("claim-eori"),
     prefix = Some(PrefixOrSuffix(content = Text("GB")))
@@ -46,49 +48,43 @@
 }
 
 @layout(
-    pageTitle = Some(messages("createUndertaking.title")),
-    backLinkEnabled = false,
-    backLink = None
+    pageTitle = Some(messages("add-claim-eori.title")),
+    backLinkEnabled = true,
+    backLink = Some(previous)
 ) {
 
     @if(form.hasErrors) {
         @govukErrorSummary(
             ErrorSummary(
-                errorList = form.errors.map { err =>
-                    ErrorLink(
-                        href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(err.message)}"),
-                        attributes = Map("class" ->"govuk-link")
-                    )
-                },
+                errorList = Seq(
+                  ErrorLink(
+                      href = Some(s"#${form.errors.head.key}"),
+                      content = Text(s"${messages("add-claim-eori." + form.errors.head.message)}"),
+                      attributes = Map("class" ->"govuk-link")
+                  )
+                ),
                 title = Text(messages("common.error.summary.title"))
             )
         )
     }
 
-    @* TODO error summary and field errors *@
-
     @formHelper(action = controllers.routes.SubsidyController.postAddClaimEori) {
-
-      <h1 class="govuk-heading-xl">Add an eori or not ... TODO</h1>
-
-    @form.data.get("should-claim-eori")
 
       @govukRadios(Radios(
         fieldset = Some(Fieldset(
           legend = Some(Legend(
-            content = Text("How would you like to add an eori TODO?"),
-            classes = "govuk-fieldset__legend--l",
+            content = Text(messages("add-claim-eori.title")),
+            classes = "govuk-fieldset__legend--xl",
             isPageHeading = true
           ))
         )),
         errorMessage = if (form.hasErrors) {
-            Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
+            Some(ErrorMessage(content = Text(messages("add-claim-eori." + form.errors.head.message))))
         } else None,
         hint = Some(Hint(
-        content = Text("this is for your own TODO")
+        content = Text(messages("add-claim-eori.hint"))
         )),
-        idPrefix = Some("claim-eori"),
+        idPrefix = Some("should-claim-eori"),
         name = "should-claim-eori",
         items = Seq(
           RadioItem(

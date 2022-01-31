@@ -33,10 +33,12 @@
 @(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-    pageTitle = Some(messages("addClaimAuthority.title")),
+    pageTitle = Some(messages("add-claim-public-authority.title")),
     backLinkEnabled = false,
     backLink = None
 ) {
+
+  <p class="govuk-body">[TODO: Back button]</p>
 
     @if(form.hasErrors) {
         @govukErrorSummary(
@@ -53,17 +55,25 @@
         )
     }
 
-
     @formHelper(action = controllers.routes.SubsidyController.postAddClaimPublicAuthority()) {
 
-      <h1 class="govuk-heading-xl">Add public authority</h1>
-
-        @govukInput(Input(
-            id = "claim-public-authority",
-            name = "claim-public-authority",
-            classes = "govuk-!-width-one-third",
-            value = form.data.get("claim-public-authority")
-        ))
-        @button("common.continue")
+      @govukInput(Input(
+        id = "claim-public-authority",
+        name = "claim-public-authority",
+        classes = "govuk-!-width-one-third",
+        errorMessage = if (form.hasErrors) {
+            Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
+        } else None,
+        hint = Some(Hint(
+          content = Text(messages("add-claim-public-authority.hint"))
+        )),
+        label = Label(
+          isPageHeading = true,
+          classes = "govuk-label--xl",
+          content = Text(messages("add-claim-public-authority.title"))
+        ),
+        value = form.data.get("claim-public-authority")
+      ))
+      @button("common.continue")
     }
 }

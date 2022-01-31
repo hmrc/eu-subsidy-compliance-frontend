@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 
 @this(
@@ -40,11 +41,9 @@
 ) {
 
     @formHelper(action = controllers.routes.SubsidyController.postCheckAnswers) {
-        @*TODO - this might need to be a GovukInput *@
         <input type=hidden name=cya value=true>
 
-        <h1 class="govuk-heading-l">@messages("subsidy.cya.title")</h1>
-        <h2 class="govuk-heading-m">@messages("subsidy.cya.h2")</h2>
+        @H1(messages("subsidy.cya.title"))
 
         @govukSummaryList(SummaryList(
             rows = Seq(
@@ -53,7 +52,7 @@
                         content = Text(messages("subsidy.cya.summary-list.claimDate.key"))
                     ),
                     value = Value(
-                        content = Text(claimDate.toString)
+                        content = Text(claimDate.toFormat)
                     ),
                     actions = Some(Actions(
                         items = Seq(
@@ -87,7 +86,7 @@
                         content = Text(messages("subsidy.cya.summary-list.claim.key"))
                     ),
                     value = Value(
-                        content = Text(claimEori.toString)
+                        content = Text(claimEori.getOrElse(""))
                     ),
                     actions = Some(Actions(
                         items = Seq(
@@ -121,7 +120,7 @@
                         content = Text(messages("subsidy.cya.summary-list.traderRef.key"))
                     ),
                     value = Value(
-                        content = Text(traderRef.toString)
+                        content = Text(traderRef.getOrElse(""))
                     ),
                     actions = Some(Actions(
                         items = Seq(
@@ -136,7 +135,7 @@
             )
         ))
 
-        <p class="govuk-body">@messages("undertaking.cya.p")</p>
+        @P(messages("subsidy.cya.p1"))
 
         @button("common.continue")
     }

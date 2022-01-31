@@ -30,14 +30,12 @@
   govukInput : GovukInput
 )
 
-
-@(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
+@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
   pageTitle = Some(messages("createUndertaking.title")),
-  backLinkEnabled = false,
-  backLink = None
+  backLinkEnabled = true,
+  backLink = Some(previous)
 ) {
 
   @if(form.hasErrors) {
@@ -55,13 +53,11 @@
     )
   }
 
-  @* TODO error summary and field errors *@
-
   @formHelper(action = controllers.routes.SubsidyController.postAddClaimAmount()) {
 
-    <h1 class="govuk-heading-xl">Add Claim Amount</h1>
     @H1(messages("add-claim-amount.title"))
     @P(messages("add-claim-amount.p1"))
+    @P(messages("add-claim-amount.p2"))
 
     @govukInput(Input(
       id = "claim-amount",
@@ -72,9 +68,11 @@
         Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
       } else None,
       label = Label(
-        content = Text("This can only be a GB EORI TODO use messages")
+        classes = "govuk-visually-hidden",
+        isPageHeading = false,
+        content = Text(messages("add-claim-amount.title"))
       ),
-      classes = "govuk-!-width-one-third",
+      classes = "govuk-input--width-5",
       autocomplete = Some("tel")
     ))
 

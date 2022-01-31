@@ -34,6 +34,10 @@ case class DateFormValues(day: String, month: String, year: String) {
     case _ => false
   }
 
+  def toFormat: String = {
+    day + "/" + month + "/" + year
+  }
+
 }
 
 case object DateFormValues {
