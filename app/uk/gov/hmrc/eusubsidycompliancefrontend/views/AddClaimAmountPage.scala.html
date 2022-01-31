@@ -33,7 +33,7 @@
 @(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-  pageTitle = Some(messages("createUndertaking.title")),
+  pageTitle = Some(messages("add-claim-amount.title")),
   backLinkEnabled = true,
   backLink = Some(previous)
 ) {
@@ -44,7 +44,7 @@
         errorList = form.errors.map { err =>
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.message)}"),
+            content = Text(s"${messages("add-claim-amount." + err.message)}"),
             attributes = Map("class" ->"govuk-link")
           )
         },
@@ -65,7 +65,7 @@
       prefix = Some(PrefixOrSuffix(content = Text("€"))),
       value = form.data.get("claim-amount"),
       errorMessage = if (form.hasErrors) {
-        Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
+        Some(ErrorMessage(content = Text(messages("add-claim-amount." + form.errors.head.message))))
       } else None,
       label = Label(
         classes = "govuk-visually-hidden",
