@@ -33,11 +33,12 @@
     govukSummaryList : GovukSummaryList
 )
 
-@(claimDate: DateFormValues, amount: BigDecimal, claimEori: Option[EORI], authority: String, traderRef: Option[TraderRef])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(claimDate: DateFormValues, amount: BigDecimal, claimEori: Option[EORI], authority: String, traderRef: Option[TraderRef], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
     pageTitle = Some(messages("subsidy.cya.title")),
-    backLinkEnabled = true
+    backLinkEnabled = true,
+    backLink = Some(previous)
 ) {
 
     @formHelper(action = controllers.routes.SubsidyController.postCheckAnswers) {
