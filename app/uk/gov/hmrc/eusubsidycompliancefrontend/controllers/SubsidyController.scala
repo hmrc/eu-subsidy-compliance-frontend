@@ -370,7 +370,7 @@ class SubsidyController @Inject()(
     (identity)(Some(_)))
 
   lazy val claimDateForm : Form[DateFormValues] = Form(
-    DateFormValues.vatRegDateMapping
+    DateFormValues.dateValueMapping
       .verifying("error.date.invalid", a =>  a.isValidDate)
   )
 

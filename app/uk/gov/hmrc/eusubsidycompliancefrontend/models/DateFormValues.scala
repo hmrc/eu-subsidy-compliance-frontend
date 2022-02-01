@@ -44,7 +44,8 @@ case object DateFormValues {
 
   def trim(inputStr: String) = inputStr.trim()
 
-  lazy val vatRegDateMapping: Mapping[DateFormValues] = tuple(
+  // TODO - transform values first by applying trim
+  lazy val dateValueMapping: Mapping[DateFormValues] = tuple(
     "day"   -> text,
     "month" -> text,
     "year"  -> text
@@ -52,15 +53,15 @@ case object DateFormValues {
     "error.date.emptyfields",
     x =>
       x match {
-        case (d: String, m: String, y: String) if trim(d) == "" && trim(m) == "" && trim(y) == "" => false
-        case _                                                                                      => true
+        case (d: String, m: String, y: String) if s"$d$m$y".trim.isEmpty => false
+        case _ => true
       })
     .verifying(
       "error.date.invalidentry",
       x =>
         x match {
           case x: (String, String, String) => valuesAreInt(x)
-          case _                                                                                      => false
+          case _ => false
         }
     )
     .verifying(
@@ -109,7 +110,8 @@ case object DateFormValues {
       "error.date.invalid",
       x =>
         x match {
-          case (d: String, m: String, y: String) if trim(d) != "" && trim(m) != "" && trim(y) != "" => Try(LocalDate.of(trim(y).toInt, trim(m).toInt, trim(d).toInt)).isSuccess
+          case (d: String, m: String, y: String) if trim(d) != "" && trim(m) != "" && trim(y) != "" =>
+            Try(LocalDate.of(trim(y).toInt, trim(m).toInt, trim(d).toInt)).isSuccess
           case _ => true
         }
     )
@@ -117,10 +119,10 @@ case object DateFormValues {
       "error.date.in-future",
       x =>
         x match {
-          case (d: String, m: String, y: String) if trim(d) != "" && trim(m) != "" && trim(y) != "" =>
-            valuesAreInt((d,m,y)) &&
-            LocalDate.of(trim(y).toInt, trim(m).toInt, trim(d).toInt)
-              .isBefore(LocalDate.now(ZoneId.of("Europe/London")))
+          case (d: String, m: String, y: String) if trim(d) != "" && trim(m) != "" && trim(y) != "" && valuesAreInt(d, m, y) =>
+            valuesAreInt((d, m, y)) &&
+              Try(LocalDate.of(trim(y).toInt, trim(m).toInt, trim(d).toInt).isBefore(LocalDate.now(ZoneId.of("Europe/London"))))
+                .getOrElse(false)
           case _ => true
         }
     )
@@ -134,9 +136,10 @@ case object DateFormValues {
   private def valuesAreInt(formInput: (String, String, String)): Boolean =
     formInput match  {
       case (d: String, m: String, y: String) =>
-        (trim(d).forall(char => Character.isDigit(char)) || trim(d) == "") &&
+        val res = (trim(d).forall(char => Character.isDigit(char)) || trim(d) == "") &&
           (trim(m).forall(char => Character.isDigit(char)) || trim(m) == "")  &&
           (trim(y).forall(char => Character.isDigit(char)) || trim(y) == "")
+        res
       case _ => false
     }
 }
