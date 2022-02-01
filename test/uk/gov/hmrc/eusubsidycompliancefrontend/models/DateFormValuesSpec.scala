@@ -69,6 +69,15 @@ class DateFormValuesSpec extends AnyWordSpecLike with Matchers {
       validateAndCheckError("1", "1", "9999")("error.date.in-future")
     }
 
+    "return no errors fro a valid date" in {
+      val result: Either[Seq[FormError], DateFormValues] = dateValueMapping.bind(Map(
+        "day"   -> "1",
+        "month" -> "1",
+        "year"  -> "2022",
+      ))
+      result mustBe Right(DateFormValues("1", "1", "2022"))
+    }
+
   }
 
   private def validateAndCheckError(d: String, m: String, y: String)(errorMessage: String) = {

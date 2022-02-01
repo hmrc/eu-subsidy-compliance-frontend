@@ -47,13 +47,13 @@ case object DateFormValues {
     "month" -> text,
     "year"  -> text
   ).transform(
-    d => (d._1.trim, d._2.trim, d._3.trim),
+    { case (d, m, y) => (d.trim, m.trim, y.trim) },
     { v: (String, String, String) => v }
   ).verifying(
     "error.date.emptyfields",
     x =>
       x match {
-        case (d: String, m: String, y: String) if s"$d$m$y".isEmpty => false
+        case ("", "", "") => false
         case _ => true
       })
     .verifying(
@@ -68,51 +68,49 @@ case object DateFormValues {
       "error.day.missing",
       x =>
         x match {
-          case (d: String, m: String, y: String) if d == "" && m != "" && y != "" => false
+          case ("", _, _) => false
           case _ => true
         })
     .verifying(
       "error.month.missing",
       x =>
         x match {
-          case (d: String, m: String, y: String) if d != "" && m == "" && y != "" => false
+          case (_, "", _) => false
           case _ => true
         })
     .verifying(
       "error.year.missing",
       x =>
         x match {
-          case (d: String, m: String, y: String) if d != "" && m != "" && y == "" => false
+          case (_, _, "") => false
           case _ => true
         })
     .verifying(
       "error.day-and-month.missing",
       x =>
         x match {
-          case (d: String, m: String, y: String) if d == "" && m == "" && y != "" => false
+          case ("", "", _) => false
           case _ => true
         })
     .verifying(
       "error.month-and-year.missing",
       x =>
         x match {
-          case (d: String, m: String, y: String) if d != "" && m == "" && y == "" => false
+          case (_, "", "") => false
           case _ => true
         })
     .verifying(
       "error.day-and-year.missing",
       x =>
         x match {
-          case (d: String, m: String, y: String) if d == "" && m != "" && y == "" => false
+          case ("", _, "") => false
           case _ => true
         })
     .verifying(
       "error.date.invalid",
       x =>
         x match {
-          case (d: String, m: String, y: String) if d != "" && m != "" && y != "" =>
-            // TODO - use a string parse instead of toInt?
-            Try(LocalDate.of(y.toInt, m.toInt, d.toInt)).isSuccess
+          case (d: String, m: String, y: String)  => Try(LocalDate.of(y.toInt, m.toInt, d.toInt)).isSuccess
           case _ => true
         }
     )
@@ -120,11 +118,9 @@ case object DateFormValues {
       "error.date.in-future",
       x =>
         x match {
-          case (d: String, m: String, y: String) if d != "" && m != "" && y != "" && valuesAreInt(d, m, y) =>
-            valuesAreInt((d, m, y)) &&
-            // TODO - replace toInt with string parse?
+          case (d: String, m: String, y: String) =>
               Try(LocalDate.of(y.toInt, m.toInt, d.toInt).isBefore(LocalDate.now(ZoneId.of("Europe/London"))))
-                .getOrElse(false)
+                .getOrElse(true)
           case _ => true
         }
     )
@@ -136,6 +132,8 @@ case object DateFormValues {
   implicit val format: OFormat[DateFormValues] = Json.format[DateFormValues]
 
   // TODO - revisit this
+  //  o clean up
+  //  o do we need to pass a tuple?
   private def valuesAreInt(formInput: (String, String, String)): Boolean =
     formInput match  {
       case (d: String, m: String, y: String) =>
