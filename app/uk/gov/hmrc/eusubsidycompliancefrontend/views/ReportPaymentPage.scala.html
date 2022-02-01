@@ -34,12 +34,9 @@
 
 @layout(
   pageTitle = Some(messages("report-payment.title")),
-  backLinkEnabled = false,
-  backLink = None
+  backLinkEnabled = true,
+  backLink = Some(controllers.routes.AccountController.getAccountPage().url)
 ) {
-
-  @* TODO build list *@
-  @P("[TODO: BACK BUTTON]")
 
   @subsidies
   @formHelper(action = controllers.routes.SubsidyController.postReportPayment) {

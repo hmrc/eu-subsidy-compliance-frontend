@@ -215,11 +215,11 @@ class SubsidyController @Inject()(
           .value
           .fold(
             Future.successful(
-              Ok(addPublicAuthorityPage(claimPublicAuthorityForm))
+              Ok(addPublicAuthorityPage(claimPublicAuthorityForm, journey.previous))
             )
           ) { x =>
             Future.successful(
-              Ok(addPublicAuthorityPage(claimPublicAuthorityForm.fill(x)))
+              Ok(addPublicAuthorityPage(claimPublicAuthorityForm.fill(x), journey.previous))
             )
           }
     }
@@ -229,7 +229,7 @@ class SubsidyController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     getPrevious[SubsidyJourney](store).flatMap { previous =>
       claimPublicAuthorityForm.bindFromRequest().fold(
-        errors => Future.successful(BadRequest(addPublicAuthorityPage(errors))),
+        errors => Future.successful(BadRequest(addPublicAuthorityPage(errors, previous))),
         form => {
           store.update[SubsidyJourney]({ x =>
             x.map { y =>
@@ -250,12 +250,12 @@ class SubsidyController @Inject()(
           .value
           .fold(
             Future.successful(
-              Ok(addTraderReferencePage(claimTraderRefForm))
+              Ok(addTraderReferencePage(claimTraderRefForm, journey.previous))
             )
           ) { x =>
             val a = x.fold("false")(_ => "true")
             Future.successful(
-              Ok(addTraderReferencePage(claimTraderRefForm.fill(OptionalTraderRef(a,x))))
+              Ok(addTraderReferencePage(claimTraderRefForm.fill(OptionalTraderRef(a,x)), journey.previous))
             )
           }
     }
@@ -265,7 +265,7 @@ class SubsidyController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     getPrevious[SubsidyJourney](store).flatMap { previous =>
       claimTraderRefForm.bindFromRequest().fold(
-        errors => Future.successful(BadRequest(addTraderReferencePage(errors))),
+        errors => Future.successful(BadRequest(addTraderReferencePage(errors, previous))),
         form => {
           store.update[SubsidyJourney]({ x =>
             x.map { y =>
@@ -288,7 +288,8 @@ class SubsidyController @Inject()(
               journey.claimAmount.value.getOrElse(throw new IllegalStateException("Claim amount payment should be defined")),
               journey.addClaimEori.value.getOrElse(throw new IllegalStateException("Claim EORI payment should be defined")),
               journey.publicAuthority.value.getOrElse(throw new IllegalStateException("Public Authority payment should be defined")),
-              journey.traderRef.value.getOrElse(throw new IllegalStateException("Trader Reference payment should be defined"))
+              journey.traderRef.value.getOrElse(throw new IllegalStateException("Trader Reference payment should be defined")),
+              journey.previous
             )
           )
         )

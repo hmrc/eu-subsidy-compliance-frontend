@@ -30,7 +30,7 @@
 )
 
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @textHtml = {
   @govukInput(Input(
@@ -46,13 +46,10 @@
 
 @layout(
     pageTitle = Some(messages("add-claim-trader-reference.title")),
-    backLinkEnabled = false,
-    backLink = None
+    backLinkEnabled = true,
+    backLink = Some(previous)
 ) {
     @formHelper(action = controllers.routes.SubsidyController.postAddClaimReference()) {
-
-      <p class="govuk-body">[TODO: Back button]</p>
-
       @if(form.hasErrors) {
           @govukErrorSummary(
               ErrorSummary(
