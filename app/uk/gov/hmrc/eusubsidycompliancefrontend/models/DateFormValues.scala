@@ -31,7 +31,7 @@ case class DateFormValues(day: String, month: String, year: String) {
     true
   }
   catch {
-    case _ => false
+    case _: Exception => false
   }
 
   def toFormat: String = {

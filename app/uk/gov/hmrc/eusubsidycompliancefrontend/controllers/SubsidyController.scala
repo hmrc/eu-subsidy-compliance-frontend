@@ -26,13 +26,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, NonHmrcSubsidy, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EligibilityJourney, EscService, Store, SubsidyJourney, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, ZoneId}
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 @Singleton
 class SubsidyController @Inject()(

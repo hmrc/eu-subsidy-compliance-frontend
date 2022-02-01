@@ -20,7 +20,7 @@ import cats.implicits._
 import play.api.libs.json.{Format, Json, OFormat}
 import shapeless.syntax.std.tuple._
 import shapeless.syntax.typeable._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ContactDetails, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 
 case class UndertakingJourney(
@@ -41,9 +41,8 @@ case class UndertakingJourney(
 }
 
 object UndertakingJourney {
-
   import Journey._
-  import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.format
+
   implicit val formPageSectorFormat: OFormat[FormPage[Sector]] =
     Json.format[FormPage[Sector]]
   implicit val formatContactDetails: OFormat[ContactDetails] =

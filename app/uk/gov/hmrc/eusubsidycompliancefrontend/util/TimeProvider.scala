@@ -18,19 +18,14 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.util
 
 import com.google.inject.{ImplementedBy, Singleton}
 
-import java.time.{LocalDate, ZoneId, ZonedDateTime}
+import java.time.LocalDate
 
 @ImplementedBy(classOf[TimeProviderImpl])
 trait TimeProvider {
-
   def today: LocalDate
-
 }
 
 @Singleton
 class TimeProviderImpl extends TimeProvider {
-
   override def today: LocalDate = LocalDate.now()
-
-
 }

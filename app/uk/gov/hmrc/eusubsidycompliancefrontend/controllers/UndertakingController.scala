@@ -240,7 +240,6 @@ class UndertakingController @Inject()(
     ref: String,
     name: String
   ): Action[AnyContent] = escAuthentication.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
       Future.successful(Ok(confirmationPage(UndertakingRef(ref), UndertakingName(name))))
   }
 
