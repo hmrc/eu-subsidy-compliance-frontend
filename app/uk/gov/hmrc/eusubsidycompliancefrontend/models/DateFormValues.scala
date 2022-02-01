@@ -25,18 +25,13 @@ import java.time.{LocalDate, ZoneId}
 import scala.util.Try
 
 case class DateFormValues(day: String, month: String, year: String) {
-  def isValidDate: Boolean = try {
+
+  def isValidDate: Boolean = {
     val dateText = s"${"%02d".format(day.toInt)}/${"%02d".format(month.toInt)}/$year"
-    LocalDate.parse(dateText, DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-    true
-  }
-  catch {
-    case _: Exception => false
+    Try(LocalDate.parse(dateText, DateTimeFormatter.ofPattern("dd/MM/yyyy"))).isSuccess
   }
 
-  def toFormat: String = {
-    day + "/" + month + "/" + year
-  }
+  def toFormat: String = day + "/" + month + "/" + year
 
 }
 

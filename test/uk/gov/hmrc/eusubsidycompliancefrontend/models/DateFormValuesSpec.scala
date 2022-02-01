@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import org.scalatest.matchers.must.Matchers
@@ -19,6 +35,12 @@ class DateFormValuesSpec extends AnyWordSpecLike with Matchers {
         DateFormValues("99", "99", "10").isValidDate mustBe false
       }
 
+    }
+
+    "toFormat is called" must {
+      "return a formatted date string" in {
+        DateFormValues("1", "1", "2022").toFormat mustBe "1/1/2022"
+      }
     }
 
   }
@@ -69,13 +91,15 @@ class DateFormValuesSpec extends AnyWordSpecLike with Matchers {
       validateAndCheckError("1", "1", "9999")("error.date.in-future")
     }
 
-    "return no errors fro a valid date" in {
+    "return no errors for a valid date" in {
+      val (d, m, y) = ("1", "1", "2022")
+
       val result: Either[Seq[FormError], DateFormValues] = dateValueMapping.bind(Map(
-        "day"   -> "1",
-        "month" -> "1",
-        "year"  -> "2022",
+        "day"   -> d,
+        "month" -> m,
+        "year"  -> y,
       ))
-      result mustBe Right(DateFormValues("1", "1", "2022"))
+      result mustBe Right(DateFormValues(d, m, y))
     }
 
   }
