@@ -41,7 +41,8 @@ case object DateFormValues {
     "day"   -> text,
     "month" -> text,
     "year"  -> text
-  ).transform(
+  )
+  .transform(
     { case (d, m, y) => (d.trim, m.trim, y.trim) },
     { v: (String, String, String) => v }
   ).verifying(
@@ -55,7 +56,7 @@ case object DateFormValues {
       "error.date.invalidentry",
       x =>
         x match {
-          case x: (String, String, String) => valuesAreInt(x)
+          case (d, m, y) => Try(s"$d$m$y".toInt).isSuccess
           case _ => false
         }
     )
@@ -126,16 +127,4 @@ case object DateFormValues {
 
   implicit val format: OFormat[DateFormValues] = Json.format[DateFormValues]
 
-  // TODO - revisit this
-  //  o clean up
-  //  o do we need to pass a tuple?
-  private def valuesAreInt(formInput: (String, String, String)): Boolean =
-    formInput match  {
-      case (d: String, m: String, y: String) =>
-        val res = (d.forall(char => Character.isDigit(char)) || d == "") &&
-          (m.forall(char => Character.isDigit(char)) || m == "")  &&
-          (y.forall(char => Character.isDigit(char)) || y == "")
-        res
-      case _ => false
-    }
 }
