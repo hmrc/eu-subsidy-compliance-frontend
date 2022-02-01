@@ -29,6 +29,10 @@ class DateFormValuesSpec extends AnyWordSpecLike with Matchers {
       validateAndCheckError("", "", "")("error.date.emptyfields")
     }
 
+    "return empty fields error if all date fields just contain whitespace" in {
+      validateAndCheckError(" ", " ", " ")("error.date.emptyfields")
+    }
+
     "return invalid entry error if non-numeric values are entered" in {
       validateAndCheckError("foo", "bar", "baz")("error.date.invalidentry")
     }
