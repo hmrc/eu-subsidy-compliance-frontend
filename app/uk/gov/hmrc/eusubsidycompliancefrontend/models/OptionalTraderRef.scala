@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-case class OptionalEORI(
+case class OptionalTraderRef(
   setValue: String,
   value: Option[String]
 )

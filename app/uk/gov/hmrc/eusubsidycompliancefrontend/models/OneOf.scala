@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.PhoneNumber
 
 // TODO - review this, it's specific to ContactDetails

@@ -20,7 +20,7 @@ import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.libs.json.{Format, Json, Reads}
 import play.api.mvc.Request
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{OneOf, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, PhoneNumber}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{Journey, Store}
