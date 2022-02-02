@@ -18,20 +18,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Json, OFormat}
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import scala.util.Try
-
 case class DateFormValues(day: String, month: String, year: String) {
-
-  // TODO -review usages - is this needed?
-  def isValidDate: Boolean = {
-    val dateText = s"${"%02d".format(day.toInt)}/${"%02d".format(month.toInt)}/$year"
-    Try(LocalDate.parse(dateText, DateTimeFormatter.ofPattern("dd/MM/yyyy"))).isSuccess
-  }
-
   def toFormattedString: String = day + "/" + month + "/" + year
-
 }
 
 object DateFormValues {
