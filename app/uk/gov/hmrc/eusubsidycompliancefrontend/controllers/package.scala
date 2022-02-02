@@ -20,7 +20,7 @@ import play.api.data.Form
 import play.api.data.Forms.{mapping, optional, text}
 import play.api.libs.json.{Format, Json, Reads}
 import play.api.mvc.Request
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ContactDetails, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, PhoneNumber}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{Journey, Store}
@@ -31,16 +31,6 @@ import scala.reflect.ClassTag
 package object controllers {
 
   implicit val undertakingFormat: Format[Undertaking] = Json.format[Undertaking]
-
-  case class FormValues(value: String)
-
-  case class OneOf(a: Option[String], b: Option[String]){
-    def toContactDetails =
-      ContactDetails(
-        a.map(PhoneNumber(_)),
-        b.map(PhoneNumber(_))
-      )
-  }
 
   val contactForm: Form[OneOf] = Form(
     mapping(
@@ -69,15 +59,6 @@ package object controllers {
     )
   )
 
-  case class OptionalEORI(
-    setValue: String,
-    value: Option[String]
-  )
-
-  case class OptionalTraderRef(
-     setValue: String,
-     value: Option[String]
-   )
 
   def getPrevious[A <: Journey : ClassTag](
     store: Store
@@ -94,4 +75,5 @@ package object controllers {
       }
     }
   }
+
 }
