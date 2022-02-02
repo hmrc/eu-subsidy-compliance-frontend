@@ -37,9 +37,9 @@ class DateFormValuesSpec extends AnyWordSpecLike with Matchers {
 
     }
 
-    "toFormat is called" must {
+    "toFormattedString is called" must {
       "return a formatted date string" in {
-        DateFormValues("1", "1", "2022").toFormat mustBe "1/1/2022"
+        DateFormValues("1", "1", "2022").toFormattedString mustBe "1/1/2022"
       }
     }
 

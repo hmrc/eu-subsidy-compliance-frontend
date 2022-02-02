@@ -26,18 +26,21 @@ import scala.util.Try
 
 case class DateFormValues(day: String, month: String, year: String) {
 
+  // TODO -review usages - is this needed?
   def isValidDate: Boolean = {
     val dateText = s"${"%02d".format(day.toInt)}/${"%02d".format(month.toInt)}/$year"
     Try(LocalDate.parse(dateText, DateTimeFormatter.ofPattern("dd/MM/yyyy"))).isSuccess
   }
 
-  def toFormat: String = day + "/" + month + "/" + year
+  def toFormattedString: String = day + "/" + month + "/" + year
 
 }
 
 case object DateFormValues {
 
-  lazy val dateValueMapping: Mapping[DateFormValues] = tuple(
+  implicit val format: OFormat[DateFormValues] = Json.format[DateFormValues]
+
+  val dateValueMapping: Mapping[DateFormValues] = tuple(
     "day"   -> text,
     "month" -> text,
     "year"  -> text
@@ -45,86 +48,75 @@ case object DateFormValues {
   .transform(
     { case (d, m, y) => (d.trim, m.trim, y.trim) },
     { v: (String, String, String) => v }
-  ).verifying(
+  )
+  .verifying(
     "error.date.emptyfields",
-    x =>
-      x match {
-        case ("", "", "") => false
-        case _ => true
-      })
-    .verifying(
-      "error.date.invalidentry",
-      x =>
-        x match {
-          case (d, m, y) => Try(s"$d$m$y".toInt).isSuccess
-          case _ => false
-        }
-    )
-    .verifying(
-      "error.day.missing",
-      x =>
-        x match {
-          case ("", _, _) => false
-          case _ => true
-        })
-    .verifying(
-      "error.month.missing",
-      x =>
-        x match {
-          case (_, "", _) => false
-          case _ => true
-        })
-    .verifying(
-      "error.year.missing",
-      x =>
-        x match {
-          case (_, _, "") => false
-          case _ => true
-        })
-    .verifying(
-      "error.day-and-month.missing",
-      x =>
-        x match {
-          case ("", "", _) => false
-          case _ => true
-        })
-    .verifying(
-      "error.month-and-year.missing",
-      x =>
-        x match {
-          case (_, "", "") => false
-          case _ => true
-        })
-    .verifying(
-      "error.day-and-year.missing",
-      x =>
-        x match {
-          case ("", _, "") => false
-          case _ => true
-        })
-    .verifying(
-      "error.date.invalid",
-      x =>
-        x match {
-          case (d: String, m: String, y: String)  => Try(LocalDate.of(y.toInt, m.toInt, d.toInt)).isSuccess
-          case _ => true
-        }
-    )
-    .verifying(
-      "error.date.in-future",
-      x =>
-        x match {
-          case (d: String, m: String, y: String) =>
-              Try(LocalDate.of(y.toInt, m.toInt, d.toInt).isBefore(LocalDate.now(ZoneId.of("Europe/London"))))
-                .getOrElse(true)
-          case _ => true
-        }
-    )
-    .transform(
-      { case (d, m, y) => DateFormValues(d,m,y) },
-      d => (d.day, d.month, d.year)
-    )
-
-  implicit val format: OFormat[DateFormValues] = Json.format[DateFormValues]
+    _ match {
+      case ("", "", "") => false
+      case _ => true
+  })
+  .verifying(
+    "error.date.invalidentry",
+    _ match {
+      case (d, m, y) => Try(s"$d$m$y".toInt).isSuccess
+      case _ => false
+  })
+  .verifying(
+    "error.day.missing",
+    _ match {
+      case ("", _, _) => false
+      case _ => true
+  })
+  .verifying(
+    "error.month.missing",
+    _ match {
+      case (_, "", _) => false
+      case _ => true
+  })
+  .verifying(
+    "error.year.missing",
+    _ match {
+      case (_, _, "") => false
+      case _ => true
+  })
+  .verifying(
+    "error.day-and-month.missing",
+    _ match {
+      case ("", "", _) => false
+      case _ => true
+  })
+  .verifying(
+    "error.month-and-year.missing",
+    _ match {
+      case (_, "", "") => false
+      case _ => true
+  })
+  .verifying(
+    "error.day-and-year.missing",
+    _ match {
+      case ("", _, "") => false
+      case _ => true
+  })
+  .verifying(
+    "error.date.invalid",
+    _ match {
+      case (d: String, m: String, y: String)  => Try(LocalDate.of(y.toInt, m.toInt, d.toInt)).isSuccess
+      case _ => true
+    }
+  )
+  .verifying(
+    "error.date.in-future",
+    _ match {
+      case (d: String, m: String, y: String) => Try {
+        LocalDate.of(y.toInt, m.toInt, d.toInt)
+          .isBefore(LocalDate.now(ZoneId.of("Europe/London")))
+      // If we can't parse the date we let the validation constraint pass since we can't check it
+      }.getOrElse(true)
+      case _ => true
+  })
+  .transform(
+    { case (d, m, y) => DateFormValues(d,m,y) },
+    d => (d.day, d.month, d.year)
+  )
 
 }
