@@ -29,7 +29,7 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
 
   private val day = 1
   private val month = 1
-  private val year = 2001
+  private val year = 2022
 
   private val fakeTimeProvider: TimeProvider = new TimeProvider {
     override def today: LocalDate = LocalDate.of(year, month, day)
@@ -80,18 +80,38 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
       validateAndCheckError("50", "20", "2000")("error.date.invalid")
     }
 
-    // TODO - exercise boundary cases
     "return date in future error if date is in the future" in {
-      validateAndCheckError("1", "1", "9999")("error.date.in-future")
+      validateAndCheckError((day+1).toString, "1", "9999")("error.date.in-future")
     }
 
-//    "return date outside of tax year range error for date before the start of the tax year range" in {
-//      validateAndCheckError("1", "1", "1900")("error.date.outside-allowed-tax-year-range")
-//    }
+    "return date outside of tax year range error for date before the start of the tax year range" in {
+      validateAndCheckError("1", "1", "1900")("error.date.outside-allowed-tax-year-range")
+    }
 
-    "return no errors for a valid date" in {
-      // TODO - remove subtraction when future date bug fixed
+    "return no errors for todays date" in {
+      val (d, m, y) = (day.toString, month.toString, year.toString)
+
+      val result: Either[Seq[FormError], DateFormValues] = underTest.mapping.bind(Map(
+        "day"   -> d,
+        "month" -> m,
+        "year"  -> y,
+      ))
+      result mustBe Right(DateFormValues(d, m, y))
+    }
+
+    "return no errors for a date in the past that is within the tax year range" in {
       val (d, m, y) = (day.toString, month.toString, (year-1).toString)
+
+      val result: Either[Seq[FormError], DateFormValues] = underTest.mapping.bind(Map(
+        "day"   -> d,
+        "month" -> m,
+        "year"  -> y,
+      ))
+      result mustBe Right(DateFormValues(d, m, y))
+    }
+
+    "return no errors for a date in the past that is equal to the start of the allowed tax year range" in {
+      val (d, m, y) = ("6", "4", (year-3).toString)
 
       val result: Either[Seq[FormError], DateFormValues] = underTest.mapping.bind(Map(
         "day"   -> d,

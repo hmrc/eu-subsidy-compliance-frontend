@@ -19,6 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 import play.api.data.Forms.{text, tuple}
 import play.api.data.{Form, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearHelpers.taxYearStartForDate
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
 import java.time.{LocalDate, ZoneId}
@@ -87,22 +88,36 @@ class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormPr
   .verifying(
     "error.date.invalid",
     _ match {
-      case (d: String, m: String, y: String)  => Try(LocalDate.of(y.toInt, m.toInt, d.toInt)).isSuccess
+      case (d: String, m: String, y: String)  => localDateFromValues(d, m, y).isSuccess
       case _ => true
     })
   .verifying(
     "error.date.in-future",
     _ match {
-      case (d: String, m: String, y: String) => Try {
-        LocalDate.of(y.toInt, m.toInt, d.toInt).isBefore(timeProvider.today(ZoneId.of("Europe/London")))
-        // If we can't parse the date we let the validation constraint pass since we can't check it
+      case (d: String, m: String, y: String) => localDateFromValues(d, m, y).map { d =>
+        val today = timeProvider.today(ZoneId.of("Europe/London"))
+        !d.isAfter(today)
       }.getOrElse(true)
       case _ => true
   })
+  .verifying(
+    "error.date.outside-allowed-tax-year-range",
+    _ match {
+      case (d: String, m: String, y: String) => localDateFromValues(d, m, y).map { d =>
+        val today = timeProvider.today(ZoneId.of("Europe/London"))
+        // We allow claims for the current or previous 2 tax years.
+        val earliestAllowedDate = taxYearStartForDate(today).minusYears(2)
+        !d.isBefore(earliestAllowedDate)
+      }.getOrElse(true)
+      case _ => false
+    }
+  )
   .transform(
     { case (d, m, y) => DateFormValues(d,m,y) },
     d => (d.day, d.month, d.year)
   )
+
+  private def localDateFromValues(d: String, m: String, y: String) = Try(LocalDate.of(y.toInt, m.toInt, d.toInt))
 
   override val form: Form[DateFormValues] = Form(mapping)
 
