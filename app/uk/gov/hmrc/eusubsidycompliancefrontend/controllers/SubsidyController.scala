@@ -25,8 +25,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, NonHmrcSubsidy, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, FormValues, OptionalEORI, OptionalTraderRef, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
@@ -35,17 +36,18 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SubsidyController @Inject()(
-                                   mcc: MessagesControllerComponents,
-                                   escActionBuilders: EscActionBuilders,
-                                   store: Store,
-                                   escService: EscService,
-                                   reportPaymentPage: ReportPaymentPage,
-                                   addClaimEoriPage: AddClaimEoriPage,
-                                   addClaimAmountPage: AddClaimAmountPage,
-                                   addClaimDatePage: AddClaimDatePage,
-                                   addPublicAuthorityPage: AddPublicAuthorityPage,
-                                   addTraderReferencePage: AddTraderReferencePage,
-                                   cyaPage: ClaimCheckYourAnswerPage
+  mcc: MessagesControllerComponents,
+  escActionBuilders: EscActionBuilders,
+  store: Store,
+  escService: EscService,
+  reportPaymentPage: ReportPaymentPage,
+  addClaimEoriPage: AddClaimEoriPage,
+  addClaimAmountPage: AddClaimAmountPage,
+  addClaimDatePage: AddClaimDatePage,
+  addPublicAuthorityPage: AddPublicAuthorityPage,
+  addTraderReferencePage: AddTraderReferencePage,
+  cyaPage: ClaimCheckYourAnswerPage,
+  claimDateFormProvider: ClaimDateFormProvider
 )(
   implicit val appConfig: AppConfig,
   executionContext: ExecutionContext
@@ -376,10 +378,7 @@ class SubsidyController @Inject()(
   )
     (identity)(Some(_)))
 
-  lazy val claimDateForm : Form[DateFormValues] = Form(
-    DateFormValues.dateValueMapping
-      .verifying("error.date.invalid", a =>  a.isValidDate)
-  )
+  private val claimDateForm = claimDateFormProvider.form
 
   lazy val cyaForm: Form[FormValues] = Form(
     mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
