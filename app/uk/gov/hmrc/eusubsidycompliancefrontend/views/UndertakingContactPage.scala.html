@@ -31,7 +31,8 @@
 @layout(
     pageTitle = Some(messages("undertakingContact.title")),
     backLinkEnabled = true,
-    backLink = Some(previous)
+    backLink = Some(previous),
+    hasErrors = form.hasErrors
 ) {
 
     @formHelper(action = controllers.routes.UndertakingController.postContact()) {

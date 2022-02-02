@@ -33,7 +33,8 @@
 @layout(
   pageTitle = Some(messages("undertakingSector.title")),
   backLinkEnabled = true,
-  backLink = Some(previous)
+  backLink = Some(previous),
+  hasErrors = form.hasErrors
 ) {
 
   @formHelper(action = controllers.routes.UndertakingController.postSector()) {

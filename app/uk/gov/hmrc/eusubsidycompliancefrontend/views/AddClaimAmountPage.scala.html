@@ -35,7 +35,8 @@
 @layout(
   pageTitle = Some(messages("add-claim-amount.title")),
   backLinkEnabled = true,
-  backLink = Some(previous)
+  backLink = Some(previous),
+  hasErrors = form.hasErrors
 ) {
 
   @if(form.hasErrors) {

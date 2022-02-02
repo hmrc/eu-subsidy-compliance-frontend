@@ -31,7 +31,8 @@
 @layout(
   pageTitle = Some(messages("undertakingName.title")),
   backLinkEnabled = false,
-  backLink = None
+  backLink = None,
+  hasErrors = form.hasErrors
 ) {
 
   @formHelper(action = controllers.routes.UndertakingController.postUndertakingName()) {
