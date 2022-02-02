@@ -60,6 +60,7 @@ class EligibilityController @Inject()(
           .fold(
             Redirect(routes.UndertakingController.getUndertakingName())
           )(identity)
+      case _ => handleMissingSessionData("Eligibility journey")
     }
   }
 
@@ -85,6 +86,7 @@ class EligibilityController @Inject()(
               ))
             )
           }
+      case _ => handleMissingSessionData("Eligibility journey")
     }
   }
 
@@ -124,6 +126,7 @@ class EligibilityController @Inject()(
               ))
             )
           }
+      case _ => handleMissingSessionData("Eligibility journey")
     }
   }
 
@@ -170,6 +173,7 @@ class EligibilityController @Inject()(
               ))
             )
           }
+      case _ => handleMissingSessionData("Eligibility journey")
     }
   }
 
@@ -241,6 +245,7 @@ class EligibilityController @Inject()(
                 ))
               )
             }
+        case _ => handleMissingSessionData("Eligibility journey")
       }
     }
   }

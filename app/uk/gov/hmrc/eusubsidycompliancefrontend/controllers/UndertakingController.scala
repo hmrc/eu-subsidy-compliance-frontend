@@ -57,6 +57,7 @@ class UndertakingController @Inject()(
           .fold(
             Redirect(routes.BusinessEntityController.getAddBusinessEntity())
           )(identity)
+      case _ => handleMissingSessionData("Undertaking journey")
     }
   }
 
@@ -126,6 +127,7 @@ class UndertakingController @Inject()(
               ))
             )
           }
+      case _ => handleMissingSessionData("Undertaking journey")
     }
   }
 
@@ -169,6 +171,7 @@ class UndertakingController @Inject()(
               ))
             )
           }
+      case _ => handleMissingSessionData("Undertaking journey")
     }
   }
 
@@ -204,6 +207,7 @@ class UndertakingController @Inject()(
             )
           )
         )
+      case _ => handleMissingSessionData("Undertaking journey")
     }
   }
 

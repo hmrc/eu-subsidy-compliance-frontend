@@ -75,6 +75,7 @@ class SubsidyController @Inject()(
       }
       case (None, None, Some(undertaking)) => // initialise the empty Journey model
         Ok(reportPaymentPage(None, undertaking))
+      case _ => handleMissingSessionData("Subsidy journey")
     }
   }
 
@@ -109,6 +110,7 @@ class SubsidyController @Inject()(
               Ok(addClaimAmountPage(claimAmountForm.fill(x), journey.previous))
             )
           }
+      case _ => handleMissingSessionData("Subsidy journey")
     }
   }
 
@@ -150,6 +152,7 @@ class SubsidyController @Inject()(
               ))
             )
           }
+      case _ => handleMissingSessionData("Subsidy journey")
     }
   }
 
@@ -186,6 +189,7 @@ class SubsidyController @Inject()(
               Ok(addClaimEoriPage(claimEoriForm.fill(OptionalEORI(a,x)), journey.previous))
             )
           }
+      case _ => handleMissingSessionData("Subsidy journey")
     }
   }
 
@@ -221,6 +225,7 @@ class SubsidyController @Inject()(
               Ok(addPublicAuthorityPage(claimPublicAuthorityForm.fill(x), journey.previous))
             )
           }
+      case _ => handleMissingSessionData("Subsidy journey")
     }
   }
 
@@ -257,6 +262,7 @@ class SubsidyController @Inject()(
               Ok(addTraderReferencePage(claimTraderRefForm.fill(OptionalTraderRef(a,x)), journey.previous))
             )
           }
+      case _ => handleMissingSessionData("Subsidy journey")
     }
   }
 
@@ -292,6 +298,7 @@ class SubsidyController @Inject()(
             )
           )
         )
+      case _ => handleMissingSessionData("Subsidy journey")
     }
   }
   def postCheckAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>

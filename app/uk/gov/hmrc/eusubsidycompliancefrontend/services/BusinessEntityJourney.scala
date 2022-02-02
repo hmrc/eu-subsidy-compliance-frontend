@@ -42,6 +42,7 @@ object BusinessEntityJourney {
 
   // TODO populate the Journey[s] from the undertaking, probably need to map them by eori
   def fromUndertakingOpt(undertakingOpt: Option[Undertaking]): BusinessEntityJourney = BusinessEntityJourney()
+
   def businessEntityJourneyForEori(undertakingOpt: Option[Undertaking], eori: EORI): BusinessEntityJourney = {
     undertakingOpt match {
       case Some(undertaking) =>
@@ -53,6 +54,8 @@ object BusinessEntityJourney {
           empty.eori.copy(value = Some(eori)),
           empty.contact.copy(value = cd)
         )
+      // TODO - what is the correct behaviour here?
+      case None => BusinessEntityJourney()
     }
   }
 

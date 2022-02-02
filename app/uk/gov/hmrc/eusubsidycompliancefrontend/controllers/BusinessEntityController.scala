@@ -68,8 +68,7 @@ class BusinessEntityController @Inject()(
           undertaking.name,
           undertaking.undertakingBusinessEntity
         ))
-      case _ => sys.error(" Business Entity journey and Undertaking are missing from session. ")
-
+      case _ => handleMissingSessionData("Business Entity Journey and Undertaking")
     }
   }
 
@@ -104,7 +103,7 @@ class BusinessEntityController @Inject()(
         case Some(journey) =>
           val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori.toString)))
           Future.successful(Ok(eoriPage(form, previous)))
-        case _ => sys.error(" Business Entity journey is missing from session.")
+        case _ => handleMissingSessionData("Business Entity Journey")
       }
     }
   }
@@ -157,6 +156,7 @@ class BusinessEntityController @Inject()(
               ))
             )
           }
+      case _ => handleMissingSessionData("Contact journey")
     }
   }
 
@@ -188,6 +188,7 @@ class BusinessEntityController @Inject()(
             )
           )
         )
+      case _ => handleMissingSessionData("CheckYourAnswers journey")
     }
   }
 
@@ -277,6 +278,7 @@ class BusinessEntityController @Inject()(
           .head
         Ok(removeBusinessPage(removeBusinessForm, bs))
       }
+      case _ => handleMissingSessionData("Undertaking journey")
     }
   }
 
@@ -300,8 +302,8 @@ class BusinessEntityController @Inject()(
           }
         )
     }
+      case _ => handleMissingSessionData("Undertaking journey")
   }}
-
 
   lazy val addBusinessForm: Form[FormValues] = Form(
     mapping("addBusiness" -> mandatory("addBusiness"))(FormValues.apply)(FormValues.unapply))
