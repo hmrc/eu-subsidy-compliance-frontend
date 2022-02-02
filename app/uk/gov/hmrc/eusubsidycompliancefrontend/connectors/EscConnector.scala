@@ -38,7 +38,7 @@ trait EscConnector {
   def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
   def createSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
   def retrieveSubsidy(subsidyRetrieve : SubsidyRetrieve)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
-
+  def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
 
 }
 
@@ -103,10 +103,23 @@ class EscConnectorImpl @Inject()(http: HttpClient,
       }
   }
 
-  def createSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(
+  override def createSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(
     implicit hc: HeaderCarrier
   ): Future[Either[Error, HttpResponse]] = {
    val subsidyUpdate = toSubsidyUpdate(journey, undertakingRef)
+    val createSubsidyUrl = s"$escURL/$updateSubsidyPath"
+    http
+      .POST[SubsidyUpdate, HttpResponse](createSubsidyUrl, subsidyUpdate)
+      .map(Right(_))
+      .recover {
+        case e => Left(Error(e))
+      }
+  }
+
+  override def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(
+    implicit hc: HeaderCarrier
+  ): Future[Either[Error, HttpResponse]] = {
+    val subsidyUpdate = toSubsidyDelete(nonHmrcSubsidy, undertakingRef)
     val createSubsidyUrl = s"$escURL/$updateSubsidyPath"
     http
       .POST[SubsidyUpdate, HttpResponse](createSubsidyUrl, subsidyUpdate)
@@ -136,7 +149,7 @@ class EscConnectorImpl @Inject()(http: HttpClient,
       update = UndertakingSubsidyAmendment(
         List(
           NonHmrcSubsidy(
-            subsidyUsageTransactionId = None,
+            subsidyUsageTransactionID = None,
             allocationDate = currentDate,
             submissionDate= currentDate,
             publicAuthority = Some(journey.publicAuthority.value.getOrElse(sys.error(" publicAuthority is missing"))),// this shouldn't be optional, is required in create API but not retrieve
@@ -145,6 +158,17 @@ class EscConnectorImpl @Inject()(http: HttpClient,
             businessEntityIdentifier = journey.addClaimEori.value.getOrElse(sys.error(" addClaimEori is missing")),
             amendmentType = Some(EisSubsidyAmendmentType("1"))
           )
+        )
+      )
+    )
+  }
+
+  private def toSubsidyDelete(nonHmrcSubsidy: NonHmrcSubsidy, undertakingRef: UndertakingRef) = {
+    SubsidyUpdate(
+      undertakingIdentifier = undertakingRef,
+      update = UndertakingSubsidyAmendment(
+        List(
+          nonHmrcSubsidy.copy(amendmentType = Some(EisSubsidyAmendmentType("3")))
         )
       )
     )

@@ -20,7 +20,7 @@ import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{ImplementedBy, Inject, Singleton}
 import play.api.http.Status.{NOT_FOUND, OK}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, NonHmrcSubsidy, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.HttpResponseOps.HttpResponseOps
 import uk.gov.hmrc.http.HeaderCarrier
@@ -39,6 +39,7 @@ trait EscService {
     implicit hc: HeaderCarrier
   ): Future[UndertakingRef]
   def retrieveSubsidy(subsidyRetrieve : SubsidyRetrieve)(implicit hc: HeaderCarrier): Future[UndertakingSubsidies]
+  def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit hc: HeaderCarrier): Future[UndertakingRef]
 
 }
 
@@ -106,6 +107,16 @@ class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit ec: Executi
         if(value.status =!= OK) sys.error("Error in retrieving subsidy ")
         else
           value.parseJSON[UndertakingSubsidies].fold(_ => sys.error("Error in parsing  UndertakingSubsidies "),undertakingSubsidies => undertakingSubsidies)
+    }
+  }
+
+  override def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit hc: HeaderCarrier): Future[UndertakingRef] = {
+    escConnector.removeSubsidy(undertakingRef, nonHmrcSubsidy).map {
+      case Left(Error(_)) =>  sys.error("Error in removing subsidy")
+      case Right(value) =>
+        if(value.status =!= OK) sys.error("Error in removing subsidy ")
+        else
+          value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  UndertakingSubsidies "),undertakingSubsidies => undertakingSubsidies)
     }
   }
 }
