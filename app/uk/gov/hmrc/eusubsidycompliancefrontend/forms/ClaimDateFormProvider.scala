@@ -28,7 +28,9 @@ import scala.util.Try
 
 class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormProvider[DateFormValues]{
 
-  override val mapping: Mapping[DateFormValues] = tuple(
+  override val form: Form[DateFormValues] = Form(mapping)
+
+  override protected def mapping: Mapping[DateFormValues] = tuple(
     "day"   -> text,
     "month" -> text,
     "year"  -> text
@@ -118,7 +120,5 @@ class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormPr
   )
 
   private def localDateFromValues(d: String, m: String, y: String) = Try(LocalDate.of(y.toInt, m.toInt, d.toInt))
-
-  override val form: Form[DateFormValues] = Form(mapping)
 
 }

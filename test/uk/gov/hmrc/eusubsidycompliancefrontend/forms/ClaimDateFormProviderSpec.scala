@@ -89,42 +89,30 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
     }
 
     "return no errors for todays date" in {
-      val (d, m, y) = (day.toString, month.toString, year.toString)
-
-      val result: Either[Seq[FormError], DateFormValues] = underTest.mapping.bind(Map(
-        "day"   -> d,
-        "month" -> m,
-        "year"  -> y,
-      ))
-      result mustBe Right(DateFormValues(d, m, y))
+      validateAndCheckSuccess(day.toString, month.toString, year.toString)
     }
 
     "return no errors for a date in the past that is within the tax year range" in {
-      val (d, m, y) = (day.toString, month.toString, (year-1).toString)
-
-      val result: Either[Seq[FormError], DateFormValues] = underTest.mapping.bind(Map(
-        "day"   -> d,
-        "month" -> m,
-        "year"  -> y,
-      ))
-      result mustBe Right(DateFormValues(d, m, y))
+      validateAndCheckSuccess(day.toString, month.toString, (year-1).toString)
     }
 
     "return no errors for a date in the past that is equal to the start of the allowed tax year range" in {
-      val (d, m, y) = ("6", "4", (year-3).toString)
-
-      val result: Either[Seq[FormError], DateFormValues] = underTest.mapping.bind(Map(
-        "day"   -> d,
-        "month" -> m,
-        "year"  -> y,
-      ))
-      result mustBe Right(DateFormValues(d, m, y))
+      validateAndCheckSuccess("6", "4", (year-3).toString)
     }
 
   }
 
+  private def validateAndCheckSuccess(d: String, m: String, y: String) = {
+    val result: Either[Seq[FormError], DateFormValues] = underTest.form.mapping.bind(Map(
+      "day"   -> d,
+      "month" -> m,
+      "year"  -> y,
+    ))
+    result mustBe Right(DateFormValues(d, m, y))
+  }
+
   private def validateAndCheckError(d: String, m: String, y: String)(errorMessage: String) = {
-    val result = underTest.mapping.bind(Map(
+    val result = underTest.form.mapping.bind(Map(
       "day"   -> d,
       "month" -> m,
       "year"  -> y,

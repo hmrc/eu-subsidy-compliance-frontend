@@ -19,6 +19,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 import play.api.data.{Form, Mapping}
 
 trait FormProvider[T] {
-  def mapping: Mapping[T]
+  protected def mapping: Mapping[T]
   def form: Form[T]
 }
