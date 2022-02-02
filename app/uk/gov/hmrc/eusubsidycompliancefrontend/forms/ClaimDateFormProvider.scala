@@ -25,12 +25,6 @@ import java.time.{LocalDate, ZoneId}
 import javax.inject.Inject
 import scala.util.Try
 
-trait FormProvider[T] {
-  def mapping: Mapping[T]
-  def form: Form[T]
-}
-
-// TODO - generalise this once a pattern is established
 class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormProvider[DateFormValues]{
 
   override val mapping: Mapping[DateFormValues] = tuple(
