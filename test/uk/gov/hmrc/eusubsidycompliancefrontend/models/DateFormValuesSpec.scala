@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.util
+package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-import com.google.inject.{ImplementedBy, Singleton}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 
-import java.time.{LocalDate, ZoneId}
+class DateFormValuesSpec extends AnyWordSpecLike with Matchers {
 
-@ImplementedBy(classOf[SystemTimeProvider])
-trait TimeProvider {
-  def today: LocalDate
-  def today(z: ZoneId): LocalDate
-}
+  "DateFormValues" when {
+    "toFormattedString is called" must {
+      "return a formatted date string" in {
+        DateFormValues("1", "1", "2022").toFormattedString mustBe "1/1/2022"
+      }
+    }
+  }
 
-@Singleton
-class SystemTimeProvider extends TimeProvider {
-  override def today: LocalDate = LocalDate.now()
-  override def today(z: ZoneId): LocalDate = LocalDate.now(z)
 }

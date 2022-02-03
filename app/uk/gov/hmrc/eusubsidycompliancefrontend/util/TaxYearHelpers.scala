@@ -16,18 +16,14 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.util
 
-import com.google.inject.{ImplementedBy, Singleton}
+import java.time.{LocalDate, Month}
 
-import java.time.{LocalDate, ZoneId}
+object TaxYearHelpers {
 
-@ImplementedBy(classOf[SystemTimeProvider])
-trait TimeProvider {
-  def today: LocalDate
-  def today(z: ZoneId): LocalDate
-}
+  def taxYearStartForDate(d: LocalDate): LocalDate = {
+    val taxYearStartForDateYear = LocalDate.of(d.getYear, Month.APRIL, 6)
+    if (d.isBefore(taxYearStartForDateYear)) taxYearStartForDateYear.minusYears(1)
+    else taxYearStartForDateYear
+  }
 
-@Singleton
-class SystemTimeProvider extends TimeProvider {
-  override def today: LocalDate = LocalDate.now()
-  override def today(z: ZoneId): LocalDate = LocalDate.now(z)
 }

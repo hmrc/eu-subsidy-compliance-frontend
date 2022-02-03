@@ -14,20 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.util
+package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-import com.google.inject.{ImplementedBy, Singleton}
-
-import java.time.{LocalDate, ZoneId}
-
-@ImplementedBy(classOf[SystemTimeProvider])
-trait TimeProvider {
-  def today: LocalDate
-  def today(z: ZoneId): LocalDate
-}
-
-@Singleton
-class SystemTimeProvider extends TimeProvider {
-  override def today: LocalDate = LocalDate.now()
-  override def today(z: ZoneId): LocalDate = LocalDate.now(z)
-}
+case class OptionalTraderRef(
+  setValue: String,
+  value: Option[String]
+)

@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.util
+package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
-import com.google.inject.{ImplementedBy, Singleton}
+import play.api.data.{Form, Mapping}
 
-import java.time.{LocalDate, ZoneId}
-
-@ImplementedBy(classOf[SystemTimeProvider])
-trait TimeProvider {
-  def today: LocalDate
-  def today(z: ZoneId): LocalDate
-}
-
-@Singleton
-class SystemTimeProvider extends TimeProvider {
-  override def today: LocalDate = LocalDate.now()
-  override def today(z: ZoneId): LocalDate = LocalDate.now(z)
+trait FormProvider[T] {
+  protected def mapping: Mapping[T]
+  def form: Form[T]
 }

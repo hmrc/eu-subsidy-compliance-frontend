@@ -30,7 +30,7 @@ class UpdateEmailAddressController @Inject()(
   BaseController(mcc) {
   import escActionBuilders._
 
-  def updateEmailAddress: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def updateEmailAddress: Action[AnyContent] = escAuthentication.async { _ =>
     Future.successful(Ok(s"update email page"))
   }
 

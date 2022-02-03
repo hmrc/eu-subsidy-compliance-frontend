@@ -28,7 +28,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData._
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class BusinessEntityControllerSpec  extends ControllerSpec
   with AuthSupport
@@ -38,7 +37,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
   val mockEscService = mock[EscService]
 
-  override def overrideBindings           = List(
+  override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
@@ -126,7 +125,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
 
               val button = doc.select("form")
-              button.attr("action") shouldBe routes.BusinessEntityController.postAddBusinessEntity.url
+              button.attr("action") shouldBe routes.BusinessEntityController.postAddBusinessEntity().url
             }
           )
         }
@@ -287,7 +286,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
               input shouldBe businessEntityJourney.eori.value.map(_.drop(2)).getOrElse("")
 
               val button = doc.select("form")
-              button.attr("action") shouldBe routes.BusinessEntityController.postEori.url
+              button.attr("action") shouldBe routes.BusinessEntityController.postEori().url
             }
           )
         }

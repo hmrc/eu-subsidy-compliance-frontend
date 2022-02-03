@@ -27,7 +27,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, 
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData.{undertaking, _}
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class AccountControllerSpec  extends ControllerSpec
@@ -59,7 +58,7 @@ class AccountControllerSpec  extends ControllerSpec
       .expects(eori, *)
       .returning{result
         .fold(e => Future.failed(e.value
-          .fold(s => new Exception(s), identity)), Future.successful(_))}
+          .fold(s => new Exception(s), identity)), Future.successful)}
   }
 
   "AccountControllerSpec" when {

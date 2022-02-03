@@ -17,19 +17,18 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
-
-import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, FormValues, OneOf, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, JourneyTraverseService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -69,8 +68,7 @@ class BusinessEntityController @Inject()(
           undertaking.name,
           undertaking.undertakingBusinessEntity
         ))
-      case _ => sys.error(" Business Entity journey and Undertaking are missing from session. ")
-
+      case _ => handleMissingSessionData("Business Entity Journey and Undertaking")
     }
   }
 
@@ -105,7 +103,7 @@ class BusinessEntityController @Inject()(
         case Some(journey) =>
           val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori.toString)))
           Future.successful(Ok(eoriPage(form, previous)))
-        case _ => sys.error(" Business Entity journey is missing from session.")
+        case _ => handleMissingSessionData("Business Entity Journey")
       }
     }
   }
@@ -158,6 +156,7 @@ class BusinessEntityController @Inject()(
               ))
             )
           }
+      case _ => handleMissingSessionData("Contact journey")
     }
   }
 
@@ -189,6 +188,7 @@ class BusinessEntityController @Inject()(
             )
           )
         )
+      case _ => handleMissingSessionData("CheckYourAnswers journey")
     }
   }
 
@@ -269,8 +269,6 @@ class BusinessEntityController @Inject()(
  }
 
   def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
     for {
       a <- escService.retrieveUndertaking(EORI(eoriEntered))
     } yield a match {
@@ -280,11 +278,11 @@ class BusinessEntityController @Inject()(
           .head
         Ok(removeBusinessPage(removeBusinessForm, bs))
       }
+      case _ => handleMissingSessionData("Undertaking journey")
     }
   }
 
   def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
     escService.retrieveUndertaking(EORI(eoriEntered)).flatMap {
       case Some(undertaking) => {
         val bs = undertaking.undertakingBusinessEntity
@@ -304,8 +302,8 @@ class BusinessEntityController @Inject()(
           }
         )
     }
+      case _ => handleMissingSessionData("Undertaking journey")
   }}
-
 
   lazy val addBusinessForm: Form[FormValues] = Form(
     mapping("addBusiness" -> mandatory("addBusiness"))(FormValues.apply)(FormValues.unapply))

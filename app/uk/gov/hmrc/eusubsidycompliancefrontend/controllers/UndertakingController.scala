@@ -22,7 +22,7 @@ import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, OneOf, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -57,6 +57,7 @@ class UndertakingController @Inject()(
           .fold(
             Redirect(routes.BusinessEntityController.getAddBusinessEntity())
           )(identity)
+      case _ => handleMissingSessionData("Undertaking journey")
     }
   }
 
@@ -126,6 +127,7 @@ class UndertakingController @Inject()(
               ))
             )
           }
+      case _ => handleMissingSessionData("Undertaking journey")
     }
   }
 
@@ -169,6 +171,7 @@ class UndertakingController @Inject()(
               ))
             )
           }
+      case _ => handleMissingSessionData("Undertaking journey")
     }
   }
 
@@ -204,6 +207,7 @@ class UndertakingController @Inject()(
             )
           )
         )
+      case _ => handleMissingSessionData("Undertaking journey")
     }
   }
 
@@ -240,7 +244,6 @@ class UndertakingController @Inject()(
     ref: String,
     name: String
   ): Action[AnyContent] = escAuthentication.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
       Future.successful(Ok(confirmationPage(UndertakingRef(ref), UndertakingName(name))))
   }
 

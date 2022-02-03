@@ -16,37 +16,34 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import javax.inject.{Inject, Singleton}
-import play.api.data.{Form, Mapping}
-import play.api.data.Forms.{bigDecimal, date, mapping, optional, single, text, tuple}
-import play.api.libs.json.{JsValue, Json}
+import play.api.data.Form
+import play.api.data.Forms.{bigDecimal, mapping, optional, text}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, NonHmrcSubsidy, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EligibilityJourney, EscService, Store, SubsidyJourney, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, ZoneId}
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 @Singleton
 class SubsidyController @Inject()(
-                                   mcc: MessagesControllerComponents,
-                                   escActionBuilders: EscActionBuilders,
-                                   store: Store,
-                                   escService: EscService,
-                                   reportPaymentPage: ReportPaymentPage,
-                                   addClaimEoriPage: AddClaimEoriPage,
-                                   addClaimAmountPage: AddClaimAmountPage,
-                                   addClaimDatePage: AddClaimDatePage,
-                                   addPublicAuthorityPage: AddPublicAuthorityPage,
-                                   addTraderReferencePage: AddTraderReferencePage,
-                                   cyaPage: ClaimCheckYourAnswerPage
+  mcc: MessagesControllerComponents,
+  escActionBuilders: EscActionBuilders,
+  store: Store,
+  escService: EscService,
+  reportPaymentPage: ReportPaymentPage,
+  addClaimEoriPage: AddClaimEoriPage,
+  addClaimAmountPage: AddClaimAmountPage,
+  addClaimDatePage: AddClaimDatePage,
+  addPublicAuthorityPage: AddPublicAuthorityPage,
+  addTraderReferencePage: AddTraderReferencePage,
+  cyaPage: ClaimCheckYourAnswerPage,
+  claimDateFormProvider: ClaimDateFormProvider
 )(
   implicit val appConfig: AppConfig,
   executionContext: ExecutionContext
@@ -76,6 +73,7 @@ class SubsidyController @Inject()(
       }
       case (None, None, Some(undertaking)) => // initialise the empty Journey model
         Ok(reportPaymentPage(None, undertaking))
+      case _ => handleMissingSessionData("Subsidy journey")
     }
   }
 
@@ -110,6 +108,7 @@ class SubsidyController @Inject()(
               Ok(addClaimAmountPage(claimAmountForm.fill(x), journey.previous))
             )
           }
+      case _ => handleMissingSessionData("Subsidy journey")
     }
   }
 
@@ -151,6 +150,7 @@ class SubsidyController @Inject()(
               ))
             )
           }
+      case _ => handleMissingSessionData("Subsidy journey")
     }
   }
 
@@ -187,6 +187,7 @@ class SubsidyController @Inject()(
               Ok(addClaimEoriPage(claimEoriForm.fill(OptionalEORI(a,x)), journey.previous))
             )
           }
+      case _ => handleMissingSessionData("Subsidy journey")
     }
   }
 
@@ -222,6 +223,7 @@ class SubsidyController @Inject()(
               Ok(addPublicAuthorityPage(claimPublicAuthorityForm.fill(x), journey.previous))
             )
           }
+      case _ => handleMissingSessionData("Subsidy journey")
     }
   }
 
@@ -258,6 +260,7 @@ class SubsidyController @Inject()(
               Ok(addTraderReferencePage(claimTraderRefForm.fill(OptionalTraderRef(a,x)), journey.previous))
             )
           }
+      case _ => handleMissingSessionData("Subsidy journey")
     }
   }
 
@@ -293,6 +296,7 @@ class SubsidyController @Inject()(
             )
           )
         )
+      case _ => handleMissingSessionData("Subsidy journey")
     }
   }
   def postCheckAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
@@ -370,10 +374,7 @@ class SubsidyController @Inject()(
   )
     (identity)(Some(_)))
 
-  lazy val claimDateForm : Form[DateFormValues] = Form(
-    DateFormValues.vatRegDateMapping
-      .verifying("error.date.invalid", a =>  a.isValidDate)
-  )
+  private val claimDateForm = claimDateFormProvider.form
 
   lazy val cyaForm: Form[FormValues] = Form(
     mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))

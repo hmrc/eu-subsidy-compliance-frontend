@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.util
+package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-import com.google.inject.{ImplementedBy, Singleton}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.PhoneNumber
 
-import java.time.{LocalDate, ZoneId}
-
-@ImplementedBy(classOf[SystemTimeProvider])
-trait TimeProvider {
-  def today: LocalDate
-  def today(z: ZoneId): LocalDate
-}
-
-@Singleton
-class SystemTimeProvider extends TimeProvider {
-  override def today: LocalDate = LocalDate.now()
-  override def today(z: ZoneId): LocalDate = LocalDate.now(z)
+case class OneOf(a: Option[String], b: Option[String]) {
+  def toContactDetails: ContactDetails =
+    ContactDetails(
+      a.map(PhoneNumber(_)),
+      b.map(PhoneNumber(_))
+    )
 }

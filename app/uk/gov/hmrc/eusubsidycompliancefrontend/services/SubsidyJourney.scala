@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import java.time.LocalDate
-
 import play.api.libs.json._
 import shapeless.syntax.std.tuple._
 import shapeless.syntax.typeable._
@@ -45,7 +43,6 @@ case class SubsidyJourney(
 
 object SubsidyJourney {
   import Journey._ // N.B. don't let intellij delete this
-  import play.api.libs.functional.syntax._
 
   implicit val formPageClaimDateFormat: OFormat[FormPage[DateFormValues]] =
     Json.format[FormPage[DateFormValues]]

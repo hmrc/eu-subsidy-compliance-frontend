@@ -22,31 +22,31 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 import scala.reflect.ClassTag
 
-trait JourneyStoreSupport {this: MockFactory =>
+trait JourneyStoreSupport { this: MockFactory =>
 
-   val mockJourneyStore = mock[Store]
+   val mockJourneyStore: Store = mock[Store]
 
-   def mockGet[A](eori: EORI)(result: Either[Error, Option[A]])(implicit ec: ExecutionContext) =
+   def mockGet[A](eori: EORI)(result: Either[Error, Option[A]]) =
       (mockJourneyStore
         .get(_:ClassTag[Any], _: EORI, _: Reads[Any]))
         .expects(*, eori, *)
-        .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful(_)))
+        .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful))
 
 
-   def mockPut[A](input: A, eori: EORI)(result: Either[Error, A])(implicit ec: ExecutionContext) =
+   def mockPut[A](input: A, eori: EORI)(result: Either[Error, A]) =
       (mockJourneyStore
         .put(_:A)(_: EORI, _: Writes[A]))
         .expects(input, eori, *)
-        .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful(_)))
+        .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful))
 
-   def mockUpdate[A](f: Option[A] => Option[A], eori: EORI)(result: Either[Error, A])(implicit ec: ExecutionContext) =
+   def mockUpdate[A](f: Option[A] => Option[A], eori: EORI)(result: Either[Error, A]) =
       (mockJourneyStore
         .update(_: Option[A] => Option[A])(_:ClassTag[A], _: EORI, _: Format[A]))
         .expects(*, *, eori, * )
-        .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful(_)))
+        .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful))
 
 
 }
