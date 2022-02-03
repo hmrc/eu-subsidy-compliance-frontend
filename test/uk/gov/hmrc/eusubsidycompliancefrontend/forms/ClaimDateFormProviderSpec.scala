@@ -24,7 +24,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
 import java.time.{LocalDate, ZoneId}
 
-// TODO - can we pass data to the form method rather than invoking the mapping?
 class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
 
   private val day = 1
@@ -118,7 +117,6 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
       "year"  -> y,
     ))
 
-    // TODO - does the frontend show multiple errors or can we just fail on the first?
     val foundExpectedErrorMessage = result.leftSideValue match {
       case Left(errors) => errors.contains(FormError("", errorMessage))
       case _ => false

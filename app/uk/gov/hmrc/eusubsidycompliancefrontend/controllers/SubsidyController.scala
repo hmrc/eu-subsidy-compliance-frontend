@@ -16,15 +16,11 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import javax.inject.{Inject, Singleton}
-import play.api.data.{Form, Mapping}
-import play.api.data.Forms.{bigDecimal, date, mapping, optional, single, text, tuple}
-import play.api.libs.json.{JsValue, Json}
+import play.api.data.Form
+import play.api.data.Forms.{bigDecimal, mapping, optional, text}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, NonHmrcSubsidy, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._

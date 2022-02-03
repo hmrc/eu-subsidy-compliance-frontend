@@ -18,7 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.PhoneNumber
 
-// TODO - review this, it's specific to ContactDetails
 case class OneOf(a: Option[String], b: Option[String]) {
   def toContactDetails: ContactDetails =
     ContactDetails(
