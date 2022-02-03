@@ -33,6 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @ImplementedBy(classOf[EscConnectorImpl])
 trait EscConnector {
   def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
+  def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
   def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
   def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
@@ -53,6 +54,7 @@ class EscConnectorImpl @Inject()(http: HttpClient,
 
   val escURL: String = servicesConfig.baseUrl("esc")
   val createUndertakingPath = "eu-subsidy-compliance/undertaking"
+  val updateUndertakingPath = "eu-subsidy-compliance/undertaking/update"
   val retrieveUndertakingPath = "eu-subsidy-compliance/undertaking/"
   val addMemberPath = "eu-subsidy-compliance/undertaking/member"
   val removeMemberPath = "eu-subsidy-compliance/undertaking/member/remove"
@@ -64,6 +66,16 @@ class EscConnectorImpl @Inject()(http: HttpClient,
     val createUndertakingUrl = s"$escURL/$createUndertakingPath"
     http.
       POST[Undertaking, HttpResponse](createUndertakingUrl, undertaking)
+      .map(Right(_))
+      .recover {
+        case e => Left(Error(e))
+      }
+  }
+
+  override def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] = {
+    val updateUndertakingUrl = s"$escURL/$updateUndertakingPath"
+    http.
+      POST[Undertaking, HttpResponse](updateUndertakingUrl, undertaking)
       .map(Right(_))
       .recover {
         case e => Left(Error(e))

@@ -1,0 +1,119 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
+
+
+@this(
+        layout: Layout,
+        formHelper: FormWithCSRF,
+        button: components.Button,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios : GovukRadios,
+        govukSummaryList : GovukSummaryList
+)
+
+
+@(name: UndertakingName, sector: Sector, contacts: ContactDetails, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(
+    pageTitle = Some(messages("undertaking.amendUndertaking.title")),
+    backLinkEnabled = true,
+    backLink = Some(previous)
+) {
+
+    @defining(
+        contacts match {
+            case ContactDetails(Some(p), Some(m)) => p + "<br>" + m
+            case ContactDetails(None, Some(m)) => m
+            case ContactDetails(Some(p), None) => p
+            case _ => ""
+        }
+    ) { case (phone) =>
+
+        @formHelper(action = controllers.routes.UndertakingController.postAmendUndertaking) {
+            <input type=hidden name=cya value=true>
+
+            <h1 class="govuk-heading-l">@messages("undertaking.amendUndertaking.title")</h1>
+
+            @govukSummaryList(SummaryList(
+                rows = Seq(
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("undertaking.amendUndertaking.summary-list.name.key"))
+                        ),
+                        value = Value(
+                            content = Text(name)
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = controllers.routes.UndertakingController.getUndertakingName().toString,
+                                    content = Text("Change"),
+                                    visuallyHiddenText = Some("name")
+                                )
+                            )
+                        ))
+                    ),
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("undertaking.amendUndertaking.summary-list.sector.key"))
+                        ),
+                        value = Value(
+                            content = Text(messages(s"sector.label.$sector"))
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = controllers.routes.UndertakingController.getSector().toString,
+                                    content = Text("Change"),
+                                    visuallyHiddenText = Some("contact information")
+                                )
+                            )
+                        ))
+                    ),
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("undertaking.amendUndertaking.summary-list.telephone.key"))
+                        ),
+                        value = Value(
+                            content = HtmlContent(phone)
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = controllers.routes.UndertakingController.getContact().toString,
+                                    content = Text("Change"),
+                                    visuallyHiddenText = Some("contact details")
+                                )
+                            )
+                        ))
+                    )
+                )
+            ))
+
+            <p class="govuk-body">@messages("undertaking.amendUndertaking.p")</p>
+
+            @button("common.saveChanges")
+        }
+    }
+}
+

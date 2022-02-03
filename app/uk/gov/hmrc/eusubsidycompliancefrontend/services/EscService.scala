@@ -30,6 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @ImplementedBy(classOf[EscServiceImpl])
 trait EscService {
   def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef]
+  def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef]
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]]
   def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier): Future[UndertakingRef]
   def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
@@ -54,7 +55,16 @@ class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit ec: Executi
       case Right(value) =>
         if(value.status =!= OK) sys.error("Error in creating Undertaking")
         else
-        value.parseJSON[UndertakingRef].fold(_ =>  sys.error("Error in parsing  UndertakingRef"), undertakingRef => undertakingRef)
+        value.parseJSON[UndertakingRef].fold(_ =>  sys.error("Error in parsing  UndertakingRef"), identity)
+    }
+  }
+
+  override def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] = {
+    escConnector.updateUndertaking(undertaking).map {
+      case Left(Error(_)) => sys.error(" Error in updating undertaking")
+      case Right(value) =>
+        if(value.status =!= OK) sys.error("Error in Update undertaking as http response came back with non OK status")
+        else value.parseJSON[UndertakingRef].fold(_ =>  sys.error("Error in parsing  UndertakingRef"), identity)
     }
   }
 
@@ -76,7 +86,7 @@ class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit ec: Executi
       case Right(value) =>
         if(value.status =!= OK) sys.error("Error in adding member to the Business Entity")
         else
-        value.parseJSON[UndertakingRef].fold(_ =>  sys.error("Error in parsing  Undertaking Ref"),undertakingRef => undertakingRef)
+        value.parseJSON[UndertakingRef].fold(_ =>  sys.error("Error in parsing  Undertaking Ref"), identity)
     }
   }
 
@@ -86,7 +96,7 @@ class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit ec: Executi
       case Right(value) =>
         if(value.status =!= OK) sys.error("Error in removing member from the Business Entity")
         else
-        value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  Undertaking Ref"),undertakingRef => undertakingRef)
+        value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  Undertaking Ref"), identity)
     }
   }
 
@@ -96,7 +106,7 @@ class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit ec: Executi
       case Right(value) =>
         if(value.status =!= OK) sys.error("Error in creating subsidy ")
         else
-          value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  Undertaking Ref"),undertakingRef => undertakingRef)
+          value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  Undertaking Ref"), identity)
     }
   }
 
@@ -106,7 +116,7 @@ class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit ec: Executi
       case Right(value) =>
         if(value.status =!= OK) sys.error("Error in retrieving subsidy ")
         else
-          value.parseJSON[UndertakingSubsidies].fold(_ => sys.error("Error in parsing  UndertakingSubsidies "),undertakingSubsidies => undertakingSubsidies)
+          value.parseJSON[UndertakingSubsidies].fold(_ => sys.error("Error in parsing  UndertakingSubsidies "), identity)
     }
   }
 
