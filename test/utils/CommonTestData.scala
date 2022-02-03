@@ -39,7 +39,7 @@ object CommonTestData {
 
   val undertakingRef = UndertakingRef("UR123456")
   val nonHmrcSubsidyList = List(NonHmrcSubsidy(
-    subsidyUsageTransactionId = None,
+    subsidyUsageTransactionID = None,
     allocationDate = currentDate,
     submissionDate = currentDate,
     publicAuthority = "Local Authority".some,

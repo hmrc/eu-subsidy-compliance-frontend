@@ -19,12 +19,12 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.data.{Form, Mapping}
 import play.api.data.Forms.{bigDecimal, date, mapping, optional, single, text, tuple}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, NonHmrcSubsidy, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EligibilityJourney, EscService, Store, SubsidyJourney, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -316,6 +316,19 @@ class SubsidyController @Inject()(
           }
       }
     )
+  }
+
+  def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    for {
+      undertaking <- store.get[Undertaking]
+      reference = undertaking.getOrElse(throw new IllegalStateException("")).reference.getOrElse(throw new IllegalStateException(""))
+      subsidies <- escService.retrieveSubsidy(SubsidyRetrieve(reference, None)).map(e => Some(e)).recoverWith({case _ => Future.successful(Option.empty[UndertakingSubsidies])})
+      sub = subsidies.get.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionID.contains(transactionId)).get
+      _ <- escService.removeSubsidy(reference, sub)
+    } yield {
+      Redirect(routes.SubsidyController.getReportPayment())
+    }
   }
 
   lazy val reportPaymentForm: Form[FormValues] = Form(
