@@ -20,9 +20,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-
-import java.time.{LocalDate, ZoneId}
+import uk.gov.hmrc.eusubsidycompliancefrontend.testutil.FakeTimeProvider
 
 class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
 
@@ -30,10 +28,7 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
   private val month = 1
   private val year = 2022
 
-  private val fakeTimeProvider: TimeProvider = new TimeProvider {
-    override def today: LocalDate = LocalDate.of(year, month, day)
-    override def today(z: ZoneId): LocalDate = today
-  }
+  private val fakeTimeProvider = FakeTimeProvider.withFixedDate(day, month, year)
 
   private val underTest = new ClaimDateFormProvider(fakeTimeProvider)
 
