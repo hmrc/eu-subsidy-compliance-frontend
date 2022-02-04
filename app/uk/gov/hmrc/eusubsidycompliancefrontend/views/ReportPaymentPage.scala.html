@@ -38,7 +38,7 @@
   backLinkEnabled = true,
   backLink = Some(controllers.routes.AccountController.getAccountPage().url)
 ) {
-  @if(subsidies.nonEmpty) {
+  @if(subsidies.nonEmpty && subsidies.get.nonHMRCSubsidyUsage.nonEmpty) {
       @govukTable(
           Table(rows =
               subsidies.get.nonHMRCSubsidyUsage.map { sub =>

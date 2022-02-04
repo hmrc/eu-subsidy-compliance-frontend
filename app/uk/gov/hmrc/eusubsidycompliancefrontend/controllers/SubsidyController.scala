@@ -284,7 +284,7 @@ class SubsidyController @Inject()(
   def getCheckAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
-      case Some(journey) =>
+      case Some(journey) => {
         Future.successful(
           Ok(
             cyaPage(
@@ -297,6 +297,7 @@ class SubsidyController @Inject()(
             )
           )
         )
+      }
       case _ => handleMissingSessionData("Subsidy journey")
     }
   }
@@ -315,6 +316,7 @@ class SubsidyController @Inject()(
               underTaking <- store.get[Undertaking]
               ref = underTaking.getOrElse(throw new IllegalStateException("")).reference.getOrElse(throw new IllegalStateException(""))
               _ <- escService.createSubsidy(ref, journey)
+              _ <- store.put(SubsidyJourney())
             } yield {
               Redirect(routes.SubsidyController.getReportPayment())
             }
