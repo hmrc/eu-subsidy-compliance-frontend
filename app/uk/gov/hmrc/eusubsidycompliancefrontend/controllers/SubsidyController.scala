@@ -183,7 +183,7 @@ class SubsidyController @Inject()(
               Ok(addClaimEoriPage(claimEoriForm, journey.previous))
             )
           ) { x =>
-            val a = x.fold("false")(_ => "true") // fix this
+            val a = x.getOrElse("")
             Future.successful(
               Ok(addClaimEoriPage(claimEoriForm.fill(OptionalEORI(a,x)), journey.previous))
             )
@@ -372,12 +372,14 @@ class SubsidyController @Inject()(
   val claimEoriForm: Form[OptionalEORI] = Form(
     mapping(
       "should-claim-eori" -> mandatory("should-claim-eori"),
-      "claim-eori" -> optional(text).verifying("error.format", eori => eori.fold(false)(entered => s"GB$entered".matches(EORI.regex)))
+      "claim-eori" -> optional(text)
     )((a,b) => OptionalEORI(a, if(b.nonEmpty) Some(s"GB${b.get}") else b)
     )(a => Some((a.setValue, a.value.fold(Option.empty[String])(e => Some(e.drop(2))))))
       .transform[OptionalEORI](
       a => if (a.setValue == "false") a.copy(value = None) else a,
       b => b
+    ).verifying(
+      "error.format", a => a.setValue == "false" || a.value.fold(false)(entered => s"GB$entered".matches(EORI.regex))
     )
   )
 
