@@ -279,7 +279,7 @@ class AccountControllerSpec  extends ControllerSpec
                 mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
                 mockRetreiveUndertaking(eori1)(Future.successful(None))
                 mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
-                mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+                mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1.some))
                 mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
               }
               checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity())
