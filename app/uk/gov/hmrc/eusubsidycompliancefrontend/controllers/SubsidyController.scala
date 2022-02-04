@@ -394,7 +394,7 @@ class SubsidyController @Inject()(
       a => if (a.setValue == "false") a.copy(value = None) else a,
       b => b
     ).verifying(
-      "error.format", a => a.setValue == "false" || a.value.fold(false)(entered => s"GB$entered".matches(EORI.regex))
+      "error.format", a => a.setValue == "false" || a.value.fold(false)(entered => s"GB${entered.drop(2)}".matches(EORI.regex))
     )
   )
 

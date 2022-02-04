@@ -19,8 +19,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import play.api.libs.json._
 import shapeless.syntax.std.tuple._
 import shapeless.syntax.typeable._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef, TraderRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, NonHmrcSubsidy}
 
 case class SubsidyJourney(
   reportPayment: FormPage[Boolean] = FormPage("claims"),
