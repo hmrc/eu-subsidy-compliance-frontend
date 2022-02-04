@@ -85,3 +85,4 @@ POST       /check-your-answers-subsidy                uk.gov.hmrc.eusubsidycompl
 GET       /update-email-address              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.updateEmailAddress
 
 GET    /subsidy-delete/:transactionId      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getRemoveSubsidyClaim(transactionId)
+POST    /subsidy-delete/:transactionId      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postRemoveSubsidyClaim(transactionId)

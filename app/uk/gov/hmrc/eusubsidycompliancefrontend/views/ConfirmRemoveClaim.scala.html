@@ -1,0 +1,129 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.NonHmrcSubsidy
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+
+
+@this(
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: components.Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios : GovukRadios,
+    govukSummaryList : GovukSummaryList
+)
+
+@(form: Form[_], nonHmrcSubsidy: NonHmrcSubsidy)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(
+    pageTitle = Some(messages("subsidy.remove.title")),
+    backLinkEnabled = true,
+    backLink = Some(controllers.routes.SubsidyController.getReportPayment().url)
+) {
+
+    @H1(messages("subsidy.remove.title"))
+    @form.errors.map { err =>
+        @govukErrorSummary(ErrorSummary(
+            errorList = Seq(
+                ErrorLink(
+                    href = Some(s"#${err.key}"),
+                    content = Text(s"${messages(err.message)}")
+                )
+            ),
+            title = Text(messages("common.error.summary.title"))
+        ))
+    }
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("subsidy.cya.summary-list.claimDate.key"))
+                    ),
+                    value = Value(
+                        content = Text(nonHmrcSubsidy.submissionDate.toString())
+                    )
+                ),
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("subsidy.cya.summary-list.amount.key"))
+                    ),
+                    value = Value(
+                        content = Text(nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.toString())
+                    )
+                ),
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("subsidy.cya.summary-list.claim.key"))
+                    ),
+                    value = Value(
+                        content = Text(nonHmrcSubsidy.businessEntityIdentifier.getOrElse(""))
+                    )
+                ),
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("subsidy.cya.summary-list.authority.key"))
+                    ),
+                    value = Value(
+                        content = Text(nonHmrcSubsidy.publicAuthority.getOrElse(""))
+                    )
+                ),
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages("subsidy.cya.summary-list.traderRef.key"))
+                    ),
+                    value = Value(
+                        content = Text(nonHmrcSubsidy.traderReference.getOrElse(""))
+                    )
+                )
+            )
+        ))
+
+    @formHelper(action = controllers.routes.SubsidyController.postRemoveSubsidyClaim(nonHmrcSubsidy.subsidyUsageTransactionID.get)) {
+
+        @govukRadios(Radios(
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text("Do you want to remove this claim?"),
+                    classes = "govuk-fieldset__legend--l",
+                    isPageHeading = true
+                ))
+            )),
+            name = "removeSubsidyClaim",
+            items = Seq(
+                RadioItem(
+                    content = Text(messages("common.yes")),
+                    value = Some("true"),
+                    checked = form.data.exists(_._2 == "true")
+                ),
+                RadioItem(
+                    content = Text(messages("common.no")),
+                    value = Some("false"),
+                    checked = form.data.exists(_._2 == "false")
+                )
+            )
+        ))
+
+            @button("common.continue")
+        }
+}

@@ -43,6 +43,7 @@ class SubsidyController @Inject()(
   addPublicAuthorityPage: AddPublicAuthorityPage,
   addTraderReferencePage: AddTraderReferencePage,
   cyaPage: ClaimCheckYourAnswerPage,
+  confirmRemovePage: ConfirmRemoveClaim,
   claimDateFormProvider: ClaimDateFormProvider
 )(
   implicit val appConfig: AppConfig,
@@ -329,10 +330,37 @@ class SubsidyController @Inject()(
       reference = undertaking.getOrElse(throw new IllegalStateException("")).reference.getOrElse(throw new IllegalStateException(""))
       subsidies <- escService.retrieveSubsidy(SubsidyRetrieve(reference, None)).map(e => Some(e)).recoverWith({case _ => Future.successful(Option.empty[UndertakingSubsidies])})
       sub = subsidies.get.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionID.contains(transactionId)).get
-      _ <- escService.removeSubsidy(reference, sub)
     } yield {
-      Redirect(routes.SubsidyController.getReportPayment())
+      Ok(confirmRemovePage(removeSubsidyClaimForm, sub))
     }
+  }
+
+  def postRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    removeSubsidyClaimForm.bindFromRequest().fold(formWithErrors =>
+      for {
+        undertaking <- store.get[Undertaking]
+        reference = undertaking.getOrElse(throw new IllegalStateException("")).reference.getOrElse(throw new IllegalStateException(""))
+        subsidies <- escService.retrieveSubsidy(SubsidyRetrieve(reference, None)).map(e => Some(e)).recoverWith({case _ => Future.successful(Option.empty[UndertakingSubsidies])})
+        sub = subsidies.get.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionID.contains(transactionId)).get
+      } yield {
+        BadRequest(confirmRemovePage(formWithErrors, sub)),
+      }, formValue => {
+      if(formValue.value == "true")
+        for {
+          undertaking <- store.get[Undertaking]
+          reference = undertaking.getOrElse(throw new IllegalStateException("")).reference.getOrElse(throw new IllegalStateException(""))
+          subsidies <- escService.retrieveSubsidy(SubsidyRetrieve(reference, None)).map(e => Some(e)).recoverWith({ case _ => Future.successful(Option.empty[UndertakingSubsidies]) })
+          sub = subsidies.get.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionID.contains(transactionId)).get
+          _ <- escService.removeSubsidy(reference, sub)
+        } yield {
+          Redirect(routes.SubsidyController.getReportPayment())
+        }
+      else {
+        Future(Redirect(routes.SubsidyController.getReportPayment()))
+      }
+    }
+    )
   }
 
   lazy val reportPaymentForm: Form[FormValues] = Form(
@@ -375,6 +403,9 @@ class SubsidyController @Inject()(
     (identity)(Some(_)))
 
   private val claimDateForm = claimDateFormProvider.form
+
+  lazy val removeSubsidyClaimForm: Form[FormValues] = Form(
+    mapping("removeSubsidyClaim" -> mandatory("removeSubsidyClaim"))(FormValues.apply)(FormValues.unapply))
 
   lazy val cyaForm: Form[FormValues] = Form(
     mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
