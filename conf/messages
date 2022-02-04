@@ -6,6 +6,7 @@ generic.errorPrefix = Error:
 
 common.back=Back
 common.sign-out=[TODO] Sign out
+common.saveChanges = Save changes
 common.continue=Save and Continue
 common.accept=Accept and send
 continue.button=Save and Continue
@@ -211,3 +212,9 @@ subsidy.cya.summary-list.authority.key=Public authority
 subsidy.cya.summary-list.traderRef.key=Your reference
 subsidy.cya.p1=By sending these details you are confirming that, to the best of your knowledge, they are correct.
 
+#Amend Undertaking
+undertaking.amendUndertaking.title = Undertaking Details
+undertaking.amendUndertaking.summary-list.name.key = Name of Undertaking
+undertaking.amendUndertaking.summary-list.sector.key = Industry sector
+undertaking.amendUndertaking.summary-list.telephone.key = Telephone number
+undertaking.amendUndertaking.p = By sending these details you are confirming that, to the best of your knowledge, they are correct

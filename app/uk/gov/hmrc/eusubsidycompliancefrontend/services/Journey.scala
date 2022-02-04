@@ -16,10 +16,13 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
+import cats.implicits.catsSyntaxOptionId
 import play.api.Logger
 import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.mvc.Results.Redirect
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{PhoneNumber, Sector}
 
 import scala.concurrent.Future
 
@@ -74,8 +77,9 @@ trait Journey {
       formPage.value.isEmpty && index < currentIndex
   }
 
-  def isComplete:Boolean =
+  def isComplete:Boolean = {
     steps.last.exists(x => x.value.isDefined)
+  }
 
   def redirect(implicit request: Request[AnyContent]): Option[Future[Result]] = {
     val firstUnfilledFormUri: Journey.Uri =

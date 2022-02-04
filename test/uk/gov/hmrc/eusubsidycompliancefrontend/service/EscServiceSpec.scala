@@ -42,6 +42,12 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       .expects(undertaking, *)
       .returning(Future.successful(result))
 
+  def mockUpdateUndertaking(undertaking: Undertaking)(result: Either[Error, HttpResponse]) =
+    (mockEscConnector
+      .updateUndertaking(_: Undertaking)(_: HeaderCarrier))
+      .expects(undertaking, *)
+      .returning(Future.successful(result))
+
   def mockRetreiveUndertaking(eori: EORI)(result: Either[Error, HttpResponse]) =
     (mockEscConnector
       .retrieveUndertaking(_:EORI)(_:HeaderCarrier))
@@ -122,6 +128,49 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         "the http call succeeds and the body of the response can be parsed" in {
           mockCreateUndertaking(undertaking)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
           val result = service.createUndertaking(undertaking)
+          await(result) shouldBe(undertakingRef)
+        }
+      }
+    }
+
+    "handling request to update an undertaking" must {
+
+      "return an error" when {
+
+        "the http call fails" in {
+          mockUpdateUndertaking(undertaking)(Left(Error("")))
+          val result = service.updateUndertaking(undertaking)
+          assertThrows[RuntimeException](await(result))
+        }
+
+        "the http response doesn't come back with status 201(created)" in {
+          mockUpdateUndertaking(undertaking)(Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders)))
+          val result = service.updateUndertaking(undertaking)
+          assertThrows[RuntimeException](await(result))
+        }
+
+        "there is no json in the response" in {
+          mockUpdateUndertaking(undertaking)(Right(HttpResponse(OK, "hi")))
+          val result = service.updateUndertaking(undertaking)
+          assertThrows[RuntimeException](await(result))
+        }
+
+        "the json in the response can't be parsed" in {
+          val json = Json.parse("""{ "a" : 1 }""")
+
+          mockUpdateUndertaking(undertaking)(Right(HttpResponse(OK, json, emptyHeaders)))
+          val result = service.updateUndertaking(undertaking)
+          assertThrows[RuntimeException](await(result))
+        }
+
+
+      }
+
+      "return successfully" when {
+
+        "the http call succeeds and the body of the response can be parsed" in {
+          mockUpdateUndertaking(undertaking)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
+          val result = service.updateUndertaking(undertaking)
           await(result) shouldBe(undertakingRef)
         }
       }
@@ -259,7 +308,6 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         }
       }
     }
-
 
     "handling request to create subsidy" must {
 

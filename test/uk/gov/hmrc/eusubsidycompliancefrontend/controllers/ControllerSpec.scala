@@ -87,6 +87,25 @@ trait ControllerSpec extends PlaySupport {
       expectedStatus
     )
 
+  def checkFormErrorsAreDisplayed(
+                                   result: Future[Result],
+                                   expectedTitle: String,
+                                   formErrors: List[String],
+                                   expectedStatus: Int = BAD_REQUEST
+                                 ): Unit =
+    checkPageIsDisplayed(
+      result,
+      expectedTitle,
+      { doc =>
+        val errorSummary = doc.select(".govuk-error-summary")
+        errorSummary.select("a").text() shouldBe formErrors(0)
+
+        val inputErrorMessages = doc.select(".govuk-error-message").text()
+        inputErrorMessages shouldBe formErrors.map(e => s"Error: $e").mkString(" ")
+      },
+      expectedStatus
+    )
+
 
   def testRadioButtonOptions(doc: Document, expectedRadioOptionsTexts: List[String]) = {
     val radioOptions = doc.select(".govuk-radios__item")

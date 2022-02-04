@@ -28,7 +28,8 @@ case class UndertakingJourney(
   sector: FormPage[Sector] = FormPage("sector"),
   contact: FormPage[ContactDetails] = FormPage("contact"),
   cya: FormPage[Boolean] = FormPage("check-your-answers"),
-  confirmation: FormPage[Boolean] = FormPage("confirmation")
+  confirmation: FormPage[Boolean] = FormPage("confirmation"),
+  isAmend: Option[Boolean] = None
 ) extends Journey {
 
   override def steps: List[Option[FormPage[_]]] =
@@ -36,6 +37,7 @@ case class UndertakingJourney(
       unapply(this)
       .map(_.toList)
       .fold(List.empty[Any])(identity)
+      .filter(_.isInstanceOf[FormPage[_]])
       .map(_.cast[FormPage[_]])
 
 }
@@ -62,7 +64,8 @@ object UndertakingJourney {
         sector = empty.sector.copy(value = undertaking.industrySector.some),
         contact = empty.contact.copy(
           value = cd
-        )
+        ),
+        isAmend = false.some
       )
     case _ => UndertakingJourney()
   }

@@ -32,9 +32,14 @@ object CommonTestData {
   val eori3 = EORI("GB123456789014")
   val eori4 = EORI("GB123456789010")
 
+  val contactDetails = ContactDetails(PhoneNumber("111").some, None).some
+  val contactDetails1 = ContactDetails(PhoneNumber("1121").some, None).some
+  val contactDetails2 = ContactDetails(PhoneNumber("222").some, PhoneNumber("333").some).some
+
   val businessEntity1 = BusinessEntity(EORI(eori1), true, None)
   val businessEntity2 = BusinessEntity(EORI(eori2), true, None)
   val businessEntity3 = BusinessEntity(EORI(eori3), true, None)
+  val businessEntity4 = BusinessEntity(EORI(eori4), false, contactDetails1)
 
 
   val undertakingRef = UndertakingRef("UR123456")
@@ -70,6 +75,13 @@ object CommonTestData {
     LocalDate.of(2021,1,18).some,
     List(businessEntity1, businessEntity2))
 
+  val undertaking1 = Undertaking(undertakingRef.some,
+    UndertakingName("TestUndertaking"),
+    transport,
+    IndustrySectorLimit(12.34).some,
+    LocalDate.of(2021,1,18).some,
+    List(businessEntity1, businessEntity4))
+
   val subsidyRetrieve = SubsidyRetrieve(
     undertakingRef, None
   )
@@ -99,7 +111,7 @@ object CommonTestData {
   createUndertaking = FormPage("create-undertaking", true.some)
   )
 
-  val contactDetails = ContactDetails(PhoneNumber("111").some, None).some
+
 
   val undertakingJourneyComplete =  UndertakingJourney(
     name = FormPage("undertaking-name", "TestUndertaking".some),
@@ -107,6 +119,15 @@ object CommonTestData {
     contact = FormPage("contact", contactDetails),
     cya = FormPage("check-your-answers", true.some),
     confirmation = FormPage("confirmation", true.some)
+  )
+
+  val undertakingJourneyComplete1 =  UndertakingJourney(
+    name = FormPage("undertaking-name", "TestUndertaking1".some),
+    sector = FormPage("sector",Sector(2).some),
+    contact = FormPage("contact", contactDetails1),
+    cya = FormPage("check-your-answers", true.some),
+    confirmation = FormPage("confirmation", true.some),
+    isAmend = true.some
   )
 
   val businessEntityJourney = BusinessEntityJourney(
