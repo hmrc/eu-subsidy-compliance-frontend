@@ -127,7 +127,7 @@ object CommonTestData {
     contact = FormPage("contact", contactDetails1),
     cya = FormPage("check-your-answers", true.some),
     confirmation = FormPage("confirmation", true.some),
-    isAmend = FormPage("amend-undertaking", true.some)
+    isAmend = true.some
   )
 
   val businessEntityJourney = BusinessEntityJourney(

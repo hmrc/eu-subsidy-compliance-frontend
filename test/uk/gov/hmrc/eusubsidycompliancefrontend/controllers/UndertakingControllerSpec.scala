@@ -515,7 +515,7 @@ class UndertakingControllerSpec extends ControllerSpec
       def performAction() = controller.getAmendUndertakingDetails(FakeRequest())
 
       def update(undertakingJourneyOpt: Option[UndertakingJourney]) = {
-        undertakingJourneyOpt.map(_.copy(isAmend = FormPage("amend-undertaking", true.some)))
+        undertakingJourneyOpt.map(_.copy(isAmend = true.some))
       }
 
       val contact = contactDetails match {
@@ -577,7 +577,7 @@ class UndertakingControllerSpec extends ControllerSpec
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-          mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = FormPage("amend-undertaking", true.some))))
+          mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true.some)))
         }
 
         checkPageIsDisplayed(
@@ -610,7 +610,7 @@ class UndertakingControllerSpec extends ControllerSpec
             .withFormUrlEncodedBody(data: _*))
 
       def update(undertakingJourneyOpt: Option[UndertakingJourney]) = {
-        undertakingJourneyOpt.map(_.copy(isAmend = FormPage("amend-undertaking", None)))
+        undertakingJourneyOpt.map(_.copy(isAmend = None))
       }
 
       "throw technical error" when {
@@ -673,7 +673,7 @@ class UndertakingControllerSpec extends ControllerSpec
         "call to retrieve undertaking passes but retrieve undertaking without Lead Business Entity" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = FormPage("amend-undertaking", true.some))))
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true.some)))
             mockRetreiveUndertaking(eori)(Future.successful(undertaking1.copy(undertakingBusinessEntity = undertaking1.undertakingBusinessEntity.filterNot(_.leadEORI)).some))
           }
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
@@ -683,7 +683,7 @@ class UndertakingControllerSpec extends ControllerSpec
           val updatedUndertaking = undertaking1.copy(name = UndertakingName("TestUndertaking"), industrySector = Sector(1))
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = FormPage("amend-undertaking", true.some))))
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true.some)))
             mockRetreiveUndertaking(eori)(Future.successful(undertaking1.some))
             mockUpdateUndertaking(updatedUndertaking)(Left(Error(exception)))
           }
@@ -694,7 +694,7 @@ class UndertakingControllerSpec extends ControllerSpec
           val updatedUndertaking = undertaking1.copy(name = UndertakingName("TestUndertaking"), industrySector = Sector(1))
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = FormPage("amend-undertaking", true.some))))
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend =  true.some)))
             mockRetreiveUndertaking(eori)(Future.successful(undertaking1.some))
             mockUpdateUndertaking(updatedUndertaking)(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(contacts = contactDetails))(Left(Error(exception)))
@@ -707,7 +707,7 @@ class UndertakingControllerSpec extends ControllerSpec
         val updatedUndertaking = undertaking1.copy(name = UndertakingName("TestUndertaking"), industrySector = Sector(1))
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = FormPage("amend-undertaking", true.some))))
+          mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true.some)))
           mockRetreiveUndertaking(eori)(Future.successful(undertaking1.some))
           mockUpdateUndertaking(updatedUndertaking)(Right(undertakingRef))
           mockAddMember(undertakingRef, businessEntity1.copy(contacts = contactDetails))(Right(undertakingRef))
