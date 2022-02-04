@@ -312,13 +312,20 @@ class BusinessEntityController @Inject()(
     mapping("removeBusiness" -> mandatory("removeBusiness"))(FormValues.apply)(FormValues.unapply))
 
   lazy val eoriForm: Form[FormValues] = Form(
-    mapping("businessEntityEori" -> mandatory("businessEntityEori"))(eoriEntered => FormValues(s"$eoriPrefix$eoriEntered"))(eori => eori.value.drop(2).some).verifying(
-    "businessEntityEori.regex.error",
-    fields => fields match {
-      case a if a.value.matches(EORI.regex) => true
-      case _ => false
-    }
-  ))
+    mapping("businessEntityEori" -> mandatory("businessEntityEori"))(eoriEntered => FormValues(s"$eoriPrefix$eoriEntered"))(eori => eori.value.drop(2).some)
+    .verifying("businessEntityEori.error.incorrect-length",
+      fields => fields match {
+        case a if a.value.toString().length == 12 || a.value.toString().length == 15 => true
+        case _ => false
+      }
+    )
+    .verifying("businessEntityEori.regex.error",
+      fields => fields match {
+        case a if a.value.matches(EORI.regex) => true
+        case _ => false
+      }
+    ) 
+  )
 
   lazy val cyaForm: Form[FormValues] = Form(
     mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
