@@ -29,7 +29,7 @@ case class UndertakingJourney(
   contact: FormPage[ContactDetails] = FormPage("contact"),
   cya: FormPage[Boolean] = FormPage("check-your-answers"),
   confirmation: FormPage[Boolean] = FormPage("confirmation"),
-  isAmend: FormPage[Boolean] = FormPage("amend-undertaking")
+  isAmend: Option[Boolean] = None
 ) extends Journey {
 
   override def steps: List[Option[FormPage[_]]] =

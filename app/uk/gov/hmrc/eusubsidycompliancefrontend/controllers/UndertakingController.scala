@@ -244,14 +244,8 @@ class UndertakingController @Inject()(
     store.get[UndertakingJourney].flatMap {
       ensureUndertakingJourneyPresent(_) { journey =>
         for {
-          updatedJourney <- if (isAmend(journey)) Future.successful(journey) else {
-            store.update[UndertakingJourney] {
-              _.map { undertakingJourney =>
-                val updatedAmend = undertakingJourney.isAmend.copy(value = true.some)
-                undertakingJourney.copy(isAmend = updatedAmend)
-              }
-            }
-          }
+          updatedJourney <- if (isAmend(journey)) Future.successful(journey) else
+            store.update[UndertakingJourney] (_.map ( _.copy(isAmend = true.some)))
         } yield Ok(
           amendUndertakingPage(
             updatedJourney.name.value.fold(handleMissingSessionData("Undertaking Name"))(UndertakingName(_)),
@@ -272,12 +266,7 @@ class UndertakingController @Inject()(
         _ => throw new IllegalStateException("value hard-coded, form hacking?"),
         _ =>
             for {
-              updatedJourney <- store.update[UndertakingJourney] {
-                _.map { undertakingJourney =>
-                  val updatedAmend = undertakingJourney.isAmend.copy(value = None)
-                  undertakingJourney.copy(isAmend = updatedAmend)
-                }
-              }
+              updatedJourney <- store.update[UndertakingJourney] (_.map ( _.copy(isAmend = None)))
               undertakingName = UndertakingName(updatedJourney.name.value.getOrElse(handleMissingSessionData("Undertaking Name")))
               undertakingSector = updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking Sector"))
               retrievedUndertaking <- escService.retrieveUndertaking(eori).map(_.getOrElse(handleMissingSessionData("Undertaking")))
@@ -293,7 +282,7 @@ class UndertakingController @Inject()(
         )
   }
 
-  private def isAmend(journey: UndertakingJourney) = journey.isAmend.value.contains(true)
+  private def isAmend(journey: UndertakingJourney) = journey.isAmend.contains(true)
 
   private def getJourneyPrevious(journey: UndertakingJourney)(implicit request: Request[_]) =
     if(isAmend(journey)) routes.UndertakingController.getAmendUndertakingDetails().url else journey.previous

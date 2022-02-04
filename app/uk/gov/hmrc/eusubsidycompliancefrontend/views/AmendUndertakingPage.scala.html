@@ -41,12 +41,7 @@
 ) {
 
     @defining(
-        contacts match {
-            case ContactDetails(Some(p), Some(m)) => p + "<br>" + m
-            case ContactDetails(None, Some(m)) => m
-            case ContactDetails(Some(p), None) => p
-            case _ => ""
-        }
+        List(contacts.phone, contacts.mobile).flatten.mkString("<br>")
     ) { case (phone) =>
 
         @formHelper(action = controllers.routes.UndertakingController.postAmendUndertaking) {
