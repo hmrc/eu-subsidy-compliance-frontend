@@ -32,7 +32,8 @@
 @layout(
   pageTitle = Some(messages("businessEntityContact.title")),
   backLinkEnabled = true,
-  backLink = Some(previous)
+  backLink = Some(previous),
+  hasErrors = form.hasErrors
 ) {
 
   @formHelper(action = controllers.routes.BusinessEntityController.postContact()) {

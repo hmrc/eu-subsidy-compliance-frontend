@@ -114,7 +114,8 @@ addBusiness.businesses-added.legend=Do you need to add another business?
 
 businessEntityEori.title=What is the EORI number of the business you want to add?
 businessEntityEori.hint=This can only be a GB EORI number.
-businessEntityEori.regex.error=GB EORI number must be 12 or 15 digits
+businessEntityEori.error.incorrect-length=GB EORI number must be 12 or 15 digits
+businessEntityEori.regex.error=Enter the GB EORI number in the correct format (12 or 15 digits), like GB497294577697 or GB729415776974533
 businessEntityEori.eoriInUse=Enter a valid EORI number
 error.businessEntityEori.required=Enter a valid EORI number
 
