@@ -256,7 +256,7 @@ class SubsidyController @Inject()(
               Ok(addTraderReferencePage(claimTraderRefForm, journey.previous))
             )
           ) { x =>
-            val a = x.fold("false")(_ => "true")
+            val a = x.getOrElse("")
             Future.successful(
               Ok(addTraderReferencePage(claimTraderRefForm.fill(OptionalTraderRef(a,x)), journey.previous))
             )
