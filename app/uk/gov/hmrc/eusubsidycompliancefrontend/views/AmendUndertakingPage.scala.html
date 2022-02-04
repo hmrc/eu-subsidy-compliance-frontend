@@ -50,7 +50,7 @@
     ) { case (phone) =>
 
         @formHelper(action = controllers.routes.UndertakingController.postAmendUndertaking) {
-            <input type=hidden name=cya value=true>
+            <input type=hidden name=amendUndertaking value=true>
 
             <h1 class="govuk-heading-l">@messages("undertaking.amendUndertaking.title")</h1>
 

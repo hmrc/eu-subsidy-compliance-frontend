@@ -16,19 +16,17 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
+import cats.implicits.catsSyntaxOptionId
 
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Request, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, OneOf, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, Journey, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, JourneyTraverseService, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,6 +37,7 @@ class UndertakingController @Inject()(
   escActionBuilders: EscActionBuilders,
   store: Store,
   escService: EscService,
+  journeyTraverseService: JourneyTraverseService,
   undertakingNamePage: UndertakingNamePage,
   undertakingSectorPage: UndertakingSectorPage,
   undertakingContactPage: UndertakingContactPage,
@@ -101,7 +100,7 @@ class UndertakingController @Inject()(
   def getSector: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
-      case Some(journey) =>
+      ensureUndertakingJourneyPresent(_) { journey =>
         val form = journey.sector.value.fold(undertakingSectorForm)(sector => undertakingSectorForm.fill(FormValues(sector.id.toString)))
         Future.successful(
           Ok(undertakingSectorPage(
@@ -110,14 +109,13 @@ class UndertakingController @Inject()(
             journey.name.value.getOrElse("")
           ))
         )
-      case _ => handleMissingSessionData("Undertaking journey")
-
+      }
     }
   }
 
   def postSector: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    getPrevious[UndertakingJourney](store).flatMap { previous =>
+    journeyTraverseService.getPrevious[UndertakingJourney].flatMap { previous =>
       undertakingSectorForm.bindFromRequest().fold(
         errors => Future.successful(BadRequest(undertakingSectorPage(errors, previous, ""))),
         form => {
@@ -137,23 +135,23 @@ class UndertakingController @Inject()(
   def getContact: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
-      case Some(journey) =>
-        val form = journey.contact.value.fold(contactForm)(contactDetails => contactForm.fill(OneOf(contactDetails.phone.map(_.toString), contactDetails.mobile.map(_.toString))))
-        Future.successful(
-          Ok(undertakingContactPage(
-            form,
-            getJourneyPrevious(journey),
-            journey.name.value.getOrElse("")
-          ))
-        )
-      case _ => handleMissingSessionData("Undertaking journey")
-
+          ensureUndertakingJourneyPresent(_) { journey =>
+            val form = journey.contact.value.fold(contactForm)(contactDetails =>
+              contactForm.fill(OneOf(contactDetails.phone.map(_.toString), contactDetails.mobile.map(_.toString))))
+            Future.successful(
+              Ok(undertakingContactPage(
+                form,
+                getJourneyPrevious(journey),
+                journey.name.value.getOrElse("")
+              ))
+            )
+          }
     }
   }
 
   def postContact: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    getPrevious[UndertakingJourney](store).flatMap { previous =>
+    journeyTraverseService.getPrevious[UndertakingJourney].flatMap { previous =>
       contactForm.bindFromRequest().fold(
         errors => Future.successful(BadRequest(undertakingContactPage(errors, previous, ""))),
         form => {
@@ -195,28 +193,26 @@ class UndertakingController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     cyaForm.bindFromRequest().fold(
       _ => throw new IllegalStateException("value hard-coded, form hacking?"),
-      form => {
-        store.update[UndertakingJourney]({ x =>
-          x.map { y =>
-            y.copy(cya = y.cya.copy(value = Some(form.value.toBoolean)))
-          }
-        }).flatMap { journey: UndertakingJourney =>
+      form =>
           for {
+            updatedJourney <-  store.update[UndertakingJourney]{ _.map { undertakingJourney =>
+                undertakingJourney.copy(cya = undertakingJourney.cya.copy(value = Some(form.value.toBoolean)))
+              }
+            }
+            undertakingName = UndertakingName(updatedJourney.name.value.getOrElse(handleMissingSessionData("Undertaking Name")))
+            undertakingSector = updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking Sector"))
             ref <- escService.createUndertaking(
                     Undertaking(
                       None,
-                      name = UndertakingName(journey.name.value.getOrElse(throw new IllegalThreadStateException(""))),
-                      industrySector = journey.sector.value.getOrElse(throw new IllegalThreadStateException("")),
+                      name = undertakingName,
+                      industrySector = undertakingSector,
                       None,
                       None,
-                      List(BusinessEntity(eori, leadEORI = true, journey.contact.value)
+                      List(BusinessEntity(eori, leadEORI = true, updatedJourney.contact.value)
                     )))
 
-          } yield {
-            Redirect(routes.UndertakingController.getConfirmation(ref, journey.name.value.getOrElse("")))
-          }
-        }
-      }
+          } yield Redirect(routes.UndertakingController.getConfirmation(ref, updatedJourney.name.value.getOrElse("")))
+
     )
   }
 
@@ -232,11 +228,10 @@ class UndertakingController @Inject()(
     confirmationForm.bindFromRequest().fold(
       _ => throw new IllegalStateException("value hard-coded, form hacking?"),
       form => {
-        store.update[UndertakingJourney]({ x =>
-          x.map { y =>
-            y.copy(confirmation = y.confirmation.copy(value = Some(form.value.toBoolean)))
+        store.update[UndertakingJourney]{ _.map { undertakingJourney =>
+            undertakingJourney.copy(confirmation = undertakingJourney.confirmation.copy(value = Some(form.value.toBoolean)))
           }
-        }).flatMap{ _ =>
+        }.flatMap { _ =>
           Future.successful(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
         }
       }
@@ -247,9 +242,9 @@ class UndertakingController @Inject()(
     implicit val eori: EORI = request.eoriNumber
 
     store.get[UndertakingJourney].flatMap {
-      case Some(journey) =>
+      ensureUndertakingJourneyPresent(_) { journey =>
         for {
-          updatedJourney <- if (journey.isAmend.value.contains(true)) Future.successful(journey) else {
+          updatedJourney <- if (isAmend(journey)) Future.successful(journey) else {
             store.update[UndertakingJourney] {
               _.map { undertakingJourney =>
                 val updatedAmend = undertakingJourney.isAmend.copy(value = true.some)
@@ -257,31 +252,61 @@ class UndertakingController @Inject()(
               }
             }
           }
-        } yield (
-          Ok(
-            amendUndertakingPage(
-              updatedJourney.name.value.fold(sys.error("name should be defined"))(UndertakingName(_)),
-              updatedJourney.sector.value.getOrElse(sys.error("sector should be defined")),
-              updatedJourney.contact.value.getOrElse(sys.error("contact should be defined")),
-              routes.AccountController.getAccountPage().url
-            )
+        } yield Ok(
+          amendUndertakingPage(
+            updatedJourney.name.value.fold(handleMissingSessionData("Undertaking Name"))(UndertakingName(_)),
+            updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking sector")),
+            updatedJourney.contact.value.getOrElse(handleMissingSessionData("Undertaking contact")),
+            routes.AccountController.getAccountPage().url
           )
-          )
-      case None => sys.error(" undertaking not retrieved")
+        )
+
+      }
     }
   }
 
     def postAmendUndertaking: Action[AnyContent] =  escAuthentication.async { implicit  request =>
       implicit val eori: EORI = request.eoriNumber
-      Future.successful(Ok(s""))
+
+      amendUndertakingForm.bindFromRequest().fold(
+        _ => throw new IllegalStateException("value hard-coded, form hacking?"),
+        _ =>
+            for {
+              updatedJourney <- store.update[UndertakingJourney] {
+                _.map { undertakingJourney =>
+                  val updatedAmend = undertakingJourney.isAmend.copy(value = None)
+                  undertakingJourney.copy(isAmend = updatedAmend)
+                }
+              }
+              undertakingName = UndertakingName(updatedJourney.name.value.getOrElse(handleMissingSessionData("Undertaking Name")))
+              undertakingSector = updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking Sector"))
+              retrievedUndertaking <- escService.retrieveUndertaking(eori).map(_.getOrElse(handleMissingSessionData("Undertaking")))
+              undertakingRef = retrievedUndertaking.reference.getOrElse(handleMissingSessionData("Undertaking ref"))
+              businessEntityList = retrievedUndertaking.undertakingBusinessEntity
+              leadBEList = businessEntityList.filter(_.leadEORI)
+              leadBE = if (leadBEList.nonEmpty) leadBEList.head else handleMissingSessionData("lead Business Entity")
+              updatedLeadBE = leadBE.copy(contacts = updatedJourney.contact.value)
+              updatedUndertaking = retrievedUndertaking.copy(name = undertakingName, industrySector = undertakingSector)
+              _ <- escService.updateUndertaking(updatedUndertaking)
+              _ <- escService.addMember(undertakingRef, updatedLeadBE)
+            } yield Redirect(routes.AccountController.getAccountPage())
+        )
   }
 
   private def isAmend(journey: UndertakingJourney) = journey.isAmend.value.contains(true)
+
   private def getJourneyPrevious(journey: UndertakingJourney)(implicit request: Request[_]) =
     if(isAmend(journey)) routes.UndertakingController.getAmendUndertakingDetails().url else journey.previous
 
   private def getJourneyNext(journey: UndertakingJourney)(implicit request: Request[_]) =
     if(isAmend(journey)) Future.successful(Redirect(routes.UndertakingController.getAmendUndertakingDetails())) else journey.next
+
+  private def ensureUndertakingJourneyPresent(journey: Option[UndertakingJourney])(f: UndertakingJourney => Future[Result]): Future[Result] = {
+    journey match {
+      case Some(undertakingJourney) => f(undertakingJourney)
+      case None => handleMissingSessionData("Undertaking journey")
+    }
+  }
 
   lazy val eoriCheckForm : Form[FormValues] = Form(
     mapping("eoricheck" -> mandatory("eoricheck"))(FormValues.apply)(FormValues.unapply))

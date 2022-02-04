@@ -73,6 +73,16 @@ class EscConnectorSpec
 
     }
 
+    "handling request to update Undertaking" must {
+
+      val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/update"
+      behave like connectorBehaviour(
+        mockPost(expectedUrl, Seq.empty, undertaking)(_),
+        () => connector.updateUndertaking(undertaking)
+      )
+
+    }
+
     "handling request to retrieve Undertaking" must {
       val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/$eori1"
       behave like connectorBehaviour(
