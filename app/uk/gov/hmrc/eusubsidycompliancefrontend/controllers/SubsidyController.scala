@@ -365,6 +365,21 @@ class SubsidyController @Inject()(
     )
   }
 
+  def getChangeSubsidyClaim(transactionId: String): Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    for {
+      undertaking <- store.get[Undertaking]
+      reference = undertaking.getOrElse(throw new IllegalStateException("")).reference.getOrElse(throw new IllegalStateException(""))
+      subsidies <- escService.retrieveSubsidy(SubsidyRetrieve(reference, None)).map(e => Some(e)).recoverWith({case _ => Future.successful(Option.empty[UndertakingSubsidies])})
+      sub = subsidies.get.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionID.contains(transactionId)).get
+      _ = store.put(
+        SubsidyJourney.fromSubsidy(sub)
+      )
+    } yield {
+      Redirect(routes.SubsidyController.getCheckAnswers())
+    }
+  }
+
   lazy val reportPaymentForm: Form[FormValues] = Form(
     mapping("reportPayment" -> mandatory("reportPayment"))(FormValues.apply)(FormValues.unapply))
 

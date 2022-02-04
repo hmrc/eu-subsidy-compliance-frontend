@@ -161,14 +161,14 @@ class EscConnectorImpl @Inject()(http: HttpClient,
       update = UndertakingSubsidyAmendment(
         List(
           NonHmrcSubsidy(
-            subsidyUsageTransactionID = None,
+            subsidyUsageTransactionID = journey.existingTransactionId,
             allocationDate = currentDate,
             submissionDate= currentDate,
             publicAuthority = Some(journey.publicAuthority.value.getOrElse(sys.error(" publicAuthority is missing"))),// this shouldn't be optional, is required in create API but not retrieve
             traderReference = journey.traderRef.value.getOrElse(sys.error(" trader ref is missing")),
             nonHMRCSubsidyAmtEUR = SubsidyAmount(journey.claimAmount.value.getOrElse(sys.error(" claimAmount is missing"))),
             businessEntityIdentifier = journey.addClaimEori.value.getOrElse(sys.error(" addClaimEori is missing")),
-            amendmentType = Some(EisSubsidyAmendmentType("1"))
+            amendmentType = journey.existingTransactionId.fold(Some(EisSubsidyAmendmentType("1")))(_ => Some(EisSubsidyAmendmentType("2")))
           )
         )
       )

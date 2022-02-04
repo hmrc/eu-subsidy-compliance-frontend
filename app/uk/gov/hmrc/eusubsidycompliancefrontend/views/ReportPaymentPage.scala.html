@@ -48,7 +48,7 @@
                       TableRow(content = Text(sub.businessEntityIdentifier.toString)),
                       TableRow(content = Text(sub.publicAuthority.toString)),
                       TableRow(content = Text(sub.subsidyUsageTransactionID.toString)),
-                      TableRow(content = HtmlContent(s"<a href=${controllers.routes.SubsidyController.getAddClaimReference().url}>Change</a>")),
+                      TableRow(content = HtmlContent(s"<a href=${controllers.routes.SubsidyController.getChangeSubsidyClaim(sub.subsidyUsageTransactionID.get).url}>Change</a>")),
                       TableRow(content = HtmlContent(s"<a href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionID.get).url}>Remove</a>"))
                   )
               },

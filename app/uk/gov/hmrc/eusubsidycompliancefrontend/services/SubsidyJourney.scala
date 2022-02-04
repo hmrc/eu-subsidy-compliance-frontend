@@ -29,7 +29,8 @@ case class SubsidyJourney(
   addClaimEori: FormPage[Option[EORI]] = FormPage("add-claim-eori"),
   publicAuthority: FormPage[String] = FormPage("add-claim-public-authority"),
   traderRef: FormPage[Option[TraderRef]] = FormPage("add-claim-reference"),
-  cya: FormPage[Boolean] = FormPage("check-your-answers-subsidy")
+  cya: FormPage[Boolean] = FormPage("check-your-answers-subsidy"),
+  existingTransactionId: Option[SubsidyRef] = None
 ) extends Journey {
 
   override def steps: List[Option[FormPage[_]]] =
@@ -91,4 +92,16 @@ object SubsidyJourney {
     Json.format[FormPage[TraderRef]]
 
   implicit val format: Format[SubsidyJourney] = Json.format[SubsidyJourney]
+
+  def fromSubsidy(nonHmrcSubsidy: NonHmrcSubsidy): SubsidyJourney = {
+    val newJourney = SubsidyJourney()
+    newJourney
+      .copy(reportPayment = newJourney.reportPayment.copy(value = Some(true)))
+      .copy(claimDate = newJourney.claimDate.copy(value = Some(DateFormValues.fromDate(nonHmrcSubsidy.submissionDate))))
+      .copy(claimAmount = newJourney.claimAmount.copy(value = Some(nonHmrcSubsidy.nonHMRCSubsidyAmtEUR)))
+      .copy(addClaimEori = newJourney.addClaimEori.copy(value = Some(nonHmrcSubsidy.businessEntityIdentifier)))
+      .copy(publicAuthority = newJourney.publicAuthority.copy(value = Some(nonHmrcSubsidy.publicAuthority.getOrElse(""))))
+      .copy(traderRef = newJourney.traderRef.copy(value = Some(nonHmrcSubsidy.traderReference)))
+      .copy(existingTransactionId = nonHmrcSubsidy.subsidyUsageTransactionID)
+  }
 }

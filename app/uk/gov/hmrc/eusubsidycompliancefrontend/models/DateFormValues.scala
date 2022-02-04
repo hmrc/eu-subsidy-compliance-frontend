@@ -18,10 +18,20 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Json, OFormat}
 
+import java.time.LocalDate
+
 case class DateFormValues(day: String, month: String, year: String) {
   def toFormattedString: String = day + "/" + month + "/" + year
 }
 
 object DateFormValues {
+
+  def fromDate(localDate: LocalDate) =
+    DateFormValues(
+      localDate.getDayOfMonth.toString,
+      localDate.getMonthValue.toString,
+      localDate.getYear.toString
+    )
+
   implicit val format: OFormat[DateFormValues] = Json.format[DateFormValues]
 }
