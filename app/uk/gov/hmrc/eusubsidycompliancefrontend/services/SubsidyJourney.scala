@@ -40,6 +40,7 @@ case class SubsidyJourney(
       .fold(List.empty[Any])(identity)
       .map(_.cast[FormPage[_]])
 
+  def isAmend(): Boolean = existingTransactionId.nonEmpty
 }
 
 object SubsidyJourney {

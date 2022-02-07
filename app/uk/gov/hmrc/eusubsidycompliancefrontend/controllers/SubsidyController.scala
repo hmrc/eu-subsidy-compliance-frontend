@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.data.Form
 import play.api.data.Forms.{bigDecimal, mapping, optional, text}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider
@@ -83,11 +83,14 @@ class SubsidyController @Inject()(
     reportPaymentForm.bindFromRequest().fold(
       _ => throw new IllegalStateException("value hard-coded, form hacking?"),
       form => {
-        store.update[SubsidyJourney]({ x =>
-          x.map { y =>
-            y.copy(reportPayment = y.reportPayment.copy(value = Some(form.value.toBoolean)))
-          }
-        }).flatMap(_.next)
+        for {
+          journey <- store.update[SubsidyJourney]({ x =>
+            x.map { y =>
+              y.copy(reportPayment = y.reportPayment.copy(value = Some(form.value.toBoolean)))
+            }
+          })
+          redirect <- getJourneyNext(journey)
+        } yield redirect
       }
     )
   }
@@ -119,11 +122,14 @@ class SubsidyController @Inject()(
       claimAmountForm.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(addClaimAmountPage(formWithErrors, previous))),
         form => {
-          store.update[SubsidyJourney]({ x =>
-            x.map { y =>
+          for {
+            journey <- store.update[SubsidyJourney]({ x =>
+              x.map { y =>
               y.copy(claimAmount = y.claimAmount.copy(value = Some(form)))
-            }
-          }).flatMap(_.next)
+              }
+            })
+            redirect <- getJourneyNext(journey)
+          } yield redirect
         }
       )
     }
@@ -161,11 +167,14 @@ class SubsidyController @Inject()(
       claimDateForm.bindFromRequest().fold(
         formWithErrors => Future(BadRequest(addClaimDatePage(formWithErrors, previous))),
         form => {
-          store.update[SubsidyJourney]({ x =>
-            x.map { y =>
+          for {
+            journey <- store.update[SubsidyJourney]({ x =>
+              x.map { y =>
               y.copy(claimDate = y.claimDate.copy(value = Some(form)))
             }
-          }).flatMap(_.next)
+            })
+            redirect <- getJourneyNext(journey)
+          } yield redirect
         }
       )
     }
@@ -198,11 +207,14 @@ class SubsidyController @Inject()(
       claimEoriForm.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(addClaimEoriPage(formWithErrors, previous))),
         form => {
-          store.update[SubsidyJourney]({ x =>
-            x.map { y =>
-              y.copy(addClaimEori = y.addClaimEori.copy(value = Some(form.value.map(EORI(_)))))
-            }
-          }).flatMap(_.next)
+          for {
+            journey <- store.update[SubsidyJourney]({ x =>
+                x.map { y =>
+                y.copy(addClaimEori = y.addClaimEori.copy(value = Some(form.value.map(EORI(_)))))
+              }
+              })
+            redirect <- getJourneyNext(journey)
+          } yield redirect
         }
       )
     }
@@ -234,11 +246,14 @@ class SubsidyController @Inject()(
       claimPublicAuthorityForm.bindFromRequest().fold(
         errors => Future.successful(BadRequest(addPublicAuthorityPage(errors, previous))),
         form => {
-          store.update[SubsidyJourney]({ x =>
-            x.map { y =>
-              y.copy(publicAuthority = y.publicAuthority.copy(value = Some(form)))
-            }
-          }).flatMap(_.next)
+          for {
+            journey <- store.update[SubsidyJourney]({ x =>
+                  x.map { y =>
+                y.copy(publicAuthority = y.publicAuthority.copy(value = Some(form)))
+              }
+              })
+            redirect <- getJourneyNext(journey)
+          } yield redirect
         }
       )
     }
@@ -271,11 +286,15 @@ class SubsidyController @Inject()(
       claimTraderRefForm.bindFromRequest().fold(
         errors => Future.successful(BadRequest(addTraderReferencePage(errors, previous))),
         form => {
-          store.update[SubsidyJourney]({ x =>
+          for {
+            journey <- store.update[SubsidyJourney]({ x =>
             x.map { y =>
-              y.copy(traderRef = y.traderRef.copy(value = Some(form.value.map(TraderRef(_)))))
-            }
-          }).flatMap(_.next)
+            y.copy(traderRef = y.traderRef.copy(value = Some(form.value.map(TraderRef(_)))))
+          }
+          })
+            redirect <- getJourneyNext(journey)
+
+          } yield redirect
         }
       )
     }
@@ -379,6 +398,9 @@ class SubsidyController @Inject()(
       Redirect(routes.SubsidyController.getCheckAnswers())
     }
   }
+
+  private def getJourneyNext(journey: SubsidyJourney)(implicit request: Request[_]) =
+    if(journey.isAmend()) Future.successful(Redirect(routes.SubsidyController.getCheckAnswers())) else journey.next
 
   lazy val reportPaymentForm: Form[FormValues] = Form(
     mapping("reportPayment" -> mandatory("reportPayment"))(FormValues.apply)(FormValues.unapply))
