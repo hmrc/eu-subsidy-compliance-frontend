@@ -224,7 +224,6 @@ class UndertakingController @Inject()(
               None,
               List(BusinessEntity(eori, leadEORI = true, updatedJourney.contact.value)
               ))
-            ref <- escService.createUndertaking(undertaking)
            result <- createUndertakingAndSendEmail(undertaking, eori, updatedJourney)
 
           } yield result

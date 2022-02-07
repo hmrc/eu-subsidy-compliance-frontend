@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 
-import cats.data.EitherT
 import com.google.inject.{ImplementedBy, Inject, Singleton}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.emailSend.EmailSendRequest

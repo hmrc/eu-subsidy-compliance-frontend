@@ -24,7 +24,7 @@ import play.api.Configuration
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.SendEmailConnectorImpl
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import utils.CommonTestData.{emailSendRequest, eori1}
+import utils.CommonTestData.{emailSendRequest}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

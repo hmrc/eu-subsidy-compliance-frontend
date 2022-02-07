@@ -34,7 +34,6 @@ object CommonTestData {
   val eori2 = EORI("GB123456789013")
   val eori3 = EORI("GB123456789014")
   val eori4 = EORI("GB123456789010")
-  val contactDetails = ContactDetails(PhoneNumber("111").some, None).some
 
   val contactDetails = ContactDetails(PhoneNumber("111").some, None).some
   val contactDetails1 = ContactDetails(PhoneNumber("1121").some, None).some

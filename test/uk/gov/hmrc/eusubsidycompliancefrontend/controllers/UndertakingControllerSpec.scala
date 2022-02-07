@@ -26,14 +26,15 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, Under
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, Error, Undertaking}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData._
+
 import scala.collection.JavaConverters._
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.mvc.Cookie
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.emailSend.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, JourneyTraverseService, Store, UndertakingJourney}
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, JourneyTraverseService, RetrieveEmailService, SendEmailService, Store, UndertakingJourney}
+
 import scala.concurrent.Future
 
 
@@ -50,7 +51,9 @@ class UndertakingControllerSpec extends ControllerSpec
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
-    bind[JourneyTraverseService].toInstance(mockJourneyTraverseService)
+    bind[JourneyTraverseService].toInstance(mockJourneyTraverseService),
+    bind[SendEmailService].toInstance(mockSendEmailService),
+    bind[RetrieveEmailService].toInstance(mockRetrieveEmailService)
   )
 
   override def additionalConfig = super.additionalConfig.withFallback(
@@ -168,7 +171,9 @@ class UndertakingControllerSpec extends ControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postUndertakingName(
-          FakeRequest("POST", routes.UndertakingController.getUndertakingName().url))
+          FakeRequest("POST", routes.UndertakingController.getUndertakingName().url)
+        .withFormUrlEncodedBody(data: _*))
+
       "throw technical error" when {
         val exception = new Exception("oh no")
 
