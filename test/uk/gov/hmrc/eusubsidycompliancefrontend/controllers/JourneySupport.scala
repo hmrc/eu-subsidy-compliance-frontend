@@ -30,11 +30,10 @@ trait JourneySupport { this: ControllerSpec =>
 
   val mockJourneyTraverseService = mock[JourneyTraverseService]
 
-  def mockGetPrevious[A <: Journey : ClassTag](eori: EORI)(result: Either[Error, Uri]) = {
+  def mockGetPrevious[A <: Journey : ClassTag](eori: EORI)(result: Either[Error, Uri]) =
     (mockJourneyTraverseService
       .getPrevious(_: ClassTag[A], _: EORI, _: Request[_], _: Reads[A]))
       .expects(*, eori, *, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful(_)))
-  }
+      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful(_)))
 
 }

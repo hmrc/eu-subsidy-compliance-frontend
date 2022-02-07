@@ -39,22 +39,30 @@ case class EligibilityJourney(
       .map(_.toList)
       .fold(List.empty[Any])(identity)
       .map(_.cast[FormPage[_]])
-      .filterNot(x => x.fold(false) { y =>
-        y.uri === "will-you-claim-customs-waivers" &&
+      .filterNot(x =>
+        x.fold(false) { y =>
+          y.uri === "will-you-claim-customs-waivers" &&
           this.customsWaivers.value.getOrElse(false)
-      })
-      .filterNot(x => x.fold(false) { y =>
-        y.uri === "not-eligible" &&
+        }
+      )
+      .filterNot(x =>
+        x.fold(false) { y =>
+          y.uri === "not-eligible" &&
           (this.customsWaivers.value.getOrElse(false) || this.willYouClaim.value.getOrElse(false))
-      })
-      .filterNot(x => x.fold(false) { y =>
-        y.uri === "not-eligible-to-lead" &&
+        }
+      )
+      .filterNot(x =>
+        x.fold(false) { y =>
+          y.uri === "not-eligible-to-lead" &&
           this.mainBusinessCheck.value.getOrElse(false)
-      })
-      .filterNot(x => x.fold(false) { y =>
-        y.uri === "incorrect-eori" &&
+        }
+      )
+      .filterNot(x =>
+        x.fold(false) { y =>
+          y.uri === "incorrect-eori" &&
           this.eoriCheck.value.getOrElse(false)
-      })
+        }
+      )
 
 }
 
@@ -62,5 +70,3 @@ object EligibilityJourney {
   import Journey._ // N.B. don't let intellij delete this
   implicit val format: Format[EligibilityJourney] = Json.format[EligibilityJourney]
 }
-
-

@@ -24,9 +24,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait AuthenticatedActionBuildersSpec extends MockitoSugar
-   {
-  implicit lazy val ec:           ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+trait AuthenticatedActionBuildersSpec extends MockitoSugar {
+  implicit lazy val ec: ExecutionContext                  = scala.concurrent.ExecutionContext.Implicits.global
   def preAuthenticatedActionBuilders(): EscActionBuilders = new EscActionBuilders(mock[EscRequestActionBuilder]) {
     override val escAuthentication: ActionBuilder[EscAuthRequest, AnyContent] =
       new ActionBuilder[EscAuthRequest, AnyContent] {

@@ -36,7 +36,7 @@ trait PlaySupport extends AnyWordSpec with Matchers with BeforeAndAfterAll with 
 
   def overrideBindings: List[GuiceableModule] = List.empty[GuiceableModule]
 
-  def additionalConfig =  Configuration()
+  def additionalConfig                    = Configuration()
   def buildFakeApplication(): Application =
     new GuiceApplicationBuilder()
       .configure(

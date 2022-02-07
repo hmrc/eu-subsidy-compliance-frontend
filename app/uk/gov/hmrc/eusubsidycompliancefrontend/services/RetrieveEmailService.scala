@@ -35,24 +35,26 @@ trait RetrieveEmailService {
 }
 
 @Singleton
-class RetrieveEmailServiceImpl @Inject() (retrieveEmailConnector: RetrieveEmailConnector
-                                         )(implicit ec: ExecutionContext) extends RetrieveEmailService {
-  override def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[EmailAddress]] = {
+class RetrieveEmailServiceImpl @Inject() (retrieveEmailConnector: RetrieveEmailConnector)(implicit ec: ExecutionContext)
+    extends RetrieveEmailService {
+  override def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[EmailAddress]] =
     retrieveEmailConnector.retrieveEmailByEORI(eori).map {
       case Left(Error(_)) => sys.error("Error in retrieving Email Address")
-      case Right(value) =>
+      case Right(value)   =>
         value.status match {
           case NOT_FOUND => None
-          case OK => value.parseJSON[EmailAddressResponse].fold(_ => sys.error("Error in parsing Email Address"), getEmailAddress)
-          case _ => sys.error("Error in retrieving Email Address")
+          case OK        =>
+            value
+              .parseJSON[EmailAddressResponse]
+              .fold(_ => sys.error("Error in parsing Email Address"), getEmailAddress)
+          case _         => sys.error("Error in retrieving Email Address")
         }
     }
-  }
 
   //If the email is Undeliverable or invalid, it does give a status of OK sometimes but its response is different
   //this method is identifying that response and returning the email address
   private def getEmailAddress(emailAddressResponse: EmailAddressResponse) = emailAddressResponse match {
     case EmailAddressResponse(email, Some(_), None) => email.some
-    case _ => None
+    case _                                          => None
   }
 }

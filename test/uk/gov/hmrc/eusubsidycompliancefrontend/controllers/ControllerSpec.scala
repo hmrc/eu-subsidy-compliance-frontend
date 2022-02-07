@@ -48,11 +48,11 @@ trait ControllerSpec extends PlaySupport {
   }
 
   def checkPageIsDisplayed(
-                            result: Future[Result],
-                            expectedTitle: String,
-                            contentChecks: Document => Unit = _ => (),
-                            expectedStatus: Int = OK
-                          ): Unit = {
+    result: Future[Result],
+    expectedTitle: String,
+    contentChecks: Document => Unit = _ => (),
+    expectedStatus: Int = OK
+  ): Unit = {
     (status(result), redirectLocation(result)) shouldBe (expectedStatus -> None)
 
     val doc = Jsoup.parse(contentAsString(result))
@@ -69,11 +69,11 @@ trait ControllerSpec extends PlaySupport {
   }
 
   def checkFormErrorIsDisplayed(
-                                 result: Future[Result],
-                                 expectedTitle: String,
-                                 formError: String,
-                                 expectedStatus: Int = BAD_REQUEST
-                               ): Unit =
+    result: Future[Result],
+    expectedTitle: String,
+    formError: String,
+    expectedStatus: Int = BAD_REQUEST
+  ): Unit =
     checkPageIsDisplayed(
       result,
       expectedTitle,
@@ -88,11 +88,11 @@ trait ControllerSpec extends PlaySupport {
     )
 
   def checkFormErrorsAreDisplayed(
-                                   result: Future[Result],
-                                   expectedTitle: String,
-                                   formErrors: List[String],
-                                   expectedStatus: Int = BAD_REQUEST
-                                 ): Unit =
+    result: Future[Result],
+    expectedTitle: String,
+    formErrors: List[String],
+    expectedStatus: Int = BAD_REQUEST
+  ): Unit =
     checkPageIsDisplayed(
       result,
       expectedTitle,
@@ -106,7 +106,6 @@ trait ControllerSpec extends PlaySupport {
       expectedStatus
     )
 
-
   def testRadioButtonOptions(doc: Document, expectedRadioOptionsTexts: List[String]) = {
     val radioOptions = doc.select(".govuk-radios__item")
     radioOptions.size shouldBe expectedRadioOptionsTexts.size
@@ -119,11 +118,11 @@ trait ControllerSpec extends PlaySupport {
 
 @Singleton
 class TestMessagesApiProvider @Inject() (
-                                          environment: Environment,
-                                          config: Configuration,
-                                          langs: Langs,
-                                          httpConfiguration: HttpConfiguration
-                                        ) extends DefaultMessagesApiProvider(environment, config, langs, httpConfiguration) {
+  environment: Environment,
+  config: Configuration,
+  langs: Langs,
+  httpConfiguration: HttpConfiguration
+) extends DefaultMessagesApiProvider(environment, config, langs, httpConfiguration) {
 
   val logger = Logger(this.getClass)
 

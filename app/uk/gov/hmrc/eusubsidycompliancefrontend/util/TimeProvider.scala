@@ -28,6 +28,6 @@ trait TimeProvider {
 
 @Singleton
 class SystemTimeProvider extends TimeProvider {
-  override def today: LocalDate = LocalDate.now()
+  override def today: LocalDate            = LocalDate.now()
   override def today(z: ZoneId): LocalDate = LocalDate.now(z)
 }

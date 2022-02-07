@@ -29,14 +29,15 @@ import utils.CommonTestData.{undertaking, _}
 
 import scala.concurrent.Future
 
-class AccountControllerSpec  extends ControllerSpec
-  with AuthSupport
-  with JourneyStoreSupport
-  with AuthAndSessionDataBehaviour {
-  val mockEscService = mock[EscService]
+class AccountControllerSpec
+    extends ControllerSpec
+    with AuthSupport
+    with JourneyStoreSupport
+    with AuthAndSessionDataBehaviour {
+  val mockEscService           = mock[EscService]
   val mockRetrieveEmailService = mock[RetrieveEmailService]
 
-  override def overrideBindings           = List(
+  override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
@@ -45,21 +46,27 @@ class AccountControllerSpec  extends ControllerSpec
 
   val controller = instanceOf[AccountController]
 
-
   def mockRetreiveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
     (mockEscService
       .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
       .returning(result)
 
-  def mockRetrieveEmail(eori: EORI)(result: Either[Error, Option[EmailAddress]]) = {
+  def mockRetrieveEmail(eori: EORI)(result: Either[Error, Option[EmailAddress]]) =
     (mockRetrieveEmailService
       .retrieveEmailByEORI(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
-      .returning{result
-        .fold(e => Future.failed(e.value
-          .fold(s => new Exception(s), identity)), Future.successful)}
-  }
+      .returning {
+        result
+          .fold(
+            e =>
+              Future.failed(
+                e.value
+                  .fold(s => new Exception(s), identity)
+              ),
+            Future.successful
+          )
+      }
 
   "AccountControllerSpec" when {
 
@@ -71,7 +78,7 @@ class AccountControllerSpec  extends ControllerSpec
 
       "display the page" when {
 
-        def test(undertaking: Undertaking) = {
+        def test(undertaking: Undertaking) =
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
@@ -83,13 +90,13 @@ class AccountControllerSpec  extends ControllerSpec
             checkPageIsDisplayed(
               performAction(),
               messageFromMessageKey("account.title", undertaking.name),
-              {doc =>
+              { doc =>
                 val htmlBody = doc.select(".govuk-grid-column-one-third").html()
-                htmlBody should include regex messageFromMessageKey(
+                htmlBody   should include regex messageFromMessageKey(
                   "account-homepage.cards.card1.link1",
                   routes.SubsidyController.getReportPayment().url
                 )
-                if(undertaking.undertakingBusinessEntity.length > 1)
+                if (undertaking.undertakingBusinessEntity.length > 1)
                   htmlBody should include regex messageFromMessageKey(
                     "account-homepage.cards.card3.link1View",
                     routes.BusinessEntityController.getAddBusinessEntity().url
@@ -104,7 +111,6 @@ class AccountControllerSpec  extends ControllerSpec
             )
 
           }
-        }
 
         "there is a view link on the page" in {
           test(undertaking)
@@ -202,7 +208,6 @@ class AccountControllerSpec  extends ControllerSpec
 
         }
 
-
         "there is an error in storing Business entity  journey data" in {
           val businessEntityData = BusinessEntityJourney.fromUndertakingOpt(None)
 
@@ -245,7 +250,7 @@ class AccountControllerSpec  extends ControllerSpec
           checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateEmailAddress())
         }
 
-         "email is retrieved from cds api" when {
+        "email is retrieved from cds api" when {
 
           "there is no existing retrieve undertaking" when {
 
@@ -286,8 +291,6 @@ class AccountControllerSpec  extends ControllerSpec
             }
           }
         }
-
-
 
       }
 

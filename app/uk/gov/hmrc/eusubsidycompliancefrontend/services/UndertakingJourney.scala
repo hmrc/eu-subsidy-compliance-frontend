@@ -33,8 +33,8 @@ case class UndertakingJourney(
 ) extends Journey {
 
   override def steps: List[Option[FormPage[_]]] =
-    UndertakingJourney.
-      unapply(this)
+    UndertakingJourney
+      .unapply(this)
       .map(_.toList)
       .fold(List.empty[Any])(identity)
       .filter(_.isInstanceOf[FormPage[_]])
@@ -45,9 +45,9 @@ case class UndertakingJourney(
 object UndertakingJourney {
   import Journey._
 
-  implicit val formPageSectorFormat: OFormat[FormPage[Sector]] =
+  implicit val formPageSectorFormat: OFormat[FormPage[Sector]]          =
     Json.format[FormPage[Sector]]
-  implicit val formatContactDetails: OFormat[ContactDetails] =
+  implicit val formatContactDetails: OFormat[ContactDetails]            =
     Json.format[ContactDetails]
   implicit val formPageContactFormat: OFormat[FormPage[ContactDetails]] =
     Json.format[FormPage[ContactDetails]]
@@ -56,7 +56,7 @@ object UndertakingJourney {
 
   def fromUndertakingOpt(undertakingOpt: Option[Undertaking]): UndertakingJourney = undertakingOpt match {
     case Some(undertaking) =>
-      val empty = UndertakingJourney()
+      val empty                      = UndertakingJourney()
       val cd: Option[ContactDetails] =
         undertaking.undertakingBusinessEntity.filter(_.leadEORI).head.contacts
       empty.copy(
@@ -67,6 +67,6 @@ object UndertakingJourney {
         ),
         isAmend = false.some
       )
-    case _ => UndertakingJourney()
+    case _                 => UndertakingJourney()
   }
 }

@@ -29,11 +29,12 @@ import utils.CommonTestData._
 
 import scala.concurrent.Future
 
-class BusinessEntityControllerSpec  extends ControllerSpec
-  with AuthSupport
-  with JourneyStoreSupport
-  with AuthAndSessionDataBehaviour
-  with JourneySupport {
+class BusinessEntityControllerSpec
+    extends ControllerSpec
+    with AuthSupport
+    with JourneyStoreSupport
+    with AuthAndSessionDataBehaviour
+    with JourneySupport {
 
   val mockEscService = mock[EscService]
 
@@ -43,7 +44,6 @@ class BusinessEntityControllerSpec  extends ControllerSpec
     bind[EscService].toInstance(mockEscService),
     bind[JourneyTraverseService].toInstance(mockJourneyTraverseService)
   )
-
 
   val controller = instanceOf[BusinessEntityController]
 
@@ -115,14 +115,13 @@ class BusinessEntityControllerSpec  extends ControllerSpec
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("addBusiness.businesses-added.title", undertaking.name),
-            {doc =>
+            { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
 
               input match {
                 case Some(value) => selectedOptions.attr("value") shouldBe value
-                case None => selectedOptions.isEmpty       shouldBe true
+                case None        => selectedOptions.isEmpty       shouldBe true
               }
-
 
               val button = doc.select("form")
               button.attr("action") shouldBe routes.BusinessEntityController.postAddBusinessEntity().url
@@ -131,7 +130,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
         }
 
         "user hasn't already answered the question" in {
-         test(None, BusinessEntityJourney())
+          test(None, BusinessEntityJourney())
         }
 
         "user has already answered the question" in {
@@ -143,7 +142,9 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
     "handling request to post add Business Page" must {
 
-      def performAction(data: (String, String)*) = controller.postAddBusinessEntity(FakeRequest("POST",routes.BusinessEntityController.getAddBusinessEntity().url).withFormUrlEncodedBody(data: _*))
+      def performAction(data: (String, String)*) = controller.postAddBusinessEntity(
+        FakeRequest("POST", routes.BusinessEntityController.getAddBusinessEntity().url).withFormUrlEncodedBody(data: _*)
+      )
 
       "throw technical error" when {
         val exception = new Exception("oh no")
@@ -167,7 +168,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
         "call to update BusinessEntityJourney fails" in {
 
           def updateFunc(beOpt: Option[BusinessEntityJourney]) =
-            beOpt.map(x => x.copy(addBusiness  = x.addBusiness.copy(value = Some(true))))
+            beOpt.map(x => x.copy(addBusiness = x.addBusiness.copy(value = Some(true))))
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori)(Right(undertaking.some))
@@ -198,7 +199,6 @@ class BusinessEntityControllerSpec  extends ControllerSpec
           displayErrorTest()("addBusiness.error.required")
         }
 
-
       }
 
       "redirect to the next page" when {
@@ -213,17 +213,18 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
         "user selected Yes" in {
           def updateFunc(beOpt: Option[BusinessEntityJourney]) =
-            beOpt.map(x => x.copy(addBusiness  = x.addBusiness.copy(value = Some(true))))
+            beOpt.map(x => x.copy(addBusiness = x.addBusiness.copy(value = Some(true))))
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori)(Right(undertaking.some))
-            mockUpdate[BusinessEntityJourney](_ => updateFunc(BusinessEntityJourney().some), eori)(Right(BusinessEntityJourney(addBusiness = FormPage("add-member", true.some))))
+            mockUpdate[BusinessEntityJourney](_ => updateFunc(BusinessEntityJourney().some), eori)(
+              Right(BusinessEntityJourney(addBusiness = FormPage("add-member", true.some)))
+            )
           }
           checkIsRedirect(performAction("addBusiness" -> "true"), "add-business-entity-eori")
         }
 
       }
-
 
     }
 
@@ -234,7 +235,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
         val exception = new Exception("oh no")
 
         "call to get previous uri fails" in {
-          inSequence{
+          inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[BusinessEntityJourney](eori1)(Left(Error(exception)))
           }
@@ -243,7 +244,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
         }
 
         "call to get business entity journey fails" in {
-          inSequence{
+          inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("/add-member"))
             mockGet[BusinessEntityJourney](eori1)(Left(Error(exception)))
@@ -253,7 +254,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
         }
 
         "call to get business entity journey came back empty" in {
-          inSequence{
+          inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("/add-member"))
             mockGet[BusinessEntityJourney](eori1)(Right(None))
@@ -262,14 +263,13 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
         }
 
-
       }
 
       "display the page" when {
 
         def test(businessEntityJourney: BusinessEntityJourney) = {
-          val previousUrl  = "add-member"
-          inSequence{
+          val previousUrl = "add-member"
+          inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[BusinessEntityJourney](eori1)(Right(previousUrl))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
@@ -278,9 +278,8 @@ class BusinessEntityControllerSpec  extends ControllerSpec
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("businessEntityEori.title"),
-            {doc =>
-
-              doc.select(".govuk-back-link").attr("href") shouldBe(previousUrl)
+            { doc =>
+              doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
 
               val input = doc.select(".govuk-input").attr("value")
               input shouldBe businessEntityJourney.eori.value.map(_.drop(2)).getOrElse("")
@@ -292,16 +291,20 @@ class BusinessEntityControllerSpec  extends ControllerSpec
         }
 
         "user hasn't already answered the question" in {
-          test(BusinessEntityJourney().copy(
-            addBusiness = FormPage("add-member", true.some)
-          ))
+          test(
+            BusinessEntityJourney().copy(
+              addBusiness = FormPage("add-member", true.some)
+            )
+          )
         }
 
         "user has already answered the question" in {
-          test(BusinessEntityJourney().copy(
-            addBusiness = FormPage("add-member", true.some),
-            eori = FormPage("add-business-entity-eori", eori1.some)
-          ))
+          test(
+            BusinessEntityJourney().copy(
+              addBusiness = FormPage("add-member", true.some),
+              eori = FormPage("add-business-entity-eori", eori1.some)
+            )
+          )
         }
 
       }
@@ -312,15 +315,16 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postEori(
-          FakeRequest("POST",routes.BusinessEntityController.getEori().url)
-          .withFormUrlEncodedBody(data: _*))
+          FakeRequest("POST", routes.BusinessEntityController.getEori().url)
+            .withFormUrlEncodedBody(data: _*)
+        )
 
       "throw technical error" when {
 
         val exception = new Exception("oh no")
 
         "call to get previous uri fails" in {
-          inSequence{
+          inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[BusinessEntityJourney](eori1)(Left(Error(exception)))
           }
@@ -329,7 +333,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
         }
 
         "call to retrieve undertaking fails" in {
-          inSequence{
+          inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
             mockRetreiveUndertaking(eori4)(Future.failed(exception))
@@ -340,15 +344,17 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
         "call to update business entity journey fails" in {
 
-          def update(opt: Option[BusinessEntityJourney]) =  opt.map { businessEntity =>
+          def update(opt: Option[BusinessEntityJourney]) = opt.map { businessEntity =>
             businessEntity.copy(eori = businessEntity.eori.copy(value = Some(EORI("123456789010"))))
           }
 
-          val businessEntityJourney =  BusinessEntityJourney().copy(
-            addBusiness = FormPage("add-member", true.some),
-            eori = FormPage("add-business-entity-eori", eori1.some)
-          ).some
-          inSequence{
+          val businessEntityJourney = BusinessEntityJourney()
+            .copy(
+              addBusiness = FormPage("add-member", true.some),
+              eori = FormPage("add-business-entity-eori", eori1.some)
+            )
+            .some
+          inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
             mockRetreiveUndertaking(eori4)(Future.successful(None))
@@ -359,14 +365,12 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
         }
 
-
-
       }
 
       "show a form error" when {
 
         def test(data: (String, String)*)(errorMessageKey: String) = {
-          inSequence{
+          inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
           }

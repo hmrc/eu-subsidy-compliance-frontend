@@ -34,6 +34,11 @@ trait DesHelpers {
   def desGet[O](url: String)(implicit rds: HttpReads[O], hc: HeaderCarrier, ec: ExecutionContext): Future[O] =
     http.GET[O](url, Seq.empty, headers)
 
-  def desPost[I, O](url: String, body: I)(implicit wts: Writes[I], rds: HttpReads[O], hc: HeaderCarrier, ec: ExecutionContext): Future[O] =
+  def desPost[I, O](url: String, body: I)(implicit
+    wts: Writes[I],
+    rds: HttpReads[O],
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[O] =
     http.POST[I, O](url, body, headers)
 }

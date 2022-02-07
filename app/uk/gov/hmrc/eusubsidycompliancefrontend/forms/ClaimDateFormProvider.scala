@@ -26,7 +26,7 @@ import java.time.{LocalDate, ZoneId}
 import javax.inject.Inject
 import scala.util.Try
 
-class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormProvider[DateFormValues]{
+class ClaimDateFormProvider @Inject() (timeProvider: TimeProvider) extends FormProvider[DateFormValues] {
 
   override val form: Form[DateFormValues] = Form(mapping)
 
@@ -35,89 +35,105 @@ class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormPr
     "month" -> text,
     "year"  -> text
   )
-  .transform(
-    { case (d, m, y) => (d.trim, m.trim, y.trim) },
-    { v: (String, String, String) => v }
-  )
-  .verifying(
-    "error.date.emptyfields",
-    _ match {
-      case ("", "", "") => false
-      case _ => true
-    })
-  .verifying(
-    "error.date.invalidentry",
-    _ match {
-      case (d, m, y) => Try(s"$d$m$y".toInt).isSuccess
-      case _ => false
-    })
-  .verifying(
-    "error.day.missing",
-    _ match {
-      case ("", _, _) => false
-      case _ => true
-    })
-  .verifying(
-    "error.month.missing",
-    _ match {
-      case (_, "", _) => false
-      case _ => true
-    })
-  .verifying(
-    "error.year.missing",
-    _ match {
-      case (_, _, "") => false
-      case _ => true
-    })
-  .verifying(
-    "error.day-and-month.missing",
-    _ match {
-      case ("", "", _) => false
-      case _ => true
-    })
-  .verifying(
-    "error.month-and-year.missing",
-    _ match {
-      case (_, "", "") => false
-      case _ => true
-   })
-  .verifying(
-    "error.day-and-year.missing",
-    _ match {
-      case ("", _, "") => false
-      case _ => true
-    })
-  .verifying(
-    "error.date.invalid",
-    _ match {
-      case (d: String, m: String, y: String)  => localDateFromValues(d, m, y).isSuccess
-      case _ => true
-    })
-  .verifying(
-    "error.date.in-future",
-    _ match {
-      case (d: String, m: String, y: String) => localDateFromValues(d, m, y).map { d =>
-        val today = timeProvider.today(ZoneId.of("Europe/London"))
-        !d.isAfter(today)
-      }.getOrElse(true)
-      case _ => true
-  })
-  .verifying(
-    "error.date.outside-allowed-tax-year-range",
-    _ match {
-      case (d: String, m: String, y: String) => localDateFromValues(d, m, y).map { d =>
-        val today = timeProvider.today(ZoneId.of("Europe/London"))
-        // We allow claims for the current or previous 2 tax years.
-        val earliestAllowedDate = taxYearStartForDate(today).minusYears(2)
-        !d.isBefore(earliestAllowedDate)
-      }.getOrElse(true)
-      case _ => false
-    }
-  )
-  .transform(
-    { case (d, m, y) => DateFormValues(d,m,y) },
-    d => (d.day, d.month, d.year)
-  )
+    .transform(
+      { case (d, m, y) => (d.trim, m.trim, y.trim) },
+      { v: (String, String, String) => v }
+    )
+    .verifying(
+      "error.date.emptyfields",
+      _ match {
+        case ("", "", "") => false
+        case _            => true
+      }
+    )
+    .verifying(
+      "error.date.invalidentry",
+      _ match {
+        case (d, m, y) => Try(s"$d$m$y".toInt).isSuccess
+        case _         => false
+      }
+    )
+    .verifying(
+      "error.day.missing",
+      _ match {
+        case ("", _, _) => false
+        case _          => true
+      }
+    )
+    .verifying(
+      "error.month.missing",
+      _ match {
+        case (_, "", _) => false
+        case _          => true
+      }
+    )
+    .verifying(
+      "error.year.missing",
+      _ match {
+        case (_, _, "") => false
+        case _          => true
+      }
+    )
+    .verifying(
+      "error.day-and-month.missing",
+      _ match {
+        case ("", "", _) => false
+        case _           => true
+      }
+    )
+    .verifying(
+      "error.month-and-year.missing",
+      _ match {
+        case (_, "", "") => false
+        case _           => true
+      }
+    )
+    .verifying(
+      "error.day-and-year.missing",
+      _ match {
+        case ("", _, "") => false
+        case _           => true
+      }
+    )
+    .verifying(
+      "error.date.invalid",
+      _ match {
+        case (d: String, m: String, y: String) => localDateFromValues(d, m, y).isSuccess
+        case _                                 => true
+      }
+    )
+    .verifying(
+      "error.date.in-future",
+      _ match {
+        case (d: String, m: String, y: String) =>
+          localDateFromValues(d, m, y)
+            .map { d =>
+              val today = timeProvider.today(ZoneId.of("Europe/London"))
+              !d.isAfter(today)
+            }
+            .getOrElse(true)
+        case _                                 => true
+      }
+    )
+    .verifying(
+      "error.date.outside-allowed-tax-year-range",
+      _ match {
+        case (d: String, m: String, y: String) =>
+          localDateFromValues(d, m, y)
+            .map { d =>
+              val today               = timeProvider.today(ZoneId.of("Europe/London"))
+              // We allow claims for the current or previous 2 tax years.
+              val earliestAllowedDate = taxYearStartForDate(today).minusYears(2)
+              !d.isBefore(earliestAllowedDate)
+            }
+            .getOrElse(true)
+        case _                                 => false
+      }
+    )
+    .transform(
+      { case (d, m, y) => DateFormValues(d, m, y) },
+      d => (d.day, d.month, d.year)
+    )
 
   private def localDateFromValues(d: String, m: String, y: String) = Try(LocalDate.of(y.toInt, m.toInt, d.toInt))
 

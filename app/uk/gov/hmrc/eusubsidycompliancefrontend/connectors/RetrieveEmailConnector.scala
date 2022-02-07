@@ -33,21 +33,18 @@ trait RetrieveEmailConnector {
 }
 
 @Singleton
-class RetrieveEmailConnectorImpl @Inject()(http: HttpClient,
-                                           servicesConfig: ServicesConfig
-                                          )(implicit ec: ExecutionContext
-                                          ) extends RetrieveEmailConnector {
-
+class RetrieveEmailConnectorImpl @Inject() (http: HttpClient, servicesConfig: ServicesConfig)(implicit
+  ec: ExecutionContext
+) extends RetrieveEmailConnector {
 
   val cdsURL: String = servicesConfig.baseUrl("cds")
 
-  def getUri(eori: EORI) = s"$cdsURL/customs-data-store/eori/${eori.toString}/verified-email"
-  override def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] = {
+  def getUri(eori: EORI)                                                                                        = s"$cdsURL/customs-data-store/eori/${eori.toString}/verified-email"
+  override def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
     http
       .GET[HttpResponse](getUri(eori))
       .map(Right(_))
-      .recover {
-        case e => Left(Error(e))
+      .recover { case e =>
+        Left(Error(e))
       }
-  }
 }

@@ -28,12 +28,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 
 package object eis {
 
-  val clock: Clock = Clock.systemUTC()
-  val formatter: DateTimeFormatter = DateTimeFormatter.ISO_INSTANT
+  val clock: Clock                        = Clock.systemUTC()
+  val formatter: DateTimeFormatter        = DateTimeFormatter.ISO_INSTANT
   val oddEisDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM-dd")
 
   def receiptDate: String = {
-    val instant = Instant.now(clock)
+    val instant      = Instant.now(clock)
     val withoutNanos = instant.minusNanos(instant.getNano)
     formatter.format(withoutNanos)
   }
@@ -55,11 +55,11 @@ package object eis {
             None
           ),
         "responseDetail" -> Json.obj(
-          "undertakingReference" ->  o.reference,
-          "undertakingName" -> o.name,
-          "industrySector" -> o.industrySector,
-          "industrySectorLimit" -> o.industrySectorLimit,
-          "lastSubsidyUsageUpdt" -> o.lastSubsidyUsageUpdt.map(_.format(oddEisDateFormat)),
+          "undertakingReference"      -> o.reference,
+          "undertakingName"           -> o.name,
+          "industrySector"            -> o.industrySector,
+          "industrySectorLimit"       -> o.industrySectorLimit,
+          "lastSubsidyUsageUpdt"      -> o.lastSubsidyUsageUpdt.map(_.format(oddEisDateFormat)),
           "undertakingBusinessEntity" -> o.undertakingBusinessEntity
         )
       )
@@ -78,7 +78,7 @@ package object eis {
             None
           ),
         "responseDetail" -> Json.obj(
-          "undertakingReference" ->  o
+          "undertakingReference" -> o
         )
       )
     )
@@ -96,7 +96,7 @@ package object eis {
             None
           ),
         "responseDetail" -> Json.obj(
-          "undertakingIdentifier" ->  o.undertakingIdentifier
+          "undertakingIdentifier" -> o.undertakingIdentifier
         )
       )
     )
@@ -104,7 +104,7 @@ package object eis {
 
   // formatter for the response from EIS when creating the Undertaking
   implicit val eisCreateUndertakingResponse: Writes[UndertakingRef] = new Writes[UndertakingRef] {
-    override def writes(undertakingRef: UndertakingRef): JsValue = {
+    override def writes(undertakingRef: UndertakingRef): JsValue =
       Json.obj(
         "createUndertakingResponse" -> Json.obj(
           "responseCommon" ->
@@ -119,51 +119,53 @@ package object eis {
           )
         )
       )
-    }
   }
 
   // provides response from EIS retrieve subsidies call
-  implicit val eisRetrieveUndertakingSubsidiesResponse: Writes[UndertakingSubsidies] = new Writes[UndertakingSubsidies] {
-    // TODO delete this if we can get the case of subsidyUsageTransactionID aligned in SCP06 & 09
-    implicit val nonHmrcSubsidyWrites: Writes[NonHmrcSubsidy] = (
-      (JsPath \ "subsidyUsageTransactionID").writeNullable[SubsidyRef] and
-      (JsPath \ "allocationDate").write[LocalDate] and
-      (JsPath \ "submissionDate").write[LocalDate] and
-      (JsPath \ "publicAuthority").writeNullable[String] and
-      (JsPath \ "traderReference").writeNullable[TraderRef] and
-      (JsPath \ "nonHMRCSubsidyAmtEUR").write[SubsidyAmount] and
-      (JsPath \ "businessEntityIdentifier").writeNullable[EORI] and
-      (JsPath \ "amendmentType").writeNullable[EisSubsidyAmendmentType]
-    )(unlift(NonHmrcSubsidy.unapply))
+  implicit val eisRetrieveUndertakingSubsidiesResponse: Writes[UndertakingSubsidies] =
+    new Writes[UndertakingSubsidies] {
+      // TODO delete this if we can get the case of subsidyUsageTransactionID aligned in SCP06 & 09
+      implicit val nonHmrcSubsidyWrites: Writes[NonHmrcSubsidy] = (
+        (JsPath \ "subsidyUsageTransactionID").writeNullable[SubsidyRef] and
+          (JsPath \ "allocationDate").write[LocalDate] and
+          (JsPath \ "submissionDate").write[LocalDate] and
+          (JsPath \ "publicAuthority").writeNullable[String] and
+          (JsPath \ "traderReference").writeNullable[TraderRef] and
+          (JsPath \ "nonHMRCSubsidyAmtEUR").write[SubsidyAmount] and
+          (JsPath \ "businessEntityIdentifier").writeNullable[EORI] and
+          (JsPath \ "amendmentType").writeNullable[EisSubsidyAmendmentType]
+      )(unlift(NonHmrcSubsidy.unapply))
 
-    override def writes(o: UndertakingSubsidies): JsValue = Json.obj(
-      "getUndertakingTransactionResponse" -> Json.obj(
-        "responseCommon" ->
-          ResponseCommon(
-            EisStatus.OK,
-            EisStatusString("String"),
-            LocalDateTime.now,
-            None
-          ),
-        "responseDetail" -> Json.obj(
-          "undertakingIdentifier" -> o.undertakingIdentifier,
-          "nonHMRCSubsidyTotalEUR" -> o.nonHMRCSubsidyTotalEUR,
-          "nonHMRCSubsidyTotalGBP" -> o.nonHMRCSubsidyTotalGBP,
-          "hmrcSubsidyTotalEUR" -> o.hmrcSubsidyTotalEUR,
-          "hmrcSubsidyTotalGBP" -> o.hmrcSubsidyTotalGBP,
-          "nonHMRCSubsidyUsage" -> o.nonHMRCSubsidyUsage,
-          "hmrcSubsidyUsage" -> o.hmrcSubsidyUsage
+      override def writes(o: UndertakingSubsidies): JsValue = Json.obj(
+        "getUndertakingTransactionResponse" -> Json.obj(
+          "responseCommon" ->
+            ResponseCommon(
+              EisStatus.OK,
+              EisStatusString("String"),
+              LocalDateTime.now,
+              None
+            ),
+          "responseDetail" -> Json.obj(
+            "undertakingIdentifier"  -> o.undertakingIdentifier,
+            "nonHMRCSubsidyTotalEUR" -> o.nonHMRCSubsidyTotalEUR,
+            "nonHMRCSubsidyTotalGBP" -> o.nonHMRCSubsidyTotalGBP,
+            "hmrcSubsidyTotalEUR"    -> o.hmrcSubsidyTotalEUR,
+            "hmrcSubsidyTotalGBP"    -> o.hmrcSubsidyTotalGBP,
+            "nonHMRCSubsidyUsage"    -> o.nonHMRCSubsidyUsage,
+            "hmrcSubsidyUsage"       -> o.hmrcSubsidyUsage
+          )
         )
       )
-    )
-  }
+    }
 
   // convenience reads so we can store a created undertaking
   val undertakingRequestReads: Reads[Undertaking] = new Reads[Undertaking] {
     override def reads(json: JsValue): JsResult[Undertaking] = {
-      val contacts: ContactDetails = ContactDetails(
-        (json \ "createUndertakingRequest" \ "requestDetail" \ "businessEntity" \ "contacts" \ "phone").asOpt[PhoneNumber],
-        (json \ "createUndertakingRequest" \ "requestDetail" \ "businessEntity" \ "contacts" \ "mobile").asOpt[PhoneNumber]
+      val contacts: ContactDetails       = ContactDetails(
+        (json \ "createUndertakingRequest" \ "requestDetail" \ "businessEntity" \ "contacts" \ "phone")
+          .asOpt[PhoneNumber],
+        (json \ "createUndertakingRequest" \ "requestDetail" \ "businessEntity" \ "contacts" \ "mobile")
+          .asOpt[PhoneNumber]
       )
       val businessEntity: BusinessEntity = BusinessEntity(
         (json \ "createUndertakingRequest" \ "requestDetail" \ "businessEntity" \ "idValue").as[EORI],
@@ -187,7 +189,7 @@ package object eis {
   val businessEntityReads: Reads[BusinessEntity] = new Reads[BusinessEntity] {
     override def reads(json: JsValue): JsResult[BusinessEntity] = JsSuccess(
       BusinessEntity(
-        (json  \ "businessEntityIdentifier").as[EORI],
+        (json \ "businessEntityIdentifier").as[EORI],
         (json \ "leadEORIIndicator").as[Boolean],
         (json \ "contacts").asOpt[ContactDetails]
       )

@@ -23,17 +23,16 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
 trait HttpSupport { this: MockFactory with Matchers ⇒
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
   val mockHttp: HttpClient = mock[HttpClient]
 
   def mockGet[A](
-                  url: String
-                )(
-                  response: Option[A]
-                ) =
+    url: String
+  )(
+    response: Option[A]
+  ) =
     (mockHttp
       .GET(_: String, _: Seq[(String, String)], _: Seq[(String, String)])(
         _: HttpReads[A],

@@ -44,11 +44,12 @@ trait AuthSupport { this: ControllerSpec =>
   def mockAuthWithNoRetrievals(): Unit =
     mockAuth(EmptyPredicate, EmptyRetrieval)(Future.successful(()))
 
-  def mockAuthWithAuthRetrievals(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) = {
-    mockAuth(Enrolment("HMRC-ESC-ORG"), authRetrievals)(Future.successful(new ~(Credentials(providerId,"type").some, groupIdentifier) and enrolments))
-  }
+  def mockAuthWithAuthRetrievals(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) =
+    mockAuth(Enrolment("HMRC-ESC-ORG"), authRetrievals)(
+      Future.successful(new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments)
+    )
 
-  val authRetrievals: Retrieval[Option[Credentials] ~ Option[String] ~ Enrolments ] =
+  val authRetrievals: Retrieval[Option[Credentials] ~ Option[String] ~ Enrolments] =
     Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
 
 }

@@ -32,102 +32,113 @@ trait EscService {
   def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef]
   def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef]
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]]
-  def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier): Future[UndertakingRef]
-  def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
-    implicit hc: HeaderCarrier
+  def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
+    hc: HeaderCarrier
   ): Future[UndertakingRef]
-  def createSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(
-    implicit hc: HeaderCarrier
+  def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
+    hc: HeaderCarrier
   ): Future[UndertakingRef]
-  def retrieveSubsidy(subsidyRetrieve : SubsidyRetrieve)(implicit hc: HeaderCarrier): Future[UndertakingSubsidies]
-  def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit hc: HeaderCarrier): Future[UndertakingRef]
+  def createSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(implicit
+    hc: HeaderCarrier
+  ): Future[UndertakingRef]
+  def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): Future[UndertakingSubsidies]
+  def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit
+    hc: HeaderCarrier
+  ): Future[UndertakingRef]
 
 }
 
 @Singleton
-class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit ec: ExecutionContext)
-  extends EscService {
+class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit ec: ExecutionContext) extends EscService {
 
-  override def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] = {
+  override def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
     escConnector.createUndertaking(undertaking).map {
       case Left(Error(_)) =>
         sys.error("Error in creating Undertaking")
-      case Right(value) =>
-        if(value.status =!= OK) sys.error("Error in creating Undertaking")
+      case Right(value)   =>
+        if (value.status =!= OK) sys.error("Error in creating Undertaking")
         else
-        value.parseJSON[UndertakingRef].fold(_ =>  sys.error("Error in parsing  UndertakingRef"), identity)
+          value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  UndertakingRef"), identity)
     }
-  }
 
-  override def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] = {
+  override def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
     escConnector.updateUndertaking(undertaking).map {
       case Left(Error(_)) => sys.error(" Error in updating undertaking")
-      case Right(value) =>
-        if(value.status =!= OK) sys.error("Error in Update undertaking as http response came back with non OK status")
-        else value.parseJSON[UndertakingRef].fold(_ =>  sys.error("Error in parsing  UndertakingRef"), identity)
+      case Right(value)   =>
+        if (value.status =!= OK) sys.error("Error in Update undertaking as http response came back with non OK status")
+        else value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  UndertakingRef"), identity)
     }
-  }
 
-  override def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]] = {
+  override def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]] =
     escConnector.retrieveUndertaking(eori).map {
       case Left(Error(_)) => None
-      case Right(value) =>
+      case Right(value)   =>
         value.status match {
           case NOT_FOUND => None
-          case OK =>  value.parseJSON[Undertaking].fold(_ => sys.error("Error in parsing Undertaking"), _.some)
-          case _ => sys.error("Error in retrieving Undertaking")
+          case OK        => value.parseJSON[Undertaking].fold(_ => sys.error("Error in parsing Undertaking"), _.some)
+          case _         => sys.error("Error in retrieving Undertaking")
         }
     }
-  }
 
-  override def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier): Future[UndertakingRef] = {
+  override def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
+    hc: HeaderCarrier
+  ): Future[UndertakingRef] =
     escConnector.addMember(undertakingRef, businessEntity).map {
-      case Left(Error(_)) =>  sys.error("Error in adding member to the Business Entity")
-      case Right(value) =>
-        if(value.status =!= OK) sys.error("Error in adding member to the Business Entity")
-        else
-        value.parseJSON[UndertakingRef].fold(_ =>  sys.error("Error in parsing  Undertaking Ref"), identity)
-    }
-  }
-
-  override def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier): Future[UndertakingRef] = {
-    escConnector.removeMember(undertakingRef, businessEntity).map {
-      case Left(Error(_)) =>  sys.error("Error in removing member from the Business Entity")
-      case Right(value) =>
-        if(value.status =!= OK) sys.error("Error in removing member from the Business Entity")
-        else
-        value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  Undertaking Ref"), identity)
-    }
-  }
-
-  override def createSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(implicit hc: HeaderCarrier): Future[UndertakingRef] = {
-    escConnector.createSubsidy(undertakingRef, journey).map {
-      case Left(Error(_)) =>  sys.error("Error in creating subsidy")
-      case Right(value) =>
-        if(value.status =!= OK) sys.error("Error in creating subsidy ")
+      case Left(Error(_)) => sys.error("Error in adding member to the Business Entity")
+      case Right(value)   =>
+        if (value.status =!= OK) sys.error("Error in adding member to the Business Entity")
         else
           value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  Undertaking Ref"), identity)
     }
-  }
 
-  override def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): Future[UndertakingSubsidies] = {
+  override def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
+    hc: HeaderCarrier
+  ): Future[UndertakingRef] =
+    escConnector.removeMember(undertakingRef, businessEntity).map {
+      case Left(Error(_)) => sys.error("Error in removing member from the Business Entity")
+      case Right(value)   =>
+        if (value.status =!= OK) sys.error("Error in removing member from the Business Entity")
+        else
+          value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  Undertaking Ref"), identity)
+    }
+
+  override def createSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(implicit
+    hc: HeaderCarrier
+  ): Future[UndertakingRef] =
+    escConnector.createSubsidy(undertakingRef, journey).map {
+      case Left(Error(_)) => sys.error("Error in creating subsidy")
+      case Right(value)   =>
+        if (value.status =!= OK) sys.error("Error in creating subsidy ")
+        else
+          value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  Undertaking Ref"), identity)
+    }
+
+  override def retrieveSubsidy(
+    subsidyRetrieve: SubsidyRetrieve
+  )(implicit hc: HeaderCarrier): Future[UndertakingSubsidies] =
     escConnector.retrieveSubsidy(subsidyRetrieve).map {
-      case Left(Error(_)) =>  sys.error("Error in retrieving subsidy")
-      case Right(value) =>
-        if(value.status =!= OK) sys.error("Error in retrieving subsidy ")
+      case Left(Error(_)) => sys.error("Error in retrieving subsidy")
+      case Right(value)   =>
+        if (value.status =!= OK) sys.error("Error in retrieving subsidy ")
         else
-          value.parseJSON[UndertakingSubsidies].fold(_ => sys.error("Error in parsing  UndertakingSubsidies "), identity)
+          value
+            .parseJSON[UndertakingSubsidies]
+            .fold(_ => sys.error("Error in parsing  UndertakingSubsidies "), identity)
     }
-  }
 
-  override def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit hc: HeaderCarrier): Future[UndertakingRef] = {
+  override def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit
+    hc: HeaderCarrier
+  ): Future[UndertakingRef] =
     escConnector.removeSubsidy(undertakingRef, nonHmrcSubsidy).map {
-      case Left(Error(_)) =>  sys.error("Error in removing subsidy")
-      case Right(value) =>
-        if(value.status =!= OK) sys.error("Error in removing subsidy ")
+      case Left(Error(_)) => sys.error("Error in removing subsidy")
+      case Right(value)   =>
+        if (value.status =!= OK) sys.error("Error in removing subsidy ")
         else
-          value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  UndertakingSubsidies "),undertakingSubsidies => undertakingSubsidies)
+          value
+            .parseJSON[UndertakingRef]
+            .fold(
+              _ => sys.error("Error in parsing  UndertakingSubsidies "),
+              undertakingSubsidies => undertakingSubsidies
+            )
     }
-  }
 }
-

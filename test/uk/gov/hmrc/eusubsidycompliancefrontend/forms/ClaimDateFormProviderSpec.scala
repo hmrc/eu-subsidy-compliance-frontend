@@ -24,9 +24,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.testutil.FakeTimeProvider
 
 class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
 
-  private val day = 1
+  private val day   = 1
   private val month = 1
-  private val year = 2022
+  private val year  = 2022
 
   private val fakeTimeProvider = FakeTimeProvider.withFixedDate(day, month, year)
 
@@ -75,7 +75,7 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
     }
 
     "return date in future error if date is in the future" in {
-      validateAndCheckError((day+1).toString, "1", "9999")("error.date.in-future")
+      validateAndCheckError((day + 1).toString, "1", "9999")("error.date.in-future")
     }
 
     "return date outside of tax year range error for date before the start of the tax year range" in {
@@ -87,34 +87,38 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
     }
 
     "return no errors for a date in the past that is within the tax year range" in {
-      validateAndCheckSuccess(day.toString, month.toString, (year-1).toString)
+      validateAndCheckSuccess(day.toString, month.toString, (year - 1).toString)
     }
 
     "return no errors for a date in the past that is equal to the start of the allowed tax year range" in {
-      validateAndCheckSuccess("6", "4", (year-3).toString)
+      validateAndCheckSuccess("6", "4", (year - 3).toString)
     }
 
   }
 
   private def validateAndCheckSuccess(d: String, m: String, y: String) = {
-    val result: Either[Seq[FormError], DateFormValues] = underTest.form.mapping.bind(Map(
-      "day"   -> d,
-      "month" -> m,
-      "year"  -> y,
-    ))
+    val result: Either[Seq[FormError], DateFormValues] = underTest.form.mapping.bind(
+      Map(
+        "day"   -> d,
+        "month" -> m,
+        "year"  -> y
+      )
+    )
     result mustBe Right(DateFormValues(d, m, y))
   }
 
   private def validateAndCheckError(d: String, m: String, y: String)(errorMessage: String) = {
-    val result = underTest.form.mapping.bind(Map(
-      "day"   -> d,
-      "month" -> m,
-      "year"  -> y,
-    ))
+    val result = underTest.form.mapping.bind(
+      Map(
+        "day"   -> d,
+        "month" -> m,
+        "year"  -> y
+      )
+    )
 
     val foundExpectedErrorMessage = result.leftSideValue match {
       case Left(errors) => errors.contains(FormError("", errorMessage))
-      case _ => false
+      case _            => false
     }
 
     foundExpectedErrorMessage mustBe true

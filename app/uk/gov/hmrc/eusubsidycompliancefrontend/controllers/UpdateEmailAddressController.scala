@@ -23,16 +23,14 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class UpdateEmailAddressController @Inject()(
-                                              mcc: MessagesControllerComponents,
-                                              escActionBuilders: EscActionBuilders
-                                            ) extends
-  BaseController(mcc) {
+class UpdateEmailAddressController @Inject() (
+  mcc: MessagesControllerComponents,
+  escActionBuilders: EscActionBuilders
+) extends BaseController(mcc) {
   import escActionBuilders._
 
   def updateEmailAddress: Action[AnyContent] = escAuthentication.async { _ =>
     Future.successful(Ok(s"update email page"))
   }
 
-  }
-
+}

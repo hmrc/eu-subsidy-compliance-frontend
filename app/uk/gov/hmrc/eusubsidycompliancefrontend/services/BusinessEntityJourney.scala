@@ -30,8 +30,8 @@ case class BusinessEntityJourney(
 ) extends Journey {
 
   override def steps: List[Option[FormPage[_]]] =
-    BusinessEntityJourney.
-      unapply(this)
+    BusinessEntityJourney
+      .unapply(this)
       .map(_.toList)
       .fold(List.empty[Any])(identity)
       .map(_.cast[FormPage[_]])
@@ -43,11 +43,11 @@ object BusinessEntityJourney {
   // TODO populate the Journey[s] from the undertaking, probably need to map them by eori
   def fromUndertakingOpt(undertakingOpt: Option[Undertaking]): BusinessEntityJourney = BusinessEntityJourney()
 
-  def businessEntityJourneyForEori(undertakingOpt: Option[Undertaking], eori: EORI): BusinessEntityJourney = {
+  def businessEntityJourneyForEori(undertakingOpt: Option[Undertaking], eori: EORI): BusinessEntityJourney =
     undertakingOpt match {
       case Some(undertaking) =>
-        val empty = BusinessEntityJourney()
-        val b: Option[BusinessEntity] = undertaking.undertakingBusinessEntity.find(_.businessEntityIdentifier == eori)
+        val empty                      = BusinessEntityJourney()
+        val b: Option[BusinessEntity]  = undertaking.undertakingBusinessEntity.find(_.businessEntityIdentifier == eori)
         val cd: Option[ContactDetails] = b.flatMap(_.contacts)
         empty.copy(
           empty.addBusiness.copy(value = Some(true)),
@@ -55,15 +55,14 @@ object BusinessEntityJourney {
           empty.contact.copy(value = cd)
         )
       // TODO - what is the correct behaviour here?
-      case None => BusinessEntityJourney()
+      case None              => BusinessEntityJourney()
     }
-  }
 
   import Journey._ // N.B. don't let intellij delete this
   import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.eoriFormat
-  implicit val formPageEoriFormat: OFormat[FormPage[EORI]] =
+  implicit val formPageEoriFormat: OFormat[FormPage[EORI]]              =
     Json.format[FormPage[EORI]]
-  implicit val formatContactDetails: OFormat[ContactDetails] =
+  implicit val formatContactDetails: OFormat[ContactDetails]            =
     Json.format[ContactDetails]
   implicit val formPageContactFormat: OFormat[FormPage[ContactDetails]] =
     Json.format[FormPage[ContactDetails]]

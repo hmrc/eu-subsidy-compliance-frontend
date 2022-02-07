@@ -32,7 +32,7 @@ object CommonTestData {
   val eori3 = EORI("GB123456789014")
   val eori4 = EORI("GB123456789010")
 
-  val contactDetails = ContactDetails(PhoneNumber("111").some, None).some
+  val contactDetails  = ContactDetails(PhoneNumber("111").some, None).some
   val contactDetails1 = ContactDetails(PhoneNumber("1121").some, None).some
   val contactDetails2 = ContactDetails(PhoneNumber("222").some, PhoneNumber("333").some).some
 
@@ -41,18 +41,19 @@ object CommonTestData {
   val businessEntity3 = BusinessEntity(EORI(eori3), true, None)
   val businessEntity4 = BusinessEntity(EORI(eori4), false, contactDetails1)
 
-
-  val undertakingRef = UndertakingRef("UR123456")
-  val nonHmrcSubsidyList = List(NonHmrcSubsidy(
-    subsidyUsageTransactionID = None,
-    allocationDate = currentDate,
-    submissionDate = currentDate,
-    publicAuthority = "Local Authority".some,
-    traderReference = TraderRef("ABC123").some,
-    nonHMRCSubsidyAmtEUR = SubsidyAmount(1234.56),
-    businessEntityIdentifier = eori1.some,
-    amendmentType = EisSubsidyAmendmentType("1").some
-  ))
+  val undertakingRef     = UndertakingRef("UR123456")
+  val nonHmrcSubsidyList = List(
+    NonHmrcSubsidy(
+      subsidyUsageTransactionID = None,
+      allocationDate = currentDate,
+      submissionDate = currentDate,
+      publicAuthority = "Local Authority".some,
+      traderReference = TraderRef("ABC123").some,
+      nonHMRCSubsidyAmtEUR = SubsidyAmount(1234.56),
+      businessEntityIdentifier = eori1.some,
+      amendmentType = EisSubsidyAmendmentType("1").some
+    )
+  )
 
   val subsidyJourney = SubsidyJourney(
     publicAuthority = FormPage("add-claim-public-authority", "Local Authority".some),
@@ -61,29 +62,32 @@ object CommonTestData {
     addClaimEori = FormPage("add-claim-eori", eori1.some.some)
   )
 
-
   val subsidyUpdate = SubsidyUpdate(
     undertakingRef,
     UndertakingSubsidyAmendment(nonHmrcSubsidyList)
-
   )
 
-  val undertaking = Undertaking(undertakingRef.some,
+  val undertaking = Undertaking(
+    undertakingRef.some,
     UndertakingName("TestUndertaking"),
     transport,
     IndustrySectorLimit(12.34).some,
-    LocalDate.of(2021,1,18).some,
-    List(businessEntity1, businessEntity2))
+    LocalDate.of(2021, 1, 18).some,
+    List(businessEntity1, businessEntity2)
+  )
 
-  val undertaking1 = Undertaking(undertakingRef.some,
+  val undertaking1 = Undertaking(
+    undertakingRef.some,
     UndertakingName("TestUndertaking"),
     transport,
     IndustrySectorLimit(12.34).some,
-    LocalDate.of(2021,1,18).some,
-    List(businessEntity1, businessEntity4))
+    LocalDate.of(2021, 1, 18).some,
+    List(businessEntity1, businessEntity4)
+  )
 
   val subsidyRetrieve = SubsidyRetrieve(
-    undertakingRef, None
+    undertakingRef,
+    None
   )
 
   val undertakingSubsidies = UndertakingSubsidies(
@@ -100,30 +104,28 @@ object CommonTestData {
     customsWaivers = FormPage("do-you-claim-customs-waivers", true.some),
     willYouClaim = FormPage("will-you-claim-customs-waivers", true.some),
     notEligible = FormPage("not-eligible", false.some),
-    mainBusinessCheck= FormPage("main-business-check", true.some),
-    signOut= FormPage("not-eligible-to-lead", false.some),
+    mainBusinessCheck = FormPage("main-business-check", true.some),
+    signOut = FormPage("not-eligible-to-lead", false.some),
     acceptTerms = FormPage("terms-conditions", true.some)
   )
 
   val eligibilityJourneyComplete = eligibilityJourneyNotComplete.copy(
-  eoriCheck = FormPage("eoricheck", true.some),
-  signOutBadEori = FormPage("incorrect-eori", false.some),
-  createUndertaking = FormPage("create-undertaking", true.some)
+    eoriCheck = FormPage("eoricheck", true.some),
+    signOutBadEori = FormPage("incorrect-eori", false.some),
+    createUndertaking = FormPage("create-undertaking", true.some)
   )
 
-
-
-  val undertakingJourneyComplete =  UndertakingJourney(
+  val undertakingJourneyComplete = UndertakingJourney(
     name = FormPage("undertaking-name", "TestUndertaking".some),
-    sector = FormPage("sector",Sector(1).some),
+    sector = FormPage("sector", Sector(1).some),
     contact = FormPage("contact", contactDetails),
     cya = FormPage("check-your-answers", true.some),
     confirmation = FormPage("confirmation", true.some)
   )
 
-  val undertakingJourneyComplete1 =  UndertakingJourney(
+  val undertakingJourneyComplete1 = UndertakingJourney(
     name = FormPage("undertaking-name", "TestUndertaking1".some),
-    sector = FormPage("sector",Sector(2).some),
+    sector = FormPage("sector", Sector(2).some),
     contact = FormPage("contact", contactDetails1),
     cya = FormPage("check-your-answers", true.some),
     confirmation = FormPage("confirmation", true.some),
@@ -134,19 +136,17 @@ object CommonTestData {
     addBusiness = FormPage("add-member", true.some),
     eori = FormPage("add-business-entity-eori", eori1.some),
     contact = FormPage("add-business-entity-contact", contactDetails),
-    cya= FormPage("check-your-answers-businesses", true.some)
+    cya = FormPage("check-your-answers-businesses", true.some)
   )
 
-  val validEmailAddress = EmailAddress("user@test.com")
-  val inValidEmailAddress = EmailAddress("invalid@email.com")
+  val validEmailAddress         = EmailAddress("user@test.com")
+  val inValidEmailAddress       = EmailAddress("invalid@email.com")
   val undeliverableEmailAddress = EmailAddress("undeliverable@address.com")
 
   val dateTime = Some(LocalDateTime.of(2021, 1, 9, 10, 10))
 
-  val undeliverableEmailResponse = EmailAddressResponse(undeliverableEmailAddress,
-    dateTime,
-    Some(Undeliverable("eventid1"))
-  )
-  val validEmailResponse = EmailAddressResponse(validEmailAddress, dateTime, None)
-  val inValidEmailResponse = EmailAddressResponse(inValidEmailAddress, None, None)
+  val undeliverableEmailResponse =
+    EmailAddressResponse(undeliverableEmailAddress, dateTime, Some(Undeliverable("eventid1")))
+  val validEmailResponse         = EmailAddressResponse(validEmailAddress, dateTime, None)
+  val inValidEmailResponse       = EmailAddressResponse(inValidEmailAddress, None, None)
 }

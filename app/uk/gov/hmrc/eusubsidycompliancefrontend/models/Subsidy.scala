@@ -30,7 +30,7 @@ case class Subsidy(
   traderReference: Option[TraderRef], // no regex in create API but one in retrieve API!
   nonHMRCSubsidyAmtEUR: PositiveSubsidyAmount, // TODO consider using sane names and write a bespoke formatter
   businessEntityIdentifier: Option[EORI],
-  amendmentType: Option[EisSubsidyAmendmentType] = Option.empty,
+  amendmentType: Option[EisSubsidyAmendmentType] = Option.empty
 )
 
 object Subsidy {
