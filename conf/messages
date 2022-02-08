@@ -139,7 +139,6 @@ removeBusinessEntity.subtitle = Do you want to remove business entity?
 removeBusinessEntity.error.required = Select yes if you want to remove business entity.
 removeBusiness.error.required = Select yes if you want to remove business entity.
 
-
 undertaking.cya.h2=Account details
 undertaking.cya.summary-list.name.key=Name of undertaking
 undertaking.cya.summary-list.eori.key=EORI number

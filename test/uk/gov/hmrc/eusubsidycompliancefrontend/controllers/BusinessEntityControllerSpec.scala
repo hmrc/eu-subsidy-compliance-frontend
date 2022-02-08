@@ -894,7 +894,6 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
     }
 
-
     "handling request to get remove Business entity by Lead" must {
       def performAction() = controller.getRemoveBusinessEntity(eori4)(FakeRequest())
 
