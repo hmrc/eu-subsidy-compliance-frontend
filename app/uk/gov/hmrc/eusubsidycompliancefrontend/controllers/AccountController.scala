@@ -30,13 +30,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AccountController @Inject()(
-                                   mcc: MessagesControllerComponents,
-                                   escActionBuilders: EscActionBuilders,
-                                   store: Store,
-                                   escService: EscService,
-                                   accountPage: AccountPage,
-                                   existingUndertakingPage: ExistingUndertakingPage,
-                                   retrieveEmailService: RetrieveEmailService
+   mcc: MessagesControllerComponents,
+   escActionBuilders: EscActionBuilders,
+   store: Store,
+   escService: EscService,
+   accountPage: AccountPage,
+   existingUndertakingPage: ExistingUndertakingPage,
+   retrieveEmailService: RetrieveEmailService
 )(
   implicit val appConfig: AppConfig,
   executionContext: ExecutionContext
@@ -83,7 +83,7 @@ class AccountController @Inject()(
           if(isLeadEORI(undertaking, eori))
           Redirect(routes.AccountController.getAccountPage())  //if logged in as lead EORI, redirect to Account home page
         else
-          Ok(existingUndertakingPage(undertaking.name)) //if logged in as non-lead EORI, redirect to existing undertaking page
+          Ok(existingUndertakingPage(undertaking.name, eori)) //if logged in as non-lead EORI, redirect to existing undertaking page
         case None => Redirect(routes.AccountController.getAccountPage()) //if undertaking not present, then create undertaking
       }
     }

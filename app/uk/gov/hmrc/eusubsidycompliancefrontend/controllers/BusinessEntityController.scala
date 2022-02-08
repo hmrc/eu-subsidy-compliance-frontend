@@ -40,6 +40,7 @@ class BusinessEntityController @Inject()(
   journeyTraverseService: JourneyTraverseService,
   addBusinessPage: AddBusinessPage,
   eoriPage: BusinessEntityEoriPage,
+  removeYourselfBEPage: BusinessEntityRemoveYourselfPage,
   businessEntityContactPage: BusinessEntityContactPage,
   businessEntityCyaPage: BusinessEntityCYAPage,
   removeBusinessPage: RemoveBusinessPage
@@ -272,31 +273,47 @@ class BusinessEntityController @Inject()(
     for {
       a <- escService.retrieveUndertaking(EORI(eoriEntered))
     } yield a match {
-      case Some(undertaking) => {
-        val bs = undertaking.undertakingBusinessEntity
-          .filter(a => a.businessEntityIdentifier == eoriEntered)
-          .head
-        Ok(removeBusinessPage(removeBusinessForm, bs))
-      }
+      case Some(undertaking) =>
+        val removeBE = undertaking.undertakingBusinessEntity
+          .filter(_.businessEntityIdentifier == eoriEntered)
+          .headOption.getOrElse(handleMissingSessionData("EORI to be removed"))
+        Ok(removeBusinessPage(removeBusinessForm, removeBE))
+
       case _ => handleMissingSessionData("Undertaking journey")
+    }
+  }
+
+  def getRemoveYourselfBE: Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori = request.eoriNumber
+    val previous = routes.AccountController.getExistingUndertaking().url
+    for {
+      undertakingOpt <- escService.retrieveUndertaking(eori)
+    } yield { undertakingOpt match {
+        case Some(undertaking) =>
+          val removeBE = undertaking.undertakingBusinessEntity
+            .filter(_.businessEntityIdentifier == eori)
+            .headOption.getOrElse(handleMissingSessionData("EORI to be removed"))
+          Ok(removeYourselfBEPage(removeYourselfBusinessForm, removeBE, previous, undertaking.name))
+
+        case _ => handleMissingSessionData("Undertaking journey")
+      }
     }
   }
 
   def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
     escService.retrieveUndertaking(EORI(eoriEntered)).flatMap {
       case Some(undertaking) => {
-        val bs = undertaking.undertakingBusinessEntity
+        val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("undertaking reference"))
+        val removeBE: BusinessEntity = undertaking.undertakingBusinessEntity
           .filter(a => a.businessEntityIdentifier == eoriEntered)
-          .head
+          .headOption.getOrElse(handleMissingSessionData("EORI to be removed"))
+
         removeBusinessForm.bindFromRequest().fold(
-          errors => Future.successful(BadRequest(removeBusinessPage(errors, bs))),
+          errors => Future.successful(BadRequest(removeBusinessPage(errors, removeBE))),
           form => {
             form.value match {
               case "true" =>
-                escService.removeMember(
-                  UndertakingRef(undertaking.reference.getOrElse(throw new IllegalStateException("no undertakingRef"))),
-                  bs)
-                Future.successful(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
+                escService.removeMember(undertakingRef, removeBE).map(_ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
               case _ => Future(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
             }
           }
@@ -305,11 +322,37 @@ class BusinessEntityController @Inject()(
       case _ => handleMissingSessionData("Undertaking journey")
   }}
 
+  def postRemoveYourselfBE: Action[AnyContent] = escAuthentication.async { implicit request =>
+    val loggedInEORI = request.eoriNumber
+    val previous = routes.AccountController.getExistingUndertaking().url
+    escService.retrieveUndertaking(loggedInEORI).flatMap {
+      case Some(undertaking) =>
+        val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("undertaking reference"))
+        val removeBE: BusinessEntity = undertaking.undertakingBusinessEntity
+          .filter(be => be.businessEntityIdentifier == loggedInEORI)
+          .headOption.getOrElse(handleMissingSessionData("EORI to be removed"))
+
+        removeYourselfBusinessForm.bindFromRequest().fold(
+          errors => Future.successful(BadRequest(removeYourselfBEPage(errors, removeBE, previous, undertaking.name))),
+          form => {
+            form.value match {
+              case "true" => escService.removeMember(undertakingRef, removeBE).map(_ => Redirect(routes.SignOutController.signOut()))
+              case _ => Future(Redirect(routes.AccountController.getAccountPage()))
+            }
+          }
+        )
+
+      case _ => handleMissingSessionData("Undertaking journey")
+    }}
+
   lazy val addBusinessForm: Form[FormValues] = Form(
     mapping("addBusiness" -> mandatory("addBusiness"))(FormValues.apply)(FormValues.unapply))
 
   lazy val removeBusinessForm: Form[FormValues] = Form(
     mapping("removeBusiness" -> mandatory("removeBusiness"))(FormValues.apply)(FormValues.unapply))
+
+  lazy val removeYourselfBusinessForm: Form[FormValues] = Form(
+    mapping("removeYourselfBusinessEntity" -> mandatory("removeYourselfBusinessEntity"))(FormValues.apply)(FormValues.unapply))
 
   lazy val eoriForm: Form[FormValues] = Form(
     mapping("businessEntityEori" -> mandatory("businessEntityEori"))(eoriEntered => FormValues(s"$eoriPrefix$eoriEntered"))(eori => eori.value.drop(2).some).verifying(
