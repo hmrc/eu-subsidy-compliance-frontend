@@ -37,9 +37,9 @@
     backLinkEnabled = true,
     backLink = Some(previous)
 ) {
-
     @formHelper(action = controllers.routes.BusinessEntityController.postRemoveYourselfBusinessEntity()) {
         @form.errors.map { err =>
+
             @govukErrorSummary(ErrorSummary(
                 errorList = Seq(
                     ErrorLink(
@@ -51,7 +51,6 @@
             ))
         }
         <h1 class="govuk-heading-xl">@title</h1>
-
         @govukRadios(Radios(
             classes = "govuk-radios--inline",
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(

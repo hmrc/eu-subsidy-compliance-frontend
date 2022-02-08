@@ -134,9 +134,12 @@ businessEntity.cya.contact.label=Contact details
 businessEntity.cya.p1=By sending these details you are confirming that, to the best of your knowledge, they are correct.
 
 removeBusinessEntity.title= Remove business entity
+<<<<<<< HEAD
 removeBusinessEntity.subtitle = Do you want to remove business entity?
 removeBusinessEntity.error.required = Select yes if you want to remove business entity.
 removeBusiness.error.required = Select yes if you want to remove business entity.
+=======
+>>>>>>> 93178ac (ESC-296 already have undertaking page)
 
 undertaking.cya.h2=Account details
 undertaking.cya.summary-list.name.key=Name of undertaking
@@ -238,4 +241,3 @@ signOut.p1 = You have been signed out of this session.
 #removeYourselfBusinessEntity
 removeYourselfBusinessEntity.title = Do you wish to remove yourself from {0}?
 removeYourselfBusinessEntity.error.required = Select yes if you wish to remove yourself from {0}.
-

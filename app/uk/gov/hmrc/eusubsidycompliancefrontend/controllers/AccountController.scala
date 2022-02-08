@@ -21,7 +21,6 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, EscService, RetrieveEmailService, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -37,7 +36,6 @@ class AccountController @Inject()(
    accountPage: AccountPage,
    existingUndertakingPage: ExistingUndertakingPage,
    retrieveEmailService: RetrieveEmailService
-
 )(
   implicit val appConfig: AppConfig,
   executionContext: ExecutionContext
