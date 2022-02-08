@@ -98,7 +98,9 @@
                   isPageHeading = false
               ))
           )),
-          hint = None,
+          hint = Some(Hint(
+            content = Text(messages("addBusiness.businesses-added.hint"))
+          )),
           idPrefix = Some("addBusiness"),
           name = "addBusiness",
           items = Seq(
@@ -115,6 +117,8 @@
           )
       ))
     }
+
+    <p class="govuk-body"><strong>@messages("addBusiness.businesses-added.p1")</strong></p>
 
     @button("common.continue")
   }

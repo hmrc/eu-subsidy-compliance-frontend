@@ -88,8 +88,9 @@ class BusinessEntityController @Inject()(
     }
     store.get[Undertaking].flatMap { undertaking =>
       val name: UndertakingName = undertaking.map(_.name).getOrElse(throw new IllegalStateException("missing undertaking name"))
+      val businessEntities: List[BusinessEntity] = undertaking.map(_.undertakingBusinessEntity).getOrElse(List.empty)
       addBusinessForm.bindFromRequest().fold(
-        errors => Future.successful(BadRequest(addBusinessPage(errors, name, List.empty))),
+        errors => Future.successful(BadRequest(addBusinessPage(errors, name, businessEntities))),
         form => handleValidAnswer(form)
       )
 
