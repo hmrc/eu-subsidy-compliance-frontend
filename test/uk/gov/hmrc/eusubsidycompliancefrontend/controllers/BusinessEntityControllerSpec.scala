@@ -78,6 +78,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
       .expects(undertakingRef, businessEntity, *)
       .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful))
 
+
   def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(result: Either[Error, UndertakingRef]) = {
     (mockEscService
       .addMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
@@ -423,6 +424,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
       }
 
     }
+
 
     "handling request to get contact page" must {
       def performAction() = controller.getContact( FakeRequest("GET",routes.BusinessEntityController.getContact().url))
@@ -891,6 +893,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
       }
 
     }
+
 
     "handling request to get remove Business entity by Lead" must {
       def performAction() = controller.getRemoveBusinessEntity(eori4)(FakeRequest())

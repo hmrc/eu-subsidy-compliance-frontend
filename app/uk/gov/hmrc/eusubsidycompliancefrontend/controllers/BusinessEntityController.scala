@@ -244,6 +244,7 @@ class BusinessEntityController @Inject()(
     }
   }
 
+
   def getRemoveYourselfBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori = request.eoriNumber
     val previous = routes.AccountController.getExistingUndertaking().url
@@ -276,6 +277,7 @@ class BusinessEntityController @Inject()(
 
       case _ => handleMissingSessionData("Undertaking journey")
   }}
+
 
   def postRemoveYourselfBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
     val loggedInEORI = request.eoriNumber
