@@ -25,8 +25,7 @@
         govukErrorSummary: GovukErrorSummary,
 )
 
-@(undertakingName: String, eori: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
+@(undertakingName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @layout(
     pageTitle = Some(messages("existingUndertaking.title")),
     backLinkEnabled = false,
