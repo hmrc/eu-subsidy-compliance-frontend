@@ -19,8 +19,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import play.api.libs.json._
 import shapeless.syntax.std.tuple._
 import shapeless.syntax.typeable._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef, TraderRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, NonHmrcSubsidy}
 
 case class SubsidyJourney(
   reportPayment: FormPage[Boolean] = FormPage("claims"),
@@ -29,7 +29,8 @@ case class SubsidyJourney(
   addClaimEori: FormPage[Option[EORI]] = FormPage("add-claim-eori"),
   publicAuthority: FormPage[String] = FormPage("add-claim-public-authority"),
   traderRef: FormPage[Option[TraderRef]] = FormPage("add-claim-reference"),
-  cya: FormPage[Boolean] = FormPage("check-your-answers-subsidy")
+  cya: FormPage[Boolean] = FormPage("check-your-answers-subsidy"),
+  existingTransactionId: Option[SubsidyRef] = None
 ) extends Journey {
 
   override def steps: List[Option[FormPage[_]]] =
@@ -39,6 +40,7 @@ case class SubsidyJourney(
       .fold(List.empty[Any])(identity)
       .map(_.cast[FormPage[_]])
 
+  def isAmend(): Boolean = existingTransactionId.nonEmpty
 }
 
 object SubsidyJourney {
@@ -91,4 +93,18 @@ object SubsidyJourney {
     Json.format[FormPage[TraderRef]]
 
   implicit val format: Format[SubsidyJourney] = Json.format[SubsidyJourney]
+
+  def fromNonHmrcSubsidy(nonHmrcSubsidy: NonHmrcSubsidy): SubsidyJourney = {
+    val newJourney = SubsidyJourney()
+    newJourney
+      .copy(
+        reportPayment = newJourney.reportPayment.copy(value = Some(true)),
+        claimDate = newJourney.claimDate.copy(value = Some(DateFormValues.fromDate(nonHmrcSubsidy.submissionDate))),
+        claimAmount = newJourney.claimAmount.copy(value = Some(nonHmrcSubsidy.nonHMRCSubsidyAmtEUR)),
+        addClaimEori = newJourney.addClaimEori.copy(value = Some(nonHmrcSubsidy.businessEntityIdentifier)),
+        publicAuthority = newJourney.publicAuthority.copy(value = Some(nonHmrcSubsidy.publicAuthority.getOrElse(""))),
+        traderRef = newJourney.traderRef.copy(value = Some(nonHmrcSubsidy.traderReference)),
+        existingTransactionId = nonHmrcSubsidy.subsidyUsageTransactionID
+    )
+  }
 }
