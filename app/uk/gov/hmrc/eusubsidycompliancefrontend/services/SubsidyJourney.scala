@@ -94,15 +94,17 @@ object SubsidyJourney {
 
   implicit val format: Format[SubsidyJourney] = Json.format[SubsidyJourney]
 
-  def fromSubsidy(nonHmrcSubsidy: NonHmrcSubsidy): SubsidyJourney = {
+  def fromNonHmrcSubsidy(nonHmrcSubsidy: NonHmrcSubsidy): SubsidyJourney = {
     val newJourney = SubsidyJourney()
     newJourney
-      .copy(reportPayment = newJourney.reportPayment.copy(value = Some(true)))
-      .copy(claimDate = newJourney.claimDate.copy(value = Some(DateFormValues.fromDate(nonHmrcSubsidy.submissionDate))))
-      .copy(claimAmount = newJourney.claimAmount.copy(value = Some(nonHmrcSubsidy.nonHMRCSubsidyAmtEUR)))
-      .copy(addClaimEori = newJourney.addClaimEori.copy(value = Some(nonHmrcSubsidy.businessEntityIdentifier)))
-      .copy(publicAuthority = newJourney.publicAuthority.copy(value = Some(nonHmrcSubsidy.publicAuthority.getOrElse(""))))
-      .copy(traderRef = newJourney.traderRef.copy(value = Some(nonHmrcSubsidy.traderReference)))
-      .copy(existingTransactionId = nonHmrcSubsidy.subsidyUsageTransactionID)
+      .copy(
+        reportPayment = newJourney.reportPayment.copy(value = Some(true)),
+        claimDate = newJourney.claimDate.copy(value = Some(DateFormValues.fromDate(nonHmrcSubsidy.submissionDate))),
+        claimAmount = newJourney.claimAmount.copy(value = Some(nonHmrcSubsidy.nonHMRCSubsidyAmtEUR)),
+        addClaimEori = newJourney.addClaimEori.copy(value = Some(nonHmrcSubsidy.businessEntityIdentifier)),
+        publicAuthority = newJourney.publicAuthority.copy(value = Some(nonHmrcSubsidy.publicAuthority.getOrElse(""))),
+        traderRef = newJourney.traderRef.copy(value = Some(nonHmrcSubsidy.traderReference)),
+        existingTransactionId = nonHmrcSubsidy.subsidyUsageTransactionID
+    )
   }
 }

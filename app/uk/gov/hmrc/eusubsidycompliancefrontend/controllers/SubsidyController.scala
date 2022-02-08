@@ -22,7 +22,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyAmount, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -84,8 +84,8 @@ class SubsidyController @Inject()(
       _ => throw new IllegalStateException("value hard-coded, form hacking?"),
       form => {
         for {
-          journey <- store.update[SubsidyJourney]({ x =>
-            x.map { y =>
+          journey <- store.update[SubsidyJourney]({
+            _.map { y =>
               y.copy(reportPayment = y.reportPayment.copy(value = Some(form.value.toBoolean)))
             }
           })
@@ -208,10 +208,10 @@ class SubsidyController @Inject()(
         formWithErrors => Future.successful(BadRequest(addClaimEoriPage(formWithErrors, previous))),
         form => {
           for {
-            journey <- store.update[SubsidyJourney]({ x =>
-                x.map { y =>
-                y.copy(addClaimEori = y.addClaimEori.copy(value = Some(form.value.map(EORI(_)))))
-              }
+            journey <- store.update[SubsidyJourney]({
+                _.map { journey =>
+                  journey.copy(addClaimEori = journey.addClaimEori.copy(value = Some(form.value.map(EORI(_)))))
+                }
               })
             redirect <- getJourneyNext(journey)
           } yield redirect
@@ -331,6 +331,10 @@ class SubsidyController @Inject()(
           }
         })
           .flatMap { journey: SubsidyJourney =>
+            journey.publicAuthority.value.getOrElse(handleMissingSessionData("publicAuthority"))
+            journey.traderRef.value.getOrElse(handleMissingSessionData("trader ref"))
+            journey.claimAmount.value.getOrElse(handleMissingSessionData("claimAmount"))
+            journey.addClaimEori.value.getOrElse(handleMissingSessionData("addClaimEori"))
             for {
               underTaking <- store.get[Undertaking]
               ref = underTaking.getOrElse(throw new IllegalStateException("")).reference.getOrElse(throw new IllegalStateException(""))
@@ -388,11 +392,11 @@ class SubsidyController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     for {
       undertaking <- store.get[Undertaking]
-      reference = undertaking.getOrElse(throw new IllegalStateException("")).reference.getOrElse(throw new IllegalStateException(""))
+      reference = undertaking.flatMap(_.reference).getOrElse(handleMissingSessionData("Reference"))
       subsidies <- escService.retrieveSubsidy(SubsidyRetrieve(reference, None)).map(e => Some(e)).recoverWith({case _ => Future.successful(Option.empty[UndertakingSubsidies])})
       sub = subsidies.get.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionID.contains(transactionId)).get
       _ = store.put(
-        SubsidyJourney.fromSubsidy(sub)
+        SubsidyJourney.fromNonHmrcSubsidy(sub)
       )
     } yield {
       Redirect(routes.SubsidyController.getCheckAnswers())
