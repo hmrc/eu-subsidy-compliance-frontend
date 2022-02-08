@@ -82,6 +82,13 @@ object CommonTestData {
     LocalDate.of(2021,1,18).some,
     List(businessEntity1, businessEntity4))
 
+  val undertaking2 = Undertaking(undertakingRef.some,
+    UndertakingName("TestUndertaking"),
+    transport,
+    IndustrySectorLimit(12.34).some,
+    LocalDate.of(2021,1,18).some,
+    List(businessEntity4))
+
   val subsidyRetrieve = SubsidyRetrieve(
     undertakingRef, None
   )

@@ -1,8 +1,11 @@
 # microservice specific routes
 
-->         /hmrc-frontend                           hmrcfrontend.Routes
-GET        /                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
-GET        /assets/*file                            controllers.Assets.versioned(path = "/public", file: Asset)
+->         /hmrc-frontend                     hmrcfrontend.Routes
+GET        /                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getExistingUndertaking
+
+GET        /home                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
+
+GET        /assets/*file                      controllers.Assets.versioned(path = "/public", file: Asset)
 
 GET        /eligibility-first-empty                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.firstEmptyPage
 GET        /undertaking-first-empty                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.firstEmptyPage
@@ -91,3 +94,4 @@ GET        /subsidy-delete/:transactionId           uk.gov.hmrc.eusubsidycomplia
 POST       /subsidy-delete/:transactionId           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postRemoveSubsidyClaim(transactionId)
 
 GET        /subsidy-change/:transactionId           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getChangeSubsidyClaim(transactionId)
+

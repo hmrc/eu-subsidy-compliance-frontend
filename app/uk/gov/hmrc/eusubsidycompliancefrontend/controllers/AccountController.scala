@@ -16,10 +16,12 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, EscService, RetrieveEmailService, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -33,6 +35,7 @@ class AccountController @Inject()(
                                    store: Store,
                                    escService: EscService,
                                    accountPage: AccountPage,
+                                   existingUndertakingPage: ExistingUndertakingPage,
                                    retrieveEmailService: RetrieveEmailService
 )(
   implicit val appConfig: AppConfig,
@@ -68,6 +71,28 @@ class AccountController @Inject()(
         case None => Future.successful(Redirect(routes.UpdateEmailAddressController.updateEmailAddress()))
       }
     }
+  }
+
+  def getExistingUndertaking: Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    for {
+      undertakingOpt <- escService.retrieveUndertaking(eori)
+    } yield {
+      undertakingOpt match {
+        case Some(undertaking) =>
+          if(isLeadEORI(undertaking, eori))
+          Redirect(routes.AccountController.getAccountPage())  //if logged in as lead EORI, redirect to Account home page
+        else
+          Ok(existingUndertakingPage(undertaking.name)) //if logged in as non-lead EORI, redirect to existing undertaking page
+        case None => Redirect(routes.AccountController.getAccountPage()) //if undertaking not present, then create undertaking
+      }
+    }
+  }
+
+  //checks if the logged in EORI is a lead
+  private  def isLeadEORI(undertaking: Undertaking, eori: EORI): Boolean = {
+    val leadEORI = undertaking.undertakingBusinessEntity.filter(_.leadEORI).headOption.getOrElse(handleMissingSessionData("Missing Lead EORI"))
+    leadEORI.businessEntityIdentifier.toString == eori.toString
   }
 
 }

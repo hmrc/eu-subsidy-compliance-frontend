@@ -80,30 +80,29 @@ class AccountControllerSpec  extends ControllerSpec
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
-            checkPageIsDisplayed(
-              performAction(),
-              messageFromMessageKey("account.title", undertaking.name),
-              {doc =>
-                val htmlBody = doc.select(".govuk-grid-column-one-third").html()
-                htmlBody should include regex messageFromMessageKey(
-                  "account-homepage.cards.card1.link1",
-                  routes.SubsidyController.getReportPayment().url
-                )
-                if(undertaking.undertakingBusinessEntity.length > 1)
-                  htmlBody should include regex messageFromMessageKey(
-                    "account-homepage.cards.card3.link1View",
-                    routes.BusinessEntityController.getAddBusinessEntity().url
-                  )
-                else
-                  htmlBody should include regex messageFromMessageKey(
-                    "account-homepage.cards.card3.link1Add",
-                    routes.BusinessEntityController.getAddBusinessEntity().url
-                  )
-
-              }
-            )
-
           }
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("account.title", undertaking.name),
+            {doc =>
+              val htmlBody = doc.select(".govuk-grid-column-one-third").html()
+              htmlBody should include regex messageFromMessageKey(
+                "account-homepage.cards.card1.link1",
+                routes.SubsidyController.getReportPayment().url
+              )
+              if(undertaking.undertakingBusinessEntity.length > 1)
+                htmlBody should include regex messageFromMessageKey(
+                  "account-homepage.cards.card3.link1View",
+                  routes.BusinessEntityController.getAddBusinessEntity().url
+                )
+              else
+                htmlBody should include regex messageFromMessageKey(
+                  "account-homepage.cards.card3.link1Add",
+                  routes.BusinessEntityController.getAddBusinessEntity().url
+                )
+
+            }
+          )
         }
 
         "there is a view link on the page" in {
@@ -202,7 +201,6 @@ class AccountControllerSpec  extends ControllerSpec
 
         }
 
-
         "there is an error in storing Business entity  journey data" in {
           val businessEntityData = BusinessEntityJourney.fromUndertakingOpt(None)
 
@@ -287,9 +285,77 @@ class AccountControllerSpec  extends ControllerSpec
           }
         }
 
+      }
 
+    }
+
+    "handling request to get existing undertaking page" must {
+
+      def performAction() = controller.getExistingUndertaking()(FakeRequest())
+
+      behave like authBehaviour(() => performAction())
+
+      "throw a technical error page" when {
+
+        "retrieved undertaking has lead EORI missing" in {
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.successful(Some(undertaking2)))
+          }
+          assertThrows[Exception](await(performAction()))
+
+        }
 
       }
+
+      "display the page" in {
+        inSequence {
+          mockAuthWithBEEnrolment()
+          mockRetreiveUndertaking(eori4)(Future.successful(Some(undertaking1)))
+        }
+        checkPageIsDisplayed(
+          performAction(),
+          messageFromMessageKey("existingUndertaking.title"),
+          {doc =>
+            doc.select("h2").get(0).text shouldBe undertaking1.name
+            val htmlBody = doc.select(".govuk-list").html()
+            htmlBody should include regex messageFromMessageKey(
+              "existingUndertaking.link1",
+              routes.AccountController.getAccountPage().url
+            )
+
+          }
+        )
+
+      }
+
+      "redirect to next page" when {
+
+        def redirectTest(eori: EORI, undertakingOpt: Option[Undertaking], nextCall: String) = {
+
+          inSequence {
+            mockAuthWithEnrolment(eori)
+            mockRetreiveUndertaking(eori)(Future.successful(undertakingOpt))
+          }
+          checkIsRedirect(performAction(), nextCall)
+
+        }
+
+        "user with non-lead EORI logged in and has no previous undertaking" in {
+          redirectTest(eori4, None, routes.AccountController.getAccountPage().url)
+        }
+
+        "user with lead EORI is logged in and has no previous undertaking" in {
+          redirectTest(eori1, None, routes.AccountController.getAccountPage().url)
+        }
+
+        "user with lead EORI is logged in and has  previous undertaking" in {
+          redirectTest(eori1, undertaking1.some, routes.AccountController.getAccountPage().url)
+        }
+
+      }
+
 
     }
 
