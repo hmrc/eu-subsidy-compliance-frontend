@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, Un
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, FormPage, JourneyTraverseService, Store}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.CommonTestData._
+import utils.CommonTestData.{undertaking, _}
 
 import scala.concurrent.Future
 
@@ -546,6 +546,155 @@ class BusinessEntityControllerSpec  extends ControllerSpec
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
           }
           checkIsRedirect(performAction("removeYourselfBusinessEntity" -> "false"), routes.AccountController.getAccountPage().url)
+        }
+      }
+
+    }
+
+    "handling request to get remove Business entity by Lead" must {
+      def performAction() = controller.getRemoveBusinessEntity(eori4)(FakeRequest())
+
+      "throw technical error" when {
+        val exception = new Exception("oh no!")
+
+        "call to retrieved undertaking fails" in {
+          inSequence {
+            mockAuthWithEnrolment(eori4)
+            mockRetreiveUndertaking(eori4)(Future.failed(exception))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to retrieved undertaking came back with empty response" in {
+          inSequence {
+            mockAuthWithEnrolment(eori4)
+            mockRetreiveUndertaking(eori4)(Future.successful(None))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to retrieved undertaking came back with undertaking having no BE with that eori" in {
+          inSequence {
+            mockAuthWithEnrolment(eori4)
+            mockRetreiveUndertaking(eori4)(Future.successful(undertaking.some))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+      }
+
+      "display the page" when {
+        def test(undertaking: Undertaking, inputDate: Option[String]) = {
+          inSequence {
+            mockAuthWithEnrolment(eori4)
+            mockRetreiveUndertaking(eori4)(Future.successful(undertaking.some))
+          }
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("removeBusinessEntity.title"),
+            { doc =>
+
+              val selectedOptions = doc.select(".govuk-radios__input[checked]")
+              inputDate match {
+                case Some(value) => selectedOptions.attr("value") shouldBe value
+                case None => selectedOptions.isEmpty       shouldBe true
+              }
+              val button = doc.select("form")
+              button.attr("action") shouldBe routes.BusinessEntityController.postRemoveBusinessEntity(eori4).url
+
+            }
+          )
+
+        }
+
+        "the user hasn't previously answered the question" in {
+          test(undertaking1, None)
+        }
+
+      }
+
+    }
+
+    "handling request to post remove  business entity" must {
+
+      def performAction(data: (String, String)*)(eori: EORI) = controller
+        .postRemoveBusinessEntity(eori)(
+          FakeRequest("POST",routes.BusinessEntityController.getRemoveYourselfBE().url)
+            .withFormUrlEncodedBody(data: _*))
+
+      "throw a technical error" when {
+        val exception = new Exception("oh no!")
+
+        "call to retrieved undertaking fails" in {
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+            mockRetreiveUndertaking(eori4)(Future.failed(exception))
+          }
+          assertThrows[Exception](await(performAction()(eori4)))
+        }
+
+        "call to retrieved undertaking came back with empty response" in {
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+            mockRetreiveUndertaking(eori4)(Future.successful(None))
+          }
+          assertThrows[Exception](await(performAction()(eori4)))
+        }
+
+        "call to retrieved undertaking came back with undertaking having no BE with that eori" in {
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+            mockRetreiveUndertaking(eori4)(Future.successful(undertaking.some))
+          }
+          assertThrows[Exception](await(performAction()(eori4)))
+        }
+
+        "call to remove BE fails" in {
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+            mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockRemoveMember(undertakingRef, businessEntity4)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
+        }
+
+
+      }
+
+      "display the form error" when {
+
+        "nothing is selected" in {
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+            mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
+          }
+          checkFormErrorIsDisplayed(
+            performAction()(eori4),
+            messageFromMessageKey("removeBusinessEntity.title"),
+            messageFromMessageKey("removeBusinessEntity.error.required")
+          )
+
+        }
+
+      }
+
+      "redirect to next page" when {
+
+        "user select yes as input" in {
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+            mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
+          }
+          checkIsRedirect(performAction("removeBusiness" -> "true")(eori4), routes.BusinessEntityController.getAddBusinessEntity().url)
+        }
+
+        "user selects No as input" in {
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+            mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
+          }
+          checkIsRedirect(performAction("removeBusiness" -> "false")(eori4), routes.BusinessEntityController.getAddBusinessEntity().url)
         }
       }
 
