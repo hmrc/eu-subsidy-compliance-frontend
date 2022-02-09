@@ -28,51 +28,52 @@
   backLinkEnabled = true,
 ) {
 
-  <h1 class="govuk-heading-l">@messages("dashboard.title")</h1>
+    <h1 class="govuk-heading-l">@messages("dashboard.title")</h1>
 
-  <!-- TODO - extract this into a component for the other sections -->
-  <table class="govuk-table">
-    <caption class="govuk-table__caption govuk-table__caption--m">
-        @messages("dashboard.summary.heading.multiple.tax.years", "2019", "2022")
-    </caption>
-    <tbody class="govuk-table__body">
-      <tr class="govuk-table__row">
-       <th scope="row" class="govuk-table__header">@messages("dashboard.customs.duty.heading")</th>
-       <td class="govuk-table__cell"></td>
-       <td class="govuk-table__cell"></td>
-      </tr>
-      <tr class="govuk-table__row">
-        <!-- TODO - make this dynamic -->
-        <td class="govuk-table__cell">€100,000.00</td>
-        <td class="govuk-table__cell"></td>
-        <td class="govuk-table__cell"></td>
-      </tr>
-      <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">@messages("dashboard.de.minimis.aid.heading")</th>
-        <td class="govuk-table__cell"></td>
-        <td class="govuk-table__cell"></td>
-      </tr>
-      <tr class="govuk-table__row">
-        <!-- TODO - make this dynamic -->
-        <td class="govuk-table__cell">€75,000.00</td>
-        <td class="govuk-table__cell"></td>
-        <td class="govuk-table__cell"></td>
-      </tr>
-      <tr class="govuk-table__row">
-        <th scope="row" class="govuk-table__header">@messages("dashboard.total.claimed.heading")</th>
-        <th scope="row" class="govuk-table__header">@messages("dashboard.sector.cap.heading")</th>
-        <th scope="row" class="govuk-table__header">@messages("dashboard.allowance.remaining.heading")</th>
-        <td class="govuk-table__cell"></td>
-      </tr>
-      <tr class="govuk-table__row">
-        <!-- TODO - make this dynamic -->
-        <td class="govuk-table__cell">€175,000.00	</td>
-        <!-- TODO - make this dynamic -->
-        <td class="govuk-table__cell">€200,000.00</td>
-          <!-- TODO - make this dynamic -->
-        <td class="govuk-table__cell">€25,000.00</td>
-      </tr>
-    </tbody>
-  </table>
+    <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--m">
+            <!-- TODO - make this dynamic -->
+            @messages("dashboard.overall.summary.heading", "2019", "2022")
+        </caption>
+        <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">@messages("dashboard.customs.duty.heading")</th>
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell"></td>
+            </tr>
+            <tr class="govuk-table__row">
+                <!-- TODO - make this dynamic -->
+                <td class="govuk-table__cell">€100,000.00</td>
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell"></td>
+            </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">@messages("dashboard.de.minimis.aid.heading")</th>
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell"></td>
+            </tr>
+            <tr class="govuk-table__row">
+                <!-- TODO - make this dynamic -->
+                <td class="govuk-table__cell">€75,000.00</td>
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell"></td>
+            </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">@messages("dashboard.total.claimed.heading")</th>
+                <th scope="row" class="govuk-table__header">@messages("dashboard.sector.cap.heading")</th>
+                <th scope="row" class="govuk-table__header">@messages("dashboard.allowance.remaining.heading")</th>
+                <td class="govuk-table__cell"></td>
+            </tr>
+            <tr class="govuk-table__row">
+                <!-- TODO - make this dynamic -->
+                <td class="govuk-table__cell">€175,000.00	</td>
+                <!-- TODO - make this dynamic -->
+                <td class="govuk-table__cell">€200,000.00</td>
+                  <!-- TODO - make this dynamic -->
+                <td class="govuk-table__cell">€25,000.00</td>
+            </tr>
+        </tbody>
+    </table>
 
+    <!-- TODO - add summary sections for each tax year -->
 }
