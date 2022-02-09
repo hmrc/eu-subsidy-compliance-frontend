@@ -327,7 +327,7 @@ class AccountControllerSpec  extends ControllerSpec
 
             htmlBody should include regex messageFromMessageKey(
               "existingUndertaking.link2",
-              routes.BusinessEntityController.getRemoveYourselfBE().url
+              routes.BusinessEntityController.getRemoveYourselfBusinessEntity().url
             )
 
           }

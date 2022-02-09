@@ -64,8 +64,8 @@ GET        /change/:eori                            uk.gov.hmrc.eusubsidycomplia
 GET        /remove/:eori                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveBusinessEntity(eori)
 POST       /remove/:eori                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveBusinessEntity(eori)
 
-GET        /remove-yourself                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveYourselfBE
-POST        /remove-yourself                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveYourselfBE
+GET        /remove-yourself                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveYourselfBusinessEntity
+POST        /remove-yourself                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveYourselfBusinessEntity
 
 GET        /claims                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPayment
 POST       /claims                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPayment

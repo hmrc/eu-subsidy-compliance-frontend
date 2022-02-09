@@ -742,7 +742,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
     }
 
     "handling request to get remove yourself Business entity" must {
-      def performAction() = controller.getRemoveYourselfBE(FakeRequest())
+      def performAction() = controller.getRemoveYourselfBusinessEntity(FakeRequest())
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
@@ -791,7 +791,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
                 case None => selectedOptions.isEmpty       shouldBe true
               }
               val button = doc.select("form")
-              button.attr("action") shouldBe routes.BusinessEntityController.postRemoveYourselfBE().url
+              button.attr("action") shouldBe routes.BusinessEntityController.postRemoveYourselfBusinessEntity().url
 
             }
           )
@@ -810,8 +810,8 @@ class BusinessEntityControllerSpec  extends ControllerSpec
     "handling request to post remove yourself business entity" must {
 
       def performAction(data: (String, String)*) = controller
-        .postRemoveYourselfBE(
-          FakeRequest("POST",routes.BusinessEntityController.getRemoveYourselfBE().url)
+        .postRemoveYourselfBusinessEntity(
+          FakeRequest("POST",routes.BusinessEntityController.getRemoveYourselfBusinessEntity().url)
             .withFormUrlEncodedBody(data: _*))
 
       "throw a technical error" when {
@@ -960,7 +960,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
       def performAction(data: (String, String)*)(eori: EORI) = controller
         .postRemoveBusinessEntity(eori)(
-          FakeRequest("POST",routes.BusinessEntityController.getRemoveYourselfBE().url)
+          FakeRequest("POST",routes.BusinessEntityController.postRemoveYourselfBusinessEntity().url)
             .withFormUrlEncodedBody(data: _*))
 
       "throw a technical error" when {

@@ -38,7 +38,7 @@
     backLink = Some(previous)
 ) {
 
-    @formHelper(action = controllers.routes.BusinessEntityController.postRemoveYourselfBE) {
+    @formHelper(action = controllers.routes.BusinessEntityController.postRemoveYourselfBusinessEntity()) {
         @form.errors.map { err =>
             @govukErrorSummary(ErrorSummary(
                 errorList = Seq(

@@ -79,11 +79,8 @@ class AccountController @Inject()(
       undertakingOpt <- escService.retrieveUndertaking(eori)
     } yield {
       undertakingOpt match {
-        case Some(undertaking) =>
-          if(isLeadEORI(undertaking, eori))
-          Redirect(routes.AccountController.getAccountPage())  //if logged in as lead EORI, redirect to Account home page
-        else
-          Ok(existingUndertakingPage(undertaking.name, eori)) //if logged in as non-lead EORI, redirect to existing undertaking page
+        case Some(undertaking) if(isLeadEORI(undertaking, eori)) => Redirect(routes.AccountController.getAccountPage())  //if logged in as lead EORI, redirect to Account home page
+        case Some(undertaking) => Ok(existingUndertakingPage(undertaking.name, eori)) //if logged in as non-lead EORI, redirect to existing undertaking page
         case None => Redirect(routes.AccountController.getAccountPage()) //if undertaking not present, then create undertaking
       }
     }
@@ -91,8 +88,11 @@ class AccountController @Inject()(
 
   //checks if the logged in EORI is a lead
   private  def isLeadEORI(undertaking: Undertaking, eori: EORI): Boolean = {
-    val leadEORI = undertaking.undertakingBusinessEntity.filter(_.leadEORI).headOption.getOrElse(handleMissingSessionData("Missing Lead EORI"))
-    leadEORI.businessEntityIdentifier.toString == eori.toString
+    val leadEORI = undertaking.undertakingBusinessEntity
+      .filter(_.leadEORI)
+      .headOption
+      .getOrElse(handleMissingSessionData("Missing Lead EORI"))
+      leadEORI.businessEntityIdentifier.toString == eori.toString
   }
 
 }
