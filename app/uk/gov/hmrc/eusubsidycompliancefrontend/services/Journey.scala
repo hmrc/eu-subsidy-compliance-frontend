@@ -16,12 +16,10 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-
 import play.api.Logger
 import play.api.libs.json.{Json, OFormat}
-import play.api.mvc.{AnyContent, Request, Result}
 import play.api.mvc.Results.Redirect
-
+import play.api.mvc.{AnyContent, Request, Result}
 
 import scala.concurrent.Future
 
