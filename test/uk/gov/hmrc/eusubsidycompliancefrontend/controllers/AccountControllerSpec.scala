@@ -29,14 +29,15 @@ import utils.CommonTestData.{undertaking, _}
 
 import scala.concurrent.Future
 
-class AccountControllerSpec  extends ControllerSpec
+class AccountControllerSpec extends ControllerSpec
   with AuthSupport
   with JourneyStoreSupport
   with AuthAndSessionDataBehaviour {
+
   val mockEscService = mock[EscService]
   val mockRetrieveEmailService = mock[RetrieveEmailService]
 
-  override def overrideBindings           = List(
+  override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
@@ -61,7 +62,7 @@ class AccountControllerSpec  extends ControllerSpec
           .fold(s => new Exception(s), identity)), Future.successful)}
   }
 
-  "AccountControllerSpec" when {
+  "AccountController" when {
 
     "handling request to get Account page" must {
 

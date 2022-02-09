@@ -22,7 +22,7 @@ import play.api.http.Status.{NOT_FOUND, OK}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, NonHmrcSubsidy, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.HttpResponseOps.HttpResponseOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.HttpResponseSyntax.HttpResponseOps
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
