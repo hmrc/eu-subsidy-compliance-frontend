@@ -24,9 +24,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
-
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
+
 
 @Singleton
 class NoClaimNotificationController @Inject()(
@@ -76,7 +76,6 @@ class NoClaimNotificationController @Inject()(
       case Some(undertaking) => Ok(noClaimConfirmationPage(undertaking.name))
       case _ => handleMissingSessionData("Undertaking journey")
     }
-
 
   }
 
