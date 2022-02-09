@@ -33,4 +33,26 @@ case class Undertaking(
 
 object Undertaking {
   implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
+
+  implicit class UndertakingOps(private val undertaking: Undertaking) extends AnyVal {
+
+    //Check if the eori entered is Lead EORI or not
+    def isLeadEORI(eori: EORI): Boolean = {
+      val leadEORI: BusinessEntity = undertaking
+        .undertakingBusinessEntity
+        .filter(_.leadEORI)
+        .headOption
+        .getOrElse(throw new IllegalStateException("Missing Lead EORI"))
+    leadEORI.businessEntityIdentifier.toString == eori.toString
+    }
+
+    //Fetches the Business entity for the given EORI
+    def getBusinessEntityByEORI(eori: EORI): BusinessEntity = {
+      undertaking.undertakingBusinessEntity
+        .filter(be => be.businessEntityIdentifier == eori)
+        .headOption
+        .getOrElse(throw new IllegalStateException(s"BE with eori $eori is missing"))
+    }
+  }
+
 }
