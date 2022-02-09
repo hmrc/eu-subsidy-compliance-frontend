@@ -33,7 +33,8 @@ class NoClaimNotificationController @Inject()(
     mcc: MessagesControllerComponents,
     escActionBuilders: EscActionBuilders,
     escService: EscService,
-    noClaimNotificationPage: NoClaimNotificationPage
+    noClaimNotificationPage: NoClaimNotificationPage,
+    noClaimConfirmationPage: NoClaimConfirmationPage
  )( implicit val appConfig: AppConfig,
     executionContext: ExecutionContext) extends BaseController(mcc) {
   import escActionBuilders._
@@ -69,7 +70,16 @@ class NoClaimNotificationController @Inject()(
   }
 
   def getNoClaimConfirmation: Action[AnyContent] = escAuthentication.async {implicit request =>
-    Future.successful(Ok(s" confirmation page"))
+    val eori = request.eoriNumber
+    val previous = routes.AccountController.getAccountPage().url
+    for {
+      undertakingOpt <- escService.retrieveUndertaking(eori)
+    } yield undertakingOpt match {
+      case Some(undertaking) =>
+        Ok(noClaimConfirmationPage(undertaking.name))
+      case _ => handleMissingSessionData("Undertaking journey")
+    }
+
 
   }
 

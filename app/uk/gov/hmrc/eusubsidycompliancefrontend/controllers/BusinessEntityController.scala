@@ -297,7 +297,6 @@ class BusinessEntityController @Inject()(
       case _ => handleMissingSessionData("Undertaking journey")
     }}
 
-
   lazy val addBusinessForm: Form[FormValues] = Form(
     mapping("addBusiness" -> mandatory("addBusiness"))(FormValues.apply)(FormValues.unapply))
 

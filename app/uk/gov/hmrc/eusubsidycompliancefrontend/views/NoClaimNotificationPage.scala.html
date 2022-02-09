@@ -55,18 +55,20 @@
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
                     isPageHeading = false,
-                    classes = "govuk-fieldset__legend--m"
+                    classes = "govuk-fieldset__legend--l"
                 ))
             )),
             hint = None,
+            idPrefix = Some(key),
              errorMessage = if(form.hasErrors) {Some(ErrorMessage(
                 content = Text(messages(s"$key.error.required"))
             ))} else None,
             items = Seq(
                 CheckboxItem(
                     content = Text(messages(s"$key.value")),
-                    value = "yes",
-                    checked = form.data
+                    value = "true",
+                    name = Some(key),
+                    checked = form.data.exists(_._2 == "true")
                 )
             )
 
