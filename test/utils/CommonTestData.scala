@@ -144,6 +144,13 @@ object CommonTestData {
     cya= FormPage("check-your-answers-businesses", true.some)
   )
 
+  val businessEntityJourney1 = BusinessEntityJourney(
+    addBusiness = FormPage("add-member", true.some),
+    eori = FormPage("add-business-entity-eori", eori2.some),
+    contact = FormPage("add-business-entity-contact", contactDetails),
+    cya= FormPage("check-your-answers-businesses", true.some)
+  )
+
   val validEmailAddress = EmailAddress("user@test.com")
   val inValidEmailAddress = EmailAddress("invalid@email.com")
   val undeliverableEmailAddress = EmailAddress("undeliverable@address.com")

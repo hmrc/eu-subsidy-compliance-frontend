@@ -37,10 +37,9 @@
     backLinkEnabled = true,
     backLink = Some(previous)
 ) {
-    <h1 class="govuk-heading-xl">@title</h1>
+
     @formHelper(action = controllers.routes.BusinessEntityController.postRemoveYourselfBE) {
         @form.errors.map { err =>
-                println(s"err is ::;;;;;;"+err)
             @govukErrorSummary(ErrorSummary(
                 errorList = Seq(
                     ErrorLink(
@@ -51,6 +50,7 @@
                 title = Text(messages("common.error.summary.title"))
             ))
         }
+        <h1 class="govuk-heading-xl">@title</h1>
 
         @govukRadios(Radios(
             classes = "govuk-radios--inline",
