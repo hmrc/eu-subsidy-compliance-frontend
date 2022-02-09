@@ -60,7 +60,6 @@
             )),
             hint = None,
             idPrefix = Some(key),
-
              errorMessage = if(form.hasErrors) {Some(ErrorMessage(
                 content = Text(messages(s"$key.error.required"))
             ))} else None,
@@ -70,7 +69,6 @@
                     value = "true",
                     name = Some(key),
                     checked = form.data.exists(_._2 == "true")
-
                 )
             )
 

@@ -247,4 +247,3 @@ noClaimNotification.error.required = Tick the check box to confirm the declarati
 noClaimConfirmation.title = You have notified HMRC that you have received no de minimis aid payments for this 90-day period
 noClaimConfirmation.ref.p1 = You can still report any de minimis sid payments for this period by entering them in the Reporting payments section on Account Home screen.
 noClaimConfirmation.link = <a href="{0}" class="govuk-link">Go to Home Account</a>
-

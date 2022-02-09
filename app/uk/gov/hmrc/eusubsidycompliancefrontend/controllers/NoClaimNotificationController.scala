@@ -76,7 +76,6 @@ class NoClaimNotificationController @Inject()(
       case Some(undertaking) => Ok(noClaimConfirmationPage(undertaking.name))
       case _ => handleMissingSessionData("Undertaking journey")
     }
-
   }
 
   lazy val noClaimForm: Form[FormValues] = Form(
