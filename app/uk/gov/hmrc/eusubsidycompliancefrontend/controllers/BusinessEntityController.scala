@@ -89,8 +89,9 @@ class BusinessEntityController @Inject()(
     }
     store.get[Undertaking].flatMap { undertaking =>
       val name: UndertakingName = undertaking.map(_.name).getOrElse(throw new IllegalStateException("missing undertaking name"))
+      val businessEntities: List[BusinessEntity] = undertaking.map(_.undertakingBusinessEntity).getOrElse(List.empty)
       addBusinessForm.bindFromRequest().fold(
-        errors => Future.successful(BadRequest(addBusinessPage(errors, name, List.empty))),
+        errors => Future.successful(BadRequest(addBusinessPage(errors, name, businessEntities))),
         form => handleValidAnswer(form)
       )
 
@@ -309,13 +310,14 @@ class BusinessEntityController @Inject()(
     mapping("removeYourselfBusinessEntity" -> mandatory("removeYourselfBusinessEntity"))(FormValues.apply)(FormValues.unapply))
 
   lazy val eoriForm: Form[FormValues] = Form(
-    mapping("businessEntityEori" -> mandatory("businessEntityEori"))(eoriEntered => FormValues(s"$eoriPrefix$eoriEntered"))(eori => eori.value.drop(2).some).verifying(
-    "businessEntityEori.regex.error",
-    fields => fields match {
-      case a if a.value.matches(EORI.regex) => true
-      case _ => false
-    }
-  ))
+    mapping("businessEntityEori" -> mandatory("businessEntityEori"))(eoriEntered => FormValues(s"$eoriPrefix$eoriEntered"))(eori => eori.value.drop(2).some)
+    .verifying("businessEntityEori.error.incorrect-length",
+      eori => eori.value.length == 14 || eori.value.length == 17
+    )
+    .verifying("businessEntityEori.regex.error",
+      eori => eori.value.matches(EORI.regex)
+    )
+  )
 
   lazy val cyaForm: Form[FormValues] = Form(
     mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))

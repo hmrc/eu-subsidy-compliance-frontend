@@ -31,11 +31,11 @@
 @(undertaking: Undertaking)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-  pageTitle = Some(messages("account.title")),
+  pageTitle = Some(messages("account-homepage.title", undertaking.name)),
   backLinkEnabled = false,
   backLink = None
 ) {
-  <h1 class="govuk-heading-xl">@{undertaking.name}</h1>
+  <h1 class="govuk-heading-xl">@messages("account-homepage.title", undertaking.name)</h1>
 
   @govukWarningText(WarningText(
     iconFallbackText = messages("common.warning"),

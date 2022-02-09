@@ -32,7 +32,10 @@
 
 
 @(form: Form[_], name: UndertakingName, businessEntity: List[BusinessEntity])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@layout(pageTitle = Some(messages("addBusiness.title", name.toString))) {
+@layout(
+  pageTitle = Some(messages("addBusiness.title", name.toString)),
+  hasErrors = form.hasErrors
+) {
 
   @formHelper(action = controllers.routes.BusinessEntityController.postAddBusinessEntity) {
     @form.errors.map { err =>
@@ -95,7 +98,9 @@
                   isPageHeading = false
               ))
           )),
-          hint = None,
+          hint = Some(Hint(
+            content = Text(messages("addBusiness.businesses-added.hint"))
+          )),
           idPrefix = Some("addBusiness"),
           name = "addBusiness",
           items = Seq(
@@ -112,6 +117,8 @@
           )
       ))
     }
+
+    <p class="govuk-body"><strong>@messages("addBusiness.businesses-added.p1")</strong></p>
 
     @button("common.continue")
   }

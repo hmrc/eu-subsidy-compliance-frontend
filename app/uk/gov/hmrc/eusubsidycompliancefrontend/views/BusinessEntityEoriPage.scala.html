@@ -31,21 +31,26 @@
 @layout(
   pageTitle = Some(messages("businessEntityEori.title")),
   backLinkEnabled = true,
-  backLink = Some(previous)
+  backLink = Some(previous),
+  hasErrors = form.hasErrors
   ) {
 
   @formHelper(action = controllers.routes.BusinessEntityController.postEori) {
-    @form.errors.map { err =>
-      @govukErrorSummary(ErrorSummary(
-        errorList = Seq(
-          ErrorLink(
-            href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.message)}")
+
+    @if(form.hasErrors) {
+      @govukErrorSummary(
+          ErrorSummary(
+              Seq(
+              ErrorLink(
+                  href = Some("#businessEntityEori"),
+                  content = Text(s"${messages(form.errors.head.message)}"),
+                  attributes = Map("class" ->"govuk-link")
+              )
+              ),
+              title = Text(messages("common.error.summary.title"))
           )
-        ),
-        title = Text(messages("common.error.summary.title"))
-      ))
-    }
+      )
+  }
 
     @govukInput(Input(
       value = form.data.get("businessEntityEori"),

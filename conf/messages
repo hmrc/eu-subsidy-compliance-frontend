@@ -111,10 +111,13 @@ addBusiness.error.required=Select yes if you need to add a business to {0}?
 
 addBusiness.businesses-added.title=Businesses in {0}
 addBusiness.businesses-added.legend=Do you need to add another business?
+addBusiness.businesses-added.hint = You must add all businesses that have received any de minimis aid payments (less customs duty waivers) payments.
+addBusiness.businesses-added.p1 = A confirmation email will be sent from HMRC to each member of the undertaking.
 
 businessEntityEori.title=What is the EORI number of the business you want to add?
 businessEntityEori.hint=This can only be a GB EORI number.
-businessEntityEori.regex.error=GB EORI number must be 12 or 15 digits
+businessEntityEori.error.incorrect-length=GB EORI number must be 12 or 15 digits
+businessEntityEori.regex.error=Enter the GB EORI number in the correct format (12 or 15 digits), like GB497294577697 or GB729415776974533
 businessEntityEori.eoriInUse=Enter a valid EORI number
 error.businessEntityEori.required=Enter a valid EORI number
 
@@ -153,8 +156,7 @@ undertaking.confirmation.p4=If you have any other businesses, you must add them 
 
 businessEntityEori.eoriInUse.error=This EORI is in use.
 
-#account.title is temporary and can be changed later, as test were failing because of missing account.title
-account.title = {0}
+account-homepage.title = {0}
 account-homepage.warning=You must report any de minimis aid (except Customs Duty waivers) {0} receives as soon as possible. If you do not report a de minimis aid payment every 90 days (or notify HMRC that you have not received any payments in that 90-day period), you will be ineligible to claim Customs Duty waivers
 account-homepage.inset=Your next entry is due by {0}. You can report de minimis aid payment, or let HMRC know that you have not received any, by following the links in the Payments received section below.
 account-homepage.cards.card1.heading=Payments received
