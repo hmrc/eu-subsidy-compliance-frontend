@@ -312,17 +312,11 @@ class BusinessEntityController @Inject()(
   lazy val eoriForm: Form[FormValues] = Form(
     mapping("businessEntityEori" -> mandatory("businessEntityEori"))(eoriEntered => FormValues(s"$eoriPrefix$eoriEntered"))(eori => eori.value.drop(2).some)
     .verifying("businessEntityEori.error.incorrect-length",
-      fields => fields match {
-        case a if a.value.toString().length == 12 || a.value.toString().length == 15 => true
-        case _ => false
-      }
+      eori => eori.value.length == 14 || eori.value.length == 17
     )
     .verifying("businessEntityEori.regex.error",
-      fields => fields match {
-        case a if a.value.matches(EORI.regex) => true
-        case _ => false
-      }
-    ) 
+      eori => eori.value.matches(EORI.regex)
+    )
   )
 
   lazy val cyaForm: Form[FormValues] = Form(

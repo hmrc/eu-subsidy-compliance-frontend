@@ -219,7 +219,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
           checkFormErrorIsDisplayed(
             performAction(data: _*),
-            messageFromMessageKey("addBusiness.title", undertaking.name),
+            messageFromMessageKey("addBusiness.businesses-added.title", undertaking.name),
             messageFromMessageKey(errorMessage, undertaking.name)
           )
         }

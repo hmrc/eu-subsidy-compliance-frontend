@@ -83,7 +83,7 @@ class AccountControllerSpec  extends ControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("account.title", undertaking.name),
+            messageFromMessageKey("account-homepage.title", undertaking.name),
             {doc =>
               val htmlBody = doc.select(".govuk-grid-column-one-third").html()
               htmlBody should include regex messageFromMessageKey(
