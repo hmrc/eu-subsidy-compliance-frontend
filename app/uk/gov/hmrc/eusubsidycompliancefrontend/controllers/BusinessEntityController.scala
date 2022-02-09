@@ -22,7 +22,7 @@ import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, FormValues, OneOf, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, JourneyTraverseService, Store}
@@ -40,6 +40,7 @@ class BusinessEntityController @Inject()(
   journeyTraverseService: JourneyTraverseService,
   addBusinessPage: AddBusinessPage,
   eoriPage: BusinessEntityEoriPage,
+  removeYourselfBEPage: BusinessEntityRemoveYourselfPage,
   businessEntityContactPage: BusinessEntityContactPage,
   businessEntityCyaPage: BusinessEntityCYAPage,
   removeBusinessPage: RemoveBusinessPage
@@ -138,39 +139,25 @@ class BusinessEntityController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     store.get[BusinessEntityJourney].flatMap {
       case Some(journey) =>
-        journey
-          .contact
-          .value
-          .fold(
-            Future.successful(
-              Ok(businessEntityContactPage(
-                contactForm,
-                journey.previous
-              ))
-            )
-          ){x =>
-            Future.successful(
-              Ok(businessEntityContactPage(
-                contactForm.fill(OneOf(x.phone.map(_.toString), x.mobile.map(_.toString))),
-                journey.previous
-              ))
-            )
-          }
+        val form = journey.contact.value.fold(contactForm
+        )(contactDetails => contactForm.fill(OneOf(contactDetails.phone.map(_.toString),
+          contactDetails.mobile.map(_.toString))))
+        Future.successful(Ok(businessEntityContactPage(form, journey.previous)))
+
       case _ => handleMissingSessionData("Contact journey")
     }
   }
 
   def postContact: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    getPrevious[BusinessEntityJourney](store).flatMap { previous =>
+    journeyTraverseService.getPrevious[BusinessEntityJourney].flatMap { previous =>
       contactForm.bindFromRequest().fold(
         errors => Future.successful(BadRequest(businessEntityContactPage(errors, previous))),
         form => {
-          store.update[BusinessEntityJourney]({ x =>
-            x.map { y =>
-              y.copy(contact = y.contact.copy(value = Some(form.toContactDetails)))
+          store.update[BusinessEntityJourney]{ _.map { beJourney =>
+              beJourney.copy(contact = beJourney.contact.copy(value = Some(form.toContactDetails)))
             }
-          }).flatMap(_.next)
+          }.flatMap(_.next)
         }
       )
     }
@@ -180,14 +167,10 @@ class BusinessEntityController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     store.get[BusinessEntityJourney].flatMap {
       case Some(journey) =>
-        Future.successful(
-          Ok(
-            businessEntityCyaPage(
-              journey.eori.value.getOrElse(throw new IllegalStateException("missing eori")),
-              journey.contact.value.getOrElse(throw new IllegalStateException("missing contact details"))
-            )
-          )
-        )
+        val eori = journey.eori.value.getOrElse(handleMissingSessionData("EORI"))
+        val contactDetails = journey.contact.value.getOrElse(handleMissingSessionData("contact details"))
+        Future.successful(Ok(businessEntityCyaPage(eori, contactDetails)))
+
       case _ => handleMissingSessionData("CheckYourAnswers journey")
     }
   }
@@ -195,10 +178,23 @@ class BusinessEntityController @Inject()(
   def postCheckYourAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    cyaForm.bindFromRequest().fold(
-      errors =>  throw new IllegalStateException("value hard-coded, form hacking?"),
-      form => {
+    def handleValidAnswers() =  for {
+      undertaking  <- store.get[Undertaking].map(_.getOrElse(handleMissingSessionData("undertaking ")))
+      undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("undertaking ref"))
+      businessEntityJourney <- store.get[BusinessEntityJourney].map(_.getOrElse(handleMissingSessionData("BusinessEntity Journey")))
+      eoriBE = businessEntityJourney.eori.value.getOrElse(handleMissingSessionData("BE EORI"))
+      contactDetails = businessEntityJourney.contact.value.getOrElse(handleMissingSessionData("contact Details"))
+      businessEntity =  BusinessEntity(
+        eoriBE,
+        leadEORI = false,
+        ContactDetails(contactDetails.phone, contactDetails.mobile).some)
+      _ <- store.put(BusinessEntityJourney())// resetting the journey as it's final CYA page
+      _ <- escService.addMember(undertakingRef, businessEntity)
+    } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
 
+    cyaForm.bindFromRequest().fold(
+      errors =>  throw new IllegalStateException(s"value hard-coded, form hacking? $errors"),
+      _ => handleValidAnswers()
 //        // TODO try to get an undertaking for the eori of the added business, and only proceed if there isn't one
 //        // TODO UX are figuring out the correct behaviour here so will come back to this
 //        for {
@@ -220,96 +216,97 @@ class BusinessEntityController @Inject()(
 //            }
 //          }
 //        }
-
-
-        for {
-          a <- store.get[Undertaking]
-          b <- store.get[BusinessEntityJourney]
-          _ <- store.put(BusinessEntityJourney())
-          ref = a.fold(throw new IllegalStateException("undertaking should be defined")) {
-            _.reference
-          }
-          journey = b.fold(throw new IllegalStateException("journey should be defined")) {
-            identity
-          }
-          _ <- escService.addMember(
-            UndertakingRef(
-              ref.getOrElse(throw new IllegalStateException("undertakingRef should be defined"))
-            ),
-            BusinessEntity(
-              EORI(journey.eori.value.getOrElse(throw new IllegalStateException("eori should be defined"))),
-              leadEORI = false,
-              Some(
-                ContactDetails(
-                  journey.contact.value.getOrElse(throw new IllegalStateException("contact should be defined")).phone,
-                  journey.contact.value.getOrElse(throw new IllegalStateException("contact should be defined")).mobile
-                )
-              )
-            )
-          )
-        } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
-      })
+      )
   }
 
  def editBusinessEntity(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
    implicit val eori111: EORI = request.eoriNumber
 
    for {
-     a <- escService.retrieveUndertaking(eori111)
-     b <- store.put(BusinessEntityJourney.businessEntityJourneyForEori(a, EORI(eoriEntered)))
-   } yield b match {
-     case journey =>
-       Ok(
-         businessEntityCyaPage(
-           eoriEntered,
-           journey.contact.value.getOrElse(throw new IllegalStateException("missing contact details"))
-         )
-       )
+     undertakingOpt <- escService.retrieveUndertaking(eori111)
+     businessEntityJourney <- store.put(BusinessEntityJourney.businessEntityJourneyForEori(undertakingOpt, EORI(eoriEntered)))
+   } yield {
+     val contactDetails = businessEntityJourney.contact.value.getOrElse(handleMissingSessionData("contact details"))
+     Ok(businessEntityCyaPage(eoriEntered, contactDetails))
    }
  }
 
   def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
     for {
-      a <- escService.retrieveUndertaking(EORI(eoriEntered))
-    } yield a match {
-      case Some(undertaking) => {
-        val bs = undertaking.undertakingBusinessEntity
-          .filter(a => a.businessEntityIdentifier == eoriEntered)
-          .head
-        Ok(removeBusinessPage(removeBusinessForm, bs))
-      }
+      undertakingOpt <- escService.retrieveUndertaking(EORI(eoriEntered))
+    } yield undertakingOpt match {
+      case Some(undertaking) =>
+        val removeBE = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
+        Ok(removeBusinessPage(removeBusinessForm, removeBE))
+
       case _ => handleMissingSessionData("Undertaking journey")
     }
   }
 
+  def getRemoveYourselfBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori = request.eoriNumber
+    val previous = routes.AccountController.getExistingUndertaking().url
+    for {
+      undertakingOpt <- escService.retrieveUndertaking(eori)
+    } yield undertakingOpt match {
+        case Some(undertaking) =>
+          val removeBE = undertaking.getBusinessEntityByEORI(eori)
+          Ok(removeYourselfBEPage(removeYourselfBusinessForm, removeBE, previous, undertaking.name))
+
+        case _ => handleMissingSessionData("Undertaking journey")
+      }
+
+  }
+
   def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
     escService.retrieveUndertaking(EORI(eoriEntered)).flatMap {
-      case Some(undertaking) => {
-        val bs = undertaking.undertakingBusinessEntity
-          .filter(a => a.businessEntityIdentifier == eoriEntered)
-          .head
+      case Some(undertaking) =>
+        val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("undertaking reference"))
+        val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
+
         removeBusinessForm.bindFromRequest().fold(
-          errors => Future.successful(BadRequest(removeBusinessPage(errors, bs))),
+          errors => Future.successful(BadRequest(removeBusinessPage(errors, removeBE))),
           form => {
             form.value match {
               case "true" =>
-                escService.removeMember(
-                  UndertakingRef(undertaking.reference.getOrElse(throw new IllegalStateException("no undertakingRef"))),
-                  bs)
-                Future.successful(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
+                escService.removeMember(undertakingRef, removeBE).map(_ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
               case _ => Future(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
             }
           }
         )
-    }
+
       case _ => handleMissingSessionData("Undertaking journey")
   }}
+
+  def postRemoveYourselfBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
+    val loggedInEORI = request.eoriNumber
+    val previous = routes.AccountController.getExistingUndertaking().url
+    escService.retrieveUndertaking(loggedInEORI).flatMap {
+      case Some(undertaking) =>
+        val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("undertaking reference"))
+        val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(loggedInEORI)
+        removeYourselfBusinessForm.bindFromRequest().fold(
+          errors => Future.successful(BadRequest(removeYourselfBEPage(errors, removeBE, previous, undertaking.name))),
+          form => {
+            form.value match {
+              case "true" => escService.removeMember(undertakingRef, removeBE).map(_ => Redirect(routes.SignOutController.signOut()))
+              case _ => Future(Redirect(routes.AccountController.getAccountPage()))
+            }
+          }
+        )
+
+      case _ => handleMissingSessionData("Undertaking journey")
+    }}
+
 
   lazy val addBusinessForm: Form[FormValues] = Form(
     mapping("addBusiness" -> mandatory("addBusiness"))(FormValues.apply)(FormValues.unapply))
 
   lazy val removeBusinessForm: Form[FormValues] = Form(
     mapping("removeBusiness" -> mandatory("removeBusiness"))(FormValues.apply)(FormValues.unapply))
+
+  lazy val removeYourselfBusinessForm: Form[FormValues] = Form(
+    mapping("removeYourselfBusinessEntity" -> mandatory("removeYourselfBusinessEntity"))(FormValues.apply)(FormValues.unapply))
 
   lazy val eoriForm: Form[FormValues] = Form(
     mapping("businessEntityEori" -> mandatory("businessEntityEori"))(eoriEntered => FormValues(s"$eoriPrefix$eoriEntered"))(eori => eori.value.drop(2).some).verifying(

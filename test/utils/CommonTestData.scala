@@ -82,6 +82,13 @@ object CommonTestData {
     LocalDate.of(2021,1,18).some,
     List(businessEntity1, businessEntity4))
 
+  val undertaking2 = Undertaking(undertakingRef.some,
+    UndertakingName("TestUndertaking"),
+    transport,
+    IndustrySectorLimit(12.34).some,
+    LocalDate.of(2021,1,18).some,
+    List(businessEntity4))
+
   val subsidyRetrieve = SubsidyRetrieve(
     undertakingRef, None
   )
@@ -133,6 +140,13 @@ object CommonTestData {
   val businessEntityJourney = BusinessEntityJourney(
     addBusiness = FormPage("add-member", true.some),
     eori = FormPage("add-business-entity-eori", eori1.some),
+    contact = FormPage("add-business-entity-contact", contactDetails),
+    cya= FormPage("check-your-answers-businesses", true.some)
+  )
+
+  val businessEntityJourney1 = BusinessEntityJourney(
+    addBusiness = FormPage("add-member", true.some),
+    eori = FormPage("add-business-entity-eori", eori2.some),
     contact = FormPage("add-business-entity-contact", contactDetails),
     cya= FormPage("check-your-answers-businesses", true.some)
   )

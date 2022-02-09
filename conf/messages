@@ -8,8 +8,10 @@ common.back=Back
 common.sign-out=[TODO] Sign out
 common.saveChanges = Save changes
 common.continue=Save and Continue
+common.continue.only=Continue
 common.accept=Accept and send
 continue.button=Save and Continue
+
 common.yes=Yes
 common.no=No
 common.warning=Warning
@@ -128,7 +130,10 @@ businessEntity.cya.eori.label=EORI number
 businessEntity.cya.contact.label=Contact details
 businessEntity.cya.p1=By sending these details you are confirming that, to the best of your knowledge, they are correct.
 
-removeBusinessEntity.title=Remove business entity
+removeBusinessEntity.title= Remove business entity
+removeBusinessEntity.subtitle = Do you want to remove business entity?
+removeBusinessEntity.error.required = Select yes if you want to remove business entity.
+removeBusiness.error.required = Select yes if you want to remove business entity.
 
 undertaking.cya.h2=Account details
 undertaking.cya.summary-list.name.key=Name of undertaking
@@ -218,3 +223,16 @@ undertaking.amendUndertaking.summary-list.name.key = Name of Undertaking
 undertaking.amendUndertaking.summary-list.sector.key = Industry sector
 undertaking.amendUndertaking.summary-list.telephone.key = Telephone number
 undertaking.amendUndertaking.p = By sending these details you are confirming that, to the best of your knowledge, they are correct
+
+#existingUndertaking
+existingUndertaking.title = Our records show that you are already part of an undertaking
+existingUndertaking.link1 = Go to your account
+existingUndertaking.link2 = Remove yourself from this undertaking
+
+#SignOut
+signOut.title = You have been removed from this undertaking
+signOut.p1 = You have been signed out of this session.
+
+#removeYourselfBusinessEntity
+removeYourselfBusinessEntity.title = Do you wish to remove yourself from {0}?
+removeYourselfBusinessEntity.error.required = Select yes if you wish to remove yourself from {0}.

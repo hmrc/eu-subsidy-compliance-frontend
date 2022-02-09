@@ -21,6 +21,7 @@ import play.api.Configuration
 import play.api.mvc.Result
 import uk.gov.hmrc.auth.core.{BearerTokenExpired, Enrolment, EnrolmentIdentifier, Enrolments, InvalidBearerToken, MissingBearerToken, NoActiveSession, SessionRecordNotFound}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import utils.CommonTestData.eori4
 
 import java.net.URLEncoder
 import scala.concurrent.Future
@@ -52,6 +53,14 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
 
   def mockAuthWithNecessaryEnrolment(): Unit =
     mockAuthWithAuthRetrievals(Enrolments(Set(Enrolment(key = "HMRC-ESC-ORG", identifiers = Seq(EnrolmentIdentifier("EORINumber", eori)), state = "" ))), "1123", Some("groupIdentifier"))
+
+  def mockAuthWithBEEnrolment(): Unit =
+    mockAuthWithAuthRetrievals(Enrolments(Set(Enrolment(key = "HMRC-ESC-ORG", identifiers = Seq(EnrolmentIdentifier("EORINumber", eori4)), state = "" ))), "1123", Some("groupIdentifier"))
+
+  def mockAuthWithEnrolment(eori: EORI): Unit =
+    mockAuthWithAuthRetrievals(Enrolments(Set(Enrolment(key = "HMRC-ESC-ORG",
+      identifiers = Seq(EnrolmentIdentifier("EORINumber", eori)),
+      state = "" ))), "1123", Some("groupIdentifier"))
 
 
   def authBehaviour(performAction: () => Future[Result]): Unit = {

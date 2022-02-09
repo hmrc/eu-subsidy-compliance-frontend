@@ -16,13 +16,12 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import cats.implicits.catsSyntaxOptionId
+
 import play.api.Logger
 import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.{AnyContent, Request, Result}
 import play.api.mvc.Results.Redirect
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{PhoneNumber, Sector}
+
 
 import scala.concurrent.Future
 

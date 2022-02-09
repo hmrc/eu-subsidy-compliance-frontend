@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
@@ -28,12 +29,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AccountController @Inject()(
-                                   mcc: MessagesControllerComponents,
-                                   escActionBuilders: EscActionBuilders,
-                                   store: Store,
-                                   escService: EscService,
-                                   accountPage: AccountPage,
-                                   retrieveEmailService: RetrieveEmailService
+   mcc: MessagesControllerComponents,
+   escActionBuilders: EscActionBuilders,
+   store: Store,
+   escService: EscService,
+   accountPage: AccountPage,
+   existingUndertakingPage: ExistingUndertakingPage,
+   retrieveEmailService: RetrieveEmailService
 )(
   implicit val appConfig: AppConfig,
   executionContext: ExecutionContext
@@ -69,5 +71,19 @@ class AccountController @Inject()(
       }
     }
   }
+
+  def getExistingUndertaking: Action[AnyContent] = escAuthentication.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    for {
+      undertakingOpt <- escService.retrieveUndertaking(eori)
+    } yield {
+      undertakingOpt match {
+        case Some(undertaking) if(undertaking.isLeadEORI(eori)) => Redirect(routes.AccountController.getAccountPage())  //if logged in as lead EORI, redirect to Account home page
+        case Some(undertaking) => Ok(existingUndertakingPage(undertaking.name, eori)) //if logged in as non-lead EORI, redirect to existing undertaking page
+        case None => Redirect(routes.AccountController.getAccountPage()) //if undertaking not present, then create undertaking
+      }
+    }
+  }
+
 
 }

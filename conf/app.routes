@@ -1,8 +1,11 @@
 # microservice specific routes
 
-->         /hmrc-frontend                           hmrcfrontend.Routes
-GET        /                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
-GET        /assets/*file                            controllers.Assets.versioned(path = "/public", file: Asset)
+->         /hmrc-frontend                     hmrcfrontend.Routes
+GET        /                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getExistingUndertaking
+
+GET        /home                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
+
+GET        /assets/*file                      controllers.Assets.versioned(path = "/public", file: Asset)
 
 GET        /eligibility-first-empty                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.firstEmptyPage
 GET        /undertaking-first-empty                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.firstEmptyPage
@@ -61,8 +64,12 @@ GET        /change/:eori                            uk.gov.hmrc.eusubsidycomplia
 GET        /remove/:eori                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveBusinessEntity(eori)
 POST       /remove/:eori                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveBusinessEntity(eori)
 
-GET        /claims                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPayment
-POST       /claims                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPayment
+GET        /remove-yourself                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveYourselfBusinessEntity
+POST        /remove-yourself                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveYourselfBusinessEntity
+
+GET        /claims                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPayment
+POST       /claims                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPayment
+
 
 GET        /add-claim-eori                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimEori
 POST       /add-claim-eori                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimEori
@@ -91,3 +98,6 @@ GET        /subsidy-delete/:transactionId           uk.gov.hmrc.eusubsidycomplia
 POST       /subsidy-delete/:transactionId           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postRemoveSubsidyClaim(transactionId)
 
 GET        /subsidy-change/:transactionId           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getChangeSubsidyClaim(transactionId)
+
+GET /sign-out                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.signOut()
+
