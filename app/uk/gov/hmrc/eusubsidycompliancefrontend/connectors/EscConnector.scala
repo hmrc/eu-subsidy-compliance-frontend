@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
-
-import play.api.Logger
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidyAmendment}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, TraderRef, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney
@@ -43,116 +41,88 @@ trait EscConnector {
 
 }
 
-
 @Singleton
-class EscConnectorImpl @Inject()(http: HttpClient,
-                                 servicesConfig: ServicesConfig,
-                                 timeProvider: TimeProvider
-                                )(implicit ec: ExecutionContext
-) extends EscConnector {
-  val logger: Logger = Logger(this.getClass)
+class EscConnectorImpl @Inject()(
+  http: HttpClient,
+  servicesConfig: ServicesConfig,
+  timeProvider: TimeProvider
+)(implicit ec: ExecutionContext) extends EscConnector {
 
-  val escURL: String = servicesConfig.baseUrl("esc")
-  val createUndertakingPath = "eu-subsidy-compliance/undertaking"
-  val updateUndertakingPath = "eu-subsidy-compliance/undertaking/update"
-  val retrieveUndertakingPath = "eu-subsidy-compliance/undertaking/"
-  val addMemberPath = "eu-subsidy-compliance/undertaking/member"
-  val removeMemberPath = "eu-subsidy-compliance/undertaking/member/remove"
-  val updateSubsidyPath = "eu-subsidy-compliance/subsidy/update"
-  val retrieveSubsidyPath = "eu-subsidy-compliance/subsidy/retrieve"
+  private val escURL: String = servicesConfig.baseUrl("esc")
+
+  private val createUndertakingPath = "eu-subsidy-compliance/undertaking"
+  private val updateUndertakingPath = "eu-subsidy-compliance/undertaking/update"
+  private val retrieveUndertakingPath = "eu-subsidy-compliance/undertaking/"
+  private val addMemberPath = "eu-subsidy-compliance/undertaking/member"
+  private val removeMemberPath = "eu-subsidy-compliance/undertaking/member/remove"
+  private val updateSubsidyPath = "eu-subsidy-compliance/subsidy/update"
+  private val retrieveSubsidyPath = "eu-subsidy-compliance/subsidy/retrieve"
 
 
-  override def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] = {
-    val createUndertakingUrl = s"$escURL/$createUndertakingPath"
+  override def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
+    http
+      .POST[Undertaking, HttpResponse](s"$escURL/$createUndertakingPath", undertaking)
+      .map(Right(_))
+      .recover {
+        case e => Left(Error(e))
+      }
+
+  override def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
     http.
-      POST[Undertaking, HttpResponse](createUndertakingUrl, undertaking)
+      POST[Undertaking, HttpResponse](s"$escURL/$updateUndertakingPath", undertaking)
       .map(Right(_))
       .recover {
         case e => Left(Error(e))
       }
-  }
 
-  override def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] = {
-    val updateUndertakingUrl = s"$escURL/$updateUndertakingPath"
+  override def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
     http.
-      POST[Undertaking, HttpResponse](updateUndertakingUrl, undertaking)
+      GET[HttpResponse](s"$escURL/$retrieveUndertakingPath$eori")
+      .map(Right(_))
+      .recover {
+        case _: NotFoundException => Right(HttpResponse(NOT_FOUND, ""))
+        case ex => Left(Error(ex))
+      }
+
+  override def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
+   http
+      .POST[BusinessEntity, HttpResponse](s"$escURL/$addMemberPath/$undertakingRef", businessEntity)
       .map(Right(_))
       .recover {
         case e => Left(Error(e))
       }
-  }
 
-  override def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] = {
-    {
-      val retrieveUndertakingUrl = s"$escURL/$retrieveUndertakingPath$eori"
-      http.
-        GET[HttpResponse](retrieveUndertakingUrl)
-        .map(Right(_))
-        .recover {
-          case _: NotFoundException => Right(HttpResponse(NOT_FOUND, ""))
-          case ex => Left(Error(ex))
-        }
-    }
-  }
-
-  override def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] = {
-   val addMemberUrl = s"$escURL/$addMemberPath/$undertakingRef"
+  override def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
     http
-      .POST[BusinessEntity, HttpResponse](addMemberUrl, businessEntity)
+      .POST[BusinessEntity, HttpResponse](s"$escURL/$removeMemberPath/$undertakingRef", businessEntity)
       .map(Right(_))
       .recover {
         case e => Left(Error(e))
       }
-  }
 
-  override def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] = {
-    val removeMemberUrl = s"$escURL/$removeMemberPath/$undertakingRef"
+  override def createSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
     http
-      .POST[BusinessEntity, HttpResponse](removeMemberUrl, businessEntity)
+      .POST[SubsidyUpdate, HttpResponse](s"$escURL/$updateSubsidyPath", toSubsidyUpdate(journey, undertakingRef))
       .map(Right(_))
       .recover {
         case e => Left(Error(e))
       }
-  }
 
-  override def createSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(
-    implicit hc: HeaderCarrier
-  ): Future[Either[Error, HttpResponse]] = {
-   val subsidyUpdate = toSubsidyUpdate(journey, undertakingRef)
-    val createSubsidyUrl = s"$escURL/$updateSubsidyPath"
+  override def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
     http
-      .POST[SubsidyUpdate, HttpResponse](createSubsidyUrl, subsidyUpdate)
+      .POST[SubsidyUpdate, HttpResponse](s"$escURL/$updateSubsidyPath", toSubsidyDelete(nonHmrcSubsidy, undertakingRef))
       .map(Right(_))
       .recover {
         case e => Left(Error(e))
       }
-  }
 
-  override def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(
-    implicit hc: HeaderCarrier
-  ): Future[Either[Error, HttpResponse]] = {
-    val subsidyUpdate = toSubsidyDelete(nonHmrcSubsidy, undertakingRef)
-    val createSubsidyUrl = s"$escURL/$updateSubsidyPath"
+  override def retrieveSubsidy(subsidyRetrieve : SubsidyRetrieve)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
     http
-      .POST[SubsidyUpdate, HttpResponse](createSubsidyUrl, subsidyUpdate)
+      .POST[SubsidyRetrieve, HttpResponse](s"$escURL/$retrieveSubsidyPath", subsidyRetrieve)
       .map(Right(_))
       .recover {
         case e => Left(Error(e))
       }
-  }
-
-  override def retrieveSubsidy(subsidyRetrieve : SubsidyRetrieve)(
-    implicit hc: HeaderCarrier
-  ): Future[Either[Error, HttpResponse]] = {
-    val retrieveSubsidyPathUrl = s"$escURL/$retrieveSubsidyPath"
-    http
-      .POST[SubsidyRetrieve, HttpResponse](retrieveSubsidyPathUrl, subsidyRetrieve)
-      .map(Right(_))
-      .recover {
-        case e => Left(Error(e))
-      }
-
-  }
 
   private def toSubsidyUpdate(journey: SubsidyJourney, undertakingRef: UndertakingRef) = {
     val currentDate = timeProvider.today
@@ -175,7 +145,7 @@ class EscConnectorImpl @Inject()(http: HttpClient,
     )
   }
 
-  private def toSubsidyDelete(nonHmrcSubsidy: NonHmrcSubsidy, undertakingRef: UndertakingRef): SubsidyUpdate = {
+  private def toSubsidyDelete(nonHmrcSubsidy: NonHmrcSubsidy, undertakingRef: UndertakingRef) =
     SubsidyUpdate(
       undertakingIdentifier = undertakingRef,
       update = UndertakingSubsidyAmendment(
@@ -184,7 +154,6 @@ class EscConnectorImpl @Inject()(http: HttpClient,
         )
       )
     )
-  }
 
 }
 
