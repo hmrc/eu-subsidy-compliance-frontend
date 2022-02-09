@@ -24,13 +24,28 @@ import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, route, 
 import play.api.{Configuration, inject}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.SubsidyRetrieve
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures.undertakingSubsidies
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
+import uk.gov.hmrc.http.HeaderCarrier
 
-class FinancialDashboardControllerSpec extends ControllerSpec with AuthSupport with JourneyStoreSupport
-  with AuthAndSessionDataBehaviour with Matchers with ScalaFutures with IntegrationPatience {
+class FinancialDashboardControllerSpec extends ControllerSpec
+  with AuthSupport
+  with JourneyStoreSupport
+  with AuthAndSessionDataBehaviour
+  with Matchers
+  with ScalaFutures
+  with IntegrationPatience {
+
+  private val mockEscService = mock[EscService]
 
   override def overrideBindings: List[GuiceableModule] = List(
-    inject.bind[AuthConnector].toInstance(mockAuthConnector)
+    inject.bind[AuthConnector].toInstance(mockAuthConnector),
+    inject.bind[Store].toInstance(mockJourneyStore),
+    inject.bind[EscService].toInstance(mockEscService),
   )
 
   override def additionalConfig = Configuration.from(Map(
@@ -44,6 +59,11 @@ class FinancialDashboardControllerSpec extends ControllerSpec with AuthSupport w
 
       "return the dashboard page for a logged in user with a valid EORI" in {
         mockAuthWithNecessaryEnrolment()
+        mockGet(eori)(Right(Some(Fixtures.undertaking)))
+
+        (mockEscService.retrieveSubsidy(_: SubsidyRetrieve)(_: HeaderCarrier))
+          .expects(*, *)
+          .returning(undertakingSubsidies.toFuture)
 
         running(fakeApplication) {
           val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard().url)
