@@ -99,5 +99,10 @@ POST       /subsidy-delete/:transactionId           uk.gov.hmrc.eusubsidycomplia
 
 GET        /subsidy-change/:transactionId           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getChangeSubsidyClaim(transactionId)
 
-GET /sign-out                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.signOut()
+GET        /no-claims-notification                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimNotification
+POST       /no-claims-notification                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.postNoClaimNotification
+
+GET        /no-claims-confirmation                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimConfirmation
+
+GET        /sign-out                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.signOut()
 

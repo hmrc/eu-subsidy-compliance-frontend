@@ -51,7 +51,7 @@
       <h2 class="govuk-heading-s">@messages("account-homepage.cards.card1.heading")</h2>
       <ul class="govuk-list govuk-list--spaced">
         <li><a href="@routes.SubsidyController.getReportPayment()" class="govuk-link">@messages("account-homepage.cards.card1.link1")</a></li>
-        <li><a href="#" class="govuk-link">[TODO: LINK HREF] @messages("account-homepage.cards.card1.link2")</a></li>
+        <li><a href="@routes.NoClaimNotificationController.getNoClaimNotification()" class="govuk-link">@messages("account-homepage.cards.card1.link2", undertaking.name)</a></li>
       </ul>
     </div>
   </div>
