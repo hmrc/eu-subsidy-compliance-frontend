@@ -20,20 +20,21 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
 
 @Singleton
 class FinancialDashboardController @Inject()(
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
-)(implicit val appConfig: AppConfig, ec: ExecutionContext) extends BaseController(mcc) {
+  financialDashboardPage: FinancialDashboardPage
+)(implicit val appConfig: AppConfig) extends BaseController(mcc) {
 
   import escActionBuilders._
 
   def getFinancialDashboard: Action[AnyContent] = escAuthentication.async { implicit request =>
-    Ok("OK").toFuture
+    Ok(financialDashboardPage()).toFuture
   }
 
 }

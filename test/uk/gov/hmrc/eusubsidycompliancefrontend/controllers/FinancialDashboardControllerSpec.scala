@@ -18,11 +18,13 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers
 import play.api.http.Status
-import play.api.inject
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, route, running, status, writeableOf_AnyContentAsEmpty}
+import play.api.{Configuration, inject}
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 
 class FinancialDashboardControllerSpec extends ControllerSpec with AuthSupport with JourneyStoreSupport
   with AuthAndSessionDataBehaviour with Matchers with ScalaFutures with IntegrationPatience {
@@ -30,6 +32,11 @@ class FinancialDashboardControllerSpec extends ControllerSpec with AuthSupport w
   override def overrideBindings: List[GuiceableModule] = List(
     inject.bind[AuthConnector].toInstance(mockAuthConnector)
   )
+
+  override def additionalConfig = Configuration.from(Map(
+    // Disable CSP n=once hashes in rendered output
+    "play.filters.csp.nonce.enabled" -> false,
+  ))
 
   "FinancialDashboardController" when {
 
@@ -43,8 +50,10 @@ class FinancialDashboardControllerSpec extends ControllerSpec with AuthSupport w
 
           val result = route(fakeApplication, request).get
 
+          val page = instanceOf[FinancialDashboardPage]
+
           status(result) shouldBe Status.OK
-          contentAsString(result) shouldBe "OK"
+          contentAsString(result) shouldBe page()(request, messages, instanceOf[AppConfig]).toString()
         }
       }
 
