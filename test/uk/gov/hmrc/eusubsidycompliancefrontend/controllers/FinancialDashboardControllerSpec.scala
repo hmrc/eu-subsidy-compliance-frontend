@@ -28,7 +28,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.SubsidyRetrieve
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures.undertakingSubsidies
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 import uk.gov.hmrc.http.HeaderCarrier
@@ -43,10 +45,13 @@ class FinancialDashboardControllerSpec extends ControllerSpec
 
   private val mockEscService = mock[EscService]
 
+  private val fakeTimeProvider = FakeTimeProvider.withFixedDate(1, 1, 2022)
+
   override def overrideBindings: List[GuiceableModule] = List(
     inject.bind[AuthConnector].toInstance(mockAuthConnector),
     inject.bind[Store].toInstance(mockJourneyStore),
     inject.bind[EscService].toInstance(mockEscService),
+    inject.bind[TimeProvider].toInstance(fakeTimeProvider),
   )
 
   override def additionalConfig = Configuration.from(Map(
@@ -74,7 +79,7 @@ class FinancialDashboardControllerSpec extends ControllerSpec
           val page = instanceOf[FinancialDashboardPage]
 
           // TODO - pass in a populated instance
-          val summaryData = FinancialDashboardSummary.fromUndertakingSubsidies(undertakingSubsidies, 2001, 2002)
+          val summaryData = FinancialDashboardSummary.fromUndertakingSubsidies(undertakingSubsidies, 2019, 2022)
 
           status(result) shouldBe Status.OK
           contentAsString(result) shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
