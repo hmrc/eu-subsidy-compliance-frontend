@@ -26,4 +26,10 @@ object TaxYearHelpers {
     else taxYearStartForDateYear
   }
 
+  def taxYearEndForDate(d: LocalDate): LocalDate =
+    taxYearStartForDate(d)
+      .plusYears(1)
+      .minusDays(1)
+
+
 }

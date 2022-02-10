@@ -39,4 +39,20 @@ class TaxYearHelpersSpec extends AnyWordSpecLike with Matchers {
 
   }
 
+  "taxYearEndForDate" must {
+
+    "return a tax year ending in the following year if the date falls on the 6th of April" in {
+      TaxYearHelpers.taxYearEndForDate(LocalDate.parse("2022-04-06")) mustBe LocalDate.parse("2023-04-05")
+    }
+
+    "return a tax year ending in the following year if the date falls after the 6th of April" in {
+      TaxYearHelpers.taxYearEndForDate(LocalDate.parse("2022-12-06")) mustBe LocalDate.parse("2023-04-05")
+    }
+
+    "return a tax year ending in the current year if the date falls before the 6th of April" in {
+      TaxYearHelpers.taxYearEndForDate(LocalDate.parse("2022-02-06")) mustBe LocalDate.parse("2022-04-05")
+    }
+
+  }
+
 }
