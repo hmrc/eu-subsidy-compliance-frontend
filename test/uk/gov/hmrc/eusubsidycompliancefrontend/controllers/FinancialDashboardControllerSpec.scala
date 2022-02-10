@@ -30,6 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures.undertakingSubsidies
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 import uk.gov.hmrc.http.HeaderCarrier
 
 class FinancialDashboardControllerSpec extends ControllerSpec
@@ -72,8 +73,11 @@ class FinancialDashboardControllerSpec extends ControllerSpec
 
           val page = instanceOf[FinancialDashboardPage]
 
+          // TODO - pass in a populated instance
+          val summaryData = mock[FinancialDashboardSummary]
+
           status(result) shouldBe Status.OK
-          contentAsString(result) shouldBe page()(request, messages, instanceOf[AppConfig]).toString()
+          contentAsString(result) shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
         }
       }
 

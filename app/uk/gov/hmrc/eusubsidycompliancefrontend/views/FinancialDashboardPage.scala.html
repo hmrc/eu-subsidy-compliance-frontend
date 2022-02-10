@@ -15,13 +15,14 @@
  *@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 
 @this(
   layout: Layout,
   govukTable: GovukTable
 )
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(summary: FinancialDashboardSummary)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
   pageTitle = Some(messages("dashboard.title")),
@@ -60,6 +61,7 @@
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">@messages("dashboard.total.claimed.heading")</th>
+                <!-- TODO - sector cap should reflect the industry -->
                 <th scope="row" class="govuk-table__header">@messages("dashboard.sector.cap.heading")</th>
                 <th scope="row" class="govuk-table__header">@messages("dashboard.allowance.remaining.heading")</th>
                 <td class="govuk-table__cell"></td>
