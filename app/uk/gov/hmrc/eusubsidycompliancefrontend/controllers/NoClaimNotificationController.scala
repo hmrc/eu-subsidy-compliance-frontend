@@ -27,7 +27,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
-
 @Singleton
 class NoClaimNotificationController @Inject()(
     mcc: MessagesControllerComponents,
