@@ -74,7 +74,7 @@ class FinancialDashboardControllerSpec extends ControllerSpec
           val page = instanceOf[FinancialDashboardPage]
 
           // TODO - pass in a populated instance
-          val summaryData = mock[FinancialDashboardSummary]
+          val summaryData = FinancialDashboardSummary.fromUndertakingSubsidies(undertakingSubsidies, 2001, 2002)
 
           status(result) shouldBe Status.OK
           contentAsString(result) shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()

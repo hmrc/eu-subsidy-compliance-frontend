@@ -20,7 +20,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.testutil.FakeTimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 
 class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
 
