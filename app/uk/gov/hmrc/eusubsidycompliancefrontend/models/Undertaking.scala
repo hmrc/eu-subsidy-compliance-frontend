@@ -53,6 +53,8 @@ object Undertaking {
         .headOption
         .getOrElse(throw new IllegalStateException(s"BE with eori $eori is missing"))
     }
+
+    def getAllNonLeadEORIs(): List[EORI] = undertaking.undertakingBusinessEntity.filter(!_.leadEORI).map(_.businessEntityIdentifier)
   }
 
 }

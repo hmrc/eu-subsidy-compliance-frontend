@@ -37,6 +37,7 @@
 ) {
   <h1 class="govuk-heading-xl">@messages("account-homepage.title", undertaking.name)</h1>
 
+
   @govukWarningText(WarningText(
     iconFallbackText = messages("common.warning"),
     content = Text(messages("account-homepage.warning", "[TODO: NAME]"))
@@ -79,7 +80,7 @@
                     "account-homepage.cards.card3.link1Add"
                 })</a>
         </li>
-        <li><a href="#" class="govuk-link">[TODO: LINK HREF] @messages("account-homepage.cards.card3.link2")</a></li>
+        <li><a href="@routes.SelectNewLeadController.getSelectNewLead()" class="govuk-link">@messages("account-homepage.cards.card3.link2")</a></li>
       </ul>
     </div>
   </div>

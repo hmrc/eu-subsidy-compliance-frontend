@@ -106,3 +106,8 @@ GET        /no-claims-confirmation                  uk.gov.hmrc.eusubsidycomplia
 
 GET        /sign-out                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.signOut()
 
+GET       /select-new-lead                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.getSelectNewLead
+POST      /select-new-lead                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.postSelectNewLead
+
+GET       /lead-eori-changed                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.getLeadEORIChanged
+
