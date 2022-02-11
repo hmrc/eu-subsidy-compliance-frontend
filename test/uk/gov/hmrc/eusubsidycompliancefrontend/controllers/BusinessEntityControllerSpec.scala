@@ -746,6 +746,76 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
     }
 
+    "handling request to edit business entity" must {
+
+      "throw technical error" when {
+
+        def performAction(eori: String) = controller.editBusinessEntity(eori)(FakeRequest())
+        val exception = new Exception("oh no!")
+        "call to retrieve undertaking fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.failed(exception))
+          }
+          assertThrows[Exception](await(performAction(eori1)))
+        }
+
+        "call to put business entity journey fails" in {
+
+          val businessEntityJourney = BusinessEntityJourney.businessEntityJourneyForEori(undertaking1.some, eori1)
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockPut[BusinessEntityJourney](businessEntityJourney, eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction(eori1)))
+        }
+
+        "call to put business entity journey came back without contact details" in {
+
+          val businessEntityJourney = BusinessEntityJourney.businessEntityJourneyForEori(undertaking1.some, eori1)
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockPut[BusinessEntityJourney](businessEntityJourney, eori1)(Right(businessEntityJourney))
+          }
+          assertThrows[Exception](await(performAction(eori1)))
+        }
+
+        "display the page" in {
+
+          val be: BusinessEntity = undertaking1.undertakingBusinessEntity.filter(_.leadEORI).head.copy(contacts = contactDetails)
+          val businessEntityJourney = BusinessEntityJourney.businessEntityJourneyForEori(undertaking1.copy(undertakingBusinessEntity = List(be)).some, eori1)
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking1.copy(undertakingBusinessEntity = List(be)).some))
+            mockPut[BusinessEntityJourney](businessEntityJourney, eori1)(Right(businessEntityJourney))
+          }
+          checkPageIsDisplayed(
+            performAction(eori1),
+            messageFromMessageKey("businessEntity.cya.title"),
+            {doc =>
+
+              val rows =
+                doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
+                  val question  = element.select(".govuk-summary-list__key").text()
+                  val answer    = element.select(".govuk-summary-list__value").text()
+                  val changeUrl = element.select(".govuk-link").attr("href")
+                  CheckYourAnswersRowBE(question, answer, changeUrl)
+                }
+              rows shouldBe expectedRows
+            }
+          )
+
+
+        }
+
+      }
+
+
+
+    }
+
     "handling request to get remove yourself Business entity" must {
       def performAction() = controller.getRemoveYourselfBusinessEntity(FakeRequest())
 

@@ -46,7 +46,7 @@ class NoBusinessPresentController @Inject()(
     escService.retrieveUndertaking(eori).map {
       _ match {
         case Some(undertaking) => Ok(noBusinessPresentPage(undertaking.name, previous))
-        case None => handleMissingSessionData("CheckYourAnswers journey")
+        case None => handleMissingSessionData("Undertaking")
       }
     }
   }
