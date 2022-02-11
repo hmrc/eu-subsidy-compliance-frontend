@@ -51,12 +51,14 @@ trait ControllerSpec extends PlaySupport {
                             result: Future[Result],
                             expectedTitle: String,
                             contentChecks: Document => Unit = _ => (),
-                            expectedStatus: Int = OK
+                            expectedStatus: Int = OK,
+                            isLeadJourney: Boolean = false
                           ): Unit = {
     (status(result), redirectLocation(result)) shouldBe (expectedStatus -> None)
 
     val doc = Jsoup.parse(contentAsString(result))
 
+    if(!isLeadJourney)
     doc.select("h1").text shouldBe expectedTitle
 
     val bodyText = doc.select("body").text

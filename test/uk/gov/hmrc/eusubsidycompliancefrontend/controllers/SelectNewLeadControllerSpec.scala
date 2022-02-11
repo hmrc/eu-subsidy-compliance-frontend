@@ -23,7 +23,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, NewLeadJourney, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, FormPage, NewLeadJourney, Store}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData._
 
@@ -207,6 +207,126 @@ class SelectNewLeadControllerSpec
         }
       }
 
+
+    }
+
+    "handling request to get lead EORI changed" must {
+
+      def performAction() = controller.getLeadEORIChanged(FakeRequest())
+      behave like authBehaviour(() => performAction())
+
+      def update(businessEntityJourneyOpt: Option[BusinessEntityJourney]) = {
+        businessEntityJourneyOpt.map(_.copy(isLeadSelectJourney = None))
+      }
+
+      "throw technical error" when {
+        val exception = new Exception("oh no!")
+
+        "call to fetch new lead journey fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[NewLeadJourney](eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+
+        }
+
+        "call to fetch new lead journey came back with None" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[NewLeadJourney](eori1)(Right(None))
+          }
+          assertThrows[Exception](await(performAction()))
+
+        }
+
+        "call to fetch new lead journey came back with response but there is no selected EORI in it" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[NewLeadJourney](eori1)(Right(NewLeadJourney().some))
+          }
+          assertThrows[Exception](await(performAction()))
+
+        }
+
+        "call to retrieve undertaking fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[NewLeadJourney](eori1)(Right(NewLeadJourney().some))
+            mockRetrieveUndertaking(eori1)(Future.failed(exception))
+          }
+          assertThrows[Exception](await(performAction()))
+
+        }
+
+        "call to retrieve undertaking came back with empty response" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[NewLeadJourney](eori1)(Right(NewLeadJourney().some))
+            mockRetrieveUndertaking(eori1)(Future.successful(None))
+          }
+          assertThrows[Exception](await(performAction()))
+
+        }
+
+        "call to update business entity journey fails" in {
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourneyLead.copy(eori = FormPage("add-business-entity-eori", eori4.some)).some), eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+
+        }
+
+        "call to reset business entity journey fails" in {
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourneyLead
+              .copy(eori = FormPage("add-business-entity-eori", eori4.some)).some), eori1)(Right(businessEntityJourneyLead))
+
+            mockPut[NewLeadJourney](NewLeadJourney(), eori)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+
+        }
+      }
+
+      "display the page" in {
+
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
+          mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+          mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourneyLead
+            .copy(eori = FormPage("add-business-entity-eori", eori4.some)).some), eori1)(Right(businessEntityJourneyLead))
+          mockPut[NewLeadJourney](NewLeadJourney(), eori)(Right(NewLeadJourney()))
+        }
+        checkPageIsDisplayed(
+          performAction(),
+          messageFromMessageKey("leadEORIChanged.title"),
+          {doc =>
+            val htmlText = doc.select(".govuk-body").html()
+            htmlText should include regex messageFromMessageKey(
+              "leadEORIChanged.p2", eori4, undertaking1.name)
+
+            htmlText should include regex messageFromMessageKey(
+              "leadEORIChanged.link", routes.AccountController.getAccountPage().url)
+
+            val htmlText1 = doc.select(".govuk-panel").html()
+            htmlText1 should include regex messageFromMessageKey(
+              "leadEORIChanged.subtitle", eori4, undertaking1.name)
+
+          }, isLeadJourney = true
+
+        )
+
+      }
 
     }
 
