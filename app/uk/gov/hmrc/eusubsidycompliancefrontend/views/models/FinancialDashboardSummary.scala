@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.views.models
 
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.UndertakingSubsidies
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingSubsidies}
 
 case class FinancialDashboardSummary(
   overall: OverallSummary
@@ -26,25 +27,30 @@ case class FinancialDashboardSummary(
 case class OverallSummary(
   startYear: Int,
   endYear: Int,
+  // TODO - we can use positive subsidy amount here
   hmrcSubsidyTotal: BigDecimal,
   nonHmrcSubsidyTotal: BigDecimal,
+  sector: Sector,
   sectorCap: BigDecimal, // TODO - should we also include the sector?
   allowanceRemaining: BigDecimal
 )
 
 object FinancialDashboardSummary {
 
-  // TODO - where is this defined and are there different values for different sectors?
-  val SectorCap = BigDecimal(200000.00)
+  // TODO - we can take an optional value from the undertaking. If this isn't present we
+  //        should fallback to a default and warn.
+  //        the default should reflect the appropriate cap for each sector
+  val SectorCap = BigDecimal(200000.00).setScale(2)
 
-  def fromUndertakingSubsidies(u: UndertakingSubsidies, startYear: Int, endYear: Int): FinancialDashboardSummary = {
+  def fromUndertakingSubsidies(u: Undertaking, s: UndertakingSubsidies, startYear: Int, endYear: Int): FinancialDashboardSummary = {
     val overallSummary = OverallSummary(
       startYear = startYear,
       endYear = endYear,
-      hmrcSubsidyTotal = u.hmrcSubsidyTotalEUR,
-      nonHmrcSubsidyTotal = u.nonHMRCSubsidyTotalEUR,
-      sectorCap = BigDecimal(200000.00),
-      allowanceRemaining = BigDecimal(200000.00) - u.hmrcSubsidyTotalEUR - u.nonHMRCSubsidyTotalEUR
+      hmrcSubsidyTotal = s.hmrcSubsidyTotalEUR.setScale(2),
+      nonHmrcSubsidyTotal = s.nonHMRCSubsidyTotalEUR.setScale(2),
+      sector = u.industrySector,
+      sectorCap = u.industrySectorLimit.map(_.setScale(2)).getOrElse(SectorCap),
+      allowanceRemaining = BigDecimal(200000.00).setScale(2) - s.hmrcSubsidyTotalEUR - s.nonHMRCSubsidyTotalEUR
     )
 
     FinancialDashboardSummary(

@@ -58,8 +58,9 @@
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">@messages("dashboard.total.claimed.heading")</th>
-                <!-- TODO - sector cap should reflect the industry -->
-                <th scope="row" class="govuk-table__header">@messages("dashboard.sector.cap.heading")</th>
+                <th scope="row" class="govuk-table__header">
+                    @messages("dashboard.sector.cap.heading", messages("dashboard.sector.name." + summary.overall.sector))
+                </th>
                 <th scope="row" class="govuk-table__header">@messages("dashboard.allowance.remaining.heading")</th>
                 <td class="govuk-table__cell"></td>
             </tr>

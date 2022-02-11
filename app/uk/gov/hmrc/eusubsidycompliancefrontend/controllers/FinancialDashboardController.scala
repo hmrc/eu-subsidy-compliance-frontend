@@ -20,15 +20,15 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearHelpers.{taxYearEndForDate, taxYearStartForDate}
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.{TaxYearHelpers, TimeProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class FinancialDashboardController @Inject()(
@@ -49,24 +49,24 @@ class FinancialDashboardController @Inject()(
 
     // THe search period covers the current tax year to date, and the previous 2 tax years.
     val searchDateStart = taxYearStartForDate(timeProvider.today).minusYears(2)
-    val searchDateEnd = timeProvider.today
+//    val searchDateEnd = timeProvider.today
     val currentTaxYearEnd = taxYearEndForDate(timeProvider.today)
 
-    val searchRange = Some(searchDateStart, searchDateStart)
+    val searchRange = Some((searchDateStart, searchDateStart))
 
-    val subsidies: Future[UndertakingSubsidies] = for {
+    val subsidies = for {
       undertaking <- store.get[Undertaking]
       r = undertaking.flatMap(_.reference).getOrElse(throw new IllegalStateException("No undertaking data on session"))
       // TODO - pass date range
       s = SubsidyRetrieve(r, searchRange)
       subsidies <- escService.retrieveSubsidy(s)
-    } yield subsidies
+    } yield (undertaking.get, subsidies)
 
     // TODO - review error cases that should be handled here
-    subsidies.map { s =>
+    subsidies.map { t =>
       Ok(financialDashboardPage(
           FinancialDashboardSummary
-            .fromUndertakingSubsidies(s, searchDateStart.getYear, currentTaxYearEnd.getYear))
+            .fromUndertakingSubsidies(t._1, t._2, searchDateStart.getYear, currentTaxYearEnd.getYear))
       )
     }
 

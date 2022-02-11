@@ -27,7 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.SubsidyRetrieve
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures.undertakingSubsidies
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures.{undertaking, undertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
@@ -78,8 +78,8 @@ class FinancialDashboardControllerSpec extends ControllerSpec
 
           val page = instanceOf[FinancialDashboardPage]
 
-          // TODO - pass in a populated instance
-          val summaryData = FinancialDashboardSummary.fromUndertakingSubsidies(undertakingSubsidies, 2019, 2022)
+          val summaryData = FinancialDashboardSummary
+            .fromUndertakingSubsidies(undertaking, undertakingSubsidies, 2019, 2022)
 
           status(result) shouldBe Status.OK
           contentAsString(result) shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()

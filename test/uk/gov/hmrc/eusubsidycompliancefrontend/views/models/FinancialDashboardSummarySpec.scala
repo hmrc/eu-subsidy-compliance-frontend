@@ -18,7 +18,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.views.models
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures.undertakingSubsidies
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures.{undertaking, undertakingSubsidies}
 
 class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
 
@@ -27,7 +28,7 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
     "convert return a valid FinancialDashboardSummary instance" in {
       val start = 2001
       val end = 2022
-      val result = FinancialDashboardSummary.fromUndertakingSubsidies(undertakingSubsidies, start, end)
+      val result = FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, undertakingSubsidies, start, end)
 
       val expected = FinancialDashboardSummary(
         overall = OverallSummary(
@@ -35,7 +36,8 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
           endYear = end,
           hmrcSubsidyTotal = undertakingSubsidies.hmrcSubsidyTotalEUR,
           nonHmrcSubsidyTotal = undertakingSubsidies.nonHMRCSubsidyTotalEUR,
-          sectorCap = BigDecimal(200000.00), // TODO - confirm if these are defined somewhere
+          sector = Sector.other,
+          sectorCap = BigDecimal(200000.00),
           allowanceRemaining = BigDecimal(200000.00) - undertakingSubsidies.hmrcSubsidyTotalEUR - undertakingSubsidies.nonHMRCSubsidyTotalEUR
         )
       )
