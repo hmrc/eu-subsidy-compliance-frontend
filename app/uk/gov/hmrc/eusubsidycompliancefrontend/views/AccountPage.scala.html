@@ -28,8 +28,8 @@
   govukInsetText : GovukInsetText
 )
 
-@(undertaking: Undertaking)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
+@(undertaking: Undertaking, isNonLeadEORIPresent: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@linkURL = @{if(isNonLeadEORIPresent) routes.SelectNewLeadController.getSelectNewLead() else routes.NoBusinessPresentController.getNoBusinessPresent() }
 @layout(
   pageTitle = Some(messages("account-homepage.title", undertaking.name)),
   backLinkEnabled = false,
@@ -80,7 +80,7 @@
                     "account-homepage.cards.card3.link1Add"
                 })</a>
         </li>
-        <li><a href="@routes.SelectNewLeadController.getSelectNewLead()" class="govuk-link">@messages("account-homepage.cards.card3.link2")</a></li>
+        <li><a href="@linkURL" class="govuk-link">@messages("account-homepage.cards.card3.link2")</a></li>
       </ul>
     </div>
   </div>

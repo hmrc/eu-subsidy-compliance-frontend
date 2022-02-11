@@ -29,7 +29,8 @@ import utils.CommonTestData.{eori1, undertaking}
 
 import scala.concurrent.Future
 
-class NoClaimNotificationControllerSpec extends ControllerSpec
+class NoClaimNotificationControllerSpec
+  extends ControllerSpec
   with AuthSupport
   with JourneyStoreSupport
   with AuthAndSessionDataBehaviour {
@@ -50,7 +51,7 @@ class NoClaimNotificationControllerSpec extends ControllerSpec
 
   "NoClaimNotificationControllerSpec" when {
 
-    "handling request to get No claim notification" when {
+    "handling request to get No claim notification" must {
 
       def performAction() = controller.getNoClaimNotification(FakeRequest())
       behave like authBehaviour(() => performAction())
@@ -102,7 +103,7 @@ class NoClaimNotificationControllerSpec extends ControllerSpec
 
     }
 
-    "handling request  to post No claim notification " when {
+    "handling request  to post No claim notification " must {
 
       def performAction(data: (String, String)*) = controller
         .postNoClaimNotification(
@@ -164,7 +165,7 @@ class NoClaimNotificationControllerSpec extends ControllerSpec
 
     }
 
-    "handling request to get No claim confirmation" when {
+    "handling request to get No claim confirmation" must {
 
       def performAction() = controller.getNoClaimConfirmation(FakeRequest())
       behave like authBehaviour(() => performAction())

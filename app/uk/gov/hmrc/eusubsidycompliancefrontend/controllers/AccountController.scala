@@ -57,7 +57,7 @@ class AccountController @Inject()(
       _ <- businessEntityJourneyOpt.fold(store.put(BusinessEntityJourney.fromUndertakingOpt(retrievedUndertaking)))(Future.successful)
       _ <- if (retrievedUndertaking.isDefined) store.put(retrievedUndertaking.getOrElse(sys.error("Undertaking is Missing"))) else Future.successful(Unit)
     } yield (retrievedUndertaking, eligibilityJourney, undertakingJourney) match {
-      case (Some(undertaking), _, _) => Ok(accountPage(undertaking))
+      case (Some(undertaking), _, _) => Ok(accountPage(undertaking, !undertaking.getAllNonLeadEORIs().isEmpty))
       case (_, eJourney, uJourney) if !eJourney.isComplete && uJourney == UndertakingJourney() =>
         Redirect(routes.EligibilityController.firstEmptyPage())
       case (_, _, uJourney) if !uJourney.isComplete =>

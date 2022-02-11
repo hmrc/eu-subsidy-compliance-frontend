@@ -111,3 +111,5 @@ POST      /select-new-lead                         uk.gov.hmrc.eusubsidycomplian
 
 GET       /lead-eori-changed                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.getLeadEORIChanged
 
+GET      /no-business-for-lead                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.getNoBusinessPresent
+POST     /no-business-for-lead                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.postNoBusinessPresent

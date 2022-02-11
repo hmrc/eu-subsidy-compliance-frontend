@@ -12,6 +12,7 @@ common.continue=Save and Continue
 common.continue.only=Continue
 common.accept=Accept and send
 continue.button=Save and Continue
+button.addBusiness = Add a business to this undertaking
 
 common.yes=Yes
 common.no=No
@@ -262,4 +263,7 @@ leadEORIChanged.p2 = EORI {0} has now been emailed with instructions and informa
 leadEORIChanged.p3 = Until they have completed these instructions, you are still the administator and it is your responsibility to ensure all account details are correct and up to date.
 leadEORIChanged.p4 = When you are no longer the administrator, please ensure you keep the new administrator updated of any de minimis aid (less Customs Duty waivers) payments you receive.
 leadEORIChanged.link = <a href="{0}" class="govuk-link">Go to account home</a>
+
+#Add a business for making lead
+noBusinessPresent.title = There are no other businesses added to {0}
 

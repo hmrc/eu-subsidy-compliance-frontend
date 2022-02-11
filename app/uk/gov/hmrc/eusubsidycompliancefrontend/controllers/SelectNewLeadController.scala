@@ -19,12 +19,12 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, NewLeadJourney, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, FormPage, NewLeadJourney, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.Inject
@@ -62,6 +62,7 @@ class SelectNewLeadController @Inject()(
     }).flatten
   }
 
+
   def postSelectNewLead: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     val previous = routes.AccountController.getAccountPage().url
@@ -93,6 +94,10 @@ class SelectNewLeadController @Inject()(
           for {
             undertaking <- escService.retrieveUndertaking(eori).map(_.getOrElse(handleMissingSessionData("Undertaking")))
             selectedEORI: EORI = newLeadJourney.selectNewLead.value.getOrElse(handleMissingSessionData("selected EORI"))
+            _ <- store.update[BusinessEntityJourney]{businessEntityOpt =>
+              businessEntityOpt.map(_.copy(isLeadSelectJourney = None))
+            }
+            _ <- store.put[NewLeadJourney](NewLeadJourney())
           } yield Ok(leadEORIChangedPage(selectedEORI, undertaking.name))
 
         case None => handleMissingSessionData("New Lead journey")

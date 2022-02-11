@@ -107,16 +107,34 @@ class AccountControllerSpec  extends ControllerSpec
                   routes.BusinessEntityController.getAddBusinessEntity().url
                 )
 
+              val isNonLeadEORIPresent = !undertaking.undertakingBusinessEntity.filterNot(_.leadEORI).isEmpty
+
+              if(isNonLeadEORIPresent)
+                htmlBody should include regex messageFromMessageKey(
+                  "account-homepage.cards.card3.link2",
+                  routes.SelectNewLeadController.getSelectNewLead().url
+                )
+              else
+                htmlBody should include regex messageFromMessageKey(
+                  "account-homepage.cards.card3.link2",
+                  routes.NoBusinessPresentController.getNoBusinessPresent().url
+                )
+
+
             }
           )
         }
 
-        "there is a view link on the page" in {
+        "there is a view link on the page and undertaking has lead only business entity" in {
           test(undertaking)
         }
 
         "there is a add link on the page" in {
           test(undertaking.copy(undertakingBusinessEntity = List(businessEntity1)))
+        }
+
+        "The undertaking  any non-Lead  business entities " in {
+          test(undertaking1)
         }
 
       }

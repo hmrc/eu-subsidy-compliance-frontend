@@ -677,7 +677,6 @@ class BusinessEntityControllerSpec  extends ControllerSpec
           assertThrows[Exception](await(performAction("cya" -> "true")))
         }
 
-
         "call to get business entity  return  without EORI" in {
           inSequence{
             mockAuthWithNecessaryEnrolment()
@@ -696,16 +695,6 @@ class BusinessEntityControllerSpec  extends ControllerSpec
           assertThrows[Exception](await(performAction("cya" -> "true")))
         }
 
-        "call to reset business entity journey fails" in {
-          inSequence{
-            mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
-            mockPut[BusinessEntityJourney](BusinessEntityJourney(), eori1)(Left(Error(exception)))
-          }
-          assertThrows[Exception](await(performAction("cya" -> "true")))
-        }
-
         "call to add member to BE undertaking fails" in {
 
           val businessEntity = BusinessEntity(eori2, false, contactDetails)
@@ -713,8 +702,19 @@ class BusinessEntityControllerSpec  extends ControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
-            mockPut[BusinessEntityJourney](BusinessEntityJourney(), eori1)(Right(BusinessEntityJourney()))
             mockAddMember(undertakingRef, businessEntity)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction("cya" -> "true")))
+        }
+
+        "call to reset business entity journey fails" in {
+          val businessEntity = BusinessEntity(eori2, false, contactDetails)
+          inSequence{
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
+            mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
+            mockPut[BusinessEntityJourney](BusinessEntityJourney(), eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")))
         }
@@ -723,20 +723,24 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
       "redirects to add business entity page" when {
 
-        def testRedirection() = {
+        def testRedirection(businessEntityJourney: BusinessEntityJourney, nextCall: String, resettedBusinessJourney: BusinessEntityJourney) = {
           val businessEntity = BusinessEntity(eori2, false, contactDetails)
           inSequence{
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
-            mockPut[BusinessEntityJourney](BusinessEntityJourney(), eori1)(Right(BusinessEntityJourney()))
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
+            mockPut[BusinessEntityJourney](resettedBusinessJourney, eori1)(Right(BusinessEntityJourney()))
           }
-          checkIsRedirect(performAction("cya" -> "true"), routes.BusinessEntityController.getAddBusinessEntity().url)
+          checkIsRedirect(performAction("cya" -> "true"), nextCall)
         }
 
-        "all api calls are successful " in {
-          testRedirection()
+        "all api calls are successful and is Select lead journey " in {
+          testRedirection(businessEntityJourneyLead, routes.SelectNewLeadController.getSelectNewLead().url, BusinessEntityJourney(isLeadSelectJourney = true.some))
+        }
+
+        "all api calls are successful and is normal add business entity journey " in {
+          testRedirection(businessEntityJourney1, routes.BusinessEntityController.getAddBusinessEntity().url, BusinessEntityJourney())
         }
       }
 

@@ -26,7 +26,8 @@ case class BusinessEntityJourney(
   addBusiness: FormPage[Boolean] = FormPage("add-member"),
   eori: FormPage[EORI] = FormPage("add-business-entity-eori"),
   contact: FormPage[ContactDetails] = FormPage("add-business-entity-contact"),
-  cya: FormPage[Boolean] = FormPage("check-your-answers-businesses") // TODO
+  cya: FormPage[Boolean] = FormPage("check-your-answers-businesses"), // TODO
+  isLeadSelectJourney: Option[Boolean] = None
 ) extends Journey {
 
   override def steps: List[Option[FormPage[_]]] =

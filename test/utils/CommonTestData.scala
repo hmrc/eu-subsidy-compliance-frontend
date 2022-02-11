@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, EmailAddress, EmailAddressResponse, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undeliverable, Undertaking, UndertakingSubsidies, UndertakingSubsidyAmendment}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, IndustrySectorLimit, PhoneNumber, Sector, SubsidyAmount, TraderRef, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, FormPage, SubsidyJourney, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, FormPage, NewLeadJourney, SubsidyJourney, UndertakingJourney}
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -150,6 +150,15 @@ object CommonTestData {
     contact = FormPage("add-business-entity-contact", contactDetails),
     cya= FormPage("check-your-answers-businesses", true.some)
   )
+  val businessEntityJourneyLead = BusinessEntityJourney(
+    addBusiness = FormPage("add-member", true.some),
+    eori = FormPage("add-business-entity-eori", eori2.some),
+    contact = FormPage("add-business-entity-contact", contactDetails),
+    cya= FormPage("check-your-answers-businesses", true.some),
+    isLeadSelectJourney = true.some
+  )
+
+  val newLeadJourney = NewLeadJourney(selectNewLead = FormPage("select-new-lead", eori4.some))
 
   val validEmailAddress = EmailAddress("user@test.com")
   val inValidEmailAddress = EmailAddress("invalid@email.com")
