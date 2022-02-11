@@ -42,17 +42,17 @@
                 <td class="govuk-table__cell"></td>
             </tr>
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">€summary.overall.hmrcSubsidyTotal</td>
+                <td class="govuk-table__cell">€@summary.overall.hmrcSubsidyTotal</td>
                 <td class="govuk-table__cell"></td>
                 <td class="govuk-table__cell"></td>
             </tr>
             <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">€summary.overall.nonHmrcSubsidyTotal</th>
+                <th scope="row" class="govuk-table__header">@messages("dashboard.de.minimis.aid.heading")</th>
                 <td class="govuk-table__cell"></td>
                 <td class="govuk-table__cell"></td>
             </tr>
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">€summary.overall.hmrcSubsidyTotal + summary.overall.nonHmrcSubsidyTotal</td>
+                <td class="govuk-table__cell">€@{summary.overall.hmrcSubsidyTotal + summary.overall.nonHmrcSubsidyTotal}</td>
                 <td class="govuk-table__cell"></td>
                 <td class="govuk-table__cell"></td>
             </tr>
@@ -64,9 +64,9 @@
                 <td class="govuk-table__cell"></td>
             </tr>
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">€summary.overall.hmrcSubsidyTotal + summary.overall.nonHmrcSubsidyTotal</td>
-                <td class="govuk-table__cell">€summary.overall.sectorCap</td>
-                <td class="govuk-table__cell">€summary.overall.allowanceRemaining</td>
+                <td class="govuk-table__cell">€@{summary.overall.hmrcSubsidyTotal + summary.overall.nonHmrcSubsidyTotal}</td>
+                <td class="govuk-table__cell">€@summary.overall.sectorCap</td>
+                <td class="govuk-table__cell">€@summary.overall.allowanceRemaining</td>
             </tr>
         </tbody>
     </table>
