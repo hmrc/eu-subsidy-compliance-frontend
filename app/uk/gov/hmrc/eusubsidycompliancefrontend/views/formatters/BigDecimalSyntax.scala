@@ -18,6 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters
 
 object BigDecimalSyntax {
   implicit class BigDecimalOps(val b: BigDecimal) extends AnyVal {
-    def format: String = BigDecimalFormatter.toTwoDecimalPlaces(b)
+    def toEuros: String = BigDecimalFormatter.toEuros(b)
   }
 }

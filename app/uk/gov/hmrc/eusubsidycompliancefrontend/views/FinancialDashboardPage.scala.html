@@ -43,7 +43,7 @@
                 <td class="govuk-table__cell"></td>
             </tr>
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">€@summary.overall.hmrcSubsidyTotal.format</td>
+                <td class="govuk-table__cell">@summary.overall.hmrcSubsidyTotal.toEuros</td>
                 <td class="govuk-table__cell"></td>
                 <td class="govuk-table__cell"></td>
             </tr>
@@ -53,7 +53,7 @@
                 <td class="govuk-table__cell"></td>
             </tr>
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">€@summary.overall.total.format</td>
+                <td class="govuk-table__cell">@summary.overall.total.toEuros</td>
                 <td class="govuk-table__cell"></td>
                 <td class="govuk-table__cell"></td>
             </tr>
@@ -66,9 +66,9 @@
                 <td class="govuk-table__cell"></td>
             </tr>
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">€@summary.overall.total.format</td>
-                <td class="govuk-table__cell">€@summary.overall.sectorCap.format</td>
-                <td class="govuk-table__cell">€@summary.overall.allowanceRemaining.format</td>
+                <td class="govuk-table__cell">@summary.overall.total.toEuros</td>
+                <td class="govuk-table__cell">@summary.overall.sectorCap.toEuros</td>
+                <td class="govuk-table__cell">@summary.overall.allowanceRemaining.toEuros</td>
             </tr>
         </tbody>
     </table>
@@ -86,7 +86,7 @@
                 <td class="govuk-table__cell"></td>
             </tr>
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">€@taxYear.hmrcSubsidyTotal</td>
+                <td class="govuk-table__cell">@taxYear.hmrcSubsidyTotal.toEuros</td>
                 <td class="govuk-table__cell"></td>
                 <td class="govuk-table__cell"></td>
             </tr>
@@ -96,7 +96,7 @@
                 <td class="govuk-table__cell"></td>
             </tr>
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">€@taxYear.nonHmrcSubsidyTotal</td>
+                <td class="govuk-table__cell">@taxYear.nonHmrcSubsidyTotal.toEuros</td>
                 <td class="govuk-table__cell"></td>
                 <td class="govuk-table__cell"></td>
             </tr>
@@ -107,7 +107,7 @@
                 <td class="govuk-table__cell"></td>
             </tr>
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">€@taxYear.total</td>
+                <td class="govuk-table__cell">@taxYear.total.toEuros</td>
                 <td class="govuk-table__cell"></td>
                 <td class="govuk-table__cell"></td>
             </tr>

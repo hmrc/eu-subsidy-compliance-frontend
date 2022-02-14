@@ -47,7 +47,6 @@ class FinancialDashboardController @Inject()(
 
     // THe search period covers the current tax year to date, and the previous 2 tax years.
     val searchDateStart = taxYearStartForDate(timeProvider.today).minusYears(2)
-//    val searchDateEnd = timeProvider.today
     val currentTaxYearEnd = taxYearEndForDate(timeProvider.today)
 
     val searchRange = Some((searchDateStart, searchDateStart))
@@ -57,15 +56,16 @@ class FinancialDashboardController @Inject()(
       r = undertaking.flatMap(_.reference).getOrElse(throw new IllegalStateException("No undertaking data on session"))
       s = SubsidyRetrieve(r, searchRange)
       subsidies <- escService.retrieveSubsidy(s)
-    } yield (undertaking.get, subsidies)
+    } yield (undertaking, subsidies)
 
     // TODO - review error cases that should be handled here
-    subsidies.map { t =>
-      Ok(financialDashboardPage(
-          FinancialDashboardSummary
-            .fromUndertakingSubsidies(t._1, t._2, searchDateStart, currentTaxYearEnd))
-      )
-    }
+    subsidies.map {
+      case (Some(undertaking), subsidies) =>
+        Ok(financialDashboardPage(
+            FinancialDashboardSummary
+              .fromUndertakingSubsidies(undertaking, subsidies, searchDateStart, currentTaxYearEnd))
+        )
+      }
 
   }
 

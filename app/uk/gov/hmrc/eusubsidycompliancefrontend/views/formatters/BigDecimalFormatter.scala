@@ -16,7 +16,17 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters
 
+import java.text.NumberFormat
+import java.util.{Currency, Locale}
+
 object BigDecimalFormatter {
-  def toTwoDecimalPlaces(amount: BigDecimal): String = amount.setScale(2).toString()
+
+  val currencyFormatter: NumberFormat = {
+    val cf = NumberFormat.getCurrencyInstance(new Locale("en", "GB"))
+    cf.setCurrency(Currency.getInstance(new Locale("en", "GB")))
+    cf.setCurrency(Currency.getInstance("EUR"))
+    cf
+  }
+  def toEuros(amount: BigDecimal): String = currencyFormatter.format(amount.setScale(2))
 }
 

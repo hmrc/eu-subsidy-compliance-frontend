@@ -23,8 +23,13 @@ class BigDecimalFormatterSoec extends AnyWordSpecLike with Matchers {
 
   "BigDecimalFormatter" when {
     "toTwoDecimalPlaces is called" should {
+
       "return a formatted string containing the value formatted to two decimal places" in {
-        BigDecimalFormatter.toTwoDecimalPlaces(BigDecimal(1)) shouldBe "1.00"
+        BigDecimalFormatter.toEuros(BigDecimal(1)) shouldBe "€1.00"
+      }
+
+      "format numbers greater than 100 with comma separators" in {
+        BigDecimalFormatter.toEuros(BigDecimal(1000)) shouldBe "€1,000.00"
       }
     }
   }
