@@ -313,7 +313,7 @@ noBusinessPresent.title = There are no other businesses added to {0}
 # Financial Dashboard
 dashboard.title = Financial Dashboard
 dashboard.overall.summary.heading = Summary of waivers: Total, tax years {0} to {1}
-dashboard.year.summary.heading = Summary of waivers: Total, tax year {0} to {1}
+dashboard.year.summary.heading = Summary of waivers: Tax year {0} to {1}
 dashboard.customs.duty.heading = Customs Duty waivers claimed
 dashboard.de.minimis.aid.heading = de minimis aid (less Customs Duty waivers) payments
 dashboard.total.claimed.heading = Total claimed
