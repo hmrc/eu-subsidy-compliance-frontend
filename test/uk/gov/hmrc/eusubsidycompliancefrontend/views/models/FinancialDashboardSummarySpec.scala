@@ -53,7 +53,7 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
         ),
         taxYears = Seq(2019, 2020, 2021).map { year =>
           TaxYearSummary(
-            year = year,
+            startYear = year,
             hmrcSubsidyTotal = SubsidyAmount.Zero,
             nonHmrcSubsidyTotal = SubsidyAmount.Zero
           )

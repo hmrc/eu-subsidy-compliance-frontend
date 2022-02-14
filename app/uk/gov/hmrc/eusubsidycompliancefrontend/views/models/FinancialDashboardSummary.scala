@@ -41,11 +41,12 @@ case class OverallSummary(
 }
 
 case class TaxYearSummary(
-  year: Int,
+  startYear: Int,
   hmrcSubsidyTotal: SubsidyAmount,
   nonHmrcSubsidyTotal: SubsidyAmount,
 ) {
   def total: SubsidyAmount = SubsidyAmount(hmrcSubsidyTotal + nonHmrcSubsidyTotal)
+  def endYear: Int = startYear + 1
 }
 
 object FinancialDashboardSummary {
@@ -103,7 +104,7 @@ object FinancialDashboardSummary {
       .map(_ - startDate.getYear)
       .map(d => LocalDate.from(startDate).plusYears(d))
       .map(d => TaxYearSummary(
-        year = d.getYear,
+        startYear = d.getYear,
         hmrcSubsidyTotal = hmrcSubsidiesByTaxYearStart.getOrElse(d, SubsidyAmount.Zero),
         nonHmrcSubsidyTotal = nonHmrcSubsidiesByTaxYearStart.getOrElse(d, SubsidyAmount.Zero),
       ))

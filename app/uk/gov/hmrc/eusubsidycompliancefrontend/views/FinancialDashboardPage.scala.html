@@ -73,5 +73,45 @@
         </tbody>
     </table>
 
-    <!-- TODO - add summary sections for each tax year -->
+    @for(taxYear <- summary.taxYears) {
+        <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-table__caption--m">
+                @messages("dashboard.year.summary.heading", taxYear.startYear.toString, taxYear.endYear.toString)
+            </caption>
+
+            <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">@messages("dashboard.customs.duty.heading")</th>
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell"></td>
+            </tr>
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">€@taxYear.hmrcSubsidyTotal</td>
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell"></td>
+            </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">@messages("dashboard.de.minimis.aid.heading")</th>
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell"></td>
+            </tr>
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">€@taxYear.nonHmrcSubsidyTotal</td>
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell"></td>
+            </tr>
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">@messages("dashboard.total.claimed.heading")</th>
+                <th scope="row" class="govuk-table__header"></th>
+                <th scope="row" class="govuk-table__header"></th>
+                <td class="govuk-table__cell"></td>
+            </tr>
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell">€@taxYear.total</td>
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell"></td>
+            </tr>
+            </tbody>
+        </table>
+    }
 }
