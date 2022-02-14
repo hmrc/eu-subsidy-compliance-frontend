@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.views.models
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.{agriculture, aquaculture, other, transport}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{IndustrySectorLimit, Sector, SubsidyAmount}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures.{hmrcSubsidy, nonHmrcSubsidy, undertaking, undertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearSyntax.LocalDateTaxYearOps
@@ -96,6 +97,41 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
       )
 
       result shouldBe expected
+    }
+
+    "apply default sector limits where none defined on the undertaking" in {
+      val end = LocalDate.parse("2022-03-01").toTaxYearEnd
+      val start = end.minusYears(2).toTaxYearStart
+
+      val emptyUndertakingSubsidies = undertakingSubsidies.copy(
+        nonHMRCSubsidyTotalEUR = SubsidyAmount.ZeroToTwoDecimalPlaces,
+        hmrcSubsidyTotalEUR = SubsidyAmount.ZeroToTwoDecimalPlaces,
+        nonHMRCSubsidyUsage = List.empty,
+        hmrcSubsidyUsage = List.empty
+      )
+
+      val sectorLimits = Map(
+        agriculture -> IndustrySectorLimit(30000.00),
+        aquaculture -> IndustrySectorLimit(20000.00),
+        other -> IndustrySectorLimit(200000.00),
+        transport -> IndustrySectorLimit(100000.00),
+      )
+
+      sectorLimits.keys.foreach { sector =>
+        val undertakingForSector = undertaking.copy(
+          industrySector = sector,
+          industrySectorLimit = None
+        )
+        val result = FinancialDashboardSummary.fromUndertakingSubsidies(
+          undertakingForSector,
+          emptyUndertakingSubsidies,
+          start,
+          end
+        )
+        result.overall.sectorCap shouldBe sectorLimits(sector)
+      }
+
+
     }
   }
 
