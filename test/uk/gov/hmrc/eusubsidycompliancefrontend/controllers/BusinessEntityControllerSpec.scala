@@ -85,6 +85,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
       .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful(_)))
   }
 
+
   "BusinessEntityControllerSpec" when {
 
     "handling request to get add Business Page" must {
@@ -792,7 +793,6 @@ class BusinessEntityControllerSpec  extends ControllerSpec
               }
               val button = doc.select("form")
               button.attr("action") shouldBe routes.BusinessEntityController.postRemoveYourselfBusinessEntity().url
-
             }
           )
 

@@ -256,7 +256,6 @@ class BusinessEntityController @Inject()(
 
         case _ => handleMissingSessionData("Undertaking journey")
       }
-
   }
 
   def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
@@ -264,7 +263,6 @@ class BusinessEntityController @Inject()(
       case Some(undertaking) =>
         val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("undertaking reference"))
         val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
-
         removeBusinessForm.bindFromRequest().fold(
           errors => Future.successful(BadRequest(removeBusinessPage(errors, removeBE))),
           form => {
@@ -298,7 +296,6 @@ class BusinessEntityController @Inject()(
 
       case _ => handleMissingSessionData("Undertaking journey")
     }}
-
 
   lazy val addBusinessForm: Form[FormValues] = Form(
     mapping("addBusiness" -> mandatory("addBusiness"))(FormValues.apply)(FormValues.unapply))

@@ -79,11 +79,10 @@ class AccountController @Inject()(
     } yield {
       undertakingOpt match {
         case Some(undertaking) if(undertaking.isLeadEORI(eori)) => Redirect(routes.AccountController.getAccountPage())  //if logged in as lead EORI, redirect to Account home page
-        case Some(undertaking) => Ok(existingUndertakingPage(undertaking.name, eori)) //if logged in as non-lead EORI, redirect to existing undertaking page
+        case Some(undertaking) => Ok(existingUndertakingPage(undertaking.name)) //if logged in as non-lead EORI, redirect to existing undertaking page
         case None => Redirect(routes.AccountController.getAccountPage()) //if undertaking not present, then create undertaking
       }
     }
   }
-
 
 }

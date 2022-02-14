@@ -17,19 +17,16 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.BusinessEntity
-
 @this(
         layout: Layout,
         formHelper: FormWithCSRF,
         button: components.Button,
         govukErrorSummary: GovukErrorSummary,
-        govukRadios : GovukRadios
+        govukCheckboxes : GovukCheckboxes
 )
 
-
-@(form: Form[_], bs: BusinessEntity, previous: Journey.Uri, undertakingName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@key = @{"removeYourselfBusinessEntity"}
+@(form: Form[_], previous: Journey.Uri, undertakingName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@key = @{"noClaimNotification"}
 @title = @{messages(s"$key.title", undertakingName)}
 
 @layout(
@@ -37,47 +34,46 @@
     backLinkEnabled = true,
     backLink = Some(previous)
 ) {
-    @formHelper(action = controllers.routes.BusinessEntityController.postRemoveYourselfBusinessEntity()) {
+
+    @formHelper(action = controllers.routes.NoClaimNotificationController.postNoClaimNotification()) {
         @form.errors.map { err =>
             @govukErrorSummary(ErrorSummary(
                 errorList = Seq(
                     ErrorLink(
                         href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(err.key++"." ++err.message, undertakingName)}")
+                        content = Text(s"${messages(err.key++"." ++err.message)}")
                     )
                 ),
                 title = Text(messages("common.error.summary.title"))
             ))
         }
+
         <h1 class="govuk-heading-xl">@title</h1>
-        @govukRadios(Radios(
-            classes = "govuk-radios--inline",
-            errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages(s"$key.error.required", undertakingName))
-            ))} else None,
+
+        @govukCheckboxes(Checkboxes(
+            name = "value",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    classes = "govuk-fieldset__legend--m",
-                    isPageHeading = false
+                    isPageHeading = false,
+                    classes = "govuk-fieldset__legend--l"
                 ))
             )),
             hint = None,
             idPrefix = Some(key),
-            name = key,
+             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+                content = Text(messages(s"$key.error.required"))
+            ))} else None,
             items = Seq(
-                RadioItem(
-                    content = Text(messages("common.yes")),
-                    value = Some("true"),
+                CheckboxItem(
+                    content = Text(messages(s"$key.value")),
+                    value = "true",
+                    name = Some(key),
                     checked = form.data.exists(_._2 == "true")
-                ),
-                RadioItem(
-                    content = Text(messages("common.no")),
-                    value = Some("false"),
-                    checked = form.data.exists(_._2 == "false")
                 )
             )
-        ))
 
-        @button("common.continue.only")
+        ))
+        @button("common.submit")
     }
+
 }

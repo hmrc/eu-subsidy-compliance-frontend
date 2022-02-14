@@ -86,10 +86,16 @@ class AccountControllerSpec  extends ControllerSpec
             messageFromMessageKey("account-homepage.title", undertaking.name),
             {doc =>
               val htmlBody = doc.select(".govuk-grid-column-one-third").html()
+
               htmlBody should include regex messageFromMessageKey(
                 "account-homepage.cards.card1.link1",
                 routes.SubsidyController.getReportPayment().url
               )
+              htmlBody should include regex messageFromMessageKey(
+                "account-homepage.cards.card2.link1",
+                routes.UndertakingController.getAmendUndertakingDetails().url
+              )
+
               if(undertaking.undertakingBusinessEntity.length > 1)
                 htmlBody should include regex messageFromMessageKey(
                   "account-homepage.cards.card3.link1View",
@@ -329,6 +335,7 @@ class AccountControllerSpec  extends ControllerSpec
               "existingUndertaking.link2",
               routes.BusinessEntityController.getRemoveYourselfBusinessEntity().url
             )
+
 
           }
         )
