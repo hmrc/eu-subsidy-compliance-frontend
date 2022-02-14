@@ -82,8 +82,8 @@ class FinancialDashboardControllerSpec extends ControllerSpec
 
           val summaryData = FinancialDashboardSummary
             .fromUndertakingSubsidies(
-              u = undertaking,
-              s = undertakingSubsidies,
+              undertaking = undertaking,
+              subsidies = undertakingSubsidies,
               startDate = LocalDate.parse("2019-04-06"),
               endDate = fakeTimeProvider.today
             )

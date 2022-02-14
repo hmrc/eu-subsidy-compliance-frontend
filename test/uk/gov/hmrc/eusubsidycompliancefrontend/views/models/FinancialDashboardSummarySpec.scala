@@ -50,7 +50,6 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
           nonHmrcSubsidyTotal = emptyUndertakingSubsidies.nonHMRCSubsidyTotalEUR,
           sector = Sector.other,
           sectorCap = IndustrySectorLimit(BigDecimal(200000.00)),
-          allowanceRemaining = SubsidyAmount(BigDecimal(200000.00)),
         ),
         taxYears = Seq(2019, 2020, 2021).map { year =>
           TaxYearSummary(
@@ -87,7 +86,6 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
           nonHmrcSubsidyTotal = undertakingSubsidies.nonHMRCSubsidyTotalEUR,
           sector = Sector.other,
           sectorCap = IndustrySectorLimit(BigDecimal(200000.00)),
-          allowanceRemaining = SubsidyAmount(BigDecimal(200000.00) - undertakingSubsidies.hmrcSubsidyTotalEUR - undertakingSubsidies.nonHMRCSubsidyTotalEUR),
         ),
         taxYears = Seq(
           TaxYearSummary(2019,  SubsidyAmount(123.45),  SubsidyAmount(123.45)),
@@ -131,7 +129,24 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
         result.overall.sectorCap shouldBe sectorLimits(sector)
       }
 
+    }
 
+    "tax year summary should compute total correctly" in {
+      TaxYearSummary(2000, SubsidyAmount(1.00), SubsidyAmount(2.00)).total shouldBe SubsidyAmount(3.00)
+    }
+
+    "overall tax summary should compute total and allowance remaining correctly" in {
+      val underTest = OverallSummary(
+        startYear = 2000,
+        endYear = 2001,
+        hmrcSubsidyTotal = SubsidyAmount(1.00),
+        nonHmrcSubsidyTotal = SubsidyAmount(2.00),
+        sector = Sector.other,
+        sectorCap = IndustrySectorLimit(200000.00)
+      )
+
+      underTest.total shouldBe SubsidyAmount(3.00)
+      underTest.allowanceRemaining shouldBe SubsidyAmount(199997.00)
     }
   }
 
