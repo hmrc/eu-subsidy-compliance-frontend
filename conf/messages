@@ -12,6 +12,7 @@ common.continue=Save and Continue
 common.continue.only=Continue
 common.accept=Accept and send
 continue.button=Save and Continue
+button.addBusiness = Add a business to this undertaking
 
 common.yes=Yes
 common.no=No
@@ -170,7 +171,7 @@ account-homepage.cards.card3.heading=Businesses in {0}
 account-homepage.cards.card3.link1=View your businesses or Add a business to your account [TODO: Link text depends on businesses added]
 account-homepage.cards.card3.link1View=View your businesses
 account-homepage.cards.card3.link1Add=Add a business to your account
-account-homepage.cards.card3.link2=Promote another business to lead
+account-homepage.cards.card3.link2=Make another business the administrator
 
 report-payment.title=Report a de minimis aid payment
 report-payment.p1=You have not yet reported any payments.
@@ -246,4 +247,23 @@ noClaimNotification.error.required = Tick the check box to confirm the declarati
 #noClaimConfirmation
 noClaimConfirmation.title = You have notified HMRC that you have received no de minimis aid payments for this 90-day period
 noClaimConfirmation.ref.p1 = You can still report any de minimis sid payments for this period by entering them in the Reporting payments section on Account Home screen.
-noClaimConfirmation.link = <a href="{0}" class="govuk-link">Go to Home Account</a>
+noClaimConfirmation.link = <a href="{0}" class="govuk-link">Go to account home</a>
+
+#Select New lead
+selectNewLead.title = Please choose the new administrator for {0}
+selectNewLead.hint = Your undertaking must have an administrator
+selectNewLead.error.required = Select an EORI to make it new administrator
+
+#Lead Eori changed
+leadEORIChanged.title = Lead EORI changed
+leadEORIChanged.subtitle = You have asked for EORI number {0} to become the new administator for {1}
+leadEORIChanged.p1 = We have sent you a confirmation email.
+leadEORIChanged.h2 = What happens next
+leadEORIChanged.p2 = EORI {0} has now been emailed with instructions and information about becoming the administrator for {1}.
+leadEORIChanged.p3 = Until they have completed these instructions, you are still the administator and it is your responsibility to ensure all account details are correct and up to date.
+leadEORIChanged.p4 = When you are no longer the administrator, please ensure you keep the new administrator updated of any de minimis aid (less Customs Duty waivers) payments you receive.
+leadEORIChanged.link = <a href="{0}" class="govuk-link">Go to account home</a>
+
+#Add a business for making lead
+noBusinessPresent.title = There are no other businesses added to {0}
+

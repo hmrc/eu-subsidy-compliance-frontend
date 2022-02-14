@@ -1,0 +1,40 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+
+@this(layout: Layout, govukPanel : GovukPanel)
+
+@(eori: String, undertakingName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@key = @{"leadEORIChanged"}
+@title = @{messages(s"$key.title")}
+
+@layout(pageTitle = Some(title)) {
+    @govukPanel(Panel(
+        classes = "govuk-!-margin-bottom-7",
+        content = HtmlContent(s"""<strong>${messages(s"$key.subtitle", eori, undertakingName)}</strong>""")
+    ))
+    <p class="govuk-body">@messages(s"$key.p1")</p>
+    <h2 class="govuk-heading-l">@{messages(s"$key.h2")}</h2>
+    <p class="govuk-body">@messages(s"$key.p2", eori, undertakingName)</p>
+    <p class="govuk-body">@messages(s"$key.p3")</p>
+    <p class="govuk-body">@messages(s"$key.p4")</p>
+    <p class="govuk-body">@Html(messages(s"$key.link", controllers.routes.AccountController.getAccountPage().url))</p>
+
+}

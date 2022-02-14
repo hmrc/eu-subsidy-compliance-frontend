@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName}
@@ -188,10 +188,10 @@ class BusinessEntityController @Inject()(
       businessEntity =  BusinessEntity(
         eoriBE,
         leadEORI = false,
-        ContactDetails(contactDetails.phone, contactDetails.mobile).some)
-      _ <- store.put(BusinessEntityJourney())// resetting the journey as it's final CYA page
+        ContactDetails(contactDetails.phone, contactDetails.mobile).some) // resetting the journey as it's final CYA page
       _ <- escService.addMember(undertakingRef, businessEntity)
-    } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
+      redirect <- getNext(businessEntityJourney)
+    } yield redirect
 
     cyaForm.bindFromRequest().fold(
       errors =>  throw new IllegalStateException(s"value hard-coded, form hacking? $errors"),
@@ -297,6 +297,16 @@ class BusinessEntityController @Inject()(
       case _ => handleMissingSessionData("Undertaking journey")
     }}
 
+  private def getNext(businessEntityJourney: BusinessEntityJourney)(implicit EORI: EORI): Future[Result] = {
+    businessEntityJourney.isLeadSelectJourney match {
+      case Some(true) =>  store.put[BusinessEntityJourney](BusinessEntityJourney(isLeadSelectJourney = true.some))
+        .map(_ => Redirect(routes.SelectNewLeadController.getSelectNewLead()))
+      case _ => store.put[BusinessEntityJourney](BusinessEntityJourney())
+        .map(_ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
+    }
+  }
+
+
   lazy val addBusinessForm: Form[FormValues] = Form(
     mapping("addBusiness" -> mandatory("addBusiness"))(FormValues.apply)(FormValues.unapply))
 
@@ -318,5 +328,6 @@ class BusinessEntityController @Inject()(
 
   lazy val cyaForm: Form[FormValues] = Form(
     mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
+
 
 }
