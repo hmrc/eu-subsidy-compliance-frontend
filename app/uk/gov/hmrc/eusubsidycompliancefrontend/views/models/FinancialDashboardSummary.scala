@@ -50,26 +50,19 @@ case class TaxYearSummary(
 
 object FinancialDashboardSummary {
 
-  // TODO - we can take an optional value from the undertaking. If this isn't present we
-  //        should fallback to a default and warn.
-  //        the default should reflect the appropriate cap for each sector
-  val SectorCap = BigDecimal(200000.00).setScale(2)
-
   // Fallback values should no value be present on the undertaking.
-  // TODO - test coverage
-  val DefaultSectorLimits = Map(
+  private val DefaultSectorLimits = Map(
     Sector.agriculture -> IndustrySectorLimit(30000.00),
     Sector.aquaculture -> IndustrySectorLimit(20000.00),
     Sector.other -> IndustrySectorLimit(200000.00),
     Sector.transport -> IndustrySectorLimit(100000.00),
   )
 
-  // TODO - we could just have the start of the first tax year and compute the rest.
+  // TODO - remove the set scale calls - this could (should?) happen in the view instead via a helper/formatter
   def fromUndertakingSubsidies(
     u: Undertaking,
     s: UndertakingSubsidies,
     startDate: LocalDate,
-    // TODO - this should be the search end date, not the tax year end date
     endDate: LocalDate
   ): FinancialDashboardSummary = {
 
@@ -83,45 +76,35 @@ object FinancialDashboardSummary {
       allowanceRemaining = SubsidyAmount(BigDecimal(200000.00).setScale(2) - s.hmrcSubsidyTotalEUR - s.nonHMRCSubsidyTotalEUR)
     )
 
-    /**
-     * Simplest thing to do here is link each subsidy total to a tax year and then group by that in order to produce
-     * a number of sublists that can then be summed up.
-     *
-     * TODO - each summary has dates - which ones do we group by?
-     */
+    def summariseByTaxYear(m: Seq[(LocalDate, SubsidyAmount)]): Map[LocalDate, SubsidyAmount] =
+      m.groupBy(kv => kv._1)
+        // TODO - tidy
+        .map { kv =>
+          kv._1 -> kv._2.map(_._2)
+            .fold(SubsidyAmount.Zero)((a, b) => SubsidyAmount(a + b))
+        }
 
-    // TODO - confirm which date refers to the tax year to use
-    // TODO - confirm that the amount is in euros?
-    // TODO - extract common logic for hmrc and non-hmrc subs
-    val hmrcSubsidiesByTaxYearStart: Map[LocalDate, SubsidyAmount] = s.hmrcSubsidyUsage
-      .map(i => i.acceptanceDate.toTaxYearStart -> i.amount.getOrElse(SubsidyAmount(BigDecimal(0.00).setScale(2))))
-      .groupBy(kv => kv._1)
-      // TODO - tidy
-      .map { kv =>
-        kv._1 -> kv._2.map(_._2)
-          .fold(SubsidyAmount(BigDecimal(0.00).setScale(2)))((a: SubsidyAmount, b: SubsidyAmount) => SubsidyAmount(a + b))
-      }
+    val hmrcSubsidiesByTaxYearStart: Map[LocalDate, SubsidyAmount] = summariseByTaxYear(
+      s.hmrcSubsidyUsage
+        // We assume that acceptanceDate is the correct field to use since it's mandatory. There is also an issueDate
+        // field but since this is optional it makes grouping by tax year impossible if no value is present.
+        // We also assume that the amount field holds a value in EUR.
+        .map(i => i.acceptanceDate.toTaxYearStart -> i.amount.getOrElse(SubsidyAmount.Zero))
+    )
 
-    // TODO - confirm that allocation date is the date to use
-    val nonHmrcSubsidiesByTaxYearStart: Map[LocalDate, SubsidyAmount] = s.nonHMRCSubsidyUsage
+    val nonHmrcSubsidiesByTaxYearStart: Map[LocalDate, SubsidyAmount] = summariseByTaxYear(
+      s.nonHMRCSubsidyUsage
       .map(i => i.allocationDate.toTaxYearStart -> i.nonHMRCSubsidyAmtEUR)
-      .groupBy(kv => kv._1)
-      // TODO - tidy
-      .map { kv =>
-        kv._1 -> kv._2.map(_._2)
-          .fold(SubsidyAmount(BigDecimal(0.00).setScale(2)))((a: SubsidyAmount, b: SubsidyAmount) => SubsidyAmount(a + b))
-      }
+    )
 
-    // Determine number of years to compute.
-    val lastTaxYearStart = endDate.toTaxYearStart
-
-    val taxYears = (startDate.getYear to lastTaxYearStart.getYear)
+    // Generate summaries for each starting tax year value.
+    val taxYears = (startDate.getYear to endDate.toTaxYearStart.getYear)
       .map(_ - startDate.getYear)
       .map(d => LocalDate.from(startDate).plusYears(d))
       .map(d => TaxYearSummary(
         year = d.getYear,
-        hmrcSubsidyTotal = hmrcSubsidiesByTaxYearStart.getOrElse(d, SubsidyAmount(BigDecimal(0.00).setScale(2))),
-        nonHmrcSubsidyTotal = nonHmrcSubsidiesByTaxYearStart.getOrElse(d, SubsidyAmount(BigDecimal(0.00).setScale(2))),
+        hmrcSubsidyTotal = hmrcSubsidiesByTaxYearStart.getOrElse(d, SubsidyAmount.Zero),
+        nonHmrcSubsidyTotal = nonHmrcSubsidiesByTaxYearStart.getOrElse(d, SubsidyAmount.Zero),
       ))
 
     FinancialDashboardSummary(

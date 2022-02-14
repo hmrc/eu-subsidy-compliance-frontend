@@ -34,8 +34,8 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
       val start = end.minusYears(2).toTaxYearStart
 
       val emptyUndertakingSubsidies = undertakingSubsidies.copy(
-        nonHMRCSubsidyTotalEUR = SubsidyAmount.ZeroToTwoDecimalPlaces,
-        hmrcSubsidyTotalEUR = SubsidyAmount.ZeroToTwoDecimalPlaces,
+        nonHMRCSubsidyTotalEUR = SubsidyAmount.Zero,
+        hmrcSubsidyTotalEUR = SubsidyAmount.Zero,
         nonHMRCSubsidyUsage = List.empty,
         hmrcSubsidyUsage = List.empty
       )
@@ -55,8 +55,8 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
         taxYears = Seq(2019, 2020, 2021).map { year =>
           TaxYearSummary(
             year = year,
-            hmrcSubsidyTotal = SubsidyAmount.ZeroToTwoDecimalPlaces,
-            nonHmrcSubsidyTotal = SubsidyAmount.ZeroToTwoDecimalPlaces
+            hmrcSubsidyTotal = SubsidyAmount.Zero,
+            nonHmrcSubsidyTotal = SubsidyAmount.Zero
           )
         }
       )
@@ -104,8 +104,8 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
       val start = end.minusYears(2).toTaxYearStart
 
       val emptyUndertakingSubsidies = undertakingSubsidies.copy(
-        nonHMRCSubsidyTotalEUR = SubsidyAmount.ZeroToTwoDecimalPlaces,
-        hmrcSubsidyTotalEUR = SubsidyAmount.ZeroToTwoDecimalPlaces,
+        nonHMRCSubsidyTotalEUR = SubsidyAmount.Zero,
+        hmrcSubsidyTotalEUR = SubsidyAmount.Zero,
         nonHMRCSubsidyUsage = List.empty,
         hmrcSubsidyUsage = List.empty
       )
