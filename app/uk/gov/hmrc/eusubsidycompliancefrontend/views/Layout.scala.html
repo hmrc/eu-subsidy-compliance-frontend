@@ -18,12 +18,16 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcHead, HmrcLayout}
 @import views.html.helper.CSPNonce
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.timeout_dialog
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLanguageSelectHelper
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcReportTechnicalIssueHelper
 
 @this(
   appConfig: AppConfig,
-  hmrcLayout: HmrcLayout,
+  govukLayout: GovukLayout,
   hmrcHead: HmrcHead,
   beforeContentBlock: components.BeforeContent,
+  hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+  hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
   scripts: components.Scripts
 )
 @(pageTitle: Option[String] = None,
@@ -45,12 +49,20 @@
 @beforeContentWrapper = {
   @beforeContentBlock(backLinkEnabled, backLink)
   @timeout_dialog(request.uri, appConfig.sessionTimeout)
+@{if(appConfig.welshLanguageSupportEnabled) Some(hmrcLanguageSelectHelper()) else None}
 }
 
-@hmrcLayout(
+@content = {
+    <div class="govuk-!-margin-bottom-6">
+    @contentBlock
+    </div>
+    <div class="govuk-!-display-none-print">
+    @hmrcReportTechnicalIssueHelper()
+    </div>
+}
+
+@govukLayout(
   pageTitle = Some(documentTitle),
-  additionalHeadBlock = Some(hmrcHead(Some(head), CSPNonce.get)),
-  nonce = CSPNonce.get,
-  isWelshTranslationAvailable = appConfig.welshLanguageSupportEnabled,
-  beforeContentBlock = Some(beforeContentWrapper)
+    headBlock = Some(hmrcHead(headBlock = Some(head), nonce = CSPNonce.get)),
+    beforeContentBlock = Some(beforeContentWrapper),
 )(contentBlock)
