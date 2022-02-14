@@ -298,10 +298,10 @@ class BusinessEntityController @Inject()(
     }}
 
   private def getNext(businessEntityJourney: BusinessEntityJourney)(implicit EORI: EORI): Future[Result] = {
-    businessEntityJourney.isLeadSelectJourney.contains(true) match {
-      case true =>  store.put[BusinessEntityJourney](BusinessEntityJourney(isLeadSelectJourney = true.some))
+    businessEntityJourney.isLeadSelectJourney match {
+      case Some(true) =>  store.put[BusinessEntityJourney](BusinessEntityJourney(isLeadSelectJourney = true.some))
         .map(_ => Redirect(routes.SelectNewLeadController.getSelectNewLead()))
-      case false => store.put[BusinessEntityJourney](BusinessEntityJourney())
+      case _ => store.put[BusinessEntityJourney](BusinessEntityJourney())
         .map(_ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
     }
   }
