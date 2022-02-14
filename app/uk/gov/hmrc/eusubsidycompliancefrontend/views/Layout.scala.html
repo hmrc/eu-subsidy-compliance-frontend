@@ -25,7 +25,6 @@
   appConfig: AppConfig,
   govukLayout: GovukLayout,
   hmrcHead: HmrcHead,
-  beforeContentBlock: components.BeforeContent,
   hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
   hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
   scripts: components.Scripts
@@ -47,7 +46,6 @@
 }
 
 @beforeContentWrapper = {
-  @beforeContentBlock(backLinkEnabled, backLink)
   @timeout_dialog(request.uri, appConfig.sessionTimeout)
 @{if(appConfig.welshLanguageSupportEnabled) Some(hmrcLanguageSelectHelper()) else None}
 }
