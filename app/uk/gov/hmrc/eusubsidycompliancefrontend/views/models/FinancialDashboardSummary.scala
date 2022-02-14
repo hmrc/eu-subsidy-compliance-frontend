@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.views.models
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyAmount
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{IndustrySectorLimit, Sector, SubsidyAmount}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearSyntax._
 
@@ -35,8 +35,7 @@ case class OverallSummary(
   hmrcSubsidyTotal: SubsidyAmount,
   nonHmrcSubsidyTotal: SubsidyAmount,
   sector: Sector,
-  // TODO - check these types
-  sectorCap: SubsidyAmount,
+  sectorCap: IndustrySectorLimit,
   allowanceRemaining: SubsidyAmount
 )
 
@@ -56,6 +55,15 @@ object FinancialDashboardSummary {
   //        the default should reflect the appropriate cap for each sector
   val SectorCap = BigDecimal(200000.00).setScale(2)
 
+  // Fallback values should no value be present on the undertaking.
+  // TODO - test coverage
+  val DefaultSectorLimits = Map(
+    Sector.agriculture -> IndustrySectorLimit(30000.00),
+    Sector.aquaculture -> IndustrySectorLimit(20000.00),
+    Sector.other -> IndustrySectorLimit(200000.00),
+    Sector.transport -> IndustrySectorLimit(100000.00),
+  )
+
   // TODO - we could just have the start of the first tax year and compute the rest.
   def fromUndertakingSubsidies(
     u: Undertaking,
@@ -71,7 +79,7 @@ object FinancialDashboardSummary {
       hmrcSubsidyTotal = SubsidyAmount(s.hmrcSubsidyTotalEUR.setScale(2)),
       nonHmrcSubsidyTotal = SubsidyAmount(s.nonHMRCSubsidyTotalEUR.setScale(2)),
       sector = u.industrySector,
-      sectorCap = SubsidyAmount(u.industrySectorLimit.map(_.setScale(2)).getOrElse(SectorCap)),
+      sectorCap = u.industrySectorLimit.orElse(DefaultSectorLimits.get(u.industrySector)).map(l => IndustrySectorLimit(l.setScale(2))).get,
       allowanceRemaining = SubsidyAmount(BigDecimal(200000.00).setScale(2) - s.hmrcSubsidyTotalEUR - s.nonHMRCSubsidyTotalEUR)
     )
 
@@ -86,8 +94,7 @@ object FinancialDashboardSummary {
     // TODO - confirm that the amount is in euros?
     // TODO - extract common logic for hmrc and non-hmrc subs
     val hmrcSubsidiesByTaxYearStart: Map[LocalDate, SubsidyAmount] = s.hmrcSubsidyUsage
-      .filter(_.issueDate.isDefined) // TODO - can this ever be empty?
-      .map(i => i.issueDate.get.toTaxYearStart -> i.amount.getOrElse(SubsidyAmount(BigDecimal(0.00).setScale(2))))
+      .map(i => i.acceptanceDate.toTaxYearStart -> i.amount.getOrElse(SubsidyAmount(BigDecimal(0.00).setScale(2))))
       .groupBy(kv => kv._1)
       // TODO - tidy
       .map { kv =>

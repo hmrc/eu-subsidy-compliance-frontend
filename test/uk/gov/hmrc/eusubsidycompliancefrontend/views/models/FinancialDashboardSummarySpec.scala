@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.views.models
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, SubsidyAmount}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{IndustrySectorLimit, Sector, SubsidyAmount}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures.{hmrcSubsidy, nonHmrcSubsidy, undertaking, undertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearSyntax.LocalDateTaxYearOps
 
@@ -48,7 +48,7 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
           hmrcSubsidyTotal = emptyUndertakingSubsidies.hmrcSubsidyTotalEUR,
           nonHmrcSubsidyTotal = emptyUndertakingSubsidies.nonHMRCSubsidyTotalEUR,
           sector = Sector.other,
-          sectorCap = SubsidyAmount(BigDecimal(200000.00)),
+          sectorCap = IndustrySectorLimit(BigDecimal(200000.00)),
           allowanceRemaining = SubsidyAmount(BigDecimal(200000.00)),
         ),
         taxYears = Seq(2019, 2020, 2021).map { year =>
@@ -71,7 +71,7 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
       val result = FinancialDashboardSummary.fromUndertakingSubsidies(
         undertaking,
         undertakingSubsidies.copy(
-          hmrcSubsidyUsage = yearOffsets.map(y => hmrcSubsidy.copy(issueDate = Some(start.plusYears(y)))),
+          hmrcSubsidyUsage = yearOffsets.map(y => hmrcSubsidy.copy(acceptanceDate = start.plusYears(y))),
           nonHMRCSubsidyUsage = yearOffsets.map(y => nonHmrcSubsidy.copy(allocationDate = start.plusYears(y)))
         ),
         start,
@@ -85,7 +85,7 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
           hmrcSubsidyTotal = undertakingSubsidies.hmrcSubsidyTotalEUR,
           nonHmrcSubsidyTotal = undertakingSubsidies.nonHMRCSubsidyTotalEUR,
           sector = Sector.other,
-          sectorCap = SubsidyAmount(BigDecimal(200000.00)),
+          sectorCap = IndustrySectorLimit(BigDecimal(200000.00)),
           allowanceRemaining = SubsidyAmount(BigDecimal(200000.00) - undertakingSubsidies.hmrcSubsidyTotalEUR - undertakingSubsidies.nonHMRCSubsidyTotalEUR),
         ),
         taxYears = Seq(

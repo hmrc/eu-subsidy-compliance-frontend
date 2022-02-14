@@ -85,8 +85,7 @@ class FinancialDashboardControllerSpec extends ControllerSpec
               u = undertaking,
               s = undertakingSubsidies,
               startDate = LocalDate.parse("2019-04-06"),
-              // TODO - this should be the search period end, not tax year end
-              endDate = LocalDate.parse("2022-04-05")
+              endDate = fakeTimeProvider.today
             )
 
           status(result) shouldBe Status.OK
