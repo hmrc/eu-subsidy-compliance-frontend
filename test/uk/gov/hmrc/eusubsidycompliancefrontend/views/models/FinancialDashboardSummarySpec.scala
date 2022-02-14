@@ -18,27 +18,80 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.views.models
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures.{undertaking, undertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, SubsidyAmount}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures.{hmrcSubsidy, nonHmrcSubsidy, undertaking, undertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearSyntax.LocalDateTaxYearOps
+
+import java.time.LocalDate
 
 class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
 
   "FinancialDashboardSummary" should {
 
-    "convert return a valid FinancialDashboardSummary instance" in {
-      val start = 2001
-      val end = 2022
-      val result = FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, undertakingSubsidies, start, end)
+    "convert and return an instance with zero summaries where no subsidy data is present" in {
+      val end = LocalDate.parse("2022-03-01").toTaxYearEnd
+      val start = end.minusYears(2).toTaxYearStart
+
+      val emptyUndertakingSubsidies = undertakingSubsidies.copy(
+        nonHMRCSubsidyTotalEUR = SubsidyAmount.ZeroToTwoDecimalPlaces,
+        hmrcSubsidyTotalEUR = SubsidyAmount.ZeroToTwoDecimalPlaces,
+        nonHMRCSubsidyUsage = List.empty,
+        hmrcSubsidyUsage = List.empty
+      )
+
+      val result = FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, emptyUndertakingSubsidies, start, end)
 
       val expected = FinancialDashboardSummary(
         overall = OverallSummary(
-          startYear = start,
-          endYear = end,
+          startYear = start.getYear,
+          endYear = end.getYear,
+          hmrcSubsidyTotal = emptyUndertakingSubsidies.hmrcSubsidyTotalEUR,
+          nonHmrcSubsidyTotal = emptyUndertakingSubsidies.nonHMRCSubsidyTotalEUR,
+          sector = Sector.other,
+          sectorCap = SubsidyAmount(BigDecimal(200000.00)),
+          allowanceRemaining = SubsidyAmount(BigDecimal(200000.00)),
+        ),
+        taxYears = Seq(2019, 2020, 2021).map { year =>
+          TaxYearSummary(
+            year = year,
+            hmrcSubsidyTotal = SubsidyAmount.ZeroToTwoDecimalPlaces,
+            nonHmrcSubsidyTotal = SubsidyAmount.ZeroToTwoDecimalPlaces
+          )
+        }
+      )
+
+      result shouldBe expected
+    }
+
+    "convert and return a valid FinancialDashboardSummary instance" in {
+      val end = LocalDate.parse("2022-03-01").toTaxYearEnd
+      val start = end.minusYears(2).toTaxYearStart
+      val yearOffsets = List(0, 1, 2)
+
+      val result = FinancialDashboardSummary.fromUndertakingSubsidies(
+        undertaking,
+        undertakingSubsidies.copy(
+          hmrcSubsidyUsage = yearOffsets.map(y => hmrcSubsidy.copy(issueDate = Some(start.plusYears(y)))),
+          nonHMRCSubsidyUsage = yearOffsets.map(y => nonHmrcSubsidy.copy(allocationDate = start.plusYears(y)))
+        ),
+        start,
+        end
+      )
+
+      val expected = FinancialDashboardSummary(
+        overall = OverallSummary(
+          startYear = start.getYear,
+          endYear = end.getYear,
           hmrcSubsidyTotal = undertakingSubsidies.hmrcSubsidyTotalEUR,
           nonHmrcSubsidyTotal = undertakingSubsidies.nonHMRCSubsidyTotalEUR,
           sector = Sector.other,
-          sectorCap = BigDecimal(200000.00),
-          allowanceRemaining = BigDecimal(200000.00) - undertakingSubsidies.hmrcSubsidyTotalEUR - undertakingSubsidies.nonHMRCSubsidyTotalEUR
+          sectorCap = SubsidyAmount(BigDecimal(200000.00)),
+          allowanceRemaining = SubsidyAmount(BigDecimal(200000.00) - undertakingSubsidies.hmrcSubsidyTotalEUR - undertakingSubsidies.nonHMRCSubsidyTotalEUR),
+        ),
+        taxYears = Seq(
+          TaxYearSummary(2019,  SubsidyAmount(123.45),  SubsidyAmount(123.45)),
+          TaxYearSummary(2020,  SubsidyAmount(123.45),  SubsidyAmount(123.45)),
+          TaxYearSummary(2021,  SubsidyAmount(123.45),  SubsidyAmount(123.45)),
         )
       )
 

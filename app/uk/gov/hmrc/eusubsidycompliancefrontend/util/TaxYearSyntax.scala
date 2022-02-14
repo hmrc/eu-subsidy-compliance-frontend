@@ -16,20 +16,13 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.util
 
-import java.time.{LocalDate, Month}
+import java.time.LocalDate
 
-object TaxYearHelpers {
+object TaxYearSyntax {
 
-  def taxYearStartForDate(d: LocalDate): LocalDate = {
-    val taxYearStartForDateYear = LocalDate.of(d.getYear, Month.APRIL, 6)
-    if (d.isBefore(taxYearStartForDateYear)) taxYearStartForDateYear.minusYears(1)
-    else taxYearStartForDateYear
+  implicit class LocalDateTaxYearOps(val ld: LocalDate) extends AnyVal {
+    def toTaxYearStart: LocalDate = TaxYearHelpers.taxYearStartForDate(ld)
+    def toTaxYearEnd: LocalDate = TaxYearHelpers.taxYearEndForDate(ld)
   }
 
-  def taxYearEndForDate(d: LocalDate): LocalDate =
-    taxYearStartForDate(d)
-      .plusYears(1)
-      .minusDays(1)
-
 }
-

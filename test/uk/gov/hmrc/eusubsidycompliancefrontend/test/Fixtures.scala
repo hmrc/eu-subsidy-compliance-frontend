@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.test
 
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, HmrcSubsidy, NonHmrcSubsidy, Undertaking, UndertakingSubsidies}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{DeclarationID, EORI, IndustrySectorLimit, Sector, SubsidyAmount, SubsidyRef, TaxType, TraderRef, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 
 import java.time.{Instant, ZoneId}
 
+// TODO - review this and align / update existing fixtures
 object Fixtures {
 
   val eori = EORI("GB123456789012")

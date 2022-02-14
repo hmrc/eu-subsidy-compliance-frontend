@@ -42,8 +42,6 @@ class FinancialDashboardController @Inject()(
 
   import escActionBuilders._
 
-  // TODO - specify date range
-  // this should be start date of second previous tax year to current date
   def getFinancialDashboard: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
@@ -57,7 +55,6 @@ class FinancialDashboardController @Inject()(
     val subsidies = for {
       undertaking <- store.get[Undertaking]
       r = undertaking.flatMap(_.reference).getOrElse(throw new IllegalStateException("No undertaking data on session"))
-      // TODO - pass date range
       s = SubsidyRetrieve(r, searchRange)
       subsidies <- escService.retrieveSubsidy(s)
     } yield (undertaking.get, subsidies)
@@ -66,7 +63,7 @@ class FinancialDashboardController @Inject()(
     subsidies.map { t =>
       Ok(financialDashboardPage(
           FinancialDashboardSummary
-            .fromUndertakingSubsidies(t._1, t._2, searchDateStart.getYear, currentTaxYearEnd.getYear))
+            .fromUndertakingSubsidies(t._1, t._2, searchDateStart, currentTaxYearEnd))
       )
     }
 

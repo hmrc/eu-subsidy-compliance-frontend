@@ -46,6 +46,7 @@ package object types extends SimpleJson {
         (x >= -99999999999.99) && (x <= 99999999999.99) && (x.scale <= 2)
       }
     }
+    val ZeroToTwoDecimalPlaces: SubsidyAmount = SubsidyAmount(BigDecimal(0.00).setScale(2))
   }
 
   type DeclarationID = String @@ DeclarationID.Tag

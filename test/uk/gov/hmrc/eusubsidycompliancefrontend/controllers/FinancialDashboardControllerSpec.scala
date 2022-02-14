@@ -35,6 +35,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDate
+
 class FinancialDashboardControllerSpec extends ControllerSpec
   with AuthSupport
   with JourneyStoreSupport
@@ -79,7 +81,13 @@ class FinancialDashboardControllerSpec extends ControllerSpec
           val page = instanceOf[FinancialDashboardPage]
 
           val summaryData = FinancialDashboardSummary
-            .fromUndertakingSubsidies(undertaking, undertakingSubsidies, 2019, 2022)
+            .fromUndertakingSubsidies(
+              u = undertaking,
+              s = undertakingSubsidies,
+              startDate = LocalDate.parse("2019-04-06"),
+              // TODO - this should be the search period end, not tax year end
+              endDate = LocalDate.parse("2022-04-05")
+            )
 
           status(result) shouldBe Status.OK
           contentAsString(result) shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
