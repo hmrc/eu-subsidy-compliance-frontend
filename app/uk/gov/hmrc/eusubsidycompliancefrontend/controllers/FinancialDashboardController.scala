@@ -56,11 +56,10 @@ class FinancialDashboardController @Inject()(
       r = undertaking.flatMap(_.reference).getOrElse(throw new IllegalStateException("No undertaking data on session"))
       s = SubsidyRetrieve(r, searchRange)
       subsidies <- escService.retrieveSubsidy(s)
-    } yield (undertaking, subsidies)
+    } yield (undertaking.get, subsidies)
 
-    // TODO - review error cases that should be handled here
     subsidies.map {
-      case (Some(undertaking), subsidies) =>
+      case ((undertaking), subsidies) =>
         Ok(financialDashboardPage(
             FinancialDashboardSummary
               .fromUndertakingSubsidies(undertaking, subsidies, searchDateStart, currentTaxYearEnd))
