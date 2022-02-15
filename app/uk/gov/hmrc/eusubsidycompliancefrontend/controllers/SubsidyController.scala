@@ -266,6 +266,7 @@ class SubsidyController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
+        // //changed form values to store the setValue, earlier it was not filing the set value
         val form = journey.traderRef.value.fold(claimTraderRefForm
         )(optionalTraderRef => claimTraderRefForm.fill(OptionalTraderRef(optionalTraderRef.setValue, optionalTraderRef.value)))
         Future.successful(Ok(addTraderReferencePage(form, journey.previous)))
