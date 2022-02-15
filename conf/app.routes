@@ -83,8 +83,8 @@ POST       /add-claim-date                          uk.gov.hmrc.eusubsidycomplia
 GET        /add-claim-public-authority              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimPublicAuthority
 POST       /add-claim-public-authority              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimPublicAuthority
 
-GET        /add-trader-ref                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimReference
-POST       /add-trader-ref                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimReference
+GET        /add-claim-reference                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimReference
+POST       /add-claim-reference                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimReference
 
 GET        /check-your-answers-subsidy              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getCheckAnswers
 POST       /check-your-answers-subsidy              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postCheckAnswers

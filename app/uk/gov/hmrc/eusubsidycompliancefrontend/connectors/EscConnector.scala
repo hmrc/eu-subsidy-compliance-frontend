@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import play.api.Logger
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidyAmendment}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, TraderRef, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import com.google.inject.{ImplementedBy, Inject, Singleton}
@@ -165,9 +165,9 @@ class EscConnectorImpl @Inject()(http: HttpClient,
             allocationDate = currentDate,
             submissionDate= currentDate,
             publicAuthority = Some(journey.publicAuthority.value.get),// this shouldn't be optional, is required in create API but not retrieve
-            traderReference = journey.traderRef.value.get,
+            traderReference = journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
             nonHMRCSubsidyAmtEUR = SubsidyAmount(journey.claimAmount.value.get),
-            businessEntityIdentifier = journey.addClaimEori.value.get,
+            businessEntityIdentifier = journey.addClaimEori.value.fold(sys.error("eori value missing"))(oprionalEORI => oprionalEORI.value.map(EORI(_))),
             amendmentType = journey.existingTransactionId.fold(Some(EisSubsidyAmendmentType("1")))(_ => Some(EisSubsidyAmendmentType("2")))
           )
         )
@@ -175,7 +175,7 @@ class EscConnectorImpl @Inject()(http: HttpClient,
     )
   }
 
-  private def toSubsidyDelete(nonHmrcSubsidy: NonHmrcSubsidy, undertakingRef: UndertakingRef) = {
+  private def toSubsidyDelete(nonHmrcSubsidy: NonHmrcSubsidy, undertakingRef: UndertakingRef): SubsidyUpdate = {
     SubsidyUpdate(
       undertakingIdentifier = undertakingRef,
       update = UndertakingSubsidyAmendment(

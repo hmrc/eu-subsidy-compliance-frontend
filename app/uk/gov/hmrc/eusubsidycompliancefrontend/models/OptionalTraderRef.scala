@@ -16,7 +16,13 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
+import play.api.libs.json.{Format, Json}
+
 case class OptionalTraderRef(
   setValue: String,
   value: Option[String]
 )
+
+object OptionalTraderRef {
+  implicit val format: Format[OptionalTraderRef] = Json.format[OptionalTraderRef]
+}

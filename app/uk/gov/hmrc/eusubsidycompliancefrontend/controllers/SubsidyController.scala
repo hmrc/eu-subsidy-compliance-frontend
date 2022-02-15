@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.data.Forms.{bigDecimal, mapping, optional, text}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
@@ -24,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store, SubsidyJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, Store, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
@@ -184,19 +185,9 @@ class SubsidyController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
-        journey
-          .addClaimEori
-          .value
-          .fold(
-            Future.successful(
-              Ok(addClaimEoriPage(claimEoriForm, journey.previous))
-            )
-          ) { x =>
-            val a = x.getOrElse("")
-            Future.successful(
-              Ok(addClaimEoriPage(claimEoriForm.fill(OptionalEORI(a,x)), journey.previous))
-            )
-          }
+        val form = journey.addClaimEori.value.fold(claimEoriForm
+        )(optionalEORI => claimEoriForm.fill(OptionalEORI(optionalEORI.setValue, optionalEORI.value)))
+        Future.successful(Ok(addClaimEoriPage(form, journey.previous)))
       case _ => handleMissingSessionData("Subsidy journey")
     }
   }
@@ -208,11 +199,10 @@ class SubsidyController @Inject()(
         formWithErrors => Future.successful(BadRequest(addClaimEoriPage(formWithErrors, previous))),
         form => {
           for {
-            journey <- store.update[SubsidyJourney]({
-                _.map { journey =>
-                  journey.copy(addClaimEori = journey.addClaimEori.copy(value = Some(form.value.map(EORI(_)))))
+            journey <- store.update[SubsidyJourney]{
+                _.map { _.copy(addClaimEori = FormPage("add-claim-eori", form.some))
                 }
-              })
+              }
             redirect <- getJourneyNext(journey)
           } yield redirect
         }
@@ -263,19 +253,9 @@ class SubsidyController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
-        journey
-          .traderRef
-          .value
-          .fold(
-            Future.successful(
-              Ok(addTraderReferencePage(claimTraderRefForm, journey.previous))
-            )
-          ) { x =>
-            val a = x.getOrElse("")
-            Future.successful(
-              Ok(addTraderReferencePage(claimTraderRefForm.fill(OptionalTraderRef(a,x)), journey.previous))
-            )
-          }
+        val form = journey.traderRef.value.fold(claimTraderRefForm
+        )(optionalTraderRef => claimTraderRefForm.fill(OptionalTraderRef(optionalTraderRef.setValue, optionalTraderRef.value)))
+        Future.successful(Ok(addTraderReferencePage(form, journey.previous)))
       case _ => handleMissingSessionData("Subsidy journey")
     }
   }
@@ -287,13 +267,12 @@ class SubsidyController @Inject()(
         errors => Future.successful(BadRequest(addTraderReferencePage(errors, previous))),
         form => {
           for {
-            journey <- store.update[SubsidyJourney]({ x =>
-            x.map { y =>
-            y.copy(traderRef = y.traderRef.copy(value = Some(form.value.map(TraderRef(_)))))
-          }
-          })
-            redirect <- getJourneyNext(journey)
-
+            updatedSubsidyJourney <- store.update[SubsidyJourney]{ _.map { subsidyJourney =>
+              val updatedTraderRef = subsidyJourney.traderRef.copy(value = OptionalTraderRef(form.setValue, form.value).some)
+              subsidyJourney.copy(traderRef = updatedTraderRef)
+              }
+            }
+            redirect <- getJourneyNext(updatedSubsidyJourney)
           } yield redirect
         }
       )
@@ -309,9 +288,9 @@ class SubsidyController @Inject()(
             cyaPage(
               journey.claimDate.value.getOrElse(throw new IllegalStateException("Claim date should be defined")),
               journey.claimAmount.value.getOrElse(throw new IllegalStateException("Claim amount payment should be defined")),
-              journey.addClaimEori.value.getOrElse(throw new IllegalStateException("Claim EORI payment should be defined")),
+              journey.addClaimEori.value.fold(handleMissingSessionData("Claim EORI payment"))(_.value.map(EORI(_))),
               journey.publicAuthority.value.getOrElse(throw new IllegalStateException("Public Authority payment should be defined")),
-              journey.traderRef.value.getOrElse(throw new IllegalStateException("Trader Reference payment should be defined")),
+              journey.traderRef.value.fold(handleMissingSessionData("Trader Ref"))(_.value.map(TraderRef(_))),
               journey.previous
             )
           )
@@ -369,7 +348,7 @@ class SubsidyController @Inject()(
         subsidies <- escService.retrieveSubsidy(SubsidyRetrieve(reference, None)).map(e => Some(e)).recoverWith({case _ => Future.successful(Option.empty[UndertakingSubsidies])})
         sub = subsidies.get.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionID.contains(transactionId)).get
       } yield {
-        BadRequest(confirmRemovePage(formWithErrors, sub)),
+        BadRequest(confirmRemovePage(formWithErrors, sub))
       }, formValue => {
       if(formValue.value == "true")
         for {
@@ -414,15 +393,21 @@ class SubsidyController @Inject()(
     mapping(
       "should-claim-eori" -> mandatory("should-claim-eori"),
       "claim-eori" -> optional(text)
-    )((a,b) => OptionalEORI(a, if(b.nonEmpty) Some(s"GB${b.get}") else b)
-    )(a => Some((a.setValue, a.value.fold(Option.empty[String])(e => Some(e.drop(2))))))
+    )((radioSelected, eori) => claimEoriFormApply(radioSelected, eori)
+    )(optionalEORI => Some((optionalEORI.setValue, optionalEORI.value.fold(Option.empty[String])(e => Some(e.drop(2))))))
       .transform[OptionalEORI](
-      a => if (a.setValue == "false") a.copy(value = None) else a,
-      b => b
+        optionalEORI => if (optionalEORI.setValue == "false") optionalEORI.copy(value = None) else optionalEORI,
+        identity
     ).verifying(
       "error.format", a => a.setValue == "false" || a.value.fold(false)(entered => s"GB${entered.drop(2)}".matches(EORI.regex))
     )
   )
+
+  def claimEoriFormApply(input: String, eoriOpt: Option[String]) =
+    (input, eoriOpt) match {
+      case (radioSelected, Some(eori)) => OptionalEORI(radioSelected, Some(s"GB$eori"))
+      case (radioSelected, other) => OptionalEORI(radioSelected, other)
+    }
 
   val claimTraderRefForm: Form[OptionalTraderRef] = Form(
     mapping(
@@ -430,8 +415,8 @@ class SubsidyController @Inject()(
       "claim-trader-ref" -> optional(text)
     )(OptionalTraderRef.apply)(OptionalTraderRef.unapply)
       .transform[OptionalTraderRef](
-      a => if (a.setValue == "false") a.copy(value = None) else a,
-      b => b
+      optionalTraderRef => if (optionalTraderRef.setValue == "false") optionalTraderRef.copy(value = None) else optionalTraderRef,
+        identity
     )
   )
 
