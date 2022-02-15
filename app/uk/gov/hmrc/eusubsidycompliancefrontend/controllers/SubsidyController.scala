@@ -188,6 +188,7 @@ class SubsidyController @Inject()(
   }
 
   def getAddClaimEori: Action[AnyContent] = escAuthentication.async { implicit request =>
+
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
@@ -201,8 +202,8 @@ class SubsidyController @Inject()(
   }
 
   def postAddClaimEori: Action[AnyContent] = escAuthentication.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
 
+    implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
       claimEoriForm.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(addClaimEoriPage(formWithErrors, previous))),
@@ -261,8 +262,8 @@ class SubsidyController @Inject()(
   }
 
   def getAddClaimReference: Action[AnyContent] = escAuthentication.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
 
+    implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
         val form = journey.traderRef.value.fold(claimTraderRefForm
@@ -273,6 +274,7 @@ class SubsidyController @Inject()(
   }
 
   def postAddClaimReference: Action[AnyContent] = escAuthentication.async { implicit request =>
+
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
       claimTraderRefForm.bindFromRequest().fold(
