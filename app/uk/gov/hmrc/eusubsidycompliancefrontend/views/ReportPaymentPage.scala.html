@@ -67,7 +67,11 @@
   @formHelper(action = controllers.routes.SubsidyController.postReportPayment) {
     <span class="govuk-caption-xl">@undertaking.name</span>
     @H1(messages("report-payment.title"))
-    @P(messages("report-payment.p1"))
+
+    @if(subsidies.isEmpty || subsidies.get.nonHMRCSubsidyUsage.isEmpty) {
+        @P(messages("report-payment.p1"))
+    }
+
     @P(messages("report-payment.p2"))
 
     <ul class="govuk-list govuk-list--bullet">
