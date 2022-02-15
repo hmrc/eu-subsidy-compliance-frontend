@@ -23,15 +23,18 @@ import java.time.LocalDate
 
 case class DateFormValues(day: String, month: String, year: String) {
   def toFormattedString: String = day + "/" + month + "/" + year
+
   def govDisplayFormat()(implicit messages: Messages): String =
     s"""${day} ${messages(
       s"date.${month}"
     )} ${year}"""
+
+  def toLocalDate: LocalDate = LocalDate.of(year.toInt, month.toInt, day.toInt)
 }
 
 object DateFormValues {
 
-  def fromDate(localDate: LocalDate) =
+  def fromDate(localDate: LocalDate): DateFormValues =
     DateFormValues(
       localDate.getDayOfMonth.toString,
       localDate.getMonthValue.toString,

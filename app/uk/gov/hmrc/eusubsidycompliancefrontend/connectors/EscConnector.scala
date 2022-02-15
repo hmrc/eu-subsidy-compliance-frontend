@@ -26,6 +26,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.{HttpResponse, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.http.HttpReads.Implicits._
+
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[EscConnectorImpl])
@@ -134,8 +136,8 @@ class EscConnectorImpl @Inject()(
         List(
           NonHmrcSubsidy(
             subsidyUsageTransactionID = journey.existingTransactionId,
-            allocationDate = currentDate,
-            submissionDate= currentDate,
+            allocationDate = journey.claimDate.value.get.toLocalDate,
+            submissionDate = currentDate,
             publicAuthority = Some(journey.publicAuthority.value.get),// this shouldn't be optional, is required in create API but not retrieve
             traderReference = journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
             nonHMRCSubsidyAmtEUR = SubsidyAmount(journey.claimAmount.value.get),

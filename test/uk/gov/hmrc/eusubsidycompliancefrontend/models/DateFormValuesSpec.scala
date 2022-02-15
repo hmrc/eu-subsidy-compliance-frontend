@@ -19,12 +19,21 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
+import java.time.LocalDate
+
 class DateFormValuesSpec extends AnyWordSpecLike with Matchers {
 
   "DateFormValues" when {
+
     "toFormattedString is called" must {
       "return a formatted date string" in {
         DateFormValues("1", "1", "2022").toFormattedString mustBe "1/1/2022"
+      }
+    }
+
+    "toLocalDate is called" must {
+      "return a valid LocalDate instance" in {
+        DateFormValues("1", "1", "2022").toLocalDate mustBe LocalDate.of(2022, 1, 1)
       }
     }
   }
