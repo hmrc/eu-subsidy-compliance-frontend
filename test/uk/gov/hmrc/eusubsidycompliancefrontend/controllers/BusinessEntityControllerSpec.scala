@@ -425,7 +425,8 @@ class BusinessEntityControllerSpec  extends ControllerSpec
     }
 
     "handling request to get contact page" must {
-      def performAction() = controller.getContact( FakeRequest("GET",routes.BusinessEntityController.getContact().url))
+      def performAction() = controller.getContact(
+        FakeRequest("GET",routes.BusinessEntityController.getContact().url))
 
       "throw technical error" when {
         val exception = new Exception("oh no")

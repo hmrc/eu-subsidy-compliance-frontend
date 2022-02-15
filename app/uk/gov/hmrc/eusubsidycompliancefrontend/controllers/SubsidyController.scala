@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, Store, SubsidyJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, JourneyTraverseService, Store, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
@@ -37,6 +37,7 @@ class SubsidyController @Inject()(
   escActionBuilders: EscActionBuilders,
   store: Store,
   escService: EscService,
+  journeyTraverseService: JourneyTraverseService,
   reportPaymentPage: ReportPaymentPage,
   addClaimEoriPage: AddClaimEoriPage,
   addClaimAmountPage: AddClaimAmountPage,
@@ -194,7 +195,7 @@ class SubsidyController @Inject()(
 
   def postAddClaimEori: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    getPrevious[SubsidyJourney](store).flatMap { previous =>
+    journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
       claimEoriForm.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(addClaimEoriPage(formWithErrors, previous))),
         form => {
@@ -262,7 +263,7 @@ class SubsidyController @Inject()(
 
   def postAddClaimReference: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    getPrevious[SubsidyJourney](store).flatMap { previous =>
+    journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
       claimTraderRefForm.bindFromRequest().fold(
         errors => Future.successful(BadRequest(addTraderReferencePage(errors, previous))),
         form => {

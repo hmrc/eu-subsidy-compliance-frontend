@@ -17,7 +17,7 @@
 package utils
 
 import cats.implicits.catsSyntaxOptionId
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, EmailAddress, EmailAddressResponse, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undeliverable, Undertaking, UndertakingSubsidies, UndertakingSubsidyAmendment}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, EmailAddress, EmailAddressResponse, NonHmrcSubsidy, OptionalEORI, OptionalTraderRef, SubsidyRetrieve, SubsidyUpdate, Undeliverable, Undertaking, UndertakingSubsidies, UndertakingSubsidyAmendment}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, IndustrySectorLimit, PhoneNumber, Sector, SubsidyAmount, TraderRef, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, FormPage, NewLeadJourney, SubsidyJourney, UndertakingJourney}
@@ -41,6 +41,9 @@ object CommonTestData {
   val businessEntity3 = BusinessEntity(EORI(eori3), true, None)
   val businessEntity4 = BusinessEntity(EORI(eori4), false, contactDetails1)
 
+  val optionalTraderRef = OptionalTraderRef("true", TraderRef("ABC123").some)
+  val optionalEORI = OptionalEORI("true", eori1.some)
+
 
   val undertakingRef = UndertakingRef("UR123456")
   val nonHmrcSubsidyList = List(NonHmrcSubsidy(
@@ -56,9 +59,9 @@ object CommonTestData {
 
   val subsidyJourney = SubsidyJourney(
     publicAuthority = FormPage("add-claim-public-authority", "Local Authority".some),
-    traderRef = FormPage("add-claim-reference", TraderRef("ABC123").some.some),
+    traderRef = FormPage("add-claim-reference", optionalTraderRef.some),
     claimAmount = FormPage("add-claim-date", SubsidyAmount(1234.56).some),
-    addClaimEori = FormPage("add-claim-eori", eori1.some.some)
+    addClaimEori = FormPage("add-claim-eori", optionalEORI.some)
   )
 
 
