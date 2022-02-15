@@ -446,6 +446,131 @@ class SubsidyControllerSpec extends ControllerSpec
         }
       }
     }
+
+    "handling request to get Add Claim Reference" must {
+      def performAction() = controller
+        .getAddClaimReference(FakeRequest("GET",routes.SubsidyController.getAddClaimReference().url))
+
+      "throw technical error" when {
+        val exception = new Exception("oh no")
+        " the call to get subsidy journey fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        " the call to get subsidy journey comes back empty" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(None))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+      }
+
+      "display the page" when {
+
+        def test(subsidyJourney: SubsidyJourney) ={
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+          }
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("add-claim-trader-reference.title"),
+            {doc =>
+              val selectedOptions = doc.select(".govuk-radios__input[checked]")
+              val inputText = doc.select(".govuk-input").attr("value")
+
+              subsidyJourney.traderRef.value match {
+                case Some(OptionalTraderRef(input, traderRef)) => {
+                  selectedOptions.attr("value") shouldBe input
+                  inputText shouldBe traderRef.getOrElse("")
+                }
+                case _ => selectedOptions.isEmpty       shouldBe true
+              }
+
+              val button = doc.select("form")
+              button.attr("action") shouldBe routes.SubsidyController.postAddClaimReference().url
+            }
+          )
+        }
+
+        "the user hasn't already answered the question" in {
+          test(subsidyJourney.copy(traderRef = FormPage("add-claim-reference", None)))
+
+        }
+
+        "the user has already answered the question" in {
+          List(subsidyJourney,
+            subsidyJourney.copy(traderRef = FormPage("add-claim-reference", OptionalTraderRef("false", None).some)))
+            .foreach { subsidyJourney =>
+              withClue(s" for each subsidy journey $subsidyJourney") {
+                test(subsidyJourney)
+              }
+
+            }
+
+        }
+
+      }
+
+    }
+
+    "handling request to post Add Claim Reference " must {
+      def performAction(data: (String, String)*) = controller
+        .postAddClaimReference(
+          FakeRequest("POST",routes.SubsidyController.getAddClaimReference().url)
+            .withFormUrlEncodedBody(data: _*))
+
+      "throw technical error" when {
+
+        def update(subsidyJourneyOpt: Option[SubsidyJourney]) =
+          subsidyJourneyOpt.map(_.copy(traderRef = FormPage("add-claim-reference", OptionalTraderRef("false", None).some)))
+
+        val exception = new Exception("oh no")
+        "call to get previous fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGetPrevious[SubsidyJourney](eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+      }
+
+      "show form error" when {
+
+        def testFormError(
+                           inputAnswer: Option[List[(String, String)]],
+                           errorMessageKey: String) = {
+          val answers = inputAnswer.getOrElse(Nil)
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGetPrevious[SubsidyJourney](eori1)(Right("add-claim-public-authority"))
+          }
+          checkFormErrorIsDisplayed(
+            performAction(answers: _*),
+            messageFromMessageKey("add-claim-trader-reference.title"),
+            messageFromMessageKey(errorMessageKey)
+          )
+
+        }
+
+        "nothing is selected" in {
+          testFormError(None, "add-claim-trader-reference.error.required")
+        }
+
+        "yes is selected but no trader reference is added" in {
+          testFormError(Some(List("should-store-trader-ref" -> "true")), "add-claim-trader-reference.error.traderRefMissing")
+
+        }
+
+      }
+
+    }
   }
 
 
