@@ -25,6 +25,33 @@ common.whatisanundertaking.details=What is an undertaking?
 common.whatisanundertaking.details.body=Every company may be structured differently. You may be a sole trader, a limited company or partnership. You may be a larger business, with subsidiary companies within the organisation. However a business is structured, we need to group all subsidiary or parent companies together. This is referred to as an undertaking.
 common.change=Change
 common.remove=Remove
+common.currency.euros=€
+
+date.1=January
+date.2=February
+date.3=March
+date.4=April
+date.5=May
+date.6=June
+date.7=July
+date.8=August
+date.9=September
+date.10=October
+date.11=November
+date.12=December
+
+date.truncated.1=Jan
+date.truncated.2=Feb
+date.truncated.3=Mar
+date.truncated.4=Apr
+date.truncated.5=May
+date.truncated.6=Jun
+date.truncated.7=Jul
+date.truncated.8=Aug
+date.truncated.9=Sep
+date.truncated.10=Oct
+date.truncated.11=Nov
+date.truncated.12=Dec
 
 customswaivers.title=Do you, or any business in your organisation, claim Customs Duty waivers?
 customswaivers.error.required=Select yes if you, or any business in your organisation, claim Customs Duty waivers
@@ -179,6 +206,13 @@ report-payment.p2=You will need to add the details of any payments of de minimis
 report-payment.ul1-li1=the previous 2 tax years (from 6 April 2019 to 5 April 2021)
 report-payment.ul1-li2=the current tax year (from 6 April 2021 to date)
 report-payment.p3=You will not need details of the Customs Duty waiver as HMRC will already have this information.
+report-payment.table.caption=Payments received
+report-payment.table.head.date=Date
+report-payment.table.head.amount=Amount
+report-payment.table.head.eori=EORI number
+report-payment.table.head.public-authority=Public authority
+report-payment.table.head.ref=Your reference
+report-payment.button = Report a payment
 
 add-claim-amount.title=What was the amount of the payment?
 add-claim-amount.p1=This type of aid is measured in euros, so you must convert any aid received from pound sterling into euros.
@@ -186,6 +220,7 @@ add-claim-amount.p2=You can use this <a class="govuk-link" href="https://ec.euro
 add-claim-amount.error.amount.tooSmall=Subsidy amount must be more than one cent, like €00.01
 add-claim-amount.error.amount.tooBig=Subsidy amount must be fewer than 17 characters
 add-claim-amount.error.amount.incorrectFormat=Enter number value of subsidy allocated in Euros, like €248.56
+add-claim-amount.error.real = Enter number value of subsidy allocated in Euros, like €248.56
 
 add-claim-date.title=What date did you receive your payment?
 add-claim-date.error.date.emptyfields=Enter a real date, like 23 11 2019
@@ -196,6 +231,9 @@ add-claim-date.error.month.missing=The date you received your payment must inclu
 add-claim-date.error.month-and-year.missing=The date you received your payment must include a month and year, like 23 11 2019
 add-claim-date.error.year.missing=The date you received your payment must include a year, like 23 11 2019
 add-claim-date.error.date.invalidentry=Enter a real date, like 23 11 2019
+add-claim-date.error.date.invalid=Enter a real date, like 23 11 2019
+add-claim-date.error.date.outside-allowed-tax-year-range = Enter the date you received payment. Date must be 6 April 2019, or later.
+add-claim-date.error.date.in-future = TBC
 
 add-claim-public-authority.title=Which public authority granted the payment?
 add-claim-public-authority.hint=For example, Invest NI, NI Direct.
@@ -219,6 +257,11 @@ subsidy.cya.summary-list.claim.key=EORI number
 subsidy.cya.summary-list.authority.key=Public authority
 subsidy.cya.summary-list.traderRef.key=Your reference
 subsidy.cya.p1=By sending these details you are confirming that, to the best of your knowledge, they are correct.
+
+subsidy.remove.title = Remove a de minimis aid payment
+subsidy.remove.p1 = If you remove this payment then your Customs Duty waiver balance will change.
+subsidy.remove.yesno.legend = Do you want to remove the above payment?
+subsidy.remove.error.required = Select yes if you want to remove the above de minimis payment
 
 #Amend Undertaking
 undertaking.amendUndertaking.title = Undertaking Details

@@ -17,11 +17,16 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Json, OFormat}
+import play.api.i18n.Messages
 
 import java.time.LocalDate
 
 case class DateFormValues(day: String, month: String, year: String) {
   def toFormattedString: String = day + "/" + month + "/" + year
+  def govDisplayFormat()(implicit messages: Messages): String =
+    s"""${day} ${messages(
+      s"date.${month}"
+    )} ${year}"""
 }
 
 object DateFormValues {

@@ -53,7 +53,7 @@
                         content = Text(messages("subsidy.cya.summary-list.claimDate.key"))
                     ),
                     value = Value(
-                        content = Text(claimDate.toFormattedString)
+                        content = Text(claimDate.govDisplayFormat)
                     ),
                     actions = Some(Actions(
                         items = Seq(
@@ -70,7 +70,7 @@
                         content = Text(messages("subsidy.cya.summary-list.amount.key"))
                     ),
                     value = Value(
-                        content = Text(amount.toString())
+                        content = Text(messages("common.currency.euros") + amount.toString())
                     ),
                     actions = Some(Actions(
                         items = Seq(

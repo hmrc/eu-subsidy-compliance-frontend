@@ -49,6 +49,7 @@
     backLink = Some(previous),
     hasErrors = form.hasErrors
 ) {
+
     @formHelper(action = controllers.routes.SubsidyController.postAddClaimReference()) {
       @if(form.hasErrors) {
           @govukErrorSummary(
@@ -84,12 +85,12 @@
           RadioItem(
             content = Text(messages("common.yes")),
             value = Some("true"),
-            checked = form.data.get("should-store-trader-ref").contains("true"),
+            checked = form.data.get("claim-trader-ref").nonEmpty,
             conditionalHtml = Some(textHtml)
           ),
           RadioItem(
             content = Text(messages("common.no")),
-            checked = form.data.get("should-store-trader-ref").contains("false"),
+            checked = form.data.get("claim-trader-ref").isEmpty,
             value = Some("false")
           )
         )

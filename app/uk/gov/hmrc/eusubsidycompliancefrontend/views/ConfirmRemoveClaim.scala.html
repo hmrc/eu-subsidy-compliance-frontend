@@ -19,9 +19,10 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
+
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
+@import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeUtils
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 
@@ -41,14 +42,13 @@
     backLinkEnabled = true,
     backLink = Some(controllers.routes.SubsidyController.getReportPayment().url)
 ) {
-
     @H1(messages("subsidy.remove.title"))
     @form.errors.map { err =>
         @govukErrorSummary(ErrorSummary(
             errorList = Seq(
                 ErrorLink(
                     href = Some(s"#${err.key}"),
-                    content = Text(s"${messages(err.message)}")
+                    content = Text(s"${messages("subsidy.remove." + err.message)}")
                 )
             ),
             title = Text(messages("common.error.summary.title"))
@@ -61,7 +61,7 @@
                         content = Text(messages("subsidy.cya.summary-list.claimDate.key"))
                     ),
                     value = Value(
-                        content = Text(nonHmrcSubsidy.submissionDate.toString())
+                        content = Text(TimeUtils.govDisplayFormat(nonHmrcSubsidy.submissionDate))
                     )
                 ),
                 SummaryListRow(
@@ -69,7 +69,7 @@
                         content = Text(messages("subsidy.cya.summary-list.amount.key"))
                     ),
                     value = Value(
-                        content = Text(nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.toString())
+                        content = Text(messages("common.currency.euros") + nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.toString())
                     )
                 ),
                 SummaryListRow(
@@ -99,13 +99,18 @@
             )
         ))
 
+    @P(messages("subsidy.remove.p1"))
+
     @formHelper(action = controllers.routes.SubsidyController.postRemoveSubsidyClaim(nonHmrcSubsidy.subsidyUsageTransactionID.get)) {
 
         @govukRadios(Radios(
+            errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+                content = Text(messages("subsidy.remove.error.required"))
+            ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text("Do you want to remove this claim?"),
-                    classes = "govuk-fieldset__legend--l",
+                    content = Text(messages("subsidy.remove.yesno.legend")),
+                    classes = "govuk-fieldset__legend--m",
                     isPageHeading = true
                 ))
             )),
