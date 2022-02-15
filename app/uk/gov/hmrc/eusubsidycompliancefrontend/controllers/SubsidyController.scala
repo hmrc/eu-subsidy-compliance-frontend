@@ -23,7 +23,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyAmount, TraderRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, JourneyTraverseService, Store, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
