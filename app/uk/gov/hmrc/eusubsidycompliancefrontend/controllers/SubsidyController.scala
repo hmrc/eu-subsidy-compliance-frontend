@@ -102,25 +102,28 @@ class SubsidyController @Inject()(
     //TODO add 'getPrevious to all'
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
-        journey
-          .claimAmount
-          .value
-          .fold(
-            Future.successful(
-              Ok(addClaimAmountPage(claimAmountForm, journey.previous))
-            )
-          ) { x =>
-            Future.successful(
-              Ok(addClaimAmountPage(claimAmountForm.fill(x), journey.previous))
-            )
-          }
+        journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
+          journey
+            .claimAmount
+            .value
+            .fold(
+              Future.successful(
+                Ok(addClaimAmountPage(claimAmountForm, previous))
+              )
+            ) { x =>
+              Future.successful(
+                Ok(addClaimAmountPage(claimAmountForm.fill(x), previous))
+              )
+            }
+
+        }
       case _ => handleMissingSessionData("Subsidy journey")
     }
   }
 
   def postAddClaimAmount: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    getPrevious[SubsidyJourney](store).flatMap { previous =>
+    journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
       claimAmountForm.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(addClaimAmountPage(formWithErrors, previous))),
         form => {
@@ -140,24 +143,26 @@ class SubsidyController @Inject()(
   def getClaimDate: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
-      case Some(journey) =>
-        journey
-          .claimDate
-          .value
-          .fold(
-            Future.successful(
-              Ok(addClaimDatePage(
-                claimDateForm, 
-                journey.previous
-              ))
-            )
-          ) { x =>
-            Future.successful(
-              Ok(addClaimDatePage(
-                claimDateForm.fill(x),
-                journey.previous
-              ))
-            )
+        case Some(journey) =>
+          journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
+            journey
+            .claimDate
+            .value
+            .fold(
+              Future.successful(
+                Ok(addClaimDatePage(
+                  claimDateForm,
+                  previous
+                ))
+              )
+            ) { x =>
+              Future.successful(
+                Ok(addClaimDatePage(
+                  claimDateForm.fill(x),
+                  previous
+                ))
+              )
+            }
           }
       case _ => handleMissingSessionData("Subsidy journey")
     }
@@ -186,9 +191,11 @@ class SubsidyController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
-        val form = journey.addClaimEori.value.fold(claimEoriForm
-        )(optionalEORI => claimEoriForm.fill(OptionalEORI(optionalEORI.setValue, optionalEORI.value)))
-        Future.successful(Ok(addClaimEoriPage(form, journey.previous)))
+        journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
+          val form = journey.addClaimEori.value.fold(claimEoriForm
+          )(optionalEORI => claimEoriForm.fill(OptionalEORI(optionalEORI.setValue, optionalEORI.value)))
+          Future.successful(Ok(addClaimEoriPage(form, previous)))
+        }
       case _ => handleMissingSessionData("Subsidy journey")
     }
   }
@@ -215,18 +222,20 @@ class SubsidyController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
-        journey
-          .publicAuthority
-          .value
-          .fold(
-            Future.successful(
-              Ok(addPublicAuthorityPage(claimPublicAuthorityForm, journey.previous))
-            )
-          ) { x =>
-            Future.successful(
-              Ok(addPublicAuthorityPage(claimPublicAuthorityForm.fill(x), journey.previous))
-            )
-          }
+        journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
+          journey
+            .publicAuthority
+            .value
+            .fold(
+              Future.successful(
+                Ok(addPublicAuthorityPage(claimPublicAuthorityForm, previous))
+              )
+            ) { x =>
+              Future.successful(
+                Ok(addPublicAuthorityPage(claimPublicAuthorityForm.fill(x), previous))
+              )
+            }
+        }
       case _ => handleMissingSessionData("Subsidy journey")
     }
   }

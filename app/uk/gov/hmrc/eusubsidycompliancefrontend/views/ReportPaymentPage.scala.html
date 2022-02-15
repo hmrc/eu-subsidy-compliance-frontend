@@ -46,8 +46,9 @@
 
     @if(subsidies.nonEmpty && subsidies.get.nonHMRCSubsidyUsage.nonEmpty) {
       @govukTable(
-          Table(rows =
-              subsidies.get.nonHMRCSubsidyUsage.map { sub =>
+          Table(
+              attributes = Map("id" -> "subsidy-list"),
+              rows = subsidies.get.nonHMRCSubsidyUsage.map { sub =>
                   Seq(
                       TableRow(content = Text(TimeUtils.govDisplayFormatTruncated(sub.submissionDate))),
                       TableRow(content = Text(messages("common.currency.euros") + sub.nonHMRCSubsidyAmtEUR.toString())),
@@ -75,8 +76,6 @@
     }
 
   @formHelper(action = controllers.routes.SubsidyController.postReportPayment) {
-    <span class="govuk-caption-xl">@undertaking.name</span>
-    @H1(messages("report-payment.title"))
 
     @if(subsidies.isEmpty || subsidies.get.nonHMRCSubsidyUsage.isEmpty) {
         @P(messages("report-payment.p1"))

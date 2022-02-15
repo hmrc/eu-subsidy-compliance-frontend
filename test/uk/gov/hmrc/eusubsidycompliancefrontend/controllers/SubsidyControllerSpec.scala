@@ -21,9 +21,14 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, OptionalEORI}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{ EscService, FormPage, JourneyTraverseService, Store, SubsidyJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, Error, NonHmrcSubsidy, OptionalEORI, OptionalTraderRef, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, FormPage, JourneyTraverseService, Store, SubsidyJourney}
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData.{subsidyJourney, _}
+
+import java.time.LocalDate
+import scala.concurrent.Future
 
 class SubsidyControllerSpec extends ControllerSpec
   with AuthSupport
@@ -40,9 +45,203 @@ class SubsidyControllerSpec extends ControllerSpec
     bind[JourneyTraverseService].toInstance(mockJourneyTraverseService)
   )
 
+  implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
+
+  def mockRetreiveSubsidy(subsidyRetrieve: SubsidyRetrieve)(result: Future[UndertakingSubsidies]) =
+    (mockEscService
+      .retrieveSubsidy(_: SubsidyRetrieve)(_: HeaderCarrier))
+      .expects(subsidyRetrieve, *)
+      .returning(result)
+
   val controller = instanceOf[SubsidyController]
 
   "SubsidyControllerSpec" when {
+
+    "handling request to get report payment page" must {
+
+      def performAction() = controller.getReportPayment(FakeRequest())
+
+      "throw technical error" when {
+        val exception = new Exception("oh no")
+
+        "call to get subsidy journey fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to get undertaking fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+            mockGet[Undertaking](eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+      }
+
+      "display the page" when {
+
+
+        def test(nonHMRCSubsidyUsage: List[NonHmrcSubsidy]) = {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(SubsidyJourney().some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockRetreiveSubsidy(subsidyRetrieve)(Future(undertakingSubsidies.copy(nonHMRCSubsidyUsage = nonHMRCSubsidyUsage)))
+          }
+
+        }
+
+        "user hasn't already answered the question" in {
+          test(List.empty)
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("report-payment.title"),
+            {doc =>
+
+              val button = doc.select("form")
+              button.attr("action") shouldBe routes.SubsidyController.postReportPayment().url
+              doc.select("#subsidy-list").size() shouldBe 0
+            }
+          )
+        }
+
+        "user has already answered the question" in {
+          test(nonHmrcSubsidyList.map(_.copy(subsidyUsageTransactionID = SubsidyRef("Z12345").some)))
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("report-payment.title"),
+            {doc =>
+
+              val subsidyList = doc.select("#subsidy-list")
+
+              subsidyList.select("thead > tr > th:nth-child(1)").text() shouldBe "Date"
+              subsidyList.select("thead > tr > th:nth-child(2)").text() shouldBe "Amount"
+              subsidyList.select("thead > tr > th:nth-child(3)").text() shouldBe "EORI number"
+              subsidyList.select("thead > tr > th:nth-child(4)").text() shouldBe "Public authority"
+              subsidyList.select("thead > tr > th:nth-child(5)").text() shouldBe "Your reference"
+
+              subsidyList.select("tbody > tr > td:nth-child(1)").text() shouldBe "20 Jan 2021"
+              subsidyList.select("tbody > tr > td:nth-child(2)").text() shouldBe "€1234.56"
+              subsidyList.select("tbody > tr > td:nth-child(3)").text() shouldBe "GB123456789012"
+              subsidyList.select("tbody > tr > td:nth-child(4)").text() shouldBe "Local Authority"
+              subsidyList.select("tbody > tr > td:nth-child(5)").text() shouldBe "Z12345"
+              subsidyList.select("tbody > tr > td:nth-child(6)").text() shouldBe "Change"
+              subsidyList.select("tbody > tr > td:nth-child(7)").text() shouldBe "Remove"
+
+              subsidyList.select("tbody > tr > td:nth-child(6) > a").attr("href") shouldBe routes.SubsidyController.getChangeSubsidyClaim("Z12345").url
+              subsidyList.select("tbody > tr > td:nth-child(7) > a").attr("href") shouldBe routes.SubsidyController.getRemoveSubsidyClaim("Z12345").url
+
+              val button = doc.select("form")
+              button.attr("action") shouldBe routes.SubsidyController.postReportPayment().url
+            }
+          )
+        }
+      }
+
+    }
+
+    "handling request to post report payment" must {
+
+      def performAction(data: (String, String)*) = controller.postReportPayment(FakeRequest("POST",routes.SubsidyController.postReportPayment().url).withFormUrlEncodedBody(data: _*))
+
+      "redirect to the next page" when {
+
+        "user selected Yes" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockUpdate[SubsidyJourney](identity, eori1)(Right(subsidyJourney))
+          }
+          checkIsRedirect(performAction(("reportPayment", "true")), "add-claim-date")
+        }
+      }
+    }
+
+    "handling request to get claim date page" must {
+
+      def performAction() = controller.getClaimDate(FakeRequest())
+
+      "throw technical error" when {
+
+        val exception = new Exception("oh no")
+
+        "call to get session fails" in {
+          inSequence{
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+
+        }
+
+        "call to get sessions returns none" in {
+          inSequence{
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(None))
+          }
+          assertThrows[Exception](await(performAction()))
+
+        }
+
+      }
+
+
+      "display the page" when {
+
+        "happy path" in {
+          inAnyOrder {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
+            mockGetPrevious[SubsidyJourney](eori1)(Right("previous"))
+          }
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("add-claim-date.title"),
+            {doc =>
+              doc.select("#claim-date > div:nth-child(1) > div > label").text() shouldBe "Day"
+              doc.select("#claim-date > div:nth-child(2) > div > label").text() shouldBe "Month"
+              doc.select("#claim-date > div:nth-child(3) > div > label").text() shouldBe "Year"
+              val button = doc.select("form")
+              button.attr("action") shouldBe routes.SubsidyController.postClaimDate().url
+            }
+          )
+        }
+
+      }
+    }
+
+    "handling request to post claim date" must {
+
+      def performAction(data: (String, String)*) = controller.postClaimDate(FakeRequest("POST",routes.SubsidyController.postClaimDate().url).withFormUrlEncodedBody(data: _*))
+
+      "redirect to the next page" when {
+
+        "valid input" in {
+          val updatedDate = DateFormValues("1", "2", LocalDate.now().getYear.toString)
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
+            mockUpdate[SubsidyJourney](j => j.map(_.copy(claimDate = FormPage("claim-date", updatedDate.some))), eori1)(Right(subsidyJourney.copy(claimDate = FormPage("claim-date", updatedDate.some))))
+          }
+          checkIsRedirect(performAction("day" -> updatedDate.day,  "month" -> updatedDate.month, "year" -> updatedDate.year), "add-claim-date")
+        }
+      }
+
+      "invalid input" should {
+        "invalid date" in {
+          val updatedDate = DateFormValues("20", "20", LocalDate.now().getYear.toString)
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
+          }
+          status(performAction("day" -> updatedDate.day,  "month" -> updatedDate.month, "year" -> updatedDate.year)) shouldBe BAD_REQUEST
+        }
+      }
+    }
 
     "handling request to get Add Claim Eori " must {
 
@@ -75,6 +274,7 @@ class SubsidyControllerSpec extends ControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+            mockGetPrevious[SubsidyJourney](eori1)(Right("next"))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -204,6 +404,47 @@ class SubsidyControllerSpec extends ControllerSpec
 
       }
 
+    }
+
+    "handling request to get add claim public authority" must {
+
+      def performAction() = controller.getAddClaimPublicAuthority(FakeRequest())
+
+      "display the page" when {
+        "happy path" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
+            mockGetPrevious[SubsidyJourney](eori1)(Right("previous"))
+          }
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("add-claim-public-authority.title"),
+            {doc =>
+              doc.select("#claim-public-authority-hint").text() shouldBe "For example, Invest NI, NI Direct."
+              val button = doc.select("form")
+              button.attr("action") shouldBe routes.SubsidyController.postAddClaimPublicAuthority().url
+            }
+          )
+        }
+      }
+    }
+
+    "handling request to post add claim public authority" must {
+
+      def performAction(data: (String, String)*) = controller.postAddClaimPublicAuthority(FakeRequest("POST", routes.SubsidyController.postAddClaimPublicAuthority().url).withFormUrlEncodedBody(data: _*))
+
+      "redirect to the next page" when {
+
+        "valid input" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
+            mockUpdate[SubsidyJourney](j => j.map(_.copy(publicAuthority = FormPage("add-claim-reference", Some("My Authority")))), eori1)(Right(subsidyJourney.copy(publicAuthority = FormPage("add-claim-reference", Some("My Authority")))))
+          }
+          checkIsRedirect(performAction("claim-public-authority" -> "My Authority"), "claims")
+        }
+      }
     }
   }
 
