@@ -250,7 +250,7 @@ add-claim-trader-reference.title=Would you like to add a reference?
 add-claim-trader-reference.hint=This is for your own records. It is not a mandatory field.
 add-claim-trader-reference.label=Enter the reference you would like to add
 add-claim-trader-reference.error.required=Select yes if you would like to add a reference
-add-claim-trader-reference.error.traderRefMissing=Enter the trader reference you would like to add
+add-claim-trader-reference.error.isempty=Enter the trader reference you would like to add
 
 subsidy.cya.title=Check your answers
 subsidy.cya.summary-list.claimDate.key=Payment date

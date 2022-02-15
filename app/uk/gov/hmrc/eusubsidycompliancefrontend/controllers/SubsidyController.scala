@@ -430,7 +430,7 @@ class SubsidyController @Inject()(
       optionalTraderRef => if (optionalTraderRef.setValue == "false") optionalTraderRef.copy(value = None) else optionalTraderRef,
       identity
     ).verifying(
-      "error.isempty", a => a.setValue == "false" || a.value.nonEmpty
+      "error.isempty", optionalTraderRef => optionalTraderRef.setValue == "false" || optionalTraderRef.value.nonEmpty
     )
   )
 

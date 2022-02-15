@@ -500,7 +500,7 @@ class SubsidyControllerSpec extends ControllerSpec
         }
 
         "the user hasn't already answered the question" in {
-          test(subsidyJourney.copy(traderRef = FormPage("add-claim-reference", None)))
+          test(subsidyJourney.copy(traderRef = FormPage("add-claim-reference"), cya = FormPage("check-your-answers-subsidy")))
 
         }
 
@@ -527,9 +527,6 @@ class SubsidyControllerSpec extends ControllerSpec
             .withFormUrlEncodedBody(data: _*))
 
       "throw technical error" when {
-
-        def update(subsidyJourneyOpt: Option[SubsidyJourney]) =
-          subsidyJourneyOpt.map(_.copy(traderRef = FormPage("add-claim-reference", OptionalTraderRef("false", None).some)))
 
         val exception = new Exception("oh no")
         "call to get previous fails" in {
@@ -564,7 +561,7 @@ class SubsidyControllerSpec extends ControllerSpec
         }
 
         "yes is selected but no trader reference is added" in {
-          testFormError(Some(List("should-store-trader-ref" -> "true")), "add-claim-trader-reference.error.traderRefMissing")
+          testFormError(Some(List("should-store-trader-ref" -> "true")), "add-claim-trader-reference.error.isempty")
 
         }
 
