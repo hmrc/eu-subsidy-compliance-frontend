@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import com.google.inject.{ImplementedBy, Inject, Singleton}
 import play.api.http.Status.NOT_FOUND
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, TraderRef, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidyAmendment}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
