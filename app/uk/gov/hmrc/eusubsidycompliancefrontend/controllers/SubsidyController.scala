@@ -415,9 +415,11 @@ class SubsidyController @Inject()(
       "should-store-trader-ref" -> mandatory("should-claim-eori"),
       "claim-trader-ref" -> optional(text)
     )(OptionalTraderRef.apply)(OptionalTraderRef.unapply)
-      .transform[OptionalTraderRef](
+    .transform[OptionalTraderRef](
       optionalTraderRef => if (optionalTraderRef.setValue == "false") optionalTraderRef.copy(value = None) else optionalTraderRef,
-        identity
+      identity
+    ).verifying(
+      "error.isempty", a => a.setValue == "false" || a.value.nonEmpty
     )
   )
 

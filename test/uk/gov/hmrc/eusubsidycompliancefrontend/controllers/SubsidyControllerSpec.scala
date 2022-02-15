@@ -21,8 +21,8 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, OptionalEORI, OptionalTraderRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, FormPage, JourneyTraverseService, Store, SubsidyJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, OptionalEORI}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{ EscService, FormPage, JourneyTraverseService, Store, SubsidyJourney}
 import utils.CommonTestData.{subsidyJourney, _}
 
 class SubsidyControllerSpec extends ControllerSpec

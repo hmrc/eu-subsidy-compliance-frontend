@@ -21,9 +21,10 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.UndertakingSubsidies
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeUtils
 
 @this(
-  layout: Layout,
+  layout: FullWidthLayout,
   formHelper: FormWithCSRF,
   button: components.Button,
   govukErrorSummary: GovukErrorSummary,
@@ -38,31 +39,40 @@
   backLinkEnabled = true,
   backLink = Some(controllers.routes.AccountController.getAccountPage().url)
 ) {
-  @if(subsidies.nonEmpty && subsidies.get.nonHMRCSubsidyUsage.nonEmpty) {
+
+  @formHelper(action = controllers.routes.SubsidyController.postReportPayment) {
+    <span class="govuk-caption-xl">@undertaking.name</span>
+    @H1(messages("report-payment.title"))
+
+    @if(subsidies.nonEmpty && subsidies.get.nonHMRCSubsidyUsage.nonEmpty) {
       @govukTable(
           Table(rows =
               subsidies.get.nonHMRCSubsidyUsage.map { sub =>
                   Seq(
-                      TableRow(content = Text(sub.submissionDate.toString)),
-                      TableRow(content = Text(sub.nonHMRCSubsidyAmtEUR.toString())),
-                      TableRow(content = Text(sub.businessEntityIdentifier.fold("")(_.toString))),
-                      TableRow(content = Text(sub.publicAuthority.fold("")(_.toString))),
-                      TableRow(content = Text(sub.traderReference.fold("")(_.toString))),
-                      TableRow(content = HtmlContent(s"<a href=${controllers.routes.SubsidyController.getChangeSubsidyClaim(sub.subsidyUsageTransactionID.get).url}>Change</a>")),
-                      TableRow(content = HtmlContent(s"<a href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionID.get).url}>Remove</a>"))
+                      TableRow(content = Text(TimeUtils.govDisplayFormatTruncated(sub.submissionDate))),
+                      TableRow(content = Text(messages("common.currency.euros") + sub.nonHMRCSubsidyAmtEUR.toString())),
+                      TableRow(content = Text(sub.businessEntityIdentifier.getOrElse(""))),
+                      TableRow(content = Text(sub.publicAuthority.getOrElse(""))),
+                      TableRow(content = Text(sub.subsidyUsageTransactionID.getOrElse(""))),
+                      TableRow(content = HtmlContent(s"<a class='govuk-link' href=${controllers.routes.SubsidyController.getChangeSubsidyClaim(sub.subsidyUsageTransactionID.get).url}>Change</a>")),
+                      TableRow(content = HtmlContent(s"<a class='govuk-link' href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionID.get).url}>Remove</a>"))
                   )
               },
           head = Some(Seq(
-              HeadCell(content = Text("Date")),
-              HeadCell(content = Text("Amount")),
-              HeadCell(content = Text("EORI number")),
-              HeadCell(content = Text("Public authority")),
-              HeadCell(content = Text("Your reference")),
+              HeadCell(content = Text(messages("report-payment.table.head.date"))),
+              HeadCell(content = Text(messages("report-payment.table.head.amount"))),
+              HeadCell(content = Text(messages("report-payment.table.head.eori"))),
+              HeadCell(content = Text(messages("report-payment.table.head.public-authority"))),
+              HeadCell(content = Text(messages("report-payment.table.head.ref"))),
+              HeadCell(content = Text("")),
+              HeadCell(content = Text("")),
           )),
-          caption = Some("Dates and amounts"),
+          caption = Some(messages("report-payment.table.caption")),
           captionClasses = "govuk-table__caption--m"
       ))
-  }
+    } else {
+      @P(messages("report-payment.p1"))
+    }
 
   @formHelper(action = controllers.routes.SubsidyController.postReportPayment) {
     <span class="govuk-caption-xl">@undertaking.name</span>
@@ -81,6 +91,8 @@
 
     @P(messages("report-payment.p3"))
     <input type=hidden name=reportPayment value=true>
-    @button("common.continue")
+    @button("report-payment.button")
+    <div><a href="@controllers.routes.AccountController.getAccountPage().url" class="govuk-link">Go to account home</a></div>
   }
+}
 }

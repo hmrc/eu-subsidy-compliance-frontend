@@ -49,6 +49,7 @@
     backLink = Some(previous),
     hasErrors = form.hasErrors
 ) {
+
     @formHelper(action = controllers.routes.SubsidyController.postAddClaimReference()) {
       @if(form.hasErrors) {
           @govukErrorSummary(
