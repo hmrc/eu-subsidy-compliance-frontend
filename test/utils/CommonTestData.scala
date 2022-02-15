@@ -48,7 +48,7 @@ object CommonTestData {
   val undertakingRef = UndertakingRef("UR123456")
   val nonHmrcSubsidyList = List(NonHmrcSubsidy(
     subsidyUsageTransactionID = None,
-    allocationDate = currentDate,
+    allocationDate = LocalDate.of(2022, 1, 1),
     submissionDate = currentDate,
     publicAuthority = "Local Authority".some,
     traderReference = TraderRef("ABC123").some,
@@ -62,6 +62,7 @@ object CommonTestData {
     traderRef = FormPage("add-claim-reference", optionalTraderRef.some),
     claimAmount = FormPage("add-claim-date", SubsidyAmount(1234.56).some),
     addClaimEori = FormPage("add-claim-eori", optionalEORI.some)
+    claimDate = FormPage("add-claim-date", DateFormValues("1", "1", "2022").some)
   )
 
 

@@ -111,12 +111,11 @@ class EscConnectorSpec
     }
 
     "handling request to create subsidy" must {
-
       val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/subsidy/update"
       behave like connectorBehaviourWithMockTime(
         mockPost(expectedUrl, Seq.empty, subsidyUpdate)(_),
         () => connector.createSubsidy(undertakingRef, subsidyJourney),
-        mockTimeProviderToday(_)
+        mockTimeProviderToday
       )
 
     }

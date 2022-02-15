@@ -384,7 +384,8 @@ class SubsidyController @Inject()(
   }
 
   private def getJourneyNext(journey: SubsidyJourney)(implicit request: Request[_]) =
-    if(journey.isAmend()) Future.successful(Redirect(routes.SubsidyController.getCheckAnswers())) else journey.next
+    if(journey.isAmend) Future.successful(Redirect(routes.SubsidyController.getCheckAnswers()))
+    else journey.next
 
   lazy val reportPaymentForm: Form[FormValues] = Form(
     mapping("reportPayment" -> mandatory("reportPayment"))(FormValues.apply)(FormValues.unapply))
