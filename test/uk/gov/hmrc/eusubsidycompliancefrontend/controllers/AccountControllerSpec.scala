@@ -92,9 +92,15 @@ class AccountControllerSpec extends ControllerSpec
                 "account-homepage.cards.card1.link1",
                 routes.SubsidyController.getReportPayment().url
               )
+
               htmlBody should include regex messageFromMessageKey(
                 "account-homepage.cards.card2.link1",
                 routes.UndertakingController.getAmendUndertakingDetails().url
+              )
+
+              htmlBody should include regex messageFromMessageKey(
+                "account-homepage.cards.card2.link2",
+                routes.FinancialDashboardController.getFinancialDashboard().url
               )
 
               if(undertaking.undertakingBusinessEntity.length > 1)
