@@ -22,7 +22,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearHelpers.{taxYearEndForDate, taxYearStartForDate}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
@@ -46,10 +46,11 @@ class FinancialDashboardController @Inject()(
     implicit val eori: EORI = request.eoriNumber
 
     // THe search period covers the current tax year to date, and the previous 2 tax years.
-    val searchDateStart = taxYearStartForDate(timeProvider.today).minusYears(2)
-    val currentTaxYearEnd = taxYearEndForDate(timeProvider.today)
+    val searchDateStart = timeProvider.today.minusYears(2).toTaxYearStart
+    val searchDateEnd = timeProvider.today
+    val currentTaxYearEnd = timeProvider.today.toTaxYearEnd
 
-    val searchRange = Some((searchDateStart, searchDateStart))
+    val searchRange = Some((searchDateStart, searchDateEnd))
 
     val subsidies = for {
       undertaking <- store.get[Undertaking]

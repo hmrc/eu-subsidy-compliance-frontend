@@ -15,8 +15,9 @@
  *@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalSyntax._
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 
 @this(
   layout: FullWidthLayout,
@@ -26,8 +27,9 @@
 @(summary: FinancialDashboardSummary)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-  pageTitle = Some(messages("dashboard.title")),
-  backLinkEnabled = true,
+    pageTitle = Some(messages("dashboard.title")),
+    backLinkEnabled = true,
+    backLink = Some(routes.AccountController.getAccountPage().url)
 ) {
 
     <h1 class="govuk-heading-l">@messages("dashboard.title")</h1>

@@ -116,13 +116,15 @@ class EscConnectorImpl @Inject()(
         case e => Left(Error(e))
       }
 
-  override def retrieveSubsidy(subsidyRetrieve : SubsidyRetrieve)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
+  override def retrieveSubsidy(subsidyRetrieve : SubsidyRetrieve)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] = {
+    println(s"retrieveSubsidy: $subsidyRetrieve")
     http
       .POST[SubsidyRetrieve, HttpResponse](s"$escURL/$retrieveSubsidyPath", subsidyRetrieve)
       .map(Right(_))
       .recover {
         case e => Left(Error(e))
       }
+  }
 
   private def toSubsidyUpdate(journey: SubsidyJourney, undertakingRef: UndertakingRef) = {
     val currentDate = timeProvider.today
