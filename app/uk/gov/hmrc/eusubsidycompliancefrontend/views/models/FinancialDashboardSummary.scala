@@ -99,8 +99,8 @@ object FinancialDashboardSummary {
       .map(i => i.allocationDate.toTaxYearStart -> i.nonHMRCSubsidyAmtEUR)
     )
 
-    // Generate summaries for each starting tax year value.
-    val taxYearSummaries = (startDate.getYear to endDate.toTaxYearStart.getYear)
+    // Generate summaries for each starting tax year value in descending year order.
+    val taxYearSummaries = (endDate.toTaxYearStart.getYear to startDate.getYear by -1)
       .map(_ - startDate.getYear)
       .map(d => LocalDate.from(startDate).plusYears(d))
       .map(d => TaxYearSummary(

@@ -51,7 +51,7 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
           sector = Sector.other,
           sectorCap = IndustrySectorLimit(BigDecimal(200000.00)),
         ),
-        taxYears = Seq(2019, 2020, 2021).map { year =>
+        taxYears = Seq(2021, 2020, 2019).map { year =>
           TaxYearSummary(
             startYear = year,
             hmrcSubsidyTotal = SubsidyAmount.Zero,
@@ -66,7 +66,7 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
     "convert and return a valid FinancialDashboardSummary instance" in {
       val end = LocalDate.parse("2022-03-01").toTaxYearEnd
       val start = end.minusYears(2).toTaxYearStart
-      val yearOffsets = List(0, 1, 2)
+      val yearOffsets = List(2, 1, 0)
 
       val result = FinancialDashboardSummary.fromUndertakingSubsidies(
         undertaking,
@@ -88,9 +88,9 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
           sectorCap = IndustrySectorLimit(BigDecimal(200000.00)),
         ),
         taxYears = Seq(
-          TaxYearSummary(2019,  SubsidyAmount(123.45),  SubsidyAmount(123.45)),
-          TaxYearSummary(2020,  SubsidyAmount(123.45),  SubsidyAmount(123.45)),
           TaxYearSummary(2021,  SubsidyAmount(123.45),  SubsidyAmount(123.45)),
+          TaxYearSummary(2020,  SubsidyAmount(123.45),  SubsidyAmount(123.45)),
+          TaxYearSummary(2019,  SubsidyAmount(123.45),  SubsidyAmount(123.45)),
         )
       )
 
