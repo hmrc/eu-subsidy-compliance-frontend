@@ -24,9 +24,11 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, Error, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, EscService, RetrieveEmailService, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData.{undertaking, _}
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class AccountControllerSpec extends ControllerSpec
@@ -36,12 +38,14 @@ class AccountControllerSpec extends ControllerSpec
 
   val mockEscService = mock[EscService]
   val mockRetrieveEmailService = mock[RetrieveEmailService]
+  val mockTimeProvider = mock[TimeProvider]
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
-    bind[RetrieveEmailService].toInstance(mockRetrieveEmailService)
+    bind[RetrieveEmailService].toInstance(mockRetrieveEmailService),
+    bind[TimeProvider].toInstance(mockTimeProvider)
   )
 
   val controller = instanceOf[AccountController]
@@ -62,6 +66,9 @@ class AccountControllerSpec extends ControllerSpec
           .fold(s => new Exception(s), identity)), Future.successful)}
   }
 
+  private def mockTimeProviderToday(today: LocalDate) =
+    (mockTimeProvider.today _).expects().returning(today)
+
   "AccountController" when {
 
     "handling request to get Account page" must {
@@ -81,6 +88,7 @@ class AccountControllerSpec extends ControllerSpec
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
+            mockTimeProviderToday(currentDate)
           }
           checkPageIsDisplayed(
             performAction(),
@@ -132,6 +140,30 @@ class AccountControllerSpec extends ControllerSpec
           )
         }
 
+        def testTimeToReport(undertaking: Undertaking, currentDate: LocalDate, isTimeToReport: Boolean, dueDate: String) = {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
+            mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+            mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
+            mockTimeProviderToday(currentDate)
+          }
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("account-homepage.title", undertaking.name),
+            {doc =>
+              if(isTimeToReport) {
+                val htmlBody = doc.select(".govuk-inset-text").text
+                htmlBody should include regex
+                  messageFromMessageKey("account-homepage.inset", dueDate)
+              }
+            }
+          )
+        }
+
         "there is a view link on the page and undertaking has lead only business entity" in {
           test(undertaking)
         }
@@ -143,6 +175,29 @@ class AccountControllerSpec extends ControllerSpec
         "The undertaking  any non-Lead  business entities " in {
           test(undertaking1)
         }
+
+        "today's date falls between the 76th and the 90th day from the last day of subsidy report " in {
+          testTimeToReport(undertaking.copy(lastSubsidyUsageUpdt = LocalDate.of(2021,12, 1).some),
+            currentDate = LocalDate.of(2022,2, 16),
+            true,
+            "1 March 2022"
+          )
+        }
+        "today's date is exactly 76 days from the last day of subsidy report " in {
+          testTimeToReport(undertaking.copy(lastSubsidyUsageUpdt = LocalDate.of(2021,12, 1).some),
+            currentDate = LocalDate.of(2022,2, 15),
+            true,
+            "1 March 2022"
+          )
+        }
+        "today's date is exactly 90 days from the last day of subsidy report " in {
+          testTimeToReport(undertaking.copy(lastSubsidyUsageUpdt = LocalDate.of(2021,12, 1).some),
+            currentDate = LocalDate.of(2022,3, 1),
+            true,
+            "1 March 2022"
+          )
+        }
+
 
       }
 
