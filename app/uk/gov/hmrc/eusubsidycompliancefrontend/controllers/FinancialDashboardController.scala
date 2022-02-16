@@ -54,7 +54,7 @@ class FinancialDashboardController @Inject()(
 
     val subsidies = for {
       undertaking <- store.get[Undertaking]
-      r = undertaking.flatMap(_.reference).getOrElse(throw new IllegalStateException("No undertaking data on session"))
+      r = undertaking.flatMap(_.reference).getOrElse(handleMissingSessionData("Undertaking"))
       s = SubsidyRetrieve(r, searchRange)
       subsidies <- escService.retrieveSubsidy(s)
     } yield (undertaking.get, subsidies)

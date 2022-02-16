@@ -133,9 +133,10 @@ class EscConnectorImpl @Inject()(
         List(
           NonHmrcSubsidy(
             subsidyUsageTransactionID = journey.existingTransactionId,
-            allocationDate = journey.claimDate.value.get.toLocalDate,
+            allocationDate = journey.claimDate.value.map(_.toLocalDate).getOrElse(throw new IllegalStateException("No claimdate on SubsidyJourney")),
             submissionDate = currentDate,
-            publicAuthority = Some(journey.publicAuthority.value.get),// this shouldn't be optional, is required in create API but not retrieve
+            // this shouldn't be optional, is required in create API but not retrieve
+            publicAuthority = Some(journey.publicAuthority.value.get),
             traderReference = journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
             nonHMRCSubsidyAmtEUR = SubsidyAmount(journey.claimAmount.value.get),
             businessEntityIdentifier = journey.addClaimEori.value.fold(sys.error("eori value missing"))(oprionalEORI => oprionalEORI.value.map(EORI(_))),
