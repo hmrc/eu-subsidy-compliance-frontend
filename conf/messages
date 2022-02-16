@@ -14,6 +14,8 @@ common.accept=Accept and send
 continue.button=Save and Continue
 button.addBusiness = Add a business to this undertaking
 
+service.homePageUrl = "test data"
+
 common.yes=Yes
 common.no=No
 common.warning=Warning

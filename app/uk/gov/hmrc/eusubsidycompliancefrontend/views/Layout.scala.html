@@ -15,23 +15,27 @@
  *@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcHead, HmrcLayout}
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcHead}
 @import views.html.helper.CSPNonce
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.timeout_dialog
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLanguageSelectHelper
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcReportTechnicalIssueHelper
 
 @this(
-  appConfig: AppConfig,
-  hmrcLayout: HmrcLayout,
-  hmrcHead: HmrcHead,
-  beforeContentBlock: components.BeforeContent,
-  scripts: components.Scripts
+        appConfig: AppConfig,
+        govukLayout: GovukLayout,
+        hmrcHead: HmrcHead,
+        hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+        beforeContentBlock: components.BeforeContent,
+        scripts: components.Scripts
 )
 @(pageTitle: Option[String] = None,
-  backLinkEnabled: Boolean = false,
-  backLink: Option[String] = None,
-  headBlock: Option[Html] = None,
-  hasErrors: Boolean = false,
-  scriptsBlock: Option[Html] = None
+        backLinkEnabled: Boolean = false,
+        backLink: Option[String] = None,
+        headBlock: Option[Html] = None,
+        hasErrors: Boolean = false,
+        scriptsBlock: Option[Html] = None
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @serviceNameAndHeading = @{pageTitle.fold(messages("service.name"))(t => s"""$t - ${messages("service.name")}""")}
@@ -39,18 +43,26 @@
 @documentTitle = @{if(hasErrors) { messages("generic.errorPrefix") + " " + govTitle } else { govTitle }}
 
 @head = {
-  <link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="all" rel="stylesheet" type="text/css" />
+    <link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="all" rel="stylesheet" type="text/css" />
 }
 
 @beforeContentWrapper = {
-  @beforeContentBlock(backLinkEnabled, backLink)
-  @timeout_dialog(request.uri, appConfig.sessionTimeout)
+@beforeContentBlock(backLinkEnabled, backLink)
+@timeout_dialog(request.uri, appConfig.sessionTimeout)
+@{if(appConfig.welshLanguageSupportEnabled) Some(hmrcLanguageSelectHelper()) else None}
 }
 
-@hmrcLayout(
-  pageTitle = Some(documentTitle),
-  additionalHeadBlock = Some(hmrcHead(Some(head), CSPNonce.get)),
-  nonce = CSPNonce.get,
-  isWelshTranslationAvailable = appConfig.welshLanguageSupportEnabled,
-  beforeContentBlock = Some(beforeContentWrapper)
+@content = {
+    <div class="govuk-!-margin-bottom-6">
+    @contentBlock
+    </div>
+    <div class="govuk-!-display-none-print">
+    @hmrcReportTechnicalIssueHelper()
+    </div>
+}
+
+@govukLayout(
+    pageTitle = Some(documentTitle),
+    headBlock = Some(hmrcHead(headBlock = Some(head), nonce = CSPNonce.get)),
+    beforeContentBlock = Some(beforeContentWrapper),
 )(contentBlock)
