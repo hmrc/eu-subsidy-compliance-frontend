@@ -51,7 +51,6 @@ object SubsidyJourney {
   implicit val formPageClaimDateFormat: OFormat[FormPage[DateFormValues]] =
     Json.format[FormPage[DateFormValues]]
 
-
   implicit val formPageOptionalEORIFormat: OFormat[FormPage[OptionalEORI]] =
     Json.format[FormPage[OptionalEORI]]
 
@@ -73,7 +72,6 @@ object SubsidyJourney {
         addClaimEori = newJourney.addClaimEori.copy(value =  getAddClaimEORI(nonHmrcSubsidy.businessEntityIdentifier).some),
         publicAuthority = newJourney.publicAuthority.copy(value = Some(nonHmrcSubsidy.publicAuthority.getOrElse(""))),
         traderRef = newJourney.traderRef.copy(value = getAddTraderRef(nonHmrcSubsidy.traderReference).some),
-//        traderRef = newJourney.traderRef.copy(value = Some(nonHmrcSubsidy.traderReference)),
         existingTransactionId = nonHmrcSubsidy.subsidyUsageTransactionID
     )
   }

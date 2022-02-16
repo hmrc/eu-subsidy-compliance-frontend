@@ -188,6 +188,7 @@ class SubsidyController @Inject()(
   }
 
   def getAddClaimEori: Action[AnyContent] = escAuthentication.async { implicit request =>
+
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
@@ -201,6 +202,7 @@ class SubsidyController @Inject()(
   }
 
   def postAddClaimEori: Action[AnyContent] = escAuthentication.async { implicit request =>
+
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
       claimEoriForm.bindFromRequest().fold(
@@ -260,6 +262,7 @@ class SubsidyController @Inject()(
   }
 
   def getAddClaimReference: Action[AnyContent] = escAuthentication.async { implicit request =>
+
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
@@ -271,6 +274,7 @@ class SubsidyController @Inject()(
   }
 
   def postAddClaimReference: Action[AnyContent] = escAuthentication.async { implicit request =>
+
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
       claimTraderRefForm.bindFromRequest().fold(
@@ -421,14 +425,14 @@ class SubsidyController @Inject()(
 
   val claimTraderRefForm: Form[OptionalTraderRef] = Form(
     mapping(
-      "should-store-trader-ref" -> mandatory("should-claim-eori"),
+      "should-store-trader-ref" -> mandatory("should-store-trader-ref"),
       "claim-trader-ref" -> optional(text)
     )(OptionalTraderRef.apply)(OptionalTraderRef.unapply)
     .transform[OptionalTraderRef](
       optionalTraderRef => if (optionalTraderRef.setValue == "false") optionalTraderRef.copy(value = None) else optionalTraderRef,
       identity
     ).verifying(
-      "error.isempty", a => a.setValue == "false" || a.value.nonEmpty
+      "error.isempty", optionalTraderRef => optionalTraderRef.setValue == "false" || optionalTraderRef.value.nonEmpty
     )
   )
 
