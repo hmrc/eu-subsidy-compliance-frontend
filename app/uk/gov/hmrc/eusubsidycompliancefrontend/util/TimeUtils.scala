@@ -17,17 +17,20 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.util
 
 import play.api.i18n.Messages
-import java.time.{LocalDate}
+import java.time.LocalDate
 
 object TimeUtils {
+
   def govDisplayFormat(date: LocalDate)(implicit messages: Messages): String =
-    s"""${date.getDayOfMonth()} ${messages(
-      s"date.${date.getMonthValue()}"
-    )} ${date.getYear()}"""
+    constructDateString(date, "date.")
 
   def govDisplayFormatTruncated(date: LocalDate)(implicit messages: Messages): String =
-    s"""${date.getDayOfMonth()} ${messages(
-      s"date.truncated.${date.getMonthValue()}"
-    )} ${date.getYear()}"""
+    constructDateString(date, "date.truncated.")
+
+  private def constructDateString(date: LocalDate, monthKeyPrefix: String)(implicit messages: Messages) = Seq(
+    date.getDayOfMonth,
+    messages(monthKeyPrefix + date.getMonthValue),
+    date.getYear
+  ).mkString(" ")
 
 }
