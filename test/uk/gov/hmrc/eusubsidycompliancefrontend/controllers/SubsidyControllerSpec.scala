@@ -23,7 +23,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, Error, NonHmrcSubsidy, OptionalEORI, OptionalTraderRef, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, FormPage, JourneyTraverseService, Store, SubsidyJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, JourneyTraverseService, Store, SubsidyJourney}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData.{subsidyJourney, _}
 
@@ -129,7 +129,7 @@ class SubsidyControllerSpec extends ControllerSpec
               subsidyList.select("tbody > tr > td:nth-child(2)").text() shouldBe "€1234.56"
               subsidyList.select("tbody > tr > td:nth-child(3)").text() shouldBe "GB123456789012"
               subsidyList.select("tbody > tr > td:nth-child(4)").text() shouldBe "Local Authority"
-              subsidyList.select("tbody > tr > td:nth-child(5)").text() shouldBe "Z12345"
+              subsidyList.select("tbody > tr > td:nth-child(5)").text() shouldBe "ABC123"
               subsidyList.select("tbody > tr > td:nth-child(6)").text() shouldBe "Change"
               subsidyList.select("tbody > tr > td:nth-child(7)").text() shouldBe "Remove"
 
