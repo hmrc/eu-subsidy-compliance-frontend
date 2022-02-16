@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.util
+package uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters
 
 import play.api.i18n.Messages
+
 import java.time.LocalDate
 
-object TimeUtils {
+object DateFormatter {
 
   def govDisplayFormat(date: LocalDate)(implicit messages: Messages): String =
     constructDateString(date, "date.")
@@ -32,5 +33,12 @@ object TimeUtils {
     messages(monthKeyPrefix + date.getMonthValue),
     date.getYear
   ).mkString(" ")
+
+  object Syntax {
+    implicit class DateOps(val d: LocalDate) extends AnyVal {
+      def toDisplayFormat(implicit m: Messages): String = govDisplayFormat(d)
+      def toShortDisplayFormat(implicit m: Messages): String = govDisplayFormatTruncated(d)
+    }
+  }
 
 }

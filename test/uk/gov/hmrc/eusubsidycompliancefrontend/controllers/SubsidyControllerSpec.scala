@@ -36,7 +36,7 @@ class SubsidyControllerSpec extends ControllerSpec
   with AuthAndSessionDataBehaviour
   with JourneySupport {
 
-  val mockEscService = mock[EscService]
+  private val mockEscService = mock[EscService]
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
@@ -53,7 +53,7 @@ class SubsidyControllerSpec extends ControllerSpec
       .expects(subsidyRetrieve, *)
       .returning(result)
 
-  val controller = instanceOf[SubsidyController]
+  private val controller = instanceOf[SubsidyController]
 
   "SubsidyControllerSpec" when {
 
@@ -125,8 +125,8 @@ class SubsidyControllerSpec extends ControllerSpec
               subsidyList.select("thead > tr > th:nth-child(4)").text() shouldBe "Public authority"
               subsidyList.select("thead > tr > th:nth-child(5)").text() shouldBe "Your reference"
 
-              subsidyList.select("tbody > tr > td:nth-child(1)").text() shouldBe "20 Jan 2021"
-              subsidyList.select("tbody > tr > td:nth-child(2)").text() shouldBe "€1234.56"
+              subsidyList.select("tbody > tr > td:nth-child(1)").text() shouldBe "1 Jan 2022"
+              subsidyList.select("tbody > tr > td:nth-child(2)").text() shouldBe "€1,234.56"
               subsidyList.select("tbody > tr > td:nth-child(3)").text() shouldBe "GB123456789012"
               subsidyList.select("tbody > tr > td:nth-child(4)").text() shouldBe "Local Authority"
               subsidyList.select("tbody > tr > td:nth-child(5)").text() shouldBe "ABC123"

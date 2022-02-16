@@ -27,6 +27,13 @@ object BigDecimalFormatter {
     cf.setCurrency(Currency.getInstance("EUR"))
     cf
   }
-  def toEuros(amount: BigDecimal): String = currencyFormatter.format(amount.setScale(2))
-}
 
+  def toEuros(amount: BigDecimal): String = currencyFormatter.format(amount.setScale(2))
+
+  object Syntax {
+    implicit class BigDecimalOps(val b: BigDecimal) extends AnyVal {
+      def toEuros: String = BigDecimalFormatter.toEuros(b)
+    }
+  }
+
+}

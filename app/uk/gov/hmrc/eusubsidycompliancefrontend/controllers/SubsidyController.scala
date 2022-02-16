@@ -26,6 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, JourneyTraverseService, Store, SubsidyJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
@@ -143,27 +144,12 @@ class SubsidyController @Inject()(
   def getClaimDate: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
-        case Some(journey) =>
-          journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
-            journey
-            .claimDate
-            .value
-            .fold(
-              Future.successful(
-                Ok(addClaimDatePage(
-                  claimDateForm,
-                  previous
-                ))
-              )
-            ) { x =>
-              Future.successful(
-                Ok(addClaimDatePage(
-                  claimDateForm.fill(x),
-                  previous
-                ))
-              )
-            }
-          }
+        case Some(journey) => journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
+          journey.claimDate.value
+            .fold(Ok(addClaimDatePage(claimDateForm, previous))) { dateFormValues =>
+              Ok(addClaimDatePage(claimDateForm.fill(dateFormValues), previous))
+          }.toFuture
+        }
       case _ => handleMissingSessionData("Subsidy journey")
     }
   }
@@ -173,19 +159,16 @@ class SubsidyController @Inject()(
     getPrevious[SubsidyJourney](store).flatMap { previous =>
       claimDateForm.bindFromRequest().fold(
         formWithErrors => Future(BadRequest(addClaimDatePage(formWithErrors, previous))),
-        form => {
-          for {
-            journey <- store.update[SubsidyJourney]({ x =>
-              x.map { y =>
-              y.copy(claimDate = y.claimDate.copy(value = Some(form)))
+        form => for {
+          journey <- store.update[SubsidyJourney] { maybeSubsidyJourney =>
+            maybeSubsidyJourney.map { subsidyJourney =>
+              subsidyJourney.copy(claimDate = subsidyJourney.claimDate.copy(value = Some(form)))
             }
-            })
-            redirect <- getJourneyNext(journey)
-          } yield redirect
-        }
-      )
+          }
+          redirect <- getJourneyNext(journey)
+        } yield redirect)
+      }
     }
-  }
 
   def getAddClaimEori: Action[AnyContent] = escAuthentication.async { implicit request =>
 

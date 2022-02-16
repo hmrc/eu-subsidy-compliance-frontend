@@ -67,7 +67,7 @@ object SubsidyJourney {
     newJourney
       .copy(
         reportPayment = newJourney.reportPayment.copy(value = Some(true)),
-        claimDate = newJourney.claimDate.copy(value = Some(DateFormValues.fromDate(nonHmrcSubsidy.submissionDate))),
+        claimDate = newJourney.claimDate.copy(value = Some(DateFormValues.fromDate(nonHmrcSubsidy.allocationDate))),
         claimAmount = newJourney.claimAmount.copy(value = Some(nonHmrcSubsidy.nonHMRCSubsidyAmtEUR)),
         addClaimEori = newJourney.addClaimEori.copy(value =  getAddClaimEORI(nonHmrcSubsidy.businessEntityIdentifier).some),
         publicAuthority = newJourney.publicAuthority.copy(value = Some(nonHmrcSubsidy.publicAuthority.getOrElse(""))),
