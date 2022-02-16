@@ -14,20 +14,31 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.util
+package uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters
 
 import play.api.i18n.Messages
-import java.time.{LocalDate}
 
-object TimeUtils {
+import java.time.LocalDate
+
+object DateFormatter {
+
   def govDisplayFormat(date: LocalDate)(implicit messages: Messages): String =
-    s"""${date.getDayOfMonth()} ${messages(
-      s"date.${date.getMonthValue()}"
-    )} ${date.getYear()}"""
+    constructDateString(date, "date.")
 
   def govDisplayFormatTruncated(date: LocalDate)(implicit messages: Messages): String =
-    s"""${date.getDayOfMonth()} ${messages(
-      s"date.truncated.${date.getMonthValue()}"
-    )} ${date.getYear()}"""
+    constructDateString(date, "date.truncated.")
+
+  private def constructDateString(date: LocalDate, monthKeyPrefix: String)(implicit messages: Messages) = Seq(
+    date.getDayOfMonth,
+    messages(monthKeyPrefix + date.getMonthValue),
+    date.getYear
+  ).mkString(" ")
+
+  object Syntax {
+    implicit class DateOps(val d: LocalDate) extends AnyVal {
+      def toDisplayFormat(implicit m: Messages): String = govDisplayFormat(d)
+      def toShortDisplayFormat(implicit m: Messages): String = govDisplayFormatTruncated(d)
+    }
+  }
 
 }

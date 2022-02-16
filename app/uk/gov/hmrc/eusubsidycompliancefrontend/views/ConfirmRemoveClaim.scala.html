@@ -22,8 +22,10 @@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
-@import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeUtils
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax._
 
 
 @this(
@@ -61,7 +63,7 @@
                         content = Text(messages("subsidy.cya.summary-list.claimDate.key"))
                     ),
                     value = Value(
-                        content = Text(TimeUtils.govDisplayFormat(nonHmrcSubsidy.submissionDate))
+                        content = Text(nonHmrcSubsidy.allocationDate.toDisplayFormat)
                     )
                 ),
                 SummaryListRow(
@@ -69,7 +71,7 @@
                         content = Text(messages("subsidy.cya.summary-list.amount.key"))
                     ),
                     value = Value(
-                        content = Text(messages("common.currency.euros") + nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.toString())
+                        content = Text(nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.toEuros)
                     )
                 ),
                 SummaryListRow(

@@ -21,7 +21,9 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.UndertakingSubsidies
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
-@import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeUtils
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax._
 
 @this(
   layout: FullWidthLayout,
@@ -50,8 +52,8 @@
               attributes = Map("id" -> "subsidy-list"),
               rows = subsidies.get.nonHMRCSubsidyUsage.map { sub =>
                   Seq(
-                      TableRow(content = Text(TimeUtils.govDisplayFormatTruncated(sub.submissionDate))),
-                      TableRow(content = Text(messages("common.currency.euros") + sub.nonHMRCSubsidyAmtEUR.toString())),
+                      TableRow(content = Text(sub.allocationDate.toShortDisplayFormat)),
+                      TableRow(content = Text(sub.nonHMRCSubsidyAmtEUR.toEuros)),
                       TableRow(content = Text(sub.businessEntityIdentifier.getOrElse(""))),
                       TableRow(content = Text(sub.publicAuthority.getOrElse(""))),
                       TableRow(content = Text(sub.traderReference.getOrElse(""))),
@@ -76,10 +78,6 @@
     }
 
   @formHelper(action = controllers.routes.SubsidyController.postReportPayment) {
-
-    @if(subsidies.isEmpty || subsidies.get.nonHMRCSubsidyUsage.isEmpty) {
-        @P(messages("report-payment.p1"))
-    }
 
     @P(messages("report-payment.p2"))
 

@@ -23,6 +23,8 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax._
 
 @this(
     layout: Layout,
@@ -70,7 +72,7 @@
                         content = Text(messages("subsidy.cya.summary-list.amount.key"))
                     ),
                     value = Value(
-                        content = Text(messages("common.currency.euros") + amount.toString())
+                        content = Text(amount.toEuros)
                     ),
                     actions = Some(Actions(
                         items = Seq(
