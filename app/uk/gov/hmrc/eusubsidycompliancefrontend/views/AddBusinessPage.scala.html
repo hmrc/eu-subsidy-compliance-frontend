@@ -30,10 +30,11 @@
   govukSummaryList: GovukSummaryList
 )
 
-
 @(form: Form[_], name: UndertakingName, businessEntity: List[BusinessEntity])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@titleKey = @{if(businessEntity.length > 1) "addBusiness.businesses-added.title" else "addBusiness.empty.title" }
+
 @layout(
-  pageTitle = Some(messages("addBusiness.title", name.toString)),
+  pageTitle = Some(messages(titleKey, name.toString)),
   hasErrors = form.hasErrors
 ) {
 
@@ -50,10 +51,9 @@
       ))
     }
 
-    @if(businessEntity.length > 1){
-      @{H1(messages("addBusiness.businesses-added.title", name.toString))}
-    }else{
-      @{H1(messages("addBusiness.title", name.toString))}
+    @{H1(messages(titleKey, name.toString))}
+
+    @if(businessEntity.length == 1){
       @{P(messages("addBusiness.p1"))}
       @{P(messages("addBusiness.p2"))}
       @{P(messages("addBusiness.p3"))}

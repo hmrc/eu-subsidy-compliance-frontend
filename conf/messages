@@ -131,7 +131,7 @@ sector.hint.3=If any part of your business is involved in the production, proces
 
 undertaking.cya.title=Check your answers
 
-addBusiness.title=Add businesses within your organisation to {0}
+addBusiness.empty.title=Add businesses within your organisation to {0}
 addBusiness.p1=This service is for businesses importing into Northern Ireland or claiming de minimis aid in the UK.
 addBusiness.p2=For this service, HMRC needs to group together related businesses within a company or organisation into a ‘single undertaking’. Businesses within an undertaking are identified by their EORI number.
 addBusiness.p3=You must add any business to this single undertaking that has claimed a Customs Duty waiver in this tax year, or the two previous tax years.
