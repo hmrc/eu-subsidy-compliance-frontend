@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.data.OptionT
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
@@ -28,7 +29,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
+import cats.implicits._
 
 @Singleton
 class FinancialDashboardController @Inject()(
@@ -52,15 +54,15 @@ class FinancialDashboardController @Inject()(
 
     val searchRange = Some((searchDateStart, searchDateEnd))
 
-    val subsidies = for {
-      undertaking <- store.get[Undertaking]
-      r = undertaking.flatMap(_.reference).getOrElse(handleMissingSessionData("Undertaking"))
+    val subsidies: Future[(Undertaking, UndertakingSubsidies)] = for {
+      undertaking <- OptionT(store.get[Undertaking]).getOrElse(handleMissingSessionData("Undertaking"))
+      r = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking reference"))
       s = SubsidyRetrieve(r, searchRange)
       subsidies <- escService.retrieveSubsidy(s)
-    } yield (undertaking.get, subsidies)
+    } yield (undertaking, subsidies)
 
     subsidies.map {
-      case ((undertaking), subsidies) =>
+      case (undertaking, subsidies) =>
         Ok(financialDashboardPage(
             FinancialDashboardSummary
               .fromUndertakingSubsidies(undertaking, subsidies, searchDateStart, currentTaxYearEnd))
