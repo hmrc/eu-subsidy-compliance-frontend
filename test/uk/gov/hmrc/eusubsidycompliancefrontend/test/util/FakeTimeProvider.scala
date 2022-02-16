@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,16 +12,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+package uk.gov.hmrc.eusubsidycompliancefrontend.test.util
 
-@this(layout: Layout)
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
-@(eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+import java.time.{LocalDate, ZoneId}
 
-@layout(pageTitle = Some("eu-subsidy-compliance-frontend")) {
-    <h1 class="govuk-heading-xl">Complete</h1>
-    <p class="govuk-body">Welcome @{eori}. @{messages("service.text")}</p>
+object FakeTimeProvider {
+
+  def withFixedDate(day: Int, month: Int, year: Int): TimeProvider = new TimeProvider {
+    override def today: LocalDate = LocalDate.of(year, month, day)
+
+    override def today(z: ZoneId): LocalDate = today
+  }
+
 }

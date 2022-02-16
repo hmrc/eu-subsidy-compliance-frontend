@@ -33,7 +33,6 @@ case class NewLeadJourney(selectNewLead: FormPage[EORI] = FormPage("select-new-l
 }
 
 object NewLeadJourney {
-  import Journey._ // N.B. don't let intellij delete this
   import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.eoriFormat
   implicit val formPageEoriFormat: OFormat[FormPage[EORI]] =
     Json.format[FormPage[EORI]]

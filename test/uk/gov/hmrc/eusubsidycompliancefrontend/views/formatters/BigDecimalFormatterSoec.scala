@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.models
+package uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters
 
-import org.scalatest.matchers.must.Matchers
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
-import java.time.LocalDate
+class BigDecimalFormatterSoec extends AnyWordSpecLike with Matchers {
 
-class DateFormValuesSpec extends AnyWordSpecLike with Matchers {
+  "BigDecimalFormatter" when {
+    "toTwoDecimalPlaces is called" should {
 
-  "DateFormValues" when {
-
-    "toFormattedString is called" must {
-      "return a formatted date string" in {
-        DateFormValues("1", "1", "2022").toFormattedString mustBe "1/1/2022"
+      "return a formatted string containing the value formatted to two decimal places" in {
+        BigDecimalFormatter.toEuros(BigDecimal(1)) shouldBe "€1.00"
       }
-    }
 
-    "toLocalDate is called" must {
-      "return a valid LocalDate instance" in {
-        DateFormValues("1", "1", "2022").toLocalDate mustBe LocalDate.of(2022, 1, 1)
+      "format numbers greater than 100 with comma separators" in {
+        BigDecimalFormatter.toEuros(BigDecimal(1000)) shouldBe "€1,000.00"
       }
     }
   }

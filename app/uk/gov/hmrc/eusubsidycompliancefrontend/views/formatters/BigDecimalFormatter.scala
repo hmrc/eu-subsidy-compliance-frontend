@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.util
+package uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters
 
-import java.time.{LocalDate, Month}
+import java.text.NumberFormat
+import java.util.{Currency, Locale}
 
-object TaxYearHelpers {
+object BigDecimalFormatter {
 
-  def taxYearStartForDate(d: LocalDate): LocalDate = {
-    val taxYearStartForDateYear = LocalDate.of(d.getYear, Month.APRIL, 6)
-    if (d.isBefore(taxYearStartForDateYear)) taxYearStartForDateYear.minusYears(1)
-    else taxYearStartForDateYear
+  val currencyFormatter: NumberFormat = {
+    val cf = NumberFormat.getCurrencyInstance(new Locale("en", "GB"))
+    cf.setCurrency(Currency.getInstance(new Locale("en", "GB")))
+    cf.setCurrency(Currency.getInstance("EUR"))
+    cf
   }
-
-  def taxYearEndForDate(d: LocalDate): LocalDate =
-    taxYearStartForDate(d)
-      .plusYears(1)
-      .minusDays(1)
-
+  def toEuros(amount: BigDecimal): String = currencyFormatter.format(amount.setScale(2))
 }
 

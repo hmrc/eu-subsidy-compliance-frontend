@@ -54,7 +54,7 @@
                       TableRow(content = Text(messages("common.currency.euros") + sub.nonHMRCSubsidyAmtEUR.toString())),
                       TableRow(content = Text(sub.businessEntityIdentifier.getOrElse(""))),
                       TableRow(content = Text(sub.publicAuthority.getOrElse(""))),
-                      TableRow(content = Text(sub.subsidyUsageTransactionID.getOrElse(""))),
+                      TableRow(content = Text(sub.traderReference.getOrElse(""))),
                       TableRow(content = HtmlContent(s"<a class='govuk-link' href=${controllers.routes.SubsidyController.getChangeSubsidyClaim(sub.subsidyUsageTransactionID.get).url}>Change</a>")),
                       TableRow(content = HtmlContent(s"<a class='govuk-link' href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionID.get).url}>Remove</a>"))
                   )

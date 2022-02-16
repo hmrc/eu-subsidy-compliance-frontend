@@ -16,20 +16,12 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.util
 
-import java.time.{LocalDate, Month}
+import scala.concurrent.Future
 
-object TaxYearHelpers {
+object FutureSyntax {
 
-  def taxYearStartForDate(d: LocalDate): LocalDate = {
-    val taxYearStartForDateYear = LocalDate.of(d.getYear, Month.APRIL, 6)
-    if (d.isBefore(taxYearStartForDateYear)) taxYearStartForDateYear.minusYears(1)
-    else taxYearStartForDateYear
+  implicit class FutureOps[A](val a: A) extends AnyVal {
+    def toFuture: Future[A] = Future.successful(a)
   }
 
-  def taxYearEndForDate(d: LocalDate): LocalDate =
-    taxYearStartForDate(d)
-      .plusYears(1)
-      .minusDays(1)
-
 }
-

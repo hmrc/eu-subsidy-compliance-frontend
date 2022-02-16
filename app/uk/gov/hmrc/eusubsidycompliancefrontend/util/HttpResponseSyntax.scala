@@ -21,7 +21,7 @@ import uk.gov.hmrc.http.HttpResponse
 
 import scala.util.{Failure, Success, Try}
 
-object HttpResponseOps {
+object HttpResponseSyntax {
 
   implicit class HttpResponseOps(private val response: HttpResponse) extends AnyVal {
 

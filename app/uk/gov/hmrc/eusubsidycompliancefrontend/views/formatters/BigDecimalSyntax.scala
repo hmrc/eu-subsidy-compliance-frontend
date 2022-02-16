@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.testutil
+package uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters
 
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-
-import java.time.{LocalDate, ZoneId}
-
-object FakeTimeProvider {
-
-  def withFixedDate(day: Int, month: Int, year: Int):TimeProvider = new TimeProvider {
-    override def today: LocalDate = LocalDate.of(year, month, day)
-    override def today(z: ZoneId): LocalDate = today
+object BigDecimalSyntax {
+  implicit class BigDecimalOps(val b: BigDecimal) extends AnyVal {
+    def toEuros: String = BigDecimalFormatter.toEuros(b)
   }
-
 }

@@ -16,7 +16,6 @@
 
 package utils
 
-import com.typesafe.config.ConfigFactory
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
@@ -36,19 +35,15 @@ trait PlaySupport extends AnyWordSpec with Matchers with BeforeAndAfterAll with 
 
   def overrideBindings: List[GuiceableModule] = List.empty[GuiceableModule]
 
-  def additionalConfig =  Configuration()
+  def additionalConfig: Configuration = Configuration()
+
+  private val defaultConfiguration = Map(
+    "microservice.metrics.graphite.enabled" -> false,
+  )
+
   def buildFakeApplication(): Application =
     new GuiceApplicationBuilder()
-      .configure(
-        Configuration(
-          ConfigFactory.parseString(
-            """
-              | microservice.metrics.graphite.enabled = false
-              |
-              | """.stripMargin
-          )
-        ).withFallback(additionalConfig)
-      )
+      .configure(Configuration.from(defaultConfiguration).withFallback(additionalConfig))
       .overrides(overrideBindings: _*)
       .overrides(bind[MessagesApi].toProvider[TestMessagesApiProvider])
       .build()
@@ -57,6 +52,7 @@ trait PlaySupport extends AnyWordSpec with Matchers with BeforeAndAfterAll with 
 
   lazy val appConfig: AppConfig = instanceOf[AppConfig]
 
+  // TODO - consider replacing this with running(app) { } in tests
   abstract override def beforeAll(): Unit = {
     Play.start(fakeApplication)
     super.beforeAll()
@@ -66,6 +62,7 @@ trait PlaySupport extends AnyWordSpec with Matchers with BeforeAndAfterAll with 
     Play.stop(fakeApplication)
     super.afterAll()
   }
+
   implicit lazy val messagesApi = instanceOf[MessagesApi]
 
   implicit lazy val messages = MessagesImpl(lang, messagesApi)

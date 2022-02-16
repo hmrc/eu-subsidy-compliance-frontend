@@ -113,3 +113,5 @@ GET       /lead-eori-changed                      uk.gov.hmrc.eusubsidycomplianc
 
 GET      /no-business-for-lead                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.getNoBusinessPresent
 POST     /no-business-for-lead                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.postNoBusinessPresent
+
+GET        /financial-dashboard                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinancialDashboardController.getFinancialDashboard
