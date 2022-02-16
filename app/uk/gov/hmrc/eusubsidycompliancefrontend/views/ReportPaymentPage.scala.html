@@ -77,10 +77,6 @@
 
   @formHelper(action = controllers.routes.SubsidyController.postReportPayment) {
 
-    @if(subsidies.isEmpty || subsidies.get.nonHMRCSubsidyUsage.isEmpty) {
-        @P(messages("report-payment.p1"))
-    }
-
     @P(messages("report-payment.p2"))
 
     <ul class="govuk-list govuk-list--bullet">
