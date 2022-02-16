@@ -27,9 +27,9 @@ case class SubsidyJourney(
    reportPayment: FormPage[Boolean] = FormPage("claims"),
    claimDate: FormPage[DateFormValues] = FormPage("add-claim-date"),
    claimAmount: FormPage[BigDecimal] = FormPage("add-claim-amount"),
-   addClaimEori: FormPage[OptionalEORI] = FormPage("add-claim-eori"),//changed it to OptionalEORI from Option[EORI]
+   addClaimEori: FormPage[OptionalEORI] = FormPage("add-claim-eori"),
    publicAuthority: FormPage[String] = FormPage("add-claim-public-authority"),
-   traderRef: FormPage[OptionalTraderRef] = FormPage("add-claim-reference"),//changed it to OptionalTraderRef from Option[Traderref]
+   traderRef: FormPage[OptionalTraderRef] = FormPage("add-claim-reference"),
    cya: FormPage[Boolean] = FormPage("check-your-answers-subsidy"),
    existingTransactionId: Option[SubsidyRef] = None,
 
@@ -51,10 +51,9 @@ object SubsidyJourney {
   implicit val formPageClaimDateFormat: OFormat[FormPage[DateFormValues]] =
     Json.format[FormPage[DateFormValues]]
 
-//added formatting for FormPage[OptionalEORI]
   implicit val formPageOptionalEORIFormat: OFormat[FormPage[OptionalEORI]] =
     Json.format[FormPage[OptionalEORI]]
-  //added formatting for FormPage[OptionalTraderRef]
+
   implicit val formPageOptionalTraderRefFormat: OFormat[FormPage[OptionalTraderRef]] =
     Json.format[FormPage[OptionalTraderRef]]
 
