@@ -17,14 +17,18 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import com.typesafe.config.ConfigFactory
+import play.api.Configuration
 import play.api.inject.bind
+import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.AmendUndertakingRows
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, Error, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, JourneyTraverseService, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, Error, Language, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, JourneyTraverseService, RetrieveEmailService, SendEmailService, Store, UndertakingJourney}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData._
 
@@ -35,17 +39,40 @@ class UndertakingControllerSpec extends ControllerSpec
   with AuthSupport
   with JourneyStoreSupport
   with AuthAndSessionDataBehaviour
-  with JourneySupport {
+  with JourneySupport
+  with RetrieveEmailSupport
+  with SendEmailSupport  {
   val mockEscService = mock[EscService]
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
-    bind[JourneyTraverseService].toInstance(mockJourneyTraverseService)
+    bind[JourneyTraverseService].toInstance(mockJourneyTraverseService),
+    bind[SendEmailService].toInstance(mockSendEmailService),
+    bind[RetrieveEmailService].toInstance(mockRetrieveEmailService)
   )
 
-  val controller: UndertakingController = instanceOf[UndertakingController]
+  override def additionalConfig = super.additionalConfig.withFallback(
+    Configuration(
+      ConfigFactory.parseString(
+        s"""
+           |
+           |play.i18n.langs = ["en", "cy", "fr"]
+           | email-send {
+           |     create-undertaking-template-en = "template_EN"
+           |     create-undertaking-template-cy = "template_CY"
+           |  }
+           |""".stripMargin)
+    )
+  )
+
+
+  def mockCreateUndertaking(undertaking: Undertaking)(result: Either[Error, UndertakingRef]) =
+    (mockEscService
+      .createUndertaking(_: Undertaking)(_: HeaderCarrier))
+      .expects(undertaking, *)
+      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful(_)))
 
   def mockRetreiveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
     (mockEscService
@@ -64,6 +91,8 @@ class UndertakingControllerSpec extends ControllerSpec
       .addMember(_: UndertakingRef, _:  BusinessEntity)(_: HeaderCarrier))
       .expects(undertakingRef, businessEntity, *)
       .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful))
+
+  val controller: UndertakingController = instanceOf[UndertakingController]
 
   "UndertakingControllerSpec" when {
 
@@ -504,6 +533,106 @@ class UndertakingControllerSpec extends ControllerSpec
 
         "page is reached via amend  undertaking journey" in {
           test(undertakingJourneyComplete1.copy(contact = FormPage("contact"), cya = FormPage("cya")), routes.UndertakingController.getAmendUndertakingDetails().url)
+        }
+
+      }
+
+    }
+
+    "handling POST request to Check your Answers call" must {
+
+      def performAction(data: (String, String)*)(lang: String) =
+        controller.postCheckAnswers(
+          FakeRequest("POST", routes.UndertakingController.getCheckAnswers().url)
+            .withCookies(Cookie("PLAY_LANG", lang))
+            .withFormUrlEncodedBody(data: _*))
+
+
+      "throw technical error" when {
+
+        val exception = new Exception("oh no !")
+
+        "cya form is empty, nothing is submitted" in {
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+          }
+          assertThrows[Exception](await(performAction()(Language.English.code)))
+        }
+
+        "call to update undertaking journey fails" in {
+
+          def updateFunc(ujOpt: Option[UndertakingJourney]) =
+            ujOpt.map(x => x.copy(cya = x.cya.copy(value = true.some)))
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockUpdate[UndertakingJourney](_ => updateFunc(undertakingJourneyComplete.copy(cya = FormPage("check-your-answers", false.some)).some), eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
+        }
+
+        "call to create undertaking fails" in {
+
+          def updateFunc(undertakingJourneyOpt: Option[UndertakingJourney]) =
+            undertakingJourneyOpt.map(x => x.copy(cya = x.cya.copy(value = true.some)))
+
+          val updatedUndertakingJourney = undertakingJourneyComplete.copy(cya = FormPage("check-your-answers", false.some))
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockUpdate[UndertakingJourney](_ => updateFunc(updatedUndertakingJourney.some), eori1
+            )(Right(updatedUndertakingJourney))
+            mockCreateUndertaking(undertakingCreated)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
+
+        }
+      }
+
+      "redirect to confirmation page" when {
+
+        def testRedirection(lang: String, templateId: String) = {
+          def updateFunc(ujOpt: Option[UndertakingJourney]) =
+            ujOpt.map(x => x.copy(cya = x.cya.copy(value = true.some)))
+
+          val updatedUndertakingJourney = undertakingJourneyComplete.copy(cya = FormPage("check-your-answers", false.some))
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockUpdate[UndertakingJourney](_ => updateFunc(updatedUndertakingJourney.some), eori1
+            )(Right(updatedUndertakingJourney))
+            mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
+            mockSendEmail(validEmailAddress, emailParameter, templateId)(Right(EmailSendResult.EmailSent))
+          }
+          checkIsRedirect(performAction("cya" -> "true")(lang), routes.UndertakingController.getConfirmation(undertakingRef, undertakingCreated.name).url)
+        }
+
+        "all api calls are successful and english language is selected" in {
+          testRedirection(Language.English.code, "template_EN")
+        }
+
+        "all api calls are successful and Welsh language is selected" in {
+          testRedirection(Language.Welsh.code, "template_CY")
+        }
+
+        "send email call fails" in {
+          def updateFunc(ujOpt: Option[UndertakingJourney]) =
+            ujOpt.map(x => x.copy(cya = x.cya.copy(value = true.some)))
+
+          val updatedUndertakingJourney = undertakingJourneyComplete.copy(cya = FormPage("check-your-answers", false.some))
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockUpdate[UndertakingJourney](_ => updateFunc(updatedUndertakingJourney.some), eori1
+            )(Right(updatedUndertakingJourney))
+            mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
+            mockSendEmail(validEmailAddress, emailParameter, "template_CY")(Left(Error(new Exception(""))))
+          }
+          checkIsRedirect(performAction("cya" -> "true")(Language.Welsh.code), routes.UndertakingController.getConfirmation(undertakingRef, undertakingCreated.name).url)
+
         }
 
       }
