@@ -24,7 +24,7 @@ import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.AmendUndertakingRows
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.ModifyUndertakingRow
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, Error, Language, Undertaking}
@@ -42,7 +42,8 @@ class UndertakingControllerSpec extends ControllerSpec
   with JourneySupport
   with RetrieveEmailSupport
   with SendEmailSupport  {
-  val mockEscService = mock[EscService]
+
+  private val mockEscService = mock[EscService]
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
@@ -53,7 +54,7 @@ class UndertakingControllerSpec extends ControllerSpec
     bind[RetrieveEmailService].toInstance(mockRetrieveEmailService)
   )
 
-  override def additionalConfig = super.additionalConfig.withFallback(
+  override def additionalConfig: Configuration = super.additionalConfig.withFallback(
     Configuration(
       ConfigFactory.parseString(
         s"""
@@ -68,33 +69,33 @@ class UndertakingControllerSpec extends ControllerSpec
   )
 
 
-  def mockCreateUndertaking(undertaking: Undertaking)(result: Either[Error, UndertakingRef]) =
+  private def mockCreateUndertaking(undertaking: Undertaking)(result: Either[Error, UndertakingRef]) =
     (mockEscService
       .createUndertaking(_: Undertaking)(_: HeaderCarrier))
       .expects(undertaking, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful(_)))
+      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful))
 
-  def mockRetreiveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
+  private def mockRetreiveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
     (mockEscService
       .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
       .returning(result)
 
-  def mockUpdateUndertaking(undertaking: Undertaking)(result: Either[Error, UndertakingRef]) =
+  private def mockUpdateUndertaking(undertaking: Undertaking)(result: Either[Error, UndertakingRef]) =
     (mockEscService
       .updateUndertaking(_: Undertaking)(_: HeaderCarrier))
       .expects(undertaking, *)
       .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful))
 
-  def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(result: Either[Error, UndertakingRef]) =
+  private def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(result: Either[Error, UndertakingRef]) =
     (mockEscService
       .addMember(_: UndertakingRef, _:  BusinessEntity)(_: HeaderCarrier))
       .expects(undertakingRef, businessEntity, *)
       .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful))
 
-  val controller: UndertakingController = instanceOf[UndertakingController]
+  private val controller = instanceOf[UndertakingController]
 
-  "UndertakingControllerSpec" when {
+  "UndertakingController" when {
 
     "handling request to get Undertaking Name" must {
 
@@ -133,7 +134,7 @@ class UndertakingControllerSpec extends ControllerSpec
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("undertakingName.title"),
-            {doc =>
+            { doc =>
               val input = doc.select(".govuk-input").attr("value")
               input shouldBe ""
 
@@ -143,23 +144,22 @@ class UndertakingControllerSpec extends ControllerSpec
           )
         }
 
-      " undertaking journey is there in store" in {
-        inSequence {
-          mockAuthWithNecessaryEnrolment()
-          mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-        }
-        checkPageIsDisplayed(
-          performAction(),
-          messageFromMessageKey("undertakingName.title"),
-          { doc =>
-            val input = doc.select(".govuk-input").attr("value")
-            input shouldBe "TestUndertaking"
-
-            val button = doc.select("form")
-            button.attr("action") shouldBe routes.UndertakingController.postUndertakingName().url
+        " undertaking journey is there in store" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
           }
-        )
-      }
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("undertakingName.title"),
+            { doc =>
+              val input = doc.select(".govuk-input").attr("value")
+              input shouldBe "TestUndertaking"
+
+              val button = doc.select("form")
+              button.attr("action") shouldBe routes.UndertakingController.postUndertakingName().url
+            })
+        }
       }
 
     }
@@ -168,7 +168,7 @@ class UndertakingControllerSpec extends ControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postUndertakingName(
-          FakeRequest("POST",routes.UndertakingController.getUndertakingName().url)
+          FakeRequest(POST, routes.UndertakingController.getUndertakingName().url)
             .withFormUrlEncodedBody(data: _*))
 
       "throw technical error" when {
@@ -178,6 +178,7 @@ class UndertakingControllerSpec extends ControllerSpec
           def update(undertakingJourneyOpt: Option[UndertakingJourney]) = {
             undertakingJourneyOpt.map(_.copy(name = FormPage("undertaking-name", "TestUndertaking123".some)))
           }
+
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Left(Error(exception)))
@@ -201,7 +202,7 @@ class UndertakingControllerSpec extends ControllerSpec
 
       "redirect to next page" when {
 
-        def test(undertakingJourney: UndertakingJourney, nextCall: String) = {
+        def test(undertakingJourney: UndertakingJourney, nextCall: String): Unit = {
           def update(undertakingJourneyOpt: Option[UndertakingJourney]) = {
             undertakingJourneyOpt.map(_.copy(name = FormPage("undertaking-name", "TestUndertaking123".some)))
           }
@@ -229,7 +230,7 @@ class UndertakingControllerSpec extends ControllerSpec
 
     "handling request to get sector" must {
 
-      def performAction() = controller.getSector(FakeRequest("GET",routes.UndertakingController.getSector().url))
+      def performAction() = controller.getSector(FakeRequest(GET, routes.UndertakingController.getSector().url))
 
       "throw technical error" when {
 
@@ -263,7 +264,7 @@ class UndertakingControllerSpec extends ControllerSpec
           messageFromMessageKey("sector.label.0")
         )
 
-        def test(undertakingJourney: UndertakingJourney, previousCall: String, inputValue: Option[String]) = {
+        def test(undertakingJourney: UndertakingJourney, previousCall: String, inputValue: Option[String]): Unit = {
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -278,7 +279,7 @@ class UndertakingControllerSpec extends ControllerSpec
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               inputValue match {
                 case Some(value) => selectedOptions.attr("value") shouldBe value
-                case None        => selectedOptions.isEmpty       shouldBe true
+                case None => selectedOptions.isEmpty shouldBe true
               }
 
               testRadioButtonOptions(doc, allRadioTexts)
@@ -317,9 +318,8 @@ class UndertakingControllerSpec extends ControllerSpec
     "handling request to post sector" must {
       def performAction(data: (String, String)*) = controller
         .postSector(
-          FakeRequest("POST",routes.UndertakingController.getSector().url)
+          FakeRequest(POST, routes.UndertakingController.getSector().url)
             .withFormUrlEncodedBody(data: _*))
-
 
 
       def update(undertakingJourneyOpt: Option[UndertakingJourney]) = {
@@ -357,7 +357,7 @@ class UndertakingControllerSpec extends ControllerSpec
             mockGetPrevious[UndertakingJourney](eori1)(Right("undertaking-name"))
           }
           checkFormErrorIsDisplayed(performAction(),
-            messageFromMessageKey("undertakingSector.title",""),
+            messageFromMessageKey("undertakingSector.title", ""),
             messageFromMessageKey("undertakingSector.error.required")
           )
 
@@ -367,9 +367,10 @@ class UndertakingControllerSpec extends ControllerSpec
 
       "redirect to next page" when {
 
-        def test(undertakingJourney: UndertakingJourney, nextCall: String) = {
+        def test(undertakingJourney: UndertakingJourney, nextCall: String): Unit = {
 
           val newSector = FormPage("sector", Sector(3).some)
+
           def update(undertakingJourneyOpt: Option[UndertakingJourney]) = {
             undertakingJourneyOpt.map(_.copy(sector = newSector))
           }
@@ -398,7 +399,7 @@ class UndertakingControllerSpec extends ControllerSpec
 
     "handling request to get Contact" must {
 
-      def performAction() = controller.getContact(FakeRequest("GET",routes.UndertakingController.getContact().url))
+      def performAction() = controller.getContact(FakeRequest(GET, routes.UndertakingController.getContact().url))
 
       "throw technical error" when {
 
@@ -429,10 +430,10 @@ class UndertakingControllerSpec extends ControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("undertakingContact.title") + " " + undertakingJourney.name.value.getOrElse("") + messageFromMessageKey("undertakingContact.title.end") ,
-            {doc =>
+            messageFromMessageKey("undertakingContact.title") + " " + undertakingJourney.name.value.getOrElse("") + messageFromMessageKey("undertakingContact.title.end"),
+            { doc =>
 
-              doc.select(".govuk-back-link").attr("href") shouldBe(previousCall)
+              doc.select(".govuk-back-link").attr("href") shouldBe previousCall
 
               val inputPhone = doc.select("#phone").attr("value")
               val inputMobile = doc.select("#mobile").attr("value")
@@ -447,15 +448,15 @@ class UndertakingControllerSpec extends ControllerSpec
         }
 
         "user has not already answered the question(normal add undertaking journey)" in {
-          test(undertakingJourneyComplete.copy(contact = FormPage("contact"), cya = FormPage("check-your-answers")),"sector")
+          test(undertakingJourneyComplete.copy(contact = FormPage("contact"), cya = FormPage("check-your-answers")), "sector")
         }
 
         "user has  already answered the question(normal add undertaking journey)" in {
-          test(undertakingJourneyComplete.copy(contact = FormPage("contact", contactDetails), cya = FormPage("check-your-answers")),"sector")
+          test(undertakingJourneyComplete.copy(contact = FormPage("contact", contactDetails.some), cya = FormPage("check-your-answers")), "sector")
         }
 
         "user has  already answered the question but it's amend journey" in {
-          test(undertakingJourneyComplete1.copy(contact = FormPage("contact", contactDetails), cya = FormPage("check-your-answers")),routes.UndertakingController.getAmendUndertakingDetails().url)
+          test(undertakingJourneyComplete1.copy(contact = FormPage("contact", contactDetails.some), cya = FormPage("check-your-answers")), routes.UndertakingController.getAmendUndertakingDetails().url)
         }
 
       }
@@ -465,11 +466,11 @@ class UndertakingControllerSpec extends ControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postContact(
-          FakeRequest("POST",routes.UndertakingController.getContact().url)
+          FakeRequest(POST, routes.UndertakingController.getContact().url)
             .withFormUrlEncodedBody(data: _*))
 
       def update(undertakingJourneyOpt: Option[UndertakingJourney]) = {
-        undertakingJourneyOpt.map(_.copy(contact = FormPage("contact", contactDetails2)))
+        undertakingJourneyOpt.map(_.copy(contact = FormPage("contact", contactDetails2.some)))
       }
 
       "throw technical error" when {
@@ -502,7 +503,7 @@ class UndertakingControllerSpec extends ControllerSpec
             mockGetPrevious[UndertakingJourney](eori1)(Right("sector"))
           }
           checkFormErrorsAreDisplayed(performAction(),
-            messageFromMessageKey("undertakingContact.title") + " " + "" + messageFromMessageKey("undertakingContact.title.end") ,
+            messageFromMessageKey("undertakingContact.title") + " " + "" + messageFromMessageKey("undertakingContact.title.end"),
             List(
               messageFromMessageKey("one.or.other.mustbe.present"),
               messageFromMessageKey("one.or.other.mustbe.present")
@@ -516,9 +517,9 @@ class UndertakingControllerSpec extends ControllerSpec
       "redirect to next page" when {
 
 
-        def test(undertakingJourney: UndertakingJourney, nextCall: String) = {
+        def test(undertakingJourney: UndertakingJourney, nextCall: String): Unit = {
 
-          val updatedUndertaking = undertakingJourney.copy(contact = FormPage("contact", contactDetails2))
+          val updatedUndertaking = undertakingJourney.copy(contact = FormPage("contact", contactDetails2.some))
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[UndertakingJourney](eori1)(Right("sector"))
@@ -539,11 +540,11 @@ class UndertakingControllerSpec extends ControllerSpec
 
     }
 
-    "handling POST request to Check your Answers call" must {
+    "handling post request to Check your Answers call" must {
 
       def performAction(data: (String, String)*)(lang: String) =
         controller.postCheckAnswers(
-          FakeRequest("POST", routes.UndertakingController.getCheckAnswers().url)
+          FakeRequest(POST, routes.UndertakingController.getCheckAnswers().url)
             .withCookies(Cookie("PLAY_LANG", lang))
             .withFormUrlEncodedBody(data: _*))
 
@@ -592,7 +593,7 @@ class UndertakingControllerSpec extends ControllerSpec
 
       "redirect to confirmation page" when {
 
-        def testRedirection(lang: String, templateId: String) = {
+        def testRedirection(lang: String, templateId: String): Unit = {
           def updateFunc(ujOpt: Option[UndertakingJourney]) =
             ujOpt.map(x => x.copy(cya = x.cya.copy(value = true.some)))
 
@@ -634,12 +635,88 @@ class UndertakingControllerSpec extends ControllerSpec
           checkIsRedirect(performAction("cya" -> "true")(Language.Welsh.code), routes.UndertakingController.getConfirmation(undertakingRef, undertakingCreated.name).url)
 
         }
-
       }
+    }
+
+    "handling request to get check your answers page" must {
+
+        def performAction() = controller.getCheckAnswers(
+          FakeRequest(GET, routes.UndertakingController.getCheckAnswers().url)
+        )
+
+        "display the page" in {
+
+          // TODO - coming in the next ticket, see ESC-332
+          val changeLinkNotImplementedYet = "#"
+
+          val expectedRows = List(
+            ModifyUndertakingRow(
+              messageFromMessageKey("undertaking.cya.summary-list.name.key"),
+              undertaking.name,
+              changeLinkNotImplementedYet
+            ),
+            ModifyUndertakingRow(
+              messageFromMessageKey("undertaking.cya.summary-list.eori.key"),
+              eori,
+              "" // User cannot change the EORI on the undertaking
+            ),
+            ModifyUndertakingRow(
+              messageFromMessageKey("undertaking.amendUndertaking.summary-list.sector.key"),
+              messageFromMessageKey(s"sector.label.${undertaking.industrySector.id.toString}"),
+              changeLinkNotImplementedYet
+            ),
+            ModifyUndertakingRow(
+              messageFromMessageKey("undertaking.amendUndertaking.summary-list.telephone.key"),
+              phoneNumber1,
+              changeLinkNotImplementedYet
+            )
+          )
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+          }
+
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("undertaking.cya.title"),
+            { doc =>
+              val rows =
+                doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
+                  val question = element.select(".govuk-summary-list__key").text()
+                  val answer = element.select(".govuk-summary-list__value").text()
+                  val changeUrl = element.select(".govuk-link").attr("href")
+                  ModifyUndertakingRow(question, answer, changeUrl)
+                }
+
+              rows shouldBe expectedRows
+            }
+          )
+
+        }
+
+        "throw technical error" when {
+          val exception = new Exception("oh no")
+
+          "call to get undertaking journey fails" in {
+            inSequence {
+              mockAuthWithNecessaryEnrolment()
+              mockGet[UndertakingJourney](eori1)(Left(Error(exception)))
+            }
+            assertThrows[Exception](await(performAction()))
+          }
+
+          "call to get undertaking journey fetches nothing" in {
+            inSequence {
+              mockAuthWithNecessaryEnrolment()
+              mockGet[UndertakingJourney](eori1)(Right(None))
+            }
+            assertThrows[Exception](await(performAction()))
+          }
+        }
 
     }
 
-    "handling request to get Amend Undertaking Details " must {
+    "handling request to get Amend Undertaking Details" must {
 
       def performAction() = controller.getAmendUndertakingDetails(FakeRequest())
 
@@ -648,24 +725,24 @@ class UndertakingControllerSpec extends ControllerSpec
       }
 
       val contact = contactDetails match {
-        case Some(ContactDetails(Some(number1), Some(number2))) => s"$number1 $number2"
-        case Some(ContactDetails(Some(number1), None)) => s"$number1"
-        case Some(ContactDetails(None, Some(number2))) => s"$number2"
+        case ContactDetails(Some(number1), Some(number2)) => s"$number1 $number2"
+        case ContactDetails(Some(number1), None) => s"$number1"
+        case ContactDetails(None, Some(number2)) => s"$number2"
         case _ => ""
       }
 
       val expectedRows = List(
-        AmendUndertakingRows(
+        ModifyUndertakingRow(
           messageFromMessageKey("undertaking.amendUndertaking.summary-list.name.key"),
           undertaking.name,
           routes.UndertakingController.getUndertakingName().url
         ),
-        AmendUndertakingRows(
+        ModifyUndertakingRow(
           messageFromMessageKey("undertaking.amendUndertaking.summary-list.sector.key"),
           messageFromMessageKey(s"sector.label.${undertaking.industrySector.id.toString}"),
           routes.UndertakingController.getSector().url
         ),
-        AmendUndertakingRows(
+        ModifyUndertakingRow(
           messageFromMessageKey("undertaking.amendUndertaking.summary-list.telephone.key"),
           contact,
           routes.UndertakingController.getContact().url
@@ -712,30 +789,30 @@ class UndertakingControllerSpec extends ControllerSpec
         checkPageIsDisplayed(
           performAction(),
           messageFromMessageKey("undertaking.amendUndertaking.title"),
-          {doc =>
+          { doc =>
 
-            doc.select(".govuk-back-link").attr("href") shouldBe(routes.AccountController.getAccountPage().url)
+            doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
 
             val rows =
               doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
-                val question  = element.select(".govuk-summary-list__key").text()
-                val answer    = element.select(".govuk-summary-list__value").text()
+                val question = element.select(".govuk-summary-list__key").text()
+                val answer = element.select(".govuk-summary-list__value").text()
                 val changeUrl = element.select(".govuk-link").attr("href")
-                AmendUndertakingRows(question, answer, changeUrl)
+                ModifyUndertakingRow(question, answer, changeUrl)
               }
             rows shouldBe expectedRows
           }
         )
 
       }
-      
+
     }
 
     "handling request to post Amend undertaking" must {
 
       def performAction(data: (String, String)*) = controller
         .postAmendUndertaking(
-          FakeRequest("POST",routes.UndertakingController.getAmendUndertakingDetails().url)
+          FakeRequest(POST, routes.UndertakingController.getAmendUndertakingDetails().url)
             .withFormUrlEncodedBody(data: _*))
 
       def update(undertakingJourneyOpt: Option[UndertakingJourney]) = {
@@ -823,10 +900,10 @@ class UndertakingControllerSpec extends ControllerSpec
           val updatedUndertaking = undertaking1.copy(name = UndertakingName("TestUndertaking"), industrySector = Sector(1))
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend =  true.some)))
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true.some)))
             mockRetreiveUndertaking(eori)(Future.successful(undertaking1.some))
             mockUpdateUndertaking(updatedUndertaking)(Right(undertakingRef))
-            mockAddMember(undertakingRef, businessEntity1.copy(contacts = contactDetails))(Left(Error(exception)))
+            mockAddMember(undertakingRef, businessEntity1.copy(contacts = contactDetails.some))(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
         }
@@ -839,16 +916,15 @@ class UndertakingControllerSpec extends ControllerSpec
           mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true.some)))
           mockRetreiveUndertaking(eori)(Future.successful(undertaking1.some))
           mockUpdateUndertaking(updatedUndertaking)(Right(undertakingRef))
-          mockAddMember(undertakingRef, businessEntity1.copy(contacts = contactDetails))(Right(undertakingRef))
+          mockAddMember(undertakingRef, businessEntity1.copy(contacts = contactDetails.some))(Right(undertakingRef))
         }
         checkIsRedirect(performAction("amendUndertaking" -> "true"), routes.AccountController.getAccountPage().url)
       }
 
     }
   }
-
 }
 
 object UndertakingControllerSpec {
-  final case class AmendUndertakingRows(question: String, answer: String, changeUrl: String)
+  final case class ModifyUndertakingRow(question: String, answer: String, changeUrl: String)
 }

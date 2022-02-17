@@ -88,7 +88,7 @@ class AccountControllerSpec extends ControllerSpec
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
-            mockTimeProviderToday(currentDate)
+            mockTimeProviderToday(fixedDate)
           }
           checkPageIsDisplayed(
             performAction(),
