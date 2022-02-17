@@ -144,7 +144,7 @@ class UndertakingControllerSpec extends ControllerSpec
           )
         }
 
-        " undertaking journey is there in store" in {
+        "undertaking journey is there in store" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
@@ -646,14 +646,11 @@ class UndertakingControllerSpec extends ControllerSpec
 
         "display the page" in {
 
-          // TODO - coming in the next ticket, see ESC-332
-          val changeLinkNotImplementedYet = "#"
-
           val expectedRows = List(
             ModifyUndertakingRow(
               messageFromMessageKey("undertaking.cya.summary-list.name.key"),
               undertaking.name,
-              changeLinkNotImplementedYet
+              routes.UndertakingController.getUndertakingName().url
             ),
             ModifyUndertakingRow(
               messageFromMessageKey("undertaking.cya.summary-list.eori.key"),
@@ -663,12 +660,12 @@ class UndertakingControllerSpec extends ControllerSpec
             ModifyUndertakingRow(
               messageFromMessageKey("undertaking.amendUndertaking.summary-list.sector.key"),
               messageFromMessageKey(s"sector.label.${undertaking.industrySector.id.toString}"),
-              changeLinkNotImplementedYet
+              routes.UndertakingController.getSector().url
             ),
             ModifyUndertakingRow(
               messageFromMessageKey("undertaking.amendUndertaking.summary-list.telephone.key"),
               phoneNumber1,
-              changeLinkNotImplementedYet
+              routes.UndertakingController.getContact().url
             )
           )
           inSequence {
