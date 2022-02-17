@@ -51,7 +51,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
   val invalidEOris = List("GB1234567890", "AB1234567890", "GB1234567890123")
 
-  val contact = List(contactDetails.get.phone, contactDetails.get.mobile).flatten.mkString(" ")
+  val contact = List(contactDetails.phone, contactDetails.mobile).flatten.mkString(" ")
 
   val expectedRows = List(
     CheckYourAnswersRowBE(
@@ -484,7 +484,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
         "user has already answered the questions" in {
           test(
-            businessEntityJourney.copy(contact = FormPage("add-business-entity-contact", contactDetails1),
+            businessEntityJourney.copy(contact = FormPage("add-business-entity-contact", contactDetails1.some),
               cya = FormPage("check-your-answers-businesses", None))
           )
         }
@@ -539,12 +539,12 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
         "user has answered the questions correctly" in {
           def updatedDef(beJourneyOpt: Option[BusinessEntityJourney]): Option[BusinessEntityJourney] = {
-            beJourneyOpt.map ( _.copy(contact = FormPage("add-business-entity-contact", contactDetails)))
+            beJourneyOpt.map ( _.copy(contact = FormPage("add-business-entity-contact", contactDetails.some)))
           }
           val currentBEJourney = businessEntityJourney1.copy(contact = FormPage("add-business-entity-contact", None),
             cya= FormPage("check-your-answers-businesses", None)).some
 
-          val updatedBEJourney = businessEntityJourney1.copy(contact = FormPage("add-business-entity-contact", contactDetails),
+          val updatedBEJourney = businessEntityJourney1.copy(contact = FormPage("add-business-entity-contact", contactDetails.some),
             cya= FormPage("check-your-answers-businesses", None))
 
           inSequence {
@@ -698,7 +698,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
         "call to add member to BE undertaking fails" in {
 
-          val businessEntity = BusinessEntity(eori2, false, contactDetails)
+          val businessEntity = BusinessEntity(eori2, leadEORI = false, contactDetails.some)
           inSequence{
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
@@ -709,7 +709,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
         }
 
         "call to reset business entity journey fails" in {
-          val businessEntity = BusinessEntity(eori2, false, contactDetails)
+          val businessEntity = BusinessEntity(eori2, leadEORI = false, contactDetails.some)
           inSequence{
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
@@ -725,7 +725,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
       "redirects to add business entity page" when {
 
         def testRedirection(businessEntityJourney: BusinessEntityJourney, nextCall: String, resettedBusinessJourney: BusinessEntityJourney) = {
-          val businessEntity = BusinessEntity(eori2, false, contactDetails)
+          val businessEntity = BusinessEntity(eori2, leadEORI = false, contactDetails.some)
           inSequence{
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
@@ -785,7 +785,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
         "display the page" in {
 
-          val be: BusinessEntity = undertaking1.undertakingBusinessEntity.filter(_.leadEORI).head.copy(contacts = contactDetails)
+          val be: BusinessEntity = undertaking1.undertakingBusinessEntity.filter(_.leadEORI).head.copy(contacts = contactDetails.some)
           val businessEntityJourney = BusinessEntityJourney.businessEntityJourneyForEori(undertaking1.copy(undertakingBusinessEntity = List(be)).some, eori1)
           inSequence {
             mockAuthWithNecessaryEnrolment()

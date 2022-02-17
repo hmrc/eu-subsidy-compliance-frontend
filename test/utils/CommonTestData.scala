@@ -27,32 +27,37 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import java.time.{LocalDate, LocalDateTime}
 
 object CommonTestData {
-  val currentDate = LocalDate.of(2021, 1, 20)
+
+  val fixedDate = LocalDate.of(2021, 1, 20)
 
   val eori1 = EORI("GB123456789012")
   val eori2 = EORI("GB123456789013")
   val eori3 = EORI("GB123456789014")
   val eori4 = EORI("GB123456789010")
 
-  val contactDetails = ContactDetails(PhoneNumber("111").some, None).some
-  val contactDetails1 = ContactDetails(PhoneNumber("1121").some, None).some
-  val contactDetails2 = ContactDetails(PhoneNumber("222").some, PhoneNumber("333").some).some
+  val phoneNumber1 = PhoneNumber("111")
+  val phoneNumber2 = PhoneNumber("1121")
+  val phoneNumber3 = PhoneNumber("222")
+  val phoneNumber4 = PhoneNumber("333")
 
-  val businessEntity1 = BusinessEntity(EORI(eori1), true, None)
-  val businessEntity2 = BusinessEntity(EORI(eori2), true, None)
-  val businessEntity3 = BusinessEntity(EORI(eori3), true, None)
-  val businessEntity4 = BusinessEntity(EORI(eori4), false, contactDetails1)
-  val businessEntity5 = BusinessEntity(EORI(eori1), true, contactDetails)
+  val contactDetails  = ContactDetails(phoneNumber1.some, None)
+  val contactDetails1 = ContactDetails(phoneNumber2.some, None)
+  val contactDetails2 = ContactDetails(phoneNumber3.some, phoneNumber4.some)
+
+  val businessEntity1 = BusinessEntity(EORI(eori1), leadEORI = true, None)
+  val businessEntity2 = BusinessEntity(EORI(eori2), leadEORI = true, None)
+  val businessEntity3 = BusinessEntity(EORI(eori3), leadEORI = true, None)
+  val businessEntity4 = BusinessEntity(EORI(eori4), leadEORI = false, contactDetails1.some)
+  val businessEntity5 = BusinessEntity(EORI(eori1), true, contactDetails.some)
 
   val optionalTraderRef = OptionalTraderRef("true", TraderRef("ABC123").some)
   val optionalEORI = OptionalEORI("true", eori1.some)
-
 
   val undertakingRef = UndertakingRef("UR123456")
   val nonHmrcSubsidyList = List(NonHmrcSubsidy(
     subsidyUsageTransactionID = None,
     allocationDate = LocalDate.of(2022, 1, 1),
-    submissionDate = currentDate,
+    submissionDate = fixedDate,
     publicAuthority = "Local Authority".some,
     traderReference = TraderRef("ABC123").some,
     nonHMRCSubsidyAmtEUR = SubsidyAmount(1234.56),
@@ -130,7 +135,7 @@ object CommonTestData {
   val undertakingJourneyComplete =  UndertakingJourney(
     name = FormPage("undertaking-name", "TestUndertaking".some),
     sector = FormPage("sector",Sector(1).some),
-    contact = FormPage("contact", contactDetails),
+    contact = FormPage("contact", contactDetails.some),
     cya = FormPage("check-your-answers", true.some),
     confirmation = FormPage("confirmation", true.some)
   )
@@ -138,7 +143,7 @@ object CommonTestData {
   val undertakingJourneyComplete1 =  UndertakingJourney(
     name = FormPage("undertaking-name", "TestUndertaking1".some),
     sector = FormPage("sector",Sector(2).some),
-    contact = FormPage("contact", contactDetails1),
+    contact = FormPage("contact", contactDetails1.some),
     cya = FormPage("check-your-answers", true.some),
     confirmation = FormPage("confirmation", true.some),
     isAmend = true.some
@@ -147,20 +152,20 @@ object CommonTestData {
   val businessEntityJourney = BusinessEntityJourney(
     addBusiness = FormPage("add-member", true.some),
     eori = FormPage("add-business-entity-eori", eori1.some),
-    contact = FormPage("add-business-entity-contact", contactDetails),
+    contact = FormPage("add-business-entity-contact", contactDetails.some),
     cya= FormPage("check-your-answers-businesses", true.some)
   )
 
   val businessEntityJourney1 = BusinessEntityJourney(
     addBusiness = FormPage("add-member", true.some),
     eori = FormPage("add-business-entity-eori", eori2.some),
-    contact = FormPage("add-business-entity-contact", contactDetails),
+    contact = FormPage("add-business-entity-contact", contactDetails.some),
     cya= FormPage("check-your-answers-businesses", true.some)
   )
   val businessEntityJourneyLead = BusinessEntityJourney(
     addBusiness = FormPage("add-member", true.some),
     eori = FormPage("add-business-entity-eori", eori2.some),
-    contact = FormPage("add-business-entity-contact", contactDetails),
+    contact = FormPage("add-business-entity-contact", contactDetails.some),
     cya= FormPage("check-your-answers-businesses", true.some),
     isLeadSelectJourney = true.some
   )
