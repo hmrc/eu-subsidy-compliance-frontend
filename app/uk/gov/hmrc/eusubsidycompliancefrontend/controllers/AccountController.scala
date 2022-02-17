@@ -47,8 +47,6 @@ class AccountController @Inject()(
 
   import escActionBuilders._
 
-  val REPORT_DEMINIMIS_DUE_DAY = 90
-
   def getAccountPage: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
@@ -65,7 +63,7 @@ class AccountController @Inject()(
 
       case (Some(undertaking), _, _) =>
 
-        val lastDayToReportDate = undertaking.lastSubsidyUsageUpdt.map(_.plusDays(REPORT_DEMINIMIS_DUE_DAY))
+        val lastDayToReportDate = ReportDeMinimisReminderHelper.dueDateToReport(undertaking.lastSubsidyUsageUpdt)
         val lastDayToReportString = lastDayToReportDate.map(_.toDisplayFormat)
         val isTimeToReport = ReportDeMinimisReminderHelper.isTimeToReport(undertaking.lastSubsidyUsageUpdt, timeProvider.today)
         Ok(accountPage(undertaking, !undertaking.getAllNonLeadEORIs().isEmpty, isTimeToReport, lastDayToReportString))

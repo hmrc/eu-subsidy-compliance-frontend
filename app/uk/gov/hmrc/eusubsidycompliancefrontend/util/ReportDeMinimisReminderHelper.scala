@@ -22,6 +22,7 @@ object ReportDeMinimisReminderHelper {
 
   val ONE_DAY_BEFORE_REMINDER_DAY = 75
   val ONE_DAY_AFTER_DUE_DAY = 91
+  val REPORT_DEMINIMIS_DUE_DAY = 90
 
   def isTimeToReport(lastSubsidyUsageUpdt: Option[LocalDate], currentDate: LocalDate) = {
     lastSubsidyUsageUpdt
@@ -29,6 +30,8 @@ object ReportDeMinimisReminderHelper {
         .isBefore(currentDate) &&
         (date.plusDays(ONE_DAY_AFTER_DUE_DAY).isAfter(currentDate)))).getOrElse(false)
   }
+
+  def dueDateToReport(lastSubsidyUsageUpdt: Option[LocalDate]) = lastSubsidyUsageUpdt.map(_.plusDays(REPORT_DEMINIMIS_DUE_DAY))
 
 
 }

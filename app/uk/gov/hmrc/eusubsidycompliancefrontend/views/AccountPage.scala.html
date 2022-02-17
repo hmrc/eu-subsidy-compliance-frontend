@@ -41,7 +41,7 @@
     content = Text(messages("account-homepage.warning", "[TODO: NAME]"))
   ))
 
-    @if(isTimeToReport.equals(true)) {
+    @if(isTimeToReport) {
         @govukInsetText(InsetText(
             content = Text(messages("account-homepage.inset", lastDayToReport.getOrElse(sys.error("due date missing"))))
         ))

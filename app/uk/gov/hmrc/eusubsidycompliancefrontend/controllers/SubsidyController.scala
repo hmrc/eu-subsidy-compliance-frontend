@@ -71,11 +71,11 @@ class SubsidyController @Inject()(
           .value
           .fold(
             Ok(reportPaymentPage(subsidies, undertaking)) // TODO populate subsidy list
-          ) { x =>
+          ) { _ =>
             Ok(reportPaymentPage(subsidies, undertaking))
           }
       }
-      case (None, None, Some(undertaking)) => // initialise the empty Journey model
+      case (None, _, Some(undertaking)) => // initialise the empty Journey model
         Ok(reportPaymentPage(None, undertaking))
       case _ => handleMissingSessionData("Subsidy journey")
     }
