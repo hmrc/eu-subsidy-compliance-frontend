@@ -23,7 +23,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, EscService, RetrieveEmailService, Store, UndertakingJourney}
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.{TimeProvider, TimeUtils}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportDeMinimisReminderHelper, TimeProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -63,9 +64,8 @@ class AccountController @Inject()(
       case (Some(undertaking), _, _) =>
 
         val lastDayToReportDate = undertaking.lastSubsidyUsageUpdt.map(_.plusDays(90))
-        val lastDayToReportString = lastDayToReportDate.map(TimeUtils.govDisplayFormat)
-        val currentDate = timeProvider.today
-        val isTimeToReport = undertaking.lastSubsidyUsageUpdt.map(date => (date.plusDays(75).isBefore(currentDate) && (date.plusDays(91).isAfter(currentDate))))
+        val lastDayToReportString = lastDayToReportDate.map(_.toDisplayFormat)
+        val isTimeToReport = ReportDeMinimisReminderHelper.isTimeToReport(undertaking.lastSubsidyUsageUpdt, timeProvider.today)
         Ok(accountPage(undertaking, !undertaking.getAllNonLeadEORIs().isEmpty, isTimeToReport, lastDayToReportString))
 
       case (_, eJourney, uJourney) if !eJourney.isComplete && uJourney == UndertakingJourney() =>
