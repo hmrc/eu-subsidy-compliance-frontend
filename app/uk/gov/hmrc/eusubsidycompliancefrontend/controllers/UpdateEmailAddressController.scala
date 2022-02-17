@@ -18,20 +18,24 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class UpdateEmailAddressController @Inject()(
                                               mcc: MessagesControllerComponents,
+                                              updateEmailAddressPage: UpdateEmailAddressPage,
                                               escActionBuilders: EscActionBuilders
-                                            ) extends
+                                            )( implicit val appConfig: AppConfig,
+                                               executionContext: ExecutionContext) extends
   BaseController(mcc) {
   import escActionBuilders._
 
   def updateEmailAddress: Action[AnyContent] = escAuthentication.async { _ =>
-    Future.successful(Ok(s"update email page"))
+    Future.successful(Ok(updateEmailAddressPage()))
   }
 
   }
