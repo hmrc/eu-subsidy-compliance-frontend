@@ -18,10 +18,12 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H2}
 
 @this(
   layout: FullWidthLayout,
-  govukTable: GovukTable
+  govukTable: GovukTable,
+  govukSummaryList: GovukSummaryList
 )
 
 @(summary: FinancialDashboardSummary)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -40,24 +42,16 @@
         </caption>
         <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">@messages("dashboard.customs.duty.heading")</th>
-                <td class="govuk-table__cell"></td>
-                <td class="govuk-table__cell"></td>
+                <th scope="row" class="govuk-table__header" colspan="3">@messages("dashboard.customs.duty.heading")</th>
             </tr>
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@summary.overall.hmrcSubsidyTotal.toEuros</td>
-                <td class="govuk-table__cell"></td>
-                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell" colspan="3">@summary.overall.hmrcSubsidyTotal.toEuros</td>
             </tr>
             <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">@messages("dashboard.de.minimis.aid.heading")</th>
-                <td class="govuk-table__cell"></td>
-                <td class="govuk-table__cell"></td>
+                <th scope="row" class="govuk-table__header" colspan="3">@messages("dashboard.de.minimis.aid.heading")</th>
             </tr>
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@summary.overall.total.toEuros</td>
-                <td class="govuk-table__cell"></td>
-                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell" colspan="3">@summary.overall.total.toEuros</td>
             </tr>
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">@messages("dashboard.total.claimed.heading")</th>
@@ -115,5 +109,37 @@
             </tr>
             </tbody>
         </table>
+    }
+
+    @for(taxYear <- summary.taxYears) {
+        @H2(messages("dashboard.year.summary.heading", taxYear.startYear.toString, taxYear.endYear.toString))
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(
+                    content = Text(messages("dashboard.customs.duty.heading"))
+                    ),
+                    value = Value(
+                    content = Text(taxYear.hmrcSubsidyTotal.toEuros)
+                    )
+                ),
+                SummaryListRow(
+                    key = Key(
+                    content = Text(messages("dashboard.de.minimis.aid.heading"))
+                    ),
+                    value = Value(
+                    content = Text(taxYear.nonHmrcSubsidyTotal.toEuros)
+                    )
+                ),
+                SummaryListRow(
+                    key = Key(
+                    content = Text(messages("dashboard.total.claimed.heading"))
+                    ),
+                    value = Value(
+                    content = Text(taxYear.total.toEuros)
+                    )
+                )
+            )
+        ))
     }
 }
