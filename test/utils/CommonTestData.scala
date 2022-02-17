@@ -20,6 +20,8 @@ import cats.implicits.catsSyntaxOptionId
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, IndustrySectorLimit, PhoneNumber, Sector, SubsidyAmount, TraderRef, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 
 import java.time.{LocalDate, LocalDateTime}
@@ -40,6 +42,7 @@ object CommonTestData {
   val businessEntity2 = BusinessEntity(EORI(eori2), true, None)
   val businessEntity3 = BusinessEntity(EORI(eori3), true, None)
   val businessEntity4 = BusinessEntity(EORI(eori4), false, contactDetails1)
+  val businessEntity5 = BusinessEntity(EORI(eori1), true, contactDetails)
 
   val optionalTraderRef = OptionalTraderRef("true", TraderRef("ABC123").some)
   val optionalEORI = OptionalEORI("true", eori1.some)
@@ -176,4 +179,15 @@ object CommonTestData {
   )
   val validEmailResponse = EmailAddressResponse(validEmailAddress, dateTime, None)
   val inValidEmailResponse = EmailAddressResponse(inValidEmailAddress, None, None)
+
+
+  val undertakingCreated = Undertaking(None,
+    UndertakingName("TestUndertaking"),
+    transport,
+    None, None,
+    List(businessEntity5))
+
+  val emailParameter   = SingleEORIEmailParameter(eori1, undertaking.name, undertakingRef, "undertaking Created by Lead EORI")
+  val emailSendRequest = EmailSendRequest(List(EmailAddress("user@test.com")), "templateId1", emailParameter)
+
 }

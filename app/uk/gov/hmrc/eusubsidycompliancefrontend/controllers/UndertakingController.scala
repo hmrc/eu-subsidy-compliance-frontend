@@ -17,18 +17,23 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import play.api.Configuration
 
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, OneOf, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Language, OneOf, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, JourneyTraverseService, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, JourneyTraverseService, RetrieveEmailService, SendEmailService, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
+import java.util.Locale
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -38,6 +43,9 @@ class UndertakingController @Inject()(
   store: Store,
   escService: EscService,
   journeyTraverseService: JourneyTraverseService,
+  sendEmailService: SendEmailService,
+  configuration: Configuration,
+  retrieveEmailService: RetrieveEmailService,
   undertakingNamePage: UndertakingNamePage,
   undertakingSectorPage: UndertakingSectorPage,
   undertakingContactPage: UndertakingContactPage,
@@ -51,6 +59,9 @@ class UndertakingController @Inject()(
   BaseController(mcc) {
 
   import escActionBuilders._
+
+  val  templateIdEN = configuration.get[String]("email-send.create-undertaking-template-en")
+  val  templateIdCY = configuration.get[String]("email-send.create-undertaking-template-cy")
 
   def firstEmptyPage: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -201,19 +212,43 @@ class UndertakingController @Inject()(
             }
             undertakingName = UndertakingName(updatedJourney.name.value.getOrElse(handleMissingSessionData("Undertaking Name")))
             undertakingSector = updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking Sector"))
-            ref <- escService.createUndertaking(
-                    Undertaking(
-                      None,
-                      name = undertakingName,
-                      industrySector = undertakingSector,
-                      None,
-                      None,
-                      List(BusinessEntity(eori, leadEORI = true, updatedJourney.contact.value)
-                    )))
+            undertaking =  Undertaking(
+              None,
+              name = undertakingName,
+              industrySector = undertakingSector,
+              None,
+              None,
+              List(BusinessEntity(eori, leadEORI = true, updatedJourney.contact.value)
+              ))
+            result <- createUndertakingAndSendEmail(undertaking, eori, updatedJourney)
 
-          } yield Redirect(routes.UndertakingController.getConfirmation(ref, updatedJourney.name.value.getOrElse("")))
+          } yield result
 
     )
+  }
+
+  //This method creates undertaking, checks for the language, fetches the appropriate template as per the lang
+  //call the retrieve email service and sends the email to retrieved email address
+  private def createUndertakingAndSendEmail(undertaking: Undertaking, eori: EORI, undertakingJourney: UndertakingJourney)(implicit request: EscAuthRequest[_]) =     for {
+    ref <- escService.createUndertaking(undertaking)
+    lang <- getLanguage
+    templateId = getTemplateId(lang)
+    emailParameters = SingleEORIEmailParameter(eori, undertaking.name, ref,  "undertaking Created by Lead EORI")
+    emailAddress <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(sys.error("Email won't be send as email address is not present")))
+  } yield {
+    sendEmailService.sendEmail(emailAddress, emailParameters, templateId)
+    Redirect(routes.UndertakingController.getConfirmation(ref, undertakingJourney.name.value.getOrElse("")))
+  }
+
+  private def getLanguage(implicit request: EscAuthRequest[_]): Future[Language] = request.request.messages.lang.code.toLowerCase(Locale.UK) match {
+    case English.code => Future.successful(English)
+    case Welsh.code   => Future.successful(Welsh)
+    case other        => sys.error(s"Found unsupported language code $other")
+  }
+
+  private def getTemplateId(lang: Language) = lang match {
+    case English => templateIdEN
+    case Welsh   => templateIdCY
   }
 
   def getConfirmation(
