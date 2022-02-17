@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H2}
@@ -70,48 +71,6 @@
     </table>
 
     @for(taxYear <- summary.taxYears) {
-        <table class="govuk-table">
-            <caption class="govuk-table__caption govuk-table__caption--m">
-                @messages("dashboard.year.summary.heading", taxYear.startYear.toString, taxYear.endYear.toString)
-            </caption>
-
-            <tbody class="govuk-table__body">
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">@messages("dashboard.customs.duty.heading")</th>
-                <td class="govuk-table__cell"></td>
-                <td class="govuk-table__cell"></td>
-            </tr>
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@taxYear.hmrcSubsidyTotal.toEuros</td>
-                <td class="govuk-table__cell"></td>
-                <td class="govuk-table__cell"></td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">@messages("dashboard.de.minimis.aid.heading")</th>
-                <td class="govuk-table__cell"></td>
-                <td class="govuk-table__cell"></td>
-            </tr>
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@taxYear.nonHmrcSubsidyTotal.toEuros</td>
-                <td class="govuk-table__cell"></td>
-                <td class="govuk-table__cell"></td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">@messages("dashboard.total.claimed.heading")</th>
-                <th scope="row" class="govuk-table__header"></th>
-                <th scope="row" class="govuk-table__header"></th>
-                <td class="govuk-table__cell"></td>
-            </tr>
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@taxYear.total.toEuros</td>
-                <td class="govuk-table__cell"></td>
-                <td class="govuk-table__cell"></td>
-            </tr>
-            </tbody>
-        </table>
-    }
-
-    @for(taxYear <- summary.taxYears) {
         @H2(messages("dashboard.year.summary.heading", taxYear.startYear.toString, taxYear.endYear.toString))
         @govukSummaryList(SummaryList(
             rows = Seq(
@@ -142,4 +101,6 @@
             )
         ))
     }
+
+    <div><a href="@controllers.routes.AccountController.getAccountPage().url" class="govuk-link">@messages("common.go-account-home")</a></div>
 }
