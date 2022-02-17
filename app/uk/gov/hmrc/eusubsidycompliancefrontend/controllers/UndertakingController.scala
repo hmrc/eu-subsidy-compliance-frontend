@@ -236,7 +236,7 @@ class UndertakingController @Inject()(
     emailParameters = SingleEORIEmailParameter(eori, undertaking.name, ref,  "undertaking Created by Lead EORI")
     emailAddress <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(sys.error("Email won't be send as email address is not present")))
   } yield {
-    val _ = sendEmailService.sendEmail(emailAddress, emailParameters, templateId)
+    sendEmailService.sendEmail(emailAddress, emailParameters, templateId)
     Redirect(routes.UndertakingController.getConfirmation(ref, undertakingJourney.name.value.getOrElse("")))
   }
 
