@@ -26,7 +26,7 @@
   govukInsetText : GovukInsetText
 )
 
-@(undertaking: Undertaking, isNonLeadEORIPresent: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(undertaking: Undertaking, isNonLeadEORIPresent: Boolean, isTimeToReport: Boolean, lastDayToReport: Option[String])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @linkURL = @{if(isNonLeadEORIPresent) routes.SelectNewLeadController.getSelectNewLead() else routes.NoBusinessPresentController.getNoBusinessPresent() }
 @layout(
   pageTitle = Some(messages("account-homepage.title", undertaking.name)),
@@ -41,9 +41,11 @@
     content = Text(messages("account-homepage.warning", "[TODO: NAME]"))
   ))
 
-  @govukInsetText(InsetText(
-    content = Text(messages("account-homepage.inset", "[TODO: DATE]"))
-  ))
+    @if(isTimeToReport) {
+        @govukInsetText(InsetText(
+            content = Text(messages("account-homepage.inset", lastDayToReport.getOrElse(sys.error("due date missing"))))
+        ))
+    }
 
   <div class="govuk-grid-column-one-third">
     <div class="govuk-card govuk-card--contained govuk-card fixed-min-height-card">

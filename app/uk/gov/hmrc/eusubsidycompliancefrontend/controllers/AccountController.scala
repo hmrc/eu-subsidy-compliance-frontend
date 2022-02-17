@@ -23,6 +23,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, EscService, RetrieveEmailService, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportDeMinimisReminderHelper, TimeProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,6 +36,7 @@ class AccountController @Inject()(
    store: Store,
    escService: EscService,
    accountPage: AccountPage,
+   timeProvider: TimeProvider,
    existingUndertakingPage: ExistingUndertakingPage,
    retrieveEmailService: RetrieveEmailService
 )(
@@ -57,7 +60,14 @@ class AccountController @Inject()(
       _ <- businessEntityJourneyOpt.fold(store.put(BusinessEntityJourney.fromUndertakingOpt(retrievedUndertaking)))(Future.successful)
       _ <- if (retrievedUndertaking.isDefined) store.put(retrievedUndertaking.getOrElse(sys.error("Undertaking is Missing"))) else Future.successful(Unit)
     } yield (retrievedUndertaking, eligibilityJourney, undertakingJourney) match {
-      case (Some(undertaking), _, _) => Ok(accountPage(undertaking, !undertaking.getAllNonLeadEORIs().isEmpty))
+
+      case (Some(undertaking), _, _) =>
+
+        val lastDayToReportDate = ReportDeMinimisReminderHelper.dueDateToReport(undertaking.lastSubsidyUsageUpdt)
+        val lastDayToReportString = lastDayToReportDate.map(_.toDisplayFormat)
+        val isTimeToReport = ReportDeMinimisReminderHelper.isTimeToReport(undertaking.lastSubsidyUsageUpdt, timeProvider.today)
+        Ok(accountPage(undertaking, !undertaking.getAllNonLeadEORIs().isEmpty, isTimeToReport, lastDayToReportString))
+
       case (_, eJourney, uJourney) if !eJourney.isComplete && uJourney == UndertakingJourney() =>
         Redirect(routes.EligibilityController.firstEmptyPage())
       case (_, _, uJourney) if !uJourney.isComplete =>
