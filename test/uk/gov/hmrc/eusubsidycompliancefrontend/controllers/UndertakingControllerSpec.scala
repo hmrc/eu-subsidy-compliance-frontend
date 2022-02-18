@@ -54,7 +54,7 @@ class UndertakingControllerSpec extends ControllerSpec
     bind[RetrieveEmailService].toInstance(mockRetrieveEmailService)
   )
 
-  override def additionalConfig: Configuration = super.additionalConfig.withFallback(
+  override def additionalConfig = super.additionalConfig.withFallback(
     Configuration(
       ConfigFactory.parseString(
         s"""
@@ -92,6 +92,7 @@ class UndertakingControllerSpec extends ControllerSpec
       .addMember(_: UndertakingRef, _:  BusinessEntity)(_: HeaderCarrier))
       .expects(undertakingRef, businessEntity, *)
       .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful))
+
 
   private val controller = instanceOf[UndertakingController]
 
@@ -540,14 +541,15 @@ class UndertakingControllerSpec extends ControllerSpec
 
     }
 
+
     "handling post request to Check your Answers call" must {
 
       def performAction(data: (String, String)*)(lang: String) =
         controller.postCheckAnswers(
           FakeRequest(POST, routes.UndertakingController.getCheckAnswers().url)
+
             .withCookies(Cookie("PLAY_LANG", lang))
             .withFormUrlEncodedBody(data: _*))
-
 
       "throw technical error" when {
 
@@ -594,6 +596,7 @@ class UndertakingControllerSpec extends ControllerSpec
       "redirect to confirmation page" when {
 
         def testRedirection(lang: String, templateId: String): Unit = {
+
           def updateFunc(ujOpt: Option[UndertakingJourney]) =
             ujOpt.map(x => x.copy(cya = x.cya.copy(value = true.some)))
 
@@ -635,6 +638,7 @@ class UndertakingControllerSpec extends ControllerSpec
           checkIsRedirect(performAction("cya" -> "true")(Language.Welsh.code), routes.UndertakingController.getConfirmation(undertakingRef, undertakingCreated.name).url)
 
         }
+
       }
     }
 
