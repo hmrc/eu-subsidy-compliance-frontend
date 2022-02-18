@@ -22,9 +22,8 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
-import utils.CommonTestData.eori1
 
-import scala.concurrent.Future
+
 
 class UpdateEmailAddressControllerSpec extends ControllerSpec
   with AuthSupport
