@@ -11,6 +11,8 @@ common.submit = Submit
 common.continue=Save and Continue
 common.continue.only=Continue
 common.accept=Accept and send
+common.go-account-home = Go to account home
+
 continue.button=Save and Continue
 button.addBusiness = Add a business to this undertaking
 

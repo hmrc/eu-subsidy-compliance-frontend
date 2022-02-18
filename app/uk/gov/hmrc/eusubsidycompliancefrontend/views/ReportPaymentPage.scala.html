@@ -89,7 +89,7 @@
     @P(messages("report-payment.p3"))
     <input type=hidden name=reportPayment value=true>
     @button("report-payment.button")
-    <div><a href="@controllers.routes.AccountController.getAccountPage().url" class="govuk-link">Go to account home</a></div>
+    <div><a href="@controllers.routes.AccountController.getAccountPage().url" class="govuk-link">@messages("common.go-account-home")</a></div>
   }
 }
 }
