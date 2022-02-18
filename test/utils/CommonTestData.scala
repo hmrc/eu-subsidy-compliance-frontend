@@ -48,7 +48,7 @@ object CommonTestData {
   val businessEntity2 = BusinessEntity(EORI(eori2), leadEORI = true, None)
   val businessEntity3 = BusinessEntity(EORI(eori3), leadEORI = true, None)
   val businessEntity4 = BusinessEntity(EORI(eori4), leadEORI = false, contactDetails1.some)
-  val businessEntity5 = BusinessEntity(EORI(eori1), true, contactDetails.some)
+  val businessEntity5 = BusinessEntity(EORI(eori1), leadEORI = true, contactDetails.some)
 
   val optionalTraderRef = OptionalTraderRef("true", TraderRef("ABC123").some)
   val optionalEORI = OptionalEORI("true", eori1.some)
@@ -119,8 +119,8 @@ object CommonTestData {
     customsWaivers = FormPage("do-you-claim-customs-waivers", true.some),
     willYouClaim = FormPage("will-you-claim-customs-waivers", true.some),
     notEligible = FormPage("not-eligible", false.some),
-    mainBusinessCheck= FormPage("main-business-check", true.some),
-    signOut= FormPage("not-eligible-to-lead", false.some),
+    mainBusinessCheck = FormPage("main-business-check", true.some),
+    signOut = FormPage("not-eligible-to-lead", false.some),
     acceptTerms = FormPage("terms-conditions", true.some)
   )
 
@@ -146,7 +146,7 @@ object CommonTestData {
     contact = FormPage("contact", contactDetails1.some),
     cya = FormPage("check-your-answers", true.some),
     confirmation = FormPage("confirmation", true.some),
-    isAmend = true.some
+    isAmend = true
   )
 
   val businessEntityJourney = BusinessEntityJourney(

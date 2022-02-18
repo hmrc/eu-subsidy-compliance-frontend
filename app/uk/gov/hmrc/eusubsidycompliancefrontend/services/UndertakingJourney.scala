@@ -29,7 +29,8 @@ case class UndertakingJourney(
   contact: FormPage[ContactDetails] = FormPage("contact"),
   cya: FormPage[Boolean] = FormPage("check-your-answers"),
   confirmation: FormPage[Boolean] = FormPage("confirmation"),
-  isAmend: Option[Boolean] = None
+  // TODO - ok for this to be a plain boolean?
+  isAmend: Boolean = false
 ) extends Journey {
 
   override def steps: List[Option[FormPage[_]]] =
@@ -54,6 +55,7 @@ object UndertakingJourney {
 
   implicit val format: Format[UndertakingJourney] = Json.format[UndertakingJourney]
 
+  // TODO - review how / where this is used
   def fromUndertakingOpt(undertakingOpt: Option[Undertaking]): UndertakingJourney = undertakingOpt match {
     case Some(undertaking) =>
       val empty = UndertakingJourney()
@@ -65,7 +67,7 @@ object UndertakingJourney {
         contact = empty.contact.copy(
           value = cd
         ),
-        isAmend = false.some
+        isAmend = false
       )
     case _ => UndertakingJourney()
   }

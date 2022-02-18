@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.catsSyntaxOptionId
 import play.api.Configuration
 
 import javax.inject.{Inject, Singleton}
@@ -76,7 +75,6 @@ class UndertakingController @Inject()(
     }
   }
 
-  // TODO - can we persist something here to modify redirect
   def getUndertakingName: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
       store.get[UndertakingJourney].flatMap {
@@ -92,7 +90,6 @@ class UndertakingController @Inject()(
       }
   }
 
-  // TODO - post handler will need to ensure we redirect to the correct location
   def postUndertakingName: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     undertakingNameForm.bindFromRequest().fold(
@@ -266,8 +263,7 @@ class UndertakingController @Inject()(
     store.get[UndertakingJourney].flatMap {
       ensureUndertakingJourneyPresent(_) { journey =>
         for {
-          updatedJourney <- if (isAmend(journey)) journey.toFuture else
-            store.update[UndertakingJourney] (_.map ( _.copy(isAmend = true.some)))
+          updatedJourney <- if (journey.isAmend) journey.toFuture else updateIsAmendState(value = true)
         } yield Ok(
           amendUndertakingPage(
             updatedJourney.name.value.fold(handleMissingSessionData("Undertaking Name"))(UndertakingName(_)),
@@ -281,6 +277,9 @@ class UndertakingController @Inject()(
     }
   }
 
+  private def updateIsAmendState(value: Boolean)(implicit e: EORI): Future[UndertakingJourney] =
+    store.update[UndertakingJourney](jo => jo.map(_.copy(isAmend = value)))
+
   def postAmendUndertaking: Action[AnyContent] =  escAuthentication.async { implicit  request =>
     implicit val eori: EORI = request.eoriNumber
 
@@ -288,7 +287,7 @@ class UndertakingController @Inject()(
       _ => throw new IllegalStateException("value hard-coded, form hacking?"),
       _ =>
           for {
-            updatedJourney <- store.update[UndertakingJourney] (_.map ( _.copy(isAmend = None)))
+            updatedJourney <- updateIsAmendState(value = false)
             undertakingName = UndertakingName(updatedJourney.name.value.getOrElse(handleMissingSessionData("Undertaking Name")))
             undertakingSector = updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking Sector"))
             retrievedUndertaking <- escService.retrieveUndertaking(eori).map(_.getOrElse(handleMissingSessionData("Undertaking")))
@@ -304,16 +303,13 @@ class UndertakingController @Inject()(
       )
   }
 
-  // TODO - we'll need to revise this to handle the amend on create
-  private def isAmend(journey: UndertakingJourney) = journey.isAmend.contains(true)
-
   // TODO - review these
   private def getJourneyPrevious(journey: UndertakingJourney)(implicit request: Request[_]) =
-    if(isAmend(journey)) routes.UndertakingController.getAmendUndertakingDetails().url
+    if (journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails().url
     else journey.previous
 
   private def getJourneyNext(journey: UndertakingJourney)(implicit request: Request[_]) =
-    if(isAmend(journey)) Redirect(routes.UndertakingController.getAmendUndertakingDetails()).toFuture
+    if(journey.isAmend) Redirect(routes.UndertakingController.getAmendUndertakingDetails()).toFuture
     else journey.next
 
   private def ensureUndertakingJourneyPresent(journey: Option[UndertakingJourney])(f: UndertakingJourney => Future[Result]): Future[Result] = {
