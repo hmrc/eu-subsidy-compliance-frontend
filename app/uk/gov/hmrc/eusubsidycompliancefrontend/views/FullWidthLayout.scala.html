@@ -35,13 +35,15 @@
 @import views.html.helper.CSPNonce
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.FullWidthMainContent
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.timeout_dialog
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcLanguageSelectHelper
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcLanguageSelectHelper, HmrcStandardFooter, HmrcScripts}
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcReportTechnicalIssueHelper
 
 @this(
         appConfig: AppConfig,
         govukLayout: GovukLayout,
         hmrcHead: HmrcHead,
+        hmrcStandardFooter: HmrcStandardFooter,
+        hmrcScripts: HmrcScripts,
         hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
         beforeContentBlock: components.BeforeContent,
@@ -62,7 +64,8 @@
 @documentTitle = @{if(hasErrors) { messages("generic.errorPrefix") + " " + govTitle } else { govTitle }}
 
 @head = {
-    <link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="all" rel="stylesheet" type="text/css" />
+    @headBlock.getOrElse(Html(""))
+    @Html(s"""<link href='${controllers.routes.Assets.versioned("stylesheets/application.css")}' media="all" rel="stylesheet" type="text/css" ${CSPNonce.attr} />""")
 }
 
 @beforeContentWrapper = {
@@ -83,6 +86,8 @@
 @govukLayout(
     pageTitle = Some(documentTitle),
     headBlock = Some(hmrcHead(headBlock = Some(head), nonce = CSPNonce.get)),
+    scriptsBlock = Some(hmrcScripts(nonce = CSPNonce.get)),
+    footerBlock = Some(hmrcStandardFooter()),
     beforeContentBlock = Some(beforeContentWrapper),
     mainContentLayout = mainContentLayout
 )(contentBlock)

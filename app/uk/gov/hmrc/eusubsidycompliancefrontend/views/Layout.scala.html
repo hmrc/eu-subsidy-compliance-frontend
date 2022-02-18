@@ -45,7 +45,8 @@
 @documentTitle = @{if(hasErrors) { messages("generic.errorPrefix") + " " + govTitle } else { govTitle }}
 
 @head = {
-    <link href='@controllers.routes.Assets.versioned("stylesheets/application.css")' media="all" rel="stylesheet" type="text/css" />
+    @headBlock.getOrElse(Html(""))
+    @Html(s"""<link href='${controllers.routes.Assets.versioned("stylesheets/application.css")}' media="all" rel="stylesheet" type="text/css" ${CSPNonce.attr} />""")
 }
 
 @beforeContentWrapper = {
@@ -66,7 +67,7 @@
 @govukLayout(
     pageTitle = Some(documentTitle),
     headBlock = Some(hmrcHead(headBlock = Some(head), nonce = CSPNonce.get)),
-    scriptsBlock = Some(hmrcScripts()),
+    scriptsBlock = Some(hmrcScripts(nonce = CSPNonce.get)),
     footerBlock = Some(hmrcStandardFooter()),
     beforeContentBlock = Some(beforeContentWrapper),
 )(contentBlock)
