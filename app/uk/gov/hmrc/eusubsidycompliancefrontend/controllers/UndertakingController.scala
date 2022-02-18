@@ -81,12 +81,10 @@ class UndertakingController @Inject()(
         case Some(journey) =>
           val form = journey.name.value.fold(undertakingNameForm)(name => undertakingNameForm.fill(FormValues(name)))
           Ok(undertakingNamePage(form)).toFuture
-
         case None => // initialise the empty Journey model
           store.put(UndertakingJourney()).map { _ =>
             Ok(undertakingNamePage(undertakingNameForm))
           }
-
       }
   }
 
@@ -114,7 +112,7 @@ class UndertakingController @Inject()(
         val form = journey.sector.value.fold(undertakingSectorForm)(sector => undertakingSectorForm.fill(FormValues(sector.id.toString)))
           Ok(undertakingSectorPage(
             form,
-            getJourneyPrevious(journey),
+            journey.previous,
             journey.name.value.getOrElse("")
           )).toFuture
       }
@@ -149,7 +147,7 @@ class UndertakingController @Inject()(
             }
             Ok(undertakingContactPage(
               form,
-              getJourneyPrevious(journey),
+              journey.previous,
               journey.name.value.getOrElse("")
             )).toFuture
           }
@@ -191,6 +189,7 @@ class UndertakingController @Inject()(
     }
   }
 
+  // This is on the create journey
   def postCheckAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     cyaForm.bindFromRequest().fold(
@@ -218,15 +217,22 @@ class UndertakingController @Inject()(
     )
   }
 
-  private def createUndertakingAndSendEmail(undertaking: Undertaking, eori: EORI, undertakingJourney: UndertakingJourney)(implicit request: EscAuthRequest[_]) =     for {
-    ref <- escService.createUndertaking(undertaking)
-    lang <- getLanguage
-    templateId = getEmailTemplateId(lang)
-    emailParameters = SingleEORIEmailParameter(eori, undertaking.name, ref,  "undertaking Created by Lead EORI")
-    emailAddress <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(sys.error("Email won't be send as email address is not present")))
-  } yield {
-    sendEmailService.sendEmail(emailAddress, emailParameters, templateId)
-    Redirect(routes.UndertakingController.getConfirmation(ref, undertakingJourney.name.value.getOrElse("")))
+  // TODO - this method should not handle the redirect, that is a concern of the caller
+  private def createUndertakingAndSendEmail(
+    undertaking: Undertaking,
+    eori: EORI,
+    undertakingJourney: UndertakingJourney
+  )(implicit request: EscAuthRequest[_]): Future[Result] = {
+    for {
+      ref <- escService.createUndertaking(undertaking)
+      lang <- getLanguage
+      templateId = getEmailTemplateId(lang)
+      emailParameters = SingleEORIEmailParameter(eori, undertaking.name, ref,  "undertaking Created by Lead EORI")
+      emailAddress <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(sys.error("Email won't be send as email address is not present")))
+    } yield {
+      sendEmailService.sendEmail(emailAddress, emailParameters, templateId)
+      Redirect(routes.UndertakingController.getConfirmation(ref, undertakingJourney.name.value.getOrElse("")))
+    }
   }
 
   private def getLanguage(implicit authenticatedRequest: EscAuthRequest[_]): Future[Language] =
@@ -303,11 +309,7 @@ class UndertakingController @Inject()(
       )
   }
 
-  // TODO - review these
-  private def getJourneyPrevious(journey: UndertakingJourney)(implicit request: Request[_]) =
-    if (journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails().url
-    else journey.previous
-
+  // TODO - this should be a property of the UndertakingJourney
   private def getJourneyNext(journey: UndertakingJourney)(implicit request: Request[_]) =
     if(journey.isAmend) Redirect(routes.UndertakingController.getAmendUndertakingDetails()).toFuture
     else journey.next

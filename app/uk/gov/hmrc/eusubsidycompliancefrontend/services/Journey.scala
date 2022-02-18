@@ -32,12 +32,11 @@ trait Journey {
 
   private val logger = Logger(getClass)
 
+  // TODO - why is this not just a list of FormPages?
   def steps: List[Option[FormPage[_]]]
 
-  def formPages: List[FormPage[_]] =
-    steps
-      .filter(_.nonEmpty)
-      .flatten
+  // TODO - this can be simplified/replaced if we don't mess about with unapply
+  def formPages: List[FormPage[_]] = steps.flatten
 
   // TODO strip/add the server path prefix instead of endsWith
   // TODO especially as this may not work for listings

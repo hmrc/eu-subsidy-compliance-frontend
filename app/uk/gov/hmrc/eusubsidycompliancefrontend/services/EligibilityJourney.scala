@@ -33,6 +33,7 @@ case class EligibilityJourney(
   createUndertaking: FormPage[Boolean] = FormPage("create-undertaking")
 ) extends Journey {
 
+  // TODO - this should be simplified
   override def steps: List[Option[FormPage[_]]] =
     EligibilityJourney
       .unapply(this)

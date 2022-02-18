@@ -18,10 +18,17 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits._
 import play.api.libs.json.{Format, Json, OFormat}
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{Request, Result}
 import shapeless.syntax.std.tuple._
 import shapeless.syntax.typeable._
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ContactDetails, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
+
+import scala.concurrent.Future
 
 case class UndertakingJourney(
   name: FormPage[String] = FormPage("undertaking-name"),
@@ -33,6 +40,8 @@ case class UndertakingJourney(
   isAmend: Boolean = false
 ) extends Journey {
 
+  // TODO - why is this a List of Option?
+  // TODO - this could just return a static list...
   override def steps: List[Option[FormPage[_]]] =
     UndertakingJourney.
       unapply(this)
@@ -40,6 +49,14 @@ case class UndertakingJourney(
       .fold(List.empty[Any])(identity)
       .filter(_.isInstanceOf[FormPage[_]])
       .map(_.cast[FormPage[_]])
+
+  override def previous(implicit request: Request[_]): Uri =
+    if (isAmend) routes.UndertakingController.getAmendUndertakingDetails().url
+    else super.previous
+
+  override def next(implicit request: Request[_]): Future[Result] =
+    if (isAmend) Redirect(routes.UndertakingController.getAmendUndertakingDetails()).toFuture
+    else super.next
 
 }
 
