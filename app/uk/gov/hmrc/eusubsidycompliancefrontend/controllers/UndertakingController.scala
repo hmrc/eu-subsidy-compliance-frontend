@@ -189,7 +189,6 @@ class UndertakingController @Inject()(
     }
   }
 
-  // This is on the create journey
   def postCheckAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     cyaForm.bindFromRequest().fold(
@@ -217,7 +216,6 @@ class UndertakingController @Inject()(
     )
   }
 
-  // TODO - this method should not handle the redirect, that is a concern of the caller
   private def createUndertakingAndSendEmail(
     undertaking: Undertaking,
     eori: EORI,
