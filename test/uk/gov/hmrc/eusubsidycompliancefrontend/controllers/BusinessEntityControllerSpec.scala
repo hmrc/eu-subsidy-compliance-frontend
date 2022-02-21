@@ -25,9 +25,9 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityControllerSpec.CheckYourAnswersRowBE
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.English
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIEmailParameter, SingleEORIEmailParameter}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, DoubleEORIEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, FormPage, JourneyTraverseService, RetrieveEmailService, SendEmailService, Store}
@@ -48,6 +48,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
   with SendEmailSupport  {
 
   val mockEscService = mock[EscService]
+  val mockTimeProvider = mock[TimeProvider]
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
@@ -55,7 +56,8 @@ class BusinessEntityControllerSpec  extends ControllerSpec
     bind[EscService].toInstance(mockEscService),
     bind[JourneyTraverseService].toInstance(mockJourneyTraverseService),
     bind[RetrieveEmailService].toInstance(mockRetrieveEmailService),
-    bind[SendEmailService].toInstance(mockSendEmailService)
+    bind[SendEmailService].toInstance(mockSendEmailService),
+    bind[TimeProvider].toInstance(mockTimeProvider)
   )
 
   override def additionalConfig = super.additionalConfig.withFallback(
@@ -68,6 +70,10 @@ class BusinessEntityControllerSpec  extends ControllerSpec
                                    |     add-member-to-be-template-cy = "template_add__be_CY"
                                    |     add-member-to-lead-template-en = "template_add_lead_EN"
                                    |     add-member-to-lead-template-cy = "template_add_lead_CY"
+                                   |     remove-member-to-be-template-en = "template_remove_be_EN"
+                                   |     remove-member-to-be-template-cy = "template_remove_be_CY"
+                                   |     remove-member-to-lead-template-en = "template_remove_lead_EN"
+                                   |     remove-member-to-lead-template-cy = "template_remove_lead_CY"
                                    |  }
                                    |""".stripMargin)
     )
@@ -113,6 +119,8 @@ class BusinessEntityControllerSpec  extends ControllerSpec
       .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful(_)))
   }
 
+  def mockTimeToday(now: LocalDate) =
+    (mockTimeProvider.today _).expects().returning(now)
 
   "BusinessEntityControllerSpec" when {
 
@@ -1150,10 +1158,13 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
     "handling request to post remove  business entity" must {
 
-      def performAction(data: (String, String)*)(eori: EORI) = controller
+      def performAction(data: (String, String)*)(eori: EORI, language: String = English.code) = controller
         .postRemoveBusinessEntity(eori)(
-          FakeRequest("POST",routes.BusinessEntityController.postRemoveYourselfBusinessEntity().url)
+          FakeRequest("POST",routes.BusinessEntityController.postRemoveBusinessEntity(eori4).url)
+            .withCookies(Cookie("PLAY_LANG", language))
             .withFormUrlEncodedBody(data: _*))
+
+      val effectiveDate = LocalDate.of(2022, 10, 9)
 
       "throw a technical error" when {
         val exception = new Exception("oh no!")
@@ -1186,11 +1197,34 @@ class BusinessEntityControllerSpec  extends ControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori1)
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockTimeToday(effectiveDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
         }
 
+        "call to fetch business entity email address fails" in {
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+            mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockTimeToday(effectiveDate)
+            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
+            mockRetrieveEmail(eori4)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
+        }
+
+        "call to fetch LeadEORI email address fails" in {
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+            mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockTimeToday(effectiveDate)
+            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
+            mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
+            mockRetrieveEmail(eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
+        }
 
       }
 
@@ -1213,13 +1247,56 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
       "redirect to next page" when {
 
-        "user select yes as input" in {
+        def testRedirection(emailParametersBE: EmailParameters, emailParametersLead: EmailParameters, templateIdBE: String, templateIdLead: String, lang: String) = {
           inSequence {
             mockAuthWithEnrolment(eori1)
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockTimeToday(effectiveDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
+            mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
+            mockSendEmail(validEmailAddress, emailParametersBE, templateIdBE)(Right(EmailSendResult.EmailSent))
+            mockSendEmail(validEmailAddress, emailParametersLead, templateIdLead)(Right(EmailSendResult.EmailSent))
           }
-          checkIsRedirect(performAction("removeBusiness" -> "true")(eori4), routes.BusinessEntityController.getAddBusinessEntity().url)
+          checkIsRedirect(performAction("removeBusiness" -> "true")(eori4, lang), routes.BusinessEntityController.getAddBusinessEntity().url)
+        }
+
+        "user select yes as input" when {
+
+          "User has selected English language" in {
+
+            val emailParameterBE = SingleEORIAndDateEmailParameter(
+              eori4,
+              undertaking.name,
+              undertakingRef,
+              "9 October 2022",  "Email to BE for being removed as a member")
+            val emailParameterLead = DoubleEORIAndDateEmailParameter(
+              eori1,
+              eori4,
+              undertaking.name,
+              undertakingRef,
+              "9 October 2022",  "Email to Lead  for removing a new member")
+            testRedirection(emailParameterBE, emailParameterLead, "template_remove_be_EN", "template_remove_lead_EN", English.code)
+
+          }
+
+          "User has selected Welsh language" in {
+
+            val emailParameterBE = SingleEORIAndDateEmailParameter(
+              eori4,
+              undertaking.name,
+              undertakingRef,
+              "9 Hydref 2022",  "Email to BE for being removed as a member")
+            val emailParameterLead = DoubleEORIAndDateEmailParameter(
+              eori1,
+              eori4,
+              undertaking.name,
+              undertakingRef,
+              "9 Hydref 2022",  "Email to Lead  for removing a new member")
+            testRedirection(emailParameterBE, emailParameterLead, "template_remove_be_CY", "template_remove_lead_CY", Welsh.code)
+
+          }
+
         }
 
         "user selects No as input" in {
