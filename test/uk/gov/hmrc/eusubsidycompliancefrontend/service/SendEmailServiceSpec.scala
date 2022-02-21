@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package uk.gov.hmrc.eusubsidycompliancefrontend.service
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
@@ -53,14 +52,11 @@ class SendEmailServiceSpec extends AnyWordSpec with Matchers with MockFactory {
     " handling request to send email" must {
 
       "return an error" when {
-
         "the http call fails" in {
           mockSendEmail(emailSendRequest)(Left(Error("")))
           val result = service.sendEmail(validEmailAddress, emailParameter, templatedId)
           assertThrows[RuntimeException](await(result))
         }
-
-
       }
 
       "return Email sent successfully" when {
@@ -77,8 +73,7 @@ class SendEmailServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         "request came back with status != Accepted " in {
           mockSendEmail(emailSendRequest)(Right(HttpResponse(OK, "")))
           val result = service.sendEmail(validEmailAddress, emailParameter, templatedId)
-          await(result) shouldBe
-            (EmailSendResult.EmailSentFailure)
+          await(result) shouldBe (EmailSendResult.EmailSentFailure)
         }
 
       }
