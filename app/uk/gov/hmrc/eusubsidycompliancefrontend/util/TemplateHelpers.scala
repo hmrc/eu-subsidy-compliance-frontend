@@ -27,14 +27,16 @@ import java.util.Locale
 
 object TemplateHelpers {
 
-  def templateIdsMap(config: Configuration, langCode: String) =  Map(
+  private def templateIdsMap(config: Configuration, langCode: String) =  Map(
     s"createUndertaking$langCode" -> config.get[String](s"email-send.create-undertaking-template-$langCode"),
     s"addMemberEmailToBE$langCode" -> config.get[String](s"email-send.add-member-to-be-template-$langCode"),
     s"addMemberEmailToLead$langCode" -> config.get[String](s"email-send.add-member-to-lead-template-$langCode"),
+    s"removeMemberEmailToBE$langCode" -> config.get[String](s"email-send.remove-member-to-be-template-$langCode"),
+    s"removeMemberEmailToLead$langCode" -> config.get[String](s"email-send.remove-member-to-lead-template-$langCode")
   )
 
 
-  def getLanguage(implicit request: EscAuthRequest[_], messagesApi: MessagesApi): Language =
+  private def getLanguage(implicit request: EscAuthRequest[_], messagesApi: MessagesApi): Language =
     request.request.messages(messagesApi).lang.code.toLowerCase(Locale.UK) match {
       case English.code => English
       case Welsh.code   => Welsh
