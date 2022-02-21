@@ -65,13 +65,9 @@ class UndertakingController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].map {
       case Some(journey) =>
-        val res = journey
+        journey
           .firstEmpty
-          .fold(
-            Redirect(routes.BusinessEntityController.getAddBusinessEntity())
-          )(identity)
-        println(s"firstEmptyPage returning: $res")
-        res
+          .fold(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))(identity)
       case _ => handleMissingSessionData("Undertaking journey")
     }
   }

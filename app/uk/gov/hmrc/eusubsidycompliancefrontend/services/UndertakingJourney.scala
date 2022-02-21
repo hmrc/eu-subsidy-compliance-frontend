@@ -34,7 +34,7 @@ case class UndertakingJourney(
   sector: FormPage[Sector] = FormPage(FormUrls.Sector),
   contact: FormPage[ContactDetails] = FormPage(FormUrls.Contact),
   cya: FormPage[Boolean] = FormPage(FormUrls.Cya),
-  confirmation: FormPage[Boolean] = FormPage(FormUrls.Cya),
+  confirmation: FormPage[Boolean] = FormPage(FormUrls.Confirmation),
   isAmend: Boolean = false
 ) extends Journey {
 
