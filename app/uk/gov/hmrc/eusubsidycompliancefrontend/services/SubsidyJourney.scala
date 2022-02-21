@@ -18,29 +18,31 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json._
-import shapeless.syntax.std.tuple._
-import shapeless.syntax.typeable._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, NonHmrcSubsidy, OptionalEORI, OptionalTraderRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.FormUrls._
 
 case class SubsidyJourney(
-   reportPayment: FormPage[Boolean] = FormPage("claims"),
-   claimDate: FormPage[DateFormValues] = FormPage("add-claim-date"),
-   claimAmount: FormPage[BigDecimal] = FormPage("add-claim-amount"),
-   addClaimEori: FormPage[OptionalEORI] = FormPage("add-claim-eori"),
-   publicAuthority: FormPage[String] = FormPage("add-claim-public-authority"),
-   traderRef: FormPage[OptionalTraderRef] = FormPage("add-claim-reference"),
-   cya: FormPage[Boolean] = FormPage("check-your-answers-subsidy"),
+   reportPayment: FormPage[Boolean] = FormPage(ReportPayment),
+   claimDate: FormPage[DateFormValues] = FormPage(ClaimDateValues),
+   claimAmount: FormPage[BigDecimal] = FormPage(ClaimAmount),
+   addClaimEori: FormPage[OptionalEORI] = FormPage(AddClaimEoriEORI),
+   publicAuthority: FormPage[String] = FormPage(PublicAuthority),
+   traderRef: FormPage[OptionalTraderRef] = FormPage(TraderReference),
+   cya: FormPage[Boolean] = FormPage(Cya),
    existingTransactionId: Option[SubsidyRef] = None,
 
 ) extends Journey {
 
-  override def steps: List[Option[FormPage[_]]] =
-    SubsidyJourney.
-      unapply(this)
-      .map(_.toList)
-      .fold(List.empty[Any])(identity)
-      .map(_.cast[FormPage[_]])
+  override protected def steps: List[FormPage[_]] = List(
+    reportPayment,
+    claimDate,
+    claimAmount,
+    addClaimEori,
+    publicAuthority,
+    traderRef,
+    cya
+  )
 
   def isAmend: Boolean = existingTransactionId.nonEmpty
 }
@@ -48,18 +50,10 @@ case class SubsidyJourney(
 object SubsidyJourney {
   import Journey._ // N.B. don't let intellij delete this
 
-  implicit val formPageClaimDateFormat: OFormat[FormPage[DateFormValues]] =
-    Json.format[FormPage[DateFormValues]]
-
-  implicit val formPageOptionalEORIFormat: OFormat[FormPage[OptionalEORI]] =
-    Json.format[FormPage[OptionalEORI]]
-
-  implicit val formPageOptionalTraderRefFormat: OFormat[FormPage[OptionalTraderRef]] =
-    Json.format[FormPage[OptionalTraderRef]]
-
-  implicit val formPageTraderRefFormat: OFormat[FormPage[TraderRef]] =
-    Json.format[FormPage[TraderRef]]
-
+  implicit val formPageClaimDateFormat: OFormat[FormPage[DateFormValues]] = Json.format[FormPage[DateFormValues]]
+  implicit val formPageOptionalEORIFormat: OFormat[FormPage[OptionalEORI]] = Json.format[FormPage[OptionalEORI]]
+  implicit val formPageOptionalTraderRefFormat: OFormat[FormPage[OptionalTraderRef]] = Json.format[FormPage[OptionalTraderRef]]
+  implicit val formPageTraderRefFormat: OFormat[FormPage[TraderRef]] = Json.format[FormPage[TraderRef]]
   implicit val format: Format[SubsidyJourney] = Json.format[SubsidyJourney]
 
   def fromNonHmrcSubsidy(nonHmrcSubsidy: NonHmrcSubsidy): SubsidyJourney = {
@@ -78,4 +72,15 @@ object SubsidyJourney {
 
   private def getAddClaimEORI(eoriOpt: Option[EORI]) = if(eoriOpt.isDefined) OptionalEORI("true", eoriOpt) else OptionalEORI("false", eoriOpt)
   private def getAddTraderRef(traderRefOpt: Option[TraderRef]) = if(traderRefOpt.isDefined) OptionalTraderRef("true", traderRefOpt) else OptionalTraderRef("false", traderRefOpt)
+
+  object FormUrls {
+    val ReportPayment = "claims"
+    val ClaimDateValues = "add-claim-date"
+    val ClaimAmount = "add-claim-amount"
+    val AddClaimEoriEORI = "add-claim-eori"
+    val PublicAuthority= "add-claim-public-authority"
+    val TraderReference = "add-claim-reference"
+    val Cya = "check-your-answers-subsidy"
+  }
+
 }

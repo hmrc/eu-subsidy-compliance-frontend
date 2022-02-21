@@ -31,7 +31,6 @@ case class EligibilityJourney(
   createUndertaking: FormPage[Boolean] = FormPage(CreateUndertaking),
 ) extends Journey {
 
-  // TODO - remove public steps if not accessed externally
   private val journeySteps = List(
     customsWaivers,
     willYouClaim,
@@ -44,15 +43,12 @@ case class EligibilityJourney(
     createUndertaking
   )
 
-  // TODO - is steps ever called directly anywhere?
-  // TODO - review this - can it be further simplified?
-  override def steps: List[Option[FormPage[_]]] =
+  override protected def steps: List[FormPage[_]] =
     journeySteps
       .filterNot(removeWillYouClaimIfDoYouClaimTrue)
       .filterNot(removeNotEligibleIfCustomsWaiversClaimed)
       .filterNot(removeSignOutIfMainBusinessCheckPassed)
       .filterNot(removeSignOutBadEoriIfEoriCheckPassed)
-      .map(Some(_))
 
   private def removeWillYouClaimIfDoYouClaimTrue(f: FormPage[_]) =
     predicate(f, WillYouClaim)(customsWaivers.value.contains(true))
@@ -74,7 +70,7 @@ object EligibilityJourney {
   import Journey._ // N.B. don't let intellij delete this
   implicit val format: Format[EligibilityJourney] = Json.format[EligibilityJourney]
 
-  // TODO - it would be nicer to have a class for each form, which can then encapsulate this URL value.
+  // TODO - consider introducing form classes for each page
   object FormUrls {
     val CustomsWaivers = "do-you-claim-customs-waivers"
     val WillYouClaim = "will-you-claim-customs-waivers"

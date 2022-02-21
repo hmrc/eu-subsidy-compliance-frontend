@@ -20,35 +20,31 @@ import cats.implicits._
 import play.api.libs.json.{Format, Json, OFormat}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result}
-import shapeless.syntax.std.tuple._
-import shapeless.syntax.typeable._
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ContactDetails, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.FormUrls
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
 
 import scala.concurrent.Future
 
 case class UndertakingJourney(
-  name: FormPage[String] = FormPage("undertaking-name"),
-  sector: FormPage[Sector] = FormPage("sector"),
-  contact: FormPage[ContactDetails] = FormPage("contact"),
-  cya: FormPage[Boolean] = FormPage("check-your-answers"),
-  confirmation: FormPage[Boolean] = FormPage("confirmation"),
-  // TODO - ok for this to be a plain boolean?
+  name: FormPage[String] = FormPage(FormUrls.Name),
+  sector: FormPage[Sector] = FormPage(FormUrls.Sector),
+  contact: FormPage[ContactDetails] = FormPage(FormUrls.Contact),
+  cya: FormPage[Boolean] = FormPage(FormUrls.Cya),
+  confirmation: FormPage[Boolean] = FormPage(FormUrls.Cya),
   isAmend: Boolean = false
 ) extends Journey {
 
-  // TODO - why is this a List of Option?
-  // TODO - this could just return a static list...
-  override def steps: List[Option[FormPage[_]]] =
-    UndertakingJourney.
-      unapply(this)
-      .map(_.toList)
-      .fold(List.empty[Any])(identity)
-      .filter(_.isInstanceOf[FormPage[_]])
-      .map(_.cast[FormPage[_]])
+  override protected def steps = List(
+    name,
+    sector,
+    contact,
+    cya,
+    confirmation
+  )
 
   override def previous(implicit request: Request[_]): Uri =
     if (isAmend) routes.UndertakingController.getAmendUndertakingDetails().url
@@ -63,12 +59,9 @@ case class UndertakingJourney(
 object UndertakingJourney {
   import Journey._
 
-  implicit val formPageSectorFormat: OFormat[FormPage[Sector]] =
-    Json.format[FormPage[Sector]]
-  implicit val formatContactDetails: OFormat[ContactDetails] =
-    Json.format[ContactDetails]
-  implicit val formPageContactFormat: OFormat[FormPage[ContactDetails]] =
-    Json.format[FormPage[ContactDetails]]
+  implicit val formPageSectorFormat: OFormat[FormPage[Sector]] = Json.format[FormPage[Sector]]
+  implicit val formatContactDetails: OFormat[ContactDetails] = Json.format[ContactDetails]
+  implicit val formPageContactFormat: OFormat[FormPage[ContactDetails]] = Json.format[FormPage[ContactDetails]]
 
   implicit val format: Format[UndertakingJourney] = Json.format[UndertakingJourney]
 
@@ -88,4 +81,13 @@ object UndertakingJourney {
       )
     case _ => UndertakingJourney()
   }
+
+  object FormUrls {
+    val Name ="undertaking-name"
+    val Sector = "sector"
+    val Contact = "contact"
+    val Cya = "check-your-answers"
+    val Confirmation = "confirmation"
+  }
+
 }

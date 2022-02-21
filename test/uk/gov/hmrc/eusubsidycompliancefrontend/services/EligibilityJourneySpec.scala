@@ -41,23 +41,6 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
         )
       }
 
-//      "return all forms if customs waivers form has false value" in {
-//        val underTest = EligibilityJourney(
-//          customsWaivers = FormPage(CustomsWaivers, Some(false)),
-//        )
-//        underTest.formPages shouldBe List(
-//          underTest.customsWaivers,
-//          underTest.willYouClaim,
-//          underTest.notEligible,
-//          underTest.mainBusinessCheck,
-//          underTest.signOut,
-//          underTest.acceptTerms,
-//          underTest.eoriCheck,
-//          underTest.signOutBadEori,
-//          underTest.createUndertaking
-//        )
-//      }
-
       "remove will you claim and notEligible steps if customs waivers form has true value" in {
         val underTest = EligibilityJourney(
           customsWaivers = FormPage(CustomsWaivers, Some(true)),
