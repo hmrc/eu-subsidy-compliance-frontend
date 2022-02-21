@@ -64,10 +64,8 @@ class BusinessEntityController @Inject()(
   val eoriPrefix = "GB"
   val AddMemberEmailToBusinessEntity = "addMemberEmailToBE"
   val AddMemberEmailToLead = "addMemberEmailToLead"
-  val removeMemberEmailToBusinessEntity = "removeMemberEmailToBE"
-  val removeMemberEmailToLead = "removeMemberEmailToLead"
-
-  val errorMsg = "Email won't be send as email address is not retrieved"
+  val RemoveMemberEmailToBusinessEntity = "removeMemberEmailToBE"
+  val RemoveMemberEmailToLead = "removeMemberEmailToLead"
 
 
   def getAddBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
@@ -297,8 +295,8 @@ class BusinessEntityController @Inject()(
                   _ <- escService.removeMember(undertakingRef, removeBE)
                   emailAddressBE <- retrieveEmailService.retrieveEmailByEORI(removeBE.businessEntityIdentifier).map(_.getOrElse(handleMissingSessionData("Business entity Email")))
                   emailAddressLead <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(handleMissingSessionData("Lead EORI Email Address")))
-                  templateIdBE = TemplateHelpers.getTemplateId(configuration, removeMemberEmailToBusinessEntity)
-                  templateIdLead = TemplateHelpers.getTemplateId(configuration, removeMemberEmailToLead)
+                  templateIdBE = TemplateHelpers.getTemplateId(configuration, RemoveMemberEmailToBusinessEntity)
+                  templateIdLead = TemplateHelpers.getTemplateId(configuration, RemoveMemberEmailToLead)
                   emailParametersBE = SingleEORIAndDateEmailParameter(removeBE.businessEntityIdentifier, undertaking.name, undertakingRef, removalEffectiveDateString,  "Email to BE for being removed as a member")
                   emailParametersLead = DoubleEORIAndDateEmailParameter(eori, removeBE.businessEntityIdentifier,  undertaking.name, undertakingRef, removalEffectiveDateString, "Email to Lead  for removing a new member")
                 } yield {
