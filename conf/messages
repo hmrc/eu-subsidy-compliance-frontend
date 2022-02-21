@@ -5,7 +5,7 @@ service.text = This is your new service
 generic.errorPrefix = Error:
 
 common.back=Back
-common.sign-out=[TODO] Sign out
+common.sign-out=Sign out
 common.saveChanges = Save changes
 common.submit = Submit
 common.continue=Save and Continue
@@ -89,14 +89,16 @@ eligibilityTerms.warning=You must report any de minimis state aid your undertaki
 eligibilityTerms.h2-2=Declaration
 eligibilityTerms.p4=I agree to the terms and conditions.
 eligibilityTerms.p5-1=If you do not agree to these terms and conditions, please
-eligibilityTerms.p5-2=[TODO SIGN OUT LINK] sign out
+eligibilityTerms.p5-2=sign out
 eligibilityTerms.p5-3=now.
 
 eoricheck.title=Is this the EORI number you want to register?
 eoricheck.error.required=Select yes if this is the EORI number you want to register
 
 incorrectEori.title=Your EORI and Government Gateway ID do not match
-incorrectEori.p1=Please <a href="#" class="govuk-link">[TODO] sign out</a> of this session and log in with a different Government Gateway ID to use this service.
+incorrectEori.p1-1=Please
+incorrectEori.p1-2=sign out
+incorrectEori.p1-3=of this session and log in with a different Government Gateway ID to use this service.
 
 createUndertaking.title=You must now create an undertaking
 createUndertaking.h2=What is an undertaking?
@@ -104,7 +106,7 @@ createUndertaking.p-1=Every company may be structured differently. You may be a 
 createUndertaking.h2-2=This will make you the undertaking lead for this account
 createUndertaking.p-2=The undertaking lead should have access to all the relevant information needed (EORI number, Customs Declaration Service login details) and the authority to report to HMRC.
 createUndertaking.p-3-1=If you are not the undertaking lead, you should
-createUndertaking.p-3-2=[TODO Sign Out Link] sign out
+createUndertaking.p-3-2=sign out
 createUndertaking.p-3-3=now.
 
 undertakingName.title=What would you like to call this single undertaking?

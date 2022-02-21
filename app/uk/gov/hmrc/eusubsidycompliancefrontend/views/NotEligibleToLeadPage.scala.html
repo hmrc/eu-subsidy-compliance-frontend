@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 
 @this(layout: Layout)
@@ -25,5 +26,5 @@
   <h2 class="govuk-heading-m">@messages("notEligibleToLead.h2")</h2>
   <p class="govuk-body">@messages("notEligibleToLead.p1")</p>
   <p class="govuk-body">@Html(messages("notEligibleToLead.p2"))</p>
-  <p class="govuk-body"><a class="govuk-link" href="#">@messages("common.sign-out")</a></p>
+  <p class="govuk-body"><a class="govuk-link" href="@controllers.routes.SignOutController.signOut()">@messages("common.sign-out")</a></p>
 }

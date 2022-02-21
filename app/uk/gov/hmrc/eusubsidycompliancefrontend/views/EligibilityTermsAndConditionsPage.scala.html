@@ -63,6 +63,6 @@
         <input type=hidden name=terms value=true>
         @button("common.continue")
 
-        <p class="govuk-body">@messages("eligibilityTerms.p5-1") <a class="govuk-link" href="#">@messages("eligibilityTerms.p5-2")</a> @messages("eligibilityTerms.p5-3")</p>
+        <p class="govuk-body">@messages("eligibilityTerms.p5-1") <a class="govuk-link" href="@controllers.routes.SignOutController.signOut()">@messages("eligibilityTerms.p5-2")</a> @messages("eligibilityTerms.p5-3")</p>
     }
 }
