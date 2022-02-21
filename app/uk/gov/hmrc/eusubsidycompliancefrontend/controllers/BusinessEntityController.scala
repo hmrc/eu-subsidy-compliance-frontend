@@ -305,7 +305,7 @@ class BusinessEntityController @Inject()(
           errors => Future.successful(BadRequest(removeYourselfBEPage(errors, removeBE, previous, undertaking.name))),
           form => {
             form.value match {
-              case "true" => escService.removeMember(undertakingRef, removeBE).map(_ => Redirect(routes.SignOutController.signOut()))
+              case "true" => escService.removeMember(undertakingRef, removeBE).map(_ => Redirect(routes.RemovedFromUndertakingSignOutController.signOut()))
               case _ => Future(Redirect(routes.AccountController.getAccountPage()))
             }
           }

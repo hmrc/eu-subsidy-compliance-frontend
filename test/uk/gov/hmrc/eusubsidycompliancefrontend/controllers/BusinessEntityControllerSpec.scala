@@ -1070,7 +1070,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
           }
-          checkIsRedirect(performAction("removeYourselfBusinessEntity" -> "true"), routes.SignOutController.signOut().url)
+          checkIsRedirect(performAction("removeYourselfBusinessEntity" -> "true"), routes.RemovedFromUndertakingSignOutController.signOut().url)
         }
 
         "user selects No as input" in {
