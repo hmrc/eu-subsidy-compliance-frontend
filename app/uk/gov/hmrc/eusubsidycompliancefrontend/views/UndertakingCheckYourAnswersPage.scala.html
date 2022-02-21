@@ -68,7 +68,7 @@
                         actions = Some(Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = "#",
+                                    href = controllers.routes.UndertakingController.getUndertakingName().toString,
                                     content = Text("Change"),
                                     visuallyHiddenText = Some("name")
                                 )
@@ -94,7 +94,7 @@
                         actions = Some(Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = "#",
+                                    href = controllers.routes.UndertakingController.getSector().toString,
                                     content = Text("Change"),
                                     visuallyHiddenText = Some("contact information")
                                 )
@@ -111,7 +111,7 @@
                         actions = Some(Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = "#",
+                                    href = controllers.routes.UndertakingController.getContact().toString,
                                     content = Text("Change"),
                                     visuallyHiddenText = Some("contact details")
                                 )

@@ -18,25 +18,23 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import shapeless.syntax.std.tuple._
-import shapeless.syntax.typeable._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.FormUrls.SelectNewLead
 
-case class NewLeadJourney(selectNewLead: FormPage[EORI] = FormPage("select-new-lead")) extends Journey {
+case class NewLeadJourney(selectNewLead: FormPage[EORI] = FormPage(SelectNewLead)) extends Journey {
 
-  override def steps: List[Option[FormPage[_]]] =
-    NewLeadJourney.
-      unapply(this)
-      .map(_.toList)
-      .fold(List.empty[Any])(identity)
-      .map(_.cast[FormPage[_]])
+  override def steps: List[FormPage[_]] = List(
+    selectNewLead
+  )
 
 }
 
 object NewLeadJourney {
-  import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.eoriFormat
-  implicit val formPageEoriFormat: OFormat[FormPage[EORI]] =
-    Json.format[FormPage[EORI]]
 
-  implicit val format: Format[NewLeadJourney] =
-    Json.format[NewLeadJourney]
+  implicit val formPageEoriFormat: OFormat[FormPage[EORI]] = Json.format[FormPage[EORI]]
+  implicit val format: Format[NewLeadJourney] = Json.format[NewLeadJourney]
+
+  object FormUrls {
+    val SelectNewLead = "select-new-lead"
+  }
+
 }

@@ -1,11 +1,11 @@
 # microservice specific routes
 
-->         /hmrc-frontend                     hmrcfrontend.Routes
-GET        /                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getExistingUndertaking
+->         /hmrc-frontend                           hmrcfrontend.Routes
+GET        /                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getExistingUndertaking
 
-GET        /home                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
+GET        /home                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
 
-GET        /assets/*file                      controllers.Assets.versioned(path = "/public", file: Asset)
+GET        /assets/*file                            controllers.Assets.versioned(path = "/public", file: Asset)
 
 GET        /eligibility-first-empty                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.firstEmptyPage
 GET        /undertaking-first-empty                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.firstEmptyPage
@@ -64,12 +64,11 @@ GET        /change/:eori                            uk.gov.hmrc.eusubsidycomplia
 GET        /remove/:eori                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveBusinessEntity(eori)
 POST       /remove/:eori                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveBusinessEntity(eori)
 
-GET        /remove-yourself                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveYourselfBusinessEntity
-POST        /remove-yourself                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveYourselfBusinessEntity
+GET        /remove-yourself                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveYourselfBusinessEntity
+POST       /remove-yourself                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveYourselfBusinessEntity
 
-GET        /claims                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPayment
-POST       /claims                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPayment
-
+GET        /claims                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPayment
+POST       /claims                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPayment
 
 GET        /add-claim-eori                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimEori
 POST       /add-claim-eori                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimEori
@@ -83,8 +82,8 @@ POST       /add-claim-date                          uk.gov.hmrc.eusubsidycomplia
 GET        /add-claim-public-authority              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimPublicAuthority
 POST       /add-claim-public-authority              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimPublicAuthority
 
-GET        /add-claim-reference                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimReference
-POST       /add-claim-reference                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimReference
+GET        /add-claim-reference                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimReference
+POST       /add-claim-reference                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimReference
 
 GET        /check-your-answers-subsidy              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getCheckAnswers
 POST       /check-your-answers-subsidy              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postCheckAnswers
@@ -105,14 +104,14 @@ POST       /no-claims-notification                  uk.gov.hmrc.eusubsidycomplia
 
 GET        /no-claims-confirmation                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimConfirmation
 
-GET        /sign-out                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.signOut()
+GET        /sign-out                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.signOut()
 
-GET       /select-new-lead                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.getSelectNewLead
-POST      /select-new-lead                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.postSelectNewLead
+GET        /select-new-lead                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.getSelectNewLead
+POST       /select-new-lead                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.postSelectNewLead
 
-GET       /lead-eori-changed                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.getLeadEORIChanged
+GET        /lead-eori-changed                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.getLeadEORIChanged
 
-GET      /no-business-for-lead                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.getNoBusinessPresent
-POST     /no-business-for-lead                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.postNoBusinessPresent
+GET        /no-business-for-lead                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.getNoBusinessPresent
+POST       /no-business-for-lead                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.postNoBusinessPresent
 
 GET        /financial-dashboard                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinancialDashboardController.getFinancialDashboard

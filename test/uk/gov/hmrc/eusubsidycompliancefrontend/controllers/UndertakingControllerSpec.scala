@@ -145,7 +145,7 @@ class UndertakingControllerSpec extends ControllerSpec
           )
         }
 
-        " undertaking journey is there in store" in {
+        "undertaking journey is there in store" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
@@ -650,14 +650,11 @@ class UndertakingControllerSpec extends ControllerSpec
 
         "display the page" in {
 
-          // TODO - coming in the next ticket, see ESC-332
-          val changeLinkNotImplementedYet = "#"
-
           val expectedRows = List(
             ModifyUndertakingRow(
               messageFromMessageKey("undertaking.cya.summary-list.name.key"),
               undertaking.name,
-              changeLinkNotImplementedYet
+              routes.UndertakingController.getUndertakingName().url
             ),
             ModifyUndertakingRow(
               messageFromMessageKey("undertaking.cya.summary-list.eori.key"),
@@ -667,12 +664,12 @@ class UndertakingControllerSpec extends ControllerSpec
             ModifyUndertakingRow(
               messageFromMessageKey("undertaking.amendUndertaking.summary-list.sector.key"),
               messageFromMessageKey(s"sector.label.${undertaking.industrySector.id.toString}"),
-              changeLinkNotImplementedYet
+              routes.UndertakingController.getSector().url
             ),
             ModifyUndertakingRow(
               messageFromMessageKey("undertaking.amendUndertaking.summary-list.telephone.key"),
               phoneNumber1,
-              changeLinkNotImplementedYet
+              routes.UndertakingController.getContact().url
             )
           )
           inSequence {
@@ -725,7 +722,7 @@ class UndertakingControllerSpec extends ControllerSpec
       def performAction() = controller.getAmendUndertakingDetails(FakeRequest())
 
       def update(undertakingJourneyOpt: Option[UndertakingJourney]) = {
-        undertakingJourneyOpt.map(_.copy(isAmend = true.some))
+        undertakingJourneyOpt.map(_.copy(isAmend = true))
       }
 
       val contact = contactDetails match {
@@ -787,7 +784,7 @@ class UndertakingControllerSpec extends ControllerSpec
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-          mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true.some)))
+          mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true)))
         }
 
         checkPageIsDisplayed(
@@ -820,7 +817,7 @@ class UndertakingControllerSpec extends ControllerSpec
             .withFormUrlEncodedBody(data: _*))
 
       def update(undertakingJourneyOpt: Option[UndertakingJourney]) = {
-        undertakingJourneyOpt.map(_.copy(isAmend = None))
+        undertakingJourneyOpt.map(_.copy(isAmend = false))
       }
 
       "throw technical error" when {
@@ -883,7 +880,7 @@ class UndertakingControllerSpec extends ControllerSpec
         "call to retrieve undertaking passes but retrieve undertaking without Lead Business Entity" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true.some)))
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true)))
             mockRetreiveUndertaking(eori)(Future.successful(undertaking1.copy(undertakingBusinessEntity = undertaking1.undertakingBusinessEntity.filterNot(_.leadEORI)).some))
           }
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
@@ -893,7 +890,7 @@ class UndertakingControllerSpec extends ControllerSpec
           val updatedUndertaking = undertaking1.copy(name = UndertakingName("TestUndertaking"), industrySector = Sector(1))
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true.some)))
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true)))
             mockRetreiveUndertaking(eori)(Future.successful(undertaking1.some))
             mockUpdateUndertaking(updatedUndertaking)(Left(Error(exception)))
           }
@@ -904,7 +901,7 @@ class UndertakingControllerSpec extends ControllerSpec
           val updatedUndertaking = undertaking1.copy(name = UndertakingName("TestUndertaking"), industrySector = Sector(1))
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true.some)))
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true)))
             mockRetreiveUndertaking(eori)(Future.successful(undertaking1.some))
             mockUpdateUndertaking(updatedUndertaking)(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(contacts = contactDetails.some))(Left(Error(exception)))
@@ -917,7 +914,7 @@ class UndertakingControllerSpec extends ControllerSpec
         val updatedUndertaking = undertaking1.copy(name = UndertakingName("TestUndertaking"), industrySector = Sector(1))
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true.some)))
+          mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true)))
           mockRetreiveUndertaking(eori)(Future.successful(undertaking1.some))
           mockUpdateUndertaking(updatedUndertaking)(Right(undertakingRef))
           mockAddMember(undertakingRef, businessEntity1.copy(contacts = contactDetails.some))(Right(undertakingRef))
