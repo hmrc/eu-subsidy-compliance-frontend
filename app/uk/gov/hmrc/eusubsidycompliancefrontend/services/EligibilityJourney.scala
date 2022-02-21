@@ -16,52 +16,77 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import cats.implicits._
 import play.api.libs.json._
-import shapeless.syntax.std.tuple._
-import shapeless.syntax.typeable._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.FormUrls._
 
 case class EligibilityJourney(
-  customsWaivers: FormPage[Boolean] = FormPage("do-you-claim-customs-waivers"),
-  willYouClaim: FormPage[Boolean] = FormPage("will-you-claim-customs-waivers"),
-  notEligible: FormPage[Boolean] = FormPage("not-eligible"),
-  mainBusinessCheck: FormPage[Boolean] = FormPage("main-business-check"),
-  signOut: FormPage[Boolean] = FormPage("not-eligible-to-lead"),
-  acceptTerms: FormPage[Boolean] = FormPage("terms-conditions"),
-  eoriCheck: FormPage[Boolean] = FormPage("eoricheck"),
-  signOutBadEori: FormPage[Boolean] = FormPage("incorrect-eori"),
-  createUndertaking: FormPage[Boolean] = FormPage("create-undertaking")
+  customsWaivers: FormPage[Boolean] = FormPage(CustomsWaivers),
+  willYouClaim: FormPage[Boolean] = FormPage(WillYouClaim),
+  notEligible: FormPage[Boolean] = FormPage(NotEligible),
+  mainBusinessCheck: FormPage[Boolean] = FormPage(MainBusinessCheck),
+  signOut: FormPage[Boolean] = FormPage(SignOut),
+  acceptTerms: FormPage[Boolean] = FormPage(AcceptTerms),
+  eoriCheck: FormPage[Boolean] = FormPage(EoriCheck),
+  signOutBadEori: FormPage[Boolean] = FormPage(SignOutBadEori),
+  createUndertaking: FormPage[Boolean] = FormPage(CreateUndertaking),
 ) extends Journey {
 
-  // TODO - this should be simplified
+  // TODO - remove public steps if not accessed externally
+  private val journeySteps = List(
+    customsWaivers,
+    willYouClaim,
+    notEligible,
+    mainBusinessCheck,
+    signOut,
+    acceptTerms,
+    eoriCheck,
+    signOutBadEori,
+    createUndertaking
+  )
+
+  // TODO - is steps ever called directly anywhere?
+  // TODO - review this - can it be further simplified?
   override def steps: List[Option[FormPage[_]]] =
-    EligibilityJourney
-      .unapply(this)
-      .map(_.toList)
-      .fold(List.empty[Any])(identity)
-      .map(_.cast[FormPage[_]])
-      .filterNot(x => x.fold(false) { y =>
-        y.uri === "will-you-claim-customs-waivers" &&
-          this.customsWaivers.value.getOrElse(false)
-      })
-      .filterNot(x => x.fold(false) { y =>
-        y.uri === "not-eligible" &&
-          (this.customsWaivers.value.getOrElse(false) || this.willYouClaim.value.getOrElse(false))
-      })
-      .filterNot(x => x.fold(false) { y =>
-        y.uri === "not-eligible-to-lead" &&
-          this.mainBusinessCheck.value.getOrElse(false)
-      })
-      .filterNot(x => x.fold(false) { y =>
-        y.uri === "incorrect-eori" &&
-          this.eoriCheck.value.getOrElse(false)
-      })
+    journeySteps
+      .filterNot(removeWillYouClaimIfDoYouClaimTrue)
+      .filterNot(removeNotEligibleIfCustomsWaiversClaimed)
+      .filterNot(removeSignOutIfMainBusinessCheckPassed)
+      .filterNot(removeSignOutBadEoriIfEoriCheckPassed)
+      .map(Some(_))
+
+  private def removeWillYouClaimIfDoYouClaimTrue(f: FormPage[_]) =
+    predicate(f, WillYouClaim)(customsWaivers.value.contains(true))
+
+  private def removeNotEligibleIfCustomsWaiversClaimed(f: FormPage[_]) =
+    predicate(f, NotEligible)(Seq(customsWaivers.value, willYouClaim.value).flatten.contains(true))
+
+  private def removeSignOutIfMainBusinessCheckPassed(f: FormPage[_]) =
+    predicate(f, SignOut)(mainBusinessCheck.value.contains(true))
+
+  private def removeSignOutBadEoriIfEoriCheckPassed(f: FormPage[_]) =
+    predicate(f, SignOutBadEori)(eoriCheck.value.contains(true))
+
+  private def predicate(f: FormPage[_], uri: String)(p: Boolean) = f.uri == uri && p
 
 }
 
 object EligibilityJourney {
   import Journey._ // N.B. don't let intellij delete this
   implicit val format: Format[EligibilityJourney] = Json.format[EligibilityJourney]
+
+  // TODO - it would be nicer to have a class for each form, which can then encapsulate this URL value.
+  object FormUrls {
+    val CustomsWaivers = "do-you-claim-customs-waivers"
+    val WillYouClaim = "will-you-claim-customs-waivers"
+    val NotEligible = "not-eligible"
+    val MainBusinessCheck = "main-business-check"
+    val SignOut = "not-eligible-to-lead"
+    val AcceptTerms = "terms-conditions"
+    val EoriCheck = "eoricheck"
+    val SignOutBadEori = "incorrect-eori"
+    val CreateUndertaking = "create-undertaking"
+  }
+
 }
 
 
