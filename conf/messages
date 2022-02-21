@@ -12,6 +12,7 @@ common.continue=Save and Continue
 common.continue.only=Continue
 common.accept=Accept and send
 common.go-account-home = Go to account home
+common.accept=Accept and continue
 
 continue.button=Save and Continue
 button.addBusiness = Add a business to this undertaking
@@ -338,3 +339,8 @@ updateEmail.p2 = This will be the only email address we use for:
 updateEmail.p3.list1 = updates on changes to the Customs Declaration Service
 updateEmail.p3.list2 = urgent updates about goods in customs
 updateEmail.p3.list3 = some financial notifications, including Direct Debit notices and VAT
+
+become-admin.title=[TODO - become admin title]
+become-admin.hint=[TODO - become admin hint]
+
+become-admin-terms-and-conditions.title=[TODO - become admin terms and conditions title]

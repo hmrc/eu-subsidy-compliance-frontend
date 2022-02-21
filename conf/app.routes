@@ -48,6 +48,15 @@ POST       /check-your-answers                      uk.gov.hmrc.eusubsidycomplia
 GET        /confirmation/:undertakingRef/name       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmation(undertakingRef,name)
 POST       /confirmation                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmation
 
+GET        /become-lead-eori                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getBecomeLeadEori()
+POST       /become-lead-eori                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.postBecomeLeadEori()
+
+GET        /accept-promote-to-lead-terms            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getAcceptPromotionTerms()
+POST       /accept-promote-to-lead-terms            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.postAcceptPromotionTerms()
+
+GET        /lead-promotion-confirmation             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getPromotionConfirmation()
+GET        /lead-promotion-confirmation-cleanup     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getPromotionCleanup()
+
 GET        /add-member                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getAddBusinessEntity
 POST       /add-member                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postAddBusinessEntity
 
