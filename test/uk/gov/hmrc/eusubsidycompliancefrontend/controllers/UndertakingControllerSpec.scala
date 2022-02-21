@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
-import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.mvc.Cookie
@@ -28,7 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, Error, Language, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, JourneyTraverseService, RetrieveEmailService, SendEmailService, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData._
 
@@ -54,20 +53,12 @@ class UndertakingControllerSpec extends ControllerSpec
     bind[RetrieveEmailService].toInstance(mockRetrieveEmailService)
   )
 
-  override def additionalConfig = super.additionalConfig.withFallback(
-    Configuration(
-      ConfigFactory.parseString(
-        s"""
-           |
-           |play.i18n.langs = ["en", "cy", "fr"]
-           | email-send {
-           |     create-undertaking-template-en = "template_EN"
-           |     create-undertaking-template-cy = "template_CY"
-           |  }
-           |""".stripMargin)
-    )
-  )
-
+  override def additionalConfig: Configuration = super.additionalConfig.withFallback(
+    Configuration.from(Map(
+      "play.i18n.langs" -> Seq("en", "cy", "fr"),
+      "email-send.create-undertaking-template-en" -> "template_EN",
+      "email-send.create-undertaking-template-cy" -> "template_CY",
+    )))
 
   private def mockCreateUndertaking(undertaking: Undertaking)(result: Either[Error, UndertakingRef]) =
     (mockEscService
@@ -222,8 +213,13 @@ class UndertakingControllerSpec extends ControllerSpec
         }
 
         "page is reached via normal undertaking creation process" in {
-          test(undertakingJourneyComplete, "sector")
+          test(UndertakingJourney(), UndertakingJourney.FormUrls.Sector)
         }
+
+        "page is reached via normal undertaking creation process when all answers have been provided" in {
+          test(undertakingJourneyComplete, routes.UndertakingController.getCheckAnswers().url)
+        }
+
       }
 
 
@@ -391,7 +387,11 @@ class UndertakingControllerSpec extends ControllerSpec
         }
 
         "page is reached via normal undertaking creation process" in {
-          test(undertakingJourneyComplete, "contact")
+          test(UndertakingJourney(), "contact")
+        }
+
+        "page is reached via normal undertaking creation process when all answers have been provided" in {
+          test(undertakingJourneyComplete, routes.UndertakingController.getCheckAnswers().url)
         }
 
       }
@@ -453,7 +453,7 @@ class UndertakingControllerSpec extends ControllerSpec
         }
 
         "user has  already answered the question(normal add undertaking journey)" in {
-          test(undertakingJourneyComplete.copy(contact = FormPage("contact", contactDetails.some), cya = FormPage("check-your-answers")), "sector")
+          test(undertakingJourneyComplete.copy(contact = FormPage("contact", contactDetails.some), cya = FormPage("check-your-answers")), routes.UndertakingController.getCheckAnswers().url)
         }
 
         "user has  already answered the question but it's amend journey" in {
@@ -530,7 +530,11 @@ class UndertakingControllerSpec extends ControllerSpec
         }
 
         "page is reached via normal create undertaking" in {
-          test(undertakingJourneyComplete.copy(contact = FormPage("contact"), cya = FormPage("cya")), "cya")
+          test(UndertakingJourney(contact = FormPage("contact"), cya = FormPage("cya")), "cya")
+        }
+
+        "page is reached via normal create undertaking when all answers have been provided" in {
+          test(undertakingJourneyComplete, routes.UndertakingController.getCheckAnswers().url)
         }
 
         "page is reached via amend  undertaking journey" in {

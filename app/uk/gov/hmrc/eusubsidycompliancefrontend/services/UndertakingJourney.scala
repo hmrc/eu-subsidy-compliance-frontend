@@ -21,8 +21,8 @@ import play.api.libs.json.{Format, Json, OFormat}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ContactDetails, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ContactDetails, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.FormUrls
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
@@ -48,11 +48,16 @@ case class UndertakingJourney(
 
   override def previous(implicit request: Request[_]): Uri =
     if (isAmend) routes.UndertakingController.getAmendUndertakingDetails().url
+    else if (requiredDetailsProvided) routes.UndertakingController.getCheckAnswers().url
     else super.previous
 
   override def next(implicit request: Request[_]): Future[Result] =
     if (isAmend) Redirect(routes.UndertakingController.getAmendUndertakingDetails()).toFuture
+    else if (requiredDetailsProvided) Redirect(routes.UndertakingController.getCheckAnswers()).toFuture
     else super.next
+
+  private def requiredDetailsProvided =
+    Seq(name, sector, contact).map(_.value.isDefined) == Seq(true, true, true)
 
 }
 

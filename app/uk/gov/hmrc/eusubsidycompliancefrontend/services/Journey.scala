@@ -43,6 +43,7 @@ trait Journey {
   def currentIndex(implicit request: Request[_]): Int =
     formPages.indexWhere(x => request.uri.endsWith(x.uri))
 
+  // TODO - should previous and next return the same types?
   def previous(implicit request: Request[_]): Journey.Uri =
     formPages
       .zipWithIndex
