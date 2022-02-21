@@ -60,8 +60,8 @@ class BusinessEntityController @Inject()(
 
   import escActionBuilders._
   val eoriPrefix = "GB"
-  val ADD_MEMBER_EMAIL_BE = "addMemberEmailToBE"
-  val ADD_MEMBER_EMAIL_LEAD = "addMemberEmailToLead"
+  val AddMemberEmailToBusinessEntity = "addMemberEmailToBE"
+  val AddMemberEmailToLead = "addMemberEmailToLead"
 
 
   def getAddBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
@@ -203,8 +203,8 @@ class BusinessEntityController @Inject()(
       _ <- escService.addMember(undertakingRef, businessEntity)
       emailAddressBE <- retrieveEmailService.retrieveEmailByEORI(eoriBE).map(_.getOrElse(handleMissingSessionData(" BE Email Address")))
       emailAddressLead <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(handleMissingSessionData("Lead Email Address")))
-      templateIdBE = TemplateHelpers.getTemplateId(configuration, ADD_MEMBER_EMAIL_BE)
-      templateIdLead = TemplateHelpers.getTemplateId(configuration, ADD_MEMBER_EMAIL_LEAD)
+      templateIdBE = TemplateHelpers.getTemplateId(configuration, AddMemberEmailToBusinessEntity)
+      templateIdLead = TemplateHelpers.getTemplateId(configuration, AddMemberEmailToLead)
       emailParametersBE = SingleEORIEmailParameter(eoriBE, undertaking.name, undertakingRef,  "Email to BE for being added as a member")
       emailParametersLead = DoubleEORIEmailParameter(eori, eoriBE,  undertaking.name, undertakingRef,  "Email to Lead  for adding a new member")
       redirect <- sendEmailAndRedirect(emailAddressBE, emailParametersBE, templateIdBE, emailAddressLead, emailParametersLead, templateIdLead, businessEntityJourney)

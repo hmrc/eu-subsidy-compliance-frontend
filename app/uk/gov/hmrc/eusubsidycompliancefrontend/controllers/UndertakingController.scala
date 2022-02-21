@@ -31,6 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValue
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, JourneyTraverseService, RetrieveEmailService, SendEmailService, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TemplateHelpers
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import java.util.Locale
@@ -59,8 +60,7 @@ class UndertakingController @Inject()(
   BaseController(mcc) {
 
   import escActionBuilders._
-
-  private val EmailTemplateConfigKey = "email-send.create-undertaking-template"
+   val CreateUndertaking = "createUndertaking"
 
   def firstEmptyPage: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -223,8 +223,7 @@ class UndertakingController @Inject()(
   )(implicit request: EscAuthRequest[_]): Future[Result] = {
     for {
       ref <- escService.createUndertaking(undertaking)
-      lang <- getLanguage
-      templateId = getEmailTemplateId(lang)
+      templateId = TemplateHelpers.getTemplateId(configuration, CreateUndertaking)
       emailParameters = SingleEORIEmailParameter(eori, undertaking.name, ref,  "undertaking Created by Lead EORI")
       emailAddress <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(sys.error("Email won't be send as email address is not present")))
     } yield {
@@ -233,14 +232,6 @@ class UndertakingController @Inject()(
     }
   }
 
-  private def getLanguage(implicit authenticatedRequest: EscAuthRequest[_]): Future[Language] =
-    authenticatedRequest.request.messages.lang.code.toLowerCase(Locale.UK) match {
-      case English.code => English.toFuture
-      case Welsh.code   => Welsh.toFuture
-      case other        => sys.error(s"Found unsupported language code $other")
-    }
-
-  private def getEmailTemplateId(lang: Language) = configuration.get[String](s"$EmailTemplateConfigKey-${lang.code}")
 
   def getConfirmation(ref: String, name: String): Action[AnyContent] = escAuthentication.async { implicit request =>
     Ok(confirmationPage(UndertakingRef(ref), UndertakingName(name))).toFuture
