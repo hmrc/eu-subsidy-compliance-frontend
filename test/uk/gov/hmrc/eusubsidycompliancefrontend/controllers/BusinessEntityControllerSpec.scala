@@ -17,17 +17,25 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import com.typesafe.config.ConfigFactory
+import play.api.Configuration
 import play.api.inject.bind
+import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityControllerSpec.CheckYourAnswersRowBE
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.English
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIEmailParameter, SingleEORIEmailParameter}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, FormPage, JourneyTraverseService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, FormPage, JourneyTraverseService, RetrieveEmailService, SendEmailService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData.{undertaking, _}
 
+import java.time.LocalDate
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
 
@@ -35,7 +43,9 @@ class BusinessEntityControllerSpec  extends ControllerSpec
   with AuthSupport
   with JourneyStoreSupport
   with AuthAndSessionDataBehaviour
-  with JourneySupport {
+  with JourneySupport
+  with RetrieveEmailSupport
+  with SendEmailSupport  {
 
   val mockEscService = mock[EscService]
 
@@ -43,13 +53,31 @@ class BusinessEntityControllerSpec  extends ControllerSpec
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
-    bind[JourneyTraverseService].toInstance(mockJourneyTraverseService)
+    bind[JourneyTraverseService].toInstance(mockJourneyTraverseService),
+    bind[RetrieveEmailService].toInstance(mockRetrieveEmailService),
+    bind[SendEmailService].toInstance(mockSendEmailService)
+  )
+
+  override def additionalConfig = super.additionalConfig.withFallback(
+    Configuration(
+      ConfigFactory.parseString(s"""
+                                   |
+                                   |play.i18n.langs = ["en", "cy", "fr"]
+                                   | email-send {
+                                   |     add-member-to-be-template-en = "template_add_be_EN"
+                                   |     add-member-to-be-template-cy = "template_add__be_CY"
+                                   |     add-member-to-lead-template-en = "template_add_lead_EN"
+                                   |     add-member-to-lead-template-cy = "template_add_lead_CY"
+                                   |  }
+                                   |""".stripMargin)
+    )
   )
 
 
   val controller = instanceOf[BusinessEntityController]
 
   val invalidEOris = List("GB1234567890", "AB1234567890", "GB1234567890123")
+  val currentDate = LocalDate.of(2022, 10,9)
 
   val contact = List(contactDetails.phone, contactDetails.mobile).flatten.mkString(" ")
 
@@ -628,9 +656,10 @@ class BusinessEntityControllerSpec  extends ControllerSpec
     }
 
     "handling request to post check yor answers" must {
-      def performAction(data: (String, String)*) = controller
+      def performAction(data: (String, String)*)(lang: String) = controller
         .postCheckYourAnswers(
           FakeRequest("POST",routes.BusinessEntityController.getCheckYourAnswers().url)
+            .withCookies(Cookie("PLAY_LANG", lang))
             .withFormUrlEncodedBody(data: _*))
 
       "throw technical error" when {
@@ -641,7 +670,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Left(Error(exception)))
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")))
+          assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
         }
 
         "call to get undertaking returns nothing" in {
@@ -649,7 +678,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(None))
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")))
+          assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
         }
 
         "call to get undertaking return undertaking without undertaking ref" in {
@@ -657,7 +686,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.copy(reference = None).some))
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")))
+          assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
         }
 
         "call to get business entity fails" in {
@@ -666,7 +695,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Left(Error(exception)))
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")))
+          assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
         }
 
         "call to get business entity returns nothing" in {
@@ -675,7 +704,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(None))
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")))
+          assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
         }
 
         "call to get business entity  return  without EORI" in {
@@ -684,7 +713,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.copy(eori = FormPage("add-business-entity-eori", None)).some))
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")))
+          assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
         }
 
         "call to get business entity  return  without contact Details" in {
@@ -693,7 +722,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.copy(contact = FormPage("add-business-entity-contact", None)).some))
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")))
+          assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
         }
 
         "call to add member to BE undertaking fails" in {
@@ -705,35 +734,123 @@ class BusinessEntityControllerSpec  extends ControllerSpec
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
             mockAddMember(undertakingRef, businessEntity)(Left(Error(exception)))
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")))
+          assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
         }
 
-        "call to reset business entity journey fails" in {
-          val businessEntity = BusinessEntity(eori2, leadEORI = false, contactDetails.some)
+        "call to retrieve email for BE EORI fails" in {
+
+          val businessEntity = BusinessEntity(eori2, false, contactDetails.some)
           inSequence{
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
-            mockPut[BusinessEntityJourney](BusinessEntityJourney(), eori1)(Left(Error(exception)))
+            mockRetrieveEmail(eori2)(Left(Error(exception)))
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")))
+
+          assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
+        }
+
+        "call to retrieve email for BE EORI returns None" in {
+
+          val businessEntity = BusinessEntity(eori2, false, contactDetails.some)
+          inSequence{
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
+            mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
+            mockRetrieveEmail(eori2)(Right(None))
+          }
+          assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
+        }
+
+        "call to retrieve email for lead EORI fails" in {
+
+          val businessEntity = BusinessEntity(eori2, false, contactDetails.some)
+          inSequence{
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
+            mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
+            mockRetrieveEmail(eori2)(Right(validEmailAddress.some))
+            mockRetrieveEmail(eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
+        }
+
+        "call to retrieve Lead EORI email address returns None" in {
+
+          val businessEntity = BusinessEntity(eori2, false, contactDetails.some)
+          inSequence{
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
+            mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
+            mockRetrieveEmail(eori2)(Right(validEmailAddress.some))
+            mockRetrieveEmail(eori1)(Right(None))
+          }
+          assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
+        }
+
+        "language is other than english /welsh" in {
+          val businessEntity = BusinessEntity(eori2, false, contactDetails.some)
+          inSequence{
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
+            mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
+          }
+          assertThrows[Exception](await(performAction("cya" -> "true")("fr")))
         }
 
       }
 
-      "redirects to add business entity page" when {
+      "redirects to next page" when {
 
         def testRedirection(businessEntityJourney: BusinessEntityJourney, nextCall: String, resettedBusinessJourney: BusinessEntityJourney) = {
           val businessEntity = BusinessEntity(eori2, leadEORI = false, contactDetails.some)
+          val emailParametersBE =  SingleEORIEmailParameter(eori2, undertaking.name, undertakingRef,  "Email to BE for being added as a member")
+          val emailParametersLead =  DoubleEORIEmailParameter(eori1, eori2, undertaking.name, undertakingRef,  "Email to Lead  for adding a new member")
           inSequence{
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
+            mockRetrieveEmail(eori2)(Right(validEmailAddress.some))
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
+            mockSendEmail(validEmailAddress, emailParametersBE, "template_add_be_EN")(Right(EmailSendResult.EmailSent))
+            mockSendEmail(validEmailAddress, emailParametersLead, "template_add_lead_EN")(Right(EmailSendResult.EmailSent))
             mockPut[BusinessEntityJourney](resettedBusinessJourney, eori1)(Right(BusinessEntityJourney()))
           }
-          checkIsRedirect(performAction("cya" -> "true"), nextCall)
+          checkIsRedirect(performAction("cya" -> "true")(English.code), nextCall)
+        }
+
+        def testRedirectionLang(lang: String, templateIdBE: String, templateIdLead: String) = {
+
+          val emailParametersBE =  SingleEORIEmailParameter(eori2, undertaking.name, undertakingRef,  "Email to BE for being added as a member")
+          val emailParametersLead =  DoubleEORIEmailParameter(eori1, eori2, undertaking.name, undertakingRef,  "Email to Lead  for adding a new member")
+
+          val businessEntity = BusinessEntity(eori2, false, contactDetails.some)
+          inSequence{
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
+            mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
+            mockRetrieveEmail(eori2)(Right(validEmailAddress.some))
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
+            mockSendEmail(validEmailAddress, emailParametersBE, templateIdBE)(Right(EmailSendResult.EmailSent))
+            mockSendEmail(validEmailAddress, emailParametersLead, templateIdLead)(Right(EmailSendResult.EmailSent))
+            mockPut[BusinessEntityJourney](BusinessEntityJourney(), eori1)(Right(BusinessEntityJourney()))
+          }
+          checkIsRedirect(performAction("cya" -> "true")(lang), routes.BusinessEntityController.getAddBusinessEntity().url)
+        }
+
+        "all api calls are successful and English language is selected" in {
+          testRedirectionLang(Language.English.code, "template_add_be_EN", "template_add_lead_EN")
+        }
+
+        "all api calls are successful and Welsh language is selected" in {
+          testRedirectionLang(Language.Welsh.code, "template_add__be_CY", "template_add_lead_CY")
         }
 
         "all api calls are successful and is Select lead journey " in {

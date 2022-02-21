@@ -17,16 +17,21 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
+import play.api.Configuration
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIEmailParameter, SingleEORIEmailParameter}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, FormValues, OneOf, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, EmailAddress, FormValues, OneOf, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, JourneyTraverseService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, JourneyTraverseService, RetrieveEmailService, SendEmailService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.{TemplateHelpers}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,6 +43,9 @@ class BusinessEntityController @Inject()(
   store: Store,
   escService: EscService,
   journeyTraverseService: JourneyTraverseService,
+  retrieveEmailService: RetrieveEmailService,
+  sendEmailService: SendEmailService,
+  configuration: Configuration,
   addBusinessPage: AddBusinessPage,
   eoriPage: BusinessEntityEoriPage,
   removeYourselfBEPage: BusinessEntityRemoveYourselfPage,
@@ -52,6 +60,9 @@ class BusinessEntityController @Inject()(
 
   import escActionBuilders._
   val eoriPrefix = "GB"
+  val AddMemberEmailToBusinessEntity = "addMemberEmailToBE"
+  val AddMemberEmailToLead = "addMemberEmailToLead"
+
 
   def getAddBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -131,7 +142,7 @@ class BusinessEntityController @Inject()(
     journeyTraverseService.getPrevious[BusinessEntityJourney].flatMap { previous =>
       eoriForm.bindFromRequest().fold(
         errors => Future.successful(BadRequest(eoriPage(errors, previous))),
-        form => (handleValidEori(form, previous)).flatten
+        form => handleValidEori(form, previous).flatten
       )
     }
   }
@@ -190,7 +201,13 @@ class BusinessEntityController @Inject()(
         leadEORI = false,
         ContactDetails(contactDetails.phone, contactDetails.mobile).some) // resetting the journey as it's final CYA page
       _ <- escService.addMember(undertakingRef, businessEntity)
-      redirect <- getNext(businessEntityJourney)
+      emailAddressBE <- retrieveEmailService.retrieveEmailByEORI(eoriBE).map(_.getOrElse(handleMissingSessionData(" BE Email Address")))
+      emailAddressLead <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(handleMissingSessionData("Lead Email Address")))
+      templateIdBE = TemplateHelpers.getTemplateId(configuration, AddMemberEmailToBusinessEntity)
+      templateIdLead = TemplateHelpers.getTemplateId(configuration, AddMemberEmailToLead)
+      emailParametersBE = SingleEORIEmailParameter(eoriBE, undertaking.name, undertakingRef,  "Email to BE for being added as a member")
+      emailParametersLead = DoubleEORIEmailParameter(eori, eoriBE,  undertaking.name, undertakingRef,  "Email to Lead  for adding a new member")
+      redirect <- sendEmailAndRedirect(emailAddressBE, emailParametersBE, templateIdBE, emailAddressLead, emailParametersLead, templateIdLead, businessEntityJourney)
     } yield redirect
 
     cyaForm.bindFromRequest().fold(
@@ -305,6 +322,19 @@ class BusinessEntityController @Inject()(
         .map(_ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
     }
   }
+
+  private def sendEmailAndRedirect(emailAddressBE: EmailAddress,
+                                   emailParametersBE: EmailParameters,
+  templateIdBE: String,
+  emailAddressLead: EmailAddress,
+  emailParametersLead: EmailParameters,
+  templateIdLead: String,
+  businessEntityJourney: BusinessEntityJourney)(implicit hc: HeaderCarrier, eori: EORI): Future[Result] = {
+    sendEmailService.sendEmail(emailAddressBE, emailParametersBE, templateIdBE)
+    sendEmailService.sendEmail(emailAddressLead, emailParametersLead, templateIdLead)
+    getNext(businessEntityJourney)(eori)
+  }
+
 
 
   lazy val addBusinessForm: Form[FormValues] = Form(
