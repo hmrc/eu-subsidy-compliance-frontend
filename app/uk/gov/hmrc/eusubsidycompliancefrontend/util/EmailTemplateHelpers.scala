@@ -25,14 +25,16 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 
 import java.util.Locale
 
-object TemplateHelpers {
+object EmailTemplateHelpers {
 
   private def templateIdsMap(config: Configuration, langCode: String) =  Map(
-    s"createUndertaking$langCode" -> config.get[String](s"email-send.create-undertaking-template-$langCode"),
-    s"addMemberEmailToBE$langCode" -> config.get[String](s"email-send.add-member-to-be-template-$langCode"),
-    s"addMemberEmailToLead$langCode" -> config.get[String](s"email-send.add-member-to-lead-template-$langCode"),
-    s"removeMemberEmailToBE$langCode" -> config.get[String](s"email-send.remove-member-to-be-template-$langCode"),
-    s"removeMemberEmailToLead$langCode" -> config.get[String](s"email-send.remove-member-to-lead-template-$langCode")
+    s"createUndertaking" -> config.get[String](s"email-send.create-undertaking-template-$langCode"),
+    s"addMemberEmailToBE" -> config.get[String](s"email-send.add-member-to-be-template-$langCode"),
+    s"addMemberEmailToLead" -> config.get[String](s"email-send.add-member-to-lead-template-$langCode"),
+    s"removeMemberEmailToBE" -> config.get[String](s"email-send.remove-member-to-be-template-$langCode"),
+    s"removeMemberEmailToLead" -> config.get[String](s"email-send.remove-member-to-lead-template-$langCode"),
+    s"promoteAsLeadEmailToBE" -> config.get[String](s"email-send.promote-other-as-lead-to-be-template-$langCode"),
+    s"promoteAsLeadEmailToLead" -> config.get[String](s"email-send.promote-other-as-lead-to-lead-template-$langCode")
   )
 
 
@@ -43,11 +45,10 @@ object TemplateHelpers {
       case other        => sys.error(s"Found unsupported language code $other")
     }
 
-  def getTemplateId(configuration: Configuration, inputKey: String
+  def getEmailTemplateId(configuration: Configuration, inputKey: String
                    )(implicit request: EscAuthRequest[_], messagesApi: MessagesApi) = {
     val lang = getLanguage
-    val mapKey = s"$inputKey${lang.code}"
-    templateIdsMap(configuration, lang.code).get(mapKey).getOrElse(s"no template for $mapKey")
+    templateIdsMap(configuration, lang.code).get(inputKey).getOrElse(s"no template for $inputKey")
   }
 
 

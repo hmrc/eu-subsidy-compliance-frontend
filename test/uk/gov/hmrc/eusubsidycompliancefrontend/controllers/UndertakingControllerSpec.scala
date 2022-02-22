@@ -545,7 +545,6 @@ class UndertakingControllerSpec extends ControllerSpec
 
     }
 
-
     "handling post request to Check your Answers call" must {
 
       def performAction(data: (String, String)*)(lang: String) =

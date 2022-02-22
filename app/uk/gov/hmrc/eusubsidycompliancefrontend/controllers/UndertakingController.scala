@@ -23,16 +23,14 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TemplateHelpers
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.EmailTemplateHelpers
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
-import java.util.Locale
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -220,7 +218,7 @@ class UndertakingController @Inject()(
   )(implicit request: EscAuthRequest[_]): Future[Result] = {
     for {
       ref <- escService.createUndertaking(undertaking)
-      templateId = TemplateHelpers.getTemplateId(configuration, CreateUndertaking)
+      templateId = EmailTemplateHelpers.getEmailTemplateId(configuration, CreateUndertaking)
       emailParameters = SingleEORIEmailParameter(eori, undertaking.name, ref,  "undertaking Created by Lead EORI")
       emailAddress <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(sys.error("Email won't be send as email address is not present")))
     } yield {

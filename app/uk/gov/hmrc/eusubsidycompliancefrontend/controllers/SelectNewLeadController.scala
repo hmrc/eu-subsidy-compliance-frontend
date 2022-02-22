@@ -17,14 +17,17 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import play.api.Configuration
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIEmailParameter, SingleEORIEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, NewLeadJourney, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, NewLeadJourney, RetrieveEmailService, SendEmailService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.EmailTemplateHelpers
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.Inject
@@ -35,11 +38,17 @@ class SelectNewLeadController @Inject()(
      escActionBuilders: EscActionBuilders,
      escService: EscService,
      store: Store,
+     retrieveEmailService: RetrieveEmailService,
+     sendEmailService: SendEmailService,
+     configuration: Configuration,
      selectNewLeadPage: SelectNewLeadPage,
      leadEORIChangedPage: LeadEORIChangedPage
 )( implicit val appConfig: AppConfig, executionContext: ExecutionContext) extends BaseController(mcc) {
 
   import escActionBuilders._
+
+  val promoteOtherAsLeadEmailToBusinessEntity = "promoteAsLeadEmailToBE"
+  val promoteOtherAsLeadEmailToLead = "promoteAsLeadEmailToLead"
 
   def getSelectNewLead: Action[AnyContent] = escAuthentication.async { implicit request =>
     val previous = routes.AccountController.getAccountPage().url
@@ -72,12 +81,27 @@ class SelectNewLeadController @Inject()(
           selectNewLeadForm.bindFromRequest().fold(
             errors => Future.successful(BadRequest(selectNewLeadPage(errors, previous, undertaking.name, undertaking.getAllNonLeadEORIs()))),
             form => {
-              store.update[NewLeadJourney] {
-                _.map { newLeadJourney =>
-                  val updatedLead = newLeadJourney.selectNewLead.copy(value = EORI(form.value).some)
-                  newLeadJourney.copy(selectNewLead = updatedLead)
+              val eoriBE = EORI(form.value)
+              val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking Ref"))
+              for {
+                _ <-  store.update[NewLeadJourney] {
+                  _.map { newLeadJourney =>
+                    val updatedLead = newLeadJourney.selectNewLead.copy(value = eoriBE.some)
+                    newLeadJourney.copy(selectNewLead = updatedLead)
+                  }
                 }
-              }.map(_ => Redirect(routes.SelectNewLeadController.getLeadEORIChanged()))
+                emailAddressBE <- retrieveEmailService.retrieveEmailByEORI(eoriBE).map(_.getOrElse(handleMissingSessionData(" BE Email Address")))
+                emailAddressLead <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(handleMissingSessionData("Lead Email Address")))
+                templateIdBE = EmailTemplateHelpers.getEmailTemplateId(configuration, promoteOtherAsLeadEmailToBusinessEntity)
+                templateIdLead = EmailTemplateHelpers.getEmailTemplateId(configuration, promoteOtherAsLeadEmailToLead)
+                emailParametersBE = SingleEORIEmailParameter(eoriBE, undertaking.name, undertakingRef,  "Email to BE for being promoted  as a Lead")
+                emailParametersLead = DoubleEORIEmailParameter(eori, eoriBE,  undertaking.name, undertakingRef,  "Email to Lead confirming they have assigned other Business Entity as lead")
+
+              } yield {
+                sendEmailService.sendEmail(emailAddressBE, emailParametersBE, templateIdBE)
+                sendEmailService.sendEmail(emailAddressLead, emailParametersLead, templateIdLead)
+                Redirect(routes.SelectNewLeadController.getLeadEORIChanged())
+              }
 
             }
           )
