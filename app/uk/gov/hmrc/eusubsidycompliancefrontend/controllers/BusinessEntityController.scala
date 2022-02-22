@@ -342,8 +342,9 @@ class BusinessEntityController @Inject()(
     }
   }
 
-  private def sendEmailAndRedirect(emailAddressBE: EmailAddress,
-                                   emailParametersBE: EmailParameters,
+  private def sendEmailAndRedirect(
+  emailAddressBE: EmailAddress,
+  emailParametersBE: EmailParameters,
   templateIdBE: String,
   emailAddressLead: EmailAddress,
   emailParametersLead: EmailParameters,
