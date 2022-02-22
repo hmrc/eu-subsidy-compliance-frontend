@@ -26,7 +26,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import java.time.{LocalDate, ZoneId}
 import javax.inject.Inject
 import scala.util.Try
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax._
 
 import java.time.format.DateTimeFormatter
 
@@ -44,61 +43,61 @@ class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormPr
     { v: (String, String, String) => v }
   )
   .verifying(
-    "error.date.emptyfields",
+    messageKeyForError("date.emptyfields"),
     _ match {
       case ("", "", "") => false
       case _ => true
     })
   .verifying(
-    "error.date.invalidentry",
+    messageKeyForError("date.invalidentry"),
     _ match {
       case (d, m, y) => Try(s"$d$m$y".toInt).isSuccess
       case _ => false
     })
   .verifying(
-    "error.day.missing",
+    messageKeyForError("day.missing"),
     _ match {
       case ("", _, _) => false
       case _ => true
     })
   .verifying(
-    "error.month.missing",
+    messageKeyForError("month.missing"),
     _ match {
       case (_, "", _) => false
       case _ => true
     })
   .verifying(
-    "error.year.missing",
+    messageKeyForError("year.missing"),
     _ match {
       case (_, _, "") => false
       case _ => true
     })
   .verifying(
-    "error.day-and-month.missing",
+    messageKeyForError("day-and-month.missing"),
     _ match {
       case ("", "", _) => false
       case _ => true
     })
   .verifying(
-    "error.month-and-year.missing",
+    messageKeyForError("month-and-year.missing"),
     _ match {
       case (_, "", "") => false
       case _ => true
     })
   .verifying(
-    "error.day-and-year.missing",
+    messageKeyForError("day-and-year.missing"),
     _ match {
       case ("", _, "") => false
       case _ => true
     })
   .verifying(
-    "error.date.invalid",
+    messageKeyForError("date.invalid"),
     _ match {
       case (d: String, m: String, y: String) => localDateFromValues(d, m, y).isSuccess
       case _ => true
     })
   .verifying(
-    "error.date.in-future",
+    messageKeyForError("date.in-future"),
     _ match {
       case (d: String, m: String, y: String) => localDateFromValues(d, m, y).map { d =>
         val today = timeProvider.today(ZoneId.of("Europe/London"))
@@ -112,7 +111,7 @@ class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormPr
         if (parsedDate.isBefore(earliestAllowedDate)) {
           Invalid(Seq(
             ValidationError(
-              "error.date.outside-allowed-tax-year-range",
+              messageKeyForError("date.outside-allowed-tax-year-range"),
               earliestAllowedDate.format(DateTimeFormatter.ofPattern("dd MM yyyy"))
             )))
         }
@@ -123,6 +122,8 @@ class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormPr
     { case (d, m, y) => DateFormValues(d,m,y) },
     d => (d.day, d.month, d.year)
   )
+
+  private def messageKeyForError(error: String) = s"add-claim-date.error.$error"
 
   // TODO - this should live on DateValues maybe?
   private def localDateFromValues(d: String, m: String, y: String) = Try(LocalDate.of(y.toInt, m.toInt, d.toInt))

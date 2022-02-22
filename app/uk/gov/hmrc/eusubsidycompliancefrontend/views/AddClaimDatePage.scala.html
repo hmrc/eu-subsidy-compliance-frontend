@@ -58,8 +58,8 @@
           ErrorSummary(
               Seq(
               ErrorLink(
-                  href = Some(s"#${deriveErrorKey("add-claim-date" + error.message)}"),
-                  content = Text(s"${messages("add-claim-date." + error.message, error.args:_*)}"),
+                  href = Some(s"#${deriveErrorKey(error.message)}"),
+                  content = Text(s"${messages(error.message, error.args:_*)}"),
                   attributes = Map("class" ->"govuk-link")
               )
               ),
@@ -73,7 +73,7 @@
     @govukDateInput(DateInput(
       id = "claim-date",
       errorMessage = if (form.hasErrors) {
-        Some(ErrorMessage(content = Text(messages("add-claim-date." + form.errors.head.message, form.errors.head.args:_*))))
+        Some(ErrorMessage(content = Text(messages(form.errors.head.message, form.errors.head.args:_*))))
       } else None,
       items = Seq(
         InputItem(
