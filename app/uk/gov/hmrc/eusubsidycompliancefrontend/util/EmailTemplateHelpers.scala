@@ -28,6 +28,7 @@ import java.util.Locale
 object EmailTemplateHelpers {
 
   private def templateIdsMap(config: Configuration, langCode: String) =  Map(
+
     s"createUndertaking" -> config.get[String](s"email-send.create-undertaking-template-$langCode"),
     s"addMemberEmailToBE" -> config.get[String](s"email-send.add-member-to-be-template-$langCode"),
     s"addMemberEmailToLead" -> config.get[String](s"email-send.add-member-to-lead-template-$langCode"),
