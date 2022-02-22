@@ -20,23 +20,15 @@ import play.api.Configuration
 import play.api.i18n.I18nSupport.RequestWithMessagesApi
 import play.api.i18n.MessagesApi
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 
 import java.util.Locale
+import javax.inject.{Inject, Singleton}
 
-object EmailTemplateHelpers {
-
-  private def templateIdsMap(config: Configuration, langCode: String) =  Map(
-    s"createUndertaking" -> config.get[String](s"email-send.create-undertaking-template-$langCode"),
-    s"addMemberEmailToBE" -> config.get[String](s"email-send.add-member-to-be-template-$langCode"),
-    s"addMemberEmailToLead" -> config.get[String](s"email-send.add-member-to-lead-template-$langCode"),
-    s"removeMemberEmailToBE" -> config.get[String](s"email-send.remove-member-to-be-template-$langCode"),
-    s"removeMemberEmailToLead" -> config.get[String](s"email-send.remove-member-to-lead-template-$langCode"),
-    s"promoteAsLeadEmailToBE" -> config.get[String](s"email-send.promote-other-as-lead-to-be-template-$langCode"),
-    s"promoteAsLeadEmailToLead" -> config.get[String](s"email-send.promote-other-as-lead-to-lead-template-$langCode")
-  )
-
+@Singleton
+class EmailTemplateHelpers @Inject()(appConfig: AppConfig) {
 
   private def getLanguage(implicit request: EscAuthRequest[_], messagesApi: MessagesApi): Language =
     request.request.messages(messagesApi).lang.code.toLowerCase(Locale.UK) match {
@@ -48,7 +40,7 @@ object EmailTemplateHelpers {
   def getEmailTemplateId(configuration: Configuration, inputKey: String
                    )(implicit request: EscAuthRequest[_], messagesApi: MessagesApi) = {
     val lang = getLanguage
-    templateIdsMap(configuration, lang.code).get(inputKey).getOrElse(s"no template for $inputKey")
+    appConfig.templateIdsMap(configuration, lang.code).get(inputKey).getOrElse(s"no template for $inputKey")
   }
 
 

@@ -38,6 +38,7 @@ class SelectNewLeadController @Inject()(
      escActionBuilders: EscActionBuilders,
      escService: EscService,
      store: Store,
+     emailTemplateHelpers: EmailTemplateHelpers,
      retrieveEmailService: RetrieveEmailService,
      sendEmailService: SendEmailService,
      configuration: Configuration,
@@ -92,8 +93,8 @@ class SelectNewLeadController @Inject()(
                 }
                 emailAddressBE <- retrieveEmailService.retrieveEmailByEORI(eoriBE).map(_.getOrElse(handleMissingSessionData(" BE Email Address")))
                 emailAddressLead <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(handleMissingSessionData("Lead Email Address")))
-                templateIdBE = EmailTemplateHelpers.getEmailTemplateId(configuration, promoteOtherAsLeadEmailToBusinessEntity)
-                templateIdLead = EmailTemplateHelpers.getEmailTemplateId(configuration, promoteOtherAsLeadEmailToLead)
+                templateIdBE = emailTemplateHelpers.getEmailTemplateId(configuration, promoteOtherAsLeadEmailToBusinessEntity)
+                templateIdLead = emailTemplateHelpers.getEmailTemplateId(configuration, promoteOtherAsLeadEmailToLead)
                 emailParametersBE = SingleEORIEmailParameter(eoriBE, undertaking.name, undertakingRef,  "Email to BE for being promoted  as a Lead")
                 emailParametersLead = DoubleEORIEmailParameter(eori, eoriBE,  undertaking.name, undertakingRef,  "Email to Lead confirming they have assigned other Business Entity as lead")
 

@@ -20,10 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 
 @Singleton
-class AppConfig @Inject()
-  (
-    config: Configuration
-  ) {
+class AppConfig @Inject()(config: Configuration) {
   val welshLanguageSupportEnabled: Boolean = config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
 
   val ggSignInUrl:        String = config.get[String](s"urls.ggSignInUrl")
@@ -32,4 +29,16 @@ class AppConfig @Inject()
 
   val betaFeedbackUrlNoAuth: String = "TODO" // TODO
   lazy val sessionTimeout = config.get[String]("application.session.maxAge")
+
+  def templateIdsMap(config: Configuration, langCode: String) =  Map(
+    "createUndertaking" -> config.get[String](s"email-send.create-undertaking-template-$langCode"),
+    "addMemberEmailToBE" -> config.get[String](s"email-send.add-member-to-be-template-$langCode"),
+    "addMemberEmailToLead" -> config.get[String](s"email-send.add-member-to-lead-template-$langCode"),
+    "removeMemberEmailToBE" -> config.get[String](s"email-send.remove-member-to-be-template-$langCode"),
+    "removeMemberEmailToLead" -> config.get[String](s"email-send.remove-member-to-lead-template-$langCode"),
+    "promoteAsLeadEmailToBE" -> config.get[String](s"email-send.promote-other-as-lead-to-be-template-$langCode"),
+    "promoteAsLeadEmailToLead" -> config.get[String](s"email-send.promote-other-as-lead-to-lead-template-$langCode"),
+    "removeThemselfEmailToBE" -> config.get[String](s"email-send.member-remove-themself-email-to-be-template-$langCode"),
+    "removeThemselfEmailToLead" -> config.get[String](s"email-send.member-remove-themself-email-to-lead-template-$langCode")
+  )
 }

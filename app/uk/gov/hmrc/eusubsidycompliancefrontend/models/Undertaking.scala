@@ -55,6 +55,12 @@ object Undertaking {
     }
 
     def getAllNonLeadEORIs(): List[EORI] = undertaking.undertakingBusinessEntity.filter(!_.leadEORI).map(_.businessEntityIdentifier)
+
+    def getLeadEORI = undertaking.undertakingBusinessEntity
+      .filter(_.leadEORI)
+      .map(_.businessEntityIdentifier)
+      .headOption
+      .getOrElse(throw new IllegalStateException(s"Lead EORI is missing"))
   }
 
 }
