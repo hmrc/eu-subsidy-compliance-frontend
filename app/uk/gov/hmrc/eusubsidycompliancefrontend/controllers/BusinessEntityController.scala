@@ -310,19 +310,6 @@ class BusinessEntityController @Inject()(
                       nextCall = routes.BusinessEntityController.getAddBusinessEntity()
                     )
                   )
-//                for {
-//                  _ <- escService.removeMember(undertakingRef, removeBE)
-//                  emailAddressBE <- retrieveEmailService.retrieveEmailByEORI(removeBE.businessEntityIdentifier).map(_.getOrElse(handleMissingSessionData("Business entity Email")))
-//                  emailAddressLead <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(handleMissingSessionData("Lead EORI Email Address")))
-//                  templateIdBE = emailTemplateHelpers.getEmailTemplateId(configuration, RemoveMemberEmailToBusinessEntity)
-//                  templateIdLead = emailTemplateHelpers.getEmailTemplateId(configuration, RemoveMemberEmailToLead)
-//                  emailParametersBE = SingleEORIAndDateEmailParameter(removeBE.businessEntityIdentifier, undertaking.name, undertakingRef, removalEffectiveDateString,  "Email to BE for being removed as a member")
-//                  emailParametersLead = DoubleEORIAndDateEmailParameter(eori, removeBE.businessEntityIdentifier,  undertaking.name, undertakingRef, removalEffectiveDateString, "Email to Lead  for removing a new member")
-//                } yield {
-//                  sendEmailService.sendEmail(emailAddressBE, emailParametersBE, templateIdBE)
-//                  sendEmailService.sendEmail(emailAddressLead, emailParametersLead, templateIdLead)
-//                  Redirect(routes.BusinessEntityController.getAddBusinessEntity())
-//                }
 
               case _ => Future(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
             }

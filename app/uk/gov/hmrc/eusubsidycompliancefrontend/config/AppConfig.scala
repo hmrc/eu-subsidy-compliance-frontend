@@ -31,14 +31,14 @@ class AppConfig @Inject()(config: Configuration) {
   lazy val sessionTimeout = config.get[String]("application.session.maxAge")
 
   def templateIdsMap(config: Configuration, langCode: String) =  Map(
-    s"createUndertaking" -> config.get[String](s"email-send.create-undertaking-template-$langCode"),
-    s"addMemberEmailToBE" -> config.get[String](s"email-send.add-member-to-be-template-$langCode"),
-    s"addMemberEmailToLead" -> config.get[String](s"email-send.add-member-to-lead-template-$langCode"),
-    s"removeMemberEmailToBE" -> config.get[String](s"email-send.remove-member-to-be-template-$langCode"),
-    s"removeMemberEmailToLead" -> config.get[String](s"email-send.remove-member-to-lead-template-$langCode"),
-    s"promoteAsLeadEmailToBE" -> config.get[String](s"email-send.promote-other-as-lead-to-be-template-$langCode"),
-    s"promoteAsLeadEmailToLead" -> config.get[String](s"email-send.promote-other-as-lead-to-lead-template-$langCode"),
-    s"removeThemselfEmailToBE" -> config.get[String](s"email-send.member-remove-themself-email-to-be-template-$langCode"),
-    s"removeThemselfEmailToLead" -> config.get[String](s"email-send.member-remove-themself-email-to-lead-template-$langCode")
+    "createUndertaking" -> config.get[String](s"email-send.create-undertaking-template-$langCode"),
+    "addMemberEmailToBE" -> config.get[String](s"email-send.add-member-to-be-template-$langCode"),
+    "addMemberEmailToLead" -> config.get[String](s"email-send.add-member-to-lead-template-$langCode"),
+    "removeMemberEmailToBE" -> config.get[String](s"email-send.remove-member-to-be-template-$langCode"),
+    "removeMemberEmailToLead" -> config.get[String](s"email-send.remove-member-to-lead-template-$langCode"),
+    "promoteAsLeadEmailToBE" -> config.get[String](s"email-send.promote-other-as-lead-to-be-template-$langCode"),
+    "promoteAsLeadEmailToLead" -> config.get[String](s"email-send.promote-other-as-lead-to-lead-template-$langCode"),
+    "removeThemselfEmailToBE" -> config.get[String](s"email-send.member-remove-themself-email-to-be-template-$langCode"),
+    "removeThemselfEmailToLead" -> config.get[String](s"email-send.member-remove-themself-email-to-lead-template-$langCode")
   )
 }
