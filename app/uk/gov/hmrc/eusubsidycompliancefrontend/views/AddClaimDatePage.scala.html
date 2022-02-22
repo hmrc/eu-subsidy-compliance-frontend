@@ -70,36 +70,36 @@
 }
 
   @formHelper(action = controllers.routes.SubsidyController.postClaimDate()) {
-    @govukDateInput(DateInput(
-      id = "claim-date",
-      errorMessage = if (form.hasErrors) {
-        Some(ErrorMessage(content = Text(messages(form.errors.head.message, form.errors.head.args:_*))))
-      } else None,
-      items = Seq(
-        InputItem(
-          name = "day",
-          classes = s"govuk-input--width-2${if(inputHasErrors("day")){" govuk-input--error"} else {""}}",
-          value = form.data.get("day")
+    @defining(form.errors.headOption) { maybeError =>
+      @govukDateInput(DateInput(
+        id = "claim-date",
+        errorMessage = maybeError.map(e => ErrorMessage(content = Text(messages(e.message, e.args:_*)))),
+        items = Seq(
+          InputItem(
+            name = "day",
+            classes = s"govuk-input--width-2${if(inputHasErrors("day")){" govuk-input--error"} else {""}}",
+            value = form.data.get("day")
+          ),
+          InputItem(
+            name = "month",
+            classes = s"govuk-input--width-2${if(inputHasErrors("month")){" govuk-input--error"} else {""}}",
+            value = form.data.get("month")
+          ),
+          InputItem(
+            name = "year",
+            classes = s"govuk-input--width-4${if(inputHasErrors("year")){" govuk-input--error"} else {""}}",
+            value = form.data.get("year")
+          )
         ),
-        InputItem(
-          name = "month",
-          classes = s"govuk-input--width-2${if(inputHasErrors("month")){" govuk-input--error"} else {""}}",
-          value = form.data.get("month")
-        ),
-        InputItem(
-          name = "year",
-          classes = s"govuk-input--width-4${if(inputHasErrors("year")){" govuk-input--error"} else {""}}",
-          value = form.data.get("year")
-        )
-      ),
-      fieldset = Some(Fieldset(
-        legend = Some(Legend(
-          content = Text(messages("add-claim-date.title")),
-          classes = "govuk-fieldset__legend--xl",
-          isPageHeading = true
+        fieldset = Some(Fieldset(
+          legend = Some(Legend(
+            content = Text(messages("add-claim-date.title")),
+            classes = "govuk-fieldset__legend--xl",
+            isPageHeading = true
+          ))
         ))
       ))
-    ))
+    }
 
     @button("common.continue")
 
