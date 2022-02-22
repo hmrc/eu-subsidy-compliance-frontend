@@ -20,12 +20,13 @@ import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import play.api.Configuration
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, DoubleEORIEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, EmailAddress, FormValues, OneOf, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, JourneyTraverseService, RetrieveEmailService, SendEmailService, Store}
@@ -294,19 +295,34 @@ class BusinessEntityController @Inject()(
             form.value match {
               case "true" =>
                 val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today)
-                for {
-                  _ <- escService.removeMember(undertakingRef, removeBE)
-                  emailAddressBE <- retrieveEmailService.retrieveEmailByEORI(removeBE.businessEntityIdentifier).map(_.getOrElse(handleMissingSessionData("Business entity Email")))
-                  emailAddressLead <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(handleMissingSessionData("Lead EORI Email Address")))
-                  templateIdBE = emailTemplateHelpers.getEmailTemplateId(configuration, RemoveMemberEmailToBusinessEntity)
-                  templateIdLead = emailTemplateHelpers.getEmailTemplateId(configuration, RemoveMemberEmailToLead)
-                  emailParametersBE = SingleEORIAndDateEmailParameter(removeBE.businessEntityIdentifier, undertaking.name, undertakingRef, removalEffectiveDateString,  "Email to BE for being removed as a member")
-                  emailParametersLead = DoubleEORIAndDateEmailParameter(eori, removeBE.businessEntityIdentifier,  undertaking.name, undertakingRef, removalEffectiveDateString, "Email to Lead  for removing a new member")
-                } yield {
-                  sendEmailService.sendEmail(emailAddressBE, emailParametersBE, templateIdBE)
-                  sendEmailService.sendEmail(emailAddressLead, emailParametersLead, templateIdLead)
-                  Redirect(routes.BusinessEntityController.getAddBusinessEntity())
-                }
+                escService.removeMember(undertakingRef, removeBE)
+                  .flatMap(_ =>
+                    sendEmail(
+                      beEORI = EORI(eoriEntered),
+                      leadEORI = eori,
+                      templateIdParamBE = RemoveMemberEmailToBusinessEntity,
+                      templateIdParamLead = RemoveMemberEmailToLead,
+                      emailParamDescBE = "Email to BE for being removed as a member",
+                      emailParamDescLead = "Email to Lead  for removing a new member",
+                      undertaking = undertaking,
+                      undertakingRef = undertakingRef,
+                      removalEffectiveDateString = removalEffectiveDateString,
+                      nextCall = routes.BusinessEntityController.getAddBusinessEntity()
+                    )
+                  )
+//                for {
+//                  _ <- escService.removeMember(undertakingRef, removeBE)
+//                  emailAddressBE <- retrieveEmailService.retrieveEmailByEORI(removeBE.businessEntityIdentifier).map(_.getOrElse(handleMissingSessionData("Business entity Email")))
+//                  emailAddressLead <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(handleMissingSessionData("Lead EORI Email Address")))
+//                  templateIdBE = emailTemplateHelpers.getEmailTemplateId(configuration, RemoveMemberEmailToBusinessEntity)
+//                  templateIdLead = emailTemplateHelpers.getEmailTemplateId(configuration, RemoveMemberEmailToLead)
+//                  emailParametersBE = SingleEORIAndDateEmailParameter(removeBE.businessEntityIdentifier, undertaking.name, undertakingRef, removalEffectiveDateString,  "Email to BE for being removed as a member")
+//                  emailParametersLead = DoubleEORIAndDateEmailParameter(eori, removeBE.businessEntityIdentifier,  undertaking.name, undertakingRef, removalEffectiveDateString, "Email to Lead  for removing a new member")
+//                } yield {
+//                  sendEmailService.sendEmail(emailAddressBE, emailParametersBE, templateIdBE)
+//                  sendEmailService.sendEmail(emailAddressLead, emailParametersLead, templateIdLead)
+//                  Redirect(routes.BusinessEntityController.getAddBusinessEntity())
+//                }
 
               case _ => Future(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
             }
@@ -330,19 +346,21 @@ class BusinessEntityController @Inject()(
               case "true" =>
                 val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today)
                 val leadEORI = undertaking.getLeadEORI
-                for {
-                  _ <- escService.removeMember(undertakingRef, removeBE)
-                  emailAddressBE <- retrieveEmailService.retrieveEmailByEORI(loggedInEORI).map(_.getOrElse(handleMissingSessionData("Business entity Email")))
-                  emailAddressLead <- retrieveEmailService.retrieveEmailByEORI(leadEORI).map(_.getOrElse(handleMissingSessionData("Lead EORI Email Address")))
-                  templateIdBE = emailTemplateHelpers.getEmailTemplateId(configuration, RemoveThemselfEmailToBusinessEntity)
-                  templateIdLead = emailTemplateHelpers.getEmailTemplateId(configuration, RemoveThemselfEmailToLead)
-                  emailParametersBE = SingleEORIAndDateEmailParameter(loggedInEORI, undertaking.name, undertakingRef, removalEffectiveDateString,  "Email to BE for removing themself from undertaking")
-                  emailParametersLead = DoubleEORIAndDateEmailParameter(leadEORI, loggedInEORI,  undertaking.name, undertakingRef, removalEffectiveDateString, "Email to Lead  informing that a Business Entity has removed itself from Undertaking")
-                } yield {
-                  sendEmailService.sendEmail(emailAddressBE, emailParametersBE, templateIdBE)
-                  sendEmailService.sendEmail(emailAddressLead, emailParametersLead, templateIdLead)
-                  Redirect(routes.SignOutController.signOut())
-                }
+
+                escService.removeMember(undertakingRef, removeBE)
+                  .flatMap(_ =>
+                    sendEmail(
+                      beEORI = loggedInEORI,
+                      leadEORI = leadEORI,
+                      templateIdParamBE = RemoveThemselfEmailToBusinessEntity,
+                      templateIdParamLead = RemoveThemselfEmailToLead,
+                      emailParamDescBE = "Email to BE for removing themself from undertaking",
+                      emailParamDescLead = "Email to Lead  informing that a Business Entity has removed itself from Undertaking",
+                      undertaking = undertaking,
+                      undertakingRef = undertakingRef,
+                      removalEffectiveDateString = removalEffectiveDateString,
+                      nextCall = routes.SignOutController.signOut()
+                    ))
               case _ => Future(Redirect(routes.AccountController.getAccountPage()))
             }
           }
@@ -371,6 +389,30 @@ class BusinessEntityController @Inject()(
     sendEmailService.sendEmail(emailAddressBE, emailParametersBE, templateIdBE)
     sendEmailService.sendEmail(emailAddressLead, emailParametersLead, templateIdLead)
     getNext(businessEntityJourney)(eori)
+  }
+
+  private def sendEmail(
+   beEORI: EORI,
+   leadEORI: EORI,
+   templateIdParamBE: String,
+   templateIdParamLead: String,
+   emailParamDescBE: String,
+   emailParamDescLead: String,
+   undertaking: Undertaking,
+   undertakingRef: UndertakingRef,
+   removalEffectiveDateString: String,
+   nextCall: Call
+   )(implicit hc: HeaderCarrier, request: EscAuthRequest[_]) = for {
+    emailAddressBE <- retrieveEmailService.retrieveEmailByEORI(beEORI).map(_.getOrElse(handleMissingSessionData("Business entity Email")))
+    emailAddressLead <- retrieveEmailService.retrieveEmailByEORI(leadEORI).map(_.getOrElse(handleMissingSessionData("Lead EORI Email Address")))
+    templateIdBE = emailTemplateHelpers.getEmailTemplateId(configuration, templateIdParamBE)
+    templateIdLead = emailTemplateHelpers.getEmailTemplateId(configuration, templateIdParamLead)
+    emailParametersBE = SingleEORIAndDateEmailParameter(beEORI, undertaking.name, undertakingRef, removalEffectiveDateString, emailParamDescBE)
+    emailParametersLead = DoubleEORIAndDateEmailParameter(leadEORI, beEORI,  undertaking.name, undertakingRef, removalEffectiveDateString, emailParamDescLead)
+  } yield {
+    sendEmailService.sendEmail(emailAddressBE, emailParametersBE, templateIdBE)
+    sendEmailService.sendEmail(emailAddressLead, emailParametersLead, templateIdLead)
+    Redirect(nextCall)
   }
 
 
