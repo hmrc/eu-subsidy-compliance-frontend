@@ -26,7 +26,7 @@ import java.time.{LocalDate, ZoneId}
 import javax.inject.Inject
 import scala.util.Try
 
-class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormProvider[DateFormValues]{
+class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormProvider[DateFormValues] {
 
   override val form: Form[DateFormValues] = Form(mapping)
 
@@ -108,6 +108,7 @@ class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormPr
       case (d: String, m: String, y: String) => localDateFromValues(d, m, y).map { d =>
         val today = timeProvider.today(ZoneId.of("Europe/London"))
         // We allow claims for the current or previous 2 tax years.
+        // TODO - move this logic into the tax year helpers.
         val earliestAllowedDate = taxYearStartForDate(today).minusYears(2)
         !d.isBefore(earliestAllowedDate)
       }.getOrElse(true)

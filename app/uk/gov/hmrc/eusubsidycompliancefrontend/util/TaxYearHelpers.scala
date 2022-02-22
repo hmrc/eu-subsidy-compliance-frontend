@@ -31,5 +31,9 @@ object TaxYearHelpers {
       .plusYears(1)
       .minusDays(1)
 
+  // Since the allowed date range is the current and previous 2 tax years the earliest allowed date is then the start
+  // of the earliest tax year.
+  def earliestAllowedDate(d: LocalDate): LocalDate = taxYearStartForDate(d).minusYears(2)
+
 }
 
