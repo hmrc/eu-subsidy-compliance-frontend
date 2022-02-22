@@ -43,6 +43,7 @@ class UndertakingController @Inject()(
   journeyTraverseService: JourneyTraverseService,
   sendEmailService: SendEmailService,
   configuration: Configuration,
+  emailTemplateHelpers: EmailTemplateHelpers,
   retrieveEmailService: RetrieveEmailService,
   undertakingNamePage: UndertakingNamePage,
   undertakingSectorPage: UndertakingSectorPage,
@@ -218,7 +219,7 @@ class UndertakingController @Inject()(
   )(implicit request: EscAuthRequest[_]): Future[Result] = {
     for {
       ref <- escService.createUndertaking(undertaking)
-      templateId = EmailTemplateHelpers.getEmailTemplateId(configuration, CreateUndertaking)
+      templateId = emailTemplateHelpers.getEmailTemplateId(configuration, CreateUndertaking)
       emailParameters = SingleEORIEmailParameter(eori, undertaking.name, ref,  "undertaking Created by Lead EORI")
       emailAddress <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(sys.error("Email won't be send as email address is not present")))
     } yield {

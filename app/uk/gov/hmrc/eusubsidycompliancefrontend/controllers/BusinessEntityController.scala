@@ -48,6 +48,7 @@ class BusinessEntityController @Inject()(
   sendEmailService: SendEmailService,
   timeProvider: TimeProvider,
   configuration: Configuration,
+  emailTemplateHelpers: EmailTemplateHelpers,
   addBusinessPage: AddBusinessPage,
   eoriPage: BusinessEntityEoriPage,
   removeYourselfBEPage: BusinessEntityRemoveYourselfPage,
@@ -66,6 +67,8 @@ class BusinessEntityController @Inject()(
   val AddMemberEmailToLead = "addMemberEmailToLead"
   val RemoveMemberEmailToBusinessEntity = "removeMemberEmailToBE"
   val RemoveMemberEmailToLead = "removeMemberEmailToLead"
+  val RemoveThemselfEmailToBusinessEntity = "removeThemselfEmailToBE"
+  val RemoveThemselfEmailToLead = "removeThemselfEmailToLead"
 
 
   def getAddBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
@@ -207,8 +210,8 @@ class BusinessEntityController @Inject()(
       _ <- escService.addMember(undertakingRef, businessEntity)
       emailAddressBE <- retrieveEmailService.retrieveEmailByEORI(eoriBE).map(_.getOrElse(handleMissingSessionData(" BE Email Address")))
       emailAddressLead <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(handleMissingSessionData("Lead Email Address")))
-      templateIdBE = EmailTemplateHelpers.getEmailTemplateId(configuration, AddMemberEmailToBusinessEntity)
-      templateIdLead = EmailTemplateHelpers.getEmailTemplateId(configuration, AddMemberEmailToLead)
+      templateIdBE = emailTemplateHelpers.getEmailTemplateId(configuration, AddMemberEmailToBusinessEntity)
+      templateIdLead = emailTemplateHelpers.getEmailTemplateId(configuration, AddMemberEmailToLead)
       emailParametersBE = SingleEORIEmailParameter(eoriBE, undertaking.name, undertakingRef,  "Email to BE for being added as a member")
       emailParametersLead = DoubleEORIEmailParameter(eori, eoriBE,  undertaking.name, undertakingRef,  "Email to Lead  for adding a new member")
       redirect <- sendEmailAndRedirect(emailAddressBE, emailParametersBE, templateIdBE, emailAddressLead, emailParametersLead, templateIdLead, businessEntityJourney)
@@ -295,8 +298,8 @@ class BusinessEntityController @Inject()(
                   _ <- escService.removeMember(undertakingRef, removeBE)
                   emailAddressBE <- retrieveEmailService.retrieveEmailByEORI(removeBE.businessEntityIdentifier).map(_.getOrElse(handleMissingSessionData("Business entity Email")))
                   emailAddressLead <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(handleMissingSessionData("Lead EORI Email Address")))
-                  templateIdBE = EmailTemplateHelpers.getEmailTemplateId(configuration, RemoveMemberEmailToBusinessEntity)
-                  templateIdLead = EmailTemplateHelpers.getEmailTemplateId(configuration, RemoveMemberEmailToLead)
+                  templateIdBE = emailTemplateHelpers.getEmailTemplateId(configuration, RemoveMemberEmailToBusinessEntity)
+                  templateIdLead = emailTemplateHelpers.getEmailTemplateId(configuration, RemoveMemberEmailToLead)
                   emailParametersBE = SingleEORIAndDateEmailParameter(removeBE.businessEntityIdentifier, undertaking.name, undertakingRef, removalEffectiveDateString,  "Email to BE for being removed as a member")
                   emailParametersLead = DoubleEORIAndDateEmailParameter(eori, removeBE.businessEntityIdentifier,  undertaking.name, undertakingRef, removalEffectiveDateString, "Email to Lead  for removing a new member")
                 } yield {
@@ -324,7 +327,22 @@ class BusinessEntityController @Inject()(
           errors => Future.successful(BadRequest(removeYourselfBEPage(errors, removeBE, previous, undertaking.name))),
           form => {
             form.value match {
-              case "true" => escService.removeMember(undertakingRef, removeBE).map(_ => Redirect(routes.SignOutController.signOut()))
+              case "true" =>
+                val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today)
+                val leadEORI = undertaking.getLeadEORI
+                for {
+                  _ <- escService.removeMember(undertakingRef, removeBE)
+                  emailAddressBE <- retrieveEmailService.retrieveEmailByEORI(loggedInEORI).map(_.getOrElse(handleMissingSessionData("Business entity Email")))
+                  emailAddressLead <- retrieveEmailService.retrieveEmailByEORI(leadEORI).map(_.getOrElse(handleMissingSessionData("Lead EORI Email Address")))
+                  templateIdBE = emailTemplateHelpers.getEmailTemplateId(configuration, RemoveThemselfEmailToBusinessEntity)
+                  templateIdLead = emailTemplateHelpers.getEmailTemplateId(configuration, RemoveThemselfEmailToLead)
+                  emailParametersBE = SingleEORIAndDateEmailParameter(loggedInEORI, undertaking.name, undertakingRef, removalEffectiveDateString,  "Email to BE for removing themself from undertaking")
+                  emailParametersLead = DoubleEORIAndDateEmailParameter(leadEORI, loggedInEORI,  undertaking.name, undertakingRef, removalEffectiveDateString, "Email to Lead  informing that a Business Entity has removed itself from Undertaking")
+                } yield {
+                  sendEmailService.sendEmail(emailAddressBE, emailParametersBE, templateIdBE)
+                  sendEmailService.sendEmail(emailAddressLead, emailParametersLead, templateIdLead)
+                  Redirect(routes.SignOutController.signOut())
+                }
               case _ => Future(Redirect(routes.AccountController.getAccountPage()))
             }
           }
