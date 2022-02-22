@@ -21,13 +21,9 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData._
-
-import scala.concurrent.Future
 
 class BecomeLeadControllerSpec
   extends ControllerSpec
@@ -35,7 +31,7 @@ class BecomeLeadControllerSpec
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour {
 
-  val mockEscService = mock[EscService]
+  private val mockEscService = mock[EscService]
 
   override def overrideBindings           = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
@@ -43,13 +39,7 @@ class BecomeLeadControllerSpec
     bind[EscService].toInstance(mockEscService)
   )
 
-  val controller = instanceOf[BecomeLeadController]
-
-  def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result)
+  private val controller = instanceOf[BecomeLeadController]
 
   "BecomeLeadControllerSpec" when {
 
@@ -143,10 +133,6 @@ class BecomeLeadControllerSpec
 
       def performAction() = controller.getAcceptPromotionTerms(FakeRequest())
       behave like authBehaviour(() => performAction())
-
-      def update(businessEntityJourneyOpt: Option[BusinessEntityJourney]) = {
-        businessEntityJourneyOpt.map(_.copy(isLeadSelectJourney = None))
-      }
 
       "throw technical error" when {
         val exception = new Exception("oh no!")

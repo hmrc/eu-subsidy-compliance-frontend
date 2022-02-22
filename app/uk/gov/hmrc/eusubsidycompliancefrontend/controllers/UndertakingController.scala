@@ -17,24 +17,23 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.Configuration
-
-import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Language, OneOf, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, JourneyTraverseService, RetrieveEmailService, SendEmailService, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TemplateHelpers
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import java.util.Locale
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -68,9 +67,7 @@ class UndertakingController @Inject()(
       case Some(journey) =>
         journey
           .firstEmpty
-          .fold(
-            Redirect(routes.BusinessEntityController.getAddBusinessEntity())
-          )(identity)
+          .fold(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))(identity)
       case _ => handleMissingSessionData("Undertaking journey")
     }
   }
@@ -94,12 +91,12 @@ class UndertakingController @Inject()(
       errors => BadRequest(undertakingNamePage(errors)).toFuture,
       success = form => {
         for {
-          updatedUndertaking <- store.update[UndertakingJourney]{ _.map { undertakingJourney =>
+          updatedUndertakingJourney <- store.update[UndertakingJourney]{ _.map { undertakingJourney =>
             val updatedName = undertakingJourney.name.copy(value = Some(form.value))
               undertakingJourney.copy(name = updatedName)
             }
           }
-          redirect <- getJourneyNext(updatedUndertaking)
+          redirect <- updatedUndertakingJourney.next
         } yield redirect
       }
     )
@@ -126,12 +123,12 @@ class UndertakingController @Inject()(
         errors => BadRequest(undertakingSectorPage(errors, previous, "")).toFuture,
         form => {
           for {
-            updatedUndertaking <-  store.update[UndertakingJourney]{ _.map { undertakingJourney =>
+            updatedUndertakingJourney <-  store.update[UndertakingJourney]{ _.map { undertakingJourney =>
               val updatedSector = undertakingJourney.sector.copy(value = Some(Sector(form.value.toInt)))
                 undertakingJourney.copy(sector = updatedSector)
               }
             }
-            redirect <- getJourneyNext(updatedUndertaking)
+            redirect <- updatedUndertakingJourney.next
           } yield redirect
         }
       )
@@ -161,13 +158,13 @@ class UndertakingController @Inject()(
         errors => BadRequest(undertakingContactPage(errors, previous, "")).toFuture,
         form => {
           for {
-            updatedUndertaking <- store.update[UndertakingJourney] {
+            updatedUndertakingJourney <- store.update[UndertakingJourney] {
               _.map { undertakingJourney =>
                 val updatedContact = undertakingJourney.contact.copy(value = Some(form.toContactDetails))
                 undertakingJourney.copy(contact = updatedContact)
               }
             }
-            redirect <- getJourneyNext(updatedUndertaking)
+            redirect <- updatedUndertakingJourney.next
           } yield redirect
 
         }
@@ -297,11 +294,6 @@ class UndertakingController @Inject()(
           } yield Redirect(routes.AccountController.getAccountPage())
       )
   }
-
-  // TODO - this should be a property of the UndertakingJourney
-  private def getJourneyNext(journey: UndertakingJourney)(implicit request: Request[_]) =
-    if(journey.isAmend) Redirect(routes.UndertakingController.getAmendUndertakingDetails()).toFuture
-    else journey.next
 
   private def ensureUndertakingJourneyPresent(journey: Option[UndertakingJourney])(f: UndertakingJourney => Future[Result]): Future[Result] = {
     journey match {
