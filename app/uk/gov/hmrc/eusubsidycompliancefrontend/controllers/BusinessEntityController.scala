@@ -333,7 +333,6 @@ class BusinessEntityController @Inject()(
               case "true" =>
                 val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today)
                 val leadEORI = undertaking.getLeadEORI
-
                 escService.removeMember(undertakingRef, removeBE)
                   .flatMap(_ =>
                     sendEmail(
