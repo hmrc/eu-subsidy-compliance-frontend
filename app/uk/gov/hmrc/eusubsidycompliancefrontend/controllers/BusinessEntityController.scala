@@ -29,7 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingNa
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, EmailAddress, FormValues, OneOf, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, JourneyTraverseService, RetrieveEmailService, SendEmailService, Store}
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.{TemplateHelpers, TimeProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.{EmailTemplateHelpers, TimeProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -207,8 +207,8 @@ class BusinessEntityController @Inject()(
       _ <- escService.addMember(undertakingRef, businessEntity)
       emailAddressBE <- retrieveEmailService.retrieveEmailByEORI(eoriBE).map(_.getOrElse(handleMissingSessionData(" BE Email Address")))
       emailAddressLead <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(handleMissingSessionData("Lead Email Address")))
-      templateIdBE = TemplateHelpers.getTemplateId(configuration, AddMemberEmailToBusinessEntity)
-      templateIdLead = TemplateHelpers.getTemplateId(configuration, AddMemberEmailToLead)
+      templateIdBE = EmailTemplateHelpers.getEmailTemplateId(configuration, AddMemberEmailToBusinessEntity)
+      templateIdLead = EmailTemplateHelpers.getEmailTemplateId(configuration, AddMemberEmailToLead)
       emailParametersBE = SingleEORIEmailParameter(eoriBE, undertaking.name, undertakingRef,  "Email to BE for being added as a member")
       emailParametersLead = DoubleEORIEmailParameter(eori, eoriBE,  undertaking.name, undertakingRef,  "Email to Lead  for adding a new member")
       redirect <- sendEmailAndRedirect(emailAddressBE, emailParametersBE, templateIdBE, emailAddressLead, emailParametersLead, templateIdLead, businessEntityJourney)
@@ -295,8 +295,8 @@ class BusinessEntityController @Inject()(
                   _ <- escService.removeMember(undertakingRef, removeBE)
                   emailAddressBE <- retrieveEmailService.retrieveEmailByEORI(removeBE.businessEntityIdentifier).map(_.getOrElse(handleMissingSessionData("Business entity Email")))
                   emailAddressLead <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(handleMissingSessionData("Lead EORI Email Address")))
-                  templateIdBE = TemplateHelpers.getTemplateId(configuration, RemoveMemberEmailToBusinessEntity)
-                  templateIdLead = TemplateHelpers.getTemplateId(configuration, RemoveMemberEmailToLead)
+                  templateIdBE = EmailTemplateHelpers.getEmailTemplateId(configuration, RemoveMemberEmailToBusinessEntity)
+                  templateIdLead = EmailTemplateHelpers.getEmailTemplateId(configuration, RemoveMemberEmailToLead)
                   emailParametersBE = SingleEORIAndDateEmailParameter(removeBE.businessEntityIdentifier, undertaking.name, undertakingRef, removalEffectiveDateString,  "Email to BE for being removed as a member")
                   emailParametersLead = DoubleEORIAndDateEmailParameter(eori, removeBE.businessEntityIdentifier,  undertaking.name, undertakingRef, removalEffectiveDateString, "Email to Lead  for removing a new member")
                 } yield {
