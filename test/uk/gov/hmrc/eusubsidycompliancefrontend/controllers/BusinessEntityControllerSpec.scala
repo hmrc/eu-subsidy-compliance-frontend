@@ -74,6 +74,10 @@ class BusinessEntityControllerSpec  extends ControllerSpec
                                    |     remove-member-to-be-template-cy = "template_remove_be_CY"
                                    |     remove-member-to-lead-template-en = "template_remove_lead_EN"
                                    |     remove-member-to-lead-template-cy = "template_remove_lead_CY"
+                                   |     member-remove-themself-email-to-be-template-en = "template_remove_yourself_be_EN"
+                                   |     member-remove-themself-email-to-be-template-cy = "template_remove_yourself_be_CY"
+                                   |     member-remove-themself-email-to-lead-template-en = "template_remove_yourself_lead_EN"
+                                   |     member-remove-themself-email-to-lead-template-cy = "template_remove_yourself_lead_CY"
                                    |  }
                                    |""".stripMargin)
     )
@@ -1009,9 +1013,10 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
     "handling request to post remove yourself business entity" must {
 
-      def performAction(data: (String, String)*) = controller
+      def performAction(data: (String, String)*)(lang: String) = controller
         .postRemoveYourselfBusinessEntity(
           FakeRequest("POST",routes.BusinessEntityController.getRemoveYourselfBusinessEntity().url)
+            .withCookies(Cookie("PLAY_LANG", lang))
             .withFormUrlEncodedBody(data: _*))
 
       "throw a technical error" when {
@@ -1022,7 +1027,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
             mockAuthWithEnrolment(eori4)
             mockRetreiveUndertaking(eori4)(Future.failed(exception))
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction()(English.code)))
         }
 
         "call to retrieved undertaking came back with empty response" in {
@@ -1030,7 +1035,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
             mockAuthWithEnrolment(eori4)
             mockRetreiveUndertaking(eori4)(Future.successful(None))
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction()(English.code)))
         }
 
         "call to retrieved undertaking came back with undertaking having no BE with that eori" in {
@@ -1038,16 +1043,52 @@ class BusinessEntityControllerSpec  extends ControllerSpec
             mockAuthWithEnrolment(eori4)
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking.some))
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction()(English.code)))
         }
 
         "call to remove BE fails" in {
           inSequence {
             mockAuthWithEnrolment(eori4)
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockTimeToday(currentDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Left(Error(exception)))
           }
-          assertThrows[Exception](await(performAction("removeYourselfBusinessEntity" -> "true")))
+          assertThrows[Exception](await(performAction("removeYourselfBusinessEntity" -> "true")(English.code)))
+        }
+
+        "call to retrieve email address of the EORI, to be removed, fails" in {
+          inSequence {
+            mockAuthWithEnrolment(eori4)
+            mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockTimeToday(currentDate)
+            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
+            mockRetrieveEmail(eori4)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction("removeYourselfBusinessEntity" -> "true")(English.code)))
+        }
+
+        "call to retrieve email address of the lead EORI, to be removed, fails" in {
+          inSequence {
+            mockAuthWithEnrolment(eori4)
+            mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockTimeToday(currentDate)
+            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
+            mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
+            mockRetrieveEmail(eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction("removeYourselfBusinessEntity" -> "true")(English.code)))
+        }
+
+        "language is other than english /welsh" in {
+          inSequence {
+            mockAuthWithEnrolment(eori4)
+            mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockTimeToday(currentDate)
+            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
+            mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
+          }
+          assertThrows[Exception](await(performAction("removeYourselfBusinessEntity" -> "true")("fr")))
         }
 
 
@@ -1061,7 +1102,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
           }
           checkFormErrorIsDisplayed(
-            performAction(),
+            performAction()(English.code),
             messageFromMessageKey("removeYourselfBusinessEntity.title", undertaking1.name),
             messageFromMessageKey("removeYourselfBusinessEntity.error.required", undertaking1.name)
           )
@@ -1072,21 +1113,41 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
       "redirect to next page" when {
 
-        "user select yes as input" in {
-          inSequence {
-            mockAuthWithEnrolment(eori4)
-            mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
-            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
+        "user select yes as input" when {
+
+         def  testRedirection(lang: String, templateIdBe: String, templateIdLead: String, effectiveRemovalDate: String)= {
+
+           val emailParamBE = SingleEORIAndDateEmailParameter(eori4, undertaking.name, undertakingRef, effectiveRemovalDate, "Email to BE for removing themself from undertaking" )
+           val emailParamLead = DoubleEORIAndDateEmailParameter(eori1, eori4, undertaking.name, undertakingRef, effectiveRemovalDate, "Email to Lead  informing that a Business Entity has removed itself from Undertaking" )
+           inSequence {
+             mockAuthWithEnrolment(eori4)
+             mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
+             mockTimeToday(currentDate)
+             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
+             mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
+             mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
+             mockSendEmail(validEmailAddress, emailParamBE, templateIdBe)(Right(EmailSendResult.EmailSent))
+             mockSendEmail(validEmailAddress, emailParamLead, templateIdLead)(Right(EmailSendResult.EmailSent))
+           }
+           checkIsRedirect(performAction("removeYourselfBusinessEntity" -> "true")(lang), routes.SignOutController.signOut().url)
+
+         }
+          "the language of the applicaton is English" in {
+            testRedirection(English.code, "template_remove_yourself_be_EN", "template_remove_yourself_lead_EN", "9 October 2022")
           }
-          checkIsRedirect(performAction("removeYourselfBusinessEntity" -> "true"), routes.SignOutController.signOut().url)
+
+          "the language of the applicaton is Welsh" in {
+            testRedirection(Welsh.code, "template_remove_yourself_be_CY", "template_remove_yourself_lead_CY", "9 Hydref 2022")
+          }
         }
+
 
         "user selects No as input" in {
           inSequence {
             mockAuthWithEnrolment(eori4)
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
           }
-          checkIsRedirect(performAction("removeYourselfBusinessEntity" -> "false"), routes.AccountController.getAccountPage().url)
+          checkIsRedirect(performAction("removeYourselfBusinessEntity" -> "false")(English.code), routes.AccountController.getAccountPage().url)
         }
       }
 
