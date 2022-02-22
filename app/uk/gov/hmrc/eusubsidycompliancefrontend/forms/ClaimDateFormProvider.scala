@@ -17,14 +17,18 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
 import play.api.data.Forms.{text, tuple}
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import play.api.data.{Form, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearHelpers.taxYearStartForDate
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
 import java.time.{LocalDate, ZoneId}
 import javax.inject.Inject
 import scala.util.Try
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax._
+
+import java.time.format.DateTimeFormatter
 
 class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormProvider[DateFormValues] {
 
@@ -80,7 +84,7 @@ class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormPr
     _ match {
       case (_, "", "") => false
       case _ => true
-   })
+    })
   .verifying(
     "error.day-and-year.missing",
     _ match {
@@ -90,7 +94,7 @@ class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormPr
   .verifying(
     "error.date.invalid",
     _ match {
-      case (d: String, m: String, y: String)  => localDateFromValues(d, m, y).isSuccess
+      case (d: String, m: String, y: String) => localDateFromValues(d, m, y).isSuccess
       case _ => true
     })
   .verifying(
@@ -101,25 +105,26 @@ class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormPr
         !d.isAfter(today)
       }.getOrElse(true)
       case _ => true
+    })
+  .verifying(Constraint { (d: (String, String, String)) =>
+      val earliestAllowedDate = timeProvider.today(ZoneId.of("Europe/London")).toEarliestTaxYearStart
+      localDateFromValues(d._1, d._2, d._3).map { parsedDate =>
+        if (parsedDate.isBefore(earliestAllowedDate)) {
+          Invalid(Seq(
+            ValidationError(
+              "error.date.outside-allowed-tax-year-range",
+              earliestAllowedDate.format(DateTimeFormatter.ofPattern("dd MM yyyy"))
+            )))
+        }
+        else Valid
+      }.getOrElse(Valid)
   })
-  .verifying(
-    "error.date.outside-allowed-tax-year-range",
-    _ match {
-      case (d: String, m: String, y: String) => localDateFromValues(d, m, y).map { d =>
-        val today = timeProvider.today(ZoneId.of("Europe/London"))
-        // We allow claims for the current or previous 2 tax years.
-        // TODO - move this logic into the tax year helpers.
-        val earliestAllowedDate = taxYearStartForDate(today).minusYears(2)
-        !d.isBefore(earliestAllowedDate)
-      }.getOrElse(true)
-      case _ => false
-    }
-  )
   .transform(
     { case (d, m, y) => DateFormValues(d,m,y) },
     d => (d.day, d.month, d.year)
   )
 
+  // TODO - this should live on DateValues maybe?
   private def localDateFromValues(d: String, m: String, y: String) = Try(LocalDate.of(y.toInt, m.toInt, d.toInt))
 
 }

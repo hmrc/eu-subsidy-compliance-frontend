@@ -79,7 +79,7 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
     }
 
     "return date outside of tax year range error for date before the start of the tax year range" in {
-      validateAndCheckError("1", "1", "1900")("error.date.outside-allowed-tax-year-range")
+      validateAndCheckError("1", "1", "1900")("error.date.outside-allowed-tax-year-range", "06 04 2019")
     }
 
     "return no errors for todays date" in {
@@ -105,7 +105,7 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
     result mustBe Right(DateFormValues(d, m, y))
   }
 
-  private def validateAndCheckError(d: String, m: String, y: String)(errorMessage: String) = {
+  private def validateAndCheckError(d: String, m: String, y: String)(errorMessage: String, args: String*) = {
     val result = underTest.form.mapping.bind(Map(
       "day"   -> d,
       "month" -> m,
@@ -113,7 +113,7 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
     ))
 
     val foundExpectedErrorMessage = result.leftSideValue match {
-      case Left(errors) => errors.contains(FormError("", errorMessage))
+      case Left(errors) => errors.contains(FormError("", errorMessage, args))
       case _ => false
     }
 

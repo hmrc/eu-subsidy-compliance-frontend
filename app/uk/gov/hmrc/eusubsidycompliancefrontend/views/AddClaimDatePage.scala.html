@@ -53,25 +53,27 @@
 ) {
   
   @if(form.hasErrors) {
+    @defining(form.errors.head) { error =>
       @govukErrorSummary(
           ErrorSummary(
               Seq(
               ErrorLink(
-                  href = Some(s"#${deriveErrorKey("add-claim-date" + form.errors.head.message)}"),
-                  content = Text(s"${messages("add-claim-date." + form.errors.head.message)}"),
+                  href = Some(s"#${deriveErrorKey("add-claim-date" + error.message)}"),
+                  content = Text(s"${messages("add-claim-date." + error.message, error.args:_*)}"),
                   attributes = Map("class" ->"govuk-link")
               )
               ),
               title = Text(messages("common.error.summary.title"))
           )
       )
-  }
+    }
+}
 
   @formHelper(action = controllers.routes.SubsidyController.postClaimDate()) {
     @govukDateInput(DateInput(
       id = "claim-date",
       errorMessage = if (form.hasErrors) {
-        Some(ErrorMessage(content = Text(messages("add-claim-date." + form.errors.head.message))))
+        Some(ErrorMessage(content = Text(messages("add-claim-date." + form.errors.head.message, form.errors.head.args:_*))))
       } else None,
       items = Seq(
         InputItem(
