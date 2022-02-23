@@ -23,34 +23,67 @@ import java.time.LocalDate
 
 class TaxYearHelpersSpec extends AnyWordSpecLike with Matchers {
 
+  private val BeforeTaxYearEnd = LocalDate.parse("2022-03-01")
+  private val LastDayOfTaxYear = LocalDate.parse("2022-04-05")
+  private val FirstDayOfTaxYear = LocalDate.parse("2022-04-06")
+  private val AfterTaxYearEnd = LocalDate.parse("2022-05-01")
+
   "taxYearStartForDate" must {
 
-    "return a tax year starting in the same year if the date falls on the 6th of April" in {
-      TaxYearHelpers.taxYearStartForDate(LocalDate.parse("2022-04-06")) mustBe LocalDate.parse("2022-04-06")
+    "return a tax year starting in the previous year if the date falls before the end of the tax year" in {
+      TaxYearHelpers.taxYearStartForDate(BeforeTaxYearEnd) mustBe LocalDate.parse("2021-04-06")
     }
 
-    "return a tax year starting in the same year if the date falls after the 6th of April" in {
-      TaxYearHelpers.taxYearStartForDate(LocalDate.parse("2022-12-06")) mustBe LocalDate.parse("2022-04-06")
+    "return a tax year starting in the previous year if the date falls on last day of the old tax year" in {
+      TaxYearHelpers.taxYearStartForDate(LastDayOfTaxYear) mustBe LocalDate.parse("2021-04-06")
     }
 
-    "return a tax year starting in the previous year if the date falls before the 6th of April" in {
-      TaxYearHelpers.taxYearStartForDate(LocalDate.parse("2022-02-06")) mustBe LocalDate.parse("2021-04-06")
+    "return a tax year starting in the same year if the date falls on first day of the new tax year" in {
+      TaxYearHelpers.taxYearStartForDate(FirstDayOfTaxYear) mustBe LocalDate.parse("2022-04-06")
+    }
+
+    "return a tax year starting in the same year if the date falls after the start of the new tax year" in {
+      TaxYearHelpers.taxYearStartForDate(AfterTaxYearEnd) mustBe LocalDate.parse("2022-04-06")
     }
 
   }
 
   "taxYearEndForDate" must {
 
-    "return a tax year ending in the following year if the date falls on the 6th of April" in {
-      TaxYearHelpers.taxYearEndForDate(LocalDate.parse("2022-04-06")) mustBe LocalDate.parse("2023-04-05")
+    "return a tax year ending in the current year if the date falls before the end of the old tax year" in {
+      TaxYearHelpers.taxYearEndForDate(BeforeTaxYearEnd) mustBe LocalDate.parse("2022-04-05")
     }
 
-    "return a tax year ending in the following year if the date falls after the 6th of April" in {
-      TaxYearHelpers.taxYearEndForDate(LocalDate.parse("2022-12-06")) mustBe LocalDate.parse("2023-04-05")
+    "return a tax year ending in the current year if the date falls on the last day of the old tax year" in {
+      TaxYearHelpers.taxYearEndForDate(LastDayOfTaxYear) mustBe LocalDate.parse("2022-04-05")
     }
 
-    "return a tax year ending in the current year if the date falls before the 6th of April" in {
-      TaxYearHelpers.taxYearEndForDate(LocalDate.parse("2022-02-06")) mustBe LocalDate.parse("2022-04-05")
+    "return a tax year ending in the following year if the date falls on the first day of the new tax year" in {
+      TaxYearHelpers.taxYearEndForDate(FirstDayOfTaxYear) mustBe LocalDate.parse("2023-04-05")
+    }
+
+    "return a tax year ending in the following year if the date falls after the first day of the new tax year" in {
+      TaxYearHelpers.taxYearEndForDate(AfterTaxYearEnd) mustBe LocalDate.parse("2023-04-05")
+    }
+
+  }
+
+  "earliestAllowedDate" must {
+
+    "return the start of the earliest allowed date if the date falls before the end of the old tax year" in {
+      TaxYearHelpers.earliestAllowedDate(BeforeTaxYearEnd) mustBe LocalDate.parse("2019-04-06")
+    }
+
+    "return the start of the earliest allowed tax year if the date falls on the last day of the old tax year" in {
+      TaxYearHelpers.earliestAllowedDate(LastDayOfTaxYear) mustBe LocalDate.parse("2019-04-06")
+    }
+
+    "return the start of the earliest allowed tax year if the date falls on the first day of the new tax year" in {
+      TaxYearHelpers.earliestAllowedDate(FirstDayOfTaxYear) mustBe LocalDate.parse("2020-04-06")
+    }
+
+    "return the start of the earliest allowed tax year if the date falls after the first day of the new tax year" in {
+      TaxYearHelpers.earliestAllowedDate(AfterTaxYearEnd) mustBe LocalDate.parse("2020-04-06")
     }
 
   }

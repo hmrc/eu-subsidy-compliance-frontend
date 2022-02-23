@@ -17,107 +17,81 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
 import play.api.data.Forms.{text, tuple}
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError, ValidationResult}
 import play.api.data.{Form, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearHelpers.taxYearStartForDate
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
 import java.time.{LocalDate, ZoneId}
 import javax.inject.Inject
 import scala.util.Try
+import java.time.format.DateTimeFormatter
 
-class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormProvider[DateFormValues]{
+class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormProvider[DateFormValues] {
+
+  private type RawFormValues = (String, String, String)
 
   override val form: Form[DateFormValues] = Form(mapping)
 
-  override protected def mapping: Mapping[DateFormValues] = tuple(
-    "day"   -> text,
+  private val dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
+
+  private def formValueMapping = tuple(
+    "day" -> text,
     "month" -> text,
-    "year"  -> text
+    "year" -> text
   )
-  .transform(
-    { case (d, m, y) => (d.trim, m.trim, y.trim) },
-    { v: (String, String, String) => v }
-  )
-  .verifying(
-    "error.date.emptyfields",
-    _ match {
-      case ("", "", "") => false
-      case _ => true
-    })
-  .verifying(
-    "error.date.invalidentry",
-    _ match {
-      case (d, m, y) => Try(s"$d$m$y".toInt).isSuccess
-      case _ => false
-    })
-  .verifying(
-    "error.day.missing",
-    _ match {
-      case ("", _, _) => false
-      case _ => true
-    })
-  .verifying(
-    "error.month.missing",
-    _ match {
-      case (_, "", _) => false
-      case _ => true
-    })
-  .verifying(
-    "error.year.missing",
-    _ match {
-      case (_, _, "") => false
-      case _ => true
-    })
-  .verifying(
-    "error.day-and-month.missing",
-    _ match {
-      case ("", "", _) => false
-      case _ => true
-    })
-  .verifying(
-    "error.month-and-year.missing",
-    _ match {
-      case (_, "", "") => false
-      case _ => true
-   })
-  .verifying(
-    "error.day-and-year.missing",
-    _ match {
-      case ("", _, "") => false
-      case _ => true
-    })
-  .verifying(
-    "error.date.invalid",
-    _ match {
-      case (d: String, m: String, y: String)  => localDateFromValues(d, m, y).isSuccess
-      case _ => true
-    })
-  .verifying(
-    "error.date.in-future",
-    _ match {
-      case (d: String, m: String, y: String) => localDateFromValues(d, m, y).map { d =>
-        val today = timeProvider.today(ZoneId.of("Europe/London"))
-        !d.isAfter(today)
-      }.getOrElse(true)
-      case _ => true
-  })
-  .verifying(
-    "error.date.outside-allowed-tax-year-range",
-    _ match {
-      case (d: String, m: String, y: String) => localDateFromValues(d, m, y).map { d =>
-        val today = timeProvider.today(ZoneId.of("Europe/London"))
-        // We allow claims for the current or previous 2 tax years.
-        val earliestAllowedDate = taxYearStartForDate(today).minusYears(2)
-        !d.isBefore(earliestAllowedDate)
-      }.getOrElse(true)
-      case _ => false
-    }
-  )
-  .transform(
-    { case (d, m, y) => DateFormValues(d,m,y) },
-    d => (d.day, d.month, d.year)
-  )
+
+  override protected def mapping: Mapping[DateFormValues] =
+    formValueMapping
+      .transform({ case (d, m, y) => (d.trim, m.trim, y.trim) }, { v: RawFormValues => v })
+      .verifying(Constraint(allDateValuesEntered(_)))
+      .verifying(Constraint(dateIsValid(_)))
+      .verifying(Constraint(dateInAllowedRange(_)))
+      .transform({ case (d, m, y) => DateFormValues(d, m, y) }, d => (d.day, d.month, d.year))
+
+  private val dateIsValid: RawFormValues => ValidationResult = {
+    case (d, m, y) if Try(s"$d$m$y".toInt).isFailure => invalid("date.invalidentry")
+    case (d, m, y) if localDateFromValues(d, m, y).isFailure => invalid("date.invalid")
+    case _ => Valid
+  }
+
+  private val allDateValuesEntered: RawFormValues => ValidationResult = {
+    case ("", "", "") => invalid("date.emptyfields")
+    case ("", "", _)  => invalid("day-and-month.missing")
+    case (_, "", "")  => invalid("month-and-year.missing")
+    case ("", _, "")  => invalid("day-and-year.missing")
+    case ("", _, _)   => invalid("day.missing")
+    case (_, "", _)   => invalid("month.missing")
+    case (_, _, "")   => invalid("year.missing")
+    case _            => Valid
+  }
+
+  private val dateInAllowedRange: RawFormValues => ValidationResult = {
+    case (d, m, y) => localDateFromValues (d, m, y).map { parsedDate =>
+      val today = timeProvider.today (ZoneId.of ("Europe/London") )
+      val earliestAllowedDate = today.toEarliestTaxYearStart
+
+      if (parsedDate.isBefore (earliestAllowedDate) )
+        invalid ("date.outside-allowed-tax-year-range", earliestAllowedDate.format (dateFormatter) )
+      else if (parsedDate.isAfter (today) )
+        invalid ("date.in-future",
+          earliestAllowedDate.format (dateFormatter),
+          today.toTaxYearEnd.minusYears (1).format (dateFormatter),
+        )
+        else Valid
+    }.getOrElse (Valid)
+    case _ => Valid
+  }
+
+  private def invalid(error: String, params: String*) =
+    Invalid(Seq(
+      ValidationError(
+        messageKeyForError(error),
+        params:_*
+      )))
+
+  private def messageKeyForError(error: String) = s"add-claim-date.error.$error"
 
   private def localDateFromValues(d: String, m: String, y: String) = Try(LocalDate.of(y.toInt, m.toInt, d.toInt))
 

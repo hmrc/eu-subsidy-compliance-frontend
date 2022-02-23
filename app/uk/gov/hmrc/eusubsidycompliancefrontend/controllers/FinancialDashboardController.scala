@@ -48,7 +48,7 @@ class FinancialDashboardController @Inject()(
     implicit val eori: EORI = request.eoriNumber
 
     // THe search period covers the current tax year to date, and the previous 2 tax years.
-    val searchDateStart = timeProvider.today.minusYears(2).toTaxYearStart
+    val searchDateStart = timeProvider.today.toEarliestTaxYearStart
     val searchDateEnd = timeProvider.today
     val currentTaxYearEnd = timeProvider.today.toTaxYearEnd
 

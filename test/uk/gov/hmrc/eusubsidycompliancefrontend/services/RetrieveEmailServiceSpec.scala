@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.service
+package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.catsSyntaxOptionId
 import org.scalamock.scalatest.MockFactory
@@ -25,12 +25,11 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.RetrieveEmailConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.RetrieveEmailServiceImpl
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.CommonTestData._
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class RetrieveEmailServiceSpec extends AnyWordSpec with Matchers with MockFactory {
 

@@ -158,7 +158,7 @@ class SubsidyController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     getPrevious[SubsidyJourney](store).flatMap { previous =>
       claimDateForm.bindFromRequest().fold(
-        formWithErrors => Future(BadRequest(addClaimDatePage(formWithErrors, previous))),
+        formWithErrors => BadRequest(addClaimDatePage(formWithErrors, previous)).toFuture,
         form => for {
           journey <- store.update[SubsidyJourney] { maybeSubsidyJourney =>
             maybeSubsidyJourney.map { subsidyJourney =>

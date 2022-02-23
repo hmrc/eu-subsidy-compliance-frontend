@@ -20,9 +20,10 @@ import java.time.LocalDate
 
 object TaxYearSyntax {
 
-  implicit class LocalDateTaxYearOps(val ld: LocalDate) extends AnyVal {
-    def toTaxYearStart: LocalDate = TaxYearHelpers.taxYearStartForDate(ld)
-    def toTaxYearEnd: LocalDate = TaxYearHelpers.taxYearEndForDate(ld)
+  implicit class LocalDateTaxYearOps(val d: LocalDate) extends AnyVal {
+    def toTaxYearStart: LocalDate = TaxYearHelpers.taxYearStartForDate(d)
+    def toTaxYearEnd: LocalDate = TaxYearHelpers.taxYearEndForDate(d)
+    def toEarliestTaxYearStart: LocalDate = TaxYearHelpers.earliestAllowedDate(d)
   }
 
 }

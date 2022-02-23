@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.service
+package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.catsSyntaxOptionId
 import org.scalamock.scalatest.MockFactory
@@ -23,12 +23,11 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, SubsidyRetrieve, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscServiceImpl, SubsidyJourney}
-
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, SubsidyRetrieve, Undertaking}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.CommonTestData._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

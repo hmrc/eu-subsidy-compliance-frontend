@@ -241,8 +241,8 @@ add-claim-date.error.month-and-year.missing=The date you received your payment m
 add-claim-date.error.year.missing=The date you received your payment must include a year, like 23 11 2019
 add-claim-date.error.date.invalidentry=Enter a real date, like 23 11 2019
 add-claim-date.error.date.invalid=Enter a real date, like 23 11 2019
-add-claim-date.error.date.outside-allowed-tax-year-range = Enter the date you received payment. Date must be [Todo: Dynamic Date] 6 April 2019, or later.
-add-claim-date.error.date.in-future = Enter a date within the current tax year, or the previous two (between [Todo: Dynamic Date] 6 April 2019 and 5 April 2021)
+add-claim-date.error.date.outside-allowed-tax-year-range = Enter the date you received payment. Date must be {0}, or later.
+add-claim-date.error.date.in-future = Enter a date within the current tax year, or the previous two (between {0} and {1})
 
 add-claim-public-authority.title=Which public authority granted the payment?
 add-claim-public-authority.hint=For example, Invest NI, NI Direct.

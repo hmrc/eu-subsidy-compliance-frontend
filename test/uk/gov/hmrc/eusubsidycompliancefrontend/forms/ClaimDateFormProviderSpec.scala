@@ -35,51 +35,51 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
   "form data validation" must {
 
     "return empty fields error if all date fields are empty" in {
-      validateAndCheckError("", "", "")("error.date.emptyfields")
+      validateAndCheckError("", "", "")("date.emptyfields")
     }
 
     "return empty fields error if all date fields just contain whitespace" in {
-      validateAndCheckError(" ", " ", " ")("error.date.emptyfields")
+      validateAndCheckError(" ", " ", " ")("date.emptyfields")
     }
 
     "return invalid entry error if non-numeric values are entered" in {
-      validateAndCheckError("foo", "bar", "baz")("error.date.invalidentry")
+      validateAndCheckError("foo", "bar", "baz")("date.invalidentry")
     }
 
     "return day missing error if day value not present" in {
-      validateAndCheckError("", "1", "2")("error.day.missing")
+      validateAndCheckError("", "1", "2")("day.missing")
     }
 
     "return month missing error if month value not present" in {
-      validateAndCheckError("1", "", "2")("error.month.missing")
+      validateAndCheckError("1", "", "2")("month.missing")
     }
 
     "return year missing error if year value not present" in {
-      validateAndCheckError("1", "2", "")("error.year.missing")
+      validateAndCheckError("1", "2", "")("year.missing")
     }
 
     "return day and month missing error if only year value present" in {
-      validateAndCheckError("", "", "2")("error.day-and-month.missing")
+      validateAndCheckError("", "", "2")("day-and-month.missing")
     }
 
     "return month and year missing error if only day value present" in {
-      validateAndCheckError("1", "", "")("error.month-and-year.missing")
+      validateAndCheckError("1", "", "")("month-and-year.missing")
     }
 
     "return day and year missing error if only month value present" in {
-      validateAndCheckError("", "1", "")("error.day-and-year.missing")
+      validateAndCheckError("", "1", "")("day-and-year.missing")
     }
 
     "return date invalid if values do not form a valid date" in {
-      validateAndCheckError("50", "20", "2000")("error.date.invalid")
+      validateAndCheckError("50", "20", "2000")("date.invalid")
     }
 
     "return date in future error if date is in the future" in {
-      validateAndCheckError((day+1).toString, "1", "9999")("error.date.in-future")
+      validateAndCheckError((day+1).toString, "1", "9999")("date.in-future", "06 04 2019", "05 04 2021")
     }
 
     "return date outside of tax year range error for date before the start of the tax year range" in {
-      validateAndCheckError("1", "1", "1900")("error.date.outside-allowed-tax-year-range")
+      validateAndCheckError("1", "1", "1900")("date.outside-allowed-tax-year-range", "06 04 2019")
     }
 
     "return no errors for todays date" in {
@@ -105,7 +105,7 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
     result mustBe Right(DateFormValues(d, m, y))
   }
 
-  private def validateAndCheckError(d: String, m: String, y: String)(errorMessage: String) = {
+  private def validateAndCheckError(d: String, m: String, y: String)(errorMessage: String, args: String*) = {
     val result = underTest.form.mapping.bind(Map(
       "day"   -> d,
       "month" -> m,
@@ -113,7 +113,7 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
     ))
 
     val foundExpectedErrorMessage = result.leftSideValue match {
-      case Left(errors) => errors.contains(FormError("", errorMessage))
+      case Left(errors) => errors.contains(FormError("", s"add-claim-date.error.$errorMessage", args))
       case _ => false
     }
 
