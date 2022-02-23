@@ -16,23 +16,25 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.catsSyntaxOptionId
+import cats.data.OptionT
+import cats.implicits._
 import play.api.data.Form
 import play.api.data.Forms.{bigDecimal, mapping, optional, text}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, JourneyTraverseService, Store, SubsidyJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearSyntax._
 
 @Singleton
 class SubsidyController @Inject()(
@@ -62,32 +64,31 @@ class SubsidyController @Inject()(
   def getReportPayment: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    val earliestAllowedDate = timeProvider.today.toEarliestTaxYearStart
-    val previousTaxYearEnd = timeProvider.today.toTaxYearEnd.minusYears(1)
-    val currentTaxYearStart = timeProvider.today.toTaxYearStart
+    val result: OptionT[Future, (UndertakingRef, Undertaking)] = for {
+      _           <- OptionT(store.get[SubsidyJourney]).orElseF(store.put(SubsidyJourney().some))
+      undertaking <- OptionT(store.get[Undertaking])
+      reference   <- OptionT.fromOption[Future](undertaking.reference)
+    } yield (reference, undertaking)
 
-    for {
-        journey <- store.get[SubsidyJourney]
-        _ = if(journey.isEmpty) store.put(SubsidyJourney())
-        undertaking <- store.get[Undertaking]
-        reference = undertaking.getOrElse(throw new IllegalStateException("")).reference.getOrElse(throw new IllegalStateException(""))
-        subsidies <- escService.retrieveSubsidy(SubsidyRetrieve(reference, None)).map(e => Some(e)).recoverWith({case _ => Future.successful(Option.empty[UndertakingSubsidies])})
-      } yield (journey, subsidies, undertaking) match {
-      case (Some(journey), subsidies, Some(undertaking)) => {
-        journey
-          .reportPayment
-          .value
-          .fold(
-            Ok(reportPaymentPage(subsidies, undertaking, earliestAllowedDate, previousTaxYearEnd, currentTaxYearStart))
-          ) { _ =>
-            Ok(reportPaymentPage(subsidies, undertaking, earliestAllowedDate, previousTaxYearEnd, currentTaxYearStart))
-          }
-      }
-      case (None, _, Some(undertaking)) => // initialise the empty Journey model
-        Ok(reportPaymentPage(None, undertaking, earliestAllowedDate, previousTaxYearEnd, currentTaxYearStart))
-      case _ => handleMissingSessionData("Subsidy journey")
+    result.foldF(handleMissingSessionData("Subsidy journey")) {
+      case (reference, undertaking) =>
+        retrieveSubsidiesOrNone(reference).map { subsidies =>
+          Ok(reportPaymentPage(
+            subsidies,
+            undertaking,
+            timeProvider.today.toEarliestTaxYearStart,
+            timeProvider.today.toTaxYearEnd.minusYears(1),
+            timeProvider.today.toTaxYearStart,
+          ))
+        }
     }
   }
+
+  private def retrieveSubsidiesOrNone(r: UndertakingRef)(implicit hc: HeaderCarrier) =
+    escService
+      .retrieveSubsidy(SubsidyRetrieve(r, None))
+      .map(Option(_))
+      .fallbackTo(Option.empty.toFuture)
 
   def postReportPayment: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
