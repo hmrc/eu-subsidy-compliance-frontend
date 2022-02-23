@@ -27,10 +27,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, JourneyTraverseService, Store, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearSyntax._
 
 @Singleton
 class SubsidyController @Inject()(
@@ -47,7 +49,8 @@ class SubsidyController @Inject()(
   addTraderReferencePage: AddTraderReferencePage,
   cyaPage: ClaimCheckYourAnswerPage,
   confirmRemovePage: ConfirmRemoveClaim,
-  claimDateFormProvider: ClaimDateFormProvider
+  claimDateFormProvider: ClaimDateFormProvider,
+  timeProvider: TimeProvider
 )(
   implicit val appConfig: AppConfig,
   executionContext: ExecutionContext
@@ -58,6 +61,11 @@ class SubsidyController @Inject()(
 
   def getReportPayment: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
+    val earliestAllowedDate = timeProvider.today.toEarliestTaxYearStart
+    val previousTaxYearEnd = timeProvider.today.toTaxYearEnd.minusYears(1)
+    val currentTaxYearStart = timeProvider.today.toTaxYearStart
+
     for {
         journey <- store.get[SubsidyJourney]
         _ = if(journey.isEmpty) store.put(SubsidyJourney())
@@ -70,13 +78,13 @@ class SubsidyController @Inject()(
           .reportPayment
           .value
           .fold(
-            Ok(reportPaymentPage(subsidies, undertaking)) // TODO populate subsidy list
+            Ok(reportPaymentPage(subsidies, undertaking, earliestAllowedDate, previousTaxYearEnd, currentTaxYearStart))
           ) { _ =>
-            Ok(reportPaymentPage(subsidies, undertaking))
+            Ok(reportPaymentPage(subsidies, undertaking, earliestAllowedDate, previousTaxYearEnd, currentTaxYearStart))
           }
       }
       case (None, _, Some(undertaking)) => // initialise the empty Journey model
-        Ok(reportPaymentPage(None, undertaking))
+        Ok(reportPaymentPage(None, undertaking, earliestAllowedDate, previousTaxYearEnd, currentTaxYearStart))
       case _ => handleMissingSessionData("Subsidy journey")
     }
   }
