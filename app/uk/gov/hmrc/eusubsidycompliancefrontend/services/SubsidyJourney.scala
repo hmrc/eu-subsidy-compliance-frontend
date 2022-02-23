@@ -26,7 +26,7 @@ case class SubsidyJourney(
    reportPayment: FormPage[Boolean] = FormPage(ReportPayment),
    claimDate: FormPage[DateFormValues] = FormPage(ClaimDateValues),
    claimAmount: FormPage[BigDecimal] = FormPage(ClaimAmount),
-   addClaimEori: FormPage[OptionalEORI] = FormPage(AddClaimEoriEORI),
+   addClaimEori: FormPage[OptionalEORI] = FormPage(AddClaimEori),
    publicAuthority: FormPage[String] = FormPage(PublicAuthority),
    traderRef: FormPage[OptionalTraderRef] = FormPage(TraderReference),
    cya: FormPage[Boolean] = FormPage(Cya),
@@ -77,7 +77,7 @@ object SubsidyJourney {
     val ReportPayment = "claims"
     val ClaimDateValues = "add-claim-date"
     val ClaimAmount = "add-claim-amount"
-    val AddClaimEoriEORI = "add-claim-eori"
+    val AddClaimEori = "add-claim-eori"
     val PublicAuthority= "add-claim-public-authority"
     val TraderReference = "add-claim-reference"
     val Cya = "check-your-answers-subsidy"
