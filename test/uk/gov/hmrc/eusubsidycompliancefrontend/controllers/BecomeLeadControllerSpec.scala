@@ -199,7 +199,7 @@ class BecomeLeadControllerSpec
         }
         checkPageIsDisplayed(
           performAction(),
-          messageFromMessageKey("become-admin-terms-and-conditions.title")
+          messageFromMessageKey("become-admin-tandc.title")
         )
 
       }
