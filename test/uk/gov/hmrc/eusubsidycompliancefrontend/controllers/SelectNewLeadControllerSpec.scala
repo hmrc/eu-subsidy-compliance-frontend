@@ -187,6 +187,7 @@ class SelectNewLeadControllerSpec
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
+        val emailParamsBE = SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promoteAsLeadEmailToBE")
 
         def update(newLeadJourneyOpt: Option[NewLeadJourney]) = {
           newLeadJourneyOpt.map(_.copy(selectNewLead = FormPage("select-new-lead", eori4.some)))
@@ -235,6 +236,7 @@ class SelectNewLeadControllerSpec
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Right(NewLeadJourney(FormPage("select-new-lead", eori4.some))))
             mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
+            mockSendEmail(validEmailAddress,emailParamsBE, "template_BE_as_lead_EN")(Right(EmailSendResult.EmailSent))
             mockRetrieveEmail(eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4.toString)(English.code)))
@@ -246,7 +248,6 @@ class SelectNewLeadControllerSpec
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Right(NewLeadJourney(FormPage("select-new-lead", eori4.some))))
             mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
-            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4.toString)("fr")))
         }
@@ -276,15 +277,15 @@ class SelectNewLeadControllerSpec
 
         def testRedirection(templateIdBE: String, templateIdLead: String, lang: String) = {
 
-          val emailParamsBE = SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "Email to BE for being promoted  as a Lead")
-          val emailParamLead = DoubleEORIEmailParameter(eori1, eori4, undertaking.name, undertakingRef, "Email to Lead confirming they have assigned other Business Entity as lead" )
+          val emailParamsBE = SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promoteAsLeadEmailToBE")
+          val emailParamLead = DoubleEORIEmailParameter(eori1, eori4, undertaking.name, undertakingRef, "promoteAsLeadEmailToLead" )
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Right(NewLeadJourney(FormPage("select-new-lead", eori4.some))))
             mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
-            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
             mockSendEmail(validEmailAddress, emailParamsBE , templateIdBE)(Right(EmailSendResult.EmailSent))
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
             mockSendEmail(validEmailAddress, emailParamLead , templateIdLead)(Right(EmailSendResult.EmailSent))
           }
           checkIsRedirect(performAction("selectNewLead" -> eori4.toString)(lang), routes.SelectNewLeadController.getLeadEORIChanged())

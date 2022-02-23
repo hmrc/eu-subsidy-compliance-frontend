@@ -22,6 +22,7 @@ import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{SingleEORIEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -35,6 +36,7 @@ class BecomeLeadController @Inject()(
   escActionBuilders: EscActionBuilders,
   store: Store,
   escService: EscService,
+  sendEmailHelperService: SendEmailHelperService,
   becomeAdminPage: BecomeAdminPage,
   becomeAdminTermsAndConditionsPage: BecomeAdminTermsAndConditionsPage,
   becomeAdminConfirmatinPage: BecomeAdminConfirmatinPage
@@ -45,6 +47,9 @@ class BecomeLeadController @Inject()(
   BaseController(mcc) {
 
   import escActionBuilders._
+
+  val PromotedAsNewLead = "promotedAsLeadToNewLead"
+  val RemovedAsLead = "removedAsLeadToOldLead"
 
   def getBecomeLeadEori: Action[AnyContent] =  escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -109,6 +114,8 @@ class BecomeLeadController @Inject()(
           oldLead = retrievedUndertaking.undertakingBusinessEntity.find(_.leadEORI).fold(handleMissingSessionData("lead Business Entity"))(_.copy(leadEORI = false))
           _ <- escService.addMember(undertakingRef, newLead)
           _ <- escService.addMember(undertakingRef, oldLead)
+          _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(eori, None, PromotedAsNewLead, retrievedUndertaking, undertakingRef, None)
+          _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(oldLead.businessEntityIdentifier, None, RemovedAsLead, retrievedUndertaking, undertakingRef, None )
         } yield {
           if (journey.acceptTerms.value.getOrElse(false)) {
             Ok(becomeAdminConfirmatinPage())

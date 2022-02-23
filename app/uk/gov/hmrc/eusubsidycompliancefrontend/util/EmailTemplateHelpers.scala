@@ -26,7 +26,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 
 import java.util.Locale
 import javax.inject.{Inject, Singleton}
-
 @Singleton
 class EmailTemplateHelpers @Inject()(appConfig: AppConfig) {
 

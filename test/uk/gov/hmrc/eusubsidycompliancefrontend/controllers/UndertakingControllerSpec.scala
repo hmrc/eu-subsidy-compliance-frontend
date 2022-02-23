@@ -545,7 +545,7 @@ class UndertakingControllerSpec extends ControllerSpec
 
     }
 
-    "handling post request to Check your Answers call" must {
+    "handling request to Post Check your Answers call" must {
 
       def performAction(data: (String, String)*)(lang: String) =
         controller.postCheckAnswers(
@@ -594,6 +594,25 @@ class UndertakingControllerSpec extends ControllerSpec
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
 
         }
+
+        "call to retrieve email address fails" in {
+
+          def updateFunc(undertakingJourneyOpt: Option[UndertakingJourney]) =
+            undertakingJourneyOpt.map(x => x.copy(cya = x.cya.copy(value = true.some)))
+
+          val updatedUndertakingJourney = undertakingJourneyComplete.copy(cya = FormPage("check-your-answers", false.some))
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockUpdate[UndertakingJourney](_ => updateFunc(updatedUndertakingJourney.some), eori1
+            )(Right(updatedUndertakingJourney))
+            mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
+            mockRetrieveEmail(eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
+
+
+        }
       }
 
       "redirect to confirmation page" when {
@@ -624,23 +643,6 @@ class UndertakingControllerSpec extends ControllerSpec
           testRedirection(Language.Welsh.code, "template_CY")
         }
 
-        "send email call fails" in {
-          def updateFunc(ujOpt: Option[UndertakingJourney]) =
-            ujOpt.map(x => x.copy(cya = x.cya.copy(value = true.some)))
-
-          val updatedUndertakingJourney = undertakingJourneyComplete.copy(cya = FormPage("check-your-answers", false.some))
-
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockUpdate[UndertakingJourney](_ => updateFunc(updatedUndertakingJourney.some), eori1
-            )(Right(updatedUndertakingJourney))
-            mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
-            mockSendEmail(validEmailAddress, emailParameter, "template_CY")(Left(Error(new Exception(""))))
-          }
-          checkIsRedirect(performAction("cya" -> "true")(Language.Welsh.code), routes.UndertakingController.getConfirmation(undertakingRef, undertakingCreated.name).url)
-
-        }
 
       }
     }
