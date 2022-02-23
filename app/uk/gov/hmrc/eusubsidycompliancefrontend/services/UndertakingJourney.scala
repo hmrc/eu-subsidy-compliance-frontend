@@ -22,7 +22,7 @@ import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ContactDetails, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.FormUrls
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
@@ -63,8 +63,6 @@ object UndertakingJourney {
   import Journey._
 
   implicit val formPageSectorFormat: OFormat[FormPage[Sector]] = Json.format[FormPage[Sector]]
-  implicit val formatContactDetails: OFormat[ContactDetails] = Json.format[ContactDetails]
-  implicit val formPageContactFormat: OFormat[FormPage[ContactDetails]] = Json.format[FormPage[ContactDetails]]
 
   implicit val format: Format[UndertakingJourney] = Json.format[UndertakingJourney]
 

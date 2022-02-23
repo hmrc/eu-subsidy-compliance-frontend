@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ContactDetails, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormUrls._
 
 case class BusinessEntityJourney(
@@ -41,8 +41,6 @@ object BusinessEntityJourney {
   import Journey._ // N.B. don't let intellij delete this
 
   implicit val formPageEoriFormat: OFormat[FormPage[EORI]] = Json.format[FormPage[EORI]]
-  implicit val formatContactDetails: OFormat[ContactDetails] = Json.format[ContactDetails]
-  implicit val formPageContactFormat: OFormat[FormPage[ContactDetails]] = Json.format[FormPage[ContactDetails]]
   implicit val format: Format[BusinessEntityJourney] = Json.format[BusinessEntityJourney]
 
   // TODO populate the Journey[s] from the undertaking, probably need to map them by eori

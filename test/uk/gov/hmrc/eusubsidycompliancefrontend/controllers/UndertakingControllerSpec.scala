@@ -26,7 +26,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.ModifyUndertakingRow
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, Error, Language, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData._
@@ -298,7 +298,7 @@ class UndertakingControllerSpec extends ControllerSpec
         "user has already answered the question (normal add undertaking journey)" in {
           test(undertakingJourney = UndertakingJourney(name = FormPage("undertaking-name", "TestUndertaking1".some),
             sector = FormPage("sector", Sector(2).some)),
-            previousCall = "undertaking-name",
+            previousCall = routes.UndertakingController.getCheckAnswers().url,
             inputValue = "2".some)
         }
 
@@ -387,158 +387,11 @@ class UndertakingControllerSpec extends ControllerSpec
         }
 
         "page is reached via normal undertaking creation process" in {
-          test(UndertakingJourney(), "contact")
+          test(UndertakingJourney(), "check-your-answers")
         }
 
         "page is reached via normal undertaking creation process when all answers have been provided" in {
           test(undertakingJourneyComplete, routes.UndertakingController.getCheckAnswers().url)
-        }
-
-      }
-
-    }
-
-    "handling request to get Contact" must {
-
-      def performAction() = controller.getContact(FakeRequest(GET, routes.UndertakingController.getContact().url))
-
-      "throw technical error" when {
-
-        val exception = new Exception("oh no")
-        "call to fetch undertaking journey fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Left(Error(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to fetch undertaking journey passes  but return no undertaking journey" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Right(None))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-      }
-
-      "display the page" when {
-
-        def test(undertakingJourney: UndertakingJourney, previousCall: String): Unit = {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-          }
-          checkPageIsDisplayed(
-            performAction(),
-            messageFromMessageKey("undertakingContact.title") + " " + undertakingJourney.name.value.getOrElse("") + messageFromMessageKey("undertakingContact.title.end"),
-            { doc =>
-
-              doc.select(".govuk-back-link").attr("href") shouldBe previousCall
-
-              val inputPhone = doc.select("#phone").attr("value")
-              val inputMobile = doc.select("#mobile").attr("value")
-
-              inputPhone shouldBe undertakingJourney.contact.value.flatMap(_.phone).getOrElse("")
-              inputMobile shouldBe undertakingJourney.contact.value.flatMap(_.mobile).getOrElse("")
-
-              val button = doc.select("form")
-              button.attr("action") shouldBe routes.UndertakingController.postContact().url
-            }
-          )
-        }
-
-        "user has not already answered the question(normal add undertaking journey)" in {
-          test(undertakingJourneyComplete.copy(contact = FormPage("contact"), cya = FormPage("check-your-answers")), "sector")
-        }
-
-        "user has  already answered the question(normal add undertaking journey)" in {
-          test(undertakingJourneyComplete.copy(contact = FormPage("contact", contactDetails.some), cya = FormPage("check-your-answers")), routes.UndertakingController.getCheckAnswers().url)
-        }
-
-        "user has  already answered the question but it's amend journey" in {
-          test(undertakingJourneyComplete1.copy(contact = FormPage("contact", contactDetails.some), cya = FormPage("check-your-answers")), routes.UndertakingController.getAmendUndertakingDetails().url)
-        }
-
-      }
-    }
-
-    "handling request to post Contact" must {
-
-      def performAction(data: (String, String)*) = controller
-        .postContact(
-          FakeRequest(POST, routes.UndertakingController.getContact().url)
-            .withFormUrlEncodedBody(data: _*))
-
-      def update(undertakingJourneyOpt: Option[UndertakingJourney]) = {
-        undertakingJourneyOpt.map(_.copy(contact = FormPage("contact", contactDetails2.some)))
-      }
-
-      "throw technical error" when {
-        val exception = new Exception("oh no")
-
-        "call to get previous url fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[UndertakingJourney](eori1)(Left(Error(exception)))
-          }
-          assertThrows[Exception](await(performAction("phone" -> "222", "mobile" -> "333")))
-        }
-
-        "call to update undertaking journey fails" in {
-          val currentUndertaking = undertakingJourneyComplete1.copy(contact = FormPage("contact"), cya = FormPage("cya"))
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[UndertakingJourney](eori1)(Right("undertaking-name"))
-            mockUpdate[UndertakingJourney](_ => update(currentUndertaking.some), eori1)(Left(Error(exception)))
-          }
-          assertThrows[Exception](await(performAction("phone" -> "222", "mobile" -> "333")))
-        }
-      }
-
-      "display form error" when {
-
-        "nothing is submitted" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[UndertakingJourney](eori1)(Right("sector"))
-          }
-          checkFormErrorsAreDisplayed(performAction(),
-            messageFromMessageKey("undertakingContact.title") + " " + "" + messageFromMessageKey("undertakingContact.title.end"),
-            List(
-              messageFromMessageKey("one.or.other.mustbe.present"),
-              messageFromMessageKey("one.or.other.mustbe.present")
-            )
-          )
-
-        }
-
-      }
-
-      "redirect to next page" when {
-
-
-        def test(undertakingJourney: UndertakingJourney, nextCall: String): Unit = {
-
-          val updatedUndertaking = undertakingJourney.copy(contact = FormPage("contact", contactDetails2.some))
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[UndertakingJourney](eori1)(Right("sector"))
-            mockUpdate[UndertakingJourney](_ => update(undertakingJourney.some), eori1)(Right(updatedUndertaking))
-          }
-          checkIsRedirect(performAction("phone" -> "222", "mobile" -> "333"), nextCall)
-        }
-
-        "page is reached via normal create undertaking" in {
-          test(UndertakingJourney(contact = FormPage("contact"), cya = FormPage("cya")), "cya")
-        }
-
-        "page is reached via normal create undertaking when all answers have been provided" in {
-          test(undertakingJourneyComplete, routes.UndertakingController.getCheckAnswers().url)
-        }
-
-        "page is reached via amend  undertaking journey" in {
-          test(undertakingJourneyComplete1.copy(contact = FormPage("contact"), cya = FormPage("cya")), routes.UndertakingController.getAmendUndertakingDetails().url)
         }
 
       }
@@ -670,11 +523,6 @@ class UndertakingControllerSpec extends ControllerSpec
               messageFromMessageKey("undertaking.amendUndertaking.summary-list.sector.key"),
               messageFromMessageKey(s"sector.label.${undertaking.industrySector.id.toString}"),
               routes.UndertakingController.getSector().url
-            ),
-            ModifyUndertakingRow(
-              messageFromMessageKey("undertaking.amendUndertaking.summary-list.telephone.key"),
-              phoneNumber1,
-              routes.UndertakingController.getContact().url
             )
           )
           inSequence {
@@ -730,13 +578,6 @@ class UndertakingControllerSpec extends ControllerSpec
         undertakingJourneyOpt.map(_.copy(isAmend = true))
       }
 
-      val contact = contactDetails match {
-        case ContactDetails(Some(number1), Some(number2)) => s"$number1 $number2"
-        case ContactDetails(Some(number1), None) => s"$number1"
-        case ContactDetails(None, Some(number2)) => s"$number2"
-        case _ => ""
-      }
-
       val expectedRows = List(
         ModifyUndertakingRow(
           messageFromMessageKey("undertaking.amendUndertaking.summary-list.name.key"),
@@ -747,11 +588,6 @@ class UndertakingControllerSpec extends ControllerSpec
           messageFromMessageKey("undertaking.amendUndertaking.summary-list.sector.key"),
           messageFromMessageKey(s"sector.label.${undertaking.industrySector.id.toString}"),
           routes.UndertakingController.getSector().url
-        ),
-        ModifyUndertakingRow(
-          messageFromMessageKey("undertaking.amendUndertaking.summary-list.telephone.key"),
-          contact,
-          routes.UndertakingController.getContact().url
         )
       )
 
@@ -909,7 +745,7 @@ class UndertakingControllerSpec extends ControllerSpec
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true)))
             mockRetreiveUndertaking(eori)(Future.successful(undertaking1.some))
             mockUpdateUndertaking(updatedUndertaking)(Right(undertakingRef))
-            mockAddMember(undertakingRef, businessEntity1.copy(contacts = contactDetails.some))(Left(Error(exception)))
+            mockAddMember(undertakingRef, businessEntity1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
         }
@@ -922,7 +758,7 @@ class UndertakingControllerSpec extends ControllerSpec
           mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Right(undertakingJourneyComplete.copy(isAmend = true)))
           mockRetreiveUndertaking(eori)(Future.successful(undertaking1.some))
           mockUpdateUndertaking(updatedUndertaking)(Right(undertakingRef))
-          mockAddMember(undertakingRef, businessEntity1.copy(contacts = contactDetails.some))(Right(undertakingRef))
+          mockAddMember(undertakingRef, businessEntity1)(Right(undertakingRef))
         }
         checkIsRedirect(performAction("amendUndertaking" -> "true"), routes.AccountController.getAccountPage().url)
       }

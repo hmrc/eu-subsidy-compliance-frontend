@@ -207,7 +207,7 @@ class BusinessEntityController @Inject()(
 
    for {
      undertakingOpt <- escService.retrieveUndertaking(eori111)
-     businessEntityJourney <- store.put(BusinessEntityJourney.businessEntityJourneyForEori(undertakingOpt, EORI(eoriEntered)))
+     _ <- store.put(BusinessEntityJourney.businessEntityJourneyForEori(undertakingOpt, EORI(eoriEntered)))
    } yield {
      Ok(businessEntityCyaPage(eoriEntered))
    }
