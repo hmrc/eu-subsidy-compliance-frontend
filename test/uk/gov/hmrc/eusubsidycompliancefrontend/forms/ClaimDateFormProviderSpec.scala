@@ -75,7 +75,7 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
     }
 
     "return date in future error if date is in the future" in {
-      validateAndCheckError((day+1).toString, "1", "9999")("date.in-future")
+      validateAndCheckError((day+1).toString, "1", "9999")("date.in-future", "06 04 2019", "05 04 2021")
     }
 
     "return date outside of tax year range error for date before the start of the tax year range" in {
