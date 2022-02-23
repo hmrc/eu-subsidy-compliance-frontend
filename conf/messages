@@ -361,4 +361,3 @@ become-admin-confirmation.h2=What happens next
 become-admin-confirmation.p1=We have sent you a confirmation email.
 become-admin-confirmation.p2=The current lead (EORI number {0}) has been emailed with your request. If you do not receive a response within 7 days, please contact HMRC 
 
-
