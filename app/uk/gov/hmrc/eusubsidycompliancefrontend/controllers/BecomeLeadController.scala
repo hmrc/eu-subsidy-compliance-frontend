@@ -38,7 +38,7 @@ class BecomeLeadController @Inject()(
   sendEmailHelperService: SendEmailHelperService,
   becomeAdminPage: BecomeAdminPage,
   becomeAdminTermsAndConditionsPage: BecomeAdminTermsAndConditionsPage,
-  becomeAdminConfirmatinPage: BecomeAdminConfirmatinPage
+  becomeAdminConfirmationPage: BecomeAdminConfirmationPage
 )(
   implicit val appConfig: AppConfig,
   executionContext: ExecutionContext
@@ -130,7 +130,7 @@ class BecomeLeadController @Inject()(
           _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(oldLead.businessEntityIdentifier, None, RemovedAsLead, retrievedUndertaking, undertakingRef, None )
         } yield {
           if (journey.acceptTerms.value.getOrElse(false)) {
-            Ok(becomeAdminConfirmatinPage(oldLead.businessEntityIdentifier))
+            Ok(becomeAdminConfirmationPage(oldLead.businessEntityIdentifier))
           } else {
             Redirect(routes.BecomeLeadController.getBecomeLeadEori())
           }
