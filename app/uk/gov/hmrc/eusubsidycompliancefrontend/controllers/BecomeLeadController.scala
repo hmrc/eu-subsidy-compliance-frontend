@@ -52,21 +52,34 @@ class BecomeLeadController @Inject()(
 
   def getBecomeLeadEori: Action[AnyContent] =  escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[BecomeLeadJourney].flatMap {
-      case Some(journey) =>
+    for {
+      journey <- store.get[BecomeLeadJourney]
+      undertakingOpt <- escService.retrieveUndertaking(eori)
+      _ <- journey.fold(store.put(BecomeLeadJourney()))(Future.successful)
+    } yield (journey, undertakingOpt) match {
+      case (Some(journey), Some(undertaking)) =>
         val form = journey.becomeLeadEori.value.fold(becomeAdminForm)(e => becomeAdminForm.fill(FormValues(e.toString)))
-        Future(Ok(becomeAdminPage(form)))
-      case None => // initialise the empty Journey model
-        store.put(BecomeLeadJourney()).map { _ =>
-          Ok(becomeAdminPage(becomeAdminForm))
-        }
+        Ok(becomeAdminPage(form, undertaking.name, eori))
+      case (None, Some(undertaking)) => // initialise the empty Journey model
+        Ok(becomeAdminPage(becomeAdminForm, undertaking.name, eori))
+      case _ =>
+        throw new IllegalStateException("missing undertaking name")
     }
   }
 
   def postBecomeLeadEori: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     becomeAdminForm.bindFromRequest().fold(
-      formWithErrors => Future(BadRequest(becomeAdminPage(formWithErrors))),
+      formWithErrors => { 
+        for {
+          undertakingOpt <- escService.retrieveUndertaking(eori)
+        } yield (undertakingOpt) match {
+          case Some(undertaking) => 
+            BadRequest(becomeAdminPage(formWithErrors, undertaking.name, eori))
+          case _ => 
+            throw new IllegalStateException("missing undertaking name")
+        }
+      },
       form => {
           store.update[BecomeLeadJourney]{ _.map { becomeLeadJourney =>
             becomeLeadJourney.copy(becomeLeadEori = becomeLeadJourney.becomeLeadEori.copy(value = Some(form.value == "true")))
@@ -79,12 +92,12 @@ class BecomeLeadController @Inject()(
     )
   }
 
-  def getAcceptPromotionTerms: Action[AnyContent] =  escAuthentication.async { implicit request =>
+    def getAcceptPromotionTerms: Action[AnyContent] =  escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[BecomeLeadJourney].flatMap {
       case Some(journey) =>
         if(journey.becomeLeadEori.value.getOrElse(false)) {
-          Future(Ok(becomeAdminTermsAndConditionsPage()))
+          Future(Ok(becomeAdminTermsAndConditionsPage(eori)))
         } else {
          Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori()))
         }
@@ -117,7 +130,7 @@ class BecomeLeadController @Inject()(
           _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(oldLead.businessEntityIdentifier, None, RemovedAsLead, retrievedUndertaking, undertakingRef, None )
         } yield {
           if (journey.acceptTerms.value.getOrElse(false)) {
-            Ok(becomeAdminConfirmatinPage())
+            Ok(becomeAdminConfirmatinPage(oldLead.businessEntityIdentifier))
           } else {
             Redirect(routes.BecomeLeadController.getBecomeLeadEori())
           }

@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingName
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{UndertakingName, EORI}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.BusinessEntity
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
@@ -30,7 +30,7 @@
   govukSummaryList: GovukSummaryList
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], name: UndertakingName, eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
   pageTitle = Some(messages("become-admin.title")),
@@ -46,7 +46,7 @@
             content = Text(s"${messages(err.key++"." ++err.message)}")
           )
         ),
-        title = Text(messages("common.error.summary.title"))
+        title = Text(messages("common.error.summary.title", name))
       ))
     }
 
@@ -57,13 +57,13 @@
           ))} else None,
           fieldset = Some(Fieldset(
               legend = Some(Legend(
-                  content = Text(messages("become-admin.title")),
+                  content = Text(messages("become-admin.title", name)),
                   classes = "govuk-fieldset__legend--l",
                   isPageHeading = true
               ))
           )),
           hint = Some(Hint(
-            content = Text(messages("become-admin.hint"))
+            content = Text(messages("become-admin.hint", eori))
           )),
           idPrefix = Some("becomeAdmin"),
           name = "becomeAdmin",

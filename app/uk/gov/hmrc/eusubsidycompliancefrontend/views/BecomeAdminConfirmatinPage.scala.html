@@ -16,37 +16,32 @@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingName
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{UndertakingName, EORI}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.BusinessEntity
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
 
 @this(
-        layout: Layout,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios : GovukRadios,
-        govukSummaryList: GovukSummaryList
+  layout: Layout,
+  govukErrorSummary: GovukErrorSummary,
+  govukRadios : GovukRadios,
+  govukSummaryList: GovukSummaryList
 )
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-    pageTitle = Some(messages("become-admin-confirmation.title"))
+  pageTitle = Some(messages("become-admin-confirmation.title"))
 ) {
 
-    <div class="govuk-panel govuk-panel--confirmation">
-        <h1 class="govuk-panel__title">
-            @messages("become-admin-confirmation.title")
-        </h1>
-
-    </div>
-
-
-    <h2 class="govuk-heading-m">What happens next</h2>
-    <p class="govuk-body">We have sent you a confirmation email.</p>
-    <p class="govuk-body">The current lead (EORI number GB497294577697) has been
-        emailed with your request. If you do not receive a response
-        within 7 days, please contact HMRC
-    </p><p class="govuk-body"><a class="govuk-link" href=@routes.BecomeLeadController.getPromotionCleanup()>Go to account</a></p>
+  <div class="govuk-panel govuk-panel--confirmation">
+    <h1 class="govuk-panel__title">@messages("become-admin-confirmation.title")</h1>
+  </div>
+  @H2(messages("become-admin-confirmation.h2"))
+  @P(messages("become-admin-confirmation.p1"))
+  @P(messages("become-admin-confirmation.p2", eori))
+  <div>
+    <a class="govuk-link" href=@routes.BecomeLeadController.getPromotionCleanup()>Go to account</a>
+  </div>
 
 }

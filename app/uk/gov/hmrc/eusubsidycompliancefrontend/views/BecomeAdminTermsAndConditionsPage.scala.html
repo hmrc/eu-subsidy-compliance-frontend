@@ -16,10 +16,10 @@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingName
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{UndertakingName, EORI}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.BusinessEntity
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
 
 @this(
   layout: Layout,
@@ -30,47 +30,24 @@
   govukSummaryList: GovukSummaryList
 )
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-  pageTitle = Some(messages("become-admin-terms-and-conditions.title"))
+  pageTitle = Some(messages("become-admin-tandc.title"))
 ) {
 
-  <h1 class="govuk-heading-xl">@messages("become-admin-terms-and-conditions.title")</h1>
-
-  <h2 class="govuk-heading-m">What are de minimis aid payments (less Customs Duty waivers)?</h2>
-
-  <p class="govuk-body">
-   De minimis aid payments (less Customs Duty waivers) could include subsidised contracts, loans or grants,
-   from organisations like Invest NI and NI Direct. If you are unsure
-   if an aid you claim is counted as de minimis aid payments (less Customs Duty waivers) you should contact the provider.
-  </p>
-
-
-
-  <h2 class="govuk-heading-m">What is a single undertaking?</h2>
-  <p class="govuk-body">
-   HMRC needs to group together related businesses within a company
-   or organisation into a 'single undertaking'. Businesses within an
-   undertaking are identified by their EORI number.
-  </p>
-  <p class="govuk-body">
-
-   Every company may be structured differently. You may be a sole trader,
-   a limited company or partnership. You may be a larger business, with subsidiary companies within the organisation.
-   However a business is structured, we need to group all subsidiary or parent companies
-   together. This is referred to as a single undertaking.
-  </p>
-
-  <p class="govuk-body">
-   EORI number GB873554120329 will be the administrator for this single undertaking. The administrator is a business, not a person.
-
-  </p>
-  <h2 class="govuk-heading-m">Declaration</h2>
-  <p class="govuk-body">I agree to the terms and conditions.</p>
+  @H1(messages("become-admin-tandc.title"))
+  @H2(messages("become-admin-tandc.h2"))
+  @P(messages("become-admin-tandc.p1"))
+  @H2(messages("become-admin-tandc.h2-2"))
+  @P(messages("become-admin-tandc.p2"))
+  @P(messages("become-admin-tandc.p3"))
+  @P(messages("become-admin-tandc.p4", eori))
+  @H2(messages("become-admin-tandc.h2-3"))
+  @P(messages("become-admin-tandc.p5"))
 
   @formHelper(action = controllers.routes.BecomeLeadController.postAcceptPromotionTerms()) {
-      @button("common.accept")
+    @button("common.accept")
   }
 
 
