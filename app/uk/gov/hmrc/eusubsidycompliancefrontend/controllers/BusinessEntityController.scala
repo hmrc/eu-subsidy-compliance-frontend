@@ -23,7 +23,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ContactDetails, FormValues, OneOf, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, JourneyTraverseService, SendEmailHelperService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
@@ -46,7 +46,6 @@ class BusinessEntityController @Inject()(
   addBusinessPage: AddBusinessPage,
   eoriPage: BusinessEntityEoriPage,
   removeYourselfBEPage: BusinessEntityRemoveYourselfPage,
-  businessEntityContactPage: BusinessEntityContactPage,
   businessEntityCyaPage: BusinessEntityCYAPage,
   removeBusinessPage: RemoveBusinessPage
 )(
@@ -148,41 +147,12 @@ class BusinessEntityController @Inject()(
     }
   }
 
-  def getContact: Action[AnyContent] = escAuthentication.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store.get[BusinessEntityJourney].flatMap {
-      case Some(journey) =>
-        val form = journey.contact.value.fold(contactForm
-        )(contactDetails => contactForm.fill(OneOf(contactDetails.phone.map(_.toString),
-          contactDetails.mobile.map(_.toString))))
-        Future.successful(Ok(businessEntityContactPage(form, journey.previous)))
-
-      case _ => handleMissingSessionData("Contact journey")
-    }
-  }
-
-  def postContact: Action[AnyContent] = escAuthentication.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    journeyTraverseService.getPrevious[BusinessEntityJourney].flatMap { previous =>
-      contactForm.bindFromRequest().fold(
-        errors => Future.successful(BadRequest(businessEntityContactPage(errors, previous))),
-        form => {
-          store.update[BusinessEntityJourney]{ _.map { beJourney =>
-              beJourney.copy(contact = beJourney.contact.copy(value = Some(form.toContactDetails)))
-            }
-          }.flatMap(_.next)
-        }
-      )
-    }
-  }
-
   def getCheckYourAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[BusinessEntityJourney].flatMap {
       case Some(journey) =>
         val eori = journey.eori.value.getOrElse(handleMissingSessionData("EORI"))
-        val contactDetails = journey.contact.value.getOrElse(handleMissingSessionData("contact details"))
-        Future.successful(Ok(businessEntityCyaPage(eori, contactDetails)))
+        Future.successful(Ok(businessEntityCyaPage(eori)))
 
       case _ => handleMissingSessionData("CheckYourAnswers journey")
     }
@@ -196,11 +166,9 @@ class BusinessEntityController @Inject()(
       undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("undertaking ref"))
       businessEntityJourney <- store.get[BusinessEntityJourney].map(_.getOrElse(handleMissingSessionData("BusinessEntity Journey")))
       eoriBE = businessEntityJourney.eori.value.getOrElse(handleMissingSessionData("BE EORI"))
-      contactDetails = businessEntityJourney.contact.value.getOrElse(handleMissingSessionData("contact Details"))
       businessEntity =  BusinessEntity(
         eoriBE,
-        leadEORI = false,
-        ContactDetails(contactDetails.phone, contactDetails.mobile).some) // resetting the journey as it's final CYA page
+        leadEORI = false) // resetting the journey as it's final CYA page
       _ <- escService.addMember(undertakingRef, businessEntity)
       _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(eoriBE, None, AddMemberEmailToBusinessEntity, undertaking, undertakingRef, None)
       _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(eori, eoriBE.some, AddMemberEmailToLead, undertaking, undertakingRef, None)
@@ -241,8 +209,7 @@ class BusinessEntityController @Inject()(
      undertakingOpt <- escService.retrieveUndertaking(eori111)
      businessEntityJourney <- store.put(BusinessEntityJourney.businessEntityJourneyForEori(undertakingOpt, EORI(eoriEntered)))
    } yield {
-     val contactDetails = businessEntityJourney.contact.value.getOrElse(handleMissingSessionData("contact details"))
-     Ok(businessEntityCyaPage(eoriEntered, contactDetails))
+     Ok(businessEntityCyaPage(eoriEntered))
    }
  }
 

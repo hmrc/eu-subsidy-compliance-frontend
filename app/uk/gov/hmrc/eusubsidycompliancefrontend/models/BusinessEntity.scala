@@ -22,8 +22,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 // TODO consider renaming... UndertakingMember might make more sense
 case class BusinessEntity(
   businessEntityIdentifier: EORI,
-  leadEORI: Boolean,
-  contacts: Option[ContactDetails]
+  leadEORI: Boolean
 )
 
 case object BusinessEntity {

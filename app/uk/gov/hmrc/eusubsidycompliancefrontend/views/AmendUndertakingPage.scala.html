@@ -32,18 +32,13 @@
 )
 
 
-@(name: UndertakingName, sector: Sector, contacts: ContactDetails, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(name: UndertakingName, sector: Sector, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
     pageTitle = Some(messages("undertaking.amendUndertaking.title")),
     backLinkEnabled = true,
     backLink = Some(previous)
 ) {
-
-    @defining(
-        List(contacts.phone, contacts.mobile).flatten.mkString("<br>")
-    ) { case (phone) =>
-
         @formHelper(action = controllers.routes.UndertakingController.postAmendUndertaking) {
             <input type=hidden name=amendUndertaking value=true>
 
@@ -84,23 +79,6 @@
                                 )
                             )
                         ))
-                    ),
-                    SummaryListRow(
-                        key = Key(
-                            content = Text(messages("undertaking.amendUndertaking.summary-list.telephone.key"))
-                        ),
-                        value = Value(
-                            content = HtmlContent(phone)
-                        ),
-                        actions = Some(Actions(
-                            items = Seq(
-                                ActionItem(
-                                    href = controllers.routes.UndertakingController.getContact().toString,
-                                    content = Text("Change"),
-                                    visuallyHiddenText = Some("contact details")
-                                )
-                            )
-                        ))
                     )
                 )
             ))
@@ -109,6 +87,6 @@
 
             @button("common.saveChanges")
         }
-    }
+
 }
 

@@ -55,8 +55,7 @@ package object digital {
             "businessEntity" ->
               Json.obj(
                 "idType" -> "EORI",
-                "idValue" -> JsString(lead.businessEntityIdentifier),
-                "contacts" -> lead.contacts
+                "idValue" -> JsString(lead.businessEntityIdentifier)
               ),
             "undertakingStartDate" -> dateFormatter.format(LocalDate.now)
           )

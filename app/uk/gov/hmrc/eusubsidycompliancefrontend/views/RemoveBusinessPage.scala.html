@@ -50,14 +50,7 @@
 
     @H1(messages("removeBusinessEntity.title"))
 
-    @defining(
-      bs.contacts match {
-        case Some(ContactDetails(Some(p), Some(m))) => p + "<br>" + m
-        case Some(ContactDetails(None, Some(m))) => m
-        case Some(ContactDetails(Some(p), None)) => p
-        case _ => ""
-      }
-    ) { case (phone) =>
+
       @govukSummaryList(SummaryList(
         rows = Seq(
           SummaryListRow(
@@ -67,18 +60,10 @@
             value = Value(
               content = Text(bs.businessEntityIdentifier)
             )
-          ),
-          SummaryListRow(
-            key = Key(
-              content = Text(messages("businessEntity.cya.contact.label"))
-            ),
-            value = Value(
-              content = HtmlContent(phone)
-            )
           )
         )
       ))
-    }
+
 
     @govukRadios(Radios(
       classes = "govuk-radios--inline",
