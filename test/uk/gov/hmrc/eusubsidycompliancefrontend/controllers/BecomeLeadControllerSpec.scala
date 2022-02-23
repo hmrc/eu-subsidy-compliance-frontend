@@ -109,11 +109,12 @@ class BecomeLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[BecomeLeadJourney](eori1)(Right(None))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockPut[BecomeLeadJourney](newBecomeLeadJourney, eori)(Right(newBecomeLeadJourney))
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("become-admin.title"),
+            messageFromMessageKey("become-admin.title", undertaking1.name),
             {doc =>
 
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
@@ -129,10 +130,11 @@ class BecomeLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = Some(true))).some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking1.some))
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("become-admin.title"),
+            messageFromMessageKey("become-admin.title", undertaking1.name),
             {doc =>
 
               val selectedOptions = doc.select(".govuk-radios__input[checked]")

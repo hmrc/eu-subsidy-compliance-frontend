@@ -20,6 +20,7 @@ import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -55,17 +56,25 @@ class BecomeLeadController @Inject()(
     for {
       journey <- store.get[BecomeLeadJourney]
       undertakingOpt <- escService.retrieveUndertaking(eori)
-      _ <- journey.fold(store.put(BecomeLeadJourney()))(Future.successful)
-    } yield (journey, undertakingOpt) match {
-      case (Some(journey), Some(undertaking)) =>
-        val form = journey.becomeLeadEori.value.fold(becomeAdminForm)(e => becomeAdminForm.fill(FormValues(e.toString)))
-        Ok(becomeAdminPage(form, undertaking.name, eori))
-      case (None, Some(undertaking)) => // initialise the empty Journey model
-        Ok(becomeAdminPage(becomeAdminForm, undertaking.name, eori))
-      case _ =>
-        throw new IllegalStateException("missing undertaking name")
-    }
+      result <- becomeLeadResult(journey, undertakingOpt)
+    } yield result
   }
+
+  private def becomeLeadResult(becomeLeadJourneyOpt: Option[BecomeLeadJourney],
+     undertakingOpt: Option[Undertaking]
+ )(implicit request: EscAuthRequest[_], eori: EORI): Future[Result] =
+    (becomeLeadJourneyOpt, undertakingOpt) match {
+    case (Some(journey), Some(undertaking)) =>
+      val form = journey.becomeLeadEori.value.fold(becomeAdminForm)(e => becomeAdminForm.fill(FormValues(e.toString)))
+      Future.successful(Ok(becomeAdminPage(form, undertaking.name, eori)))
+    case (None, Some(undertaking)) => // initialise the empty Journey model
+      store.put(BecomeLeadJourney()).map { _ =>
+        Ok(becomeAdminPage(becomeAdminForm, undertaking.name, eori))
+      }
+    case _ =>
+      throw new IllegalStateException("missing undertaking name")
+  }
+
 
   def postBecomeLeadEori: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
