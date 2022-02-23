@@ -345,5 +345,6 @@ updateEmail.p3.list3 = some financial notifications, including Direct Debit noti
 
 become-admin.title=[TODO - become admin title]
 become-admin.hint=[TODO - become admin hint]
+become-admin-confirmation.title = You have requested to become the administrator for this single undertaking
 
 become-admin-terms-and-conditions.title=[TODO - become admin terms and conditions title]

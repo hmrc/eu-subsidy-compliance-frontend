@@ -39,6 +39,8 @@ class AppConfig @Inject()(config: Configuration) {
     "promoteAsLeadEmailToBE" -> config.get[String](s"email-send.promote-other-as-lead-to-be-template-$langCode"),
     "promoteAsLeadEmailToLead" -> config.get[String](s"email-send.promote-other-as-lead-to-lead-template-$langCode"),
     "removeThemselfEmailToBE" -> config.get[String](s"email-send.member-remove-themself-email-to-be-template-$langCode"),
-    "removeThemselfEmailToLead" -> config.get[String](s"email-send.member-remove-themself-email-to-lead-template-$langCode")
+    "removeThemselfEmailToLead" -> config.get[String](s"email-send.member-remove-themself-email-to-lead-template-$langCode"),
+    "promotedAsLeadToNewLead" -> config.get[String](s"email-send.promoted-themself-email-to-new-lead-template-$langCode"),
+    "removedAsLeadToOldLead" -> config.get[String](s"email-send.removed_as_lead-email-to-old-lead-template-$langCode")
   )
 }

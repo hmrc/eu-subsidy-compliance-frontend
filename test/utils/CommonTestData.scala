@@ -195,7 +195,7 @@ object CommonTestData {
     None, None,
     List(businessEntity5))
 
-  val emailParameter   = SingleEORIEmailParameter(eori1, undertaking.name, undertakingRef, "undertaking Created by Lead EORI")
+  val emailParameter   = SingleEORIEmailParameter(eori1, undertaking.name, undertakingRef, "createUndertaking")
   val emailSendRequest = EmailSendRequest(List(EmailAddress("user@test.com")), "templateId1", emailParameter)
 
 }

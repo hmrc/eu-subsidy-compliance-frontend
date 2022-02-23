@@ -16,19 +16,16 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import play.api.Configuration
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, OneOf, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.EmailTemplateHelpers
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
@@ -41,10 +38,7 @@ class UndertakingController @Inject()(
   store: Store,
   escService: EscService,
   journeyTraverseService: JourneyTraverseService,
-  sendEmailService: SendEmailService,
-  configuration: Configuration,
-  emailTemplateHelpers: EmailTemplateHelpers,
-  retrieveEmailService: RetrieveEmailService,
+  sendEmailHelperService: SendEmailHelperService,
   undertakingNamePage: UndertakingNamePage,
   undertakingSectorPage: UndertakingSectorPage,
   undertakingContactPage: UndertakingContactPage,
@@ -219,11 +213,8 @@ class UndertakingController @Inject()(
   )(implicit request: EscAuthRequest[_]): Future[Result] = {
     for {
       ref <- escService.createUndertaking(undertaking)
-      templateId = emailTemplateHelpers.getEmailTemplateId(configuration, CreateUndertaking)
-      emailParameters = SingleEORIEmailParameter(eori, undertaking.name, ref,  "undertaking Created by Lead EORI")
-      emailAddress <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(sys.error("Email won't be send as email address is not present")))
+     _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(eori, None, CreateUndertaking, undertaking, ref, None)
     } yield {
-      sendEmailService.sendEmail(emailAddress, emailParameters, templateId)
       Redirect(routes.UndertakingController.getConfirmation(ref, undertakingJourney.name.value.getOrElse("")))
     }
   }

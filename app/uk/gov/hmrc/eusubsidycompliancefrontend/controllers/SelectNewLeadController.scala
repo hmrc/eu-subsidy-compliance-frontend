@@ -17,17 +17,14 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
-import play.api.Configuration
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIEmailParameter, SingleEORIEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, NewLeadJourney, RetrieveEmailService, SendEmailService, Store}
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.EmailTemplateHelpers
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, NewLeadJourney, SendEmailHelperService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.Inject
@@ -38,10 +35,7 @@ class SelectNewLeadController @Inject()(
      escActionBuilders: EscActionBuilders,
      escService: EscService,
      store: Store,
-     emailTemplateHelpers: EmailTemplateHelpers,
-     retrieveEmailService: RetrieveEmailService,
-     sendEmailService: SendEmailService,
-     configuration: Configuration,
+     sendEmailHelperService : SendEmailHelperService,
      selectNewLeadPage: SelectNewLeadPage,
      leadEORIChangedPage: LeadEORIChangedPage
 )( implicit val appConfig: AppConfig, executionContext: ExecutionContext) extends BaseController(mcc) {
@@ -91,18 +85,9 @@ class SelectNewLeadController @Inject()(
                     newLeadJourney.copy(selectNewLead = updatedLead)
                   }
                 }
-                emailAddressBE <- retrieveEmailService.retrieveEmailByEORI(eoriBE).map(_.getOrElse(handleMissingSessionData(" BE Email Address")))
-                emailAddressLead <- retrieveEmailService.retrieveEmailByEORI(eori).map(_.getOrElse(handleMissingSessionData("Lead Email Address")))
-                templateIdBE = emailTemplateHelpers.getEmailTemplateId(configuration, promoteOtherAsLeadEmailToBusinessEntity)
-                templateIdLead = emailTemplateHelpers.getEmailTemplateId(configuration, promoteOtherAsLeadEmailToLead)
-                emailParametersBE = SingleEORIEmailParameter(eoriBE, undertaking.name, undertakingRef,  "Email to BE for being promoted  as a Lead")
-                emailParametersLead = DoubleEORIEmailParameter(eori, eoriBE,  undertaking.name, undertakingRef,  "Email to Lead confirming they have assigned other Business Entity as lead")
-
-              } yield {
-                sendEmailService.sendEmail(emailAddressBE, emailParametersBE, templateIdBE)
-                sendEmailService.sendEmail(emailAddressLead, emailParametersLead, templateIdLead)
-                Redirect(routes.SelectNewLeadController.getLeadEORIChanged())
-              }
+                _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(eoriBE, None, promoteOtherAsLeadEmailToBusinessEntity, undertaking, undertakingRef, None)
+                _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(eori, eoriBE.some, promoteOtherAsLeadEmailToLead, undertaking, undertakingRef, None)
+              } yield Redirect(routes.SelectNewLeadController.getLeadEORIChanged())
 
             }
           )
