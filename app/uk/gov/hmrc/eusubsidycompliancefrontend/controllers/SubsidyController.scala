@@ -19,16 +19,14 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.data.Forms.{bigDecimal, mapping, optional, text}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, JourneyTraverseService, Store, SubsidyJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, Journey, JourneyTraverseService, Store, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
@@ -41,7 +39,6 @@ class SubsidyController @Inject()(
   store: Store,
   escService: EscService,
   journeyTraverseService: JourneyTraverseService,
-  timeProvider: TimeProvider,
   reportPaymentPage: ReportPaymentPage,
   addClaimEoriPage: AddClaimEoriPage,
   addClaimAmountPage: AddClaimAmountPage,
@@ -105,23 +102,13 @@ class SubsidyController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
-        import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax._
-        val currentDateDisplay = timeProvider.today.toDisplayFormat
-
-        journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
-          journey
-            .claimAmount
-            .value
-            .fold(
-              Future.successful(
-                Ok(addClaimAmountPage(claimAmountForm, previous))
-              )
-            ) { x =>
-              Future.successful(
-                Ok(addClaimAmountPage(claimAmountForm.fill(x), previous))
-              )
-            }
-
+        val form = journey.claimAmount.value.fold(claimAmountForm)(claimAmountForm.fill)
+        for {
+          subsidyJourney <- store.get[SubsidyJourney].map(_.getOrElse(handleMissingSessionData("Subsidy Journey")))
+          previous <- journeyTraverseService.getPrevious[SubsidyJourney]
+        } yield {
+          val addClaimDate = subsidyJourney.claimDate.value.getOrElse(handleMissingSessionData("Subsidy Claim date"))
+          Ok(addClaimAmountPage(form, previous, addClaimDate.year, addClaimDate.month))
         }
       case _ => handleMissingSessionData("Subsidy journey")
     }
@@ -129,21 +116,25 @@ class SubsidyController @Inject()(
 
   def postAddClaimAmount: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
-      claimAmountForm.bindFromRequest().fold(
-        formWithErrors => Future.successful(BadRequest(addClaimAmountPage(formWithErrors, previous))),
-        form => {
-          for {
-            journey <- store.update[SubsidyJourney]({ x =>
-              x.map { y =>
-              y.copy(claimAmount = y.claimAmount.copy(value = Some(form)))
-              }
-            })
-            redirect <- getJourneyNext(journey)
-          } yield redirect
-        }
-      )
-    }
+
+    def handleFormSubmit(previous: Journey.Uri, addClaimDate: DateFormValues): Future[Result] = claimAmountForm.bindFromRequest().fold(
+      formWithErrors => Future.successful(BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month))),
+      form => {
+        for {
+          journey <- store.update[SubsidyJourney]{ _.map { subsidyJourney =>
+            subsidyJourney.copy(claimAmount = subsidyJourney.claimAmount.copy(value = Some(form)))
+          }
+          }
+          redirect <- getJourneyNext(journey)
+        } yield redirect
+      }
+    )
+    for {
+      subsidyJourney <- store.get[SubsidyJourney].map(_.getOrElse(handleMissingSessionData("Subsidy Journey")))
+      previous <- journeyTraverseService.getPrevious[SubsidyJourney]
+      addClaimDate = subsidyJourney.claimDate.value.getOrElse(handleMissingSessionData("Subsidy Claim date"))
+      result <- handleFormSubmit(previous, addClaimDate)
+    } yield result
   }
 
   def getClaimDate: Action[AnyContent] = escAuthentication.async { implicit request =>
@@ -212,19 +203,9 @@ class SubsidyController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
-        journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
-          journey
-            .publicAuthority
-            .value
-            .fold(
-              Future.successful(
-                Ok(addPublicAuthorityPage(claimPublicAuthorityForm, previous))
-              )
-            ) { x =>
-              Future.successful(
-                Ok(addPublicAuthorityPage(claimPublicAuthorityForm.fill(x), previous))
-              )
-            }
+        val form = journey.publicAuthority.value.fold(claimPublicAuthorityForm)(claimPublicAuthorityForm.fill)
+        journeyTraverseService.getPrevious[SubsidyJourney].map { previous =>
+          Ok(addPublicAuthorityPage(form, previous))
         }
       case _ => handleMissingSessionData("Subsidy journey")
     }
@@ -237,9 +218,8 @@ class SubsidyController @Inject()(
         errors => Future.successful(BadRequest(addPublicAuthorityPage(errors, previous))),
         form => {
           for {
-            journey <- store.update[SubsidyJourney]({ x =>
-                  x.map { y =>
-                y.copy(publicAuthority = y.publicAuthority.copy(value = Some(form)))
+            journey <- store.update[SubsidyJourney]({ _.map { subsidyJourney =>
+                subsidyJourney.copy(publicAuthority = subsidyJourney.publicAuthority.copy(value = Some(form)))
               }
               })
             redirect <- getJourneyNext(journey)
