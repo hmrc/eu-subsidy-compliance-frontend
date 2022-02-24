@@ -106,9 +106,9 @@ class SubsidyController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     // TODO - add 'getPrevious to all'
     store.get[SubsidyJourney].flatMap {
-      case Some(journey) => journeyTraverseService.getPrevious[SubsidyJourney].flatMap { p =>
+      case Some(journey) => journeyTraverseService.getPrevious[SubsidyJourney].map { p =>
         val form = journey.claimAmount.value.fold(claimAmountForm)(claimAmountForm.fill)
-        Ok(addClaimAmountPage(form, p)).toFuture
+        Ok(addClaimAmountPage(form, p))
       }
       case _ => handleMissingSessionData("Subsidy journey")
     }
