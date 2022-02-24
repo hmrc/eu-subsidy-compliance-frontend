@@ -20,7 +20,7 @@ import cats.data.OptionT
 import cats.implicits._
 import play.api.data.Form
 import play.api.data.Forms.{bigDecimal, mapping, optional, text}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider
@@ -271,18 +271,21 @@ class SubsidyController @Inject()(
 
   def getCheckAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[SubsidyJourney].flatMap {
-      case Some(journey) =>
-        Ok(cyaPage(
-          claimDate = journey.claimDate.value.getOrElse(handleMissingSessionData("claim date")),
-          amount = journey.claimAmount.value.getOrElse(handleMissingSessionData("claim amount")),
-          claimEori = journey.addClaimEori.value.fold(handleMissingSessionData("claim EORI"))(_.value.map(EORI(_))),
-          authority = journey.publicAuthority.value.getOrElse(handleMissingSessionData("public authority")),
-          traderRef = journey.traderRef.value.fold(handleMissingSessionData("trader ReF"))(_.value.map(TraderRef(_))),
-          previous = journey.previous
-        )).toFuture
-      case _ => handleMissingSessionData("Subsidy journey")
-    }
+
+    val result: OptionT[Future, Result] = for {
+      journey           <- store.get[SubsidyJourney].toContext
+      _                 <- validateSubsidyJourneyFieldsPopulated(journey).toContext
+      claimDate         <- journey.claimDate.value.toContext
+      amount            <- journey.claimAmount.value.toContext
+      optionalEori      <- journey.addClaimEori.value.toContext
+      authority         <- journey.publicAuthority.value.toContext
+      optionalTraderRef <- journey.traderRef.value.toContext
+      claimEori = optionalEori.value.map(EORI(_))
+      traderRef = optionalTraderRef.value.map(TraderRef(_))
+      previous  = journey.previous
+    } yield Ok(cyaPage(claimDate, amount, claimEori, authority, traderRef, previous))
+
+    result.getOrElse(handleMissingSessionData("Subsidy journey"))
   }
 
   def postCheckAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
