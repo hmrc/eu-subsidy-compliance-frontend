@@ -23,8 +23,6 @@
 
 @this(
   layout: Layout,
-  formHelper: FormWithCSRF,
-  button: components.Button,
   govukErrorSummary: GovukErrorSummary,
   govukRadios : GovukRadios,
   govukSummaryList: GovukSummaryList
@@ -33,22 +31,17 @@
 @(eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-  pageTitle = Some(messages("become-admin-tandc.title"))
+  pageTitle = Some(messages("become-admin-confirmation.title"))
 ) {
 
-  @H1(messages("become-admin-tandc.title"))
-  @H2(messages("become-admin-tandc.h2"))
-  @P(messages("become-admin-tandc.p1"))
-  @H2(messages("become-admin-tandc.h2-2"))
-  @P(messages("become-admin-tandc.p2"))
-  @P(messages("become-admin-tandc.p3"))
-  @P(messages("become-admin-tandc.p4", eori))
-  @H2(messages("become-admin-tandc.h2-3"))
-  @P(messages("become-admin-tandc.p5"))
-
-  @formHelper(action = controllers.routes.BecomeLeadController.postAcceptPromotionTerms()) {
-    @button("common.accept")
-  }
-
+  <div class="govuk-panel govuk-panel--confirmation">
+    <h1 class="govuk-panel__title">@messages("become-admin-confirmation.title")</h1>
+  </div>
+  @H2(messages("become-admin-confirmation.h2"))
+  @P(messages("become-admin-confirmation.p1"))
+  @P(messages("become-admin-confirmation.p2", eori))
+  <div>
+    <a class="govuk-link" href=@routes.BecomeLeadController.getPromotionCleanup()>@messages("common.go-account-home")</a>
+  </div>
 
 }
