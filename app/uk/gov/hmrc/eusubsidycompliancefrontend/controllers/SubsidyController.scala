@@ -104,10 +104,9 @@ class SubsidyController @Inject()(
       case Some(journey) =>
         val form = journey.claimAmount.value.fold(claimAmountForm)(claimAmountForm.fill)
         for {
-          subsidyJourney <- store.get[SubsidyJourney].map(_.getOrElse(handleMissingSessionData("Subsidy Journey")))
           previous <- journeyTraverseService.getPrevious[SubsidyJourney]
         } yield {
-          val addClaimDate = subsidyJourney.claimDate.value.getOrElse(handleMissingSessionData("Subsidy Claim date"))
+          val addClaimDate = journey.claimDate.value.getOrElse(handleMissingSessionData("Subsidy Claim date"))
           Ok(addClaimAmountPage(form, previous, addClaimDate.year, addClaimDate.month))
         }
       case _ => handleMissingSessionData("Subsidy journey")

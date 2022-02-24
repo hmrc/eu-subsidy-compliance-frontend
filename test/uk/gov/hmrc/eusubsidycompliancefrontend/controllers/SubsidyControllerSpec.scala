@@ -23,6 +23,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, Error, NonHmrcSubsidy, OptionalEORI, OptionalTraderRef, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.FormUrls.{ClaimAmount, ClaimDateValues, ReportPayment}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, JourneyTraverseService, Store, SubsidyJourney}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData.{subsidyJourney, _}
@@ -159,6 +160,93 @@ class SubsidyControllerSpec extends ControllerSpec
           checkIsRedirect(performAction(("reportPayment", "true")), "add-claim-date")
         }
       }
+    }
+
+    "handling request to get claim amount" must {
+
+      def performAction() = controller
+        .getClaimAmount(FakeRequest("GET",routes.SubsidyController.getClaimAmount().url))
+
+      "throw technical error" when {
+
+        val exception = new Exception("oh no !")
+        "call to get subsidy journey fails " in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to get subsidy journey passes but return None " in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(None))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to fetch previous call fails " in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+            mockGetPrevious[SubsidyJourney](eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to get subsidy journey come back with no claim date " in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(SubsidyJourney().some))
+            mockGetPrevious[SubsidyJourney](eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+      }
+
+      "display the page" when {
+
+        def test(subsidyJourney: SubsidyJourney) = {
+          mockAuthWithNecessaryEnrolment()
+          mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+          mockGetPrevious[SubsidyJourney](eori1)(Right("add-claim-date"))
+
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("add-claim-amount.title"),
+            { doc =>
+              val text = doc.select(".govuk-list").text
+              text should include regex subsidyJourney.claimDate.value.map(_.year).getOrElse("")
+              text should include regex subsidyJourney.claimDate.value.map(_.month).getOrElse("")
+
+              val input = doc.select(".govuk-input").attr("value")
+              input shouldBe subsidyJourney.claimAmount.value.map(_.toString()).getOrElse("")
+
+              val button = doc.select("form")
+              button.attr("action") shouldBe routes.SubsidyController.postAddClaimAmount().url
+
+            }
+          )
+        }
+
+        "user hasn't already answered the question" in {
+          test(SubsidyJourney(
+            reportPayment = FormPage(ReportPayment, true.some),
+            claimDate = FormPage(ClaimDateValues, DateFormValues("9","10","2022").some)
+          ))
+        }
+
+        "user has already answered the question" in {
+          test(SubsidyJourney(
+            reportPayment = FormPage(ReportPayment, true.some),
+            claimDate = FormPage(ClaimDateValues, DateFormValues("9","10","2022").some),
+            claimAmount = FormPage(ClaimAmount,BigDecimal(123.45).some)
+          ))
+        }
+
+      }
+
     }
 
     "handling request to get claim date page" must {

@@ -44,7 +44,7 @@
         errorList = form.errors.map { err =>
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(s"$key"+err.message)}"),
+            content = Text(s"${messages(s"$key."+err.message)}"),
             attributes = Map("class" ->"govuk-link")
           )
         },
@@ -58,9 +58,9 @@
     @H1(title)
     @P(messages(s"$key.p1"))
       <ul class="govuk-list govuk-list--number">
-          <li>@{messages(s"$key.l1", currentYear, currentMonth)}</li>
-          <li>@{messages(s"$key.l2")}</li>
-          <li>@{messages(s"$key.l3")}</li>
+          <li>@{messages(s"$key.l1", currentYear, currentMonth)}</li><br>
+          <li>@{messages(s"$key.l2")}</li><br>
+          <li>@{messages(s"$key.l3")}</li><br>
       </ul>
 
     @govukInput(Input(
