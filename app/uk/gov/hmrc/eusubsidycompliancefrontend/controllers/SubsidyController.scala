@@ -380,11 +380,11 @@ class SubsidyController @Inject()(
     if(journey.isAmend) Future.successful(Redirect(routes.SubsidyController.getCheckAnswers()))
     else journey.next
 
-  lazy val reportPaymentForm: Form[FormValues] = Form(
+  private val reportPaymentForm: Form[FormValues] = Form(
     mapping("reportPayment" -> mandatory("reportPayment"))(FormValues.apply)(FormValues.unapply))
 
   // TODO validate the EORI matches regex
-  val claimEoriForm: Form[OptionalEORI] = Form(
+  private val claimEoriForm: Form[OptionalEORI] = Form(
     mapping(
       "should-claim-eori" -> mandatory("should-claim-eori"),
       "claim-eori" -> optional(text)
@@ -398,13 +398,13 @@ class SubsidyController @Inject()(
     )
   )
 
-  def claimEoriFormApply(input: String, eoriOpt: Option[String]) =
+  private def claimEoriFormApply(input: String, eoriOpt: Option[String]) =
     (input, eoriOpt) match {
       case (radioSelected, Some(eori)) => OptionalEORI(radioSelected, Some(s"GB$eori"))
       case (radioSelected, other) => OptionalEORI(radioSelected, other)
     }
 
-  val claimTraderRefForm: Form[OptionalTraderRef] = Form(
+  private val claimTraderRefForm: Form[OptionalTraderRef] = Form(
     mapping(
       "should-store-trader-ref" -> mandatory("should-store-trader-ref"),
       "claim-trader-ref" -> optional(text)
@@ -417,11 +417,11 @@ class SubsidyController @Inject()(
     )
   )
 
-  lazy val claimPublicAuthorityForm: Form[String] = Form(
+  private val claimPublicAuthorityForm: Form[String] = Form(
     "claim-public-authority" -> mandatory("claim-public-authority")
   )
 
-  lazy val claimAmountForm : Form[BigDecimal] = Form(
+  private val claimAmountForm : Form[BigDecimal] = Form(
     mapping("claim-amount" -> bigDecimal
       .verifying("error.amount.incorrectFormat", e => e.scale == 2 || e.scale == 0)
       .verifying("error.amount.tooBig", e => e.toString().length < 17)
@@ -431,10 +431,10 @@ class SubsidyController @Inject()(
 
   private val claimDateForm = claimDateFormProvider.form
 
-  lazy val removeSubsidyClaimForm: Form[FormValues] = Form(
+  private val removeSubsidyClaimForm: Form[FormValues] = Form(
     mapping("removeSubsidyClaim" -> mandatory("removeSubsidyClaim"))(FormValues.apply)(FormValues.unapply))
 
-  lazy val cyaForm: Form[FormValues] = Form(
+  private val cyaForm: Form[FormValues] = Form(
     mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
 
 }
