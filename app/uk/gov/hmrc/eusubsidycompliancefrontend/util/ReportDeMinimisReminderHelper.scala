@@ -26,12 +26,15 @@ object ReportDeMinimisReminderHelper {
 
   def isTimeToReport(lastSubsidyUsageUpdt: Option[LocalDate], currentDate: LocalDate) = {
     lastSubsidyUsageUpdt
-      .map(date => (date.plusDays(ONE_DAY_BEFORE_REMINDER_DAY)
+      .map(lastUpdated => (lastUpdated.plusDays(ONE_DAY_BEFORE_REMINDER_DAY)
         .isBefore(currentDate) &&
-        (date.plusDays(ONE_DAY_AFTER_DUE_DAY).isAfter(currentDate)))).getOrElse(false)
+        (lastUpdated.plusDays(ONE_DAY_AFTER_DUE_DAY).isAfter(currentDate))))
+
+      .getOrElse(false)
   }
 
   def dueDateToReport(lastSubsidyUsageUpdt: Option[LocalDate]) = lastSubsidyUsageUpdt.map(_.plusDays(REPORT_DEMINIMIS_DUE_DAY))
 
+  def isOverdue(lastSubsidyUsageUpdt: Option[LocalDate], currentDate: LocalDate): Boolean = lastSubsidyUsageUpdt.fold(false)(date => date.isBefore(currentDate.minusDays(REPORT_DEMINIMIS_DUE_DAY)))
 
 }

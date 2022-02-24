@@ -26,7 +26,7 @@
   govukInsetText : GovukInsetText
 )
 
-@(undertaking: Undertaking, isNonLeadEORIPresent: Boolean, isTimeToReport: Boolean, lastDayToReport: Option[String])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(undertaking: Undertaking, isNonLeadEORIPresent: Boolean, isTimeToReport: Boolean, lastDayToReport: Option[String], isOverdue: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @linkURL = @{if(isNonLeadEORIPresent) routes.SelectNewLeadController.getSelectNewLead() else routes.NoBusinessPresentController.getNoBusinessPresent() }
 @layout(
   pageTitle = Some(messages("account-homepage.title", undertaking.name)),
@@ -34,7 +34,6 @@
   backLink = None
 ) {
   <h1 class="govuk-heading-xl">@messages("account-homepage.title", undertaking.name)</h1>
-
 
   @govukWarningText(WarningText(
     iconFallbackText = messages("common.warning"),
@@ -44,6 +43,11 @@
     @if(isTimeToReport) {
         @govukInsetText(InsetText(
             content = Text(messages("account-homepage.inset", lastDayToReport.getOrElse(sys.error("due date missing"))))
+        ))
+    }
+    @if(isOverdue) {
+        @govukInsetText(InsetText(
+            content = Text(messages("account-homepage-overdue.inset", lastDayToReport.getOrElse(sys.error("due date missing"))))
         ))
     }
 
