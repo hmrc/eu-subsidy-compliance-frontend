@@ -28,6 +28,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -64,10 +65,10 @@ class SubsidyController @Inject()(
   def getReportPayment: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    val result: OptionT[Future, (UndertakingRef, Undertaking)] = for {
-      _           <- OptionT(store.get[SubsidyJourney]).orElseF(store.put(SubsidyJourney()).map(Option(_)))
-      undertaking <- OptionT(store.get[Undertaking])
-      reference   <- OptionT.fromOption[Future](undertaking.reference)
+    val result = for {
+      _           <- store.get[SubsidyJourney].toContext.orElse(store.put(SubsidyJourney()).toContext)
+      undertaking <- store.get[Undertaking].toContext
+      reference   <- undertaking.reference.toContext
     } yield (reference, undertaking)
 
     result.foldF(handleMissingSessionData("Subsidy journey")) {
@@ -88,7 +89,7 @@ class SubsidyController @Inject()(
     escService
       .retrieveSubsidy(SubsidyRetrieve(r, None))
       .map(Option(_))
-      .fallbackTo(Option.empty.toFuture)
+      .fallbackTo(Future.successful(Option.empty)) // TODO - why is toFuture not avaialble here?
 
   def postReportPayment: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -273,7 +274,6 @@ class SubsidyController @Inject()(
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
         Ok(cyaPage(
-          // TODO - extract into common validator
           claimDate = journey.claimDate.value.getOrElse(handleMissingSessionData("claim date")),
           amount = journey.claimAmount.value.getOrElse(handleMissingSessionData("claim amount")),
           claimEori = journey.addClaimEori.value.fold(handleMissingSessionData("claim EORI"))(_.value.map(EORI(_))),
@@ -292,12 +292,12 @@ class SubsidyController @Inject()(
       _ => sys.error("Error processing subsidy cya form submission"),
       form => {
         for {
-          journey <- OptionT(store.update[SubsidyJourney] (updateCya(form)).map(Option(_)))
-          _ <- OptionT(validateSubsidyJourneyFieldsPopulated(journey).toFuture)
-          undertaking <- OptionT(store.get[Undertaking]).orElseF(handleMissingSessionData("undertaking"))
-          ref <- OptionT.fromOption[Future](undertaking.reference)
-          _ <- OptionT(escService.createSubsidy(ref, journey).some.toFuture)
-          _ <- OptionT(store.put(SubsidyJourney()).map(Option(_)))
+          journey <- store.update[SubsidyJourney] (updateCya(form)).map(Option(_)).toContext
+          _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
+          undertaking <- store.get[Undertaking].toContext.orElseF(handleMissingSessionData("undertaking"))
+          ref <- undertaking.reference.toContext
+          _ <- escService.createSubsidy(ref, journey).toContext
+          _ <- store.put(SubsidyJourney()).toContext
         } yield {
           Redirect(routes.SubsidyController.getReportPayment())
         }
