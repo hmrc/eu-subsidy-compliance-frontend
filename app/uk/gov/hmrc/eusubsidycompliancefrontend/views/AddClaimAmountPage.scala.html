@@ -56,7 +56,7 @@
   @formHelper(action = controllers.routes.SubsidyController.postAddClaimAmount()) {
 
     @H1(messages("add-claim-amount.title"))
-    @P(messages("add-claim-amount.p1", "https://ec.europa.eu/info/funding-tenders/procedures-guidelines-tenders/information-contractors-and-beneficiaries/exchange-rate-inforeuro_en"))
+    @P(messages("add-claim-amount.p1", appConfig.exchangeRateToolUrl))
       <ul class="govuk-list govuk-list--number">
           <li>@{messages(s"$key.l1", currentYear, currentMonth)}</li><br>
           <li>@{messages(s"$key.l2")}</li><br>
@@ -69,7 +69,7 @@
       prefix = Some(PrefixOrSuffix(content = Text("€"))),
       value = form.data.get("claim-amount"),
       errorMessage = if (form.hasErrors) {
-          Some(ErrorMessage(content = Text(messages(s"$key." + form.errors.head.message))))
+          Some(ErrorMessage(content = Text(messages(s"$key.${form.errors.head.message}" ))))
       } else None,
       label = Label(
         classes = "govuk-visually-hidden",
