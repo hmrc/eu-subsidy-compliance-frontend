@@ -65,7 +65,7 @@ class SubsidyController @Inject()(
     implicit val eori: EORI = request.eoriNumber
 
     val result: OptionT[Future, (UndertakingRef, Undertaking)] = for {
-      _           <- OptionT(store.get[SubsidyJourney]).orElseF(store.put(SubsidyJourney().some))
+      _           <- OptionT(store.get[SubsidyJourney]).orElseF(store.put(SubsidyJourney()).map(Option(_)))
       undertaking <- OptionT(store.get[Undertaking])
       reference   <- OptionT.fromOption[Future](undertaking.reference)
     } yield (reference, undertaking)
@@ -93,7 +93,8 @@ class SubsidyController @Inject()(
   def postReportPayment: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    reportPaymentForm.bindFromRequest().fold(throw new IllegalStateException("value hard-coded, form hacking?"),
+    reportPaymentForm.bindFromRequest().fold(
+      _ => throw new IllegalStateException("report payment form submission failed"),
       (form: FormValues) => for {
         journey <- store.update[SubsidyJourney](updateReportPayment(form))
         redirect <- getJourneyNext(journey)
