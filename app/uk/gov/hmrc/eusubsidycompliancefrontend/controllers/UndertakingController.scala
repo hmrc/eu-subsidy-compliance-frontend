@@ -235,12 +235,8 @@ class UndertakingController @Inject()(
             undertakingSector = updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking Sector"))
             retrievedUndertaking <- escService.retrieveUndertaking(eori).map(_.getOrElse(handleMissingSessionData("Undertaking")))
             undertakingRef = retrievedUndertaking.reference.getOrElse(handleMissingSessionData("Undertaking ref"))
-            businessEntityList = retrievedUndertaking.undertakingBusinessEntity
-            leadBEList = businessEntityList.filter(_.leadEORI)
-            leadBE = if (leadBEList.nonEmpty) leadBEList.head else handleMissingSessionData("lead Business Entity")
             updatedUndertaking = retrievedUndertaking.copy(name = undertakingName, industrySector = undertakingSector)
             _ <- escService.updateUndertaking(updatedUndertaking)
-            _ <- escService.addMember(undertakingRef, leadBE)
           } yield Redirect(routes.AccountController.getAccountPage())
       )
   }
