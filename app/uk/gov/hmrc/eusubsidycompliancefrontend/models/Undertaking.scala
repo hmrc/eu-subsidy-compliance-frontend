@@ -36,20 +36,17 @@ object Undertaking {
 
   implicit class UndertakingOps(private val undertaking: Undertaking) extends AnyVal {
 
-    //Check if the eori entered is Lead EORI or not
     def isLeadEORI(eori: EORI): Boolean = {
-      val leadEORI: BusinessEntity = undertaking.undertakingBusinessEntity
-        .filter(_.leadEORI)
-        .headOption
+      val leadEORI: BusinessEntity = undertaking
+        .undertakingBusinessEntity
+        .find(_.leadEORI)
         .getOrElse(throw new IllegalStateException("Missing Lead EORI"))
-      leadEORI.businessEntityIdentifier.toString == eori.toString
+      leadEORI.businessEntityIdentifier == eori
     }
 
-    //Fetches the Business entity for the given EORI
-    def getBusinessEntityByEORI(eori: EORI): BusinessEntity =
+    def getBusinessEntityByEORI(eori: EORI): BusinessEntity = {
       undertaking.undertakingBusinessEntity
-        .filter(be => be.businessEntityIdentifier == eori)
-        .headOption
+        .find(be => be.businessEntityIdentifier == eori)
         .getOrElse(throw new IllegalStateException(s"BE with eori $eori is missing"))
 
     def getAllNonLeadEORIs(): List[EORI] =
