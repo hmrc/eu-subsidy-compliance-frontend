@@ -23,7 +23,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, OneOf, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -41,7 +41,6 @@ class UndertakingController @Inject()(
   sendEmailHelperService: SendEmailHelperService,
   undertakingNamePage: UndertakingNamePage,
   undertakingSectorPage: UndertakingSectorPage,
-  undertakingContactPage: UndertakingContactPage,
   cyaPage: UndertakingCheckYourAnswersPage,
   confirmationPage: ConfirmationPage,
   amendUndertakingPage: AmendUndertakingPage
@@ -128,42 +127,6 @@ class UndertakingController @Inject()(
     }
   }
 
-  def getContact: Action[AnyContent] = escAuthentication.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store.get[UndertakingJourney].flatMap {
-          ensureUndertakingJourneyPresent(_) { journey =>
-            val form = journey.contact.value.fold(contactForm) { contactDetails =>
-              contactForm.fill(OneOf(contactDetails.phone, contactDetails.mobile))
-            }
-            Ok(undertakingContactPage(
-              form,
-              journey.previous,
-              journey.name.value.getOrElse("")
-            )).toFuture
-          }
-    }
-  }
-
-  def postContact: Action[AnyContent] = escAuthentication.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    journeyTraverseService.getPrevious[UndertakingJourney].flatMap { previous =>
-      contactForm.bindFromRequest().fold(
-        errors => BadRequest(undertakingContactPage(errors, previous, "")).toFuture,
-        form => {
-          for {
-            updatedUndertakingJourney <- store.update[UndertakingJourney] {
-              _.map { undertakingJourney =>
-                val updatedContact = undertakingJourney.contact.copy(value = Some(form.toContactDetails))
-                undertakingJourney.copy(contact = updatedContact)
-              }
-            }
-            redirect <- updatedUndertakingJourney.next
-          } yield redirect
-
-        }
-      )
-    }
-  }
 
   def getCheckAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -172,7 +135,6 @@ class UndertakingController @Inject()(
         journey.name.value.fold(throw new IllegalStateException("name should be defined"))(UndertakingName(_)),
         eori,
         journey.sector.value.getOrElse(throw new IllegalStateException("sector should be defined")),
-        journey.contact.value.getOrElse(throw new IllegalStateException("contact should be defined")),
         journey.previous
       )).toFuture
       case _ => handleMissingSessionData("Undertaking journey")
@@ -197,7 +159,7 @@ class UndertakingController @Inject()(
               industrySector = undertakingSector,
               None,
               None,
-              List(BusinessEntity(eori, leadEORI = true, updatedJourney.contact.value)
+              List(BusinessEntity(eori, leadEORI = true)
               ))
             result <- createUndertakingAndSendEmail(undertaking, eori, updatedJourney)
 
@@ -250,7 +212,6 @@ class UndertakingController @Inject()(
           amendUndertakingPage(
             updatedJourney.name.value.fold(handleMissingSessionData("Undertaking Name"))(UndertakingName(_)),
             updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking sector")),
-            updatedJourney.contact.value.getOrElse(handleMissingSessionData("Undertaking contact")),
             routes.AccountController.getAccountPage().url
           )
         )
@@ -274,13 +235,8 @@ class UndertakingController @Inject()(
             undertakingSector = updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking Sector"))
             retrievedUndertaking <- escService.retrieveUndertaking(eori).map(_.getOrElse(handleMissingSessionData("Undertaking")))
             undertakingRef = retrievedUndertaking.reference.getOrElse(handleMissingSessionData("Undertaking ref"))
-            businessEntityList = retrievedUndertaking.undertakingBusinessEntity
-            leadBEList = businessEntityList.filter(_.leadEORI)
-            leadBE = if (leadBEList.nonEmpty) leadBEList.head else handleMissingSessionData("lead Business Entity")
-            updatedLeadBE = leadBE.copy(contacts = updatedJourney.contact.value)
             updatedUndertaking = retrievedUndertaking.copy(name = undertakingName, industrySector = undertakingSector)
             _ <- escService.updateUndertaking(updatedUndertaking)
-            _ <- escService.addMember(undertakingRef, updatedLeadBE)
           } yield Redirect(routes.AccountController.getAccountPage())
       )
   }

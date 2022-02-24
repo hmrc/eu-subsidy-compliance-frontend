@@ -40,7 +40,7 @@ object Fixtures {
     sector,
     Some(industrySectorLimit),
     Some(date),
-    List(BusinessEntity(eori, leadEORI = true, None))
+    List(BusinessEntity(eori, leadEORI = true))
   )
 
   val subsidyRef = SubsidyRef("ABC12345")

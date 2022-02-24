@@ -22,7 +22,7 @@ import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ContactDetails, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.FormUrls
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
@@ -32,7 +32,6 @@ import scala.concurrent.Future
 case class UndertakingJourney(
   name: FormPage[String] = FormPage(FormUrls.Name),
   sector: FormPage[Sector] = FormPage(FormUrls.Sector),
-  contact: FormPage[ContactDetails] = FormPage(FormUrls.Contact),
   cya: FormPage[Boolean] = FormPage(FormUrls.Cya),
   confirmation: FormPage[Boolean] = FormPage(FormUrls.Confirmation),
   isAmend: Boolean = false
@@ -41,7 +40,6 @@ case class UndertakingJourney(
   override protected def steps = List(
     name,
     sector,
-    contact,
     cya,
     confirmation
   )
@@ -57,7 +55,7 @@ case class UndertakingJourney(
     else super.next
 
   private def requiredDetailsProvided =
-    Seq(name, sector, contact).map(_.value.isDefined) == Seq(true, true, true)
+    Seq(name, sector).map(_.value.isDefined) == Seq(true, true)
 
 }
 
@@ -65,8 +63,6 @@ object UndertakingJourney {
   import Journey._
 
   implicit val formPageSectorFormat: OFormat[FormPage[Sector]] = Json.format[FormPage[Sector]]
-  implicit val formatContactDetails: OFormat[ContactDetails] = Json.format[ContactDetails]
-  implicit val formPageContactFormat: OFormat[FormPage[ContactDetails]] = Json.format[FormPage[ContactDetails]]
 
   implicit val format: Format[UndertakingJourney] = Json.format[UndertakingJourney]
 
@@ -74,14 +70,9 @@ object UndertakingJourney {
   def fromUndertakingOpt(undertakingOpt: Option[Undertaking]): UndertakingJourney = undertakingOpt match {
     case Some(undertaking) =>
       val empty = UndertakingJourney()
-      val cd: Option[ContactDetails] =
-        undertaking.undertakingBusinessEntity.filter(_.leadEORI).head.contacts
       empty.copy(
         name = empty.name.copy(value = undertaking.name.some),
         sector = empty.sector.copy(value = undertaking.industrySector.some),
-        contact = empty.contact.copy(
-          value = cd
-        ),
         isAmend = false
       )
     case _ => UndertakingJourney()

@@ -33,8 +33,7 @@ case class BusinessEntityUpdate(
 object BusinessEntityUpdate {
 	implicit val businessEntityWrites: Writes[BusinessEntity] = (
 		(JsPath \ "businessEntityIdentifier").write[EORI] and
-			(JsPath \ "leadEORIIndicator").write[Boolean] and
-			(JsPath \ "contacts").writeNullable[ContactDetails]
+			(JsPath \ "leadEORIIndicator").write[Boolean]
 		)(unlift(BusinessEntity.unapply))
 
 	implicit val businessEntityUpdateWrites: Writes[BusinessEntityUpdate] = new Writes[BusinessEntityUpdate] {

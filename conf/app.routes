@@ -39,9 +39,6 @@ POST       /undertaking-name                        uk.gov.hmrc.eusubsidycomplia
 GET        /sector                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSector
 POST       /sector                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postSector
 
-GET        /contact                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getContact
-POST       /contact                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postContact
-
 GET        /check-your-answers                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getCheckAnswers
 POST       /check-your-answers                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postCheckAnswers
 
@@ -63,8 +60,6 @@ POST       /add-member                              uk.gov.hmrc.eusubsidycomplia
 GET        /add-business-entity-eori                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getEori
 POST       /add-business-entity-eori                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postEori
 
-GET        /add-business-entity-contact             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getContact
-POST       /add-business-entity-contact             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postContact
 
 GET        /check-your-answers-businesses           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getCheckYourAnswers
 POST       /check-your-answers-businesses           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postCheckYourAnswers

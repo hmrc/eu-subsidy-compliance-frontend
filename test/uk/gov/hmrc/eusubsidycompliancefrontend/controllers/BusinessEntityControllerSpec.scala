@@ -89,18 +89,12 @@ class BusinessEntityControllerSpec  extends ControllerSpec
   val invalidEOris = List("GB1234567890", "AB1234567890", "GB1234567890123")
   val currentDate = LocalDate.of(2022, 10,9)
 
-  val contact = List(contactDetails.phone, contactDetails.mobile).flatten.mkString(" ")
 
   val expectedRows = List(
     CheckYourAnswersRowBE(
       messageFromMessageKey("businessEntity.cya.eori.label"),
       eori1,
       routes.BusinessEntityController.getEori().url
-    ),
-    CheckYourAnswersRowBE(
-      messageFromMessageKey("businessEntity.cya.contact.label"),
-      contact,
-      routes.BusinessEntityController.getContact().url
     )
   )
 
@@ -464,142 +458,6 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
     }
 
-    "handling request to get contact page" must {
-      def performAction() = controller.getContact(
-        FakeRequest("GET",routes.BusinessEntityController.getContact().url))
-
-      "throw technical error" when {
-        val exception = new Exception("oh no")
-        "call to get business entity journey fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[BusinessEntityJourney](eori1)(Left(Error(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to get business entity journey return with None" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[BusinessEntityJourney](eori1)(Right(None))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-      }
-
-      "display the page" when {
-
-        def test(businessEntityJourney: BusinessEntityJourney) = {
-
-          val previousUrl = "add-business-entity-eori"
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-          }
-
-          checkPageIsDisplayed(
-            performAction(),
-            messageFromMessageKey("businessEntityContact.title"),
-            {doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe(previousUrl)
-
-              val inputPhone = doc.select("#phone").attr("value")
-              val inputMobile = doc.select("#mobile").attr("value")
-
-              inputPhone shouldBe businessEntityJourney.contact.value.flatMap(_.phone).getOrElse("")
-              inputMobile shouldBe businessEntityJourney.contact.value.flatMap(_.mobile).getOrElse("")
-
-              val button = doc.select("form")
-              button.attr("action") shouldBe routes.BusinessEntityController.postContact.url
-            }
-          )
-        }
-
-        "user hasn't already answered the questions" in {
-          test(
-            businessEntityJourney.copy(contact = FormPage("add-business-entity-contact", None),
-              cya = FormPage("check-your-answers-businesses", None))
-          )
-        }
-
-        "user has already answered the questions" in {
-          test(
-            businessEntityJourney.copy(contact = FormPage("add-business-entity-contact", contactDetails1.some),
-              cya = FormPage("check-your-answers-businesses", None))
-          )
-        }
-
-      }
-    }
-
-    "handling request to post contact page" must {
-
-      def performAction(data: (String, String)*) = controller
-        .postContact(
-          FakeRequest("POST",routes.BusinessEntityController.getContact().url)
-            .withFormUrlEncodedBody(data: _*))
-
-      "throw technical error" when {
-        val exception = new Exception("oh no")
-        "call to get previous fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[BusinessEntityJourney](eori1)(Left(Error(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-      }
-
-      "show form errors" when {
-
-        def test(data: (String, String)*)(errorMessageKey: List[String]) = {
-          inSequence{
-            mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-business-entity-contact"))
-          }
-          checkFormErrorsAreDisplayed(
-            performAction(data: _*),
-            messageFromMessageKey("businessEntityContact.title"),
-            errorMessageKey
-          )
-
-        }
-
-        "nothing is submitted" in {
-          test()(List(
-            messageFromMessageKey("one.or.other.mustbe.present"),
-            messageFromMessageKey("one.or.other.mustbe.present")
-          ))
-        }
-
-      }
-
-      "redirect to next page" when {
-
-        "user has answered the questions correctly" in {
-          def updatedDef(beJourneyOpt: Option[BusinessEntityJourney]): Option[BusinessEntityJourney] = {
-            beJourneyOpt.map ( _.copy(contact = FormPage("add-business-entity-contact", contactDetails.some)))
-          }
-          val currentBEJourney = businessEntityJourney1.copy(contact = FormPage("add-business-entity-contact", None),
-            cya= FormPage("check-your-answers-businesses", None)).some
-
-          val updatedBEJourney = businessEntityJourney1.copy(contact = FormPage("add-business-entity-contact", contactDetails.some),
-            cya= FormPage("check-your-answers-businesses", None))
-
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-business-entity-contact"))
-            mockUpdate[BusinessEntityJourney](_ => updatedDef(currentBEJourney), eori1)(Right(updatedBEJourney))
-          }
-
-          checkIsRedirect(performAction("phone" -> "1234567890"), "check-your-answers-businesses")
-
-        }
-      }
-
-    }
-
     "handling request to get check your answers page" must {
 
       def performAction() = controller.getCheckYourAnswers(
@@ -633,13 +491,6 @@ class BusinessEntityControllerSpec  extends ControllerSpec
           assertThrows[Exception](await(performAction()))
         }
 
-        "call to fetch Business Entity journey returns journey without contact details" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.copy(contact = FormPage("contact")).some))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
       }
 
       "display the page" in {
@@ -729,18 +580,9 @@ class BusinessEntityControllerSpec  extends ControllerSpec
           assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
         }
 
-        "call to get business entity  return  without contact Details" in {
-          inSequence{
-            mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.copy(contact = FormPage("add-business-entity-contact", None)).some))
-          }
-          assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
-        }
-
         "call to add member to BE undertaking fails" in {
 
-          val businessEntity = BusinessEntity(eori2, leadEORI = false, contactDetails.some)
+          val businessEntity = BusinessEntity(eori2, leadEORI = false)
           inSequence{
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
@@ -752,7 +594,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
         "call to retrieve email for BE EORI fails" in {
 
-          val businessEntity = BusinessEntity(eori2, false, contactDetails.some)
+          val businessEntity = BusinessEntity(eori2, false)
           inSequence{
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
@@ -766,7 +608,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
         "call to retrieve email for BE EORI returns None" in {
 
-          val businessEntity = BusinessEntity(eori2, false, contactDetails.some)
+          val businessEntity = BusinessEntity(eori2, false)
           inSequence{
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
@@ -779,7 +621,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
         "call to retrieve email for lead EORI fails" in {
 
-          val businessEntity = BusinessEntity(eori2, false, contactDetails.some)
+          val businessEntity = BusinessEntity(eori2, false)
           inSequence{
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
@@ -794,7 +636,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
 
         "call to retrieve Lead EORI email address returns None" in {
 
-          val businessEntity = BusinessEntity(eori2, false, contactDetails.some)
+          val businessEntity = BusinessEntity(eori2, false)
           inSequence{
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
@@ -808,7 +650,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
         }
 
         "language is other than english /welsh" in {
-          val businessEntity = BusinessEntity(eori2, false, contactDetails.some)
+          val businessEntity = BusinessEntity(eori2, false)
           inSequence{
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
@@ -823,7 +665,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
       "redirects to next page" when {
 
         def testRedirection(businessEntityJourney: BusinessEntityJourney, nextCall: String, resettedBusinessJourney: BusinessEntityJourney) = {
-          val businessEntity = BusinessEntity(eori2, leadEORI = false, contactDetails.some)
+          val businessEntity = BusinessEntity(eori2, leadEORI = false)
           val emailParametersBE =  SingleEORIEmailParameter(eori2, undertaking.name, undertakingRef,  "addMemberEmailToBE")
           val emailParametersLead =  DoubleEORIEmailParameter(eori1, eori2, undertaking.name, undertakingRef,  "addMemberEmailToLead")
           inSequence{
@@ -845,7 +687,7 @@ class BusinessEntityControllerSpec  extends ControllerSpec
           val emailParametersBE =  SingleEORIEmailParameter(eori2, undertaking.name, undertakingRef,  "addMemberEmailToBE")
           val emailParametersLead =  DoubleEORIEmailParameter(eori1, eori2, undertaking.name, undertakingRef,  "addMemberEmailToLead")
 
-          val businessEntity = BusinessEntity(eori2, false, contactDetails.some)
+          val businessEntity = BusinessEntity(eori2, false)
           inSequence{
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
@@ -904,20 +746,9 @@ class BusinessEntityControllerSpec  extends ControllerSpec
           assertThrows[Exception](await(performAction(eori1)))
         }
 
-        "call to put business entity journey came back without contact details" in {
-
-          val businessEntityJourney = BusinessEntityJourney.businessEntityJourneyForEori(undertaking1.some, eori1)
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockPut[BusinessEntityJourney](businessEntityJourney, eori1)(Right(businessEntityJourney))
-          }
-          assertThrows[Exception](await(performAction(eori1)))
-        }
-
         "display the page" in {
 
-          val be: BusinessEntity = undertaking1.undertakingBusinessEntity.filter(_.leadEORI).head.copy(contacts = contactDetails.some)
+          val be: BusinessEntity = undertaking1.undertakingBusinessEntity.filter(_.leadEORI).head
           val businessEntityJourney = BusinessEntityJourney.businessEntityJourneyForEori(undertaking1.copy(undertakingBusinessEntity = List(be)).some, eori1)
           inSequence {
             mockAuthWithNecessaryEnrolment()

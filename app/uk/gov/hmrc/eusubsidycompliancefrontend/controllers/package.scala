@@ -16,12 +16,10 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend
 
-import play.api.data.Form
-import play.api.data.Forms.{mapping, optional, text}
 import play.api.libs.json.{Format, Json, Reads}
 import play.api.mvc.Request
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{OneOf, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, PhoneNumber}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{Journey, Store}
 
@@ -31,34 +29,6 @@ import scala.reflect.ClassTag
 package object controllers {
 
   implicit val undertakingFormat: Format[Undertaking] = Json.format[Undertaking]
-
-  val contactForm: Form[OneOf] = Form(
-    mapping(
-      "phone" -> optional(text),
-      "mobile"  -> optional(text)
-    )(OneOf.apply)(OneOf.unapply).verifying(
-      "one.or.other.mustbe.present",
-      fields => fields match {
-        case OneOf(Some(_), Some(_)) => true
-        case OneOf(_, Some(_)) => true
-        case OneOf(Some(_),_) => true
-        case _ => false
-      }
-    ).verifying(
-      "phone.regex.error",
-      fields => fields match {
-        case OneOf(Some(a),_) if !a.matches(PhoneNumber.regex) => false
-        case _ => true
-      }
-    ).verifying(
-      "mobile.regex.error",
-      fields => fields match {
-        case OneOf(_,Some(b)) if !b.matches(PhoneNumber.regex) => false
-        case _ => true
-      }
-    )
-  )
-
 
   def getPrevious[A <: Journey : ClassTag](
     store: Store

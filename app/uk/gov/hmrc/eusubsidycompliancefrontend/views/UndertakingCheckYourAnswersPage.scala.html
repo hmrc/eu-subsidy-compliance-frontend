@@ -19,7 +19,6 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
 
 
 @this(
@@ -32,22 +31,13 @@
 )
 
 
-@(name: UndertakingName, eori: EORI, sector: Sector, contacts: ContactDetails, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(name: UndertakingName, eori: EORI, sector: Sector, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
     pageTitle = Some(messages("undertaking.cya.title")),
     backLinkEnabled = true,
     backLink = Some(previous)
 ) {
-
-    @defining(
-        contacts match {
-            case ContactDetails(Some(p), Some(m)) => p + "<br>" + m
-            case ContactDetails(None, Some(m)) => m
-            case ContactDetails(Some(p), None) => p
-            case _ => ""
-        }
-    ) { case (phone) =>
 
         @formHelper(action = controllers.routes.UndertakingController.postCheckAnswers) {
             @*TODO - this might need to be a GovukInput *@
@@ -100,23 +90,6 @@
                                 )
                             )
                         ))
-                    ),
-                    SummaryListRow(
-                        key = Key(
-                            content = Text(messages("undertaking.cya.summary-list.phone.key"))
-                        ),
-                        value = Value(
-                            content = HtmlContent(phone)
-                        ),
-                        actions = Some(Actions(
-                            items = Seq(
-                                ActionItem(
-                                    href = controllers.routes.UndertakingController.getContact().toString,
-                                    content = Text("Change"),
-                                    visuallyHiddenText = Some("contact details")
-                                )
-                            )
-                        ))
                     )
                 )
             ))
@@ -125,5 +98,5 @@
 
             @button("common.continue")
         }
-    }
+
 }

@@ -16,7 +16,6 @@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.ContactDetails
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
 
 
@@ -29,22 +28,13 @@
   govukSummaryList: GovukSummaryList
 )
 
-@(eori: String, contactDetails: ContactDetails)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(eori: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
   pageTitle = Some(messages("businessEntity.cya.title")),
   backLinkEnabled = false,
   backLink = None
 ) {
-  @defining(
-    contactDetails match {
-      case ContactDetails(Some(p), Some(m)) => p + "<br>" + m
-      case ContactDetails(None, Some(m)) => m
-      case ContactDetails(Some(p), None) => p
-      case _ => ""
-    }
-    ) { case (phone) =>
-
     @H1(messages("businessEntity.cya.title"))
     @H2(messages("businessEntity.cya.h2"))
 
@@ -66,23 +56,6 @@
               )
             )
           ))
-        ),
-        SummaryListRow(
-          key = Key(
-            content = Text(messages("businessEntity.cya.contact.label"))
-          ),
-          value = Value(
-            content = HtmlContent(phone)
-          ),
-          actions = Some(Actions(
-            items = Seq(
-              ActionItem(
-                href = controllers.routes.BusinessEntityController.getContact().toString,
-                content = Text("Change"),
-                visuallyHiddenText = Some("name")
-              )
-            )
-          ))
         )
       )
     ))
@@ -93,5 +66,5 @@
       <input type=hidden name=cya value=true>
       @button("common.accept")
     }
-  }
+
 }
