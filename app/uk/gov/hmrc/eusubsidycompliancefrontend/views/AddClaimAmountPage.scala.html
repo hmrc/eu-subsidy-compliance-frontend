@@ -28,10 +28,11 @@
   govukInput : GovukInput
 )
 
-@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
+@(form: Form[_], previous: Journey.Uri, currentYear: String, currentMonth: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@key = @{"add-claim-amount"}
+@title = @{messages(s"$key.title")}
 @layout(
-  pageTitle = Some(messages("add-claim-amount.title")),
+  pageTitle = Some(title),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -40,13 +41,13 @@
   @if(form.hasErrors) {
     @govukErrorSummary(
       ErrorSummary(
-        errorList = form.errors.map { err =>
-          ErrorLink(
-            href = Some(s"#${err.key}"),
-            content = Text(s"${messages("add-claim-amount." + err.message)}"),
-            attributes = Map("class" ->"govuk-link")
-          )
-        },
+          errorList = Seq(
+              ErrorLink(
+                  href = Some(s"#${form.errors.head.key}"),
+                  content = Text(s"${messages(s"$key.${form.errors.head.message}")}"),
+                  attributes = Map("class" ->"govuk-link")
+              )
+          ),
         title = Text(messages("common.error.summary.title"))
       )
     )
@@ -55,8 +56,12 @@
   @formHelper(action = controllers.routes.SubsidyController.postAddClaimAmount()) {
 
     @H1(messages("add-claim-amount.title"))
-    @P(messages("add-claim-amount.p1"))
-    @P(messages("add-claim-amount.p2"))
+    @P(messages("add-claim-amount.p1", "https://ec.europa.eu/info/funding-tenders/procedures-guidelines-tenders/information-contractors-and-beneficiaries/exchange-rate-inforeuro_en"))
+      <ul class="govuk-list govuk-list--number">
+          <li>@{messages(s"$key.l1", currentYear, currentMonth)}</li><br>
+          <li>@{messages(s"$key.l2")}</li><br>
+          <li>@{messages(s"$key.l3")}</li><br>
+      </ul>
 
     @govukInput(Input(
       id = "claim-amount",
@@ -64,12 +69,12 @@
       prefix = Some(PrefixOrSuffix(content = Text("€"))),
       value = form.data.get("claim-amount"),
       errorMessage = if (form.hasErrors) {
-        Some(ErrorMessage(content = Text(messages("add-claim-amount." + form.errors.head.message))))
+          Some(ErrorMessage(content = Text(messages(s"$key." + form.errors.head.message))))
       } else None,
       label = Label(
         classes = "govuk-visually-hidden",
         isPageHeading = false,
-        content = Text(messages("add-claim-amount.title"))
+        content = Text(title)
       ),
       classes = "govuk-input--width-5",
       autocomplete = Some("tel")

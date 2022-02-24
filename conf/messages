@@ -225,8 +225,10 @@ report-payment.table.head.ref=Your reference
 report-payment.button = Report a payment
 
 add-claim-amount.title=What was the amount of the payment?
-add-claim-amount.p1=This type of aid is measured in euros, so you must convert any aid received from pound sterling into euros.
-add-claim-amount.p2=You can use this <a class="govuk-link" href="https://ec.europa.eu/info/funding-tenders/procedures-guidelines-tenders/information-contractors-and-beneficiaries/exchange-rate-inforeuro_en">exchange rate tool</a> to work out the payment value, for [TODO: Claim Date] in euros. 
+add-claim-amount.p1=This type of aid is measured in euros, so you must convert any aid received from pound sterling into euros using this <a class="govuk-link" href={0}>exchange rate tool</a>
+add-claim-amount.l1 = Change the year to {0} and month to {1}
+add-claim-amount.l2 = Enter the amount of aid you received in pounds sterling
+add-claim-amount.l3 = Change the ‘From’ dropdown to ‘GBP’ and use the figure displayed below it (to the nearest euro)
 add-claim-amount.error.amount.tooSmall=Subsidy amount must be more than one cent, like €00.01
 add-claim-amount.error.amount.tooBig=Subsidy amount must be fewer than 17 characters
 add-claim-amount.error.amount.incorrectFormat=Enter number value of subsidy allocated in Euros, like €248.56
