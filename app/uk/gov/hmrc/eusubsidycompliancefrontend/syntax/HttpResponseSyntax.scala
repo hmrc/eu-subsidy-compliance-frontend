@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.util
+package uk.gov.hmrc.eusubsidycompliancefrontend.syntax
 
 import play.api.libs.json.Reads
 import uk.gov.hmrc.http.HttpResponse
@@ -44,5 +44,3 @@ object HttpResponseSyntax {
 
   }
 }
-
-

@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.util
+package uk.gov.hmrc.eusubsidycompliancefrontend.syntax
 
-import java.time.LocalDate
+import scala.concurrent.Future
 
-object TaxYearSyntax {
+object FutureSyntax {
 
-  implicit class LocalDateTaxYearOps(val d: LocalDate) extends AnyVal {
-    def toTaxYearStart: LocalDate = TaxYearHelpers.taxYearStartForDate(d)
-    def toTaxYearEnd: LocalDate = TaxYearHelpers.taxYearEndForDate(d)
-    def toEarliestTaxYearStart: LocalDate = TaxYearHelpers.earliestAllowedDate(d)
+  implicit class FutureOps[A](val a: A) extends AnyVal {
+    def toFuture: Future[A] = Future.successful(a)
   }
 
 }

@@ -47,7 +47,7 @@ class SubsidyControllerSpec extends ControllerSpec
 
   implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
 
-  def mockRetreiveSubsidy(subsidyRetrieve: SubsidyRetrieve)(result: Future[UndertakingSubsidies]) =
+  private def mockRetrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(result: Future[UndertakingSubsidies]) =
     (mockEscService
       .retrieveSubsidy(_: SubsidyRetrieve)(_: HeaderCarrier))
       .expects(subsidyRetrieve, *)
@@ -91,7 +91,7 @@ class SubsidyControllerSpec extends ControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Right(SubsidyJourney().some))
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockRetreiveSubsidy(subsidyRetrieve)(Future(undertakingSubsidies.copy(nonHMRCSubsidyUsage = nonHMRCSubsidyUsage)))
+            mockRetrieveSubsidy(subsidyRetrieve)(Future(undertakingSubsidies.copy(nonHMRCSubsidyUsage = nonHMRCSubsidyUsage)))
           }
 
         }

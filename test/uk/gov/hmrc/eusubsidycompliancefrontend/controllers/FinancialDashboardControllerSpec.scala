@@ -29,7 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures.{undertaking, undertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
