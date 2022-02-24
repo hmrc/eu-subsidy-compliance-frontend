@@ -44,7 +44,7 @@
         errorList = form.errors.map { err =>
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(s"$key."+err.message)}"),
+            content = Text(s"${messages(s"$key.${err.message}")}"),
             attributes = Map("class" ->"govuk-link")
           )
         },
