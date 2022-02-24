@@ -102,13 +102,6 @@ class SubsidyController @Inject()(
     )
   }
 
-  private def updateReportPayment(f: FormValues)(os: Option[SubsidyJourney]) =
-    os.map { subsidyJourney =>
-      subsidyJourney.copy(
-        reportPayment = subsidyJourney.reportPayment.copy(value = Some(f.value.toBoolean))
-      )
-    }
-
   def getClaimAmount: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     // TODO - add 'getPrevious to all'
@@ -134,13 +127,6 @@ class SubsidyController @Inject()(
     }
   }
 
-  private def updateClaimAmount(b: BigDecimal)(os: Option[SubsidyJourney]) =
-    os.map { subsidyJourney =>
-      subsidyJourney.copy(
-        claimAmount = subsidyJourney.claimAmount.copy(value = Some(b))
-      )
-    }
-
   def getClaimDate: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
@@ -162,13 +148,6 @@ class SubsidyController @Inject()(
           redirect <- getJourneyNext(journey)
         } yield redirect)
       }
-    }
-
-  private def updateClaimDate(d: DateFormValues)(os: Option[SubsidyJourney]): Option[SubsidyJourney] =
-    os.map { subsidyJourney =>
-      subsidyJourney.copy(
-        claimDate = subsidyJourney.claimDate.copy(value = Some(d))
-      )
     }
 
   def getAddClaimEori: Action[AnyContent] = escAuthentication.async { implicit request =>
@@ -200,13 +179,6 @@ class SubsidyController @Inject()(
     }
   }
 
-  private def updateClaimEori(oe: OptionalEORI)(os: Option[SubsidyJourney]) =
-    os.map { subsidyJourney =>
-      subsidyJourney.copy(
-        addClaimEori = subsidyJourney.addClaimEori.copy(value = oe.some)
-      )
-    }
-
   def getAddClaimPublicAuthority: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
@@ -233,11 +205,6 @@ class SubsidyController @Inject()(
     }
   }
 
-  private def updateClaimAuthority(pa: String)(os: Option[SubsidyJourney]) =
-    os.map { subsidyJourney =>
-      subsidyJourney.copy(publicAuthority = subsidyJourney.publicAuthority.copy(value = pa.some))
-    }
-
   def getAddClaimReference: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
@@ -262,12 +229,6 @@ class SubsidyController @Inject()(
       )
     }
   }
-
-  private def updateOptionalTraderRef(otr: OptionalTraderRef)(os: Option[SubsidyJourney]) =
-    os.map { subsidyJourney =>
-      val updatedTraderRef = subsidyJourney.traderRef.copy(value = OptionalTraderRef(otr.setValue, otr.value).some)
-      subsidyJourney.copy(traderRef = updatedTraderRef)
-    }
 
   def getCheckAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -317,12 +278,6 @@ class SubsidyController @Inject()(
       _ <- journey.traderRef.value.orElse(handleMissingSessionData("trader ref"))
     } yield ()
   }
-
-
-  private def updateCya(f: FormValues)(os: Option[SubsidyJourney]) =
-    os.map { subsidyJourney =>
-      subsidyJourney.copy(cya = subsidyJourney.cya.copy(value = f.value.toBoolean.some))
-    }
 
   def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -379,6 +334,38 @@ class SubsidyController @Inject()(
     }
   }
 
+  private def updateSubsidyJourney(os: Option[SubsidyJourney])(f: SubsidyJourney => SubsidyJourney) = os.map(f)
+
+  private def updateReportPayment(f: FormValues)(os: Option[SubsidyJourney]) = updateSubsidyJourney(os) { s =>
+    s.copy(reportPayment = s.reportPayment.copy(value = Some(f.value.toBoolean)))
+  }
+
+  private def updateClaimAmount(b: BigDecimal)(os: Option[SubsidyJourney]) = updateSubsidyJourney(os) { s =>
+    s.copy(claimAmount = s.claimAmount.copy(value = Some(b)))
+  }
+
+  private def updateClaimDate(d: DateFormValues)(os: Option[SubsidyJourney]) = updateSubsidyJourney(os) { s =>
+    s.copy(claimDate = s.claimDate.copy(value = Some(d)))
+  }
+
+  private def updateClaimEori(oe: OptionalEORI)(os: Option[SubsidyJourney]) = updateSubsidyJourney(os) { s =>
+    s.copy(addClaimEori = s.addClaimEori.copy(value = oe.some))
+  }
+
+  private def updateClaimAuthority(pa: String)(os: Option[SubsidyJourney]) = updateSubsidyJourney(os) { s =>
+    s.copy(publicAuthority = s.publicAuthority.copy(value = pa.some))
+  }
+
+  private def updateOptionalTraderRef(otr: OptionalTraderRef)(os: Option[SubsidyJourney]) = updateSubsidyJourney(os) { s =>
+    val updatedTraderRef = s.traderRef.copy(value = OptionalTraderRef(otr.setValue, otr.value).some)
+    s.copy(traderRef = updatedTraderRef)
+  }
+
+  private def updateCya(f: FormValues)(os: Option[SubsidyJourney]) = updateSubsidyJourney(os) { s =>
+    s.copy(cya = s.cya.copy(value = f.value.toBoolean.some))
+  }
+
+  // TODO - move this into SubsidyJourney (see UndertakingJourney.next)
   private def getJourneyNext(journey: SubsidyJourney)(implicit request: Request[_]) =
     if(journey.isAmend) Future.successful(Redirect(routes.SubsidyController.getCheckAnswers()))
     else journey.next
