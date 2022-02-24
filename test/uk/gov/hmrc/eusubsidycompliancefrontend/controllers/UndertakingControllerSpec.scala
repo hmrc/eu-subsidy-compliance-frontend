@@ -26,7 +26,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.ModifyUndertakingRow
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, Language, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData._
@@ -77,13 +77,6 @@ class UndertakingControllerSpec extends ControllerSpec
       .updateUndertaking(_: Undertaking)(_: HeaderCarrier))
       .expects(undertaking, *)
       .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful))
-
-  private def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(result: Either[Error, UndertakingRef]) =
-    (mockEscService
-      .addMember(_: UndertakingRef, _:  BusinessEntity)(_: HeaderCarrier))
-      .expects(undertakingRef, businessEntity, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful))
-
 
   private val controller = instanceOf[UndertakingController]
 
