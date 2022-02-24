@@ -92,7 +92,6 @@ class SubsidyController @Inject()(
 
   def postReportPayment: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     reportPaymentForm.bindFromRequest().fold(
       _ => throw new IllegalStateException("report payment form submission failed"),
       (form: FormValues) => for {
@@ -143,7 +142,6 @@ class SubsidyController @Inject()(
 
   def getClaimDate: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     store.get[SubsidyJourney].flatMap {
         case Some(journey) => journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
           val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
@@ -155,7 +153,6 @@ class SubsidyController @Inject()(
 
   def postClaimDate: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     getPrevious[SubsidyJourney](store).flatMap { previous =>
       claimDateForm.bindFromRequest().fold(
         formWithErrors => BadRequest(addClaimDatePage(formWithErrors, previous)).toFuture,
@@ -175,7 +172,6 @@ class SubsidyController @Inject()(
 
   def getAddClaimEori: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
         journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
@@ -190,7 +186,6 @@ class SubsidyController @Inject()(
 
   def postAddClaimEori: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
       claimEoriForm.bindFromRequest().fold(
         formWithErrors => Future.successful(BadRequest(addClaimEoriPage(formWithErrors, previous))),
@@ -207,13 +202,12 @@ class SubsidyController @Inject()(
   private def updateClaimEori(oe: OptionalEORI)(os: Option[SubsidyJourney]) =
     os.map { subsidyJourney =>
       subsidyJourney.copy(
-        addClaimEori = FormPage(SubsidyJourney.FormUrls.AddClaimEori, oe.some)
+        addClaimEori = subsidyJourney.addClaimEori.copy(value = oe.some)
       )
     }
 
   def getAddClaimPublicAuthority: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     store.get[SubsidyJourney].flatMap {
       case Some(journey) => journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
         val form = journey.publicAuthority.value.fold(claimPublicAuthorityForm)(claimPublicAuthorityForm.fill)
@@ -230,11 +224,7 @@ class SubsidyController @Inject()(
         errors => Future.successful(BadRequest(addPublicAuthorityPage(errors, previous))),
         form => {
           for {
-            journey <- store.update[SubsidyJourney]({ x =>
-                  x.map { y =>
-                y.copy(publicAuthority = y.publicAuthority.copy(value = Some(form)))
-              }
-              })
+            journey <- store.update[SubsidyJourney](updateClaimAuthority(form))
             redirect <- getJourneyNext(journey)
           } yield redirect
         }
@@ -242,85 +232,94 @@ class SubsidyController @Inject()(
     }
   }
 
-  def getAddClaimReference: Action[AnyContent] = escAuthentication.async { implicit request =>
+  private def updateClaimAuthority(pa: String)(os: Option[SubsidyJourney]) =
+    os.map { subsidyJourney =>
+      subsidyJourney.copy(publicAuthority = subsidyJourney.publicAuthority.copy(value = pa.some))
+    }
 
+  def getAddClaimReference: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
-        val form = journey.traderRef.value.fold(claimTraderRefForm
-        )(optionalTraderRef => claimTraderRefForm.fill(OptionalTraderRef(optionalTraderRef.setValue, optionalTraderRef.value)))
-        Future.successful(Ok(addTraderReferencePage(form, journey.previous)))
+        val form = journey.traderRef.value.fold(claimTraderRefForm) { optionalTraderRef =>
+          claimTraderRefForm.fill(OptionalTraderRef(optionalTraderRef.setValue, optionalTraderRef.value))
+        }
+        Ok(addTraderReferencePage(form, journey.previous)).toFuture
       case _ => handleMissingSessionData("Subsidy journey")
     }
   }
 
   def postAddClaimReference: Action[AnyContent] = escAuthentication.async { implicit request =>
-
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
       claimTraderRefForm.bindFromRequest().fold(
-        errors => Future.successful(BadRequest(addTraderReferencePage(errors, previous))),
-        form => {
-          for {
-            updatedSubsidyJourney <- store.update[SubsidyJourney]{ _.map { subsidyJourney =>
-              val updatedTraderRef = subsidyJourney.traderRef.copy(value = OptionalTraderRef(form.setValue, form.value).some)
-              subsidyJourney.copy(traderRef = updatedTraderRef)
-              }
-            }
-            redirect <- getJourneyNext(updatedSubsidyJourney)
-          } yield redirect
-        }
+        errors => BadRequest(addTraderReferencePage(errors, previous)).toFuture,
+        form => for {
+          updatedSubsidyJourney <- store.update[SubsidyJourney](updateOptionalTraderRef(form))
+          redirect <- getJourneyNext(updatedSubsidyJourney)
+        } yield redirect
       )
     }
   }
 
+  private def updateOptionalTraderRef(otr: OptionalTraderRef)(os: Option[SubsidyJourney]) =
+    os.map { subsidyJourney =>
+      val updatedTraderRef = subsidyJourney.traderRef.copy(value = OptionalTraderRef(otr.setValue, otr.value).some)
+      subsidyJourney.copy(traderRef = updatedTraderRef)
+    }
+
   def getCheckAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
-      case Some(journey) => {
-        Future.successful(
-          Ok(
-            cyaPage(
-              journey.claimDate.value.getOrElse(throw new IllegalStateException("Claim date should be defined")),
-              journey.claimAmount.value.getOrElse(throw new IllegalStateException("Claim amount payment should be defined")),
-              journey.addClaimEori.value.fold(handleMissingSessionData("Claim EORI payment"))(_.value.map(EORI(_))),
-              journey.publicAuthority.value.getOrElse(throw new IllegalStateException("Public Authority payment should be defined")),
-              journey.traderRef.value.fold(handleMissingSessionData("Trader Ref"))(_.value.map(TraderRef(_))),
-              journey.previous
-            )
-          )
-        )
-      }
+      case Some(journey) =>
+        Ok(cyaPage(
+          // TODO - extract into common validator
+          claimDate = journey.claimDate.value.getOrElse(handleMissingSessionData("claim date")),
+          amount = journey.claimAmount.value.getOrElse(handleMissingSessionData("claim amount")),
+          claimEori = journey.addClaimEori.value.fold(handleMissingSessionData("claim EORI"))(_.value.map(EORI(_))),
+          authority = journey.publicAuthority.value.getOrElse(handleMissingSessionData("public authority")),
+          traderRef = journey.traderRef.value.fold(handleMissingSessionData("trader ReF"))(_.value.map(TraderRef(_))),
+          previous = journey.previous
+        )).toFuture
       case _ => handleMissingSessionData("Subsidy journey")
     }
   }
+
   def postCheckAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
     cyaForm.bindFromRequest().fold(
-      _ => throw new IllegalStateException("value hard-coded, form hacking?"),
+      _ => sys.error("Error processing subsidy cya form submission"),
       form => {
-        store.update[SubsidyJourney]({ x =>
-          x.map { y =>
-            y.copy(cya = y.cya.copy(value = Some(form.value.toBoolean)))
-          }
-        })
-          .flatMap { journey: SubsidyJourney =>
-            journey.publicAuthority.value.getOrElse(handleMissingSessionData("publicAuthority"))
-            journey.traderRef.value.getOrElse(handleMissingSessionData("trader ref"))
-            journey.claimAmount.value.getOrElse(handleMissingSessionData("claimAmount"))
-            journey.addClaimEori.value.getOrElse(handleMissingSessionData("addClaimEori"))
-            for {
-              underTaking <- store.get[Undertaking]
-              ref = underTaking.getOrElse(throw new IllegalStateException("")).reference.getOrElse(throw new IllegalStateException(""))
-              _ <- escService.createSubsidy(ref, journey)
-              _ <- store.put(SubsidyJourney())
-            } yield {
-              Redirect(routes.SubsidyController.getReportPayment())
-            }
-          }
-      }
+        for {
+          journey <- OptionT(store.update[SubsidyJourney] (updateCya(form)).map(Option(_)))
+          _ <- OptionT(validateSubsidyJourneyFieldsPopulated(journey).toFuture)
+          undertaking <- OptionT(store.get[Undertaking]).orElseF(handleMissingSessionData("undertaking"))
+          ref <- OptionT.fromOption[Future](undertaking.reference)
+          _ <- OptionT(escService.createSubsidy(ref, journey).some.toFuture)
+          _ <- OptionT(store.put(SubsidyJourney()).map(Option(_)))
+        } yield {
+          Redirect(routes.SubsidyController.getReportPayment())
+        }
+      }.getOrElse(sys.error("Error processing subsidy cya form submission"))
     )
   }
+
+  private def validateSubsidyJourneyFieldsPopulated(journey: SubsidyJourney): Option[Unit] = {
+    for {
+      _ <- journey.addClaimEori.value.orElse(handleMissingSessionData("claim EORI"))
+      _ <- journey.claimAmount.value.orElse(handleMissingSessionData("claim mount"))
+      _ <- journey.claimDate.value.orElse(handleMissingSessionData("claim date"))
+      _ <- journey.publicAuthority.value.orElse(handleMissingSessionData("public authority"))
+      _ <- journey.traderRef.value.orElse(handleMissingSessionData("trader ref"))
+    } yield ()
+  }
+
+
+  private def updateCya(f: FormValues)(os: Option[SubsidyJourney]) =
+    os.map { subsidyJourney =>
+      subsidyJourney.copy(cya = subsidyJourney.cya.copy(value = f.value.toBoolean.some))
+    }
 
   def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
