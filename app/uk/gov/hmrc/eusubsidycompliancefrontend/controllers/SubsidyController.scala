@@ -27,6 +27,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, JourneyTraverseService, Store, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
@@ -39,6 +41,7 @@ class SubsidyController @Inject()(
   store: Store,
   escService: EscService,
   journeyTraverseService: JourneyTraverseService,
+  timeProvider: TimeProvider,
   reportPaymentPage: ReportPaymentPage,
   addClaimEoriPage: AddClaimEoriPage,
   addClaimAmountPage: AddClaimAmountPage,
@@ -100,9 +103,11 @@ class SubsidyController @Inject()(
 
   def getClaimAmount: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    //TODO add 'getPrevious to all'
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
+        import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax._
+        val currentDateDisplay = timeProvider.today.toDisplayFormat
+
         journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
           journey
             .claimAmount
