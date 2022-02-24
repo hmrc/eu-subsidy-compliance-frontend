@@ -27,8 +27,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.HeaderCarrier

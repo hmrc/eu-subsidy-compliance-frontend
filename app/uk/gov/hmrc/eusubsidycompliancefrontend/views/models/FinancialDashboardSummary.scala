@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.views.models
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{IndustrySectorLimit, Sector, SubsidyAmount}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingSubsidies}
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 
 import java.time.LocalDate
 

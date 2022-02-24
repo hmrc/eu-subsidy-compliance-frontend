@@ -22,7 +22,7 @@ import play.api.http.Status._
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.RetrieveEmailConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, EmailAddressResponse, Error}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.HttpResponseSyntax.HttpResponseOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
