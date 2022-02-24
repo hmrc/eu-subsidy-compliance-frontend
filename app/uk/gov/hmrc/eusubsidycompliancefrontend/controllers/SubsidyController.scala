@@ -89,7 +89,7 @@ class SubsidyController @Inject()(
     escService
       .retrieveSubsidy(SubsidyRetrieve(r, None))
       .map(Option(_))
-      .fallbackTo(Future.successful(Option.empty)) // TODO - why is toFuture not avaialble here?
+      .fallbackTo(Option.empty.toFuture)
 
   def postReportPayment: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
