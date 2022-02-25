@@ -86,13 +86,13 @@ object SubsidyJourney {
 
   object Forms {
     // TODO - replace uris with routes lookups
-    case class ReportPaymentFormPage(value: Form[Boolean] = None) extends FormPageBase[Boolean] { val uri: Uri = SubsidyJourney.FormUrls.ReportPayment }
-    case class ClaimDateFormPage(value: Form[DateFormValues] = None) extends FormPageBase[DateFormValues] { val uri: Uri = SubsidyJourney.FormUrls.ClaimDateValues }
-    case class ClaimAmountFormPage(value: Form[BigDecimal] = None) extends FormPageBase[BigDecimal] { val uri: Uri = SubsidyJourney.FormUrls.ClaimAmount }
-    case class AddClaimEoriFormPage(value: Form[OptionalEORI] = None) extends FormPageBase[OptionalEORI] { val uri: Uri = SubsidyJourney.FormUrls.AddClaimEori }
-    case class PublicAuthorityFormPage(value: Form[String] = None) extends FormPageBase[String] { val uri: Uri = SubsidyJourney.FormUrls.PublicAuthority }
-    case class TraderRefFormPage(value: Form[OptionalTraderRef] = None) extends FormPageBase[OptionalTraderRef] { val uri: Uri = SubsidyJourney.FormUrls.TraderReference }
-    case class CyaFormPage(value: Form[Boolean] = None) extends FormPageBase[Boolean] { val uri: Uri = SubsidyJourney.FormUrls.Cya }
+    case class ReportPaymentFormPage(value: Form[Boolean] = None) extends FormPageBase[Boolean] { val uri = FormUrls.ReportPayment }
+    case class ClaimDateFormPage(value: Form[DateFormValues] = None) extends FormPageBase[DateFormValues] { val uri = FormUrls.ClaimDateValues }
+    case class ClaimAmountFormPage(value: Form[BigDecimal] = None) extends FormPageBase[BigDecimal] { val uri = FormUrls.ClaimAmount }
+    case class AddClaimEoriFormPage(value: Form[OptionalEORI] = None) extends FormPageBase[OptionalEORI] { val uri = FormUrls.AddClaimEori }
+    case class PublicAuthorityFormPage(value: Form[String] = None) extends FormPageBase[String] { val uri = FormUrls.PublicAuthority }
+    case class TraderRefFormPage(value: Form[OptionalTraderRef] = None) extends FormPageBase[OptionalTraderRef] { val uri = FormUrls.TraderReference }
+    case class CyaFormPage(value: Form[Boolean] = None) extends FormPageBase[Boolean] { val uri = FormUrls.Cya }
 
     object ReportPaymentFormPage { implicit val reportPaymentFormPageFormat: OFormat[ReportPaymentFormPage] = Json.format }
     object ClaimDateFormPage { implicit val claimDateFormPageFormat: OFormat[ClaimDateFormPage] = Json.format }

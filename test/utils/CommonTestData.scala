@@ -164,7 +164,7 @@ object CommonTestData {
 
   val newLeadJourney = NewLeadJourney(selectNewLead = FormPage("select-new-lead", eori4.some))
 
-  val newBecomeLeadJourney = BecomeLeadJourney(becomeLeadEori = FormPage("become-lead-eori"))
+  val newBecomeLeadJourney = BecomeLeadJourney()
 
   val validEmailAddress         = EmailAddress("user@test.com")
   val inValidEmailAddress       = EmailAddress("invalid@email.com")
