@@ -23,6 +23,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, Error, NonHmrcSubsidy, OptionalEORI, OptionalTraderRef, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.FormUrls.{ClaimAmount, ClaimDateValues, ReportPayment}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, JourneyTraverseService, Store, SubsidyJourney}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData.{subsidyJourney, _}
@@ -241,6 +242,210 @@ class SubsidyControllerSpec extends ControllerSpec
           status(performAction("day" -> updatedDate.day,  "month" -> updatedDate.month, "year" -> updatedDate.year)) shouldBe BAD_REQUEST
         }
       }
+    }
+
+    "handling request to get claim amount" must {
+
+      def performAction() = controller
+        .getClaimAmount(FakeRequest("GET",routes.SubsidyController.getClaimAmount().url))
+
+      "throw technical error" when {
+
+        val exception = new Exception("oh no !")
+        "call to get subsidy journey fails " in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to get subsidy journey passes but return None " in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(None))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to get subsidy journey come back with no claim date " in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(SubsidyJourney().some))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+      }
+
+      "display the page" when {
+
+        def test(subsidyJourney: SubsidyJourney) = {
+          mockAuthWithNecessaryEnrolment()
+          mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("add-claim-amount.title"),
+            { doc =>
+              val text = doc.select(".govuk-list").text
+              text should include regex subsidyJourney.claimDate.value.map(_.year).getOrElse("")
+              text should include regex subsidyJourney.claimDate.value.map(_.month).getOrElse("")
+
+              val input = doc.select(".govuk-input").attr("value")
+              input shouldBe subsidyJourney.claimAmount.value.map(_.toString()).getOrElse("")
+
+              val button = doc.select("form")
+              button.attr("action") shouldBe routes.SubsidyController.postAddClaimAmount().url
+
+            }
+          )
+        }
+
+        "user hasn't already answered the question" in {
+          test(SubsidyJourney(
+            reportPayment = FormPage(ReportPayment, true.some),
+            claimDate = FormPage(ClaimDateValues, DateFormValues("9","10","2022").some)
+          ))
+        }
+
+        "user has already answered the question" in {
+          test(SubsidyJourney(
+            reportPayment = FormPage(ReportPayment, true.some),
+            claimDate = FormPage(ClaimDateValues, DateFormValues("9","10","2022").some),
+            claimAmount = FormPage(ClaimAmount,BigDecimal(123.45).some)
+          ))
+        }
+
+      }
+
+    }
+
+    "handling request to Post claim amount" must {
+
+      def performAction(data: (String, String)*) = controller
+        .postAddClaimAmount(
+          FakeRequest("POST",routes.SubsidyController.getClaimAmount().url)
+            .withFormUrlEncodedBody(data: _*))
+
+      "throw technical error" when {
+
+        val exception = new Exception("oh no !")
+        "call to get subsidy journey fails " in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to get subsidy journey passes but come back empty " in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(None))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to get subsidy journey passes but come back with No claim date " in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(None))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to get subsidy journey come back with no claim date " in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(SubsidyJourney().some))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to update the subsidy journey fails" in {
+
+          val subsidyJourneyOpt  = SubsidyJourney(
+            reportPayment = FormPage(ReportPayment, true.some),
+            claimDate = FormPage(ClaimDateValues, DateFormValues("9","10","2022").some)
+          ).some
+
+          def update(subsidyJourneyOpt: Option[SubsidyJourney]) =
+            subsidyJourneyOpt.map(_.copy(claimAmount = FormPage(ClaimAmount,BigDecimal(123.45).some)))
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
+            mockUpdate[SubsidyJourney](_ => update(subsidyJourneyOpt), eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction("claim-amount" -> "123.45")))
+        }
+      }
+
+      "display form error" when {
+
+        def displayError(data: (String, String)*)(errorMessageKey: String) = {
+
+          val subsidyJourneyOpt = SubsidyJourney(
+            reportPayment = FormPage(ReportPayment, true.some),
+            claimDate = FormPage(ClaimDateValues, DateFormValues("9","10","2022").some)
+          ).some
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
+          }
+
+          checkFormErrorIsDisplayed(
+            performAction(data: _*),
+            messageFromMessageKey("add-claim-amount.title"),
+            messageFromMessageKey(errorMessageKey)
+          )
+        }
+
+        "nothing is entered" in {
+          displayError("claim-amount" -> "")("add-claim-amount.error.real")
+
+        }
+        "claim amount entered in wrong format" in {
+          displayError("claim-amount" -> "123.4")("add-claim-amount.error.amount.incorrectFormat")
+        }
+
+        "claim amount entered is more than 17 chars" in {
+          displayError("claim-amount" ->"1234567890.12345678")("add-claim-amount.error.amount.tooBig")
+        }
+
+        "claim amount entered is too small < 0.01" in {
+          displayError("claim-amount" -> "00.01")("add-claim-amount.error.amount.tooSmall")
+        }
+
+      }
+
+      "redirect to next page" in {
+
+        val subsidyJourney = SubsidyJourney(
+          reportPayment = FormPage(ReportPayment, true.some),
+          claimDate = FormPage(ClaimDateValues, DateFormValues("9","10","2022").some),
+          claimAmount = FormPage(ClaimAmount,BigDecimal(123.45).some)
+        )
+
+        val subsidyJourneyOpt  = SubsidyJourney(
+          reportPayment = FormPage(ReportPayment, true.some),
+          claimDate = FormPage(ClaimDateValues, DateFormValues("9","10","2022").some)
+        ).some
+
+        def update(subsidyJourneyOpt: Option[SubsidyJourney]) =
+          subsidyJourneyOpt.map(_.copy(claimAmount = FormPage(ClaimAmount,BigDecimal(123.45).some)))
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
+          mockUpdate[SubsidyJourney](_ => update(subsidyJourneyOpt), eori1)(Right(subsidyJourney))
+        }
+
+        checkIsRedirect(
+          performAction("claim-amount" -> "123.45"),
+          "add-claim-eori"
+        )
+
+      }
+
     }
 
     "handling request to get Add Claim Eori " must {

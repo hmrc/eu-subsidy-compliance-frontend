@@ -26,6 +26,7 @@ class AppConfig @Inject()(config: Configuration) {
   val ggSignInUrl:        String = config.get[String](s"urls.ggSignInUrl")
   val ggSignOutUrl:       String = config.get[String](s"urls.ggSignOutUrl")
   val eccEscSubscribeUrl: String = config.get[String](s"urls.eccEscSubscribeUrl")
+  val exchangeRateToolUrl: String = config.get[String](s"urls.exchangeRateToolUrl")
 
   val betaFeedbackUrlNoAuth: String = "TODO" // TODO
   lazy val sessionTimeout = config.get[String]("application.session.maxAge")

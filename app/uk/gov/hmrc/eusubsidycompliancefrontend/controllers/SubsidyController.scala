@@ -104,27 +104,37 @@ class SubsidyController @Inject()(
 
   def getClaimAmount: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    // TODO - add 'getPrevious to all'
-    store.get[SubsidyJourney].flatMap {
-      case Some(journey) => journeyTraverseService.getPrevious[SubsidyJourney].map { p =>
-        val form = journey.claimAmount.value.fold(claimAmountForm)(claimAmountForm.fill)
-        Ok(addClaimAmountPage(form, p))
-      }
-      case _ => handleMissingSessionData("Subsidy journey")
+    val result: OptionT[Future, Result] = for {
+      subsidyJourney <- store.get[SubsidyJourney].toContext
+      addClaimDate <- subsidyJourney.claimDate.value.toContext
+      previous = subsidyJourney.previous
+    } yield {
+      val form = subsidyJourney.claimAmount.value.fold(claimAmountForm)(claimAmountForm.fill)
+      Ok(addClaimAmountPage(form, previous, addClaimDate.year, addClaimDate.month))
     }
+    result.getOrElse(handleMissingSessionData(" Subsidy journey"))
   }
 
   def postAddClaimAmount: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
+
+    def handleFormSubmit(previous: Journey.Uri, addClaimDate: DateFormValues) = {
       claimAmountForm.bindFromRequest().fold(
-        formWithErrors => Future.successful(BadRequest(addClaimAmountPage(formWithErrors, previous))),
+        formWithErrors => Future.successful(BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month))),
         form => for {
           journey <- store.update[SubsidyJourney](updateClaimAmount(form))
           redirect <- getJourneyNext(journey)
         } yield redirect
       )
     }
+
+    val result: OptionT[Future, Result] = for {
+      subsidyJourney <- store.get[SubsidyJourney].toContext
+      addClaimDate <- subsidyJourney.claimDate.value.toContext
+      previous = subsidyJourney.previous
+      resultFormSubmit <- handleFormSubmit(previous, addClaimDate).toContext
+    } yield (resultFormSubmit)
+    result.getOrElse(handleMissingSessionData(" Subsidy journey"))
   }
 
   def getClaimDate: Action[AnyContent] = escAuthentication.async { implicit request =>
@@ -413,8 +423,8 @@ class SubsidyController @Inject()(
 
   private val claimAmountForm : Form[BigDecimal] = Form(
     mapping("claim-amount" -> bigDecimal
-      .verifying("error.amount.incorrectFormat", e => e.scale == 2 || e.scale == 0)
       .verifying("error.amount.tooBig", e => e.toString().length < 17)
+      .verifying("error.amount.incorrectFormat", e => e.scale == 2 || e.scale == 0)
       .verifying("error.amount.tooSmall", e => e > 0.01)
   )
     (identity)(Some(_)))
