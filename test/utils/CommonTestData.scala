@@ -22,7 +22,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAme
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.FormUrls.{AcceptTerms, CreateUndertaking, CustomsWaivers, EoriCheck, MainBusinessCheck, NotEligible, SignOut, SignOutBadEori, WillYouClaim}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms.{AddClaimEoriFormPage, ClaimAmountFormPage, ClaimDateFormPage, PublicAuthorityFormPage, TraderRefFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 
 import java.time.{LocalDate, LocalDateTime}
@@ -60,11 +60,11 @@ object CommonTestData {
   )
 
   val subsidyJourney = SubsidyJourney(
-    publicAuthority = FormPage("add-claim-public-authority", "Local Authority".some),
-    traderRef = FormPage("add-claim-reference", optionalTraderRef.some),
-    claimAmount = FormPage("add-claim-date", SubsidyAmount(1234.56).some),
-    addClaimEori = FormPage("add-claim-eori", optionalEORI.some),
-    claimDate = FormPage("add-claim-date", DateFormValues("1", "1", "2022").some)
+    publicAuthority = PublicAuthorityFormPage("Local Authority".some),
+    traderRef = TraderRefFormPage(optionalTraderRef.some),
+    claimAmount = ClaimAmountFormPage(SubsidyAmount(1234.56).some),
+    addClaimEori = AddClaimEoriFormPage(optionalEORI.some),
+    claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some)
   )
 
   val subsidyUpdate = SubsidyUpdate(

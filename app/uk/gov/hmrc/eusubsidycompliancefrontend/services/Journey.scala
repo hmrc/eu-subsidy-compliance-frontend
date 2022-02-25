@@ -20,28 +20,43 @@ import play.api.Logger
 import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Request, Result}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.Future
 
+// TODO - Remove once transition to NewFormPage complete.
+trait FormPageBase[+T] {
+  def value: Journey.Form[T]
+  def uri: Journey.Uri
+}
+
+// TODO - rename to FormPage once all usages migrated.
+abstract case class NewFormPage[+T](
+  override val value: Journey.Form[T] = None,
+) extends FormPageBase[T] {
+  override val uri: Uri
+}
+
 case class FormPage[+T](
-  uri: Journey.Uri,
-  value: Journey.Form[T] = None
-)
+  override val uri: Journey.Uri,
+  value: Journey.Form[T] = None,
+) extends FormPageBase[T]
 
 // TODO - this needs another pass. Potential scope for simplifying previous/next handling
 trait Journey {
 
   private val logger = Logger(getClass)
 
-  protected def steps: List[FormPage[_]]
+  protected def steps: List[FormPageBase[_]]
 
-  def formPages: List[FormPage[_]] = steps
+  def formPages: List[FormPageBase[_]] = steps
 
   // TODO strip/add the server path prefix instead of endsWith
   // TODO especially as this may not work for listings
-  def currentIndex(implicit request: Request[_]): Int =
+  def currentIndex(implicit request: Request[_]): Int = {
     formPages.indexWhere(x => request.uri.endsWith(x.uri))
+  }
 
   // TODO - should previous and next return the same types?
   def previous(implicit request: Request[_]): Journey.Uri =
@@ -56,7 +71,7 @@ trait Journey {
         Redirect(x._1.uri).withSession(request.session).toFuture
       }
 
-  def isEmptyFormPage(indexedFormPage: (FormPage[_], Int))(implicit request: Request[_]): Boolean =
+  def isEmptyFormPage(indexedFormPage: (FormPageBase[_], Int))(implicit request: Request[_]): Boolean =
     indexedFormPage match {
       case (formPage, index) => formPage.value.isEmpty && index < currentIndex
     }
@@ -84,12 +99,14 @@ trait Journey {
 
 object Journey {
 
+  // TODO - consider renaming this to form value
   type Form[+T] = Option[T]
   type Uri = String
 
+  // TODO - remove these once transition to new form types complete
+  implicit val formPageBooleanFormat: OFormat[FormPage[Boolean]] = Json.format[FormPage[Boolean]]
   implicit val formPageBigDecimalFormat: OFormat[FormPage[BigDecimal]] = Json.format[FormPage[BigDecimal]]
-  implicit val formPageBooleanValueFormat: OFormat[FormPage[Boolean]] = Json.format[FormPage[Boolean]]
   implicit val formPageIntFormat: OFormat[FormPage[Int]] = Json.format[FormPage[Int]]
-  implicit val formPageStringValueFormat: OFormat[FormPage[String]] = Json.format[FormPage[String]]
+  implicit val formPageStringFormat: OFormat[FormPage[String]] = Json.format[FormPage[String]]
 
 }

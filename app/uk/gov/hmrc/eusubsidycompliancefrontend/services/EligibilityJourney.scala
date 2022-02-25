@@ -63,6 +63,7 @@ case class EligibilityJourney(
   private def removeSignOutBadEoriIfEoriCheckPassed(f: FormPage[_]) =
     predicate(f, SignOutBadEori)(eoriCheck.value.contains(true))
 
+  // TODO - review usage of URI here - should be replaced with something else
   private def predicate(f: FormPage[_], uri: String)(p: Boolean) = f.uri == uri && p
 
 }
