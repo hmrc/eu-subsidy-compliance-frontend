@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import play.api.libs.json._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.FormUrls._
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 
 case class EligibilityJourney(
   customsWaivers: FormPage[Boolean] = FormPage(CustomsWaivers),
@@ -72,15 +73,15 @@ object EligibilityJourney {
 
   // TODO - consider introducing form classes for each page
   object FormUrls {
-    val CustomsWaivers = "do-you-claim-customs-waivers"
-    val WillYouClaim = "will-you-claim-customs-waivers"
-    val NotEligible = "not-eligible"
-    val MainBusinessCheck = "main-business-check"
-    val SignOut = "not-eligible-to-lead"
-    val AcceptTerms = "terms-conditions"
-    val EoriCheck = "eoricheck"
-    val SignOutBadEori = "incorrect-eori"
-    val CreateUndertaking = "create-undertaking"
+    val CustomsWaivers = routes.EligibilityController.getCustomsWaivers().url
+    val WillYouClaim = routes.EligibilityController.getWillYouClaim().url
+    val NotEligible = routes.EligibilityController.getNotEligible().url
+    val MainBusinessCheck = routes.EligibilityController.getMainBusinessCheck().url
+    val SignOut = routes.EligibilityController.getNotEligible().url
+    val AcceptTerms = routes.EligibilityController.getTerms().url
+    val EoriCheck = routes.EligibilityController.getEoriCheck().url
+    val SignOutBadEori = routes.EligibilityController.getIncorrectEori().url
+    val CreateUndertaking = routes.EligibilityController.getCreateUndertaking().url
   }
 
 }
