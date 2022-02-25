@@ -22,6 +22,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAme
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.FormUrls.{AcceptTerms, CreateUndertaking, CustomsWaivers, EoriCheck, MainBusinessCheck, NotEligible, SignOut, SignOutBadEori, WillYouClaim}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 
 import java.time.{LocalDate, LocalDateTime}
@@ -185,5 +186,17 @@ object CommonTestData {
 
   val emailParameter   = SingleEORIEmailParameter(eori1, undertaking.name, undertakingRef, "createUndertaking")
   val emailSendRequest = EmailSendRequest(List(EmailAddress("user@test.com")), "templateId1", emailParameter)
+
+  val eligibilityJourney = EligibilityJourney(
+    customsWaivers = FormPage(CustomsWaivers, true.some),
+    willYouClaim = FormPage(WillYouClaim, true.some),
+    notEligible = FormPage(NotEligible, true.some),
+    mainBusinessCheck = FormPage(MainBusinessCheck, true.some),
+    signOut = FormPage(SignOut, true.some),
+    acceptTerms = FormPage(AcceptTerms, true.some),
+    eoriCheck = FormPage(EoriCheck, true.some),
+    signOutBadEori = FormPage(SignOutBadEori, true.some),
+    createUndertaking = FormPage(CreateUndertaking, true.some),
+  )
 
 }

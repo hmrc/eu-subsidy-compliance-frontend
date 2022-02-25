@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.AuditEvent.TermsAndConditionsAccepted
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EligibilityJourney, JourneyTraverseService, Store, SubsidyJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EligibilityJourney, JourneyTraverseService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
@@ -96,7 +96,7 @@ class EligibilityController @Inject()(
 
   def postWillYouClaim: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
+    journeyTraverseService.getPrevious[EligibilityJourney].flatMap { previous =>
       willYouClaimForm.bindFromRequest().fold(
         errors => Future.successful(BadRequest(willYouClaimPage(errors, previous))),
         form => {
