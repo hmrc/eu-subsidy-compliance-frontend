@@ -35,7 +35,6 @@ case class BusinessEntityJourney(
       eori,
       cya,
     )
-
 }
 
 object BusinessEntityJourney {
