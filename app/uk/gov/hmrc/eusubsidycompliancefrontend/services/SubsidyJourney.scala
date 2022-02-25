@@ -56,29 +56,23 @@ object SubsidyJourney {
   implicit val formPageTraderRefFormat: OFormat[FormPage[TraderRef]] = Json.format[FormPage[TraderRef]]
   implicit val format: Format[SubsidyJourney] = Json.format[SubsidyJourney]
 
-  def fromNonHmrcSubsidy(nonHmrcSubsidy: NonHmrcSubsidy): SubsidyJourney = {
-    val newJourney = SubsidyJourney()
-    newJourney
-      .copy(
-        reportPayment = newJourney.reportPayment.copy(value = Some(true)),
-        claimDate = newJourney.claimDate.copy(value = Some(DateFormValues.fromDate(nonHmrcSubsidy.allocationDate))),
-        claimAmount = newJourney.claimAmount.copy(value = Some(nonHmrcSubsidy.nonHMRCSubsidyAmtEUR)),
-        addClaimEori =
-          newJourney.addClaimEori.copy(value = getAddClaimEORI(nonHmrcSubsidy.businessEntityIdentifier).some),
-        publicAuthority = newJourney.publicAuthority.copy(value = Some(nonHmrcSubsidy.publicAuthority.getOrElse(""))),
-        traderRef = newJourney.traderRef.copy(value = getAddTraderRef(nonHmrcSubsidy.traderReference).some),
-        existingTransactionId = nonHmrcSubsidy.subsidyUsageTransactionID
-      )
+  def fromNonHmrcSubsidy(nonHmrcSubsidy: NonHmrcSubsidy): SubsidyJourney =
+    SubsidyJourney(
+      reportPayment = ReportPaymentFormPage(true.some),
+      claimDate = ClaimDateFormPage(DateFormValues.fromDate(nonHmrcSubsidy.allocationDate).some),
+      claimAmount = ClaimAmountFormPage(nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.some),
+      addClaimEori = AddClaimEoriFormPage(getAddClaimEORI(nonHmrcSubsidy.businessEntityIdentifier).some),
+      publicAuthority= PublicAuthorityFormPage(nonHmrcSubsidy.publicAuthority.orElse("".some)),
+      traderRef = TraderRefFormPage(getAddTraderRef(nonHmrcSubsidy.traderReference).some),
+      existingTransactionId = nonHmrcSubsidy.subsidyUsageTransactionID
+    )
+
+  private def getAddClaimEORI(eoriOpt: Option[EORI]): OptionalEORI = {
+    eoriOpt.fold(OptionalEORI("false", eoriOpt))(e => OptionalEORI("true", e.some))
   }
 
-  // TODO - refactor these to folds
-  private def getAddClaimEORI(eoriOpt: Option[EORI]) =
-    if(eoriOpt.isDefined) OptionalEORI("true", eoriOpt)
-    else OptionalEORI("false", eoriOpt)
-
   private def getAddTraderRef(traderRefOpt: Option[TraderRef]) =
-    if(traderRefOpt.isDefined) OptionalTraderRef("true", traderRefOpt)
-    else OptionalTraderRef("false", traderRefOpt)
+    traderRefOpt.fold(OptionalTraderRef("false", None))(t => OptionalTraderRef("true", t.some))
 
   object FormUrls {
     val ReportPayment = "claims"
