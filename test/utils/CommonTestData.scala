@@ -22,6 +22,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAme
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Forms.{AddBusinessCyaFormPage, AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms.{AddClaimEoriFormPage, ClaimAmountFormPage, ClaimDateFormPage, PublicAuthorityFormPage, TraderRefFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 
@@ -145,20 +146,20 @@ object CommonTestData {
   )
 
   val businessEntityJourney = BusinessEntityJourney(
-    addBusiness = FormPage("add-member", true.some),
-    eori = FormPage("add-business-entity-eori", eori1.some),
-    cya = FormPage("check-your-answers-businesses", true.some)
+    addBusiness = AddBusinessFormPage(true.some),
+    eori = AddEoriFormPage(eori1.some),
+    cya = AddBusinessCyaFormPage(true.some)
   )
 
   val businessEntityJourney1 = BusinessEntityJourney(
-    addBusiness = FormPage("add-member", true.some),
-    eori = FormPage("add-business-entity-eori", eori2.some),
-    cya = FormPage("check-your-answers-businesses", true.some)
+    addBusiness = AddBusinessFormPage(true.some),
+    eori = AddEoriFormPage(eori2.some),
+    cya = AddBusinessCyaFormPage(true.some)
   )
   val businessEntityJourneyLead = BusinessEntityJourney(
-    addBusiness = FormPage("add-member", true.some),
-    eori = FormPage("add-business-entity-eori", eori2.some),
-    cya = FormPage("check-your-answers-businesses", true.some),
+    addBusiness = AddBusinessFormPage(true.some),
+    eori = AddEoriFormPage(eori2.some),
+    cya = AddBusinessCyaFormPage(true.some),
     isLeadSelectJourney = true.some
   )
 

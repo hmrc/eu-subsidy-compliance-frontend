@@ -29,6 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{Dou
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Forms.AddEoriFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, FormPage, NewLeadJourney, RetrieveEmailService, SendEmailService, Store}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData._
@@ -43,7 +44,7 @@ class SelectNewLeadControllerSpec
     with RetrieveEmailSupport
     with SendEmailSupport {
 
-  val mockEscService = mock[EscService]
+  private val mockEscService = mock[EscService]
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
@@ -68,9 +69,9 @@ class SelectNewLeadControllerSpec
     )
   )
 
-  val controller = instanceOf[SelectNewLeadController]
+  private val controller = instanceOf[SelectNewLeadController]
 
-  def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
+  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
     (mockEscService
       .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
@@ -376,10 +377,7 @@ class SelectNewLeadControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[BusinessEntityJourney](
-              _ => update(businessEntityJourneyLead.copy(eori = FormPage("add-business-entity-eori", eori4.some)).some),
-              eori1
-            )(Left(Error(exception)))
+            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourneyLead.copy(eori = AddEoriFormPage(eori4.some)).some), eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -391,15 +389,8 @@ class SelectNewLeadControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[BusinessEntityJourney](
-              _ =>
-                update(
-                  businessEntityJourneyLead
-                    .copy(eori = FormPage("add-business-entity-eori", eori4.some))
-                    .some
-                ),
-              eori1
-            )(Right(businessEntityJourneyLead))
+            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourneyLead
+              .copy(eori = AddEoriFormPage(eori4.some)).some), eori1)(Right(businessEntityJourneyLead))
 
             mockPut[NewLeadJourney](NewLeadJourney(), eori)(Left(Error(exception)))
           }
@@ -414,15 +405,8 @@ class SelectNewLeadControllerSpec
           mockAuthWithNecessaryEnrolment()
           mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
           mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-          mockUpdate[BusinessEntityJourney](
-            _ =>
-              update(
-                businessEntityJourneyLead
-                  .copy(eori = FormPage("add-business-entity-eori", eori4.some))
-                  .some
-              ),
-            eori1
-          )(Right(businessEntityJourneyLead))
+          mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourneyLead
+            .copy(eori = AddEoriFormPage(eori4.some)).some), eori1)(Right(businessEntityJourneyLead))
           mockPut[NewLeadJourney](NewLeadJourney(), eori)(Right(NewLeadJourney()))
         }
         checkPageIsDisplayed(

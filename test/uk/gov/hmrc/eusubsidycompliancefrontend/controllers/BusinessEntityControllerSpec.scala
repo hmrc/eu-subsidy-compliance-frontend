@@ -28,12 +28,13 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityControl
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, DoubleEORIEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, FormPage, JourneyTraverseService, RetrieveEmailService, SendEmailService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, Language, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Forms.{AddBusinessFormPage, AddEoriFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.CommonTestData.{undertaking, _}
+import utils.CommonTestData._
 
 import java.time.LocalDate
 import scala.collection.JavaConverters._
@@ -48,8 +49,8 @@ class BusinessEntityControllerSpec
     with RetrieveEmailSupport
     with SendEmailSupport {
 
-  val mockEscService   = mock[EscService]
-  val mockTimeProvider = mock[TimeProvider]
+  private val mockEscService = mock[EscService]
+  private val mockTimeProvider = mock[TimeProvider]
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
@@ -84,12 +85,12 @@ class BusinessEntityControllerSpec
     )
   )
 
-  val controller = instanceOf[BusinessEntityController]
+  private val controller = instanceOf[BusinessEntityController]
 
-  val invalidEOris = List("GB1234567890", "AB1234567890", "GB1234567890123")
-  val currentDate  = LocalDate.of(2022, 10, 9)
+  private val invalidEOris = List("GB1234567890", "AB1234567890", "GB1234567890123")
+  private val currentDate = LocalDate.of(2022, 10,9)
 
-  val expectedRows = List(
+  private val expectedRows = List(
     CheckYourAnswersRowBE(
       messageFromMessageKey("businessEntity.cya.eori.label"),
       eori1,
@@ -97,13 +98,13 @@ class BusinessEntityControllerSpec
     )
   )
 
-  def mockRetreiveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
+  private def mockRetreiveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
     (mockEscService
       .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
       .returning(result)
 
-  def mockRemoveMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
+  private def mockRemoveMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
     result: Either[Error, UndertakingRef]
   ) =
     (mockEscService
@@ -111,7 +112,7 @@ class BusinessEntityControllerSpec
       .expects(undertakingRef, businessEntity, *)
       .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful))
 
-  def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
+  private def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
     result: Either[Error, UndertakingRef]
   ) =
     (mockEscService
@@ -119,7 +120,7 @@ class BusinessEntityControllerSpec
       .expects(undertakingRef, businessEntity, *)
       .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful(_)))
 
-  def mockTimeToday(now: LocalDate) =
+  private def mockTimeToday(now: LocalDate) =
     (mockTimeProvider.today _).expects().returning(now)
 
   "BusinessEntityControllerSpec" when {
@@ -201,7 +202,7 @@ class BusinessEntityControllerSpec
         }
 
         "user has already answered the question" in {
-          test(Some("true"), BusinessEntityJourney(addBusiness = FormPage("add-member", true.some)))
+          test(Some("true"), BusinessEntityJourney(addBusiness = AddBusinessFormPage(true.some)))
         }
       }
 
@@ -284,9 +285,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori)(Right(undertaking.some))
-            mockUpdate[BusinessEntityJourney](_ => updateFunc(BusinessEntityJourney().some), eori)(
-              Right(BusinessEntityJourney(addBusiness = FormPage("add-member", true.some)))
-            )
+            mockUpdate[BusinessEntityJourney](_ => updateFunc(BusinessEntityJourney().some), eori)(Right(BusinessEntityJourney(addBusiness = AddBusinessFormPage(true.some))))
           }
           checkIsRedirect(performAction("addBusiness" -> "true"), "add-business-entity-eori")
         }
@@ -358,20 +357,16 @@ class BusinessEntityControllerSpec
         }
 
         "user hasn't already answered the question" in {
-          test(
-            BusinessEntityJourney().copy(
-              addBusiness = FormPage("add-member", true.some)
-            )
-          )
+          test(BusinessEntityJourney().copy(
+            addBusiness = AddBusinessFormPage(true.some)
+          ))
         }
 
         "user has already answered the question" in {
-          test(
-            BusinessEntityJourney().copy(
-              addBusiness = FormPage("add-member", true.some),
-              eori = FormPage("add-business-entity-eori", eori1.some)
-            )
-          )
+          test(BusinessEntityJourney().copy(
+            addBusiness = AddBusinessFormPage(true.some),
+            eori = AddEoriFormPage(eori1.some)
+          ))
         }
 
       }
@@ -415,13 +410,11 @@ class BusinessEntityControllerSpec
             businessEntity.copy(eori = businessEntity.eori.copy(value = Some(EORI("123456789010"))))
           }
 
-          val businessEntityJourney = BusinessEntityJourney()
-            .copy(
-              addBusiness = FormPage("add-member", true.some),
-              eori = FormPage("add-business-entity-eori", eori1.some)
-            )
-            .some
-          inSequence {
+          val businessEntityJourney =  BusinessEntityJourney().copy(
+            addBusiness = AddBusinessFormPage(true.some),
+            eori = AddEoriFormPage(eori1.some)
+          ).some
+          inSequence{
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
             mockRetreiveUndertaking(eori4)(Future.successful(None))
@@ -492,9 +485,7 @@ class BusinessEntityControllerSpec
         "call to fetch Business Entity journey returns journey without eori" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[BusinessEntityJourney](eori1)(
-              Right(businessEntityJourney.copy(eori = FormPage("add-business-entity-eori")).some)
-            )
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.copy(eori = AddEoriFormPage()).some))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -583,9 +574,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockGet[BusinessEntityJourney](eori1)(
-              Right(businessEntityJourney1.copy(eori = FormPage("add-business-entity-eori", None)).some)
-            )
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.copy(eori = AddEoriFormPage(None)).some))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
         }
