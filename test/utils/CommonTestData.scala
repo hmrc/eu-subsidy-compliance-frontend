@@ -24,6 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.Sing
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 
@@ -164,7 +165,7 @@ object CommonTestData {
     isLeadSelectJourney = true.some
   )
 
-  val newLeadJourney = NewLeadJourney(selectNewLead = FormPage("select-new-lead", eori4.some))
+  val newLeadJourney = NewLeadJourney(selectNewLead = SelectNewLeadFormPage(eori4.some))
 
   val newBecomeLeadJourney = BecomeLeadJourney()
 

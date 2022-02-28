@@ -27,10 +27,11 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIEmailParameter, SingleEORIEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Forms.AddEoriFormPage
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, FormPage, NewLeadJourney, RetrieveEmailService, SendEmailService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData._
 
@@ -189,14 +190,15 @@ class SelectNewLeadControllerSpec
         val exception     = new Exception("oh no!")
         val emailParamsBE = SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promoteAsLeadEmailToBE")
 
-        def update(newLeadJourneyOpt: Option[NewLeadJourney]) =
-          newLeadJourneyOpt.map(_.copy(selectNewLead = FormPage("select-new-lead", eori4.some)))
+        def update(newLeadJourneyOpt: Option[NewLeadJourney]) = {
+          newLeadJourneyOpt.map(_.copy(selectNewLead = SelectNewLeadFormPage(eori4.some)))
+        }
         "call to retrieve Undertaking fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.failed(exception))
           }
-          assertThrows[Exception](await(performAction("selectNewLead" -> eori4.toString)(English.code)))
+          assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
         }
 
         "call to retrieve Undertaking came back with Nothing" in {
@@ -204,7 +206,7 @@ class SelectNewLeadControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(None))
           }
-          assertThrows[Exception](await(performAction("selectNewLead" -> eori4.toString)(English.code)))
+          assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
         }
 
         "call to update new lead journey fails" in {
@@ -214,7 +216,7 @@ class SelectNewLeadControllerSpec
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Left(Error(exception)))
           }
-          assertThrows[Exception](await(performAction("selectNewLead" -> eori4.toString)(English.code)))
+          assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
         }
 
         "call to fetch business entity email address fails" in {
@@ -222,9 +224,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
-              Right(NewLeadJourney(FormPage("select-new-lead", eori4.some)))
-            )
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some))))
             mockRetrieveEmail(eori4)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4.toString)(English.code)))
@@ -235,26 +235,22 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
-              Right(NewLeadJourney(FormPage("select-new-lead", eori4.some)))
-            )
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some))))
             mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
             mockSendEmail(validEmailAddress, emailParamsBE, "template_BE_as_lead_EN")(Right(EmailSendResult.EmailSent))
             mockRetrieveEmail(eori1)(Left(Error(exception)))
           }
-          assertThrows[Exception](await(performAction("selectNewLead" -> eori4.toString)(English.code)))
+          assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
         }
 
         "language is other than english /welsh" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
-              Right(NewLeadJourney(FormPage("select-new-lead", eori4.some)))
-            )
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some))))
             mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
           }
-          assertThrows[Exception](await(performAction("selectNewLead" -> eori4.toString)("fr")))
+          assertThrows[Exception](await(performAction("selectNewLead" -> eori4)("fr")))
         }
 
       }
@@ -276,8 +272,9 @@ class SelectNewLeadControllerSpec
 
       "redirect to next page" when {
 
-        def update(newLeadJourneyOpt: Option[NewLeadJourney]) =
-          newLeadJourneyOpt.map(_.copy(selectNewLead = FormPage("select-new-lead", eori4.some)))
+        def update(newLeadJourneyOpt: Option[NewLeadJourney]) = {
+          newLeadJourneyOpt.map(_.copy(selectNewLead = SelectNewLeadFormPage(eori4.some)))
+        }
 
         def testRedirection(templateIdBE: String, templateIdLead: String, lang: String) = {
 
@@ -288,18 +285,13 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
-              Right(NewLeadJourney(FormPage("select-new-lead", eori4.some)))
-            )
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some))))
             mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
             mockSendEmail(validEmailAddress, emailParamsBE, templateIdBE)(Right(EmailSendResult.EmailSent))
             mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
             mockSendEmail(validEmailAddress, emailParamLead, templateIdLead)(Right(EmailSendResult.EmailSent))
           }
-          checkIsRedirect(
-            performAction("selectNewLead" -> eori4.toString)(lang),
-            routes.SelectNewLeadController.getLeadEORIChanged()
-          )
+          checkIsRedirect(performAction("selectNewLead" -> eori4)(lang), routes.SelectNewLeadController.getLeadEORIChanged())
         }
 
         "the language selected by user is  English" in {
