@@ -23,7 +23,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.AuditEvent.TermsAndConditionsAccepted
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.FormUrls._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.FormUrls.{MainBusinessCheck, _}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EligibilityJourney, FormPage, JourneyTraverseService, Store}
 import utils.CommonTestData.{eligibilityJourney, _}
 
@@ -85,7 +85,7 @@ class EligibilityControllerSpec extends ControllerSpec
         }
 
         "first empty value comes out to be empty" in {
-          redirect(EligibilityJourney(), routes.EligibilityController.getCustomsWaivers().url)
+          redirect(EligibilityJourney(), "/do-you-claim-customs-waivers")
         }
 
         "Eligibility journey is complete" in {
@@ -206,7 +206,7 @@ class EligibilityControllerSpec extends ControllerSpec
               mockAuthWithNecessaryEnrolment()
               mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Right(EligibilityJourney(customsWaivers = FormPage(CustomsWaivers, true.some))))
             }
-            checkIsRedirect(performAction("customswaivers" -> inputValue), routes.EligibilityController.getMainBusinessCheck().url)
+            checkIsRedirect(performAction("customswaivers" -> inputValue), "/main-business-check")
           }
         }
       }
@@ -240,7 +240,7 @@ class EligibilityControllerSpec extends ControllerSpec
 
       "display the page" when {
 
-        val previousUrl = routes.EligibilityController.getCustomsWaivers().url
+        val previousUrl = "/do-you-claim-customs-waivers"
 
         def testDisplay(eligibilityJourney: EligibilityJourney) = {
           inSequence {
@@ -288,14 +288,13 @@ class EligibilityControllerSpec extends ControllerSpec
 
       val previousUrl = routes.EligibilityController.getCustomsWaivers().url
 
+      val eligibilityJourney = EligibilityJourney(
+        willYouClaim = FormPage(WillYouClaim, false.some)
+      )
+      val updatedEligibilityJourney = eligibilityJourney.copy(willYouClaim = FormPage(WillYouClaim, true.some))
+
       def update(ejOpt: Option[EligibilityJourney]) = ejOpt
         .map(ej => ej.copy(willYouClaim = ej.willYouClaim.copy(value = true.some)))
-
-      val eligibilityJourney = EligibilityJourney(
-        customsWaivers = FormPage(CustomsWaivers, false.some)
-      )
-
-      val updatedEligibilityJourney = eligibilityJourney.copy(willYouClaim = FormPage(WillYouClaim, true.some))
 
       "throw technical error" when {
 
@@ -333,14 +332,14 @@ class EligibilityControllerSpec extends ControllerSpec
         }
       }
 
-      "redirect to next page" when {
+      "redirect to next page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGetPrevious(eori)(Right(previousUrl))
           mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Right(updatedEligibilityJourney))
         }
 
-        checkIsRedirect(performAction("willyouclaim" -> "true"), routes.EligibilityController.getMainBusinessCheck().url)
+        checkIsRedirect(performAction("willyouclaim" -> "true"), "/main-business-check")
       }
     }
 
@@ -372,7 +371,7 @@ class EligibilityControllerSpec extends ControllerSpec
 
       "display the page" when {
 
-        val previousUrl = routes.EligibilityController.getWillYouClaim().url
+        val previousUrl = "/not-eligible"
 
         def testDisplay(eligibilityJourney: EligibilityJourney) = {
           inSequence {
@@ -387,11 +386,14 @@ class EligibilityControllerSpec extends ControllerSpec
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
 
               eligibilityJourney.mainBusinessCheck.value match {
-                case Some(value) => if (value)
+                case Some(value) => println(" insde some , value is ::"+value)
+                  if (value) {
                   doc.select(".govuk-back-link").attr("href") shouldBe (previousUrl)
-                else
-                  doc.select(".govuk-back-link").attr("href") shouldBe (routes.EligibilityController.getNotEligible().url)
+                } else {
+                  doc.select(".govuk-back-link").attr("href") shouldBe ("/not-eligible")
                   selectedOptions.attr("value") shouldBe value.toString
+                }
+
                 case None =>
                   selectedOptions.isEmpty shouldBe true
                   doc.select(".govuk-back-link").attr("href") shouldBe (previousUrl)
@@ -404,7 +406,7 @@ class EligibilityControllerSpec extends ControllerSpec
         }
 
         "user hasn't answered the question" in {
-          testDisplay(EligibilityJourney(willYouClaim = FormPage(WillYouClaim, true.some)))
+          testDisplay(EligibilityJourney(mainBusinessCheck = FormPage(MainBusinessCheck, true.some)))
         }
 
         "user has already answered the question" in {
@@ -427,14 +429,13 @@ class EligibilityControllerSpec extends ControllerSpec
             .withFormUrlEncodedBody(data: _*))
 
       val previousUrl = routes.EligibilityController.getWillYouClaim().url
-
-      def update(ejOpt: Option[EligibilityJourney]) = ejOpt
-        .map(ej => ej.copy(mainBusinessCheck = ej.mainBusinessCheck.copy(value = true.some)))
-
       val eligibilityJourney = EligibilityJourney(
         customsWaivers = FormPage(CustomsWaivers, false.some)
       )
       val updatedEligibilityJourney = eligibilityJourney.copy(mainBusinessCheck = FormPage(MainBusinessCheck, true.some))
+
+      def update(ejOpt: Option[EligibilityJourney]) = ejOpt
+        .map(ej => ej.copy(mainBusinessCheck = ej.mainBusinessCheck.copy(value = true.some)))
 
       "throw technical error" when {
 
@@ -472,13 +473,13 @@ class EligibilityControllerSpec extends ControllerSpec
         }
       }
 
-      "redirect to next page" when {
+      "redirect to next page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGetPrevious(eori)(Right(previousUrl))
           mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Right(updatedEligibilityJourney))
         }
-        checkIsRedirect(performAction("mainbusinesscheck" -> "true"), routes.EligibilityController.getTerms().url)
+        checkIsRedirect(performAction("mainbusinesscheck" -> "true"), "/terms-conditions")
       }
     }
 
@@ -517,7 +518,6 @@ class EligibilityControllerSpec extends ControllerSpec
           }
         )
       }
-
 
     }
 
@@ -558,7 +558,7 @@ class EligibilityControllerSpec extends ControllerSpec
           mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Right(updatedJourney))
           mockSendAuditEvent(expectedAuditEvent)
         }
-        checkIsRedirect(performAction("terms" -> "true"), routes.EligibilityController.getEoriCheck().url)
+        checkIsRedirect(performAction("terms" -> "true"), "/eoricheck")
       }
 
     }
@@ -591,7 +591,7 @@ class EligibilityControllerSpec extends ControllerSpec
 
       "display the page" when {
 
-        val previousUrl = routes.EligibilityController.getTerms().url
+        val previousUrl = "/terms-conditions"
 
         def testDisplay(eligibilityJourney: EligibilityJourney) = {
           inSequence {

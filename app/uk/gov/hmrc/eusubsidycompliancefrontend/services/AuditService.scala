@@ -42,7 +42,7 @@ trait AuditService {
 }
 
 @Singleton
-class AuditServiceImpl @Inject() (auditConnector: AuditConnector)(implicit ec: ExecutionContext)
+class AuditServiceImpl @Inject()(auditConnector: AuditConnector)(implicit ec: ExecutionContext)
   extends AuditService
     with Logging {
 

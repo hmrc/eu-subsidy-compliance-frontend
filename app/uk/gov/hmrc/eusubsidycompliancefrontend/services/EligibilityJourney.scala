@@ -77,7 +77,7 @@ object EligibilityJourney {
     val WillYouClaim = routes.EligibilityController.getWillYouClaim().url
     val NotEligible = routes.EligibilityController.getNotEligible().url
     val MainBusinessCheck = routes.EligibilityController.getMainBusinessCheck().url
-    val SignOut = routes.EligibilityController.getNotEligible().url
+    val SignOut = routes.EligibilityController.getNotEligibleToLead().url
     val AcceptTerms = routes.EligibilityController.getTerms().url
     val EoriCheck = routes.EligibilityController.getEoriCheck().url
     val SignOutBadEori = routes.EligibilityController.getIncorrectEori().url
