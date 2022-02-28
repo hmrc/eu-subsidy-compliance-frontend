@@ -27,12 +27,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 
 package object eis {
 
-  val clock: Clock                        = Clock.systemUTC()
-  val formatter: DateTimeFormatter        = DateTimeFormatter.ISO_INSTANT
+  val clock: Clock = Clock.systemUTC()
+  val formatter: DateTimeFormatter = DateTimeFormatter.ISO_INSTANT
   val oddEisDateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/MM-dd")
 
   def receiptDate: String = {
-    val instant      = Instant.now(clock)
+    val instant = Instant.now(clock)
     val withoutNanos = instant.minusNanos(instant.getNano)
     formatter.format(withoutNanos)
   }
@@ -54,11 +54,11 @@ package object eis {
             None
           ),
         "responseDetail" -> Json.obj(
-          "undertakingReference"      -> o.reference,
-          "undertakingName"           -> o.name,
-          "industrySector"            -> o.industrySector,
-          "industrySectorLimit"       -> o.industrySectorLimit,
-          "lastSubsidyUsageUpdt"      -> o.lastSubsidyUsageUpdt.map(_.format(oddEisDateFormat)),
+          "undertakingReference" -> o.reference,
+          "undertakingName" -> o.name,
+          "industrySector" -> o.industrySector,
+          "industrySectorLimit" -> o.industrySectorLimit,
+          "lastSubsidyUsageUpdt" -> o.lastSubsidyUsageUpdt.map(_.format(oddEisDateFormat)),
           "undertakingBusinessEntity" -> o.undertakingBusinessEntity
         )
       )
@@ -145,13 +145,13 @@ package object eis {
               None
             ),
           "responseDetail" -> Json.obj(
-            "undertakingIdentifier"  -> o.undertakingIdentifier,
+            "undertakingIdentifier" -> o.undertakingIdentifier,
             "nonHMRCSubsidyTotalEUR" -> o.nonHMRCSubsidyTotalEUR,
             "nonHMRCSubsidyTotalGBP" -> o.nonHMRCSubsidyTotalGBP,
-            "hmrcSubsidyTotalEUR"    -> o.hmrcSubsidyTotalEUR,
-            "hmrcSubsidyTotalGBP"    -> o.hmrcSubsidyTotalGBP,
-            "nonHMRCSubsidyUsage"    -> o.nonHMRCSubsidyUsage,
-            "hmrcSubsidyUsage"       -> o.hmrcSubsidyUsage
+            "hmrcSubsidyTotalEUR" -> o.hmrcSubsidyTotalEUR,
+            "hmrcSubsidyTotalGBP" -> o.hmrcSubsidyTotalGBP,
+            "nonHMRCSubsidyUsage" -> o.nonHMRCSubsidyUsage,
+            "hmrcSubsidyUsage" -> o.hmrcSubsidyUsage
           )
         )
       )

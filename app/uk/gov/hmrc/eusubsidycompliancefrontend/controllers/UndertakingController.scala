@@ -261,7 +261,7 @@ class UndertakingController @Inject() (
             retrievedUndertaking <- escService
               .retrieveUndertaking(eori)
               .map(_.getOrElse(handleMissingSessionData("Undertaking")))
-            undertakingRef     = retrievedUndertaking.reference.getOrElse(handleMissingSessionData("Undertaking ref"))
+            undertakingRef = retrievedUndertaking.reference.getOrElse(handleMissingSessionData("Undertaking ref"))
             updatedUndertaking = retrievedUndertaking.copy(name = undertakingName, industrySector = undertakingSector)
             _ <- escService.updateUndertaking(updatedUndertaking)
           } yield Redirect(routes.AccountController.getAccountPage())
@@ -273,7 +273,7 @@ class UndertakingController @Inject() (
   )(f: UndertakingJourney => Future[Result]): Future[Result] =
     journey match {
       case Some(undertakingJourney) => f(undertakingJourney)
-      case None                     => handleMissingSessionData("Undertaking journey")
+      case None => handleMissingSessionData("Undertaking journey")
     }
 
   private val undertakingNameForm: Form[FormValues] = Form(
@@ -282,7 +282,7 @@ class UndertakingController @Inject() (
       fields =>
         fields match {
           case a if a.value.matches(UndertakingName.regex) => true
-          case _                                           => false
+          case _ => false
         }
     )
   )

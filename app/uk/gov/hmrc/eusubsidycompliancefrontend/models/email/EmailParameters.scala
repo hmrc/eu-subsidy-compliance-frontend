@@ -25,8 +25,8 @@ sealed trait EmailParameterType
 
 object EmailParameterType {
 
-  case object SingleEORI        extends EmailParameterType
-  case object DoubleEORI        extends EmailParameterType
+  case object SingleEORI extends EmailParameterType
+  case object DoubleEORI extends EmailParameterType
   case object DoubleEORIAndDate extends EmailParameterType
   case object SingleEORIAndDate extends EmailParameterType
 
@@ -87,8 +87,8 @@ object EmailParameters {
   implicit val format: OFormat[EmailParameters] = new OFormat[EmailParameters] {
     override def writes(o: EmailParameters): JsObject = {
       val json = o match {
-        case s: SingleEORIEmailParameter         => Json.writes[SingleEORIEmailParameter].writes(s)
-        case d: DoubleEORIEmailParameter         => Json.writes[DoubleEORIEmailParameter].writes(d)
+        case s: SingleEORIEmailParameter => Json.writes[SingleEORIEmailParameter].writes(s)
+        case d: DoubleEORIEmailParameter => Json.writes[DoubleEORIEmailParameter].writes(d)
         case sd: SingleEORIAndDateEmailParameter => Json.writes[SingleEORIAndDateEmailParameter].writes(sd)
         case dd: DoubleEORIAndDateEmailParameter => Json.writes[DoubleEORIAndDateEmailParameter].writes(dd)
       }
@@ -99,8 +99,8 @@ object EmailParameters {
       (json \ "emailParameterType")
         .validate[EmailParameterType]
         .flatMap {
-          case EmailParameterType.SingleEORI        => Json.reads[SingleEORIEmailParameter].reads(json)
-          case EmailParameterType.DoubleEORI        => Json.reads[DoubleEORIEmailParameter].reads(json)
+          case EmailParameterType.SingleEORI => Json.reads[SingleEORIEmailParameter].reads(json)
+          case EmailParameterType.DoubleEORI => Json.reads[DoubleEORIEmailParameter].reads(json)
           case EmailParameterType.SingleEORIAndDate => Json.reads[SingleEORIAndDateEmailParameter].reads(json)
           case EmailParameterType.DoubleEORIAndDate => Json.reads[DoubleEORIAndDateEmailParameter].reads(json)
         }

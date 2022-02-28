@@ -84,8 +84,8 @@ package object types extends SimpleJson {
 
   object Sector extends Enumeration {
     type Sector = Value
-    val other: types.Sector.Value       = Value("0")
-    val transport: types.Sector.Value   = Value("1")
+    val other: types.Sector.Value = Value("0")
+    val transport: types.Sector.Value = Value("1")
     val agriculture: types.Sector.Value = Value("2")
     val aquaculture: types.Sector.Value = Value("3")
     implicit val format: Format[Sector] = Json.formatEnum(Sector)
@@ -115,7 +115,7 @@ package object types extends SimpleJson {
       extends RegexValidatedString(
         """^[A-Z][A-Z]$""",
         _.toUpperCase match {
-          case "UK"  => "GB"
+          case "UK" => "GB"
           case other => other
         }
       )
@@ -135,7 +135,7 @@ package object types extends SimpleJson {
 
   object EisAmendmentType extends Enumeration {
     type EisAmendmentType = Value
-    val A, D            = Value
+    val A, D = Value
     implicit val format = Json.formatEnum(EisAmendmentType)
   }
 
@@ -155,8 +155,8 @@ package object types extends SimpleJson {
   object AmendmentType extends Enumeration {
     type AmendmentType = Value
 
-    val add: types.AmendmentType.Value    = Value("1")
-    val amend: types.AmendmentType.Value  = Value("2")
+    val add: types.AmendmentType.Value = Value("1")
+    val amend: types.AmendmentType.Value = Value("2")
     val delete: types.AmendmentType.Value = Value("3")
 
     implicit val format: Format[AmendmentType] = Json.formatEnum(AmendmentType)

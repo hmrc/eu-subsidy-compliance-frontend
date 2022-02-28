@@ -74,8 +74,8 @@ class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit ec: Executi
       case Right(value) =>
         value.status match {
           case NOT_FOUND => None
-          case OK        => value.parseJSON[Undertaking].fold(_ => sys.error("Error in parsing Undertaking"), _.some)
-          case _         => sys.error("Error in retrieving Undertaking")
+          case OK => value.parseJSON[Undertaking].fold(_ => sys.error("Error in parsing Undertaking"), _.some)
+          case _ => sys.error("Error in retrieving Undertaking")
         }
     }
 

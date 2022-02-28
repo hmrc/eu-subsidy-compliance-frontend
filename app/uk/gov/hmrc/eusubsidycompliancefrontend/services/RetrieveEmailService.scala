@@ -55,6 +55,6 @@ class RetrieveEmailServiceImpl @Inject() (retrieveEmailConnector: RetrieveEmailC
   //this method is identifying that response and returning the email address
   private def getEmailAddress(emailAddressResponse: EmailAddressResponse) = emailAddressResponse match {
     case EmailAddressResponse(email, Some(_), None) => email.some
-    case _                                          => None
+    case _ => None
   }
 }

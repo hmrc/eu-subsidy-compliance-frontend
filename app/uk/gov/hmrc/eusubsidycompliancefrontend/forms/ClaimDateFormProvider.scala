@@ -37,9 +37,9 @@ class ClaimDateFormProvider @Inject() (timeProvider: TimeProvider) extends FormP
   private val dateFormatter = DateTimeFormatter.ofPattern("dd MM yyyy")
 
   private def formValueMapping = tuple(
-    "day"   -> text,
+    "day" -> text,
     "month" -> text,
-    "year"  -> text
+    "year" -> text
   )
 
   override protected def mapping: Mapping[DateFormValues] =
@@ -51,27 +51,27 @@ class ClaimDateFormProvider @Inject() (timeProvider: TimeProvider) extends FormP
       .transform({ case (d, m, y) => DateFormValues(d, m, y) }, d => (d.day, d.month, d.year))
 
   private val dateIsValid: RawFormValues => ValidationResult = {
-    case (d, m, y) if Try(s"$d$m$y".toInt).isFailure         => invalid("date.invalidentry")
+    case (d, m, y) if Try(s"$d$m$y".toInt).isFailure => invalid("date.invalidentry")
     case (d, m, y) if localDateFromValues(d, m, y).isFailure => invalid("date.invalid")
-    case _                                                   => Valid
+    case _ => Valid
   }
 
   private val allDateValuesEntered: RawFormValues => ValidationResult = {
     case ("", "", "") => invalid("date.emptyfields")
-    case ("", "", _)  => invalid("day-and-month.missing")
-    case (_, "", "")  => invalid("month-and-year.missing")
-    case ("", _, "")  => invalid("day-and-year.missing")
-    case ("", _, _)   => invalid("day.missing")
-    case (_, "", _)   => invalid("month.missing")
-    case (_, _, "")   => invalid("year.missing")
-    case _            => Valid
+    case ("", "", _) => invalid("day-and-month.missing")
+    case (_, "", "") => invalid("month-and-year.missing")
+    case ("", _, "") => invalid("day-and-year.missing")
+    case ("", _, _) => invalid("day.missing")
+    case (_, "", _) => invalid("month.missing")
+    case (_, _, "") => invalid("year.missing")
+    case _ => Valid
   }
 
   private val dateInAllowedRange: RawFormValues => ValidationResult = {
     case (d, m, y) =>
       localDateFromValues(d, m, y)
         .map { parsedDate =>
-          val today               = timeProvider.today(ZoneId.of("Europe/London"))
+          val today = timeProvider.today(ZoneId.of("Europe/London"))
           val earliestAllowedDate = today.toEarliestTaxYearStart
 
           if (parsedDate.isBefore(earliestAllowedDate))

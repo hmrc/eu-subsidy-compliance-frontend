@@ -38,11 +38,11 @@ object ErrorDetail {
 
     override def writes(o: ErrorDetail): JsValue = Json.obj(
       "errorDetail" -> Json.obj(
-        "timestamp"     -> o.timestamp.format(oddEisFormat),
+        "timestamp" -> o.timestamp.format(oddEisFormat),
         "correlationId" -> o.correlationId,
-        "errorCode"     -> o.errorCode,
-        "errorMessage"  -> o.errorMessage,
-        "source"        -> o.source,
+        "errorCode" -> o.errorCode,
+        "errorMessage" -> o.errorMessage,
+        "source" -> o.source,
         "sourceFaultDetail" -> Json.obj(
           "detail" -> o.sourceFaultDetail
         )

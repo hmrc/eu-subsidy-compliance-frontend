@@ -49,12 +49,12 @@ case class SubsidyJourney(
 object SubsidyJourney {
   import Journey._ // N.B. don't let intellij delete this
 
-  implicit val formPageClaimDateFormat: OFormat[FormPage[DateFormValues]]  = Json.format[FormPage[DateFormValues]]
+  implicit val formPageClaimDateFormat: OFormat[FormPage[DateFormValues]] = Json.format[FormPage[DateFormValues]]
   implicit val formPageOptionalEORIFormat: OFormat[FormPage[OptionalEORI]] = Json.format[FormPage[OptionalEORI]]
   implicit val formPageOptionalTraderRefFormat: OFormat[FormPage[OptionalTraderRef]] =
     Json.format[FormPage[OptionalTraderRef]]
   implicit val formPageTraderRefFormat: OFormat[FormPage[TraderRef]] = Json.format[FormPage[TraderRef]]
-  implicit val format: Format[SubsidyJourney]                        = Json.format[SubsidyJourney]
+  implicit val format: Format[SubsidyJourney] = Json.format[SubsidyJourney]
 
   def fromNonHmrcSubsidy(nonHmrcSubsidy: NonHmrcSubsidy): SubsidyJourney = {
     val newJourney = SubsidyJourney()
@@ -77,13 +77,13 @@ object SubsidyJourney {
     if (traderRefOpt.isDefined) OptionalTraderRef("true", traderRefOpt) else OptionalTraderRef("false", traderRefOpt)
 
   object FormUrls {
-    val ReportPayment   = "claims"
+    val ReportPayment = "claims"
     val ClaimDateValues = "add-claim-date"
-    val ClaimAmount     = "add-claim-amount"
-    val AddClaimEori    = "add-claim-eori"
+    val ClaimAmount = "add-claim-amount"
+    val AddClaimEori = "add-claim-eori"
     val PublicAuthority = "add-claim-public-authority"
     val TraderReference = "add-claim-reference"
-    val Cya             = "check-your-answers-subsidy"
+    val Cya = "check-your-answers-subsidy"
   }
 
 }

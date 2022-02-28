@@ -73,14 +73,14 @@ object EligibilityJourney {
 
   // TODO - consider introducing form classes for each page
   object FormUrls {
-    val CustomsWaivers    = routes.EligibilityController.getCustomsWaivers().url
-    val WillYouClaim      = routes.EligibilityController.getWillYouClaim().url
-    val NotEligible       = routes.EligibilityController.getNotEligible().url
+    val CustomsWaivers = routes.EligibilityController.getCustomsWaivers().url
+    val WillYouClaim = routes.EligibilityController.getWillYouClaim().url
+    val NotEligible = routes.EligibilityController.getNotEligible().url
     val MainBusinessCheck = routes.EligibilityController.getMainBusinessCheck().url
-    val SignOut           = routes.EligibilityController.getNotEligibleToLead().url
-    val AcceptTerms       = routes.EligibilityController.getTerms().url
-    val EoriCheck         = routes.EligibilityController.getEoriCheck().url
-    val SignOutBadEori    = routes.EligibilityController.getIncorrectEori().url
+    val SignOut = routes.EligibilityController.getNotEligibleToLead().url
+    val AcceptTerms = routes.EligibilityController.getTerms().url
+    val EoriCheck = routes.EligibilityController.getEoriCheck().url
+    val SignOutBadEori = routes.EligibilityController.getIncorrectEori().url
     val CreateUndertaking = routes.EligibilityController.getCreateUndertaking().url
   }
 

@@ -21,8 +21,8 @@ import java.time.LocalDate
 object ReportDeMinimisReminderHelper {
 
   val ONE_DAY_BEFORE_REMINDER_DAY = 75
-  val ONE_DAY_AFTER_DUE_DAY       = 91
-  val REPORT_DEMINIMIS_DUE_DAY    = 90
+  val ONE_DAY_AFTER_DUE_DAY = 91
+  val REPORT_DEMINIMIS_DUE_DAY = 90
 
   def isTimeToReport(lastSubsidyUsageUpdt: Option[LocalDate], currentDate: LocalDate) =
     lastSubsidyUsageUpdt

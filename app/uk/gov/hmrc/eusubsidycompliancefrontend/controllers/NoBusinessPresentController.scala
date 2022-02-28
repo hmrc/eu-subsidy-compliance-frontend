@@ -40,11 +40,11 @@ class NoBusinessPresentController @Inject() (
 
   def getNoBusinessPresent: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori = request.eoriNumber
-    val previous      = routes.AccountController.getAccountPage().url
+    val previous = routes.AccountController.getAccountPage().url
     escService.retrieveUndertaking(eori).map {
       _ match {
         case Some(undertaking) => Ok(noBusinessPresentPage(undertaking.name, previous))
-        case None              => handleMissingSessionData("Undertaking")
+        case None => handleMissingSessionData("Undertaking")
       }
     }
   }

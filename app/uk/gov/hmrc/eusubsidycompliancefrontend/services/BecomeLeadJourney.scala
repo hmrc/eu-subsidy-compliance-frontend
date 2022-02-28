@@ -41,9 +41,9 @@ object BecomeLeadJourney {
 
   object FormUrls {
 
-    val BecomeLead         = "become-lead-eori"
+    val BecomeLead = "become-lead-eori"
     val TermsAndConditions = "accept-promote-to-lead-terms"
-    val Confirmation       = "lead-promotion-confirmation"
+    val Confirmation = "lead-promotion-confirmation"
   }
 
 }

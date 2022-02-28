@@ -69,7 +69,7 @@ trait SimpleJson {
       case JsString(value) =>
         A.validateAndTransform(value) match {
           case Some(v) => JsSuccess(A(v))
-          case None    => JsError(s"Expected a valid $name, got $value instead")
+          case None => JsError(s"Expected a valid $name, got $value instead")
         }
       case xs: JsValue => JsError(JsPath -> JsonValidationError(Seq(s"""Expected a valid $name, got $xs instead""")))
     }
@@ -88,7 +88,7 @@ trait SimpleJson {
         case JsNumber(value) =>
           A.validateAndTransform(value) match {
             case Some(v) => JsSuccess(A(v))
-            case None    => JsError(s"Expected a valid $name, got $value instead.")
+            case None => JsError(s"Expected a valid $name, got $value instead.")
           }
         case xs: JsValue =>
           JsError(

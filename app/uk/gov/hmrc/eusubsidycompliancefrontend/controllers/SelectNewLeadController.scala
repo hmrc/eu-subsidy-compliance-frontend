@@ -44,14 +44,14 @@ class SelectNewLeadController @Inject() (
   import escActionBuilders._
 
   val promoteOtherAsLeadEmailToBusinessEntity = "promoteAsLeadEmailToBE"
-  val promoteOtherAsLeadEmailToLead           = "promoteAsLeadEmailToLead"
+  val promoteOtherAsLeadEmailToLead = "promoteAsLeadEmailToLead"
 
   def getSelectNewLead: Action[AnyContent] = escAuthentication.async { implicit request =>
-    val previous      = routes.AccountController.getAccountPage().url
+    val previous = routes.AccountController.getAccountPage().url
     implicit val eori = request.eoriNumber
     (for {
       newLeadJourneyOpt <- store.get[NewLeadJourney]
-      undertakingOpt    <- escService.retrieveUndertaking(eori)
+      undertakingOpt <- escService.retrieveUndertaking(eori)
     } yield (newLeadJourneyOpt, undertakingOpt) match {
       case (Some(newLeadJourney), Some(undertaking)) =>
         val form = newLeadJourney.selectNewLead.value.fold(selectNewLeadForm)(eori =>
@@ -73,7 +73,7 @@ class SelectNewLeadController @Inject() (
 
   def postSelectNewLead: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    val previous            = routes.AccountController.getAccountPage().url
+    val previous = routes.AccountController.getAccountPage().url
     escService.retrieveUndertaking(eori).flatMap {
       _ match {
         case Some(undertaking) =>
@@ -85,7 +85,7 @@ class SelectNewLeadController @Inject() (
                   BadRequest(selectNewLeadPage(errors, previous, undertaking.name, undertaking.getAllNonLeadEORIs()))
                 ),
               form => {
-                val eoriBE         = EORI(form.value)
+                val eoriBE = EORI(form.value)
                 val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking Ref"))
                 for {
                   _ <- store.update[NewLeadJourney] {

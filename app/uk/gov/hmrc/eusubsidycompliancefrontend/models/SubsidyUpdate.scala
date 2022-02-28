@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
 import scala.reflect.ClassTag
 
 sealed trait Update
-case class NilSubmissionDate(d: LocalDate)                            extends Update
+case class NilSubmissionDate(d: LocalDate) extends Update
 case class UndertakingSubsidyAmendment(updates: List[NonHmrcSubsidy]) extends Update
 
 case class SubsidyUpdate(
@@ -41,7 +41,7 @@ case class SubsidyUpdate(
 
   private def as[T : ClassTag]: Option[T] = update match {
     case x: T => x.some
-    case _    => none[T]
+    case _ => none[T]
   }
 }
 
@@ -52,11 +52,11 @@ object SubsidyUpdate {
         case NilSubmissionDate(d) =>
           Json.obj(
             "undertakingIdentifier" -> o.undertakingIdentifier,
-            "nilSubmissionDate"     -> JsString(d.toString)
+            "nilSubmissionDate" -> JsString(d.toString)
           )
         case UndertakingSubsidyAmendment(updates) =>
           Json.obj(
-            "undertakingIdentifier"       -> o.undertakingIdentifier,
+            "undertakingIdentifier" -> o.undertakingIdentifier,
             "undertakingSubsidyAmendment" -> updates
           )
       }

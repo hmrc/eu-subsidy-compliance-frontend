@@ -40,7 +40,7 @@ class UpdateEmailAddressController @Inject() (
   }
 
   def postUpdateEmailAddress: Action[AnyContent] = escAuthentication.async { _ =>
-    val baseUrl: String         = servicesConfig.baseUrl("update-email")
+    val baseUrl: String = servicesConfig.baseUrl("update-email")
     val updatedEmailUrl: String = s"$baseUrl/manage-email-cds/service/eu-subsidy-compliance-frontend"
     Future.successful(Redirect(updatedEmailUrl))
   }

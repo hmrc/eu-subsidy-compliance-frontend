@@ -51,10 +51,10 @@ package object digital {
           "requestCommon" -> requestCommon,
           "requestDetail" -> Json.obj(
             "undertakingName" -> o.name,
-            "industrySector"  -> o.industrySector,
+            "industrySector" -> o.industrySector,
             "businessEntity" ->
               Json.obj(
-                "idType"  -> "EORI",
+                "idType" -> "EORI",
                 "idValue" -> JsString(lead.businessEntityIdentifier)
               ),
             "undertakingStartDate" -> dateFormatter.format(LocalDate.now)
@@ -70,17 +70,17 @@ package object digital {
         retrieveUndertakingResponse \ "retrieveUndertakingResponse" \ "responseCommon"
       (responseCommon \ "status").as[String] match {
         case "NOT_OK" =>
-          val processingDate   = (responseCommon \ "processingDate").as[ZonedDateTime]
-          val statusText       = (responseCommon \ "statusText").asOpt[String]
+          val processingDate = (responseCommon \ "processingDate").as[ZonedDateTime]
+          val statusText = (responseCommon \ "statusText").asOpt[String]
           val returnParameters = (responseCommon \ "returnParameters").asOpt[List[Params]]
           // TODO consider moving exception to connector
           throw new EisBadResponseException("NOT_OK", processingDate, statusText, returnParameters)
         case "OK" =>
           val responseDetail: JsLookupResult =
             retrieveUndertakingResponse \ "retrieveUndertakingResponse" \ "responseDetail"
-          val undertakingRef: Option[String]   = (responseDetail \ "undertakingReference").asOpt[String]
+          val undertakingRef: Option[String] = (responseDetail \ "undertakingReference").asOpt[String]
           val undertakingName: UndertakingName = (responseDetail \ "undertakingName").as[UndertakingName]
-          val industrySector: Sector           = (responseDetail \ "industrySector").as[Sector]
+          val industrySector: Sector = (responseDetail \ "industrySector").as[Sector]
           val industrySectorLimit: IndustrySectorLimit =
             (responseDetail \ "industrySectorLimit").as[IndustrySectorLimit]
           val lastSubsidyUsageUpdt: LocalDate =
@@ -116,7 +116,7 @@ package object digital {
       "retrieveUndertakingRequest" -> Json.obj(
         "requestCommon" -> requestCommon,
         "requestDetail" -> Json.obj(
-          "idType"  -> "EORI",
+          "idType" -> "EORI",
           "idValue" -> o.toString
         )
       )
@@ -128,8 +128,8 @@ package object digital {
     new Writes[UndertakingBusinessEntityUpdate] {
       override def writes(o: UndertakingBusinessEntityUpdate): JsValue = Json.obj(
         "undertakingIdentifier" -> JsString(o.undertakingIdentifier),
-        "undertakingComplete"   -> JsBoolean(true),
-        "memberAmendments"      -> o.businessEntityUpdates
+        "undertakingComplete" -> JsBoolean(true),
+        "memberAmendments" -> o.businessEntityUpdates
       )
     }
 
@@ -146,10 +146,10 @@ package object digital {
           "updateUndertakingRequest" -> Json.obj(
             "requestCommon" -> requestCommon,
             "requestDetail" -> Json.obj(
-              "amendmentType"        -> amendmentType,
-              "undertakingId"        -> o.reference,
-              "undertakingName"      -> o.name,
-              "industrySector"       -> o.industrySector,
+              "amendmentType" -> amendmentType,
+              "undertakingId" -> o.reference,
+              "undertakingName" -> o.name,
+              "industrySector" -> o.industrySector,
               "disablementStartDate" -> dateFormatter.format(LocalDate.now)
             )
           )
@@ -164,8 +164,8 @@ package object digital {
       val responseCommon: JsLookupResult = json \ "createUndertakingResponse" \ "responseCommon"
       (responseCommon \ "status").as[String] match {
         case "NOT_OK" =>
-          val processingDate   = (responseCommon \ "processingDate").as[ZonedDateTime]
-          val statusText       = (responseCommon \ "statusText").asOpt[String]
+          val processingDate = (responseCommon \ "processingDate").as[ZonedDateTime]
+          val statusText = (responseCommon \ "statusText").asOpt[String]
           val returnParameters = (responseCommon \ "returnParameters").asOpt[List[Params]]
           // TODO consider moving exception to connector
           throw new EisBadResponseException("NOT_OK", processingDate, statusText, returnParameters)

@@ -32,8 +32,8 @@ class EmailTemplateHelpers @Inject() (appConfig: AppConfig) {
   private def getLanguage(implicit request: EscAuthRequest[_], messagesApi: MessagesApi): Language =
     request.request.messages(messagesApi).lang.code.toLowerCase(Locale.UK) match {
       case English.code => English
-      case Welsh.code   => Welsh
-      case other        => sys.error(s"Found unsupported language code $other")
+      case Welsh.code => Welsh
+      case other => sys.error(s"Found unsupported language code $other")
     }
 
   def getEmailTemplateId(configuration: Configuration, inputKey: String)(implicit

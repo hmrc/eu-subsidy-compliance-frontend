@@ -29,15 +29,15 @@ case class RequestCommon(
 case object RequestCommon {
   implicit val writes: Writes[RequestCommon] = new Writes[RequestCommon] {
     override def writes(o: RequestCommon): JsValue = Json.obj(
-      "originatingSystem"        -> "MDTP",
-      "receiptDate"              -> receiptDate,
+      "originatingSystem" -> "MDTP",
+      "receiptDate" -> receiptDate,
       "acknowledgementReference" -> o.acknowledgementReference,
       "messageTypes" -> Json.obj(
         "messageType" -> o.messageType
       ),
       "requestParameters" -> Json.arr(
         Json.obj(
-          "paramName"  -> "REGIME",
+          "paramName" -> "REGIME",
           "paramValue" -> "ES"
         )
       )

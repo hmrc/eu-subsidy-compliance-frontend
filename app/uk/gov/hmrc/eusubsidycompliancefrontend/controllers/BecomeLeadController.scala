@@ -48,14 +48,14 @@ class BecomeLeadController @Inject() (
   import escActionBuilders._
 
   val PromotedAsNewLead = "promotedAsLeadToNewLead"
-  val RemovedAsLead     = "removedAsLeadToOldLead"
+  val RemovedAsLead = "removedAsLeadToOldLead"
 
   def getBecomeLeadEori: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     for {
-      journey        <- store.get[BecomeLeadJourney]
+      journey <- store.get[BecomeLeadJourney]
       undertakingOpt <- escService.retrieveUndertaking(eori)
-      result         <- becomeLeadResult(journey, undertakingOpt)
+      result <- becomeLeadResult(journey, undertakingOpt)
     } yield result
   }
 

@@ -26,8 +26,8 @@ case class Subsidy(
   subsidyUsageTransactionId: Option[SubsidyRef],
   allocationDate: LocalDate,
   submissionDate: LocalDate,
-  publicAuthority: String,                     // no regex
-  traderReference: Option[TraderRef],          // no regex in create API but one in retrieve API!
+  publicAuthority: String, // no regex
+  traderReference: Option[TraderRef], // no regex in create API but one in retrieve API!
   nonHMRCSubsidyAmtEUR: PositiveSubsidyAmount, // TODO consider using sane names and write a bespoke formatter
   businessEntityIdentifier: Option[EORI],
   amendmentType: Option[EisSubsidyAmendmentType] = Option.empty

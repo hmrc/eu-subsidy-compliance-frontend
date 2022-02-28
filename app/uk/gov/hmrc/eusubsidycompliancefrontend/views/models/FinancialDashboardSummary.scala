@@ -36,7 +36,7 @@ case class OverallSummary(
   sector: Sector,
   sectorCap: IndustrySectorLimit
 ) {
-  def total: SubsidyAmount              = SubsidyAmount(hmrcSubsidyTotal + nonHmrcSubsidyTotal)
+  def total: SubsidyAmount = SubsidyAmount(hmrcSubsidyTotal + nonHmrcSubsidyTotal)
   def allowanceRemaining: SubsidyAmount = SubsidyAmount(sectorCap - total)
 }
 
@@ -46,7 +46,7 @@ case class TaxYearSummary(
   nonHmrcSubsidyTotal: SubsidyAmount
 ) {
   def total: SubsidyAmount = SubsidyAmount(hmrcSubsidyTotal + nonHmrcSubsidyTotal)
-  def endYear: Int         = startYear + 1
+  def endYear: Int = startYear + 1
 }
 
 object FinancialDashboardSummary {
@@ -55,8 +55,8 @@ object FinancialDashboardSummary {
   private val DefaultSectorLimits = Map(
     Sector.agriculture -> IndustrySectorLimit(30000.00),
     Sector.aquaculture -> IndustrySectorLimit(20000.00),
-    Sector.other       -> IndustrySectorLimit(200000.00),
-    Sector.transport   -> IndustrySectorLimit(100000.00)
+    Sector.other -> IndustrySectorLimit(200000.00),
+    Sector.transport -> IndustrySectorLimit(100000.00)
   )
 
   // Generates summarised data to populate the financial dashboard page.

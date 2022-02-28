@@ -32,7 +32,7 @@ object AuditEvent {
   final case class TermsAndConditionsAccepted(
     eori: EORI
   ) extends AuditEvent {
-    override val auditType: String       = "TermsAndConditionsAcceptedDetails"
+    override val auditType: String = "TermsAndConditionsAcceptedDetails"
     override val transactionName: String = "terms-and-conditions-accepted"
   }
 

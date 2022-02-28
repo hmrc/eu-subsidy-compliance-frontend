@@ -49,9 +49,9 @@ class AccountController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     def getAccountFlow: Future[Result] = for {
-      retrievedUndertaking  <- escService.retrieveUndertaking(eori)
+      retrievedUndertaking <- escService.retrieveUndertaking(eori)
       eligibilityJourneyOpt <- store.get[EligibilityJourney]
-      eligibilityJourney    <- eligibilityJourneyOpt.fold(store.put(EligibilityJourney()))(Future.successful)
+      eligibilityJourney <- eligibilityJourneyOpt.fold(store.put(EligibilityJourney()))(Future.successful)
       undertakingJourneyOpt <- store.get[UndertakingJourney]
       undertakingJourney <- undertakingJourneyOpt.fold(
         store.put(UndertakingJourney.fromUndertakingOpt(retrievedUndertaking))
@@ -67,11 +67,11 @@ class AccountController @Inject() (
     } yield (retrievedUndertaking, eligibilityJourney, undertakingJourney) match {
 
       case (Some(undertaking), _, _) =>
-        val lastDayToReportDate   = ReportDeMinimisReminderHelper.dueDateToReport(undertaking.lastSubsidyUsageUpdt)
+        val lastDayToReportDate = ReportDeMinimisReminderHelper.dueDateToReport(undertaking.lastSubsidyUsageUpdt)
         val lastDayToReportString = lastDayToReportDate.map(_.toDisplayFormat)
-        val currentTime           = timeProvider.today
-        val isTimeToReport        = ReportDeMinimisReminderHelper.isTimeToReport(undertaking.lastSubsidyUsageUpdt, currentTime)
-        val isOverdue             = ReportDeMinimisReminderHelper.isOverdue(undertaking.lastSubsidyUsageUpdt, currentTime)
+        val currentTime = timeProvider.today
+        val isTimeToReport = ReportDeMinimisReminderHelper.isTimeToReport(undertaking.lastSubsidyUsageUpdt, currentTime)
+        val isOverdue = ReportDeMinimisReminderHelper.isOverdue(undertaking.lastSubsidyUsageUpdt, currentTime)
         Ok(
           accountPage(
             undertaking,
@@ -92,7 +92,7 @@ class AccountController @Inject() (
     retrieveEmailService.retrieveEmailByEORI(eori).flatMap {
       _ match {
         case Some(_) => getAccountFlow
-        case None    => Future.successful(Redirect(routes.UpdateEmailAddressController.updateEmailAddress()))
+        case None => Future.successful(Redirect(routes.UpdateEmailAddressController.updateEmailAddress()))
       }
     }
   }

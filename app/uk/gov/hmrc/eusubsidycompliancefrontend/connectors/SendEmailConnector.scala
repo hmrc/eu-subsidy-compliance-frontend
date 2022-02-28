@@ -35,7 +35,7 @@ class SendEmailConnectorImpl @Inject() (http: HttpClient, servicesConfig: Servic
   ec: ExecutionContext
 ) extends SendEmailConnector {
 
-  private val baseUrl: String      = servicesConfig.baseUrl("email-send")
+  private val baseUrl: String = servicesConfig.baseUrl("email-send")
   private val sendEmailUrl: String = s"$baseUrl/hmrc/email"
 
   override def sendEmail(emailSendRequest: EmailSendRequest)(implicit

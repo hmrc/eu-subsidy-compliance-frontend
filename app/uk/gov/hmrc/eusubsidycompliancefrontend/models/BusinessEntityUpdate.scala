@@ -38,9 +38,9 @@ object BusinessEntityUpdate {
 
   implicit val businessEntityUpdateWrites: Writes[BusinessEntityUpdate] = new Writes[BusinessEntityUpdate] {
     override def writes(o: BusinessEntityUpdate): JsValue = Json.obj(
-      "amendmentType"          -> o.amendmentType,
+      "amendmentType" -> o.amendmentType,
       "amendmentEffectiveDate" -> o.amendmentEffectiveDate,
-      "businessEntity"         -> o.businessEntity
+      "businessEntity" -> o.businessEntity
     )
   }
 

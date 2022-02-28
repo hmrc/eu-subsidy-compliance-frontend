@@ -53,20 +53,20 @@ class BusinessEntityController @Inject() (
 ) extends BaseController(mcc) {
 
   import escActionBuilders._
-  val eoriPrefix                          = "GB"
-  val AddMemberEmailToBusinessEntity      = "addMemberEmailToBE"
-  val AddMemberEmailToLead                = "addMemberEmailToLead"
-  val RemoveMemberEmailToBusinessEntity   = "removeMemberEmailToBE"
-  val RemoveMemberEmailToLead             = "removeMemberEmailToLead"
+  val eoriPrefix = "GB"
+  val AddMemberEmailToBusinessEntity = "addMemberEmailToBE"
+  val AddMemberEmailToLead = "addMemberEmailToLead"
+  val RemoveMemberEmailToBusinessEntity = "removeMemberEmailToBE"
+  val RemoveMemberEmailToLead = "removeMemberEmailToLead"
   val RemoveThemselfEmailToBusinessEntity = "removeThemselfEmailToBE"
-  val RemoveThemselfEmailToLead           = "removeThemselfEmailToLead"
+  val RemoveThemselfEmailToLead = "removeThemselfEmailToLead"
 
   def getAddBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     for {
       businessEntityJourneyOpt <- store.get[BusinessEntityJourney]
-      undertakingOpt           <- escService.retrieveUndertaking(eori)
+      undertakingOpt <- escService.retrieveUndertaking(eori)
       _ <- store.put[Undertaking](
         undertakingOpt.getOrElse(throw new IllegalStateException("missing undertaking on hod"))
       )
@@ -179,7 +179,7 @@ class BusinessEntityController @Inject() (
       businessEntityJourney <- store
         .get[BusinessEntityJourney]
         .map(_.getOrElse(handleMissingSessionData("BusinessEntity Journey")))
-      eoriBE         = businessEntityJourney.eori.value.getOrElse(handleMissingSessionData("BE EORI"))
+      eoriBE = businessEntityJourney.eori.value.getOrElse(handleMissingSessionData("BE EORI"))
       businessEntity = BusinessEntity(eoriBE, leadEORI = false) // resetting the journey as it's final CYA page
       _ <- escService.addMember(undertakingRef, businessEntity)
       _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
@@ -235,7 +235,7 @@ class BusinessEntityController @Inject() (
 
     for {
       undertakingOpt <- escService.retrieveUndertaking(eori111)
-      _              <- store.put(BusinessEntityJourney.businessEntityJourneyForEori(undertakingOpt, EORI(eoriEntered)))
+      _ <- store.put(BusinessEntityJourney.businessEntityJourneyForEori(undertakingOpt, EORI(eoriEntered)))
     } yield Ok(businessEntityCyaPage(eoriEntered))
   }
 
@@ -253,7 +253,7 @@ class BusinessEntityController @Inject() (
 
   def getRemoveYourselfBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori = request.eoriNumber
-    val previous      = routes.AccountController.getExistingUndertaking().url
+    val previous = routes.AccountController.getExistingUndertaking().url
     for {
       undertakingOpt <- escService.retrieveUndertaking(eori)
     } yield undertakingOpt match {
@@ -269,7 +269,7 @@ class BusinessEntityController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     escService.retrieveUndertaking(EORI(eoriEntered)).flatMap {
       case Some(undertaking) =>
-        val undertakingRef           = undertaking.reference.getOrElse(handleMissingSessionData("undertaking reference"))
+        val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("undertaking reference"))
         val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
         removeBusinessForm
           .bindFromRequest()
@@ -309,10 +309,10 @@ class BusinessEntityController @Inject() (
 
   def postRemoveYourselfBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
     val loggedInEORI = request.eoriNumber
-    val previous     = routes.AccountController.getExistingUndertaking().url
+    val previous = routes.AccountController.getExistingUndertaking().url
     escService.retrieveUndertaking(loggedInEORI).flatMap {
       case Some(undertaking) =>
-        val undertakingRef           = undertaking.reference.getOrElse(handleMissingSessionData("undertaking reference"))
+        val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("undertaking reference"))
         val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(loggedInEORI)
         removeYourselfBusinessForm
           .bindFromRequest()
@@ -322,7 +322,7 @@ class BusinessEntityController @Inject() (
               form.value match {
                 case "true" =>
                   val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today)
-                  val leadEORI                   = undertaking.getLeadEORI
+                  val leadEORI = undertaking.getLeadEORI
                   for {
                     _ <- escService.removeMember(undertakingRef, removeBE)
                     _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(

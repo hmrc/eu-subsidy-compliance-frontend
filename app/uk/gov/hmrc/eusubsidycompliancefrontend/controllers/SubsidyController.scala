@@ -65,9 +65,9 @@ class SubsidyController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     val result = for {
-      _           <- store.get[SubsidyJourney].toContext.orElse(store.put(SubsidyJourney()).toContext)
+      _ <- store.get[SubsidyJourney].toContext.orElse(store.put(SubsidyJourney()).toContext)
       undertaking <- store.get[Undertaking].toContext
-      reference   <- undertaking.reference.toContext
+      reference <- undertaking.reference.toContext
     } yield (reference, undertaking)
 
     result.foldF(handleMissingSessionData("Subsidy journey")) { case (reference, undertaking) =>
@@ -99,7 +99,7 @@ class SubsidyController @Inject() (
         _ => throw new IllegalStateException("report payment form submission failed"),
         (form: FormValues) =>
           for {
-            journey  <- store.update[SubsidyJourney](updateReportPayment(form))
+            journey <- store.update[SubsidyJourney](updateReportPayment(form))
             redirect <- getJourneyNext(journey)
           } yield redirect
       )
@@ -109,7 +109,7 @@ class SubsidyController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     val result: OptionT[Future, Result] = for {
       subsidyJourney <- store.get[SubsidyJourney].toContext
-      addClaimDate   <- subsidyJourney.claimDate.value.toContext
+      addClaimDate <- subsidyJourney.claimDate.value.toContext
       previous = subsidyJourney.previous
     } yield {
       val form = subsidyJourney.claimAmount.value.fold(claimAmountForm)(claimAmountForm.fill)
@@ -131,14 +131,14 @@ class SubsidyController @Inject() (
             ),
           form =>
             for {
-              journey  <- store.update[SubsidyJourney](updateClaimAmount(form))
+              journey <- store.update[SubsidyJourney](updateClaimAmount(form))
               redirect <- getJourneyNext(journey)
             } yield redirect
         )
 
     val result: OptionT[Future, Result] = for {
       subsidyJourney <- store.get[SubsidyJourney].toContext
-      addClaimDate   <- subsidyJourney.claimDate.value.toContext
+      addClaimDate <- subsidyJourney.claimDate.value.toContext
       previous = subsidyJourney.previous
       resultFormSubmit <- handleFormSubmit(previous, addClaimDate).toContext
     } yield resultFormSubmit
@@ -166,7 +166,7 @@ class SubsidyController @Inject() (
           formWithErrors => BadRequest(addClaimDatePage(formWithErrors, previous)).toFuture,
           form =>
             for {
-              journey  <- store.update[SubsidyJourney](updateClaimDate(form))
+              journey <- store.update[SubsidyJourney](updateClaimDate(form))
               redirect <- getJourneyNext(journey)
             } yield redirect
         )
@@ -196,7 +196,7 @@ class SubsidyController @Inject() (
           formWithErrors => Future.successful(BadRequest(addClaimEoriPage(formWithErrors, previous))),
           (form: OptionalEORI) =>
             for {
-              journey  <- store.update[SubsidyJourney](updateClaimEori(form))
+              journey <- store.update[SubsidyJourney](updateClaimEori(form))
               redirect <- getJourneyNext(journey)
             } yield redirect
         )
@@ -224,7 +224,7 @@ class SubsidyController @Inject() (
           errors => Future.successful(BadRequest(addPublicAuthorityPage(errors, previous))),
           form =>
             for {
-              journey  <- store.update[SubsidyJourney](updateClaimAuthority(form))
+              journey <- store.update[SubsidyJourney](updateClaimAuthority(form))
               redirect <- getJourneyNext(journey)
             } yield redirect
         )
@@ -253,7 +253,7 @@ class SubsidyController @Inject() (
           form =>
             for {
               updatedSubsidyJourney <- store.update[SubsidyJourney](updateOptionalTraderRef(form))
-              redirect              <- getJourneyNext(updatedSubsidyJourney)
+              redirect <- getJourneyNext(updatedSubsidyJourney)
             } yield redirect
         )
     }
@@ -263,16 +263,16 @@ class SubsidyController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     val result: OptionT[Future, Result] = for {
-      journey           <- store.get[SubsidyJourney].toContext
-      _                 <- validateSubsidyJourneyFieldsPopulated(journey).toContext
-      claimDate         <- journey.claimDate.value.toContext
-      amount            <- journey.claimAmount.value.toContext
-      optionalEori      <- journey.addClaimEori.value.toContext
-      authority         <- journey.publicAuthority.value.toContext
+      journey <- store.get[SubsidyJourney].toContext
+      _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
+      claimDate <- journey.claimDate.value.toContext
+      amount <- journey.claimAmount.value.toContext
+      optionalEori <- journey.addClaimEori.value.toContext
+      authority <- journey.publicAuthority.value.toContext
       optionalTraderRef <- journey.traderRef.value.toContext
       claimEori = optionalEori.value.map(EORI(_))
       traderRef = optionalTraderRef.value.map(TraderRef(_))
-      previous  = journey.previous
+      previous = journey.previous
     } yield Ok(cyaPage(claimDate, amount, claimEori, authority, traderRef, previous))
 
     result.getOrElse(handleMissingSessionData("Subsidy journey"))
@@ -288,12 +288,12 @@ class SubsidyController @Inject() (
         form =>
           {
             for {
-              journey     <- store.update[SubsidyJourney](updateCya(form)).map(Option(_)).toContext
-              _           <- validateSubsidyJourneyFieldsPopulated(journey).toContext
+              journey <- store.update[SubsidyJourney](updateCya(form)).map(Option(_)).toContext
+              _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
               undertaking <- store.get[Undertaking].toContext.orElseF(handleMissingSessionData("undertaking"))
-              ref         <- undertaking.reference.toContext
-              _           <- escService.createSubsidy(ref, journey).toContext
-              _           <- store.put(SubsidyJourney()).toContext
+              ref <- undertaking.reference.toContext
+              _ <- escService.createSubsidy(ref, journey).toContext
+              _ <- store.put(SubsidyJourney()).toContext
             } yield Redirect(routes.SubsidyController.getReportPayment())
           }.getOrElse(sys.error("Error processing subsidy cya form submission"))
       )
@@ -424,7 +424,7 @@ class SubsidyController @Inject() (
   private val claimEoriForm: Form[OptionalEORI] = Form(
     mapping(
       "should-claim-eori" -> mandatory("should-claim-eori"),
-      "claim-eori"        -> optional(text)
+      "claim-eori" -> optional(text)
     )((radioSelected, eori) => claimEoriFormApply(radioSelected, eori))(optionalEORI =>
       Some((optionalEORI.setValue, optionalEORI.value.fold(Option.empty[String])(e => Some(e.drop(2)))))
     )
@@ -441,13 +441,13 @@ class SubsidyController @Inject() (
   private def claimEoriFormApply(input: String, eoriOpt: Option[String]) =
     (input, eoriOpt) match {
       case (radioSelected, Some(eori)) => OptionalEORI(radioSelected, Some(s"GB$eori"))
-      case (radioSelected, other)      => OptionalEORI(radioSelected, other)
+      case (radioSelected, other) => OptionalEORI(radioSelected, other)
     }
 
   private val claimTraderRefForm: Form[OptionalTraderRef] = Form(
     mapping(
       "should-store-trader-ref" -> mandatory("should-store-trader-ref"),
-      "claim-trader-ref"        -> optional(text)
+      "claim-trader-ref" -> optional(text)
     )(OptionalTraderRef.apply)(OptionalTraderRef.unapply)
       .transform[OptionalTraderRef](
         optionalTraderRef =>

@@ -25,7 +25,7 @@ sealed trait EmailSendResult extends Product with Serializable
 
 object EmailSendResult {
 
-  case object EmailSent        extends EmailSendResult
+  case object EmailSent extends EmailSendResult
   case object EmailSentFailure extends EmailSendResult
 
   implicit val format: Format[EmailSendResult] = Jsonx.formatSealed[EmailSendResult]

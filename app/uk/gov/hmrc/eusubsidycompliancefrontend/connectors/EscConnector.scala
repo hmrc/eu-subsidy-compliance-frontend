@@ -59,13 +59,13 @@ class EscConnectorImpl @Inject() (
 
   private val escURL: String = servicesConfig.baseUrl("esc")
 
-  private val createUndertakingPath   = "eu-subsidy-compliance/undertaking"
-  private val updateUndertakingPath   = "eu-subsidy-compliance/undertaking/update"
+  private val createUndertakingPath = "eu-subsidy-compliance/undertaking"
+  private val updateUndertakingPath = "eu-subsidy-compliance/undertaking/update"
   private val retrieveUndertakingPath = "eu-subsidy-compliance/undertaking/"
-  private val addMemberPath           = "eu-subsidy-compliance/undertaking/member"
-  private val removeMemberPath        = "eu-subsidy-compliance/undertaking/member/remove"
-  private val updateSubsidyPath       = "eu-subsidy-compliance/subsidy/update"
-  private val retrieveSubsidyPath     = "eu-subsidy-compliance/subsidy/retrieve"
+  private val addMemberPath = "eu-subsidy-compliance/undertaking/member"
+  private val removeMemberPath = "eu-subsidy-compliance/undertaking/member/remove"
+  private val updateSubsidyPath = "eu-subsidy-compliance/subsidy/update"
+  private val retrieveSubsidyPath = "eu-subsidy-compliance/subsidy/retrieve"
 
   override def createUndertaking(
     undertaking: Undertaking
@@ -93,7 +93,7 @@ class EscConnectorImpl @Inject() (
       .map(Right(_))
       .recover {
         case _: NotFoundException => Right(HttpResponse(NOT_FOUND, ""))
-        case ex                   => Left(Error(ex))
+        case ex => Left(Error(ex))
       }
 
   override def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit

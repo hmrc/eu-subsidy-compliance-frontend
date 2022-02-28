@@ -80,10 +80,10 @@ object UndertakingJourney {
   }
 
   object FormUrls {
-    val Name         = "undertaking-name"
-    val Sector       = "sector"
-    val Contact      = "contact"
-    val Cya          = "check-your-answers"
+    val Name = "undertaking-name"
+    val Sector = "sector"
+    val Contact = "contact"
+    val Cya = "check-your-answers"
     val Confirmation = "confirmation"
   }
 

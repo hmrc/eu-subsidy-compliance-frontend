@@ -63,7 +63,7 @@ class EscRequestActionBuilder @Inject() (
             .flatMap(y => y.map(z => z.value))
             .map(x => EORI(x)) match {
             case Some(eori) => block(EscAuthRequest(information.providerId, groupId, request, eori))
-            case _          => throw new IllegalStateException("no eori provided")
+            case _ => throw new IllegalStateException("no eori provided")
           }
         case _ ~ _ => Future.failed(throw InternalError())
       }(hc(request), executionContext)
