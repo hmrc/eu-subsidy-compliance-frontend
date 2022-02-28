@@ -36,7 +36,7 @@ object DateFormatter {
 
   object Syntax {
     implicit class DateOps(val d: LocalDate) extends AnyVal {
-      def toDisplayFormat(implicit m: Messages): String = govDisplayFormat(d)
+      def toDisplayFormat(implicit m: Messages): String      = govDisplayFormat(d)
       def toShortDisplayFormat(implicit m: Messages): String = govDisplayFormatTruncated(d)
     }
   }

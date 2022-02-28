@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
-
 import com.google.inject.{ImplementedBy, Inject, Singleton}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendRequest
@@ -33,15 +32,15 @@ trait SendEmailConnector {
 
 @Singleton
 class SendEmailConnectorImpl @Inject() (http: HttpClient, servicesConfig: ServicesConfig)(implicit
-                                                                                          ec: ExecutionContext
+  ec: ExecutionContext
 ) extends SendEmailConnector {
 
   private val baseUrl: String      = servicesConfig.baseUrl("email-send")
   private val sendEmailUrl: String = s"$baseUrl/hmrc/email"
 
   override def sendEmail(emailSendRequest: EmailSendRequest)(implicit
-                                                             hc: HeaderCarrier
-  ):Future[Either[Error, HttpResponse]] =
+    hc: HeaderCarrier
+  ): Future[Either[Error, HttpResponse]] =
     http
       .POST[EmailSendRequest, HttpResponse](sendEmailUrl, emailSendRequest)
       .map(Right(_))

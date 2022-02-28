@@ -19,4 +19,5 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests
 import play.api.mvc.{Request, WrappedRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
-case class EscAuthRequest[A](authorityId: String, groupId: String, request: Request[A], eoriNumber: EORI) extends WrappedRequest[A](request)
+case class EscAuthRequest[A](authorityId: String, groupId: String, request: Request[A], eoriNumber: EORI)
+    extends WrappedRequest[A](request)
