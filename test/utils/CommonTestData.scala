@@ -188,15 +188,15 @@ object CommonTestData {
   val emailSendRequest = EmailSendRequest(List(EmailAddress("user@test.com")), "templateId1", emailParameter)
 
   val eligibilityJourney = EligibilityJourney(
-    customsWaivers = FormPage(CustomsWaivers, true.some),
-    willYouClaim = FormPage(WillYouClaim, true.some),
-    notEligible = FormPage(NotEligible, true.some),
-    mainBusinessCheck = FormPage(MainBusinessCheck, true.some),
-    signOut = FormPage(SignOut, true.some),
-    acceptTerms = FormPage(AcceptTerms, true.some),
-    eoriCheck = FormPage(EoriCheck, true.some),
-    signOutBadEori = FormPage(SignOutBadEori, true.some),
-    createUndertaking = FormPage(CreateUndertaking, true.some)
+    customsWaivers = CustomsWaiversFormPage(true.some),
+    willYouClaim = WillYouClaimFormPage(true.some),
+    notEligible = NotEligibleFormPage(true.some),
+    mainBusinessCheck = MainBusinessCheckFormPage(true.some),
+    signOut = SignOutFormPage(true.some),
+    acceptTerms = AcceptTermsFormPage(true.some),
+    eoriCheck = EoriCheckFormPage(true.some),
+    signOutBadEori = SignOutBadEoriFormPage(true.some),
+    createUndertaking = CreateUndertakingFormPage(true.some)
   )
 
 }

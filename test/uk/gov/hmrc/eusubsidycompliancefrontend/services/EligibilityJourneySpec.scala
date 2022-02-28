@@ -18,7 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.FormUrls.{CustomsWaivers, EoriCheck, MainBusinessCheck, WillYouClaim}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.{CustomsWaiversFormPage, EoriCheckFormPage, MainBusinessCheckFormPage, WillYouClaimFormPage}
 
 class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
@@ -59,7 +58,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
 
       "remove not eligible step if do you claim form has true value" in {
         val underTest = EligibilityJourney(
-          willYouClaim = FormPage(WillYouClaim, Some(true))
+          willYouClaim = WillYouClaimFormPage(Some(true))
         )
         underTest.formPages shouldBe List(
           underTest.customsWaivers,

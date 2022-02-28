@@ -44,7 +44,7 @@ object Undertaking {
       leadEORI.businessEntityIdentifier == eori
     }
 
-    def getBusinessEntityByEORI(eori: EORI): BusinessEntity = {
+    def getBusinessEntityByEORI(eori: EORI): BusinessEntity =
       undertaking.undertakingBusinessEntity
         .find(be => be.businessEntityIdentifier == eori)
         .getOrElse(throw new IllegalStateException(s"BE with eori $eori is missing"))

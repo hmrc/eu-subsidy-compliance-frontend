@@ -21,8 +21,8 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, JourneyTraverseService, Store, SubsidyJourney}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -231,8 +231,8 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
-            mockUpdate[SubsidyJourney](j => j.map(_.copy(claimDate = FormPage("claim-date", updatedDate.some))), eori1)(
-              Right(subsidyJourney.copy(claimDate = FormPage("claim-date", updatedDate.some)))
+            mockUpdate[SubsidyJourney](j => j.map(_.copy(claimDate = ClaimDateFormPage(updatedDate.some))), eori1)(
+              Right(subsidyJourney.copy(claimDate = ClaimDateFormPage(updatedDate.some)))
             )
           }
           checkIsRedirect(
@@ -316,8 +316,8 @@ class SubsidyControllerSpec
         "user hasn't already answered the question" in {
           test(
             SubsidyJourney(
-              reportPayment = FormPage(ReportPayment, true.some),
-              claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some)
+              reportPayment = ReportPaymentFormPage(true.some),
+              claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
             )
           )
         }
@@ -325,9 +325,9 @@ class SubsidyControllerSpec
         "user has already answered the question" in {
           test(
             SubsidyJourney(
-              reportPayment = FormPage(ReportPayment, true.some),
-              claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some),
-              claimAmount = FormPage(ClaimAmount, BigDecimal(123.45).some)
+              reportPayment = ReportPaymentFormPage(true.some),
+              claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
+              claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some)
             )
           )
         }
@@ -382,12 +382,12 @@ class SubsidyControllerSpec
         "call to update the subsidy journey fails" in {
 
           val subsidyJourneyOpt = SubsidyJourney(
-            reportPayment = FormPage(ReportPayment, true.some),
-            claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some)
+            reportPayment = ReportPaymentFormPage(true.some),
+            claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
           ).some
 
           def update(subsidyJourneyOpt: Option[SubsidyJourney]) =
-            subsidyJourneyOpt.map(_.copy(claimAmount = FormPage(ClaimAmount, BigDecimal(123.45).some)))
+            subsidyJourneyOpt.map(_.copy(claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some)))
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
@@ -402,8 +402,8 @@ class SubsidyControllerSpec
         def displayError(data: (String, String)*)(errorMessageKey: String) = {
 
           val subsidyJourneyOpt = SubsidyJourney(
-            reportPayment = FormPage(ReportPayment, true.some),
-            claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some)
+            reportPayment = ReportPaymentFormPage(true.some),
+            claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
           ).some
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -438,18 +438,18 @@ class SubsidyControllerSpec
       "redirect to next page" in {
 
         val subsidyJourney = SubsidyJourney(
-          reportPayment = FormPage(ReportPayment, true.some),
-          claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some),
-          claimAmount = FormPage(ClaimAmount, BigDecimal(123.45).some)
+          reportPayment = ReportPaymentFormPage(true.some),
+          claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
+          claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some)
         )
 
         val subsidyJourneyOpt = SubsidyJourney(
-          reportPayment = FormPage(ReportPayment, true.some),
-          claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some)
+          reportPayment = ReportPaymentFormPage(true.some),
+          claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
         ).some
 
         def update(subsidyJourneyOpt: Option[SubsidyJourney]) =
-          subsidyJourneyOpt.map(_.copy(claimAmount = FormPage(ClaimAmount, BigDecimal(123.45).some)))
+          subsidyJourneyOpt.map(_.copy(claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some)))
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))

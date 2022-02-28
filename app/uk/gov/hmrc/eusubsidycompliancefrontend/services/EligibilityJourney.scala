@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import play.api.libs.json._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.FormUrls._
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 
 case class EligibilityJourney(

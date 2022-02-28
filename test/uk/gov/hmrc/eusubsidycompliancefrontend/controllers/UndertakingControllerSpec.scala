@@ -440,8 +440,6 @@ class UndertakingControllerSpec
           def updateFunc(undertakingJourneyOpt: Option[UndertakingJourney]) =
             undertakingJourneyOpt.map(x => x.copy(cya = x.cya.copy(value = true.some)))
 
-          val updatedUndertakingJourney =
-            undertakingJourneyComplete.copy(cya = FormPage("check-your-answers", false.some))
           val updatedUndertakingJourney = undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage(false.some))
 
           inSequence {
@@ -461,7 +459,7 @@ class UndertakingControllerSpec
             undertakingJourneyOpt.map(x => x.copy(cya = x.cya.copy(value = true.some)))
 
           val updatedUndertakingJourney =
-            undertakingJourneyComplete.copy(cya = FormPage("check-your-answers", false.some))
+            undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage(false.some))
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
