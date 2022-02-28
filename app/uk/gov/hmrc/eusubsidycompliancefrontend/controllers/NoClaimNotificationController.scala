@@ -28,18 +28,17 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class NoClaimNotificationController @Inject()(
-    mcc: MessagesControllerComponents,
-    escActionBuilders: EscActionBuilders,
-    escService: EscService,
-    noClaimNotificationPage: NoClaimNotificationPage,
-    noClaimConfirmationPage: NoClaimConfirmationPage
- )( implicit val appConfig: AppConfig,
-    executionContext: ExecutionContext) extends BaseController(mcc) {
+class NoClaimNotificationController @Inject() (
+  mcc: MessagesControllerComponents,
+  escActionBuilders: EscActionBuilders,
+  escService: EscService,
+  noClaimNotificationPage: NoClaimNotificationPage,
+  noClaimConfirmationPage: NoClaimConfirmationPage
+)(implicit val appConfig: AppConfig, executionContext: ExecutionContext)
+    extends BaseController(mcc) {
   import escActionBuilders._
 
   def getNoClaimNotification: Action[AnyContent] = escAuthentication.async { implicit request =>
-
     val eori = request.eoriNumber
     val previous = routes.AccountController.getAccountPage().url
     for {
@@ -51,7 +50,6 @@ class NoClaimNotificationController @Inject()(
     }
   }
 
-
   def postNoClaimNotification: Action[AnyContent] = escAuthentication.async { implicit request =>
     val eori = request.eoriNumber
     val previous = routes.AccountController.getAccountPage().url
@@ -59,15 +57,17 @@ class NoClaimNotificationController @Inject()(
       undertakingOpt <- escService.retrieveUndertaking(eori)
     } yield undertakingOpt match {
       case Some(undertaking) =>
-        noClaimForm.bindFromRequest().fold(
-          errors => BadRequest(noClaimNotificationPage(errors, previous, undertaking.name)),
-          _ => Redirect(routes.NoClaimNotificationController.getNoClaimConfirmation())
-        )
+        noClaimForm
+          .bindFromRequest()
+          .fold(
+            errors => BadRequest(noClaimNotificationPage(errors, previous, undertaking.name)),
+            _ => Redirect(routes.NoClaimNotificationController.getNoClaimConfirmation())
+          )
       case _ => handleMissingSessionData("Undertaking journey")
     }
   }
 
-  def getNoClaimConfirmation: Action[AnyContent] = escAuthentication.async {implicit request =>
+  def getNoClaimConfirmation: Action[AnyContent] = escAuthentication.async { implicit request =>
     val eori = request.eoriNumber
     for {
       undertakingOpt <- escService.retrieveUndertaking(eori)
@@ -78,6 +78,7 @@ class NoClaimNotificationController @Inject()(
   }
 
   lazy val noClaimForm: Form[FormValues] = Form(
-    mapping("noClaimNotification" -> mandatory("noClaimNotification"))(FormValues.apply)(FormValues.unapply))
+    mapping("noClaimNotification" -> mandatory("noClaimNotification"))(FormValues.apply)(FormValues.unapply)
+  )
 
 }

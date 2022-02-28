@@ -48,18 +48,18 @@ trait ControllerSpec extends PlaySupport {
   }
 
   def checkPageIsDisplayed(
-                            result: Future[Result],
-                            expectedTitle: String,
-                            contentChecks: Document => Unit = _ => (),
-                            expectedStatus: Int = OK,
-                            isLeadJourney: Boolean = false
-                          ): Unit = {
+    result: Future[Result],
+    expectedTitle: String,
+    contentChecks: Document => Unit = _ => (),
+    expectedStatus: Int = OK,
+    isLeadJourney: Boolean = false
+  ): Unit = {
     (status(result), redirectLocation(result)) shouldBe (expectedStatus -> None)
 
     val doc = Jsoup.parse(contentAsString(result))
 
-    if(!isLeadJourney)
-    doc.select("h1").text shouldBe expectedTitle
+    if (!isLeadJourney)
+      doc.select("h1").text shouldBe expectedTitle
 
     val bodyText = doc.select("body").text
     val regex    = """not_found_message\((.*?)\)""".r
@@ -71,11 +71,11 @@ trait ControllerSpec extends PlaySupport {
   }
 
   def checkFormErrorIsDisplayed(
-                                 result: Future[Result],
-                                 expectedTitle: String,
-                                 formError: String,
-                                 expectedStatus: Int = BAD_REQUEST
-                               ): Unit =
+    result: Future[Result],
+    expectedTitle: String,
+    formError: String,
+    expectedStatus: Int = BAD_REQUEST
+  ): Unit =
     checkPageIsDisplayed(
       result,
       expectedTitle,
@@ -90,11 +90,11 @@ trait ControllerSpec extends PlaySupport {
     )
 
   def checkFormErrorsAreDisplayed(
-                                   result: Future[Result],
-                                   expectedTitle: String,
-                                   formErrors: List[String],
-                                   expectedStatus: Int = BAD_REQUEST
-                                 ): Unit =
+    result: Future[Result],
+    expectedTitle: String,
+    formErrors: List[String],
+    expectedStatus: Int = BAD_REQUEST
+  ): Unit =
     checkPageIsDisplayed(
       result,
       expectedTitle,
@@ -108,7 +108,6 @@ trait ControllerSpec extends PlaySupport {
       expectedStatus
     )
 
-
   def testRadioButtonOptions(doc: Document, expectedRadioOptionsTexts: List[String]) = {
     val radioOptions = doc.select(".govuk-radios__item")
     radioOptions.size shouldBe expectedRadioOptionsTexts.size
@@ -121,11 +120,11 @@ trait ControllerSpec extends PlaySupport {
 
 @Singleton
 class TestMessagesApiProvider @Inject() (
-                                          environment: Environment,
-                                          config: Configuration,
-                                          langs: Langs,
-                                          httpConfiguration: HttpConfiguration
-                                        ) extends DefaultMessagesApiProvider(environment, config, langs, httpConfiguration) {
+  environment: Environment,
+  config: Configuration,
+  langs: Langs,
+  httpConfiguration: HttpConfiguration
+) extends DefaultMessagesApiProvider(environment, config, langs, httpConfiguration) {
 
   val logger = Logger(this.getClass)
 

@@ -34,7 +34,7 @@ case class OverallSummary(
   hmrcSubsidyTotal: SubsidyAmount,
   nonHmrcSubsidyTotal: SubsidyAmount,
   sector: Sector,
-  sectorCap: IndustrySectorLimit,
+  sectorCap: IndustrySectorLimit
 ) {
   def total: SubsidyAmount = SubsidyAmount(hmrcSubsidyTotal + nonHmrcSubsidyTotal)
   def allowanceRemaining: SubsidyAmount = SubsidyAmount(sectorCap - total)
@@ -43,7 +43,7 @@ case class OverallSummary(
 case class TaxYearSummary(
   startYear: Int,
   hmrcSubsidyTotal: SubsidyAmount,
-  nonHmrcSubsidyTotal: SubsidyAmount,
+  nonHmrcSubsidyTotal: SubsidyAmount
 ) {
   def total: SubsidyAmount = SubsidyAmount(hmrcSubsidyTotal + nonHmrcSubsidyTotal)
   def endYear: Int = startYear + 1
@@ -56,7 +56,7 @@ object FinancialDashboardSummary {
     Sector.agriculture -> IndustrySectorLimit(30000.00),
     Sector.aquaculture -> IndustrySectorLimit(20000.00),
     Sector.other -> IndustrySectorLimit(200000.00),
-    Sector.transport -> IndustrySectorLimit(100000.00),
+    Sector.transport -> IndustrySectorLimit(100000.00)
   )
 
   // Generates summarised data to populate the financial dashboard page.
@@ -77,15 +77,16 @@ object FinancialDashboardSummary {
       hmrcSubsidyTotal = SubsidyAmount(subsidies.hmrcSubsidyTotalEUR),
       nonHmrcSubsidyTotal = SubsidyAmount(subsidies.nonHMRCSubsidyTotalEUR),
       sector = undertaking.industrySector,
-      sectorCap = sectorCapOrDefault,
+      sectorCap = sectorCapOrDefault
     )
 
     // We assume that acceptanceDate is the correct field to use since it's mandatory. There is also an issueDate
     // field but since this is optional it makes grouping by tax year impossible if no value is present.
     // We also assume that the amount field holds a value in EUR.
     def sumByTaxYear(m: Seq[(LocalDate, SubsidyAmount)]): Map[LocalDate, SubsidyAmount] =
-      m.groupBy(kv => kv._1).map {
-        case (key, value) => key -> value.map(_._2)
+      m.groupBy(kv => kv._1).map { case (key, value) =>
+        key -> value
+          .map(_._2)
           .fold(SubsidyAmount.Zero)((a, b) => SubsidyAmount(a + b))
       }
 
@@ -96,18 +97,20 @@ object FinancialDashboardSummary {
 
     val nonHmrcSubsidiesByTaxYearStart: Map[LocalDate, SubsidyAmount] = sumByTaxYear(
       subsidies.nonHMRCSubsidyUsage
-      .map(i => i.allocationDate.toTaxYearStart -> i.nonHMRCSubsidyAmtEUR)
+        .map(i => i.allocationDate.toTaxYearStart -> i.nonHMRCSubsidyAmtEUR)
     )
 
     // Generate summaries for each starting tax year value in descending year order.
     val taxYearSummaries = (endDate.toTaxYearStart.getYear to startDate.getYear by -1)
       .map(_ - startDate.getYear)
       .map(d => LocalDate.from(startDate).plusYears(d))
-      .map(d => TaxYearSummary(
-        startYear = d.getYear,
-        hmrcSubsidyTotal = hmrcSubsidiesByTaxYearStart.getOrElse(d, SubsidyAmount.Zero),
-        nonHmrcSubsidyTotal = nonHmrcSubsidiesByTaxYearStart.getOrElse(d, SubsidyAmount.Zero),
-      ))
+      .map(d =>
+        TaxYearSummary(
+          startYear = d.getYear,
+          hmrcSubsidyTotal = hmrcSubsidiesByTaxYearStart.getOrElse(d, SubsidyAmount.Zero),
+          nonHmrcSubsidyTotal = nonHmrcSubsidiesByTaxYearStart.getOrElse(d, SubsidyAmount.Zero)
+        )
+      )
 
     FinancialDashboardSummary(
       overall = overallSummary,

@@ -24,7 +24,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EisParamName.EisPara
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EisStatus.EisStatus
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EisParamValue, EisStatusString}
 
-
 case class Params(
   paramName: EisParamName,
   paramValue: EisParamValue
@@ -47,6 +46,7 @@ object ResponseCommon {
   implicit val ldtwrites: Writes[LocalDateTime] = new Writes[LocalDateTime] {
     override def writes(o: LocalDateTime): JsValue = JsString(o.eisFormat)
   }
+
   implicit val writes: Writes[ResponseCommon] = (
     (JsPath \ "status").write[EisStatus] and
       (JsPath \ "statusText").write[EisStatusString] and
@@ -55,4 +55,3 @@ object ResponseCommon {
   )(unlift(ResponseCommon.unapply))
 
 }
-

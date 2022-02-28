@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
@@ -30,45 +29,58 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AccountController @Inject()(
-   mcc: MessagesControllerComponents,
-   escActionBuilders: EscActionBuilders,
-   store: Store,
-   escService: EscService,
-   accountPage: AccountPage,
-   timeProvider: TimeProvider,
-   existingUndertakingPage: ExistingUndertakingPage,
-   retrieveEmailService: RetrieveEmailService
-)(
-  implicit val appConfig: AppConfig,
+class AccountController @Inject() (
+  mcc: MessagesControllerComponents,
+  escActionBuilders: EscActionBuilders,
+  store: Store,
+  escService: EscService,
+  accountPage: AccountPage,
+  timeProvider: TimeProvider,
+  existingUndertakingPage: ExistingUndertakingPage,
+  retrieveEmailService: RetrieveEmailService
+)(implicit
+  val appConfig: AppConfig,
   executionContext: ExecutionContext
-) extends
-  BaseController(mcc) {
+) extends BaseController(mcc) {
 
   import escActionBuilders._
 
   def getAccountPage: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    def getAccountFlow: Future[Result] =   for {
+    def getAccountFlow: Future[Result] = for {
       retrievedUndertaking <- escService.retrieveUndertaking(eori)
       eligibilityJourneyOpt <- store.get[EligibilityJourney]
       eligibilityJourney <- eligibilityJourneyOpt.fold(store.put(EligibilityJourney()))(Future.successful)
       undertakingJourneyOpt <- store.get[UndertakingJourney]
-      undertakingJourney <- undertakingJourneyOpt.fold(store.put(UndertakingJourney.fromUndertakingOpt(retrievedUndertaking)))(Future.successful)
+      undertakingJourney <- undertakingJourneyOpt.fold(
+        store.put(UndertakingJourney.fromUndertakingOpt(retrievedUndertaking))
+      )(Future.successful)
       businessEntityJourneyOpt <- store.get[BusinessEntityJourney]
-      _ <- businessEntityJourneyOpt.fold(store.put(BusinessEntityJourney.fromUndertakingOpt(retrievedUndertaking)))(Future.successful)
-      _ <- if (retrievedUndertaking.isDefined) store.put(retrievedUndertaking.getOrElse(sys.error("Undertaking is Missing"))) else Future.successful(Unit)
+      _ <- businessEntityJourneyOpt.fold(store.put(BusinessEntityJourney.fromUndertakingOpt(retrievedUndertaking)))(
+        Future.successful
+      )
+      _ <-
+        if (retrievedUndertaking.isDefined)
+          store.put(retrievedUndertaking.getOrElse(sys.error("Undertaking is Missing")))
+        else Future.successful(Unit)
     } yield (retrievedUndertaking, eligibilityJourney, undertakingJourney) match {
 
       case (Some(undertaking), _, _) =>
-
         val lastDayToReportDate = ReportDeMinimisReminderHelper.dueDateToReport(undertaking.lastSubsidyUsageUpdt)
         val lastDayToReportString = lastDayToReportDate.map(_.toDisplayFormat)
         val currentTime = timeProvider.today
         val isTimeToReport = ReportDeMinimisReminderHelper.isTimeToReport(undertaking.lastSubsidyUsageUpdt, currentTime)
         val isOverdue = ReportDeMinimisReminderHelper.isOverdue(undertaking.lastSubsidyUsageUpdt, currentTime)
-        Ok(accountPage(undertaking, !undertaking.getAllNonLeadEORIs().isEmpty, isTimeToReport, lastDayToReportString, isOverdue))
+        Ok(
+          accountPage(
+            undertaking,
+            !undertaking.getAllNonLeadEORIs().isEmpty,
+            isTimeToReport,
+            lastDayToReportString,
+            isOverdue
+          )
+        )
 
       case (_, eJourney, uJourney) if !eJourney.isComplete && uJourney == UndertakingJourney() =>
         Redirect(routes.EligibilityController.firstEmptyPage())
@@ -77,8 +89,9 @@ class AccountController @Inject()(
       case _ =>
         Redirect(routes.BusinessEntityController.getAddBusinessEntity()) // TODO add this journey into the match
     }
-    retrieveEmailService.retrieveEmailByEORI(eori).flatMap {_ match {
-        case Some(_) =>  getAccountFlow
+    retrieveEmailService.retrieveEmailByEORI(eori).flatMap {
+      _ match {
+        case Some(_) => getAccountFlow
         case None => Future.successful(Redirect(routes.UpdateEmailAddressController.updateEmailAddress()))
       }
     }
@@ -88,12 +101,15 @@ class AccountController @Inject()(
     implicit val eori: EORI = request.eoriNumber
     for {
       undertakingOpt <- escService.retrieveUndertaking(eori)
-    } yield {
-      undertakingOpt match {
-        case Some(undertaking) if(undertaking.isLeadEORI(eori)) => Redirect(routes.AccountController.getAccountPage())  //if logged in as lead EORI, redirect to Account home page
-        case Some(undertaking) => Ok(existingUndertakingPage(undertaking.name)) //if logged in as non-lead EORI, redirect to existing undertaking page
-        case None => Redirect(routes.AccountController.getAccountPage()) //if undertaking not present, then create undertaking
-      }
+    } yield undertakingOpt match {
+      case Some(undertaking) if undertaking.isLeadEORI(eori) =>
+        Redirect(routes.AccountController.getAccountPage()) //if logged in as lead EORI, redirect to Account home page
+      case Some(undertaking) =>
+        Ok(
+          existingUndertakingPage(undertaking.name)
+        ) //if logged in as non-lead EORI, redirect to existing undertaking page
+      case None =>
+        Redirect(routes.AccountController.getAccountPage()) //if undertaking not present, then create undertaking
     }
   }
 

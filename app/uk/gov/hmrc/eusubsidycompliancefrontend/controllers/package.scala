@@ -32,8 +32,8 @@ package object controllers {
 
   def getPrevious[A <: Journey : ClassTag](
     store: Store
-  )(
-    implicit eori: EORI,
+  )(implicit
+    eori: EORI,
     request: Request[_],
     reads: Reads[A],
     executionContext: ExecutionContext

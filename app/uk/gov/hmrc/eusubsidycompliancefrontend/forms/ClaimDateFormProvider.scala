@@ -28,7 +28,7 @@ import javax.inject.Inject
 import scala.util.Try
 import java.time.format.DateTimeFormatter
 
-class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormProvider[DateFormValues] {
+class ClaimDateFormProvider @Inject() (timeProvider: TimeProvider) extends FormProvider[DateFormValues] {
 
   private type RawFormValues = (String, String, String)
 
@@ -58,38 +58,45 @@ class ClaimDateFormProvider @Inject()(timeProvider: TimeProvider) extends FormPr
 
   private val allDateValuesEntered: RawFormValues => ValidationResult = {
     case ("", "", "") => invalid("date.emptyfields")
-    case ("", "", _)  => invalid("day-and-month.missing")
-    case (_, "", "")  => invalid("month-and-year.missing")
-    case ("", _, "")  => invalid("day-and-year.missing")
-    case ("", _, _)   => invalid("day.missing")
-    case (_, "", _)   => invalid("month.missing")
-    case (_, _, "")   => invalid("year.missing")
-    case _            => Valid
+    case ("", "", _) => invalid("day-and-month.missing")
+    case (_, "", "") => invalid("month-and-year.missing")
+    case ("", _, "") => invalid("day-and-year.missing")
+    case ("", _, _) => invalid("day.missing")
+    case (_, "", _) => invalid("month.missing")
+    case (_, _, "") => invalid("year.missing")
+    case _ => Valid
   }
 
   private val dateInAllowedRange: RawFormValues => ValidationResult = {
-    case (d, m, y) => localDateFromValues (d, m, y).map { parsedDate =>
-      val today = timeProvider.today (ZoneId.of ("Europe/London") )
-      val earliestAllowedDate = today.toEarliestTaxYearStart
+    case (d, m, y) =>
+      localDateFromValues(d, m, y)
+        .map { parsedDate =>
+          val today = timeProvider.today(ZoneId.of("Europe/London"))
+          val earliestAllowedDate = today.toEarliestTaxYearStart
 
-      if (parsedDate.isBefore (earliestAllowedDate) )
-        invalid ("date.outside-allowed-tax-year-range", earliestAllowedDate.format (dateFormatter) )
-      else if (parsedDate.isAfter (today) )
-        invalid ("date.in-future",
-          earliestAllowedDate.format (dateFormatter),
-          today.toTaxYearEnd.minusYears (1).format (dateFormatter),
-        )
-        else Valid
-    }.getOrElse (Valid)
+          if (parsedDate.isBefore(earliestAllowedDate))
+            invalid("date.outside-allowed-tax-year-range", earliestAllowedDate.format(dateFormatter))
+          else if (parsedDate.isAfter(today))
+            invalid(
+              "date.in-future",
+              earliestAllowedDate.format(dateFormatter),
+              today.toTaxYearEnd.minusYears(1).format(dateFormatter)
+            )
+          else Valid
+        }
+        .getOrElse(Valid)
     case _ => Valid
   }
 
   private def invalid(error: String, params: String*) =
-    Invalid(Seq(
-      ValidationError(
-        messageKeyForError(error),
-        params:_*
-      )))
+    Invalid(
+      Seq(
+        ValidationError(
+          messageKeyForError(error),
+          params: _*
+        )
+      )
+    )
 
   private def messageKeyForError(error: String) = s"add-claim-date.error.$error"
 

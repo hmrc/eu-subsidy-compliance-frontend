@@ -39,10 +39,9 @@ class DateFormatterSpec extends AnyWordSpecLike with MockitoSugar with Matchers 
     "govDisplayFormatTruncated is called" should {
       "return a correct formatted date string with truncated month name" in {
         val mockMessages = mockMessagesFor("date.truncated.1", "Jan")
-       DateFormatter.govDisplayFormatTruncated(date)(mockMessages) shouldBe "1 Jan 2022"
+        DateFormatter.govDisplayFormatTruncated(date)(mockMessages) shouldBe "1 Jan 2022"
       }
     }
-
   }
 
   // Using mockito since scalamock doesn't seem able to handle the apply methods on the Messages trait.

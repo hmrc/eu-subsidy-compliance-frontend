@@ -28,11 +28,12 @@ class EisBadResponseException(
   statusText: Option[String],
   returnParameters: Option[List[Params]]
 ) extends RuntimeException(
-  s"$processingDate $status ${statusText.getOrElse("")} ${returnParameters.getOrElse(List.empty[Params])}"
-) {
+      s"$processingDate $status ${statusText.getOrElse("")} ${returnParameters.getOrElse(List.empty[Params])}"
+    ) {
 
-  val params: Map[EisParamName, EisParamValue] = returnParameters.getOrElse(List.empty[Params]).map(x => (x.paramName, x.paramValue)).toMap
-  val code: EisParamValue =  params.getOrElse(EisParamName.ERRORCODE, EisParamValue("UNKNOWN"))
+  val params: Map[EisParamName, EisParamValue] =
+    returnParameters.getOrElse(List.empty[Params]).map(x => (x.paramName, x.paramValue)).toMap
+  val code: EisParamValue = params.getOrElse(EisParamName.ERRORCODE, EisParamValue("UNKNOWN"))
   val message: EisParamValue = params.getOrElse(EisParamName.ERRORTEXT, EisParamValue("UNKNOWN"))
 
 }

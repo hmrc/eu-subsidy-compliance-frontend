@@ -20,10 +20,10 @@ import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormUrls
 
 case class BecomeLeadJourney(
-                              becomeLeadEori: FormPage[Boolean] = FormPage(FormUrls.BecomeLead),
-                              acceptTerms: FormPage[Boolean] = FormPage(FormUrls.TermsAndConditions),
-                              confirmation: FormPage[Boolean] = FormPage(FormUrls.Confirmation),
-                            ) extends Journey {
+  becomeLeadEori: FormPage[Boolean] = FormPage(FormUrls.BecomeLead),
+  acceptTerms: FormPage[Boolean] = FormPage(FormUrls.TermsAndConditions),
+  confirmation: FormPage[Boolean] = FormPage(FormUrls.Confirmation)
+) extends Journey {
 
   override def steps: List[FormPage[_]] =
     List(
@@ -31,8 +31,8 @@ case class BecomeLeadJourney(
       acceptTerms,
       confirmation
     )
-}
 
+}
 
 object BecomeLeadJourney {
   import Journey._

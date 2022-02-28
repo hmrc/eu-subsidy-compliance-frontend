@@ -27,25 +27,21 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import java.util.Locale
 import javax.inject.{Inject, Singleton}
 @Singleton
-class EmailTemplateHelpers @Inject()(appConfig: AppConfig) {
+class EmailTemplateHelpers @Inject() (appConfig: AppConfig) {
 
   private def getLanguage(implicit request: EscAuthRequest[_], messagesApi: MessagesApi): Language =
     request.request.messages(messagesApi).lang.code.toLowerCase(Locale.UK) match {
       case English.code => English
-      case Welsh.code   => Welsh
-      case other        => sys.error(s"Found unsupported language code $other")
+      case Welsh.code => Welsh
+      case other => sys.error(s"Found unsupported language code $other")
     }
 
-  def getEmailTemplateId(configuration: Configuration, inputKey: String
-                   )(implicit request: EscAuthRequest[_], messagesApi: MessagesApi) = {
+  def getEmailTemplateId(configuration: Configuration, inputKey: String)(implicit
+    request: EscAuthRequest[_],
+    messagesApi: MessagesApi
+  ) = {
     val lang = getLanguage
     appConfig.templateIdsMap(configuration, lang.code).get(inputKey).getOrElse(s"no template for $inputKey")
   }
-
-
-
-
-
-
 
 }

@@ -45,37 +45,33 @@ trait Journey {
 
   // TODO - should previous and next return the same types?
   def previous(implicit request: Request[_]): Journey.Uri =
-    formPages
-      .zipWithIndex
+    formPages.zipWithIndex
       .find(_._2 == currentIndex - 1)
       .fold(throw new IllegalStateException("no previous page"))(_._1.uri)
 
   def next(implicit request: Request[_]): Future[Result] =
-    formPages
-      .zipWithIndex
+    formPages.zipWithIndex
       .find(_._2 == currentIndex + 1)
       .fold(throw new IllegalStateException("no next page")) { x =>
         Redirect(x._1.uri).withSession(request.session).toFuture
       }
 
-  def isEmptyFormPage(indexedFormPage: (FormPage[_],Int))(implicit request: Request[_]): Boolean =
+  def isEmptyFormPage(indexedFormPage: (FormPage[_], Int))(implicit request: Request[_]): Boolean =
     indexedFormPage match {
       case (formPage, index) => formPage.value.isEmpty && index < currentIndex
     }
 
-  def isComplete:Boolean = steps.last.value.isDefined
+  def isComplete: Boolean = steps.last.value.isDefined
 
   def redirect(implicit request: Request[AnyContent]): Option[Future[Result]] = {
     val firstUnfilledFormUri: Journey.Uri =
-      formPages
-        .zipWithIndex
+      formPages.zipWithIndex
         .find(isEmptyFormPage)
-        .fold(request.uri)({case (a,_) => a.uri})
+        .fold(request.uri)({ case (a, _) => a.uri })
     if (firstUnfilledFormUri != request.uri) {
       logger.info(s"redirecting ${request.uri} to $firstUnfilledFormUri")
       Some(Redirect(firstUnfilledFormUri).withSession(request.session).toFuture)
-    }
-    else None
+    } else None
   }
 
   def firstEmpty(implicit request: Request[_]): Option[Result] =

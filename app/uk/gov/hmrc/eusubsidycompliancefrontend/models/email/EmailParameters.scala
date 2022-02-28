@@ -25,10 +25,10 @@ sealed trait EmailParameterType
 
 object EmailParameterType {
 
-  case object  SingleEORI extends EmailParameterType
+  case object SingleEORI extends EmailParameterType
   case object DoubleEORI extends EmailParameterType
   case object DoubleEORIAndDate extends EmailParameterType
-  case object  SingleEORIAndDate extends EmailParameterType
+  case object SingleEORIAndDate extends EmailParameterType
 
   import ai.x.play.json.SingletonEncoder.simpleName
   import ai.x.play.json.implicits.formatSingleton
@@ -44,25 +44,49 @@ trait EmailParameters {
 
 object EmailParameters {
 
-  final case class SingleEORIEmailParameter(eori: EORI, undertakingName: UndertakingName, undertakingRef: UndertakingRef, description: String) extends EmailParameters {
+  final case class SingleEORIEmailParameter(
+    eori: EORI,
+    undertakingName: UndertakingName,
+    undertakingRef: UndertakingRef,
+    description: String
+  ) extends EmailParameters {
     val emailParameterType = EmailParameterType.SingleEORI
   }
 
-  final case class DoubleEORIEmailParameter(eori: EORI, beEORI: EORI,  undertakingName: UndertakingName, undertakingRef: UndertakingRef, description: String) extends EmailParameters {
+  final case class DoubleEORIEmailParameter(
+    eori: EORI,
+    beEORI: EORI,
+    undertakingName: UndertakingName,
+    undertakingRef: UndertakingRef,
+    description: String
+  ) extends EmailParameters {
     val emailParameterType = EmailParameterType.DoubleEORI
   }
 
-  final case class SingleEORIAndDateEmailParameter(eori: EORI, undertakingName: UndertakingName, undertakingRef: UndertakingRef, effectiveDate: String, description: String) extends EmailParameters {
+  final case class SingleEORIAndDateEmailParameter(
+    eori: EORI,
+    undertakingName: UndertakingName,
+    undertakingRef: UndertakingRef,
+    effectiveDate: String,
+    description: String
+  ) extends EmailParameters {
     val emailParameterType = EmailParameterType.SingleEORIAndDate
   }
 
-  final case class DoubleEORIAndDateEmailParameter(eori: EORI, beEORI: EORI, undertakingName: UndertakingName, undertakingRef: UndertakingRef, effectiveDate: String, description: String) extends EmailParameters {
+  final case class DoubleEORIAndDateEmailParameter(
+    eori: EORI,
+    beEORI: EORI,
+    undertakingName: UndertakingName,
+    undertakingRef: UndertakingRef,
+    effectiveDate: String,
+    description: String
+  ) extends EmailParameters {
     val emailParameterType = EmailParameterType.DoubleEORIAndDate
   }
 
   implicit val format: OFormat[EmailParameters] = new OFormat[EmailParameters] {
     override def writes(o: EmailParameters): JsObject = {
-      val json  = o match {
+      val json = o match {
         case s: SingleEORIEmailParameter => Json.writes[SingleEORIEmailParameter].writes(s)
         case d: DoubleEORIEmailParameter => Json.writes[DoubleEORIEmailParameter].writes(d)
         case sd: SingleEORIAndDateEmailParameter => Json.writes[SingleEORIAndDateEmailParameter].writes(sd)
@@ -81,6 +105,5 @@ object EmailParameters {
           case EmailParameterType.DoubleEORIAndDate => Json.reads[DoubleEORIAndDateEmailParameter].reads(json)
         }
   }
-
 
 }

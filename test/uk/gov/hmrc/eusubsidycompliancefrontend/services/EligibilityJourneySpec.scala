@@ -43,7 +43,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
 
       "remove will you claim and notEligible steps if customs waivers form has true value" in {
         val underTest = EligibilityJourney(
-          customsWaivers = FormPage(CustomsWaivers, Some(true)),
+          customsWaivers = FormPage(CustomsWaivers, Some(true))
         )
         underTest.formPages shouldBe List(
           underTest.customsWaivers,
@@ -58,7 +58,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
 
       "remove not eligible step if do you claim form has true value" in {
         val underTest = EligibilityJourney(
-          willYouClaim = FormPage(WillYouClaim, Some(true)),
+          willYouClaim = FormPage(WillYouClaim, Some(true))
         )
         underTest.formPages shouldBe List(
           underTest.customsWaivers,
@@ -75,7 +75,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
       "remove sign out step if main business check has true value" in {
         val underTest = EligibilityJourney(
           willYouClaim = FormPage(WillYouClaim, Some(true)),
-          mainBusinessCheck = FormPage(MainBusinessCheck, Some(true)),
+          mainBusinessCheck = FormPage(MainBusinessCheck, Some(true))
         )
         underTest.formPages shouldBe List(
           underTest.customsWaivers,
@@ -92,7 +92,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
         val underTest = EligibilityJourney(
           willYouClaim = FormPage(WillYouClaim, Some(true)),
           mainBusinessCheck = FormPage(MainBusinessCheck, Some(true)),
-          eoriCheck = FormPage(EoriCheck, Some(true)),
+          eoriCheck = FormPage(EoriCheck, Some(true))
         )
         underTest.formPages shouldBe List(
           underTest.customsWaivers,

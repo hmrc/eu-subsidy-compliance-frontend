@@ -28,15 +28,14 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.mongo.test.MongoSupport
 
 class BaseControllerSpec
-  extends AnyWordSpec
-  with Matchers
-  with GuiceOneAppPerSuite
-  with AuthenticatedActionBuildersSpec
-  with MongoSupport
-{
+    extends AnyWordSpec
+    with Matchers
+    with GuiceOneAppPerSuite
+    with AuthenticatedActionBuildersSpec
+    with MongoSupport {
 
   lazy val environment: Environment = Environment.simple(new File("."))
-  lazy val configuration = Configuration.load(environment)
+  lazy val configuration            = Configuration.load(environment)
   implicit val appConfig: AppConfig = new AppConfig(configuration)
   override def fakeApplication(): Application =
     new GuiceApplicationBuilder()

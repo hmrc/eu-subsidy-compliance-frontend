@@ -32,13 +32,13 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EscRequestActionBuilder @Inject()(
-  val config:                    Configuration,
-  val env:                       Environment,
-  val authConnector:             AuthConnector,
-  mcc:                           ControllerComponents
+class EscRequestActionBuilder @Inject() (
+  val config: Configuration,
+  val env: Environment,
+  val authConnector: AuthConnector,
+  mcc: ControllerComponents
 )(implicit val executionContext: ExecutionContext, appConfig: AppConfig)
-  extends ActionBuilder[EscAuthRequest, AnyContent]
+    extends ActionBuilder[EscAuthRequest, AnyContent]
     with FrontendHeaderCarrierProvider
     with Results
     with AuthRedirects
@@ -57,9 +57,11 @@ class EscRequestActionBuilder @Inject()(
         Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
       ) {
         case Some(information) ~ Some(groupId) ~ enrolments =>
-          enrolments.getEnrolment("HMRC-ESC-ORG")
+          enrolments
+            .getEnrolment("HMRC-ESC-ORG")
             .map(x => x.getIdentifier("EORINumber"))
-            .flatMap(y => y.map(z => z.value)).map(x => EORI(x)) match {
+            .flatMap(y => y.map(z => z.value))
+            .map(x => EORI(x)) match {
             case Some(eori) => block(EscAuthRequest(information.providerId, groupId, request, eori))
             case _ => throw new IllegalStateException("no eori provided")
           }

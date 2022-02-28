@@ -36,58 +36,61 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SendEmailHelperService @Inject() (
-    appConfig: AppConfig,
-    retrieveEmailService: RetrieveEmailService,
-    sendEmailService: SendEmailService,
-    configuration: Configuration) {
+  appConfig: AppConfig,
+  retrieveEmailService: RetrieveEmailService,
+  sendEmailService: SendEmailService,
+  configuration: Configuration
+) {
 
-
-  def retrieveEmailAddressAndSendEmail(eori1: EORI,
-     eori2: Option[EORI],
-     key: String,
-     undertaking: Undertaking,
-     undertakingRef: UndertakingRef,
-     removeEffectiveDate: Option[String]
-  )(implicit hc: HeaderCarrier,
-     executionContext: ExecutionContext,
-     request: EscAuthRequest[_],
-     messagesApi: MessagesApi
-  ): Future[EmailSendResult] = {
+  def retrieveEmailAddressAndSendEmail(
+    eori1: EORI,
+    eori2: Option[EORI],
+    key: String,
+    undertaking: Undertaking,
+    undertakingRef: UndertakingRef,
+    removeEffectiveDate: Option[String]
+  )(implicit
+    hc: HeaderCarrier,
+    executionContext: ExecutionContext,
+    request: EscAuthRequest[_],
+    messagesApi: MessagesApi
+  ): Future[EmailSendResult] =
     for {
       emailAddress <- retrieveEmailService.retrieveEmailByEORI(eori1).map(_.getOrElse(sys.error("Email Address")))
-      templateId  = getEmailTemplateId(configuration, key)
-      emailParameter =   getEmailParams(key, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
+      templateId = getEmailTemplateId(configuration, key)
+      emailParameter = getEmailParams(key, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
       result <- sendEmailService.sendEmail(emailAddress, emailParameter, templateId)
     } yield result
 
-  }
-
-
-  private def getEmailParams(key: String,
-                        eori1: EORI,
-                        eori2: Option[EORI],
-                        undertaking: Undertaking,
-                        undertakingRef: UndertakingRef,
-                        removeEffectiveDate: Option[String]): EmailParameters =
+  private def getEmailParams(
+    key: String,
+    eori1: EORI,
+    eori2: Option[EORI],
+    undertaking: Undertaking,
+    undertakingRef: UndertakingRef,
+    removeEffectiveDate: Option[String]
+  ): EmailParameters =
     (eori2, removeEffectiveDate) match {
-      case (None, None) => SingleEORIEmailParameter(eori1, undertaking.name, undertakingRef,  key)
-      case(None, Some(date)) => SingleEORIAndDateEmailParameter(eori1, undertaking.name, undertakingRef, date, key)
-      case (Some(eori), None) => DoubleEORIEmailParameter(eori1, eori,  undertaking.name, undertakingRef,  key)
-      case (Some(eori), Some(date)) => DoubleEORIAndDateEmailParameter(eori1, eori,  undertaking.name, undertakingRef, date, key)
+      case (None, None) => SingleEORIEmailParameter(eori1, undertaking.name, undertakingRef, key)
+      case (None, Some(date)) => SingleEORIAndDateEmailParameter(eori1, undertaking.name, undertakingRef, date, key)
+      case (Some(eori), None) => DoubleEORIEmailParameter(eori1, eori, undertaking.name, undertakingRef, key)
+      case (Some(eori), Some(date)) =>
+        DoubleEORIAndDateEmailParameter(eori1, eori, undertaking.name, undertakingRef, date, key)
     }
 
   private def getLanguage(implicit request: EscAuthRequest[_], messagesApi: MessagesApi): Language =
     request.request.messages(messagesApi).lang.code.toLowerCase(Locale.UK) match {
       case English.code => English
-      case Welsh.code   => Welsh
-      case other        => sys.error(s"Found unsupported language code $other")
+      case Welsh.code => Welsh
+      case other => sys.error(s"Found unsupported language code $other")
     }
 
-  private def getEmailTemplateId(configuration: Configuration, inputKey: String
-                        )(implicit request: EscAuthRequest[_], messagesApi: MessagesApi) = {
+  private def getEmailTemplateId(configuration: Configuration, inputKey: String)(implicit
+    request: EscAuthRequest[_],
+    messagesApi: MessagesApi
+  ) = {
     val lang = getLanguage
     appConfig.templateIdsMap(configuration, lang.code).get(inputKey).getOrElse(s"no template for $inputKey")
   }
-
 
 }

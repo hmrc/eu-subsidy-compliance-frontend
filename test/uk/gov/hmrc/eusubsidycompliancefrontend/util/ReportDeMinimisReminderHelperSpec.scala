@@ -28,8 +28,8 @@ class ReportDeMinimisReminderHelperSpec extends AnyWordSpecLike with Matchers {
 
     "isTimeToReport" must {
 
-      def test(currentDate : LocalDate, response: Boolean) = {
-        val lastSubsidyUsageUpdt = LocalDate.of(2021,12,1).some
+      def test(currentDate: LocalDate, response: Boolean) = {
+        val lastSubsidyUsageUpdt = LocalDate.of(2021, 12, 1).some
         ReportDeMinimisReminderHelper.isTimeToReport(lastSubsidyUsageUpdt, currentDate) mustBe response
       }
 

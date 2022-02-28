@@ -27,33 +27,37 @@ import scala.concurrent.duration.{DAYS, FiniteDuration}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
-object EoriIdType extends CacheIdType[EORI]{
+object EoriIdType extends CacheIdType[EORI] {
   def run: EORI => EORI = identity
 }
 
 @Singleton
-class JourneyStore @Inject()(
-  mongoComponent  : MongoComponent,
-  configuration   : Configuration
-)(implicit ec: ExecutionContext
-) extends MongoCacheRepository[EORI](
-  mongoComponent   = mongoComponent,
-  collectionName   = "journeyStore",
-  ttl              = configuration.getOptional[FiniteDuration]("mongodb.journeyStore.expireAfter").getOrElse(FiniteDuration(30, DAYS)),
-  timestampSupport = new CurrentTimestampSupport,
-  cacheIdType      = EoriIdType
-) with Store {
+class JourneyStore @Inject() (
+  mongoComponent: MongoComponent,
+  configuration: Configuration
+)(implicit ec: ExecutionContext)
+    extends MongoCacheRepository[EORI](
+      mongoComponent = mongoComponent,
+      collectionName = "journeyStore",
+      ttl = configuration
+        .getOptional[FiniteDuration]("mongodb.journeyStore.expireAfter")
+        .getOrElse(FiniteDuration(30, DAYS)),
+      timestampSupport = new CurrentTimestampSupport,
+      cacheIdType = EoriIdType
+    )
+    with Store {
 
-  override def get[A: ClassTag](implicit eori: EORI, reads: Reads[A]): Future[Option[A]] = {
+  override def get[A : ClassTag](implicit eori: EORI, reads: Reads[A]): Future[Option[A]] = {
     val modelType = implicitly[ClassTag[A]].runtimeClass.getSimpleName
     get[A](eori)(DataKey(modelType))
   }
 
   override def put[A](in: A)(implicit eori: EORI, writes: Writes[A]): Future[A] =
-    put[A](eori)(DataKey(in.getClass.getSimpleName), in).map(_=> in)
+    put[A](eori)(DataKey(in.getClass.getSimpleName), in).map(_ => in)
 
-  def update[A: ClassTag](f: Option[A] => Option[A])(implicit eori: EORI, format: Format[A]): Future[A] =
-    get.map(f)
+  def update[A : ClassTag](f: Option[A] => Option[A])(implicit eori: EORI, format: Format[A]): Future[A] =
+    get
+      .map(f)
       .flatMap(x => x.fold(throw new IllegalStateException("trying to update non-existent model"))(put(_)))
 
 }

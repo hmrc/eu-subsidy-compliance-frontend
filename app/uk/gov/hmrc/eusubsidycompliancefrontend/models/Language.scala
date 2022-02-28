@@ -18,7 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{JsString, Writes}
 
-
 sealed trait Language extends Product with Serializable {
   val code: String
 }

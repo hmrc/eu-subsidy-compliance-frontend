@@ -30,14 +30,14 @@ import utils.CommonTestData.{businessEntityJourney1, eori1, undertaking1}
 import scala.concurrent.Future
 
 class NoBusinessPresentControllerSpec
-  extends ControllerSpec
+    extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour {
 
   val mockEscService = mock[EscService]
 
-  override def overrideBindings           = List(
+  override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService)
@@ -78,7 +78,6 @@ class NoBusinessPresentControllerSpec
         }
       }
 
-
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
@@ -88,7 +87,7 @@ class NoBusinessPresentControllerSpec
           performAction(),
           messageFromMessageKey("noBusinessPresent.title", undertaking1.name),
           { doc =>
-            doc.select(".govuk-back-link").attr("href") shouldBe(routes.AccountController.getAccountPage().url)
+            doc.select(".govuk-back-link").attr("href") shouldBe (routes.AccountController.getAccountPage().url)
             val button = doc.select("form")
             button.attr("action") shouldBe routes.NoBusinessPresentController.postNoBusinessPresent().url
           }
@@ -117,7 +116,9 @@ class NoBusinessPresentControllerSpec
       "redirect to next page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1.some), eori1)(Right(businessEntityJourney1))
+          mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1.some), eori1)(
+            Right(businessEntityJourney1)
+          )
         }
         checkIsRedirect(
           performAction(),
@@ -127,6 +128,5 @@ class NoBusinessPresentControllerSpec
     }
 
   }
-
 
 }

@@ -75,11 +75,12 @@ object UndertakingJourney {
         sector = empty.sector.copy(value = undertaking.industrySector.some),
         isAmend = false
       )
+
     case _ => UndertakingJourney()
   }
 
   object FormUrls {
-    val Name ="undertaking-name"
+    val Name = "undertaking-name"
     val Sector = "sector"
     val Contact = "contact"
     val Cya = "check-your-answers"

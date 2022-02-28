@@ -37,7 +37,7 @@ import utils.CommonTestData._
 import scala.concurrent.Future
 
 class BecomeLeadControllerSpec
-  extends ControllerSpec
+    extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
@@ -46,7 +46,7 @@ class BecomeLeadControllerSpec
 
   private val mockEscService = mock[EscService]
 
-  override def overrideBindings           = List(
+  override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
@@ -77,12 +77,13 @@ class BecomeLeadControllerSpec
       .expects(eori, *)
       .returning(result)
 
-  def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(result: Either[Error, UndertakingRef]) = {
+  def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
+    result: Either[Error, UndertakingRef]
+  ) =
     (mockEscService
       .addMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
       .expects(undertakingRef, businessEntity, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)),Future.successful(_)))
-  }
+      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful(_)))
 
   "BecomeLeadControllerSpec" when {
 
@@ -115,10 +116,9 @@ class BecomeLeadControllerSpec
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("become-admin.title", undertaking1.name),
-            {doc =>
-
+            { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
-              selectedOptions.isEmpty  shouldBe true
+              selectedOptions.isEmpty shouldBe true
 
               val button = doc.select("form")
               button.attr("action") shouldBe routes.BecomeLeadController.postBecomeLeadEori().url
@@ -129,14 +129,19 @@ class BecomeLeadControllerSpec
         "new lead journey already exists" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = Some(true))).some))
+            mockGet[BecomeLeadJourney](eori1)(
+              Right(
+                newBecomeLeadJourney
+                  .copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = Some(true)))
+                  .some
+              )
+            )
             mockRetreiveUndertaking(eori1)(Future.successful(undertaking1.some))
           }
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("become-admin.title", undertaking1.name),
-            {doc =>
-
+            { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               selectedOptions.attr("value") shouldBe "true"
 
@@ -152,17 +157,15 @@ class BecomeLeadControllerSpec
     "handling request to post Become Lead Eori" must {
 
       def performAction(data: (String, String)*) = controller
-        .postBecomeLeadEori(
-          FakeRequest().withFormUrlEncodedBody(data: _*))
+        .postBecomeLeadEori(FakeRequest().withFormUrlEncodedBody(data: _*))
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
 
         "call to update new lead journey fails" in {
 
-          def update(newLeadJourneyOpt: Option[BecomeLeadJourney]) = {
+          def update(newLeadJourneyOpt: Option[BecomeLeadJourney]) =
             newLeadJourneyOpt.map(_.copy(becomeLeadEori = FormPage("select-new-lead")))
-          }
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney().some), eori1)(Left(Error(exception)))
@@ -197,7 +200,13 @@ class BecomeLeadControllerSpec
 
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = Some(true))).some))
+          mockGet[BecomeLeadJourney](eori1)(
+            Right(
+              newBecomeLeadJourney
+                .copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = Some(true)))
+                .some
+            )
+          )
         }
         checkPageIsDisplayed(
           performAction(),
@@ -214,7 +223,8 @@ class BecomeLeadControllerSpec
         .getPromotionConfirmation(
           FakeRequest()
             .withCookies(Cookie("PLAY_LANG", lang))
-            .withFormUrlEncodedBody(data: _*))
+            .withFormUrlEncodedBody(data: _*)
+        )
 
       "throw technical error" when {
 
@@ -259,7 +269,9 @@ class BecomeLeadControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
-            mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.copy(undertakingBusinessEntity = List(businessEntity1)).some))
+            mockRetreiveUndertaking(eori4)(
+              Future.successful(undertaking1.copy(undertakingBusinessEntity = List(businessEntity1)).some)
+            )
           }
           assertThrows[Exception](await(performAction()(English.code)))
         }
@@ -268,7 +280,9 @@ class BecomeLeadControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
-            mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.copy(undertakingBusinessEntity = List(businessEntity4)).some))
+            mockRetreiveUndertaking(eori4)(
+              Future.successful(undertaking1.copy(undertakingBusinessEntity = List(businessEntity4)).some)
+            )
           }
           assertThrows[Exception](await(performAction()(English.code)))
         }
@@ -308,7 +322,8 @@ class BecomeLeadControllerSpec
 
         "call to retrieve email address of old lead fails" in {
 
-          val newLeadParams = SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promotedAsLeadToNewLead")
+          val newLeadParams =
+            SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promotedAsLeadToNewLead")
           inSequence {
             mockAuthWithEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
@@ -316,7 +331,9 @@ class BecomeLeadControllerSpec
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
             mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
-            mockSendEmail(validEmailAddress, newLeadParams, "template_promoted_themself_as_lead_email_to_lead_EN")(Right(EmailSendResult.EmailSent))
+            mockSendEmail(validEmailAddress, newLeadParams, "template_promoted_themself_as_lead_email_to_lead_EN")(
+              Right(EmailSendResult.EmailSent)
+            )
             mockRetrieveEmail(eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()(English.code)))
@@ -334,17 +351,20 @@ class BecomeLeadControllerSpec
           assertThrows[Exception](await(performAction()("fr")))
         }
 
-
       }
 
       "display the page" when {
 
         def testDisplay(templateIdNewLead: String, templateIdOldLead: String, lang: String) = {
-          val newLeadParams = SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promotedAsLeadToNewLead")
-          val oldLeadParams = SingleEORIEmailParameter(eori1, undertaking1.name, undertakingRef, "removedAsLeadToOldLead")
+          val newLeadParams =
+            SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promotedAsLeadToNewLead")
+          val oldLeadParams =
+            SingleEORIEmailParameter(eori1, undertaking1.name, undertakingRef, "removedAsLeadToOldLead")
           inSequence {
             mockAuthWithEnrolment(eori4)
-            mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.copy(acceptTerms = FormPage(FormUrls.TermsAndConditions, true.some)).some))
+            mockGet[BecomeLeadJourney](eori4)(
+              Right(newBecomeLeadJourney.copy(acceptTerms = FormPage(FormUrls.TermsAndConditions, true.some)).some)
+            )
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
@@ -361,9 +381,11 @@ class BecomeLeadControllerSpec
         }
 
         "when user has selected English language" in {
-          testDisplay("template_promoted_themself_as_lead_email_to_lead_EN",
-          "template_removed_as_lead_email_to_previous_lead_EN",
-            English.code)
+          testDisplay(
+            "template_promoted_themself_as_lead_email_to_lead_EN",
+            "template_removed_as_lead_email_to_previous_lead_EN",
+            English.code
+          )
         }
 
         "when user has selected Welsh language" in {
@@ -380,8 +402,10 @@ class BecomeLeadControllerSpec
       "redirect to next page" when {
 
         "become lead journey doesn't contains accept terms" in {
-          val newLeadParams = SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promotedAsLeadToNewLead")
-          val oldLeadParams = SingleEORIEmailParameter(eori1, undertaking1.name, undertakingRef, "removedAsLeadToOldLead")
+          val newLeadParams =
+            SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promotedAsLeadToNewLead")
+          val oldLeadParams =
+            SingleEORIEmailParameter(eori1, undertaking1.name, undertakingRef, "removedAsLeadToOldLead")
           inSequence {
             mockAuthWithEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
@@ -389,9 +413,13 @@ class BecomeLeadControllerSpec
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
             mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
-            mockSendEmail(validEmailAddress, newLeadParams, "template_promoted_themself_as_lead_email_to_lead_EN")(Right(EmailSendResult.EmailSent))
+            mockSendEmail(validEmailAddress, newLeadParams, "template_promoted_themself_as_lead_email_to_lead_EN")(
+              Right(EmailSendResult.EmailSent)
+            )
             mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
-            mockSendEmail(validEmailAddress, oldLeadParams, "template_removed_as_lead_email_to_previous_lead_EN")(Right(EmailSendResult.EmailSent))
+            mockSendEmail(validEmailAddress, oldLeadParams, "template_removed_as_lead_email_to_previous_lead_EN")(
+              Right(EmailSendResult.EmailSent)
+            )
           }
 
           checkIsRedirect(performAction()(English.code), routes.BecomeLeadController.getBecomeLeadEori())
@@ -400,8 +428,6 @@ class BecomeLeadControllerSpec
       }
 
     }
-
-
 
   }
 

@@ -24,14 +24,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait AuthenticatedActionBuildersSpec extends MockitoSugar
-   {
-  implicit lazy val ec:           ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+trait AuthenticatedActionBuildersSpec extends MockitoSugar {
+  implicit lazy val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
   def preAuthenticatedActionBuilders(): EscActionBuilders = new EscActionBuilders(mock[EscRequestActionBuilder]) {
     override val escAuthentication: ActionBuilder[EscAuthRequest, AnyContent] =
       new ActionBuilder[EscAuthRequest, AnyContent] {
         override def parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.anyContent
-
         override def invokeBlock[A](request: Request[A], block: EscAuthRequest[A] => Future[Result]): Future[Result] =
           block(EscAuthRequest("testAuthorityId", "testGroupId", request, EORI("GB123456789012")))
 

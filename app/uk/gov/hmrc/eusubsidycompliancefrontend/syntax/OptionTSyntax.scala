@@ -22,18 +22,18 @@ import cats.implicits._
 import scala.concurrent.{ExecutionContext, Future}
 
 /**
- * Much of our code operates with Future[Option[_]] types which can benefit from using OptionT to simplify unpacking
- * the results.
- *
- * This syntax provides some convenience extension methods to clean up OptionT related boilerplate when values need to
- * be 'lifted' into the Future[Option[_]] context.
- *
- * In the long term we should revisit our error handling and consider using Future[Either[_, _]] instead of throwing
- * exceptions.
- *
- * This is a step in that direction and introduces the idea of lifting values into a context, where for now, that
- * context is Future[Option[_]]
- */
+  * Much of our code operates with Future[Option[_]] types which can benefit from using OptionT to simplify unpacking
+  * the results.
+  *
+  * This syntax provides some convenience extension methods to clean up OptionT related boilerplate when values need to
+  * be 'lifted' into the Future[Option[_]] context.
+  *
+  * In the long term we should revisit our error handling and consider using Future[Either[_, _]] instead of throwing
+  * exceptions.
+  *
+  * This is a step in that direction and introduces the idea of lifting values into a context, where for now, that
+  * context is Future[Option[_]]
+  */
 object OptionTSyntax {
 
   implicit class FutureToOptionTOps[A](val f: Future[A]) extends AnyVal {

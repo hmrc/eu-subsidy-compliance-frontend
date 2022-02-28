@@ -36,7 +36,7 @@ import utils.CommonTestData._
 import scala.concurrent.Future
 
 class SelectNewLeadControllerSpec
-  extends ControllerSpec
+    extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
@@ -45,7 +45,7 @@ class SelectNewLeadControllerSpec
 
   val mockEscService = mock[EscService]
 
-  override def overrideBindings           = List(
+  override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
@@ -137,11 +137,10 @@ class SelectNewLeadControllerSpec
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("selectNewLead.title", undertaking.name),
-            {doc =>
-
-              doc.select(".govuk-back-link").attr("href") shouldBe(routes.AccountController.getAccountPage().url)
+            { doc =>
+              doc.select(".govuk-back-link").attr("href") shouldBe (routes.AccountController.getAccountPage().url)
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
-              selectedOptions.isEmpty  shouldBe true
+              selectedOptions.isEmpty shouldBe true
 
               val button = doc.select("form")
               button.attr("action") shouldBe routes.SelectNewLeadController.postSelectNewLead().url
@@ -158,14 +157,13 @@ class SelectNewLeadControllerSpec
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("selectNewLead.title", undertaking1.name),
-            {doc =>
-
-              doc.select(".govuk-back-link").attr("href") shouldBe(routes.AccountController.getAccountPage().url)
+            { doc =>
+              doc.select(".govuk-back-link").attr("href") shouldBe (routes.AccountController.getAccountPage().url)
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               selectedOptions.attr("value") shouldBe eori4.toString
 
               val radioOptions = doc.select(".govuk-radios__item")
-              radioOptions.size() shouldBe(undertaking1.undertakingBusinessEntity.filterNot(_.leadEORI).size)
+              radioOptions.size() shouldBe (undertaking1.undertakingBusinessEntity.filterNot(_.leadEORI).size)
 
               val button = doc.select("form")
               button.attr("action") shouldBe routes.SelectNewLeadController.postSelectNewLead().url
@@ -183,15 +181,15 @@ class SelectNewLeadControllerSpec
         .postSelectNewLead(
           FakeRequest()
             .withCookies(Cookie("PLAY_LANG", lang))
-            .withFormUrlEncodedBody(data: _*))
+            .withFormUrlEncodedBody(data: _*)
+        )
 
       "throw technical error" when {
-        val exception = new Exception("oh no!")
+        val exception     = new Exception("oh no!")
         val emailParamsBE = SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promoteAsLeadEmailToBE")
 
-        def update(newLeadJourneyOpt: Option[NewLeadJourney]) = {
+        def update(newLeadJourneyOpt: Option[NewLeadJourney]) =
           newLeadJourneyOpt.map(_.copy(selectNewLead = FormPage("select-new-lead", eori4.some)))
-        }
         "call to retrieve Undertaking fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -223,7 +221,9 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Right(NewLeadJourney(FormPage("select-new-lead", eori4.some))))
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
+              Right(NewLeadJourney(FormPage("select-new-lead", eori4.some)))
+            )
             mockRetrieveEmail(eori4)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4.toString)(English.code)))
@@ -234,9 +234,11 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Right(NewLeadJourney(FormPage("select-new-lead", eori4.some))))
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
+              Right(NewLeadJourney(FormPage("select-new-lead", eori4.some)))
+            )
             mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
-            mockSendEmail(validEmailAddress,emailParamsBE, "template_BE_as_lead_EN")(Right(EmailSendResult.EmailSent))
+            mockSendEmail(validEmailAddress, emailParamsBE, "template_BE_as_lead_EN")(Right(EmailSendResult.EmailSent))
             mockRetrieveEmail(eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4.toString)(English.code)))
@@ -246,7 +248,9 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Right(NewLeadJourney(FormPage("select-new-lead", eori4.some))))
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
+              Right(NewLeadJourney(FormPage("select-new-lead", eori4.some)))
+            )
             mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4.toString)("fr")))
@@ -271,35 +275,40 @@ class SelectNewLeadControllerSpec
 
       "redirect to next page" when {
 
-        def update(newLeadJourneyOpt: Option[NewLeadJourney]) = {
+        def update(newLeadJourneyOpt: Option[NewLeadJourney]) =
           newLeadJourneyOpt.map(_.copy(selectNewLead = FormPage("select-new-lead", eori4.some)))
-        }
 
         def testRedirection(templateIdBE: String, templateIdLead: String, lang: String) = {
 
-          val emailParamsBE = SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promoteAsLeadEmailToBE")
-          val emailParamLead = DoubleEORIEmailParameter(eori1, eori4, undertaking.name, undertakingRef, "promoteAsLeadEmailToLead" )
+          val emailParamsBE =
+            SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promoteAsLeadEmailToBE")
+          val emailParamLead =
+            DoubleEORIEmailParameter(eori1, eori4, undertaking.name, undertakingRef, "promoteAsLeadEmailToLead")
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Right(NewLeadJourney(FormPage("select-new-lead", eori4.some))))
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
+              Right(NewLeadJourney(FormPage("select-new-lead", eori4.some)))
+            )
             mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
-            mockSendEmail(validEmailAddress, emailParamsBE , templateIdBE)(Right(EmailSendResult.EmailSent))
+            mockSendEmail(validEmailAddress, emailParamsBE, templateIdBE)(Right(EmailSendResult.EmailSent))
             mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
-            mockSendEmail(validEmailAddress, emailParamLead , templateIdLead)(Right(EmailSendResult.EmailSent))
+            mockSendEmail(validEmailAddress, emailParamLead, templateIdLead)(Right(EmailSendResult.EmailSent))
           }
-          checkIsRedirect(performAction("selectNewLead" -> eori4.toString)(lang), routes.SelectNewLeadController.getLeadEORIChanged())
+          checkIsRedirect(
+            performAction("selectNewLead" -> eori4.toString)(lang),
+            routes.SelectNewLeadController.getLeadEORIChanged()
+          )
         }
 
         "the language selected by user is  English" in {
-          testRedirection("template_BE_as_lead_EN","template_BE_as_lead_mail_to_lead_EN", English.code)
+          testRedirection("template_BE_as_lead_EN", "template_BE_as_lead_mail_to_lead_EN", English.code)
         }
 
         "the language selected by user is  Welsh" in {
-          testRedirection("template_BE_as_lead_CY","template_BE_as_lead_mail_to_lead_CY", Welsh.code)
+          testRedirection("template_BE_as_lead_CY", "template_BE_as_lead_mail_to_lead_CY", Welsh.code)
         }
       }
-
 
     }
 
@@ -308,9 +317,8 @@ class SelectNewLeadControllerSpec
       def performAction() = controller.getLeadEORIChanged(FakeRequest())
       behave like authBehaviour(() => performAction())
 
-      def update(businessEntityJourneyOpt: Option[BusinessEntityJourney]) = {
+      def update(businessEntityJourneyOpt: Option[BusinessEntityJourney]) =
         businessEntityJourneyOpt.map(_.copy(isLeadSelectJourney = None))
-      }
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
@@ -368,7 +376,10 @@ class SelectNewLeadControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourneyLead.copy(eori = FormPage("add-business-entity-eori", eori4.some)).some), eori1)(Left(Error(exception)))
+            mockUpdate[BusinessEntityJourney](
+              _ => update(businessEntityJourneyLead.copy(eori = FormPage("add-business-entity-eori", eori4.some)).some),
+              eori1
+            )(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -380,8 +391,15 @@ class SelectNewLeadControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourneyLead
-              .copy(eori = FormPage("add-business-entity-eori", eori4.some)).some), eori1)(Right(businessEntityJourneyLead))
+            mockUpdate[BusinessEntityJourney](
+              _ =>
+                update(
+                  businessEntityJourneyLead
+                    .copy(eori = FormPage("add-business-entity-eori", eori4.some))
+                    .some
+                ),
+              eori1
+            )(Right(businessEntityJourneyLead))
 
             mockPut[NewLeadJourney](NewLeadJourney(), eori)(Left(Error(exception)))
           }
@@ -396,27 +414,34 @@ class SelectNewLeadControllerSpec
           mockAuthWithNecessaryEnrolment()
           mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
           mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-          mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourneyLead
-            .copy(eori = FormPage("add-business-entity-eori", eori4.some)).some), eori1)(Right(businessEntityJourneyLead))
+          mockUpdate[BusinessEntityJourney](
+            _ =>
+              update(
+                businessEntityJourneyLead
+                  .copy(eori = FormPage("add-business-entity-eori", eori4.some))
+                  .some
+              ),
+            eori1
+          )(Right(businessEntityJourneyLead))
           mockPut[NewLeadJourney](NewLeadJourney(), eori)(Right(NewLeadJourney()))
         }
         checkPageIsDisplayed(
           performAction(),
           messageFromMessageKey("leadEORIChanged.title"),
-          {doc =>
+          { doc =>
             val htmlText = doc.select(".govuk-body").html()
-            htmlText should include regex messageFromMessageKey(
-              "leadEORIChanged.p2", eori4, undertaking1.name)
+            htmlText should include regex messageFromMessageKey("leadEORIChanged.p2", eori4, undertaking1.name)
 
             htmlText should include regex messageFromMessageKey(
-              "leadEORIChanged.link", routes.AccountController.getAccountPage().url)
+              "leadEORIChanged.link",
+              routes.AccountController.getAccountPage().url
+            )
 
             val htmlText1 = doc.select(".govuk-panel").html()
-            htmlText1 should include regex messageFromMessageKey(
-              "leadEORIChanged.subtitle", eori4, undertaking1.name)
+            htmlText1 should include regex messageFromMessageKey("leadEORIChanged.subtitle", eori4, undertaking1.name)
 
-          }, isLeadJourney = true
-
+          },
+          isLeadJourney = true
         )
 
       }

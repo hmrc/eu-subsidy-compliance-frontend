@@ -29,7 +29,6 @@ import utils.CommonTestData._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-
 class SendEmailServiceSpec extends AnyWordSpec with Matchers with MockFactory {
 
   val mockSendEmailConnector: SendEmailConnector = mock[SendEmailConnector]
@@ -53,6 +52,7 @@ class SendEmailServiceSpec extends AnyWordSpec with Matchers with MockFactory {
     " handling request to send email" must {
 
       "return an error" when {
+
         "the http call fails" in {
           mockSendEmail(emailSendRequest)(Left(Error("")))
           val result = service.sendEmail(validEmailAddress, emailParameter, templatedId)
@@ -84,4 +84,3 @@ class SendEmailServiceSpec extends AnyWordSpec with Matchers with MockFactory {
   }
 
 }
-

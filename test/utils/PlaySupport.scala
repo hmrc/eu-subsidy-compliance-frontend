@@ -38,7 +38,7 @@ trait PlaySupport extends AnyWordSpec with Matchers with BeforeAndAfterAll with 
   def additionalConfig: Configuration = Configuration()
 
   private val defaultConfiguration = Map(
-    "microservice.metrics.graphite.enabled" -> false,
+    "microservice.metrics.graphite.enabled" -> false
   )
 
   def buildFakeApplication(): Application =

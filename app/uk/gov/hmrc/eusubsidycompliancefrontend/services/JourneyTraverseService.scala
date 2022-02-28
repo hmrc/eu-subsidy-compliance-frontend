@@ -33,14 +33,18 @@ trait JourneyTraverseService {
 }
 
 @Singleton
-class JourneyTraverseServiceImpl @Inject() (store: Store)(implicit ec: ExecutionContext) extends JourneyTraverseService {
-  override def getPrevious[A <: Journey : ClassTag](implicit eori: EORI, request: Request[_], reads: Reads[A]): Future[Uri]  =
-    {
-      val journeyType: Uri = implicitly[ClassTag[A]].runtimeClass.getSimpleName
-      store.get[A].map { opt =>
-        opt.fold(throw new IllegalStateException(s"$journeyType should be there")) { value =>
-          value.previous
-        }
+class JourneyTraverseServiceImpl @Inject() (store: Store)(implicit ec: ExecutionContext)
+    extends JourneyTraverseService {
+  override def getPrevious[A <: Journey : ClassTag](implicit
+    eori: EORI,
+    request: Request[_],
+    reads: Reads[A]
+  ): Future[Uri] = {
+    val journeyType: Uri = implicitly[ClassTag[A]].runtimeClass.getSimpleName
+    store.get[A].map { opt =>
+      opt.fold(throw new IllegalStateException(s"$journeyType should be there")) { value =>
+        value.previous
       }
     }
+  }
 }

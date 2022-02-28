@@ -29,7 +29,7 @@ case class EligibilityJourney(
   acceptTerms: FormPage[Boolean] = FormPage(AcceptTerms),
   eoriCheck: FormPage[Boolean] = FormPage(EoriCheck),
   signOutBadEori: FormPage[Boolean] = FormPage(SignOutBadEori),
-  createUndertaking: FormPage[Boolean] = FormPage(CreateUndertaking),
+  createUndertaking: FormPage[Boolean] = FormPage(CreateUndertaking)
 ) extends Journey {
 
   private val journeySteps = List(
@@ -85,5 +85,3 @@ object EligibilityJourney {
   }
 
 }
-
-

@@ -30,7 +30,7 @@ case class UndertakingSubsidyAmendment(updates: List[NonHmrcSubsidy]) extends Up
 
 case class SubsidyUpdate(
   undertakingIdentifier: UndertakingRef,
-  update: Update,
+  update: Update
 ) {
 
   def nilSubmissionDate: Option[NilSubmissionDate] =
@@ -40,14 +40,14 @@ case class SubsidyUpdate(
     as[UndertakingSubsidyAmendment]
 
   private def as[T : ClassTag]: Option[T] = update match {
-    case x:T => x.some
+    case x: T => x.some
     case _ => none[T]
   }
 }
 
 object SubsidyUpdate {
   implicit val updateFormat: Format[SubsidyUpdate] = new Format[SubsidyUpdate] {
-    override def writes(o: SubsidyUpdate): JsValue = {
+    override def writes(o: SubsidyUpdate): JsValue =
       o.update match {
         case NilSubmissionDate(d) =>
           Json.obj(
@@ -60,14 +60,15 @@ object SubsidyUpdate {
             "undertakingSubsidyAmendment" -> updates
           )
       }
-    }
 
     override def reads(json: JsValue): JsResult[SubsidyUpdate] = {
       val update: Update =
         if ((json \ "nilSubmissionDate").isDefined) {
           NilSubmissionDate((json \ "nilSubmissionDate").as[LocalDate])
         } else
-          UndertakingSubsidyAmendment((json \ "undertakingSubsidyAmendment").as[List[NonHmrcSubsidy]]) // TODO this can only be this if we can get the API aligned
+          UndertakingSubsidyAmendment(
+            (json \ "undertakingSubsidyAmendment").as[List[NonHmrcSubsidy]]
+          ) // TODO this can only be this if we can get the API aligned
       val id = (json \ "undertakingIdentifier").as[UndertakingRef]
       JsSuccess(SubsidyUpdate(id, update))
     }

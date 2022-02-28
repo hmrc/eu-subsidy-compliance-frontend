@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 import play.api.libs.json._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{CorrelationID, ErrorCode, Source, ErrorMessage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{CorrelationID, ErrorCode, ErrorMessage, Source}
 
 case class ErrorDetail(
   errorCode: ErrorCode,
@@ -31,7 +31,6 @@ case class ErrorDetail(
   timestamp: LocalDateTime = LocalDateTime.now,
   correlationId: CorrelationID = CorrelationID(UUID.randomUUID().toString)
 )
-
 
 object ErrorDetail {
   val oddEisFormat = DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ss'Z'")

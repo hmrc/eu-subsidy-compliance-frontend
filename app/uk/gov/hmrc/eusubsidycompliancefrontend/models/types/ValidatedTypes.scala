@@ -33,15 +33,15 @@ trait ValidatedType[BaseType] {
   def validateAndTransform(in: BaseType): Option[BaseType]
 
   def apply(in: BaseType): BaseType @@ Tag =
-    of(in).getOrElse{
+    of(in).getOrElse {
       throw new IllegalArgumentException(
         s""""$in" is not a valid ${className.init}"""
       )
     }
 
   def of(in: BaseType): Option[BaseType @@ Tag] =
-    validateAndTransform(in) map {
-      x => tag[Tag][BaseType](x)
+    validateAndTransform(in) map { x =>
+      tag[Tag][BaseType](x)
     }
 }
 
@@ -79,23 +79,22 @@ trait SimpleJson {
     ): JsValue = JsString(o)
   }
 
-
   def validatedBigDecimalFormat(
     A: ValidatedType[BigDecimal],
     name: String
   ): Format[@@[BigDecimal, A.Tag]] = new Format[BigDecimal @@ A.Tag] {
-    override def reads(json: JsValue): JsResult[BigDecimal @@ A.Tag] = {
+    override def reads(json: JsValue): JsResult[BigDecimal @@ A.Tag] =
       json match {
         case JsNumber(value) =>
           A.validateAndTransform(value) match {
             case Some(v) => JsSuccess(A(v))
             case None => JsError(s"Expected a valid $name, got $value instead.")
           }
-        case xs: JsValue => JsError(
-          JsPath -> JsonValidationError(Seq(s"""Expected a valid IndustrySectorLimit, got $xs instead"""))
-        )
+        case xs: JsValue =>
+          JsError(
+            JsPath -> JsonValidationError(Seq(s"""Expected a valid IndustrySectorLimit, got $xs instead"""))
+          )
       }
-    }
 
     override def writes(o: BigDecimal @@ A.Tag): JsValue = JsNumber(BigDecimal(o.toString))
   }

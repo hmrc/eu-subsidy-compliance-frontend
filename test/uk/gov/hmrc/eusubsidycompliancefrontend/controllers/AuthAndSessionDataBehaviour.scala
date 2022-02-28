@@ -32,8 +32,8 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
 
   val eori = EORI("GB123456789012")
 
-  val predicate = Enrolment("HMRC-ESC-ORG")
-  val ggSignInUrl = "http://ggSignInUrl:123"
+  val predicate    = Enrolment("HMRC-ESC-ORG")
+  val ggSignInUrl  = "http://ggSignInUrl:123"
   val ggSignOutUrl = "http://ggSignOutUrl:123"
 
   override def additionalConfig = Configuration(
@@ -47,23 +47,38 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
   )
 
   lazy val expectedSignInUrl = {
-    s"$ggSignInUrl?" +  s"continue=${URLEncoder.encode("/", "UTF-8")}&" +
+    s"$ggSignInUrl?" + s"continue=${URLEncoder.encode("/", "UTF-8")}&" +
       s"origin=$appName"
   }
 
   def mockAuthWithNecessaryEnrolment(): Unit =
-    mockAuthWithAuthRetrievals(Enrolments(Set(Enrolment(key = "HMRC-ESC-ORG", identifiers = Seq(EnrolmentIdentifier("EORINumber", eori)), state = "" ))), "1123", Some("groupIdentifier"))
+    mockAuthWithAuthRetrievals(
+      Enrolments(
+        Set(Enrolment(key = "HMRC-ESC-ORG", identifiers = Seq(EnrolmentIdentifier("EORINumber", eori)), state = ""))
+      ),
+      "1123",
+      Some("groupIdentifier")
+    )
 
   def mockAuthWithBEEnrolment(): Unit =
-    mockAuthWithAuthRetrievals(Enrolments(Set(Enrolment(key = "HMRC-ESC-ORG", identifiers = Seq(EnrolmentIdentifier("EORINumber", eori4)), state = "" ))), "1123", Some("groupIdentifier"))
+    mockAuthWithAuthRetrievals(
+      Enrolments(
+        Set(Enrolment(key = "HMRC-ESC-ORG", identifiers = Seq(EnrolmentIdentifier("EORINumber", eori4)), state = ""))
+      ),
+      "1123",
+      Some("groupIdentifier")
+    )
 
   def mockAuthWithEnrolment(eori: EORI): Unit =
-    mockAuthWithAuthRetrievals(Enrolments(Set(Enrolment(key = "HMRC-ESC-ORG",
-      identifiers = Seq(EnrolmentIdentifier("EORINumber", eori)),
-      state = "" ))), "1123", Some("groupIdentifier"))
+    mockAuthWithAuthRetrievals(
+      Enrolments(
+        Set(Enrolment(key = "HMRC-ESC-ORG", identifiers = Seq(EnrolmentIdentifier("EORINumber", eori)), state = ""))
+      ),
+      "1123",
+      Some("groupIdentifier")
+    )
 
-
-  def authBehaviour(performAction: () => Future[Result]): Unit = {
+  def authBehaviour(performAction: () => Future[Result]): Unit =
     "redirect to the login page when the user is not logged in" in {
       List[NoActiveSession](
         BearerTokenExpired(),
@@ -79,5 +94,4 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
       }
 
     }
-  }
 }

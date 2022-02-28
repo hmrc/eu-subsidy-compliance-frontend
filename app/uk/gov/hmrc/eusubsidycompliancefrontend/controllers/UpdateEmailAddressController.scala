@@ -26,13 +26,13 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class UpdateEmailAddressController @Inject()(
-                                              mcc: MessagesControllerComponents,
-                                              updateEmailAddressPage: UpdateEmailPage,
-                                              escActionBuilders: EscActionBuilders,
-                                              servicesConfig: ServicesConfig
-                                            )( implicit val appConfig: AppConfig) extends
-  BaseController(mcc) {
+class UpdateEmailAddressController @Inject() (
+  mcc: MessagesControllerComponents,
+  updateEmailAddressPage: UpdateEmailPage,
+  escActionBuilders: EscActionBuilders,
+  servicesConfig: ServicesConfig
+)(implicit val appConfig: AppConfig)
+    extends BaseController(mcc) {
   import escActionBuilders._
 
   def updateEmailAddress: Action[AnyContent] = escAuthentication.async { implicit request =>
@@ -40,10 +40,9 @@ class UpdateEmailAddressController @Inject()(
   }
 
   def postUpdateEmailAddress: Action[AnyContent] = escAuthentication.async { _ =>
-     val baseUrl: String = servicesConfig.baseUrl("update-email")
+    val baseUrl: String = servicesConfig.baseUrl("update-email")
     val updatedEmailUrl: String = s"$baseUrl/manage-email-cds/service/eu-subsidy-compliance-frontend"
     Future.successful(Redirect(updatedEmailUrl))
   }
 
-  }
-
+}

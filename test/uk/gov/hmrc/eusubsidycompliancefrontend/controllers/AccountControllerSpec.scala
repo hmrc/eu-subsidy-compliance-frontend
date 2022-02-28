@@ -31,14 +31,15 @@ import utils.CommonTestData.{undertaking, _}
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class AccountControllerSpec extends ControllerSpec
-  with AuthSupport
-  with JourneyStoreSupport
-  with AuthAndSessionDataBehaviour {
+class AccountControllerSpec
+    extends ControllerSpec
+    with AuthSupport
+    with JourneyStoreSupport
+    with AuthAndSessionDataBehaviour {
 
-  val mockEscService = mock[EscService]
+  val mockEscService           = mock[EscService]
   val mockRetrieveEmailService = mock[RetrieveEmailService]
-  val mockTimeProvider = mock[TimeProvider]
+  val mockTimeProvider         = mock[TimeProvider]
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
@@ -50,21 +51,27 @@ class AccountControllerSpec extends ControllerSpec
 
   val controller = instanceOf[AccountController]
 
-
   def mockRetreiveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
     (mockEscService
       .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
       .returning(result)
 
-  def mockRetrieveEmail(eori: EORI)(result: Either[Error, Option[EmailAddress]]) = {
+  def mockRetrieveEmail(eori: EORI)(result: Either[Error, Option[EmailAddress]]) =
     (mockRetrieveEmailService
       .retrieveEmailByEORI(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
-      .returning{result
-        .fold(e => Future.failed(e.value
-          .fold(s => new Exception(s), identity)), Future.successful)}
-  }
+      .returning {
+        result
+          .fold(
+            e =>
+              Future.failed(
+                e.value
+                  .fold(s => new Exception(s), identity)
+              ),
+            Future.successful
+          )
+      }
 
   private def mockTimeProviderToday(today: LocalDate) =
     (mockTimeProvider.today _).expects().returning(today)
@@ -93,7 +100,7 @@ class AccountControllerSpec extends ControllerSpec
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("account-homepage.title", undertaking.name),
-            {doc =>
+            { doc =>
               val htmlBody = doc.select(".govuk-grid-column-one-third").html()
 
               htmlBody should include regex messageFromMessageKey(
@@ -111,7 +118,7 @@ class AccountControllerSpec extends ControllerSpec
                 routes.FinancialDashboardController.getFinancialDashboard().url
               )
 
-              if(undertaking.undertakingBusinessEntity.length > 1)
+              if (undertaking.undertakingBusinessEntity.length > 1)
                 htmlBody should include regex messageFromMessageKey(
                   "account-homepage.cards.card3.link1View",
                   routes.BusinessEntityController.getAddBusinessEntity().url
@@ -124,7 +131,7 @@ class AccountControllerSpec extends ControllerSpec
 
               val isNonLeadEORIPresent = !undertaking.undertakingBusinessEntity.filterNot(_.leadEORI).isEmpty
 
-              if(isNonLeadEORIPresent)
+              if (isNonLeadEORIPresent)
                 htmlBody should include regex messageFromMessageKey(
                   "account-homepage.cards.card3.link2",
                   routes.SelectNewLeadController.getSelectNewLead().url
@@ -135,12 +142,17 @@ class AccountControllerSpec extends ControllerSpec
                   routes.NoBusinessPresentController.getNoBusinessPresent().url
                 )
 
-
             }
           )
         }
 
-        def testTimeToReport(undertaking: Undertaking, currentDate: LocalDate, isTimeToReport: Boolean, dueDate: String, isOverdue: Boolean) = {
+        def testTimeToReport(
+          undertaking: Undertaking,
+          currentDate: LocalDate,
+          isTimeToReport: Boolean,
+          dueDate: String,
+          isOverdue: Boolean
+        ) = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
@@ -154,17 +166,16 @@ class AccountControllerSpec extends ControllerSpec
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("account-homepage.title", undertaking.name),
-            {doc =>
-              if(isTimeToReport) {
+            doc =>
+              if (isTimeToReport) {
                 val htmlBody = doc.select(".govuk-inset-text").text
                 htmlBody should include regex
                   messageFromMessageKey("account-homepage.inset", dueDate)
-              } else if(isOverdue) {
+              } else if (isOverdue) {
                 val htmlBody = doc.select(".govuk-inset-text").text
                 htmlBody should include regex
                   messageFromMessageKey("account-homepage-overdue.inset", dueDate)
               }
-            }
           )
         }
 
@@ -181,16 +192,18 @@ class AccountControllerSpec extends ControllerSpec
         }
 
         "today's date falls between the 76th and the 90th day from the last day of subsidy report " in {
-          testTimeToReport(undertaking.copy(lastSubsidyUsageUpdt = LocalDate.of(2021,12, 1).some),
-            currentDate = LocalDate.of(2022,2, 16),
+          testTimeToReport(
+            undertaking.copy(lastSubsidyUsageUpdt = LocalDate.of(2021, 12, 1).some),
+            currentDate = LocalDate.of(2022, 2, 16),
             true,
             "1 March 2022",
             false
           )
         }
         "today's date is exactly 76 days from the last day of subsidy report " in {
-          testTimeToReport(undertaking.copy(lastSubsidyUsageUpdt = LocalDate.of(2021,12, 1).some),
-            currentDate = LocalDate.of(2022,2, 15),
+          testTimeToReport(
+            undertaking.copy(lastSubsidyUsageUpdt = LocalDate.of(2021, 12, 1).some),
+            currentDate = LocalDate.of(2022, 2, 15),
             true,
             "1 March 2022",
             false
@@ -198,8 +211,9 @@ class AccountControllerSpec extends ControllerSpec
         }
 
         "today's over 90 days from the last day of subsidy report " in {
-          val lastUpdatedDate = LocalDate.of(2021,12, 1)
-          testTimeToReport(undertaking.copy(lastSubsidyUsageUpdt = lastUpdatedDate.some),
+          val lastUpdatedDate = LocalDate.of(2021, 12, 1)
+          testTimeToReport(
+            undertaking.copy(lastSubsidyUsageUpdt = lastUpdatedDate.some),
             currentDate = lastUpdatedDate.plusDays(91),
             false,
             "1 March 2022",
@@ -337,7 +351,7 @@ class AccountControllerSpec extends ControllerSpec
           checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateEmailAddress())
         }
 
-         "email is retrieved from cds api" when {
+        "email is retrieved from cds api" when {
 
           "there is no existing retrieve undertaking" when {
 
@@ -411,7 +425,7 @@ class AccountControllerSpec extends ControllerSpec
         checkPageIsDisplayed(
           performAction(),
           messageFromMessageKey("existingUndertaking.title"),
-          {doc =>
+          { doc =>
             doc.select("h2").get(0).text shouldBe undertaking1.name
             val htmlBody = doc.select(".govuk-list").html()
             htmlBody should include regex messageFromMessageKey(
@@ -423,7 +437,6 @@ class AccountControllerSpec extends ControllerSpec
               "existingUndertaking.link2",
               routes.BusinessEntityController.getRemoveYourselfBusinessEntity().url
             )
-
 
           }
         )
@@ -455,7 +468,6 @@ class AccountControllerSpec extends ControllerSpec
         }
 
       }
-
 
     }
 

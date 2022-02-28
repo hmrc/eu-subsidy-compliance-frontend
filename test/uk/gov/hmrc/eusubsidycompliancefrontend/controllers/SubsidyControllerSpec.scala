@@ -31,11 +31,12 @@ import utils.CommonTestData.{subsidyJourney, _}
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class SubsidyControllerSpec extends ControllerSpec
-  with AuthSupport
-  with JourneyStoreSupport
-  with AuthAndSessionDataBehaviour
-  with JourneySupport {
+class SubsidyControllerSpec
+    extends ControllerSpec
+    with AuthSupport
+    with JourneyStoreSupport
+    with AuthAndSessionDataBehaviour
+    with JourneySupport {
 
   private val mockEscService = mock[EscService]
 
@@ -86,24 +87,22 @@ class SubsidyControllerSpec extends ControllerSpec
 
       "display the page" when {
 
-
-        def test(nonHMRCSubsidyUsage: List[NonHmrcSubsidy]) = {
+        def test(nonHMRCSubsidyUsage: List[NonHmrcSubsidy]) =
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Right(SubsidyJourney().some))
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockRetrieveSubsidy(subsidyRetrieve)(Future(undertakingSubsidies.copy(nonHMRCSubsidyUsage = nonHMRCSubsidyUsage)))
+            mockRetrieveSubsidy(subsidyRetrieve)(
+              Future(undertakingSubsidies.copy(nonHMRCSubsidyUsage = nonHMRCSubsidyUsage))
+            )
           }
-
-        }
 
         "user hasn't already answered the question" in {
           test(List.empty)
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("report-payment.title"),
-            {doc =>
-
+            { doc =>
               val button = doc.select("form")
               button.attr("action") shouldBe routes.SubsidyController.postReportPayment().url
               doc.select("#subsidy-list").size() shouldBe 0
@@ -116,8 +115,7 @@ class SubsidyControllerSpec extends ControllerSpec
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("report-payment.title"),
-            {doc =>
-
+            { doc =>
               val subsidyList = doc.select("#subsidy-list")
 
               subsidyList.select("thead > tr > th:nth-child(1)").text() shouldBe "Date"
@@ -134,8 +132,12 @@ class SubsidyControllerSpec extends ControllerSpec
               subsidyList.select("tbody > tr > td:nth-child(6)").text() shouldBe "Change"
               subsidyList.select("tbody > tr > td:nth-child(7)").text() shouldBe "Remove"
 
-              subsidyList.select("tbody > tr > td:nth-child(6) > a").attr("href") shouldBe routes.SubsidyController.getChangeSubsidyClaim("Z12345").url
-              subsidyList.select("tbody > tr > td:nth-child(7) > a").attr("href") shouldBe routes.SubsidyController.getRemoveSubsidyClaim("Z12345").url
+              subsidyList.select("tbody > tr > td:nth-child(6) > a").attr("href") shouldBe routes.SubsidyController
+                .getChangeSubsidyClaim("Z12345")
+                .url
+              subsidyList.select("tbody > tr > td:nth-child(7) > a").attr("href") shouldBe routes.SubsidyController
+                .getRemoveSubsidyClaim("Z12345")
+                .url
 
               val button = doc.select("form")
               button.attr("action") shouldBe routes.SubsidyController.postReportPayment().url
@@ -148,7 +150,9 @@ class SubsidyControllerSpec extends ControllerSpec
 
     "handling request to post report payment" must {
 
-      def performAction(data: (String, String)*) = controller.postReportPayment(FakeRequest("POST",routes.SubsidyController.postReportPayment().url).withFormUrlEncodedBody(data: _*))
+      def performAction(data: (String, String)*) = controller.postReportPayment(
+        FakeRequest("POST", routes.SubsidyController.postReportPayment().url).withFormUrlEncodedBody(data: _*)
+      )
 
       "redirect to the next page" when {
 
@@ -171,7 +175,7 @@ class SubsidyControllerSpec extends ControllerSpec
         val exception = new Exception("oh no")
 
         "call to get session fails" in {
-          inSequence{
+          inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
           }
@@ -180,7 +184,7 @@ class SubsidyControllerSpec extends ControllerSpec
         }
 
         "call to get sessions returns none" in {
-          inSequence{
+          inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Right(None))
           }
@@ -189,7 +193,6 @@ class SubsidyControllerSpec extends ControllerSpec
         }
 
       }
-
 
       "display the page" when {
 
@@ -202,7 +205,7 @@ class SubsidyControllerSpec extends ControllerSpec
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("add-claim-date.title"),
-            {doc =>
+            { doc =>
               doc.select("#claim-date > div:nth-child(1) > div > label").text() shouldBe "Day"
               doc.select("#claim-date > div:nth-child(2) > div > label").text() shouldBe "Month"
               doc.select("#claim-date > div:nth-child(3) > div > label").text() shouldBe "Year"
@@ -217,7 +220,9 @@ class SubsidyControllerSpec extends ControllerSpec
 
     "handling request to post claim date" must {
 
-      def performAction(data: (String, String)*) = controller.postClaimDate(FakeRequest("POST",routes.SubsidyController.postClaimDate().url).withFormUrlEncodedBody(data: _*))
+      def performAction(data: (String, String)*) = controller.postClaimDate(
+        FakeRequest("POST", routes.SubsidyController.postClaimDate().url).withFormUrlEncodedBody(data: _*)
+      )
 
       "redirect to the next page" when {
 
@@ -226,9 +231,14 @@ class SubsidyControllerSpec extends ControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
-            mockUpdate[SubsidyJourney](j => j.map(_.copy(claimDate = FormPage("claim-date", updatedDate.some))), eori1)(Right(subsidyJourney.copy(claimDate = FormPage("claim-date", updatedDate.some))))
+            mockUpdate[SubsidyJourney](j => j.map(_.copy(claimDate = FormPage("claim-date", updatedDate.some))), eori1)(
+              Right(subsidyJourney.copy(claimDate = FormPage("claim-date", updatedDate.some)))
+            )
           }
-          checkIsRedirect(performAction("day" -> updatedDate.day,  "month" -> updatedDate.month, "year" -> updatedDate.year), "add-claim-date")
+          checkIsRedirect(
+            performAction("day" -> updatedDate.day, "month" -> updatedDate.month, "year" -> updatedDate.year),
+            "add-claim-date"
+          )
         }
       }
 
@@ -239,7 +249,9 @@ class SubsidyControllerSpec extends ControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
           }
-          status(performAction("day" -> updatedDate.day,  "month" -> updatedDate.month, "year" -> updatedDate.year)) shouldBe BAD_REQUEST
+          status(
+            performAction("day" -> updatedDate.day, "month" -> updatedDate.month, "year" -> updatedDate.year)
+          ) shouldBe BAD_REQUEST
         }
       }
     }
@@ -247,7 +259,7 @@ class SubsidyControllerSpec extends ControllerSpec
     "handling request to get claim amount" must {
 
       def performAction() = controller
-        .getClaimAmount(FakeRequest("GET",routes.SubsidyController.getClaimAmount().url))
+        .getClaimAmount(FakeRequest("GET", routes.SubsidyController.getClaimAmount().url))
 
       "throw technical error" when {
 
@@ -302,18 +314,22 @@ class SubsidyControllerSpec extends ControllerSpec
         }
 
         "user hasn't already answered the question" in {
-          test(SubsidyJourney(
-            reportPayment = FormPage(ReportPayment, true.some),
-            claimDate = FormPage(ClaimDateValues, DateFormValues("9","10","2022").some)
-          ))
+          test(
+            SubsidyJourney(
+              reportPayment = FormPage(ReportPayment, true.some),
+              claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some)
+            )
+          )
         }
 
         "user has already answered the question" in {
-          test(SubsidyJourney(
-            reportPayment = FormPage(ReportPayment, true.some),
-            claimDate = FormPage(ClaimDateValues, DateFormValues("9","10","2022").some),
-            claimAmount = FormPage(ClaimAmount,BigDecimal(123.45).some)
-          ))
+          test(
+            SubsidyJourney(
+              reportPayment = FormPage(ReportPayment, true.some),
+              claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some),
+              claimAmount = FormPage(ClaimAmount, BigDecimal(123.45).some)
+            )
+          )
         }
 
       }
@@ -324,8 +340,9 @@ class SubsidyControllerSpec extends ControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postAddClaimAmount(
-          FakeRequest("POST",routes.SubsidyController.getClaimAmount().url)
-            .withFormUrlEncodedBody(data: _*))
+          FakeRequest("POST", routes.SubsidyController.getClaimAmount().url)
+            .withFormUrlEncodedBody(data: _*)
+        )
 
       "throw technical error" when {
 
@@ -364,13 +381,13 @@ class SubsidyControllerSpec extends ControllerSpec
 
         "call to update the subsidy journey fails" in {
 
-          val subsidyJourneyOpt  = SubsidyJourney(
+          val subsidyJourneyOpt = SubsidyJourney(
             reportPayment = FormPage(ReportPayment, true.some),
-            claimDate = FormPage(ClaimDateValues, DateFormValues("9","10","2022").some)
+            claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some)
           ).some
 
           def update(subsidyJourneyOpt: Option[SubsidyJourney]) =
-            subsidyJourneyOpt.map(_.copy(claimAmount = FormPage(ClaimAmount,BigDecimal(123.45).some)))
+            subsidyJourneyOpt.map(_.copy(claimAmount = FormPage(ClaimAmount, BigDecimal(123.45).some)))
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
@@ -386,7 +403,7 @@ class SubsidyControllerSpec extends ControllerSpec
 
           val subsidyJourneyOpt = SubsidyJourney(
             reportPayment = FormPage(ReportPayment, true.some),
-            claimDate = FormPage(ClaimDateValues, DateFormValues("9","10","2022").some)
+            claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some)
           ).some
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -409,7 +426,7 @@ class SubsidyControllerSpec extends ControllerSpec
         }
 
         "claim amount entered is more than 17 chars" in {
-          displayError("claim-amount" ->"1234567890.12345678")("add-claim-amount.error.amount.tooBig")
+          displayError("claim-amount" -> "1234567890.12345678")("add-claim-amount.error.amount.tooBig")
         }
 
         "claim amount entered is too small < 0.01" in {
@@ -422,17 +439,17 @@ class SubsidyControllerSpec extends ControllerSpec
 
         val subsidyJourney = SubsidyJourney(
           reportPayment = FormPage(ReportPayment, true.some),
-          claimDate = FormPage(ClaimDateValues, DateFormValues("9","10","2022").some),
-          claimAmount = FormPage(ClaimAmount,BigDecimal(123.45).some)
+          claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some),
+          claimAmount = FormPage(ClaimAmount, BigDecimal(123.45).some)
         )
 
-        val subsidyJourneyOpt  = SubsidyJourney(
+        val subsidyJourneyOpt = SubsidyJourney(
           reportPayment = FormPage(ReportPayment, true.some),
-          claimDate = FormPage(ClaimDateValues, DateFormValues("9","10","2022").some)
+          claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some)
         ).some
 
         def update(subsidyJourneyOpt: Option[SubsidyJourney]) =
-          subsidyJourneyOpt.map(_.copy(claimAmount = FormPage(ClaimAmount,BigDecimal(123.45).some)))
+          subsidyJourneyOpt.map(_.copy(claimAmount = FormPage(ClaimAmount, BigDecimal(123.45).some)))
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
@@ -451,7 +468,7 @@ class SubsidyControllerSpec extends ControllerSpec
     "handling request to get Add Claim Eori " must {
 
       def performAction() = controller
-        .getAddClaimEori(FakeRequest("GET",routes.SubsidyController.getAddClaimEori().url))
+        .getAddClaimEori(FakeRequest("GET", routes.SubsidyController.getAddClaimEori().url))
 
       "throw technical error" when {
         val exception = new Exception("oh no")
@@ -475,7 +492,7 @@ class SubsidyControllerSpec extends ControllerSpec
 
       "display the page" when {
 
-        def test(subsidyJourney: SubsidyJourney) ={
+        def test(subsidyJourney: SubsidyJourney) = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
@@ -484,16 +501,15 @@ class SubsidyControllerSpec extends ControllerSpec
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("add-claim-eori.title"),
-            {doc =>
+            { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
-              val inputText = doc.select(".govuk-input").attr("value")
+              val inputText       = doc.select(".govuk-input").attr("value")
 
               subsidyJourney.addClaimEori.value match {
-                case Some(OptionalEORI(input, eori)) => {
+                case Some(OptionalEORI(input, eori)) =>
                   selectedOptions.attr("value") shouldBe input
                   inputText shouldBe eori.map(_.drop(2)).getOrElse("")
-                }
-                case _ => selectedOptions.isEmpty       shouldBe true
+                case _ => selectedOptions.isEmpty shouldBe true
               }
 
               val button = doc.select("form")
@@ -508,8 +524,10 @@ class SubsidyControllerSpec extends ControllerSpec
         }
 
         "the user has already answered the question" in {
-          List(subsidyJourney,
-            subsidyJourney.copy(addClaimEori = FormPage("add-claim-eori", OptionalEORI("false", None).some)))
+          List(
+            subsidyJourney,
+            subsidyJourney.copy(addClaimEori = FormPage("add-claim-eori", OptionalEORI("false", None).some))
+          )
             .foreach { subsidyJourney =>
               withClue(s" for each subsidy journey $subsidyJourney") {
                 test(subsidyJourney)
@@ -526,8 +544,9 @@ class SubsidyControllerSpec extends ControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postAddClaimEori(
-          FakeRequest("POST",routes.SubsidyController.getAddClaimEori().url)
-            .withFormUrlEncodedBody(data: _*))
+          FakeRequest("POST", routes.SubsidyController.getAddClaimEori().url)
+            .withFormUrlEncodedBody(data: _*)
+        )
 
       "throw technical error" when {
 
@@ -548,7 +567,10 @@ class SubsidyControllerSpec extends ControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[SubsidyJourney](eori1)(Right("add-claim-amount"))
-            mockUpdate[SubsidyJourney](_ => update(subsidyJourney.copy(addClaimEori = FormPage("add-claim-eori", None)).some), eori1)(Left(Error(exception)))
+            mockUpdate[SubsidyJourney](
+              _ => update(subsidyJourney.copy(addClaimEori = FormPage("add-claim-eori", None)).some),
+              eori1
+            )(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction("should-claim-eori" -> "false")))
         }
@@ -556,9 +578,7 @@ class SubsidyControllerSpec extends ControllerSpec
 
       "show form error" when {
 
-        def testFormError(
-                          inputAnswer: Option[List[(String, String)]],
-                          errorMessageKey: String) = {
+        def testFormError(inputAnswer: Option[List[(String, String)]], errorMessageKey: String) = {
           val answers = inputAnswer.getOrElse(Nil)
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -588,19 +608,25 @@ class SubsidyControllerSpec extends ControllerSpec
         def update(subsidyJourneyOpt: Option[SubsidyJourney], formValues: Option[OptionalEORI]) =
           subsidyJourneyOpt.map(_.copy(addClaimEori = FormPage("add-claim-eori", formValues)))
 
-        def testRedirect(optionalEORI: OptionalEORI, inputAnswer: List[(String, String)]) ={
-          val updatedSubsidyJourney = update(subsidyJourney.some, optionalEORI.some).getOrElse(sys.error(" no subsdy journey"))
+        def testRedirect(optionalEORI: OptionalEORI, inputAnswer: List[(String, String)]) = {
+          val updatedSubsidyJourney =
+            update(subsidyJourney.some, optionalEORI.some).getOrElse(sys.error(" no subsdy journey"))
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[SubsidyJourney](eori1)(Right("add-claim-amount"))
-            mockUpdate[SubsidyJourney](_ => update(subsidyJourney.some, optionalEORI.some), eori1)(Right(updatedSubsidyJourney))
+            mockUpdate[SubsidyJourney](_ => update(subsidyJourney.some, optionalEORI.some), eori1)(
+              Right(updatedSubsidyJourney)
+            )
           }
           checkIsRedirect(performAction(inputAnswer: _*), "add-claim-public-authority")
         }
 
         "user selected yes and enter eori number" in {
-          testRedirect(OptionalEORI("true", "123456789013".some), List("should-claim-eori" -> "true", "claim-eori" -> "123456789013"))
+          testRedirect(
+            OptionalEORI("true", "123456789013".some),
+            List("should-claim-eori" -> "true", "claim-eori" -> "123456789013")
+          )
         }
 
         "user selected No " in {
@@ -625,7 +651,7 @@ class SubsidyControllerSpec extends ControllerSpec
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("add-claim-public-authority.title"),
-            {doc =>
+            { doc =>
               doc.select("#claim-public-authority-hint").text() shouldBe "For example, Invest NI, NI Direct."
               val button = doc.select("form")
               button.attr("action") shouldBe routes.SubsidyController.postAddClaimPublicAuthority().url
@@ -637,7 +663,9 @@ class SubsidyControllerSpec extends ControllerSpec
 
     "handling request to post add claim public authority" must {
 
-      def performAction(data: (String, String)*) = controller.postAddClaimPublicAuthority(FakeRequest("POST", routes.SubsidyController.postAddClaimPublicAuthority().url).withFormUrlEncodedBody(data: _*))
+      def performAction(data: (String, String)*) = controller.postAddClaimPublicAuthority(
+        FakeRequest("POST", routes.SubsidyController.postAddClaimPublicAuthority().url).withFormUrlEncodedBody(data: _*)
+      )
 
       "redirect to the next page" when {
 
@@ -645,7 +673,10 @@ class SubsidyControllerSpec extends ControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
-            mockUpdate[SubsidyJourney](j => j.map(_.copy(publicAuthority = FormPage("add-claim-reference", Some("My Authority")))), eori1)(Right(subsidyJourney.copy(publicAuthority = FormPage("add-claim-reference", Some("My Authority")))))
+            mockUpdate[SubsidyJourney](
+              j => j.map(_.copy(publicAuthority = FormPage("add-claim-reference", Some("My Authority")))),
+              eori1
+            )(Right(subsidyJourney.copy(publicAuthority = FormPage("add-claim-reference", Some("My Authority")))))
           }
           checkIsRedirect(performAction("claim-public-authority" -> "My Authority"), "claims")
         }
@@ -654,7 +685,7 @@ class SubsidyControllerSpec extends ControllerSpec
 
     "handling request to get Add Claim Reference" must {
       def performAction() = controller
-        .getAddClaimReference(FakeRequest("GET",routes.SubsidyController.getAddClaimReference().url))
+        .getAddClaimReference(FakeRequest("GET", routes.SubsidyController.getAddClaimReference().url))
 
       "throw technical error" when {
         val exception = new Exception("oh no")
@@ -678,7 +709,7 @@ class SubsidyControllerSpec extends ControllerSpec
 
       "display the page" when {
 
-        def test(subsidyJourney: SubsidyJourney) ={
+        def test(subsidyJourney: SubsidyJourney) = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
@@ -686,16 +717,15 @@ class SubsidyControllerSpec extends ControllerSpec
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("add-claim-trader-reference.title"),
-            {doc =>
+            { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
-              val inputText = doc.select(".govuk-input").attr("value")
+              val inputText       = doc.select(".govuk-input").attr("value")
 
               subsidyJourney.traderRef.value match {
-                case Some(OptionalTraderRef(input, traderRef)) => {
+                case Some(OptionalTraderRef(input, traderRef)) =>
                   selectedOptions.attr("value") shouldBe input
                   inputText shouldBe traderRef.getOrElse("")
-                }
-                case _ => selectedOptions.isEmpty       shouldBe true
+                case _ => selectedOptions.isEmpty shouldBe true
               }
 
               val button = doc.select("form")
@@ -705,13 +735,18 @@ class SubsidyControllerSpec extends ControllerSpec
         }
 
         "the user hasn't already answered the question" in {
-          test(subsidyJourney.copy(traderRef = FormPage("add-claim-reference"), cya = FormPage("check-your-answers-subsidy")))
+          test(
+            subsidyJourney
+              .copy(traderRef = FormPage("add-claim-reference"), cya = FormPage("check-your-answers-subsidy"))
+          )
 
         }
 
         "the user has already answered the question" in {
-          List(subsidyJourney,
-            subsidyJourney.copy(traderRef = FormPage("add-claim-reference", OptionalTraderRef("false", None).some)))
+          List(
+            subsidyJourney,
+            subsidyJourney.copy(traderRef = FormPage("add-claim-reference", OptionalTraderRef("false", None).some))
+          )
             .foreach { subsidyJourney =>
               withClue(s" for each subsidy journey $subsidyJourney") {
                 test(subsidyJourney)
@@ -728,8 +763,9 @@ class SubsidyControllerSpec extends ControllerSpec
     "handling request to post Add Claim Reference " must {
       def performAction(data: (String, String)*) = controller
         .postAddClaimReference(
-          FakeRequest("POST",routes.SubsidyController.getAddClaimReference().url)
-            .withFormUrlEncodedBody(data: _*))
+          FakeRequest("POST", routes.SubsidyController.getAddClaimReference().url)
+            .withFormUrlEncodedBody(data: _*)
+        )
 
       "throw technical error" when {
 
@@ -745,9 +781,7 @@ class SubsidyControllerSpec extends ControllerSpec
 
       "show form error" when {
 
-        def testFormError(
-                           inputAnswer: Option[List[(String, String)]],
-                           errorMessageKey: String) = {
+        def testFormError(inputAnswer: Option[List[(String, String)]], errorMessageKey: String) = {
           val answers = inputAnswer.getOrElse(Nil)
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -774,6 +808,5 @@ class SubsidyControllerSpec extends ControllerSpec
 
     }
   }
-
 
 }

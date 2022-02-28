@@ -23,13 +23,13 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.AcknowledgementRef
 
 case class RequestCommon(
   messageType: String,
-  acknowledgementReference: AcknowledgementRef = AcknowledgementRef(UUID.randomUUID().toString.replace("-",""))
+  acknowledgementReference: AcknowledgementRef = AcknowledgementRef(UUID.randomUUID().toString.replace("-", ""))
 )
 
 case object RequestCommon {
   implicit val writes: Writes[RequestCommon] = new Writes[RequestCommon] {
     override def writes(o: RequestCommon): JsValue = Json.obj(
-      "originatingSystem" ->  "MDTP",
+      "originatingSystem" -> "MDTP",
       "receiptDate" -> receiptDate,
       "acknowledgementReference" -> o.acknowledgementReference,
       "messageTypes" -> Json.obj(

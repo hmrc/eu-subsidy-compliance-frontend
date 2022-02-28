@@ -24,15 +24,15 @@ import java.time.{Instant, ZoneId}
 // TODO - review this and align / update existing fixtures
 object Fixtures {
 
-  val eori = EORI("GB123456789012")
+  val eori         = EORI("GB123456789012")
   val fixedInstant = Instant.parse("2022-01-01T12:00:00Z")
 
   val undertakingReference = UndertakingRef("SomeUndertakingReference")
-  val undertakingName = UndertakingName("SomeUndertakingName")
-  val sector = Sector.other
-  val industrySectorLimit = IndustrySectorLimit(BigDecimal(200000.00))
-  val date = fixedInstant.atZone(ZoneId.of("Europe/London")).toLocalDate
-  val subsidyAmount = SubsidyAmount(BigDecimal(123.45))
+  val undertakingName      = UndertakingName("SomeUndertakingName")
+  val sector               = Sector.other
+  val industrySectorLimit  = IndustrySectorLimit(BigDecimal(200000.00))
+  val date                 = fixedInstant.atZone(ZoneId.of("Europe/London")).toLocalDate
+  val subsidyAmount        = SubsidyAmount(BigDecimal(123.45))
 
   val undertaking = Undertaking(
     Some(undertakingReference),
@@ -43,10 +43,10 @@ object Fixtures {
     List(BusinessEntity(eori, leadEORI = true))
   )
 
-  val subsidyRef = SubsidyRef("ABC12345")
-  val declarationId = DeclarationID("12345")
-  val traderRef = TraderRef("SomeTraderReference")
-  val taxType = TaxType("1")
+  val subsidyRef      = SubsidyRef("ABC12345")
+  val declarationId   = DeclarationID("12345")
+  val traderRef       = TraderRef("SomeTraderReference")
+  val taxType         = TaxType("1")
   val publicAuthority = "SomePublicAuthority"
 
   val hmrcSubsidy = HmrcSubsidy(
@@ -68,7 +68,7 @@ object Fixtures {
     traderReference = Some(traderRef),
     nonHMRCSubsidyAmtEUR = subsidyAmount,
     businessEntityIdentifier = Some(eori),
-    amendmentType = None,
+    amendmentType = None
   )
 
   val undertakingSubsidies = UndertakingSubsidies(

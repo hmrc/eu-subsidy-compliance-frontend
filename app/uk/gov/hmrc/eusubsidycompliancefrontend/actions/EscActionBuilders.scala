@@ -22,9 +22,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class EscActionBuilders @Inject()(
+class EscActionBuilders @Inject() (
   escRequestActionBuilder: EscRequestActionBuilder
- ) {
+) {
   val escAuthentication: ActionBuilder[EscAuthRequest, AnyContent] =
     escRequestActionBuilder
 }

@@ -27,13 +27,13 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.FormU
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EligibilityJourney, FormPage, JourneyTraverseService, Store}
 import utils.CommonTestData.{eligibilityJourney, _}
 
-
-class EligibilityControllerSpec extends ControllerSpec
-  with AuthSupport
-  with JourneyStoreSupport
-  with AuthAndSessionDataBehaviour
-  with JourneySupport
-  with AuditServiceSupport {
+class EligibilityControllerSpec
+    extends ControllerSpec
+    with AuthSupport
+    with JourneyStoreSupport
+    with AuthAndSessionDataBehaviour
+    with JourneySupport
+    with AuditServiceSupport {
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
@@ -52,7 +52,8 @@ class EligibilityControllerSpec extends ControllerSpec
       def performAction() = controller
         .firstEmptyPage(
           FakeRequest("GET", routes.EligibilityController.firstEmptyPage().url)
-            .withFormUrlEncodedBody())
+            .withFormUrlEncodedBody()
+        )
 
       "throw technical error" when {
 
@@ -98,8 +99,7 @@ class EligibilityControllerSpec extends ControllerSpec
     "handling request to get custom waivers" must {
 
       def performAction() = controller
-        .getCustomsWaivers(
-          FakeRequest().withFormUrlEncodedBody())
+        .getCustomsWaivers(FakeRequest().withFormUrlEncodedBody())
 
       "throw technical error" when {
 
@@ -136,7 +136,7 @@ class EligibilityControllerSpec extends ControllerSpec
 
               eligibilityJourney.customsWaivers.value match {
                 case Some(value) => selectedOptions.attr("value") shouldBe value.toString
-                case None => selectedOptions.isEmpty shouldBe true
+                case None        => selectedOptions.isEmpty shouldBe true
               }
               val button = doc.select("form")
               button.attr("action") shouldBe routes.EligibilityController.postCustomsWaivers().url
@@ -159,7 +159,6 @@ class EligibilityControllerSpec extends ControllerSpec
 
         }
 
-
       }
     }
 
@@ -167,7 +166,8 @@ class EligibilityControllerSpec extends ControllerSpec
       def performAction(data: (String, String)*) = controller
         .postCustomsWaivers(
           FakeRequest("GET", routes.EligibilityController.getCustomsWaivers().url)
-            .withFormUrlEncodedBody(data: _*))
+            .withFormUrlEncodedBody(data: _*)
+        )
 
       val eligibilityJourney = EligibilityJourney()
 
@@ -192,9 +192,11 @@ class EligibilityControllerSpec extends ControllerSpec
             mockAuthWithNecessaryEnrolment()
           }
 
-          checkFormErrorIsDisplayed(performAction(),
+          checkFormErrorIsDisplayed(
+            performAction(),
             messageFromMessageKey("customswaivers.title"),
-            messageFromMessageKey("customswaivers.error.required"))
+            messageFromMessageKey("customswaivers.error.required")
+          )
         }
       }
 
@@ -204,7 +206,9 @@ class EligibilityControllerSpec extends ControllerSpec
           withClue(s" For input value :: $inputValue") {
             inSequence {
               mockAuthWithNecessaryEnrolment()
-              mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Right(EligibilityJourney(customsWaivers = FormPage(CustomsWaivers, true.some))))
+              mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(
+                Right(EligibilityJourney(customsWaivers = FormPage(CustomsWaivers, true.some)))
+              )
             }
             checkIsRedirect(performAction("customswaivers" -> inputValue), "/main-business-check")
           }
@@ -216,7 +220,8 @@ class EligibilityControllerSpec extends ControllerSpec
       def performAction() = controller
         .getWillYouClaim(
           FakeRequest("GET", routes.EligibilityController.getWillYouClaim().url)
-            .withFormUrlEncodedBody())
+            .withFormUrlEncodedBody()
+        )
 
       "throw technical error" when {
 
@@ -251,12 +256,12 @@ class EligibilityControllerSpec extends ControllerSpec
             performAction(),
             messageFromMessageKey("willyouclaim.title"),
             { doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe (previousUrl)
+              doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
 
               eligibilityJourney.willYouClaim.value match {
                 case Some(value) => selectedOptions.attr("value") shouldBe value.toString
-                case None => selectedOptions.isEmpty shouldBe true
+                case None        => selectedOptions.isEmpty shouldBe true
               }
               val button = doc.select("form")
               button.attr("action") shouldBe routes.EligibilityController.postWillYouClaim().url
@@ -284,7 +289,8 @@ class EligibilityControllerSpec extends ControllerSpec
       def performAction(data: (String, String)*) = controller
         .postWillYouClaim(
           FakeRequest("GET", routes.EligibilityController.getWillYouClaim().url)
-            .withFormUrlEncodedBody(data: _*))
+            .withFormUrlEncodedBody(data: _*)
+        )
 
       val previousUrl = routes.EligibilityController.getCustomsWaivers().url
 
@@ -326,9 +332,11 @@ class EligibilityControllerSpec extends ControllerSpec
             mockGetPrevious[EligibilityJourney](eori)(Right(previousUrl))
           }
 
-          checkFormErrorIsDisplayed(performAction(),
+          checkFormErrorIsDisplayed(
+            performAction(),
             messageFromMessageKey("willyouclaim.title"),
-            messageFromMessageKey("willyouclaim.error.required"))
+            messageFromMessageKey("willyouclaim.error.required")
+          )
         }
       }
 
@@ -348,7 +356,8 @@ class EligibilityControllerSpec extends ControllerSpec
       def performAction() = controller
         .getMainBusinessCheck(
           FakeRequest("GET", routes.EligibilityController.getMainBusinessCheck().url)
-            .withFormUrlEncodedBody())
+            .withFormUrlEncodedBody()
+        )
 
       "throw technical error" when {
 
@@ -382,21 +391,21 @@ class EligibilityControllerSpec extends ControllerSpec
             performAction(),
             messageFromMessageKey("mainbusinesscheck.title"),
             { doc =>
-
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
 
               eligibilityJourney.mainBusinessCheck.value match {
-                case Some(value) => println(" insde some , value is ::"+value)
+                case Some(value) =>
+                  println(" insde some , value is ::" + value)
                   if (value) {
-                  doc.select(".govuk-back-link").attr("href") shouldBe (previousUrl)
-                } else {
-                  doc.select(".govuk-back-link").attr("href") shouldBe ("/not-eligible")
-                  selectedOptions.attr("value") shouldBe value.toString
-                }
+                    doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
+                  } else {
+                    doc.select(".govuk-back-link").attr("href") shouldBe "/not-eligible"
+                    selectedOptions.attr("value") shouldBe value.toString
+                  }
 
                 case None =>
                   selectedOptions.isEmpty shouldBe true
-                  doc.select(".govuk-back-link").attr("href") shouldBe (previousUrl)
+                  doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
               }
               val button = doc.select("form")
               button.attr("action") shouldBe routes.EligibilityController.postMainBusinessCheck().url
@@ -412,8 +421,7 @@ class EligibilityControllerSpec extends ControllerSpec
         "user has already answered the question" in {
           List(true, false).foreach { inputValue =>
             withClue(s" For input value :: $inputValue") {
-              testDisplay(EligibilityJourney(
-                mainBusinessCheck = FormPage(MainBusinessCheck, inputValue.some)))
+              testDisplay(EligibilityJourney(mainBusinessCheck = FormPage(MainBusinessCheck, inputValue.some)))
             }
           }
         }
@@ -426,13 +434,15 @@ class EligibilityControllerSpec extends ControllerSpec
       def performAction(data: (String, String)*) = controller
         .postMainBusinessCheck(
           FakeRequest("GET", routes.EligibilityController.getMainBusinessCheck().url)
-            .withFormUrlEncodedBody(data: _*))
+            .withFormUrlEncodedBody(data: _*)
+        )
 
       val previousUrl = routes.EligibilityController.getWillYouClaim().url
       val eligibilityJourney = EligibilityJourney(
         customsWaivers = FormPage(CustomsWaivers, false.some)
       )
-      val updatedEligibilityJourney = eligibilityJourney.copy(mainBusinessCheck = FormPage(MainBusinessCheck, true.some))
+      val updatedEligibilityJourney =
+        eligibilityJourney.copy(mainBusinessCheck = FormPage(MainBusinessCheck, true.some))
 
       def update(ejOpt: Option[EligibilityJourney]) = ejOpt
         .map(ej => ej.copy(mainBusinessCheck = ej.mainBusinessCheck.copy(value = true.some)))
@@ -467,9 +477,11 @@ class EligibilityControllerSpec extends ControllerSpec
             mockGetPrevious[EligibilityJourney](eori)(Right(previousUrl))
           }
 
-          checkFormErrorIsDisplayed(performAction(),
+          checkFormErrorIsDisplayed(
+            performAction(),
             messageFromMessageKey("mainbusinesscheck.title"),
-            messageFromMessageKey("mainbusinesscheck.error.required"))
+            messageFromMessageKey("mainbusinesscheck.error.required")
+          )
         }
       }
 
@@ -488,7 +500,8 @@ class EligibilityControllerSpec extends ControllerSpec
       def performAction() = controller
         .getTerms(
           FakeRequest("GET", routes.EligibilityController.getTerms().url)
-            .withFormUrlEncodedBody())
+            .withFormUrlEncodedBody()
+        )
 
       "throw technical error" when {
 
@@ -508,10 +521,11 @@ class EligibilityControllerSpec extends ControllerSpec
           mockAuthWithNecessaryEnrolment()
           mockGetPrevious[EligibilityJourney](eori1)(Right(previousUrl))
         }
-        checkPageIsDisplayed(performAction(),
+        checkPageIsDisplayed(
+          performAction(),
           messageFromMessageKey("eligibilityTerms.title"),
           { doc =>
-            doc.select(".govuk-back-link").attr("href") shouldBe (previousUrl)
+            doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
             val button = doc.select("form")
             button.attr("action") shouldBe routes.EligibilityController.postTerms().url
 
@@ -526,14 +540,15 @@ class EligibilityControllerSpec extends ControllerSpec
       def performAction(data: (String, String)*) = controller
         .postTerms(
           FakeRequest("POST", routes.EligibilityController.getTerms().url)
-            .withFormUrlEncodedBody(data: _*))
+            .withFormUrlEncodedBody(data: _*)
+        )
 
       val eligibilityJourney = EligibilityJourney(
         customsWaivers = FormPage(CustomsWaivers, true.some),
         willYouClaim = FormPage(WillYouClaim, true.some),
         notEligible = FormPage(NotEligible, true.some),
         mainBusinessCheck = FormPage(MainBusinessCheck, true.some),
-        signOut = FormPage(SignOut, true.some),
+        signOut = FormPage(SignOut, true.some)
       )
 
       def update(ejOpt: Option[EligibilityJourney]) = ejOpt
@@ -552,7 +567,7 @@ class EligibilityControllerSpec extends ControllerSpec
 
       "redirect to next page" in {
         val expectedAuditEvent = TermsAndConditionsAccepted(eori1)
-        val updatedJourney = eligibilityJourney.copy(acceptTerms = FormPage(AcceptTerms, true.some))
+        val updatedJourney     = eligibilityJourney.copy(acceptTerms = FormPage(AcceptTerms, true.some))
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Right(updatedJourney))
@@ -568,7 +583,8 @@ class EligibilityControllerSpec extends ControllerSpec
       def performAction() = controller
         .getEoriCheck(
           FakeRequest("GET", routes.EligibilityController.getEoriCheck().url)
-            .withFormUrlEncodedBody())
+            .withFormUrlEncodedBody()
+        )
 
       "throw technical error" when {
         "call to get eligibility fails" in {
@@ -602,12 +618,12 @@ class EligibilityControllerSpec extends ControllerSpec
             performAction(),
             messageFromMessageKey("eoricheck.title"),
             { doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe (previousUrl)
+              doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
 
               eligibilityJourney.eoriCheck.value match {
                 case Some(value) => selectedOptions.attr("value") shouldBe value.toString
-                case None => selectedOptions.isEmpty shouldBe true
+                case None        => selectedOptions.isEmpty shouldBe true
 
               }
               val button = doc.select("form")
@@ -624,9 +640,12 @@ class EligibilityControllerSpec extends ControllerSpec
         "user has already answered the question" in {
           List(true, false).foreach { inputValue =>
             withClue(s" For input value :: $inputValue") {
-              testDisplay(EligibilityJourney(
-                acceptTerms = FormPage(AcceptTerms, true.some),
-                eoriCheck = FormPage(EoriCheck, inputValue.some)))
+              testDisplay(
+                EligibilityJourney(
+                  acceptTerms = FormPage(AcceptTerms, true.some),
+                  eoriCheck = FormPage(EoriCheck, inputValue.some)
+                )
+              )
             }
           }
         }

@@ -23,22 +23,20 @@ import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
 
+class UpdateEmailAddressControllerSpec
+    extends ControllerSpec
+    with AuthSupport
+    with JourneyStoreSupport
+    with AuthAndSessionDataBehaviour {
 
-
-class UpdateEmailAddressControllerSpec extends ControllerSpec
-  with AuthSupport
-  with JourneyStoreSupport
-  with AuthAndSessionDataBehaviour {
-
-  override def overrideBindings           = List(
+  override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore)
   )
 
   override def additionalConfig = super.additionalConfig.withFallback(
     Configuration(
-      ConfigFactory.parseString(
-        s"""
+      ConfigFactory.parseString(s"""
            | microservice.services.update-email {
            |       protocol = http
            |       host = localhost
@@ -79,7 +77,7 @@ class UpdateEmailAddressControllerSpec extends ControllerSpec
           mockAuthWithNecessaryEnrolment()
         }
         val url = "http://localhost:9898/manage-email-cds/service/eu-subsidy-compliance-frontend"
-        checkIsRedirect(performAction(), url )
+        checkIsRedirect(performAction(), url)
       }
     }
   }

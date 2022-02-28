@@ -33,20 +33,20 @@ import scala.concurrent.{ExecutionContext, Future}
 import cats.implicits._
 
 @Singleton
-class FinancialDashboardController @Inject()(
+class FinancialDashboardController @Inject() (
   escActionBuilders: EscActionBuilders,
   escService: EscService,
   financialDashboardPage: FinancialDashboardPage,
   mcc: MessagesControllerComponents,
   store: Store,
-  timeProvider: TimeProvider,
-)(implicit val appConfig: AppConfig, ec: ExecutionContext) extends BaseController(mcc) {
+  timeProvider: TimeProvider
+)(implicit val appConfig: AppConfig, ec: ExecutionContext)
+    extends BaseController(mcc) {
 
   import escActionBuilders._
 
   def getFinancialDashboard: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
     // THe search period covers the current tax year to date, and the previous 2 tax years.
     val searchDateStart = timeProvider.today.toEarliestTaxYearStart
     val searchDateEnd = timeProvider.today
@@ -61,13 +61,14 @@ class FinancialDashboardController @Inject()(
       subsidies <- escService.retrieveSubsidy(s)
     } yield (undertaking, subsidies)
 
-    subsidies.map {
-      case (undertaking, subsidies) =>
-        Ok(financialDashboardPage(
-            FinancialDashboardSummary
-              .fromUndertakingSubsidies(undertaking, subsidies, searchDateStart, currentTaxYearEnd))
+    subsidies.map { case (undertaking, subsidies) =>
+      Ok(
+        financialDashboardPage(
+          FinancialDashboardSummary
+            .fromUndertakingSubsidies(undertaking, subsidies, searchDateStart, currentTaxYearEnd)
         )
-      }
+      )
+    }
 
   }
 

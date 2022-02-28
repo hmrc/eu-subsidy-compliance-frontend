@@ -28,16 +28,14 @@ import scala.concurrent.{ExecutionContext}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 @Singleton
-class NoBusinessPresentController @Inject()(
+class NoBusinessPresentController @Inject() (
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
   store: Store,
   escService: EscService,
   noBusinessPresentPage: NoBusinessPresentPage
-)(
-   implicit val appConfig: AppConfig,
-   executionContext: ExecutionContext) extends
-  BaseController(mcc) {
+)(implicit val appConfig: AppConfig, executionContext: ExecutionContext)
+    extends BaseController(mcc) {
   import escActionBuilders._
 
   def getNoBusinessPresent: Action[AnyContent] = escAuthentication.async { implicit request =>
@@ -54,10 +52,11 @@ class NoBusinessPresentController @Inject()(
   def postNoBusinessPresent: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     for {
-      _ <- store.update[BusinessEntityJourney]{ businessEntityJourneyOpt =>
-        businessEntityJourneyOpt.map(_.copy(isLeadSelectJourney = true.some))}
+      _ <- store.update[BusinessEntityJourney] { businessEntityJourneyOpt =>
+        businessEntityJourneyOpt.map(_.copy(isLeadSelectJourney = true.some))
+      }
     } yield (Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
 
   }
 
-  }
+}
