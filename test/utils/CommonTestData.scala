@@ -26,6 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Fo
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 
 import java.time.{LocalDate, LocalDateTime}
@@ -133,17 +134,17 @@ object CommonTestData {
   )
 
   val undertakingJourneyComplete =  UndertakingJourney(
-    name = FormPage("undertaking-name", "TestUndertaking".some),
-    sector = FormPage("sector", Sector(1).some),
-    cya = FormPage("check-your-answers", true.some),
-    confirmation = FormPage("confirmation", true.some)
+    name = UndertakingNameFormPage("TestUndertaking".some),
+    sector = UndertakingSectorFormPage(Sector(1).some),
+    cya = UndertakingCyaFormPage(true.some),
+    confirmation = UndertakingConfirmationFormPage(true.some)
   )
 
-  val undertakingJourneyComplete1 = UndertakingJourney(
-    name = FormPage("undertaking-name", "TestUndertaking1".some),
-    sector = FormPage("sector", Sector(2).some),
-    cya = FormPage("check-your-answers", true.some),
-    confirmation = FormPage("confirmation", true.some),
+  val undertakingJourneyComplete1 =  UndertakingJourney(
+    name = UndertakingNameFormPage("TestUndertaking1".some),
+    sector = UndertakingSectorFormPage(Sector(2).some),
+    cya = UndertakingCyaFormPage(true.some),
+    confirmation = UndertakingConfirmationFormPage(true.some),
     isAmend = true
   )
 
