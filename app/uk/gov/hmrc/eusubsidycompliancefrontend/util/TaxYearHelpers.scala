@@ -36,4 +36,3 @@ object TaxYearHelpers {
   def earliestAllowedDate(d: LocalDate): LocalDate = taxYearStartForDate(d).minusYears(2)
 
 }
-

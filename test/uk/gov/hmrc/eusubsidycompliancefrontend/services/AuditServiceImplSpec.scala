@@ -32,7 +32,6 @@ import utils.CommonTestData.eori1
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 
-
 class AuditServiceImplSpec extends Matchers with AnyWordSpecLike with MockFactory {
 
   val mockAuditConnector = mock[AuditConnector]

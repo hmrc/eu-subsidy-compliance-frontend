@@ -31,7 +31,7 @@ case class BusinessEntityJourney(
   override protected def steps: List[FormPage[_]] = List(
     addBusiness,
     eori,
-    cya,
+    cya
   )
 
 }
@@ -39,14 +39,13 @@ case class BusinessEntityJourney(
 object BusinessEntityJourney {
 
   import Journey._ // N.B. don't let intellij delete this
-
   implicit val formPageEoriFormat: OFormat[FormPage[EORI]] = Json.format[FormPage[EORI]]
-  implicit val format: Format[BusinessEntityJourney] = Json.format[BusinessEntityJourney]
+  implicit val format: Format[BusinessEntityJourney]       = Json.format[BusinessEntityJourney]
 
   // TODO populate the Journey[s] from the undertaking, probably need to map them by eori
   def fromUndertakingOpt(undertakingOpt: Option[Undertaking]): BusinessEntityJourney = BusinessEntityJourney()
 
-  def businessEntityJourneyForEori(undertakingOpt: Option[Undertaking], eori: EORI): BusinessEntityJourney = {
+  def businessEntityJourneyForEori(undertakingOpt: Option[Undertaking], eori: EORI): BusinessEntityJourney =
     undertakingOpt match {
       case Some(undertaking) =>
         val empty = BusinessEntityJourney()
@@ -57,13 +56,11 @@ object BusinessEntityJourney {
       // TODO - what is the correct behaviour here?
       case None => BusinessEntityJourney()
     }
-  }
-
 
   object FormUrls {
     val AddBusiness = "add-member"
-    val Eori = "add-business-entity-eori"
-    val Cya = "check-your-answers-businesses"
+    val Eori        = "add-business-entity-eori"
+    val Cya         = "check-your-answers-businesses"
   }
 
 }

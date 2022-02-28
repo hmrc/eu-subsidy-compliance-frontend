@@ -30,9 +30,9 @@ sealed trait AuditEvent {
 object AuditEvent {
 
   final case class TermsAndConditionsAccepted(
-      eori: EORI,
-) extends AuditEvent {
-    override val auditType: String = "TermsAndConditionsAcceptedDetails"
+    eori: EORI
+  ) extends AuditEvent {
+    override val auditType: String       = "TermsAndConditionsAcceptedDetails"
     override val transactionName: String = "terms-and-conditions-accepted"
   }
 

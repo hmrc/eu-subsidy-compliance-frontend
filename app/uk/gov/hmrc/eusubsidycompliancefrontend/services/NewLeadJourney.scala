@@ -31,7 +31,7 @@ case class NewLeadJourney(selectNewLead: FormPage[EORI] = FormPage(SelectNewLead
 object NewLeadJourney {
 
   implicit val formPageEoriFormat: OFormat[FormPage[EORI]] = Json.format[FormPage[EORI]]
-  implicit val format: Format[NewLeadJourney] = Json.format[NewLeadJourney]
+  implicit val format: Format[NewLeadJourney]              = Json.format[NewLeadJourney]
 
   object FormUrls {
     val SelectNewLead = "select-new-lead"

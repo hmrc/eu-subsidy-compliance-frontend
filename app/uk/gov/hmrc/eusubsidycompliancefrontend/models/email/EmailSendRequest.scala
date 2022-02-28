@@ -20,11 +20,11 @@ import play.api.libs.json.{Json, OWrites}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.EmailAddress
 
 final case class EmailSendRequest(
-                                   to: List[EmailAddress],
-                                   templateId: String,
-                                   parameters: EmailParameters,
-                                   force: Boolean = true
-                                 )
+  to: List[EmailAddress],
+  templateId: String,
+  parameters: EmailParameters,
+  force: Boolean = true
+)
 
 object EmailSendRequest {
   implicit val writes: OWrites[EmailSendRequest] = Json.writes

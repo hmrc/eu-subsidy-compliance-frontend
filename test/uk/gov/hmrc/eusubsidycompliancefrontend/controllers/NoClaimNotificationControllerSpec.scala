@@ -30,13 +30,13 @@ import utils.CommonTestData.{eori1, undertaking}
 import scala.concurrent.Future
 
 class NoClaimNotificationControllerSpec
-  extends ControllerSpec
-  with AuthSupport
-  with JourneyStoreSupport
-  with AuthAndSessionDataBehaviour {
+    extends ControllerSpec
+    with AuthSupport
+    with JourneyStoreSupport
+    with AuthAndSessionDataBehaviour {
   val mockEscService = mock[EscService]
 
-  override def overrideBindings           = List(
+  override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService)
@@ -87,11 +87,10 @@ class NoClaimNotificationControllerSpec
         checkPageIsDisplayed(
           performAction(),
           messageFromMessageKey("noClaimNotification.title", undertaking.name),
-          {doc =>
-
-            doc.select(".govuk-back-link").attr("href") shouldBe(routes.AccountController.getAccountPage().url)
+          { doc =>
+            doc.select(".govuk-back-link").attr("href") shouldBe (routes.AccountController.getAccountPage().url)
             val selectedOptions = doc.select(".govuk-checkboxes__input[checked]")
-            selectedOptions.isEmpty  shouldBe true
+            selectedOptions.isEmpty shouldBe true
 
             val button = doc.select("form")
             button.attr("action") shouldBe routes.NoClaimNotificationController.postNoClaimNotification().url
@@ -100,7 +99,6 @@ class NoClaimNotificationControllerSpec
 
       }
 
-
     }
 
     "handling request  to post No claim notification " must {
@@ -108,7 +106,8 @@ class NoClaimNotificationControllerSpec
       def performAction(data: (String, String)*) = controller
         .postNoClaimNotification(
           FakeRequest()
-            .withFormUrlEncodedBody(data: _*))
+            .withFormUrlEncodedBody(data: _*)
+        )
 
       "throw technical error" when {
 
@@ -145,12 +144,12 @@ class NoClaimNotificationControllerSpec
           checkFormErrorIsDisplayed(
             performAction(),
             messageFromMessageKey("noClaimNotification.title", undertaking.name),
-            messageFromMessageKey("noClaimNotification.error.required"),
+            messageFromMessageKey("noClaimNotification.error.required")
           )
         }
       }
 
-      "redirect to next page " in  {
+      "redirect to next page " in {
 
         inSequence {
           mockAuthWithNecessaryEnrolment()
@@ -200,15 +199,13 @@ class NoClaimNotificationControllerSpec
         checkPageIsDisplayed(
           performAction(),
           undertaking.name,
-          {doc =>
-
+          { doc =>
             val htmlBody = doc.select(".govuk-body").html()
 
             htmlBody should include regex messageFromMessageKey(
               "noClaimConfirmation.link",
               routes.AccountController.getAccountPage().url
             )
-
 
           }
         )

@@ -28,33 +28,29 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[SendEmailServiceImpl])
 trait SendEmailService {
-  def sendEmail(emailAddress: EmailAddress,
-                emailParameters: EmailParameters,
-                templateId: String
- )(implicit hc: HeaderCarrier): Future[EmailSendResult]
+  def sendEmail(emailAddress: EmailAddress, emailParameters: EmailParameters, templateId: String)(implicit
+    hc: HeaderCarrier
+  ): Future[EmailSendResult]
 
 }
 
 @Singleton
-class SendEmailServiceImpl @Inject() (emailSendConnector: SendEmailConnector)(implicit ec: ExecutionContext
-) extends SendEmailService
-  with Logging {
+class SendEmailServiceImpl @Inject() (emailSendConnector: SendEmailConnector)(implicit ec: ExecutionContext)
+    extends SendEmailService
+    with Logging {
 
-  override def sendEmail(emailAddress: EmailAddress,
-                         emailParameters: EmailParameters,
-                         templateId: String
-                        )(implicit hc: HeaderCarrier): Future[EmailSendResult] =
+  override def sendEmail(emailAddress: EmailAddress, emailParameters: EmailParameters, templateId: String)(implicit
+    hc: HeaderCarrier
+  ): Future[EmailSendResult] =
     emailSendConnector.sendEmail(EmailSendRequest(List(emailAddress), templateId, emailParameters)).map {
       case Left(Error(_)) => sys.error(s"Error in Sending Email ${emailParameters.description}")
-      case Right(value) => value.status match {
-        case ACCEPTED => EmailSendResult.EmailSent
-        case other    =>
-          logger.warn(s"Response for send email call came back with status : $other")
-          EmailSendResult.EmailSentFailure
-      }
+      case Right(value) =>
+        value.status match {
+          case ACCEPTED => EmailSendResult.EmailSent
+          case other =>
+            logger.warn(s"Response for send email call came back with status : $other")
+            EmailSendResult.EmailSentFailure
+        }
     }
-
-
-
 
 }

@@ -25,4 +25,5 @@ package object json {
     value.fold(List.empty[(String, Json.JsValueWrapper)]) { v =>
       List((name, JsString(v.toString)))
     }
+
 }

@@ -33,7 +33,7 @@ import scala.concurrent.Future
 
 class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
   val mockEscConnector = mock[EscConnector]
-  val service = new EscServiceImpl(mockEscConnector)
+  val service          = new EscServiceImpl(mockEscConnector)
 
   def mockCreateUndertaking(undertaking: Undertaking)(result: Either[Error, HttpResponse]) =
     (mockEscConnector
@@ -49,28 +49,31 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
 
   def mockRetreiveUndertaking(eori: EORI)(result: Either[Error, HttpResponse]) =
     (mockEscConnector
-      .retrieveUndertaking(_:EORI)(_:HeaderCarrier))
+      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
       .returning(Future.successful(result))
 
-  def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(result: Either[Error, HttpResponse]) =
+  def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
+    result: Either[Error, HttpResponse]
+  ) =
     (mockEscConnector
-      .addMember(_: UndertakingRef, _:BusinessEntity)(_: HeaderCarrier))
+      .addMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
       .expects(undertakingRef, businessEntity, *)
       .returning(Future.successful(result))
 
-  def mockRemoveMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(result: Either[Error, HttpResponse]) =
+  def mockRemoveMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
+    result: Either[Error, HttpResponse]
+  ) =
     (mockEscConnector
-      .removeMember(_: UndertakingRef, _:BusinessEntity)(_: HeaderCarrier))
+      .removeMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
       .expects(undertakingRef, businessEntity, *)
       .returning(Future.successful(result))
 
- def mockCreateSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(result: Either[Error, HttpResponse]) = {
-   (mockEscConnector
-     .createSubsidy(_: UndertakingRef, _: SubsidyJourney)(_: HeaderCarrier))
-     .expects(undertakingRef, journey, *)
-     .returning(Future.successful(result))
- }
+  def mockCreateSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(result: Either[Error, HttpResponse]) =
+    (mockEscConnector
+      .createSubsidy(_: UndertakingRef, _: SubsidyJourney)(_: HeaderCarrier))
+      .expects(undertakingRef, journey, *)
+      .returning(Future.successful(result))
 
   def mockRetrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(result: Either[Error, HttpResponse]) =
     (mockEscConnector
@@ -78,9 +81,9 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       .expects(subsidyRetrieve, *)
       .returning(Future.successful(result))
 
-  val undertakingRefJson = Json.toJson(undertakingRef)
-  val undertakingJson = Json.toJson(undertaking)
-  val businessEntityJson = Json.toJson(businessEntity1)
+  val undertakingRefJson       = Json.toJson(undertakingRef)
+  val undertakingJson          = Json.toJson(undertaking)
+  val businessEntityJson       = Json.toJson(businessEntity1)
   val undertakingSubsidiesJson = Json.toJson(undertakingSubsidies)
 
   val emptyHeaders = Map.empty[String, Seq[String]]
@@ -119,7 +122,6 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
           assertThrows[RuntimeException](await(result))
         }
 
-
       }
 
       "return successfully" when {
@@ -127,7 +129,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         "the http call succeeds and the body of the response can be parsed" in {
           mockCreateUndertaking(undertaking)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
           val result = service.createUndertaking(undertaking)
-          await(result) shouldBe(undertakingRef)
+          await(result) shouldBe undertakingRef
         }
       }
     }
@@ -162,7 +164,6 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
           assertThrows[RuntimeException](await(result))
         }
 
-
       }
 
       "return successfully" when {
@@ -170,7 +171,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         "the http call succeeds and the body of the response can be parsed" in {
           mockUpdateUndertaking(undertaking)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
           val result = service.updateUndertaking(undertaking)
-          await(result) shouldBe(undertakingRef)
+          await(result) shouldBe undertakingRef
         }
       }
     }
@@ -199,7 +200,6 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
           assertThrows[RuntimeException](await(result))
         }
 
-
       }
 
       "return successfully" when {
@@ -209,13 +209,13 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
           "http response status is 200 and response can be parsed" in {
             mockRetreiveUndertaking(eori1)(Right(HttpResponse(OK, undertakingJson, emptyHeaders)))
             val result = service.retrieveUndertaking(eori1)
-            await(result) shouldBe(undertaking.some)
+            await(result) shouldBe (undertaking.some)
           }
 
           "http response status is 404 and response body is not there" in {
             mockRetreiveUndertaking(eori1)(Right(HttpResponse(NOT_FOUND, " ")))
             val result = service.retrieveUndertaking(eori1)
-            await(result) shouldBe(None)
+            await(result) shouldBe None
           }
 
         }
@@ -233,7 +233,9 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         }
 
         "the http response doesn't come back with status 200(OK)" in {
-          mockAddMember(undertakingRef, businessEntity3)(Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders)))
+          mockAddMember(undertakingRef, businessEntity3)(
+            Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders))
+          )
           val result = service.addMember(undertakingRef, businessEntity3)
           assertThrows[RuntimeException](await(result))
         }
@@ -252,7 +254,6 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
           assertThrows[RuntimeException](await(result))
         }
 
-
       }
 
       "return successfully" when {
@@ -260,7 +261,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         "the http call succeeds and the body of the response can be parsed" in {
           mockAddMember(undertakingRef, businessEntity3)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
           val result = service.addMember(undertakingRef, businessEntity3)
-          await(result) shouldBe(undertakingRef)
+          await(result) shouldBe undertakingRef
         }
       }
     }
@@ -280,7 +281,9 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         }
 
         "the http response doesn't come back with status 200(OK)" in {
-          mockRemoveMember(undertakingRef, businessEntity3)(Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders)))
+          mockRemoveMember(undertakingRef, businessEntity3)(
+            Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders))
+          )
           isError()
         }
 
@@ -295,7 +298,6 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
           isError()
         }
 
-
       }
 
       "return successfully" when {
@@ -303,7 +305,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         "the http call succeeds and the body of the response can be parsed" in {
           mockRemoveMember(undertakingRef, businessEntity3)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
           val result = service.removeMember(undertakingRef, businessEntity3)
-          await(result) shouldBe(undertakingRef)
+          await(result) shouldBe undertakingRef
         }
       }
     }
@@ -323,7 +325,9 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         }
 
         "the http response doesn't come back with status 200(OK)" in {
-          mockCreateSubsidy(undertakingRef, subsidyJourney)(Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders)))
+          mockCreateSubsidy(undertakingRef, subsidyJourney)(
+            Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders))
+          )
           isError()
         }
 
@@ -338,7 +342,6 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
           isError()
         }
 
-
       }
 
       "return successfully" when {
@@ -346,7 +349,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         "the http call succeeds and the body of the response can be parsed" in {
           mockCreateSubsidy(undertakingRef, subsidyJourney)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
           val result = service.createSubsidy(undertakingRef, subsidyJourney)
-          await(result) shouldBe(undertakingRef)
+          await(result) shouldBe undertakingRef
         }
       }
     }
@@ -381,7 +384,6 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
           isError()
         }
 
-
       }
 
       "return successfully" when {
@@ -389,11 +391,10 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         "the http call succeeds and the body of the response can be parsed" in {
           mockRetrieveSubsidy(subsidyRetrieve)(Right(HttpResponse(OK, undertakingSubsidiesJson, emptyHeaders)))
           val result = service.retrieveSubsidy(subsidyRetrieve)
-          await(result) shouldBe(undertakingSubsidies)
+          await(result) shouldBe undertakingSubsidies
         }
       }
     }
-
 
   }
 

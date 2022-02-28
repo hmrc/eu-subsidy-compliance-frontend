@@ -27,7 +27,6 @@ import java.time.{LocalDate, ZonedDateTime}
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 
-
 package object digital {
 
   val dateFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
@@ -43,7 +42,8 @@ package object digital {
       val lead: BusinessEntity =
         o.undertakingBusinessEntity match {
           case h :: Nil => h
-          case _ => throw new IllegalStateException(s"unable to create undertaking with missing or multiple business entities")
+          case _ =>
+            throw new IllegalStateException(s"unable to create undertaking with missing or multiple business entities")
         }
 
       Json.obj(
@@ -51,10 +51,10 @@ package object digital {
           "requestCommon" -> requestCommon,
           "requestDetail" -> Json.obj(
             "undertakingName" -> o.name,
-            "industrySector" -> o.industrySector,
+            "industrySector"  -> o.industrySector,
             "businessEntity" ->
               Json.obj(
-                "idType" -> "EORI",
+                "idType"  -> "EORI",
                 "idValue" -> JsString(lead.businessEntityIdentifier)
               ),
             "undertakingStartDate" -> dateFormatter.format(LocalDate.now)
@@ -66,26 +66,31 @@ package object digital {
 
     // provides Undertaking from EIS retrieveUndertaking response
     override def reads(retrieveUndertakingResponse: JsValue): JsResult[Undertaking] = {
-      val responseCommon: JsLookupResult = retrieveUndertakingResponse \ "retrieveUndertakingResponse" \ "responseCommon"
+      val responseCommon: JsLookupResult =
+        retrieveUndertakingResponse \ "retrieveUndertakingResponse" \ "responseCommon"
       (responseCommon \ "status").as[String] match {
         case "NOT_OK" =>
-          val processingDate = (responseCommon \ "processingDate").as[ZonedDateTime]
-          val statusText = (responseCommon \ "statusText").asOpt[String]
+          val processingDate   = (responseCommon \ "processingDate").as[ZonedDateTime]
+          val statusText       = (responseCommon \ "statusText").asOpt[String]
           val returnParameters = (responseCommon \ "returnParameters").asOpt[List[Params]]
           // TODO consider moving exception to connector
           throw new EisBadResponseException("NOT_OK", processingDate, statusText, returnParameters)
         case "OK" =>
-          val responseDetail: JsLookupResult = retrieveUndertakingResponse \ "retrieveUndertakingResponse" \ "responseDetail"
-          val undertakingRef: Option[String] = (responseDetail \ "undertakingReference").asOpt[String]
+          val responseDetail: JsLookupResult =
+            retrieveUndertakingResponse \ "retrieveUndertakingResponse" \ "responseDetail"
+          val undertakingRef: Option[String]   = (responseDetail \ "undertakingReference").asOpt[String]
           val undertakingName: UndertakingName = (responseDetail \ "undertakingName").as[UndertakingName]
-          val industrySector: Sector = (responseDetail \ "industrySector").as[Sector]
-          val industrySectorLimit: IndustrySectorLimit = (responseDetail \ "industrySectorLimit").as[IndustrySectorLimit]
-          val lastSubsidyUsageUpdt: LocalDate = (responseDetail \ "lastSubsidyUsageUpdt").as[LocalDate](new Reads[LocalDate] {
-            override def reads(json: JsValue): JsResult[LocalDate] =
-              // TODO consider Either.catchOnly (cats)
-              JsSuccess(LocalDate.parse(json.as[String], eis.oddEisDateFormat))
-          })
-          val undertakingBusinessEntity: List[BusinessEntity] = (responseDetail \ "undertakingBusinessEntity").as[List[BusinessEntity]]
+          val industrySector: Sector           = (responseDetail \ "industrySector").as[Sector]
+          val industrySectorLimit: IndustrySectorLimit =
+            (responseDetail \ "industrySectorLimit").as[IndustrySectorLimit]
+          val lastSubsidyUsageUpdt: LocalDate =
+            (responseDetail \ "lastSubsidyUsageUpdt").as[LocalDate](new Reads[LocalDate] {
+              override def reads(json: JsValue): JsResult[LocalDate] =
+                // TODO consider Either.catchOnly (cats)
+                JsSuccess(LocalDate.parse(json.as[String], eis.oddEisDateFormat))
+            })
+          val undertakingBusinessEntity: List[BusinessEntity] =
+            (responseDetail \ "undertakingBusinessEntity").as[List[BusinessEntity]]
           JsSuccess(
             Undertaking(
               undertakingRef.map(UndertakingRef(_)),
@@ -111,7 +116,7 @@ package object digital {
       "retrieveUndertakingRequest" -> Json.obj(
         "requestCommon" -> requestCommon,
         "requestDetail" -> Json.obj(
-          "idType" -> "EORI",
+          "idType"  -> "EORI",
           "idValue" -> o.toString
         )
       )
@@ -119,13 +124,14 @@ package object digital {
   }
 
   // provides json for EIS Amend Undertaking Member Data (business entities) call
-  implicit val amendUndertakingMemberDataWrites: Writes[UndertakingBusinessEntityUpdate] = new Writes[UndertakingBusinessEntityUpdate] {
-    override def writes(o: UndertakingBusinessEntityUpdate): JsValue = Json.obj(
-      "undertakingIdentifier" -> JsString(o.undertakingIdentifier),
-      "undertakingComplete" -> JsBoolean(true),
-      "memberAmendments" -> o.businessEntityUpdates
-    )
-  }
+  implicit val amendUndertakingMemberDataWrites: Writes[UndertakingBusinessEntityUpdate] =
+    new Writes[UndertakingBusinessEntityUpdate] {
+      override def writes(o: UndertakingBusinessEntityUpdate): JsValue = Json.obj(
+        "undertakingIdentifier" -> JsString(o.undertakingIdentifier),
+        "undertakingComplete"   -> JsBoolean(true),
+        "memberAmendments"      -> o.businessEntityUpdates
+      )
+    }
 
   // provides json for EIS updateUndertaking call
   def updateUndertakingWrites(
@@ -135,20 +141,19 @@ package object digital {
       val requestCommon = RequestCommon(
         "UpdateUndertaking"
       )
-      override def writes(o: Undertaking): JsValue = {
+      override def writes(o: Undertaking): JsValue =
         Json.obj(
           "updateUndertakingRequest" -> Json.obj(
             "requestCommon" -> requestCommon,
             "requestDetail" -> Json.obj(
-              "amendmentType" -> amendmentType,
-              "undertakingId" -> o.reference,
-              "undertakingName" -> o.name,
-              "industrySector" -> o.industrySector,
+              "amendmentType"        -> amendmentType,
+              "undertakingId"        -> o.reference,
+              "undertakingName"      -> o.name,
+              "industrySector"       -> o.industrySector,
               "disablementStartDate" -> dateFormatter.format(LocalDate.now)
             )
           )
         )
-      }
     }
     amendUndertakingWrites
   }
@@ -159,8 +164,8 @@ package object digital {
       val responseCommon: JsLookupResult = json \ "createUndertakingResponse" \ "responseCommon"
       (responseCommon \ "status").as[String] match {
         case "NOT_OK" =>
-          val processingDate = (responseCommon \ "processingDate").as[ZonedDateTime]
-          val statusText = (responseCommon \ "statusText").asOpt[String]
+          val processingDate   = (responseCommon \ "processingDate").as[ZonedDateTime]
+          val statusText       = (responseCommon \ "statusText").asOpt[String]
           val returnParameters = (responseCommon \ "returnParameters").asOpt[List[Params]]
           // TODO consider moving exception to connector
           throw new EisBadResponseException("NOT_OK", processingDate, statusText, returnParameters)

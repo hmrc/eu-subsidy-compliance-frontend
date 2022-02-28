@@ -23,15 +23,14 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, NonHmrcSu
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.FormUrls._
 
 case class SubsidyJourney(
-   reportPayment: FormPage[Boolean] = FormPage(ReportPayment),
-   claimDate: FormPage[DateFormValues] = FormPage(ClaimDateValues),
-   claimAmount: FormPage[BigDecimal] = FormPage(ClaimAmount),
-   addClaimEori: FormPage[OptionalEORI] = FormPage(AddClaimEori),
-   publicAuthority: FormPage[String] = FormPage(PublicAuthority),
-   traderRef: FormPage[OptionalTraderRef] = FormPage(TraderReference),
-   cya: FormPage[Boolean] = FormPage(Cya),
-   existingTransactionId: Option[SubsidyRef] = None,
-
+  reportPayment: FormPage[Boolean] = FormPage(ReportPayment),
+  claimDate: FormPage[DateFormValues] = FormPage(ClaimDateValues),
+  claimAmount: FormPage[BigDecimal] = FormPage(ClaimAmount),
+  addClaimEori: FormPage[OptionalEORI] = FormPage(AddClaimEori),
+  publicAuthority: FormPage[String] = FormPage(PublicAuthority),
+  traderRef: FormPage[OptionalTraderRef] = FormPage(TraderReference),
+  cya: FormPage[Boolean] = FormPage(Cya),
+  existingTransactionId: Option[SubsidyRef] = None
 ) extends Journey {
 
   override protected def steps: List[FormPage[_]] = List(
@@ -50,11 +49,12 @@ case class SubsidyJourney(
 object SubsidyJourney {
   import Journey._ // N.B. don't let intellij delete this
 
-  implicit val formPageClaimDateFormat: OFormat[FormPage[DateFormValues]] = Json.format[FormPage[DateFormValues]]
+  implicit val formPageClaimDateFormat: OFormat[FormPage[DateFormValues]]  = Json.format[FormPage[DateFormValues]]
   implicit val formPageOptionalEORIFormat: OFormat[FormPage[OptionalEORI]] = Json.format[FormPage[OptionalEORI]]
-  implicit val formPageOptionalTraderRefFormat: OFormat[FormPage[OptionalTraderRef]] = Json.format[FormPage[OptionalTraderRef]]
+  implicit val formPageOptionalTraderRefFormat: OFormat[FormPage[OptionalTraderRef]] =
+    Json.format[FormPage[OptionalTraderRef]]
   implicit val formPageTraderRefFormat: OFormat[FormPage[TraderRef]] = Json.format[FormPage[TraderRef]]
-  implicit val format: Format[SubsidyJourney] = Json.format[SubsidyJourney]
+  implicit val format: Format[SubsidyJourney]                        = Json.format[SubsidyJourney]
 
   def fromNonHmrcSubsidy(nonHmrcSubsidy: NonHmrcSubsidy): SubsidyJourney = {
     val newJourney = SubsidyJourney()
@@ -63,24 +63,27 @@ object SubsidyJourney {
         reportPayment = newJourney.reportPayment.copy(value = Some(true)),
         claimDate = newJourney.claimDate.copy(value = Some(DateFormValues.fromDate(nonHmrcSubsidy.allocationDate))),
         claimAmount = newJourney.claimAmount.copy(value = Some(nonHmrcSubsidy.nonHMRCSubsidyAmtEUR)),
-        addClaimEori = newJourney.addClaimEori.copy(value =  getAddClaimEORI(nonHmrcSubsidy.businessEntityIdentifier).some),
+        addClaimEori =
+          newJourney.addClaimEori.copy(value = getAddClaimEORI(nonHmrcSubsidy.businessEntityIdentifier).some),
         publicAuthority = newJourney.publicAuthority.copy(value = Some(nonHmrcSubsidy.publicAuthority.getOrElse(""))),
         traderRef = newJourney.traderRef.copy(value = getAddTraderRef(nonHmrcSubsidy.traderReference).some),
         existingTransactionId = nonHmrcSubsidy.subsidyUsageTransactionID
-    )
+      )
   }
 
-  private def getAddClaimEORI(eoriOpt: Option[EORI]) = if(eoriOpt.isDefined) OptionalEORI("true", eoriOpt) else OptionalEORI("false", eoriOpt)
-  private def getAddTraderRef(traderRefOpt: Option[TraderRef]) = if(traderRefOpt.isDefined) OptionalTraderRef("true", traderRefOpt) else OptionalTraderRef("false", traderRefOpt)
+  private def getAddClaimEORI(eoriOpt: Option[EORI]) =
+    if (eoriOpt.isDefined) OptionalEORI("true", eoriOpt) else OptionalEORI("false", eoriOpt)
+  private def getAddTraderRef(traderRefOpt: Option[TraderRef]) =
+    if (traderRefOpt.isDefined) OptionalTraderRef("true", traderRefOpt) else OptionalTraderRef("false", traderRefOpt)
 
   object FormUrls {
-    val ReportPayment = "claims"
+    val ReportPayment   = "claims"
     val ClaimDateValues = "add-claim-date"
-    val ClaimAmount = "add-claim-amount"
-    val AddClaimEori = "add-claim-eori"
-    val PublicAuthority= "add-claim-public-authority"
+    val ClaimAmount     = "add-claim-amount"
+    val AddClaimEori    = "add-claim-eori"
+    val PublicAuthority = "add-claim-public-authority"
     val TraderReference = "add-claim-reference"
-    val Cya = "check-your-answers-subsidy"
+    val Cya             = "check-your-answers-subsidy"
   }
 
 }

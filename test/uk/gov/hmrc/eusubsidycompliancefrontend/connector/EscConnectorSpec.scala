@@ -28,14 +28,10 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import utils.CommonTestData._
 
-
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class EscConnectorSpec
-  extends AnyWordSpec
-    with Matchers
-    with MockFactory with HttpSupport with ConnectorSpec {
+class EscConnectorSpec extends AnyWordSpec with Matchers with MockFactory with HttpSupport with ConnectorSpec {
 
   val (protocol, host, port) = ("http", "host", "123")
 
@@ -49,17 +45,15 @@ class EscConnectorSpec
                                  |""".stripMargin)
   )
 
-
   val mockTimeProvider = mock[TimeProvider]
 
-  val connector = new EscConnectorImpl(mockHttp,  new ServicesConfig(config), mockTimeProvider)
+  val connector = new EscConnectorImpl(mockHttp, new ServicesConfig(config), mockTimeProvider)
 
   private def mockTimeProviderToday(today: LocalDate) =
     (mockTimeProvider.today _).expects().returning(today)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  val responseHeaders = Map.empty[String, Seq[String]]
-
+  val responseHeaders            = Map.empty[String, Seq[String]]
 
   "EscConnectorSpec" when {
 
@@ -122,7 +116,7 @@ class EscConnectorSpec
 
     "handling request to retrieve subsidy" must {
 
-       val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/subsidy/retrieve"
+      val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/subsidy/retrieve"
       behave like connectorBehaviour(
         mockPost(expectedUrl, Seq.empty, subsidyRetrieve)(_),
         () => connector.retrieveSubsidy(subsidyRetrieve)

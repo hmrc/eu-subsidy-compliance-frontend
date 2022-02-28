@@ -28,11 +28,7 @@ import utils.CommonTestData.emailSendRequest
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class SendEmailConnectorSpec extends AnyWordSpec
-  with Matchers
-  with MockFactory
-  with HttpSupport
-  with ConnectorSpec {
+class SendEmailConnectorSpec extends AnyWordSpec with Matchers with MockFactory with HttpSupport with ConnectorSpec {
 
   val (protocol, host, port) = ("http", "host", "123")
 
@@ -46,10 +42,10 @@ class SendEmailConnectorSpec extends AnyWordSpec
                                  |""".stripMargin)
   )
 
-  val connector = new SendEmailConnectorImpl(mockHttp,  new ServicesConfig(config))
+  val connector = new SendEmailConnectorImpl(mockHttp, new ServicesConfig(config))
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  val responseHeaders = Map.empty[String, Seq[String]]
+  val responseHeaders            = Map.empty[String, Seq[String]]
 
   "SendEmailConnectorSpec" when {
     "handling request to send  email address " must {
@@ -62,6 +58,4 @@ class SendEmailConnectorSpec extends AnyWordSpec
     }
   }
 
-
 }
-

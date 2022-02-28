@@ -36,7 +36,6 @@ object HttpResponseSyntax {
                 Left("Could not parse http response JSON"),
               Right(_)
             )
-
         case Failure(_) ⇒
           // response.json failed in this case - there was no JSON in the response
           Left(s"Could not read http response as JSON")

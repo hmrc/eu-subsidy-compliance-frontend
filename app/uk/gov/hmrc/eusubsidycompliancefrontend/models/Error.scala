@@ -25,4 +25,3 @@ object Error {
   def apply(error: Throwable): Error = Error(Right(error))
 
 }
-

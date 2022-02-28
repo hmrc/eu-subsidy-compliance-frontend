@@ -32,7 +32,7 @@ trait ConnectorSpec { this: Matchers with AnyWordSpecLike =>
 
   def connectorBehaviour(
     mockResponse: Option[HttpResponse] => Unit,
-    performCall: () => Future[Either[Error, HttpResponse]],
+    performCall: () => Future[Either[Error, HttpResponse]]
   ) = {
     "do a get http call and return the result" in {
       List(
@@ -59,12 +59,11 @@ trait ConnectorSpec { this: Matchers with AnyWordSpecLike =>
     }
   }
 
-
   def connectorBehaviourWithMockTime(
-                          mockResponse: Option[HttpResponse] => Unit,
-                          performCall: () => Future[Either[Error, HttpResponse]],
-                          mockTimeResponse: LocalDate => Unit
-                        ) = {
+    mockResponse: Option[HttpResponse] => Unit,
+    performCall: () => Future[Either[Error, HttpResponse]],
+    mockTimeResponse: LocalDate => Unit
+  ) = {
     "do a get http call and return the result" in {
 
       List(

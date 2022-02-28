@@ -32,7 +32,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EligibilityController @Inject()(
+class EligibilityController @Inject() (
   mcc: MessagesControllerComponents,
   auditService: AuditService,
   journeyTraverseService: JourneyTraverseService,
@@ -47,17 +47,17 @@ class EligibilityController @Inject()(
   createUndertakingPage: CreateUndertakingPage,
   escActionBuilders: EscActionBuilders,
   store: Store
-)(
-  implicit val appConfig: AppConfig,
+)(implicit
+  val appConfig: AppConfig,
   executionContext: ExecutionContext
-) extends
-  BaseController(mcc) {
+) extends BaseController(mcc) {
 
   import escActionBuilders._
 
   def firstEmptyPage: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-   store.get[EligibilityJourney]
+    store
+      .get[EligibilityJourney]
       .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
       .map { eligibilityJourney =>
         eligibilityJourney.firstEmpty.fold(Redirect(routes.UndertakingController.getUndertakingName()))(identity)
@@ -66,43 +66,49 @@ class EligibilityController @Inject()(
 
   def getCustomsWaivers: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[EligibilityJourney]
+    store
+      .get[EligibilityJourney]
       .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
       .map { journey =>
-        val form = journey.customsWaivers.value.fold(customsWaiversForm)(customWaiverBool => customsWaiversForm.fill(FormValues(customWaiverBool.toString)))
+        val form = journey.customsWaivers.value.fold(customsWaiversForm)(customWaiverBool =>
+          customsWaiversForm.fill(FormValues(customWaiverBool.toString))
+        )
         Ok(customsWaiversPage(form))
-    }
+      }
   }
 
   def postCustomsWaivers: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    customsWaiversForm.bindFromRequest().fold(
-      errors => Future.successful(BadRequest(customsWaiversPage(errors))),
-      form => {
-        store.update[EligibilityJourney](updateCustomWaiver(form.value.toBoolean)).flatMap(_.next)
-      }
-    )
+    customsWaiversForm
+      .bindFromRequest()
+      .fold(
+        errors => Future.successful(BadRequest(customsWaiversPage(errors))),
+        form => store.update[EligibilityJourney](updateCustomWaiver(form.value.toBoolean)).flatMap(_.next)
+      )
   }
 
   def getWillYouClaim: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[EligibilityJourney]
+    store
+      .get[EligibilityJourney]
       .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
       .map { journey =>
-        val form = journey.willYouClaim.value.fold(willYouClaimForm)(willYouClaimBool => willYouClaimForm.fill(FormValues(willYouClaimBool.toString)))
-       Ok(willYouClaimPage(form, journey.previous))
-    }
+        val form = journey.willYouClaim.value.fold(willYouClaimForm)(willYouClaimBool =>
+          willYouClaimForm.fill(FormValues(willYouClaimBool.toString))
+        )
+        Ok(willYouClaimPage(form, journey.previous))
+      }
   }
 
   def postWillYouClaim: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[EligibilityJourney].flatMap { previous =>
-      willYouClaimForm.bindFromRequest().fold(
-        errors => Future.successful(BadRequest(willYouClaimPage(errors, previous))),
-        form => {
-          store.update[EligibilityJourney](updateWillYouClaim(form.value.toBoolean)).flatMap(_.next)
-        }
-      )
+      willYouClaimForm
+        .bindFromRequest()
+        .fold(
+          errors => Future.successful(BadRequest(willYouClaimPage(errors, previous))),
+          form => store.update[EligibilityJourney](updateWillYouClaim(form.value.toBoolean)).flatMap(_.next)
+        )
     }
   }
 
@@ -110,28 +116,31 @@ class EligibilityController @Inject()(
     Ok(notEligiblePage()).toFuture
   }
 
-
   def getMainBusinessCheck: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[EligibilityJourney]
+    store
+      .get[EligibilityJourney]
       .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
       .map { journey =>
-        val form = journey.mainBusinessCheck.value.fold(mainBusinessCheckForm)(mainBC => mainBusinessCheckForm.fill(FormValues(mainBC.toString)))
+        val form = journey.mainBusinessCheck.value.fold(mainBusinessCheckForm)(mainBC =>
+          mainBusinessCheckForm.fill(FormValues(mainBC.toString))
+        )
         Ok(mainBusinessCheckPage(form, journey.previous))
-    }
+      }
   }
 
   def postMainBusinessCheck: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    journeyTraverseService.getPrevious[EligibilityJourney]
+    journeyTraverseService
+      .getPrevious[EligibilityJourney]
       .flatMap { previous =>
-      mainBusinessCheckForm.bindFromRequest().fold(
-        errors => Future.successful(BadRequest(mainBusinessCheckPage(errors, previous))),
-        form => {
-          store.update[EligibilityJourney](updateMainBusinessCheck(form.value.toBoolean)).flatMap(_.next)
-        }
-      )
-    }
+        mainBusinessCheckForm
+          .bindFromRequest()
+          .fold(
+            errors => Future.successful(BadRequest(mainBusinessCheckPage(errors, previous))),
+            form => store.update[EligibilityJourney](updateMainBusinessCheck(form.value.toBoolean)).flatMap(_.next)
+          )
+      }
   }
 
   def getNotEligibleToLead: Action[AnyContent] = escAuthentication.async { implicit request =>
@@ -147,38 +156,40 @@ class EligibilityController @Inject()(
 
   def postTerms: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-      termsForm.bindFromRequest().fold(
+    termsForm
+      .bindFromRequest()
+      .fold(
         _ => throw new IllegalStateException("value hard-coded, form hacking?"),
-        form => {
+        form =>
           store.update[EligibilityJourney](updateAcceptTerms(form.value.toBoolean)).flatMap { eligibilityJourney =>
             auditService.sendEvent(TermsAndConditionsAccepted(eori))
             eligibilityJourney.next
           }
-        }
       )
 
   }
 
   def getEoriCheck: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-      store.get[EligibilityJourney].map {
-        case Some(journey) =>
-          val form = journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck => eoriCheckForm.fill(FormValues(eoriCheck.toString)))
-          Ok(checkEoriPage(form, eori, journey.previous))
-        case _ => handleMissingSessionData("Eligibility journey")
-      }
+    store.get[EligibilityJourney].map {
+      case Some(journey) =>
+        val form =
+          journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck => eoriCheckForm.fill(FormValues(eoriCheck.toString)))
+        Ok(checkEoriPage(form, eori, journey.previous))
+      case _ => handleMissingSessionData("Eligibility journey")
+    }
 
   }
 
   def postEoriCheck: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[EligibilityJourney].flatMap { previous =>
-      eoriCheckForm.bindFromRequest().fold(
-        errors => Future.successful(BadRequest(checkEoriPage(errors, eori, previous))),
-        form => {
-          store.update[EligibilityJourney](updateEoriCheck(form.value.toBoolean)).flatMap(_.next)
-        }
-      )
+      eoriCheckForm
+        .bindFromRequest()
+        .fold(
+          errors => Future.successful(BadRequest(checkEoriPage(errors, eori, previous))),
+          form => store.update[EligibilityJourney](updateEoriCheck(form.value.toBoolean)).flatMap(_.next)
+        )
     }
   }
 
@@ -195,59 +206,75 @@ class EligibilityController @Inject()(
 
   def postCreateUndertaking: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    createUndertakingForm.bindFromRequest().fold(
-      _ => throw new IllegalStateException("value hard-coded, form hacking?"),
-      form => {
-        store.update[EligibilityJourney](updateCreateUndertaking(form.value.toBoolean)).map { _ =>
-          Redirect(routes.UndertakingController.getUndertakingName())
-        }
-      }
-    )
+    createUndertakingForm
+      .bindFromRequest()
+      .fold(
+        _ => throw new IllegalStateException("value hard-coded, form hacking?"),
+        form =>
+          store.update[EligibilityJourney](updateCreateUndertaking(form.value.toBoolean)).map { _ =>
+            Redirect(routes.UndertakingController.getUndertakingName())
+          }
+      )
   }
 
-  private def updateEligibilityJourney(eligibilityJourneyOpt: Option[EligibilityJourney])(f: EligibilityJourney => EligibilityJourney) = eligibilityJourneyOpt.map(f)
+  private def updateEligibilityJourney(eligibilityJourneyOpt: Option[EligibilityJourney])(
+    f: EligibilityJourney => EligibilityJourney
+  ) = eligibilityJourneyOpt.map(f)
 
-  private def updateWillYouClaim(newWillYouClaim: Boolean)(eligibilityJourneyOpt : Option[EligibilityJourney]) = updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
-    ej.copy(willYouClaim = ej.willYouClaim.copy(value = Some(newWillYouClaim)))
-  }
+  private def updateWillYouClaim(newWillYouClaim: Boolean)(eligibilityJourneyOpt: Option[EligibilityJourney]) =
+    updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
+      ej.copy(willYouClaim = ej.willYouClaim.copy(value = Some(newWillYouClaim)))
+    }
 
-  private def updateCustomWaiver(newCustomWaiver: Boolean)(eligibilityJourneyOpt : Option[EligibilityJourney]) = updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
-    ej.copy(customsWaivers = ej.customsWaivers.copy(value = Some(newCustomWaiver)))
-  }
+  private def updateCustomWaiver(newCustomWaiver: Boolean)(eligibilityJourneyOpt: Option[EligibilityJourney]) =
+    updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
+      ej.copy(customsWaivers = ej.customsWaivers.copy(value = Some(newCustomWaiver)))
+    }
 
-  private def updateMainBusinessCheck(newMainBusinessCheck: Boolean)(eligibilityJourneyOpt : Option[EligibilityJourney]) = updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
+  private def updateMainBusinessCheck(
+    newMainBusinessCheck: Boolean
+  )(eligibilityJourneyOpt: Option[EligibilityJourney]) = updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
     ej.copy(mainBusinessCheck = ej.mainBusinessCheck.copy(value = Some(newMainBusinessCheck)))
   }
 
-  private def updateAcceptTerms(newAcceptTerms: Boolean)(eligibilityJourneyOpt : Option[EligibilityJourney]) = updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
-    ej.copy(acceptTerms = ej.acceptTerms.copy(value = Some(newAcceptTerms)))
-  }
+  private def updateAcceptTerms(newAcceptTerms: Boolean)(eligibilityJourneyOpt: Option[EligibilityJourney]) =
+    updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
+      ej.copy(acceptTerms = ej.acceptTerms.copy(value = Some(newAcceptTerms)))
+    }
 
-  private def updateEoriCheck(newEoriCheck: Boolean)(eligibilityJourneyOpt : Option[EligibilityJourney]) = updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
-    ej.copy(eoriCheck = ej.eoriCheck.copy(value = Some(newEoriCheck)))
-  }
+  private def updateEoriCheck(newEoriCheck: Boolean)(eligibilityJourneyOpt: Option[EligibilityJourney]) =
+    updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
+      ej.copy(eoriCheck = ej.eoriCheck.copy(value = Some(newEoriCheck)))
+    }
 
-  private def updateCreateUndertaking(newCreateUndertaking: Boolean)(eligibilityJourneyOpt : Option[EligibilityJourney]) = updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
+  private def updateCreateUndertaking(
+    newCreateUndertaking: Boolean
+  )(eligibilityJourneyOpt: Option[EligibilityJourney]) = updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
     ej.copy(createUndertaking = ej.createUndertaking.copy(value = Some(newCreateUndertaking)))
   }
 
-
   lazy val customsWaiversForm: Form[FormValues] = Form(
-    mapping("customswaivers" -> mandatory("customswaivers"))(FormValues.apply)(FormValues.unapply))
+    mapping("customswaivers" -> mandatory("customswaivers"))(FormValues.apply)(FormValues.unapply)
+  )
 
   lazy val mainBusinessCheckForm: Form[FormValues] = Form(
-    mapping("mainbusinesscheck" -> mandatory("mainbusinesscheck"))(FormValues.apply)(FormValues.unapply))
+    mapping("mainbusinesscheck" -> mandatory("mainbusinesscheck"))(FormValues.apply)(FormValues.unapply)
+  )
 
   lazy val willYouClaimForm: Form[FormValues] = Form(
-    mapping("willyouclaim" -> mandatory("willyouclaim"))(FormValues.apply)(FormValues.unapply))
+    mapping("willyouclaim" -> mandatory("willyouclaim"))(FormValues.apply)(FormValues.unapply)
+  )
 
   lazy val termsForm: Form[FormValues] = Form(
-    mapping("terms" -> mandatory("terms"))(FormValues.apply)(FormValues.unapply))
+    mapping("terms" -> mandatory("terms"))(FormValues.apply)(FormValues.unapply)
+  )
 
-  lazy val eoriCheckForm : Form[FormValues] = Form(
-    mapping("eoricheck" -> mandatory("eoricheck"))(FormValues.apply)(FormValues.unapply))
+  lazy val eoriCheckForm: Form[FormValues] = Form(
+    mapping("eoricheck" -> mandatory("eoricheck"))(FormValues.apply)(FormValues.unapply)
+  )
 
   lazy val createUndertakingForm: Form[FormValues] = Form(
-    mapping("createUndertaking" -> mandatory("createUndertaking"))(FormValues.apply)(FormValues.unapply))
+    mapping("createUndertaking" -> mandatory("createUndertaking"))(FormValues.apply)(FormValues.unapply)
+  )
 
 }

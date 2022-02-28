@@ -23,18 +23,17 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
-
 @Singleton
-class SignOutController @Inject()(
+class SignOutController @Inject() (
   mcc: MessagesControllerComponents,
   signOutPage: SignOutPage
-)(implicit val appConfig: AppConfig) extends BaseController(mcc)
+)(implicit val appConfig: AppConfig)
+    extends BaseController(mcc)
     with I18nSupport
     with Logging {
 
   val signOut: Action[AnyContent] = Action { implicit request =>
     Ok(signOutPage()).withNewSession
   }
-
 
 }

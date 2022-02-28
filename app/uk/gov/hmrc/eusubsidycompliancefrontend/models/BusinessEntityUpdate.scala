@@ -25,36 +25,35 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.AmendmentType.Amendm
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
 case class BusinessEntityUpdate(
-	amendmentType: AmendmentType,
-	amendmentEffectiveDate: LocalDate,
-	businessEntity: BusinessEntity
+  amendmentType: AmendmentType,
+  amendmentEffectiveDate: LocalDate,
+  businessEntity: BusinessEntity
 )
 
 object BusinessEntityUpdate {
-	implicit val businessEntityWrites: Writes[BusinessEntity] = (
-		(JsPath \ "businessEntityIdentifier").write[EORI] and
-			(JsPath \ "leadEORIIndicator").write[Boolean]
-		)(unlift(BusinessEntity.unapply))
+  implicit val businessEntityWrites: Writes[BusinessEntity] = (
+    (JsPath \ "businessEntityIdentifier").write[EORI] and
+      (JsPath \ "leadEORIIndicator").write[Boolean]
+  )(unlift(BusinessEntity.unapply))
 
-	implicit val businessEntityUpdateWrites: Writes[BusinessEntityUpdate] = new Writes[BusinessEntityUpdate] {
-		override def writes(o: BusinessEntityUpdate): JsValue = Json.obj(
-			"amendmentType" -> o.amendmentType,
-			"amendmentEffectiveDate" -> o.amendmentEffectiveDate,
-			"businessEntity" -> o.businessEntity
-		)
-	}
+  implicit val businessEntityUpdateWrites: Writes[BusinessEntityUpdate] = new Writes[BusinessEntityUpdate] {
+    override def writes(o: BusinessEntityUpdate): JsValue = Json.obj(
+      "amendmentType"          -> o.amendmentType,
+      "amendmentEffectiveDate" -> o.amendmentEffectiveDate,
+      "businessEntity"         -> o.businessEntity
+    )
+  }
 
   implicit val reads: Reads[BusinessEntityUpdate] = new Reads[BusinessEntityUpdate] {
-		implicit val beReads = businessEntityReads
+    implicit val beReads = businessEntityReads
 
-		override def reads(json: JsValue): JsResult[BusinessEntityUpdate] = {
-			JsSuccess(
-				BusinessEntityUpdate(
-					(json \ "amendmentType").as[AmendmentType],
-					(json \ "amendmentEffectiveDate").as[LocalDate],
-					(json \ "businessEntity").as[BusinessEntity]
-				)
-			)
-		}
+    override def reads(json: JsValue): JsResult[BusinessEntityUpdate] =
+      JsSuccess(
+        BusinessEntityUpdate(
+          (json \ "amendmentType").as[AmendmentType],
+          (json \ "amendmentEffectiveDate").as[LocalDate],
+          (json \ "businessEntity").as[BusinessEntity]
+        )
+      )
   }
 }

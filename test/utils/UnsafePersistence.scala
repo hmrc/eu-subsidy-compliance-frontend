@@ -37,13 +37,14 @@ class UnsafePersistence extends Store {
     Future.successful(in)
   }
 
-  override def update[A: ClassTag](
+  override def update[A : ClassTag](
     f: Option[A] => Option[A]
-  )(
-    implicit eori: EORI,
+  )(implicit
+    eori: EORI,
     format: Format[A]
   ): Future[A] =
-    get.map(f)
+    get
+      .map(f)
       .flatMap(x => x.fold(throw new IllegalStateException("trying to update non-existent model"))(put(_)))
 
 }

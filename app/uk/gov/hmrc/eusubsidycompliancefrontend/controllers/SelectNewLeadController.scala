@@ -30,35 +30,40 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelectNewLeadController @Inject()(
-     mcc: MessagesControllerComponents,
-     escActionBuilders: EscActionBuilders,
-     escService: EscService,
-     store: Store,
-     sendEmailHelperService : SendEmailHelperService,
-     selectNewLeadPage: SelectNewLeadPage,
-     leadEORIChangedPage: LeadEORIChangedPage
-)( implicit val appConfig: AppConfig, executionContext: ExecutionContext) extends BaseController(mcc) {
+class SelectNewLeadController @Inject() (
+  mcc: MessagesControllerComponents,
+  escActionBuilders: EscActionBuilders,
+  escService: EscService,
+  store: Store,
+  sendEmailHelperService: SendEmailHelperService,
+  selectNewLeadPage: SelectNewLeadPage,
+  leadEORIChangedPage: LeadEORIChangedPage
+)(implicit val appConfig: AppConfig, executionContext: ExecutionContext)
+    extends BaseController(mcc) {
 
   import escActionBuilders._
 
   val promoteOtherAsLeadEmailToBusinessEntity = "promoteAsLeadEmailToBE"
-  val promoteOtherAsLeadEmailToLead = "promoteAsLeadEmailToLead"
+  val promoteOtherAsLeadEmailToLead           = "promoteAsLeadEmailToLead"
 
   def getSelectNewLead: Action[AnyContent] = escAuthentication.async { implicit request =>
-    val previous = routes.AccountController.getAccountPage().url
+    val previous      = routes.AccountController.getAccountPage().url
     implicit val eori = request.eoriNumber
     (for {
       newLeadJourneyOpt <- store.get[NewLeadJourney]
-      undertakingOpt <- escService.retrieveUndertaking(eori)
+      undertakingOpt    <- escService.retrieveUndertaking(eori)
     } yield (newLeadJourneyOpt, undertakingOpt) match {
       case (Some(newLeadJourney), Some(undertaking)) =>
-        val form = newLeadJourney.selectNewLead.value.fold(selectNewLeadForm)(eori => selectNewLeadForm.fill(FormValues(eori.toString)))
+        val form = newLeadJourney.selectNewLead.value.fold(selectNewLeadForm)(eori =>
+          selectNewLeadForm.fill(FormValues(eori.toString))
+        )
         Future.successful(Ok(selectNewLeadPage(form, previous, undertaking.name, undertaking.getAllNonLeadEORIs())))
 
       case (None, Some(undertaking)) =>
         store.put(NewLeadJourney()).map { journey =>
-          val form = journey.selectNewLead.value.fold(selectNewLeadForm)(eori => selectNewLeadForm.fill(FormValues(eori.toString)))
+          val form = journey.selectNewLead.value.fold(selectNewLeadForm)(eori =>
+            selectNewLeadForm.fill(FormValues(eori.toString))
+          )
           Ok(selectNewLeadPage(form, previous, undertaking.name, undertaking.getAllNonLeadEORIs()))
         }
 
@@ -66,31 +71,49 @@ class SelectNewLeadController @Inject()(
     }).flatten
   }
 
-
   def postSelectNewLead: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    val previous = routes.AccountController.getAccountPage().url
+    val previous            = routes.AccountController.getAccountPage().url
     escService.retrieveUndertaking(eori).flatMap {
       _ match {
         case Some(undertaking) =>
-          selectNewLeadForm.bindFromRequest().fold(
-            errors => Future.successful(BadRequest(selectNewLeadPage(errors, previous, undertaking.name, undertaking.getAllNonLeadEORIs()))),
-            form => {
-              val eoriBE = EORI(form.value)
-              val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking Ref"))
-              for {
-                _ <-  store.update[NewLeadJourney] {
-                  _.map { newLeadJourney =>
-                    val updatedLead = newLeadJourney.selectNewLead.copy(value = eoriBE.some)
-                    newLeadJourney.copy(selectNewLead = updatedLead)
+          selectNewLeadForm
+            .bindFromRequest()
+            .fold(
+              errors =>
+                Future.successful(
+                  BadRequest(selectNewLeadPage(errors, previous, undertaking.name, undertaking.getAllNonLeadEORIs()))
+                ),
+              form => {
+                val eoriBE         = EORI(form.value)
+                val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking Ref"))
+                for {
+                  _ <- store.update[NewLeadJourney] {
+                    _.map { newLeadJourney =>
+                      val updatedLead = newLeadJourney.selectNewLead.copy(value = eoriBE.some)
+                      newLeadJourney.copy(selectNewLead = updatedLead)
+                    }
                   }
-                }
-                _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(eoriBE, None, promoteOtherAsLeadEmailToBusinessEntity, undertaking, undertakingRef, None)
-                _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(eori, eoriBE.some, promoteOtherAsLeadEmailToLead, undertaking, undertakingRef, None)
-              } yield Redirect(routes.SelectNewLeadController.getLeadEORIChanged())
+                  _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+                    eoriBE,
+                    None,
+                    promoteOtherAsLeadEmailToBusinessEntity,
+                    undertaking,
+                    undertakingRef,
+                    None
+                  )
+                  _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+                    eori,
+                    eoriBE.some,
+                    promoteOtherAsLeadEmailToLead,
+                    undertaking,
+                    undertakingRef,
+                    None
+                  )
+                } yield Redirect(routes.SelectNewLeadController.getLeadEORIChanged())
 
-            }
-          )
+              }
+            )
         case _ => handleMissingSessionData("Undertaking journey")
       }
     }
@@ -102,9 +125,11 @@ class SelectNewLeadController @Inject()(
       _ match {
         case Some(newLeadJourney) =>
           for {
-            undertaking <- escService.retrieveUndertaking(eori).map(_.getOrElse(handleMissingSessionData("Undertaking")))
+            undertaking <- escService
+              .retrieveUndertaking(eori)
+              .map(_.getOrElse(handleMissingSessionData("Undertaking")))
             selectedEORI: EORI = newLeadJourney.selectNewLead.value.getOrElse(handleMissingSessionData("selected EORI"))
-            _ <- store.update[BusinessEntityJourney]{businessEntityOpt =>
+            _ <- store.update[BusinessEntityJourney] { businessEntityOpt =>
               businessEntityOpt.map(_.copy(isLeadSelectJourney = None))
             }
             _ <- store.put[NewLeadJourney](NewLeadJourney())
@@ -116,7 +141,7 @@ class SelectNewLeadController @Inject()(
   }
 
   lazy val selectNewLeadForm: Form[FormValues] = Form(
-    mapping("selectNewLead" -> mandatory("selectNewLead"))(FormValues.apply)(FormValues.unapply))
-
+    mapping("selectNewLead" -> mandatory("selectNewLead"))(FormValues.apply)(FormValues.unapply)
+  )
 
 }

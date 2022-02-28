@@ -29,21 +29,19 @@ import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
-
 @ImplementedBy(classOf[AuditServiceImpl])
 trait AuditService {
 
   def sendEvent[A <: AuditEvent](auditEvent: A)(implicit
-        hc: HeaderCarrier,
-        writes: Writes[A],
-        request: Request[_]
+    hc: HeaderCarrier,
+    writes: Writes[A],
+    request: Request[_]
   ): Unit
-
 }
 
 @Singleton
-class AuditServiceImpl @Inject()(auditConnector: AuditConnector)(implicit ec: ExecutionContext)
-  extends AuditService
+class AuditServiceImpl @Inject() (auditConnector: AuditConnector)(implicit ec: ExecutionContext)
+    extends AuditService
     with Logging {
 
   private val auditSource: String = "eu-subsidy-compliance-frontend"
@@ -51,10 +49,10 @@ class AuditServiceImpl @Inject()(auditConnector: AuditConnector)(implicit ec: Ex
   override def sendEvent[A <: AuditEvent](
     auditEvent: A
   )(implicit
-       hc: HeaderCarrier,
-       writes: Writes[A],
-       request: Request[_]
-   ): Unit = {
+    hc: HeaderCarrier,
+    writes: Writes[A],
+    request: Request[_]
+  ): Unit = {
     val extendedDataEvent = ExtendedDataEvent(
       auditSource = auditSource,
       auditType = auditEvent.auditType,

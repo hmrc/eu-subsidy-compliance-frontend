@@ -28,11 +28,12 @@ import utils.CommonTestData.{eori1}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class RetrieveEmailConnectorSpec  extends AnyWordSpec
-  with Matchers
-  with MockFactory
-  with HttpSupport
-  with ConnectorSpec {
+class RetrieveEmailConnectorSpec
+    extends AnyWordSpec
+    with Matchers
+    with MockFactory
+    with HttpSupport
+    with ConnectorSpec {
 
   val (protocol, host, port) = ("http", "host", "123")
 
@@ -46,21 +47,20 @@ class RetrieveEmailConnectorSpec  extends AnyWordSpec
                                  |""".stripMargin)
   )
 
-  val connector = new RetrieveEmailConnectorImpl(mockHttp,  new ServicesConfig(config))
+  val connector = new RetrieveEmailConnectorImpl(mockHttp, new ServicesConfig(config))
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  val responseHeaders = Map.empty[String, Seq[String]]
+  val responseHeaders            = Map.empty[String, Seq[String]]
 
   "RetrieveEmailConnectorSpec" when {
-     "handling request to retrieve email address by eori" must {
-       val expectedUrl = s"$protocol://$host:$port/customs-data-store/eori/${eori1.toString}/verified-email"
+    "handling request to retrieve email address by eori" must {
+      val expectedUrl = s"$protocol://$host:$port/customs-data-store/eori/${eori1.toString}/verified-email"
 
-       behave like connectorBehaviour(
-         mockGet(expectedUrl)(_),
-         () => connector.retrieveEmailByEORI(eori1)
-       )
-     }
+      behave like connectorBehaviour(
+        mockGet(expectedUrl)(_),
+        () => connector.retrieveEmailByEORI(eori1)
+      )
+    }
   }
-
 
 }

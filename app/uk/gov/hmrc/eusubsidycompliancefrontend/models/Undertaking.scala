@@ -38,23 +38,22 @@ object Undertaking {
 
     //Check if the eori entered is Lead EORI or not
     def isLeadEORI(eori: EORI): Boolean = {
-      val leadEORI: BusinessEntity = undertaking
-        .undertakingBusinessEntity
+      val leadEORI: BusinessEntity = undertaking.undertakingBusinessEntity
         .filter(_.leadEORI)
         .headOption
         .getOrElse(throw new IllegalStateException("Missing Lead EORI"))
-    leadEORI.businessEntityIdentifier.toString == eori.toString
+      leadEORI.businessEntityIdentifier.toString == eori.toString
     }
 
     //Fetches the Business entity for the given EORI
-    def getBusinessEntityByEORI(eori: EORI): BusinessEntity = {
+    def getBusinessEntityByEORI(eori: EORI): BusinessEntity =
       undertaking.undertakingBusinessEntity
         .filter(be => be.businessEntityIdentifier == eori)
         .headOption
         .getOrElse(throw new IllegalStateException(s"BE with eori $eori is missing"))
-    }
 
-    def getAllNonLeadEORIs(): List[EORI] = undertaking.undertakingBusinessEntity.filter(!_.leadEORI).map(_.businessEntityIdentifier)
+    def getAllNonLeadEORIs(): List[EORI] =
+      undertaking.undertakingBusinessEntity.filter(!_.leadEORI).map(_.businessEntityIdentifier)
 
     def getLeadEORI = undertaking.undertakingBusinessEntity
       .filter(_.leadEORI)

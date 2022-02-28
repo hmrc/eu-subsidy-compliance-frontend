@@ -23,7 +23,6 @@ import play.api.libs.json._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.json._
 
-
 // assuming that we always want both subsidy types, and that any date range should apply to both
 case class SubsidyRetrieve(
   undertakingIdentifier: UndertakingRef,
@@ -53,9 +52,9 @@ object SubsidyRetrieve {
   implicit val reads: Reads[SubsidyRetrieve] = new Reads[SubsidyRetrieve] {
     override def reads(json: JsValue): JsResult[SubsidyRetrieve] = {
       val undertakingIdentifier = (json \ "undertakingIdentifier").as[UndertakingRef]
-      val from = (json \ "dateFromNonHMRCSubsidyUsage").asOpt[LocalDate]
-      val to = (json \ "dateToNonHMRCSubsidyUsage").asOpt[LocalDate]
-      val range = (from, to).bisequence
+      val from                  = (json \ "dateFromNonHMRCSubsidyUsage").asOpt[LocalDate]
+      val to                    = (json \ "dateToNonHMRCSubsidyUsage").asOpt[LocalDate]
+      val range                 = (from, to).bisequence
       JsSuccess(SubsidyRetrieve(undertakingIdentifier, range))
     }
   }

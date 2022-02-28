@@ -31,6 +31,4 @@ trait AuditServiceSupport { this: MockFactory =>
       .sendEvent(_: A)(_: HeaderCarrier, _: Writes[A], _: Request[_]))
       .expects(event, *, *, *)
       .returning(())
-
 }
-

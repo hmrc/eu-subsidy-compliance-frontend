@@ -23,17 +23,16 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
 trait HttpSupport { this: MockFactory with Matchers ⇒
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
   val mockHttp: HttpClient = mock[HttpClient]
 
   def mockGet[A](
-                  url: String
-                )(
-                  response: Option[A]
-                ) =
+    url: String
+  )(
+    response: Option[A]
+  ) =
     (mockHttp
       .GET(_: String, _: Seq[(String, String)], _: Seq[(String, String)])(
         _: HttpReads[A],
@@ -51,9 +50,9 @@ trait HttpSupport { this: MockFactory with Matchers ⇒
         ) ⇒
           // use matchers here to get useful error messages when the following predicates
           // are not satisfied - otherwise it is difficult to tell in the logs what went wrong
-          u              shouldBe url
-          q              shouldBe Seq.empty
-          r              shouldBe Seq.empty
+          u shouldBe url
+          q shouldBe Seq.empty
+          r shouldBe Seq.empty
           h.extraHeaders shouldBe Seq.empty
           true
       })
