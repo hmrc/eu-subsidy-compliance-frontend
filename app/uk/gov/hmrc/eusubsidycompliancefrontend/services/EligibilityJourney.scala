@@ -70,6 +70,7 @@ case class EligibilityJourney(
 
 object EligibilityJourney {
   import Journey._ // N.B. don't let intellij delete this
+
   implicit val format: Format[EligibilityJourney] = Json.format[EligibilityJourney]
 
   // TODO - consider introducing form classes for each page
@@ -97,14 +98,14 @@ object EligibilityJourney {
     case class CreateUndertakingFormPage(value: Form[Boolean] = None) extends FormPageBase[Boolean] { val uri = FormUrls.CreateUndertaking}
 
     object CustomsWaiversFormPage { implicit val customsWaiversFormPageFormat: OFormat[CustomsWaiversFormPage] = Json.format }
-    object WillYouClaimFormPage { implicit val willYouClaimFormPageFormat: OFormat[CustomsWaiversFormPage] = Json.format }
-    object NotEligibleFormPage { implicit val notEligibleFormPageFormat: OFormat[CustomsWaiversFormPage] = Json.format }
-    object MainBusinessCheckFormPage { implicit val mainBusinessCheckFormPageFormat: OFormat[CustomsWaiversFormPage] = Json.format }
-    object SignOutBadEoriFormPage { implicit val signOutFormPageFormat: OFormat[CustomsWaiversFormPage] = Json.format }
-    object AcceptTermsFormPage { implicit val acceptTermsFormPageFormat: OFormat[CustomsWaiversFormPage] = Json.format }
-    object EoriCheckFormPage { implicit val eoriCheckFormPageFormat: OFormat[CustomsWaiversFormPage] = Json.format }
-    object SignOutFormPage { implicit val signOutFormPageFormat: OFormat[CustomsWaiversFormPage] = Json.format }
-    object CreateUndertakingFormPage { implicit val createUndertakingFormPageFormat: OFormat[CustomsWaiversFormPage] = Json.format }
+    object WillYouClaimFormPage { implicit val willYouClaimFormPageFormat: OFormat[WillYouClaimFormPage] = Json.format }
+    object NotEligibleFormPage { implicit val notEligibleFormPageFormat: OFormat[NotEligibleFormPage] = Json.format }
+    object MainBusinessCheckFormPage { implicit val mainBusinessCheckFormPageFormat: OFormat[MainBusinessCheckFormPage] = Json.format }
+    object SignOutBadEoriFormPage { implicit val signOutFormPageFormat: OFormat[SignOutBadEoriFormPage] = Json.format }
+    object AcceptTermsFormPage { implicit val acceptTermsFormPageFormat: OFormat[AcceptTermsFormPage] = Json.format }
+    object EoriCheckFormPage { implicit val eoriCheckFormPageFormat: OFormat[EoriCheckFormPage] = Json.format }
+    object SignOutFormPage { implicit val signOutFormPageFormat: OFormat[SignOutFormPage] = Json.format }
+    object CreateUndertakingFormPage { implicit val createUndertakingFormPageFormat: OFormat[CreateUndertakingFormPage] = Json.format }
   }
 
 }

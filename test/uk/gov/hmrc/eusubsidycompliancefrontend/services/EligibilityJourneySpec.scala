@@ -19,6 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.FormUrls.{CustomsWaivers, EoriCheck, MainBusinessCheck, WillYouClaim}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.{CustomsWaiversFormPage, EoriCheckFormPage, MainBusinessCheckFormPage, WillYouClaimFormPage}
 
 class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
 
@@ -43,7 +44,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
 
       "remove will you claim and notEligible steps if customs waivers form has true value" in {
         val underTest = EligibilityJourney(
-          customsWaivers = FormPage(CustomsWaivers, Some(true))
+          customsWaivers = CustomsWaiversFormPage(Some(true)),
         )
         underTest.formPages shouldBe List(
           underTest.customsWaivers,
@@ -74,8 +75,8 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
 
       "remove sign out step if main business check has true value" in {
         val underTest = EligibilityJourney(
-          willYouClaim = FormPage(WillYouClaim, Some(true)),
-          mainBusinessCheck = FormPage(MainBusinessCheck, Some(true))
+          willYouClaim = WillYouClaimFormPage(Some(true)),
+          mainBusinessCheck = MainBusinessCheckFormPage(Some(true)),
         )
         underTest.formPages shouldBe List(
           underTest.customsWaivers,
@@ -90,9 +91,9 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
 
       "remove sign out bad eori step if eori check has true value" in {
         val underTest = EligibilityJourney(
-          willYouClaim = FormPage(WillYouClaim, Some(true)),
-          mainBusinessCheck = FormPage(MainBusinessCheck, Some(true)),
-          eoriCheck = FormPage(EoriCheck, Some(true))
+          willYouClaim = WillYouClaimFormPage(Some(true)),
+          mainBusinessCheck = MainBusinessCheckFormPage(Some(true)),
+          eoriCheck = EoriCheckFormPage(Some(true)),
         )
         underTest.formPages shouldBe List(
           underTest.customsWaivers,
