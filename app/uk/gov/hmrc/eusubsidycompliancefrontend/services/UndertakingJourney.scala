@@ -23,7 +23,7 @@ import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.{Form, Uri}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
@@ -60,9 +60,6 @@ case class UndertakingJourney(
 }
 
 object UndertakingJourney {
-  import Journey._
-
-  implicit val formPageSectorFormat: OFormat[FormPage[Sector]] = Json.format[FormPage[Sector]]
 
   implicit val format: Format[UndertakingJourney] = Json.format[UndertakingJourney]
 
@@ -88,10 +85,10 @@ object UndertakingJourney {
 
   object Forms {
     // TODO - replace uris with routes lookups
-    case class UndertakingNameFormPage(value: Form[String] = None) extends FormPageBase[String] { val uri = FormUrls.Name }
-    case class UndertakingSectorFormPage(value: Form[Sector] = None) extends FormPageBase[Sector] { val uri = FormUrls.Sector }
-    case class UndertakingCyaFormPage(value: Form[Boolean] = None) extends FormPageBase[Boolean] { val uri = FormUrls.Cya }
-    case class UndertakingConfirmationFormPage(value: Form[Boolean] = None) extends FormPageBase[Boolean] { val uri = FormUrls.Confirmation }
+    case class UndertakingNameFormPage(value: Form[String] = None) extends FormPage[String] { val uri = FormUrls.Name }
+    case class UndertakingSectorFormPage(value: Form[Sector] = None) extends FormPage[Sector] { val uri = FormUrls.Sector }
+    case class UndertakingCyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = FormUrls.Cya }
+    case class UndertakingConfirmationFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = FormUrls.Confirmation }
 
     object UndertakingNameFormPage { implicit val undertakingNameFormPage: OFormat[UndertakingNameFormPage] = Json.format }
     object UndertakingSectorFormPage { implicit val undertakingSectorFormPage: OFormat[UndertakingSectorFormPage] = Json.format }

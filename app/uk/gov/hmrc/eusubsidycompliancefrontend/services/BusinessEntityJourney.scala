@@ -21,6 +21,7 @@ import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Forms.{AddBusinessCyaFormPage, AddBusinessFormPage, AddEoriFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 
 case class BusinessEntityJourney(
   addBusiness: AddBusinessFormPage = AddBusinessFormPage(),
@@ -29,7 +30,7 @@ case class BusinessEntityJourney(
   isLeadSelectJourney: Option[Boolean] = None
 ) extends Journey {
 
-  override protected def steps: List[FormPageBase[_]] =
+  override protected def steps: List[FormPage[_]] =
     List(
       addBusiness,
       eori,
@@ -39,8 +40,6 @@ case class BusinessEntityJourney(
 
 object BusinessEntityJourney {
 
-  import Journey._ // N.B. don't let intellij delete this
-  implicit val formPageEoriFormat: OFormat[FormPage[EORI]] = Json.format[FormPage[EORI]]
   implicit val format: Format[BusinessEntityJourney] = Json.format[BusinessEntityJourney]
 
   // TODO populate the Journey[s] from the undertaking, probably need to map them by eori
@@ -62,9 +61,9 @@ object BusinessEntityJourney {
   }
 
   object Forms {
-    case class AddBusinessFormPage(value: Form[Boolean] = None) extends FormPageBase[Boolean] { val uri = FormUrls.AddBusiness }
-    case class AddEoriFormPage(value: Form[EORI] = None) extends FormPageBase[EORI] { val uri = FormUrls.Eori }
-    case class AddBusinessCyaFormPage(value: Form[Boolean] = None) extends FormPageBase[Boolean] { val uri = FormUrls.Cya }
+    case class AddBusinessFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = FormUrls.AddBusiness }
+    case class AddEoriFormPage(value: Form[EORI] = None) extends FormPage[EORI] { val uri = FormUrls.Eori }
+    case class AddBusinessCyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = FormUrls.Cya }
 
     object AddBusinessFormPage { implicit val addBusinessFormPageFormat: OFormat[AddBusinessFormPage] = Json.format }
     object AddEoriFormPage { implicit val addEoriFormPageFormat: OFormat[AddEoriFormPage] = Json.format }
