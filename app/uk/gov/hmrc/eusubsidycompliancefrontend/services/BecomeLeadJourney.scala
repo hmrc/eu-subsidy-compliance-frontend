@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import play.api.libs.json.{Format, Json, OFormat}
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 
@@ -41,7 +42,7 @@ object BecomeLeadJourney {
 
   object FormPages {
 
-    private val controller = uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes.BecomeLeadController
+    private val controller = routes.BecomeLeadController
 
     case class BecomeLeadEoriFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = controller.getBecomeLeadEori().url }
     case class TermsAndConditionsFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = controller.getAcceptPromotionTerms().url }
