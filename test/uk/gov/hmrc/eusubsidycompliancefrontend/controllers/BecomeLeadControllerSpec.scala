@@ -31,7 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.Sing
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.Forms.{BecomeLeadEoriFormPage, TermsAndConditionsFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages.{BecomeLeadEoriFormPage, TermsAndConditionsFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData._
