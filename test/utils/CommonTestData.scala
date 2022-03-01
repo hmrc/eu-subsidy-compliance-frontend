@@ -213,4 +213,6 @@ object CommonTestData {
       )
     )
   )
+
+  val businessEntityAddedEvent = AuditEvent.BusinessEntityAdded("1123", eori1, eori2)
 }

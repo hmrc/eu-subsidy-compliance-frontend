@@ -22,10 +22,11 @@ import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, JourneyTraverseService, SendEmailHelperService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, BusinessEntityJourney, EscService, JourneyTraverseService, SendEmailHelperService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -42,6 +43,7 @@ class BusinessEntityController @Inject() (
   journeyTraverseService: JourneyTraverseService,
   timeProvider: TimeProvider,
   sendEmailHelperService: SendEmailHelperService,
+  auditService: AuditService,
   addBusinessPage: AddBusinessPage,
   eoriPage: BusinessEntityEoriPage,
   removeYourselfBEPage: BusinessEntityRemoveYourselfPage,
@@ -198,6 +200,7 @@ class BusinessEntityController @Inject() (
         undertakingRef,
         None
       )
+      _ = auditService.sendEvent(AuditEvent.BusinessEntityAdded(request.authorityId, eori, eoriBE))
       redirect <- getNext(businessEntityJourney)(eori)
     } yield redirect
 
@@ -236,6 +239,7 @@ class BusinessEntityController @Inject() (
     for {
       undertakingOpt <- escService.retrieveUndertaking(eori111)
       _ <- store.put(BusinessEntityJourney.businessEntityJourneyForEori(undertakingOpt, EORI(eoriEntered)))
+      _ = auditService.sendEvent(AuditEvent.BusinessEntityUpdated(request.authorityId, eori111, EORI(eoriEntered)))
     } yield Ok(businessEntityCyaPage(eoriEntered))
   }
 
@@ -297,6 +301,8 @@ class BusinessEntityController @Inject() (
                       undertakingRef,
                       removalEffectiveDateString.some
                     )
+                    _ = auditService
+                      .sendEvent(AuditEvent.BusinessEntityRemoved(request.authorityId, eori, EORI(eoriEntered)))
                   } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
                 case _ => Future(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
               }
