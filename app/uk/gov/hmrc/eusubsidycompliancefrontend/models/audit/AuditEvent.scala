@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.audit
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{EISRequest, EISResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.EISResponse
 
 sealed trait AuditEvent {
 
