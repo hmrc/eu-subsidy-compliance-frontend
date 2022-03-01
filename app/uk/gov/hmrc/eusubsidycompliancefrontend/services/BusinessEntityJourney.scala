@@ -16,51 +16,58 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
+import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json.{Format, Json, OFormat}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormUrls._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Forms.{AddBusinessCyaFormPage, AddBusinessFormPage, AddEoriFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 
 case class BusinessEntityJourney(
-  addBusiness: FormPage[Boolean] = FormPage(AddBusiness),
-  eori: FormPage[EORI] = FormPage(Eori),
-  cya: FormPage[Boolean] = FormPage(Cya),
+  addBusiness: AddBusinessFormPage = AddBusinessFormPage(),
+  eori: AddEoriFormPage = AddEoriFormPage(),
+  cya: AddBusinessCyaFormPage = AddBusinessCyaFormPage(),
   isLeadSelectJourney: Option[Boolean] = None
 ) extends Journey {
 
-  override protected def steps: List[FormPage[_]] = List(
-    addBusiness,
-    eori,
-    cya
-  )
-
+  override protected def steps: List[FormPage[_]] =
+    List(
+      addBusiness,
+      eori,
+      cya,
+    )
 }
 
 object BusinessEntityJourney {
 
-  import Journey._ // N.B. don't let intellij delete this
-  implicit val formPageEoriFormat: OFormat[FormPage[EORI]] = Json.format[FormPage[EORI]]
   implicit val format: Format[BusinessEntityJourney] = Json.format[BusinessEntityJourney]
 
   // TODO populate the Journey[s] from the undertaking, probably need to map them by eori
   def fromUndertakingOpt(undertakingOpt: Option[Undertaking]): BusinessEntityJourney = BusinessEntityJourney()
 
-  def businessEntityJourneyForEori(undertakingOpt: Option[Undertaking], eori: EORI): BusinessEntityJourney =
-    undertakingOpt match {
-      case Some(undertaking) =>
-        val empty = BusinessEntityJourney()
-        empty.copy(
-          empty.addBusiness.copy(value = Some(true)),
-          empty.eori.copy(value = Some(eori))
-        )
-      // TODO - what is the correct behaviour here?
-      case None => BusinessEntityJourney()
+  def businessEntityJourneyForEori(undertakingOpt: Option[Undertaking], eori: EORI): BusinessEntityJourney = {
+    undertakingOpt.fold(BusinessEntityJourney()) { _ =>
+      BusinessEntityJourney(
+        addBusiness = AddBusinessFormPage(true.some),
+        eori = AddEoriFormPage(eori.some)
+      )
     }
+  }
 
   object FormUrls {
     val AddBusiness = "add-member"
     val Eori = "add-business-entity-eori"
     val Cya = "check-your-answers-businesses"
+  }
+
+  object Forms {
+    case class AddBusinessFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = FormUrls.AddBusiness }
+    case class AddEoriFormPage(value: Form[EORI] = None) extends FormPage[EORI] { val uri = FormUrls.Eori }
+    case class AddBusinessCyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = FormUrls.Cya }
+
+    object AddBusinessFormPage { implicit val addBusinessFormPageFormat: OFormat[AddBusinessFormPage] = Json.format }
+    object AddEoriFormPage { implicit val addEoriFormPageFormat: OFormat[AddEoriFormPage] = Json.format }
+    object AddBusinessCyaFormPage { implicit val cyaFormPageFormat: OFormat[AddBusinessCyaFormPage] = Json.format }
   }
 
 }

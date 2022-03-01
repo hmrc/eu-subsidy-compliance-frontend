@@ -24,12 +24,12 @@ import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormUrls
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.Forms.{BecomeLeadEoriFormPage, TermsAndConditionsFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData._
@@ -164,8 +164,9 @@ class BecomeLeadControllerSpec
 
         "call to update new lead journey fails" in {
 
-          def update(newLeadJourneyOpt: Option[BecomeLeadJourney]) =
-            newLeadJourneyOpt.map(_.copy(becomeLeadEori = FormPage("select-new-lead")))
+          def update(newLeadJourneyOpt: Option[BecomeLeadJourney]) = {
+            newLeadJourneyOpt.map(_.copy(becomeLeadEori = BecomeLeadEoriFormPage()))
+          }
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney().some), eori1)(Left(Error(exception)))
@@ -362,9 +363,7 @@ class BecomeLeadControllerSpec
             SingleEORIEmailParameter(eori1, undertaking1.name, undertakingRef, "removedAsLeadToOldLead")
           inSequence {
             mockAuthWithEnrolment(eori4)
-            mockGet[BecomeLeadJourney](eori4)(
-              Right(newBecomeLeadJourney.copy(acceptTerms = FormPage(FormUrls.TermsAndConditions, true.some)).some)
-            )
+            mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.copy(acceptTerms = TermsAndConditionsFormPage(true.some)).some))
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))

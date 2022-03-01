@@ -23,9 +23,9 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.AuditEvent.TermsAndConditionsAccepted
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.FormUrls.{MainBusinessCheck, _}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EligibilityJourney, FormPage, JourneyTraverseService, Store}
-import utils.CommonTestData.{eligibilityJourney, _}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import utils.CommonTestData._
 
 class EligibilityControllerSpec
     extends ControllerSpec
@@ -152,7 +152,7 @@ class EligibilityControllerSpec
         "user has already answered te question" in {
           List(true, false).foreach { inputValue =>
             withClue(s" For input value:: $inputValue") {
-              testDisplay(EligibilityJourney(customsWaivers = FormPage(CustomsWaivers, inputValue.some)))
+              testDisplay(EligibilityJourney(customsWaivers = CustomsWaiversFormPage(inputValue.some)))
             }
 
           }
@@ -172,7 +172,7 @@ class EligibilityControllerSpec
       val eligibilityJourney = EligibilityJourney()
 
       def update(eligibilityJourneyOpt: Option[EligibilityJourney]) = eligibilityJourneyOpt
-        .map(_.copy(customsWaivers = FormPage(CustomsWaivers, true.some)))
+        .map(_.copy(customsWaivers = CustomsWaiversFormPage(true.some)))
 
       "throw technical error" when {
 
@@ -207,7 +207,7 @@ class EligibilityControllerSpec
             inSequence {
               mockAuthWithNecessaryEnrolment()
               mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(
-                Right(EligibilityJourney(customsWaivers = FormPage(CustomsWaivers, true.some)))
+                Right(EligibilityJourney(customsWaivers = CustomsWaiversFormPage(true.some)))
               )
             }
             checkIsRedirect(performAction("customswaivers" -> inputValue), "/main-business-check")
@@ -277,7 +277,7 @@ class EligibilityControllerSpec
         "user has already answered the question" in {
           List(true, false).foreach { inputValue =>
             withClue(s" For input value :: $inputValue") {
-              testDisplay(EligibilityJourney(willYouClaim = FormPage(WillYouClaim, inputValue.some)))
+              testDisplay(EligibilityJourney(willYouClaim = WillYouClaimFormPage(inputValue.some)))
             }
           }
         }
@@ -295,9 +295,9 @@ class EligibilityControllerSpec
       val previousUrl = routes.EligibilityController.getCustomsWaivers().url
 
       val eligibilityJourney = EligibilityJourney(
-        willYouClaim = FormPage(WillYouClaim, false.some)
+        willYouClaim = WillYouClaimFormPage(false.some)
       )
-      val updatedEligibilityJourney = eligibilityJourney.copy(willYouClaim = FormPage(WillYouClaim, true.some))
+      val updatedEligibilityJourney = eligibilityJourney.copy(willYouClaim = WillYouClaimFormPage(true.some))
 
       def update(ejOpt: Option[EligibilityJourney]) = ejOpt
         .map(ej => ej.copy(willYouClaim = ej.willYouClaim.copy(value = true.some)))
@@ -395,7 +395,6 @@ class EligibilityControllerSpec
 
               eligibilityJourney.mainBusinessCheck.value match {
                 case Some(value) =>
-                  println(" insde some , value is ::" + value)
                   if (value) {
                     doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
                   } else {
@@ -415,13 +414,13 @@ class EligibilityControllerSpec
         }
 
         "user hasn't answered the question" in {
-          testDisplay(EligibilityJourney(mainBusinessCheck = FormPage(MainBusinessCheck, true.some)))
+          testDisplay(EligibilityJourney(mainBusinessCheck = MainBusinessCheckFormPage(true.some)))
         }
 
         "user has already answered the question" in {
           List(true, false).foreach { inputValue =>
             withClue(s" For input value :: $inputValue") {
-              testDisplay(EligibilityJourney(mainBusinessCheck = FormPage(MainBusinessCheck, inputValue.some)))
+              testDisplay(EligibilityJourney(mainBusinessCheck = MainBusinessCheckFormPage(inputValue.some)))
             }
           }
         }
@@ -439,10 +438,10 @@ class EligibilityControllerSpec
 
       val previousUrl = routes.EligibilityController.getWillYouClaim().url
       val eligibilityJourney = EligibilityJourney(
-        customsWaivers = FormPage(CustomsWaivers, false.some)
+        customsWaivers = CustomsWaiversFormPage(false.some)
       )
       val updatedEligibilityJourney =
-        eligibilityJourney.copy(mainBusinessCheck = FormPage(MainBusinessCheck, true.some))
+        eligibilityJourney.copy(mainBusinessCheck = MainBusinessCheckFormPage(true.some))
 
       def update(ejOpt: Option[EligibilityJourney]) = ejOpt
         .map(ej => ej.copy(mainBusinessCheck = ej.mainBusinessCheck.copy(value = true.some)))
@@ -544,11 +543,11 @@ class EligibilityControllerSpec
         )
 
       val eligibilityJourney = EligibilityJourney(
-        customsWaivers = FormPage(CustomsWaivers, true.some),
-        willYouClaim = FormPage(WillYouClaim, true.some),
-        notEligible = FormPage(NotEligible, true.some),
-        mainBusinessCheck = FormPage(MainBusinessCheck, true.some),
-        signOut = FormPage(SignOut, true.some)
+        customsWaivers = CustomsWaiversFormPage(true.some),
+        willYouClaim = WillYouClaimFormPage(true.some),
+        notEligible = NotEligibleFormPage(true.some),
+        mainBusinessCheck = MainBusinessCheckFormPage(true.some),
+        signOut = SignOutFormPage(true.some)
       )
 
       def update(ejOpt: Option[EligibilityJourney]) = ejOpt
@@ -567,7 +566,7 @@ class EligibilityControllerSpec
 
       "redirect to next page" in {
         val expectedAuditEvent = TermsAndConditionsAccepted(eori1)
-        val updatedJourney     = eligibilityJourney.copy(acceptTerms = FormPage(AcceptTerms, true.some))
+        val updatedJourney = eligibilityJourney.copy(acceptTerms = AcceptTermsFormPage(true.some))
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Right(updatedJourney))
@@ -634,7 +633,7 @@ class EligibilityControllerSpec
         }
 
         "user hasn't answered the question" in {
-          testDisplay(EligibilityJourney(acceptTerms = FormPage(AcceptTerms, true.some)))
+          testDisplay(EligibilityJourney(acceptTerms = AcceptTermsFormPage(true.some)))
         }
 
         "user has already answered the question" in {
@@ -642,8 +641,8 @@ class EligibilityControllerSpec
             withClue(s" For input value :: $inputValue") {
               testDisplay(
                 EligibilityJourney(
-                  acceptTerms = FormPage(AcceptTerms, true.some),
-                  eoriCheck = FormPage(EoriCheck, inputValue.some)
+                  acceptTerms = AcceptTermsFormPage(true.some),
+                  eoriCheck = EoriCheckFormPage(inputValue.some)
                 )
               )
             }

@@ -21,12 +21,12 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, Error, NonHmrcSubsidy, OptionalEORI, OptionalTraderRef, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.FormUrls.{ClaimAmount, ClaimDateValues, ReportPayment}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, FormPage, JourneyTraverseService, Store, SubsidyJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, JourneyTraverseService, Store, SubsidyJourney}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.CommonTestData.{subsidyJourney, _}
+import utils.CommonTestData._
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -231,13 +231,13 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
-            mockUpdate[SubsidyJourney](j => j.map(_.copy(claimDate = FormPage("claim-date", updatedDate.some))), eori1)(
-              Right(subsidyJourney.copy(claimDate = FormPage("claim-date", updatedDate.some)))
+            mockUpdate[SubsidyJourney](j => j.map(_.copy(claimDate = ClaimDateFormPage(updatedDate.some))), eori1)(
+              Right(subsidyJourney.copy(claimDate = ClaimDateFormPage(updatedDate.some)))
             )
           }
           checkIsRedirect(
             performAction("day" -> updatedDate.day, "month" -> updatedDate.month, "year" -> updatedDate.year),
-            "add-claim-date"
+            SubsidyJourney.FormUrls.ClaimAmount
           )
         }
       }
@@ -316,8 +316,8 @@ class SubsidyControllerSpec
         "user hasn't already answered the question" in {
           test(
             SubsidyJourney(
-              reportPayment = FormPage(ReportPayment, true.some),
-              claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some)
+              reportPayment = ReportPaymentFormPage(true.some),
+              claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
             )
           )
         }
@@ -325,9 +325,9 @@ class SubsidyControllerSpec
         "user has already answered the question" in {
           test(
             SubsidyJourney(
-              reportPayment = FormPage(ReportPayment, true.some),
-              claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some),
-              claimAmount = FormPage(ClaimAmount, BigDecimal(123.45).some)
+              reportPayment = ReportPaymentFormPage(true.some),
+              claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
+              claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some)
             )
           )
         }
@@ -382,12 +382,12 @@ class SubsidyControllerSpec
         "call to update the subsidy journey fails" in {
 
           val subsidyJourneyOpt = SubsidyJourney(
-            reportPayment = FormPage(ReportPayment, true.some),
-            claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some)
+            reportPayment = ReportPaymentFormPage(true.some),
+            claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
           ).some
 
           def update(subsidyJourneyOpt: Option[SubsidyJourney]) =
-            subsidyJourneyOpt.map(_.copy(claimAmount = FormPage(ClaimAmount, BigDecimal(123.45).some)))
+            subsidyJourneyOpt.map(_.copy(claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some)))
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
@@ -402,8 +402,8 @@ class SubsidyControllerSpec
         def displayError(data: (String, String)*)(errorMessageKey: String) = {
 
           val subsidyJourneyOpt = SubsidyJourney(
-            reportPayment = FormPage(ReportPayment, true.some),
-            claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some)
+            reportPayment = ReportPaymentFormPage(true.some),
+            claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
           ).some
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -438,18 +438,18 @@ class SubsidyControllerSpec
       "redirect to next page" in {
 
         val subsidyJourney = SubsidyJourney(
-          reportPayment = FormPage(ReportPayment, true.some),
-          claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some),
-          claimAmount = FormPage(ClaimAmount, BigDecimal(123.45).some)
+          reportPayment = ReportPaymentFormPage(true.some),
+          claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
+          claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some)
         )
 
         val subsidyJourneyOpt = SubsidyJourney(
-          reportPayment = FormPage(ReportPayment, true.some),
-          claimDate = FormPage(ClaimDateValues, DateFormValues("9", "10", "2022").some)
+          reportPayment = ReportPaymentFormPage(true.some),
+          claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
         ).some
 
         def update(subsidyJourneyOpt: Option[SubsidyJourney]) =
-          subsidyJourneyOpt.map(_.copy(claimAmount = FormPage(ClaimAmount, BigDecimal(123.45).some)))
+          subsidyJourneyOpt.map(_.copy(claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some)))
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
@@ -492,7 +492,7 @@ class SubsidyControllerSpec
 
       "display the page" when {
 
-        def test(subsidyJourney: SubsidyJourney) = {
+        def test(subsidyJourney: SubsidyJourney): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
@@ -519,22 +519,17 @@ class SubsidyControllerSpec
         }
 
         "the user hasn't already answered the question" in {
-          test(subsidyJourney.copy(addClaimEori = FormPage("add-claim-eori", None)))
-
+          test(subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage( None)))
         }
 
         "the user has already answered the question" in {
-          List(
-            subsidyJourney,
-            subsidyJourney.copy(addClaimEori = FormPage("add-claim-eori", OptionalEORI("false", None).some))
-          )
+          List(subsidyJourney,
+            subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage(OptionalEORI("false", None).some)))
             .foreach { subsidyJourney =>
               withClue(s" for each subsidy journey $subsidyJourney") {
                 test(subsidyJourney)
               }
-
             }
-
         }
 
       }
@@ -562,15 +557,12 @@ class SubsidyControllerSpec
         "call to update subsidy journey fails" in {
 
           def update(subsidyJourneyOpt: Option[SubsidyJourney]) =
-            subsidyJourneyOpt.map(_.copy(addClaimEori = FormPage("add-claim-eori", OptionalEORI("false", None).some)))
+            subsidyJourneyOpt.map(_.copy(addClaimEori = AddClaimEoriFormPage(OptionalEORI("false", None).some)))
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[SubsidyJourney](eori1)(Right("add-claim-amount"))
-            mockUpdate[SubsidyJourney](
-              _ => update(subsidyJourney.copy(addClaimEori = FormPage("add-claim-eori", None)).some),
-              eori1
-            )(Left(Error(exception)))
+            mockUpdate[SubsidyJourney](_ => update(subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage(None)).some), eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction("should-claim-eori" -> "false")))
         }
@@ -578,7 +570,10 @@ class SubsidyControllerSpec
 
       "show form error" when {
 
-        def testFormError(inputAnswer: Option[List[(String, String)]], errorMessageKey: String) = {
+        def testFormError(
+          inputAnswer: Option[List[(String, String)]],
+          errorMessageKey: String
+        ): Unit = {
           val answers = inputAnswer.getOrElse(Nil)
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -606,11 +601,10 @@ class SubsidyControllerSpec
       "redirect to next page" when {
 
         def update(subsidyJourneyOpt: Option[SubsidyJourney], formValues: Option[OptionalEORI]) =
-          subsidyJourneyOpt.map(_.copy(addClaimEori = FormPage("add-claim-eori", formValues)))
+          subsidyJourneyOpt.map(_.copy(addClaimEori = AddClaimEoriFormPage(formValues)))
 
-        def testRedirect(optionalEORI: OptionalEORI, inputAnswer: List[(String, String)]) = {
-          val updatedSubsidyJourney =
-            update(subsidyJourney.some, optionalEORI.some).getOrElse(sys.error(" no subsdy journey"))
+        def testRedirect(optionalEORI: OptionalEORI, inputAnswer: List[(String, String)]): Unit = {
+          val updatedSubsidyJourney = update(subsidyJourney.some, optionalEORI.some).getOrElse(sys.error("no subsidy journey"))
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -673,12 +667,11 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
-            mockUpdate[SubsidyJourney](
-              j => j.map(_.copy(publicAuthority = FormPage("add-claim-reference", Some("My Authority")))),
-              eori1
-            )(Right(subsidyJourney.copy(publicAuthority = FormPage("add-claim-reference", Some("My Authority")))))
+            mockUpdate[SubsidyJourney](j => j.map(_.copy(publicAuthority = PublicAuthorityFormPage(Some("My Authority")))), eori1)(
+              Right(subsidyJourney.copy(publicAuthority = PublicAuthorityFormPage(Some("My Authority"))))
+            )
           }
-          checkIsRedirect(performAction("claim-public-authority" -> "My Authority"), "claims")
+          checkIsRedirect(performAction("claim-public-authority" -> "My Authority"), SubsidyJourney.FormUrls.TraderReference)
         }
       }
     }
@@ -709,7 +702,7 @@ class SubsidyControllerSpec
 
       "display the page" when {
 
-        def test(subsidyJourney: SubsidyJourney) = {
+        def test(subsidyJourney: SubsidyJourney): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
@@ -735,18 +728,15 @@ class SubsidyControllerSpec
         }
 
         "the user hasn't already answered the question" in {
-          test(
-            subsidyJourney
-              .copy(traderRef = FormPage("add-claim-reference"), cya = FormPage("check-your-answers-subsidy"))
-          )
-
+          test(subsidyJourney.copy(
+            traderRef = TraderRefFormPage(),
+            cya = CyaFormPage(),
+          ))
         }
 
         "the user has already answered the question" in {
-          List(
-            subsidyJourney,
-            subsidyJourney.copy(traderRef = FormPage("add-claim-reference", OptionalTraderRef("false", None).some))
-          )
+          List(subsidyJourney,
+            subsidyJourney.copy(traderRef = TraderRefFormPage(OptionalTraderRef("false", None).some)))
             .foreach { subsidyJourney =>
               withClue(s" for each subsidy journey $subsidyJourney") {
                 test(subsidyJourney)
@@ -781,7 +771,9 @@ class SubsidyControllerSpec
 
       "show form error" when {
 
-        def testFormError(inputAnswer: Option[List[(String, String)]], errorMessageKey: String) = {
+        def testFormError(
+          inputAnswer: Option[List[(String, String)]],
+          errorMessageKey: String): Unit = {
           val answers = inputAnswer.getOrElse(Nil)
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -801,7 +793,6 @@ class SubsidyControllerSpec
 
         "yes is selected but no trader reference is added" in {
           testFormError(Some(List("should-store-trader-ref" -> "true")), "add-claim-trader-reference.error.isempty")
-
         }
 
       }

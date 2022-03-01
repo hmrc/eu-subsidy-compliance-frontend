@@ -17,19 +17,18 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import play.api.Logger
-import play.api.libs.json.{Json, OFormat}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Request, Result}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.Future
 
-case class FormPage[+T](
-  uri: Journey.Uri,
-  value: Journey.Form[T] = None
-)
+trait FormPage[+T] {
+  val value: Journey.Form[T]
+  def uri: Uri
+}
 
-// TODO - this needs another pass. Potential scope for simplifying previous/next handling
 trait Journey {
 
   private val logger = Logger(getClass)
@@ -40,8 +39,9 @@ trait Journey {
 
   // TODO strip/add the server path prefix instead of endsWith
   // TODO especially as this may not work for listings
-  def currentIndex(implicit request: Request[_]): Int =
+  def currentIndex(implicit request: Request[_]): Int = {
     formPages.indexWhere(x => request.uri.endsWith(x.uri))
+  }
 
   // TODO - should previous and next return the same types?
   def previous(implicit request: Request[_]): Journey.Uri =
@@ -86,10 +86,5 @@ object Journey {
 
   type Form[+T] = Option[T]
   type Uri = String
-
-  implicit val formPageBigDecimalFormat: OFormat[FormPage[BigDecimal]] = Json.format[FormPage[BigDecimal]]
-  implicit val formPageBooleanValueFormat: OFormat[FormPage[Boolean]] = Json.format[FormPage[Boolean]]
-  implicit val formPageIntFormat: OFormat[FormPage[Int]] = Json.format[FormPage[Int]]
-  implicit val formPageStringValueFormat: OFormat[FormPage[String]] = Json.format[FormPage[String]]
 
 }

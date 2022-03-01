@@ -18,11 +18,15 @@ package utils
 
 import cats.implicits.catsSyntaxOptionId
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, IndustrySectorLimit, Sector, SubsidyAmount, TraderRef, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.FormUrls.{AcceptTerms, CreateUndertaking, CustomsWaivers, EoriCheck, MainBusinessCheck, NotEligible, SignOut, SignOutBadEori, WillYouClaim}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Forms._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 
 import java.time.{LocalDate, LocalDateTime}
@@ -60,11 +64,11 @@ object CommonTestData {
   )
 
   val subsidyJourney = SubsidyJourney(
-    publicAuthority = FormPage("add-claim-public-authority", "Local Authority".some),
-    traderRef = FormPage("add-claim-reference", optionalTraderRef.some),
-    claimAmount = FormPage("add-claim-date", SubsidyAmount(1234.56).some),
-    addClaimEori = FormPage("add-claim-eori", optionalEORI.some),
-    claimDate = FormPage("add-claim-date", DateFormValues("1", "1", "2022").some)
+    publicAuthority = PublicAuthorityFormPage("Local Authority".some),
+    traderRef = TraderRefFormPage(optionalTraderRef.some),
+    claimAmount = ClaimAmountFormPage(SubsidyAmount(1234.56).some),
+    addClaimEori = AddClaimEoriFormPage(optionalEORI.some),
+    claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some)
   )
 
   val subsidyUpdate = SubsidyUpdate(
@@ -115,56 +119,56 @@ object CommonTestData {
   )
 
   val eligibilityJourneyNotComplete = EligibilityJourney(
-    customsWaivers = FormPage("do-you-claim-customs-waivers", true.some),
-    willYouClaim = FormPage("will-you-claim-customs-waivers", true.some),
-    notEligible = FormPage("not-eligible", false.some),
-    mainBusinessCheck = FormPage("main-business-check", true.some),
-    signOut = FormPage("not-eligible-to-lead", false.some),
-    acceptTerms = FormPage("terms-conditions", true.some)
+    customsWaivers = CustomsWaiversFormPage(true.some),
+    willYouClaim = WillYouClaimFormPage(true.some),
+    notEligible = NotEligibleFormPage(false.some),
+    mainBusinessCheck = MainBusinessCheckFormPage(true.some),
+    signOut = SignOutFormPage(false.some),
+    acceptTerms = AcceptTermsFormPage(true.some)
   )
 
   val eligibilityJourneyComplete = eligibilityJourneyNotComplete.copy(
-    eoriCheck = FormPage("eoricheck", true.some),
-    signOutBadEori = FormPage("incorrect-eori", false.some),
-    createUndertaking = FormPage("create-undertaking", true.some)
+    eoriCheck = EoriCheckFormPage(true.some),
+    signOutBadEori = SignOutBadEoriFormPage(false.some),
+    createUndertaking = CreateUndertakingFormPage(true.some)
   )
 
-  val undertakingJourneyComplete = UndertakingJourney(
-    name = FormPage("undertaking-name", "TestUndertaking".some),
-    sector = FormPage("sector", Sector(1).some),
-    cya = FormPage("check-your-answers", true.some),
-    confirmation = FormPage("confirmation", true.some)
+  val undertakingJourneyComplete =  UndertakingJourney(
+    name = UndertakingNameFormPage("TestUndertaking".some),
+    sector = UndertakingSectorFormPage(Sector(1).some),
+    cya = UndertakingCyaFormPage(true.some),
+    confirmation = UndertakingConfirmationFormPage(true.some)
   )
 
-  val undertakingJourneyComplete1 = UndertakingJourney(
-    name = FormPage("undertaking-name", "TestUndertaking1".some),
-    sector = FormPage("sector", Sector(2).some),
-    cya = FormPage("check-your-answers", true.some),
-    confirmation = FormPage("confirmation", true.some),
+  val undertakingJourneyComplete1 =  UndertakingJourney(
+    name = UndertakingNameFormPage("TestUndertaking1".some),
+    sector = UndertakingSectorFormPage(Sector(2).some),
+    cya = UndertakingCyaFormPage(true.some),
+    confirmation = UndertakingConfirmationFormPage(true.some),
     isAmend = true
   )
 
   val businessEntityJourney = BusinessEntityJourney(
-    addBusiness = FormPage("add-member", true.some),
-    eori = FormPage("add-business-entity-eori", eori1.some),
-    cya = FormPage("check-your-answers-businesses", true.some)
+    addBusiness = AddBusinessFormPage(true.some),
+    eori = AddEoriFormPage(eori1.some),
+    cya = AddBusinessCyaFormPage(true.some)
   )
 
   val businessEntityJourney1 = BusinessEntityJourney(
-    addBusiness = FormPage("add-member", true.some),
-    eori = FormPage("add-business-entity-eori", eori2.some),
-    cya = FormPage("check-your-answers-businesses", true.some)
+    addBusiness = AddBusinessFormPage(true.some),
+    eori = AddEoriFormPage(eori2.some),
+    cya = AddBusinessCyaFormPage(true.some)
   )
   val businessEntityJourneyLead = BusinessEntityJourney(
-    addBusiness = FormPage("add-member", true.some),
-    eori = FormPage("add-business-entity-eori", eori2.some),
-    cya = FormPage("check-your-answers-businesses", true.some),
+    addBusiness = AddBusinessFormPage(true.some),
+    eori = AddEoriFormPage(eori2.some),
+    cya = AddBusinessCyaFormPage(true.some),
     isLeadSelectJourney = true.some
   )
 
-  val newLeadJourney = NewLeadJourney(selectNewLead = FormPage("select-new-lead", eori4.some))
+  val newLeadJourney = NewLeadJourney(selectNewLead = SelectNewLeadFormPage(eori4.some))
 
-  val newBecomeLeadJourney = BecomeLeadJourney(becomeLeadEori = FormPage("become-lead-eori"))
+  val newBecomeLeadJourney = BecomeLeadJourney()
 
   val validEmailAddress         = EmailAddress("user@test.com")
   val inValidEmailAddress       = EmailAddress("invalid@email.com")
@@ -184,15 +188,15 @@ object CommonTestData {
   val emailSendRequest = EmailSendRequest(List(EmailAddress("user@test.com")), "templateId1", emailParameter)
 
   val eligibilityJourney = EligibilityJourney(
-    customsWaivers = FormPage(CustomsWaivers, true.some),
-    willYouClaim = FormPage(WillYouClaim, true.some),
-    notEligible = FormPage(NotEligible, true.some),
-    mainBusinessCheck = FormPage(MainBusinessCheck, true.some),
-    signOut = FormPage(SignOut, true.some),
-    acceptTerms = FormPage(AcceptTerms, true.some),
-    eoriCheck = FormPage(EoriCheck, true.some),
-    signOutBadEori = FormPage(SignOutBadEori, true.some),
-    createUndertaking = FormPage(CreateUndertaking, true.some)
+    customsWaivers = CustomsWaiversFormPage(true.some),
+    willYouClaim = WillYouClaimFormPage(true.some),
+    notEligible = NotEligibleFormPage(true.some),
+    mainBusinessCheck = MainBusinessCheckFormPage(true.some),
+    signOut = SignOutFormPage(true.some),
+    acceptTerms = AcceptTermsFormPage(true.some),
+    eoriCheck = EoriCheckFormPage(true.some),
+    signOutBadEori = SignOutBadEoriFormPage(true.some),
+    createUndertaking = CreateUndertakingFormPage(true.some)
   )
 
 }
