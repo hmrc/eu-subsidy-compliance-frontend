@@ -17,27 +17,24 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import play.api.libs.json.{Format, Json, OFormat}
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
 
 case class NewLeadJourney(selectNewLead: SelectNewLeadFormPage = SelectNewLeadFormPage()) extends Journey {
-
   override def steps: List[FormPage[_]] = List(selectNewLead)
-
 }
 
 object NewLeadJourney {
 
   implicit val format: Format[NewLeadJourney] = Json.format[NewLeadJourney]
 
-  object FormUrls {
-    val SelectNewLead = "select-new-lead"
-  }
-
   object Forms {
-    // TODO - replace uris with routes lookups
-    case class SelectNewLeadFormPage(value: Form[EORI] = None) extends FormPage[EORI] { val uri = FormUrls.SelectNewLead }
+    private val controller = routes.SelectNewLeadController
+
+    case class SelectNewLeadFormPage(value: Form[EORI] = None) extends FormPage[EORI] { val uri = controller.getSelectNewLead().url  }
+
     object SelectNewLeadFormPage { implicit val selectNewLeadFormPageFormat: OFormat[SelectNewLeadFormPage] = Json.format }
   }
 
