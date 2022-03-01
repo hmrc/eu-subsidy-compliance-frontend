@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.util
+package uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking
 
-import com.google.inject.{ImplementedBy, Singleton}
+import play.api.libs.json.{Json, Writes}
 
-import java.time.{LocalDate, LocalDateTime, ZoneId}
+import java.time.LocalDateTime
 
-@ImplementedBy(classOf[SystemTimeProvider])
-trait TimeProvider {
-  def today: LocalDate
-  def today(z: ZoneId): LocalDate
-  def now: LocalDateTime
-}
+final case class ResponseCommonUndertaking(status: String, processingDate: LocalDateTime)
 
-@Singleton
-class SystemTimeProvider extends TimeProvider {
-  override def today: LocalDate = LocalDate.now()
-  override def today(z: ZoneId): LocalDate = LocalDate.now(z)
-  override def now: LocalDateTime = LocalDateTime.now()
+object ResponseCommonUndertaking {
+  implicit val writes: Writes[ResponseCommonUndertaking] = Json.writes
 }

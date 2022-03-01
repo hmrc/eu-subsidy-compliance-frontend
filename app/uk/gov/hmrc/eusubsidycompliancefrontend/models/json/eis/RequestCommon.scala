@@ -17,8 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.json.eis
 
 import java.util.UUID
-
-import play.api.libs.json.{JsValue, Json, Writes}
+import play.api.libs.json.{JsLookupResult, JsResult, JsSuccess, JsValue, Json, Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.AcknowledgementRef
 
 case class RequestCommon(
@@ -26,7 +25,7 @@ case class RequestCommon(
   acknowledgementReference: AcknowledgementRef = AcknowledgementRef(UUID.randomUUID().toString.replace("-", ""))
 )
 
-case object RequestCommon {
+object RequestCommon {
   implicit val writes: Writes[RequestCommon] = new Writes[RequestCommon] {
     override def writes(o: RequestCommon): JsValue = Json.obj(
       "originatingSystem" -> "MDTP",
@@ -42,5 +41,14 @@ case object RequestCommon {
         )
       )
     )
+  }
+
+  implicit val reads = new Reads[RequestCommon] {
+    override def reads(json: JsValue): JsResult[RequestCommon] = {
+      val requestCommon: JsLookupResult = json \ "requestCommon"
+      val ackRef = (requestCommon \ "acknowledgementReference").as[String]
+      val messageType = (requestCommon \ "messageTypes" \ "messageType").as[String]
+      JsSuccess(RequestCommon(messageType, AcknowledgementRef(ackRef)))
+    }
   }
 }

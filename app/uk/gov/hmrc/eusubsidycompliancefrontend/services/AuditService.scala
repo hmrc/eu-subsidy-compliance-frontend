@@ -20,7 +20,7 @@ import com.google.inject.{ImplementedBy, Inject, Singleton}
 import play.api.Logging
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Request
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.AuditEvent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions.auditHeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector

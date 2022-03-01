@@ -14,30 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.models
+package uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking
 
 import play.api.libs.json.{Json, Writes}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
 
-sealed trait AuditEvent {
+case class ResponseDetail(undertakingReference: UndertakingRef)
 
-  val auditType: String
-
-  val transactionName: String
-
-}
-
-object AuditEvent {
-
-  final case class TermsAndConditionsAccepted(
-    eori: EORI
-  ) extends AuditEvent {
-    override val auditType: String = "TermsAndConditionsAcceptedDetails"
-    override val transactionName: String = "terms-and-conditions-accepted"
-  }
-
-  object TermsAndConditionsAccepted {
-    implicit val writes: Writes[TermsAndConditionsAccepted] = Json.writes
-  }
-
+object ResponseDetail {
+  implicit val writes: Writes[ResponseDetail] = Json.writes
 }
