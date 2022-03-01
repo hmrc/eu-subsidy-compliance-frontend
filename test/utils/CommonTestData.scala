@@ -20,6 +20,8 @@ import cats.implicits.catsSyntaxOptionId
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Forms._
@@ -47,7 +49,7 @@ object CommonTestData {
   val businessEntity5 = BusinessEntity(EORI(eori1), leadEORI = true)
 
   val optionalTraderRef = OptionalTraderRef("true", TraderRef("ABC123").some)
-  val optionalEORI      = OptionalEORI("true", eori1.some)
+  val optionalEORI = OptionalEORI("true", eori1.some)
 
   val undertakingRef = UndertakingRef("UR123456")
   val nonHmrcSubsidyList = List(
@@ -133,14 +135,14 @@ object CommonTestData {
     createUndertaking = CreateUndertakingFormPage(true.some)
   )
 
-  val undertakingJourneyComplete =  UndertakingJourney(
+  val undertakingJourneyComplete = UndertakingJourney(
     name = UndertakingNameFormPage("TestUndertaking".some),
     sector = UndertakingSectorFormPage(Sector(1).some),
     cya = UndertakingCyaFormPage(true.some),
     confirmation = UndertakingConfirmationFormPage(true.some)
   )
 
-  val undertakingJourneyComplete1 =  UndertakingJourney(
+  val undertakingJourneyComplete1 = UndertakingJourney(
     name = UndertakingNameFormPage("TestUndertaking1".some),
     sector = UndertakingSectorFormPage(Sector(2).some),
     cya = UndertakingCyaFormPage(true.some),
@@ -170,21 +172,21 @@ object CommonTestData {
 
   val newBecomeLeadJourney = BecomeLeadJourney()
 
-  val validEmailAddress         = EmailAddress("user@test.com")
-  val inValidEmailAddress       = EmailAddress("invalid@email.com")
+  val validEmailAddress = EmailAddress("user@test.com")
+  val inValidEmailAddress = EmailAddress("invalid@email.com")
   val undeliverableEmailAddress = EmailAddress("undeliverable@address.com")
 
   val dateTime = Some(LocalDateTime.of(2021, 1, 9, 10, 10))
 
   val undeliverableEmailResponse =
     EmailAddressResponse(undeliverableEmailAddress, dateTime, Some(Undeliverable("eventid1")))
-  val validEmailResponse   = EmailAddressResponse(validEmailAddress, dateTime, None)
+  val validEmailResponse = EmailAddressResponse(validEmailAddress, dateTime, None)
   val inValidEmailResponse = EmailAddressResponse(inValidEmailAddress, None, None)
 
   val undertakingCreated =
     Undertaking(None, UndertakingName("TestUndertaking"), transport, None, None, List(businessEntity5))
 
-  val emailParameter   = SingleEORIEmailParameter(eori1, undertaking.name, undertakingRef, "createUndertaking")
+  val emailParameter = SingleEORIEmailParameter(eori1, undertaking.name, undertakingRef, "createUndertaking")
   val emailSendRequest = EmailSendRequest(List(EmailAddress("user@test.com")), "templateId1", emailParameter)
 
   val eligibilityJourney = EligibilityJourney(
@@ -199,4 +201,16 @@ object CommonTestData {
     createUndertaking = CreateUndertakingFormPage(true.some)
   )
 
+  val timeNow = LocalDateTime.of(2021, 10, 9, 10, 9, 0, 0)
+
+  val createUndertakingAuditEvent = AuditEvent.CreateUndertaking(
+    "1123",
+    undertakingCreated,
+    EISResponse(
+      CreateUndertakingResponse(
+        ResponseCommonUndertaking("OK", timeNow),
+        ResponseDetail(undertakingRef)
+      )
+    )
+  )
 }

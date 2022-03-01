@@ -18,13 +18,15 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.test.util
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
-import java.time.{LocalDate, ZoneId}
+import java.time.{LocalDate, LocalDateTime, ZoneId}
 
 object FakeTimeProvider {
 
-  def withFixedDate(day: Int, month: Int, year: Int): TimeProvider = new TimeProvider {
-    override def today: LocalDate            = LocalDate.of(year, month, day)
-    override def today(z: ZoneId): LocalDate = today
-  }
+  def withFixedDate(day: Int, month: Int, year: Int, hr: Int = 0, mm: Int = 0, ss: Int = 0): TimeProvider =
+    new TimeProvider {
+      override def today: LocalDate = LocalDate.of(year, month, day)
+      override def today(z: ZoneId): LocalDate = today
+      override def now: LocalDateTime = LocalDateTime.of(year, month, day, hr, mm, ss)
+    }
 
 }
