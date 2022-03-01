@@ -31,6 +31,6 @@ final case class CreateUndertakingRequest(
 )
 
 object CreateUndertakingRequest {
-  import uk.gov.hmrc.eusubsidycompliancefrontend.models.json.eis.RequestCommon._
+  import uk.gov.hmrc.eusubsidycompliancefrontend.models.json.eis.RequestCommon._ //do not delete this
   implicit val writes: OFormat[CreateUndertakingRequest] = Json.format
 }
