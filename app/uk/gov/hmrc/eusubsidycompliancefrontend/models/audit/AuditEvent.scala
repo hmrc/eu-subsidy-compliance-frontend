@@ -55,7 +55,7 @@ object AuditEvent {
 
   object CreateUndertaking {
 
-    def toAuditEvent(ggCredId: String, ref: UndertakingRef, undertaking: Undertaking, timeNow: LocalDateTime) = {
+    def apply(ggCredId: String, ref: UndertakingRef, undertaking: Undertaking, timeNow: LocalDateTime) = {
       val eisResponse = EISResponse(
         CreateUndertakingResponse(
           ResponseCommonUndertaking("OK", timeNow),

@@ -201,8 +201,12 @@ class UndertakingController @Inject() (
         ref,
         None
       )
-      auditEventCreateUndertaking = AuditEvent.CreateUndertaking
-        .toAuditEvent(request.authorityId, ref, undertaking, timeProvider.now)
+      auditEventCreateUndertaking = AuditEvent.CreateUndertaking(
+        request.authorityId,
+        ref,
+        undertaking,
+        timeProvider.now
+      )
       _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
     } yield Redirect(routes.UndertakingController.getConfirmation(ref, undertakingJourney.name.value.getOrElse("")))
 
