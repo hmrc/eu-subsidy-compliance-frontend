@@ -24,7 +24,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.CreateUndertaking
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -202,7 +201,8 @@ class UndertakingController @Inject() (
         ref,
         None
       )
-      auditEventCreateUndertaking = createUndertakingAuditEvent(ref, undertaking)
+      auditEventCreateUndertaking = AuditEvent.CreateUndertaking
+        .toAuditEvent(request.authorityId, ref, undertaking, timeProvider.now)
       _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
     } yield Redirect(routes.UndertakingController.getConfirmation(ref, undertakingJourney.name.value.getOrElse("")))
 
@@ -294,18 +294,6 @@ class UndertakingController @Inject() (
         }
     )
   )
-
-  private def createUndertakingAuditEvent(ref: UndertakingRef, undertaking: Undertaking)(implicit
-    request: EscAuthRequest[_]
-  ) = {
-    val resp = EISResponse(
-      CreateUndertakingResponse(
-        ResponseCommonUndertaking("OK", timeProvider.now),
-        ResponseDetail(ref)
-      )
-    )
-    AuditEvent.CreateUndertaking(request.authorityId, undertaking, resp)
-  }
 
   private val undertakingSectorForm: Form[FormValues] = Form(
     mapping("undertakingSector" -> mandatory("undertakingSector"))(FormValues.apply)(FormValues.unapply)

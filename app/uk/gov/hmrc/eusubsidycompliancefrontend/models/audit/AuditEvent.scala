@@ -18,8 +18,10 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.audit
 
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.EISResponse
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
+
+import java.time.LocalDateTime
 
 sealed trait AuditEvent {
 
@@ -52,7 +54,17 @@ object AuditEvent {
   }
 
   object CreateUndertaking {
-    import uk.gov.hmrc.eusubsidycompliancefrontend.models.json.digital.undertakingFormat
+
+    def toAuditEvent(ggCredId: String, ref: UndertakingRef, undertaking: Undertaking, timeNow: LocalDateTime) = {
+      val eisResponse = EISResponse(
+        CreateUndertakingResponse(
+          ResponseCommonUndertaking("OK", timeNow),
+          ResponseDetail(ref)
+        )
+      )
+      CreateUndertaking(ggCredId, undertaking, eisResponse)
+    }
+    import uk.gov.hmrc.eusubsidycompliancefrontend.models.json.digital.undertakingFormat //Do not delete
     implicit val writes: Writes[CreateUndertaking] = Json.writes
   }
 
