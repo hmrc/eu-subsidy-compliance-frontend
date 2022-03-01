@@ -96,8 +96,8 @@ object AuditEvent {
 
   final case class BusinessEntityRemoved(
     ggDetails: String,
-    leadEORI: EORI,
-    removedEORI: EORI
+    leadEori: EORI,
+    removedEori: EORI
   ) extends AuditEvent {
     override val auditType: String = "BusinessEntityRemoved"
     override val transactionName: String = "BusinessEntityRemoved"
