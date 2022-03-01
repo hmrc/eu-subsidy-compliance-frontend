@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import org.scalamock.scalatest.MockFactory
 import play.api.libs.json.Writes
 import play.api.mvc.Request
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.AuditEvent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.http.HeaderCarrier
 
 trait AuditServiceSupport { this: MockFactory =>

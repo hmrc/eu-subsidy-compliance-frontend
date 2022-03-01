@@ -19,9 +19,10 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{ImplementedBy, Inject, Singleton}
 import play.api.http.Status.{NOT_FOUND, OK}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, NonHmrcSubsidy, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisStatus, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -29,7 +30,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[EscServiceImpl])
 trait EscService {
-  def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef]
+  def createUndertaking(
+    undertaking: Undertaking
+  )(implicit hc: HeaderCarrier): Future[UndertakingRef]
   def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef]
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]]
   def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
@@ -48,9 +51,13 @@ trait EscService {
 }
 
 @Singleton
-class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit ec: ExecutionContext) extends EscService {
+class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit
+  ec: ExecutionContext
+) extends EscService {
 
-  override def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
+  override def createUndertaking(
+    undertaking: Undertaking
+  )(implicit hc: HeaderCarrier): Future[UndertakingRef] =
     escConnector.createUndertaking(undertaking).map {
       case Left(Error(_)) =>
         sys.error("Error in creating Undertaking")

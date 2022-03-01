@@ -21,8 +21,8 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.AuditEvent.TermsAndConditionsAccepted
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import utils.CommonTestData._
@@ -136,7 +136,7 @@ class EligibilityControllerSpec
 
               eligibilityJourney.customsWaivers.value match {
                 case Some(value) => selectedOptions.attr("value") shouldBe value.toString
-                case None        => selectedOptions.isEmpty shouldBe true
+                case None => selectedOptions.isEmpty shouldBe true
               }
               val button = doc.select("form")
               button.attr("action") shouldBe routes.EligibilityController.postCustomsWaivers().url
@@ -261,7 +261,7 @@ class EligibilityControllerSpec
 
               eligibilityJourney.willYouClaim.value match {
                 case Some(value) => selectedOptions.attr("value") shouldBe value.toString
-                case None        => selectedOptions.isEmpty shouldBe true
+                case None => selectedOptions.isEmpty shouldBe true
               }
               val button = doc.select("form")
               button.attr("action") shouldBe routes.EligibilityController.postWillYouClaim().url
@@ -622,7 +622,7 @@ class EligibilityControllerSpec
 
               eligibilityJourney.eoriCheck.value match {
                 case Some(value) => selectedOptions.attr("value") shouldBe value.toString
-                case None        => selectedOptions.isEmpty shouldBe true
+                case None => selectedOptions.isEmpty shouldBe true
 
               }
               val button = doc.select("form")

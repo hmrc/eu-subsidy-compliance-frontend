@@ -22,10 +22,14 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.CreateUndertaking
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
@@ -39,6 +43,8 @@ class UndertakingController @Inject() (
   escService: EscService,
   journeyTraverseService: JourneyTraverseService,
   sendEmailHelperService: SendEmailHelperService,
+  timeProvider: TimeProvider,
+  auditService: AuditService,
   undertakingNamePage: UndertakingNamePage,
   undertakingSectorPage: UndertakingSectorPage,
   cyaPage: UndertakingCheckYourAnswersPage,
@@ -196,6 +202,8 @@ class UndertakingController @Inject() (
         ref,
         None
       )
+      auditEventCreateUndertaking = createUndertakingAuditEvent(ref, undertaking)
+      _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
     } yield Redirect(routes.UndertakingController.getConfirmation(ref, undertakingJourney.name.value.getOrElse("")))
 
   def getConfirmation(ref: String, name: String): Action[AnyContent] = escAuthentication.async { implicit request =>
@@ -286,6 +294,18 @@ class UndertakingController @Inject() (
         }
     )
   )
+
+  private def createUndertakingAuditEvent(ref: UndertakingRef, undertaking: Undertaking)(implicit
+    request: EscAuthRequest[_]
+  ) = {
+    val resp = EISResponse(
+      CreateUndertakingResponse(
+        ResponseCommonUndertaking("OK", timeProvider.now),
+        ResponseDetail(ref)
+      )
+    )
+    AuditEvent.CreateUndertaking(request.authorityId, undertaking, resp)
+  }
 
   private val undertakingSectorForm: Form[FormValues] = Form(
     mapping("undertakingSector" -> mandatory("undertakingSector"))(FormValues.apply)(FormValues.unapply)
