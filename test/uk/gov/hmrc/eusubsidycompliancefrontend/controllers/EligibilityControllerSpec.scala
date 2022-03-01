@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import play.api.Configuration
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -42,7 +43,11 @@ class EligibilityControllerSpec
     bind[AuditService].toInstance(mockAuditService)
   )
 
-  val controller = instanceOf[EligibilityController]
+  override def additionalConfig: Configuration = Configuration.from(Map(
+    "appName" -> "sausages"
+  ))
+
+  private val controller = instanceOf[EligibilityController]
 
   "EligibilityControllerSpec" when {
     val exception = new Exception("oh no!")
@@ -86,7 +91,7 @@ class EligibilityControllerSpec
         }
 
         "first empty value comes out to be empty" in {
-          redirect(EligibilityJourney(), "/do-you-claim-customs-waivers")
+          redirect(EligibilityJourney(), routes.EligibilityController.getCustomsWaivers().url)
         }
 
         "Eligibility journey is complete" in {
@@ -210,7 +215,7 @@ class EligibilityControllerSpec
                 Right(EligibilityJourney(customsWaivers = CustomsWaiversFormPage(true.some)))
               )
             }
-            checkIsRedirect(performAction("customswaivers" -> inputValue), "/main-business-check")
+            checkIsRedirect(performAction("customswaivers" -> inputValue), routes.EligibilityController.getMainBusinessCheck().url)
           }
         }
       }
@@ -245,7 +250,7 @@ class EligibilityControllerSpec
 
       "display the page" when {
 
-        val previousUrl = "/do-you-claim-customs-waivers"
+        val previousUrl = routes.EligibilityController.getCustomsWaivers().url
 
         def testDisplay(eligibilityJourney: EligibilityJourney) = {
           inSequence {
@@ -347,7 +352,7 @@ class EligibilityControllerSpec
           mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Right(updatedEligibilityJourney))
         }
 
-        checkIsRedirect(performAction("willyouclaim" -> "true"), "/main-business-check")
+        checkIsRedirect(performAction("willyouclaim" -> "true"), routes.EligibilityController.getMainBusinessCheck().url)
       }
     }
 
@@ -380,7 +385,7 @@ class EligibilityControllerSpec
 
       "display the page" when {
 
-        val previousUrl = "/not-eligible"
+        val previousUrl = routes.EligibilityController.getNotEligible().url
 
         def testDisplay(eligibilityJourney: EligibilityJourney) = {
           inSequence {
@@ -398,7 +403,7 @@ class EligibilityControllerSpec
                   if (value) {
                     doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
                   } else {
-                    doc.select(".govuk-back-link").attr("href") shouldBe "/not-eligible"
+                    doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
                     selectedOptions.attr("value") shouldBe value.toString
                   }
 
@@ -490,7 +495,7 @@ class EligibilityControllerSpec
           mockGetPrevious(eori)(Right(previousUrl))
           mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Right(updatedEligibilityJourney))
         }
-        checkIsRedirect(performAction("mainbusinesscheck" -> "true"), "/terms-conditions")
+        checkIsRedirect(performAction("mainbusinesscheck" -> "true"), routes.EligibilityController.getTerms().url)
       }
     }
 
@@ -572,7 +577,7 @@ class EligibilityControllerSpec
           mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Right(updatedJourney))
           mockSendAuditEvent(expectedAuditEvent)
         }
-        checkIsRedirect(performAction("terms" -> "true"), "/eoricheck")
+        checkIsRedirect(performAction("terms" -> "true"), routes.EligibilityController.getEoriCheck().url)
       }
 
     }
@@ -606,7 +611,7 @@ class EligibilityControllerSpec
 
       "display the page" when {
 
-        val previousUrl = "/terms-conditions"
+        val previousUrl = routes.EligibilityController.getTerms().url
 
         def testDisplay(eligibilityJourney: EligibilityJourney) = {
           inSequence {

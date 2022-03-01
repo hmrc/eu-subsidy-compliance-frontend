@@ -32,10 +32,7 @@ trait ControllerSpec extends PlaySupport {
 
   def checkIsRedirect(result: Future[Result], expectedRedirectLocation: String): Unit = {
     status(result) shouldBe SEE_OTHER
-
-    val rl = redirectLocation(result)
-
-    rl shouldBe Some(expectedRedirectLocation)
+    redirectLocation(result) shouldBe Some(expectedRedirectLocation)
   }
 
   def checkIsRedirect(result: Future[Result], expectedRedirectLocation: Call): Unit =

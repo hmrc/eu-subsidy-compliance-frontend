@@ -83,8 +83,6 @@ trait Journey {
 }
 
 object Journey {
-
   type Form[+T] = Option[T]
   type Uri = String
-
 }
