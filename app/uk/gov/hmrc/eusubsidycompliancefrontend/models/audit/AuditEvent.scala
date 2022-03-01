@@ -55,14 +55,19 @@ object AuditEvent {
 
   object CreateUndertaking {
 
-    def apply(ggCredId: String, ref: UndertakingRef, undertaking: Undertaking, timeNow: LocalDateTime) = {
+    def apply(
+      ggCredId: String,
+      ref: UndertakingRef,
+      undertaking: Undertaking,
+      timeNow: LocalDateTime
+    ): CreateUndertaking = {
       val eisResponse = EISResponse(
         CreateUndertakingResponse(
           ResponseCommonUndertaking("OK", timeNow),
           ResponseDetail(ref)
         )
       )
-      CreateUndertaking(ggCredId, undertaking, eisResponse)
+      AuditEvent.CreateUndertaking(ggCredId, undertaking, eisResponse)
     }
     import uk.gov.hmrc.eusubsidycompliancefrontend.models.json.digital.undertakingFormat //Do not delete
     implicit val writes: Writes[CreateUndertaking] = Json.writes
