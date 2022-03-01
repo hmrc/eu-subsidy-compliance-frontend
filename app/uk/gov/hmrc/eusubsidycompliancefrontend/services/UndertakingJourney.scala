@@ -76,23 +76,19 @@ object UndertakingJourney {
     case _ => UndertakingJourney()
   }
 
-  object FormUrls {
-    val Name = "undertaking-name"
-    val Sector = "sector"
-    val Cya = "check-your-answers"
-    val Confirmation = "confirmation"
-  }
-
   object Forms {
-    // TODO - replace uris with routes lookups
-    case class UndertakingNameFormPage(value: Form[String] = None) extends FormPage[String] { val uri = FormUrls.Name }
-    case class UndertakingSectorFormPage(value: Form[Sector] = None) extends FormPage[Sector] { val uri = FormUrls.Sector }
-    case class UndertakingCyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = FormUrls.Cya }
-    case class UndertakingConfirmationFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = FormUrls.Confirmation }
+
+    private val controller = routes.UndertakingController
+
+    case class UndertakingNameFormPage(value: Form[String] = None) extends FormPage[String] { def uri = controller.getUndertakingName().url }
+    case class UndertakingSectorFormPage(value: Form[Sector] = None) extends FormPage[Sector] { def uri = controller.getSector().url }
+    case class UndertakingCyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getCheckAnswers().url }
+    case class UndertakingConfirmationFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.postConfirmation().url }
 
     object UndertakingNameFormPage { implicit val undertakingNameFormPage: OFormat[UndertakingNameFormPage] = Json.format }
     object UndertakingSectorFormPage { implicit val undertakingSectorFormPage: OFormat[UndertakingSectorFormPage] = Json.format }
     object UndertakingCyaFormPage { implicit val undertakingCyaFormPage: OFormat[UndertakingCyaFormPage] = Json.format }
     object UndertakingConfirmationFormPage { implicit val undertakingConfirmationFormPage: OFormat[UndertakingConfirmationFormPage] = Json.format }
+
   }
 }
