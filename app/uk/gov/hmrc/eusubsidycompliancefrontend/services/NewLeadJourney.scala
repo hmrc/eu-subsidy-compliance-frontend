@@ -31,11 +31,13 @@ object NewLeadJourney {
   implicit val format: Format[NewLeadJourney] = Json.format[NewLeadJourney]
 
   object Forms {
+
     private val controller = routes.SelectNewLeadController
 
-    case class SelectNewLeadFormPage(value: Form[EORI] = None) extends FormPage[EORI] { val uri = controller.getSelectNewLead().url  }
+    case class SelectNewLeadFormPage(value: Form[EORI] = None) extends FormPage[EORI] { def uri = controller.getSelectNewLead().url  }
 
     object SelectNewLeadFormPage { implicit val selectNewLeadFormPageFormat: OFormat[SelectNewLeadFormPage] = Json.format }
+
   }
 
 }

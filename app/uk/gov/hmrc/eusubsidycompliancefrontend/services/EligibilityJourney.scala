@@ -63,17 +63,18 @@ object EligibilityJourney {
   implicit val format: Format[EligibilityJourney] = Json.format[EligibilityJourney]
 
   object Forms {
+
     private val controller = routes.EligibilityController
 
-    case class CustomsWaiversFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = controller.getCustomsWaivers().url }
-    case class WillYouClaimFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = controller.getWillYouClaim().url }
-    case class NotEligibleFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = controller.getNotEligible().url  }
-    case class MainBusinessCheckFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = controller.getMainBusinessCheck().url }
-    case class SignOutFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = controller.getNotEligibleToLead().url }
-    case class AcceptTermsFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = controller.getTerms().url }
-    case class EoriCheckFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = controller.getEoriCheck().url }
-    case class SignOutBadEoriFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = controller.getIncorrectEori().url }
-    case class CreateUndertakingFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = controller.getCreateUndertaking().url }
+    case class CustomsWaiversFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getCustomsWaivers().url }
+    case class WillYouClaimFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getWillYouClaim().url }
+    case class NotEligibleFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getNotEligible().url  }
+    case class MainBusinessCheckFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getMainBusinessCheck().url }
+    case class SignOutFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getNotEligibleToLead().url }
+    case class AcceptTermsFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getTerms().url }
+    case class EoriCheckFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getEoriCheck().url }
+    case class SignOutBadEoriFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getIncorrectEori().url }
+    case class CreateUndertakingFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getCreateUndertaking().url }
 
     object CustomsWaiversFormPage { implicit val customsWaiversFormPageFormat: OFormat[CustomsWaiversFormPage] = Json.format }
     object WillYouClaimFormPage { implicit val willYouClaimFormPageFormat: OFormat[WillYouClaimFormPage] = Json.format }
@@ -84,6 +85,7 @@ object EligibilityJourney {
     object EoriCheckFormPage { implicit val eoriCheckFormPageFormat: OFormat[EoriCheckFormPage] = Json.format }
     object SignOutFormPage { implicit val signOutFormPageFormat: OFormat[SignOutFormPage] = Json.format }
     object CreateUndertakingFormPage { implicit val createUndertakingFormPageFormat: OFormat[CreateUndertakingFormPage] = Json.format }
+
   }
 
 }

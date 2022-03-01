@@ -44,9 +44,9 @@ object BecomeLeadJourney {
 
     private val controller = routes.BecomeLeadController
 
-    case class BecomeLeadEoriFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = controller.getBecomeLeadEori().url }
-    case class TermsAndConditionsFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = controller.getAcceptPromotionTerms().url }
-    case class ConfirmationFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = controller.getPromotionConfirmation().url }
+    case class BecomeLeadEoriFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getBecomeLeadEori().url }
+    case class TermsAndConditionsFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getAcceptPromotionTerms().url }
+    case class ConfirmationFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getPromotionConfirmation().url }
 
     object BecomeLeadEoriFormPage { implicit val becomeLeadEoriFormPageFormat: OFormat[BecomeLeadEoriFormPage] = Json.format }
     object TermsAndConditionsFormPage { implicit val termsAndConditionsFormPageFormat: OFormat[TermsAndConditionsFormPage] = Json.format }
