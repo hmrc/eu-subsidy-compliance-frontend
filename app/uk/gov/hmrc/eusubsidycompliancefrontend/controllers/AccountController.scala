@@ -75,7 +75,7 @@ class AccountController @Inject() (
         Ok(
           accountPage(
             undertaking,
-            !undertaking.getAllNonLeadEORIs().isEmpty,
+            undertaking.getAllNonLeadEORIs().nonEmpty,
             isTimeToReport,
             lastDayToReportString,
             isOverdue
@@ -89,27 +89,20 @@ class AccountController @Inject() (
       case _ =>
         Redirect(routes.BusinessEntityController.getAddBusinessEntity()) // TODO add this journey into the match
     }
+
     retrieveEmailService.retrieveEmailByEORI(eori).flatMap {
-      _ match {
-        case Some(_) => getAccountFlow
-        case None => Future.successful(Redirect(routes.UpdateEmailAddressController.updateEmailAddress()))
-      }
+      case Some(_) => getAccountFlow
+      case None => Future.successful(Redirect(routes.UpdateEmailAddressController.updateEmailAddress()))
     }
   }
 
   def getExistingUndertaking: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    for {
-      undertakingOpt <- escService.retrieveUndertaking(eori)
-    } yield undertakingOpt match {
-      case Some(undertaking) if undertaking.isLeadEORI(eori) =>
-        Redirect(routes.AccountController.getAccountPage()) //if logged in as lead EORI, redirect to Account home page
-      case Some(undertaking) =>
-        Ok(
-          existingUndertakingPage(undertaking.name)
-        ) //if logged in as non-lead EORI, redirect to existing undertaking page
-      case None =>
-        Redirect(routes.AccountController.getAccountPage()) //if undertaking not present, then create undertaking
+
+    escService.retrieveUndertaking(eori).map {
+      case Some(undertaking) if undertaking.isLeadEORI(eori) => Redirect(routes.AccountController.getAccountPage())
+      case Some(undertaking) => Ok(existingUndertakingPage(undertaking.name))
+      case None => Redirect(routes.AccountController.getAccountPage())
     }
   }
 
