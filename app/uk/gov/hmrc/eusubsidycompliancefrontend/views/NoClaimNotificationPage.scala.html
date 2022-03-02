@@ -18,11 +18,11 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        button: components.Button,
-        govukErrorSummary: GovukErrorSummary,
-        govukCheckboxes : GovukCheckboxes
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: components.Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukCheckboxes : GovukCheckboxes
 )
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -32,7 +32,8 @@
 @layout(
     pageTitle = Some(title),
     backLinkEnabled = true,
-    backLink = Some(previous)
+    backLink = Some(previous),
+    hasErrors = form.hasErrors
 ) {
 
     @formHelper(action = controllers.routes.NoClaimNotificationController.postNoClaimNotification()) {

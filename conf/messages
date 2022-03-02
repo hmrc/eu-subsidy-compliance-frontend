@@ -299,7 +299,7 @@ removeYourselfBusinessEntity.error.required = Select yes if you wish to remove y
 
 noClaimNotification.title = Notify HMRC that {0} has not received de minimis aid payments (less Customs Duty waivers) in the past 90 days
 noClaimNotification.value = I declare that this single undertaking has not received de minimis aid payments (less Customs Duty waivers) for this period
-noClaimNotification.error.required = Tick the check box to confirm the declaration.
+noClaimNotification.error.required = Select if you want to declare you have not received de minimis aid in the past 90 days
 
 #noClaimConfirmation
 noClaimConfirmation.title = You have notified HMRC that you have received no de minimis aid payments for this 90-day period
