@@ -23,8 +23,10 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromoted
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, NewLeadJourney, SendEmailHelperService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, BusinessEntityJourney, EscService, NewLeadJourney, SendEmailHelperService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.Inject
@@ -36,6 +38,7 @@ class SelectNewLeadController @Inject() (
   escService: EscService,
   store: Store,
   sendEmailHelperService: SendEmailHelperService,
+  auditService: AuditService,
   selectNewLeadPage: SelectNewLeadPage,
   leadEORIChangedPage: LeadEORIChangedPage
 )(implicit val appConfig: AppConfig, executionContext: ExecutionContext)
@@ -109,6 +112,9 @@ class SelectNewLeadController @Inject() (
                     undertaking,
                     undertakingRef,
                     None
+                  )
+                  _ = auditService.sendEvent[BusinessEntityPromoted](
+                    AuditEvent.BusinessEntityPromoted(request.authorityId, eori, eoriBE)
                   )
                 } yield Redirect(routes.SelectNewLeadController.getLeadEORIChanged())
 

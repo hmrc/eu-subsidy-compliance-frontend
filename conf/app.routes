@@ -51,7 +51,7 @@ POST       /become-lead-eori                        uk.gov.hmrc.eusubsidycomplia
 GET        /accept-promote-to-lead-terms            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getAcceptPromotionTerms()
 POST       /accept-promote-to-lead-terms            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.postAcceptPromotionTerms()
 
-GET        /lead-promotion-confirmation             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getPromotionConfirmation()
+GET        /promote-self                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getPromotionConfirmation()
 GET        /lead-promotion-confirmation-cleanup     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getPromotionCleanup()
 
 GET        /add-member                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getAddBusinessEntity
@@ -64,9 +64,9 @@ POST       /add-business-entity-eori                uk.gov.hmrc.eusubsidycomplia
 GET        /check-your-answers-businesses           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getCheckYourAnswers
 POST       /check-your-answers-businesses           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postCheckYourAnswers
 
-GET        /change/:eori                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.editBusinessEntity(eori)
-GET        /remove/:eori                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveBusinessEntity(eori)
-POST       /remove/:eori                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveBusinessEntity(eori)
+GET        /update-member/:eori                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.editBusinessEntity(eori)
+GET        /remove-business-entity/:eori            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveBusinessEntity(eori)
+POST       /remove-business-entity/:eori            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveBusinessEntity(eori)
 
 GET        /remove-yourself                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveYourselfBusinessEntity
 POST       /remove-yourself                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveYourselfBusinessEntity
@@ -110,8 +110,8 @@ GET        /no-claims-confirmation                  uk.gov.hmrc.eusubsidycomplia
 
 GET        /sign-out                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.signOut()
 
-GET        /select-new-lead                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.getSelectNewLead
-POST       /select-new-lead                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.postSelectNewLead
+GET        /promote-business-entity                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.getSelectNewLead
+POST       /promote-business-entity                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.postSelectNewLead
 
 GET        /lead-eori-changed                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.getLeadEORIChanged
 

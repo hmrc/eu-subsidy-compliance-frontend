@@ -25,6 +25,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
@@ -42,7 +44,8 @@ class BecomeLeadControllerSpec
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with RetrieveEmailSupport
-    with SendEmailSupport {
+    with SendEmailSupport
+    with AuditServiceSupport {
 
   private val mockEscService = mock[EscService]
 
@@ -51,7 +54,8 @@ class BecomeLeadControllerSpec
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[RetrieveEmailService].toInstance(mockRetrieveEmailService),
-    bind[SendEmailService].toInstance(mockSendEmailService)
+    bind[SendEmailService].toInstance(mockSendEmailService),
+    bind[AuditService].toInstance(mockAuditService)
   )
 
   override def additionalConfig = super.additionalConfig.withFallback(
@@ -164,9 +168,8 @@ class BecomeLeadControllerSpec
 
         "call to update new lead journey fails" in {
 
-          def update(newLeadJourneyOpt: Option[BecomeLeadJourney]) = {
+          def update(newLeadJourneyOpt: Option[BecomeLeadJourney]) =
             newLeadJourneyOpt.map(_.copy(becomeLeadEori = BecomeLeadEoriFormPage()))
-          }
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney().some), eori1)(Left(Error(exception)))
@@ -363,7 +366,9 @@ class BecomeLeadControllerSpec
             SingleEORIEmailParameter(eori1, undertaking1.name, undertakingRef, "removedAsLeadToOldLead")
           inSequence {
             mockAuthWithEnrolment(eori4)
-            mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.copy(acceptTerms = TermsAndConditionsFormPage(true.some)).some))
+            mockGet[BecomeLeadJourney](eori4)(
+              Right(newBecomeLeadJourney.copy(acceptTerms = TermsAndConditionsFormPage(true.some)).some)
+            )
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
@@ -371,6 +376,7 @@ class BecomeLeadControllerSpec
             mockSendEmail(validEmailAddress, newLeadParams, templateIdNewLead)(Right(EmailSendResult.EmailSent))
             mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
             mockSendEmail(validEmailAddress, oldLeadParams, templateIdOldLead)(Right(EmailSendResult.EmailSent))
+            mockSendAuditEvent[BusinessEntityPromotedSelf](AuditEvent.BusinessEntityPromotedSelf("1123", eori1, eori4))
           }
 
           checkPageIsDisplayed(
@@ -419,6 +425,7 @@ class BecomeLeadControllerSpec
             mockSendEmail(validEmailAddress, oldLeadParams, "template_removed_as_lead_email_to_previous_lead_EN")(
               Right(EmailSendResult.EmailSent)
             )
+            mockSendAuditEvent[BusinessEntityPromotedSelf](AuditEvent.BusinessEntityPromotedSelf("1123", eori1, eori4))
           }
 
           checkIsRedirect(performAction()(English.code), routes.BecomeLeadController.getBecomeLeadEori())

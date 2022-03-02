@@ -23,6 +23,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -37,6 +39,7 @@ class BecomeLeadController @Inject() (
   store: Store,
   escService: EscService,
   sendEmailHelperService: SendEmailHelperService,
+  auditService: AuditService,
   becomeAdminPage: BecomeAdminPage,
   becomeAdminTermsAndConditionsPage: BecomeAdminTermsAndConditionsPage,
   becomeAdminConfirmationPage: BecomeAdminConfirmationPage
@@ -155,6 +158,13 @@ class BecomeLeadController @Inject() (
             retrievedUndertaking,
             undertakingRef,
             None
+          )
+          _ = auditService.sendEvent[BusinessEntityPromotedSelf](
+            AuditEvent.BusinessEntityPromotedSelf(
+              request.authorityId,
+              oldLead.businessEntityIdentifier,
+              newLead.businessEntityIdentifier
+            )
           )
         } yield
           if (journey.acceptTerms.value.getOrElse(false)) {

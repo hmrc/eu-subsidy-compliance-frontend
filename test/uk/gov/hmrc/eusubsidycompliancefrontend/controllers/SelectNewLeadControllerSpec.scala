@@ -25,6 +25,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIEmailParameter, SingleEORIEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -43,7 +44,8 @@ class SelectNewLeadControllerSpec
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with RetrieveEmailSupport
-    with SendEmailSupport {
+    with SendEmailSupport
+    with AuditServiceSupport {
 
   private val mockEscService = mock[EscService]
 
@@ -52,7 +54,8 @@ class SelectNewLeadControllerSpec
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[RetrieveEmailService].toInstance(mockRetrieveEmailService),
-    bind[SendEmailService].toInstance(mockSendEmailService)
+    bind[SendEmailService].toInstance(mockSendEmailService),
+    bind[AuditService].toInstance(mockAuditService)
   )
 
   override def additionalConfig = super.additionalConfig.withFallback(
@@ -187,12 +190,11 @@ class SelectNewLeadControllerSpec
         )
 
       "throw technical error" when {
-        val exception     = new Exception("oh no!")
+        val exception = new Exception("oh no!")
         val emailParamsBE = SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promoteAsLeadEmailToBE")
 
-        def update(newLeadJourneyOpt: Option[NewLeadJourney]) = {
+        def update(newLeadJourneyOpt: Option[NewLeadJourney]) =
           newLeadJourneyOpt.map(_.copy(selectNewLead = SelectNewLeadFormPage(eori4.some)))
-        }
         "call to retrieve Undertaking fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -224,7 +226,9 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some))))
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
+              Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
+            )
             mockRetrieveEmail(eori4)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4.toString)(English.code)))
@@ -235,7 +239,9 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some))))
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
+              Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
+            )
             mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
             mockSendEmail(validEmailAddress, emailParamsBE, "template_BE_as_lead_EN")(Right(EmailSendResult.EmailSent))
             mockRetrieveEmail(eori1)(Left(Error(exception)))
@@ -247,7 +253,9 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some))))
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
+              Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
+            )
             mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4)("fr")))
@@ -272,9 +280,8 @@ class SelectNewLeadControllerSpec
 
       "redirect to next page" when {
 
-        def update(newLeadJourneyOpt: Option[NewLeadJourney]) = {
+        def update(newLeadJourneyOpt: Option[NewLeadJourney]) =
           newLeadJourneyOpt.map(_.copy(selectNewLead = SelectNewLeadFormPage(eori4.some)))
-        }
 
         def testRedirection(templateIdBE: String, templateIdLead: String, lang: String) = {
 
@@ -285,13 +292,19 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some))))
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
+              Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
+            )
             mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
             mockSendEmail(validEmailAddress, emailParamsBE, templateIdBE)(Right(EmailSendResult.EmailSent))
             mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
             mockSendEmail(validEmailAddress, emailParamLead, templateIdLead)(Right(EmailSendResult.EmailSent))
+            mockSendAuditEvent(AuditEvent.BusinessEntityPromoted("1123", eori1, eori4))
           }
-          checkIsRedirect(performAction("selectNewLead" -> eori4)(lang), routes.SelectNewLeadController.getLeadEORIChanged())
+          checkIsRedirect(
+            performAction("selectNewLead" -> eori4)(lang),
+            routes.SelectNewLeadController.getLeadEORIChanged()
+          )
         }
 
         "the language selected by user is  English" in {
@@ -369,7 +382,10 @@ class SelectNewLeadControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourneyLead.copy(eori = AddEoriFormPage(eori4.some)).some), eori1)(Left(Error(exception)))
+            mockUpdate[BusinessEntityJourney](
+              _ => update(businessEntityJourneyLead.copy(eori = AddEoriFormPage(eori4.some)).some),
+              eori1
+            )(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -381,8 +397,15 @@ class SelectNewLeadControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourneyLead
-              .copy(eori = AddEoriFormPage(eori4.some)).some), eori1)(Right(businessEntityJourneyLead))
+            mockUpdate[BusinessEntityJourney](
+              _ =>
+                update(
+                  businessEntityJourneyLead
+                    .copy(eori = AddEoriFormPage(eori4.some))
+                    .some
+                ),
+              eori1
+            )(Right(businessEntityJourneyLead))
 
             mockPut[NewLeadJourney](NewLeadJourney(), eori)(Left(Error(exception)))
           }
@@ -397,8 +420,15 @@ class SelectNewLeadControllerSpec
           mockAuthWithNecessaryEnrolment()
           mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
           mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-          mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourneyLead
-            .copy(eori = AddEoriFormPage(eori4.some)).some), eori1)(Right(businessEntityJourneyLead))
+          mockUpdate[BusinessEntityJourney](
+            _ =>
+              update(
+                businessEntityJourneyLead
+                  .copy(eori = AddEoriFormPage(eori4.some))
+                  .some
+              ),
+            eori1
+          )(Right(businessEntityJourneyLead))
           mockPut[NewLeadJourney](NewLeadJourney(), eori)(Right(NewLeadJourney()))
         }
         checkPageIsDisplayed(

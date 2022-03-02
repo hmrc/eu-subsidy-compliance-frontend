@@ -26,6 +26,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityControllerSpec.CheckYourAnswersRowBE
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, DoubleEORIEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
@@ -47,7 +48,8 @@ class BusinessEntityControllerSpec
     with AuthAndSessionDataBehaviour
     with JourneySupport
     with RetrieveEmailSupport
-    with SendEmailSupport {
+    with SendEmailSupport
+    with AuditServiceSupport {
 
   private val mockEscService = mock[EscService]
   private val mockTimeProvider = mock[TimeProvider]
@@ -59,7 +61,8 @@ class BusinessEntityControllerSpec
     bind[JourneyTraverseService].toInstance(mockJourneyTraverseService),
     bind[RetrieveEmailService].toInstance(mockRetrieveEmailService),
     bind[SendEmailService].toInstance(mockSendEmailService),
-    bind[TimeProvider].toInstance(mockTimeProvider)
+    bind[TimeProvider].toInstance(mockTimeProvider),
+    bind[AuditService].toInstance(mockAuditService)
   )
 
   override def additionalConfig = super.additionalConfig.withFallback(
@@ -88,12 +91,12 @@ class BusinessEntityControllerSpec
   private val controller = instanceOf[BusinessEntityController]
 
   private val invalidEOris = List("GB1234567890", "AB1234567890", "GB1234567890123")
-  private val currentDate = LocalDate.of(2022, 10,9)
+  private val currentDate = LocalDate.of(2022, 10, 9)
 
-  private val expectedRows = List(
+  private def expectedRows(eori: EORI) = List(
     CheckYourAnswersRowBE(
       messageFromMessageKey("businessEntity.cya.eori.label"),
-      eori1,
+      eori,
       routes.BusinessEntityController.getEori().url
     )
   )
@@ -188,7 +191,7 @@ class BusinessEntityControllerSpec
 
               input match {
                 case Some(value) => selectedOptions.attr("value") shouldBe value
-                case None        => selectedOptions.isEmpty shouldBe true
+                case None => selectedOptions.isEmpty shouldBe true
               }
 
               val button = doc.select("form")
@@ -285,7 +288,9 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori)(Right(undertaking.some))
-            mockUpdate[BusinessEntityJourney](_ => updateFunc(BusinessEntityJourney().some), eori)(Right(BusinessEntityJourney(addBusiness = AddBusinessFormPage(true.some))))
+            mockUpdate[BusinessEntityJourney](_ => updateFunc(BusinessEntityJourney().some), eori)(
+              Right(BusinessEntityJourney(addBusiness = AddBusinessFormPage(true.some)))
+            )
           }
           checkIsRedirect(performAction("addBusiness" -> "true"), "add-business-entity-eori")
         }
@@ -357,16 +362,20 @@ class BusinessEntityControllerSpec
         }
 
         "user hasn't already answered the question" in {
-          test(BusinessEntityJourney().copy(
-            addBusiness = AddBusinessFormPage(true.some)
-          ))
+          test(
+            BusinessEntityJourney().copy(
+              addBusiness = AddBusinessFormPage(true.some)
+            )
+          )
         }
 
         "user has already answered the question" in {
-          test(BusinessEntityJourney().copy(
-            addBusiness = AddBusinessFormPage(true.some),
-            eori = AddEoriFormPage(eori1.some)
-          ))
+          test(
+            BusinessEntityJourney().copy(
+              addBusiness = AddBusinessFormPage(true.some),
+              eori = AddEoriFormPage(eori1.some)
+            )
+          )
         }
 
       }
@@ -410,11 +419,13 @@ class BusinessEntityControllerSpec
             businessEntity.copy(eori = businessEntity.eori.copy(value = Some(EORI("123456789010"))))
           }
 
-          val businessEntityJourney =  BusinessEntityJourney().copy(
-            addBusiness = AddBusinessFormPage(true.some),
-            eori = AddEoriFormPage(eori1.some)
-          ).some
-          inSequence{
+          val businessEntityJourney = BusinessEntityJourney()
+            .copy(
+              addBusiness = AddBusinessFormPage(true.some),
+              eori = AddEoriFormPage(eori1.some)
+            )
+            .some
+          inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
             mockRetreiveUndertaking(eori4)(Future.successful(None))
@@ -504,12 +515,12 @@ class BusinessEntityControllerSpec
           { doc =>
             val rows =
               doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
-                val question  = element.select(".govuk-summary-list__key").text()
-                val answer    = element.select(".govuk-summary-list__value").text()
+                val question = element.select(".govuk-summary-list__key").text()
+                val answer = element.select(".govuk-summary-list__value").text()
                 val changeUrl = element.select(".govuk-link").attr("href")
                 CheckYourAnswersRowBE(question, answer, changeUrl)
               }
-            rows shouldBe expectedRows
+            rows shouldBe expectedRows(eori1)
           }
         )
       }
@@ -525,7 +536,7 @@ class BusinessEntityControllerSpec
         )
 
       "throw technical error" when {
-        val exception         = new Exception("oh no")
+        val exception = new Exception("oh no")
         val emailParametersBE = SingleEORIEmailParameter(eori2, undertaking.name, undertakingRef, "addMemberEmailToBE")
 
         "call to get undertaking fails" in {
@@ -684,6 +695,7 @@ class BusinessEntityControllerSpec
             mockSendEmail(validEmailAddress, emailParametersLead, "template_add_lead_EN")(
               Right(EmailSendResult.EmailSent)
             )
+            mockSendAuditEvent(businessEntityAddedEvent)
             mockPut[BusinessEntityJourney](resettedBusinessJourney, eori1)(Right(BusinessEntityJourney()))
           }
           checkIsRedirect(performAction("cya" -> "true")(English.code), nextCall)
@@ -706,6 +718,7 @@ class BusinessEntityControllerSpec
             mockSendEmail(validEmailAddress, emailParametersBE, templateIdBE)(Right(EmailSendResult.EmailSent))
             mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
             mockSendEmail(validEmailAddress, emailParametersLead, templateIdLead)(Right(EmailSendResult.EmailSent))
+            mockSendAuditEvent(businessEntityAddedEvent)
             mockPut[BusinessEntityJourney](BusinessEntityJourney(), eori1)(Right(BusinessEntityJourney()))
           }
           checkIsRedirect(
@@ -743,10 +756,11 @@ class BusinessEntityControllerSpec
 
     "handling request to edit business entity" must {
 
-      "throw technical error" when {
+      def performAction(eori: String) = controller.editBusinessEntity(eori)(FakeRequest())
 
-        def performAction(eori: String) = controller.editBusinessEntity(eori)(FakeRequest())
-        val exception                   = new Exception("oh no!")
+      "throw technical error" when {
+        val exception = new Exception("oh no!")
+
         "call to retrieve undertaking fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -766,36 +780,37 @@ class BusinessEntityControllerSpec
           assertThrows[Exception](await(performAction(eori1)))
         }
 
-        "display the page" in {
+      }
 
-          val be: BusinessEntity = undertaking1.undertakingBusinessEntity.filter(_.leadEORI).head
-          val businessEntityJourney = BusinessEntityJourney.businessEntityJourneyForEori(
-            undertaking1.copy(undertakingBusinessEntity = List(be)).some,
-            eori1
-          )
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(
-              Future.successful(undertaking1.copy(undertakingBusinessEntity = List(be)).some)
-            )
-            mockPut[BusinessEntityJourney](businessEntityJourney, eori1)(Right(businessEntityJourney))
-          }
-          checkPageIsDisplayed(
-            performAction(eori1),
-            messageFromMessageKey("businessEntity.cya.title"),
-            { doc =>
-              val rows =
-                doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
-                  val question  = element.select(".govuk-summary-list__key").text()
-                  val answer    = element.select(".govuk-summary-list__value").text()
-                  val changeUrl = element.select(".govuk-link").attr("href")
-                  CheckYourAnswersRowBE(question, answer, changeUrl)
-                }
-              rows shouldBe expectedRows
-            }
-          )
+      "display the page" in {
 
+        val be: BusinessEntity = undertaking1.undertakingBusinessEntity.filter(_.leadEORI).head
+        val businessEntityJourney = BusinessEntityJourney.businessEntityJourneyForEori(
+          undertaking1.copy(undertakingBusinessEntity = List(be)).some,
+          eori4
+        )
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockRetreiveUndertaking(eori1)(
+            Future.successful(undertaking1.copy(undertakingBusinessEntity = List(be)).some)
+          )
+          mockPut[BusinessEntityJourney](businessEntityJourney, eori1)(Right(businessEntityJourney))
+          mockSendAuditEvent(AuditEvent.BusinessEntityUpdated("1123", eori1, eori4))
         }
+        checkPageIsDisplayed(
+          performAction(eori4),
+          messageFromMessageKey("businessEntity.cya.title"),
+          { doc =>
+            val rows =
+              doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
+                val question = element.select(".govuk-summary-list__key").text()
+                val answer = element.select(".govuk-summary-list__value").text()
+                val changeUrl = element.select(".govuk-link").attr("href")
+                CheckYourAnswersRowBE(question, answer, changeUrl)
+              }
+            rows shouldBe expectedRows(eori4)
+          }
+        )
 
       }
 
@@ -850,7 +865,7 @@ class BusinessEntityControllerSpec
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               inputDate match {
                 case Some(value) => selectedOptions.attr("value") shouldBe value
-                case None        => selectedOptions.isEmpty shouldBe true
+                case None => selectedOptions.isEmpty shouldBe true
               }
               val button = doc.select("form")
               button.attr("action") shouldBe routes.BusinessEntityController.postRemoveYourselfBusinessEntity().url
@@ -1096,7 +1111,7 @@ class BusinessEntityControllerSpec
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               inputDate match {
                 case Some(value) => selectedOptions.attr("value") shouldBe value
-                case None        => selectedOptions.isEmpty shouldBe true
+                case None => selectedOptions.isEmpty shouldBe true
               }
               val button = doc.select("form")
               button.attr("action") shouldBe routes.BusinessEntityController.postRemoveBusinessEntity(eori4).url
@@ -1233,6 +1248,7 @@ class BusinessEntityControllerSpec
             mockSendEmail(validEmailAddress, emailParametersBE, templateIdBE)(Right(EmailSendResult.EmailSent))
             mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
             mockSendEmail(validEmailAddress, emailParametersLead, templateIdLead)(Right(EmailSendResult.EmailSent))
+            mockSendAuditEvent(AuditEvent.BusinessEntityRemoved("1123", eori1, eori4))
           }
           checkIsRedirect(
             performAction("removeBusiness" -> "true")(eori4, lang),
