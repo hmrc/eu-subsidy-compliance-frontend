@@ -37,14 +37,14 @@ case class UndertakingJourney(
   isAmend: Boolean = false
 ) extends Journey {
 
-  override protected def steps = List(
+  override def steps = Array(
     name,
     sector,
     cya,
     confirmation
   )
 
-  override def previous(implicit request: Request[_]): Uri =
+  override def previous(implicit r: Request[_]): Uri =
     if (isAmend) routes.UndertakingController.getAmendUndertakingDetails().url
     else if (requiredDetailsProvided) routes.UndertakingController.getCheckAnswers().url
     else super.previous

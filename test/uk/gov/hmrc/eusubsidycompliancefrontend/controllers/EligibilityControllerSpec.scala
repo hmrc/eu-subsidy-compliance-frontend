@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
-import play.api.Configuration
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -42,10 +41,6 @@ class EligibilityControllerSpec
     bind[JourneyTraverseService].toInstance(mockJourneyTraverseService),
     bind[AuditService].toInstance(mockAuditService)
   )
-
-  override def additionalConfig: Configuration = Configuration.from(Map(
-    "appName" -> "sausages"
-  ))
 
   private val controller = instanceOf[EligibilityController]
 

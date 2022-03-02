@@ -45,7 +45,7 @@ case class EligibilityJourney(
     createUndertaking
   )
 
-  override protected def steps: List[FormPage[_]] =
+  override def steps: Array[FormPage[_]] =
     journeySteps
       // Remove steps based on user responses during the eligibility journey.
       .filterNot {
@@ -54,7 +54,7 @@ case class EligibilityJourney(
         case SignOutFormPage(_) => mainBusinessCheck.value.contains(true)
         case SignOutBadEoriFormPage(_) => eoriCheck.value.contains(true)
         case _ => false
-      }
+      }.toArray
 
 }
 

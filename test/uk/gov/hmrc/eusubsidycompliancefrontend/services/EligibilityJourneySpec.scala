@@ -28,7 +28,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
 
       "return all forms at the start of the journey" in {
         val underTest = EligibilityJourney()
-        underTest.formPages shouldBe List(
+        underTest.steps shouldBe Array(
           underTest.customsWaivers,
           underTest.willYouClaim,
           underTest.notEligible,
@@ -45,7 +45,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
         val underTest = EligibilityJourney(
           customsWaivers = CustomsWaiversFormPage(Some(true)),
         )
-        underTest.formPages shouldBe List(
+        underTest.steps shouldBe Array(
           underTest.customsWaivers,
           underTest.mainBusinessCheck,
           underTest.signOut,
@@ -60,7 +60,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
         val underTest = EligibilityJourney(
           willYouClaim = WillYouClaimFormPage(Some(true))
         )
-        underTest.formPages shouldBe List(
+        underTest.steps shouldBe Array(
           underTest.customsWaivers,
           underTest.willYouClaim,
           underTest.mainBusinessCheck,
@@ -77,7 +77,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
           willYouClaim = WillYouClaimFormPage(Some(true)),
           mainBusinessCheck = MainBusinessCheckFormPage(Some(true)),
         )
-        underTest.formPages shouldBe List(
+        underTest.steps shouldBe Array(
           underTest.customsWaivers,
           underTest.willYouClaim,
           underTest.mainBusinessCheck,
@@ -94,7 +94,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
           mainBusinessCheck = MainBusinessCheckFormPage(Some(true)),
           eoriCheck = EoriCheckFormPage(Some(true)),
         )
-        underTest.formPages shouldBe List(
+        underTest.steps shouldBe Array(
           underTest.customsWaivers,
           underTest.willYouClaim,
           underTest.mainBusinessCheck,

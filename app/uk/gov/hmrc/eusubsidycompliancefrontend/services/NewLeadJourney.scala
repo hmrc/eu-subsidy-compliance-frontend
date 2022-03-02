@@ -23,7 +23,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
 
 case class NewLeadJourney(selectNewLead: SelectNewLeadFormPage = SelectNewLeadFormPage()) extends Journey {
-  override def steps: List[FormPage[_]] = List(selectNewLead)
+  override def steps: Array[FormPage[_]] = Array(selectNewLead)
 }
 
 object NewLeadJourney {

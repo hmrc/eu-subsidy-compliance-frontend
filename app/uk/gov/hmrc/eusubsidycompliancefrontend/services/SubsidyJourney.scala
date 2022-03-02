@@ -35,7 +35,7 @@ case class SubsidyJourney(
   existingTransactionId: Option[SubsidyRef] = None,
 ) extends Journey {
 
-  override protected def steps: List[FormPage[_]] = List(
+  override def steps: Array[FormPage[_]] = Array(
     reportPayment,
     claimDate,
     claimAmount,

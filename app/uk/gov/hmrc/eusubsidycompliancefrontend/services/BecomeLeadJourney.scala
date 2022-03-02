@@ -27,8 +27,8 @@ case class BecomeLeadJourney(
   confirmation: ConfirmationFormPage = ConfirmationFormPage(),
 ) extends Journey {
 
-  override def steps: List[FormPage[_]] =
-    List(
+  override def steps: Array[FormPage[_]] =
+    Array(
       becomeLeadEori,
       acceptTerms,
       confirmation

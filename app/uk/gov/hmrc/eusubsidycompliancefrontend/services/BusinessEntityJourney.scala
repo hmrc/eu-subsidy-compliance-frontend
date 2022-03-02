@@ -31,8 +31,8 @@ case class BusinessEntityJourney(
   isLeadSelectJourney: Option[Boolean] = None
 ) extends Journey {
 
-  override protected def steps: List[FormPage[_]] =
-    List(
+  override def steps: Array[FormPage[_]] =
+    Array(
       addBusiness,
       eori,
       cya,
