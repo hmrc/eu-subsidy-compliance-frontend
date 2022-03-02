@@ -353,7 +353,7 @@ class SubsidyController @Inject() (
       _ = auditService.sendEvent[NonCustomsSubsidyUpdated](
         AuditEvent.NonCustomsSubsidyUpdated(request.authorityId, reference, subsidyJourney, timeProvider)
       )
-    } yield Redirect(routes.SubsidyController.getCheckAnswers())
+    } yield Redirect(routes.SubsidyController.c())
     result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
   }
 
