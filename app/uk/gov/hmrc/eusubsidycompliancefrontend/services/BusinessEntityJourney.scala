@@ -18,9 +18,10 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json.{Format, Json, OFormat}
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Forms.{AddBusinessCyaFormPage, AddBusinessFormPage, AddEoriFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessCyaFormPage, AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 
 case class BusinessEntityJourney(
@@ -30,8 +31,8 @@ case class BusinessEntityJourney(
   isLeadSelectJourney: Option[Boolean] = None
 ) extends Journey {
 
-  override protected def steps: List[FormPage[_]] =
-    List(
+  override def steps: Array[FormPage[_]] =
+    Array(
       addBusiness,
       eori,
       cya,
@@ -54,20 +55,18 @@ object BusinessEntityJourney {
     }
   }
 
-  object FormUrls {
-    val AddBusiness = "add-member"
-    val Eori = "add-business-entity-eori"
-    val Cya = "check-your-answers-businesses"
-  }
+  object FormPages {
 
-  object Forms {
-    case class AddBusinessFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = FormUrls.AddBusiness }
-    case class AddEoriFormPage(value: Form[EORI] = None) extends FormPage[EORI] { val uri = FormUrls.Eori }
-    case class AddBusinessCyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = FormUrls.Cya }
+    private val controller = routes.BusinessEntityController
+
+    case class AddBusinessFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getAddBusinessEntity().url }
+    case class AddEoriFormPage(value: Form[EORI] = None) extends FormPage[EORI] { def uri = controller.getEori().url }
+    case class AddBusinessCyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getCheckYourAnswers().url }
 
     object AddBusinessFormPage { implicit val addBusinessFormPageFormat: OFormat[AddBusinessFormPage] = Json.format }
     object AddEoriFormPage { implicit val addEoriFormPageFormat: OFormat[AddEoriFormPage] = Json.format }
     object AddBusinessCyaFormPage { implicit val cyaFormPageFormat: OFormat[AddBusinessCyaFormPage] = Json.format }
+
   }
 
 }

@@ -16,9 +16,8 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import play.api.Logger
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
@@ -31,60 +30,33 @@ trait FormPage[+T] {
 
 trait Journey {
 
-  private val logger = Logger(getClass)
+  def steps: Array[FormPage[_]]
 
-  protected def steps: List[FormPage[_]]
+  def previous(implicit r: Request[_]): Journey.Uri =
+    if (currentIndex > 0) steps(previousIndex).uri
+    else throw new IllegalStateException("no previous page")
 
-  def formPages: List[FormPage[_]] = steps
-
-  // TODO strip/add the server path prefix instead of endsWith
-  // TODO especially as this may not work for listings
-  def currentIndex(implicit request: Request[_]): Int = {
-    formPages.indexWhere(x => request.uri.endsWith(x.uri))
+  def next(implicit r: Request[_]): Future[Result] = {
+    if (currentIndex < lastIndex) redirectWithSession(steps(nextIndex).uri).toFuture
+    else throw new IllegalStateException("no next page")
   }
 
-  // TODO - should previous and next return the same types?
-  def previous(implicit request: Request[_]): Journey.Uri =
-    formPages.zipWithIndex
-      .find(_._2 == currentIndex - 1)
-      .fold(throw new IllegalStateException("no previous page"))(_._1.uri)
-
-  def next(implicit request: Request[_]): Future[Result] =
-    formPages.zipWithIndex
-      .find(_._2 == currentIndex + 1)
-      .fold(throw new IllegalStateException("no next page")) { x =>
-        Redirect(x._1.uri).withSession(request.session).toFuture
-      }
-
-  def isEmptyFormPage(indexedFormPage: (FormPage[_], Int))(implicit request: Request[_]): Boolean =
-    indexedFormPage match {
-      case (formPage, index) => formPage.value.isEmpty && index < currentIndex
-    }
-
-  def isComplete: Boolean = steps.last.value.isDefined
-
-  def redirect(implicit request: Request[AnyContent]): Option[Future[Result]] = {
-    val firstUnfilledFormUri: Journey.Uri =
-      formPages.zipWithIndex
-        .find(isEmptyFormPage)
-        .fold(request.uri)({ case (a, _) => a.uri })
-    if (firstUnfilledFormUri != request.uri) {
-      logger.info(s"redirecting ${request.uri} to $firstUnfilledFormUri")
-      Some(Redirect(firstUnfilledFormUri).withSession(request.session).toFuture)
-    } else None
-  }
+  def isComplete: Boolean = steps(lastIndex).value.isDefined
 
   def firstEmpty(implicit request: Request[_]): Option[Result] =
-    formPages.find(x => x.value.isEmpty).map { x =>
-      val uri = x.uri
-      Redirect(uri).withSession(request.session)
-    }
+    steps
+      .find(_.value.isEmpty)
+      .map(e => redirectWithSession(e.uri))
 
+  private def currentIndex(implicit r: Request[_]): Int = steps.indexWhere(e => r.uri == e.uri)
+  private def previousIndex(implicit r: Request[_]) = currentIndex - 1
+  private def nextIndex(implicit r: Request[_]) = currentIndex + 1
+  private def lastIndex = steps.length - 1
+
+  private def redirectWithSession(u: String)(implicit r: Request[_]) = Redirect(u).withSession(r.session)
 }
 
 object Journey {
-
   type Form[+T] = Option[T]
   type Uri = String
-
 }

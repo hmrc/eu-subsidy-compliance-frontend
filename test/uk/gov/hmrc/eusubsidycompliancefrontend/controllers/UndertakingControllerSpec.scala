@@ -221,7 +221,7 @@ class UndertakingControllerSpec
         }
 
         "page is reached via normal undertaking creation process" in {
-          test(UndertakingJourney(), UndertakingJourney.FormUrls.Sector)
+          test(UndertakingJourney(), routes.UndertakingController.getSector().url)
         }
 
         "page is reached via normal undertaking creation process when all answers have been provided" in {
@@ -297,9 +297,8 @@ class UndertakingControllerSpec
         }
 
         "user has not already answered the question (normal add undertaking journey)" in {
-          test(
-            undertakingJourney = UndertakingJourney(name = UndertakingNameFormPage("TestUndertaking1".some)),
-            previousCall = "undertaking-name",
+          test(undertakingJourney = UndertakingJourney(name = UndertakingNameFormPage("TestUndertaking1".some)),
+            previousCall = routes.UndertakingController.getUndertakingName().url,
             inputValue = None
           )
         }
@@ -401,7 +400,7 @@ class UndertakingControllerSpec
         }
 
         "page is reached via normal undertaking creation process" in {
-          test(UndertakingJourney(), "check-your-answers")
+          test(UndertakingJourney(), routes.UndertakingController.getCheckAnswers().url)
         }
 
         "page is reached via normal undertaking creation process when all answers have been provided" in {

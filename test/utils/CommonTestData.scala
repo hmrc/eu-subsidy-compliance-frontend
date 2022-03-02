@@ -24,7 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Forms._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._

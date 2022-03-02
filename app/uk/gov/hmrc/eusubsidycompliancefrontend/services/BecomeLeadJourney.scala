@@ -17,7 +17,8 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import play.api.libs.json.{Format, Json, OFormat}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.Forms.{BecomeLeadEoriFormPage, ConfirmationFormPage, TermsAndConditionsFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 
 case class BecomeLeadJourney(
@@ -26,8 +27,8 @@ case class BecomeLeadJourney(
   confirmation: ConfirmationFormPage = ConfirmationFormPage(),
 ) extends Journey {
 
-  override def steps: List[FormPage[_]] =
-    List(
+  override def steps: Array[FormPage[_]] =
+    Array(
       becomeLeadEori,
       acceptTerms,
       confirmation
@@ -39,20 +40,18 @@ object BecomeLeadJourney {
 
   implicit val format: Format[BecomeLeadJourney] = Json.format[BecomeLeadJourney]
 
-  object FormUrls {
-    val BecomeLead = "become-lead-eori"
-    val TermsAndConditions = "accept-promote-to-lead-terms"
-    val Confirmation = "lead-promotion-confirmation"
-  }
+  object FormPages {
 
-  object Forms {
-    case class BecomeLeadEoriFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = FormUrls.BecomeLead }
-    case class TermsAndConditionsFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = FormUrls.TermsAndConditions }
-    case class ConfirmationFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = FormUrls.Confirmation }
+    private val controller = routes.BecomeLeadController
+
+    case class BecomeLeadEoriFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getBecomeLeadEori().url }
+    case class TermsAndConditionsFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getAcceptPromotionTerms().url }
+    case class ConfirmationFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getPromotionConfirmation().url }
 
     object BecomeLeadEoriFormPage { implicit val becomeLeadEoriFormPageFormat: OFormat[BecomeLeadEoriFormPage] = Json.format }
     object TermsAndConditionsFormPage { implicit val termsAndConditionsFormPageFormat: OFormat[TermsAndConditionsFormPage] = Json.format }
     object ConfirmationFormPage { implicit val confirmationFormPageFormat: OFormat[ConfirmationFormPage] = Json.format }
+
   }
 
 }

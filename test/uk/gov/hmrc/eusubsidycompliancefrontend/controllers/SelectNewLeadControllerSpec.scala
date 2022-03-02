@@ -30,7 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{Dou
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Forms.AddEoriFormPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.AddEoriFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.http.HeaderCarrier

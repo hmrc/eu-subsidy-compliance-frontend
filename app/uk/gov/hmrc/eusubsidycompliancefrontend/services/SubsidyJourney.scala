@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json._
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, NonHmrcSubsidy, OptionalEORI, OptionalTraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
@@ -34,7 +35,7 @@ case class SubsidyJourney(
   existingTransactionId: Option[SubsidyRef] = None,
 ) extends Journey {
 
-  override protected def steps: List[FormPage[_]] = List(
+  override def steps: Array[FormPage[_]] = Array(
     reportPayment,
     claimDate,
     claimAmount,
@@ -69,25 +70,17 @@ object SubsidyJourney {
   private def getAddTraderRef(traderRefOpt: Option[TraderRef]) =
     traderRefOpt.fold(OptionalTraderRef("false", None))(t => OptionalTraderRef("true", t.some))
 
-  object FormUrls {
-    val ReportPayment = "claims"
-    val ClaimDateValues = "add-claim-date"
-    val ClaimAmount = "add-claim-amount"
-    val AddClaimEori = "add-claim-eori"
-    val PublicAuthority = "add-claim-public-authority"
-    val TraderReference = "add-claim-reference"
-    val Cya = "check-your-answers-subsidy"
-  }
-
   object Forms {
-    // TODO - replace uris with routes lookups
-    case class ReportPaymentFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = FormUrls.ReportPayment }
-    case class ClaimDateFormPage(value: Form[DateFormValues] = None) extends FormPage[DateFormValues] { val uri = FormUrls.ClaimDateValues }
-    case class ClaimAmountFormPage(value: Form[BigDecimal] = None) extends FormPage[BigDecimal] { val uri = FormUrls.ClaimAmount }
-    case class AddClaimEoriFormPage(value: Form[OptionalEORI] = None) extends FormPage[OptionalEORI] { val uri = FormUrls.AddClaimEori }
-    case class PublicAuthorityFormPage(value: Form[String] = None) extends FormPage[String] { val uri = FormUrls.PublicAuthority }
-    case class TraderRefFormPage(value: Form[OptionalTraderRef] = None) extends FormPage[OptionalTraderRef] { val uri = FormUrls.TraderReference }
-    case class CyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { val uri = FormUrls.Cya }
+
+    private val controller = routes.SubsidyController
+
+    case class ReportPaymentFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getReportPayment().url }
+    case class ClaimDateFormPage(value: Form[DateFormValues] = None) extends FormPage[DateFormValues] { def uri = controller.getClaimDate().url }
+    case class ClaimAmountFormPage(value: Form[BigDecimal] = None) extends FormPage[BigDecimal] { def uri = controller.getClaimAmount().url }
+    case class AddClaimEoriFormPage(value: Form[OptionalEORI] = None) extends FormPage[OptionalEORI] { def uri = controller.getAddClaimEori().url }
+    case class PublicAuthorityFormPage(value: Form[String] = None) extends FormPage[String] { def uri = controller.getAddClaimPublicAuthority().url }
+    case class TraderRefFormPage(value: Form[OptionalTraderRef] = None) extends FormPage[OptionalTraderRef] { def uri = controller.getAddClaimReference().url }
+    case class CyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getCheckAnswers().url }
 
     object ReportPaymentFormPage { implicit val reportPaymentFormPageFormat: OFormat[ReportPaymentFormPage] = Json.format }
     object ClaimDateFormPage { implicit val claimDateFormPageFormat: OFormat[ClaimDateFormPage] = Json.format }
@@ -96,6 +89,7 @@ object SubsidyJourney {
     object PublicAuthorityFormPage { implicit val claimAmountFormPageFormat: OFormat[PublicAuthorityFormPage] = Json.format }
     object TraderRefFormPage { implicit val claimAmountFormPageFormat: OFormat[TraderRefFormPage] = Json.format }
     object CyaFormPage { implicit val claimAmountFormPageFormat: OFormat[CyaFormPage] = Json.format }
+
   }
 
 }

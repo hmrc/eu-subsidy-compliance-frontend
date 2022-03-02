@@ -30,6 +30,7 @@ import utils.CommonTestData._
 
 import java.time.LocalDate
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class SubsidyControllerSpec
     extends ControllerSpec
@@ -46,8 +47,6 @@ class SubsidyControllerSpec
     bind[EscService].toInstance(mockEscService),
     bind[JourneyTraverseService].toInstance(mockJourneyTraverseService)
   )
-
-  implicit val ec: scala.concurrent.ExecutionContext = scala.concurrent.ExecutionContext.global
 
   private def mockRetrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(result: Future[UndertakingSubsidies]) =
     (mockEscService
@@ -161,7 +160,7 @@ class SubsidyControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[SubsidyJourney](identity, eori1)(Right(subsidyJourney))
           }
-          checkIsRedirect(performAction(("reportPayment", "true")), "add-claim-date")
+          checkIsRedirect(performAction(("reportPayment", "true")), routes.SubsidyController.getClaimDate().url)
         }
       }
     }
@@ -237,7 +236,7 @@ class SubsidyControllerSpec
           }
           checkIsRedirect(
             performAction("day" -> updatedDate.day, "month" -> updatedDate.month, "year" -> updatedDate.year),
-            SubsidyJourney.FormUrls.ClaimAmount
+            routes.SubsidyController.getClaimAmount().url
           )
         }
       }
@@ -291,7 +290,7 @@ class SubsidyControllerSpec
 
       "display the page" when {
 
-        def test(subsidyJourney: SubsidyJourney) = {
+        def test(subsidyJourney: SubsidyJourney): Unit = {
           mockAuthWithNecessaryEnrolment()
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
 
@@ -399,7 +398,7 @@ class SubsidyControllerSpec
 
       "display form error" when {
 
-        def displayError(data: (String, String)*)(errorMessageKey: String) = {
+        def displayError(data: (String, String)*)(errorMessageKey: String): Unit = {
 
           val subsidyJourneyOpt = SubsidyJourney(
             reportPayment = ReportPaymentFormPage(true.some),
@@ -458,7 +457,7 @@ class SubsidyControllerSpec
 
         checkIsRedirect(
           performAction("claim-amount" -> "123.45"),
-          "add-claim-eori"
+          routes.SubsidyController.getAddClaimEori().url
         )
 
       }
@@ -608,12 +607,12 @@ class SubsidyControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[SubsidyJourney](eori1)(Right("add-claim-amount"))
+            mockGetPrevious[SubsidyJourney](eori1)(Right(routes.SubsidyController.getClaimAmount().url))
             mockUpdate[SubsidyJourney](_ => update(subsidyJourney.some, optionalEORI.some), eori1)(
               Right(updatedSubsidyJourney)
             )
           }
-          checkIsRedirect(performAction(inputAnswer: _*), "add-claim-public-authority")
+          checkIsRedirect(performAction(inputAnswer: _*), routes.SubsidyController.getAddClaimPublicAuthority().url)
         }
 
         "user selected yes and enter eori number" in {
@@ -671,7 +670,10 @@ class SubsidyControllerSpec
               Right(subsidyJourney.copy(publicAuthority = PublicAuthorityFormPage(Some("My Authority"))))
             )
           }
-          checkIsRedirect(performAction("claim-public-authority" -> "My Authority"), SubsidyJourney.FormUrls.TraderReference)
+          checkIsRedirect(
+            performAction("claim-public-authority" -> "My Authority"),
+            routes.SubsidyController.getAddClaimReference().url
+          )
         }
       }
     }
