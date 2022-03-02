@@ -672,7 +672,7 @@ class BusinessEntityControllerSpec
 
       }
 
-      "redirects to next page" when {
+      "post successful for creation" when {
 
         def testRedirection(
           businessEntityJourney: BusinessEntityJourney,
@@ -746,6 +746,45 @@ class BusinessEntityControllerSpec
         "all api calls are successful and is normal add business entity journey " in {
           testRedirection(
             businessEntityJourney1,
+            routes.BusinessEntityController.getAddBusinessEntity().url,
+            BusinessEntityJourney()
+          )
+        }
+      }
+
+      "edit post successful for edit" when {
+
+        def testRedirection(
+                             businessEntityJourney: BusinessEntityJourney,
+                             nextCall: String,
+                             resettedBusinessJourney: BusinessEntityJourney
+                           ) = {
+          val businessEntity = BusinessEntity(eori2, leadEORI = false)
+          val emailParametersBE =
+            SingleEORIEmailParameter(eori2, undertaking.name, undertakingRef, "addMemberEmailToBE")
+          val emailParametersLead =
+            DoubleEORIEmailParameter(eori1, eori2, undertaking.name, undertakingRef, "addMemberEmailToLead")
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+            mockRemoveMember(undertakingRef, businessEntity.copy(businessEntityIdentifier = businessEntityJourney.oldEORI.get))(Right(undertakingRef))
+            mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
+            mockRetrieveEmail(eori2)(Right(validEmailAddress.some))
+            mockSendEmail(validEmailAddress, emailParametersBE, "template_add_be_EN")(Right(EmailSendResult.EmailSent))
+            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
+            mockSendEmail(validEmailAddress, emailParametersLead, "template_add_lead_EN")(
+              Right(EmailSendResult.EmailSent)
+            )
+            mockSendAuditEvent(businessEntityAddedEvent)
+            mockPut[BusinessEntityJourney](resettedBusinessJourney, eori1)(Right(BusinessEntityJourney()))
+          }
+          checkIsRedirect(performAction("cya" -> "true")(English.code), nextCall)
+        }
+
+        "all api calls are successful and is normal edit business entity journey " in {
+          testRedirection(
+            businessEntityJourney1.copy(oldEORI = Some(eori4)),
             routes.BusinessEntityController.getAddBusinessEntity().url,
             BusinessEntityJourney()
           )
