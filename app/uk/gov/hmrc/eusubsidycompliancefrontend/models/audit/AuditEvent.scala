@@ -25,7 +25,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityUpdate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyAmount, SubsidyRef, TraderRef, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -170,7 +169,7 @@ object AuditEvent {
       leadEori: EORI,
       undertakingRef: UndertakingRef,
       subsidyJourney: SubsidyJourney,
-      timeProvider: TimeProvider
+      currentDate: LocalDate
     ): NonCustomsSubsidyAdded =
       AuditEvent.NonCustomsSubsidyAdded(
         ggDetails = ggDetails,
@@ -179,7 +178,7 @@ object AuditEvent {
         allocationDate = subsidyJourney.claimDate.value
           .map(_.toLocalDate)
           .getOrElse(sys.error("No claimdate on SubsidyJourney")),
-        submissionDate = timeProvider.today,
+        submissionDate = currentDate,
         publicAuthority = subsidyJourney.publicAuthority.value.fold(sys.error("public Authority missing"))(Some(_)),
         traderReference =
           subsidyJourney.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
@@ -227,7 +226,7 @@ object AuditEvent {
       ggDetails: String,
       undertakingRef: UndertakingRef,
       subsidyJourney: SubsidyJourney,
-      timeProvider: TimeProvider
+      currentDate: LocalDate
     ): NonCustomsSubsidyUpdated =
       AuditEvent.NonCustomsSubsidyUpdated(
         ggDetails = ggDetails,
@@ -235,7 +234,7 @@ object AuditEvent {
         allocationDate = subsidyJourney.claimDate.value
           .map(_.toLocalDate)
           .getOrElse(sys.error("No claimdate on SubsidyJourney")),
-        submissionDate = timeProvider.today,
+        submissionDate = currentDate,
         publicAuthority = subsidyJourney.publicAuthority.value.fold(sys.error("public Authority missing"))(Some(_)),
         traderReference =
           subsidyJourney.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),

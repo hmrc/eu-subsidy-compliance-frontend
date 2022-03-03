@@ -65,6 +65,8 @@ object CommonTestData {
     )
   )
 
+  val nonHmrcSubsidyList1 = nonHmrcSubsidyList.map(_.copy(subsidyUsageTransactionID = SubsidyRef("TID1234").some))
+
   val subsidyJourney = SubsidyJourney(
     publicAuthority = PublicAuthorityFormPage("Local Authority".some),
     traderRef = TraderRefFormPage(optionalTraderRef.some),
@@ -111,14 +113,16 @@ object CommonTestData {
   )
 
   val undertakingSubsidies = UndertakingSubsidies(
-    undertakingRef,
-    SubsidyAmount(1234.56),
-    SubsidyAmount(1234.56),
-    SubsidyAmount(1234.56),
-    SubsidyAmount(1234.56),
-    nonHmrcSubsidyList,
-    List.empty
+    undertakingIdentifier = undertakingRef,
+    nonHMRCSubsidyTotalEUR = SubsidyAmount(1234.56),
+    nonHMRCSubsidyTotalGBP = SubsidyAmount(1234.56),
+    hmrcSubsidyTotalEUR = SubsidyAmount(1234.56),
+    hmrcSubsidyTotalGBP = SubsidyAmount(1234.56),
+    nonHMRCSubsidyUsage = nonHmrcSubsidyList,
+    hmrcSubsidyUsage = List.empty
   )
+
+  val undertakingSubsidies1 = undertakingSubsidies.copy(nonHMRCSubsidyUsage = nonHmrcSubsidyList1)
 
   val eligibilityJourneyNotComplete = EligibilityJourney(
     customsWaivers = CustomsWaiversFormPage(true.some),

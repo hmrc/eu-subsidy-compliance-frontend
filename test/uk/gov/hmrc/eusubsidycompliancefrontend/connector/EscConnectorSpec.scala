@@ -22,6 +22,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnectorImpl
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
@@ -53,7 +54,7 @@ class EscConnectorSpec extends AnyWordSpec with Matchers with MockFactory with H
     (mockTimeProvider.today _).expects().returning(today)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  val responseHeaders            = Map.empty[String, Seq[String]]
+  val responseHeaders = Map.empty[String, Seq[String]]
 
   "EscConnectorSpec" when {
 
@@ -108,7 +109,11 @@ class EscConnectorSpec extends AnyWordSpec with Matchers with MockFactory with H
       val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/subsidy/update"
       behave like connectorBehaviourWithMockTime(
         mockPost(expectedUrl, Seq.empty, subsidyUpdate)(_),
-        () => connector.createSubsidy(undertakingRef, subsidyJourney),
+        () =>
+          connector.createSubsidy(
+            undertakingRef,
+            SubsidyController.toSubsidyUpdate(subsidyJourney, undertakingRef, LocalDate.now())
+          ),
         mockTimeProviderToday
       )
 

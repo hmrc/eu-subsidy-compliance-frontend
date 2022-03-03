@@ -77,14 +77,15 @@ class SubsidyController @Inject() (
     } yield (reference, undertaking)
 
     result.foldF(handleMissingSessionData("Subsidy journey")) { case (reference, undertaking) =>
+      val currentDate = timeProvider.today
       retrieveSubsidiesOrNone(reference).map { subsidies =>
         Ok(
           reportPaymentPage(
             subsidies,
             undertaking,
-            timeProvider.today.toEarliestTaxYearStart,
-            timeProvider.today.toTaxYearEnd.minusYears(1),
-            timeProvider.today.toTaxYearStart
+            currentDate.toEarliestTaxYearStart,
+            currentDate.toTaxYearEnd.minusYears(1),
+            currentDate.toTaxYearStart
           )
         )
       }
@@ -296,18 +297,22 @@ class SubsidyController @Inject() (
             for {
               journey <- store.update[SubsidyJourney](updateCya(form)).map(Option(_)).toContext
               _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
-              undertaking <- store.get[Undertaking].toContext.orElseF(handleMissingSessionData("undertaking"))
+              undertaking <- escService
+                .retrieveUndertaking(eori)
+                .toContext
+                .orElseF(handleMissingSessionData("undertaking"))
               ref <- undertaking.reference.toContext
-              _ <- escService.createSubsidy(ref, toSubsidyUpdate(journey, ref, timeProvider.today)).toContext
+              currentDate = timeProvider.today
+              _ <- escService.createSubsidy(ref, toSubsidyUpdate(journey, ref, currentDate)).toContext
               _ <- store.put(SubsidyJourney()).toContext
               _ =
                 if (journey.isAmend)
                   auditService.sendEvent[NonCustomsSubsidyUpdated](
-                    AuditEvent.NonCustomsSubsidyUpdated(request.authorityId, ref, journey, timeProvider)
+                    AuditEvent.NonCustomsSubsidyUpdated(request.authorityId, ref, journey, currentDate)
                   )
                 else
                   auditService.sendEvent[NonCustomsSubsidyAdded](
-                    AuditEvent.NonCustomsSubsidyAdded(request.authorityId, eori, ref, journey, timeProvider)
+                    AuditEvent.NonCustomsSubsidyAdded(request.authorityId, eori, ref, journey, currentDate)
                   )
             } yield Redirect(routes.SubsidyController.getReportPayment())
           }.getOrElse(sys.error("Error processing subsidy cya form submission"))
@@ -357,7 +362,7 @@ class SubsidyController @Inject() (
       reference <- getUndertakingRef
       nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
       subsidyJourney = SubsidyJourney.fromNonHmrcSubsidy(nonHmrcSubsidy)
-      _ = store.put(subsidyJourney)
+      _ <- store.put(subsidyJourney).toContext
     } yield Redirect(routes.SubsidyController.getCheckAnswers())
     result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
   }
@@ -513,7 +518,7 @@ class SubsidyController @Inject() (
 }
 
 object SubsidyController {
-  private def toSubsidyUpdate(
+  def toSubsidyUpdate(
     journey: SubsidyJourney,
     undertakingRef: UndertakingRef,
     currentDate: LocalDate

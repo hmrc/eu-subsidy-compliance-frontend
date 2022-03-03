@@ -73,7 +73,7 @@ class NoClaimNotificationController @Inject() (
               val result = for {
                 reference <- undertaking.reference.toContext
                 _ <- escService
-                  .createSubsidy(reference, SubsidyUpdate(reference, NilSubmissionDate(timeProvider.today)))
+                  .createSubsidy(reference, SubsidyUpdate(reference, NilSubmissionDate(nilSubmissionDate)))
                   .toContext
                 _ = auditService
                   .sendEvent(
