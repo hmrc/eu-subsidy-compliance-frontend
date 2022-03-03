@@ -35,6 +35,7 @@ class AccountController @Inject() (
   store: Store,
   escService: EscService,
   leadAccountPage: LeadAccountPage,
+  nonLeadAccountPage: NonLeadAccountPage,
   timeProvider: TimeProvider,
   existingUndertakingPage: ExistingUndertakingPage,
   retrieveEmailService: RetrieveEmailService
@@ -72,15 +73,19 @@ class AccountController @Inject() (
         val currentTime = timeProvider.today
         val isTimeToReport = ReportDeMinimisReminderHelper.isTimeToReport(undertaking.lastSubsidyUsageUpdt, currentTime)
         val isOverdue = ReportDeMinimisReminderHelper.isOverdue(undertaking.lastSubsidyUsageUpdt, currentTime)
-        Ok(
-          leadAccountPage(
-            undertaking,
-            undertaking.getAllNonLeadEORIs().nonEmpty,
-            isTimeToReport,
-            lastDayToReportString,
-            isOverdue
+
+        if (undertaking.isLeadEORI(eori)) {
+          Ok(
+            leadAccountPage(
+              undertaking,
+              undertaking.getAllNonLeadEORIs().nonEmpty,
+              isTimeToReport,
+              lastDayToReportString,
+              isOverdue
+            )
           )
-        )
+        }
+        else Ok(nonLeadAccountPage(undertaking))
 
       case (_, eJourney, uJourney) if !eJourney.isComplete && uJourney == UndertakingJourney() =>
         Redirect(routes.EligibilityController.firstEmptyPage())
