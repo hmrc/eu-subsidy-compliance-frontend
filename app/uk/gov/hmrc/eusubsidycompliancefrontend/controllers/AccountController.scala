@@ -34,7 +34,7 @@ class AccountController @Inject() (
   escActionBuilders: EscActionBuilders,
   store: Store,
   escService: EscService,
-  accountPage: AccountPage,
+  leadAccountPage: LeadAccountPage,
   timeProvider: TimeProvider,
   existingUndertakingPage: ExistingUndertakingPage,
   retrieveEmailService: RetrieveEmailService
@@ -73,7 +73,7 @@ class AccountController @Inject() (
         val isTimeToReport = ReportDeMinimisReminderHelper.isTimeToReport(undertaking.lastSubsidyUsageUpdt, currentTime)
         val isOverdue = ReportDeMinimisReminderHelper.isOverdue(undertaking.lastSubsidyUsageUpdt, currentTime)
         Ok(
-          accountPage(
+          leadAccountPage(
             undertaking,
             undertaking.getAllNonLeadEORIs().nonEmpty,
             isTimeToReport,
