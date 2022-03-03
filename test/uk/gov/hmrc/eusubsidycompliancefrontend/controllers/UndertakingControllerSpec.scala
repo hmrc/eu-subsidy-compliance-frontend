@@ -297,7 +297,8 @@ class UndertakingControllerSpec
         }
 
         "user has not already answered the question (normal add undertaking journey)" in {
-          test(undertakingJourney = UndertakingJourney(name = UndertakingNameFormPage("TestUndertaking1".some)),
+          test(
+            undertakingJourney = UndertakingJourney(name = UndertakingNameFormPage("TestUndertaking1".some)),
             previousCall = routes.UndertakingController.getUndertakingName().url,
             inputValue = None
           )
@@ -365,10 +366,13 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[UndertakingJourney](eori1)(Right("undertaking-name"))
+            mockGet[UndertakingJourney](eori1)(
+              Right(undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage()).some)
+            )
           }
           checkFormErrorIsDisplayed(
             performAction(),
-            messageFromMessageKey("undertakingSector.title", ""),
+            messageFromMessageKey("undertakingSector.title", undertakingJourneyComplete.name.value.getOrElse("")),
             messageFromMessageKey("undertakingSector.error.required")
           )
 
