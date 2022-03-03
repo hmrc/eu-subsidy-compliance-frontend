@@ -300,9 +300,15 @@ class SubsidyController @Inject() (
               ref <- undertaking.reference.toContext
               _ <- escService.createSubsidy(ref, toSubsidyUpdate(journey, ref, timeProvider.today)).toContext
               _ <- store.put(SubsidyJourney()).toContext
-              _ = auditService.sendEvent[NonCustomsSubsidyAdded](
-                AuditEvent.NonCustomsSubsidyAdded(request.authorityId, eori, ref, journey, timeProvider)
-              )
+              _ =
+                if (journey.isAmend)
+                  auditService.sendEvent[NonCustomsSubsidyUpdated](
+                    AuditEvent.NonCustomsSubsidyUpdated(request.authorityId, ref, journey, timeProvider)
+                  )
+                else
+                  auditService.sendEvent[NonCustomsSubsidyAdded](
+                    AuditEvent.NonCustomsSubsidyAdded(request.authorityId, eori, ref, journey, timeProvider)
+                  )
             } yield Redirect(routes.SubsidyController.getReportPayment())
           }.getOrElse(sys.error("Error processing subsidy cya form submission"))
       )
@@ -352,9 +358,6 @@ class SubsidyController @Inject() (
       nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
       subsidyJourney = SubsidyJourney.fromNonHmrcSubsidy(nonHmrcSubsidy)
       _ = store.put(subsidyJourney)
-      _ = auditService.sendEvent[NonCustomsSubsidyUpdated](
-        AuditEvent.NonCustomsSubsidyUpdated(request.authorityId, reference, subsidyJourney, timeProvider)
-      )
     } yield Redirect(routes.SubsidyController.getCheckAnswers())
     result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
   }

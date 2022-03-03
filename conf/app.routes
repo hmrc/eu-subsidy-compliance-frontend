@@ -103,8 +103,8 @@ POST       /remove-non-customs-subsidy/:transactionId           uk.gov.hmrc.eusu
 
 GET        /update-non-customs-subsidy/:transactionId           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getChangeSubsidyClaim(transactionId)
 
-GET        /no-claims-notification                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimNotification
-POST       /no-claims-notification                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.postNoClaimNotification
+GET        /non-customs-subsidy-nil-return         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimNotification
+POST       /non-customs-subsidy-nil-return         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.postNoClaimNotification
 
 GET        /no-claims-confirmation                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimConfirmation
 
