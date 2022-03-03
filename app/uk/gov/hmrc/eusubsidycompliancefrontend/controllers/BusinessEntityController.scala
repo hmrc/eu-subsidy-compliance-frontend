@@ -146,7 +146,11 @@ class BusinessEntityController @Inject() (
           store
             .update[BusinessEntityJourney] { businessEntityOpt =>
               businessEntityOpt.map { businessEntity =>
-                businessEntity.copy(eori = businessEntity.eori.copy(value = Some(EORI(form.value))))
+                businessEntity.copy(
+                  eori = businessEntity.eori.copy(
+                    value = Some(EORI(form.value))),
+                    oldEORI = businessEntity.eori.value
+                )
               }
             }
             .flatMap(_.next)
@@ -183,7 +187,12 @@ class BusinessEntityController @Inject() (
         .map(_.getOrElse(handleMissingSessionData("BusinessEntity Journey")))
       eoriBE = businessEntityJourney.eori.value.getOrElse(handleMissingSessionData("BE EORI"))
       businessEntity = BusinessEntity(eoriBE, leadEORI = false) // resetting the journey as it's final CYA page
-      _ <- escService.addMember(undertakingRef, businessEntity)
+      _ <- {
+        if(businessEntityJourney.isAmend) {
+          escService.removeMember(undertakingRef, businessEntity.copy(businessEntityIdentifier = businessEntityJourney.oldEORI.get))
+        }
+        escService.addMember(undertakingRef, businessEntity)
+      }
       _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
         eoriBE,
         None,

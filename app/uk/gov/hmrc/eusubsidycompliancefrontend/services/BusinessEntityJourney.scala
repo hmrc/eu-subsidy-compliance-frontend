@@ -25,10 +25,11 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Fo
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 
 case class BusinessEntityJourney(
-  addBusiness: AddBusinessFormPage = AddBusinessFormPage(),
-  eori: AddEoriFormPage = AddEoriFormPage(),
-  cya: AddBusinessCyaFormPage = AddBusinessCyaFormPage(),
-  isLeadSelectJourney: Option[Boolean] = None
+                                  addBusiness: AddBusinessFormPage = AddBusinessFormPage(),
+                                  eori: AddEoriFormPage = AddEoriFormPage(),
+                                  cya: AddBusinessCyaFormPage = AddBusinessCyaFormPage(),
+                                  isLeadSelectJourney: Option[Boolean] = None,
+                                  oldEORI: Option[EORI] = None
 ) extends Journey {
 
   override def steps: Array[FormPage[_]] =
@@ -37,6 +38,8 @@ case class BusinessEntityJourney(
       eori,
       cya,
     )
+
+  def isAmend: Boolean = oldEORI.nonEmpty
 }
 
 object BusinessEntityJourney {
