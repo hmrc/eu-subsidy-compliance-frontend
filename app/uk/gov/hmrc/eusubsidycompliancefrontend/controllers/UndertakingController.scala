@@ -30,11 +30,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
-
 import cats.data.OptionT
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.{FutureOptionToOptionTOps, OptionToOptionTOps}
-
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -121,27 +119,6 @@ class UndertakingController @Inject() (
       }
     }
   }
-
-  // def postSector: Action[AnyContent] = escAuthentication.async { implicit request =>
-  //   implicit val eori: EORI = request.eoriNumber
-  //   journeyTraverseService.getPrevious[UndertakingJourney].flatMap { previous =>
-  //     undertakingSectorForm
-  //       .bindFromRequest()
-  //       .fold(
-  //         errors => BadRequest(undertakingSectorPage(errors, previous, "")).toFuture,
-  //         form =>
-  //           for {
-  //             updatedUndertakingJourney <- store.update[UndertakingJourney] {
-  //               _.map { undertakingJourney =>
-  //                 val updatedSector = undertakingJourney.sector.copy(value = Some(Sector(form.value.toInt)))
-  //                 undertakingJourney.copy(sector = updatedSector)
-  //               }
-  //             }
-  //             redirect <- updatedUndertakingJourney.next
-  //           } yield redirect
-  //       )
-  //   }
-  // }
 
   def postSector: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
