@@ -37,7 +37,8 @@
 @layout(
     pageTitle = Some(messages("subsidy.remove.title")),
     backLinkEnabled = true,
-    backLink = Some(controllers.routes.SubsidyController.getReportPayment().url)
+    backLink = Some(controllers.routes.SubsidyController.getReportPayment().url),
+    hasErrors = form.hasErrors
 ) {
     @H1(messages("subsidy.remove.title"))
     @form.errors.map { err =>
@@ -108,7 +109,7 @@
                 legend = Some(Legend(
                     content = Text(messages("subsidy.remove.yesno.legend")),
                     classes = "govuk-fieldset__legend--m",
-                    isPageHeading = true
+                    isPageHeading = false
                 ))
             )),
             name = "removeSubsidyClaim",

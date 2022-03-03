@@ -59,8 +59,8 @@
                             items = Seq(
                                 ActionItem(
                                     href = controllers.routes.UndertakingController.getUndertakingName().toString,
-                                    content = Text("Change"),
-                                    visuallyHiddenText = Some("name")
+                                    content = Text(messages("common.cya.change")),
+                                    visuallyHiddenText = Some(messages("undertaking.cya.change.hidden.name"))
                                 )
                             )
                         ))
@@ -85,8 +85,8 @@
                             items = Seq(
                                 ActionItem(
                                     href = controllers.routes.UndertakingController.getSector().toString,
-                                    content = Text("Change"),
-                                    visuallyHiddenText = Some("contact information")
+                                    content = Text(messages("common.cya.change")),
+                                    visuallyHiddenText = Some(messages("undertaking.cya.change.hidden.industry-sector"))
                                 )
                             )
                         ))

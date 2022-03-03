@@ -3,7 +3,6 @@
 .fixed-min-height-card {
   background-color: #f8f8f8;
   padding: 20px;
-  min-height: 150px;
 }
 
 .summary-list-no-value {
@@ -13,5 +12,15 @@
 
   .govuk-summary-list__actions {
     width: 40%;
+  }
+}
+
+.govuk-card.fixed-min-height-card {
+  margin-bottom: 15px;
+}
+
+@media (min-width: 40.0625em) {
+  .fixed-min-height-card {
+    min-height: 200px;
   }
 }

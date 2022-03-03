@@ -33,7 +33,9 @@
 @(form: Form[_], name: UndertakingName, eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-  pageTitle = Some(messages("become-admin.title")),
+  pageTitle = Some(messages("become-admin.title", name)),
+  backLinkEnabled = true,
+  backLink = Some(controllers.routes.AccountController.getAccountPage().url),
   hasErrors = form.hasErrors
 ) {
 
@@ -58,7 +60,7 @@
           fieldset = Some(Fieldset(
               legend = Some(Legend(
                   content = Text(messages("become-admin.title", name)),
-                  classes = "govuk-fieldset__legend--l",
+                  classes = "govuk-fieldset__legend--xl",
                   isPageHeading = true
               ))
           )),

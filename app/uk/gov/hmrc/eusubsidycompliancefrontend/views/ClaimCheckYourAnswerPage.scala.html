@@ -58,8 +58,8 @@
                         items = Seq(
                             ActionItem(
                                 href = controllers.routes.SubsidyController.getClaimDate().url,
-                                content = Text("Change"),
-                                visuallyHiddenText = Some("name")
+                                content = Text(messages("common.cya.change")),
+                                visuallyHiddenText = Some(messages("subsidy.cya.change.hidden.payment-date"))
                             )
                         )
                     ))
@@ -75,8 +75,8 @@
                         items = Seq(
                             ActionItem(
                                 href = controllers.routes.SubsidyController.getClaimAmount().url,
-                                content = Text("Change"),
-                                visuallyHiddenText = Some("amount")
+                                content = Text(messages("common.cya.change")),
+                                visuallyHiddenText = Some(messages("subsidy.cya.change.hidden.payment-amount"))
                             )
                         )
                     ))
@@ -92,8 +92,8 @@
                         items = Seq(
                             ActionItem(
                                 href = controllers.routes.SubsidyController.getAddClaimEori().url,
-                                content = Text("Change"),
-                                visuallyHiddenText = Some("contact information")
+                                content = Text(messages("common.cya.change")),
+                                visuallyHiddenText = Some(messages("subsidy.cya.change.hidden.eori-number"))
                             )
                         )
                     ))
@@ -109,8 +109,8 @@
                         items = Seq(
                             ActionItem(
                                 href = controllers.routes.SubsidyController.getAddClaimPublicAuthority().url,
-                                content = Text("Change"),
-                                visuallyHiddenText = Some("contact details")
+                                content = Text(messages("common.cya.change")),
+                                visuallyHiddenText = Some(messages("subsidy.cya.change.hidden.public-authority"))
                             )
                         )
                     ))
@@ -126,8 +126,8 @@
                         items = Seq(
                             ActionItem(
                                 href = controllers.routes.SubsidyController.getAddClaimReference().url,
-                                content = Text("Change"),
-                                visuallyHiddenText = Some("contact details")
+                                content = Text(messages("common.cya.change")),
+                                visuallyHiddenText = Some(messages("subsidy.cya.change.hidden.your-reference"))
                             )
                         )
                     ))

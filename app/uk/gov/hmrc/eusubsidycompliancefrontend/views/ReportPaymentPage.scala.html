@@ -74,8 +74,8 @@
               HeadCell(content = Text(messages("report-payment.table.head.eori"))),
               HeadCell(content = Text(messages("report-payment.table.head.public-authority"))),
               HeadCell(content = Text(messages("report-payment.table.head.ref"))),
-              HeadCell(content = Text("")),
-              HeadCell(content = Text("")),
+              HeadCell(content = HtmlContent(s"""<span class='govuk-visually-hidden'>${messages("common.change")}</span>""")),
+              HeadCell(content = HtmlContent(s"""<span  class='govuk-visually-hidden'>${messages("common.remove")}</span>""")),
           )),
           caption = Some(messages("report-payment.table.caption")),
           captionClasses = "govuk-table__caption--m"

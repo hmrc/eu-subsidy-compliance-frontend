@@ -31,7 +31,10 @@
 
 @(form: Form[_], bs: BusinessEntity)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("removeBusinessEntity.title"))) {
+@layout(
+  pageTitle = Some(messages("removeBusinessEntity.title")),
+  hasErrors = form.hasErrors
+) {
   @formHelper(action = controllers.routes.BusinessEntityController.postRemoveBusinessEntity(bs.businessEntityIdentifier)) {
     @form.errors.map { err =>
       @govukErrorSummary(ErrorSummary(
