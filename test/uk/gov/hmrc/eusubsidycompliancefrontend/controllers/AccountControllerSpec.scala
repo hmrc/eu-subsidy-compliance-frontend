@@ -99,46 +99,46 @@ class AccountControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("account-homepage.title", undertaking.name),
+            messageFromMessageKey("lead-account-homepage.title", undertaking.name),
             { doc =>
               val htmlBody = doc.select(".govuk-grid-column-one-third").html()
 
               htmlBody should include regex messageFromMessageKey(
-                "account-homepage.cards.card1.link1",
+                "lead-account-homepage.cards.card1.link1",
                 routes.SubsidyController.getReportPayment().url
               )
 
               htmlBody should include regex messageFromMessageKey(
-                "account-homepage.cards.card2.link1",
+                "lead-account-homepage.cards.card2.link1",
                 routes.UndertakingController.getAmendUndertakingDetails().url
               )
 
               htmlBody should include regex messageFromMessageKey(
-                "account-homepage.cards.card2.link2",
+                "lead-account-homepage.cards.card2.link2",
                 routes.FinancialDashboardController.getFinancialDashboard().url
               )
 
               if (undertaking.undertakingBusinessEntity.length > 1)
                 htmlBody should include regex messageFromMessageKey(
-                  "account-homepage.cards.card3.link1View",
+                  "lead-account-homepage.cards.card3.link1View",
                   routes.BusinessEntityController.getAddBusinessEntity().url
                 )
               else
                 htmlBody should include regex messageFromMessageKey(
-                  "account-homepage.cards.card3.link1Add",
+                  "lead-account-homepage.cards.card3.link1Add",
                   routes.BusinessEntityController.getAddBusinessEntity().url
                 )
 
-              val isNonLeadEORIPresent = !undertaking.undertakingBusinessEntity.filterNot(_.leadEORI).isEmpty
+              val isNonLeadEORIPresent = !undertaking.undertakingBusinessEntity.forall(_.leadEORI)
 
               if (isNonLeadEORIPresent)
                 htmlBody should include regex messageFromMessageKey(
-                  "account-homepage.cards.card3.link2",
+                  "lead-account-homepage.cards.card3.link2",
                   routes.SelectNewLeadController.getSelectNewLead().url
                 )
               else
                 htmlBody should include regex messageFromMessageKey(
-                  "account-homepage.cards.card3.link2",
+                  "lead-account-homepage.cards.card3.link2",
                   routes.NoBusinessPresentController.getNoBusinessPresent().url
                 )
 
@@ -165,16 +165,16 @@ class AccountControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("account-homepage.title", undertaking.name),
+            messageFromMessageKey("lead-account-homepage.title", undertaking.name),
             doc =>
               if (isTimeToReport) {
                 val htmlBody = doc.select(".govuk-inset-text").text
                 htmlBody should include regex
-                  messageFromMessageKey("account-homepage.inset", dueDate)
+                  messageFromMessageKey("lead-account-homepage.inset", dueDate)
               } else if (isOverdue) {
                 val htmlBody = doc.select(".govuk-inset-text").text
                 htmlBody should include regex
-                  messageFromMessageKey("account-homepage-overdue.inset", dueDate)
+                  messageFromMessageKey("lead-account-homepage-overdue.inset", dueDate)
               }
           )
         }
