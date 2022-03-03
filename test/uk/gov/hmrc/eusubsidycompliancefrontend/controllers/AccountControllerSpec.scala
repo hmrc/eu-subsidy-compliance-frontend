@@ -17,14 +17,18 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import play.api.Configuration
+import play.api.http.Status
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, Error, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, EscService, RetrieveEmailService, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.NonLeadAccountPage
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData.{undertaking, _}
 
@@ -49,15 +53,21 @@ class AccountControllerSpec
     bind[TimeProvider].toInstance(mockTimeProvider)
   )
 
-  val controller = instanceOf[AccountController]
+  override def additionalConfig = super.additionalConfig.withFallback(
+    Configuration.from(Map(
+      // Disable CSP n=once hashes in rendered output
+      "play.filters.csp.nonce.enabled" -> false,
+    )))
 
-  def mockRetreiveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
+  private val controller = instanceOf[AccountController]
+
+  private def mockRetreiveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
     (mockEscService
       .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
       .returning(result)
 
-  def mockRetrieveEmail(eori: EORI)(result: Either[Error, Option[EmailAddress]]) =
+  private def mockRetrieveEmail(eori: EORI)(result: Either[Error, Option[EmailAddress]]) =
     (mockRetrieveEmailService
       .retrieveEmailByEORI(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
@@ -84,7 +94,7 @@ class AccountControllerSpec
 
       behave like authBehaviour(() => performAction())
 
-      "display the page" when {
+      "display the lead account home page" when {
 
         def test(undertaking: Undertaking) = {
           inSequence {
@@ -221,6 +231,33 @@ class AccountControllerSpec
           )
         }
 
+      }
+
+      "the non-lead account home page" when {
+
+        "valid request for non-lead user is made" in {
+          inSequence {
+            mockAuthWithEnrolment(eori2)
+            mockRetrieveEmail(eori2)(Right(validEmailAddress.some))
+            mockRetreiveUndertaking(eori2)(Future.successful(undertaking.some))
+            mockGet[EligibilityJourney](eori2)(Right(eligibilityJourneyComplete.some))
+            mockGet[UndertakingJourney](eori2)(Right(UndertakingJourney().some))
+            mockGet[BusinessEntityJourney](eori2)(Right(businessEntityJourney.some))
+            mockPut[Undertaking](undertaking, eori2)(Right(undertaking))
+            mockTimeProviderToday(fixedDate)
+          }
+
+          running(fakeApplication) {
+            val request = FakeRequest(GET, routes.AccountController.getAccountPage().url)
+
+            val result = route(fakeApplication, request).get
+
+            val page = instanceOf[NonLeadAccountPage]
+
+            status(result) shouldBe Status.OK
+            contentAsString(result) shouldBe page(undertaking)(request, messages, instanceOf[AppConfig]).toString()
+          }
+        }
       }
 
       "throw technical error" when {
