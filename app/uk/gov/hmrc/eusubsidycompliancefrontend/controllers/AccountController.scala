@@ -46,7 +46,6 @@ class AccountController @Inject() (
 
   import escActionBuilders._
 
-  // TODO - review this - a lot of the account flow stuff here may not apply to non-leads.
   def getAccountPage: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
