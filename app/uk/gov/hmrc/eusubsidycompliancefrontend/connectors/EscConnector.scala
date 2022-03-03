@@ -18,9 +18,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import com.google.inject.{ImplementedBy, Inject, Singleton}
 import play.api.http.Status.NOT_FOUND
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, TraderRef, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidyAmendment}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, NotFoundException}
@@ -39,7 +38,7 @@ trait EscConnector {
   def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
     hc: HeaderCarrier
   ): Future[Either[Error, HttpResponse]]
-  def createSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(implicit
+  def createSubsidy(undertakingRef: UndertakingRef, subsidyUpdate: SubsidyUpdate)(implicit
     hc: HeaderCarrier
   ): Future[Either[Error, HttpResponse]]
   def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
@@ -116,11 +115,11 @@ class EscConnectorImpl @Inject() (
         Left(Error(e))
       }
 
-  override def createSubsidy(undertakingRef: UndertakingRef, journey: SubsidyJourney)(implicit
+  override def createSubsidy(undertakingRef: UndertakingRef, subsidyUpdate: SubsidyUpdate)(implicit
     hc: HeaderCarrier
   ): Future[Either[Error, HttpResponse]] =
     http
-      .POST[SubsidyUpdate, HttpResponse](s"$escURL/$updateSubsidyPath", toSubsidyUpdate(journey, undertakingRef))
+      .POST[SubsidyUpdate, HttpResponse](s"$escURL/$updateSubsidyPath", subsidyUpdate)
       .map(Right(_))
       .recover { case e =>
         Left(Error(e))
@@ -145,34 +144,6 @@ class EscConnectorImpl @Inject() (
       .recover { case e =>
         Left(Error(e))
       }
-
-  private def toSubsidyUpdate(journey: SubsidyJourney, undertakingRef: UndertakingRef) = {
-    val currentDate = timeProvider.today
-    SubsidyUpdate(
-      undertakingIdentifier = undertakingRef,
-      update = UndertakingSubsidyAmendment(
-        List(
-          NonHmrcSubsidy(
-            subsidyUsageTransactionID = journey.existingTransactionId,
-            allocationDate = journey.claimDate.value
-              .map(_.toLocalDate)
-              .getOrElse(throw new IllegalStateException("No claimdate on SubsidyJourney")),
-            submissionDate = currentDate,
-            // this shouldn't be optional, is required in create API but not retrieve
-            publicAuthority = Some(journey.publicAuthority.value.get),
-            traderReference = journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
-            nonHMRCSubsidyAmtEUR = SubsidyAmount(journey.claimAmount.value.get),
-            businessEntityIdentifier = journey.addClaimEori.value.fold(sys.error("eori value missing"))(oprionalEORI =>
-              oprionalEORI.value.map(EORI(_))
-            ),
-            amendmentType = journey.existingTransactionId.fold(Some(EisSubsidyAmendmentType("1")))(_ =>
-              Some(EisSubsidyAmendmentType("2"))
-            )
-          )
-        )
-      )
-    )
-  }
 
   private def toSubsidyDelete(nonHmrcSubsidy: NonHmrcSubsidy, undertakingRef: UndertakingRef) =
     SubsidyUpdate(

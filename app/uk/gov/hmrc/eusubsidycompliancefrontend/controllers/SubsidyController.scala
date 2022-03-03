@@ -24,11 +24,12 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, 
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.toSubsidyUpdate
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{NonCustomsSubsidyAdded, NonCustomsSubsidyRemoved, NonCustomsSubsidyUpdated}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, TraderRef, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, TraderRef, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -37,6 +38,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -296,7 +298,7 @@ class SubsidyController @Inject() (
               _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
               undertaking <- store.get[Undertaking].toContext.orElseF(handleMissingSessionData("undertaking"))
               ref <- undertaking.reference.toContext
-              _ <- escService.createSubsidy(ref, journey).toContext
+              _ <- escService.createSubsidy(ref, toSubsidyUpdate(journey, ref, timeProvider.today)).toContext
               _ <- store.put(SubsidyJourney()).toContext
               _ = auditService.sendEvent[NonCustomsSubsidyAdded](
                 AuditEvent.NonCustomsSubsidyAdded(request.authorityId, eori, ref, journey, timeProvider)
@@ -353,7 +355,7 @@ class SubsidyController @Inject() (
       _ = auditService.sendEvent[NonCustomsSubsidyUpdated](
         AuditEvent.NonCustomsSubsidyUpdated(request.authorityId, reference, subsidyJourney, timeProvider)
       )
-    } yield Redirect(routes.SubsidyController.c())
+    } yield Redirect(routes.SubsidyController.getCheckAnswers())
     result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
   }
 
@@ -365,7 +367,7 @@ class SubsidyController @Inject() (
   private def getNonHmrcSubsidy(
     transactionId: String,
     reference: UndertakingRef
-  )(implicit eori: EORI, hc: HeaderCarrier, request: EscAuthRequest[_]): OptionT[Future, NonHmrcSubsidy] =
+  )(implicit hc: HeaderCarrier): OptionT[Future, NonHmrcSubsidy] =
     for {
       subsides <- escService
         .retrieveSubsidy(SubsidyRetrieve(reference, None))
@@ -505,4 +507,36 @@ class SubsidyController @Inject() (
 
   private val cyaForm: Form[FormValues] = Form(mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
 
+}
+
+object SubsidyController {
+  private def toSubsidyUpdate(
+    journey: SubsidyJourney,
+    undertakingRef: UndertakingRef,
+    currentDate: LocalDate
+  ): SubsidyUpdate =
+    SubsidyUpdate(
+      undertakingIdentifier = undertakingRef,
+      UndertakingSubsidyAmendment(
+        List(
+          NonHmrcSubsidy(
+            subsidyUsageTransactionID = journey.existingTransactionId,
+            allocationDate = journey.claimDate.value
+              .map(_.toLocalDate)
+              .getOrElse(throw new IllegalStateException("No claimdate on SubsidyJourney")),
+            submissionDate = currentDate,
+            // this shouldn't be optional, is required in create API but not retrieve
+            publicAuthority = Some(journey.publicAuthority.value.get),
+            traderReference = journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
+            nonHMRCSubsidyAmtEUR = SubsidyAmount(journey.claimAmount.value.get),
+            businessEntityIdentifier = journey.addClaimEori.value.fold(sys.error("eori value missing"))(oprionalEORI =>
+              oprionalEORI.value.map(EORI(_))
+            ),
+            amendmentType = journey.existingTransactionId.fold(Some(EisSubsidyAmendmentType("1")))(_ =>
+              Some(EisSubsidyAmendmentType("2"))
+            )
+          )
+        )
+      )
+    )
 }

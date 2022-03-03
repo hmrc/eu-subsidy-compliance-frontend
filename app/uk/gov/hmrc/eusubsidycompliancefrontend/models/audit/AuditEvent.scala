@@ -17,14 +17,13 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.audit
 
 import play.api.libs.json.{Json, Writes}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{NonHmrcSubsidy, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityAddeed.BusinessDetailsAdded
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoteItself.BusinessEntityPromoteItselfDetails
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoted.LeadPromoteDetails
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityUpdated.BusinessDetailsUpdated
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyAmount, SubsidyRef, TraderRef, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
@@ -250,5 +249,19 @@ object AuditEvent {
       )
 
     implicit val writes: Writes[NonCustomsSubsidyUpdated] = Json.writes
+  }
+
+  final case class NonCustomsSubsidyNilReturn(
+    ggDetails: String,
+    leadEori: EORI,
+    undertakingIdentifier: UndertakingRef,
+    nilSubmissionDate: LocalDate
+  ) extends AuditEvent {
+    override val auditType: String = "NonCustomsSubsidyNilReturn"
+    override val transactionName: String = "NonCustomsSubsidyNilReturn"
+  }
+
+  object NonCustomsSubsidyNilReturn {
+    implicit val writes: Writes[NonCustomsSubsidyNilReturn] = Json.writes
   }
 }

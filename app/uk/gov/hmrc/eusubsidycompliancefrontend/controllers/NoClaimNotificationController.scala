@@ -21,9 +21,14 @@ import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyUpdate}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EscService}
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.{FutureToOptionTOps, OptionToOptionTOps}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
@@ -32,6 +37,8 @@ class NoClaimNotificationController @Inject() (
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
   escService: EscService,
+  auditService: AuditService,
+  timeProvider: TimeProvider,
   noClaimNotificationPage: NoClaimNotificationPage,
   noClaimConfirmationPage: NoClaimConfirmationPage
 )(implicit val appConfig: AppConfig, executionContext: ExecutionContext)
@@ -53,18 +60,31 @@ class NoClaimNotificationController @Inject() (
   def postNoClaimNotification: Action[AnyContent] = escAuthentication.async { implicit request =>
     val eori = request.eoriNumber
     val previous = routes.AccountController.getAccountPage().url
-    for {
+    (for {
       undertakingOpt <- escService.retrieveUndertaking(eori)
     } yield undertakingOpt match {
       case Some(undertaking) =>
         noClaimForm
           .bindFromRequest()
           .fold(
-            errors => BadRequest(noClaimNotificationPage(errors, previous, undertaking.name)),
-            _ => Redirect(routes.NoClaimNotificationController.getNoClaimConfirmation())
+            errors => BadRequest(noClaimNotificationPage(errors, previous, undertaking.name)).toFuture,
+            _ => {
+              val nilSubmissionDate = timeProvider.today
+              val result = for {
+                reference <- undertaking.reference.toContext
+                _ <- escService
+                  .createSubsidy(reference, SubsidyUpdate(reference, NilSubmissionDate(timeProvider.today)))
+                  .toContext
+                _ = auditService
+                  .sendEvent(
+                    AuditEvent.NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate)
+                  )
+              } yield Redirect(routes.NoClaimNotificationController.getNoClaimConfirmation())
+              result.fold(handleMissingSessionData("Undertaking ref"))(identity)
+            }
           )
       case _ => handleMissingSessionData("Undertaking journey")
-    }
+    }).flatten
   }
 
   def getNoClaimConfirmation: Action[AnyContent] = escAuthentication.async { implicit request =>
