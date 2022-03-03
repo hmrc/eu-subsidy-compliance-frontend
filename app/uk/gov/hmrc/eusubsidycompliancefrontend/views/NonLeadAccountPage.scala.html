@@ -33,8 +33,13 @@
   backLinkEnabled = false,
   backLink = None
 ) {
+
   <h1 class="govuk-heading-xl">@messages("non-lead-account-homepage.title", undertaking.name)</h1>
 
-  TODO :(
+  <ul class="govuk-list govuk-list--spaced">
+    <li><a href="@routes.BecomeLeadController.getBecomeLeadEori()" class="govuk-link">@messages("non-lead-account-homepage.link1", undertaking.name)</a></li>
+    <li><a href="@routes.FinancialDashboardController.getFinancialDashboard()" class="govuk-link">@messages("non-lead-account-homepage.link2", undertaking.name)</a></li>
+    <li><a href="@routes.BusinessEntityController.getRemoveYourselfBusinessEntity()" class="govuk-link">@messages("non-lead-account-homepage.link3")</a></li>
+  </ul>
 
 }
