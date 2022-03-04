@@ -22,14 +22,12 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnectorImpl
-import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import utils.CommonTestData._
 
-import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EscConnectorSpec extends AnyWordSpec with Matchers with MockFactory with HttpSupport with ConnectorSpec {
@@ -49,9 +47,6 @@ class EscConnectorSpec extends AnyWordSpec with Matchers with MockFactory with H
   val mockTimeProvider = mock[TimeProvider]
 
   val connector = new EscConnectorImpl(mockHttp, new ServicesConfig(config), mockTimeProvider)
-
-  private def mockTimeProviderToday(today: LocalDate) =
-    (mockTimeProvider.today _).expects().returning(today)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
   val responseHeaders = Map.empty[String, Seq[String]]
@@ -107,14 +102,13 @@ class EscConnectorSpec extends AnyWordSpec with Matchers with MockFactory with H
 
     "handling request to create subsidy" must {
       val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/subsidy/update"
-      behave like connectorBehaviourWithMockTime(
+      behave like connectorBehaviour(
         mockPost(expectedUrl, Seq.empty, subsidyUpdate)(_),
         () =>
           connector.createSubsidy(
             undertakingRef,
-            SubsidyController.toSubsidyUpdate(subsidyJourney, undertakingRef, LocalDate.now())
-          ),
-        mockTimeProviderToday
+            subsidyUpdate
+          )
       )
 
     }

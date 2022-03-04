@@ -330,18 +330,14 @@ class SubsidyController @Inject() (
 
   def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    for {
-      undertaking <- store.get[Undertaking]
-      reference = undertaking
-        .getOrElse(throw new IllegalStateException(""))
-        .reference
-        .getOrElse(throw new IllegalStateException(""))
-      subsidies <- escService
-        .retrieveSubsidy(SubsidyRetrieve(reference, None))
-        .map(e => Some(e))
-        .recoverWith({ case _ => Future.successful(Option.empty[UndertakingSubsidies]) })
-      sub = subsidies.get.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionID.contains(transactionId)).get
+
+    val result: OptionT[Future, Result] = for {
+      undertaking <- store.get[Undertaking].toContext
+      reference <- undertaking.reference.toContext
+      subsidies <- retrieveSubsidiesOrNone(reference).toContext
+      sub <- subsidies.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionID.contains(transactionId)).toContext
     } yield Ok(confirmRemovePage(removeSubsidyClaimForm, sub))
+    result.fold(handleMissingSessionData("Subsidy Journey"))(identity)
   }
 
   def postRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = escAuthentication.async { implicit request =>

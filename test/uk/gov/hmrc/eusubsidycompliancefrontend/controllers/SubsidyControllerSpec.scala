@@ -21,19 +21,24 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyControllerSpec.RemoveSubsidyRow
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{NonHmrcSubsidy, _}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyRemoved
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EscService, JourneyTraverseService, Store, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData.{undertakingRef, _}
 
 import java.time.LocalDate
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
+
+import scala.collection.JavaConverters.asScalaIteratorConverter
 
 class SubsidyControllerSpec
     extends ControllerSpec
@@ -801,7 +806,7 @@ class SubsidyControllerSpec
 
     }
 
-    "handling request to post Add Claim Reference " must {
+    "handling request to post Add Claim Reference" must {
       def performAction(data: (String, String)*) = controller
         .postAddClaimReference(
           FakeRequest("POST", routes.SubsidyController.getAddClaimReference().url)
@@ -844,6 +849,115 @@ class SubsidyControllerSpec
           testFormError(Some(List("should-store-trader-ref" -> "true")), "add-claim-trader-reference.error.isempty")
         }
 
+      }
+
+    }
+
+    "handling request to get remove subsidy claim" must {
+
+      val transactionId = "TID1234"
+
+      def performAction(transactionId: String) = controller
+        .getRemoveSubsidyClaim(transactionId)(
+          FakeRequest("GET", routes.SubsidyController.getRemoveSubsidyClaim(transactionId).url)
+        )
+
+      "throw technical error" when {
+
+        "call to fetch undertaking fails" in {
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Left(Error(exception)))
+          }
+          assertThrows[Exception](await(performAction(transactionId)))
+        }
+
+        "call to fetch undertaking passes but come back empty" in {
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(None))
+          }
+          assertThrows[Exception](await(performAction(transactionId)))
+        }
+
+        "call to fetch undertaking passes but come back with empty reference" in {
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking1.copy(reference = None).some))
+          }
+          assertThrows[Exception](await(performAction(transactionId)))
+        }
+
+        "call to retrieve subsidy failed" in {
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking1.some))
+            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.failed(exception))
+          }
+          assertThrows[Exception](await(performAction(transactionId)))
+        }
+
+        "call to retrieve subsidy comes back with nonHMRC subsidy usage list with missing transactionId" in {
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking1.some))
+            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies))
+          }
+          assertThrows[Exception](await(performAction(transactionId)))
+        }
+      }
+
+      "display the page" in {
+
+        def expectedRows(nonHmrcSubsidy: NonHmrcSubsidy) = List(
+          RemoveSubsidyRow(
+            messageFromMessageKey("subsidy.cya.summary-list.claimDate.key"),
+            nonHmrcSubsidy.allocationDate.toDisplayFormat
+          ),
+          RemoveSubsidyRow(
+            messageFromMessageKey("subsidy.cya.summary-list.amount.key"),
+            nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.toEuros
+          ),
+          RemoveSubsidyRow(
+            messageFromMessageKey("subsidy.cya.summary-list.claim.key"),
+            nonHmrcSubsidy.businessEntityIdentifier.getOrElse("")
+          ),
+          RemoveSubsidyRow(
+            messageFromMessageKey("subsidy.cya.summary-list.authority.key"),
+            nonHmrcSubsidy.publicAuthority.getOrElse("")
+          ),
+          RemoveSubsidyRow(
+            messageFromMessageKey("subsidy.cya.summary-list.traderRef.key"),
+            nonHmrcSubsidy.traderReference.getOrElse("")
+          )
+        )
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockGet[Undertaking](eori1)(Right(undertaking1.some))
+          mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies1))
+        }
+        checkPageIsDisplayed(
+          performAction(transactionId),
+          List(messageFromMessageKey("subsidy.remove.title"), messageFromMessageKey("subsidy.remove.yesno.legend"))
+            .mkString(" "),
+          { doc =>
+            val rows =
+              doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
+                val question = element.select(".govuk-summary-list__key").text()
+                val answer = element.select(".govuk-summary-list__value").text()
+                RemoveSubsidyRow(question, answer)
+              }
+            rows shouldBe expectedRows(nonHmrcSubsidyList1.head)
+            val button = doc.select("form")
+            button.attr("action") shouldBe routes.SubsidyController.postRemoveSubsidyClaim(transactionId).url
+
+          }
+        )
       }
 
     }
@@ -1095,4 +1209,8 @@ class SubsidyControllerSpec
 
   }
 
+}
+
+object SubsidyControllerSpec {
+  case class RemoveSubsidyRow(key: String, value: String)
 }
