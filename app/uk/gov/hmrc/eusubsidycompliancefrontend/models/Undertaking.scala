@@ -35,6 +35,7 @@ case class Undertaking(
     val leadEORI: BusinessEntity = undertakingBusinessEntity
       .find(_.leadEORI)
       .getOrElse(throw new IllegalStateException("Missing Lead EORI"))
+
     leadEORI.businessEntityIdentifier == eori
   }
 

@@ -54,6 +54,16 @@ case class UndertakingJourney(
     else if (requiredDetailsProvided) Redirect(routes.UndertakingController.getCheckAnswers()).toFuture
     else super.next
 
+  // Returns a new UndertakingJourney without user entered values except name and sector which cannot be changed.
+  // TODO - is this needed?
+  def clearUserData: UndertakingJourney = UndertakingJourney(
+    name = name,
+    sector = sector,
+  )
+
+  // TODO - could call this not started
+  def isEmpty: Boolean = steps.flatMap(_.value).isEmpty
+
   private def requiredDetailsProvided =
     Seq(name, sector).map(_.value.isDefined) == Seq(true, true)
 
@@ -75,6 +85,11 @@ object UndertakingJourney {
 
     case _ => UndertakingJourney()
   }
+
+  def fromUndertaking(undertaking: Undertaking): UndertakingJourney = UndertakingJourney(
+    name = UndertakingNameFormPage(undertaking.name.some),
+    sector = UndertakingSectorFormPage(undertaking.industrySector.some)
+  )
 
   object Forms {
 

@@ -16,16 +16,22 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import cats.data.OptionT
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, EscService, RetrieveEmailService, Store, UndertakingJourney}
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportDeMinimisReminderHelper, TimeProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.ReportDeMinimisReminderHelper.{dueDateToReport, isOverdue, isTimeToReport}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -48,57 +54,68 @@ class AccountController @Inject() (
 
   def getAccountPage: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
-    def getAccountFlow: Future[Result] = for {
-      retrievedUndertaking <- escService.retrieveUndertaking(eori)
-      eligibilityJourneyOpt <- store.get[EligibilityJourney]
-      eligibilityJourney <- eligibilityJourneyOpt.fold(store.put(EligibilityJourney()))(Future.successful)
-      undertakingJourneyOpt <- store.get[UndertakingJourney]
-      undertakingJourney <- undertakingJourneyOpt.fold(
-        store.put(UndertakingJourney.fromUndertakingOpt(retrievedUndertaking))
-      )(Future.successful)
-      businessEntityJourneyOpt <- store.get[BusinessEntityJourney]
-      _ <- businessEntityJourneyOpt.fold(store.put(BusinessEntityJourney.fromUndertakingOpt(retrievedUndertaking)))(
-        Future.successful
-      )
-      _ <-
-        if (retrievedUndertaking.isDefined)
-          store.put(retrievedUndertaking.getOrElse(sys.error("Undertaking is Missing")))
-        else Future.successful(Unit)
-    } yield (retrievedUndertaking, eligibilityJourney, undertakingJourney) match {
-
-      case (Some(undertaking), _, _) =>
-        val lastDayToReportDate = ReportDeMinimisReminderHelper.dueDateToReport(undertaking.lastSubsidyUsageUpdt)
-        val lastDayToReportString = lastDayToReportDate.map(_.toDisplayFormat)
-        val currentTime = timeProvider.today
-        val isTimeToReport = ReportDeMinimisReminderHelper.isTimeToReport(undertaking.lastSubsidyUsageUpdt, currentTime)
-        val isOverdue = ReportDeMinimisReminderHelper.isOverdue(undertaking.lastSubsidyUsageUpdt, currentTime)
-
-        if (undertaking.isLeadEORI(eori)) {
-          Ok(
-            leadAccountPage(
-              undertaking,
-              undertaking.getAllNonLeadEORIs().nonEmpty,
-              isTimeToReport,
-              lastDayToReportString,
-              isOverdue
-            )
-          )
-        }
-        else Ok(nonLeadAccountPage(undertaking))
-
-      case (_, eJourney, uJourney) if !eJourney.isComplete && uJourney == UndertakingJourney() =>
-        Redirect(routes.EligibilityController.firstEmptyPage())
-      case (_, _, uJourney) if !uJourney.isComplete =>
-        Redirect(routes.UndertakingController.firstEmptyPage())
-      case _ =>
-        Redirect(routes.BusinessEntityController.getAddBusinessEntity()) // TODO add this journey into the match
+    retrieveEmailService
+      .retrieveEmailByEORI(eori).flatMap {
+      case Some(_) => getUndertakingAndHandleResponse
+      case None => Redirect(routes.UpdateEmailAddressController.updateEmailAddress()).toFuture
     }
+  }
 
-    retrieveEmailService.retrieveEmailByEORI(eori).flatMap {
-      case Some(_) => getAccountFlow
-      case None => Future.successful(Redirect(routes.UpdateEmailAddressController.updateEmailAddress()))
+  private def getUndertakingAndHandleResponse(implicit r: EscAuthRequest[AnyContent], eori: EORI) =
+    escService
+      .retrieveUndertaking(r.eoriNumber)
+      .toContext
+      .flatTransform {
+        case Some(u) => handleExistingUndertaking(u)
+        case None => handleUndertakingNotCreated
+      } getOrElse(sys.error("Error during getAccount flow"))
+
+  private def handleUndertakingNotCreated(implicit r: EscAuthRequest[AnyContent], eori: EORI) = {
+    // TODO - are these steps really necessary or can they be handled in their respective controllers?
+    val result = for {
+      eligibilityJourney <- store.get[EligibilityJourney].toContext.orElse(store.put(EligibilityJourney()).toContext)
+      undertakingJourney <- store.get[UndertakingJourney].toContext.orElse(store.put(UndertakingJourney()).toContext)
+      // TODO - why are we doing this here?
+      _ <- store.get[BusinessEntityJourney].toContext.orElse(store.put(BusinessEntityJourney()).toContext)
+    } yield (eligibilityJourney, undertakingJourney)
+
+    result.map {
+      case (ej, uj) if !ej.isComplete && uj.isEmpty => Redirect(routes.EligibilityController.firstEmptyPage())
+      case (_, uj) if !uj.isComplete => Redirect(routes.UndertakingController.firstEmptyPage())
+      case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity())
+    }.value
+
+  }
+
+  // TODO - need to allow empty undertaking where the eligibility journey has not been completed yet
+  private def handleExistingUndertaking(undertaking: Undertaking)(implicit r: EscAuthRequest[AnyContent], eori: EORI) = {
+    val result: OptionT[Future, (Undertaking, EligibilityJourney, UndertakingJourney)] = for {
+      _ <- store.put(undertaking).toContext
+      // TODO - are these all necessary here? Can they be handled elsewhere?
+      eligibilityJourney <- store.get[EligibilityJourney].toContext.orElse(store.put(EligibilityJourney()).toContext)
+      undertakingJourney <- store.get[UndertakingJourney].toContext.orElse(store.put(UndertakingJourney.fromUndertaking(undertaking)).toContext)
+      // TODO - why are we doing this here?
+      _ <- store.get[BusinessEntityJourney].toContext.orElse(store.put(BusinessEntityJourney()).toContext)
+    } yield (undertaking, eligibilityJourney, undertakingJourney)
+
+    result
+      .map(_ => renderAccountPage(undertaking))
+      .value
+  }
+
+  private def renderAccountPage(undertaking: Undertaking)(implicit r: EscAuthRequest[AnyContent]) = {
+    val currentTime = timeProvider.today
+
+    if (undertaking.isLeadEORI(r.eoriNumber)) {
+      Ok(leadAccountPage(
+        undertaking,
+        undertaking.getAllNonLeadEORIs().nonEmpty,
+        isTimeToReport(undertaking.lastSubsidyUsageUpdt, currentTime),
+        dueDateToReport(undertaking.lastSubsidyUsageUpdt).map(_.toDisplayFormat),
+        isOverdue(undertaking.lastSubsidyUsageUpdt, currentTime)
+      ))
     }
+    else Ok(nonLeadAccountPage(undertaking))
   }
 
   def getExistingUndertaking: Action[AnyContent] = escAuthentication.async { implicit request =>
