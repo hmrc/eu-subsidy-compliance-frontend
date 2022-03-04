@@ -31,21 +31,19 @@ import scala.concurrent.Future
 
 class SendEmailServiceSpec extends AnyWordSpec with Matchers with MockFactory {
 
-  val mockSendEmailConnector: SendEmailConnector = mock[SendEmailConnector]
+  private val mockSendEmailConnector: SendEmailConnector = mock[SendEmailConnector]
 
-  def mockSendEmail(emailSendRequest: EmailSendRequest)(result: Either[Error, HttpResponse]) =
+  private def mockSendEmail(emailSendRequest: EmailSendRequest)(result: Either[Error, HttpResponse]) =
     (mockSendEmailConnector
       .sendEmail(_: EmailSendRequest)(_: HeaderCarrier))
       .expects(emailSendRequest, *)
       .returning(Future.successful(result))
 
-  val emptyHeaders = Map.empty[String, Seq[String]]
+  private val service = new SendEmailService(mockSendEmailConnector)
 
-  val service = new SendEmailServiceImpl(mockSendEmailConnector)
+  private implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-
-  val templatedId = "templateId1"
+  private val templatedId = "templateId1"
 
   "SendEmailServiceImplSpec" when {
 
@@ -65,7 +63,7 @@ class SendEmailServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         "request came back with status Accepted and request can be parsed" in {
           mockSendEmail(emailSendRequest)(Right(HttpResponse(ACCEPTED, "")))
           val result = service.sendEmail(validEmailAddress, emailParameter, templatedId)
-          await(result) shouldBe (EmailSendResult.EmailSent)
+          await(result) shouldBe EmailSendResult.EmailSent
         }
       }
 
@@ -74,7 +72,7 @@ class SendEmailServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         "request came back with status != Accepted " in {
           mockSendEmail(emailSendRequest)(Right(HttpResponse(OK, "")))
           val result = service.sendEmail(validEmailAddress, emailParameter, templatedId)
-          await(result) shouldBe (EmailSendResult.EmailSentFailure)
+          await(result) shouldBe EmailSendResult.EmailSentFailure
         }
 
       }
