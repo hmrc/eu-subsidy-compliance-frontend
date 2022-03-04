@@ -147,9 +147,8 @@ class BusinessEntityController @Inject() (
             .update[BusinessEntityJourney] { businessEntityOpt =>
               businessEntityOpt.map { businessEntity =>
                 businessEntity.copy(
-                  eori = businessEntity.eori.copy(
-                    value = Some(EORI(form.value))),
-                    oldEORI = businessEntity.eori.value
+                  eori = businessEntity.eori.copy(value = Some(EORI(form.value))),
+                  oldEORI = businessEntity.eori.value
                 )
               }
             }
@@ -188,8 +187,11 @@ class BusinessEntityController @Inject() (
       eoriBE = businessEntityJourney.eori.value.getOrElse(handleMissingSessionData("BE EORI"))
       businessEntity = BusinessEntity(eoriBE, leadEORI = false) // resetting the journey as it's final CYA page
       _ <- {
-        if(businessEntityJourney.isAmend) {
-          escService.removeMember(undertakingRef, businessEntity.copy(businessEntityIdentifier = businessEntityJourney.oldEORI.get))
+        if (businessEntityJourney.isAmend) {
+          escService.removeMember(
+            undertakingRef,
+            businessEntity.copy(businessEntityIdentifier = businessEntityJourney.oldEORI.get)
+          )
         }
         escService.addMember(undertakingRef, businessEntity)
       }
@@ -209,7 +211,10 @@ class BusinessEntityController @Inject() (
         undertakingRef,
         None
       )
-      _ = auditService.sendEvent(AuditEvent.BusinessEntityAdded(request.authorityId, eori, eoriBE))
+      _ =
+        if (businessEntityJourney.isAmend)
+          auditService.sendEvent(AuditEvent.BusinessEntityUpdated(request.authorityId, eori, eoriBE))
+        else auditService.sendEvent(AuditEvent.BusinessEntityAdded(request.authorityId, eori, eoriBE))
       redirect <- getNext(businessEntityJourney)(eori)
     } yield redirect
 
@@ -248,7 +253,6 @@ class BusinessEntityController @Inject() (
     for {
       undertakingOpt <- escService.retrieveUndertaking(eori111)
       _ <- store.put(BusinessEntityJourney.businessEntityJourneyForEori(undertakingOpt, EORI(eoriEntered)))
-      _ = auditService.sendEvent(AuditEvent.BusinessEntityUpdated(request.authorityId, eori111, EORI(eoriEntered)))
     } yield Ok(businessEntityCyaPage(eoriEntered))
   }
 

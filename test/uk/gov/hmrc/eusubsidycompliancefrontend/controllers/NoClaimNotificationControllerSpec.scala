@@ -21,33 +21,52 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, NilSubmissionDate, SubsidyUpdate, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EscService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.CommonTestData.{eori1, undertaking}
+import utils.CommonTestData.{eori1, undertaking, undertakingRef}
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class NoClaimNotificationControllerSpec
     extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
-    with AuthAndSessionDataBehaviour {
-  val mockEscService = mock[EscService]
+    with AuthAndSessionDataBehaviour
+    with AuditServiceSupport {
+
+  private val mockEscService = mock[EscService]
+  private val mockTimeProvider = mock[TimeProvider]
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
-    bind[EscService].toInstance(mockEscService)
+    bind[EscService].toInstance(mockEscService),
+    bind[TimeProvider].toInstance(mockTimeProvider),
+    bind[AuditService].toInstance(mockAuditService)
   )
-  val controller = instanceOf[NoClaimNotificationController]
+  private val controller = instanceOf[NoClaimNotificationController]
 
-  def mockRetreiveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
+  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
     (mockEscService
       .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
       .returning(result)
+
+  private def mockCreateSubsidy(reference: UndertakingRef, subsidyUpdate: SubsidyUpdate)(
+    result: Either[Error, UndertakingRef]
+  ) =
+    (mockEscService
+      .createSubsidy(_: UndertakingRef, _: SubsidyUpdate)(_: HeaderCarrier))
+      .expects(reference, subsidyUpdate, *)
+      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful(_)))
+
+  private def mockTimeProviderToday(today: LocalDate) =
+    (mockTimeProvider.today _).expects().returning(today)
 
   "NoClaimNotificationControllerSpec" when {
 
@@ -62,7 +81,7 @@ class NoClaimNotificationControllerSpec
         "there is error in retrieving the undertaking" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.failed(exception))
+            mockRetrieveUndertaking(eori1)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -71,7 +90,7 @@ class NoClaimNotificationControllerSpec
         "call to retrieve undertaking came back with None" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.successful(None))
+            mockRetrieveUndertaking(eori1)(Future.successful(None))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -82,13 +101,13 @@ class NoClaimNotificationControllerSpec
 
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
+          mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
         }
         checkPageIsDisplayed(
           performAction(),
           messageFromMessageKey("noClaimNotification.title", undertaking.name),
           { doc =>
-            doc.select(".govuk-back-link").attr("href") shouldBe (routes.AccountController.getAccountPage().url)
+            doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
             val selectedOptions = doc.select(".govuk-checkboxes__input[checked]")
             selectedOptions.isEmpty shouldBe true
 
@@ -109,6 +128,8 @@ class NoClaimNotificationControllerSpec
             .withFormUrlEncodedBody(data: _*)
         )
 
+      val currentDay = LocalDate.of(2022, 10, 9)
+
       "throw technical error" when {
 
         val exception = new Exception("oh no")
@@ -116,7 +137,7 @@ class NoClaimNotificationControllerSpec
         "there is error in retrieving the undertaking" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.failed(exception))
+            mockRetrieveUndertaking(eori1)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
 
@@ -125,10 +146,22 @@ class NoClaimNotificationControllerSpec
         "call to retrieve undertaking came back with None" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.successful(None))
+            mockRetrieveUndertaking(eori1)(Future.successful(None))
           }
           assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
 
+        }
+
+        "call to create Subsidy fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockTimeProviderToday(currentDay)
+            mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
+              Left(Error(exception))
+            )
+          }
+          assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
         }
 
       }
@@ -138,7 +171,7 @@ class NoClaimNotificationControllerSpec
         "check box is not checked" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
           }
 
           checkFormErrorIsDisplayed(
@@ -153,7 +186,12 @@ class NoClaimNotificationControllerSpec
 
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
+          mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+          mockTimeProviderToday(currentDay)
+          mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
+            Right(undertakingRef)
+          )
+          mockSendAuditEvent(AuditEvent.NonCustomsSubsidyNilReturn("1123", eori1, undertakingRef, currentDay))
         }
         checkIsRedirect(
           performAction("noClaimNotification" -> "true"),
@@ -175,7 +213,7 @@ class NoClaimNotificationControllerSpec
         "there is error in retrieving the undertaking" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.failed(exception))
+            mockRetrieveUndertaking(eori1)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -184,7 +222,7 @@ class NoClaimNotificationControllerSpec
         "call to retrieve undertaking came back with None" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.successful(None))
+            mockRetrieveUndertaking(eori1)(Future.successful(None))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -194,7 +232,7 @@ class NoClaimNotificationControllerSpec
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
+          mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
         }
         checkPageIsDisplayed(
           performAction(),

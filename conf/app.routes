@@ -98,13 +98,13 @@ POST       /amend-undertaking                       uk.gov.hmrc.eusubsidycomplia
 GET        /update-email-address                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.updateEmailAddress
 POST       /update-email-address                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.postUpdateEmailAddress
 
-GET        /subsidy-delete/:transactionId           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getRemoveSubsidyClaim(transactionId)
-POST       /subsidy-delete/:transactionId           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postRemoveSubsidyClaim(transactionId)
+GET        /remove-non-customs-subsidy/:transactionId           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getRemoveSubsidyClaim(transactionId)
+POST       /remove-non-customs-subsidy/:transactionId           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postRemoveSubsidyClaim(transactionId)
 
-GET        /subsidy-change/:transactionId           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getChangeSubsidyClaim(transactionId)
+GET        /update-non-customs-subsidy/:transactionId           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getChangeSubsidyClaim(transactionId)
 
-GET        /no-claims-notification                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimNotification
-POST       /no-claims-notification                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.postNoClaimNotification
+GET        /non-customs-subsidy-nil-return         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimNotification
+POST       /non-customs-subsidy-nil-return         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.postNoClaimNotification
 
 GET        /no-claims-confirmation                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimConfirmation
 

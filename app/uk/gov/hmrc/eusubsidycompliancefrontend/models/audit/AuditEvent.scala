@@ -22,10 +22,11 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityAddeed
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoteItself.BusinessEntityPromoteItselfDetails
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoted.LeadPromoteDetails
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityUpdated.BusinessDetailsUpdated
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyAmount, SubsidyRef, TraderRef, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney
 
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime}
 
 sealed trait AuditEvent {
 
@@ -146,4 +147,120 @@ object AuditEvent {
     implicit val writes: Writes[BusinessEntityPromotedSelf] = Json.writes
   }
 
+  final case class NonCustomsSubsidyAdded(
+    ggDetails: String,
+    leadEori: EORI,
+    undertakingIdentifier: UndertakingRef,
+    allocationDate: LocalDate,
+    submissionDate: LocalDate,
+    publicAuthority: Option[String],
+    traderReference: Option[TraderRef],
+    nonHMRCSubsidyAmtEUR: SubsidyAmount,
+    businessEntityIdentifier: Option[EORI],
+    subsidyUsageTransactionId: Option[SubsidyRef]
+  ) extends AuditEvent {
+    override val auditType: String = "NonCustomsSubsidyAdded"
+    override val transactionName: String = "NonCustomsSubsidyAdded"
+  }
+
+  object NonCustomsSubsidyAdded {
+    def apply(
+      ggDetails: String,
+      leadEori: EORI,
+      undertakingRef: UndertakingRef,
+      subsidyJourney: SubsidyJourney,
+      currentDate: LocalDate
+    ): NonCustomsSubsidyAdded =
+      AuditEvent.NonCustomsSubsidyAdded(
+        ggDetails = ggDetails,
+        leadEori = leadEori,
+        undertakingIdentifier = undertakingRef,
+        allocationDate = subsidyJourney.claimDate.value
+          .map(_.toLocalDate)
+          .getOrElse(sys.error("No claimdate on SubsidyJourney")),
+        submissionDate = currentDate,
+        publicAuthority = subsidyJourney.publicAuthority.value.fold(sys.error("public Authority missing"))(Some(_)),
+        traderReference =
+          subsidyJourney.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
+        nonHMRCSubsidyAmtEUR =
+          SubsidyAmount(subsidyJourney.claimAmount.value.getOrElse(sys.error("claimAmount missing from journey"))),
+        businessEntityIdentifier =
+          subsidyJourney.addClaimEori.value.fold(sys.error("eori value missing"))(optionalEORI =>
+            optionalEORI.value.map(EORI(_))
+          ),
+        subsidyUsageTransactionId = subsidyJourney.existingTransactionId
+      )
+
+    implicit val writes: Writes[NonCustomsSubsidyAdded] = Json.writes
+  }
+
+  final case class NonCustomsSubsidyRemoved(
+    ggDetails: String,
+    undertakingIdentifier: UndertakingRef
+  ) extends AuditEvent {
+    override val auditType: String = "NonCustomsSubsidyRemoved"
+    override val transactionName: String = "NonCustomsSubsidyRemoved"
+  }
+
+  object NonCustomsSubsidyRemoved {
+    implicit val writes: Writes[NonCustomsSubsidyRemoved] = Json.writes
+  }
+
+  final case class NonCustomsSubsidyUpdated(
+    ggDetails: String,
+    undertakingIdentifier: UndertakingRef,
+    allocationDate: LocalDate,
+    submissionDate: LocalDate,
+    publicAuthority: Option[String],
+    traderReference: Option[TraderRef],
+    nonHMRCSubsidyAmtEUR: SubsidyAmount,
+    businessEntityIdentifier: Option[EORI],
+    subsidyUsageTransactionId: Option[SubsidyRef]
+  ) extends AuditEvent {
+    override val auditType: String = "NonCustomsSubsidyUpdated"
+    override val transactionName: String = "NonCustomsSubsidyUpdated"
+  }
+
+  object NonCustomsSubsidyUpdated {
+    def apply(
+      ggDetails: String,
+      undertakingRef: UndertakingRef,
+      subsidyJourney: SubsidyJourney,
+      currentDate: LocalDate
+    ): NonCustomsSubsidyUpdated =
+      AuditEvent.NonCustomsSubsidyUpdated(
+        ggDetails = ggDetails,
+        undertakingIdentifier = undertakingRef,
+        allocationDate = subsidyJourney.claimDate.value
+          .map(_.toLocalDate)
+          .getOrElse(sys.error("No claimdate on SubsidyJourney")),
+        submissionDate = currentDate,
+        publicAuthority = subsidyJourney.publicAuthority.value.fold(sys.error("public Authority missing"))(Some(_)),
+        traderReference =
+          subsidyJourney.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
+        nonHMRCSubsidyAmtEUR =
+          SubsidyAmount(subsidyJourney.claimAmount.value.getOrElse(sys.error("claimAmount missing from journey"))),
+        businessEntityIdentifier =
+          subsidyJourney.addClaimEori.value.fold(sys.error("eori value missing"))(optionalEORI =>
+            optionalEORI.value.map(EORI(_))
+          ),
+        subsidyUsageTransactionId = subsidyJourney.existingTransactionId
+      )
+
+    implicit val writes: Writes[NonCustomsSubsidyUpdated] = Json.writes
+  }
+
+  final case class NonCustomsSubsidyNilReturn(
+    ggDetails: String,
+    leadEori: EORI,
+    undertakingIdentifier: UndertakingRef,
+    nilSubmissionDate: LocalDate
+  ) extends AuditEvent {
+    override val auditType: String = "NonCustomsSubsidyNilReturn"
+    override val transactionName: String = "NonCustomsSubsidyNilReturn"
+  }
+
+  object NonCustomsSubsidyNilReturn {
+    implicit val writes: Writes[NonCustomsSubsidyNilReturn] = Json.writes
+  }
 }

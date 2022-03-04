@@ -755,10 +755,10 @@ class BusinessEntityControllerSpec
       "edit post successful for edit" when {
 
         def testRedirection(
-                             businessEntityJourney: BusinessEntityJourney,
-                             nextCall: String,
-                             resettedBusinessJourney: BusinessEntityJourney
-                           ) = {
+          businessEntityJourney: BusinessEntityJourney,
+          nextCall: String,
+          resettedBusinessJourney: BusinessEntityJourney
+        ) = {
           val businessEntity = BusinessEntity(eori2, leadEORI = false)
           val emailParametersBE =
             SingleEORIEmailParameter(eori2, undertaking.name, undertakingRef, "addMemberEmailToBE")
@@ -768,7 +768,10 @@ class BusinessEntityControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-            mockRemoveMember(undertakingRef, businessEntity.copy(businessEntityIdentifier = businessEntityJourney.oldEORI.get))(Right(undertakingRef))
+            mockRemoveMember(
+              undertakingRef,
+              businessEntity.copy(businessEntityIdentifier = businessEntityJourney.oldEORI.get)
+            )(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
             mockRetrieveEmail(eori2)(Right(validEmailAddress.some))
             mockSendEmail(validEmailAddress, emailParametersBE, "template_add_be_EN")(Right(EmailSendResult.EmailSent))
@@ -776,7 +779,7 @@ class BusinessEntityControllerSpec
             mockSendEmail(validEmailAddress, emailParametersLead, "template_add_lead_EN")(
               Right(EmailSendResult.EmailSent)
             )
-            mockSendAuditEvent(businessEntityAddedEvent)
+            mockSendAuditEvent(businessEntityUpdatedEvent)
             mockPut[BusinessEntityJourney](resettedBusinessJourney, eori1)(Right(BusinessEntityJourney()))
           }
           checkIsRedirect(performAction("cya" -> "true")(English.code), nextCall)
@@ -834,7 +837,6 @@ class BusinessEntityControllerSpec
             Future.successful(undertaking1.copy(undertakingBusinessEntity = List(be)).some)
           )
           mockPut[BusinessEntityJourney](businessEntityJourney, eori1)(Right(businessEntityJourney))
-          mockSendAuditEvent(AuditEvent.BusinessEntityUpdated("1123", eori1, eori4))
         }
         checkPageIsDisplayed(
           performAction(eori4),
