@@ -22,8 +22,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityAddeed
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoteItself.BusinessEntityPromoteItselfDetails
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoted.LeadPromoteDetails
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityUpdated.BusinessDetailsUpdated
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyAmount, SubsidyRef, TraderRef, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyAmount, SubsidyRef, TraderRef, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney
 
 import java.time.{LocalDate, LocalDateTime}
@@ -262,5 +263,19 @@ object AuditEvent {
 
   object NonCustomsSubsidyNilReturn {
     implicit val writes: Writes[NonCustomsSubsidyNilReturn] = Json.writes
+  }
+
+  final case class UndertakingUpdated(
+    ggDetails: String,
+    leadEori: EORI,
+    undertakingIdentifier: UndertakingRef,
+    undertakingName: UndertakingName,
+    industrySector: Sector
+  ) extends AuditEvent {
+    override val auditType: String = "UndertakingUpdated"
+    override val transactionName: String = "UndertakingUpdated"
+  }
+  object UndertakingUpdated {
+    implicit val writes: Writes[UndertakingUpdated] = Json.writes
   }
 }
