@@ -24,16 +24,15 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.CreateUndertaking
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUndertaking, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.{FutureOptionToOptionTOps, OptionToOptionTOps}
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.{FutureOptionToOptionTOps, FutureToOptionTOps, OptionToOptionTOps}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
-import cats.data.OptionT
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.{FutureOptionToOptionTOps, OptionToOptionTOps}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -91,12 +90,7 @@ class UndertakingController @Inject() (
         errors => BadRequest(undertakingNamePage(errors)).toFuture,
         success = form => {
           for {
-            updatedUndertakingJourney <- store.update[UndertakingJourney] {
-              _.map { undertakingJourney =>
-                val updatedName = undertakingJourney.name.copy(value = Some(form.value))
-                undertakingJourney.copy(name = updatedName)
-              }
-            }
+            updatedUndertakingJourney <- store.update[UndertakingJourney](updateUndertakingName(form))
             redirect <- updatedUndertakingJourney.next
           } yield redirect
         }
@@ -136,12 +130,7 @@ class UndertakingController @Inject() (
           },
           form =>
             for {
-              updatedUndertakingJourney <- store.update[UndertakingJourney] {
-                _.map { undertakingJourney =>
-                  val updatedSector = undertakingJourney.sector.copy(value = Some(Sector(form.value.toInt)))
-                  undertakingJourney.copy(sector = updatedSector)
-                }
-              }
+              updatedUndertakingJourney <- store.update[UndertakingJourney](updateUndertakingSector(form))
               redirect <- updatedUndertakingJourney.next
             } yield redirect
         )
@@ -170,28 +159,23 @@ class UndertakingController @Inject() (
       .bindFromRequest()
       .fold(
         _ => throw new IllegalStateException("value hard-coded, form hacking?"),
-        form =>
-          for {
-            updatedJourney <- store.update[UndertakingJourney] {
-              _.map { undertakingJourney =>
-                undertakingJourney.copy(cya = undertakingJourney.cya.copy(value = Some(form.value.toBoolean)))
-              }
-            }
-            undertakingName = UndertakingName(
-              updatedJourney.name.value.getOrElse(handleMissingSessionData("Undertaking Name"))
-            )
-            undertakingSector = updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking Sector"))
+        form => {
+          val result = for {
+            updatedJourney <- store.update[UndertakingJourney](updateUndertakingCYA(form)).toContext
+            undertakingName <- updatedJourney.name.value.toContext
+            undertakingSector <- updatedJourney.sector.value.toContext
             undertaking = Undertaking(
               None,
-              name = undertakingName,
+              name = UndertakingName(undertakingName),
               industrySector = undertakingSector,
               None,
               None,
               List(BusinessEntity(eori, leadEORI = true))
             )
-            result <- createUndertakingAndSendEmail(undertaking, eori, updatedJourney)
-
-          } yield result
+            undertakingCreated <- createUndertakingAndSendEmail(undertaking, eori, updatedJourney).toContext
+          } yield undertakingCreated
+          result.fold(handleMissingSessionData("Undertaking create journey"))(identity)
+        }
       )
   }
 
@@ -231,14 +215,9 @@ class UndertakingController @Inject() (
         _ => throw new IllegalStateException("value hard-coded, form hacking?"),
         form =>
           store
-            .update[UndertakingJourney] {
-              _.map { undertakingJourney =>
-                undertakingJourney
-                  .copy(confirmation = undertakingJourney.confirmation.copy(value = Some(form.value.toBoolean)))
-              }
-            }
-            .flatMap { _ =>
-              Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture
+            .update[UndertakingJourney](updateUndertakingConfirmation(form))
+            .map { _ =>
+              Redirect(routes.BusinessEntityController.getAddBusinessEntity())
             }
       )
   }
@@ -272,20 +251,29 @@ class UndertakingController @Inject() (
       .bindFromRequest()
       .fold(
         _ => throw new IllegalStateException("value hard-coded, form hacking?"),
-        _ =>
-          for {
-            updatedJourney <- updateIsAmendState(value = false)
-            undertakingName = UndertakingName(
-              updatedJourney.name.value.getOrElse(handleMissingSessionData("Undertaking Name"))
+        _ => {
+          val result = for {
+            updatedJourney <- updateIsAmendState(value = false).toContext
+            undertakingName <- updatedJourney.name.value.toContext
+            undertakingSector <- updatedJourney.sector.value.toContext
+            retrievedUndertaking <- escService.retrieveUndertaking(eori).toContext
+            undertakingRef <- retrievedUndertaking.reference.toContext
+            updatedUndertaking = retrievedUndertaking
+              .copy(name = UndertakingName(undertakingName), industrySector = undertakingSector)
+            _ <- escService.updateUndertaking(updatedUndertaking).toContext
+            _ = auditService.sendEvent(
+              UndertakingUpdated(
+                request.authorityId,
+                eori,
+                undertakingRef,
+                updatedUndertaking.name,
+                updatedUndertaking.industrySector
+              )
             )
-            undertakingSector = updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking Sector"))
-            retrievedUndertaking <- escService
-              .retrieveUndertaking(eori)
-              .map(_.getOrElse(handleMissingSessionData("Undertaking")))
-            undertakingRef = retrievedUndertaking.reference.getOrElse(handleMissingSessionData("Undertaking ref"))
-            updatedUndertaking = retrievedUndertaking.copy(name = undertakingName, industrySector = undertakingSector)
-            _ <- escService.updateUndertaking(updatedUndertaking)
           } yield Redirect(routes.AccountController.getAccountPage())
+          result.fold(handleMissingSessionData("Undertaking Journey"))(identity)
+
+        }
       )
   }
 
@@ -295,6 +283,30 @@ class UndertakingController @Inject() (
     journey match {
       case Some(undertakingJourney) => f(undertakingJourney)
       case None => handleMissingSessionData("Undertaking journey")
+    }
+
+  private def updateUndertakingJourney(ujOpt: Option[UndertakingJourney])(f: UndertakingJourney => UndertakingJourney) =
+    ujOpt.map(f)
+
+  private def updateUndertakingName(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
+    updateUndertakingJourney(ujOpt) { journey =>
+      journey.copy(name = journey.name.copy(value = Some(formValues.value)))
+    }
+
+  private def updateUndertakingSector(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
+    updateUndertakingJourney(ujOpt) { journey =>
+      journey.copy(sector = journey.sector.copy(value = Some(Sector(formValues.value.toInt))))
+    }
+
+  private def updateUndertakingCYA(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
+    updateUndertakingJourney(ujOpt) { journey =>
+      journey.copy(cya = journey.cya.copy(value = Some(formValues.value.toBoolean)))
+    }
+
+  private def updateUndertakingConfirmation(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
+    updateUndertakingJourney(ujOpt) { journey =>
+      journey.copy(confirmation = journey.confirmation.copy(value = Some(formValues.value.toBoolean)))
+
     }
 
   private val undertakingNameForm: Form[FormValues] = Form(
