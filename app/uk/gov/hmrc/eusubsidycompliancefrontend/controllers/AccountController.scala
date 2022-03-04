@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
@@ -30,7 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Sy
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AccountController @Inject() (
@@ -59,42 +59,37 @@ class AccountController @Inject() (
     }
   }
 
-  def getExistingUndertaking: Action[AnyContent] = escAuthentication.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    escService.retrieveUndertaking(eori).map {
-      case Some(undertaking) if undertaking.isLeadEORI(eori) => Redirect(routes.AccountController.getAccountPage())
-      case Some(undertaking) => Ok(existingUndertakingPage(undertaking.name))
-      case None => Redirect(routes.AccountController.getAccountPage())
+  private def getUndertakingAndHandleResponse(implicit r: EscAuthRequest[AnyContent], e: EORI): Future[Result] = {
+    escService.retrieveUndertaking(r.eoriNumber) flatMap {
+      case Some(u) => handleExistingUndertaking(u)
+      case None => handleUndertakingNotCreated
     }
   }
 
-  private def getUndertakingAndHandleResponse(implicit r: EscAuthRequest[AnyContent], e: EORI) =
-    escService
-      .retrieveUndertaking(r.eoriNumber)
-      .toContext
-      .flatMap(handleExistingUndertaking)
-      .orElse(handleUndertakingNotCreated)
-      .getOrElse(sys.error("Error during getAccount flow"))
-
-  private def handleUndertakingNotCreated(implicit e: EORI) =
-    getOrCreateJourneys().map {
+  private def handleUndertakingNotCreated(implicit e: EORI): Future[Result] = {
+    val result = getOrCreateJourneys().map {
       case (ej, uj) if !ej.isComplete && uj.isEmpty => Redirect(routes.EligibilityController.firstEmptyPage())
       case (_, uj) if !uj.isComplete => Redirect(routes.UndertakingController.firstEmptyPage())
       case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity())
     }
+    result.getOrElse(handleMissingSessionData("Account Home - Undertaking not created -"))
+  }
 
-  private def handleExistingUndertaking(u: Undertaking)(implicit r: EscAuthRequest[AnyContent], e: EORI) =
-    for {
+  private def handleExistingUndertaking(u: Undertaking)(implicit r: EscAuthRequest[AnyContent], e: EORI): Future[Result] = {
+    val result = for {
       _ <- store.put(u).toContext
       _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(u))
     } yield renderAccountPage(u)
 
-  private def getOrCreateJourneys(u: UndertakingJourney = UndertakingJourney())(implicit  e: EORI) = for {
-    ej <- store.get[EligibilityJourney].toContext.flatTapNone(store.put(EligibilityJourney()))
-    uj <- store.get[UndertakingJourney].toContext.flatTapNone(store.put(u))
-    _ <- store.get[BusinessEntityJourney].toContext.flatTapNone(store.put(BusinessEntityJourney()))
-  } yield (ej, uj)
+    result.getOrElse(handleMissingSessionData("Account Home - Existing Undertaking -"))
+  }
+
+  private def getOrCreateJourneys(u: UndertakingJourney = UndertakingJourney())(implicit  e: EORI) =
+    for {
+      ej <- store.get[EligibilityJourney].toContext.orElse(store.put(EligibilityJourney()).toContext)
+      uj <- store.get[UndertakingJourney].toContext.orElse(store.put(u).toContext)
+      _ <- store.get[BusinessEntityJourney].toContext.orElse(store.put(BusinessEntityJourney()).toContext)
+    } yield (ej, uj)
 
   private def renderAccountPage(undertaking: Undertaking)(implicit r: EscAuthRequest[AnyContent]) = {
     val currentTime = timeProvider.today
@@ -114,5 +109,15 @@ class AccountController @Inject() (
     }
     else Ok(nonLeadAccountPage(undertaking))
   }
+
+   def getExistingUndertaking: Action[AnyContent] = escAuthentication.async { implicit request =>
+     implicit val eori: EORI = request.eoriNumber
+
+     escService.retrieveUndertaking(eori).map {
+       case Some(undertaking) if undertaking.isLeadEORI(eori) => Redirect(routes.AccountController.getAccountPage())
+       case Some(undertaking) => Ok(existingUndertakingPage(undertaking.name))
+       case None => Redirect(routes.AccountController.getAccountPage())
+     }
+   }
 
 }
