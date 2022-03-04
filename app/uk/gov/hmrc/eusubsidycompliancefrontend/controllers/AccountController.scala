@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportDeMinimisReminderHelper, TimeProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
@@ -99,9 +99,9 @@ class AccountController @Inject() (
   private def renderAccountPage(undertaking: Undertaking)(implicit r: EscAuthRequest[AnyContent]) = {
     val currentTime = timeProvider.today
 
-    val isTimeToReport = ReportDeMinimisReminderHelper.isTimeToReport(undertaking.lastSubsidyUsageUpdt, currentTime)
-    val dueDate = ReportDeMinimisReminderHelper.dueDateToReport(undertaking.lastSubsidyUsageUpdt).map(_.toDisplayFormat)
-    val isOverdue = ReportDeMinimisReminderHelper.isOverdue(undertaking.lastSubsidyUsageUpdt, currentTime)
+    val isTimeToReport = ReportReminderHelpers.isTimeToReport(undertaking.lastSubsidyUsageUpdt, currentTime)
+    val dueDate = ReportReminderHelpers.dueDateToReport(undertaking.lastSubsidyUsageUpdt).map(_.toDisplayFormat)
+    val isOverdue = ReportReminderHelpers.isOverdue(undertaking.lastSubsidyUsageUpdt, currentTime)
 
     if (undertaking.isLeadEORI(r.eoriNumber)) {
       Ok(leadAccountPage(
