@@ -38,7 +38,7 @@ class NoBusinessPresentController @Inject() (
     extends BaseController(mcc) {
   import escActionBuilders._
 
-  def getNoBusinessPresent: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getNoBusinessPresent: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori = request.eoriNumber
     val previous = routes.AccountController.getAccountPage().url
     escService.retrieveUndertaking(eori).map {
@@ -49,7 +49,7 @@ class NoBusinessPresentController @Inject() (
     }
   }
 
-  def postNoBusinessPresent: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postNoBusinessPresent: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     for {
       _ <- store.update[BusinessEntityJourney] { businessEntityJourneyOpt =>

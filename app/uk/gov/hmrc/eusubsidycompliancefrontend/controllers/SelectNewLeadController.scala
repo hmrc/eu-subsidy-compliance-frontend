@@ -49,7 +49,7 @@ class SelectNewLeadController @Inject() (
   val promoteOtherAsLeadEmailToBusinessEntity = "promoteAsLeadEmailToBE"
   val promoteOtherAsLeadEmailToLead = "promoteAsLeadEmailToLead"
 
-  def getSelectNewLead: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getSelectNewLead: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     val previous = routes.AccountController.getAccountPage().url
     implicit val eori = request.eoriNumber
     (for {
@@ -74,7 +74,7 @@ class SelectNewLeadController @Inject() (
     }).flatten
   }
 
-  def postSelectNewLead: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postSelectNewLead: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     val previous = routes.AccountController.getAccountPage().url
     escService.retrieveUndertaking(eori).flatMap {
@@ -125,7 +125,7 @@ class SelectNewLeadController @Inject() (
     }
   }
 
-  def getLeadEORIChanged = escAuthentication.async { implicit request =>
+  def getLeadEORIChanged = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[NewLeadJourney].flatMap {
       _ match {

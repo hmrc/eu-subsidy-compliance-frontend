@@ -45,7 +45,7 @@ class FinancialDashboardController @Inject() (
 
   import escActionBuilders._
 
-  def getFinancialDashboard: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getFinancialDashboard: Action[AnyContent] = anyAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     // THe search period covers the current tax year to date, and the previous 2 tax years.
     val searchDateStart = timeProvider.today.toEarliestTaxYearStart
@@ -54,6 +54,7 @@ class FinancialDashboardController @Inject() (
 
     val searchRange = Some((searchDateStart, searchDateEnd))
 
+    // TODO - review this - can we flip to contexts?
     val subsidies: Future[(Undertaking, UndertakingSubsidies)] = for {
       undertaking <- OptionT(store.get[Undertaking]).getOrElse(handleMissingSessionData("Undertaking"))
       r = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking reference"))

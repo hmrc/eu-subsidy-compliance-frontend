@@ -63,7 +63,7 @@ class BusinessEntityController @Inject() (
   val RemoveThemselfEmailToBusinessEntity = "removeThemselfEmailToBE"
   val RemoveThemselfEmailToLead = "removeThemselfEmailToLead"
 
-  def getAddBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getAddBusinessEntity: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     for {
@@ -87,7 +87,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postAddBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postAddBusinessEntity: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def handleValidAnswer(form: FormValues) = {
@@ -117,7 +117,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def getEori: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getEori: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[BusinessEntityJourney].flatMap { previous =>
       store.get[BusinessEntityJourney].flatMap {
@@ -129,7 +129,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postEori: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postEori: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def handleValidEori(form: FormValues, previous: Uri) =
@@ -164,7 +164,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def getCheckYourAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getCheckYourAnswers: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[BusinessEntityJourney].flatMap {
       case Some(journey) =>
@@ -175,7 +175,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postCheckYourAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postCheckYourAnswers: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def handleValidAnswers() = for {
@@ -247,7 +247,7 @@ class BusinessEntityController @Inject() (
       )
   }
 
-  def editBusinessEntity(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
+  def editBusinessEntity(eoriEntered: String): Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori111: EORI = request.eoriNumber
 
     for {
@@ -256,7 +256,7 @@ class BusinessEntityController @Inject() (
     } yield Ok(businessEntityCyaPage(eoriEntered))
   }
 
-  def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     for {
       undertakingOpt <- escService.retrieveUndertaking(EORI(eoriEntered))
     } yield undertakingOpt match {
@@ -268,7 +268,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def getRemoveYourselfBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getRemoveYourselfBusinessEntity: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori = request.eoriNumber
     val previous = routes.AccountController.getAccountPage().url
     for {
@@ -282,7 +282,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     escService.retrieveUndertaking(EORI(eoriEntered)).flatMap {
       case Some(undertaking) =>
@@ -326,7 +326,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postRemoveYourselfBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postRemoveYourselfBusinessEntity: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     val loggedInEORI = request.eoriNumber
     val previous = routes.AccountController.getAccountPage().url
     escService.retrieveUndertaking(loggedInEORI).flatMap {

@@ -67,7 +67,7 @@ class SubsidyController @Inject() (
 
   import escActionBuilders._
 
-  def getReportPayment: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getReportPayment: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     val result = for {
@@ -98,7 +98,7 @@ class SubsidyController @Inject() (
       .map(Option(_))
       .fallbackTo(Option.empty.toFuture)
 
-  def postReportPayment: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postReportPayment: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     reportPaymentForm
       .bindFromRequest()
@@ -112,7 +112,7 @@ class SubsidyController @Inject() (
       )
   }
 
-  def getClaimAmount: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getClaimAmount: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     val result: OptionT[Future, Result] = for {
       subsidyJourney <- store.get[SubsidyJourney].toContext
@@ -125,7 +125,7 @@ class SubsidyController @Inject() (
     result.getOrElse(handleMissingSessionData(" Subsidy journey"))
   }
 
-  def postAddClaimAmount: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postAddClaimAmount: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def handleFormSubmit(previous: Journey.Uri, addClaimDate: DateFormValues) =
@@ -152,7 +152,7 @@ class SubsidyController @Inject() (
     result.getOrElse(handleMissingSessionData(" Subsidy journey"))
   }
 
-  def getClaimDate: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getClaimDate: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
@@ -164,7 +164,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postClaimDate: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postClaimDate: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     getPrevious[SubsidyJourney](store).flatMap { previous =>
       claimDateForm
@@ -180,7 +180,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getAddClaimEori: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getAddClaimEori: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
@@ -194,7 +194,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postAddClaimEori: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postAddClaimEori: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
       claimEoriForm
@@ -210,7 +210,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getAddClaimPublicAuthority: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getAddClaimPublicAuthority: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
@@ -222,7 +222,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postAddClaimPublicAuthority: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postAddClaimPublicAuthority: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     getPrevious[SubsidyJourney](store).flatMap { previous =>
       claimPublicAuthorityForm
@@ -238,7 +238,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getAddClaimReference: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getAddClaimReference: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[SubsidyJourney].flatMap {
       case Some(journey) =>
@@ -250,7 +250,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postAddClaimReference: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postAddClaimReference: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
       claimTraderRefForm
@@ -266,7 +266,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getCheckAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getCheckAnswers: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     val result: OptionT[Future, Result] = for {
@@ -285,7 +285,7 @@ class SubsidyController @Inject() (
     result.getOrElse(handleMissingSessionData("Subsidy journey"))
   }
 
-  def postCheckAnswers: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postCheckAnswers: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     cyaForm
@@ -328,7 +328,7 @@ class SubsidyController @Inject() (
       _ <- journey.traderRef.value.orElse(handleMissingSessionData("trader ref"))
     } yield ()
 
-  def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     val result: OptionT[Future, Result] = for {
@@ -340,7 +340,7 @@ class SubsidyController @Inject() (
     result.fold(handleMissingSessionData("Subsidy Journey"))(identity)
   }
 
-  def postRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     removeSubsidyClaimForm
       .bindFromRequest()
@@ -352,7 +352,7 @@ class SubsidyController @Inject() (
       )
   }
 
-  def getChangeSubsidyClaim(transactionId: String): Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getChangeSubsidyClaim(transactionId: String): Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     val result = for {
       reference <- getUndertakingRef

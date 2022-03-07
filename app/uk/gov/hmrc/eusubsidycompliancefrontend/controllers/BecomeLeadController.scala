@@ -50,10 +50,10 @@ class BecomeLeadController @Inject() (
 
   import escActionBuilders._
 
-  val PromotedAsNewLead = "promotedAsLeadToNewLead"
-  val RemovedAsLead = "removedAsLeadToOldLead"
+  private val PromotedAsNewLead = "promotedAsLeadToNewLead"
+  private val RemovedAsLead = "removedAsLeadToOldLead"
 
-  def getBecomeLeadEori: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getBecomeLeadEori: Action[AnyContent] = anyAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     for {
       journey <- store.get[BecomeLeadJourney]
@@ -77,7 +77,7 @@ class BecomeLeadController @Inject() (
       throw new IllegalStateException("missing undertaking name")
   }
 
-  def postBecomeLeadEori: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postBecomeLeadEori: Action[AnyContent] = anyAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     becomeAdminForm
       .bindFromRequest()
@@ -106,7 +106,7 @@ class BecomeLeadController @Inject() (
       )
   }
 
-  def getAcceptPromotionTerms: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getAcceptPromotionTerms: Action[AnyContent] = anyAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[BecomeLeadJourney].flatMap {
       case Some(journey) =>
@@ -119,7 +119,7 @@ class BecomeLeadController @Inject() (
     }
   }
 
-  def postAcceptPromotionTerms: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postAcceptPromotionTerms: Action[AnyContent] = anyAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .update[BecomeLeadJourney] {
@@ -132,7 +132,7 @@ class BecomeLeadController @Inject() (
       }
   }
 
-  def getPromotionConfirmation: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getPromotionConfirmation: Action[AnyContent] = anyAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[BecomeLeadJourney].flatMap {
       case Some(journey) =>
@@ -176,7 +176,7 @@ class BecomeLeadController @Inject() (
     }
   }
 
-  def getPromotionCleanup: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getPromotionCleanup: Action[AnyContent] = anyAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .update[BecomeLeadJourney] {

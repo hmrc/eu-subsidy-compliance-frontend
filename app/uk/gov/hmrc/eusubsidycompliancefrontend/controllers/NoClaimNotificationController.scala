@@ -45,7 +45,7 @@ class NoClaimNotificationController @Inject() (
     extends BaseController(mcc) {
   import escActionBuilders._
 
-  def getNoClaimNotification: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getNoClaimNotification: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     val eori = request.eoriNumber
     val previous = routes.AccountController.getAccountPage().url
     for {
@@ -57,7 +57,7 @@ class NoClaimNotificationController @Inject() (
     }
   }
 
-  def postNoClaimNotification: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postNoClaimNotification: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     val eori = request.eoriNumber
     val previous = routes.AccountController.getAccountPage().url
     (for {
@@ -87,7 +87,7 @@ class NoClaimNotificationController @Inject() (
     }).flatten
   }
 
-  def getNoClaimConfirmation: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getNoClaimConfirmation: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
     val eori = request.eoriNumber
     for {
       undertakingOpt <- escService.retrieveUndertaking(eori)
