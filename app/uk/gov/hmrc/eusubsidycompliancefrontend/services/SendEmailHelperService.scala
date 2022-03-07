@@ -26,7 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import com.google.inject.Inject
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, DoubleEORIEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -56,11 +56,17 @@ class SendEmailHelperService @Inject() (
     messagesApi: MessagesApi
   ): Future[EmailSendResult] =
     for {
-      emailAddress <- retrieveEmailService.retrieveEmailByEORI(eori1).map(_.getOrElse(sys.error("Email Address")))
+      retrieveEmailResponse <- retrieveEmailService.retrieveEmailByEORI(eori1)
       templateId = getEmailTemplateId(configuration, key)
       emailParameter = getEmailParams(key, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
+      emailAddress = getEmailAddress(retrieveEmailResponse)
       result <- sendEmailService.sendEmail(emailAddress, emailParameter, templateId)
     } yield result
+
+  private def getEmailAddress(retrieveEmailResponse: RetrieveEmailResponse) = retrieveEmailResponse.emailType match {
+    case EmailType.VerifiedEmail => retrieveEmailResponse.emailAddress.getOrElse(sys.error("email not found"))
+    case _ => sys.error(" No Verified email found")
+  }
 
   private def getEmailParams(
     key: String,

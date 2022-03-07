@@ -21,6 +21,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -53,17 +54,21 @@ class AccountController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     retrieveEmailService.retrieveEmailByEORI(eori) flatMap {
-      case Some(_) => getUndertakingAndHandleResponse
-      case _ => Redirect(routes.UpdateEmailAddressController.updateEmailAddress()).toFuture
+      _.emailType match {
+        case EmailType.VerifiedEmail => getUndertakingAndHandleResponse
+        case EmailType.UnVerifiedEmail =>
+          Redirect(routes.UpdateEmailAddressController.updateUnverifiedEmailAddress()).toFuture
+        case EmailType.UndeliverableEmail =>
+          Redirect(routes.UpdateEmailAddressController.updateUndeliveredEmailAddress()).toFuture
+      }
     }
   }
 
-  private def getUndertakingAndHandleResponse(implicit r: EscAuthRequest[AnyContent], e: EORI): Future[Result] = {
+  private def getUndertakingAndHandleResponse(implicit r: EscAuthRequest[AnyContent], e: EORI): Future[Result] =
     escService.retrieveUndertaking(r.eoriNumber) flatMap {
       case Some(u) => handleExistingUndertaking(u)
       case None => handleUndertakingNotCreated
     }
-  }
 
   private def handleUndertakingNotCreated(implicit e: EORI): Future[Result] = {
     val result = getOrCreateJourneys().map {
@@ -74,7 +79,9 @@ class AccountController @Inject() (
     result.getOrElse(handleMissingSessionData("Account Home - Undertaking not created -"))
   }
 
-  private def handleExistingUndertaking(u: Undertaking)(implicit r: EscAuthRequest[AnyContent], e: EORI): Future[Result] = {
+  private def handleExistingUndertaking(
+    u: Undertaking
+  )(implicit r: EscAuthRequest[AnyContent], e: EORI): Future[Result] = {
     val result = for {
       _ <- store.put(u).toContext
       _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(u))
@@ -83,7 +90,7 @@ class AccountController @Inject() (
     result.getOrElse(handleMissingSessionData("Account Home - Existing Undertaking -"))
   }
 
-  private def getOrCreateJourneys(u: UndertakingJourney = UndertakingJourney())(implicit  e: EORI) =
+  private def getOrCreateJourneys(u: UndertakingJourney = UndertakingJourney())(implicit e: EORI) =
     for {
       ej <- store.get[EligibilityJourney].toContext.orElse(store.put(EligibilityJourney()).toContext)
       uj <- store.get[UndertakingJourney].toContext.orElse(store.put(u).toContext)
@@ -98,15 +105,16 @@ class AccountController @Inject() (
     val isOverdue = ReportReminderHelpers.isOverdue(undertaking.lastSubsidyUsageUpdt, currentTime)
 
     if (undertaking.isLeadEORI(r.eoriNumber)) {
-      Ok(leadAccountPage(
-        undertaking,
-        undertaking.getAllNonLeadEORIs().nonEmpty,
-        isTimeToReport,
-        dueDate,
-        isOverdue
-      ))
-    }
-    else Ok(nonLeadAccountPage(undertaking))
+      Ok(
+        leadAccountPage(
+          undertaking,
+          undertaking.getAllNonLeadEORIs().nonEmpty,
+          isTimeToReport,
+          dueDate,
+          isOverdue
+        )
+      )
+    } else Ok(nonLeadAccountPage(undertaking))
   }
 
 }
