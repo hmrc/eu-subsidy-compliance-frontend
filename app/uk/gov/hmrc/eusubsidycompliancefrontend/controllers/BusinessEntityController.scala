@@ -257,7 +257,7 @@ class BusinessEntityController @Inject() (
 
   def getRemoveYourselfBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori = request.eoriNumber
-    val previous = routes.AccountController.getExistingUndertaking().url
+    val previous = routes.AccountController.getAccountPage().url
     for {
       undertakingOpt <- escService.retrieveUndertaking(eori)
     } yield undertakingOpt match {
@@ -315,7 +315,7 @@ class BusinessEntityController @Inject() (
 
   def postRemoveYourselfBusinessEntity: Action[AnyContent] = escAuthentication.async { implicit request =>
     val loggedInEORI = request.eoriNumber
-    val previous = routes.AccountController.getExistingUndertaking().url
+    val previous = routes.AccountController.getAccountPage().url
     escService.retrieveUndertaking(loggedInEORI).flatMap {
       case Some(undertaking) =>
         val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("undertaking reference"))

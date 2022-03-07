@@ -121,7 +121,7 @@ class BusinessEntityControllerSpec
     (mockEscService
       .addMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
       .expects(undertakingRef, businessEntity, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful(_)))
+      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful))
 
   private def mockTimeToday(now: LocalDate) =
     (mockTimeProvider.today _).expects().returning(now)
@@ -860,7 +860,7 @@ class BusinessEntityControllerSpec
             { doc =>
               doc
                 .select(".govuk-back-link")
-                .attr("href") shouldBe (routes.AccountController.getExistingUndertaking().url)
+                .attr("href") shouldBe (routes.AccountController.getAccountPage().url)
 
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               inputDate match {

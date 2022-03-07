@@ -289,11 +289,6 @@ undertaking.amendUndertaking.summary-list.sector.key = Industry sector
 undertaking.amendUndertaking.summary-list.telephone.key = Telephone number
 undertaking.amendUndertaking.p = By sending these details you are confirming that, to the best of your knowledge, they are correct
 
-#existingUndertaking
-existingUndertaking.title = Our records show that you are already part of an undertaking
-existingUndertaking.link1 = Go to your account
-existingUndertaking.link2 = Remove yourself from this undertaking
-
 #SignOut
 signOut.title = You have been removed from this undertaking
 signOut.p1 = You have been signed out of this session.

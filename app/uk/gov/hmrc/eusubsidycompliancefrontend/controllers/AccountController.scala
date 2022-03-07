@@ -41,7 +41,6 @@ class AccountController @Inject() (
   leadAccountPage: LeadAccountPage,
   nonLeadAccountPage: NonLeadAccountPage,
   timeProvider: TimeProvider,
-  existingUndertakingPage: ExistingUndertakingPage,
   retrieveEmailService: RetrieveEmailService
 )(implicit
   val appConfig: AppConfig,
@@ -109,15 +108,5 @@ class AccountController @Inject() (
     }
     else Ok(nonLeadAccountPage(undertaking))
   }
-
-   def getExistingUndertaking: Action[AnyContent] = escAuthentication.async { implicit request =>
-     implicit val eori: EORI = request.eoriNumber
-
-     escService.retrieveUndertaking(eori).map {
-       case Some(undertaking) if undertaking.isLeadEORI(eori) => Redirect(routes.AccountController.getAccountPage())
-       case Some(undertaking) => Ok(existingUndertakingPage(undertaking.name))
-       case None => Redirect(routes.AccountController.getAccountPage())
-     }
-   }
 
 }

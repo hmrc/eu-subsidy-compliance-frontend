@@ -1,7 +1,7 @@
 # microservice specific routes
 
 ->         /hmrc-frontend                           hmrcfrontend.Routes
-GET        /                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getExistingUndertaking
+GET        /                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
 
 GET        /home                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
 
