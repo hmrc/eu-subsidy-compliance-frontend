@@ -54,14 +54,6 @@ case class UndertakingJourney(
     else if (requiredDetailsProvided) Redirect(routes.UndertakingController.getCheckAnswers()).toFuture
     else super.next
 
-  // Returns a new UndertakingJourney without user entered values except name and sector which cannot be changed.
-  // TODO - is this needed?
-  def clearUserData: UndertakingJourney = UndertakingJourney(
-    name = name,
-    sector = sector,
-  )
-
-  // TODO - could call this not started
   def isEmpty: Boolean = steps.flatMap(_.value).isEmpty
 
   private def requiredDetailsProvided =
@@ -72,19 +64,6 @@ case class UndertakingJourney(
 object UndertakingJourney {
 
   implicit val format: Format[UndertakingJourney] = Json.format[UndertakingJourney]
-
-  // TODO - review how / where this is used
-  def fromUndertakingOpt(undertakingOpt: Option[Undertaking]): UndertakingJourney = undertakingOpt match {
-    case Some(undertaking) =>
-      val empty = UndertakingJourney()
-      empty.copy(
-        name = empty.name.copy(value = undertaking.name.some),
-        sector = empty.sector.copy(value = undertaking.industrySector.some),
-        isAmend = false
-      )
-
-    case _ => UndertakingJourney()
-  }
 
   def fromUndertaking(undertaking: Undertaking): UndertakingJourney = UndertakingJourney(
     name = UndertakingNameFormPage(undertaking.name.some),
