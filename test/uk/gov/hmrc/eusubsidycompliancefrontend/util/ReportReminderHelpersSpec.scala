@@ -22,7 +22,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 
 import java.time.LocalDate
 
-class ReportDeMinimisReminderHelperSpec extends AnyWordSpecLike with Matchers {
+class ReportReminderHelpersSpec extends AnyWordSpecLike with Matchers {
 
   "ReportDeMinimisReminderHelperSpec" when {
 
@@ -30,7 +30,7 @@ class ReportDeMinimisReminderHelperSpec extends AnyWordSpecLike with Matchers {
 
       def test(currentDate: LocalDate, response: Boolean) = {
         val lastSubsidyUsageUpdt = LocalDate.of(2021, 12, 1).some
-        ReportDeMinimisReminderHelper.isTimeToReport(lastSubsidyUsageUpdt, currentDate) mustBe response
+        ReportReminderHelpers.isTimeToReport(lastSubsidyUsageUpdt, currentDate) mustBe response
       }
 
       "return true" when {

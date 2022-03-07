@@ -32,7 +32,7 @@ trait SendEmailSupport {
     (mockSendEmailService
       .sendEmail(_: EmailAddress, _: EmailParameters, _: String)(_: HeaderCarrier))
       .expects(emailAddress, emailParameters, templateId, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful(_)))
+      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful))
 }
 
 

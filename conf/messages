@@ -194,21 +194,26 @@ undertaking.confirmation.p4=If you have any other businesses, you must add them 
 
 businessEntityEori.eoriInUse.error=This EORI is in use.
 
-account-homepage.title = {0}
-account-homepage.warning=You must report any de minimis aid (except Customs Duty waivers) {0} receives as soon as possible. If you do not report a de minimis aid payment every 90 days (or notify HMRC that you have not received any payments in that 90-day period), you will be ineligible to claim Customs Duty waivers
-account-homepage.inset=Your next entry is due by {0}. You can report de minimis aid payment, or let HMRC know that you have not received any, by following the links in the Payments received section below.
-account-homepage-overdue.inset=Your due date of {0} has passed. You have not submitted your return within the 90-day period.
-account-homepage.cards.card1.heading=Payments received
-account-homepage.cards.card1.link1=Report or amend payments
-account-homepage.cards.card1.link2= Notify HMRC that {0} has not received de minimis aid payments (less Customs Duty waivers) in the past 90 days
-account-homepage.cards.card2.heading=Account
-account-homepage.cards.card2.link1=View or amend your account details
-account-homepage.cards.card2.link2=View financial dashboard
-account-homepage.cards.card3.heading=Businesses in {0}
-account-homepage.cards.card3.link1=View your businesses or Add a business to your account [TODO: Link text depends on businesses added]
-account-homepage.cards.card3.link1View=View your businesses
-account-homepage.cards.card3.link1Add=Add a business to your account
-account-homepage.cards.card3.link2=Make another business the administrator
+lead-account-homepage.title = {0}
+lead-account-homepage.warning=You must report any de minimis aid (except Customs Duty waivers) {0} receives as soon as possible. If you do not report a de minimis aid payment every 90 days (or notify HMRC that you have not received any payments in that 90-day period), you will be ineligible to claim Customs Duty waivers
+lead-account-homepage.inset=Your next entry is due by {0}. You can report de minimis aid payment, or let HMRC know that you have not received any, by following the links in the Payments received section below.
+lead-account-homepage-overdue.inset=Your due date of {0} has passed. You have not submitted your return within the 90-day period.
+lead-account-homepage.cards.card1.heading=Payments received
+lead-account-homepage.cards.card1.link1=Report or amend payments
+lead-account-homepage.cards.card1.link2= Notify HMRC that {0} has not received de minimis aid payments (less Customs Duty waivers) in the past 90 days
+lead-account-homepage.cards.card2.heading=Account
+lead-account-homepage.cards.card2.link1=View or amend your account details
+lead-account-homepage.cards.card2.link2=View financial dashboard
+lead-account-homepage.cards.card3.heading=Businesses in {0}
+lead-account-homepage.cards.card3.link1=View your businesses or Add a business to your account [TODO: Link text depends on businesses added]
+lead-account-homepage.cards.card3.link1View=View your businesses
+lead-account-homepage.cards.card3.link1Add=Add a business to your account
+lead-account-homepage.cards.card3.link2=Make another business the administrator
+
+non-lead-account-homepage.title = You are part of the single undertaking {0}
+non-lead-account-homepage.link1 = Become administrator for {0}
+non-lead-account-homepage.link2 = View the [TODO: finalise copy] financial dashboard / de minimis aid balance for {0}
+non-lead-account-homepage.link3 = Remove yourself from this single undertaking
 
 report-payment.title=Report a de minimis aid payment
 report-payment.p1=You have not yet reported any payments.
@@ -283,11 +288,6 @@ undertaking.amendUndertaking.summary-list.name.key = Name of Undertaking
 undertaking.amendUndertaking.summary-list.sector.key = Industry sector
 undertaking.amendUndertaking.summary-list.telephone.key = Telephone number
 undertaking.amendUndertaking.p = By sending these details you are confirming that, to the best of your knowledge, they are correct
-
-#existingUndertaking
-existingUndertaking.title = Our records show that you are already part of an undertaking
-existingUndertaking.link1 = Go to your account
-existingUndertaking.link2 = Remove yourself from this undertaking
 
 #SignOut
 signOut.title = You have been removed from this undertaking

@@ -29,34 +29,31 @@ case class Undertaking(
   industrySectorLimit: Option[IndustrySectorLimit],
   lastSubsidyUsageUpdt: Option[LocalDate],
   undertakingBusinessEntity: List[BusinessEntity]
-)
+) {
+
+  def isLeadEORI(eori: EORI): Boolean = {
+    val leadEORI: BusinessEntity = undertakingBusinessEntity
+      .find(_.leadEORI)
+      .getOrElse(throw new IllegalStateException("Missing Lead EORI"))
+
+    leadEORI.businessEntityIdentifier == eori
+  }
+
+  def getBusinessEntityByEORI(eori: EORI): BusinessEntity =
+    undertakingBusinessEntity
+      .find(be => be.businessEntityIdentifier == eori)
+      .getOrElse(throw new IllegalStateException(s"BE with eori $eori is missing"))
+
+  def getAllNonLeadEORIs(): List[EORI] =
+    undertakingBusinessEntity.filter(!_.leadEORI).map(_.businessEntityIdentifier)
+
+  def getLeadEORI = undertakingBusinessEntity
+    .filter(_.leadEORI)
+    .map(_.businessEntityIdentifier)
+    .headOption
+    .getOrElse(throw new IllegalStateException(s"Lead EORI is missing"))
+}
 
 object Undertaking {
   implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
-
-  implicit class UndertakingOps(private val undertaking: Undertaking) extends AnyVal {
-
-    def isLeadEORI(eori: EORI): Boolean = {
-      val leadEORI: BusinessEntity = undertaking
-        .undertakingBusinessEntity
-        .find(_.leadEORI)
-        .getOrElse(throw new IllegalStateException("Missing Lead EORI"))
-      leadEORI.businessEntityIdentifier == eori
-    }
-
-    def getBusinessEntityByEORI(eori: EORI): BusinessEntity =
-      undertaking.undertakingBusinessEntity
-        .find(be => be.businessEntityIdentifier == eori)
-        .getOrElse(throw new IllegalStateException(s"BE with eori $eori is missing"))
-
-    def getAllNonLeadEORIs(): List[EORI] =
-      undertaking.undertakingBusinessEntity.filter(!_.leadEORI).map(_.businessEntityIdentifier)
-
-    def getLeadEORI = undertaking.undertakingBusinessEntity
-      .filter(_.leadEORI)
-      .map(_.businessEntityIdentifier)
-      .headOption
-      .getOrElse(throw new IllegalStateException(s"Lead EORI is missing"))
-  }
-
 }

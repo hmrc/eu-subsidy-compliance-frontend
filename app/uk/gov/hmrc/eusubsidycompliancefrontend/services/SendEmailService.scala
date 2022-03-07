@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import com.google.inject.{ImplementedBy, Inject, Singleton}
+import com.google.inject.{Inject, Singleton}
 import play.api.Logging
 import play.api.http.Status.ACCEPTED
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.SendEmailConnector
@@ -26,20 +26,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-@ImplementedBy(classOf[SendEmailServiceImpl])
-trait SendEmailService {
-  def sendEmail(emailAddress: EmailAddress, emailParameters: EmailParameters, templateId: String)(implicit
-    hc: HeaderCarrier
-  ): Future[EmailSendResult]
-
-}
-
 @Singleton
-class SendEmailServiceImpl @Inject() (emailSendConnector: SendEmailConnector)(implicit ec: ExecutionContext)
-    extends SendEmailService
-    with Logging {
+class SendEmailService @Inject() (emailSendConnector: SendEmailConnector)(implicit ec: ExecutionContext)
+  extends Logging {
 
-  override def sendEmail(emailAddress: EmailAddress, emailParameters: EmailParameters, templateId: String)(implicit
+  def sendEmail(emailAddress: EmailAddress, emailParameters: EmailParameters, templateId: String)(implicit
     hc: HeaderCarrier
   ): Future[EmailSendResult] =
     emailSendConnector.sendEmail(EmailSendRequest(List(emailAddress), templateId, emailParameters)).map {

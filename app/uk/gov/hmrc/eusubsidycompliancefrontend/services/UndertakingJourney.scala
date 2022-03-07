@@ -54,6 +54,8 @@ case class UndertakingJourney(
     else if (requiredDetailsProvided) Redirect(routes.UndertakingController.getCheckAnswers()).toFuture
     else super.next
 
+  def isEmpty: Boolean = steps.flatMap(_.value).isEmpty
+
   private def requiredDetailsProvided =
     Seq(name, sector).map(_.value.isDefined) == Seq(true, true)
 
@@ -63,18 +65,10 @@ object UndertakingJourney {
 
   implicit val format: Format[UndertakingJourney] = Json.format[UndertakingJourney]
 
-  // TODO - review how / where this is used
-  def fromUndertakingOpt(undertakingOpt: Option[Undertaking]): UndertakingJourney = undertakingOpt match {
-    case Some(undertaking) =>
-      val empty = UndertakingJourney()
-      empty.copy(
-        name = empty.name.copy(value = undertaking.name.some),
-        sector = empty.sector.copy(value = undertaking.industrySector.some),
-        isAmend = false
-      )
-
-    case _ => UndertakingJourney()
-  }
+  def fromUndertaking(undertaking: Undertaking): UndertakingJourney = UndertakingJourney(
+    name = UndertakingNameFormPage(undertaking.name.some),
+    sector = UndertakingSectorFormPage(undertaking.industrySector.some)
+  )
 
   object Forms {
 

@@ -1,7 +1,7 @@
 # microservice specific routes
 
 ->         /hmrc-frontend                           hmrcfrontend.Routes
-GET        /                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getExistingUndertaking
+GET        /                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
 
 GET        /home                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
 
@@ -59,7 +59,6 @@ POST       /add-member                              uk.gov.hmrc.eusubsidycomplia
 
 GET        /add-business-entity-eori                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getEori
 POST       /add-business-entity-eori                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postEori
-
 
 GET        /check-your-answers-businesses           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getCheckYourAnswers
 POST       /check-your-answers-businesses           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postCheckYourAnswers
