@@ -17,17 +17,16 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
-import cats.kernel.Previous
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, BusinessEntityJourney, EscService, JourneyTraverseService, SendEmailHelperService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
@@ -141,6 +140,7 @@ class BusinessEntityController @Inject() (
               eori = b.eori.copy(value = Some(EORI(form.value))),
               oldEORI = b.eori.value
             ).some
+            case None => None
           }.flatMap(_.next)
       }
 
