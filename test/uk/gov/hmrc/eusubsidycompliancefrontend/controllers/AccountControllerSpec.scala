@@ -18,8 +18,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.Configuration
-import play.api.http.Status
 import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -45,7 +45,7 @@ class AccountControllerSpec
   private val mockRetrieveEmailService = mock[RetrieveEmailService]
   private val mockTimeProvider = mock[TimeProvider]
 
-  override def overrideBindings = List(
+  override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
@@ -53,7 +53,7 @@ class AccountControllerSpec
     bind[TimeProvider].toInstance(mockTimeProvider)
   )
 
-  override def additionalConfig = super.additionalConfig.withFallback(
+  override def additionalConfig: Configuration = super.additionalConfig.withFallback(
     Configuration.from(
       Map(
         // Disable CSP n=once hashes in rendered output
@@ -240,26 +240,34 @@ class AccountControllerSpec
 
         "valid request for non-lead user is made" in {
           inSequence {
-            mockAuthWithEnrolment(eori2)
-            mockRetrieveEmail(eori2)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockRetrieveUndertaking(eori2)(Future.successful(undertaking.some))
-            mockPut[Undertaking](undertaking, eori2)(Right(undertaking))
-            mockGet[EligibilityJourney](eori2)(Right(eligibilityJourneyComplete.some))
-            mockGet[UndertakingJourney](eori2)(Right(UndertakingJourney().some))
-            mockGet[BusinessEntityJourney](eori2)(Right(businessEntityJourney.some))
+            mockAuthWithEnrolment(eori4)
+            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockPut[Undertaking](undertaking1, eori4)(Right(undertaking1))
+            mockGet[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete.some))
+            mockGet[UndertakingJourney](eori4)(Right(UndertakingJourney().some))
+            mockGet[BusinessEntityJourney](eori4)(Right(businessEntityJourney.some))
             mockTimeProviderToday(fixedDate)
           }
 
-          running(fakeApplication) {
-            val request = FakeRequest(GET, routes.AccountController.getAccountPage().url)
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("non-lead-account-homepage.title", undertaking1.name),
+            { doc =>
+              val testBody = doc.select(".govuk-list").text
+              testBody should include regex messageFromMessageKey(
+                "non-lead-account-homepage.link1",
+                undertaking1.name
+              )
 
-            val result = route(fakeApplication, request).get
+              val htmlBody = doc.select(".govuk-list").html
+              htmlBody should include regex routes.BecomeLeadController.getBecomeLeadEori().url
+              htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard().url
+              htmlBody should include regex routes.BusinessEntityController.getRemoveYourselfBusinessEntity().url
 
-            val page = instanceOf[NonLeadAccountPage]
+            }
+          )
 
-            status(result) shouldBe Status.OK
-            contentAsString(result) shouldBe page(undertaking)(request, messages, instanceOf[AppConfig]).toString()
-          }
         }
       }
 

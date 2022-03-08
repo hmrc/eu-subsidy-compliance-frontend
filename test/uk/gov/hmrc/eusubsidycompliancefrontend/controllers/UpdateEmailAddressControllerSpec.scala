@@ -70,6 +70,27 @@ class UpdateEmailAddressControllerSpec
       }
     }
 
+    "handling request to update Undelivered Email Address " must {
+
+      def performAction() = controller.updateUndeliveredEmailAddress(FakeRequest())
+
+      "display the page" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+        }
+        checkPageIsDisplayed(
+          performAction(),
+          messageFromMessageKey("updateUndeliveredEmail.title"),
+          { doc =>
+            val button = doc.select("form")
+            button.attr("action") shouldBe routes.UpdateEmailAddressController.postUpdateEmailAddress().url
+
+          }
+        )
+
+      }
+    }
+
     "handling request to post update email address" must {
       def performAction() = controller.postUpdateEmailAddress(FakeRequest())
       "redirect to next page" in {

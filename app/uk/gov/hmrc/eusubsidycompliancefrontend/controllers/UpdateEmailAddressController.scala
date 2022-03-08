@@ -29,7 +29,7 @@ import scala.concurrent.Future
 class UpdateEmailAddressController @Inject() (
   mcc: MessagesControllerComponents,
   updateUnverifiedEmailAddressPage: UpdateUnverifiedEmailPage,
-  updateUndeliverdEmailAddressPage: UpdateUndeliveredEmailAddressPage,
+  updateUndeliveredEmailAddressPage: UpdateUndeliveredEmailAddressPage,
   escActionBuilders: EscActionBuilders,
   servicesConfig: ServicesConfig
 )(implicit val appConfig: AppConfig)
@@ -48,7 +48,7 @@ class UpdateEmailAddressController @Inject() (
   }
 
   def updateUndeliveredEmailAddress: Action[AnyContent] = escAuthentication.async { implicit request =>
-    Future.successful(Ok(updateUndeliverdEmailAddressPage()))
+    Future.successful(Ok(updateUndeliveredEmailAddressPage()))
   }
 
 }
