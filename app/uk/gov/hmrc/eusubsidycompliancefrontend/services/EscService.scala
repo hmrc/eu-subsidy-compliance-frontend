@@ -17,44 +17,20 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
-import com.google.inject.{ImplementedBy, Inject, Singleton}
+import com.google.inject.{Inject, Singleton}
 import play.api.http.Status.{NOT_FOUND, OK}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-@ImplementedBy(classOf[EscServiceImpl])
-trait EscService {
-  def createUndertaking(
-    undertaking: Undertaking
-  )(implicit hc: HeaderCarrier): Future[UndertakingRef]
-  def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef]
-  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]]
-  def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
-    hc: HeaderCarrier
-  ): Future[UndertakingRef]
-  def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
-    hc: HeaderCarrier
-  ): Future[UndertakingRef]
-  def createSubsidy(undertakingRef: UndertakingRef, subsidyUpdate: SubsidyUpdate)(implicit
-    hc: HeaderCarrier
-  ): Future[UndertakingRef]
-  def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): Future[UndertakingSubsidies]
-  def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit
-    hc: HeaderCarrier
-  ): Future[UndertakingRef]
-}
-
 @Singleton
-class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit
-  ec: ExecutionContext
-) extends EscService {
+class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionContext) {
 
-  override def createUndertaking(
+  def createUndertaking(
     undertaking: Undertaking
   )(implicit hc: HeaderCarrier): Future[UndertakingRef] =
     escConnector.createUndertaking(undertaking).map {
@@ -66,7 +42,7 @@ class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit
           value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  UndertakingRef"), identity)
     }
 
-  override def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
+  def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
     escConnector.updateUndertaking(undertaking).map {
       case Left(Error(_)) => sys.error(" Error in updating undertaking")
       case Right(value) =>
@@ -74,7 +50,7 @@ class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit
         else value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  UndertakingRef"), identity)
     }
 
-  override def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]] =
+  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]] =
     escConnector.retrieveUndertaking(eori).map {
       case Left(Error(_)) => None
       case Right(value) =>
@@ -85,7 +61,7 @@ class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit
         }
     }
 
-  override def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
+  def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
     hc: HeaderCarrier
   ): Future[UndertakingRef] =
     escConnector.addMember(undertakingRef, businessEntity).map {
@@ -96,7 +72,7 @@ class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit
           value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  Undertaking Ref"), identity)
     }
 
-  override def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
+  def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
     hc: HeaderCarrier
   ): Future[UndertakingRef] =
     escConnector.removeMember(undertakingRef, businessEntity).map {
@@ -107,7 +83,7 @@ class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit
           value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  Undertaking Ref"), identity)
     }
 
-  override def createSubsidy(undertakingRef: UndertakingRef, subsidyUpdate: SubsidyUpdate)(implicit
+  def createSubsidy(undertakingRef: UndertakingRef, subsidyUpdate: SubsidyUpdate)(implicit
     hc: HeaderCarrier
   ): Future[UndertakingRef] =
     escConnector.createSubsidy(undertakingRef, subsidyUpdate).map {
@@ -118,7 +94,7 @@ class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit
           value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  Undertaking Ref"), identity)
     }
 
-  override def retrieveSubsidy(
+  def retrieveSubsidy(
     subsidyRetrieve: SubsidyRetrieve
   )(implicit hc: HeaderCarrier): Future[UndertakingSubsidies] =
     escConnector.retrieveSubsidy(subsidyRetrieve).map {
@@ -131,7 +107,7 @@ class EscServiceImpl @Inject() (escConnector: EscConnector)(implicit
             .fold(_ => sys.error("Error in parsing  UndertakingSubsidies "), identity)
     }
 
-  override def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit
+  def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit
     hc: HeaderCarrier
   ): Future[UndertakingRef] =
     escConnector.removeSubsidy(undertakingRef, nonHmrcSubsidy).map {

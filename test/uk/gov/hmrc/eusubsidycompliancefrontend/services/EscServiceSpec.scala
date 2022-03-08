@@ -35,8 +35,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
-  val mockEscConnector: EscConnector = mock[EscConnector]
-  private val service: EscServiceImpl = new EscServiceImpl(mockEscConnector)
+  private val mockEscConnector: EscConnector = mock[EscConnector]
+  private val service: EscService = new EscService(mockEscConnector)
 
   private def mockCreateUndertaking(undertaking: Undertaking)(
     result: Either[Error, HttpResponse]
