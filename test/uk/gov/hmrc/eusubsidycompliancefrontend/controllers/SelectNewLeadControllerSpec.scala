@@ -27,7 +27,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIEmailParameter, SingleEORIEmailParameter}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.AddEoriFormPage
@@ -58,7 +58,7 @@ class SelectNewLeadControllerSpec
     bind[AuditService].toInstance(mockAuditService)
   )
 
-  override def additionalConfig = super.additionalConfig.withFallback(
+  override def additionalConfig: Configuration = super.additionalConfig.withFallback(
     Configuration(
       ConfigFactory.parseString(s"""
                                    |
@@ -143,7 +143,7 @@ class SelectNewLeadControllerSpec
             performAction(),
             messageFromMessageKey("selectNewLead.title", undertaking.name),
             { doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe (routes.AccountController.getAccountPage().url)
+              doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               selectedOptions.isEmpty shouldBe true
 
@@ -163,12 +163,12 @@ class SelectNewLeadControllerSpec
             performAction(),
             messageFromMessageKey("selectNewLead.title", undertaking1.name),
             { doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe (routes.AccountController.getAccountPage().url)
+              doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               selectedOptions.attr("value") shouldBe eori4.toString
 
               val radioOptions = doc.select(".govuk-radios__item")
-              radioOptions.size() shouldBe (undertaking1.undertakingBusinessEntity.filterNot(_.leadEORI).size)
+              radioOptions.size() shouldBe undertaking1.undertakingBusinessEntity.filterNot(_.leadEORI).size
 
               val button = doc.select("form")
               button.attr("action") shouldBe routes.SelectNewLeadController.postSelectNewLead().url
@@ -242,7 +242,7 @@ class SelectNewLeadControllerSpec
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
-            mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
+            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockSendEmail(validEmailAddress, emailParamsBE, "template_BE_as_lead_EN")(Right(EmailSendResult.EmailSent))
             mockRetrieveEmail(eori1)(Left(Error(exception)))
           }
@@ -256,7 +256,7 @@ class SelectNewLeadControllerSpec
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
-            mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
+            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4)("fr")))
         }
@@ -280,10 +280,10 @@ class SelectNewLeadControllerSpec
 
       "redirect to next page" when {
 
-        def update(newLeadJourneyOpt: Option[NewLeadJourney]) =
+        def update(newLeadJourneyOpt: Option[NewLeadJourney]): Option[NewLeadJourney] =
           newLeadJourneyOpt.map(_.copy(selectNewLead = SelectNewLeadFormPage(eori4.some)))
 
-        def testRedirection(templateIdBE: String, templateIdLead: String, lang: String) = {
+        def testRedirection(templateIdBE: String, templateIdLead: String, lang: String): Unit = {
 
           val emailParamsBE =
             SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promoteAsLeadEmailToBE")
@@ -295,9 +295,9 @@ class SelectNewLeadControllerSpec
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
-            mockRetrieveEmail(eori4)(Right(validEmailAddress.some))
+            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockSendEmail(validEmailAddress, emailParamsBE, templateIdBE)(Right(EmailSendResult.EmailSent))
-            mockRetrieveEmail(eori1)(Right(validEmailAddress.some))
+            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockSendEmail(validEmailAddress, emailParamLead, templateIdLead)(Right(EmailSendResult.EmailSent))
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted("1123", eori1, eori4))
           }

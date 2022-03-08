@@ -94,8 +94,10 @@ POST       /check-your-answers-subsidy              uk.gov.hmrc.eusubsidycomplia
 GET        /amend-undertaking                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAmendUndertakingDetails
 POST       /amend-undertaking                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAmendUndertaking
 
-GET        /update-email-address                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.updateEmailAddress
-POST       /update-email-address                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.postUpdateEmailAddress
+GET        /update-unverified-email-address         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.updateUnverifiedEmailAddress
+POST       /update-email-address         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.postUpdateEmailAddress
+GET        /update-undelivered-email-address        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.updateUndeliveredEmailAddress
+
 
 GET        /remove-non-customs-subsidy/:transactionId           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getRemoveSubsidyClaim(transactionId)
 POST       /remove-non-customs-subsidy/:transactionId           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postRemoveSubsidyClaim(transactionId)

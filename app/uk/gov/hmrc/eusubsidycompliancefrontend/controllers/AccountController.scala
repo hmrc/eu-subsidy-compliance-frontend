@@ -58,7 +58,7 @@ class AccountController @Inject() (
         case EmailType.VerifiedEmail => getUndertakingAndHandleResponse
         case EmailType.UnVerifiedEmail =>
           Redirect(routes.UpdateEmailAddressController.updateUnverifiedEmailAddress()).toFuture
-        case EmailType.UndeliverableEmail =>
+        case EmailType.UnDeliverableEmail =>
           Redirect(routes.UpdateEmailAddressController.updateUndeliveredEmailAddress()).toFuture
       }
     }

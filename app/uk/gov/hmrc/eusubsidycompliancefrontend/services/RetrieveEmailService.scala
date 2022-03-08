@@ -36,33 +36,35 @@ trait RetrieveEmailService {
 }
 
 @Singleton
-class RetrieveEmailServiceImpl @Inject() (retrieveEmailConnector: RetrieveEmailConnector)(implicit ec: ExecutionContext)
+class RetrieveEmailServiceImpl @Inject() (
+  retrieveEmailConnector: RetrieveEmailConnector
+)(implicit ec: ExecutionContext)
     extends RetrieveEmailService {
   override def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): Future[RetrieveEmailResponse] =
     retrieveEmailConnector.retrieveEmailByEORI(eori).map {
-      case Left(Error(_)) => sys.error("Error in retrieving Email Address")
+      case Left(Error(_)) => sys.error("Error in retrieving Email Address Response")
       case Right(value) =>
         value.status match {
-          case NOT_FOUND => RetrieveEmailResponse(EmailType.NoEmail, None)
+          case NOT_FOUND => RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)
           case OK =>
             value
               .parseJSON[EmailAddressResponse]
               .fold(_ => sys.error("Error in parsing Email Address"), getEmailAddress)
-          case _ => sys.error("Error in retrieving Email Address")
+
+          case _ => sys.error(" Error in retrieving Email Address Response")
+
         }
     }
 
   //If the email is Undeliverable or invalid, it does give a status of OK sometimes but its response is different
-  //this method is identifying that response and returning the email address
-  private def getEmailAddress(emailAddressResponse: EmailAddressResponse): RetrieveEmailResponse = {
-    println(" email response L::" + emailAddressResponse)
-
+  //this method is identifying that response and returning the RetrieveEmailResponse
+  private def getEmailAddress(emailAddressResponse: EmailAddressResponse): RetrieveEmailResponse =
     emailAddressResponse match {
       case EmailAddressResponse(email, Some(_), None) => RetrieveEmailResponse(EmailType.VerifiedEmail, email.some)
-      case EmailAddressResponse(email, None, None) => RetrieveEmailResponse(EmailType.UnVerifiedEmail, email.some)
       case EmailAddressResponse(email, Some(_), Some(_)) =>
-        RetrieveEmailResponse(EmailType.UndeliverableEmail, email.some)
-      case _ => RetrieveEmailResponse(EmailType.NoEmail, None)
+        RetrieveEmailResponse(EmailType.UnDeliverableEmail, email.some)
+      case EmailAddressResponse(email, None, None) => RetrieveEmailResponse(EmailType.UnVerifiedEmail, email.some)
+      case _ => sys.error(" Email address response is not valid")
     }
-  }
+
 }

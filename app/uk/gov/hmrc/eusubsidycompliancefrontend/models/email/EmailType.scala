@@ -27,11 +27,9 @@ object EmailType {
 
   case object VerifiedEmail extends EmailType
 
-  case object UndeliverableEmail extends EmailType
+  case object UnDeliverableEmail extends EmailType
 
   case object UnVerifiedEmail extends EmailType
-
-  case object NoEmail extends EmailType
 
   implicit val eq: Eq[EmailType] = Eq.fromUniversalEquals
 
