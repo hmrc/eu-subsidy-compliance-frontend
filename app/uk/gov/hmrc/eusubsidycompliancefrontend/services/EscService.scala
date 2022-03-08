@@ -19,36 +19,25 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
 import play.api.http.Status.{NOT_FOUND, OK}
+import play.api.libs.json.Reads
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionContext) {
 
-  def createUndertaking(
-    undertaking: Undertaking
-  )(implicit hc: HeaderCarrier): Future[UndertakingRef] =
-    escConnector.createUndertaking(undertaking).map {
-      case Left(Error(_)) =>
-        sys.error("Error in creating Undertaking")
-      case Right(value) =>
-        if (value.status =!= OK) sys.error("Error in creating Undertaking")
-        else
-          value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  UndertakingRef"), identity)
-    }
+  def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
+    escConnector.createUndertaking(undertaking)
+      .map(handleResponse[UndertakingRef](_, "create undertaking"))
 
   def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
-    escConnector.updateUndertaking(undertaking).map {
-      case Left(Error(_)) => sys.error(" Error in updating undertaking")
-      case Right(value) =>
-        if (value.status =!= OK) sys.error("Error in Update undertaking as http response came back with non OK status")
-        else value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  UndertakingRef"), identity)
-    }
+    escConnector.updateUndertaking(undertaking)
+      .map(handleResponse[UndertakingRef](_, "update undertaking"))
 
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]] =
     escConnector.retrieveUndertaking(eori).map {
@@ -64,62 +53,41 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
   def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
     hc: HeaderCarrier
   ): Future[UndertakingRef] =
-    escConnector.addMember(undertakingRef, businessEntity).map {
-      case Left(Error(_)) => sys.error("Error in adding member to the Business Entity")
-      case Right(value) =>
-        if (value.status =!= OK) sys.error("Error in adding member to the Business Entity")
-        else
-          value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  Undertaking Ref"), identity)
-    }
+    escConnector.addMember(undertakingRef, businessEntity)
+      .map(handleResponse[UndertakingRef](_, "add member"))
+
 
   def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
     hc: HeaderCarrier
   ): Future[UndertakingRef] =
-    escConnector.removeMember(undertakingRef, businessEntity).map {
-      case Left(Error(_)) => sys.error("Error in removing member from the Business Entity")
-      case Right(value) =>
-        if (value.status =!= OK) sys.error("Error in removing member from the Business Entity")
-        else
-          value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  Undertaking Ref"), identity)
-    }
+    escConnector.removeMember(undertakingRef, businessEntity)
+      .map(handleResponse[UndertakingRef](_, "remove member"))
 
   def createSubsidy(undertakingRef: UndertakingRef, subsidyUpdate: SubsidyUpdate)(implicit
     hc: HeaderCarrier
   ): Future[UndertakingRef] =
-    escConnector.createSubsidy(undertakingRef, subsidyUpdate).map {
-      case Left(Error(_)) => sys.error("Error in creating subsidy")
-      case Right(value) =>
-        if (value.status =!= OK) sys.error("Error in creating subsidy ")
-        else
-          value.parseJSON[UndertakingRef].fold(_ => sys.error("Error in parsing  Undertaking Ref"), identity)
-    }
+    escConnector.createSubsidy(undertakingRef, subsidyUpdate)
+      .map(handleResponse[UndertakingRef](_, "create subsidy"))
 
   def retrieveSubsidy(
     subsidyRetrieve: SubsidyRetrieve
   )(implicit hc: HeaderCarrier): Future[UndertakingSubsidies] =
-    escConnector.retrieveSubsidy(subsidyRetrieve).map {
-      case Left(Error(_)) => sys.error("Error in retrieving subsidy")
-      case Right(value) =>
-        if (value.status =!= OK) sys.error("Error in retrieving subsidy ")
-        else
-          value
-            .parseJSON[UndertakingSubsidies]
-            .fold(_ => sys.error("Error in parsing  UndertakingSubsidies "), identity)
-    }
+    escConnector.retrieveSubsidy(subsidyRetrieve)
+      .map(handleResponse[UndertakingSubsidies](_, "retrieve subsidy"))
 
   def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit
     hc: HeaderCarrier
   ): Future[UndertakingRef] =
-    escConnector.removeSubsidy(undertakingRef, nonHmrcSubsidy).map {
-      case Left(Error(_)) => sys.error("Error in removing subsidy")
-      case Right(value) =>
-        if (value.status =!= OK) sys.error("Error in removing subsidy ")
-        else
-          value
-            .parseJSON[UndertakingRef]
-            .fold(
-              _ => sys.error("Error in parsing  UndertakingSubsidies "),
-              undertakingSubsidies => undertakingSubsidies
-            )
-    }
+    escConnector.removeSubsidy(undertakingRef, nonHmrcSubsidy)
+      .map(handleResponse[UndertakingRef](_, "remove subsidy"))
+
+  private def handleResponse[A](r: Either[Error, HttpResponse], action: String)(implicit reads: Reads[A]) =
+    r.fold(_ => sys.error(s"Error executing $action"), { response =>
+      if (response.status =!= OK) sys.error(s"Error executing $action - Got response status: ${response.status}")
+       else response.parseJSON[A].fold(
+          _ => sys.error(s"Error parsing response for $action"),
+          identity
+        )
+    })
+
 }
