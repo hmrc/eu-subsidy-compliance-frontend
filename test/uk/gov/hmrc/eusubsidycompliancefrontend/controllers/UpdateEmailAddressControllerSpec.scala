@@ -34,7 +34,7 @@ class UpdateEmailAddressControllerSpec
     bind[Store].toInstance(mockJourneyStore)
   )
 
-  override def additionalConfig = super.additionalConfig.withFallback(
+  override def additionalConfig: Configuration = super.additionalConfig.withFallback(
     Configuration(
       ConfigFactory.parseString(s"""
            | microservice.services.update-email {
@@ -46,20 +46,41 @@ class UpdateEmailAddressControllerSpec
     )
   )
 
-  val controller = instanceOf[UpdateEmailAddressController]
+  private val controller = instanceOf[UpdateEmailAddressController]
 
   "UpdateEmailAddressController" when {
 
-    "handling request to update Email Address " must {
+    "handling request to update Unverified Email Address " must {
 
-      def performAction() = controller.updateEmailAddress(FakeRequest())
+      def performAction() = controller.updateUnverifiedEmailAddress(FakeRequest())
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
         }
         checkPageIsDisplayed(
           performAction(),
-          messageFromMessageKey("updateEmail.title"),
+          messageFromMessageKey("updateUnverifiedEmail.title"),
+          { doc =>
+            val button = doc.select("form")
+            button.attr("action") shouldBe routes.UpdateEmailAddressController.postUpdateEmailAddress().url
+
+          }
+        )
+
+      }
+    }
+
+    "handling request to update Undelivered Email Address " must {
+
+      def performAction() = controller.updateUndeliveredEmailAddress(FakeRequest())
+
+      "display the page" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+        }
+        checkPageIsDisplayed(
+          performAction(),
+          messageFromMessageKey("updateUndeliveredEmail.title"),
           { doc =>
             val button = doc.select("form")
             button.attr("action") shouldBe routes.UpdateEmailAddressController.postUpdateEmailAddress().url

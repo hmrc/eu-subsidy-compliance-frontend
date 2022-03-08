@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, Error}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.RetrieveEmailResponse
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.RetrieveEmailService
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,7 +28,7 @@ trait RetrieveEmailSupport { this: ControllerSpec =>
 
   val mockRetrieveEmailService = mock[RetrieveEmailService]
 
-  def mockRetrieveEmail(eori: EORI)(result: Either[Error, Option[EmailAddress]]) =
+  def mockRetrieveEmail(eori: EORI)(result: Either[Error, RetrieveEmailResponse]) =
     (mockRetrieveEmailService
       .retrieveEmailByEORI(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)

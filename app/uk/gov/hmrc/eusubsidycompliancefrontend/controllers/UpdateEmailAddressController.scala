@@ -28,21 +28,27 @@ import scala.concurrent.Future
 @Singleton
 class UpdateEmailAddressController @Inject() (
   mcc: MessagesControllerComponents,
-  updateEmailAddressPage: UpdateEmailPage,
+  updateUnverifiedEmailAddressPage: UpdateUnverifiedEmailPage,
+  updateUndeliveredEmailAddressPage: UpdateUndeliveredEmailAddressPage,
   escActionBuilders: EscActionBuilders,
   servicesConfig: ServicesConfig
 )(implicit val appConfig: AppConfig)
     extends BaseController(mcc) {
   import escActionBuilders._
 
-  def updateEmailAddress: Action[AnyContent] = escAuthentication.async { implicit request =>
-    Future.successful(Ok(updateEmailAddressPage()))
+  val baseUrl: String = servicesConfig.baseUrl("update-email")
+  val updatedEmailUrl: String = s"$baseUrl/manage-email-cds/service/eu-subsidy-compliance-frontend"
+
+  def updateUnverifiedEmailAddress: Action[AnyContent] = escAuthentication.async { implicit request =>
+    Future.successful(Ok(updateUnverifiedEmailAddressPage()))
   }
 
   def postUpdateEmailAddress: Action[AnyContent] = escAuthentication.async { _ =>
-    val baseUrl: String = servicesConfig.baseUrl("update-email")
-    val updatedEmailUrl: String = s"$baseUrl/manage-email-cds/service/eu-subsidy-compliance-frontend"
     Future.successful(Redirect(updatedEmailUrl))
+  }
+
+  def updateUndeliveredEmailAddress: Action[AnyContent] = escAuthentication.async { implicit request =>
+    Future.successful(Ok(updateUndeliveredEmailAddressPage()))
   }
 
 }
