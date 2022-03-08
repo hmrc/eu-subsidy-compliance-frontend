@@ -28,6 +28,7 @@ class EscActionBuilders @Inject() (
 ) {
 
   // User must be authenticated and a lead EORI
+  @deprecated
   val authenticatedLeadUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] =
     escRequestActionBuilder andThen
       leadOnlyActionBuilder

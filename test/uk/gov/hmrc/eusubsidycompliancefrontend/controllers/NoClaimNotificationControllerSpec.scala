@@ -87,14 +87,6 @@ class NoClaimNotificationControllerSpec
 
         }
 
-        "call to retrieve undertaking came back with None" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(None))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
       }
 
       "display the page" in {
@@ -138,15 +130,6 @@ class NoClaimNotificationControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
-
-        }
-
-        "call to retrieve undertaking came back with None" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(None))
           }
           assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
 
@@ -219,14 +202,6 @@ class NoClaimNotificationControllerSpec
 
         }
 
-        "call to retrieve undertaking came back with None" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(None))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
       }
 
       "display the page" in {
