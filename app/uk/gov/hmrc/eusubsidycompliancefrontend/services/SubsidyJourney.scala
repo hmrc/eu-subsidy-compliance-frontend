@@ -60,7 +60,7 @@ object SubsidyJourney {
       addClaimEori = AddClaimEoriFormPage(getAddClaimEORI(nonHmrcSubsidy.businessEntityIdentifier).some),
       publicAuthority= PublicAuthorityFormPage(nonHmrcSubsidy.publicAuthority.orElse("".some)),
       traderRef = TraderRefFormPage(getAddTraderRef(nonHmrcSubsidy.traderReference).some),
-      existingTransactionId = nonHmrcSubsidy.subsidyUsageTransactionID
+      existingTransactionId = nonHmrcSubsidy.subsidyUsageTransactionId
     )
 
   private def getAddClaimEORI(eoriOpt: Option[EORI]): OptionalEORI = {

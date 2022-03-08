@@ -335,7 +335,7 @@ class SubsidyController @Inject() (
       undertaking <- store.get[Undertaking].toContext
       reference <- undertaking.reference.toContext
       subsidies <- retrieveSubsidiesOrNone(reference).toContext
-      sub <- subsidies.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionID.contains(transactionId)).toContext
+      sub <- subsidies.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext
     } yield Ok(confirmRemovePage(removeSubsidyClaimForm, sub))
     result.fold(handleMissingSessionData("Subsidy Journey"))(identity)
   }
@@ -378,7 +378,7 @@ class SubsidyController @Inject() (
         .map(Some(_))
         .recoverWith({ case _ => Future.successful(Option.empty[UndertakingSubsidies]) })
         .toContext
-      sub <- subsides.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionID.contains(transactionId)).toContext
+      sub <- subsides.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext
     } yield sub
 
   private def handleRemoveSubsidyFormError(formWithErrors: Form[FormValues], transactionId: String)(implicit
@@ -524,7 +524,7 @@ object SubsidyController {
       UndertakingSubsidyAmendment(
         List(
           NonHmrcSubsidy(
-            subsidyUsageTransactionID = journey.existingTransactionId,
+            subsidyUsageTransactionId = journey.existingTransactionId,
             allocationDate = journey.claimDate.value
               .map(_.toLocalDate)
               .getOrElse(throw new IllegalStateException("No claimdate on SubsidyJourney")),

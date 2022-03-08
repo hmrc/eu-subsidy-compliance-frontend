@@ -151,7 +151,7 @@ class SubsidyControllerSpec
         }
 
         "user has already answered the question" in {
-          test(nonHmrcSubsidyList.map(_.copy(subsidyUsageTransactionID = SubsidyRef("Z12345").some)))
+          test(nonHmrcSubsidyList.map(_.copy(subsidyUsageTransactionId = SubsidyRef("Z12345").some)))
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("report-payment.title"),

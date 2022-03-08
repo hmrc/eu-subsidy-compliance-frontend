@@ -123,9 +123,9 @@ package object eis {
   // provides response from EIS retrieve subsidies call
   implicit val eisRetrieveUndertakingSubsidiesResponse: Writes[UndertakingSubsidies] =
     new Writes[UndertakingSubsidies] {
-      // TODO delete this if we can get the case of subsidyUsageTransactionID aligned in SCP06 & 09
+      // TODO delete this if we can get the case of subsidyUsageTransactionId aligned in SCP06 & 09
       implicit val nonHmrcSubsidyWrites: Writes[NonHmrcSubsidy] = (
-        (JsPath \ "subsidyUsageTransactionID").writeNullable[SubsidyRef] and
+        (JsPath \ "subsidyUsageTransactionId").writeNullable[SubsidyRef] and
           (JsPath \ "allocationDate").write[LocalDate] and
           (JsPath \ "submissionDate").write[LocalDate] and
           (JsPath \ "publicAuthority").writeNullable[String] and

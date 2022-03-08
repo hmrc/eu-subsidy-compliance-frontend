@@ -98,7 +98,7 @@
 
     @P(messages("subsidy.remove.p1"))
 
-    @formHelper(action = controllers.routes.SubsidyController.postRemoveSubsidyClaim(nonHmrcSubsidy.subsidyUsageTransactionID.get)) {
+    @formHelper(action = controllers.routes.SubsidyController.postRemoveSubsidyClaim(nonHmrcSubsidy.subsidyUsageTransactionId.get)) {
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(

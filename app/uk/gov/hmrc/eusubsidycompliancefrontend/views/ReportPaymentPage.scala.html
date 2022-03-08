@@ -59,13 +59,13 @@
               attributes = Map("id" -> "subsidy-list"),
               rows = subsidies.get.nonHMRCSubsidyUsage.map { sub =>
                   Seq(
-                      TableRow(content = Text(sub.allocationDate.toShortDisplayFormat)),
+                  TableRow(content = Text(sub.allocationDate.toShortDisplayFormat)),
                       TableRow(content = Text(sub.nonHMRCSubsidyAmtEUR.toEuros)),
                       TableRow(content = Text(sub.businessEntityIdentifier.getOrElse(""))),
                       TableRow(content = Text(sub.publicAuthority.getOrElse(""))),
                       TableRow(content = Text(sub.traderReference.getOrElse(""))),
-                      TableRow(content = HtmlContent(s"<a class='govuk-link' href=${controllers.routes.SubsidyController.getChangeSubsidyClaim(sub.subsidyUsageTransactionID.get).url}>Change</a>")),
-                      TableRow(content = HtmlContent(s"<a class='govuk-link' href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionID.get).url}>Remove</a>"))
+                      TableRow(content = HtmlContent(s"<a class='govuk-link' href=${controllers.routes.SubsidyController.getChangeSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>Change</a>")),
+                      TableRow(content = HtmlContent(s"<a class='govuk-link' href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>Remove</a>"))
                   )
               },
           head = Some(Seq(

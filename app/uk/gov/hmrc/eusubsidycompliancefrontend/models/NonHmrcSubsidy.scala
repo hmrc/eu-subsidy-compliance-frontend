@@ -22,15 +22,14 @@ import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, SubsidyRef, TraderRef}
 
 case class NonHmrcSubsidy(
-  subsidyUsageTransactionID: Option[SubsidyRef],
-  // TODO if we can't get SCP09 sorted we'll need to uppercase ID in the format
-  allocationDate: LocalDate,
-  submissionDate: LocalDate,
-  publicAuthority: Option[String], // this shouldn't be optional, is required in create API but not retrieve
-  traderReference: Option[TraderRef],
-  nonHMRCSubsidyAmtEUR: SubsidyAmount,
-  businessEntityIdentifier: Option[EORI],
-  amendmentType: Option[EisSubsidyAmendmentType] = Option.empty // this only used for create
+                           subsidyUsageTransactionId: Option[SubsidyRef],
+                           allocationDate: LocalDate,
+                           submissionDate: LocalDate,
+                           publicAuthority: Option[String], // this shouldn't be optional, is required in create API but not retrieve
+                           traderReference: Option[TraderRef],
+                           nonHMRCSubsidyAmtEUR: SubsidyAmount,
+                           businessEntityIdentifier: Option[EORI],
+                           amendmentType: Option[EisSubsidyAmendmentType] = Option.empty // this only used for create
 )
 
 object NonHmrcSubsidy {
