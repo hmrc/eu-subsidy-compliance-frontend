@@ -50,7 +50,7 @@ class AccountController @Inject() (
 
   import escActionBuilders._
 
-  def getAccountPage: Action[AnyContent] = anyAuthenticatedUser.async { implicit request =>
+  def getAccountPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     retrieveEmailService.retrieveEmailByEORI(eori) flatMap {

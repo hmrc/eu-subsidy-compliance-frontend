@@ -138,6 +138,7 @@ class BusinessEntityControllerSpec
         "call to get business entity journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -146,18 +147,7 @@ class BusinessEntityControllerSpec
         "call to fetch undertaking fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockRetreiveUndertaking(eori1)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to fetch undertaking retrieve no undertaking" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-            mockRetreiveUndertaking(eori1)(Future.successful(None))
-
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -165,8 +155,8 @@ class BusinessEntityControllerSpec
         "call to store undertaking fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockPut[Undertaking](undertaking, eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -178,8 +168,8 @@ class BusinessEntityControllerSpec
         def test(input: Option[String], businessEntityJourney: BusinessEntityJourney): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
           }
 
@@ -220,29 +210,13 @@ class BusinessEntityControllerSpec
       "throw technical error" when {
         val exception = new Exception("oh no")
 
-        "call to fetch undertaking fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori)(Left(Error(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to fetch undertaking passes but the undertaking came back as None" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori)(Right(None))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
         "call to update BusinessEntityJourney fails" in {
 
           def updateFunc(beOpt: Option[BusinessEntityJourney]) =
             beOpt.map(x => x.copy(addBusiness = x.addBusiness.copy(value = Some(true))))
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori)(Right(undertaking.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockUpdate[BusinessEntityJourney](_ => updateFunc(businessEntityJourney.some), eori)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction("addBusiness" -> "true")))
@@ -256,7 +230,7 @@ class BusinessEntityControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori)(Right(undertaking.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
           }
 
           checkFormErrorIsDisplayed(
@@ -277,7 +251,7 @@ class BusinessEntityControllerSpec
         "user selected No" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori)(Right(undertaking.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
           }
           checkIsRedirect(performAction("addBusiness" -> "false"), routes.AccountController.getAccountPage().url)
         }
@@ -287,7 +261,7 @@ class BusinessEntityControllerSpec
             beOpt.map(x => x.copy(addBusiness = x.addBusiness.copy(value = Some(true))))
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori)(Right(undertaking.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockUpdate[BusinessEntityJourney](_ => updateFunc(BusinessEntityJourney().some), eori)(
               Right(BusinessEntityJourney(addBusiness = AddBusinessFormPage(true.some)))
             )
@@ -308,6 +282,7 @@ class BusinessEntityControllerSpec
         "call to get previous uri fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -317,6 +292,7 @@ class BusinessEntityControllerSpec
         "call to get business entity journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("/add-member"))
             mockGet[BusinessEntityJourney](eori1)(Left(Error(exception)))
           }
@@ -327,6 +303,7 @@ class BusinessEntityControllerSpec
         "call to get business entity journey came back empty" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("/add-member"))
             mockGet[BusinessEntityJourney](eori1)(Right(None))
           }
@@ -342,6 +319,7 @@ class BusinessEntityControllerSpec
           val previousUrl = "add-member"
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Right(previousUrl))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
           }
@@ -397,6 +375,7 @@ class BusinessEntityControllerSpec
         "call to get previous uri fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -406,6 +385,7 @@ class BusinessEntityControllerSpec
         "call to retrieve undertaking fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
             mockRetreiveUndertaking(eori4)(Future.failed(exception))
           }
@@ -427,6 +407,7 @@ class BusinessEntityControllerSpec
             .some
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
             mockRetreiveUndertaking(eori4)(Future.successful(None))
             mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(Left(Error(exception)))
@@ -443,6 +424,7 @@ class BusinessEntityControllerSpec
         def test(data: (String, String)*)(errorMessageKey: String): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
           }
           checkFormErrorIsDisplayed(
@@ -479,6 +461,7 @@ class BusinessEntityControllerSpec
         "Call to fetch Business Entity journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -488,6 +471,7 @@ class BusinessEntityControllerSpec
         "call to fetch Business Entity journey returns Nothing" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(None))
           }
           assertThrows[Exception](await(performAction()))
@@ -496,6 +480,7 @@ class BusinessEntityControllerSpec
         "call to fetch Business Entity journey returns journey without eori" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.copy(eori = AddEoriFormPage()).some))
           }
           assertThrows[Exception](await(performAction()))
@@ -506,6 +491,7 @@ class BusinessEntityControllerSpec
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
+          mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
           mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
         }
 
@@ -542,15 +528,7 @@ class BusinessEntityControllerSpec
         "call to get undertaking fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Left(Error(exception)))
-          }
-          assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
-        }
-
-        "call to get undertaking returns nothing" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(None))
+            mockRetreiveUndertaking(eori1)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
         }
@@ -558,7 +536,7 @@ class BusinessEntityControllerSpec
         "call to get undertaking return undertaking without undertaking ref" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.copy(reference = None).some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.copy(reference = None).some))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
         }
@@ -566,7 +544,7 @@ class BusinessEntityControllerSpec
         "call to get business entity fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
@@ -575,7 +553,7 @@ class BusinessEntityControllerSpec
         "call to get business entity returns nothing" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(None))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
@@ -584,7 +562,7 @@ class BusinessEntityControllerSpec
         "call to get business entity  return  without EORI" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.copy(eori = AddEoriFormPage(None)).some))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
@@ -595,7 +573,7 @@ class BusinessEntityControllerSpec
           val businessEntity = BusinessEntity(eori2, leadEORI = false)
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
             mockAddMember(undertakingRef, businessEntity)(Left(Error(exception)))
           }
@@ -607,7 +585,7 @@ class BusinessEntityControllerSpec
           val businessEntity = BusinessEntity(businessEntityIdentifier = eori2, leadEORI = false)
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
             mockRetrieveEmail(eori2)(Left(Error(exception)))
@@ -621,7 +599,7 @@ class BusinessEntityControllerSpec
           val businessEntity = BusinessEntity(businessEntityIdentifier = eori2, leadEORI = false)
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
             mockRetrieveEmail(eori2)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
@@ -634,7 +612,7 @@ class BusinessEntityControllerSpec
           val businessEntity = BusinessEntity(businessEntityIdentifier = eori2, leadEORI = false)
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
             mockRetrieveEmail(eori2)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -649,7 +627,7 @@ class BusinessEntityControllerSpec
           val businessEntity = BusinessEntity(businessEntityIdentifier = eori2, leadEORI = false)
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
             mockRetrieveEmail(eori2)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -663,7 +641,7 @@ class BusinessEntityControllerSpec
           val businessEntity = BusinessEntity(businessEntityIdentifier = eori2, leadEORI = false)
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
           }
@@ -686,7 +664,7 @@ class BusinessEntityControllerSpec
             DoubleEORIEmailParameter(eori1, eori2, undertaking.name, undertakingRef, "addMemberEmailToLead")
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
             mockRetrieveEmail(eori2)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -711,7 +689,7 @@ class BusinessEntityControllerSpec
           val businessEntity = BusinessEntity(businessEntityIdentifier = eori2, leadEORI = false)
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
             mockRetrieveEmail(eori2)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -766,7 +744,7 @@ class BusinessEntityControllerSpec
             DoubleEORIEmailParameter(eori1, eori2, undertaking.name, undertakingRef, "addMemberEmailToLead")
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockRemoveMember(
               undertakingRef,
@@ -1111,28 +1089,11 @@ class BusinessEntityControllerSpec
       def performAction() = controller.getRemoveBusinessEntity(eori4)(FakeRequest())
 
       "throw technical error" when {
-        val exception = new Exception("oh no!")
 
-        "call to retrieved undertaking fails" in {
+        "call to retrieve undertaking came back with undertaking having no BE with that eori" in {
           inSequence {
-            mockAuthWithEnrolment(eori4)
-            mockRetreiveUndertaking(eori4)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to retrieved undertaking came back with empty response" in {
-          inSequence {
-            mockAuthWithEnrolment(eori4)
-            mockRetreiveUndertaking(eori4)(Future.successful(None))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to retrieved undertaking came back with undertaking having no BE with that eori" in {
-          inSequence {
-            mockAuthWithEnrolment(eori4)
-            mockRetreiveUndertaking(eori4)(Future.successful(undertaking.some))
+            mockAuthWithEnrolment(eori1)
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -1142,7 +1103,8 @@ class BusinessEntityControllerSpec
       "display the page" when {
         def test(undertaking: Undertaking, inputDate: Option[String]): Unit = {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            mockAuthWithEnrolment(eori1)
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking.some))
           }
           checkPageIsDisplayed(
@@ -1184,26 +1146,10 @@ class BusinessEntityControllerSpec
       "throw a technical error" when {
         val exception = new Exception("oh no!")
 
-        "call to retrieved undertaking fails" in {
-          inSequence {
-            mockAuthWithEnrolment(eori1)
-            mockRetreiveUndertaking(eori4)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction()(eori4)))
-        }
-
-        "call to retrieved undertaking came back with empty response" in {
-          inSequence {
-            mockAuthWithEnrolment(eori1)
-            mockRetreiveUndertaking(eori4)(Future.successful(None))
-          }
-          assertThrows[Exception](await(performAction()(eori4)))
-        }
-
         "call to retrieved undertaking came back with undertaking having no BE with that eori" in {
           inSequence {
             mockAuthWithEnrolment(eori1)
-            mockRetreiveUndertaking(eori4)(Future.successful(undertaking.some))
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
           }
           assertThrows[Exception](await(performAction()(eori4)))
         }
@@ -1211,6 +1157,7 @@ class BusinessEntityControllerSpec
         "call to remove BE fails" in {
           inSequence {
             mockAuthWithEnrolment(eori1)
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(effectiveDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Left(Error(exception)))
@@ -1221,6 +1168,7 @@ class BusinessEntityControllerSpec
         "call to fetch business entity email address fails" in {
           inSequence {
             mockAuthWithEnrolment(eori1)
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(effectiveDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
@@ -1240,6 +1188,7 @@ class BusinessEntityControllerSpec
 
           inSequence {
             mockAuthWithEnrolment(eori1)
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(effectiveDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
@@ -1259,6 +1208,7 @@ class BusinessEntityControllerSpec
         "nothing is selected" in {
           inSequence {
             mockAuthWithEnrolment(eori1)
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
           }
           checkFormErrorIsDisplayed(
@@ -1282,6 +1232,7 @@ class BusinessEntityControllerSpec
         ): Unit = {
           inSequence {
             mockAuthWithEnrolment(eori1)
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(effectiveDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
@@ -1358,6 +1309,7 @@ class BusinessEntityControllerSpec
         "user selects No as input" in {
           inSequence {
             mockAuthWithEnrolment(eori1)
+            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking1.some))
           }
           checkIsRedirect(

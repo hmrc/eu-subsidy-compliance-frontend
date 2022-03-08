@@ -45,14 +45,14 @@ class NoClaimNotificationController @Inject() (
     extends BaseController(mcc) with LeadOnlyUndertakingSupport {
   import escActionBuilders._
 
-  def getNoClaimNotification: Action[AnyContent] = anyAuthenticatedUser.async { implicit request =>
+  def getNoClaimNotification: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       val previous = routes.AccountController.getAccountPage().url
       Ok(noClaimNotificationPage(noClaimForm, previous, undertaking.name)).toFuture
     }
   }
 
-  def postNoClaimNotification: Action[AnyContent] = anyAuthenticatedUser.async { implicit request =>
+  def postNoClaimNotification: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       val eori = request.eoriNumber
       val previous = routes.AccountController.getAccountPage().url
@@ -78,7 +78,7 @@ class NoClaimNotificationController @Inject() (
     }
   }
 
-  def getNoClaimConfirmation: Action[AnyContent] = anyAuthenticatedUser.async { implicit request =>
+  def getNoClaimConfirmation: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       Ok(noClaimConfirmationPage(undertaking.name)).toFuture
     }

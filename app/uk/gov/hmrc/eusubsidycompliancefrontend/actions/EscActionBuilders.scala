@@ -34,5 +34,5 @@ class EscActionBuilders @Inject() (
       leadOnlyActionBuilder
 
   // User must be authenticated and can either be a lead or non-lead EORI
-  val anyAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] = escRequestActionBuilder
+  val withAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] = escRequestActionBuilder
 }

@@ -37,6 +37,6 @@ trait AuthenticatedActionBuildersSpec extends MockitoSugar {
           override protected def executionContext: ExecutionContext = ec
         }
 
-      override val anyAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] = authenticatedLeadUser
+      override val withAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] = authenticatedLeadUser
   }
 }
