@@ -22,7 +22,7 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.retrieve.v2._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
@@ -38,7 +38,7 @@ class EscRequestActionBuilder @Inject() (
   val authConnector: AuthConnector,
   mcc: ControllerComponents
 )(implicit val executionContext: ExecutionContext, appConfig: AppConfig)
-    extends ActionBuilder[EscAuthRequest, AnyContent]
+    extends ActionBuilder[AuthenticatedEscRequest, AnyContent]
     with FrontendHeaderCarrierProvider
     with Results
     with AuthRedirects
@@ -52,7 +52,7 @@ class EscRequestActionBuilder @Inject() (
 
   val parser: BodyParser[AnyContent] = mcc.parsers.anyContent
 
-  override def invokeBlock[A](request: Request[A], block: EscAuthRequest[A] => Future[Result]): Future[Result] =
+  override def invokeBlock[A](request: Request[A], block: AuthenticatedEscRequest[A] => Future[Result]): Future[Result] =
     authorised(Enrolment(EnrolmentKey))
       .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](
         Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
@@ -62,7 +62,7 @@ class EscRequestActionBuilder @Inject() (
             .getEnrolment(EnrolmentKey)
             .flatMap(_.getIdentifier(EnrolmentIdentifier))
             .fold(throw new IllegalStateException("no eori provided")) { identifier =>
-              block(EscAuthRequest(credentials.providerId, groupId, request, EORI(identifier.value)))
+              block(AuthenticatedEscRequest(credentials.providerId, groupId, request, EORI(identifier.value)))
             }
         case _ ~ _ => Future.failed(throw InternalError())
       }(hc(request), executionContext).recover(handleFailure(request))

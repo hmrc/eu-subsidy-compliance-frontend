@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType
@@ -64,7 +64,7 @@ class AccountController @Inject() (
     }
   }
 
-  private def getUndertakingAndHandleResponse(implicit r: EscAuthRequest[AnyContent], e: EORI): Future[Result] =
+  private def getUndertakingAndHandleResponse(implicit r: AuthenticatedEscRequest[AnyContent], e: EORI): Future[Result] = {
     escService.retrieveUndertaking(r.eoriNumber) flatMap {
       case Some(u) => handleExistingUndertaking(u)
       case None => handleUndertakingNotCreated
@@ -79,9 +79,7 @@ class AccountController @Inject() (
     result.getOrElse(handleMissingSessionData("Account Home - Undertaking not created -"))
   }
 
-  private def handleExistingUndertaking(
-    u: Undertaking
-  )(implicit r: EscAuthRequest[AnyContent], e: EORI): Future[Result] = {
+  private def handleExistingUndertaking(u: Undertaking)(implicit r: AuthenticatedEscRequest[AnyContent], e: EORI): Future[Result] = {
     val result = for {
       _ <- store.put(u).toContext
       _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(u))
@@ -97,7 +95,7 @@ class AccountController @Inject() (
       _ <- store.get[BusinessEntityJourney].toContext.orElse(store.put(BusinessEntityJourney()).toContext)
     } yield (ej, uj)
 
-  private def renderAccountPage(undertaking: Undertaking)(implicit r: EscAuthRequest[AnyContent]) = {
+  private def renderAccountPage(undertaking: Undertaking)(implicit r: AuthenticatedEscRequest[AnyContent]) = {
     val currentTime = timeProvider.today
 
     val isTimeToReport = ReportReminderHelpers.isTimeToReport(undertaking.lastSubsidyUsageUpdt, currentTime)

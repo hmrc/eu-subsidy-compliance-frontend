@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.actions
 
 import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 
 import javax.inject.{Inject, Singleton}
 
@@ -28,10 +28,10 @@ class EscActionBuilders @Inject() (
 ) {
 
   // User must be authenticated and a lead EORI
-  val authenticatedLeadUser: ActionBuilder[EscAuthRequest, AnyContent] =
+  val authenticatedLeadUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] =
     escRequestActionBuilder andThen
       leadOnlyActionBuilder
 
   // User must be authenticated and can either be a lead or non-lead EORI
-  val anyAuthenticatedUser: ActionBuilder[EscAuthRequest, AnyContent] = escRequestActionBuilder
+  val anyAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] = escRequestActionBuilder
 }

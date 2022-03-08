@@ -21,7 +21,7 @@ import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUndertaking, UndertakingUpdated}
@@ -189,7 +189,7 @@ class UndertakingController @Inject() (
     undertaking: Undertaking,
     eori: EORI,
     undertakingJourney: UndertakingJourney
-  )(implicit request: EscAuthRequest[_]): Future[Result] =
+  )(implicit request: AuthenticatedEscRequest[_]): Future[Result] =
     for {
       ref <- escService.createUndertaking(undertaking)
       _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(

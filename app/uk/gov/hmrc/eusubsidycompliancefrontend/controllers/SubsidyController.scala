@@ -22,7 +22,7 @@ import play.api.data.Form
 import play.api.data.Forms.{bigDecimal, mapping, optional, text}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.toSubsidyUpdate
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider
@@ -384,7 +384,7 @@ class SubsidyController @Inject() (
   private def handleRemoveSubsidyFormError(formWithErrors: Form[FormValues], transactionId: String)(implicit
     eori: EORI,
     hc: HeaderCarrier,
-    request: EscAuthRequest[_]
+    request: AuthenticatedEscRequest[_]
   ): Future[Result] = {
     val result = for {
       reference <- getUndertakingRef
@@ -396,7 +396,7 @@ class SubsidyController @Inject() (
   private def handleRemoveSubsidyValidAnswer(transactionId: String)(implicit
     eori: EORI,
     hc: HeaderCarrier,
-    request: EscAuthRequest[_]
+    request: AuthenticatedEscRequest[_]
   ): Future[Result] = {
     val result = for {
       reference <- getUndertakingRef

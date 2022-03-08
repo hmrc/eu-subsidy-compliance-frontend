@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.actions
 import play.api.Logging
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionFunction, Result}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -37,9 +37,9 @@ import scala.concurrent.{ExecutionContext, Future}
  */
 @Singleton
 class LeadOnlyActionBuilder @Inject() (escService: EscService)(implicit val executionContext: ExecutionContext)
-  extends ActionFunction[EscAuthRequest, EscAuthRequest] with FrontendHeaderCarrierProvider with Logging {
+  extends ActionFunction[AuthenticatedEscRequest, AuthenticatedEscRequest] with FrontendHeaderCarrierProvider with Logging {
 
-  override def invokeBlock[A](r:  EscAuthRequest[A], f:  EscAuthRequest[A] => Future[Result]): Future[Result] =
+  override def invokeBlock[A](r:  AuthenticatedEscRequest[A], f:  AuthenticatedEscRequest[A] => Future[Result]): Future[Result] =
     escService.retrieveUndertaking(r.eoriNumber)(hc(r)) flatMap {
       case Some(u) if u.isLeadEORI(r.eoriNumber) => f(r)
       case _ =>
