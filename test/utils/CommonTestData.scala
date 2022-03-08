@@ -54,7 +54,7 @@ object CommonTestData {
   val undertakingRef = UndertakingRef("UR123456")
   val nonHmrcSubsidyList = List(
     NonHmrcSubsidy(
-      subsidyUsageTransactionID = None,
+      subsidyUsageTransactionId = None,
       allocationDate = LocalDate.of(2022, 1, 1),
       submissionDate = fixedDate,
       publicAuthority = "Local Authority".some,
@@ -65,7 +65,7 @@ object CommonTestData {
     )
   )
 
-  val nonHmrcSubsidyList1 = nonHmrcSubsidyList.map(_.copy(subsidyUsageTransactionID = SubsidyRef("TID1234").some))
+  val nonHmrcSubsidyList1 = nonHmrcSubsidyList.map(_.copy(subsidyUsageTransactionId = SubsidyRef("TID1234").some))
 
   val subsidyJourney = SubsidyJourney(
     publicAuthority = PublicAuthorityFormPage("Local Authority".some),
