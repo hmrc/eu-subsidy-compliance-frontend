@@ -59,7 +59,7 @@ class UndertakingController @Inject() (
   import escActionBuilders._
   val CreateUndertaking = "createUndertaking"
 
-  def firstEmptyPage: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
+  def firstEmptyPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].map {
       case Some(journey) =>
@@ -69,7 +69,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getUndertakingName: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
+  def getUndertakingName: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
@@ -83,7 +83,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def postUndertakingName: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
+  def postUndertakingName: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
@@ -103,7 +103,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getSector: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
+  def getSector: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       ensureUndertakingJourneyPresent(_) { journey =>
@@ -121,7 +121,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def postSector: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
+  def postSector: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[UndertakingJourney].flatMap { previous =>
       undertakingSectorForm
@@ -143,7 +143,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getCheckAnswers: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
+  def getCheckAnswers: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
@@ -159,7 +159,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def postCheckAnswers: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
+  def postCheckAnswers: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     cyaForm
       .bindFromRequest()
@@ -209,11 +209,11 @@ class UndertakingController @Inject() (
       _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
     } yield Redirect(routes.UndertakingController.getConfirmation(ref, undertakingJourney.name.value.getOrElse("")))
 
-  def getConfirmation(ref: String, name: String): Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
+  def getConfirmation(ref: String, name: String): Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     Ok(confirmationPage(UndertakingRef(ref), UndertakingName(name))).toFuture
   }
 
-  def postConfirmation: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
+  def postConfirmation: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     confirmationForm
       .bindFromRequest()
@@ -228,7 +228,7 @@ class UndertakingController @Inject() (
       )
   }
 
-  def getAmendUndertakingDetails: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
+  def getAmendUndertakingDetails: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     store.get[UndertakingJourney].flatMap {
@@ -250,7 +250,7 @@ class UndertakingController @Inject() (
   private def updateIsAmendState(value: Boolean)(implicit e: EORI): Future[UndertakingJourney] =
     store.update[UndertakingJourney](jo => jo.map(_.copy(isAmend = value)))
 
-  def postAmendUndertaking: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
+  def postAmendUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     amendUndertakingForm
