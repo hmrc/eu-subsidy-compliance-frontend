@@ -34,13 +34,13 @@ class UpdateEmailAddressControllerSpec
     bind[Store].toInstance(mockJourneyStore)
   )
 
+  val redirectUrl = "manage-email-cds/service/eu-subsidy-compliance-frontend"
+
   override def additionalConfig: Configuration = super.additionalConfig.withFallback(
     Configuration(
       ConfigFactory.parseString(s"""
-           | microservice.services.update-email {
-           |       protocol = http
-           |       host = localhost
-           |       port = 9898
+           | microservice.services.customs-email-frontend {
+           |       url = $redirectUrl
            |    }
            |""".stripMargin)
     )
@@ -97,8 +97,7 @@ class UpdateEmailAddressControllerSpec
         inSequence {
           mockAuthWithNecessaryEnrolment()
         }
-        val url = "http://localhost:9898/manage-email-cds/service/eu-subsidy-compliance-frontend"
-        checkIsRedirect(performAction(), url)
+        checkIsRedirect(performAction(), redirectUrl)
       }
     }
   }
