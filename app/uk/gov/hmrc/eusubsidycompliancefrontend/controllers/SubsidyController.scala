@@ -348,8 +348,6 @@ class SubsidyController @Inject() (
 
   def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
-      implicit val eori: EORI = request.eoriNumber
-
       val result = for {
         reference <- undertaking.reference.toContext
         subsidies <- retrieveSubsidiesOrNone(reference).toContext
@@ -361,7 +359,6 @@ class SubsidyController @Inject() (
 
   def postRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
-      implicit val eori: EORI = request.eoriNumber
       removeSubsidyClaimForm
         .bindFromRequest()
         .fold(
@@ -373,15 +370,17 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getChangeSubsidyClaim(transactionId: String): Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    val result = for {
-      reference <- getUndertakingRef
-      nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
-      subsidyJourney = SubsidyJourney.fromNonHmrcSubsidy(nonHmrcSubsidy)
-      _ <- store.put(subsidyJourney).toContext
-    } yield Redirect(routes.SubsidyController.getCheckAnswers())
-    result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
+  def getChangeSubsidyClaim(transactionId: String): Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+      val result = for {
+        reference <- getUndertakingRef
+        nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
+        subsidyJourney = SubsidyJourney.fromNonHmrcSubsidy(nonHmrcSubsidy)
+        _ <- store.put(subsidyJourney).toContext
+      } yield Redirect(routes.SubsidyController.getCheckAnswers())
+      result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
+    }
   }
 
   // TODO - confirm all usages of this
@@ -408,7 +407,6 @@ class SubsidyController @Inject() (
     transactionId: String,
     undertaking: Undertaking,
   )(implicit
-    eori: EORI,
     hc: HeaderCarrier,
     request: AuthenticatedEscRequest[_]
   ): Future[Result] = {
@@ -423,7 +421,6 @@ class SubsidyController @Inject() (
     transactionId: String,
     undertaking: Undertaking
   )(implicit
-    eori: EORI,
     hc: HeaderCarrier,
     request: AuthenticatedEscRequest[_]
   ): Future[Result] = {

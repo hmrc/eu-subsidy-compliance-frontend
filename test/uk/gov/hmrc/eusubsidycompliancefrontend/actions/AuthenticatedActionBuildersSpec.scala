@@ -27,8 +27,8 @@ import scala.concurrent.{ExecutionContext, Future}
 trait AuthenticatedActionBuildersSpec extends MockitoSugar {
   implicit lazy val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
   def preAuthenticatedActionBuilders(): EscActionBuilders =
-    new EscActionBuilders(mock[EscRequestActionBuilder], mock[LeadOnlyActionBuilder]) {
-      override val authenticatedLeadUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] =
+    new EscActionBuilders(mock[EscRequestActionBuilder]) {
+      override val withAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] =
         new ActionBuilder[AuthenticatedEscRequest, AnyContent] {
           override def parser: BodyParser[AnyContent] = stubMessagesControllerComponents().parsers.anyContent
           override def invokeBlock[A](request: Request[A], block: AuthenticatedEscRequest[A] => Future[Result]): Future[Result] =
@@ -36,7 +36,5 @@ trait AuthenticatedActionBuildersSpec extends MockitoSugar {
 
           override protected def executionContext: ExecutionContext = ec
         }
-
-      override val withAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] = authenticatedLeadUser
   }
 }

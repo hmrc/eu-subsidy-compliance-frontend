@@ -23,16 +23,8 @@ import javax.inject.{Inject, Singleton}
 
 @Singleton
 class EscActionBuilders @Inject() (
-  escRequestActionBuilder: EscRequestActionBuilder,
-  leadOnlyActionBuilder: LeadOnlyActionBuilder
+  escRequestActionBuilder: EscRequestActionBuilder
 ) {
 
-  // User must be authenticated and a lead EORI
-  @deprecated
-  val authenticatedLeadUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] =
-    escRequestActionBuilder andThen
-      leadOnlyActionBuilder
-
-  // User must be authenticated and can either be a lead or non-lead EORI
   val withAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] = escRequestActionBuilder
 }
