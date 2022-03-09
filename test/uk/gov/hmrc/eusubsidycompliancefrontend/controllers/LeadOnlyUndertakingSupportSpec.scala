@@ -38,14 +38,14 @@ import utils.CommonTestData.{eori3, undertaking}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory with ScalaFutures with Matchers {
+class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory with ScalaFutures with Matchers
+  with JourneyStoreSupport {
 
   private val mockEscService = mock[EscService]
-  private val mockStore = mock[Store]
 
   private val underTest = new FrontendController(mock[MessagesControllerComponents]) with LeadOnlyUndertakingSupport {
     override protected val escService: EscService = mockEscService
-    override protected val store: Store = mockStore
+    override protected val store: Store = mockJourneyStore
     override protected implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
   }
 
@@ -54,7 +54,10 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
     "invoke the function" when {
 
       "called with a request from a lead undertaking user" in {
-        mockRetrieveUndertaking(eori)(undertaking.some.toFuture)
+        inSequence {
+          mockGet[Undertaking](eori)(Right(Option.empty))
+          mockRetrieveUndertaking(eori)(undertaking.some.toFuture)
+        }
 
         val fakeRequest = authorisedRequestForEori(eori)
 
@@ -67,7 +70,10 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
     "redirect to the account home page" when {
 
       "called with a request from a non-lead undertaking user" in {
-        mockRetrieveUndertaking(eori3)(undertaking.some.toFuture)
+        inSequence {
+          mockGet[Undertaking](eori)(Right(Option.empty))
+          mockRetrieveUndertaking(eori3)(undertaking.some.toFuture)
+        }
 
         val fakeRequest = authorisedRequestForEori(eori3)
 
@@ -78,7 +84,10 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
       }
 
       "no undertaking could be found for the eori associated with the request" in {
-        mockRetrieveUndertaking(eori)(Option.empty.toFuture)
+        inSequence {
+          mockGet[Undertaking](eori)(Right(Option.empty))
+          mockRetrieveUndertaking(eori3)(undertaking.some.toFuture)
+        }
 
         val fakeRequest = authorisedRequestForEori(eori)
 
@@ -92,7 +101,10 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
     "throw an error" when {
 
       "an error occurred retrieving the undertaking" in {
-        mockRetrieveUndertaking(eori)(Future.failed(new RuntimeException("Error")))
+        inSequence {
+          mockGet[Undertaking](eori)(Right(Option.empty))
+          mockRetrieveUndertaking(eori3)(undertaking.some.toFuture)
+        }
 
         val fakeRequest = authorisedRequestForEori(eori)
 
