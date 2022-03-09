@@ -74,27 +74,33 @@ class UndertakingController @Inject() (
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
         val form = journey.name.value.fold(undertakingNameForm)(name => undertakingNameForm.fill(FormValues(name)))
-        Ok(undertakingNamePage(form)).toFuture
+        Ok(undertakingNamePage(form, journey.previous)).toFuture
       case None => // initialise the empty Journey model
-        store.put(UndertakingJourney()).map { _ =>
-          Ok(undertakingNamePage(undertakingNameForm))
+        val journey = UndertakingJourney()
+        store.put(journey).map { _ =>
+          Ok(undertakingNamePage(undertakingNameForm, UndertakingJourney().previous))
         }
     }
   }
 
   def postUndertakingName: Action[AnyContent] = escAuthentication.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    undertakingNameForm
-      .bindFromRequest()
-      .fold(
-        errors => BadRequest(undertakingNamePage(errors)).toFuture,
-        success = form => {
-          for {
-            updatedUndertakingJourney <- store.update[UndertakingJourney](updateUndertakingName(form))
-            redirect <- updatedUndertakingJourney.next
-          } yield redirect
-        }
-      )
+    store.get[UndertakingJourney].flatMap {
+      case Some(journey) =>
+        undertakingNameForm
+          .bindFromRequest()
+          .fold(
+            errors => BadRequest(undertakingNamePage(errors, journey.previous)).toFuture,
+            success = form => {
+              for {
+                updatedUndertakingJourney <- store.update[UndertakingJourney](updateUndertakingName(form))
+                redirect <- updatedUndertakingJourney.next
+              } yield redirect
+            }
+          )
+      case None => handleMissingSessionData("Undertaking Journey")
+
+    }
   }
 
   def getSector: Action[AnyContent] = escAuthentication.async { implicit request =>
