@@ -36,15 +36,12 @@ class UpdateEmailAddressController @Inject() (
     extends BaseController(mcc) {
   import escActionBuilders._
 
-  val baseUrl: String = servicesConfig.baseUrl("update-email")
-  val updatedEmailUrl: String = s"$baseUrl/manage-email-cds/service/eu-subsidy-compliance-frontend"
-
   def updateUnverifiedEmailAddress: Action[AnyContent] = escAuthentication.async { implicit request =>
     Future.successful(Ok(updateUnverifiedEmailAddressPage()))
   }
 
   def postUpdateEmailAddress: Action[AnyContent] = escAuthentication.async { _ =>
-    Future.successful(Redirect(updatedEmailUrl))
+    Future.successful(Redirect(appConfig.emailFrontendUrl))
   }
 
   def updateUndeliveredEmailAddress: Action[AnyContent] = escAuthentication.async { implicit request =>
