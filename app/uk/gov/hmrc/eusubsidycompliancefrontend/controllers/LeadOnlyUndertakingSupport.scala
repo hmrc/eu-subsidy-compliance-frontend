@@ -32,7 +32,7 @@ trait LeadOnlyUndertakingSupport { this: FrontendController =>
 
   // Only execute the block where the undertaking exists and the logged in user is the lead for that undertaking.
   // If there is no undertaking, or the user is not the lead we redirect to the account home page.
-  protected def withLeadUndertaking[A](f: Undertaking => Future[Result])(implicit r: AuthenticatedEscRequest[A]): Future[Result] =
+  def withLeadUndertaking[A](f: Undertaking => Future[Result])(implicit r: AuthenticatedEscRequest[A]): Future[Result] =
     escService.retrieveUndertaking(r.eoriNumber) flatMap {
       case Some(undertaking) if undertaking.isLeadEORI(r.eoriNumber) => f(undertaking)
       case _ => Redirect(routes.AccountController.getAccountPage()).toFuture

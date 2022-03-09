@@ -67,7 +67,7 @@ class SubsidyControllerSpec
       .expects(subsidyRetrieve, *)
       .returning(result)
 
-  private def mockRetreiveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
+  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
     (mockEscService
       .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
@@ -108,7 +108,7 @@ class SubsidyControllerSpec
         "call to get subsidy journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -117,7 +117,7 @@ class SubsidyControllerSpec
         "call to get undertaking fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.failed(exception))
+            mockRetrieveUndertaking(eori1)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -129,7 +129,7 @@ class SubsidyControllerSpec
         def test(nonHMRCSubsidyUsage: List[NonHmrcSubsidy]) =
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(SubsidyJourney().some))
             mockTimeProviderToday(currentDate)
             mockRetrieveSubsidy(subsidyRetrieve)(
@@ -200,7 +200,7 @@ class SubsidyControllerSpec
         "user selected Yes" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockUpdate[SubsidyJourney](identity, eori1)(Right(subsidyJourney))
           }
           checkIsRedirect(performAction(("reportPayment", "true")), routes.SubsidyController.getClaimDate().url)
@@ -219,7 +219,7 @@ class SubsidyControllerSpec
         "call to get session fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -229,7 +229,7 @@ class SubsidyControllerSpec
         "call to get sessions returns none" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(None))
           }
           assertThrows[Exception](await(performAction()))
@@ -243,7 +243,7 @@ class SubsidyControllerSpec
         "a valid request is made" in {
           inAnyOrder {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
             mockGetPrevious[SubsidyJourney](eori1)(Right("previous"))
           }
@@ -275,7 +275,7 @@ class SubsidyControllerSpec
           val updatedDate = DateFormValues("1", "2", LocalDate.now().getYear.toString)
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
             mockUpdate[SubsidyJourney](j => j.map(_.copy(claimDate = ClaimDateFormPage(updatedDate.some))), eori1)(
               Right(subsidyJourney.copy(claimDate = ClaimDateFormPage(updatedDate.some)))
@@ -293,7 +293,7 @@ class SubsidyControllerSpec
           val updatedDate = DateFormValues("20", "20", LocalDate.now().getYear.toString)
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
           }
           status(
@@ -314,7 +314,7 @@ class SubsidyControllerSpec
         "call to get subsidy journey fails " in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -323,7 +323,7 @@ class SubsidyControllerSpec
         "call to get subsidy journey passes but return None " in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(None))
           }
           assertThrows[Exception](await(performAction()))
@@ -332,7 +332,7 @@ class SubsidyControllerSpec
         "call to get subsidy journey come back with no claim date " in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(SubsidyJourney().some))
           }
           assertThrows[Exception](await(performAction()))
@@ -343,7 +343,7 @@ class SubsidyControllerSpec
 
         def test(subsidyJourney: SubsidyJourney): Unit = {
           mockAuthWithNecessaryEnrolment()
-          mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
 
           checkPageIsDisplayed(
@@ -401,7 +401,7 @@ class SubsidyControllerSpec
         "call to get subsidy journey fails " in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -410,7 +410,7 @@ class SubsidyControllerSpec
         "call to get subsidy journey passes but come back empty " in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(None))
           }
           assertThrows[Exception](await(performAction()))
@@ -419,7 +419,7 @@ class SubsidyControllerSpec
         "call to get subsidy journey passes but come back with No claim date " in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(None))
           }
           assertThrows[Exception](await(performAction()))
@@ -428,7 +428,7 @@ class SubsidyControllerSpec
         "call to get subsidy journey come back with no claim date " in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(SubsidyJourney().some))
           }
           assertThrows[Exception](await(performAction()))
@@ -445,7 +445,7 @@ class SubsidyControllerSpec
             subsidyJourneyOpt.map(_.copy(claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some)))
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
             mockUpdate[SubsidyJourney](_ => update(subsidyJourneyOpt), eori1)(Left(Error(exception)))
           }
@@ -463,7 +463,7 @@ class SubsidyControllerSpec
           ).some
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
           }
 
@@ -509,7 +509,7 @@ class SubsidyControllerSpec
           subsidyJourneyOpt.map(_.copy(claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some)))
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
           mockUpdate[SubsidyJourney](_ => update(subsidyJourneyOpt), eori1)(Right(subsidyJourney))
         }
@@ -533,7 +533,7 @@ class SubsidyControllerSpec
         " the call to get subsidy journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -542,7 +542,7 @@ class SubsidyControllerSpec
         " the call to get subsidy journey comes back empty" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(None))
           }
           assertThrows[Exception](await(performAction()))
@@ -555,7 +555,7 @@ class SubsidyControllerSpec
         def test(subsidyJourney: SubsidyJourney): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
             mockGetPrevious[SubsidyJourney](eori1)(Right("next"))
           }
@@ -612,7 +612,7 @@ class SubsidyControllerSpec
         "call to get previous fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetPrevious[SubsidyJourney](eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -625,7 +625,7 @@ class SubsidyControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetPrevious[SubsidyJourney](eori1)(Right("add-claim-amount"))
             mockUpdate[SubsidyJourney](
               _ => update(subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage(None)).some),
@@ -645,7 +645,7 @@ class SubsidyControllerSpec
           val answers = inputAnswer.getOrElse(Nil)
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetPrevious[SubsidyJourney](eori1)(Right("add-claim-amount"))
           }
           checkFormErrorIsDisplayed(
@@ -678,7 +678,7 @@ class SubsidyControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetPrevious[SubsidyJourney](eori1)(Right(routes.SubsidyController.getClaimAmount().url))
             mockUpdate[SubsidyJourney](_ => update(subsidyJourney.some, optionalEORI.some), eori1)(
               Right(updatedSubsidyJourney)
@@ -710,7 +710,7 @@ class SubsidyControllerSpec
         "happy path" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
             mockGetPrevious[SubsidyJourney](eori1)(Right("previous"))
           }
@@ -738,7 +738,7 @@ class SubsidyControllerSpec
         "valid input" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
             mockUpdate[SubsidyJourney](
               j => j.map(_.copy(publicAuthority = PublicAuthorityFormPage(Some("My Authority")))),
@@ -764,7 +764,7 @@ class SubsidyControllerSpec
         " the call to get subsidy journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -773,7 +773,7 @@ class SubsidyControllerSpec
         " the call to get subsidy journey comes back empty" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(None))
           }
           assertThrows[Exception](await(performAction()))
@@ -786,7 +786,7 @@ class SubsidyControllerSpec
         def test(subsidyJourney: SubsidyJourney): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
           }
           checkPageIsDisplayed(
@@ -849,7 +849,7 @@ class SubsidyControllerSpec
         "call to get previous fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetPrevious[SubsidyJourney](eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -862,7 +862,7 @@ class SubsidyControllerSpec
           val answers = inputAnswer.getOrElse(Nil)
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetPrevious[SubsidyJourney](eori1)(Right("add-claim-public-authority"))
           }
           checkFormErrorIsDisplayed(
@@ -900,7 +900,7 @@ class SubsidyControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.failed(exception))
+            mockRetrieveUndertaking(eori1)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction(transactionId)))
         }
@@ -909,7 +909,7 @@ class SubsidyControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking1.copy(reference = None).some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking1.copy(reference = None).some.toFuture)
           }
           assertThrows[Exception](await(performAction(transactionId)))
         }
@@ -918,7 +918,7 @@ class SubsidyControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction(transactionId)))
@@ -928,7 +928,7 @@ class SubsidyControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies))
           }
           assertThrows[Exception](await(performAction(transactionId)))
@@ -961,7 +961,7 @@ class SubsidyControllerSpec
         )
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies1))
         }
         checkPageIsDisplayed(
@@ -998,7 +998,7 @@ class SubsidyControllerSpec
         "call to get undertaking fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.failed(exception))
+            mockRetrieveUndertaking(eori1)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction("removeSubsidyClaim" -> "true")("TID1234")))
         }
@@ -1006,7 +1006,7 @@ class SubsidyControllerSpec
         "call to get undertaking passes but comes back with No reference" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.copy(reference = None).some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.copy(reference = None).some.toFuture)
           }
           assertThrows[Exception](await(performAction("removeSubsidyClaim" -> "true")("TID1234")))
         }
@@ -1014,7 +1014,7 @@ class SubsidyControllerSpec
         "call to retrieve subsidy fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction("removeSubsidyClaim" -> "true")("TID1234")))
@@ -1023,7 +1023,7 @@ class SubsidyControllerSpec
         "call to remove subsidy fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies1))
             mockRemoveSubsidy(undertakingRef, nonHmrcSubsidyList1.head)(Left(Error(exception)))
           }
@@ -1037,7 +1037,7 @@ class SubsidyControllerSpec
         "nothing is submitted" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies1))
           }
           checkFormErrorIsDisplayed(
@@ -1054,7 +1054,7 @@ class SubsidyControllerSpec
         "If user select yes" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies1))
             mockRemoveSubsidy(undertakingRef, nonHmrcSubsidyList1.head)(Right(undertakingRef))
             mockSendAuditEvent[NonCustomsSubsidyRemoved](AuditEvent.NonCustomsSubsidyRemoved("1123", undertakingRef))
@@ -1069,7 +1069,7 @@ class SubsidyControllerSpec
         "if user selects no" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           }
           checkIsRedirect(
             performAction("removeSubsidyClaim" -> "false")("TID1234"),
@@ -1099,7 +1099,7 @@ class SubsidyControllerSpec
         "call to update subsidy journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockUpdate[SubsidyJourney](_ => update(subsidyJourney.some), eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")))
@@ -1108,7 +1108,7 @@ class SubsidyControllerSpec
         "call to fetch undertaking fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.failed(exception))
+            mockRetrieveUndertaking(eori1)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")))
         }
@@ -1116,7 +1116,7 @@ class SubsidyControllerSpec
         "call to fetch undertaking come back with No reference" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.successful(undertaking1.copy(reference = None).some))
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.copy(reference = None).some))
             mockUpdate[SubsidyJourney](_ => update(subsidyJourney.some), eori1)(Right(updatedJourney))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")))
@@ -1125,7 +1125,7 @@ class SubsidyControllerSpec
         "call to create subsidy fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockUpdate[SubsidyJourney](_ => update(subsidyJourney.some), eori1)(Right(updatedJourney))
             mockTimeProviderToday(currentDate)
             mockCreateSubsidy(
@@ -1139,7 +1139,7 @@ class SubsidyControllerSpec
         "call to reset subsidy journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockUpdate[SubsidyJourney](_ => update(subsidyJourney.some), eori1)(Right(updatedJourney))
             mockTimeProviderToday(currentDate)
             mockCreateSubsidy(
@@ -1160,7 +1160,7 @@ class SubsidyControllerSpec
           val updatedSJ = subsidyJourneyExisting.copy(cya = CyaFormPage(value = true.some))
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockUpdate[SubsidyJourney](
               _ => update(subsidyJourneyExisting.some),
               eori1
@@ -1192,7 +1192,7 @@ class SubsidyControllerSpec
           val updatedSJ = subsidyJourney.copy(cya = CyaFormPage(value = true.some))
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockUpdate[SubsidyJourney](
               _ => update(subsidyJourney.some),
               eori1
