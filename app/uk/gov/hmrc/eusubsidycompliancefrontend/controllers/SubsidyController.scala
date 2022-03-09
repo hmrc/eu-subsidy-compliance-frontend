@@ -46,8 +46,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class SubsidyController @Inject() (
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
-  store: Store,
-  val escService: EscService,
+  override val store: Store,
+  override val escService: EscService,
   journeyTraverseService: JourneyTraverseService,
   auditService: AuditService,
   reportPaymentPage: ReportPaymentPage,

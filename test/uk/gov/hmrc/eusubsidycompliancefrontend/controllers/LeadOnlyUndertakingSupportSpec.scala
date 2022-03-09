@@ -29,7 +29,7 @@ import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures.eori
 import uk.gov.hmrc.http.HeaderCarrier
@@ -41,9 +41,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory with ScalaFutures with Matchers {
 
   private val mockEscService = mock[EscService]
+  private val mockStore = mock[Store]
 
   private val underTest = new FrontendController(mock[MessagesControllerComponents]) with LeadOnlyUndertakingSupport {
     override protected val escService: EscService = mockEscService
+    override protected val store: Store = mockStore
     override protected implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
   }
 

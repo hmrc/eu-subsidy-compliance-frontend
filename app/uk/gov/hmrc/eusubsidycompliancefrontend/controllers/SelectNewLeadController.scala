@@ -36,8 +36,8 @@ import scala.concurrent.ExecutionContext
 class SelectNewLeadController @Inject() (
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
-  val escService: EscService,
-  store: Store,
+  override val escService: EscService,
+  override val store: Store,
   sendEmailHelperService: SendEmailHelperService,
   auditService: AuditService,
   selectNewLeadPage: SelectNewLeadPage,
