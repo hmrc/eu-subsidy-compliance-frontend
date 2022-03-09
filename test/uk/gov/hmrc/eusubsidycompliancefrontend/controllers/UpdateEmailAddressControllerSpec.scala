@@ -85,6 +85,12 @@ class UpdateEmailAddressControllerSpec
         )
 
       }
+
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(performAction)
+        }
+      }
     }
 
     "handling request to update Undelivered Email Address " must {
@@ -94,6 +100,7 @@ class UpdateEmailAddressControllerSpec
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
+          mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
         }
         checkPageIsDisplayed(
           performAction(),

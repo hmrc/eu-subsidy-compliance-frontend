@@ -69,6 +69,7 @@ class AccountController @Inject() (
       case Some(u) => handleExistingUndertaking(u)
       case None => handleUndertakingNotCreated
     }
+  }
 
   private def handleUndertakingNotCreated(implicit e: EORI): Future[Result] = {
     val result = getOrCreateJourneys().map {

@@ -351,7 +351,7 @@ class SubsidyController @Inject() (
       val result = for {
         reference <- undertaking.reference.toContext
         subsidies <- retrieveSubsidiesOrNone(reference).toContext
-        sub <- subsidies.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionID.contains(transactionId)).toContext
+        sub <- subsidies.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext
       } yield Ok(confirmRemovePage(removeSubsidyClaimForm, sub))
       result.fold(handleMissingSessionData("Subsidy Journey"))(identity)
     }
