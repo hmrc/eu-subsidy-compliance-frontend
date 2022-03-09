@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.inject.bind
-import play.api.mvc.Cookie
+import play.api.mvc.{Cookie, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -75,12 +75,6 @@ class SelectNewLeadControllerSpec
 
   private val controller = instanceOf[SelectNewLeadController]
 
-  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result)
-
   "SelectNewLeadControllerSpec" when {
 
     "handling request to get Select New Lead" must {
@@ -95,15 +89,6 @@ class SelectNewLeadControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockGet[NewLeadJourney](eori1)(Left(Error(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
-        "call to retrieve undertaking fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -168,6 +153,12 @@ class SelectNewLeadControllerSpec
         }
       }
 
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(performAction)
+        }
+      }
+
     }
 
     "handling request to post select new lead" must {
@@ -185,13 +176,6 @@ class SelectNewLeadControllerSpec
 
         def update(newLeadJourneyOpt: Option[NewLeadJourney]) =
           newLeadJourneyOpt.map(_.copy(selectNewLead = SelectNewLeadFormPage(eori4.some)))
-        "call to retrieve Undertaking fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
-        }
 
         "call to update new lead journey fails" in {
 
@@ -295,6 +279,12 @@ class SelectNewLeadControllerSpec
 
         "the language selected by user is  Welsh" in {
           testRedirection("template_BE_as_lead_CY", "template_BE_as_lead_mail_to_lead_CY", Welsh.code)
+        }
+      }
+
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(() => performAction()(English.code))
         }
       }
 
@@ -415,8 +405,32 @@ class SelectNewLeadControllerSpec
 
       }
 
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(performAction)
+        }
+      }
+
     }
 
+  }
+
+  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
+    (mockEscService
+      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
+      .expects(eori, *)
+      .returning(result)
+
+  private def testLeadOnlyRedirect(f: () => Future[Result]) = {
+    inSequence {
+      mockAuthWithEnrolment(eori3)
+      mockRetrieveUndertaking(eori3)(Future.successful(undertaking.some))
+    }
+
+    val result = f()
+
+    status(result) shouldBe SEE_OTHER
+    redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
   }
 
 }

@@ -148,5 +148,4 @@ class NoBusinessPresentControllerSpec
     redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
   }
 
-
 }

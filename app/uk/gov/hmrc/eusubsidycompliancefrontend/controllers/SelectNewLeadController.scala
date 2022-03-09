@@ -60,7 +60,6 @@ class SelectNewLeadController @Inject() (
         form = journey.selectNewLead.value.fold(selectNewLeadForm)(e => selectNewLeadForm.fill(FormValues(e)))
       } yield Ok(selectNewLeadPage(form, previous, undertaking.name, undertaking.getAllNonLeadEORIs()))
 
-      // TODO - is this getOrElse needed?
       result.getOrElse(handleMissingSessionData("NewLeadJourney"))
     }
   }
