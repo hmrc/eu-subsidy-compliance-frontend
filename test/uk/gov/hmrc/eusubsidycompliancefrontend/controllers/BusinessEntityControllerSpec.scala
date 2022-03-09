@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.inject.bind
-import play.api.mvc.Cookie
+import play.api.mvc.{Cookie, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -93,39 +93,6 @@ class BusinessEntityControllerSpec
   private val invalidEOris = List("GB1234567890", "AB1234567890", "GB1234567890123")
   private val currentDate = LocalDate.of(2022, 10, 9)
 
-  private def expectedRows(eori: EORI) = List(
-    CheckYourAnswersRowBE(
-      messageFromMessageKey("businessEntity.cya.eori.label"),
-      eori,
-      routes.BusinessEntityController.getEori().url
-    )
-  )
-
-  private def mockRetreiveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result)
-
-  private def mockRemoveMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
-    result: Either[Error, UndertakingRef]
-  ) =
-    (mockEscService
-      .removeMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
-      .expects(undertakingRef, businessEntity, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful))
-
-  private def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
-    result: Either[Error, UndertakingRef]
-  ) =
-    (mockEscService
-      .addMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
-      .expects(undertakingRef, businessEntity, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful))
-
-  private def mockTimeToday(now: LocalDate) =
-    (mockTimeProvider.today _).expects().returning(now)
-
   "BusinessEntityControllerSpec" when {
 
     "handling request to get add Business Page" must {
@@ -140,14 +107,6 @@ class BusinessEntityControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Left(Error(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to fetch undertaking fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -196,6 +155,12 @@ class BusinessEntityControllerSpec
 
         "user has already answered the question" in {
           test(Some("true"), BusinessEntityJourney(addBusiness = AddBusinessFormPage(true.some)))
+        }
+      }
+
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(performAction)
         }
       }
 
@@ -269,6 +234,12 @@ class BusinessEntityControllerSpec
           checkIsRedirect(performAction("addBusiness" -> "true"), routes.BusinessEntityController.getEori().url)
         }
 
+      }
+
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(() => performAction())
+        }
       }
 
     }
@@ -358,6 +329,12 @@ class BusinessEntityControllerSpec
 
       }
 
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(performAction)
+        }
+      }
+
     }
 
     "handling request to Post EORI page" must {
@@ -379,17 +356,6 @@ class BusinessEntityControllerSpec
             mockGetPrevious[BusinessEntityJourney](eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
-
-        }
-
-        "call to retrieve undertaking fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
-            mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
-            mockRetreiveUndertaking(eori4)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction("businessEntityEori" -> "123456789010")))
 
         }
 
@@ -445,6 +411,12 @@ class BusinessEntityControllerSpec
             }
 
           }
+        }
+      }
+
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(() => performAction())
         }
       }
 
@@ -509,6 +481,12 @@ class BusinessEntityControllerSpec
             rows shouldBe expectedRows(eori1)
           }
         )
+      }
+
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(performAction)
+        }
       }
 
     }
@@ -772,6 +750,12 @@ class BusinessEntityControllerSpec
         }
       }
 
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(() => performAction()(English.code))
+        }
+      }
+
     }
 
     "handling request to edit business entity" must {
@@ -780,14 +764,6 @@ class BusinessEntityControllerSpec
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
-
-        "call to retrieve undertaking fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetreiveUndertaking(eori1)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction(eori1)))
-        }
 
         "call to put business entity journey fails" in {
 
@@ -833,31 +809,20 @@ class BusinessEntityControllerSpec
 
       }
 
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(() => performAction(eori4))
+        }
+      }
+
     }
 
     "handling request to get remove yourself Business entity" must {
       def performAction() = controller.getRemoveYourselfBusinessEntity(FakeRequest())
 
       "throw technical error" when {
-        val exception = new Exception("oh no!")
 
-        "call to retrieved undertaking fails" in {
-          inSequence {
-            mockAuthWithEnrolment(eori4)
-            mockRetreiveUndertaking(eori4)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to retrieved undertaking came back with empty response" in {
-          inSequence {
-            mockAuthWithEnrolment(eori4)
-            mockRetreiveUndertaking(eori4)(Future.successful(None))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to retrieved undertaking came back with undertaking having no BE with that eori" in {
+        "call to retrieve undertaking returns undertaking having no BE with that eori" in {
           inSequence {
             mockAuthWithEnrolment(eori4)
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking.some))
@@ -897,7 +862,6 @@ class BusinessEntityControllerSpec
         }
 
       }
-
     }
 
     "handling request to post remove yourself business entity" must {
@@ -919,23 +883,7 @@ class BusinessEntityControllerSpec
           "removeThemselfEmailToBE"
         )
 
-        "call to retrieved undertaking fails" in {
-          inSequence {
-            mockAuthWithEnrolment(eori4)
-            mockRetreiveUndertaking(eori4)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction()(English.code)))
-        }
-
-        "call to retrieved undertaking came back with empty response" in {
-          inSequence {
-            mockAuthWithEnrolment(eori4)
-            mockRetreiveUndertaking(eori4)(Future.successful(None))
-          }
-          assertThrows[Exception](await(performAction()(English.code)))
-        }
-
-        "call to retrieved undertaking came back with undertaking having no BE with that eori" in {
+        "call to retrieve undertaking returns undertaking having no BE with that eori" in {
           inSequence {
             mockAuthWithEnrolment(eori4)
             mockRetreiveUndertaking(eori4)(Future.successful(undertaking.some))
@@ -1090,7 +1038,7 @@ class BusinessEntityControllerSpec
 
       "throw technical error" when {
 
-        "call to retrieve undertaking came back with undertaking having no BE with that eori" in {
+        "call to retrieve undertaking returns undertaking having no BE with that eori" in {
           inSequence {
             mockAuthWithEnrolment(eori1)
             mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
@@ -1130,9 +1078,15 @@ class BusinessEntityControllerSpec
 
       }
 
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(performAction)
+        }
+      }
+
     }
 
-    "handling request to post remove  business entity" must {
+    "handling request to post remove business entity" must {
 
       def performAction(data: (String, String)*)(eori: EORI, language: String = English.code) = controller
         .postRemoveBusinessEntity(eori)(
@@ -1146,7 +1100,7 @@ class BusinessEntityControllerSpec
       "throw a technical error" when {
         val exception = new Exception("oh no!")
 
-        "call to retrieved undertaking came back with undertaking having no BE with that eori" in {
+        "call to retrieve undertaking returns undertaking having no BE with that eori" in {
           inSequence {
             mockAuthWithEnrolment(eori1)
             mockRetreiveUndertaking(eori1)(Future.successful(undertaking.some))
@@ -1319,8 +1273,58 @@ class BusinessEntityControllerSpec
         }
       }
 
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(() => performAction()(eori4, English.code))
+        }
+      }
+
+    }
+  }
+
+  private def expectedRows(eori: EORI) = List(
+    CheckYourAnswersRowBE(
+      messageFromMessageKey("businessEntity.cya.eori.label"),
+      eori,
+      routes.BusinessEntityController.getEori().url
+    )
+  )
+
+  private def mockRetreiveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
+    (mockEscService
+      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
+      .expects(eori, *)
+      .returning(result)
+
+  private def mockRemoveMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
+    result: Either[Error, UndertakingRef]
+  ) =
+    (mockEscService
+      .removeMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
+      .expects(undertakingRef, businessEntity, *)
+      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful))
+
+  private def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
+    result: Either[Error, UndertakingRef]
+  ) =
+    (mockEscService
+      .addMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
+      .expects(undertakingRef, businessEntity, *)
+      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful))
+
+  private def mockTimeToday(now: LocalDate) =
+    (mockTimeProvider.today _).expects().returning(now)
+
+  private def testLeadOnlyRedirect(f: () => Future[Result]) = {
+    inSequence {
+      mockAuthWithEnrolment(eori3)
+      mockRetreiveUndertaking(eori3)(Future.successful(undertaking.some))
     }
 
+    val result = f()
+
+    status(result) shouldBe SEE_OTHER
+    redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
   }
 
 }

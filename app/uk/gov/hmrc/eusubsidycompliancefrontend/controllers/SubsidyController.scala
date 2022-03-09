@@ -371,10 +371,10 @@ class SubsidyController @Inject() (
   }
 
   def getChangeSubsidyClaim(transactionId: String): Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    withLeadUndertaking { _ =>
+    withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
       val result = for {
-        reference <- getUndertakingRef
+        reference <- undertaking.reference.toContext
         nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
         subsidyJourney = SubsidyJourney.fromNonHmrcSubsidy(nonHmrcSubsidy)
         _ <- store.put(subsidyJourney).toContext
@@ -382,12 +382,6 @@ class SubsidyController @Inject() (
       result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
     }
   }
-
-  // TODO - confirm all usages of this
-  private def getUndertakingRef(implicit eori: EORI): OptionT[Future, UndertakingRef] = for {
-    undertaking <- store.get[Undertaking].toContext
-    reference <- undertaking.reference.toContext
-  } yield reference
 
   private def getNonHmrcSubsidy(
     transactionId: String,
