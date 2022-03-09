@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.inject.bind
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -25,7 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, Store}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.CommonTestData.{businessEntityJourney1, eori1, undertaking1}
+import utils.CommonTestData.{businessEntityJourney1, eori1, eori3, undertaking, undertaking1}
 
 import scala.concurrent.Future
 
@@ -35,7 +36,7 @@ class NoBusinessPresentControllerSpec
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour {
 
-  val mockEscService = mock[EscService]
+  private val mockEscService = mock[EscService]
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
@@ -43,13 +44,7 @@ class NoBusinessPresentControllerSpec
     bind[EscService].toInstance(mockEscService)
   )
 
-  val controller = instanceOf[NoBusinessPresentController]
-
-  def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result)
+  private val controller = instanceOf[NoBusinessPresentController]
 
   "NoBusinessPresentControllerSpec" when {
 
@@ -79,11 +74,17 @@ class NoBusinessPresentControllerSpec
           performAction(),
           messageFromMessageKey("noBusinessPresent.title", undertaking1.name),
           { doc =>
-            doc.select(".govuk-back-link").attr("href") shouldBe (routes.AccountController.getAccountPage().url)
+            doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
             val button = doc.select("form")
             button.attr("action") shouldBe routes.NoBusinessPresentController.postNoBusinessPresent().url
           }
         )
+      }
+
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(performAction)
+        }
       }
     }
 
@@ -119,8 +120,33 @@ class NoBusinessPresentControllerSpec
           routes.BusinessEntityController.getAddBusinessEntity().url
         )
       }
+
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(performAction)
+        }
+      }
     }
 
   }
+
+  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
+    (mockEscService
+      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
+      .expects(eori, *)
+      .returning(result)
+
+  private def testLeadOnlyRedirect(f: () => Future[Result]) = {
+    inSequence {
+      mockAuthWithEnrolment(eori3)
+      mockRetrieveUndertaking(eori3)(Future.successful(undertaking.some))
+    }
+
+    val result = f()
+
+    status(result) shouldBe SEE_OTHER
+    redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
+  }
+
 
 }
