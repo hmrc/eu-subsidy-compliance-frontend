@@ -1,4 +1,5 @@
 # microservice specific routes
+# TODO - fix alignment after rebase
 
 ->         /hmrc-frontend                           hmrcfrontend.Routes
 GET        /                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
@@ -63,7 +64,7 @@ POST       /add-business-entity-eori                uk.gov.hmrc.eusubsidycomplia
 GET        /check-your-answers-businesses           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getCheckYourAnswers
 POST       /check-your-answers-businesses           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postCheckYourAnswers
 
-GET        /update-member/:eori                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.editBusinessEntity(eori)
+GET        /update-member/:eori                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.editBusinessEntity(eori)
 GET        /remove-business-entity/:eori            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveBusinessEntity(eori)
 POST       /remove-business-entity/:eori            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveBusinessEntity(eori)
 
@@ -99,13 +100,13 @@ POST       /update-email-address         uk.gov.hmrc.eusubsidycompliancefrontend
 GET        /update-undelivered-email-address        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.updateUndeliveredEmailAddress
 
 
-GET        /remove-non-customs-subsidy/:transactionId           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getRemoveSubsidyClaim(transactionId)
-POST       /remove-non-customs-subsidy/:transactionId           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postRemoveSubsidyClaim(transactionId)
+GET        /remove-non-customs-subsidy/:transactionId uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getRemoveSubsidyClaim(transactionId)
+POST       /remove-non-customs-subsidy/:transactionId uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postRemoveSubsidyClaim(transactionId)
 
-GET        /update-non-customs-subsidy/:transactionId           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getChangeSubsidyClaim(transactionId)
+GET        /update-non-customs-subsidy/:transactionId uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getChangeSubsidyClaim(transactionId)
 
-GET        /non-customs-subsidy-nil-return         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimNotification
-POST       /non-customs-subsidy-nil-return         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.postNoClaimNotification
+GET        /non-customs-subsidy-nil-return            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimNotification
+POST       /non-customs-subsidy-nil-return            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.postNoClaimNotification
 
 GET        /no-claims-confirmation                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimConfirmation
 

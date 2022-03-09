@@ -19,11 +19,13 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class UpdateEmailAddressController @Inject() (
@@ -31,21 +33,22 @@ class UpdateEmailAddressController @Inject() (
   updateUnverifiedEmailAddressPage: UpdateUnverifiedEmailPage,
   updateUndeliveredEmailAddressPage: UpdateUndeliveredEmailAddressPage,
   escActionBuilders: EscActionBuilders,
-  servicesConfig: ServicesConfig
-)(implicit val appConfig: AppConfig)
-    extends BaseController(mcc) {
+  servicesConfig: ServicesConfig,
+  val escService: EscService
+)(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
+    extends BaseController(mcc) with LeadOnlyUndertakingSupport {
   import escActionBuilders._
 
-  def updateUnverifiedEmailAddress: Action[AnyContent] = escAuthentication.async { implicit request =>
-    Future.successful(Ok(updateUnverifiedEmailAddressPage()))
+  def updateUnverifiedEmailAddress: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ => Ok(updateUnverifiedEmailAddressPage()).toFuture }
   }
 
-  def postUpdateEmailAddress: Action[AnyContent] = escAuthentication.async { _ =>
-    Future.successful(Redirect(appConfig.emailFrontendUrl))
+  def postUpdateEmailAddress: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ => Redirect(appConfig.emailFrontendUrl).toFuture }
   }
 
-  def updateUndeliveredEmailAddress: Action[AnyContent] = escAuthentication.async { implicit request =>
-    Future.successful(Ok(updateUndeliveredEmailAddressPage()))
+  def updateUndeliveredEmailAddress: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ => Ok(updateUndeliveredEmailAddressPage()).toFuture }
   }
 
 }

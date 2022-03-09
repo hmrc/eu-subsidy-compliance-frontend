@@ -47,7 +47,7 @@ class SubsidyController @Inject() (
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
   store: Store,
-  escService: EscService,
+  val escService: EscService,
   journeyTraverseService: JourneyTraverseService,
   auditService: AuditService,
   reportPaymentPage: ReportPaymentPage,
@@ -60,34 +60,33 @@ class SubsidyController @Inject() (
   confirmRemovePage: ConfirmRemoveClaim,
   claimDateFormProvider: ClaimDateFormProvider,
   timeProvider: TimeProvider
-)(implicit
-  val appConfig: AppConfig,
-  executionContext: ExecutionContext
-) extends BaseController(mcc) {
+)(implicit val appConfig: AppConfig, val executionContext: ExecutionContext) extends BaseController(mcc)
+  with LeadOnlyUndertakingSupport {
 
   import escActionBuilders._
 
-  def getReportPayment: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
+  def getReportPayment: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { undertaking =>
+      implicit val eori: EORI = request.eoriNumber
 
-    val result = for {
-      _ <- store.get[SubsidyJourney].toContext.orElse(store.put(SubsidyJourney()).toContext)
-      undertaking <- store.get[Undertaking].toContext
-      reference <- undertaking.reference.toContext
-    } yield (reference, undertaking)
+      val result = for {
+        _ <- store.get[SubsidyJourney].toContext.orElse(store.put(SubsidyJourney()).toContext)
+        reference <- undertaking.reference.toContext
+      } yield reference
 
-    result.foldF(handleMissingSessionData("Subsidy journey")) { case (reference, undertaking) =>
-      val currentDate = timeProvider.today
-      retrieveSubsidiesOrNone(reference).map { subsidies =>
-        Ok(
-          reportPaymentPage(
-            subsidies,
-            undertaking,
-            currentDate.toEarliestTaxYearStart,
-            currentDate.toTaxYearEnd.minusYears(1),
-            currentDate.toTaxYearStart
+      result.foldF(handleMissingSessionData("Subsidy journey")) { reference =>
+        val currentDate = timeProvider.today
+        retrieveSubsidiesOrNone(reference).map { subsidies =>
+          Ok(
+            reportPaymentPage(
+              subsidies,
+              undertaking,
+              currentDate.toEarliestTaxYearStart,
+              currentDate.toTaxYearEnd.minusYears(1),
+              currentDate.toTaxYearStart
+            )
           )
-        )
+        }
       }
     }
   }
@@ -98,34 +97,38 @@ class SubsidyController @Inject() (
       .map(Option(_))
       .fallbackTo(Option.empty.toFuture)
 
-  def postReportPayment: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    reportPaymentForm
-      .bindFromRequest()
-      .fold(
-        _ => throw new IllegalStateException("report payment form submission failed"),
-        (form: FormValues) =>
-          for {
-            journey <- store.update[SubsidyJourney](updateReportPayment(form))
-            redirect <- getJourneyNext(journey)
-          } yield redirect
-      )
-  }
-
-  def getClaimAmount: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    val result: OptionT[Future, Result] = for {
-      subsidyJourney <- store.get[SubsidyJourney].toContext
-      addClaimDate <- subsidyJourney.claimDate.value.toContext
-      previous = subsidyJourney.previous
-    } yield {
-      val form = subsidyJourney.claimAmount.value.fold(claimAmountForm)(claimAmountForm.fill)
-      Ok(addClaimAmountPage(form, previous, addClaimDate.year, addClaimDate.month))
+  def postReportPayment: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+      reportPaymentForm
+        .bindFromRequest()
+        .fold(
+          _ => throw new IllegalStateException("report payment form submission failed"),
+          form =>
+            for {
+              journey <- store.update[SubsidyJourney](updateReportPayment(form))
+              redirect <- getJourneyNext(journey)
+            } yield redirect
+        )
     }
-    result.getOrElse(handleMissingSessionData(" Subsidy journey"))
   }
 
-  def postAddClaimAmount: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
+  def getClaimAmount: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+      val result: OptionT[Future, Result] = for {
+        subsidyJourney <- store.get[SubsidyJourney].toContext
+        addClaimDate <- subsidyJourney.claimDate.value.toContext
+        previous = subsidyJourney.previous
+      } yield {
+        val form = subsidyJourney.claimAmount.value.fold(claimAmountForm)(claimAmountForm.fill)
+        Ok(addClaimAmountPage(form, previous, addClaimDate.year, addClaimDate.month))
+      }
+      result.getOrElse(handleMissingSessionData("Subsidy journey"))
+    }
+  }
+
+  def postAddClaimAmount: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def handleFormSubmit(previous: Journey.Uri, addClaimDate: DateFormValues) =
@@ -133,9 +136,7 @@ class SubsidyController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            Future.successful(
-              BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month))
-            ),
+              BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture,
           form =>
             for {
               journey <- store.update[SubsidyJourney](updateClaimAmount(form))
@@ -143,164 +144,180 @@ class SubsidyController @Inject() (
             } yield redirect
         )
 
-    val result: OptionT[Future, Result] = for {
-      subsidyJourney <- store.get[SubsidyJourney].toContext
-      addClaimDate <- subsidyJourney.claimDate.value.toContext
-      previous = subsidyJourney.previous
-      resultFormSubmit <- handleFormSubmit(previous, addClaimDate).toContext
-    } yield resultFormSubmit
-    result.getOrElse(handleMissingSessionData(" Subsidy journey"))
-  }
-
-  def getClaimDate: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store.get[SubsidyJourney].flatMap {
-      case Some(journey) =>
-        journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
-          val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
-          Ok(addClaimDatePage(form, previous)).toFuture
-        }
-      case _ => handleMissingSessionData("Subsidy journey")
+    withLeadUndertaking { _ =>
+      val result = for {
+        subsidyJourney <- store.get[SubsidyJourney].toContext
+        addClaimDate <- subsidyJourney.claimDate.value.toContext
+        previous = subsidyJourney.previous
+        resultFormSubmit <- handleFormSubmit(previous, addClaimDate).toContext
+      } yield resultFormSubmit
+      result.getOrElse(handleMissingSessionData(" Subsidy journey"))
     }
   }
 
-  def postClaimDate: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    getPrevious[SubsidyJourney](store).flatMap { previous =>
-      claimDateForm
-        .bindFromRequest()
-        .fold(
-          formWithErrors => BadRequest(addClaimDatePage(formWithErrors, previous)).toFuture,
-          form =>
-            for {
-              journey <- store.update[SubsidyJourney](updateClaimDate(form))
-              redirect <- getJourneyNext(journey)
-            } yield redirect
-        )
-    }
-  }
-
-  def getAddClaimEori: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store.get[SubsidyJourney].flatMap {
-      case Some(journey) =>
-        journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
-          val form = journey.addClaimEori.value.fold(claimEoriForm) { optionalEORI =>
-            claimEoriForm.fill(OptionalEORI(optionalEORI.setValue, optionalEORI.value))
+  def getClaimDate: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+      store.get[SubsidyJourney].flatMap {
+        case Some(journey) =>
+          journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
+            val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
+            Ok(addClaimDatePage(form, previous)).toFuture
           }
-          Ok(addClaimEoriPage(form, previous)).toFuture
-        }
-      case _ => handleMissingSessionData("Subsidy journey")
+        case _ => handleMissingSessionData("Subsidy journey")
+      }
     }
   }
 
-  def postAddClaimEori: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
-      claimEoriForm
+  def postClaimDate: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+      getPrevious[SubsidyJourney](store).flatMap { previous =>
+        claimDateForm
+          .bindFromRequest()
+          .fold(
+            formWithErrors => BadRequest(addClaimDatePage(formWithErrors, previous)).toFuture,
+            form =>
+              for {
+                journey <- store.update[SubsidyJourney](updateClaimDate(form))
+                redirect <- getJourneyNext(journey)
+              } yield redirect
+          )
+      }
+    }
+  }
+
+  def getAddClaimEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+      store.get[SubsidyJourney].flatMap {
+        case Some(journey) =>
+          journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
+            val form = journey.addClaimEori.value.fold(claimEoriForm) { optionalEORI =>
+              claimEoriForm.fill(OptionalEORI(optionalEORI.setValue, optionalEORI.value))
+            }
+            Ok(addClaimEoriPage(form, previous)).toFuture
+          }
+        case _ => handleMissingSessionData("Subsidy journey")
+      }
+    }
+  }
+
+  def postAddClaimEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+      journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
+        claimEoriForm
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(addClaimEoriPage(formWithErrors, previous))),
+            (form: OptionalEORI) =>
+              for {
+                journey <- store.update[SubsidyJourney](updateClaimEori(form))
+                redirect <- getJourneyNext(journey)
+              } yield redirect
+          )
+      }
+    }
+  }
+
+  def getAddClaimPublicAuthority: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+      store.get[SubsidyJourney].flatMap {
+        case Some(journey) =>
+          journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
+            val form = journey.publicAuthority.value.fold(claimPublicAuthorityForm)(claimPublicAuthorityForm.fill)
+            Ok(addPublicAuthorityPage(form, previous)).toFuture
+          }
+        case _ => handleMissingSessionData("Subsidy journey")
+      }
+    }
+  }
+
+  def postAddClaimPublicAuthority: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+      getPrevious[SubsidyJourney](store).flatMap { previous =>
+        claimPublicAuthorityForm
+          .bindFromRequest()
+          .fold(
+            errors => Future.successful(BadRequest(addPublicAuthorityPage(errors, previous))),
+            form =>
+              for {
+                journey <- store.update[SubsidyJourney](updateClaimAuthority(form))
+                redirect <- getJourneyNext(journey)
+              } yield redirect
+          )
+      }
+    }
+  }
+
+  def getAddClaimReference: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+      store.get[SubsidyJourney].flatMap {
+        case Some(journey) =>
+          val form = journey.traderRef.value.fold(claimTraderRefForm) { optionalTraderRef =>
+            claimTraderRefForm.fill(OptionalTraderRef(optionalTraderRef.setValue, optionalTraderRef.value))
+          }
+          Ok(addTraderReferencePage(form, journey.previous)).toFuture
+        case _ => handleMissingSessionData("Subsidy journey")
+      }
+    }
+  }
+
+  def postAddClaimReference: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+      journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
+        claimTraderRefForm
+          .bindFromRequest()
+          .fold(
+            errors => BadRequest(addTraderReferencePage(errors, previous)).toFuture,
+            form =>
+              for {
+                updatedSubsidyJourney <- store.update[SubsidyJourney](updateOptionalTraderRef(form))
+                redirect <- getJourneyNext(updatedSubsidyJourney)
+              } yield redirect
+          )
+      }
+    }
+  }
+
+  def getCheckAnswers: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+
+      val result: OptionT[Future, Result] = for {
+        journey <- store.get[SubsidyJourney].toContext
+        _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
+        claimDate <- journey.claimDate.value.toContext
+        amount <- journey.claimAmount.value.toContext
+        optionalEori <- journey.addClaimEori.value.toContext
+        authority <- journey.publicAuthority.value.toContext
+        optionalTraderRef <- journey.traderRef.value.toContext
+        claimEori = optionalEori.value.map(EORI(_))
+        traderRef = optionalTraderRef.value.map(TraderRef(_))
+        previous = journey.previous
+      } yield Ok(cyaPage(claimDate, amount, claimEori, authority, traderRef, previous))
+
+      result.getOrElse(handleMissingSessionData("Subsidy journey"))
+    }
+  }
+
+  def postCheckAnswers: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { undertaking =>
+      implicit val eori: EORI = request.eoriNumber
+
+      cyaForm
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(addClaimEoriPage(formWithErrors, previous))),
-          (form: OptionalEORI) =>
-            for {
-              journey <- store.update[SubsidyJourney](updateClaimEori(form))
-              redirect <- getJourneyNext(journey)
-            } yield redirect
-        )
-    }
-  }
-
-  def getAddClaimPublicAuthority: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store.get[SubsidyJourney].flatMap {
-      case Some(journey) =>
-        journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
-          val form = journey.publicAuthority.value.fold(claimPublicAuthorityForm)(claimPublicAuthorityForm.fill)
-          Ok(addPublicAuthorityPage(form, previous)).toFuture
-        }
-      case _ => handleMissingSessionData("Subsidy journey")
-    }
-  }
-
-  def postAddClaimPublicAuthority: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    getPrevious[SubsidyJourney](store).flatMap { previous =>
-      claimPublicAuthorityForm
-        .bindFromRequest()
-        .fold(
-          errors => Future.successful(BadRequest(addPublicAuthorityPage(errors, previous))),
-          form =>
-            for {
-              journey <- store.update[SubsidyJourney](updateClaimAuthority(form))
-              redirect <- getJourneyNext(journey)
-            } yield redirect
-        )
-    }
-  }
-
-  def getAddClaimReference: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store.get[SubsidyJourney].flatMap {
-      case Some(journey) =>
-        val form = journey.traderRef.value.fold(claimTraderRefForm) { optionalTraderRef =>
-          claimTraderRefForm.fill(OptionalTraderRef(optionalTraderRef.setValue, optionalTraderRef.value))
-        }
-        Ok(addTraderReferencePage(form, journey.previous)).toFuture
-      case _ => handleMissingSessionData("Subsidy journey")
-    }
-  }
-
-  def postAddClaimReference: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
-      claimTraderRefForm
-        .bindFromRequest()
-        .fold(
-          errors => BadRequest(addTraderReferencePage(errors, previous)).toFuture,
-          form =>
-            for {
-              updatedSubsidyJourney <- store.update[SubsidyJourney](updateOptionalTraderRef(form))
-              redirect <- getJourneyNext(updatedSubsidyJourney)
-            } yield redirect
-        )
-    }
-  }
-
-  def getCheckAnswers: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    val result: OptionT[Future, Result] = for {
-      journey <- store.get[SubsidyJourney].toContext
-      _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
-      claimDate <- journey.claimDate.value.toContext
-      amount <- journey.claimAmount.value.toContext
-      optionalEori <- journey.addClaimEori.value.toContext
-      authority <- journey.publicAuthority.value.toContext
-      optionalTraderRef <- journey.traderRef.value.toContext
-      claimEori = optionalEori.value.map(EORI(_))
-      traderRef = optionalTraderRef.value.map(TraderRef(_))
-      previous = journey.previous
-    } yield Ok(cyaPage(claimDate, amount, claimEori, authority, traderRef, previous))
-
-    result.getOrElse(handleMissingSessionData("Subsidy journey"))
-  }
-
-  def postCheckAnswers: Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    cyaForm
-      .bindFromRequest()
-      .fold(
-        _ => sys.error("Error processing subsidy cya form submission"),
-        form =>
-          {
+          _ => sys.error("Error processing subsidy cya form submission"),
+          form => {
             for {
               journey <- store.update[SubsidyJourney](updateCya(form)).map(Option(_)).toContext
               _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
-              undertaking <- escService
-                .retrieveUndertaking(eori)
-                .toContext
-                .orElseF(handleMissingSessionData("undertaking"))
               ref <- undertaking.reference.toContext
               currentDate = timeProvider.today
               _ <- escService.createSubsidy(ref, toSubsidyUpdate(journey, ref, currentDate)).toContext
@@ -316,7 +333,8 @@ class SubsidyController @Inject() (
                   )
             } yield Redirect(routes.SubsidyController.getReportPayment())
           }.getOrElse(sys.error("Error processing subsidy cya form submission"))
-      )
+        )
+    }
   }
 
   private def validateSubsidyJourneyFieldsPopulated(journey: SubsidyJourney): Option[Unit] =
@@ -328,28 +346,31 @@ class SubsidyController @Inject() (
       _ <- journey.traderRef.value.orElse(handleMissingSessionData("trader ref"))
     } yield ()
 
-  def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
+  def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { undertaking =>
+      implicit val eori: EORI = request.eoriNumber
 
-    val result: OptionT[Future, Result] = for {
-      undertaking <- store.get[Undertaking].toContext
-      reference <- undertaking.reference.toContext
-      subsidies <- retrieveSubsidiesOrNone(reference).toContext
-      sub <- subsidies.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext
-    } yield Ok(confirmRemovePage(removeSubsidyClaimForm, sub))
-    result.fold(handleMissingSessionData("Subsidy Journey"))(identity)
+      val result = for {
+        reference <- undertaking.reference.toContext
+        subsidies <- retrieveSubsidiesOrNone(reference).toContext
+        sub <- subsidies.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionID.contains(transactionId)).toContext
+      } yield Ok(confirmRemovePage(removeSubsidyClaimForm, sub))
+      result.fold(handleMissingSessionData("Subsidy Journey"))(identity)
+    }
   }
 
-  def postRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    removeSubsidyClaimForm
-      .bindFromRequest()
-      .fold(
-        formWithErrors => handleRemoveSubsidyFormError(formWithErrors, transactionId),
-        formValue =>
-          if (formValue.value == "true") handleRemoveSubsidyValidAnswer(transactionId)
-          else Future(Redirect(routes.SubsidyController.getReportPayment()))
-      )
+  def postRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { undertaking =>
+      implicit val eori: EORI = request.eoriNumber
+      removeSubsidyClaimForm
+        .bindFromRequest()
+        .fold(
+          formWithErrors => handleRemoveSubsidyFormError(formWithErrors, transactionId, undertaking),
+          formValue =>
+            if (formValue.value == "true") handleRemoveSubsidyValidAnswer(transactionId, undertaking)
+            else Redirect(routes.SubsidyController.getReportPayment()).toFuture
+        )
+    }
   }
 
   def getChangeSubsidyClaim(transactionId: String): Action[AnyContent] = authenticatedLeadUser.async { implicit request =>
@@ -363,6 +384,7 @@ class SubsidyController @Inject() (
     result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
   }
 
+  // TODO - confirm all usages of this
   private def getUndertakingRef(implicit eori: EORI): OptionT[Future, UndertakingRef] = for {
     undertaking <- store.get[Undertaking].toContext
     reference <- undertaking.reference.toContext
@@ -381,25 +403,32 @@ class SubsidyController @Inject() (
       sub <- subsides.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext
     } yield sub
 
-  private def handleRemoveSubsidyFormError(formWithErrors: Form[FormValues], transactionId: String)(implicit
+  private def handleRemoveSubsidyFormError(
+    formWithErrors: Form[FormValues],
+    transactionId: String,
+    undertaking: Undertaking,
+  )(implicit
     eori: EORI,
     hc: HeaderCarrier,
     request: AuthenticatedEscRequest[_]
   ): Future[Result] = {
     val result = for {
-      reference <- getUndertakingRef
+      reference <- undertaking.reference.toContext
       nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
     } yield BadRequest(confirmRemovePage(formWithErrors, nonHmrcSubsidy))
     result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
   }
 
-  private def handleRemoveSubsidyValidAnswer(transactionId: String)(implicit
+  private def handleRemoveSubsidyValidAnswer(
+    transactionId: String,
+    undertaking: Undertaking
+  )(implicit
     eori: EORI,
     hc: HeaderCarrier,
     request: AuthenticatedEscRequest[_]
   ): Future[Result] = {
     val result = for {
-      reference <- getUndertakingRef
+      reference <- undertaking.reference.toContext
       nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
       _ <- escService.removeSubsidy(reference, nonHmrcSubsidy).toContext
       _ = auditService.sendEvent[NonCustomsSubsidyRemoved](
