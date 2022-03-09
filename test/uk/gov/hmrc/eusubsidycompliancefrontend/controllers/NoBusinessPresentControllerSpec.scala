@@ -60,21 +60,13 @@ class NoBusinessPresentControllerSpec
 
       " throw technical error" when {
         val exception = new Exception("oh no!")
+
         "call to fetch new lead journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction()))
-        }
-
-        "call to retrieve undertaking fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(None))
-          }
-          assertThrows[Exception](await(performAction()))
-
         }
       }
 
@@ -106,6 +98,7 @@ class NoBusinessPresentControllerSpec
         "call to update business entity journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1.some), eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -116,6 +109,7 @@ class NoBusinessPresentControllerSpec
       "redirect to next page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
+          mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
           mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1.some), eori1)(
             Right(businessEntityJourney1)
           )
