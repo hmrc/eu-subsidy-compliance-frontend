@@ -108,6 +108,18 @@ object AuditEvent {
     implicit val writes: Writes[BusinessEntityRemoved] = Json.writes
   }
 
+  final case class BusinessEntityRemovedSelf(
+    ggDetails: String,
+    leadEori: EORI,
+    removedEori: EORI
+  ) extends AuditEvent {
+    override val auditType: String = "BusinessEntityRemovedSelf"
+    override val transactionName: String = "BusinessEntityRemovedSelf"
+  }
+  object BusinessEntityRemovedSelf {
+    implicit val writes: Writes[BusinessEntityRemovedSelf] = Json.writes
+  }
+
   final case class BusinessEntityUpdated(
     ggDetails: String,
     leadEori: EORI,

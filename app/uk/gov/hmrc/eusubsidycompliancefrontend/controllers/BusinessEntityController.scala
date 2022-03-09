@@ -360,6 +360,8 @@ class BusinessEntityController @Inject() (
                       undertakingRef,
                       removalEffectiveDateString.some
                     )
+                    _ = auditService
+                      .sendEvent(AuditEvent.BusinessEntityRemovedSelf(request.authorityId, leadEORI, loggedInEORI))
                   } yield Redirect(routes.SignOutController.signOut())
                 case _ => Future(Redirect(routes.AccountController.getAccountPage()))
               }

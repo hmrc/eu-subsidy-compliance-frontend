@@ -1066,6 +1066,7 @@ class BusinessEntityControllerSpec
               mockSendEmail(validEmailAddress, emailParamBE, templateIdBe)(Right(EmailSendResult.EmailSent))
               mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
               mockSendEmail(validEmailAddress, emailParamLead, templateIdLead)(Right(EmailSendResult.EmailSent))
+              mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf("1123", eori1, eori4))
             }
             checkIsRedirect(
               performAction("removeYourselfBusinessEntity" -> "true")(lang),
