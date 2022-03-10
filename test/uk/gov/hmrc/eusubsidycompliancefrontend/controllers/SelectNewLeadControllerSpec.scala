@@ -28,12 +28,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIEmailParameter, SingleEORIEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.AddEoriFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData._
 
 import scala.concurrent.Future
@@ -87,7 +85,7 @@ class SelectNewLeadControllerSpec
         "call to fetch new lead journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[NewLeadJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -97,7 +95,7 @@ class SelectNewLeadControllerSpec
         "call to put New lead journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[NewLeadJourney](eori1)(Right(None))
             mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Left(ConnectorError(exception)))
           }
@@ -110,7 +108,7 @@ class SelectNewLeadControllerSpec
         "new lead journey is blank " in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[NewLeadJourney](eori1)(Right(None))
             mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Right(NewLeadJourney()))
           }
@@ -131,7 +129,7 @@ class SelectNewLeadControllerSpec
         "new lead journey already exists" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[Undertaking](eori1)(Right(undertaking1.some))
             mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
           }
           checkPageIsDisplayed(
@@ -140,7 +138,7 @@ class SelectNewLeadControllerSpec
             { doc =>
               doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
-              selectedOptions.attr("value") shouldBe eori4.toString
+              selectedOptions.attr("value") shouldBe eori4
 
               val radioOptions = doc.select(".govuk-radios__item")
               radioOptions.size() shouldBe undertaking1.undertakingBusinessEntity.filterNot(_.leadEORI).size
@@ -181,7 +179,7 @@ class SelectNewLeadControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
@@ -191,20 +189,20 @@ class SelectNewLeadControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockRetrieveEmail(eori4)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction("selectNewLead" -> eori4.toString)(English.code)))
+          assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
         }
 
         "call to fetch lead email address fails" in {
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
@@ -218,7 +216,7 @@ class SelectNewLeadControllerSpec
         "language is other than english /welsh" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
@@ -234,7 +232,7 @@ class SelectNewLeadControllerSpec
         "nothing is selected" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
           }
           checkFormErrorIsDisplayed(
             performAction()(English.code),
@@ -257,7 +255,7 @@ class SelectNewLeadControllerSpec
             DoubleEORIEmailParameter(eori1, eori4, undertaking.name, undertakingRef, "promoteAsLeadEmailToLead")
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
@@ -304,7 +302,7 @@ class SelectNewLeadControllerSpec
         "call to fetch new lead journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[NewLeadJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -314,7 +312,7 @@ class SelectNewLeadControllerSpec
         "call to fetch new lead journey came back with None" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[NewLeadJourney](eori1)(Right(None))
           }
           assertThrows[Exception](await(performAction()))
@@ -324,7 +322,7 @@ class SelectNewLeadControllerSpec
         "call to fetch new lead journey came back with response but there is no selected EORI in it" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[NewLeadJourney](eori1)(Right(NewLeadJourney().some))
           }
           assertThrows[Exception](await(performAction()))
@@ -334,7 +332,7 @@ class SelectNewLeadControllerSpec
         "call to update business entity journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
             mockUpdate[BusinessEntityJourney](
               _ => update(businessEntityJourneyLead.copy(eori = AddEoriFormPage(eori4.some)).some),
@@ -348,7 +346,7 @@ class SelectNewLeadControllerSpec
         "call to reset business entity journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
             mockUpdate[BusinessEntityJourney](
               _ =>
@@ -371,7 +369,7 @@ class SelectNewLeadControllerSpec
 
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+          mockGet[Undertaking](eori1)(Right(undertaking.some))
           mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
           mockUpdate[BusinessEntityJourney](
             _ =>
@@ -415,16 +413,10 @@ class SelectNewLeadControllerSpec
 
   }
 
-  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result)
-
   private def testLeadOnlyRedirect(f: () => Future[Result]) = {
     inSequence {
       mockAuthWithEnrolment(eori3)
-      mockRetrieveUndertaking(eori3)(Future.successful(undertaking.some))
+      mockGet[Undertaking](eori3)(Right(undertaking.some))
     }
 
     val result = f()
