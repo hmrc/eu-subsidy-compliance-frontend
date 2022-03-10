@@ -51,8 +51,8 @@
             items = Seq(
               ActionItem(
                 href = controllers.routes.BusinessEntityController.getEori().toString,
-                content = Text("Change"),
-                visuallyHiddenText = Some("name")
+                content = Text(messages("common.change")),
+                visuallyHiddenText = Some(messages("businessEntity.cya.change.eori"))
               )
             )
           ))

@@ -13,6 +13,7 @@ common.continue.only=Continue
 common.accept=Accept and send
 common.go-account-home = Go to account home
 common.accept=Accept and continue
+common.cya.change = Change
 
 continue.button=Save and Continue
 button.addBusiness = Add a business to this undertaking
@@ -137,6 +138,8 @@ sector.hint.2=An ‘agricultural product’ can be products such as: live animal
 sector.hint.3=If any part of your business is involved in the production, processing or marketing of fishery and aquaculture products. A ‘fishery product’ means aquatic organisms resulting from any fishing activity or products derived from them.
 
 undertaking.cya.title=Check your answers
+undertaking.cya.change.hidden.name = name
+undertaking.cya.change.hidden.industry-sector = industry sector
 
 addBusiness.empty.title=Add businesses within your organisation to {0}
 addBusiness.p1=This service is for businesses importing into Northern Ireland or claiming de minimis aid in the UK.
@@ -145,6 +148,7 @@ addBusiness.p3=You must add any business to this single undertaking that has cla
 addBusiness.p4=You do not need to add international businesses which do not qualify for the Customs Duty waiver or de minimis aid from the UK government.
 addBusiness.legend=Do you have any businesses to add to {0}
 addBusiness.error.required=Select yes if you need to add a business to {0}?
+addBusiness.change-remove.snippet = business with EORI
 
 
 addBusiness.businesses-added.title=Businesses in {0}
@@ -170,6 +174,7 @@ businessEntity.cya.h2=Other businesses in undertaking
 businessEntity.cya.eori.label=EORI number
 businessEntity.cya.contact.label=Contact details
 businessEntity.cya.p1=By sending these details you are confirming that, to the best of your knowledge, they are correct.
+businessEntity.cya.change.eori=EORI number
 
 removeBusinessEntity.title= Remove business entity
 removeBusinessEntity.subtitle = Do you want to remove business entity?
@@ -230,7 +235,7 @@ report-payment.table.head.ref=Your reference
 report-payment.button = Report a payment
 
 add-claim-amount.title=What was the amount of the payment?
-add-claim-amount.p1=This type of aid is measured in euros, so you must convert any aid received from pound sterling into euros using this <a class="govuk-link" href={0}>exchange rate tool</a>
+add-claim-amount.p1=This type of aid is measured in euros, so you must convert any aid received from pound sterling into euros using this <a class="govuk-link" href={0} target="_blank">exchange rate tool (external site, opens in a new tab)</a>:
 add-claim-amount.l1 = Change the year to {0} and month to {1}
 add-claim-amount.l2 = Enter the amount of aid you received in pounds sterling
 add-claim-amount.l3 = Change the ‘From’ dropdown to ‘GBP’ and use the figure displayed below it (to the nearest euro)
@@ -276,6 +281,11 @@ subsidy.cya.summary-list.claim.key=EORI number
 subsidy.cya.summary-list.authority.key=Public authority
 subsidy.cya.summary-list.traderRef.key=Your reference
 subsidy.cya.p1=By sending these details you are confirming that, to the best of your knowledge, they are correct.
+subsidy.cya.change.hidden.payment-date=payment date
+subsidy.cya.change.hidden.payment-amount=payment amount
+subsidy.cya.change.hidden.eori-number=eori number
+subsidy.cya.change.hidden.public-authority=public authority
+subsidy.cya.change.hidden.your-reference=your reference
 
 subsidy.remove.title = Remove a de minimis aid payment
 subsidy.remove.p1 = If you remove this payment then your Customs Duty waiver balance will change.
@@ -284,9 +294,11 @@ subsidy.remove.error.required = Select yes if you want to remove the above de mi
 
 #Amend Undertaking
 undertaking.amendUndertaking.title = Undertaking Details
-undertaking.amendUndertaking.summary-list.name.key = Name of Undertaking
+undertaking.amendUndertaking.summary-list.name.key = Name of undertaking
 undertaking.amendUndertaking.summary-list.sector.key = Industry sector
 undertaking.amendUndertaking.summary-list.telephone.key = Telephone number
+undertaking.amendUndertaking.summary-list.change.undertaking-name = name of undertaking
+undertaking.amendUndertaking.summary-list.change.industry-sector = industry sector
 undertaking.amendUndertaking.p = By sending these details you are confirming that, to the best of your knowledge, they are correct
 
 #SignOut
@@ -309,7 +321,7 @@ noClaimConfirmation.link = <a href="{0}" class="govuk-link">Go to account home</
 #Select New lead
 selectNewLead.title = Please choose the new administrator for {0}
 selectNewLead.hint = Your undertaking must have an administrator
-selectNewLead.error.required = Select an EORI to make it new administrator
+selectNewLead.error.required = Select the new administator for your undertaking
 
 #Lead Eori changed
 leadEORIChanged.title = Lead EORI changed
@@ -361,6 +373,7 @@ updateUndeliveredEmail.p3.list3 = some financial notifications, including Direct
 
 become-admin.title=Do you want to become the administrator for {0}
 become-admin.hint=As undertaking administrator, the business EORI number {0} will be responsible for reporting de minimis aid (less Customs Duty waivers) payments received by all businesses which are part of this single undertaking.
+becomeAdmin.error.required = Select yes if you want to become administrator for this undertaking 
 
 become-admin-tandc.title=You must accept the terms and conditions
 become-admin-tandc.h2=Reporting de minimis aid payments (less Customs Duty waivers) as a single undertaking

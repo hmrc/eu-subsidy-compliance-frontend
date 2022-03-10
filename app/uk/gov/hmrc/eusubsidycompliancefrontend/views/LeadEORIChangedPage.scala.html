@@ -26,10 +26,12 @@
 @title = @{messages(s"$key.title")}
 
 @layout(pageTitle = Some(title)) {
+
     @govukPanel(Panel(
-        classes = "govuk-!-margin-bottom-7",
-        content = HtmlContent(s"""<strong>${messages(s"$key.subtitle", eori, undertakingName)}</strong>""")
+        title = Text(messages(s"$key.subtitle", eori, undertakingName)),
+        classes = "govuk-!-margin-bottom-7"
     ))
+
     <p class="govuk-body">@messages(s"$key.p1")</p>
     <h2 class="govuk-heading-l">@{messages(s"$key.h2")}</h2>
     <p class="govuk-body">@messages(s"$key.p2", eori, undertakingName)</p>
