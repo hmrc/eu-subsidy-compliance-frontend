@@ -62,8 +62,6 @@ class SubsidyControllerSpec
     bind[TimeProvider].toInstance(mockTimeProvider)
   )
 
-
-
   private val controller = instanceOf[SubsidyController]
   private val exception = new Exception("oh no!")
   private val currentDate = LocalDate.of(2022, 10, 9)
@@ -1000,8 +998,7 @@ class SubsidyControllerSpec
         }
         checkPageIsDisplayed(
           performAction(transactionId),
-          List(messageFromMessageKey("subsidy.remove.title"), messageFromMessageKey("subsidy.remove.yesno.legend"))
-            .mkString(" "),
+          messageFromMessageKey("subsidy.remove.title"),
           { doc =>
             val rows =
               doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
@@ -1074,8 +1071,7 @@ class SubsidyControllerSpec
           }
           checkFormErrorIsDisplayed(
             performAction()("TID1234"),
-            List(messageFromMessageKey("subsidy.remove.title"), messageFromMessageKey("subsidy.remove.yesno.legend"))
-              .mkString(" "),
+            messageFromMessageKey("subsidy.remove.title"),
             messageFromMessageKey("subsidy.remove.error.required")
           )
         }
