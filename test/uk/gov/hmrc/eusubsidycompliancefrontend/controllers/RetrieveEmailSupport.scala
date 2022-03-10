@@ -32,5 +32,5 @@ trait RetrieveEmailSupport { this: ControllerSpec =>
     (mockRetrieveEmailService
       .retrieveEmailByEORI(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
-      .returning(result.fold(e => Future.failed(e.value), Future.successful))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 }

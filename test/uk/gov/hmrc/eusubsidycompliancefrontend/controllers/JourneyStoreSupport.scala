@@ -33,18 +33,18 @@ trait JourneyStoreSupport { this: MockFactory =>
     (mockJourneyStore
       .get(_: ClassTag[Any], _: EORI, _: Reads[Any]))
       .expects(*, eori, *)
-      .returning(result.fold(e => Future.failed(e.value), Future.successful))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 
   def mockPut[A](input: A, eori: EORI)(result: Either[Error, A]) =
     (mockJourneyStore
       .put(_: A)(_: EORI, _: Writes[A]))
       .expects(input, eori, *)
-      .returning(result.fold(e => Future.failed(e.value), Future.successful))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 
   def mockUpdate[A](f: Option[A] => Option[A], eori: EORI)(result: Either[Error, A]) =
     (mockJourneyStore
       .update(_: Option[A] => Option[A])(_: ClassTag[A], _: EORI, _: Format[A]))
       .expects(*, *, eori, *)
-      .returning(result.fold(e => Future.failed(e.value), Future.successful))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 
 }

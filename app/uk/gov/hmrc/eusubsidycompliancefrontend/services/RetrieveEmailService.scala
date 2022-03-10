@@ -17,32 +17,22 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.catsSyntaxOptionId
-import com.google.inject.{ImplementedBy, Inject, Singleton}
+import com.google.inject.{Inject, Singleton}
 import play.api.http.Status._
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.RetrieveEmailConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.EmailAddressResponse
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddressResponse, Error}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-@ImplementedBy(classOf[RetrieveEmailServiceImpl])
-trait RetrieveEmailService {
-
-  def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): Future[RetrieveEmailResponse]
-
-}
-
 @Singleton
-class RetrieveEmailServiceImpl @Inject() (
-  retrieveEmailConnector: RetrieveEmailConnector
-)(implicit ec: ExecutionContext)
-    extends RetrieveEmailService {
-  override def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): Future[RetrieveEmailResponse] =
+class RetrieveEmailService @Inject() (retrieveEmailConnector: RetrieveEmailConnector)(implicit ec: ExecutionContext) {
+  def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): Future[RetrieveEmailResponse] =
     retrieveEmailConnector.retrieveEmailByEORI(eori).map {
-      case Left(Error(_)) => sys.error("Error in retrieving Email Address Response")
+      case Left(error) => throw error
       case Right(value) =>
         value.status match {
           case NOT_FOUND => RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)
@@ -51,7 +41,7 @@ class RetrieveEmailServiceImpl @Inject() (
               .parseJSON[EmailAddressResponse]
               .fold(_ => sys.error("Error in parsing Email Address"), getEmailAddress)
 
-          case _ => sys.error(" Error in retrieving Email Address Response")
+          case _ => sys.error("Error in retrieving Email Address Response")
 
         }
     }
@@ -64,7 +54,7 @@ class RetrieveEmailServiceImpl @Inject() (
       case EmailAddressResponse(email, Some(_), Some(_)) =>
         RetrieveEmailResponse(EmailType.UnDeliverableEmail, email.some)
       case EmailAddressResponse(email, None, None) => RetrieveEmailResponse(EmailType.UnVerifiedEmail, email.some)
-      case _ => sys.error(" Email address response is not valid")
+      case _ => sys.error("Email address response is not valid")
     }
 
 }

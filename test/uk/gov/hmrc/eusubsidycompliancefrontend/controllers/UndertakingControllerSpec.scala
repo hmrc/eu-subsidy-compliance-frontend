@@ -76,7 +76,7 @@ class UndertakingControllerSpec
     (mockEscService
       .createUndertaking(_: Undertaking)(_: HeaderCarrier))
       .expects(undertaking, *)
-      .returning(result.fold(e => Future.failed(e.value), Future.successful))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 
   private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
     (mockEscService
@@ -88,7 +88,7 @@ class UndertakingControllerSpec
     (mockEscService
       .updateUndertaking(_: Undertaking)(_: HeaderCarrier))
       .expects(undertaking, *)
-      .returning(result.fold(e => Future.failed(e.value), Future.successful))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 
   private def mockTimeProviderNow(now: LocalDateTime) =
     (mockTimeProvider.now _).expects().returning(now)

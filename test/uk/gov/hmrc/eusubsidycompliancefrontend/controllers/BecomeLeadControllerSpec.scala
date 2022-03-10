@@ -87,7 +87,7 @@ class BecomeLeadControllerSpec
     (mockEscService
       .addMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
       .expects(undertakingRef, businessEntity, *)
-      .returning(result.fold(e => Future.failed(e.value), Future.successful))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 
   "BecomeLeadControllerSpec" when {
 

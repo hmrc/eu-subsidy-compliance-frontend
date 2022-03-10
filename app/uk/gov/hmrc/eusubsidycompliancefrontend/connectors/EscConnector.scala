@@ -32,7 +32,7 @@ class EscConnector @Inject() (
   servicesConfig: ServicesConfig,
 )(implicit ec: ExecutionContext) {
 
-  private val escURL: String = servicesConfig.baseUrl("esc")
+  private lazy val escURL: String = servicesConfig.baseUrl("esc")
 
   private val createUndertakingPath = "eu-subsidy-compliance/undertaking"
   private val updateUndertakingPath = "eu-subsidy-compliance/undertaking/update"

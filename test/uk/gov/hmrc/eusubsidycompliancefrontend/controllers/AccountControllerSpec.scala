@@ -77,7 +77,7 @@ class AccountControllerSpec
       .returning {
         result
           .fold(
-            e => Future.failed(e.value),
+            e => Future.failed(e),
             Future.successful
           )
       }

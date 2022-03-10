@@ -30,7 +30,7 @@ trait SendEmailSupport { this: ControllerSpec =>
     (mockSendEmailService
       .sendEmail(_: EmailAddress, _: EmailParameters, _: String)(_: HeaderCarrier))
       .expects(emailAddress, emailParameters, templateId, *)
-      .returning(result.fold(e => Future.failed(e.value), Future.successful))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 }
 
 

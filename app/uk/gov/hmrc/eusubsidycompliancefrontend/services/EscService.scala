@@ -41,7 +41,7 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
 
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]] =
     escConnector.retrieveUndertaking(eori).map {
-      case Left(Error(_)) => None
+      case Left(_) => None
       case Right(value) =>
         value.status match {
           case NOT_FOUND => None

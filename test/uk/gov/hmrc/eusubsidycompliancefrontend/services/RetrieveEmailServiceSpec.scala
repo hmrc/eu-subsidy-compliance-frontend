@@ -45,7 +45,7 @@ class RetrieveEmailServiceSpec extends AnyWordSpec with Matchers with MockFactor
 
   private val emptyHeaders = Map.empty[String, Seq[String]]
 
-  private val service = new RetrieveEmailServiceImpl(mockRetrieveEmailConnector)
+  private val service = new RetrieveEmailService(mockRetrieveEmailConnector)
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

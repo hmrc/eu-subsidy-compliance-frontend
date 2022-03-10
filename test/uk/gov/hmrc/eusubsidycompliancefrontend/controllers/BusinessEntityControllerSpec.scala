@@ -1302,7 +1302,7 @@ class BusinessEntityControllerSpec
     (mockEscService
       .removeMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
       .expects(undertakingRef, businessEntity, *)
-      .returning(result.fold(e => Future.failed(e.value), Future.successful))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 
   private def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
     result: Either[Error, UndertakingRef]
@@ -1310,7 +1310,7 @@ class BusinessEntityControllerSpec
     (mockEscService
       .addMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
       .expects(undertakingRef, businessEntity, *)
-      .returning(result.fold(e => Future.failed(e.value), Future.successful))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 
   private def mockTimeToday(now: LocalDate) =
     (mockTimeProvider.today _).expects().returning(now)

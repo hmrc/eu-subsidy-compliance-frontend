@@ -34,7 +34,7 @@ class SendEmailService @Inject() (emailSendConnector: SendEmailConnector)(implic
     hc: HeaderCarrier
   ): Future[EmailSendResult] =
     emailSendConnector.sendEmail(EmailSendRequest(List(emailAddress), templateId, emailParameters)).map {
-      case Left(Error(_)) => sys.error(s"Error in Sending Email ${emailParameters.description}")
+      case Left(error) => throw Error(s"Error in Sending Email ${emailParameters.description}", error)
       case Right(value) =>
         value.status match {
           case ACCEPTED => EmailSendResult.EmailSent

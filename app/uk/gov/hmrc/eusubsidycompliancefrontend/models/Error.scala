@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-final case class Error(value: Throwable)
+final case class Error(message: String, cause: Throwable) extends RuntimeException(message, cause)
 
 object Error {
-  def apply(message: String): Error = Error(new RuntimeException("message"))
+  def apply(cause: Throwable): Error = Error(cause.getMessage, cause)
+  def apply(message: String): Error = Error(message, null)
 }

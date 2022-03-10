@@ -205,7 +205,7 @@ class NoClaimNotificationControllerSpec
     (mockEscService
       .createSubsidy(_: UndertakingRef, _: SubsidyUpdate)(_: HeaderCarrier))
       .expects(reference, subsidyUpdate, *)
-      .returning(result.fold(e => Future.failed(e.value), Future.successful))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 
   private def mockTimeProviderToday(today: LocalDate) =
     (mockTimeProvider.today _).expects().returning(today)
