@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.inject.bind
-import play.api.mvc.{Cookie, Result}
+import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -49,7 +49,8 @@ class BusinessEntityControllerSpec
     with JourneySupport
     with RetrieveEmailSupport
     with SendEmailSupport
-    with AuditServiceSupport {
+    with AuditServiceSupport
+    with LeadOnlyRedirectSupport {
 
   private val mockEscService = mock[EscService]
   private val mockTimeProvider = mock[TimeProvider]
@@ -1304,18 +1305,6 @@ class BusinessEntityControllerSpec
 
   private def mockTimeToday(now: LocalDate) =
     (mockTimeProvider.today _).expects().returning(now)
-
-  private def testLeadOnlyRedirect(f: () => Future[Result]) = {
-    inSequence {
-      mockAuthWithEnrolment(eori3)
-      mockGet[Undertaking](eori3)(Right(undertaking.some))
-    }
-
-    val result = f()
-
-    status(result) shouldBe SEE_OTHER
-    redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
-  }
 
 }
 

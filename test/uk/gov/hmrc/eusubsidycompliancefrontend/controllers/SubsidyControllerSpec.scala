@@ -18,15 +18,14 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.inject.bind
-import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyControllerSpec.RemoveSubsidyRow
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyRemoved
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{SubsidyRef, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
@@ -46,7 +45,8 @@ class SubsidyControllerSpec
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with JourneySupport
-    with AuditServiceSupport {
+    with AuditServiceSupport
+    with LeadOnlyRedirectSupport {
 
   private val mockEscService = mock[EscService]
   private val mockTimeProvider = mock[TimeProvider]
@@ -1280,18 +1280,6 @@ class SubsidyControllerSpec
 
   private def mockTimeProviderToday(today: LocalDate) =
     (mockTimeProvider.today _).expects().returning(today)
-
-  private def testLeadOnlyRedirect(f: () => Future[Result]) = {
-    inSequence {
-      mockAuthWithEnrolment(eori3)
-      mockGet[Undertaking](eori3)(Right(undertaking.some))
-    }
-
-    val result = f()
-
-    status(result) shouldBe SEE_OTHER
-    redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
-  }
 
 }
 

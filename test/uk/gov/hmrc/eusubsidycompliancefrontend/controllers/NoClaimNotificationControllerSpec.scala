@@ -18,7 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.inject.bind
-import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -28,7 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NilSubmis
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.CommonTestData.{eori1, eori3, undertaking, undertakingRef}
+import utils.CommonTestData.{eori1, undertaking, undertakingRef}
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -38,7 +37,8 @@ class NoClaimNotificationControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
-    with AuditServiceSupport {
+    with AuditServiceSupport
+    with LeadOnlyRedirectSupport {
 
   private val mockEscService = mock[EscService]
   private val mockTimeProvider = mock[TimeProvider]
@@ -203,17 +203,5 @@ class NoClaimNotificationControllerSpec
 
   private def mockTimeProviderToday(today: LocalDate) =
     (mockTimeProvider.today _).expects().returning(today)
-
-  private def testLeadOnlyRedirect(f: () => Future[Result]) = {
-    inSequence {
-      mockAuthWithEnrolment(eori3)
-      mockGet[Undertaking](eori3)(Right(undertaking.some))
-    }
-
-    val result = f()
-
-    status(result) shouldBe SEE_OTHER
-    redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
-  }
 
 }

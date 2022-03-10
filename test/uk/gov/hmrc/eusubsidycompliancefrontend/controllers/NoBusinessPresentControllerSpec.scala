@@ -18,7 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.inject.bind
-import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -26,13 +25,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaki
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, Store}
 import utils.CommonTestData._
 
-import scala.concurrent.Future
-
 class NoBusinessPresentControllerSpec
     extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
-    with AuthAndSessionDataBehaviour {
+    with AuthAndSessionDataBehaviour
+    with LeadOnlyRedirectSupport {
 
   private val mockEscService = mock[EscService]
 
@@ -114,18 +112,6 @@ class NoBusinessPresentControllerSpec
       }
     }
 
-  }
-
-  private def testLeadOnlyRedirect(f: () => Future[Result]) = {
-    inSequence {
-      mockAuthWithEnrolment(eori3)
-      mockGet[Undertaking](eori3)(Right(undertaking.some))
-    }
-
-    val result = f()
-
-    status(result) shouldBe SEE_OTHER
-    redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
   }
 
 }

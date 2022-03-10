@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.inject.bind
-import play.api.mvc.{Cookie, Result}
+import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -34,8 +34,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.Sel
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import utils.CommonTestData._
 
-import scala.concurrent.Future
-
 class SelectNewLeadControllerSpec
     extends ControllerSpec
     with AuthSupport
@@ -43,7 +41,8 @@ class SelectNewLeadControllerSpec
     with AuthAndSessionDataBehaviour
     with RetrieveEmailSupport
     with SendEmailSupport
-    with AuditServiceSupport {
+    with AuditServiceSupport
+    with LeadOnlyRedirectSupport {
 
   private val mockEscService = mock[EscService]
 
@@ -411,18 +410,6 @@ class SelectNewLeadControllerSpec
 
     }
 
-  }
-
-  private def testLeadOnlyRedirect(f: () => Future[Result]) = {
-    inSequence {
-      mockAuthWithEnrolment(eori3)
-      mockGet[Undertaking](eori3)(Right(undertaking.some))
-    }
-
-    val result = f()
-
-    status(result) shouldBe SEE_OTHER
-    redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
   }
 
 }

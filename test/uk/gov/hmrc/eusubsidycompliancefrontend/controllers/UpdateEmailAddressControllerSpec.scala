@@ -20,24 +20,20 @@ import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Configuration
-import play.api.http.Status.SEE_OTHER
 import play.api.inject.bind
-import play.api.mvc.Result
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
-import utils.CommonTestData.{eori1, eori3, undertaking}
-
-import scala.concurrent.Future
+import utils.CommonTestData.{eori1, undertaking}
 
 class UpdateEmailAddressControllerSpec
     extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
-    with ScalaFutures {
+    with ScalaFutures
+    with LeadOnlyRedirectSupport {
 
   private val mockEscService = mock[EscService]
 
@@ -138,18 +134,6 @@ class UpdateEmailAddressControllerSpec
       }
 
     }
-  }
-
-  private def testLeadOnlyRedirect(f: () => Future[Result]) = {
-    inSequence {
-      mockAuthWithEnrolment(eori3)
-      mockGet[Undertaking](eori3)(Right(undertaking.some))
-    }
-
-    val result = f()
-
-    status(result) shouldBe SEE_OTHER
-    redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
   }
 
 }
