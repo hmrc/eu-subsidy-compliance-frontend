@@ -27,9 +27,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
-import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData.{eori1, eori3, undertaking}
 
 import scala.concurrent.Future
@@ -72,7 +70,7 @@ class UpdateEmailAddressControllerSpec
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+          mockGet[Undertaking](eori1)(Right(undertaking.some))
         }
         checkPageIsDisplayed(
           performAction(),
@@ -100,7 +98,7 @@ class UpdateEmailAddressControllerSpec
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+          mockGet[Undertaking](eori1)(Right(undertaking.some))
         }
         checkPageIsDisplayed(
           performAction(),
@@ -128,7 +126,7 @@ class UpdateEmailAddressControllerSpec
       "redirect to next page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+          mockGet[Undertaking](eori1)(Right(undertaking.some))
         }
         checkIsRedirect(performAction(), redirectUrl)
       }
@@ -142,16 +140,10 @@ class UpdateEmailAddressControllerSpec
     }
   }
 
-  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result)
-
   private def testLeadOnlyRedirect(f: () => Future[Result]) = {
     inSequence {
       mockAuthWithEnrolment(eori3)
-      mockRetrieveUndertaking(eori3)(Future.successful(undertaking.some))
+      mockGet[Undertaking](eori3)(Right(undertaking.some))
     }
 
     val result = f()
