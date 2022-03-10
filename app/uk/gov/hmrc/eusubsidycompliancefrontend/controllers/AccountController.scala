@@ -64,12 +64,14 @@ class AccountController @Inject() (
     }
   }
 
-  private def getUndertakingAndHandleResponse(implicit r: AuthenticatedEscRequest[AnyContent], e: EORI): Future[Result] = {
+  private def getUndertakingAndHandleResponse(implicit
+    r: AuthenticatedEscRequest[AnyContent],
+    e: EORI
+  ): Future[Result] =
     escService.retrieveUndertaking(r.eoriNumber) flatMap {
       case Some(u) => handleExistingUndertaking(u)
       case None => handleUndertakingNotCreated
     }
-  }
 
   private def handleUndertakingNotCreated(implicit e: EORI): Future[Result] = {
     val result = getOrCreateJourneys().map {
@@ -80,7 +82,9 @@ class AccountController @Inject() (
     result.getOrElse(handleMissingSessionData("Account Home - Undertaking not created -"))
   }
 
-  private def handleExistingUndertaking(u: Undertaking)(implicit r: AuthenticatedEscRequest[AnyContent], e: EORI): Future[Result] = {
+  private def handleExistingUndertaking(
+    u: Undertaking
+  )(implicit r: AuthenticatedEscRequest[AnyContent], e: EORI): Future[Result] = {
     val result = for {
       _ <- store.put(u).toContext
       _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(u))

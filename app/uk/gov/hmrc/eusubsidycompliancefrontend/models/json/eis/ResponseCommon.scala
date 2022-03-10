@@ -54,4 +54,16 @@ object ResponseCommon {
       (JsPath \ "returnParameters").writeNullable[List[Params]]
   )(unlift(ResponseCommon.unapply))
 
+  implicit val reads: Reads[ResponseCommon] = new Reads[ResponseCommon] {
+    override def reads(json: JsValue): JsResult[ResponseCommon] =
+      JsSuccess(
+        ResponseCommon(
+          (json \ "retrieveUndertakingResponse" \ "responseCommon" \ "status").as[EisStatus],
+          EisStatusString("status text"),
+          (json \ "retrieveUndertakingResponse" \ "responseCommon" \ "processingDate").as[LocalDateTime],
+          None
+        )
+      )
+  }
+
 }

@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class EscConnector @Inject() (
   http: HttpClient,
-  servicesConfig: ServicesConfig,
+  servicesConfig: ServicesConfig
 )(implicit ec: ExecutionContext) {
 
   private lazy val escURL: String = servicesConfig.baseUrl("esc")
