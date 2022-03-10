@@ -22,17 +22,15 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-trait SendEmailSupport {
-  this: ControllerSpec =>
+trait SendEmailSupport { this: ControllerSpec =>
 
   val mockSendEmailService = mock[SendEmailService]
-
 
   def mockSendEmail(emailAddress: EmailAddress, emailParameters: EmailParameters, templateId: String)(result: Either[Error, EmailSendResult]) =
     (mockSendEmailService
       .sendEmail(_: EmailAddress, _: EmailParameters, _: String)(_: HeaderCarrier))
       .expects(emailAddress, emailParameters, templateId, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful))
+      .returning(result.fold(e => Future.failed(e.value), Future.successful))
 }
 
 

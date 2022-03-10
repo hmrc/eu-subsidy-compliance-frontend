@@ -34,6 +34,6 @@ trait JourneySupport { this: ControllerSpec =>
     (mockJourneyTraverseService
       .getPrevious(_: ClassTag[A], _: EORI, _: Request[_], _: Reads[A]))
       .expects(*, eori, *, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful(_)))
+      .returning(result.fold(e => Future.failed(e.value), Future.successful))
 
 }

@@ -26,11 +26,11 @@ import scala.concurrent.Future
 
 trait RetrieveEmailSupport { this: ControllerSpec =>
 
-  val mockRetrieveEmailService = mock[RetrieveEmailService]
+  val mockRetrieveEmailService: RetrieveEmailService = mock[RetrieveEmailService]
 
   def mockRetrieveEmail(eori: EORI)(result: Either[Error, RetrieveEmailResponse]) =
     (mockRetrieveEmailService
       .retrieveEmailByEORI(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful(_)))
+      .returning(result.fold(e => Future.failed(e.value), Future.successful))
 }

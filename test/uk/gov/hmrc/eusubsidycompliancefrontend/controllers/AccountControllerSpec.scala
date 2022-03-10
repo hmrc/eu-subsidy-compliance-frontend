@@ -77,11 +77,7 @@ class AccountControllerSpec
       .returning {
         result
           .fold(
-            e =>
-              Future.failed(
-                e.value
-                  .fold(s => new Exception(s), identity)
-              ),
+            e => Future.failed(e.value),
             Future.successful
           )
       }
@@ -142,7 +138,7 @@ class AccountControllerSpec
                   routes.BusinessEntityController.getAddBusinessEntity().url
                 )
 
-              val isNonLeadEORIPresent = undertaking.undertakingBusinessEntity.filterNot(_.leadEORI).nonEmpty
+              val isNonLeadEORIPresent = !undertaking.undertakingBusinessEntity.forall(_.leadEORI)
 
               if (isNonLeadEORIPresent)
                 htmlBody should include regex messageFromMessageKey(

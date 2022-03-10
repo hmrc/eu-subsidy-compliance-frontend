@@ -16,12 +16,8 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-final case class Error(value: Either[String, Throwable]) extends AnyVal
+final case class Error(value: Throwable)
 
 object Error {
-
-  def apply(message: String): Error = Error(Left(message))
-
-  def apply(error: Throwable): Error = Error(Right(error))
-
+  def apply(message: String): Error = Error(new RuntimeException("message"))
 }
