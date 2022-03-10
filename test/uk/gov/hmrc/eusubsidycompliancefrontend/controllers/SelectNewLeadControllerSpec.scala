@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.inject.bind
-import play.api.mvc.Cookie
+import play.api.mvc.{Cookie, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -75,12 +75,6 @@ class SelectNewLeadControllerSpec
 
   private val controller = instanceOf[SelectNewLeadController]
 
-  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result)
-
   "SelectNewLeadControllerSpec" when {
 
     "handling request to get Select New Lead" must {
@@ -93,27 +87,8 @@ class SelectNewLeadControllerSpec
         "call to fetch new lead journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockGet[NewLeadJourney](eori1)(Left(Error(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
-        "call to retrieve undertaking fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[NewLeadJourney](eori1)(Right(NewLeadJourney().some))
-            mockRetrieveUndertaking(eori1)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
-        "call to retrieve undertaking came back with empty response" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[NewLeadJourney](eori1)(Right(NewLeadJourney().some))
-            mockRetrieveUndertaking(eori1)(Future.successful(None))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -122,8 +97,8 @@ class SelectNewLeadControllerSpec
         "call to put New lead journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[NewLeadJourney](eori1)(Right(None))
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[NewLeadJourney](eori1)(Right(None))
             mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -135,8 +110,8 @@ class SelectNewLeadControllerSpec
         "new lead journey is blank " in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[NewLeadJourney](eori1)(Right(None))
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockGet[NewLeadJourney](eori1)(Right(None))
             mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Right(NewLeadJourney()))
           }
           checkPageIsDisplayed(
@@ -156,8 +131,8 @@ class SelectNewLeadControllerSpec
         "new lead journey already exists" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -178,6 +153,12 @@ class SelectNewLeadControllerSpec
         }
       }
 
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(performAction)
+        }
+      }
+
     }
 
     "handling request to post select new lead" must {
@@ -195,21 +176,6 @@ class SelectNewLeadControllerSpec
 
         def update(newLeadJourneyOpt: Option[NewLeadJourney]) =
           newLeadJourneyOpt.map(_.copy(selectNewLead = SelectNewLeadFormPage(eori4.some)))
-        "call to retrieve Undertaking fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
-        }
-
-        "call to retrieve Undertaking came back with Nothing" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(None))
-          }
-          assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
-        }
 
         "call to update new lead journey fails" in {
 
@@ -316,6 +282,12 @@ class SelectNewLeadControllerSpec
         }
       }
 
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(() => performAction()(English.code))
+        }
+      }
+
     }
 
     "handling request to get lead EORI changed" must {
@@ -332,6 +304,7 @@ class SelectNewLeadControllerSpec
         "call to fetch new lead journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockGet[NewLeadJourney](eori1)(Left(Error(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -341,6 +314,7 @@ class SelectNewLeadControllerSpec
         "call to fetch new lead journey came back with None" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockGet[NewLeadJourney](eori1)(Right(None))
           }
           assertThrows[Exception](await(performAction()))
@@ -350,38 +324,18 @@ class SelectNewLeadControllerSpec
         "call to fetch new lead journey came back with response but there is no selected EORI in it" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockGet[NewLeadJourney](eori1)(Right(NewLeadJourney().some))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
-        "call to retrieve undertaking fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[NewLeadJourney](eori1)(Right(NewLeadJourney().some))
-            mockRetrieveUndertaking(eori1)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
-        "call to retrieve undertaking came back with empty response" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[NewLeadJourney](eori1)(Right(NewLeadJourney().some))
-            mockRetrieveUndertaking(eori1)(Future.successful(None))
           }
           assertThrows[Exception](await(performAction()))
 
         }
 
         "call to update business entity journey fails" in {
-
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
             mockUpdate[BusinessEntityJourney](
               _ => update(businessEntityJourneyLead.copy(eori = AddEoriFormPage(eori4.some)).some),
               eori1
@@ -392,11 +346,10 @@ class SelectNewLeadControllerSpec
         }
 
         "call to reset business entity journey fails" in {
-
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
             mockUpdate[BusinessEntityJourney](
               _ =>
                 update(
@@ -418,8 +371,8 @@ class SelectNewLeadControllerSpec
 
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
           mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+          mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
           mockUpdate[BusinessEntityJourney](
             _ =>
               update(
@@ -452,8 +405,32 @@ class SelectNewLeadControllerSpec
 
       }
 
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(performAction)
+        }
+      }
+
     }
 
+  }
+
+  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
+    (mockEscService
+      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
+      .expects(eori, *)
+      .returning(result)
+
+  private def testLeadOnlyRedirect(f: () => Future[Result]) = {
+    inSequence {
+      mockAuthWithEnrolment(eori3)
+      mockRetrieveUndertaking(eori3)(Future.successful(undertaking.some))
+    }
+
+    val result = f()
+
+    status(result) shouldBe SEE_OTHER
+    redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
   }
 
 }

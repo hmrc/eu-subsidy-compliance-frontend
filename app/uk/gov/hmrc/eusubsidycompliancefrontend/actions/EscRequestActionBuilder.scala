@@ -18,17 +18,17 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.actions
 
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.retrieve.v2._
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, _}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
+import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
-import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -38,38 +38,36 @@ class EscRequestActionBuilder @Inject() (
   val authConnector: AuthConnector,
   mcc: ControllerComponents
 )(implicit val executionContext: ExecutionContext, appConfig: AppConfig)
-    extends ActionBuilder[EscAuthRequest, AnyContent]
+    extends ActionBuilder[AuthenticatedEscRequest, AnyContent]
     with FrontendHeaderCarrierProvider
     with Results
     with AuthRedirects
     with AuthorisedFunctions
     with I18nSupport {
 
-  val logger: Logger = Logger(this.getClass.getName)
+  private val EnrolmentKey = "HMRC-ESC-ORG"
+  private val EnrolmentIdentifier = "EORINumber"
 
   val messagesApi: MessagesApi = mcc.messagesApi
 
   val parser: BodyParser[AnyContent] = mcc.parsers.anyContent
 
-  override def invokeBlock[A](request: Request[A], block: EscAuthRequest[A] => Future[Result]): Future[Result] =
-    authorised(Enrolment("HMRC-ESC-ORG"))
+  override def invokeBlock[A](request: Request[A], block: AuthenticatedEscRequest[A] => Future[Result]): Future[Result] =
+    authorised(Enrolment(EnrolmentKey))
       .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](
         Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
       ) {
-        case Some(information) ~ Some(groupId) ~ enrolments =>
+        case Some(credentials) ~ Some(groupId) ~ enrolments =>
           enrolments
-            .getEnrolment("HMRC-ESC-ORG")
-            .map(x => x.getIdentifier("EORINumber"))
-            .flatMap(y => y.map(z => z.value))
-            .map(x => EORI(x)) match {
-            case Some(eori) => block(EscAuthRequest(information.providerId, groupId, request, eori))
-            case _ => throw new IllegalStateException("no eori provided")
-          }
+            .getEnrolment(EnrolmentKey)
+            .flatMap(_.getIdentifier(EnrolmentIdentifier))
+            .fold(throw new IllegalStateException("no eori provided")) { identifier =>
+              block(AuthenticatedEscRequest(credentials.providerId, groupId, request, EORI(identifier.value)))
+            }
         case _ ~ _ => Future.failed(throw InternalError())
-      }(hc(request), executionContext)
-      .recover(handleFailure(request))
+      }(hc(request), executionContext).recover(handleFailure(request))
 
-  def handleFailure(implicit request: Request[_]): PartialFunction[Throwable, Result] = {
+  private def handleFailure(implicit request: Request[_]): PartialFunction[Throwable, Result] = {
     case _: NoActiveSession =>
       Redirect(appConfig.ggSignInUrl, Map("continue" -> Seq(request.uri), "origin" -> Seq(origin)))
     case _: InsufficientEnrolments =>

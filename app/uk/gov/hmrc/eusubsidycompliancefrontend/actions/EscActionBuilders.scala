@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.actions
 
 import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 
 import javax.inject.{Inject, Singleton}
 
@@ -25,6 +25,6 @@ import javax.inject.{Inject, Singleton}
 class EscActionBuilders @Inject() (
   escRequestActionBuilder: EscRequestActionBuilder
 ) {
-  val escAuthentication: ActionBuilder[EscAuthRequest, AnyContent] =
-    escRequestActionBuilder
+
+  val withAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] = escRequestActionBuilder
 }

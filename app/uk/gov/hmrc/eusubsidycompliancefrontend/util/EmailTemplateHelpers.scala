@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.util
 import play.api.Configuration
 import play.api.i18n.I18nSupport.RequestWithMessagesApi
 import play.api.i18n.MessagesApi
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
@@ -29,7 +29,7 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class EmailTemplateHelpers @Inject() (appConfig: AppConfig) {
 
-  private def getLanguage(implicit request: EscAuthRequest[_], messagesApi: MessagesApi): Language =
+  private def getLanguage(implicit request: AuthenticatedEscRequest[_], messagesApi: MessagesApi): Language =
     request.request.messages(messagesApi).lang.code.toLowerCase(Locale.UK) match {
       case English.code => English
       case Welsh.code => Welsh
@@ -37,7 +37,7 @@ class EmailTemplateHelpers @Inject() (appConfig: AppConfig) {
     }
 
   def getEmailTemplateId(configuration: Configuration, inputKey: String)(implicit
-    request: EscAuthRequest[_],
+    request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
   ) = {
     val lang = getLanguage

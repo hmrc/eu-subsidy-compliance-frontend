@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import play.api.Configuration
 import play.api.i18n.I18nSupport.RequestWithMessagesApi
 import play.api.i18n.MessagesApi
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.EscAuthRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
@@ -52,7 +52,7 @@ class SendEmailHelperService @Inject() (
   )(implicit
     hc: HeaderCarrier,
     executionContext: ExecutionContext,
-    request: EscAuthRequest[_],
+    request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
   ): Future[EmailSendResult] =
     for {
@@ -84,7 +84,7 @@ class SendEmailHelperService @Inject() (
         DoubleEORIAndDateEmailParameter(eori1, eori, undertaking.name, undertakingRef, date, key)
     }
 
-  private def getLanguage(implicit request: EscAuthRequest[_], messagesApi: MessagesApi): Language =
+  private def getLanguage(implicit request: AuthenticatedEscRequest[_], messagesApi: MessagesApi): Language =
     request.request.messages(messagesApi).lang.code.toLowerCase(Locale.UK) match {
       case English.code => English
       case Welsh.code => Welsh
@@ -92,7 +92,7 @@ class SendEmailHelperService @Inject() (
     }
 
   private def getEmailTemplateId(configuration: Configuration, inputKey: String)(implicit
-    request: EscAuthRequest[_],
+    request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
   ) = {
     val lang = getLanguage

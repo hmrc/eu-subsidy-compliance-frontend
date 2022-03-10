@@ -54,7 +54,7 @@ class EligibilityController @Inject() (
 
   import escActionBuilders._
 
-  def firstEmptyPage: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def firstEmptyPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .get[EligibilityJourney]
@@ -64,7 +64,7 @@ class EligibilityController @Inject() (
       }
   }
 
-  def getCustomsWaivers: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getCustomsWaivers: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .get[EligibilityJourney]
@@ -77,7 +77,7 @@ class EligibilityController @Inject() (
       }
   }
 
-  def postCustomsWaivers: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postCustomsWaivers: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     customsWaiversForm
       .bindFromRequest()
@@ -87,7 +87,7 @@ class EligibilityController @Inject() (
       )
   }
 
-  def getWillYouClaim: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getWillYouClaim: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .get[EligibilityJourney]
@@ -100,7 +100,7 @@ class EligibilityController @Inject() (
       }
   }
 
-  def postWillYouClaim: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postWillYouClaim: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[EligibilityJourney].flatMap { previous =>
       willYouClaimForm
@@ -112,11 +112,11 @@ class EligibilityController @Inject() (
     }
   }
 
-  def getNotEligible: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getNotEligible: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     Ok(notEligiblePage()).toFuture
   }
 
-  def getMainBusinessCheck: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getMainBusinessCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .get[EligibilityJourney]
@@ -129,7 +129,7 @@ class EligibilityController @Inject() (
       }
   }
 
-  def postMainBusinessCheck: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postMainBusinessCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService
       .getPrevious[EligibilityJourney]
@@ -143,18 +143,18 @@ class EligibilityController @Inject() (
       }
   }
 
-  def getNotEligibleToLead: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getNotEligibleToLead: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     Ok(notEligibleToLeadPage()).toFuture
   }
 
-  def getTerms: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getTerms: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[EligibilityJourney].map { previous =>
       Ok(termsPage(previous))
     }
   }
 
-  def postTerms: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postTerms: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     termsForm
       .bindFromRequest()
@@ -169,7 +169,7 @@ class EligibilityController @Inject() (
 
   }
 
-  def getEoriCheck: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[EligibilityJourney].map {
       case Some(journey) =>
@@ -181,7 +181,7 @@ class EligibilityController @Inject() (
 
   }
 
-  def postEoriCheck: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[EligibilityJourney].flatMap { previous =>
       eoriCheckForm
@@ -193,18 +193,18 @@ class EligibilityController @Inject() (
     }
   }
 
-  def getIncorrectEori: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getIncorrectEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     Future.successful(Ok(incorrectEoriPage()))
   }
 
-  def getCreateUndertaking: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def getCreateUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[EligibilityJourney].map { previous =>
       Ok(createUndertakingPage(previous))
     }
   }
 
-  def postCreateUndertaking: Action[AnyContent] = escAuthentication.async { implicit request =>
+  def postCreateUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     createUndertakingForm
       .bindFromRequest()

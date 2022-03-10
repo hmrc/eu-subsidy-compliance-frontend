@@ -16,22 +16,37 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
+import org.scalatest.concurrent.ScalaFutures
 import play.api.Configuration
+import play.api.http.Status.SEE_OTHER
 import play.api.inject.bind
+import play.api.mvc.Result
 import play.api.test.FakeRequest
+import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
+import uk.gov.hmrc.http.HeaderCarrier
+import utils.CommonTestData.{eori1, eori3, undertaking}
+
+import scala.concurrent.Future
 
 class UpdateEmailAddressControllerSpec
     extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
-    with AuthAndSessionDataBehaviour {
+    with AuthAndSessionDataBehaviour
+    with ScalaFutures {
+
+  private val mockEscService = mock[EscService]
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
-    bind[Store].toInstance(mockJourneyStore)
+    bind[Store].toInstance(mockJourneyStore),
+    bind[EscService].toInstance(mockEscService),
   )
 
   val redirectUrl = "manage-email-cds/service/eu-subsidy-compliance-frontend"
@@ -53,9 +68,11 @@ class UpdateEmailAddressControllerSpec
     "handling request to update Unverified Email Address " must {
 
       def performAction() = controller.updateUnverifiedEmailAddress(FakeRequest())
+
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
+          mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
         }
         checkPageIsDisplayed(
           performAction(),
@@ -68,6 +85,12 @@ class UpdateEmailAddressControllerSpec
         )
 
       }
+
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(performAction)
+        }
+      }
     }
 
     "handling request to update Undelivered Email Address " must {
@@ -77,6 +100,7 @@ class UpdateEmailAddressControllerSpec
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
+          mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
         }
         checkPageIsDisplayed(
           performAction(),
@@ -87,19 +111,53 @@ class UpdateEmailAddressControllerSpec
 
           }
         )
-
       }
+
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(performAction)
+        }
+      }
+
     }
 
     "handling request to post update email address" must {
+
       def performAction() = controller.postUpdateEmailAddress(FakeRequest())
+
       "redirect to next page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
+          mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
         }
         checkIsRedirect(performAction(), redirectUrl)
       }
+
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(performAction)
+        }
+      }
+
     }
+  }
+
+  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
+    (mockEscService
+      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
+      .expects(eori, *)
+      .returning(result)
+
+  private def testLeadOnlyRedirect(f: () => Future[Result]) = {
+    inSequence {
+      mockAuthWithEnrolment(eori3)
+      mockRetrieveUndertaking(eori3)(Future.successful(undertaking.some))
+    }
+
+    val result = f()
+
+    status(result) shouldBe SEE_OTHER
+    redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
   }
 
 }

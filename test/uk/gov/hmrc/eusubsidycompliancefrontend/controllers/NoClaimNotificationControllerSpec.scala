@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.inject.bind
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -27,7 +28,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRe
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.CommonTestData.{eori1, undertaking, undertakingRef}
+import utils.CommonTestData.{eori1, eori3, undertaking, undertakingRef}
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -51,51 +52,12 @@ class NoClaimNotificationControllerSpec
   )
   private val controller = instanceOf[NoClaimNotificationController]
 
-  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result)
-
-  private def mockCreateSubsidy(reference: UndertakingRef, subsidyUpdate: SubsidyUpdate)(
-    result: Either[Error, UndertakingRef]
-  ) =
-    (mockEscService
-      .createSubsidy(_: UndertakingRef, _: SubsidyUpdate)(_: HeaderCarrier))
-      .expects(reference, subsidyUpdate, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful(_)))
-
-  private def mockTimeProviderToday(today: LocalDate) =
-    (mockTimeProvider.today _).expects().returning(today)
-
   "NoClaimNotificationControllerSpec" when {
 
     "handling request to get No claim notification" must {
 
       def performAction() = controller.getNoClaimNotification(FakeRequest())
       behave like authBehaviour(() => performAction())
-
-      "throw technical error" when {
-        val exception = new Exception("oh no")
-
-        "there is error in retrieving the undertaking" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
-        "call to retrieve undertaking came back with None" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(None))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-      }
 
       "display the page" in {
 
@@ -118,6 +80,12 @@ class NoClaimNotificationControllerSpec
 
       }
 
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(performAction)
+        }
+      }
+
     }
 
     "handling request  to post No claim notification " must {
@@ -133,24 +101,6 @@ class NoClaimNotificationControllerSpec
       "throw technical error" when {
 
         val exception = new Exception("oh no")
-
-        "there is error in retrieving the undertaking" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
-
-        }
-
-        "call to retrieve undertaking came back with None" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(None))
-          }
-          assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
-
-        }
 
         "call to create Subsidy fails" in {
           inSequence {
@@ -200,34 +150,18 @@ class NoClaimNotificationControllerSpec
 
       }
 
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(() => performAction())
+        }
+      }
+
     }
 
     "handling request to get No claim confirmation" must {
 
       def performAction() = controller.getNoClaimConfirmation(FakeRequest())
       behave like authBehaviour(() => performAction())
-
-      "throw technical error" when {
-        val exception = new Exception("oh no")
-
-        "there is error in retrieving the undertaking" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
-        "call to retrieve undertaking came back with None" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(None))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-      }
 
       "display the page" in {
         inSequence {
@@ -249,8 +183,43 @@ class NoClaimNotificationControllerSpec
         )
       }
 
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(performAction)
+        }
+      }
+
     }
 
+  }
+
+  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
+    (mockEscService
+      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
+      .expects(eori, *)
+      .returning(result)
+
+  private def mockCreateSubsidy(reference: UndertakingRef, subsidyUpdate: SubsidyUpdate)(
+    result: Either[Error, UndertakingRef]
+  ) =
+    (mockEscService
+      .createSubsidy(_: UndertakingRef, _: SubsidyUpdate)(_: HeaderCarrier))
+      .expects(reference, subsidyUpdate, *)
+      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful))
+
+  private def mockTimeProviderToday(today: LocalDate) =
+    (mockTimeProvider.today _).expects().returning(today)
+
+  private def testLeadOnlyRedirect(f: () => Future[Result]) = {
+    inSequence {
+      mockAuthWithEnrolment(eori3)
+      mockRetrieveUndertaking(eori3)(Future.successful(undertaking.some))
+    }
+
+    val result = f()
+
+    status(result) shouldBe SEE_OTHER
+    redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
   }
 
 }

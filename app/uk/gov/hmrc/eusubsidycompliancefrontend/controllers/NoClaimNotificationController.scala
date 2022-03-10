@@ -21,8 +21,8 @@ import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyNilReturn
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyUpdate}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EscService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.{FutureToOptionTOps, OptionToOptionTOps}
@@ -36,64 +36,51 @@ import scala.concurrent.ExecutionContext
 class NoClaimNotificationController @Inject() (
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
-  escService: EscService,
+  val escService: EscService,
   auditService: AuditService,
   timeProvider: TimeProvider,
   noClaimNotificationPage: NoClaimNotificationPage,
   noClaimConfirmationPage: NoClaimConfirmationPage
-)(implicit val appConfig: AppConfig, executionContext: ExecutionContext)
-    extends BaseController(mcc) {
+)(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
+    extends BaseController(mcc) with LeadOnlyUndertakingSupport {
   import escActionBuilders._
 
-  def getNoClaimNotification: Action[AnyContent] = escAuthentication.async { implicit request =>
-    val eori = request.eoriNumber
-    val previous = routes.AccountController.getAccountPage().url
-    for {
-      undertakingOpt <- escService.retrieveUndertaking(eori)
-    } yield undertakingOpt match {
-      case Some(undertaking) =>
-        Ok(noClaimNotificationPage(noClaimForm, previous, undertaking.name))
-      case _ => handleMissingSessionData("Undertaking journey")
+  def getNoClaimNotification: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { undertaking =>
+      val previous = routes.AccountController.getAccountPage().url
+      Ok(noClaimNotificationPage(noClaimForm, previous, undertaking.name)).toFuture
     }
   }
 
-  def postNoClaimNotification: Action[AnyContent] = escAuthentication.async { implicit request =>
-    val eori = request.eoriNumber
-    val previous = routes.AccountController.getAccountPage().url
-    (for {
-      undertakingOpt <- escService.retrieveUndertaking(eori)
-    } yield undertakingOpt match {
-      case Some(undertaking) =>
-        noClaimForm
-          .bindFromRequest()
-          .fold(
-            errors => BadRequest(noClaimNotificationPage(errors, previous, undertaking.name)).toFuture,
-            _ => {
-              val nilSubmissionDate = timeProvider.today
-              val result = for {
-                reference <- undertaking.reference.toContext
-                _ <- escService
-                  .createSubsidy(reference, SubsidyUpdate(reference, NilSubmissionDate(nilSubmissionDate)))
-                  .toContext
-                _ = auditService
-                  .sendEvent(
-                    AuditEvent.NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate)
-                  )
-              } yield Redirect(routes.NoClaimNotificationController.getNoClaimConfirmation())
-              result.fold(handleMissingSessionData("Undertaking ref"))(identity)
-            }
-          )
-      case _ => handleMissingSessionData("Undertaking journey")
-    }).flatten
+  def postNoClaimNotification: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { undertaking =>
+      val eori = request.eoriNumber
+      val previous = routes.AccountController.getAccountPage().url
+
+      noClaimForm
+        .bindFromRequest()
+        .fold(
+          errors => BadRequest(noClaimNotificationPage(errors, previous, undertaking.name)).toFuture,
+          _ => {
+            val nilSubmissionDate = timeProvider.today
+            val result = for {
+              reference <- undertaking.reference.toContext
+              _ <- escService
+                .createSubsidy(reference, SubsidyUpdate(reference, NilSubmissionDate(nilSubmissionDate)))
+                .toContext
+              _ = auditService
+                .sendEvent(NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate))
+            } yield Redirect(routes.NoClaimNotificationController.getNoClaimConfirmation())
+
+            result.getOrElse(handleMissingSessionData("Undertaking ref"))
+          }
+        )
+    }
   }
 
-  def getNoClaimConfirmation: Action[AnyContent] = escAuthentication.async { implicit request =>
-    val eori = request.eoriNumber
-    for {
-      undertakingOpt <- escService.retrieveUndertaking(eori)
-    } yield undertakingOpt match {
-      case Some(undertaking) => Ok(noClaimConfirmationPage(undertaking.name))
-      case _ => handleMissingSessionData("Undertaking journey")
+  def getNoClaimConfirmation: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { undertaking =>
+      Ok(noClaimConfirmationPage(undertaking.name)).toFuture
     }
   }
 

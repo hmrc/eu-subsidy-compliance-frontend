@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.data.Forms.text
 import play.api.data.Mapping
 import play.api.data.validation.{Constraint, Invalid, Valid}
@@ -24,8 +23,10 @@ import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
+import javax.inject.Singleton
+
 @Singleton
-class BaseController @Inject() (mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
+class BaseController (mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
 
   protected def mandatory(key: String): Mapping[String] =
     text.transform[String](_.trim, s => s).verifying(required(key))
@@ -54,4 +55,5 @@ class BaseController @Inject() (mcc: MessagesControllerComponents) extends Front
     case a if !a.matches(regex) => Invalid(s"error.$key.invalid")
     case _ => Valid
   }
+
 }

@@ -22,9 +22,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext}
+import scala.concurrent.ExecutionContext
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 @Singleton
@@ -32,30 +33,28 @@ class NoBusinessPresentController @Inject() (
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
   store: Store,
-  escService: EscService,
+  val escService: EscService,
   noBusinessPresentPage: NoBusinessPresentPage
-)(implicit val appConfig: AppConfig, executionContext: ExecutionContext)
-    extends BaseController(mcc) {
+)(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
+    extends BaseController(mcc) with LeadOnlyUndertakingSupport {
   import escActionBuilders._
 
-  def getNoBusinessPresent: Action[AnyContent] = escAuthentication.async { implicit request =>
-    implicit val eori = request.eoriNumber
-    val previous = routes.AccountController.getAccountPage().url
-    escService.retrieveUndertaking(eori).map {
-      _ match {
-        case Some(undertaking) => Ok(noBusinessPresentPage(undertaking.name, previous))
-        case None => handleMissingSessionData("Undertaking")
-      }
+  def getNoBusinessPresent: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { undertaking =>
+      val previous = routes.AccountController.getAccountPage().url
+      Ok(noBusinessPresentPage(undertaking.name, previous)).toFuture
     }
   }
 
-  def postNoBusinessPresent: Action[AnyContent] = escAuthentication.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    for {
-      _ <- store.update[BusinessEntityJourney] { businessEntityJourneyOpt =>
-        businessEntityJourneyOpt.map(_.copy(isLeadSelectJourney = true.some))
-      }
-    } yield (Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
+  def postNoBusinessPresent: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+      for {
+        _ <- store.update[BusinessEntityJourney] { businessEntityJourneyOpt =>
+          businessEntityJourneyOpt.map(_.copy(isLeadSelectJourney = true.some))
+        }
+      } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
+    }
 
   }
 
