@@ -21,9 +21,8 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnectorImpl
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import utils.CommonTestData._
@@ -32,9 +31,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class EscConnectorSpec extends AnyWordSpec with Matchers with MockFactory with HttpSupport with ConnectorSpec {
 
-  val (protocol, host, port) = ("http", "host", "123")
+  private val (protocol, host, port) = ("http", "host", "123")
 
-  val config = Configuration(
+  private val config = Configuration(
     ConfigFactory.parseString(s"""
                                  | microservice.services.esc {
                                  |    protocol = "$protocol"
@@ -44,12 +43,9 @@ class EscConnectorSpec extends AnyWordSpec with Matchers with MockFactory with H
                                  |""".stripMargin)
   )
 
-  val mockTimeProvider = mock[TimeProvider]
+  private val connector = new EscConnector(mockHttp, new ServicesConfig(config))
 
-  val connector = new EscConnectorImpl(mockHttp, new ServicesConfig(config), mockTimeProvider)
-
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-  val responseHeaders = Map.empty[String, Seq[String]]
+  private implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "EscConnectorSpec" when {
 

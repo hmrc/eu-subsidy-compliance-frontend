@@ -16,45 +16,21 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
-import com.google.inject.{ImplementedBy, Inject, Singleton}
+import com.google.inject.{Inject, Singleton}
 import play.api.http.Status.NOT_FOUND
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidyAmendment}
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
-@ImplementedBy(classOf[EscConnectorImpl])
-trait EscConnector {
-  def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
-  def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
-  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
-  def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
-    hc: HeaderCarrier
-  ): Future[Either[Error, HttpResponse]]
-  def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
-    hc: HeaderCarrier
-  ): Future[Either[Error, HttpResponse]]
-  def createSubsidy(undertakingRef: UndertakingRef, subsidyUpdate: SubsidyUpdate)(implicit
-    hc: HeaderCarrier
-  ): Future[Either[Error, HttpResponse]]
-  def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
-  def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit
-    hc: HeaderCarrier
-  ): Future[Either[Error, HttpResponse]]
-
-}
-
 @Singleton
-class EscConnectorImpl @Inject() (
+class EscConnector @Inject() (
   http: HttpClient,
   servicesConfig: ServicesConfig,
-  timeProvider: TimeProvider
-)(implicit ec: ExecutionContext)
-    extends EscConnector {
+)(implicit ec: ExecutionContext) {
 
   private val escURL: String = servicesConfig.baseUrl("esc")
 
@@ -66,7 +42,7 @@ class EscConnectorImpl @Inject() (
   private val updateSubsidyPath = "eu-subsidy-compliance/subsidy/update"
   private val retrieveSubsidyPath = "eu-subsidy-compliance/subsidy/retrieve"
 
-  override def createUndertaking(
+  def createUndertaking(
     undertaking: Undertaking
   )(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
     http
@@ -76,7 +52,7 @@ class EscConnectorImpl @Inject() (
         Left(Error(e))
       }
 
-  override def updateUndertaking(
+  def updateUndertaking(
     undertaking: Undertaking
   )(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
     http
@@ -86,7 +62,7 @@ class EscConnectorImpl @Inject() (
         Left(Error(e))
       }
 
-  override def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
+  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
     http
       .GET[HttpResponse](s"$escURL/$retrieveUndertakingPath$eori")
       .map(Right(_))
@@ -95,7 +71,7 @@ class EscConnectorImpl @Inject() (
         case ex => Left(Error(ex))
       }
 
-  override def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
+  def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
     hc: HeaderCarrier
   ): Future[Either[Error, HttpResponse]] =
     http
@@ -105,7 +81,7 @@ class EscConnectorImpl @Inject() (
         Left(Error(e))
       }
 
-  override def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
+  def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
     hc: HeaderCarrier
   ): Future[Either[Error, HttpResponse]] =
     http
@@ -115,7 +91,7 @@ class EscConnectorImpl @Inject() (
         Left(Error(e))
       }
 
-  override def createSubsidy(undertakingRef: UndertakingRef, subsidyUpdate: SubsidyUpdate)(implicit
+  def createSubsidy(undertakingRef: UndertakingRef, subsidyUpdate: SubsidyUpdate)(implicit
     hc: HeaderCarrier
   ): Future[Either[Error, HttpResponse]] =
     http
@@ -125,7 +101,7 @@ class EscConnectorImpl @Inject() (
         Left(Error(e))
       }
 
-  override def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit
+  def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit
     hc: HeaderCarrier
   ): Future[Either[Error, HttpResponse]] =
     http
@@ -135,7 +111,7 @@ class EscConnectorImpl @Inject() (
         Left(Error(e))
       }
 
-  override def retrieveSubsidy(
+  def retrieveSubsidy(
     subsidyRetrieve: SubsidyRetrieve
   )(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
     http
