@@ -18,14 +18,14 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
-import play.api.http.Status.{NOT_FOUND, OK}
-import play.api.libs.json.Reads
+import play.api.http.Status.{NOT_ACCEPTABLE, NOT_FOUND, OK}
+import play.api.libs.json.{JsResult, JsSuccess, JsValue, Reads}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.json.eis.ResponseCommon
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
+import EscService.reads
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -43,28 +43,29 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
       .map(handleResponse[UndertakingRef](_, "update undertaking"))
 
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]] =
-    retrieveUndertakingWithRC(eori).map {
+    retrieveUndertakingWithResponseCommon(eori).map {
       case Left(_) => None
       case Right(undertakingOpt) => undertakingOpt
     }
 
-  def retrieveUndertakingWithRC(
+  def retrieveUndertakingWithResponseCommon(
     eori: EORI
-  )(implicit hc: HeaderCarrier): Future[Either[ResponseCommon, Option[Undertaking]]] =
+  )(implicit hc: HeaderCarrier): Future[Either[UpstreamErrorResponse, Option[Undertaking]]] =
     escConnector.retrieveUndertaking(eori).map {
       case Left(_) => Right(None)
       case Right(value) =>
         value.status match {
           case NOT_FOUND => Right(None)
+          case NOT_ACCEPTABLE =>
+            value
+              .parseJSON[UpstreamErrorResponse]
+              .fold(_ => sys.error("Error in parsing Response common"), Left(_))
           case OK =>
             value
               .parseJSON[Undertaking]
               .fold(
-                _ =>
-                  value
-                    .parseJSON[ResponseCommon]
-                    .fold(_ => sys.error(" parsing error"), Left(_)),
-                x => Right(x.some)
+                _ => sys.error(" Error in parsing undertaking"),
+                undertaking => Right(undertaking.some)
               )
         }
     }
@@ -118,4 +119,16 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
             )
     )
 
+}
+
+object EscService {
+  implicit val reads: Reads[UpstreamErrorResponse] = new Reads[UpstreamErrorResponse] {
+    override def reads(json: JsValue): JsResult[UpstreamErrorResponse] =
+      JsSuccess(
+        UpstreamErrorResponse(
+          (json \ "message").as[String],
+          (json \ "statusCode").as[Int]
+        )
+      )
+  }
 }

@@ -23,7 +23,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.json.eis.ResponseCommon
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
@@ -135,18 +134,26 @@ class BusinessEntityController @Inject() (
   def postEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    //val businessEntityEori = "businessEntityEori"
+    val businessEntityEori = "businessEntityEori"
 
     def handleValidEori(form: FormValues, previous: Uri): Future[Result] =
-      escService.retrieveUndertaking(EORI(form.value)).flatMap {
-        case Some(_) =>
+      escService.retrieveUndertakingWithResponseCommon(EORI(form.value)).flatMap {
+        case Right(Some(_)) =>
           BadRequest(
             eoriPage(
-              eoriForm.withError("businessEntityEori", "businessEntityEori.eoriInUse").fill(form),
+              eoriForm.withError(businessEntityEori, "businessEntityEori.eoriInUse").fill(form),
               previous
             )
           ).toFuture
-        case None =>
+
+        case Left(_) =>
+          BadRequest(
+            eoriPage(
+              eoriForm.withError(businessEntityEori, s"error.$businessEntityEori.required").fill(form),
+              previous
+            )
+          ).toFuture
+        case Right(None) =>
           store
             .update[BusinessEntityJourney] {
               case Some(b) =>
@@ -158,36 +165,6 @@ class BusinessEntityController @Inject() (
             }
             .flatMap(_.next)
       }
-
-//    def handleValidEori(form: FormValues, previous: Uri): Future[Result] =
-//      escService.retrieveUndertakingWithRC(EORI(form.value)).flatMap {
-//        case Right(Some(_)) =>
-//          BadRequest(
-//            eoriPage(
-//              eoriForm.withError(businessEntityEori, s"$businessEntityEori.eoriInUse").fill(form),
-//              previous
-//            )
-//          ).toFuture
-//
-//        case Left(ResponseCommon(_, _, _, _)) =>
-//          BadRequest(
-//            eoriPage(
-//              eoriForm.withError(businessEntityEori, s"error.$businessEntityEori.required").fill(form),
-//              previous
-//            )
-//          ).toFuture
-//        case Right(None) =>
-//          store
-//            .update[BusinessEntityJourney] {
-//              case Some(b) =>
-//                b.copy(
-//                  eori = b.eori.copy(value = Some(EORI(form.value))),
-//                  oldEORI = b.eori.value
-//                ).some
-//              case None => None
-//            }
-//            .flatMap(_.next)
-//      }
 
     withLeadUndertaking { _ =>
       journeyTraverseService.getPrevious[BusinessEntityJourney].flatMap { previous =>
