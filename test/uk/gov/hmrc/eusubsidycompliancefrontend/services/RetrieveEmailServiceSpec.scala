@@ -23,7 +23,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.RetrieveEmailConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -37,7 +37,7 @@ class RetrieveEmailServiceSpec extends AnyWordSpec with Matchers with MockFactor
 
   private val mockRetrieveEmailConnector = mock[RetrieveEmailConnector]
 
-  private def mockRetrieveEmail(eori: EORI)(result: Either[Error, HttpResponse]) =
+  private def mockRetrieveEmail(eori: EORI)(result: Either[ConnectorError, HttpResponse]) =
     (mockRetrieveEmailConnector
       .retrieveEmailByEORI(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
@@ -60,7 +60,7 @@ class RetrieveEmailServiceSpec extends AnyWordSpec with Matchers with MockFactor
       "return an error" when {
 
         "the http call fails" in {
-          mockRetrieveEmail(eori1)(Left(Error("")))
+          mockRetrieveEmail(eori1)(Left(ConnectorError("")))
           val result = service.retrieveEmailByEORI(eori1)
           assertThrows[RuntimeException](await(result))
         }

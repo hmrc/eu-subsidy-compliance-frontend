@@ -30,7 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, DoubleEORIEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, Language, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
@@ -106,7 +106,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
-            mockGet[BusinessEntityJourney](eori1)(Left(Error(exception)))
+            mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -116,7 +116,7 @@ class BusinessEntityControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-            mockPut[Undertaking](undertaking, eori1)(Left(Error(exception)))
+            mockPut[Undertaking](undertaking, eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -182,7 +182,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
-            mockUpdate[BusinessEntityJourney](_ => updateFunc(businessEntityJourney.some), eori)(Left(Error(exception)))
+            mockUpdate[BusinessEntityJourney](_ => updateFunc(businessEntityJourney.some), eori)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("addBusiness" -> "true")))
         }
@@ -254,7 +254,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
-            mockGetPrevious[BusinessEntityJourney](eori1)(Left(Error(exception)))
+            mockGetPrevious[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -265,7 +265,7 @@ class BusinessEntityControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("/add-member"))
-            mockGet[BusinessEntityJourney](eori1)(Left(Error(exception)))
+            mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -353,7 +353,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
-            mockGetPrevious[BusinessEntityJourney](eori1)(Left(Error(exception)))
+            mockGetPrevious[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -376,7 +376,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
             mockRetrieveUndertaking(eori4)(Future.successful(None))
-            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(Left(Error(exception)))
+            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(Left(ConnectorError(exception)))
           }
 
           assertThrows[Exception](await(performAction("businessEntityEori" -> "123456789010")))
@@ -434,7 +434,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
-            mockGet[BusinessEntityJourney](eori1)(Left(Error(exception)))
+            mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -523,7 +523,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
-            mockGet[BusinessEntityJourney](eori1)(Left(Error(exception)))
+            mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
         }
@@ -553,7 +553,7 @@ class BusinessEntityControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
-            mockAddMember(undertakingRef, businessEntity)(Left(Error(exception)))
+            mockAddMember(undertakingRef, businessEntity)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
         }
@@ -566,7 +566,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
-            mockRetrieveEmail(eori2)(Left(Error(exception)))
+            mockRetrieveEmail(eori2)(Left(ConnectorError(exception)))
           }
 
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
@@ -595,7 +595,7 @@ class BusinessEntityControllerSpec
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
             mockRetrieveEmail(eori2)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockSendEmail(validEmailAddress, emailParametersBE, "template_add_be_EN")(Right(EmailSendResult.EmailSent))
-            mockRetrieveEmail(eori1)(Left(Error(exception)))
+            mockRetrieveEmail(eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
         }
@@ -771,7 +771,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockPut[BusinessEntityJourney](businessEntityJourney, eori1)(Left(Error(exception)))
+            mockPut[BusinessEntityJourney](businessEntityJourney, eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction(eori1)))
         }
@@ -896,7 +896,7 @@ class BusinessEntityControllerSpec
             mockAuthWithEnrolment(eori4)
             mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(currentDate)
-            mockRemoveMember(undertakingRef, businessEntity4)(Left(Error(exception)))
+            mockRemoveMember(undertakingRef, businessEntity4)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("removeYourselfBusinessEntity" -> "true")(English.code)))
         }
@@ -907,7 +907,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(currentDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockRetrieveEmail(eori4)(Left(Error(exception)))
+            mockRetrieveEmail(eori4)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("removeYourselfBusinessEntity" -> "true")(English.code)))
         }
@@ -922,7 +922,7 @@ class BusinessEntityControllerSpec
             mockSendEmail(validEmailAddress, emailParamBE, "template_remove_yourself_be_EN")(
               Right(EmailSendResult.EmailSent)
             )
-            mockRetrieveEmail(eori1)(Left(Error(exception)))
+            mockRetrieveEmail(eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("removeYourselfBusinessEntity" -> "true")(English.code)))
         }
@@ -1114,7 +1114,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(effectiveDate)
-            mockRemoveMember(undertakingRef, businessEntity4)(Left(Error(exception)))
+            mockRemoveMember(undertakingRef, businessEntity4)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
         }
@@ -1126,7 +1126,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(effectiveDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockRetrieveEmail(eori4)(Left(Error(exception)))
+            mockRetrieveEmail(eori4)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
         }
@@ -1150,7 +1150,7 @@ class BusinessEntityControllerSpec
             mockSendEmail(validEmailAddress, emailParameterBE, "template_remove_be_EN")(
               Right(EmailSendResult.EmailSent)
             )
-            mockRetrieveEmail(eori1)(Left(Error(exception)))
+            mockRetrieveEmail(eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
         }
@@ -1297,7 +1297,7 @@ class BusinessEntityControllerSpec
       .returning(result)
 
   private def mockRemoveMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
-    result: Either[Error, UndertakingRef]
+    result: Either[ConnectorError, UndertakingRef]
   ) =
     (mockEscService
       .removeMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
@@ -1305,7 +1305,7 @@ class BusinessEntityControllerSpec
       .returning(result.fold(e => Future.failed(e), Future.successful))
 
   private def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
-    result: Either[Error, UndertakingRef]
+    result: Either[ConnectorError, UndertakingRef]
   ) =
     (mockEscService
       .addMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))

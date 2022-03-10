@@ -27,7 +27,7 @@ import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -141,7 +141,7 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
 
       "an error occurred retrieving the undertaking from the cache" in {
         inSequence {
-          mockGet[Undertaking](eori)(Left(Error("Error")))
+          mockGet[Undertaking](eori)(Left(ConnectorError("Error")))
         }
 
         runTest()

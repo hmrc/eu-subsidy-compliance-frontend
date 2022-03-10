@@ -26,7 +26,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, SubsidyRetrieve, SubsidyUpdate, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, SubsidyRetrieve, SubsidyUpdate, Undertaking}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.CommonTestData._
 
@@ -39,7 +39,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
   private val service: EscService = new EscService(mockEscConnector)
 
   private def mockCreateUndertaking(undertaking: Undertaking)(
-    result: Either[Error, HttpResponse]
+    result: Either[ConnectorError, HttpResponse]
   ) =
     (mockEscConnector
       .createUndertaking(_: Undertaking)(_: HeaderCarrier))
@@ -47,21 +47,21 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       .returning(Future.successful(result))
 
   private def mockUpdateUndertaking(undertaking: Undertaking)(
-    result: Either[Error, HttpResponse]
+    result: Either[ConnectorError, HttpResponse]
   ) =
     (mockEscConnector
       .updateUndertaking(_: Undertaking)(_: HeaderCarrier))
       .expects(undertaking, *)
       .returning(Future.successful(result))
 
-  private def mockRetrieveUndertaking(eori: EORI)(result: Either[Error, HttpResponse]) =
+  private def mockRetrieveUndertaking(eori: EORI)(result: Either[ConnectorError, HttpResponse]) =
     (mockEscConnector
       .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
       .returning(Future.successful(result))
 
   private def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
-    result: Either[Error, HttpResponse]
+    result: Either[ConnectorError, HttpResponse]
   ) =
     (mockEscConnector
       .addMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
@@ -69,7 +69,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       .returning(Future.successful(result))
 
   private def mockRemoveMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
-    result: Either[Error, HttpResponse]
+    result: Either[ConnectorError, HttpResponse]
   ) =
     (mockEscConnector
       .removeMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
@@ -77,7 +77,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       .returning(Future.successful(result))
 
   private def mockCreateSubsidy(undertakingRef: UndertakingRef, subsidyUpdate: SubsidyUpdate)(
-    result: Either[Error, HttpResponse]
+    result: Either[ConnectorError, HttpResponse]
   ) =
     (mockEscConnector
       .createSubsidy(_: UndertakingRef, _: SubsidyUpdate)(_: HeaderCarrier))
@@ -85,7 +85,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       .returning(Future.successful(result))
 
   private def mockRetrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(
-    result: Either[Error, HttpResponse]
+    result: Either[ConnectorError, HttpResponse]
   ) =
     (mockEscConnector
       .retrieveSubsidy(_: SubsidyRetrieve)(_: HeaderCarrier))
@@ -107,7 +107,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       "return an error" when {
 
         "the http call fails" in {
-          mockCreateUndertaking(undertaking)(Left(Error("")))
+          mockCreateUndertaking(undertaking)(Left(ConnectorError("")))
           val result = service.createUndertaking(undertaking)
           assertThrows[RuntimeException](await(result))
         }
@@ -149,7 +149,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       "return an error" when {
 
         "the http call fails" in {
-          mockUpdateUndertaking(undertaking)(Left(Error("")))
+          mockUpdateUndertaking(undertaking)(Left(ConnectorError("")))
           val result = service.updateUndertaking(undertaking)
           assertThrows[RuntimeException](await(result))
         }
@@ -237,7 +237,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       "return an error" when {
 
         "the http call fails" in {
-          mockAddMember(undertakingRef, businessEntity3)(Left(Error("")))
+          mockAddMember(undertakingRef, businessEntity3)(Left(ConnectorError("")))
           val result = service.addMember(undertakingRef, businessEntity3)
           assertThrows[RuntimeException](await(result))
         }
@@ -286,7 +286,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         }
 
         "the http call fails" in {
-          mockRemoveMember(undertakingRef, businessEntity3)(Left(Error("")))
+          mockRemoveMember(undertakingRef, businessEntity3)(Left(ConnectorError("")))
           isError()
         }
 
@@ -332,7 +332,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         }
 
         "the http call fails" in {
-          mockCreateSubsidy(undertakingRef, subsidyUpdate)(Left(Error("")))
+          mockCreateSubsidy(undertakingRef, subsidyUpdate)(Left(ConnectorError("")))
           isError()
         }
 
@@ -376,7 +376,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         }
 
         "the http call fails" in {
-          mockRetrieveSubsidy(subsidyRetrieve)(Left(Error("")))
+          mockRetrieveSubsidy(subsidyRetrieve)(Left(ConnectorError("")))
           isError()
         }
 

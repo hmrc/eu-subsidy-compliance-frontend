@@ -81,7 +81,7 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
     escConnector.removeSubsidy(undertakingRef, nonHmrcSubsidy)
       .map(handleResponse[UndertakingRef](_, "remove subsidy"))
 
-  private def handleResponse[A](r: Either[Error, HttpResponse], action: String)(implicit reads: Reads[A]) =
+  private def handleResponse[A](r: Either[ConnectorError, HttpResponse], action: String)(implicit reads: Reads[A]) =
     r.fold(_ => sys.error(s"Error executing $action"), { response =>
       if (response.status =!= OK) sys.error(s"Error executing $action - Got response status: ${response.status}")
        else response.parseJSON[A].fold(

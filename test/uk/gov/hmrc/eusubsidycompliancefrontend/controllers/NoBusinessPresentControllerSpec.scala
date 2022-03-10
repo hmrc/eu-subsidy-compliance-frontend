@@ -23,7 +23,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, Store}
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData.{businessEntityJourney1, eori1, eori3, undertaking, undertaking1}
@@ -100,7 +100,7 @@ class NoBusinessPresentControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1.some), eori1)(Left(Error(exception)))
+            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1.some), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, Error}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, ConnectorError}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SendEmailService
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -26,7 +26,7 @@ trait SendEmailSupport { this: ControllerSpec =>
 
   val mockSendEmailService = mock[SendEmailService]
 
-  def mockSendEmail(emailAddress: EmailAddress, emailParameters: EmailParameters, templateId: String)(result: Either[Error, EmailSendResult]) =
+  def mockSendEmail(emailAddress: EmailAddress, emailParameters: EmailParameters, templateId: String)(result: Either[ConnectorError, EmailSendResult]) =
     (mockSendEmailService
       .sendEmail(_: EmailAddress, _: EmailParameters, _: String)(_: HeaderCarrier))
       .expects(emailAddress, emailParameters, templateId, *)

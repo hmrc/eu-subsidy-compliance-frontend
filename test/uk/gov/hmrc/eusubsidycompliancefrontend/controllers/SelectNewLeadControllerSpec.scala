@@ -29,7 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIEmailParameter, SingleEORIEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.AddEoriFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -88,7 +88,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockGet[NewLeadJourney](eori1)(Left(Error(exception)))
+            mockGet[NewLeadJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -99,7 +99,7 @@ class SelectNewLeadControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
             mockGet[NewLeadJourney](eori1)(Right(None))
-            mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Left(Error(exception)))
+            mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -182,7 +182,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Left(Error(exception)))
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
         }
@@ -195,7 +195,7 @@ class SelectNewLeadControllerSpec
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
-            mockRetrieveEmail(eori4)(Left(Error(exception)))
+            mockRetrieveEmail(eori4)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4.toString)(English.code)))
         }
@@ -210,7 +210,7 @@ class SelectNewLeadControllerSpec
             )
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockSendEmail(validEmailAddress, emailParamsBE, "template_BE_as_lead_EN")(Right(EmailSendResult.EmailSent))
-            mockRetrieveEmail(eori1)(Left(Error(exception)))
+            mockRetrieveEmail(eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
         }
@@ -305,7 +305,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockGet[NewLeadJourney](eori1)(Left(Error(exception)))
+            mockGet[NewLeadJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -339,7 +339,7 @@ class SelectNewLeadControllerSpec
             mockUpdate[BusinessEntityJourney](
               _ => update(businessEntityJourneyLead.copy(eori = AddEoriFormPage(eori4.some)).some),
               eori1
-            )(Left(Error(exception)))
+            )(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -360,7 +360,7 @@ class SelectNewLeadControllerSpec
               eori1
             )(Right(businessEntityJourneyLead))
 
-            mockPut[NewLeadJourney](NewLeadJourney(), eori)(Left(Error(exception)))
+            mockPut[NewLeadJourney](NewLeadJourney(), eori)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 

@@ -81,7 +81,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
+            mockGet[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -196,7 +196,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
+            mockGet[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -304,7 +304,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
+            mockGet[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -398,7 +398,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
+            mockGet[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -443,7 +443,7 @@ class SubsidyControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
-            mockUpdate[SubsidyJourney](_ => update(subsidyJourneyOpt), eori1)(Left(Error(exception)))
+            mockUpdate[SubsidyJourney](_ => update(subsidyJourneyOpt), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("claim-amount" -> "123.45")))
         }
@@ -538,7 +538,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
+            mockGet[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -624,7 +624,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetPrevious[SubsidyJourney](eori1)(Left(Error(exception)))
+            mockGetPrevious[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -641,7 +641,7 @@ class SubsidyControllerSpec
             mockUpdate[SubsidyJourney](
               _ => update(subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage(None)).some),
               eori1
-            )(Left(Error(exception)))
+            )(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("should-claim-eori" -> "false")))
         }
@@ -796,7 +796,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Left(Error(exception)))
+            mockGet[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -887,7 +887,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetPrevious[SubsidyJourney](eori1)(Left(Error(exception)))
+            mockGetPrevious[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -1057,7 +1057,7 @@ class SubsidyControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies1))
-            mockRemoveSubsidy(undertakingRef, nonHmrcSubsidyList1.head)(Left(Error(exception)))
+            mockRemoveSubsidy(undertakingRef, nonHmrcSubsidyList1.head)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("removeSubsidyClaim" -> "true")("TID1234")))
         }
@@ -1138,7 +1138,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[SubsidyJourney](_ => update(subsidyJourney.some), eori1)(Left(Error(exception)))
+            mockUpdate[SubsidyJourney](_ => update(subsidyJourney.some), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")))
         }
@@ -1161,7 +1161,7 @@ class SubsidyControllerSpec
             mockCreateSubsidy(
               undertakingRef,
               SubsidyController.toSubsidyUpdate(subsidyJourney, undertakingRef, currentDate)
-            )(Left(Error(exception)))
+            )(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")))
         }
@@ -1176,7 +1176,7 @@ class SubsidyControllerSpec
               undertakingRef,
               SubsidyController.toSubsidyUpdate(subsidyJourney, undertakingRef, currentDate)
             )(Right(undertakingRef))
-            mockPut[SubsidyJourney](SubsidyJourney(), eori1)(Left(Error(exception)))
+            mockPut[SubsidyJourney](SubsidyJourney(), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")))
         }
@@ -1273,7 +1273,7 @@ class SubsidyControllerSpec
       .returning(result)
 
   private def mockRemoveSubsidy(reference: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(
-    result: Either[Error, UndertakingRef]
+    result: Either[ConnectorError, UndertakingRef]
   ) =
     (mockEscService
       .removeSubsidy(_: UndertakingRef, _: NonHmrcSubsidy)(_: HeaderCarrier))
@@ -1281,7 +1281,7 @@ class SubsidyControllerSpec
       .returning(result.fold(e => Future.failed(e), Future.successful))
 
   private def mockCreateSubsidy(reference: UndertakingRef, subsidyUpdate: SubsidyUpdate)(
-    result: Either[Error, UndertakingRef]
+    result: Either[ConnectorError, UndertakingRef]
   ) =
     (mockEscService
       .createSubsidy(_: UndertakingRef, _: SubsidyUpdate)(_: HeaderCarrier))

@@ -23,7 +23,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, NilSubmissionDate, SubsidyUpdate, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NilSubmissionDate, SubsidyUpdate, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
@@ -108,7 +108,7 @@ class NoClaimNotificationControllerSpec
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
             mockTimeProviderToday(currentDay)
             mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
-              Left(Error(exception))
+              Left(ConnectorError(exception))
             )
           }
           assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
@@ -200,7 +200,7 @@ class NoClaimNotificationControllerSpec
       .returning(result)
 
   private def mockCreateSubsidy(reference: UndertakingRef, subsidyUpdate: SubsidyUpdate)(
-    result: Either[Error, UndertakingRef]
+    result: Either[ConnectorError, UndertakingRef]
   ) =
     (mockEscService
       .createSubsidy(_: UndertakingRef, _: SubsidyUpdate)(_: HeaderCarrier))

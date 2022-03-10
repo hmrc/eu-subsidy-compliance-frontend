@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 import com.google.inject.{Inject, Singleton}
 import play.api.http.Status.NOT_FOUND
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Error, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidyAmendment}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidyAmendment}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -44,81 +44,81 @@ class EscConnector @Inject() (
 
   def createUndertaking(
     undertaking: Undertaking
-  )(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
+  )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]] =
     http
       .POST[Undertaking, HttpResponse](s"$escURL/$createUndertakingPath", undertaking)
       .map(Right(_))
       .recover { case e =>
-        Left(Error(e))
+        Left(ConnectorError(e))
       }
 
   def updateUndertaking(
     undertaking: Undertaking
-  )(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
+  )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]] =
     http
       .POST[Undertaking, HttpResponse](s"$escURL/$updateUndertakingPath", undertaking)
       .map(Right(_))
       .recover { case e =>
-        Left(Error(e))
+        Left(ConnectorError(e))
       }
 
-  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
+  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]] =
     http
       .GET[HttpResponse](s"$escURL/$retrieveUndertakingPath$eori")
       .map(Right(_))
       .recover {
         case _: NotFoundException => Right(HttpResponse(NOT_FOUND, ""))
-        case ex => Left(Error(ex))
+        case ex => Left(ConnectorError(ex))
       }
 
   def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
     hc: HeaderCarrier
-  ): Future[Either[Error, HttpResponse]] =
+  ): Future[Either[ConnectorError, HttpResponse]] =
     http
       .POST[BusinessEntity, HttpResponse](s"$escURL/$addMemberPath/$undertakingRef", businessEntity)
       .map(Right(_))
       .recover { case e =>
-        Left(Error(e))
+        Left(ConnectorError(e))
       }
 
   def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
     hc: HeaderCarrier
-  ): Future[Either[Error, HttpResponse]] =
+  ): Future[Either[ConnectorError, HttpResponse]] =
     http
       .POST[BusinessEntity, HttpResponse](s"$escURL/$removeMemberPath/$undertakingRef", businessEntity)
       .map(Right(_))
       .recover { case e =>
-        Left(Error(e))
+        Left(ConnectorError(e))
       }
 
   def createSubsidy(undertakingRef: UndertakingRef, subsidyUpdate: SubsidyUpdate)(implicit
     hc: HeaderCarrier
-  ): Future[Either[Error, HttpResponse]] =
+  ): Future[Either[ConnectorError, HttpResponse]] =
     http
       .POST[SubsidyUpdate, HttpResponse](s"$escURL/$updateSubsidyPath", subsidyUpdate)
       .map(Right(_))
       .recover { case e =>
-        Left(Error(e))
+        Left(ConnectorError(e))
       }
 
   def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit
     hc: HeaderCarrier
-  ): Future[Either[Error, HttpResponse]] =
+  ): Future[Either[ConnectorError, HttpResponse]] =
     http
       .POST[SubsidyUpdate, HttpResponse](s"$escURL/$updateSubsidyPath", toSubsidyDelete(nonHmrcSubsidy, undertakingRef))
       .map(Right(_))
       .recover { case e =>
-        Left(Error(e))
+        Left(ConnectorError(e))
       }
 
   def retrieveSubsidy(
     subsidyRetrieve: SubsidyRetrieve
-  )(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
+  )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]] =
     http
       .POST[SubsidyRetrieve, HttpResponse](s"$escURL/$retrieveSubsidyPath", subsidyRetrieve)
       .map(Right(_))
       .recover { case e =>
-        Left(Error(e))
+        Left(ConnectorError(e))
       }
 
   private def toSubsidyDelete(nonHmrcSubsidy: NonHmrcSubsidy, undertakingRef: UndertakingRef) =
