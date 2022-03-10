@@ -612,6 +612,7 @@ class UndertakingControllerSpec
           performAction(),
           messageFromMessageKey("undertaking.cya.title"),
           { doc =>
+            doc.select(".govuk-back-link").attr("href") shouldBe routes.UndertakingController.getSector().url
             val rows =
               doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
                 val question = element.select(".govuk-summary-list__key").text()

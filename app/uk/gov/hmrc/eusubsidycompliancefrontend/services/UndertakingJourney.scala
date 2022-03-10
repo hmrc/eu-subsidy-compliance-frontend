@@ -49,7 +49,7 @@ case class UndertakingJourney(
 
   override def previous(implicit r: Request[_]): Uri =
     if (isAmend) routes.UndertakingController.getAmendUndertakingDetails().url
-    else if (requiredDetailsProvided) routes.UndertakingController.getCheckAnswers().url
+    else if (requiredDetailsProvided && !isCurrentPageCYA) routes.UndertakingController.getCheckAnswers().url
     else previousMap.get(r.uri).getOrElse(super.previous)
 
   override def next(implicit request: Request[_]): Future[Result] =
@@ -58,6 +58,8 @@ case class UndertakingJourney(
     else super.next
 
   def isEmpty: Boolean = steps.flatMap(_.value).isEmpty
+
+  def isCurrentPageCYA(implicit request: Request[_]) = request.uri == routes.UndertakingController.getCheckAnswers().url
 
   private def requiredDetailsProvided =
     Seq(name, sector).map(_.value.isDefined) == Seq(true, true)
