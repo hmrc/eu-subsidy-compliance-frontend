@@ -27,7 +27,7 @@ import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -53,29 +53,50 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
 
     "invoke the function" when {
 
-      "called with a request from a lead undertaking user" in {
+      def runTest() = {
+        val fakeRequest = AuthenticatedEscRequest(
+          "Foo",
+          "Bar",
+          FakeRequest(),
+          eori
+        )
+        val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
+        status(result) shouldBe OK
+      }
+
+      "called with a request from a lead undertaking user where the cache is empty" in {
         inSequence {
           mockGet[Undertaking](eori)(Right(Option.empty))
           mockRetrieveUndertaking(eori)(undertaking.some.toFuture)
+          mockPut(undertaking, eori)(Right(undertaking))
         }
 
-        val fakeRequest = authorisedRequestForEori(eori)
-
-        val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
-
-        status(result) shouldBe OK
+        runTest()
       }
+
+      "called with a request from a lead undertaking user where the undertaking is cached" in {
+        inSequence {
+          mockGet[Undertaking](eori)(Right(undertaking.some))
+        }
+
+        runTest()
+      }
+
     }
 
     "redirect to the account home page" when {
 
       "called with a request from a non-lead undertaking user" in {
         inSequence {
-          mockGet[Undertaking](eori)(Right(Option.empty))
-          mockRetrieveUndertaking(eori3)(undertaking.some.toFuture)
+          mockGet[Undertaking](eori3)(Right(undertaking.some))
         }
 
-        val fakeRequest = authorisedRequestForEori(eori3)
+        val fakeRequest = AuthenticatedEscRequest(
+          "Foo",
+          "Bar",
+          FakeRequest(),
+          eori3
+        )
 
         val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
 
@@ -86,10 +107,15 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
       "no undertaking could be found for the eori associated with the request" in {
         inSequence {
           mockGet[Undertaking](eori)(Right(Option.empty))
-          mockRetrieveUndertaking(eori3)(undertaking.some.toFuture)
+          mockRetrieveUndertaking(eori)(Option.empty.toFuture)
         }
 
-        val fakeRequest = authorisedRequestForEori(eori)
+        val fakeRequest = AuthenticatedEscRequest(
+          "Foo",
+          "Bar",
+          FakeRequest(),
+          eori
+        )
 
         val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
 
@@ -100,19 +126,37 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
 
     "throw an error" when {
 
-      "an error occurred retrieving the undertaking" in {
-        inSequence {
-          mockGet[Undertaking](eori)(Right(Option.empty))
-          mockRetrieveUndertaking(eori3)(undertaking.some.toFuture)
-        }
-
-        val fakeRequest = authorisedRequestForEori(eori)
+      def runTest() = {
+        val fakeRequest = AuthenticatedEscRequest(
+          "Foo",
+          "Bar",
+          FakeRequest(),
+          eori
+        )
 
         val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
 
         a[RuntimeException] shouldBe thrownBy(result.futureValue)
       }
+
+      "an error occurred retrieving the undertaking from the cache" in {
+        inSequence {
+          mockGet[Undertaking](eori)(Left(Error("Error")))
+        }
+
+        runTest()
+      }
+
+      "an error occurred retrieving the undertaking from the backend" in {
+        inSequence {
+          mockGet[Undertaking](eori)(Right(Option.empty))
+          mockRetrieveUndertaking(eori)(Future.failed(new RuntimeException("Some error")))
+        }
+
+        runTest()
+      }
     }
+
   }
 
   private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
@@ -120,12 +164,5 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
       .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
       .returning(result)
-
-  private def authorisedRequestForEori(e: EORI) = AuthenticatedEscRequest(
-    "Foo",
-    "Bar",
-    FakeRequest(),
-    e
-  )
 
 }

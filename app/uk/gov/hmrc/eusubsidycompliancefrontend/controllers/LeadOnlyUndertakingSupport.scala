@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.data.OptionT
 import play.api.mvc.Result
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
@@ -39,9 +40,15 @@ trait LeadOnlyUndertakingSupport { this: FrontendController =>
     implicit val eori: EORI = r.eoriNumber
 
     store.get[Undertaking].toContext
-      .orElse(escService.retrieveUndertaking(eori).toContext)
+      .orElse(getAndCacheUndertaking)
       .filter(_.isLeadEORI(r.eoriNumber))
       .foldF(Redirect(routes.AccountController.getAccountPage()).toFuture)(f)
   }
+
+  private def getAndCacheUndertaking[A](implicit r: AuthenticatedEscRequest[A], e: EORI): OptionT[Future, Undertaking] =
+    for {
+      undertaking <- escService.retrieveUndertaking(e).toContext
+      _ <- store.put(undertaking).toContext
+    } yield undertaking
 
 }
