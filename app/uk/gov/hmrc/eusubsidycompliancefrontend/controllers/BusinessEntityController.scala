@@ -203,6 +203,8 @@ class BusinessEntityController @Inject() (
         undertakingRef,
         None
       )
+      // Clear the cached undertaking so it's retrieved on the next access
+      _ <- store.delete[Undertaking]
       _ =
         if (businessEntityJourney.isAmend)
           auditService.sendEvent(AuditEvent.BusinessEntityUpdated(request.authorityId, eori, eoriBE))

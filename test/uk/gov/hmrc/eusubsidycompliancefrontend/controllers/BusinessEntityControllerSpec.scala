@@ -709,6 +709,7 @@ class BusinessEntityControllerSpec
             mockSendEmail(validEmailAddress, emailParametersLead, "template_add_lead_EN")(
               Right(EmailSendResult.EmailSent)
             )
+            mockDelete[Undertaking](eori1)(Right(()))
             mockSendAuditEvent(businessEntityAddedEvent)
             mockPut[BusinessEntityJourney](resettedBusinessJourney, eori1)(Right(BusinessEntityJourney()))
           }
@@ -732,7 +733,9 @@ class BusinessEntityControllerSpec
             mockSendEmail(validEmailAddress, emailParametersBE, templateIdBE)(Right(EmailSendResult.EmailSent))
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockSendEmail(validEmailAddress, emailParametersLead, templateIdLead)(Right(EmailSendResult.EmailSent))
+            mockDelete[Undertaking](eori1)(Right(()))
             mockSendAuditEvent(businessEntityAddedEvent)
+            // TODO - where is this put happening? Can't see it in the controller :/
             mockPut[BusinessEntityJourney](BusinessEntityJourney(), eori1)(Right(BusinessEntityJourney()))
           }
           checkIsRedirect(
@@ -793,6 +796,7 @@ class BusinessEntityControllerSpec
             mockSendEmail(validEmailAddress, emailParametersLead, "template_add_lead_EN")(
               Right(EmailSendResult.EmailSent)
             )
+            mockDelete[Undertaking](eori2)(Right(()))
             mockSendAuditEvent(businessEntityUpdatedEvent)
             mockPut[BusinessEntityJourney](updatedBusinessJourney, eori1)(Right(BusinessEntityJourney()))
           }
