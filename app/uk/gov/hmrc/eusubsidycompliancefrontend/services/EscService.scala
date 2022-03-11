@@ -59,7 +59,7 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
           case NOT_ACCEPTABLE =>
             value
               .parseJSON[UpstreamErrorResponse]
-              .fold(_ => sys.error("Error in parsing Response common"), Left(_))
+              .fold(_ => sys.error("Error in parsing Upstream Error Response"), Left(_))
           case OK =>
             value
               .parseJSON[Undertaking]

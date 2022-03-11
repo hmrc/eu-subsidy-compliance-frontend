@@ -411,7 +411,7 @@ class BusinessEntityControllerSpec
         )(retrieveResponse: Either[UpstreamErrorResponse, Option[Undertaking]], errorMessageKey: String): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
             mockRetrieveUndertakingWithErrorResponse(eori4)(retrieveResponse)
           }
@@ -472,7 +472,7 @@ class BusinessEntityControllerSpec
             businessEntityJourney.copy(eori = businessEntityJourney.eori.copy(value = Some(eori4)))
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
             mockRetrieveUndertakingWithErrorResponse(eori4)(Right(None))
             mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney.some), eori1)(
