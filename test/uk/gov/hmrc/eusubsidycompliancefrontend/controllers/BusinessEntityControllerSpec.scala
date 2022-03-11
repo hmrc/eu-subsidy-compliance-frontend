@@ -33,8 +33,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRe
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
 import utils.CommonTestData._
 
 import java.time.LocalDate
@@ -183,7 +184,9 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate[BusinessEntityJourney](_ => updateFunc(businessEntityJourney.some), eori)(Left(ConnectorError(exception)))
+            mockUpdate[BusinessEntityJourney](_ => updateFunc(businessEntityJourney.some), eori)(
+              Left(ConnectorError(exception))
+            )
           }
           assertThrows[Exception](await(performAction("addBusiness" -> "true")))
         }
@@ -376,8 +379,10 @@ class BusinessEntityControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
-            mockRetrieveUndertaking(eori4)(Future.successful(None))
-            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(Left(ConnectorError(exception)))
+            mockRetrieveUndertakingWithErrorResponse(eori4)(Right(None))
+            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(
+              Left(ConnectorError(exception))
+            )
           }
 
           assertThrows[Exception](await(performAction("businessEntityEori" -> "123456789010")))
@@ -401,6 +406,22 @@ class BusinessEntityControllerSpec
           )
         }
 
+        def testEORIvalidation(
+          data: (String, String)*
+        )(retrieveResponse: Either[UpstreamErrorResponse, Option[Undertaking]], errorMessageKey: String): Unit = {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
+            mockRetrieveUndertakingWithErrorResponse(eori4)(retrieveResponse)
+          }
+          checkFormErrorIsDisplayed(
+            performAction(data: _*),
+            messageFromMessageKey("businessEntityEori.title"),
+            messageFromMessageKey(errorMessageKey)
+          )
+        }
+
         "No eori is submitted" in {
           test("businessEntityEori" -> "")("error.businessEntityEori.required")
         }
@@ -413,11 +434,55 @@ class BusinessEntityControllerSpec
 
           }
         }
+
+        "eori submitted is already in use" in {
+          testEORIvalidation("businessEntityEori" -> "123456789010")(
+            Right(undertaking1.some),
+            "businessEntityEori.eoriInUse"
+          )
+        }
+
+        "eori submitted is not stored in SMTP" in {
+          testEORIvalidation("businessEntityEori" -> "123456789010")(
+            Left(UpstreamErrorResponse("EORi not preent in SMTP", 406)),
+            "businessEntityEori.eoriInUse"
+          )
+        }
+
       }
 
       "redirect to the account home page" when {
+
         "user is not an undertaking lead" in {
           testLeadOnlyRedirect(() => performAction())
+        }
+
+        "user is an undertaking lead" in {
+          def update(opt: Option[BusinessEntityJourney]) = opt.map { businessEntity =>
+            businessEntity.copy(eori = businessEntity.eori.copy(value = Some(eori4)))
+          }
+
+          val businessEntityJourney = BusinessEntityJourney()
+            .copy(
+              addBusiness = AddBusinessFormPage(true.some),
+              eori = AddEoriFormPage(eori1.some)
+            )
+
+          val updatedBusinessJourney =
+            businessEntityJourney.copy(eori = businessEntityJourney.eori.copy(value = Some(eori4)))
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
+            mockRetrieveUndertakingWithErrorResponse(eori4)(Right(None))
+            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney.some), eori1)(
+              Right(updatedBusinessJourney)
+            )
+          }
+          checkIsRedirect(
+            performAction("businessEntityEori" -> "123456789010"),
+            routes.BusinessEntityController.getCheckYourAnswers().url
+          )
         }
       }
 
@@ -1286,6 +1351,14 @@ class BusinessEntityControllerSpec
       .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
       .returning(result)
+
+  private def mockRetrieveUndertakingWithErrorResponse(
+    eori: EORI
+  )(result: Either[UpstreamErrorResponse, Option[Undertaking]]) =
+    (mockEscService
+      .retrieveUndertakingWithErrorResponse(_: EORI)(_: HeaderCarrier))
+      .expects(eori, *)
+      .returning(result.toFuture)
 
   private def mockRemoveMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
     result: Either[ConnectorError, UndertakingRef]

@@ -43,12 +43,12 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
       .map(handleResponse[UndertakingRef](_, "update undertaking"))
 
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]] =
-    retrieveUndertakingWithResponseCommon(eori).map {
+    retrieveUndertakingWithErrorResponse(eori).map {
       case Left(_) => None
       case Right(undertakingOpt) => undertakingOpt
     }
 
-  def retrieveUndertakingWithResponseCommon(
+  def retrieveUndertakingWithErrorResponse(
     eori: EORI
   )(implicit hc: HeaderCarrier): Future[Either[UpstreamErrorResponse, Option[Undertaking]]] =
     escConnector.retrieveUndertaking(eori).map {

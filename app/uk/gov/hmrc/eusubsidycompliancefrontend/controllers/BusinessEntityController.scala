@@ -136,23 +136,14 @@ class BusinessEntityController @Inject() (
 
     val businessEntityEori = "businessEntityEori"
 
-    def handleValidEori(form: FormValues, previous: Uri): Future[Result] =
-      escService.retrieveUndertakingWithResponseCommon(EORI(form.value)).flatMap {
-        case Right(Some(_)) =>
-          BadRequest(
-            eoriPage(
-              eoriForm.withError(businessEntityEori, "businessEntityEori.eoriInUse").fill(form),
-              previous
-            )
-          ).toFuture
+    def getErrorResponse(errorMessageKey: String, previous: String, form: FormValues) =
+      BadRequest(eoriPage(eoriForm.withError(businessEntityEori, errorMessageKey).fill(form), previous)).toFuture
 
-        case Left(_) =>
-          BadRequest(
-            eoriPage(
-              eoriForm.withError(businessEntityEori, s"error.$businessEntityEori.required").fill(form),
-              previous
-            )
-          ).toFuture
+    def handleValidEori(form: FormValues, previous: Uri): Future[Result] =
+      escService.retrieveUndertakingWithErrorResponse(EORI(form.value)).flatMap {
+
+        case Right(Some(_)) => getErrorResponse("businessEntityEori.eoriInUse", previous, form)
+        case Left(_) => getErrorResponse(s"error.$businessEntityEori.required", previous, form)
         case Right(None) =>
           store
             .update[BusinessEntityJourney] {
