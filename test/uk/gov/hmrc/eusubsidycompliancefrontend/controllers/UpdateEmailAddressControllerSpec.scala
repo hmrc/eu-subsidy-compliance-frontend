@@ -16,24 +16,20 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
-import utils.CommonTestData.{eori1, undertaking}
 
 class UpdateEmailAddressControllerSpec
     extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
-    with ScalaFutures
-    with LeadOnlyRedirectSupport {
+    with ScalaFutures {
 
   private val mockEscService = mock[EscService]
 
@@ -43,7 +39,7 @@ class UpdateEmailAddressControllerSpec
     bind[EscService].toInstance(mockEscService),
   )
 
-  val redirectUrl = "manage-email-cds/service/eu-subsidy-compliance-frontend"
+  private val redirectUrl = "manage-email-cds/service/eu-subsidy-compliance-frontend"
 
   override def additionalConfig: Configuration = super.additionalConfig.withFallback(
     Configuration(
@@ -66,7 +62,6 @@ class UpdateEmailAddressControllerSpec
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockGet[Undertaking](eori1)(Right(undertaking.some))
         }
         checkPageIsDisplayed(
           performAction(),
@@ -79,12 +74,6 @@ class UpdateEmailAddressControllerSpec
         )
 
       }
-
-      "redirect to the account home page" when {
-        "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(performAction)
-        }
-      }
     }
 
     "handling request to update Undelivered Email Address " must {
@@ -94,7 +83,6 @@ class UpdateEmailAddressControllerSpec
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockGet[Undertaking](eori1)(Right(undertaking.some))
         }
         checkPageIsDisplayed(
           performAction(),
@@ -107,12 +95,6 @@ class UpdateEmailAddressControllerSpec
         )
       }
 
-      "redirect to the account home page" when {
-        "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(performAction)
-        }
-      }
-
     }
 
     "handling request to post update email address" must {
@@ -122,15 +104,8 @@ class UpdateEmailAddressControllerSpec
       "redirect to next page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockGet[Undertaking](eori1)(Right(undertaking.some))
         }
         checkIsRedirect(performAction(), redirectUrl)
-      }
-
-      "redirect to the account home page" when {
-        "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(performAction)
-        }
       }
 
     }

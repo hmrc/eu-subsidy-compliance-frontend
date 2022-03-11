@@ -19,7 +19,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
@@ -32,22 +31,20 @@ class UpdateEmailAddressController @Inject() (
   updateUnverifiedEmailAddressPage: UpdateUnverifiedEmailPage,
   updateUndeliveredEmailAddressPage: UpdateUndeliveredEmailAddressPage,
   escActionBuilders: EscActionBuilders,
-  override val escService: EscService,
-  override val store: Store,
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
-    extends BaseController(mcc) with LeadOnlyUndertakingSupport {
+    extends BaseController(mcc) {
   import escActionBuilders._
 
   def updateUnverifiedEmailAddress: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    withLeadUndertaking { _ => Ok(updateUnverifiedEmailAddressPage()).toFuture }
+    Ok(updateUnverifiedEmailAddressPage()).toFuture
   }
 
-  def postUpdateEmailAddress: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    withLeadUndertaking { _ => Redirect(appConfig.emailFrontendUrl).toFuture }
+  def postUpdateEmailAddress: Action[AnyContent] = withAuthenticatedUser.async {
+    Redirect(appConfig.emailFrontendUrl).toFuture
   }
 
   def updateUndeliveredEmailAddress: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    withLeadUndertaking { _ => Ok(updateUndeliveredEmailAddressPage()).toFuture }
+    Ok(updateUndeliveredEmailAddressPage()).toFuture
   }
 
 }
