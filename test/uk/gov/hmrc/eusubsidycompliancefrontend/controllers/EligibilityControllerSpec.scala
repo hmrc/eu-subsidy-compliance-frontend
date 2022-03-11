@@ -21,7 +21,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -60,7 +60,7 @@ class EligibilityControllerSpec
         "call to get eligibility journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[EligibilityJourney](eori1)(Left(Error(exception)))
+            mockGet[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -106,7 +106,7 @@ class EligibilityControllerSpec
         "call to get eligibility journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[EligibilityJourney](eori1)(Left(Error(exception)))
+            mockGet[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -179,7 +179,7 @@ class EligibilityControllerSpec
         "call to update eligibility journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Left(Error(exception)))
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("customswaivers" -> "true")))
         }
@@ -228,7 +228,7 @@ class EligibilityControllerSpec
         "call to get eligibility fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[EligibilityJourney](eori1)(Left(Error(exception)))
+            mockGet[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -307,7 +307,7 @@ class EligibilityControllerSpec
         "call to get previous fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[EligibilityJourney](eori)(Left(Error(exception)))
+            mockGetPrevious[EligibilityJourney](eori)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -317,7 +317,7 @@ class EligibilityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious(eori)(Right(previousUrl))
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Left(Error(exception)))
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("willyouclaim" -> "true")))
         }
@@ -364,7 +364,7 @@ class EligibilityControllerSpec
         "call to get eligibility fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[EligibilityJourney](eori1)(Left(Error(exception)))
+            mockGet[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -451,7 +451,7 @@ class EligibilityControllerSpec
         "call to get previous fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[EligibilityJourney](eori)(Left(Error(exception)))
+            mockGetPrevious[EligibilityJourney](eori)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -461,7 +461,7 @@ class EligibilityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious(eori)(Right(previousUrl))
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Left(Error(exception)))
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("mainbusinesscheck" -> "true")))
         }
@@ -507,7 +507,7 @@ class EligibilityControllerSpec
         "call to get previous fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[EligibilityJourney](eori1)(Left(Error(exception)))
+            mockGetPrevious[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -558,7 +558,7 @@ class EligibilityControllerSpec
         "call to update eligibility journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Left(Error(exception)))
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("terms" -> "true")))
         }
@@ -589,7 +589,7 @@ class EligibilityControllerSpec
         "call to get eligibility fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[EligibilityJourney](eori1)(Left(Error(exception)))
+            mockGet[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }

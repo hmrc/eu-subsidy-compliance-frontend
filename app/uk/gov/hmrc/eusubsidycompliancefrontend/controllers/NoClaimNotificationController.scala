@@ -23,7 +23,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyNilReturn
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyUpdate}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EscService}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.{FutureToOptionTOps, OptionToOptionTOps}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
@@ -36,7 +36,8 @@ import scala.concurrent.ExecutionContext
 class NoClaimNotificationController @Inject() (
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
-  val escService: EscService,
+  override val store: Store,
+  override val escService: EscService,
   auditService: AuditService,
   timeProvider: TimeProvider,
   noClaimNotificationPage: NoClaimNotificationPage,

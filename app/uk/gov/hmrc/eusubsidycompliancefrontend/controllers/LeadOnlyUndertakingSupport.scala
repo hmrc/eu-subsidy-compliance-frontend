@@ -16,11 +16,14 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.data.OptionT
 import play.api.mvc.Result
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -28,14 +31,24 @@ import scala.concurrent.{ExecutionContext, Future}
 trait LeadOnlyUndertakingSupport { this: FrontendController =>
 
   protected val escService: EscService
+  protected val store: Store
   protected implicit val executionContext: ExecutionContext
 
   // Only execute the block where the undertaking exists and the logged in user is the lead for that undertaking.
   // If there is no undertaking, or the user is not the lead we redirect to the account home page.
-  def withLeadUndertaking[A](f: Undertaking => Future[Result])(implicit r: AuthenticatedEscRequest[A]): Future[Result] =
-    escService.retrieveUndertaking(r.eoriNumber) flatMap {
-      case Some(undertaking) if undertaking.isLeadEORI(r.eoriNumber) => f(undertaking)
-      case _ => Redirect(routes.AccountController.getAccountPage()).toFuture
-    }
+  def withLeadUndertaking[A](f: Undertaking => Future[Result])(implicit r: AuthenticatedEscRequest[A]): Future[Result] = {
+    implicit val eori: EORI = r.eoriNumber
+
+    store.get[Undertaking].toContext
+      .orElse(getAndCacheUndertaking)
+      .filter(_.isLeadEORI(r.eoriNumber))
+      .foldF(Redirect(routes.AccountController.getAccountPage()).toFuture)(f)
+  }
+
+  private def getAndCacheUndertaking[A](implicit r: AuthenticatedEscRequest[A], e: EORI): OptionT[Future, Undertaking] =
+    for {
+      undertaking <- escService.retrieveUndertaking(e).toContext
+      _ <- store.put(undertaking).toContext
+    } yield undertaking
 
 }

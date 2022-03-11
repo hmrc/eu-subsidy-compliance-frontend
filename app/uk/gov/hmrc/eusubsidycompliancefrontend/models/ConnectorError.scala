@@ -16,12 +16,9 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-final case class Error(value: Either[String, Throwable]) extends AnyVal
+final case class ConnectorError(message: String, cause: Throwable) extends RuntimeException(message, cause)
 
-object Error {
-
-  def apply(message: String): Error = Error(Left(message))
-
-  def apply(error: Throwable): Error = Error(Right(error))
-
+object ConnectorError {
+  def apply(cause: Throwable): ConnectorError = ConnectorError(cause.getMessage, cause)
+  def apply(message: String): ConnectorError = ConnectorError(message, null)
 }

@@ -18,17 +18,16 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.inject.bind
-import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, NilSubmissionDate, SubsidyUpdate, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NilSubmissionDate, SubsidyUpdate, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.CommonTestData.{eori1, eori3, undertaking, undertakingRef}
+import utils.CommonTestData.{eori1, undertaking, undertakingRef}
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -38,7 +37,8 @@ class NoClaimNotificationControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
-    with AuditServiceSupport {
+    with AuditServiceSupport
+    with LeadOnlyRedirectSupport {
 
   private val mockEscService = mock[EscService]
   private val mockTimeProvider = mock[TimeProvider]
@@ -63,7 +63,7 @@ class NoClaimNotificationControllerSpec
 
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+          mockGet[Undertaking](eori)(Right(undertaking.some))
         }
         checkPageIsDisplayed(
           performAction(),
@@ -105,10 +105,10 @@ class NoClaimNotificationControllerSpec
         "call to create Subsidy fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockTimeProviderToday(currentDay)
             mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
-              Left(Error(exception))
+              Left(ConnectorError(exception))
             )
           }
           assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
@@ -121,7 +121,7 @@ class NoClaimNotificationControllerSpec
         "check box is not checked" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
           }
 
           checkFormErrorIsDisplayed(
@@ -136,7 +136,7 @@ class NoClaimNotificationControllerSpec
 
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+          mockGet[Undertaking](eori1)(Right(undertaking.some))
           mockTimeProviderToday(currentDay)
           mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
             Right(undertakingRef)
@@ -166,7 +166,7 @@ class NoClaimNotificationControllerSpec
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+          mockGet[Undertaking](eori1)(Right(undertaking.some))
         }
         checkPageIsDisplayed(
           performAction(),
@@ -193,33 +193,15 @@ class NoClaimNotificationControllerSpec
 
   }
 
-  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result)
-
   private def mockCreateSubsidy(reference: UndertakingRef, subsidyUpdate: SubsidyUpdate)(
-    result: Either[Error, UndertakingRef]
+    result: Either[ConnectorError, UndertakingRef]
   ) =
     (mockEscService
       .createSubsidy(_: UndertakingRef, _: SubsidyUpdate)(_: HeaderCarrier))
       .expects(reference, subsidyUpdate, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 
   private def mockTimeProviderToday(today: LocalDate) =
     (mockTimeProvider.today _).expects().returning(today)
-
-  private def testLeadOnlyRedirect(f: () => Future[Result]) = {
-    inSequence {
-      mockAuthWithEnrolment(eori3)
-      mockRetrieveUndertaking(eori3)(Future.successful(undertaking.some))
-    }
-
-    val result = f()
-
-    status(result) shouldBe SEE_OTHER
-    redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
-  }
 
 }

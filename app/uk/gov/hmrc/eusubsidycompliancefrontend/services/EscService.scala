@@ -41,7 +41,7 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
 
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]] =
     escConnector.retrieveUndertaking(eori).map {
-      case Left(Error(_)) => None
+      case Left(_) => None
       case Right(value) =>
         value.status match {
           case NOT_FOUND => None
@@ -81,7 +81,7 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
     escConnector.removeSubsidy(undertakingRef, nonHmrcSubsidy)
       .map(handleResponse[UndertakingRef](_, "remove subsidy"))
 
-  private def handleResponse[A](r: Either[Error, HttpResponse], action: String)(implicit reads: Reads[A]) =
+  private def handleResponse[A](r: Either[ConnectorError, HttpResponse], action: String)(implicit reads: Reads[A]) =
     r.fold(_ => sys.error(s"Error executing $action"), { response =>
       if (response.status =!= OK) sys.error(s"Error executing $action - Got response status: ${response.status}")
        else response.parseJSON[A].fold(

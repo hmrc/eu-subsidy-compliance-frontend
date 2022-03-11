@@ -27,7 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.UndertakingUpdated
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Language, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
@@ -72,11 +72,11 @@ class UndertakingControllerSpec
     )
   )
 
-  private def mockCreateUndertaking(undertaking: Undertaking)(result: Either[Error, UndertakingRef]) =
+  private def mockCreateUndertaking(undertaking: Undertaking)(result: Either[ConnectorError, UndertakingRef]) =
     (mockEscService
       .createUndertaking(_: Undertaking)(_: HeaderCarrier))
       .expects(undertaking, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 
   private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
     (mockEscService
@@ -84,11 +84,11 @@ class UndertakingControllerSpec
       .expects(eori, *)
       .returning(result)
 
-  private def mockUpdateUndertaking(undertaking: Undertaking)(result: Either[Error, UndertakingRef]) =
+  private def mockUpdateUndertaking(undertaking: Undertaking)(result: Either[ConnectorError, UndertakingRef]) =
     (mockEscService
       .updateUndertaking(_: Undertaking)(_: HeaderCarrier))
       .expects(undertaking, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 
   private def mockTimeProviderNow(now: LocalDateTime) =
     (mockTimeProvider.now _).expects().returning(now)
@@ -108,7 +108,7 @@ class UndertakingControllerSpec
         "call to fetch undertaking journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Left(Error(exception)))
+            mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -117,7 +117,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[UndertakingJourney](eori1)(Right(None))
-            mockPut[UndertakingJourney](UndertakingJourney(), eori1)(Left(Error(exception)))
+            mockPut[UndertakingJourney](UndertakingJourney(), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -208,7 +208,7 @@ class UndertakingControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Left(Error(exception)))
+            mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("undertakingName" -> "TestUndertaking123")))
         }
@@ -230,7 +230,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Left(Error(exception)))
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("undertakingName" -> "TestUndertaking123")))
         }
@@ -293,7 +293,7 @@ class UndertakingControllerSpec
         "call to fetch undertaking journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Left(Error(exception)))
+            mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -394,7 +394,7 @@ class UndertakingControllerSpec
         "call to get previous url fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[UndertakingJourney](eori1)(Left(Error(exception)))
+            mockGetPrevious[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("undertakingSector" -> "2")))
         }
@@ -404,7 +404,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[UndertakingJourney](eori1)(Right("undertaking-name"))
-            mockUpdate[UndertakingJourney](_ => update(currentUndertaking.some), eori1)(Left(Error(exception)))
+            mockUpdate[UndertakingJourney](_ => update(currentUndertaking.some), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("undertakingSector" -> "2")))
         }
@@ -497,7 +497,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](
               _ => updateFunc(undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage(false.some)).some),
               eori1
-            )(Left(Error(exception)))
+            )(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
         }
@@ -514,7 +514,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](_ => updateFunc(updatedUndertakingJourney.some), eori1)(
               Right(updatedUndertakingJourney)
             )
-            mockCreateUndertaking(undertakingCreated)(Left(Error(exception)))
+            mockCreateUndertaking(undertakingCreated)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
 
@@ -534,7 +534,7 @@ class UndertakingControllerSpec
               Right(updatedUndertakingJourney)
             )
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockRetrieveEmail(eori1)(Left(Error(exception)))
+            mockRetrieveEmail(eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
 
@@ -633,7 +633,7 @@ class UndertakingControllerSpec
         "call to get undertaking journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Left(Error(exception)))
+            mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -675,7 +675,7 @@ class UndertakingControllerSpec
         "call to get undertaking journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Left(Error(exception)))
+            mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -693,7 +693,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Left(Error(exception)))
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -746,7 +746,7 @@ class UndertakingControllerSpec
         "call to update undertaking journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Left(Error(exception)))
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
 
@@ -816,7 +816,7 @@ class UndertakingControllerSpec
               Right(undertakingJourneyComplete.copy(isAmend = true))
             )
             mockRetrieveUndertaking(eori)(Future.successful(undertaking1.some))
-            mockUpdateUndertaking(updatedUndertaking)(Left(Error(exception)))
+            mockUpdateUndertaking(updatedUndertaking)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
         }

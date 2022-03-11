@@ -21,7 +21,7 @@ import org.scalatest.wordspec._
 import play.api.libs.json.JsString
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -32,7 +32,7 @@ trait ConnectorSpec { this: Matchers with AnyWordSpecLike =>
 
   def connectorBehaviour(
     mockResponse: Option[HttpResponse] => Unit,
-    performCall: () => Future[Either[Error, HttpResponse]]
+    performCall: () => Future[Either[ConnectorError, HttpResponse]]
   ) = {
     "do a get http call and return the result" in {
       List(
@@ -61,7 +61,7 @@ trait ConnectorSpec { this: Matchers with AnyWordSpecLike =>
 
   def connectorBehaviourWithMockTime(
     mockResponse: Option[HttpResponse] => Unit,
-    performCall: () => Future[Either[Error, HttpResponse]],
+    performCall: () => Future[Either[ConnectorError, HttpResponse]],
     mockTimeResponse: LocalDate => Unit
   ) = {
     "do a get http call and return the result" in {

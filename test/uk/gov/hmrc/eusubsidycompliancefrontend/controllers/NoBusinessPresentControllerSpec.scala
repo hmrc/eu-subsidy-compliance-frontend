@@ -18,23 +18,19 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.inject.bind
-import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, Store}
-import uk.gov.hmrc.http.HeaderCarrier
-import utils.CommonTestData.{businessEntityJourney1, eori1, eori3, undertaking, undertaking1}
-
-import scala.concurrent.Future
+import utils.CommonTestData._
 
 class NoBusinessPresentControllerSpec
     extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
-    with AuthAndSessionDataBehaviour {
+    with AuthAndSessionDataBehaviour
+    with LeadOnlyRedirectSupport {
 
   private val mockEscService = mock[EscService]
 
@@ -53,22 +49,10 @@ class NoBusinessPresentControllerSpec
 
       behave like authBehaviour(() => performAction())
 
-      " throw technical error" when {
-        val exception = new Exception("oh no!")
-
-        "call to fetch new lead journey fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-      }
-
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+          mockGet[Undertaking](eori1)(Right(undertaking.some))
         }
         checkPageIsDisplayed(
           performAction(),
@@ -99,8 +83,8 @@ class NoBusinessPresentControllerSpec
         "call to update business entity journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
-            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1.some), eori1)(Left(Error(exception)))
+            mockGet[Undertaking](eori1)(Right(undertaking1.some))
+            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1.some), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -110,7 +94,7 @@ class NoBusinessPresentControllerSpec
       "redirect to next page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+          mockGet[Undertaking](eori1)(Right(undertaking1.some))
           mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1.some), eori1)(
             Right(businessEntityJourney1)
           )
@@ -128,24 +112,6 @@ class NoBusinessPresentControllerSpec
       }
     }
 
-  }
-
-  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result)
-
-  private def testLeadOnlyRedirect(f: () => Future[Result]) = {
-    inSequence {
-      mockAuthWithEnrolment(eori3)
-      mockRetrieveUndertaking(eori3)(Future.successful(undertaking.some))
-    }
-
-    val result = f()
-
-    status(result) shouldBe SEE_OTHER
-    redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
   }
 
 }

@@ -24,7 +24,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Error, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, EscService, RetrieveEmailService, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -70,18 +70,14 @@ class AccountControllerSpec
       .expects(eori, *)
       .returning(result)
 
-  private def mockRetrieveEmail(eori: EORI)(result: Either[Error, RetrieveEmailResponse]) =
+  private def mockRetrieveEmail(eori: EORI)(result: Either[ConnectorError, RetrieveEmailResponse]) =
     (mockRetrieveEmailService
       .retrieveEmailByEORI(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
       .returning {
         result
           .fold(
-            e =>
-              Future.failed(
-                e.value
-                  .fold(s => new Exception(s), identity)
-              ),
+            e => Future.failed(e),
             Future.successful
           )
       }
@@ -142,7 +138,7 @@ class AccountControllerSpec
                   routes.BusinessEntityController.getAddBusinessEntity().url
                 )
 
-              val isNonLeadEORIPresent = undertaking.undertakingBusinessEntity.filterNot(_.leadEORI).nonEmpty
+              val isNonLeadEORIPresent = !undertaking.undertakingBusinessEntity.forall(_.leadEORI)
 
               if (isNonLeadEORIPresent)
                 htmlBody should include regex messageFromMessageKey(
@@ -277,7 +273,7 @@ class AccountControllerSpec
         "there is error in retrieving the email" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(Left(Error(exception)))
+            mockRetrieveEmail(eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -299,7 +295,7 @@ class AccountControllerSpec
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
-            mockGet[EligibilityJourney](eori1)(Left(Error(exception)))
+            mockGet[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -312,7 +308,7 @@ class AccountControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
             mockGet[EligibilityJourney](eori1)(Right(None))
-            mockPut[EligibilityJourney](EligibilityJourney(), eori1)(Left(Error(exception)))
+            mockPut[EligibilityJourney](EligibilityJourney(), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -325,7 +321,7 @@ class AccountControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
             mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete.some))
-            mockGet[UndertakingJourney](eori1)(Left(Error(exception)))
+            mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -341,7 +337,7 @@ class AccountControllerSpec
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
             mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete.some))
             mockGet[UndertakingJourney](eori1)(Right(None))
-            mockPut[UndertakingJourney](undertakingData, eori1)(Left(Error(exception)))
+            mockPut[UndertakingJourney](undertakingData, eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -356,7 +352,7 @@ class AccountControllerSpec
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
             mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
-            mockGet[BusinessEntityJourney](eori1)(Left(Error(exception)))
+            mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -373,7 +369,7 @@ class AccountControllerSpec
             mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
             mockGet[BusinessEntityJourney](eori1)(Right(None))
-            mockPut[BusinessEntityJourney](businessEntityData, eori1)(Left(Error(exception)))
+            mockPut[BusinessEntityJourney](businessEntityData, eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -384,7 +380,7 @@ class AccountControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
-            mockPut[Undertaking](undertaking, eori1)(Left(Error(exception)))
+            mockPut[Undertaking](undertaking, eori1)(Left(ConnectorError(exception)))
 
           }
           assertThrows[Exception](await(performAction()))

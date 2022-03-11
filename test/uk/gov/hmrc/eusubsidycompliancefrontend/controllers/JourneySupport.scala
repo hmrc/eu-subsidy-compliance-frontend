@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.libs.json.Reads
 import play.api.mvc.Request
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{Journey, JourneyTraverseService}
@@ -30,10 +30,10 @@ trait JourneySupport { this: ControllerSpec =>
 
   val mockJourneyTraverseService = mock[JourneyTraverseService]
 
-  def mockGetPrevious[A <: Journey : ClassTag](eori: EORI)(result: Either[Error, Uri]) =
+  def mockGetPrevious[A <: Journey : ClassTag](eori: EORI)(result: Either[ConnectorError, Uri]) =
     (mockJourneyTraverseService
       .getPrevious(_: ClassTag[A], _: EORI, _: Request[_], _: Reads[A]))
       .expects(*, eori, *, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful(_)))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 
 }

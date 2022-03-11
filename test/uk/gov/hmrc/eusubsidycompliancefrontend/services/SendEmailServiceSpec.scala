@@ -21,7 +21,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.SendEmailConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendRequest, EmailSendResult}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.CommonTestData._
@@ -33,7 +33,7 @@ class SendEmailServiceSpec extends AnyWordSpec with Matchers with MockFactory {
 
   private val mockSendEmailConnector: SendEmailConnector = mock[SendEmailConnector]
 
-  private def mockSendEmail(emailSendRequest: EmailSendRequest)(result: Either[Error, HttpResponse]) =
+  private def mockSendEmail(emailSendRequest: EmailSendRequest)(result: Either[ConnectorError, HttpResponse]) =
     (mockSendEmailConnector
       .sendEmail(_: EmailSendRequest)(_: HeaderCarrier))
       .expects(emailSendRequest, *)
@@ -52,7 +52,7 @@ class SendEmailServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       "return an error" when {
 
         "the http call fails" in {
-          mockSendEmail(emailSendRequest)(Left(Error("")))
+          mockSendEmail(emailSendRequest)(Left(ConnectorError("")))
           val result = service.sendEmail(validEmailAddress, emailParameter, templatedId)
           assertThrows[RuntimeException](await(result))
         }

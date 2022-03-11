@@ -21,7 +21,7 @@ import play.api.Logging
 import play.api.http.Status.ACCEPTED
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.SendEmailConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendRequest, EmailSendResult}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, Error}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, ConnectorError}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,7 +34,7 @@ class SendEmailService @Inject() (emailSendConnector: SendEmailConnector)(implic
     hc: HeaderCarrier
   ): Future[EmailSendResult] =
     emailSendConnector.sendEmail(EmailSendRequest(List(emailAddress), templateId, emailParameters)).map {
-      case Left(Error(_)) => sys.error(s"Error in Sending Email ${emailParameters.description}")
+      case Left(error) => throw ConnectorError(s"Error in Sending Email ${emailParameters.description}", error)
       case Right(value) =>
         value.status match {
           case ACCEPTED => EmailSendResult.EmailSent

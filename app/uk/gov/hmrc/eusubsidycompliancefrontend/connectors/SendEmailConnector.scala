@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import com.google.inject.{ImplementedBy, Inject, Singleton}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendRequest
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[SendEmailConnectorImpl])
 trait SendEmailConnector {
-  def sendEmail(emailSendRequest: EmailSendRequest)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
+  def sendEmail(emailSendRequest: EmailSendRequest)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]]
 }
 
 @Singleton
@@ -40,10 +40,10 @@ class SendEmailConnectorImpl @Inject() (http: HttpClient, servicesConfig: Servic
 
   override def sendEmail(emailSendRequest: EmailSendRequest)(implicit
     hc: HeaderCarrier
-  ): Future[Either[Error, HttpResponse]] =
+  ): Future[Either[ConnectorError, HttpResponse]] =
     http
       .POST[EmailSendRequest, HttpResponse](sendEmailUrl, emailSendRequest)
       .map(Right(_))
-      .recover { case e => Left(Error(e)) }
+      .recover { case e => Left(ConnectorError(e)) }
 
 }

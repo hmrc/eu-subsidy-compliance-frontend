@@ -40,8 +40,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class BusinessEntityController @Inject() (
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
-  store: Store,
-  val escService: EscService,
+  override val store: Store,
+  override val escService: EscService,
   journeyTraverseService: JourneyTraverseService,
   timeProvider: TimeProvider,
   sendEmailHelperService: SendEmailHelperService,

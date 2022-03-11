@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import com.google.inject.{ImplementedBy, Inject, Singleton}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @ImplementedBy(classOf[RetrieveEmailConnectorImpl])
 trait RetrieveEmailConnector {
 
-  def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]]
+  def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]]
 
 }
 
@@ -40,11 +40,11 @@ class RetrieveEmailConnectorImpl @Inject() (http: HttpClient, servicesConfig: Se
   val cdsURL: String = servicesConfig.baseUrl("cds")
 
   def getUri(eori: EORI) = s"$cdsURL/customs-data-store/eori/${eori.toString}/verified-email"
-  override def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[Error, HttpResponse]] =
+  override def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]] =
     http
       .GET[HttpResponse](getUri(eori))
       .map(Right(_))
       .recover { case e =>
-        Left(Error(e))
+        Left(ConnectorError(e))
       }
 }

@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import org.scalamock.scalatest.MockFactory
 import play.api.libs.json.{Format, Reads, Writes}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Error
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
 
@@ -29,22 +29,22 @@ trait JourneyStoreSupport { this: MockFactory =>
 
   val mockJourneyStore: Store = mock[Store]
 
-  def mockGet[A](eori: EORI)(result: Either[Error, Option[A]]) =
+  def mockGet[A](eori: EORI)(result: Either[ConnectorError, Option[A]]) =
     (mockJourneyStore
       .get(_: ClassTag[Any], _: EORI, _: Reads[Any]))
       .expects(*, eori, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 
-  def mockPut[A](input: A, eori: EORI)(result: Either[Error, A]) =
+  def mockPut[A](input: A, eori: EORI)(result: Either[ConnectorError, A]) =
     (mockJourneyStore
       .put(_: A)(_: EORI, _: Writes[A]))
       .expects(input, eori, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 
-  def mockUpdate[A](f: Option[A] => Option[A], eori: EORI)(result: Either[Error, A]) =
+  def mockUpdate[A](f: Option[A] => Option[A], eori: EORI)(result: Either[ConnectorError, A]) =
     (mockJourneyStore
       .update(_: Option[A] => Option[A])(_: ClassTag[A], _: EORI, _: Format[A]))
       .expects(*, *, eori, *)
-      .returning(result.fold(e => Future.failed(e.value.fold(s => new Exception(s), identity)), Future.successful))
+      .returning(result.fold(e => Future.failed(e), Future.successful))
 
 }
