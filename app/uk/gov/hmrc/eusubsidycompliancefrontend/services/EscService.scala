@@ -18,13 +18,14 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
-import play.api.http.Status.{NOT_FOUND, OK}
-import play.api.libs.json.Reads
+import play.api.http.Status.{NOT_ACCEPTABLE, NOT_FOUND, OK}
+import play.api.libs.json.{JsResult, JsSuccess, JsValue, Reads}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
+import EscService.reads
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -32,62 +33,102 @@ import scala.concurrent.{ExecutionContext, Future}
 class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionContext) {
 
   def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
-    escConnector.createUndertaking(undertaking)
+    escConnector
+      .createUndertaking(undertaking)
       .map(handleResponse[UndertakingRef](_, "create undertaking"))
 
   def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
-    escConnector.updateUndertaking(undertaking)
+    escConnector
+      .updateUndertaking(undertaking)
       .map(handleResponse[UndertakingRef](_, "update undertaking"))
 
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]] =
-    escConnector.retrieveUndertaking(eori).map {
+    retrieveUndertakingWithErrorResponse(eori).map {
       case Left(_) => None
+      case Right(undertakingOpt) => undertakingOpt
+    }
+
+  def retrieveUndertakingWithErrorResponse(
+    eori: EORI
+  )(implicit hc: HeaderCarrier): Future[Either[UpstreamErrorResponse, Option[Undertaking]]] =
+    escConnector.retrieveUndertaking(eori).map {
+      case Left(_) => Right(None)
       case Right(value) =>
         value.status match {
-          case NOT_FOUND => None
-          case OK => value.parseJSON[Undertaking].fold(_ => sys.error("Error in parsing Undertaking"), _.some)
-          case _ => sys.error("Error in retrieving Undertaking")
+          case NOT_FOUND => Right(None)
+          case NOT_ACCEPTABLE =>
+            value
+              .parseJSON[UpstreamErrorResponse]
+              .fold(_ => sys.error("Error in parsing Upstream Error Response"), Left(_))
+          case OK =>
+            value
+              .parseJSON[Undertaking]
+              .fold(
+                _ => sys.error(" Error in parsing undertaking"),
+                undertaking => Right(undertaking.some)
+              )
         }
     }
 
   def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
     hc: HeaderCarrier
   ): Future[UndertakingRef] =
-    escConnector.addMember(undertakingRef, businessEntity)
+    escConnector
+      .addMember(undertakingRef, businessEntity)
       .map(handleResponse[UndertakingRef](_, "add member"))
-
 
   def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
     hc: HeaderCarrier
   ): Future[UndertakingRef] =
-    escConnector.removeMember(undertakingRef, businessEntity)
+    escConnector
+      .removeMember(undertakingRef, businessEntity)
       .map(handleResponse[UndertakingRef](_, "remove member"))
 
   def createSubsidy(undertakingRef: UndertakingRef, subsidyUpdate: SubsidyUpdate)(implicit
     hc: HeaderCarrier
   ): Future[UndertakingRef] =
-    escConnector.createSubsidy(undertakingRef, subsidyUpdate)
+    escConnector
+      .createSubsidy(undertakingRef, subsidyUpdate)
       .map(handleResponse[UndertakingRef](_, "create subsidy"))
 
   def retrieveSubsidy(
     subsidyRetrieve: SubsidyRetrieve
   )(implicit hc: HeaderCarrier): Future[UndertakingSubsidies] =
-    escConnector.retrieveSubsidy(subsidyRetrieve)
+    escConnector
+      .retrieveSubsidy(subsidyRetrieve)
       .map(handleResponse[UndertakingSubsidies](_, "retrieve subsidy"))
 
   def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit
     hc: HeaderCarrier
   ): Future[UndertakingRef] =
-    escConnector.removeSubsidy(undertakingRef, nonHmrcSubsidy)
+    escConnector
+      .removeSubsidy(undertakingRef, nonHmrcSubsidy)
       .map(handleResponse[UndertakingRef](_, "remove subsidy"))
 
   private def handleResponse[A](r: Either[ConnectorError, HttpResponse], action: String)(implicit reads: Reads[A]) =
-    r.fold(_ => sys.error(s"Error executing $action"), { response =>
-      if (response.status =!= OK) sys.error(s"Error executing $action - Got response status: ${response.status}")
-       else response.parseJSON[A].fold(
-          _ => sys.error(s"Error parsing response for $action"),
-          identity
-        )
-    })
+    r.fold(
+      _ => sys.error(s"Error executing $action"),
+      response =>
+        if (response.status =!= OK) sys.error(s"Error executing $action - Got response status: ${response.status}")
+        else
+          response
+            .parseJSON[A]
+            .fold(
+              _ => sys.error(s"Error parsing response for $action"),
+              identity
+            )
+    )
 
+}
+
+object EscService {
+  implicit val reads: Reads[UpstreamErrorResponse] = new Reads[UpstreamErrorResponse] {
+    override def reads(json: JsValue): JsResult[UpstreamErrorResponse] =
+      JsSuccess(
+        UpstreamErrorResponse(
+          (json \ "message").as[String],
+          (json \ "statusCode").as[Int]
+        )
+      )
+  }
 }
