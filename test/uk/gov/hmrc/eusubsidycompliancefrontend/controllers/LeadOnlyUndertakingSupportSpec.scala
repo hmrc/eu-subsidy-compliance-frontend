@@ -54,12 +54,7 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
     "invoke the function" when {
 
       def runTest() = {
-        val fakeRequest = AuthenticatedEscRequest(
-          "Foo",
-          "Bar",
-          FakeRequest(),
-          eori
-        )
+        val fakeRequest = authorisedRequestForEori(eori)
         val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
         status(result) shouldBe OK
       }
@@ -91,12 +86,7 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
           mockGet[Undertaking](eori3)(Right(undertaking.some))
         }
 
-        val fakeRequest = AuthenticatedEscRequest(
-          "Foo",
-          "Bar",
-          FakeRequest(),
-          eori3
-        )
+        val fakeRequest = authorisedRequestForEori(eori3)
 
         val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
 
@@ -110,12 +100,7 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
           mockRetrieveUndertaking(eori)(Option.empty.toFuture)
         }
 
-        val fakeRequest = AuthenticatedEscRequest(
-          "Foo",
-          "Bar",
-          FakeRequest(),
-          eori
-        )
+        val fakeRequest = authorisedRequestForEori(eori)
 
         val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
 
@@ -127,12 +112,7 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
     "throw an error" when {
 
       def runTest() = {
-        val fakeRequest = AuthenticatedEscRequest(
-          "Foo",
-          "Bar",
-          FakeRequest(),
-          eori
-        )
+        val fakeRequest = authorisedRequestForEori(eori)
 
         val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
 
@@ -164,5 +144,12 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
       .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
       .returning(result)
+
+  private def authorisedRequestForEori(e: EORI) = AuthenticatedEscRequest(
+    "Foo",
+    "Bar",
+    FakeRequest(),
+    e
+  )
 
 }
