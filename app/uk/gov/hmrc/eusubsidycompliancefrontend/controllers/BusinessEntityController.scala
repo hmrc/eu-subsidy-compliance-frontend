@@ -203,6 +203,8 @@ class BusinessEntityController @Inject() (
         undertakingRef,
         None
       )
+      // Clear the cached undertaking so it's retrieved on the next access
+      _ <- store.delete[Undertaking]
       _ =
         if (businessEntityJourney.isAmend)
           auditService.sendEvent(AuditEvent.BusinessEntityUpdated(request.authorityId, eori, eoriBE))
@@ -293,6 +295,8 @@ class BusinessEntityController @Inject() (
                           undertakingRef,
                           removalEffectiveDateString.some
                         )
+                        // Clear the cached undertaking so it's retrieved on the next access
+                        _ <- store.delete[Undertaking]
                         _ = auditService
                           .sendEvent(AuditEvent.BusinessEntityRemoved(request.authorityId, eori, EORI(eoriEntered)))
                       } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
