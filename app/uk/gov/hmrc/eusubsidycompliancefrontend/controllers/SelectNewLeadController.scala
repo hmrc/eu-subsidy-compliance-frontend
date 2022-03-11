@@ -43,7 +43,8 @@ class SelectNewLeadController @Inject() (
   selectNewLeadPage: SelectNewLeadPage,
   leadEORIChangedPage: LeadEORIChangedPage
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
-    extends BaseController(mcc) with LeadOnlyUndertakingSupport {
+    extends BaseController(mcc)
+    with LeadOnlyUndertakingSupport {
 
   import escActionBuilders._
 
@@ -74,38 +75,39 @@ class SelectNewLeadController @Inject() (
             errors,
             routes.AccountController.getAccountPage().url,
             undertaking.name,
-            undertaking.getAllNonLeadEORIs())
+            undertaking.getAllNonLeadEORIs()
+          )
         ).toFuture
 
       def handleFormSubmission(form: FormValues) = {
-          val eoriBE = EORI(form.value)
-          val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking Ref"))
-          for {
-            _ <- store.update[NewLeadJourney] {
-              _.map { newLeadJourney =>
-                val updatedLead = newLeadJourney.selectNewLead.copy(value = eoriBE.some)
-                newLeadJourney.copy(selectNewLead = updatedLead)
-              }
+        val eoriBE = EORI(form.value)
+        val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking Ref"))
+        for {
+          _ <- store.update[NewLeadJourney] {
+            _.map { newLeadJourney =>
+              val updatedLead = newLeadJourney.selectNewLead.copy(value = eoriBE.some)
+              newLeadJourney.copy(selectNewLead = updatedLead)
             }
-            _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
-              eoriBE,
-              None,
-              promoteOtherAsLeadEmailToBusinessEntity,
-              undertaking,
-              undertakingRef,
-              None
-            )
-            _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
-              eori,
-              eoriBE.some,
-              promoteOtherAsLeadEmailToLead,
-              undertaking,
-              undertakingRef,
-              None
-            )
-            _ = auditService.sendEvent(BusinessEntityPromoted(request.authorityId, eori, eoriBE))
-          } yield Redirect(routes.SelectNewLeadController.getLeadEORIChanged())
-        }
+          }
+          _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+            eoriBE,
+            None,
+            promoteOtherAsLeadEmailToBusinessEntity,
+            undertaking,
+            undertakingRef,
+            None
+          )
+          _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+            eori,
+            eoriBE.some,
+            promoteOtherAsLeadEmailToLead,
+            undertaking,
+            undertakingRef,
+            None
+          )
+          _ = auditService.sendEvent(BusinessEntityPromoted(request.authorityId, eori, eoriBE))
+        } yield Redirect(routes.SelectNewLeadController.getLeadEORIChanged())
+      }
 
       selectNewLeadForm
         .bindFromRequest()

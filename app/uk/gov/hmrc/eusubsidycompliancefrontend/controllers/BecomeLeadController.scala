@@ -65,17 +65,18 @@ class BecomeLeadController @Inject() (
   private def becomeLeadResult(
     becomeLeadJourneyOpt: Option[BecomeLeadJourney],
     undertakingOpt: Option[Undertaking]
-  )(implicit request: AuthenticatedEscRequest[_], eori: EORI): Future[Result] = (becomeLeadJourneyOpt, undertakingOpt) match {
-    case (Some(journey), Some(undertaking)) =>
-      val form = journey.becomeLeadEori.value.fold(becomeAdminForm)(e => becomeAdminForm.fill(FormValues(e.toString)))
-      Future.successful(Ok(becomeAdminPage(form, undertaking.name, eori)))
-    case (None, Some(undertaking)) => // initialise the empty Journey model
-      store.put(BecomeLeadJourney()).map { _ =>
-        Ok(becomeAdminPage(becomeAdminForm, undertaking.name, eori))
-      }
-    case _ =>
-      throw new IllegalStateException("missing undertaking name")
-  }
+  )(implicit request: AuthenticatedEscRequest[_], eori: EORI): Future[Result] =
+    (becomeLeadJourneyOpt, undertakingOpt) match {
+      case (Some(journey), Some(undertaking)) =>
+        val form = journey.becomeLeadEori.value.fold(becomeAdminForm)(e => becomeAdminForm.fill(FormValues(e.toString)))
+        Future.successful(Ok(becomeAdminPage(form, undertaking.name, eori)))
+      case (None, Some(undertaking)) => // initialise the empty Journey model
+        store.put(BecomeLeadJourney()).map { _ =>
+          Ok(becomeAdminPage(becomeAdminForm, undertaking.name, eori))
+        }
+      case _ =>
+        throw new IllegalStateException("missing undertaking name")
+    }
 
   def postBecomeLeadEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber

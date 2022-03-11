@@ -36,10 +36,9 @@ trait Journey {
     if (currentIndex > 0) steps(previousIndex).uri
     else throw new IllegalStateException("no previous page")
 
-  def next(implicit r: Request[_]): Future[Result] = {
+  def next(implicit r: Request[_]): Future[Result] =
     if (currentIndex < lastIndex) redirectWithSession(steps(nextIndex).uri).toFuture
     else throw new IllegalStateException("no next page")
-  }
 
   def isComplete: Boolean = steps(lastIndex).value.isDefined
 

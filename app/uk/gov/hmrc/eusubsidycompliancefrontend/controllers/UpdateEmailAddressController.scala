@@ -30,7 +30,7 @@ class UpdateEmailAddressController @Inject() (
   mcc: MessagesControllerComponents,
   updateUnverifiedEmailAddressPage: UpdateUnverifiedEmailPage,
   updateUndeliveredEmailAddressPage: UpdateUndeliveredEmailAddressPage,
-  escActionBuilders: EscActionBuilders,
+  escActionBuilders: EscActionBuilders
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc) {
   import escActionBuilders._

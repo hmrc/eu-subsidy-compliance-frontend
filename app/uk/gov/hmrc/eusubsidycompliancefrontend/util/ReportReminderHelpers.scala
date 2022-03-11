@@ -27,7 +27,7 @@ object ReportReminderHelpers {
   def isTimeToReport(od: Option[LocalDate], currentDate: LocalDate): Boolean =
     od.exists { lastUpdated =>
       lastUpdated.plusDays(ONE_DAY_BEFORE_REMINDER_DAY).isBefore(currentDate) &&
-        lastUpdated.plusDays(ONE_DAY_AFTER_DUE_DAY).isAfter(currentDate)
+      lastUpdated.plusDays(ONE_DAY_AFTER_DUE_DAY).isAfter(currentDate)
     }
 
   def dueDateToReport(od: Option[LocalDate]): Option[LocalDate] =

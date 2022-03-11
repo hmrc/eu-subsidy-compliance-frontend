@@ -32,7 +32,7 @@ case class SubsidyJourney(
   publicAuthority: PublicAuthorityFormPage = PublicAuthorityFormPage(),
   traderRef: TraderRefFormPage = TraderRefFormPage(),
   cya: CyaFormPage = CyaFormPage(),
-  existingTransactionId: Option[SubsidyRef] = None,
+  existingTransactionId: Option[SubsidyRef] = None
 ) extends Journey {
 
   override def steps: Array[FormPage[_]] = Array(
@@ -58,14 +58,13 @@ object SubsidyJourney {
       claimDate = ClaimDateFormPage(DateFormValues.fromDate(nonHmrcSubsidy.allocationDate).some),
       claimAmount = ClaimAmountFormPage(nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.some),
       addClaimEori = AddClaimEoriFormPage(getAddClaimEORI(nonHmrcSubsidy.businessEntityIdentifier).some),
-      publicAuthority= PublicAuthorityFormPage(nonHmrcSubsidy.publicAuthority.orElse("".some)),
+      publicAuthority = PublicAuthorityFormPage(nonHmrcSubsidy.publicAuthority.orElse("".some)),
       traderRef = TraderRefFormPage(getAddTraderRef(nonHmrcSubsidy.traderReference).some),
       existingTransactionId = nonHmrcSubsidy.subsidyUsageTransactionId
     )
 
-  private def getAddClaimEORI(eoriOpt: Option[EORI]): OptionalEORI = {
+  private def getAddClaimEORI(eoriOpt: Option[EORI]): OptionalEORI =
     eoriOpt.fold(OptionalEORI("false", eoriOpt))(e => OptionalEORI("true", e.some))
-  }
 
   private def getAddTraderRef(traderRefOpt: Option[TraderRef]) =
     traderRefOpt.fold(OptionalTraderRef("false", None))(t => OptionalTraderRef("true", t.some))
@@ -74,19 +73,37 @@ object SubsidyJourney {
 
     private val controller = routes.SubsidyController
 
-    case class ReportPaymentFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getReportPayment().url }
-    case class ClaimDateFormPage(value: Form[DateFormValues] = None) extends FormPage[DateFormValues] { def uri = controller.getClaimDate().url }
-    case class ClaimAmountFormPage(value: Form[BigDecimal] = None) extends FormPage[BigDecimal] { def uri = controller.getClaimAmount().url }
-    case class AddClaimEoriFormPage(value: Form[OptionalEORI] = None) extends FormPage[OptionalEORI] { def uri = controller.getAddClaimEori().url }
-    case class PublicAuthorityFormPage(value: Form[String] = None) extends FormPage[String] { def uri = controller.getAddClaimPublicAuthority().url }
-    case class TraderRefFormPage(value: Form[OptionalTraderRef] = None) extends FormPage[OptionalTraderRef] { def uri = controller.getAddClaimReference().url }
-    case class CyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] { def uri = controller.getCheckAnswers().url }
+    case class ReportPaymentFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
+      def uri = controller.getReportPayment().url
+    }
+    case class ClaimDateFormPage(value: Form[DateFormValues] = None) extends FormPage[DateFormValues] {
+      def uri = controller.getClaimDate().url
+    }
+    case class ClaimAmountFormPage(value: Form[BigDecimal] = None) extends FormPage[BigDecimal] {
+      def uri = controller.getClaimAmount().url
+    }
+    case class AddClaimEoriFormPage(value: Form[OptionalEORI] = None) extends FormPage[OptionalEORI] {
+      def uri = controller.getAddClaimEori().url
+    }
+    case class PublicAuthorityFormPage(value: Form[String] = None) extends FormPage[String] {
+      def uri = controller.getAddClaimPublicAuthority().url
+    }
+    case class TraderRefFormPage(value: Form[OptionalTraderRef] = None) extends FormPage[OptionalTraderRef] {
+      def uri = controller.getAddClaimReference().url
+    }
+    case class CyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
+      def uri = controller.getCheckAnswers().url
+    }
 
-    object ReportPaymentFormPage { implicit val reportPaymentFormPageFormat: OFormat[ReportPaymentFormPage] = Json.format }
+    object ReportPaymentFormPage {
+      implicit val reportPaymentFormPageFormat: OFormat[ReportPaymentFormPage] = Json.format
+    }
     object ClaimDateFormPage { implicit val claimDateFormPageFormat: OFormat[ClaimDateFormPage] = Json.format }
     object ClaimAmountFormPage { implicit val claimAmountFormPageFormat: OFormat[ClaimAmountFormPage] = Json.format }
     object AddClaimEoriFormPage { implicit val claimAmountFormPageFormat: OFormat[AddClaimEoriFormPage] = Json.format }
-    object PublicAuthorityFormPage { implicit val claimAmountFormPageFormat: OFormat[PublicAuthorityFormPage] = Json.format }
+    object PublicAuthorityFormPage {
+      implicit val claimAmountFormPageFormat: OFormat[PublicAuthorityFormPage] = Json.format
+    }
     object TraderRefFormPage { implicit val claimAmountFormPageFormat: OFormat[TraderRefFormPage] = Json.format }
     object CyaFormPage { implicit val claimAmountFormPageFormat: OFormat[CyaFormPage] = Json.format }
 

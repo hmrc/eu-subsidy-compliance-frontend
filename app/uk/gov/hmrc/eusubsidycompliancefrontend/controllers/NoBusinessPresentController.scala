@@ -36,7 +36,8 @@ class NoBusinessPresentController @Inject() (
   override val escService: EscService,
   noBusinessPresentPage: NoBusinessPresentPage
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
-    extends BaseController(mcc) with LeadOnlyUndertakingSupport {
+    extends BaseController(mcc)
+    with LeadOnlyUndertakingSupport {
   import escActionBuilders._
 
   def getNoBusinessPresent: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
