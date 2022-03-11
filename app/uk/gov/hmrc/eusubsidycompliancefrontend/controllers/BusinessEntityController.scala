@@ -98,11 +98,7 @@ class BusinessEntityController @Inject() (
     def handleValidAnswer(form: FormValues) = {
       val enteredValue = form.value
       if (enteredValue === "true")
-        store
-          .update[BusinessEntityJourney] { businessEntityOpt =>
-            businessEntityOpt.map(be => be.copy(addBusiness = be.addBusiness.copy(value = Some(form.value.toBoolean))))
-          }
-          .flatMap(_.next)
+        store.update[BusinessEntityJourney](updateAddBusiness(form)).flatMap(_.next)
       else Redirect(routes.AccountController.getAccountPage()).toFuture
     }
 
@@ -136,7 +132,7 @@ class BusinessEntityController @Inject() (
 
     val businessEntityEori = "businessEntityEori"
 
-    def getErrorResponse(errorMessageKey: String, previous: String, form: FormValues) =
+    def getErrorResponse(errorMessageKey: String, previous: String, form: FormValues): Future[Result] =
       BadRequest(eoriPage(eoriForm.withError(businessEntityEori, errorMessageKey).fill(form), previous)).toFuture
 
     def handleValidEori(form: FormValues, previous: Uri): Future[Result] =
@@ -144,17 +140,7 @@ class BusinessEntityController @Inject() (
 
         case Right(Some(_)) => getErrorResponse("businessEntityEori.eoriInUse", previous, form)
         case Left(_) => getErrorResponse(s"error.$businessEntityEori.required", previous, form)
-        case Right(None) =>
-          store
-            .update[BusinessEntityJourney] {
-              case Some(b) =>
-                b.copy(
-                  eori = b.eori.copy(value = Some(EORI(form.value))),
-                  oldEORI = b.eori.value
-                ).some
-              case None => None
-            }
-            .flatMap(_.next)
+        case Right(None) => store.update[BusinessEntityJourney](updateEori(form)).flatMap(_.next)
       }
 
     withLeadUndertaking { _ =>
@@ -374,6 +360,20 @@ class BusinessEntityController @Inject() (
         store
           .put[BusinessEntityJourney](BusinessEntityJourney())
           .map(_ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
+    }
+
+  private def updateBusinessEntityJourney(beOpt: Option[BusinessEntityJourney])(
+    f: BusinessEntityJourney => BusinessEntityJourney
+  ) = beOpt.map(f)
+
+  private def updateEori(f: FormValues)(beOpt: Option[BusinessEntityJourney]) = updateBusinessEntityJourney(beOpt) {
+    beJourney =>
+      beJourney.copy(eori = beJourney.eori.copy(value = EORI(f.value).some), oldEORI = beJourney.eori.value)
+  }
+
+  private def updateAddBusiness(f: FormValues)(beOpt: Option[BusinessEntityJourney]) =
+    updateBusinessEntityJourney(beOpt) { beJourney =>
+      beJourney.copy(addBusiness = beJourney.addBusiness.copy(value = f.value.toBoolean.some))
     }
 
   lazy val addBusinessForm: Form[FormValues] = Form(
