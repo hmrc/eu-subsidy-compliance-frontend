@@ -36,8 +36,4 @@ class SignOutController @Inject() (
     Ok(signOutPage()).withNewSession
   }
 
-  val exitSurvey: Action[AnyContent] = Action { _ =>
-    Redirect(appConfig.exitSurveyUrl).withNewSession
-  }
-
 }
