@@ -43,7 +43,8 @@ class NoClaimNotificationController @Inject() (
   noClaimNotificationPage: NoClaimNotificationPage,
   noClaimConfirmationPage: NoClaimConfirmationPage
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
-    extends BaseController(mcc) with LeadOnlyUndertakingSupport {
+    extends BaseController(mcc)
+    with LeadOnlyUndertakingSupport {
   import escActionBuilders._
 
   def getNoClaimNotification: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>

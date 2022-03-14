@@ -21,14 +21,14 @@ import play.api.Logging
 import play.api.http.Status.ACCEPTED
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.SendEmailConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendRequest, EmailSendResult}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, ConnectorError}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SendEmailService @Inject() (emailSendConnector: SendEmailConnector)(implicit ec: ExecutionContext)
-  extends Logging {
+    extends Logging {
 
   def sendEmail(emailAddress: EmailAddress, emailParameters: EmailParameters, templateId: String)(implicit
     hc: HeaderCarrier

@@ -26,7 +26,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import javax.inject.Singleton
 
 @Singleton
-class BaseController (mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
+class BaseController(mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
 
   protected def mandatory(key: String): Mapping[String] =
     text.transform[String](_.trim, s => s).verifying(required(key))

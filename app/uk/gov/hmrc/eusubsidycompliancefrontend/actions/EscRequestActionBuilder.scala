@@ -52,7 +52,10 @@ class EscRequestActionBuilder @Inject() (
 
   val parser: BodyParser[AnyContent] = mcc.parsers.anyContent
 
-  override def invokeBlock[A](request: Request[A], block: AuthenticatedEscRequest[A] => Future[Result]): Future[Result] =
+  override def invokeBlock[A](
+    request: Request[A],
+    block: AuthenticatedEscRequest[A] => Future[Result]
+  ): Future[Result] =
     authorised(Enrolment(EnrolmentKey))
       .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](
         Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
@@ -65,7 +68,8 @@ class EscRequestActionBuilder @Inject() (
               block(AuthenticatedEscRequest(credentials.providerId, groupId, request, EORI(identifier.value)))
             }
         case _ ~ _ => Future.failed(throw InternalError())
-      }(hc(request), executionContext).recover(handleFailure(request))
+      }(hc(request), executionContext)
+      .recover(handleFailure(request))
 
   private def handleFailure(implicit request: Request[_]): PartialFunction[Throwable, Result] = {
     case _: NoActiveSession =>

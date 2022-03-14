@@ -34,9 +34,13 @@ object NewLeadJourney {
 
     private val controller = routes.SelectNewLeadController
 
-    case class SelectNewLeadFormPage(value: Form[EORI] = None) extends FormPage[EORI] { def uri = controller.getSelectNewLead().url  }
+    case class SelectNewLeadFormPage(value: Form[EORI] = None) extends FormPage[EORI] {
+      def uri = controller.getSelectNewLead().url
+    }
 
-    object SelectNewLeadFormPage { implicit val selectNewLeadFormPageFormat: OFormat[SelectNewLeadFormPage] = Json.format }
+    object SelectNewLeadFormPage {
+      implicit val selectNewLeadFormPageFormat: OFormat[SelectNewLeadFormPage] = Json.format
+    }
 
   }
 

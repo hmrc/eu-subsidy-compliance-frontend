@@ -27,7 +27,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @ImplementedBy(classOf[SendEmailConnectorImpl])
 trait SendEmailConnector {
-  def sendEmail(emailSendRequest: EmailSendRequest)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]]
+  def sendEmail(emailSendRequest: EmailSendRequest)(implicit
+    hc: HeaderCarrier
+  ): Future[Either[ConnectorError, HttpResponse]]
 }
 
 @Singleton
