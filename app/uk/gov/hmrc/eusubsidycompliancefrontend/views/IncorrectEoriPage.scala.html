@@ -23,5 +23,5 @@
 
 @layout(pageTitle = Some(messages("incorrectEori.title"))) {
   <h1 class="govuk-heading-xl">@messages("incorrectEori.title")</h1>
-  <p class="govuk-body">@messages("incorrectEori.p1-1") <a class="govuk-link" href="@controllers.routes.SignOutController.signOut()">@messages("incorrectEori.p1-2")</a> @messages("incorrectEori.p1-3")</p>
+  <p class="govuk-body">@messages("incorrectEori.p1-1") <a class="govuk-link" href="@appConfig.exitSurveyUrl">@messages("incorrectEori.p1-2")</a> @messages("incorrectEori.p1-3")</p>
 }
