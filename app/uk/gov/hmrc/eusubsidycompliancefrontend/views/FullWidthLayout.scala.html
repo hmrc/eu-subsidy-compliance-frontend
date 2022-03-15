@@ -31,32 +31,36 @@
 *@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcHead}
 @import views.html.helper.CSPNonce
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.FullWidthMainContent
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.timeout_dialog
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcLanguageSelectHelper, HmrcStandardFooter, HmrcScripts}
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcReportTechnicalIssueHelper
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 
 @this(
-        appConfig: AppConfig,
-        govukLayout: GovukLayout,
-        hmrcHead: HmrcHead,
-        hmrcStandardFooter: HmrcStandardFooter,
-        hmrcScripts: HmrcScripts,
-        hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
-        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-        beforeContentBlock: components.BeforeContent,
-        scripts: components.Scripts,
-        defaultMainContent: FullWidthMainContent
+    appConfig: AppConfig,
+    govukLayout: GovukLayout,
+    hmrcHead: HmrcHead,
+    hmrcStandardFooter: HmrcStandardFooter,
+    hmrcScripts: HmrcScripts,
+    hmrcStandardHeader: HmrcStandardHeader,
+    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
+    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+    beforeContentBlock: components.BeforeContent,
+    scripts: components.Scripts,
+    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+    defaultMainContent: FullWidthMainContent
 )
 @(pageTitle: Option[String] = None,
-        backLinkEnabled: Boolean = false,
-        backLink: Option[String] = None,
-        headBlock: Option[Html] = None,
-        hasErrors: Boolean = false,
-        scriptsBlock: Option[Html] = None,
-        mainContentLayout: Option[Html => Html] = Some(defaultMainContent(_))
+    backLinkEnabled: Boolean = false,
+    backLink: Option[String] = None,
+    headBlock: Option[Html] = None,
+    hasErrors: Boolean = false,
+    showSignOutLink: Boolean = true,
+    scriptsBlock: Option[Html] = None,
+    mainContentLayout: Option[Html => Html] = Some(defaultMainContent(_))
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @serviceNameAndHeading = @{pageTitle.fold(messages("service.name"))(t => s"""$t - ${messages("service.name")}""")}
@@ -86,6 +90,10 @@
 @govukLayout(
     pageTitle = Some(documentTitle),
     headBlock = Some(hmrcHead(headBlock = Some(head), nonce = CSPNonce.get)),
+    headerBlock = Some(hmrcStandardHeader(
+        serviceUrl  = Some(routes.AccountController.getAccountPage().url),
+        signOutUrl = if(showSignOutLink) Some(appConfig.exitSurveyUrl) else None)
+    ),
     scriptsBlock = Some(hmrcScripts(nonce = CSPNonce.get)),
     footerBlock = Some(hmrcStandardFooter()),
     beforeContentBlock = Some(beforeContentWrapper),

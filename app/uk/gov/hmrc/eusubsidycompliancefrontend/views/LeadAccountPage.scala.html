@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.H1
 
 @this(
   layout: FullWidthLayout,
@@ -33,7 +34,7 @@
   backLinkEnabled = false,
   backLink = None
 ) {
-  <h1 class="govuk-heading-xl">@messages("lead-account-homepage.title", undertaking.name)</h1>
+    @H1(messages("lead-account-homepage.title", undertaking.name))
 
   @govukWarningText(WarningText(
     iconFallbackText = messages("common.warning"),

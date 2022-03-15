@@ -15,11 +15,12 @@
  *@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcHead}
 @import views.html.helper.CSPNonce
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.timeout_dialog
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcLanguageSelectHelper, HmrcStandardFooter, HmrcScripts}
-@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcReportTechnicalIssueHelper
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 
 @this(
         appConfig: AppConfig,
@@ -27,16 +28,19 @@
         hmrcHead: HmrcHead,
         hmrcStandardFooter: HmrcStandardFooter,
         hmrcScripts: HmrcScripts,
+        hmrcStandardHeader: HmrcStandardHeader,
         hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
         beforeContentBlock: components.BeforeContent,
-        scripts: components.Scripts
+        scripts: components.Scripts,
+        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
 )
 @(pageTitle: Option[String] = None,
         backLinkEnabled: Boolean = false,
         backLink: Option[String] = None,
         headBlock: Option[Html] = None,
         hasErrors: Boolean = false,
+        showSignOutLink: Boolean = true,
         scriptsBlock: Option[Html] = None
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -67,6 +71,10 @@
 @govukLayout(
     pageTitle = Some(documentTitle),
     headBlock = Some(hmrcHead(headBlock = Some(head), nonce = CSPNonce.get)),
+    headerBlock = Some(hmrcStandardHeader(
+        serviceUrl  = Some(routes.AccountController.getAccountPage().url),
+        signOutUrl = if(showSignOutLink) Some(appConfig.exitSurveyUrl) else None)
+    ),
     scriptsBlock = Some(hmrcScripts(nonce = CSPNonce.get)),
     footerBlock = Some(hmrcStandardFooter()),
     beforeContentBlock = Some(beforeContentWrapper),
