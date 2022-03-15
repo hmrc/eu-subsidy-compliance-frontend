@@ -54,7 +54,7 @@
     }
 
     @{H1(messages(titleKey, name.toString))}
-
+      
     @if(businessEntity.length == 1){
       @{P(messages("addBusiness.p1"))}
       @{P(messages("addBusiness.p2"))}
@@ -62,26 +62,30 @@
       @{P(messages("addBusiness.p4"))}
     }
 
-    @{govukSummaryList(SummaryList(
-      classes = "summary-list-no-value",
-      rows = businessEntity.filter(a => !a.leadEORI).map(b => SummaryListRow(
-        key = Key(content = Text(b.businessEntityIdentifier)),
-        actions = Some(Actions(
-          items = Seq(
-            ActionItem(
-              href = routes.BusinessEntityController.editBusinessEntity(b.businessEntityIdentifier).toString,
-              content = HtmlContent(s"<span aria-hidden='true'>${messages("common.change")}</span>"),
-              visuallyHiddenText = Some(messages("common.change") + " " + messages("addBusiness.change-remove.snippet") + " " + b.businessEntityIdentifier)
-            ),
-            ActionItem(
-              href = routes.BusinessEntityController.getRemoveBusinessEntity(b.businessEntityIdentifier).toString,
-              content = HtmlContent(s"<span aria-hidden='true'>${messages("common.remove")}</span>"),
-              visuallyHiddenText = Some(messages("common.remove") + " " + messages("addBusiness.change-remove.snippet") + " " + b.businessEntityIdentifier)
-            )
-          )
-        ))
-      ))
-    ))}
+      @if(businessEntity.length > 1){
+          @{govukSummaryList(SummaryList(
+              classes = "summary-list-no-value",
+              rows = businessEntity.filter(a => !a.leadEORI).map(b => SummaryListRow(
+                  key = Key(content = Text(b.businessEntityIdentifier)),
+                  actions = Some(Actions(
+                      items = Seq(
+                          ActionItem(
+                              href = routes.BusinessEntityController.editBusinessEntity(b.businessEntityIdentifier).toString,
+                              content = HtmlContent(s"<span aria-hidden='true'>${messages("common.change")}</span>"),
+                              visuallyHiddenText = Some(messages("common.change") + " " + messages("addBusiness.change-remove.snippet") + " " + b.businessEntityIdentifier)
+                          ),
+                          ActionItem(
+                              href = routes.BusinessEntityController.getRemoveBusinessEntity(b.businessEntityIdentifier).toString,
+                              content = HtmlContent(s"<span aria-hidden='true'>${messages("common.remove")}</span>"),
+                              visuallyHiddenText = Some(messages("common.remove") + " " + messages("addBusiness.change-remove.snippet") + " " + b.businessEntityIdentifier)
+                          )
+                      )
+                  ))
+              ))
+          ))}
+      }
+
+
     @defining(
       businessEntity.length match {
         case x if x > 1 => messages("addBusiness.businesses-added.legend")
