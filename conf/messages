@@ -244,7 +244,7 @@ add-claim-amount.error.amount.tooBig=Subsidy amount must be fewer than 17 charac
 add-claim-amount.error.amount.incorrectFormat=Enter number value of subsidy allocated in Euros, like €248.56
 add-claim-amount.error.real = Enter number value of subsidy allocated in Euros, like €248.56
 
-add-claim-date.title=What date did you receive your payment?
+add-claim-date.title=What date were you awarded the payment?
 add-claim-date.error.date.emptyfields=Enter a real date, like 23 11 2019
 add-claim-date.error.day.missing=The date you received your payment must include a day, like 23 11 2019
 add-claim-date.error.day-and-month.missing=The date you received your payment must include a day and month, like 23 11 2019
@@ -315,7 +315,7 @@ noClaimNotification.error.required = Select if you want to declare you have not 
 
 #noClaimConfirmation
 noClaimConfirmation.title = You have notified HMRC that you have received no de minimis aid payments for this 90-day period
-noClaimConfirmation.ref.p1 = You can still report any de minimis sid payments for this period by entering them in the Reporting payments section on Account Home screen.
+noClaimConfirmation.ref.p1 = You can still report any de minimis aid payments for this period by entering them in the Reporting payments section on Account Home screen.
 noClaimConfirmation.link = <a href="{0}" class="govuk-link">Go to account home</a>
 
 #Select New lead
