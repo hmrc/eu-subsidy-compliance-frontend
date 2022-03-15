@@ -15,6 +15,7 @@
  *@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.{HmrcHead}
 @import views.html.helper.CSPNonce
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.timeout_dialog
@@ -70,7 +71,10 @@
 @govukLayout(
     pageTitle = Some(documentTitle),
     headBlock = Some(hmrcHead(headBlock = Some(head), nonce = CSPNonce.get)),
-    headerBlock = Some(hmrcStandardHeader(signOutUrl = if(showSignOutLink) Some(appConfig.exitSurveyUrl) else None)),
+    headerBlock = Some(hmrcStandardHeader(
+        serviceUrl  = Some(routes.AccountController.getAccountPage().url),
+        signOutUrl = if(showSignOutLink) Some(appConfig.exitSurveyUrl) else None)
+    ),
     scriptsBlock = Some(hmrcScripts(nonce = CSPNonce.get)),
     footerBlock = Some(hmrcStandardFooter()),
     beforeContentBlock = Some(beforeContentWrapper),
