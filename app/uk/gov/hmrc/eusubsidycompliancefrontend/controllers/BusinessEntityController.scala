@@ -207,8 +207,8 @@ class BusinessEntityController @Inject() (
       _ <- store.delete[Undertaking]
       _ =
         if (businessEntityJourney.isAmend)
-          auditService.sendEvent(AuditEvent.BusinessEntityUpdated(request.authorityId, eori, eoriBE))
-        else auditService.sendEvent(AuditEvent.BusinessEntityAdded(request.authorityId, eori, eoriBE))
+          auditService.sendEvent(AuditEvent.BusinessEntityUpdated(undertakingRef, request.authorityId, eori, eoriBE))
+        else auditService.sendEvent(AuditEvent.BusinessEntityAdded(undertakingRef, request.authorityId, eori, eoriBE))
       redirect <- getNext(businessEntityJourney)(eori)
     } yield redirect
 
@@ -298,7 +298,10 @@ class BusinessEntityController @Inject() (
                         // Clear the cached undertaking so it's retrieved on the next access
                         _ <- store.delete[Undertaking]
                         _ = auditService
-                          .sendEvent(AuditEvent.BusinessEntityRemoved(request.authorityId, eori, EORI(eoriEntered)))
+                          .sendEvent(
+                            AuditEvent
+                              .BusinessEntityRemoved(undertakingRef, request.authorityId, eori, EORI(eoriEntered))
+                          )
                       } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
                     case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture
                   }
@@ -344,7 +347,10 @@ class BusinessEntityController @Inject() (
                       removalEffectiveDateString.some
                     )
                     _ = auditService
-                      .sendEvent(AuditEvent.BusinessEntityRemovedSelf(request.authorityId, leadEORI, loggedInEORI))
+                      .sendEvent(
+                        AuditEvent
+                          .BusinessEntityRemovedSelf(undertakingRef, request.authorityId, leadEORI, loggedInEORI)
+                      )
                   } yield Redirect(routes.SignOutController.signOut())
                 case _ => Future(Redirect(routes.AccountController.getAccountPage()))
               }

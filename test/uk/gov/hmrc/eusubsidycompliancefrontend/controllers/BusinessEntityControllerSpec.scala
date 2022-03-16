@@ -1051,7 +1051,7 @@ class BusinessEntityControllerSpec
               mockSendEmail(validEmailAddress, emailParamBE, templateIdBe)(Right(EmailSendResult.EmailSent))
               mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
               mockSendEmail(validEmailAddress, emailParamLead, templateIdLead)(Right(EmailSendResult.EmailSent))
-              mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf("1123", eori1, eori4))
+              mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf(undertakingRef, "1123", eori1, eori4))
             }
             checkIsRedirect(
               performAction("removeYourselfBusinessEntity" -> "true")(lang),
@@ -1254,7 +1254,7 @@ class BusinessEntityControllerSpec
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockSendEmail(validEmailAddress, emailParametersLead, templateIdLead)(Right(EmailSendResult.EmailSent))
             mockDelete[Undertaking](eori1)(Right(()))
-            mockSendAuditEvent(AuditEvent.BusinessEntityRemoved("1123", eori1, eori4))
+            mockSendAuditEvent(AuditEvent.BusinessEntityRemoved(undertakingRef, "1123", eori1, eori4))
           }
           checkIsRedirect(
             performAction("removeBusiness" -> "true")(eori4, lang),

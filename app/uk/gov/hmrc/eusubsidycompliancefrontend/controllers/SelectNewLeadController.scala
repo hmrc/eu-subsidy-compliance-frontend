@@ -105,7 +105,7 @@ class SelectNewLeadController @Inject() (
             undertakingRef,
             None
           )
-          _ = auditService.sendEvent(BusinessEntityPromoted(request.authorityId, eori, eoriBE))
+          _ = auditService.sendEvent(BusinessEntityPromoted(undertakingRef, request.authorityId, eori, eoriBE))
         } yield Redirect(routes.SelectNewLeadController.getLeadEORIChanged())
       }
 

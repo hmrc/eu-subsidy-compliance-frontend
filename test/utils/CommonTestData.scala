@@ -218,6 +218,6 @@ object CommonTestData {
     )
   )
 
-  val businessEntityAddedEvent = AuditEvent.BusinessEntityAdded("1123", eori1, eori2)
-  val businessEntityUpdatedEvent = AuditEvent.BusinessEntityUpdated("1123", eori1, eori2)
+  val businessEntityAddedEvent = AuditEvent.BusinessEntityAdded(undertakingRef, "1123", eori1, eori2)
+  val businessEntityUpdatedEvent = AuditEvent.BusinessEntityUpdated(undertakingRef, "1123", eori1, eori2)
 }
