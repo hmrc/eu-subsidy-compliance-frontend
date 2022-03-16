@@ -40,8 +40,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class UndertakingController @Inject() (
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
-  store: Store,
-  escService: EscService,
+  override val store: Store,
+  override val escService: EscService,
   journeyTraverseService: JourneyTraverseService,
   sendEmailHelperService: SendEmailHelperService,
   timeProvider: TimeProvider,
@@ -53,8 +53,8 @@ class UndertakingController @Inject() (
   amendUndertakingPage: AmendUndertakingPage
 )(implicit
   val appConfig: AppConfig,
-  executionContext: ExecutionContext
-) extends BaseController(mcc) {
+  val executionContext: ExecutionContext
+) extends BaseController(mcc) with LeadOnlyUndertakingSupport {
 
   import escActionBuilders._
   val CreateUndertaking = "createUndertaking"
@@ -229,20 +229,22 @@ class UndertakingController @Inject() (
   }
 
   def getAmendUndertakingDetails: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
 
-    store.get[UndertakingJourney].flatMap {
-      ensureUndertakingJourneyPresent(_) { journey =>
-        for {
-          updatedJourney <- if (journey.isAmend) journey.toFuture else updateIsAmendState(value = true)
-        } yield Ok(
-          amendUndertakingPage(
-            updatedJourney.name.value.fold(handleMissingSessionData("Undertaking Name"))(UndertakingName(_)),
-            updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking sector")),
-            routes.AccountController.getAccountPage().url
+      store.get[UndertakingJourney].flatMap {
+        ensureUndertakingJourneyPresent(_) { journey =>
+          for {
+            updatedJourney <- if (journey.isAmend) journey.toFuture else updateIsAmendState(value = true)
+          } yield Ok(
+            amendUndertakingPage(
+              updatedJourney.name.value.fold(handleMissingSessionData("Undertaking Name"))(UndertakingName(_)),
+              updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking sector")),
+              routes.AccountController.getAccountPage().url
+            )
           )
-        )
 
+        }
       }
     }
   }
@@ -251,36 +253,37 @@ class UndertakingController @Inject() (
     store.update[UndertakingJourney](jo => jo.map(_.copy(isAmend = value)))
 
   def postAmendUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
 
-    amendUndertakingForm
-      .bindFromRequest()
-      .fold(
-        _ => throw new IllegalStateException("value hard-coded, form hacking?"),
-        _ => {
-          val result = for {
-            updatedJourney <- updateIsAmendState(value = false).toContext
-            undertakingName <- updatedJourney.name.value.toContext
-            undertakingSector <- updatedJourney.sector.value.toContext
-            retrievedUndertaking <- escService.retrieveUndertaking(eori).toContext
-            undertakingRef <- retrievedUndertaking.reference.toContext
-            updatedUndertaking = retrievedUndertaking
-              .copy(name = UndertakingName(undertakingName), industrySector = undertakingSector)
-            _ <- escService.updateUndertaking(updatedUndertaking).toContext
-            _ = auditService.sendEvent(
-              UndertakingUpdated(
-                request.authorityId,
-                eori,
-                undertakingRef,
-                updatedUndertaking.name,
-                updatedUndertaking.industrySector
+      amendUndertakingForm
+        .bindFromRequest()
+        .fold(
+          _ => throw new IllegalStateException("value hard-coded, form hacking?"),
+          _ => {
+            val result = for {
+              updatedJourney <- updateIsAmendState(value = false).toContext
+              undertakingName <- updatedJourney.name.value.toContext
+              undertakingSector <- updatedJourney.sector.value.toContext
+              retrievedUndertaking <- escService.retrieveUndertaking(eori).toContext
+              undertakingRef <- retrievedUndertaking.reference.toContext
+              updatedUndertaking = retrievedUndertaking
+                .copy(name = UndertakingName(undertakingName), industrySector = undertakingSector)
+              _ <- escService.updateUndertaking(updatedUndertaking).toContext
+              _ = auditService.sendEvent(
+                UndertakingUpdated(
+                  request.authorityId,
+                  eori,
+                  undertakingRef,
+                  updatedUndertaking.name,
+                  updatedUndertaking.industrySector
+                )
               )
-            )
-          } yield Redirect(routes.AccountController.getAccountPage())
-          result.fold(handleMissingSessionData("Undertaking Journey"))(identity)
-
-        }
-      )
+            } yield Redirect(routes.AccountController.getAccountPage())
+            result.getOrElse(handleMissingSessionData("Undertaking Journey"))
+          }
+        )
+    }
   }
 
   private def ensureUndertakingJourneyPresent(
