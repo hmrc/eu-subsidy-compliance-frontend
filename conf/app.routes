@@ -48,14 +48,14 @@ POST       /first-login-journey-registered-undertaking                          
 GET        /lead-underrtaking-amend-undertaking                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAmendUndertakingDetails
 POST       /lead-underrtaking-amend-undertaking                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAmendUndertaking
 
-GET        /lead-undertaking-add-businesses                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getAddBusinessEntity
-POST       /lead-undertaking-add-businesses                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postAddBusinessEntity
+GET        /lead-undertaking-add-business                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getAddBusinessEntity
+POST       /lead-undertaking-add-business                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postAddBusinessEntity
 
 GET        /lead-undertaking-add-eori                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getEori
 POST       /lead-undertaking-add-eori                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postEori
 
-GET        /lead-undertaking-check-your-answers-businesses                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getCheckYourAnswers
-POST       /lead-undertaking-check-your-answers-businesses                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postCheckYourAnswers
+GET        /lead-undertaking-check-your-answers-business                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getCheckYourAnswers
+POST       /lead-undertaking-check-your-answers-business                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postCheckYourAnswers
 
 GET        /lead-undertaking-update-member/:eori                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.editBusinessEntity(eori)
 GET        /lead-undertaking-remove-business-entity/:eori                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveBusinessEntity(eori)
@@ -64,8 +64,8 @@ POST       /lead-undertaking-remove-business-entity/:eori                       
 GET        /business-enterprise-remove-yourself-from-undertaking                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveYourselfBusinessEntity
 POST       /business-enterprise-remove-yourself-from-undertaking                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveYourselfBusinessEntity
 
-GET        /lead-undertaking-report-payments                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPayment
-POST       /lead-undertaking-report-payments                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPayment
+GET        /lead-undertaking-report-de-minimis-aid-payment                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPayment
+POST       /lead-undertaking-report-de-minimis-aid-payment                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPayment
 
 GET        /lead-undertaking-add-eori-business-claimed-payment                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimEori
 POST       /lead-undertaking-add-eori-business-claimed-payment                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimEori
