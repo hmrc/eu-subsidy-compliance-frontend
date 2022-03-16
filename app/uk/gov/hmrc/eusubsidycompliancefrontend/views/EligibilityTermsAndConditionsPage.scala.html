@@ -59,10 +59,9 @@
 
         <h2 class="govuk-heading-m">@messages("eligibilityTerms.h2-2")</h2>
         <p class="govuk-body">@messages("eligibilityTerms.p4")</p>
+        <p class="govuk-body">@messages("eligibilityTerms.p5-1") <a class="govuk-link" href="@controllers.routes.SignOutController.signOut()">@messages("eligibilityTerms.p5-2")</a> @messages("eligibilityTerms.p5-3")</p>
 
         <input type=hidden name=terms value=true>
         @button("common.continue")
-
-        <p class="govuk-body">@messages("eligibilityTerms.p5-1") <a class="govuk-link" href="@controllers.routes.SignOutController.signOut()">@messages("eligibilityTerms.p5-2")</a> @messages("eligibilityTerms.p5-3")</p>
     }
 }
