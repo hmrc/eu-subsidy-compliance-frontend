@@ -29,11 +29,7 @@ class AppConfig @Inject() (config: Configuration) {
   val eccEscSubscribeUrl: String = config.get[String](s"urls.eccEscSubscribeUrl")
   val exchangeRateToolUrl: String = config.get[String](s"urls.exchangeRateToolUrl")
   val emailFrontendUrl: String = config.get[String]("microservice.services.customs-email-frontend.url")
-  val serviceName = config.get[String]("feedback-frontend.serviceName")
-  val exitSurveyUrl: String = {
-    val baseUrl = config.get[String]("feedback-frontend.base-url")
-    s"$baseUrl/feedback/$serviceName"
-  }
+  val exitSurveyUrl: String = config.get[String]("urls.feedback-survey")
 
   val betaFeedbackUrlNoAuth: String = "TODO" // TODO
   lazy val sessionTimeout = config.get[String]("application.session.maxAge")
