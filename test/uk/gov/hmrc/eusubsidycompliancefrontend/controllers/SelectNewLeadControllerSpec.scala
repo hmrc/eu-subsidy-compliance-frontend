@@ -262,7 +262,7 @@ class SelectNewLeadControllerSpec
             mockSendEmail(validEmailAddress, emailParamsBE, templateIdBE)(Right(EmailSendResult.EmailSent))
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockSendEmail(validEmailAddress, emailParamLead, templateIdLead)(Right(EmailSendResult.EmailSent))
-            mockSendAuditEvent(AuditEvent.BusinessEntityPromoted("1123", eori1, eori4))
+            mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
           }
           checkIsRedirect(
             performAction("selectNewLead" -> eori4)(lang),

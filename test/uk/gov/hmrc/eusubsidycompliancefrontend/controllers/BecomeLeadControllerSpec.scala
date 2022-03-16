@@ -376,7 +376,9 @@ class BecomeLeadControllerSpec
             mockSendEmail(validEmailAddress, newLeadParams, templateIdNewLead)(Right(EmailSendResult.EmailSent))
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockSendEmail(validEmailAddress, oldLeadParams, templateIdOldLead)(Right(EmailSendResult.EmailSent))
-            mockSendAuditEvent[BusinessEntityPromotedSelf](AuditEvent.BusinessEntityPromotedSelf("1123", eori1, eori4))
+            mockSendAuditEvent[BusinessEntityPromotedSelf](
+              AuditEvent.BusinessEntityPromotedSelf(undertakingRef, "1123", eori1, eori4)
+            )
           }
 
           checkPageIsDisplayed(
@@ -425,7 +427,9 @@ class BecomeLeadControllerSpec
             mockSendEmail(validEmailAddress, oldLeadParams, "template_removed_as_lead_email_to_previous_lead_EN")(
               Right(EmailSendResult.EmailSent)
             )
-            mockSendAuditEvent[BusinessEntityPromotedSelf](AuditEvent.BusinessEntityPromotedSelf("1123", eori1, eori4))
+            mockSendAuditEvent[BusinessEntityPromotedSelf](
+              AuditEvent.BusinessEntityPromotedSelf(undertakingRef, "1123", eori1, eori4)
+            )
           }
 
           checkIsRedirect(performAction()(English.code), routes.BecomeLeadController.getBecomeLeadEori())

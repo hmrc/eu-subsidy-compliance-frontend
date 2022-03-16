@@ -162,6 +162,7 @@ class BecomeLeadController @Inject() (
           )
           _ = auditService.sendEvent[BusinessEntityPromotedSelf](
             AuditEvent.BusinessEntityPromotedSelf(
+              undertakingRef,
               request.authorityId,
               oldLead.businessEntityIdentifier,
               newLead.businessEntityIdentifier

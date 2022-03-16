@@ -71,7 +71,9 @@ class NoClaimNotificationController @Inject() (
                 .createSubsidy(reference, SubsidyUpdate(reference, NilSubmissionDate(nilSubmissionDate)))
                 .toContext
               _ = auditService
-                .sendEvent(NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate))
+                .sendEvent(
+                  NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate)
+                )
             } yield Redirect(routes.NoClaimNotificationController.getNoClaimConfirmation())
 
             result.getOrElse(handleMissingSessionData("Undertaking ref"))

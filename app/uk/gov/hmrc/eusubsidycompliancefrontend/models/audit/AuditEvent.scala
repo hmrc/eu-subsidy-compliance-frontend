@@ -80,6 +80,7 @@ object AuditEvent {
   }
 
   final case class BusinessEntityAdded(
+    undertakingReference: UndertakingRef,
     ggDetails: String,
     leadEORI: EORI,
     detailsAdded: BusinessDetailsAdded
@@ -90,13 +91,14 @@ object AuditEvent {
 
   object BusinessEntityAdded {
 
-    def apply(ggDetails: String, leadEORI: EORI, beEORI: EORI): BusinessEntityAdded =
-      AuditEvent.BusinessEntityAdded(ggDetails, leadEORI, BusinessDetailsAdded(beEORI))
+    def apply(ref: UndertakingRef, ggDetails: String, leadEORI: EORI, beEORI: EORI): BusinessEntityAdded =
+      AuditEvent.BusinessEntityAdded(ref, ggDetails, leadEORI, BusinessDetailsAdded(beEORI))
     implicit val writes: Writes[BusinessEntityAdded] = Json.writes
 
   }
 
   final case class BusinessEntityRemoved(
+    undertakingReference: UndertakingRef,
     ggDetails: String,
     leadEori: EORI,
     removedEori: EORI
@@ -109,6 +111,7 @@ object AuditEvent {
   }
 
   final case class BusinessEntityRemovedSelf(
+    undertakingReference: UndertakingRef,
     ggDetails: String,
     leadEori: EORI,
     removedEori: EORI
@@ -121,6 +124,7 @@ object AuditEvent {
   }
 
   final case class BusinessEntityUpdated(
+    undertakingReference: UndertakingRef,
     ggDetails: String,
     leadEori: EORI,
     detailsUpdated: BusinessDetailsUpdated
@@ -131,32 +135,58 @@ object AuditEvent {
 
   object BusinessEntityUpdated {
 
-    def apply(ggDetails: String, leadEori: EORI, updatedEORI: EORI): BusinessEntityUpdated =
-      AuditEvent.BusinessEntityUpdated(ggDetails, leadEori, BusinessDetailsUpdated(updatedEORI))
+    def apply(
+      undertakingReference: UndertakingRef,
+      ggDetails: String,
+      leadEori: EORI,
+      updatedEORI: EORI
+    ): BusinessEntityUpdated =
+      AuditEvent.BusinessEntityUpdated(undertakingReference, ggDetails, leadEori, BusinessDetailsUpdated(updatedEORI))
     implicit val writes: Writes[BusinessEntityUpdated] = Json.writes
 
   }
 
-  final case class BusinessEntityPromoted(ggDetails: String, details: LeadPromoteDetails) extends AuditEvent {
+  final case class BusinessEntityPromoted(
+    undertakingReference: UndertakingRef,
+    ggDetails: String,
+    details: LeadPromoteDetails
+  ) extends AuditEvent {
     override val auditType: String = "LeadPromotesBusinessEntity"
     override val transactionName: String = "LeadPromotesBusinessEntity"
   }
 
   object BusinessEntityPromoted {
-    def apply(ggDetails: String, leadEORI: EORI, promotedEori: EORI): BusinessEntityPromoted =
-      AuditEvent.BusinessEntityPromoted(ggDetails, LeadPromoteDetails(leadEORI, promotedEori))
+    def apply(
+      undertakingReference: UndertakingRef,
+      ggDetails: String,
+      leadEORI: EORI,
+      promotedEori: EORI
+    ): BusinessEntityPromoted =
+      AuditEvent.BusinessEntityPromoted(undertakingReference, ggDetails, LeadPromoteDetails(leadEORI, promotedEori))
     implicit val writes: Writes[BusinessEntityPromoted] = Json.writes
   }
 
-  final case class BusinessEntityPromotedSelf(ggDetails: String, details: BusinessEntityPromoteItselfDetails)
-      extends AuditEvent {
+  final case class BusinessEntityPromotedSelf(
+    undertakingReference: UndertakingRef,
+    ggDetails: String,
+    details: BusinessEntityPromoteItselfDetails
+  ) extends AuditEvent {
     override val auditType: String = "BusinessEntityPromotesSelf"
     override val transactionName: String = "BusinessEntityPromotesSelf"
   }
 
   object BusinessEntityPromotedSelf {
-    def apply(ggDetails: String, oldEORI: EORI, newEORI: EORI): BusinessEntityPromotedSelf =
-      AuditEvent.BusinessEntityPromotedSelf(ggDetails, BusinessEntityPromoteItselfDetails(oldEORI, newEORI))
+    def apply(
+      undertakingReference: UndertakingRef,
+      ggDetails: String,
+      oldEORI: EORI,
+      newEORI: EORI
+    ): BusinessEntityPromotedSelf =
+      AuditEvent.BusinessEntityPromotedSelf(
+        undertakingReference,
+        ggDetails,
+        BusinessEntityPromoteItselfDetails(oldEORI, newEORI)
+      )
     implicit val writes: Writes[BusinessEntityPromotedSelf] = Json.writes
   }
 
