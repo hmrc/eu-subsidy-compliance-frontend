@@ -60,7 +60,7 @@
                 errorList = Seq(
                   ErrorLink(
                       href = Some(s"#${form.errors.head.key}"),
-                      content = Text(s"${messages("add-claim-eori." + form.errors.head.message)}"),
+                      content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}"),
                       attributes = Map("class" ->"govuk-link")
                   )
                 ),
@@ -80,7 +80,7 @@
           ))
         )),
         errorMessage = if (form.hasErrors) {
-            Some(ErrorMessage(content = Text(messages("add-claim-eori." + form.errors.head.message))))
+            Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}")))
         } else None,
         hint = Some(Hint(
         content = Text(messages("add-claim-eori.hint"))

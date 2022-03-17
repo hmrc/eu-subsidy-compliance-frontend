@@ -18,8 +18,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.data.OptionT
 import cats.implicits._
-import play.api.data.Form
-import play.api.data.Forms.{bigDecimal, mapping, optional, text}
+import play.api.data.{Form, Mapping}
+import play.api.data.Forms.{bigDecimal, mapping, nonEmptyText, optional, text}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
@@ -37,6 +37,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
@@ -243,7 +244,10 @@ class SubsidyController @Inject() (
         claimPublicAuthorityForm
           .bindFromRequest()
           .fold(
-            errors => Future.successful(BadRequest(addPublicAuthorityPage(errors, previous))),
+            errors => {
+              println(" form with error ::" + errors.errors)
+              Future.successful(BadRequest(addPublicAuthorityPage(errors, previous)))
+            },
             form =>
               for {
                 journey <- store.update[SubsidyJourney](updateClaimAuthority(form))
@@ -475,22 +479,16 @@ class SubsidyController @Inject() (
     mapping("reportPayment" -> mandatory("reportPayment"))(FormValues.apply)(FormValues.unapply)
   )
 
-  // TODO validate the EORI matches regex
+  private val optionalEoriMapping: Mapping[String] = nonEmptyText
+    .verifying("error.format", eoriEntered => s"GB$eoriEntered".matches(EORI.regex))
+
   private val claimEoriForm: Form[OptionalEORI] = Form(
     mapping(
       "should-claim-eori" -> mandatory("should-claim-eori"),
-      "claim-eori" -> optional(text)
+      "claim-eori" -> mandatoryIfEqual("should-claim-eori", "true", optionalEoriMapping)
     )((radioSelected, eori) => claimEoriFormApply(radioSelected, eori))(optionalEORI =>
       Some((optionalEORI.setValue, optionalEORI.value.fold(Option.empty[String])(e => Some(e.drop(2)))))
     )
-      .transform[OptionalEORI](
-        optionalEORI => if (optionalEORI.setValue == "false") optionalEORI.copy(value = None) else optionalEORI,
-        identity
-      )
-      .verifying(
-        "error.format",
-        a => a.setValue == "false" || a.value.fold(false)(entered => s"GB${entered.drop(2)}".matches(EORI.regex))
-      )
   )
 
   private def claimEoriFormApply(input: String, eoriOpt: Option[String]) =
@@ -502,17 +500,8 @@ class SubsidyController @Inject() (
   private val claimTraderRefForm: Form[OptionalTraderRef] = Form(
     mapping(
       "should-store-trader-ref" -> mandatory("should-store-trader-ref"),
-      "claim-trader-ref" -> optional(text)
+      "claim-trader-ref" -> mandatoryIfEqual("should-store-trader-ref", "true", nonEmptyText)
     )(OptionalTraderRef.apply)(OptionalTraderRef.unapply)
-      .transform[OptionalTraderRef](
-        optionalTraderRef =>
-          if (optionalTraderRef.setValue == "false") optionalTraderRef.copy(value = None) else optionalTraderRef,
-        identity
-      )
-      .verifying(
-        "error.isempty",
-        optionalTraderRef => optionalTraderRef.setValue == "false" || optionalTraderRef.value.nonEmpty
-      )
   )
 
   private val claimPublicAuthorityForm: Form[String] = Form(

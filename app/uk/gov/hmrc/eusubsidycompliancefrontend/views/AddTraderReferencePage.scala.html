@@ -57,7 +57,7 @@
                   errorList = form.errors.map { err =>
                       ErrorLink(
                           href = Some(s"#${err.key}"),
-                          content = Text(s"${messages("add-claim-trader-reference." + err.message)}"),
+                          content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}"),
                           attributes = Map("class" ->"govuk-link")
                       )
                   },
@@ -78,7 +78,7 @@
           content = Text(messages("add-claim-trader-reference.hint"))
         )),
         errorMessage = if (form.hasErrors) {
-            Some(ErrorMessage(content = Text(messages("add-claim-trader-reference." + form.errors.head.message))))
+            Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}")))
         } else None,
         name = "should-store-trader-ref",
         items = Seq(
