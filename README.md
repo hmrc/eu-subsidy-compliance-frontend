@@ -35,7 +35,7 @@ sbt run
 ### Starting a journey
 A journey can be started via the start endpoint
 ```
-GET /eu-subsidy-compliance/
+GET /report-and-check-de-minimis-aid-northern-ireland/
 ```
 This will prompt the user to log in if there isn't an active session yet.
 

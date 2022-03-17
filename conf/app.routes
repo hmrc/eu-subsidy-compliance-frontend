@@ -7,116 +7,115 @@ GET        /home                                      uk.gov.hmrc.eusubsidycompl
 
 GET        /assets/*file                              controllers.Assets.versioned(path = "/public", file: Asset)
 
-GET        /eligibility-first-empty                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.firstEmptyPage
-GET        /undertaking-first-empty                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.firstEmptyPage
+GET        /first-login-journey-eligibility-first-empty                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.firstEmptyPage
+GET        /first-login-journey-undertaking-first-empty                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.firstEmptyPage
 
-GET        /do-you-claim-customs-waivers              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getCustomsWaivers
-POST       /do-you-claim-customs-waivers              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postCustomsWaivers
+GET        /first-login-journey-do-you-claim-customs-duty-waivers                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getCustomsWaivers
+POST       /first-login-journey-do-you-claim-customs-duty-waivers                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postCustomsWaivers
 
-GET        /main-business-check                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getMainBusinessCheck
-POST       /main-business-check                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postMainBusinessCheck
+GET        /first-login-journey-report-de-minimis-aid-payments-as-single-undertaking     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getMainBusinessCheck
+POST       /first-login-journey-report-de-minimis-aid-payments-as-single-undertaking     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postMainBusinessCheck
 
-GET        /will-you-claim-customs-waivers            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getWillYouClaim
-POST       /will-you-claim-customs-waivers            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postWillYouClaim
+GET        /first-login-journey-will-you-claim-customs-duty-waivers                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getWillYouClaim
+POST       /first-login-journey-will-you-claim-customs-duty-waivers                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postWillYouClaim
 
-GET        /not-eligible                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getNotEligible
-GET        /not-eligible-to-lead                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getNotEligibleToLead
+GET        /first-login-journey-not-eligible                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getNotEligible
+GET        /first-login-journey-not-eligible-to-lead                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getNotEligibleToLead
 
-GET        /terms-conditions                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getTerms
-POST       /terms-conditions                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postTerms
+GET        /first-login-journey-accept-and-continue-to-register-single-undertaking       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getTerms
+POST       /first-login-journey-accept-and-continue-to-register-single-undertaking       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postTerms
 
-GET        /eoricheck                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getEoriCheck
-POST       /eoricheck                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postEoriCheck
+GET        /first-login-journey-register-eori                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getEoriCheck
+POST       /first-login-journey-register-eori                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postEoriCheck
 
-GET        /incorrect-eori                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getIncorrectEori
+GET        /first-login-journey-incorrect-eori                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getIncorrectEori
 
-GET        /create-undertaking                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getCreateUndertaking
-POST       /create-undertaking                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postCreateUndertaking
+GET        /first-login-journey-create-undertaking                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getCreateUndertaking
+POST       /first-login-journey-create-undertaking                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postCreateUndertaking
 
-GET        /undertaking-name                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getUndertakingName
-POST       /undertaking-name                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postUndertakingName
+GET        /first-login-journey-name-single-undertaking                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getUndertakingName
+POST       /first-login-journey-name-single-undertaking                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postUndertakingName
 
-GET        /sector                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSector
-POST       /sector                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postSector
+GET        /first-login-journey-what-sector                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSector
+POST       /first-login-journey-what-sector                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postSector
 
-GET        /check-your-answers                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getCheckAnswers
-POST       /check-your-answers                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postCheckAnswers
+GET        /first-login-journey-check-your-answers                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getCheckAnswers
+POST       /first-login-journey-check-your-answers                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postCheckAnswers
 
-GET        /confirmation/:undertakingRef/name         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmation(undertakingRef,name)
-POST       /confirmation                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmation
+GET        /first-login-journey-registered-undertaking/:undertakingRef/name              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmation(undertakingRef,name)
+POST       /first-login-journey-registered-undertaking                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmation
 
-GET        /become-lead-eori                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getBecomeLeadEori()
-POST       /become-lead-eori                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.postBecomeLeadEori()
+GET        /lead-undertaking-amend-undertaking                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAmendUndertakingDetails
+POST       /lead-undertaking-amend-undertaking                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAmendUndertaking
 
-GET        /accept-promote-to-lead-terms              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getAcceptPromotionTerms()
-POST       /accept-promote-to-lead-terms              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.postAcceptPromotionTerms()
+GET        /lead-undertaking-add-business                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getAddBusinessEntity
+POST       /lead-undertaking-add-business                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postAddBusinessEntity
 
-GET        /promote-self                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getPromotionConfirmation()
-GET        /lead-promotion-confirmation-cleanup       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getPromotionCleanup()
+GET        /lead-undertaking-add-eori                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getEori
+POST       /lead-undertaking-add-eori                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postEori
 
-GET        /add-member                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getAddBusinessEntity
-POST       /add-member                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postAddBusinessEntity
+GET        /lead-undertaking-check-your-answers-business                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getCheckYourAnswers
+POST       /lead-undertaking-check-your-answers-business                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postCheckYourAnswers
 
-GET        /add-business-entity-eori                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getEori
-POST       /add-business-entity-eori                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postEori
+GET        /lead-undertaking-update-member/:eori                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.editBusinessEntity(eori)
+GET        /lead-undertaking-remove-business-entity/:eori                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveBusinessEntity(eori)
+POST       /lead-undertaking-remove-business-entity/:eori                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveBusinessEntity(eori)
 
-GET        /check-your-answers-businesses             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getCheckYourAnswers
-POST       /check-your-answers-businesses             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postCheckYourAnswers
+GET        /business-enterprise-remove-yourself-from-undertaking                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveYourselfBusinessEntity
+POST       /business-enterprise-remove-yourself-from-undertaking                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveYourselfBusinessEntity
 
-GET        /update-member/:eori                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.editBusinessEntity(eori)
-GET        /remove-business-entity/:eori              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveBusinessEntity(eori)
-POST       /remove-business-entity/:eori              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveBusinessEntity(eori)
+GET        /lead-undertaking-report-de-minimis-aid-payment                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPayment
+POST       /lead-undertaking-report-de-minimis-aid-payment                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPayment
 
-GET        /remove-yourself                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveYourselfBusinessEntity
-POST       /remove-yourself                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveYourselfBusinessEntity
+GET        /lead-undertaking-add-eori-business-claimed-payment                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimEori
+POST       /lead-undertaking-add-eori-business-claimed-payment                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimEori
 
-GET        /claims                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPayment
-POST       /claims                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPayment
+GET        /lead-undertaking-add-payment-amount                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getClaimAmount
+POST       /lead-undertaking-add-payment-amount                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimAmount
 
-GET        /add-claim-eori                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimEori
-POST       /add-claim-eori                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimEori
+GET        /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getClaimDate
+POST       /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postClaimDate
 
-GET        /add-claim-amount                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getClaimAmount
-POST       /add-claim-amount                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimAmount
+GET        /lead-undertaking-add-public-authority                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimPublicAuthority
+POST       /lead-undertaking-add-public-authority                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimPublicAuthority
 
-GET        /add-claim-date                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getClaimDate
-POST       /add-claim-date                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postClaimDate
+GET        /lead-undertaking-add-reference                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimReference
+POST       /lead-undertaking-add-reference                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimReference
 
-GET        /add-claim-public-authority                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimPublicAuthority
-POST       /add-claim-public-authority                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimPublicAuthority
+GET        /lead-undertaking-check-your-answers-subsidy                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getCheckAnswers
+POST       /lead-undertaking-check-your-answers-subsidy                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postCheckAnswers
 
-GET        /add-claim-reference                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimReference
-POST       /add-claim-reference                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimReference
+GET        /lead-undertaking-remove-non-customs-subsidy/:transactionId                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getRemoveSubsidyClaim(transactionId)
+POST       /lead-undertaking-remove-non-customs-subsidy/:transactionId                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postRemoveSubsidyClaim(transactionId)
 
-GET        /check-your-answers-subsidy                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getCheckAnswers
-POST       /check-your-answers-subsidy                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postCheckAnswers
+GET        /lead-undertaking-update-non-customs-subsidy/:transactionId                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getChangeSubsidyClaim(transactionId)
 
-GET        /amend-undertaking                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAmendUndertakingDetails
-POST       /amend-undertaking                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAmendUndertaking
+GET        /lead-undertaking-promote-business-entity-as-lead                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.getSelectNewLead
+POST       /lead-undertaking-promote-business-entity-as-lead                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.postSelectNewLead
 
-GET        /update-unverified-email-address           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.updateUnverifiedEmailAddress
-POST       /update-email-address                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.postUpdateEmailAddress
-GET        /update-undelivered-email-address          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.updateUndeliveredEmailAddress
+GET        /lead-undertaking-lead-eori-changed                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.getLeadEORIChanged
 
+GET        /business-enterprise-become-lead-eori                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getBecomeLeadEori()
+POST       /business-enterprise-become-lead-eori                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.postBecomeLeadEori()
 
-GET        /remove-non-customs-subsidy/:transactionId uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getRemoveSubsidyClaim(transactionId)
-POST       /remove-non-customs-subsidy/:transactionId uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postRemoveSubsidyClaim(transactionId)
+GET        /business-enterprise-terms-conditions                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getAcceptPromotionTerms()
+POST       /business-enterprise-terms-conditions                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.postAcceptPromotionTerms()
 
-GET        /update-non-customs-subsidy/:transactionId uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getChangeSubsidyClaim(transactionId)
+GET        /business-enterprise-admin-request                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getPromotionConfirmation()
+GET        /lead-promotion-confirmation-cleanup                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getPromotionCleanup()
 
-GET        /non-customs-subsidy-nil-return            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimNotification
-POST       /non-customs-subsidy-nil-return            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.postNoClaimNotification
+GET        /update-unverified-email-address                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.updateUnverifiedEmailAddress
+POST       /update-email-address                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.postUpdateEmailAddress
+GET        /update-undelivered-email-address                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.updateUndeliveredEmailAddress
 
-GET        /no-claims-confirmation                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimConfirmation
+GET        /lead-undertaking-non-customs-subsidy-nil-return                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimNotification
+POST       /lead-undertaking-non-customs-subsidy-nil-return                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.postNoClaimNotification
 
-GET        /sign-out                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.signOut()
+GET        /lead-undertaking-no-claims-confirmation                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimConfirmation
 
-GET        /promote-business-entity                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.getSelectNewLead
-POST       /promote-business-entity                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.postSelectNewLead
+GET        /sign-out                                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.signOut()
 
-GET        /lead-eori-changed                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.getLeadEORIChanged
+GET        /lead-undertaking-no-business-present                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.getNoBusinessPresent
+POST       /lead-undertaking-no-business-present                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.postNoBusinessPresent
 
-GET        /no-business-for-lead                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.getNoBusinessPresent
-POST       /no-business-for-lead                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.postNoBusinessPresent
-
-GET        /financial-dashboard                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinancialDashboardController.getFinancialDashboard
+GET        /financial-dashboard                                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinancialDashboardController.getFinancialDashboard
