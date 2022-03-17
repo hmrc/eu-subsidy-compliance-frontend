@@ -210,7 +210,10 @@ class EligibilityControllerSpec
                 Right(EligibilityJourney(customsWaivers = CustomsWaiversFormPage(true.some)))
               )
             }
-            checkIsRedirect(performAction("customswaivers" -> inputValue), routes.EligibilityController.getMainBusinessCheck().url)
+            checkIsRedirect(
+              performAction("customswaivers" -> inputValue),
+              routes.EligibilityController.getMainBusinessCheck().url
+            )
           }
         }
       }
@@ -347,7 +350,10 @@ class EligibilityControllerSpec
           mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Right(updatedEligibilityJourney))
         }
 
-        checkIsRedirect(performAction("willyouclaim" -> "true"), routes.EligibilityController.getMainBusinessCheck().url)
+        checkIsRedirect(
+          performAction("willyouclaim" -> "true"),
+          routes.EligibilityController.getMainBusinessCheck().url
+        )
       }
     }
 
@@ -389,7 +395,10 @@ class EligibilityControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("mainbusinesscheck.title"),
+            List(
+              messageFromMessageKey("mainbusinesscheck.title"),
+              messageFromMessageKey("mainbusinesscheck.legend", eori1)
+            ).mkString(" "),
             { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
 
@@ -478,7 +487,10 @@ class EligibilityControllerSpec
 
           checkFormErrorIsDisplayed(
             performAction(),
-            messageFromMessageKey("mainbusinesscheck.title"),
+            List(
+              messageFromMessageKey("mainbusinesscheck.title"),
+              messageFromMessageKey("mainbusinesscheck.legend", eori1)
+            ).mkString(" "),
             messageFromMessageKey("mainbusinesscheck.error.required")
           )
         }
