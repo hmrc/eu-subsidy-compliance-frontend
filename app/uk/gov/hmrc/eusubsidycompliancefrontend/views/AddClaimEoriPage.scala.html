@@ -31,10 +31,17 @@
 
 @(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@radioIdentifier = @{"should-claim-eori"}
+@inputIdentifier = @{"claim-eori"}
+
+
 @textHtml = {
   @govukInput(Input(
-    id = "claim-eori",
-    name = "claim-eori",
+    id = inputIdentifier,
+    name = inputIdentifier,
+    errorMessage = if (form.hasErrors && form.errors.head.key == inputIdentifier) {
+      Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}")))
+    } else None,
     inputType = "tel",
     label = Label(
       content = Text(messages("add-claim-eori.label")),
@@ -42,7 +49,7 @@
     ),
     classes = "govuk-input--width-20",
     autocomplete = Some("tel"),
-    value = form.data.get("claim-eori"),
+    value = form.data.get(inputIdentifier),
     prefix = Some(PrefixOrSuffix(content = Text("GB")))
   ))
 }
@@ -53,7 +60,7 @@
     backLink = Some(previous),
     hasErrors = form.hasErrors
 ) {
-
+  
     @if(form.hasErrors) {
         @govukErrorSummary(
             ErrorSummary(
@@ -79,24 +86,24 @@
             isPageHeading = true
           ))
         )),
-        errorMessage = if (form.hasErrors) {
+        errorMessage = if (form.hasErrors && form.errors.head.key == radioIdentifier) {
             Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}")))
         } else None,
         hint = Some(Hint(
         content = Text(messages("add-claim-eori.hint"))
         )),
-        idPrefix = Some("should-claim-eori"),
-        name = "should-claim-eori",
+        idPrefix = Some(radioIdentifier),
+        name = radioIdentifier,
         items = Seq(
           RadioItem(
             content = Text("Yes"),
             value = Some("true"),
-            checked = form.data.get("should-claim-eori").contains("true"),
+            checked = form.data.get(radioIdentifier).contains("true"),
             conditionalHtml = Some(textHtml)
           ),
           RadioItem(
             content = Text("No"),
-            checked = form.data.get("should-claim-eori").contains("false"),
+            checked = form.data.get(radioIdentifier).contains("false"),
             value = Some("false")
           )
         )
