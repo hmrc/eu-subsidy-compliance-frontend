@@ -59,7 +59,7 @@ trait ControllerSpec extends PlaySupport {
       doc.select("h1").text shouldBe expectedTitle
 
     val bodyText = doc.select("body").text
-    val regex    = """not_found_message\((.*?)\)""".r
+    val regex = """not_found_message\((.*?)\)""".r
 
     val regexResult = regex.findAllMatchIn(bodyText).toList
     if (regexResult.nonEmpty) fail(s"Missing message keys: ${regexResult.map(_.group(1)).mkString(", ")}")

@@ -125,7 +125,7 @@ class EligibilityController @Inject() (
         val form = journey.mainBusinessCheck.value.fold(mainBusinessCheckForm)(mainBC =>
           mainBusinessCheckForm.fill(FormValues(mainBC.toString))
         )
-        Ok(mainBusinessCheckPage(form, journey.previous))
+        Ok(mainBusinessCheckPage(form, eori, journey.previous))
       }
   }
 
@@ -137,7 +137,7 @@ class EligibilityController @Inject() (
         mainBusinessCheckForm
           .bindFromRequest()
           .fold(
-            errors => Future.successful(BadRequest(mainBusinessCheckPage(errors, previous))),
+            errors => Future.successful(BadRequest(mainBusinessCheckPage(errors, eori, previous))),
             form => store.update[EligibilityJourney](updateMainBusinessCheck(form.value.toBoolean)).flatMap(_.next)
           )
       }

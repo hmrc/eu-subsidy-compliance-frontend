@@ -64,9 +64,16 @@ customswaivers.title=Do you, or any business in your organisation, claim Customs
 customswaivers.error.required=Select yes if you, or any business in your organisation, claim Customs Duty waivers
 
 mainbusinesscheck.error.required=Select if you will be responsible for reporting de minimis aid for this undertaking
-mainbusinesscheck.title=Will you be responsible for reporting de minimis aid for this undertaking?
-mainbusinesscheck.p1=As undertaking administrator(or lead or something), it will be your responsibility to report any de minimis state aid that you, or other businesses in your organisation, receive.
-mainbusinesscheck.p2=The undertaking administrator should have access to all the relevant information needed and the authority to report to HMRC.
+mainbusinesscheck.title=Reporting de minimis aid payments (less Customs Duty waivers) as a single undertaking
+mainbusinesscheck.h2=What are de minimis aid payments (less Customs Duty waivers)?
+mainbusinesscheck.p1=De minimis aid payments (less Customs Duty waivers) could include employment allowances, subsidised contracts, loans or grants, from organisations like Invest NI and NI Direct. If you are unsure if aid you claim is counted as de minimis aid payments (less Customs Duty waivers) you should contact the provider.
+mainbusinesscheck.h3=What is a single undertaking?
+mainbusinesscheck.p2=HMRC needs to group together related businesses within a company or organisation into a ‘single undertaking’. Businesses within an undertaking are identified by their EORI number.
+mainbusinesscheck.p3=Every company may be structured differently. You may be a limited company, partnership or sole trader, or a larger business, with subsidiary companies within the organisation.
+mainbusinesscheck.p4=However a business is structured, we need to group all subsidiary or parent companies together. This is referred to as a single undertaking.
+mainbusinesscheck.p5=If you are a sole trader, you still need to create a single undertaking.
+mainbusinesscheck.p6=You must add any relevant business within your organisation to this single undertaking. EORI number {0} will be the administrator for this single undertaking. The administrator is a business, not a person.
+mainbusinesscheck.legend=Will the business EORI number {0} be responsible for reporting de minimis aid (less Customs Duty waivers) payments for this single undertaking?
 
 willyouclaim.title=Will you, or any business in your organisation, claim Customs Duty waivers in the future?
 willyouclaim.error.required=Select if you, or any business in your organisation, will claim Customs Duty waivers in the future
