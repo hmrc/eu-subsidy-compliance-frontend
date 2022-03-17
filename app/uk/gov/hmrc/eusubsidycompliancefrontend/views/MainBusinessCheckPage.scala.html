@@ -14,9 +14,11 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
 
 @this(
     layout: Layout,
@@ -27,7 +29,7 @@
     govukDetails : GovukDetails
 )
 
-@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], eori: EORI, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
     pageTitle = Some(messages("mainbusinesscheck.title")),
@@ -49,13 +51,15 @@
             ))
         }
 
-        <h1 class="govuk-heading-xl">@messages("mainbusinesscheck.title")</h1>
-        @govukDetails(Details(
-            summary = Text(messages("common.whatisanundertaking.details")),
-            content = Text(messages("common.whatisanundertaking.details.body"))
-        ))
-        <p class="govuk-body">@messages("mainbusinesscheck.p1")</p>
-        <p class="govuk-body">@messages("mainbusinesscheck.p2")</p>
+        @H1(messages("mainbusinesscheck.title"))
+        @H2(messages("mainbusinesscheck.h2"))
+        @P(messages("mainbusinesscheck.p1"))
+        @H2(messages("mainbusinesscheck.h3"))
+        @P(messages("mainbusinesscheck.p2"))
+        @P(messages("mainbusinesscheck.p3"))
+        @P(messages("mainbusinesscheck.p4"))
+        @P(messages("mainbusinesscheck.p5"))
+        @P(messages("mainbusinesscheck.p6", eori))
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
@@ -63,8 +67,9 @@
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    classes = "govuk-fieldset__legend--l govuk-visually-hidden",
-                    isPageHeading = true
+                    classes = "govuk-fieldset__legend--m",
+                    isPageHeading = true,
+                    content = Text(messages("mainbusinesscheck.legend", eori))
                 ))
             )),
             hint = None,
