@@ -153,7 +153,7 @@ class AccountController @Inject() (
   // Home account has logic to update the counter only if it's 1 or 2. Since the counter is 1 ,when the user is redirected to home account, counter get updated to 2.
   // Home page has logic to display the message only if the counter is 2 . At this point the message will be displayed.
   //If user refreshes or return to home page via another journey, counter is updated to 3 and success message is no longer displayed
-  //Since the counter is 3 now, it will no longer be updated because of this func logic and will be rest to 1 if user goes on to nil return journey again.
+  //Since the counter is 3 now, it will no longer be updated because of this func logic and will be reset to 1 if user goes on to nil return journey again.
   private def isUpdateNeededForNilJourneyCounter(nilReturnJourney: NilReturnJourney) =
     nilReturnJourney.nilReturnCounter == 1 || nilReturnJourney.nilReturnCounter == 2
 
