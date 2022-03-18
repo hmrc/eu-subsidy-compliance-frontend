@@ -23,6 +23,5 @@ case class AuthenticatedEscRequest[A](
   authorityId: String,
   groupId: String,
   request: Request[A],
-  eoriNumber: EORI,
-  previousUrl: Option[String] = None
+  eoriNumber: EORI
 ) extends WrappedRequest[A](request)
