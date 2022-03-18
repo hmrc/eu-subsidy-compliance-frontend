@@ -39,7 +39,7 @@ lazy val microservice = Project(appName, file("."))
     ),
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*repositories.*;" +
       ".*BuildInfo.*;.*javascript.*;.*Routes.*;.*GuiceInjector;" +
-      ".*ControllerConfiguration;.*testonly.*"
+      ".*ControllerConfiguration;.*testonly.*;.*syntax.*;.*models.*;.*views.*;.*config.*"
   )
 
 lazy val testSettings = Seq(
