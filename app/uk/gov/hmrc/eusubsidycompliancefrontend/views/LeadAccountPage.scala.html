@@ -29,7 +29,7 @@
   govukNotificationBanner : GovukNotificationBanner
 )
 
-@(undertaking: Undertaking, isNonLeadEORIPresent: Boolean, isTimeToReport: Boolean, lastDayToReport: Option[String], isOverdue: Boolean, hasReturnFiledRecently: Boolean, dueDate: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(undertaking: Undertaking, isNonLeadEORIPresent: Boolean, isTimeToReport: Boolean, lastDayToReport: Option[String], isOverdue: Boolean, isNilReturnDoneRecently: Boolean, dueDate: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @linkURL = @{if(isNonLeadEORIPresent) routes.SelectNewLeadController.getSelectNewLead() else routes.NoBusinessPresentController.getNoBusinessPresent() }
 
 @html = {
@@ -62,7 +62,7 @@
             content = Text(messages("lead-account-homepage-overdue.inset", lastDayToReport.getOrElse(sys.error("due date missing"))))
         ))
     }
-    @if(hasReturnFiledRecently) {
+    @if(isNilReturnDoneRecently) {
 
         @govukNotificationBanner(NotificationBanner(
             content = HtmlContent(html),
