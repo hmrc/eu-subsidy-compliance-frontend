@@ -129,7 +129,7 @@ class AccountController @Inject() (
             isTimeToReport,
             dueDate,
             isOverdue,
-            isNilReturnDoneRecently(updatedJourney),
+            updatedJourney.isNilJourneyDoneRecently,
             currentDay.plusDays(dueDays).toDisplayFormat
           )
         ).toFuture.toContext
@@ -150,14 +150,13 @@ class AccountController @Inject() (
   //nilReturnCounter is used to track when user has moved to home account page after nil return claim
   //This counter also helps in identifying when to display the success message which should be displayed only once
   //By default,  NilReturnJourney has counter set to 0. When user submit on No claim page, the count is set to 1, indicating user has started the nil return journey.
-  // Home account has logic to update the counter only if it's 1 or 2. Since the counter is 1 ,when the user is redirected to home account, counter get updated to 2.
-  // Home page has logic to display the message only if the counter is 2 . At this point the message will be displayed.
-  //If user refreshes or return to home page via another journey, counter is updated to 3 and success message is no longer displayed
-  //Since the counter is 3 now, it will no longer be updated because of this func logic and will be reset to 1 if user goes on to nil return journey again.
+  // Home account has logic to update the counter only if hasNilJourneyStarted or isNilJourneyDoneRecently.
+  // Since the journey has started ,when the user is redirected to home account, counter get updated to 2.
+  // Home page has logic to display the message only if the isNilJourneyDoneRecently . At this point the message will be displayed.
+  //If user refreshes or return to home page via another journey, counter is updated and success message is no longer displayed
+  //Since neither the nil journey has just started nor finished recently, counter will no longer be updated because of this func logic
+  // and will be reset to 1 if user goes on to nil return journey again.
   private def isUpdateNeededForNilJourneyCounter(nilReturnJourney: NilReturnJourney) =
-    nilReturnJourney.nilReturnCounter == 1 || nilReturnJourney.nilReturnCounter == 2
-
-  //Logic to check if the success message be displayed on the Home account page
-  private def isNilReturnDoneRecently(nilReturnJourney: NilReturnJourney) = nilReturnJourney.nilReturnCounter == 2
+    nilReturnJourney.hasNilJourneyStarted || nilReturnJourney.isNilJourneyDoneRecently
 
 }

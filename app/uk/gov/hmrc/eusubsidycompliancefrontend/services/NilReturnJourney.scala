@@ -24,6 +24,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.NilReturnJourney.Forms.N
 case class NilReturnJourney(nilReturn: NilReturnFormPage = NilReturnFormPage(), nilReturnCounter: Int = 0)
     extends Journey {
   override def steps: Array[FormPage[_]] = Array(nilReturn)
+
+  def hasNilJourneyStarted = nilReturnCounter == 1 //means user has clicked on the check box to do nil return submission
+  def isNilJourneyDoneRecently =
+    nilReturnCounter == 2 //means the page previous to current page was to submit the nil return
 }
 
 object NilReturnJourney {
@@ -42,4 +46,5 @@ object NilReturnJourney {
     }
 
   }
+
 }
