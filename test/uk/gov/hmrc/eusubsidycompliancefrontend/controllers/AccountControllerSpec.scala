@@ -26,7 +26,8 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, EscService, RetrieveEmailService, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.NilReturnJourney.Forms.NilReturnFormPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, EscService, NilReturnJourney, RetrieveEmailService, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
@@ -96,6 +97,8 @@ class AccountControllerSpec
       "display the lead account home page" when {
 
         def test(undertaking: Undertaking): Unit = {
+
+          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None), 0)
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -105,6 +108,8 @@ class AccountControllerSpec
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockTimeProviderToday(fixedDate)
+            mockGet[NilReturnJourney](eori1)(Right(None))
+            mockPut[NilReturnJourney](nilJourneyCreate, eori1)(Right(nilJourneyCreate))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -162,6 +167,7 @@ class AccountControllerSpec
           dueDate: String,
           isOverdue: Boolean
         ): Unit = {
+          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None), 0)
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -171,6 +177,8 @@ class AccountControllerSpec
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockTimeProviderToday(currentDate)
+            mockGet[NilReturnJourney](eori1)(Right(None))
+            mockPut[NilReturnJourney](nilJourneyCreate, eori1)(Right(nilJourneyCreate))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -184,6 +192,48 @@ class AccountControllerSpec
                 val htmlBody = doc.select(".govuk-inset-text").text
                 htmlBody should include regex
                   messageFromMessageKey("lead-account-homepage-overdue.inset", dueDate)
+              }
+          )
+        }
+
+        def testNilReturnSuccessMessage(
+          undertaking: Undertaking,
+          nilReturnJourney: NilReturnJourney,
+          hasFiledNilReturnRecently: Boolean,
+          currentDate: LocalDate
+        ): Unit = {
+
+          def update(njOpt: Option[NilReturnJourney]) = njOpt.map { nj =>
+            nj.copy(nilReturnCounter = nj.nilReturnCounter + 1)
+          }
+          val updatedNJ = nilReturnJourney.copy(nilReturnCounter = nilReturnJourney.nilReturnCounter + 1)
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
+            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
+            mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+            mockTimeProviderToday(currentDate)
+            mockGet[NilReturnJourney](eori1)(Right(nilReturnJourney.some))
+            mockUpdate[NilReturnJourney](_ => update(nilReturnJourney.some), eori1)(Right(updatedNJ))
+          }
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("lead-account-homepage.title", undertaking.name),
+            doc =>
+              if (hasFiledNilReturnRecently) {
+                val htmlBody1 = doc.select(".govuk-notification-banner").text
+                htmlBody1 should include regex
+                  List(
+                    messageFromMessageKey("noClaimConfirmation.title"),
+                    messageFromMessageKey("noClaimConfirmation.ref.p1", "16 June 2022")
+                  ).mkString(" ")
+              } else {
+                val body = doc.select(".govuk-notification-banner").text
+                body should include regex ""
               }
           )
         }
@@ -227,6 +277,23 @@ class AccountControllerSpec
             isTimeToReport = false,
             dueDate = "1 March 2022",
             isOverdue = true
+          )
+        }
+
+        "user has recently filed the Nil Return " in {
+          testNilReturnSuccessMessage(
+            undertaking1,
+            NilReturnJourney(NilReturnFormPage(value = true.some), 1),
+            true,
+            LocalDate.of(2022, 3, 18)
+          )
+        }
+        "user has recently filed the Nil Return but user refreshed the home account " in {
+          testNilReturnSuccessMessage(
+            undertaking1,
+            NilReturnJourney(NilReturnFormPage(value = true.some), 2),
+            false,
+            LocalDate.of(2022, 3, 18)
           )
         }
 

@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.data.OptionT
 import cats.implicits._
 import play.api.data.{Form, Mapping}
-import play.api.data.Forms.{bigDecimal, mapping, nonEmptyText, optional, text}
+import play.api.data.Forms.{bigDecimal, mapping, nonEmptyText}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest

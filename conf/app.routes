@@ -111,8 +111,6 @@ GET        /update-undelivered-email-address                                    
 GET        /lead-undertaking-non-customs-subsidy-nil-return                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimNotification
 POST       /lead-undertaking-non-customs-subsidy-nil-return                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.postNoClaimNotification
 
-GET        /lead-undertaking-no-claims-confirmation                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimConfirmation
-
 GET        /sign-out                                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.signOut()
 
 GET        /lead-undertaking-no-business-present                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.getNoBusinessPresent

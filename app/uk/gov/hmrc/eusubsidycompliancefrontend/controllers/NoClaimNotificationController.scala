@@ -23,14 +23,14 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyNilReturn
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyUpdate}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EscService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EscService, NilReturnJourney, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.{FutureToOptionTOps, OptionToOptionTOps}
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext}
 
 @Singleton
 class NoClaimNotificationController @Inject() (
@@ -40,8 +40,7 @@ class NoClaimNotificationController @Inject() (
   override val escService: EscService,
   auditService: AuditService,
   timeProvider: TimeProvider,
-  noClaimNotificationPage: NoClaimNotificationPage,
-  noClaimConfirmationPage: NoClaimConfirmationPage
+  noClaimNotificationPage: NoClaimNotificationPage
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
@@ -56,17 +55,18 @@ class NoClaimNotificationController @Inject() (
 
   def postNoClaimNotification: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
-      val eori = request.eoriNumber
+      implicit val eori = request.eoriNumber
       val previous = routes.AccountController.getAccountPage().url
 
       noClaimForm
         .bindFromRequest()
         .fold(
           errors => BadRequest(noClaimNotificationPage(errors, previous, undertaking.name)).toFuture,
-          _ => {
+          form => {
             val nilSubmissionDate = timeProvider.today
             val result = for {
               reference <- undertaking.reference.toContext
+              _ <- store.update[NilReturnJourney](updateNilReturnValues(form)).toContext
               _ <- escService
                 .createSubsidy(reference, SubsidyUpdate(reference, NilSubmissionDate(nilSubmissionDate)))
                 .toContext
@@ -74,7 +74,7 @@ class NoClaimNotificationController @Inject() (
                 .sendEvent(
                   NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate)
                 )
-            } yield Redirect(routes.NoClaimNotificationController.getNoClaimConfirmation())
+            } yield Redirect(routes.AccountController.getAccountPage())
 
             result.getOrElse(handleMissingSessionData("Undertaking ref"))
           }
@@ -82,10 +82,11 @@ class NoClaimNotificationController @Inject() (
     }
   }
 
-  def getNoClaimConfirmation: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    withLeadUndertaking { undertaking =>
-      Ok(noClaimConfirmationPage(undertaking.name)).toFuture
-    }
+  private def updateNilReturnJourney(nrj: Option[NilReturnJourney])(f: NilReturnJourney => NilReturnJourney) =
+    nrj.map(f)
+
+  private def updateNilReturnValues(f: FormValues)(nrj: Option[NilReturnJourney]) = updateNilReturnJourney(nrj) { nj =>
+    nj.copy(nilReturn = nj.nilReturn.copy(value = Some(f.value.toBoolean)), nilReturnCounter = 1)
   }
 
   lazy val noClaimForm: Form[FormValues] = Form(

@@ -19,8 +19,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages.{BecomeLeadEoriFormPage, controller}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.{CustomsWaiversFormPage, EoriCheckFormPage, MainBusinessCheckFormPage, WillYouClaimFormPage}
 
 class BecomeLeadJourneySpec extends AnyWordSpecLike with Matchers {
 
@@ -40,15 +38,21 @@ class BecomeLeadJourneySpec extends AnyWordSpecLike with Matchers {
     "uris correct" should {
 
       "Become lead" in {
-        BecomeLeadJourney.FormPages.BecomeLeadEoriFormPage().uri shouldBe  routes.BecomeLeadController.getBecomeLeadEori().url
+        BecomeLeadJourney.FormPages.BecomeLeadEoriFormPage().uri shouldBe routes.BecomeLeadController
+          .getBecomeLeadEori()
+          .url
       }
 
       "Accept terms" in {
-        BecomeLeadJourney.FormPages.TermsAndConditionsFormPage().uri shouldBe  routes.BecomeLeadController.getAcceptPromotionTerms().url
+        BecomeLeadJourney.FormPages.TermsAndConditionsFormPage().uri shouldBe routes.BecomeLeadController
+          .getAcceptPromotionTerms()
+          .url
       }
 
       "Confirmation" in {
-        BecomeLeadJourney.FormPages.ConfirmationFormPage().uri shouldBe  routes.BecomeLeadController.getPromotionConfirmation().url
+        BecomeLeadJourney.FormPages.ConfirmationFormPage().uri shouldBe routes.BecomeLeadController
+          .getPromotionConfirmation()
+          .url
       }
     }
   }
