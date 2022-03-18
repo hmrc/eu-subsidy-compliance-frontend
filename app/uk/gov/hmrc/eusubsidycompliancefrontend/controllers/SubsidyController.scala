@@ -244,10 +244,7 @@ class SubsidyController @Inject() (
         claimPublicAuthorityForm
           .bindFromRequest()
           .fold(
-            errors => {
-              println(" form with error ::" + errors.errors)
-              Future.successful(BadRequest(addPublicAuthorityPage(errors, previous)))
-            },
+            errors => Future.successful(BadRequest(addPublicAuthorityPage(errors, previous))),
             form =>
               for {
                 journey <- store.update[SubsidyJourney](updateClaimAuthority(form))
