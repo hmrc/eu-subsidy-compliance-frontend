@@ -664,11 +664,16 @@ class SubsidyControllerSpec
         }
 
         "nothing is selected" in {
-          testFormError(None, "add-claim-eori.error.required")
+          testFormError(None, "should-claim-eori.error.required")
         }
 
         "yes is selected but no eori is entered" in {
-          testFormError(Some(List("should-claim-eori" -> "true")), "add-claim-eori.error.format")
+          testFormError(Some(List("should-claim-eori" -> "true")), "claim-eori.error.required")
+
+        }
+
+        "yes is selected but no eori eneterd is invalid" in {
+          testFormError(Some(List("should-claim-eori" -> "true", "claim-eori" -> "12345")), "claim-eori.error.format")
 
         }
 
@@ -907,11 +912,11 @@ class SubsidyControllerSpec
         }
 
         "nothing is selected" in {
-          testFormError(None, "add-claim-trader-reference.error.required")
+          testFormError(None, "should-store-trader-ref.error.required")
         }
 
         "yes is selected but no trader reference is added" in {
-          testFormError(Some(List("should-store-trader-ref" -> "true")), "add-claim-trader-reference.error.isempty")
+          testFormError(Some(List("should-store-trader-ref" -> "true")), "claim-trader-ref.error.required")
         }
 
       }

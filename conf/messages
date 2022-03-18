@@ -270,15 +270,16 @@ error.claim-public-authority.required=Enter the public authority
 add-claim-eori.title=Would you like to add an EORI number for the business that claimed the payment?
 add-claim-eori.label=This must be a GB EORI number
 add-claim-eori.hint=This is for your own records. It is not a mandatory field.
-add-claim-eori.error.format=GB EORI number must be 12 or 15 digits
-add-claim-eori.error.required=Select yes if you would like to add a valid EORI number
+should-claim-eori.error.required=Select yes if you would like to add a valid EORI number
+claim-eori.error.format=GB EORI number must be 12 or 15 digits
+claim-eori.error.required=GB EORI number must be 12 or 15 digits
 
 
 add-claim-trader-reference.title=Would you like to add a reference?
 add-claim-trader-reference.hint=This is for your own records. It is not a mandatory field.
 add-claim-trader-reference.label=Enter the reference you would like to add
-add-claim-trader-reference.error.required=Select yes if you would like to add a reference
-add-claim-trader-reference.error.isempty=Enter the trader reference you would like to add
+should-store-trader-ref.error.required=Select yes if you would like to add a reference
+claim-trader-ref.error.required=Enter the trader reference you would like to add
 
 subsidy.cya.title=Check your answers
 subsidy.cya.summary-list.claimDate.key=Payment date

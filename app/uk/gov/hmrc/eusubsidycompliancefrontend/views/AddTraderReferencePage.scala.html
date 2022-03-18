@@ -31,11 +31,17 @@
 
 @(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@radioIdentifier = @{"should-store-trader-ref"}
+@inputIdentifier = @{"claim-trader-ref"}
+
 @textHtml = {
   @govukInput(Input(
-    id = "claim-trader-ref",
-    name = "claim-trader-ref",
-    value = form.data.get("claim-trader-ref"),
+    id = inputIdentifier,
+    name = inputIdentifier,
+    errorMessage = if (form.hasErrors && form.errors.head.key == inputIdentifier) {
+      Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}")))
+    } else None,
+    value = form.data.get(inputIdentifier),
     label = Label(
       content = Text(messages("add-claim-trader-reference.label"))
     ),
@@ -57,7 +63,7 @@
                   errorList = form.errors.map { err =>
                       ErrorLink(
                           href = Some(s"#${err.key}"),
-                          content = Text(s"${messages("add-claim-trader-reference." + err.message)}"),
+                          content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}"),
                           attributes = Map("class" ->"govuk-link")
                       )
                   },
@@ -77,20 +83,20 @@
         hint = Some(Hint(
           content = Text(messages("add-claim-trader-reference.hint"))
         )),
-        errorMessage = if (form.hasErrors) {
-            Some(ErrorMessage(content = Text(messages("add-claim-trader-reference." + form.errors.head.message))))
+        errorMessage = if (form.hasErrors && form.errors.head.key == radioIdentifier) {
+            Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}")))
         } else None,
-        name = "should-store-trader-ref",
+        name = radioIdentifier,
         items = Seq(
           RadioItem(
             content = Text(messages("common.yes")),
             value = Some("true"),
-            checked = form.data.get("should-store-trader-ref").contains("true"),
+            checked = form.data.get(radioIdentifier).contains("true"),
             conditionalHtml = Some(textHtml)
           ),
           RadioItem(
             content = Text(messages("common.no")),
-            checked = form.data.get("should-store-trader-ref").contains("false"),
+            checked = form.data.get(radioIdentifier).contains("false"),
             value = Some("false")
           )
         )
