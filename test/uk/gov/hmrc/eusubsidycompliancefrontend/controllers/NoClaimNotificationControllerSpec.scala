@@ -24,7 +24,8 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NilSubmissionDate, SubsidyUpdate, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EscService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.NilReturnJourney.Forms.NilReturnFormPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EscService, NilReturnJourney, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.CommonTestData.{eori1, undertaking, undertakingRef}
@@ -90,6 +91,12 @@ class NoClaimNotificationControllerSpec
 
     "handling request  to post No claim notification " must {
 
+      val nilReturnJourney = NilReturnJourney()
+      val updatedNilReturnJourney = NilReturnJourney(NilReturnFormPage(true.some), 1)
+
+      def update(nrjOpt: Option[NilReturnJourney]) = nrjOpt.map { nrj =>
+        nrj.copy(nilReturn = nrj.nilReturn.copy(value = Some(true)), nilReturnCounter = 1)
+      }
       def performAction(data: (String, String)*) = controller
         .postNoClaimNotification(
           FakeRequest()
@@ -100,13 +107,32 @@ class NoClaimNotificationControllerSpec
 
       "throw technical error" when {
 
+        val nilReturnJourney = NilReturnJourney()
+        val updatedNilReturnJourney = NilReturnJourney(NilReturnFormPage(true.some), 1)
+
+        def update(nrjOpt: Option[NilReturnJourney]) = nrjOpt.map { nrj =>
+          nrj.copy(nilReturn = nrj.nilReturn.copy(value = Some(true)), nilReturnCounter = 1)
+        }
+
         val exception = new Exception("oh no")
+
+        "call to update  Nil return journey fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockTimeProviderToday(currentDay)
+            mockUpdate[NilReturnJourney](_ => update(nilReturnJourney.some), eori1)(Left(ConnectorError(exception)))
+
+          }
+          assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
+        }
 
         "call to create Subsidy fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockTimeProviderToday(currentDay)
+            mockUpdate[NilReturnJourney](_ => update(nilReturnJourney.some), eori1)(Right(updatedNilReturnJourney))
             mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
               Left(ConnectorError(exception))
             )
@@ -138,6 +164,7 @@ class NoClaimNotificationControllerSpec
           mockAuthWithNecessaryEnrolment()
           mockGet[Undertaking](eori1)(Right(undertaking.some))
           mockTimeProviderToday(currentDay)
+          mockUpdate[NilReturnJourney](_ => update(nilReturnJourney.some), eori1)(Right(updatedNilReturnJourney))
           mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
             Right(undertakingRef)
           )
@@ -145,48 +172,9 @@ class NoClaimNotificationControllerSpec
         }
         checkIsRedirect(
           performAction("noClaimNotification" -> "true"),
-          routes.NoClaimNotificationController.getNoClaimConfirmation()
+          routes.AccountController.getAccountPage().url
         )
 
-      }
-
-      "redirect to the account home page" when {
-        "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(() => performAction())
-        }
-      }
-
-    }
-
-    "handling request to get No claim confirmation" must {
-
-      def performAction() = controller.getNoClaimConfirmation(FakeRequest())
-      behave like authBehaviour(() => performAction())
-
-      "display the page" in {
-        inSequence {
-          mockAuthWithNecessaryEnrolment()
-          mockGet[Undertaking](eori1)(Right(undertaking.some))
-        }
-        checkPageIsDisplayed(
-          performAction(),
-          undertaking.name,
-          { doc =>
-            val htmlBody = doc.select(".govuk-body").html()
-
-            htmlBody should include regex messageFromMessageKey(
-              "noClaimConfirmation.link",
-              routes.AccountController.getAccountPage().url
-            )
-
-          }
-        )
-      }
-
-      "redirect to the account home page" when {
-        "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(performAction)
-        }
       }
 
     }

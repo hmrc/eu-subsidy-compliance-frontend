@@ -18,17 +18,28 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.H1
+@import play.twirl.api.Html
 
 @this(
   layout: FullWidthLayout,
   button: components.Button,
   govukRadios : GovukRadios,
   govukWarningText : GovukWarningText,
-  govukInsetText : GovukInsetText
+  govukInsetText : GovukInsetText,
+  govukNotificationBanner : GovukNotificationBanner
 )
 
-@(undertaking: Undertaking, isNonLeadEORIPresent: Boolean, isTimeToReport: Boolean, lastDayToReport: Option[String], isOverdue: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(undertaking: Undertaking, isNonLeadEORIPresent: Boolean, isTimeToReport: Boolean, lastDayToReport: Option[String], isOverdue: Boolean, hasReturnFiledRecently: Boolean, dueDate: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @linkURL = @{if(isNonLeadEORIPresent) routes.SelectNewLeadController.getSelectNewLead() else routes.NoBusinessPresentController.getNoBusinessPresent() }
+
+@html = {
+    <p class="govuk-notification-banner__heading">
+    @messages("noClaimConfirmation.title")
+    </p>
+    <p class="govuk-body">
+    @messages("noClaimConfirmation.ref.p1", dueDate)
+    </p>
+}
 @layout(
   pageTitle = Some(messages("lead-account-homepage.title", undertaking.name)),
   backLinkEnabled = false,
@@ -51,6 +62,16 @@
             content = Text(messages("lead-account-homepage-overdue.inset", lastDayToReport.getOrElse(sys.error("due date missing"))))
         ))
     }
+    @if(hasReturnFiledRecently) {
+
+        @govukNotificationBanner(NotificationBanner(
+            content = HtmlContent(html),
+            bannerType = Some("success"),
+            disableAutoFocus = Some(true)
+        ))
+
+    }
+
 
   <div class="govuk-grid-column-one-third">
     <div class="govuk-card govuk-card--contained govuk-card fixed-min-height-card">

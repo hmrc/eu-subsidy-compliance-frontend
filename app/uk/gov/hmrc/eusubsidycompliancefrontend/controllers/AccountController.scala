@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.implicits.catsSyntaxOptionId
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
@@ -49,6 +50,8 @@ class AccountController @Inject() (
 ) extends BaseController(mcc) {
 
   import escActionBuilders._
+
+  val dueDays = 90
 
   def getAccountPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -88,7 +91,8 @@ class AccountController @Inject() (
     val result = for {
       _ <- store.put(u).toContext
       _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(u))
-    } yield renderAccountPage(u)
+      result <- renderAccountPage(u).toContext
+    } yield result
 
     result.getOrElse(handleMissingSessionData("Account Home - Existing Undertaking -"))
   }
@@ -101,23 +105,46 @@ class AccountController @Inject() (
     } yield (ej, uj)
 
   private def renderAccountPage(undertaking: Undertaking)(implicit r: AuthenticatedEscRequest[AnyContent]) = {
-    val currentTime = timeProvider.today
+    implicit val eori = r.eoriNumber
+    val currentDay = timeProvider.today
 
-    val isTimeToReport = ReportReminderHelpers.isTimeToReport(undertaking.lastSubsidyUsageUpdt, currentTime)
+    val isTimeToReport = ReportReminderHelpers.isTimeToReport(undertaking.lastSubsidyUsageUpdt, currentDay)
     val dueDate = ReportReminderHelpers.dueDateToReport(undertaking.lastSubsidyUsageUpdt).map(_.toDisplayFormat)
-    val isOverdue = ReportReminderHelpers.isOverdue(undertaking.lastSubsidyUsageUpdt, currentTime)
+    val isOverdue = ReportReminderHelpers.isOverdue(undertaking.lastSubsidyUsageUpdt, currentDay)
 
-    if (undertaking.isLeadEORI(r.eoriNumber)) {
-      Ok(
-        leadAccountPage(
-          undertaking,
-          undertaking.getAllNonLeadEORIs().nonEmpty,
-          isTimeToReport,
-          dueDate,
-          isOverdue
-        )
-      )
-    } else Ok(nonLeadAccountPage(undertaking))
+    if (undertaking.isLeadEORI(eori)) {
+      val result = for {
+        nilReturnJourney <- store
+          .get[NilReturnJourney]
+          .toContext
+          .orElse(store.put[NilReturnJourney](NilReturnJourney()).toContext)
+        updatedJourney <-
+          if (nilReturnJourney.nilReturnCounter == 1 || nilReturnJourney.nilReturnCounter == 2)
+            store.update[NilReturnJourney](updateNilReturnCounter).toContext
+          else nilReturnJourney.some.toContext
+        result <- Ok(
+          leadAccountPage(
+            undertaking,
+            undertaking.getAllNonLeadEORIs().nonEmpty,
+            isTimeToReport,
+            dueDate,
+            isOverdue,
+            updatedJourney.nilReturnCounter == 2,
+            currentDay.plusDays(dueDays).toDisplayFormat
+          )
+        ).toFuture.toContext
+      } yield result
+
+      result.getOrElse(handleMissingSessionData("Nil Return Journey"))
+
+    } else Ok(nonLeadAccountPage(undertaking)).toFuture
+  }
+
+  private def updateNilReturnJourney(nrj: Option[NilReturnJourney])(f: NilReturnJourney => NilReturnJourney) =
+    nrj.map(f)
+
+  private def updateNilReturnCounter(nrj: Option[NilReturnJourney]) = updateNilReturnJourney(nrj) { nj =>
+    nj.copy(nilReturnCounter = nj.nilReturnCounter + 1)
   }
 
 }

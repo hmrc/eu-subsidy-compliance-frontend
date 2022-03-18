@@ -322,8 +322,8 @@ noClaimNotification.error.required = Select if you want to declare you have not 
 
 #noClaimConfirmation
 noClaimConfirmation.title = You have notified HMRC that you have received no de minimis aid payments for this 90-day period
-noClaimConfirmation.ref.p1 = You can still report any de minimis aid payments for this period by entering them in the Reporting payments section on Account Home screen.
-noClaimConfirmation.link = <a href="{0}" class="govuk-link">Go to account home</a>
+noClaimConfirmation.ref.p1 = You can still report any de minimis aid payments for this period by entering them in the Reporting payments section below. Your next entry date is due by {0}
+
 
 #Select New lead
 selectNewLead.title = Please choose the new administrator for {0}

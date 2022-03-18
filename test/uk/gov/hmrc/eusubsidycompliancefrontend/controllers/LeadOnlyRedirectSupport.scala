@@ -19,27 +19,21 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.implicits.catsSyntaxOptionId
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
-import play.api.http.Status.SEE_OTHER
 import play.api.mvc.Result
-import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import utils.CommonTestData.{eori3, undertaking}
 
 import scala.concurrent.Future
 
 trait LeadOnlyRedirectSupport extends MockFactory with Matchers {
-  this: AuthAndSessionDataBehaviour with JourneyStoreSupport =>
+  this: AuthAndSessionDataBehaviour with JourneyStoreSupport with ControllerSpec =>
 
   protected def testLeadOnlyRedirect(f: () => Future[Result]) = {
     inSequence {
       mockAuthWithEnrolment(eori3)
       mockGet[Undertaking](eori3)(Right(undertaking.some))
     }
-
-    val result = f()
-
-    status(result) shouldBe SEE_OTHER
-    redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
+    checkIsRedirect(f(), routes.AccountController.getAccountPage().url)
   }
 
 }
