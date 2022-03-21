@@ -51,6 +51,16 @@
 @head = {
     @headBlock.getOrElse(Html(""))
     @Html(s"""<link href='${controllers.routes.Assets.versioned("stylesheets/application.css")}' media="all" rel="stylesheet" type="text/css" ${CSPNonce.attr} />""")
+
+    @if(showSignOutLink) {
+        @hmrcTimeoutDialogHelper(
+            title = Some(messages("hmrcTimeoutDialog.title")),
+            signOutUrl = appConfig.signOutUrl(continueUrl = Some(appConfig.timeOutContinue)),
+            timeoutUrl = Some(routes.SignOutController.signOutFromTimeout().url),
+            countdown = Some(appConfig.authTimeoutCountdownSeconds),
+            timeout = Some(appConfig.authTimeoutSeconds)
+        )
+    }
 }
 
 @beforeContentWrapper = {

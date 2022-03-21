@@ -113,6 +113,8 @@ POST       /lead-undertaking-non-customs-subsidy-nil-return                     
 
 GET        /sign-out                                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.signOut()
 
+GET        /timed-out                                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.signOutFromTimeout()
+
 GET        /lead-undertaking-no-business-present                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.getNoBusinessPresent
 POST       /lead-undertaking-no-business-present                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.postNoBusinessPresent
 

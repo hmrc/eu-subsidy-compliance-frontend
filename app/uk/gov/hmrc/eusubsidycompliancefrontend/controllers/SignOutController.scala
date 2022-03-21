@@ -21,16 +21,22 @@ import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.TimedOut
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 @Singleton
 class SignOutController @Inject() (
   mcc: MessagesControllerComponents,
+  timedOutPage: TimedOut,
   signOutPage: SignOutPage
 )(implicit val appConfig: AppConfig)
     extends BaseController(mcc)
     with I18nSupport
     with Logging {
+
+  val signOutFromTimeout: Action[AnyContent] = Action { implicit request =>
+    Ok(timedOutPage()).withNewSession
+  }
 
   val signOut: Action[AnyContent] = Action { implicit request =>
     Ok(signOutPage()).withNewSession
