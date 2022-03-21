@@ -34,6 +34,12 @@ common.change=Change
 common.remove=Remove
 common.currency.euros=€
 
+hmrcTimeoutDialog.title = You’re about to be signed out
+
+timedOut.title = For your security, we signed you out
+timedOut.p1 = We did not save your answers.
+timedOut.signIn = Sign in
+
 date.1=January
 date.2=February
 date.3=March

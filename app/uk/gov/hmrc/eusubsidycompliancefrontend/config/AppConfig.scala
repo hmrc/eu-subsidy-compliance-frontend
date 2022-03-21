@@ -19,6 +19,7 @@ import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
+import scala.concurrent.duration.FiniteDuration
 
 @Singleton
 class AppConfig @Inject() (config: Configuration, contactFrontendConfig: ContactFrontendConfig) {
@@ -39,6 +40,18 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
 
   val betaFeedbackUrlNoAuth: String = s"$contactFrontendUrl/contact/beta-feedback?service=$contactFormServiceIdentifier"
   lazy val sessionTimeout = config.get[String]("application.session.maxAge")
+
+  private val signOutUrlBase: String = config.get[String]("auth.sign-out.url")
+
+  def signOutUrl(continueUrl: Option[String]): String =
+    continueUrl.fold(signOutUrlBase)(continue => s"$signOutUrlBase?continue=${continue}")
+
+  val timeOutContinue: String = config.get[String](s"urls.timeOutContinue")
+
+  val authTimeoutSeconds: Int = config.get[FiniteDuration]("auth.sign-out.inactivity-timeout").toSeconds.toInt
+
+  val authTimeoutCountdownSeconds: Int =
+    config.get[FiniteDuration]("auth.sign-out.inactivity-countdown").toSeconds.toInt
 
   def templateIdsMap(config: Configuration, langCode: String) = Map(
     "createUndertaking" -> config.get[String](s"email-send.create-undertaking-template-$langCode"),
