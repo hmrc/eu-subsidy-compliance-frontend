@@ -126,6 +126,8 @@ createUndertaking.p-3-3=now.
 undertakingName.title=What would you like to call this single undertaking?
 undertakingName.hint=This is for your own records.
 error.undertakingName.required=Enter a name for this single undertaking
+#TODO confirm this error message
+undertakingName.regex.error = Undertaking name should be less than 106 characters.
 
 undertakingSector.error.required=Select an industry sector
 undertakingSector.title=What is the industry sector of {0}?

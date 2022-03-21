@@ -54,7 +54,8 @@ class UndertakingController @Inject() (
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
-) extends BaseController(mcc) with LeadOnlyUndertakingSupport {
+) extends BaseController(mcc)
+    with LeadOnlyUndertakingSupport {
 
   import escActionBuilders._
   val CreateUndertaking = "createUndertaking"
@@ -147,14 +148,11 @@ class UndertakingController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
-        Ok(
-          cyaPage(
-            journey.name.value.fold(throw new IllegalStateException("name should be defined"))(UndertakingName(_)),
-            eori,
-            journey.sector.value.getOrElse(throw new IllegalStateException("sector should be defined")),
-            journey.previous
-          )
-        ).toFuture
+        val result: OptionT[Future, Result] = for {
+          undertakingName <- journey.name.value.toContext
+          undertakingSector <- journey.sector.value.toContext
+        } yield Ok(cyaPage(UndertakingName(undertakingName), eori, undertakingSector, journey.previous))
+        result.fold(handleMissingSessionData("Undertaking Journey Name/Sector"))(identity)
       case _ => handleMissingSessionData("Undertaking journey")
     }
   }
@@ -297,7 +295,7 @@ class UndertakingController @Inject() (
   private def updateUndertakingJourney(ujOpt: Option[UndertakingJourney])(f: UndertakingJourney => UndertakingJourney) =
     ujOpt.map(f)
 
-  private def updateUndertakingName(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
+  def updateUndertakingName(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
     updateUndertakingJourney(ujOpt) { journey =>
       journey.copy(name = journey.name.copy(value = Some(formValues.value)))
     }
@@ -320,7 +318,7 @@ class UndertakingController @Inject() (
 
   private val undertakingNameForm: Form[FormValues] = Form(
     mapping("undertakingName" -> mandatory("undertakingName"))(FormValues.apply)(FormValues.unapply).verifying(
-      "regex.error",
+      "undertakingName.regex.error",
       fields =>
         fields match {
           case a if a.value.matches(UndertakingName.regex) => true
