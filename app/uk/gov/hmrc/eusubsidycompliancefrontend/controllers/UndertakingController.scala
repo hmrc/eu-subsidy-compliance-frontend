@@ -295,7 +295,7 @@ class UndertakingController @Inject() (
   private def updateUndertakingJourney(ujOpt: Option[UndertakingJourney])(f: UndertakingJourney => UndertakingJourney) =
     ujOpt.map(f)
 
-  private def updateUndertakingName(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
+  def updateUndertakingName(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
     updateUndertakingJourney(ujOpt) { journey =>
       journey.copy(name = journey.name.copy(value = Some(formValues.value)))
     }
@@ -318,7 +318,7 @@ class UndertakingController @Inject() (
 
   private val undertakingNameForm: Form[FormValues] = Form(
     mapping("undertakingName" -> mandatory("undertakingName"))(FormValues.apply)(FormValues.unapply).verifying(
-      "regex.error",
+      "undertakingName.regex.error",
       fields =>
         fields match {
           case a if a.value.matches(UndertakingName.regex) => true

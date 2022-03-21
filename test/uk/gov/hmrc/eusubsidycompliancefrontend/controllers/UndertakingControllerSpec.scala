@@ -27,7 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.UndertakingUpdated
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, FormValues, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
@@ -217,6 +217,27 @@ class UndertakingControllerSpec
 
       "display the page" when {
 
+        def testDisplay(undertakingJourney: UndertakingJourney, backUrl: String) = {
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
+          }
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("undertakingName.title"),
+            { doc =>
+              doc.select(".govuk-back-link").attr("href") shouldBe backUrl
+              val input = doc.select(".govuk-input").attr("value")
+              input shouldBe undertakingJourney.name.value.getOrElse("")
+
+              val button = doc.select("form")
+              button.attr("action") shouldBe routes.UndertakingController.postUndertakingName().url
+            }
+          )
+
+        }
+
         "no undertaking journey is there in store" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -239,46 +260,24 @@ class UndertakingControllerSpec
           )
         }
 
-        "undertaking journey is there in store" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-          }
-          checkPageIsDisplayed(
-            performAction(),
-            messageFromMessageKey("undertakingName.title"),
-            { doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe routes.UndertakingController
-                .getCheckAnswers()
-                .url
-              val input = doc.select(".govuk-input").attr("value")
-              input shouldBe "TestUndertaking"
+        "undertaking journey is there in store and user has already answered the questions and all answers are complete" in {
+          testDisplay(undertakingJourneyComplete, routes.UndertakingController.getCheckAnswers().url)
+        }
 
-              val button = doc.select("form")
-              button.attr("action") shouldBe routes.UndertakingController.postUndertakingName().url
-            }
+        "undertaking journey is there in store and user hasn't  answered any questions" in {
+          testDisplay(UndertakingJourney(), routes.EligibilityController.getCreateUndertaking().url)
+        }
+        "undertaking journey is there in store and user has answered the question but journey is not complete" in {
+          testDisplay(
+            UndertakingJourney(
+              name = UndertakingNameFormPage("TestUndertaking".some)
+            ),
+            routes.EligibilityController.getCreateUndertaking().url
           )
         }
 
         "page appeared via amend undertaking journey" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1.some))
-          }
-          checkPageIsDisplayed(
-            performAction(),
-            messageFromMessageKey("undertakingName.title"),
-            { doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe routes.UndertakingController
-                .getAmendUndertakingDetails()
-                .url
-              val input = doc.select(".govuk-input").attr("value")
-              input shouldBe "TestUndertaking1"
-
-              val button = doc.select("form")
-              button.attr("action") shouldBe routes.UndertakingController.postUndertakingName().url
-            }
-          )
+          testDisplay(undertakingJourneyComplete1, routes.UndertakingController.getAmendUndertakingDetails().url)
         }
       }
 
@@ -342,6 +341,18 @@ class UndertakingControllerSpec
             messageFromMessageKey("error.undertakingName.required")
           )
         }
+
+        "undertaking name is more than 105 chars" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+          }
+          checkFormErrorIsDisplayed(
+            performAction("undertakingName" -> "x" * 106),
+            messageFromMessageKey("undertakingName.title"),
+            messageFromMessageKey("undertakingName.regex.error")
+          )
+        }
       }
 
       "redirect to next page" when {
@@ -354,7 +365,9 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-            mockUpdate[UndertakingJourney](_ => update(undertakingJourney.some), eori1)(Right(updatedUndertaking))
+            mockUpdate[UndertakingJourney](controller.updateUndertakingName(FormValues("TestUndertaking123")), eori1)(
+              Right(updatedUndertaking)
+            )
           }
           checkIsRedirect(performAction("undertakingName" -> "TestUndertaking123"), nextCall)
         }
@@ -644,6 +657,26 @@ class UndertakingControllerSpec
           }
           assertThrows[Exception](await(performAction()))
         }
+
+        "call to get undertaking journey fetches the journey without undertaking name" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[UndertakingJourney](eori1)(
+              Right(undertakingJourneyComplete.copy(name = UndertakingNameFormPage()).some)
+            )
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to get undertaking journey fetches the journey without undertaking sector" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[UndertakingJourney](eori1)(
+              Right(undertakingJourneyComplete.copy(sector = UndertakingSectorFormPage()).some)
+            )
+          }
+          assertThrows[Exception](await(performAction()))
+        }
       }
 
     }
@@ -821,6 +854,45 @@ class UndertakingControllerSpec
           }
         )
 
+      }
+
+    }
+
+    "handling request to Post Confirmation page" must {
+
+      def performAction(data: (String, String)*) =
+        controller.postConfirmation(FakeRequest().withFormUrlEncodedBody(data: _*))
+      def update(ujOpt: Option[UndertakingJourney]) = ujOpt.map { uj =>
+        uj.copy(confirmation = UndertakingConfirmationFormPage(value = true.some))
+      }
+
+      val undertakingJourney =
+        undertakingJourneyComplete.copy(confirmation = UndertakingConfirmationFormPage(value = None))
+      "throw technical error" when {
+
+        "confirmation form is empty" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to update undertaking confirmation fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourney.some), eori1)(Left(ConnectorError(exception)))
+          }
+          assertThrows[Exception](await(performAction("confirm" -> "true")))
+        }
+      }
+
+      "redirect to next page" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockUpdate[UndertakingJourney](_ => update(undertakingJourney.some), eori1)(Right(undertakingJourneyComplete))
+        }
+
+        checkIsRedirect(performAction("confirm" -> "true"), routes.BusinessEntityController.getAddBusinessEntity().url)
       }
 
     }
