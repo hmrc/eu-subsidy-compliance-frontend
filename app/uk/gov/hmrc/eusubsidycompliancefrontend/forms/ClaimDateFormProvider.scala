@@ -28,6 +28,8 @@ import javax.inject.Inject
 import scala.util.Try
 import java.time.format.DateTimeFormatter
 
+// TODO - consider taking this out of DI and have the controller instantiate as required
+//      - this allows a consistent approach for both form providers
 class ClaimDateFormProvider @Inject() (timeProvider: TimeProvider) extends FormProvider[DateFormValues] {
 
   private type RawFormValues = (String, String, String)

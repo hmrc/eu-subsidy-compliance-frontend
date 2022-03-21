@@ -643,41 +643,51 @@ class SubsidyControllerSpec
         }
       }
 
-      "show form error" when {
+//      "show form error" when {
+//
+//        def testFormError(
+//          inputAnswer: Option[List[(String, String)]],
+//          errorMessageKey: String
+//        ): Unit = {
+//          val answers = inputAnswer.getOrElse(Nil)
+//          inSequence {
+//            mockAuthWithNecessaryEnrolment()
+//            mockGet[Undertaking](eori1)(Right(undertaking.some))
+//            mockGetPrevious[SubsidyJourney](eori1)(Right("add-claim-amount"))
+//          }
+//          checkFormErrorIsDisplayed(
+//            performAction(answers: _*),
+//            messageFromMessageKey("add-claim-eori.title"),
+//            messageFromMessageKey(errorMessageKey)
+//          )
+//
+//        }
+//
+//        "nothing is selected" in {
+//          testFormError(None, "should-claim-eori.error.required")
+//        }
+//
+//        "yes is selected but no eori is entered" in {
+//          testFormError(Some(List("should-claim-eori" -> "true")), "claim-eori.error.required")
+//
+//        }
+//
+//        "yes is selected but no eori entered is invalid" in {
+//          testFormError(Some(List("should-claim-eori" -> "true", "claim-eori" -> "12345")), "claim-eori.error.format")
+//
+//        }
 
-        def testFormError(
-          inputAnswer: Option[List[(String, String)]],
-          errorMessageKey: String
-        ): Unit = {
-          val answers = inputAnswer.getOrElse(Nil)
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockGetPrevious[SubsidyJourney](eori1)(Right("add-claim-amount"))
-          }
-          checkFormErrorIsDisplayed(
-            performAction(answers: _*),
-            messageFromMessageKey("add-claim-eori.title"),
-            messageFromMessageKey(errorMessageKey)
-          )
+//        "yes is selected but the eori entered is not part of the undertaking" in {
+//          testFormError(
+//            Some(List(
+//              "should-claim-eori" -> "true",
+//              "claim-eori" -> "121212121212"),
+//            ),
+//            "claim-eori.error.not-in-undertaking"
+//          )
+//        }
 
-        }
-
-        "nothing is selected" in {
-          testFormError(None, "should-claim-eori.error.required")
-        }
-
-        "yes is selected but no eori is entered" in {
-          testFormError(Some(List("should-claim-eori" -> "true")), "claim-eori.error.required")
-
-        }
-
-        "yes is selected but no eori eneterd is invalid" in {
-          testFormError(Some(List("should-claim-eori" -> "true", "claim-eori" -> "12345")), "claim-eori.error.format")
-
-        }
-
-      }
+//      }
 
       "redirect to next page" when {
 

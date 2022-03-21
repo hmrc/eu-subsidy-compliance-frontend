@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.toSubsidyUpdate
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimDateFormProvider, ClaimEoriFormProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{NonCustomsSubsidyAdded, NonCustomsSubsidyRemoved, NonCustomsSubsidyUpdated}
@@ -60,7 +60,8 @@ class SubsidyController @Inject() (
   cyaPage: ClaimCheckYourAnswerPage,
   confirmRemovePage: ConfirmRemoveClaim,
   claimDateFormProvider: ClaimDateFormProvider,
-  timeProvider: TimeProvider
+  timeProvider: TimeProvider,
+  claimEoriFormProvider: ClaimEoriFormProvider
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
@@ -476,23 +477,7 @@ class SubsidyController @Inject() (
     mapping("reportPayment" -> mandatory("reportPayment"))(FormValues.apply)(FormValues.unapply)
   )
 
-  private val optionalEoriMapping: Mapping[String] = nonEmptyText
-    .verifying("error.format", eoriEntered => s"GB$eoriEntered".matches(EORI.regex))
-
-  private val claimEoriForm: Form[OptionalEORI] = Form(
-    mapping(
-      "should-claim-eori" -> mandatory("should-claim-eori"),
-      "claim-eori" -> mandatoryIfEqual("should-claim-eori", "true", optionalEoriMapping)
-    )((radioSelected, eori) => claimEoriFormApply(radioSelected, eori))(optionalEORI =>
-      Some((optionalEORI.setValue, optionalEORI.value.fold(Option.empty[String])(e => Some(e.drop(2)))))
-    )
-  )
-
-  private def claimEoriFormApply(input: String, eoriOpt: Option[String]) =
-    (input, eoriOpt) match {
-      case (radioSelected, Some(eori)) => OptionalEORI(radioSelected, Some(s"GB$eori"))
-      case (radioSelected, other) => OptionalEORI(radioSelected, other)
-    }
+  private val claimEoriForm: Form[OptionalEORI] = claimEoriFormProvider.form
 
   private val claimTraderRefForm: Form[OptionalTraderRef] = Form(
     mapping(

@@ -284,7 +284,7 @@ add-claim-eori.hint=This is for your own records. It is not a mandatory field.
 should-claim-eori.error.required=Select yes if you would like to add a valid EORI number
 claim-eori.error.format=GB EORI number must be 12 or 15 digits
 claim-eori.error.required=GB EORI number must be 12 or 15 digits
-
+claim-eori.error.not-in-undertaking=[TODO: Copy] EORI must be part of the undertaking
 
 add-claim-trader-reference.title=Would you like to add a reference?
 add-claim-trader-reference.hint=This is for your own records. It is not a mandatory field.
