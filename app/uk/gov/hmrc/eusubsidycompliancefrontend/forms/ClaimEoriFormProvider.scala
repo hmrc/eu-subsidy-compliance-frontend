@@ -20,13 +20,11 @@ import play.api.data.Forms.text
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.{Form, Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Fields._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.OptionalEORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{OptionalEORI, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
-// TODO - need a way to pass a parameter - this could be done by inoking this on demeand - might be the best way
-//      - avoids coupling, retrieval of undertaking etc...
-class ClaimEoriFormProvider extends FormProvider[OptionalEORI] {
+case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[OptionalEORI] {
 
   override def form: Form[OptionalEORI] = Form(mapping)
 

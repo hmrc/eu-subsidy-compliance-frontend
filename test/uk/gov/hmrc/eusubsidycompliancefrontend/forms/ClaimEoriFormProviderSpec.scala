@@ -22,10 +22,11 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.OptionalEORI
 import ClaimEoriFormProvider.Fields._
+import utils.CommonTestData.undertaking
 
 class ClaimEoriFormProviderSpec extends AnyWordSpecLike with Matchers {
 
-  private val underTest = new ClaimEoriFormProvider()
+  private val underTest = new ClaimEoriFormProvider(undertaking)
 
   "claim eori form validation" must {
 

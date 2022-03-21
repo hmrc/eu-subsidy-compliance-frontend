@@ -59,9 +59,7 @@ class SubsidyController @Inject() (
   addTraderReferencePage: AddTraderReferencePage,
   cyaPage: ClaimCheckYourAnswerPage,
   confirmRemovePage: ConfirmRemoveClaim,
-  claimDateFormProvider: ClaimDateFormProvider,
   timeProvider: TimeProvider,
-  claimEoriFormProvider: ClaimEoriFormProvider
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
@@ -191,8 +189,9 @@ class SubsidyController @Inject() (
   }
 
   def getAddClaimEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    withLeadUndertaking { _ =>
+    withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
+      val claimEoriForm = ClaimEoriFormProvider(undertaking).form
       store.get[SubsidyJourney].flatMap {
         case Some(journey) =>
           journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
@@ -207,8 +206,9 @@ class SubsidyController @Inject() (
   }
 
   def postAddClaimEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    withLeadUndertaking { _ =>
+    withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
+      val claimEoriForm = ClaimEoriFormProvider(undertaking).form
       journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
         claimEoriForm
           .bindFromRequest()
@@ -477,8 +477,6 @@ class SubsidyController @Inject() (
     mapping("reportPayment" -> mandatory("reportPayment"))(FormValues.apply)(FormValues.unapply)
   )
 
-  private val claimEoriForm: Form[OptionalEORI] = claimEoriFormProvider.form
-
   private val claimTraderRefForm: Form[OptionalTraderRef] = Form(
     mapping(
       "should-store-trader-ref" -> mandatory("should-store-trader-ref"),
@@ -499,7 +497,7 @@ class SubsidyController @Inject() (
     )(identity)(Some(_))
   )
 
-  private val claimDateForm = claimDateFormProvider.form
+  private val claimDateForm = ClaimDateFormProvider(timeProvider).form
 
   private val removeSubsidyClaimForm: Form[FormValues] = Form(
     mapping("removeSubsidyClaim" -> mandatory("removeSubsidyClaim"))(FormValues.apply)(FormValues.unapply)

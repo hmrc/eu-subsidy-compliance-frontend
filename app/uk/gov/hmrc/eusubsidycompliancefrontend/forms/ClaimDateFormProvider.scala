@@ -17,20 +17,17 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
 import play.api.data.Forms.{text, tuple}
-import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError, ValidationResult}
+import play.api.data.validation._
 import play.api.data.{Form, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
-import java.time.{LocalDate, ZoneId}
-import javax.inject.Inject
-import scala.util.Try
 import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, ZoneId}
+import scala.util.Try
 
-// TODO - consider taking this out of DI and have the controller instantiate as required
-//      - this allows a consistent approach for both form providers
-class ClaimDateFormProvider @Inject() (timeProvider: TimeProvider) extends FormProvider[DateFormValues] {
+case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvider[DateFormValues] {
 
   private type RawFormValues = (String, String, String)
 
