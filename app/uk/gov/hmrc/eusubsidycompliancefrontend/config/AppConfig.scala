@@ -15,12 +15,13 @@
  */
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.config
+import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 
 @Singleton
-class AppConfig @Inject() (config: Configuration) {
+class AppConfig @Inject() (config: Configuration, contactFrontendConfig: ContactFrontendConfig) {
   val welshLanguageSupportEnabled: Boolean =
     config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
 
@@ -30,8 +31,13 @@ class AppConfig @Inject() (config: Configuration) {
   val exchangeRateToolUrl: String = config.get[String](s"urls.exchangeRateToolUrl")
   val emailFrontendUrl: String = config.get[String]("microservice.services.customs-email-frontend.url")
   val exitSurveyUrl: String = config.get[String]("urls.feedback-survey")
+  val contactFrontendUrl: String =
+    contactFrontendConfig.baseUrl.getOrElse(sys.error("Could not find config for contact frontend url"))
 
-  val betaFeedbackUrlNoAuth: String = "TODO" // TODO
+  val contactFormServiceIdentifier: String =
+    contactFrontendConfig.serviceId.getOrElse(sys.error("Could not find config for contact frontend service id"))
+
+  val betaFeedbackUrlNoAuth: String = s"$contactFrontendUrl/contact/beta-feedback?service=$contactFormServiceIdentifier"
   lazy val sessionTimeout = config.get[String]("application.session.maxAge")
 
   def templateIdsMap(config: Configuration, langCode: String) = Map(
