@@ -521,7 +521,7 @@ class SubsidyControllerSpec
 
     }
 
-    "handling request to get Add Claim Eori " must {
+    "handling request to get Add Claim Eori" must {
 
       def performAction() = controller
         .getAddClaimEori(FakeRequest("GET", routes.SubsidyController.getAddClaimEori().url))
@@ -1128,6 +1128,58 @@ class SubsidyControllerSpec
       }
     }
 
+    "handling get of check your answers" must {
+
+      def performAction() = controller.getCheckAnswers(
+        FakeRequest("GET", routes.SubsidyController.getCheckAnswers().url)
+      )
+
+      "throw technical error" when {
+
+        def testErrorFor(s: SubsidyJourney) = {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking1.some))
+            mockGet[SubsidyJourney](eori1)(Right(s.some))
+          }
+
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "EORI is not present on subsidy journey" in {
+          testErrorFor(subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage()))
+        }
+
+        "claim amount is not present on subsidy journey" in {
+          testErrorFor(subsidyJourney.copy(claimAmount = ClaimAmountFormPage()))
+        }
+
+        "claim date is not present on subsidy journey" in {
+          testErrorFor(subsidyJourney.copy(claimDate = ClaimDateFormPage()))
+        }
+
+        "public authority is not present on subsidy journey" in {
+          testErrorFor(subsidyJourney.copy(publicAuthority = PublicAuthorityFormPage()))
+        }
+
+        "trader ref is not present on subsidy journey" in {
+          testErrorFor(subsidyJourney.copy(traderRef = TraderRefFormPage()))
+        }
+
+      }
+
+      "display the page" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockGet[Undertaking](eori1)(Right(undertaking1.some))
+          mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+        }
+
+        status(performAction()) shouldBe OK
+      }
+
+    }
+
     "handling post to check your answers" must {
 
       def performAction(data: (String, String)*) = controller
@@ -1265,6 +1317,36 @@ class SubsidyControllerSpec
           testLeadOnlyRedirect(() => performAction())
         }
       }
+    }
+
+    "handling request to get change subsidy" should {
+
+      val transactionID = "TID12345"
+
+      def performAction() = controller.getCheckAnswers(
+        FakeRequest("GET", routes.SubsidyController.getChangeSubsidyClaim(transactionID).url)
+      )
+
+      "throw technical error" when {
+
+        "todo" in {
+          // TODO
+        }
+
+      }
+
+      "redirect to check answers page" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockGet[Undertaking](eori1)(Right(undertaking1.some))
+          mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+        }
+
+        val result = performAction()
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe "foo"
+      }
+
     }
 
   }

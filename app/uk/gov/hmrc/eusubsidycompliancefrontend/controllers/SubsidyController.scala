@@ -344,7 +344,7 @@ class SubsidyController @Inject() (
   private def validateSubsidyJourneyFieldsPopulated(journey: SubsidyJourney): Option[Unit] =
     for {
       _ <- journey.addClaimEori.value.orElse(handleMissingSessionData("claim EORI"))
-      _ <- journey.claimAmount.value.orElse(handleMissingSessionData("claim mount"))
+      _ <- journey.claimAmount.value.orElse(handleMissingSessionData("claim amount"))
       _ <- journey.claimDate.value.orElse(handleMissingSessionData("claim date"))
       _ <- journey.publicAuthority.value.orElse(handleMissingSessionData("public authority"))
       _ <- journey.traderRef.value.orElse(handleMissingSessionData("trader ref"))
@@ -376,6 +376,7 @@ class SubsidyController @Inject() (
       }
   }
 
+  // TODO - no coverage of this
   def getChangeSubsidyClaim(transactionId: String): Action[AnyContent] = withAuthenticatedUser.async {
     implicit request =>
       withLeadUndertaking { undertaking =>
@@ -386,6 +387,7 @@ class SubsidyController @Inject() (
           subsidyJourney = SubsidyJourney.fromNonHmrcSubsidy(nonHmrcSubsidy)
           _ <- store.put(subsidyJourney).toContext
         } yield Redirect(routes.SubsidyController.getCheckAnswers())
+        println(s"getChangeSubsidyClaim: about to redirect")
         result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
       }
   }
@@ -436,9 +438,11 @@ class SubsidyController @Inject() (
     result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
   }
 
+  // TODO - none of these are showing up as covered which is odd
   private def updateSubsidyJourney(os: Option[SubsidyJourney])(f: SubsidyJourney => SubsidyJourney) = os.map(f)
 
   private def updateReportPayment(f: FormValues)(os: Option[SubsidyJourney]) = updateSubsidyJourney(os) { s =>
+    println(s"updateReportPayment: $os")
     s.copy(reportPayment = s.reportPayment.copy(value = Some(f.value.toBoolean)))
   }
 
