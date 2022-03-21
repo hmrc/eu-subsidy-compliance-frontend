@@ -357,6 +357,46 @@ class EligibilityControllerSpec
       }
     }
 
+    "handling request to get Not eligible" must {
+
+      def performAction() = controller
+        .getNotEligible(
+          FakeRequest("GET", routes.EligibilityController.getNotEligible().url)
+            .withFormUrlEncodedBody()
+        )
+
+      "display the page" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+        }
+        checkPageIsDisplayed(
+          performAction(),
+          messageFromMessageKey("notEligible.title")
+        )
+
+      }
+    }
+
+    "handling request to get not eligible to lead" must {
+
+      def performAction() = controller
+        .getNotEligibleToLead(
+          FakeRequest("GET", routes.EligibilityController.getNotEligibleToLead().url)
+            .withFormUrlEncodedBody()
+        )
+
+      "display the page" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+        }
+        checkPageIsDisplayed(
+          performAction(),
+          messageFromMessageKey("notEligibleToLead.title")
+        )
+
+      }
+    }
+
     "handling request to get main business check" must {
 
       def performAction() = controller
@@ -567,6 +607,13 @@ class EligibilityControllerSpec
 
       "throw technical error" when {
 
+        "Form value is missing" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
         "call to update eligibility journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -684,7 +731,10 @@ class EligibilityControllerSpec
             Right(EligibilityJourney(eoriCheck = EoriCheckFormPage(true.some)))
           )
         }
-        redirectLocation(performAction(("eoricheck" -> "true"))) shouldBe routes.EligibilityController.getCreateUndertaking().url.some
+        redirectLocation(performAction(("eoricheck" -> "true"))) shouldBe routes.EligibilityController
+          .getCreateUndertaking()
+          .url
+          .some
       }
 
       "bad form" in {
@@ -696,17 +746,18 @@ class EligibilityControllerSpec
       }
 
     }
+
     "handling request to getIncorrectEori" must {
       def performAction() = controller
         .getIncorrectEori(
           FakeRequest("GET", routes.EligibilityController.getIncorrectEori().url)
         )
 
-      "Return OK" in {
+      "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
         }
-        status(performAction()) shouldBe OK
+        checkPageIsDisplayed(performAction(), messageFromMessageKey("incorrectEori.title"))
       }
     }
 
@@ -729,12 +780,35 @@ class EligibilityControllerSpec
       def performAction(data: (String, String)*) = controller
         .postCreateUndertaking(
           FakeRequest("POST", routes.EligibilityController.postCreateUndertaking().url)
-          .withFormUrlEncodedBody(data: _*)
+            .withFormUrlEncodedBody(data: _*)
         )
 
-      "Return OK" in {
-        def update(eligibilityJourneyOpt: Option[EligibilityJourney]) = eligibilityJourneyOpt
-          .map(_.copy(createUndertaking = CreateUndertakingFormPage(true.some)))
+      def update(eligibilityJourneyOpt: Option[EligibilityJourney]) = eligibilityJourneyOpt
+        .map(_.copy(createUndertaking = CreateUndertakingFormPage(true.some)))
+
+      "throw technical error" when {
+
+        "Form value is missing" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to update eligibility journey failed" in {
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(
+              Left(ConnectorError(exception))
+            )
+          }
+          assertThrows[Exception](await(performAction("createUndertaking" -> "true")))
+        }
+
+      }
+
+      "redirect to next page" in {
 
         inSequence {
           mockAuthWithNecessaryEnrolment()
@@ -742,7 +816,13 @@ class EligibilityControllerSpec
             Right(EligibilityJourney(createUndertaking = CreateUndertakingFormPage(true.some)))
           )
         }
-        redirectLocation(performAction(("createUndertaking" -> "true"))) shouldBe routes.UndertakingController.getUndertakingName().url.some
+        checkIsRedirect(
+          performAction(("createUndertaking" -> "true")),
+          routes.UndertakingController
+            .getUndertakingName()
+            .url
+        )
+
       }
     }
   }
