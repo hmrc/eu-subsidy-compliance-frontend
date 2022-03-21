@@ -1321,9 +1321,9 @@ class SubsidyControllerSpec
 
     "handling request to get change subsidy" should {
 
-      val transactionID = "TID12345"
+      val transactionID = "TID1234"
 
-      def performAction() = controller.getCheckAnswers(
+      def performAction() = controller.getChangeSubsidyClaim(transactionID)(
         FakeRequest("GET", routes.SubsidyController.getChangeSubsidyClaim(transactionID).url)
       )
 
@@ -1336,15 +1336,22 @@ class SubsidyControllerSpec
       }
 
       "redirect to check answers page" in {
+        val subsidyJourneyWithReportPaymentForm =
+          subsidyJourney.copy(
+            reportPayment = ReportPaymentFormPage(Some(true)),
+            existingTransactionId = Some(SubsidyRef(transactionID))
+          )
+
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGet[Undertaking](eori1)(Right(undertaking1.some))
-          mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+          mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies1))
+          mockPut[SubsidyJourney](subsidyJourneyWithReportPaymentForm, eori1)(Right(subsidyJourneyWithReportPaymentForm))
         }
 
         val result = performAction()
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe "foo"
+        redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers().url)
       }
 
     }

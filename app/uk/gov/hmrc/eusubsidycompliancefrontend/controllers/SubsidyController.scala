@@ -18,9 +18,9 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.data.OptionT
 import cats.implicits._
-import play.api.data.{Form, Mapping}
+import play.api.data.Form
 import play.api.data.Forms.{bigDecimal, mapping, nonEmptyText}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
@@ -387,7 +387,6 @@ class SubsidyController @Inject() (
           subsidyJourney = SubsidyJourney.fromNonHmrcSubsidy(nonHmrcSubsidy)
           _ <- store.put(subsidyJourney).toContext
         } yield Redirect(routes.SubsidyController.getCheckAnswers())
-        println(s"getChangeSubsidyClaim: about to redirect")
         result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
       }
   }
