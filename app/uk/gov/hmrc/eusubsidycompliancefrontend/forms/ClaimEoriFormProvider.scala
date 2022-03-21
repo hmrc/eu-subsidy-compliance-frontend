@@ -43,11 +43,19 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
     else Invalid("error.format")
   }
 
+  private val eoriIsPartOfUndertaking = Constraint[String] { eori: String =>
+    undertaking.undertakingBusinessEntity
+      .find(_.businessEntityIdentifier == eori)
+      .map(_ => Valid)
+      .getOrElse(Invalid(s"error.not-in-undertaking"))
+  }
+
   private val eoriNumberMapping: Mapping[String] =
     text
       .verifying(eoriEntered)
       .transform(e => s"GB$e", (s: String) => s.drop(2))
       .verifying(enteredEoriIsValid)
+      .verifying(eoriIsPartOfUndertaking)
 
   private val radioButtonSelected = Constraint[String] { r: String =>
     if (r.isEmpty) Invalid(s"error.$YesNoRadioButton.required")

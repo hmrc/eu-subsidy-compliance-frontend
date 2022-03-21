@@ -22,7 +22,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.OptionalEORI
 import ClaimEoriFormProvider.Fields._
-import utils.CommonTestData.undertaking
+import utils.CommonTestData.{eori1, undertaking}
 
 class ClaimEoriFormProviderSpec extends AnyWordSpecLike with Matchers {
 
@@ -35,7 +35,7 @@ class ClaimEoriFormProviderSpec extends AnyWordSpecLike with Matchers {
     }
 
     "return no errors for a submission where an EORI was entered" in {
-      validateAndCheckSucess("true", Some("121212121212"))
+      validateAndCheckSucess("true", Some(eori1.drop(2)))
     }
 
     "return an error if no fields are selected" in {
@@ -48,6 +48,10 @@ class ClaimEoriFormProviderSpec extends AnyWordSpecLike with Matchers {
 
     "return an error if the yes radio button is selected and an invalid eori number is entered" in {
       validateAndCheckError("true", Some("sausages"))("claim-eori", "error.format")
+    }
+
+    "return an error if the entered eori is not part of the undertaking" in {
+      validateAndCheckError("true", Some("171717171717"))(EoriNumber, "error.not-in-undertaking")
     }
 
   }
