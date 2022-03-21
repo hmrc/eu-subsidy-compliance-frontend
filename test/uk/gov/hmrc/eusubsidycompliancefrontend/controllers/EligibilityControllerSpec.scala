@@ -664,5 +664,38 @@ class EligibilityControllerSpec
       }
     }
 
+    "handling request to post EORI check" must {
+
+      def performAction(data: (String, String)*) = controller
+        .postEoriCheck(
+          FakeRequest("POST", routes.EligibilityController.postEoriCheck().url)
+            .withFormUrlEncodedBody(data: _*)
+        )
+
+      val previousUrl = routes.EligibilityController.getCustomsWaivers().url
+      def update(eligibilityJourneyOpt: Option[EligibilityJourney]) = eligibilityJourneyOpt
+        .map(_.copy(customsWaivers = CustomsWaiversFormPage(true.some)))
+
+      "happy path" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockGetPrevious[EligibilityJourney](eori)(Right(previousUrl))
+          mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(
+            Right(EligibilityJourney(eoriCheck = EoriCheckFormPage(true.some)))
+          )
+        }
+        redirectLocation(performAction(("eoricheck" -> "true"))) shouldBe routes.EligibilityController.getCreateUndertaking().url.some
+      }
+
+      "bad form" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockGetPrevious[EligibilityJourney](eori)(Right(previousUrl))
+        }
+        status(performAction(("invalidform" -> "true"))) shouldBe BAD_REQUEST
+      }
+
+    }
+
   }
 }
