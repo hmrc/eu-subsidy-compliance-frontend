@@ -664,5 +664,87 @@ class EligibilityControllerSpec
       }
     }
 
+    "handling request to post EORI check" must {
+
+      def performAction(data: (String, String)*) = controller
+        .postEoriCheck(
+          FakeRequest("POST", routes.EligibilityController.postEoriCheck().url)
+            .withFormUrlEncodedBody(data: _*)
+        )
+
+      val previousUrl = routes.EligibilityController.getCustomsWaivers().url
+      def update(eligibilityJourneyOpt: Option[EligibilityJourney]) = eligibilityJourneyOpt
+        .map(_.copy(customsWaivers = CustomsWaiversFormPage(true.some)))
+
+      "happy path" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockGetPrevious[EligibilityJourney](eori)(Right(previousUrl))
+          mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(
+            Right(EligibilityJourney(eoriCheck = EoriCheckFormPage(true.some)))
+          )
+        }
+        redirectLocation(performAction(("eoricheck" -> "true"))) shouldBe routes.EligibilityController.getCreateUndertaking().url.some
+      }
+
+      "bad form" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockGetPrevious[EligibilityJourney](eori)(Right(previousUrl))
+        }
+        status(performAction(("invalidform" -> "true"))) shouldBe BAD_REQUEST
+      }
+
+    }
+    "handling request to getIncorrectEori" must {
+      def performAction() = controller
+        .getIncorrectEori(
+          FakeRequest("GET", routes.EligibilityController.getIncorrectEori().url)
+        )
+
+      "Return OK" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+        }
+        status(performAction()) shouldBe OK
+      }
+    }
+
+    "handling request to getCreateUndertaking" must {
+      def performAction() = controller
+        .getCreateUndertaking(
+          FakeRequest("GET", routes.EligibilityController.getCreateUndertaking().url)
+        )
+
+      "Return OK" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockGetPrevious[EligibilityJourney](eori)(Right(routes.EligibilityController.getEoriCheck().url))
+        }
+        status(performAction()) shouldBe OK
+      }
+    }
+
+    "handling request to postCreateUndertaking" must {
+      def performAction(data: (String, String)*) = controller
+        .postCreateUndertaking(
+          FakeRequest("POST", routes.EligibilityController.postCreateUndertaking().url)
+          .withFormUrlEncodedBody(data: _*)
+        )
+
+      "Return OK" in {
+        def update(eligibilityJourneyOpt: Option[EligibilityJourney]) = eligibilityJourneyOpt
+          .map(_.copy(createUndertaking = CreateUndertakingFormPage(true.some)))
+
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(
+            Right(EligibilityJourney(createUndertaking = CreateUndertakingFormPage(true.some)))
+          )
+        }
+        redirectLocation(performAction(("createUndertaking" -> "true"))) shouldBe routes.UndertakingController.getUndertakingName().url.some
+      }
+    }
   }
+
 }
