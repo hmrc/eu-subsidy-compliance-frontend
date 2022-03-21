@@ -54,7 +54,8 @@ class UndertakingController @Inject() (
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
-) extends BaseController(mcc) with LeadOnlyUndertakingSupport {
+) extends BaseController(mcc)
+    with LeadOnlyUndertakingSupport {
 
   import escActionBuilders._
   val CreateUndertaking = "createUndertaking"
@@ -147,14 +148,11 @@ class UndertakingController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
-        Ok(
-          cyaPage(
-            journey.name.value.fold(throw new IllegalStateException("name should be defined"))(UndertakingName(_)),
-            eori,
-            journey.sector.value.getOrElse(throw new IllegalStateException("sector should be defined")),
-            journey.previous
-          )
-        ).toFuture
+        val result: OptionT[Future, Result] = for {
+          undertakingName <- journey.name.value.toContext
+          undertakingSector <- journey.sector.value.toContext
+        } yield Ok(cyaPage(UndertakingName(undertakingName), eori, undertakingSector, journey.previous))
+        result.fold(handleMissingSessionData("Undertaking Journey Name/Sector"))(identity)
       case _ => handleMissingSessionData("Undertaking journey")
     }
   }
