@@ -193,7 +193,7 @@ object AuditEvent {
   final case class NonCustomsSubsidyAdded(
     ggDetails: String,
     leadEori: EORI,
-    undertakingIdentifier: UndertakingRef,
+    undertakingReference: UndertakingRef,
     allocationDate: LocalDate,
     submissionDate: LocalDate,
     publicAuthority: Option[String],
@@ -217,7 +217,7 @@ object AuditEvent {
       AuditEvent.NonCustomsSubsidyAdded(
         ggDetails = ggDetails,
         leadEori = leadEori,
-        undertakingIdentifier = undertakingRef,
+        undertakingReference = undertakingRef,
         allocationDate = subsidyJourney.claimDate.value
           .map(_.toLocalDate)
           .getOrElse(sys.error("No claimdate on SubsidyJourney")),
@@ -239,7 +239,7 @@ object AuditEvent {
 
   final case class NonCustomsSubsidyRemoved(
     ggDetails: String,
-    undertakingIdentifier: UndertakingRef
+    undertakingReference: UndertakingRef
   ) extends AuditEvent {
     override val auditType: String = "NonCustomsSubsidyRemoved"
     override val transactionName: String = "NonCustomsSubsidyRemoved"
@@ -251,7 +251,7 @@ object AuditEvent {
 
   final case class NonCustomsSubsidyUpdated(
     ggDetails: String,
-    undertakingIdentifier: UndertakingRef,
+    undertakingReference: UndertakingRef,
     allocationDate: LocalDate,
     submissionDate: LocalDate,
     publicAuthority: Option[String],
@@ -273,7 +273,7 @@ object AuditEvent {
     ): NonCustomsSubsidyUpdated =
       AuditEvent.NonCustomsSubsidyUpdated(
         ggDetails = ggDetails,
-        undertakingIdentifier = undertakingRef,
+        undertakingReference = undertakingRef,
         allocationDate = subsidyJourney.claimDate.value
           .map(_.toLocalDate)
           .getOrElse(sys.error("No claimdate on SubsidyJourney")),
@@ -296,7 +296,7 @@ object AuditEvent {
   final case class NonCustomsSubsidyNilReturn(
     ggDetails: String,
     leadEori: EORI,
-    undertakingIdentifier: UndertakingRef,
+    undertakingReference: UndertakingRef,
     nilSubmissionDate: LocalDate
   ) extends AuditEvent {
     override val auditType: String = "NonCustomsSubsidyNilReturn"
@@ -310,7 +310,7 @@ object AuditEvent {
   final case class UndertakingUpdated(
     ggDetails: String,
     leadEori: EORI,
-    undertakingIdentifier: UndertakingRef,
+    undertakingReference: UndertakingRef,
     undertakingName: UndertakingName,
     industrySector: Sector
   ) extends AuditEvent {
