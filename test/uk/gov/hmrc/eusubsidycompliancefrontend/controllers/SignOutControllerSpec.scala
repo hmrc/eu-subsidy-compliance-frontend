@@ -16,14 +16,40 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import play.api.Configuration
 import play.api.test.FakeRequest
 
 class SignOutControllerSpec extends ControllerSpec {
 
   private val controller = instanceOf[SignOutController]
 
+  override def additionalConfig = Configuration.from(
+    Map(
+      // Disable CSP n=once hashes in rendered output
+      "urls.timeOutContinue" -> "http://host:123/continue"
+    )
+  )
 
   "BusinessEntityControllerSpec" when {
+
+    "handling request to signOut From Timeout" must {
+
+      def performAction() = controller.signOutFromTimeout(FakeRequest())
+
+      "display the page" in {
+
+        checkPageIsDisplayed(
+          performAction(),
+          messageFromMessageKey("timedOut.title"),
+          { doc =>
+            val body = doc.select(".govuk-body").text()
+            body should include regex messageFromMessageKey("timedOut.p1")
+            body should include regex messageFromMessageKey("timedOut.signIn", appConfig.timeOutContinue)
+          }
+        )
+
+      }
+    }
 
     "handling request to get sign out" must {
 
@@ -34,9 +60,7 @@ class SignOutControllerSpec extends ControllerSpec {
         checkPageIsDisplayed(
           performAction(),
           messageFromMessageKey("signOut.title"),
-          { doc =>
-            doc.select(".govuk-body").text() shouldBe "You have been signed out of this session."
-          }
+          doc => doc.select(".govuk-body").text() shouldBe "You have been signed out of this session."
         )
 
       }

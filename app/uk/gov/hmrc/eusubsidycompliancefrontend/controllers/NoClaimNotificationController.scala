@@ -82,10 +82,10 @@ class NoClaimNotificationController @Inject() (
     }
   }
 
-  private def updateNilReturnJourney(nrj: Option[NilReturnJourney])(f: NilReturnJourney => NilReturnJourney) =
+  def updateNilReturnJourney(nrj: Option[NilReturnJourney])(f: NilReturnJourney => NilReturnJourney) =
     nrj.map(f)
 
-  private def updateNilReturnValues(f: FormValues)(nrj: Option[NilReturnJourney]) = updateNilReturnJourney(nrj) { nj =>
+  def updateNilReturnValues(f: FormValues)(nrj: Option[NilReturnJourney]) = updateNilReturnJourney(nrj) { nj =>
     nj.copy(nilReturn = nj.nilReturn.copy(value = Some(f.value.toBoolean)), nilReturnCounter = 1)
   }
 

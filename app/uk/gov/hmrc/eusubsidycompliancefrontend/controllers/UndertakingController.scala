@@ -300,17 +300,17 @@ class UndertakingController @Inject() (
       journey.copy(name = journey.name.copy(value = Some(formValues.value)))
     }
 
-  private def updateUndertakingSector(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
+  def updateUndertakingSector(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
     updateUndertakingJourney(ujOpt) { journey =>
       journey.copy(sector = journey.sector.copy(value = Some(Sector(formValues.value.toInt))))
     }
 
-  private def updateUndertakingCYA(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
+  def updateUndertakingCYA(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
     updateUndertakingJourney(ujOpt) { journey =>
       journey.copy(cya = journey.cya.copy(value = Some(formValues.value.toBoolean)))
     }
 
-  private def updateUndertakingConfirmation(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
+  def updateUndertakingConfirmation(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
     updateUndertakingJourney(ujOpt) { journey =>
       journey.copy(confirmation = journey.confirmation.copy(value = Some(formValues.value.toBoolean)))
 

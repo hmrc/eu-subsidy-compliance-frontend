@@ -358,9 +358,6 @@ class UndertakingControllerSpec
       "redirect to next page" when {
 
         def test(undertakingJourney: UndertakingJourney, nextCall: String): Unit = {
-          def update(undertakingJourneyOpt: Option[UndertakingJourney]) =
-            undertakingJourneyOpt.map(_.copy(name = UndertakingNameFormPage("TestUndertaking123".some)))
-
           val updatedUndertaking = undertakingJourney.copy(name = UndertakingNameFormPage("TestUndertaking123".some))
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -383,6 +380,14 @@ class UndertakingControllerSpec
 
         "page is reached via normal undertaking creation process when all answers have been provided" in {
           test(undertakingJourneyComplete, routes.UndertakingController.getCheckAnswers().url)
+        }
+
+        "Test update name function" in {
+          val initialUndertakingJourney = UndertakingJourney()
+          val updatedUndertakingJourney = UndertakingJourney(name = UndertakingNameFormPage("Test Undertaking".some))
+          val result = controller.updateUndertakingName(FormValues("Test Undertaking"))(initialUndertakingJourney.some)
+          result shouldBe updatedUndertakingJourney.some
+
         }
 
       }
@@ -585,6 +590,14 @@ class UndertakingControllerSpec
         "page is reached via normal undertaking creation process when all answers have been provided" in {
           test(undertakingJourneyComplete, routes.UndertakingController.getCheckAnswers().url)
         }
+
+      }
+
+      "Test update sector function" in {
+        val initialUndertakingJourney = UndertakingJourney()
+        val updatedUndertakingJourney = UndertakingJourney(sector = UndertakingSectorFormPage(Sector(1).some))
+        val result = controller.updateUndertakingSector(FormValues("1"))(initialUndertakingJourney.some)
+        result shouldBe updatedUndertakingJourney.some
 
       }
 
@@ -831,6 +844,14 @@ class UndertakingControllerSpec
         }
 
       }
+
+      "Test update CYA function" in {
+        val initialUndertakingJourney = UndertakingJourney()
+        val updatedUndertakingJourney = UndertakingJourney(cya = UndertakingCyaFormPage(true.some))
+        val result = controller.updateUndertakingCYA(FormValues("true"))(initialUndertakingJourney.some)
+        result shouldBe updatedUndertakingJourney.some
+
+      }
     }
 
     "handling request to get confirmation" must {
@@ -868,6 +889,7 @@ class UndertakingControllerSpec
 
       val undertakingJourney =
         undertakingJourneyComplete.copy(confirmation = UndertakingConfirmationFormPage(value = None))
+
       "throw technical error" when {
 
         "confirmation form is empty" in {
@@ -893,6 +915,14 @@ class UndertakingControllerSpec
         }
 
         checkIsRedirect(performAction("confirm" -> "true"), routes.BusinessEntityController.getAddBusinessEntity().url)
+      }
+
+      "Test update Confirmation function" in {
+        val initialUndertakingJourney = UndertakingJourney()
+        val updatedUndertakingJourney = UndertakingJourney(confirmation = UndertakingConfirmationFormPage(true.some))
+        val result = controller.updateUndertakingConfirmation(FormValues("true"))(initialUndertakingJourney.some)
+        result shouldBe updatedUndertakingJourney.some
+
       }
 
     }
@@ -952,32 +982,60 @@ class UndertakingControllerSpec
         }
       }
 
-      "display the page" in {
-        inSequence {
-          mockAuthWithNecessaryEnrolment()
-          mockGet[Undertaking](eori1)(Right(undertaking.some))
-          mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-          mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(
-            Right(undertakingJourneyComplete.copy(isAmend = true))
+      "display the page" when {
+
+        "is Amend is true" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.copy(isAmend = true).some))
+          }
+
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("undertaking.amendUndertaking.title"),
+            { doc =>
+              doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
+
+              val rows =
+                doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
+                  val question = element.select(".govuk-summary-list__key").text()
+                  val answer = element.select(".govuk-summary-list__value").text()
+                  val changeUrl = element.select(".govuk-link").attr("href")
+                  ModifyUndertakingRow(question, answer, changeUrl)
+                }
+              rows shouldBe expectedRows
+            }
           )
         }
 
-        checkPageIsDisplayed(
-          performAction(),
-          messageFromMessageKey("undertaking.amendUndertaking.title"),
-          { doc =>
-            doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
-
-            val rows =
-              doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
-                val question = element.select(".govuk-summary-list__key").text()
-                val answer = element.select(".govuk-summary-list__value").text()
-                val changeUrl = element.select(".govuk-link").attr("href")
-                ModifyUndertakingRow(question, answer, changeUrl)
-              }
-            rows shouldBe expectedRows
+        "is Amend flag is false" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete.some), eori1)(
+              Right(undertakingJourneyComplete.copy(isAmend = true))
+            )
           }
-        )
+
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("undertaking.amendUndertaking.title"),
+            { doc =>
+              doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
+
+              val rows =
+                doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
+                  val question = element.select(".govuk-summary-list__key").text()
+                  val answer = element.select(".govuk-summary-list__value").text()
+                  val changeUrl = element.select(".govuk-link").attr("href")
+                  ModifyUndertakingRow(question, answer, changeUrl)
+                }
+              rows shouldBe expectedRows
+            }
+          )
+        }
 
       }
 

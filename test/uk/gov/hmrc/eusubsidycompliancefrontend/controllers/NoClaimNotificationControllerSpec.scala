@@ -23,7 +23,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NilSubmissionDate, SubsidyUpdate, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, FormValues, NilSubmissionDate, SubsidyUpdate, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NilReturnJourney.Forms.NilReturnFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EscService, NilReturnJourney, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
@@ -175,6 +175,13 @@ class NoClaimNotificationControllerSpec
           routes.AccountController.getAccountPage().url
         )
 
+      }
+
+      "test to update nil return values" in {
+        val initialNilReturnJourney = NilReturnJourney()
+        val updatedNilReturnJourney = NilReturnJourney(nilReturn = NilReturnFormPage(true.some), nilReturnCounter = 1)
+        val result = controller.updateNilReturnValues(FormValues("true"))(initialNilReturnJourney.some)
+        result shouldBe updatedNilReturnJourney.some
       }
 
     }
