@@ -17,7 +17,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.H1
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
 
 
 
@@ -29,14 +29,20 @@
 )
 
 
-@(ref: UndertakingRef, name: UndertakingName)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(ref: UndertakingRef, name: UndertakingName, eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @html = {
-
-    <p class="govuk-body"><strong>@messages("undertaking.confirmation.h2", name)</strong></p>
+    <p class="govuk-notification-banner__heading">
+        @messages("undertaking.confirmation.h2")
+    </p>
+    <p class="govuk-body"><strong>@messages("undertaking.confirmation.h3", name)</strong></p>
     <p class="govuk-body">
         @messages("undertaking.confirmation.ref.p1")<br>
-        @ref
+        <strong>@ref</strong>
+    </p>
+    <p class="govuk-body">
+        @messages("undertaking.confirmation.ref.p1")<br>
+        <strong>@messages("undertaking.confirmation.ref.eori-prefix") @eori</strong>
     </p>
 
 
@@ -50,7 +56,8 @@
 
     @formHelper(action = controllers.routes.UndertakingController.postConfirmation) {
         <input type=hidden name=confirm value=true>
-      @H1(messages("undertaking.confirmation.title"))
+
+        @H1(messages("undertaking.confirmation.title"), Some("govuk-heading-l"))
 
         @govukNotificationBanner(NotificationBanner(
             content = HtmlContent(html),
@@ -58,11 +65,11 @@
             disableAutoFocus = Some(true)
         ))
 
-        <p class="govuk-body">@messages("undertaking.confirmation.p2")</p>
-        <h2 class="govuk-heading-m">@messages("undertaking.confirmation.h2-2")</h2>
-        <p class="govuk-body">@messages("undertaking.confirmation.p3", name)</p>
-        <p class="govuk-body">@messages("undertaking.confirmation.p4", name)</p>
+        @H2(messages("undertaking.confirmation.h2-2"))
+        @P(messages("undertaking.confirmation.p2"))
+        @P(messages("undertaking.confirmation.p3", name))
+        @P(messages("undertaking.confirmation.p4", name))
 
-        @button("common.continue")
+        @button("common.continue.only")
     }
 }

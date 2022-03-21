@@ -208,7 +208,8 @@ class UndertakingController @Inject() (
     } yield Redirect(routes.UndertakingController.getConfirmation(ref, undertakingJourney.name.value.getOrElse("")))
 
   def getConfirmation(ref: String, name: String): Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    Ok(confirmationPage(UndertakingRef(ref), UndertakingName(name))).toFuture
+    implicit val eori: EORI = request.eoriNumber
+    Ok(confirmationPage(UndertakingRef(ref), UndertakingName(name), eori)).toFuture
   }
 
   def postConfirmation: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
