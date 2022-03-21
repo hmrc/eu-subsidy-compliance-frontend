@@ -42,13 +42,12 @@
     errorMessage = if (form.hasErrors && form.errors.head.key == inputIdentifier) {
       Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}")))
     } else None,
-    inputType = "tel",
+    inputType = "text",
     label = Label(
       content = Text(messages("add-claim-eori.label")),
       classes = "govuk-label--s"
     ),
     classes = "govuk-input--width-20",
-    autocomplete = Some("tel"),
     value = form.data.get(inputIdentifier),
     prefix = Some(PrefixOrSuffix(content = Text("GB")))
   ))
