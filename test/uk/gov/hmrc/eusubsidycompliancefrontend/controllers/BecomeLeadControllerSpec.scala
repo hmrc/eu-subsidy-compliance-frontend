@@ -106,6 +106,16 @@ class BecomeLeadControllerSpec
           assertThrows[Exception](await(performAction()))
 
         }
+
+        "call to fetch undertaking returns None" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[BecomeLeadJourney](eori1)(Right(None))
+            mockRetrieveUndertaking(eori1)(Future.successful(None))
+          }
+          assertThrows[Exception](await(performAction()))
+
+        }
       }
 
       "display the page" when {
@@ -170,6 +180,7 @@ class BecomeLeadControllerSpec
 
           def update(newLeadJourneyOpt: Option[BecomeLeadJourney]) =
             newLeadJourneyOpt.map(_.copy(becomeLeadEori = BecomeLeadEoriFormPage()))
+
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney().some), eori1)(Left(ConnectorError(exception)))
@@ -177,8 +188,53 @@ class BecomeLeadControllerSpec
           assertThrows[Exception](await(performAction("becomeAdmin" -> "true")))
         }
 
+        "call to retrieve journey fails on bad form branch" in {
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(Future.successful(None))
+          }
+          assertThrows[Exception](await(performAction("badForm" -> "true")))
+        }
+
+    }
+
+      "Bad request" when {
+        "form is incorrect" in {
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(Future.successful(Some(undertaking)))
+          }
+          status(performAction("badForm" -> "true")) shouldBe BAD_REQUEST
+        }
       }
 
+      "Successful" when {
+        "redirect to accept when user submits true" in {
+
+          def update(newLeadJourneyOpt: Option[BecomeLeadJourney]) =
+            newLeadJourneyOpt.map(_.copy(becomeLeadEori = BecomeLeadEoriFormPage()))
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney().some), eori1)(Right(newBecomeLeadJourney))
+          }
+          redirectLocation(performAction("becomeAdmin" -> "true")) shouldBe Some(routes.BecomeLeadController.getAcceptPromotionTerms().url)
+        }
+
+        "redirect to account homepage when user submits false" in {
+
+          def update(newLeadJourneyOpt: Option[BecomeLeadJourney]) =
+            newLeadJourneyOpt.map(_.copy(becomeLeadEori = BecomeLeadEoriFormPage()))
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney().some), eori1)(Right(newBecomeLeadJourney))
+          }
+          redirectLocation(performAction("becomeAdmin" -> "false")) shouldBe Some(routes.AccountController.getAccountPage().url)
+        }
+      }
     }
 
     "handling request to get Become Lead Eori Terms" must {
@@ -217,6 +273,30 @@ class BecomeLeadControllerSpec
           messageFromMessageKey("become-admin-tandc.title")
         )
 
+      }
+
+      "redirect when becomelead is false" in {
+
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockGet[BecomeLeadJourney](eori1)(
+            Right(
+              newBecomeLeadJourney
+                .copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = Some(false)))
+                .some
+            )
+          )
+        }
+        redirectLocation(performAction()) shouldBe Some(routes.BecomeLeadController.getBecomeLeadEori().url)
+      }
+
+      "redirect when no journey found" in {
+
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockGet[BecomeLeadJourney](eori1)(Right(None))
+        }
+        redirectLocation(performAction()) shouldBe Some(routes.BecomeLeadController.getBecomeLeadEori().url)
       }
 
     }
@@ -439,6 +519,41 @@ class BecomeLeadControllerSpec
 
     }
 
-  }
+    "handling request to post Promotion Confirmation" must {
 
+      def performAction() = controller.postAcceptPromotionTerms(FakeRequest() )
+
+      "redirect" when {
+
+        "redirect to promotion confirmation on success" in {
+          def update(newLeadJourneyOpt: Option[BecomeLeadJourney]) =
+            newLeadJourneyOpt.map(_.copy(becomeLeadEori = BecomeLeadEoriFormPage()))
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney().some), eori1)(Right(newBecomeLeadJourney))
+          }
+          redirectLocation(performAction()) shouldBe routes.BecomeLeadController.getPromotionConfirmation().url.some
+        }
+       }
+    }
+
+
+    "handling request to getPromotionCleanup" must {
+
+      def performAction() = controller.getPromotionCleanup(FakeRequest() )
+
+      "redirect" when {
+
+        "redirect to promotion confirmation on success" in {
+          def update(newLeadJourneyOpt: Option[BecomeLeadJourney]) =
+            newLeadJourneyOpt.map(_.copy(becomeLeadEori = BecomeLeadEoriFormPage()))
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney().some), eori1)(Right(newBecomeLeadJourney))
+          }
+          redirectLocation(performAction()) shouldBe routes.AccountController.getAccountPage().url.some
+        }
+      }
+    }
+  }
 }
