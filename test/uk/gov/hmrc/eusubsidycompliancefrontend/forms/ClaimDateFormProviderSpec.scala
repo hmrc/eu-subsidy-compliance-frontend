@@ -32,7 +32,7 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
 
   private val underTest = new ClaimDateFormProvider(fakeTimeProvider)
 
-  "form data validation" must {
+  "claim date form validation" must {
 
     "return empty fields error if all date fields are empty" in {
       validateAndCheckError("", "", "")("date.emptyfields")

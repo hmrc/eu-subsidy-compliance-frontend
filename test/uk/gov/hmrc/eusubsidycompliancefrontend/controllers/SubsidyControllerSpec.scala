@@ -521,7 +521,7 @@ class SubsidyControllerSpec
 
     }
 
-    "handling request to get Add Claim Eori " must {
+    "handling request to get Add Claim Eori" must {
 
       def performAction() = controller
         .getAddClaimEori(FakeRequest("GET", routes.SubsidyController.getAddClaimEori().url))
@@ -672,9 +672,19 @@ class SubsidyControllerSpec
 
         }
 
-        "yes is selected but no eori eneterd is invalid" in {
+        "yes is selected but no eori entered is invalid" in {
           testFormError(Some(List("should-claim-eori" -> "true", "claim-eori" -> "12345")), "claim-eori.error.format")
 
+        }
+
+        "yes is selected but the eori entered is not part of the undertaking" in {
+          testFormError(
+            Some(List(
+              "should-claim-eori" -> "true",
+              "claim-eori" -> "121212121212"),
+            ),
+            "claim-eori.error.not-in-undertaking"
+          )
         }
 
       }
@@ -1118,6 +1128,58 @@ class SubsidyControllerSpec
       }
     }
 
+    "handling get of check your answers" must {
+
+      def performAction() = controller.getCheckAnswers(
+        FakeRequest("GET", routes.SubsidyController.getCheckAnswers().url)
+      )
+
+      "throw technical error" when {
+
+        def testErrorFor(s: SubsidyJourney) = {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking1.some))
+            mockGet[SubsidyJourney](eori1)(Right(s.some))
+          }
+
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "EORI is not present on subsidy journey" in {
+          testErrorFor(subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage()))
+        }
+
+        "claim amount is not present on subsidy journey" in {
+          testErrorFor(subsidyJourney.copy(claimAmount = ClaimAmountFormPage()))
+        }
+
+        "claim date is not present on subsidy journey" in {
+          testErrorFor(subsidyJourney.copy(claimDate = ClaimDateFormPage()))
+        }
+
+        "public authority is not present on subsidy journey" in {
+          testErrorFor(subsidyJourney.copy(publicAuthority = PublicAuthorityFormPage()))
+        }
+
+        "trader ref is not present on subsidy journey" in {
+          testErrorFor(subsidyJourney.copy(traderRef = TraderRefFormPage()))
+        }
+
+      }
+
+      "display the page" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockGet[Undertaking](eori1)(Right(undertaking1.some))
+          mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+        }
+
+        status(performAction()) shouldBe OK
+      }
+
+    }
+
     "handling post to check your answers" must {
 
       def performAction(data: (String, String)*) = controller
@@ -1255,6 +1317,72 @@ class SubsidyControllerSpec
           testLeadOnlyRedirect(() => performAction())
         }
       }
+    }
+
+    "handling request to get change subsidy" should {
+
+      val transactionID = "TID1234"
+
+      def performAction() = controller.getChangeSubsidyClaim(transactionID)(
+        FakeRequest("GET", routes.SubsidyController.getChangeSubsidyClaim(transactionID).url)
+      )
+
+      val subsidyJourneyWithReportPaymentForm =
+        subsidyJourney.copy(
+          reportPayment = ReportPaymentFormPage(Some(true)),
+          existingTransactionId = Some(SubsidyRef(transactionID))
+        )
+
+      "throw technical error" when {
+
+        "undertaking has no reference" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking1.copy(reference = None).some))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "esc service returns an error retrieving subsidies" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking1.some))
+            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.failed(exception))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "store returns an error when attempting to store subsidy journey" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking1.some))
+            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies1))
+            mockPut[SubsidyJourney](subsidyJourneyWithReportPaymentForm, eori1)(Left(ConnectorError(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+      }
+
+      "redirect to check answers page" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockGet[Undertaking](eori1)(Right(undertaking1.some))
+          mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies1))
+          mockPut[SubsidyJourney](subsidyJourneyWithReportPaymentForm, eori1)(Right(subsidyJourneyWithReportPaymentForm))
+        }
+
+        val result = performAction()
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers().url)
+      }
+
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(() => performAction())
+        }
+      }
+
     }
 
   }
