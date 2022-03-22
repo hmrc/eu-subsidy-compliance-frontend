@@ -64,6 +64,29 @@ class EligibilityController @Inject() (
       }
   }
 
+  def getEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.get[EligibilityJourney].map {
+      case Some(journey) =>
+        val form =
+          journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck => eoriCheckForm.fill(FormValues(eoriCheck.toString)))
+        Ok(checkEoriPage(form, eori))
+      case _ => handleMissingSessionData("Eligibility journey")
+    }
+
+  }
+
+  def postEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    eoriCheckForm
+      .bindFromRequest()
+      .fold(
+        errors => Future.successful(BadRequest(checkEoriPage(errors, eori))),
+        form => store.update[EligibilityJourney](updateEoriCheck(form.value.toBoolean)).flatMap(_.next)
+      )
+
+  }
+
   def getCustomsWaivers: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
@@ -73,18 +96,20 @@ class EligibilityController @Inject() (
         val form = journey.customsWaivers.value.fold(customsWaiversForm)(customWaiverBool =>
           customsWaiversForm.fill(FormValues(customWaiverBool.toString))
         )
-        Ok(customsWaiversPage(form))
+        Ok(customsWaiversPage(form, journey.previous))
       }
   }
 
   def postCustomsWaivers: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    customsWaiversForm
-      .bindFromRequest()
-      .fold(
-        errors => Future.successful(BadRequest(customsWaiversPage(errors))),
-        form => store.update[EligibilityJourney](updateCustomWaiver(form.value.toBoolean)).flatMap(_.next)
-      )
+    journeyTraverseService.getPrevious[EligibilityJourney].flatMap { previous =>
+      customsWaiversForm
+        .bindFromRequest()
+        .fold(
+          errors => Future.successful(BadRequest(customsWaiversPage(errors, previous))),
+          form => store.update[EligibilityJourney](updateCustomWaiver(form.value.toBoolean)).flatMap(_.next)
+        )
+    }
   }
 
   def getWillYouClaim: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
@@ -167,30 +192,6 @@ class EligibilityController @Inject() (
           }
       )
 
-  }
-
-  def getEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store.get[EligibilityJourney].map {
-      case Some(journey) =>
-        val form =
-          journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck => eoriCheckForm.fill(FormValues(eoriCheck.toString)))
-        Ok(checkEoriPage(form, eori, journey.previous))
-      case _ => handleMissingSessionData("Eligibility journey")
-    }
-
-  }
-
-  def postEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    journeyTraverseService.getPrevious[EligibilityJourney].flatMap { previous =>
-      eoriCheckForm
-        .bindFromRequest()
-        .fold(
-          errors => Future.successful(BadRequest(checkEoriPage(errors, eori, previous))),
-          form => store.update[EligibilityJourney](updateEoriCheck(form.value.toBoolean)).flatMap(_.next)
-        )
-    }
   }
 
   def getIncorrectEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
