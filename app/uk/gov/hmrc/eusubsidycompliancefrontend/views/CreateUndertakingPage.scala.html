@@ -27,24 +27,23 @@
 )
 
 
-@(previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
+@(previous: Journey.Uri, eori: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@key = @{"createUndertaking"}
+@title = @{messages(s"$key.title")}
 @layout(
-    pageTitle = Some(messages("createUndertaking.title")),
+    pageTitle = Some(title),
     backLinkEnabled = true,
     backLink = Some(previous)
 ) {
 
     @formHelper(action = controllers.routes.EligibilityController.postCreateUndertaking) {
 
-        <h1 class="govuk-heading-xl">@messages("createUndertaking.title")</h1>
-        <h2 class="govuk-heading-m">@messages("createUndertaking.h2")</h2>
-        <p class="govuk-body">@messages("createUndertaking.p-1")</p>
-        <h2 class="govuk-heading-m">@messages("createUndertaking.h2-2")</h2>
-        <p class="govuk-body">@messages("createUndertaking.p-2")</p>
-        <p class="govuk-body">@messages("createUndertaking.p-3-1") <a class="govuk-link" href="@controllers.routes.SignOutController.signOut()">@messages("createUndertaking.p-3-2")</a> @messages("createUndertaking.p-3-3")</p>
-
+        <h1 class="govuk-heading-xl">@title</h1>
+        <h2 class="govuk-heading-m">@messages(s"$key.h2", eori)</h2>
         <input type=hidden name=createUndertaking value=true>
         @button("common.continue")
+        <p class="govuk-body">@Html(messages(s"$key.p1", appConfig.exitSurveyUrl)) </p>
+
+
     }
 }

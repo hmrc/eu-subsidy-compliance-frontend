@@ -30,38 +30,30 @@
 )
 
 
-@(previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
+@(previous: Journey.Uri, eori: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@key = @{"eligibilityTerms"}
+@title = @{messages(s"$key.title")}
 @layout(
-    pageTitle = Some(messages("eligibilityTerms.title")),
+    pageTitle = Some(title),
     backLinkEnabled = true,
     backLink = Some(previous)
 ) {
 
     @formHelper(action = controllers.routes.EligibilityController.postTerms) {
-        <h1 class="govuk-heading-l">@messages("eligibilityTerms.title")</h1>
-        <h2 class="govuk-heading-m">@messages("eligibilityTerms.h2")</h2>
+        <h1 class="govuk-heading-l">@title</h1>
+        <h2 class="govuk-heading-m">@messages(s"$key.h2")</h2>
 
-        <p class="govuk-body">@messages("eligibilityTerms.p1")</p>
-        @govukDetails(Details(
-            summary = Text(messages("common.whatisanundertaking.details")),
-            content = Text(messages("common.whatisanundertaking.details.body"))
-        ))
-        <p class="govuk-body">@messages("eligibilityTerms.p2")</p>
-        @govukInsetText(InsetText(
-            content = Text(messages("eligibilityTerms.inset"))
-        ))
-        <p class="govuk-body">@messages("eligibilityTerms.p3")</p>
+        <p class="govuk-body">@messages(s"$key.p1")</p>
+        <p class="govuk-body">@messages(s"$key.p2", eori)</p>
         @govukWarningText(WarningText(
             iconFallbackText = messages("common.warning"),
-            content = Text(messages("eligibilityTerms.warning"))
+            content = Text(messages(s"$key.warning"))
         ))
-
-        <h2 class="govuk-heading-m">@messages("eligibilityTerms.h2-2")</h2>
-        <p class="govuk-body">@messages("eligibilityTerms.p4")</p>
-        <p class="govuk-body">@messages("eligibilityTerms.p5-1") <a class="govuk-link" href="@controllers.routes.SignOutController.signOut()">@messages("eligibilityTerms.p5-2")</a> @messages("eligibilityTerms.p5-3")</p>
-
+        <p class="govuk-body">@messages(s"$key.p3")</p>
         <input type=hidden name=terms value=true>
-        @button("common.continue")
+        @button("common.accept-continue")
+        <p class="govuk-body">@Html(messages(s"$key.p4", appConfig.exitSurveyUrl))</p>
+
+
     }
 }
