@@ -222,33 +222,33 @@ class EligibilityController @Inject() (
     f: EligibilityJourney => EligibilityJourney
   ) = eligibilityJourneyOpt.map(f)
 
-  private def updateWillYouClaim(newWillYouClaim: Boolean)(eligibilityJourneyOpt: Option[EligibilityJourney]) =
+  def updateWillYouClaim(newWillYouClaim: Boolean)(eligibilityJourneyOpt: Option[EligibilityJourney]) =
     updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
       ej.copy(willYouClaim = ej.willYouClaim.copy(value = Some(newWillYouClaim)))
     }
 
-  private def updateCustomWaiver(newCustomWaiver: Boolean)(eligibilityJourneyOpt: Option[EligibilityJourney]) =
+  def updateCustomWaiver(newCustomWaiver: Boolean)(eligibilityJourneyOpt: Option[EligibilityJourney]) =
     updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
       ej.copy(customsWaivers = ej.customsWaivers.copy(value = Some(newCustomWaiver)))
     }
 
-  private def updateMainBusinessCheck(
+  def updateMainBusinessCheck(
     newMainBusinessCheck: Boolean
   )(eligibilityJourneyOpt: Option[EligibilityJourney]) = updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
     ej.copy(mainBusinessCheck = ej.mainBusinessCheck.copy(value = Some(newMainBusinessCheck)))
   }
 
-  private def updateAcceptTerms(newAcceptTerms: Boolean)(eligibilityJourneyOpt: Option[EligibilityJourney]) =
+  def updateAcceptTerms(newAcceptTerms: Boolean)(eligibilityJourneyOpt: Option[EligibilityJourney]) =
     updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
       ej.copy(acceptTerms = ej.acceptTerms.copy(value = Some(newAcceptTerms)))
     }
 
-  private def updateEoriCheck(newEoriCheck: Boolean)(eligibilityJourneyOpt: Option[EligibilityJourney]) =
+  def updateEoriCheck(newEoriCheck: Boolean)(eligibilityJourneyOpt: Option[EligibilityJourney]) =
     updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
       ej.copy(eoriCheck = ej.eoriCheck.copy(value = Some(newEoriCheck)))
     }
 
-  private def updateCreateUndertaking(
+  def updateCreateUndertaking(
     newCreateUndertaking: Boolean
   )(eligibilityJourneyOpt: Option[EligibilityJourney]) = updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
     ej.copy(createUndertaking = ej.createUndertaking.copy(value = Some(newCreateUndertaking)))

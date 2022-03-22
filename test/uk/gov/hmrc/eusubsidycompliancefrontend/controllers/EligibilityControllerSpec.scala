@@ -244,6 +244,12 @@ class EligibilityControllerSpec
         }
 
       }
+
+      "test for update customer waiver" in {
+        val updatedJourney = eligibilityJourney.copy(customsWaivers = CustomsWaiversFormPage(value = false.some))
+        val result = controller.updateCustomWaiver(false)(eligibilityJourney.some)
+        result shouldBe updatedJourney.some
+      }
     }
 
     "handling request to get will you claim" must {
@@ -327,7 +333,6 @@ class EligibilityControllerSpec
       val eligibilityJourney = EligibilityJourney(
         willYouClaim = WillYouClaimFormPage(false.some)
       )
-      val updatedEligibilityJourney = eligibilityJourney.copy(willYouClaim = WillYouClaimFormPage(true.some))
 
       def update(ejOpt: Option[EligibilityJourney]) = ejOpt
         .map(ej => ej.copy(willYouClaim = ej.willYouClaim.copy(value = true.some)))
@@ -370,17 +375,41 @@ class EligibilityControllerSpec
         }
       }
 
-      "redirect to next page" in {
-        inSequence {
-          mockAuthWithNecessaryEnrolment()
-          mockGetPrevious(eori)(Right(previousUrl))
-          mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Right(updatedEligibilityJourney))
+      "redirect to next page" when {
+
+        def testRedirection(input: Boolean, nextCall: String) = {
+          val eligibilityJourney = EligibilityJourney(
+            eoriCheck = EoriCheckFormPage(true.some),
+            customsWaivers = CustomsWaiversFormPage(false.some)
+          )
+          val updatedEJ =
+            eligibilityJourney.copy(willYouClaim = eligibilityJourney.willYouClaim.copy(value = input.some))
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGetPrevious(eori)(Right(previousUrl))
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Right(updatedEJ))
+          }
+
+          checkIsRedirect(
+            performAction("willyouclaim" -> input.toString),
+            nextCall
+          )
         }
 
-        checkIsRedirect(
-          performAction("willyouclaim" -> "true"),
-          routes.EligibilityController.getMainBusinessCheck().url
-        )
+        "Yes is selected" in {
+          testRedirection(true, routes.EligibilityController.getMainBusinessCheck().url)
+        }
+
+        "No is selected" in {
+          testRedirection(false, routes.EligibilityController.getNotEligible().url)
+        }
+
+      }
+
+      "test for update will you claim" in {
+        val updatedJourney = eligibilityJourney.copy(willYouClaim = WillYouClaimFormPage(true.some))
+        val result = controller.updateWillYouClaim(true)(eligibilityJourney.some)
+        result shouldBe updatedJourney.some
       }
     }
 
@@ -514,10 +543,10 @@ class EligibilityControllerSpec
 
       val previousUrl = routes.EligibilityController.getWillYouClaim().url
       val eligibilityJourney = EligibilityJourney(
-        customsWaivers = CustomsWaiversFormPage(false.some)
+        customsWaivers = CustomsWaiversFormPage(true.some)
       )
-      val updatedEligibilityJourney =
-        eligibilityJourney.copy(mainBusinessCheck = MainBusinessCheckFormPage(true.some))
+      def updatedEligibilityJourney(input: Boolean) =
+        eligibilityJourney.copy(mainBusinessCheck = MainBusinessCheckFormPage(input.some))
 
       def update(ejOpt: Option[EligibilityJourney]) = ejOpt
         .map(ej => ej.copy(mainBusinessCheck = ej.mainBusinessCheck.copy(value = true.some)))
@@ -563,13 +592,33 @@ class EligibilityControllerSpec
         }
       }
 
-      "redirect to next page" in {
-        inSequence {
-          mockAuthWithNecessaryEnrolment()
-          mockGetPrevious(eori)(Right(previousUrl))
-          mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Right(updatedEligibilityJourney))
+      "redirect to next page" when {
+
+        def testRedirection(input: Boolean, nextCall: String) = {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGetPrevious(eori)(Right(previousUrl))
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(
+              Right(updatedEligibilityJourney(input))
+            )
+          }
+          checkIsRedirect(performAction("mainbusinesscheck" -> input.toString), nextCall)
         }
-        checkIsRedirect(performAction("mainbusinesscheck" -> "true"), routes.EligibilityController.getTerms().url)
+
+        "Yes is selected" in {
+          testRedirection(true, routes.EligibilityController.getTerms().url)
+        }
+
+        "No is selected" in {
+          testRedirection(false, routes.EligibilityController.getNotEligibleToLead().url)
+        }
+
+      }
+
+      "test for update main business check" in {
+        val updatedJourney = eligibilityJourney.copy(mainBusinessCheck = MainBusinessCheckFormPage(value = true.some))
+        val result = controller.updateMainBusinessCheck(true)(eligibilityJourney.some)
+        result shouldBe updatedJourney.some
       }
     }
 
@@ -659,6 +708,12 @@ class EligibilityControllerSpec
           mockSendAuditEvent(expectedAuditEvent)
         }
         checkIsRedirect(performAction("terms" -> "true"), routes.EligibilityController.getCreateUndertaking().url)
+      }
+
+      "test for update terms and conditions" in {
+        val updatedJourney = eligibilityJourney.copy(acceptTerms = AcceptTermsFormPage(value = true.some))
+        val result = controller.updateAcceptTerms(true)(eligibilityJourney.some)
+        result shouldBe updatedJourney.some
       }
 
     }
@@ -793,6 +848,12 @@ class EligibilityControllerSpec
         }
       }
 
+      "test for update eori check" in {
+        val updatedJourney = EligibilityJourney().copy(eoriCheck = EoriCheckFormPage(value = true.some))
+        val result = controller.updateEoriCheck(true)(EligibilityJourney().some)
+        result shouldBe updatedJourney.some
+      }
+
     }
 
     "handling request to getIncorrectEori" must {
@@ -895,6 +956,14 @@ class EligibilityControllerSpec
             .url
         )
 
+      }
+
+      "test for update Create Undertaking" in {
+
+        val initialEJ = eligibilityJourney.copy(createUndertaking = CreateUndertakingFormPage())
+        val updatedJourney = initialEJ.copy(createUndertaking = CreateUndertakingFormPage(value = true.some))
+        val result = controller.updateCreateUndertaking(true)(initialEJ.some)
+        result shouldBe updatedJourney.some
       }
     }
   }
