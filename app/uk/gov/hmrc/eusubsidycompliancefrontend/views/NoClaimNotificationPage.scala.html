@@ -49,14 +49,13 @@
             ))
         }
 
-        <h1 class="govuk-heading-xl">@title</h1>
-
         @govukCheckboxes(Checkboxes(
             name = "value",
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    isPageHeading = false,
-                    classes = "govuk-fieldset__legend--l"
+                    isPageHeading = true,
+                    classes = "govuk-fieldset__legend--xl",
+                    content = Text(title)
                 ))
             )),
             hint = None,
@@ -75,6 +74,7 @@
 
         ))
         @button("common.submit")
+        <div><a href="@controllers.routes.AccountController.getAccountPage().url" class="govuk-link">@messages("common.go-account-home")</a></div>
     }
 
 }
