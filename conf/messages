@@ -9,6 +9,7 @@ common.sign-out=Sign out
 common.saveChanges = Save changes
 common.submit = Submit
 common.continue=Save and Continue
+common.accept-continue=Accept and Continue
 common.continue.only=Continue
 common.accept=Accept and send
 common.go-account-home = Go to account home
@@ -90,21 +91,17 @@ notEligible.p2=Find out more about Customs Duty waivers, who can and cannot clai
 
 notEligibleToLead.title=Please sign out
 notEligibleToLead.h2=You must become the undertaking lead to create the account for this service.
-notEligibleToLead.p1=To report any de minimis state aid, you must contact the undertaking lead of your organsation.
+notEligibleToLead.p1=To report any de minimis state aid, you must contact the undertaking lead of your organisation.
 notEligibleToLead.p2=To find out more about customs waivers, who can claim them, and other information related to importing, visit the <a href="https://www.gov.uk/government/collections/customs-declaration-service" class="govuk-link">Customs Declaration Service (CDS)</a>
 
 eligibilityTerms.title=You must accept the terms and conditions
 eligibilityTerms.h2=Terms and conditions
-eligibilityTerms.p1=By using this service, you will become part of an undertaking.
-eligibilityTerms.p2=If you are not already part of an undertaking, you will need to create one and become the undertaking lead. If you are not the lead, you should sign out now.
-eligibilityTerms.inset=The undertaking lead should have access to all the relevant information needed (EORI number, Customs Declaration Service login details) and the authority to report to HMRC.
-eligibilityTerms.p3=It is your responsibility as undertaking lead to add any other businesses in your organisation to the undertaking account. You must ensure all account details are correct and up to date.
-eligibilityTerms.warning=You must report any de minimis state aid your undertaking receives as soon as possible. If you do not report a de minimis state aid payment every 90 days (or notify HMRC that you have not received any payments in that 90-day period), you will be ineligible to claim Customs Duty waivers.
-eligibilityTerms.h2-2=Declaration
-eligibilityTerms.p4=I agree to the terms and conditions.
-eligibilityTerms.p5-1=If you do not agree to these terms and conditions, please
-eligibilityTerms.p5-2=sign out
-eligibilityTerms.p5-3=now.
+eligibilityTerms.p1=By using this service, you are registering your single undertaking.
+eligibilityTerms.p2=If you are not already part of a single undertaking, you will need to create one and {0} (EORI number) will be the undertaking administrator. The administrator must have access to the Customs Declaration Service (CDS), and the authority to report to HMRC.
+eligibilityTerms.warning=You must report any de minimis aid payment (less Customs Duty waivers) your undertaking receives as soon as possible. If you do not report a de minimis aid payment (less Customs Duty waivers) every 90 days (or notify HMRC that you have not received any payments in that 90-day period), you will be ineligible to claim Customs Duty waivers.
+eligibilityTerms.p3=It is the responsibility of the undertaking administrator to add any other businesses in your organisation to this single undertaking. The administrator must ensure all account details are correct and up to date.
+eligibilityTerms.p4=If you do not agree to these terms and conditions, you should <a href="{0}" class="govuk-link">sign out</a> now.
+
 
 eoricheck.title=Is this the EORI number you want to register?
 eoricheck.error.required=Select yes if this is the EORI number you want to register
@@ -114,14 +111,9 @@ incorrectEori.p1-1=Please
 incorrectEori.p1-2=sign out
 incorrectEori.p1-3=of this session and log in with a different Government Gateway ID to use this service.
 
-createUndertaking.title=You must now create an undertaking
-createUndertaking.h2=What is an undertaking?
-createUndertaking.p-1=Every company may be structured differently. You may be a sole trader, a limited company or partnership. You may be a larger business, with subsidiary companies within the organisation. However a business is structured, we need to group all subsidiary or parent companies together. This is referred to as an undertaking.
-createUndertaking.h2-2=This will make you the undertaking lead for this account
-createUndertaking.p-2=The undertaking lead should have access to all the relevant information needed (EORI number, Customs Declaration Service login details) and the authority to report to HMRC.
-createUndertaking.p-3-1=If you are not the undertaking lead, you should
-createUndertaking.p-3-2=sign out
-createUndertaking.p-3-3=now.
+createUndertaking.title=You must now register a single undertaking
+createUndertaking.h2=This will make EORI number {0} the administrator for this undertaking
+createUndertaking.p1=If you are not the undertaking administrator, you should <a href="{0}" class="govuk-link">sign out</a> now.
 
 undertakingName.title=What would you like to call this single undertaking?
 undertakingName.hint=This is for your own records.
