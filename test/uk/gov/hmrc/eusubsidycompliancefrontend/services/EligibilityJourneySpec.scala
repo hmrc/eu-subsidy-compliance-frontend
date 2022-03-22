@@ -29,29 +29,29 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
       "return all forms at the start of the journey" in {
         val underTest = EligibilityJourney()
         underTest.steps shouldBe Array(
+          underTest.eoriCheck,
+          underTest.signOutBadEori,
           underTest.customsWaivers,
           underTest.willYouClaim,
           underTest.notEligible,
           underTest.mainBusinessCheck,
           underTest.signOut,
           underTest.acceptTerms,
-          underTest.eoriCheck,
-          underTest.signOutBadEori,
           underTest.createUndertaking
         )
       }
 
       "remove will you claim and notEligible steps if customs waivers form has true value" in {
         val underTest = EligibilityJourney(
-          customsWaivers = CustomsWaiversFormPage(Some(true)),
+          customsWaivers = CustomsWaiversFormPage(Some(true))
         )
         underTest.steps shouldBe Array(
+          underTest.eoriCheck,
+          underTest.signOutBadEori,
           underTest.customsWaivers,
           underTest.mainBusinessCheck,
           underTest.signOut,
           underTest.acceptTerms,
-          underTest.eoriCheck,
-          underTest.signOutBadEori,
           underTest.createUndertaking
         )
       }
@@ -61,13 +61,13 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
           willYouClaim = WillYouClaimFormPage(Some(true))
         )
         underTest.steps shouldBe Array(
+          underTest.eoriCheck,
+          underTest.signOutBadEori,
           underTest.customsWaivers,
           underTest.willYouClaim,
           underTest.mainBusinessCheck,
           underTest.signOut,
           underTest.acceptTerms,
-          underTest.eoriCheck,
-          underTest.signOutBadEori,
           underTest.createUndertaking
         )
       }
@@ -75,15 +75,15 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
       "remove sign out step if main business check has true value" in {
         val underTest = EligibilityJourney(
           willYouClaim = WillYouClaimFormPage(Some(true)),
-          mainBusinessCheck = MainBusinessCheckFormPage(Some(true)),
+          mainBusinessCheck = MainBusinessCheckFormPage(Some(true))
         )
         underTest.steps shouldBe Array(
+          underTest.eoriCheck,
+          underTest.signOutBadEori,
           underTest.customsWaivers,
           underTest.willYouClaim,
           underTest.mainBusinessCheck,
           underTest.acceptTerms,
-          underTest.eoriCheck,
-          underTest.signOutBadEori,
           underTest.createUndertaking
         )
       }
@@ -92,14 +92,14 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
         val underTest = EligibilityJourney(
           willYouClaim = WillYouClaimFormPage(Some(true)),
           mainBusinessCheck = MainBusinessCheckFormPage(Some(true)),
-          eoriCheck = EoriCheckFormPage(Some(true)),
+          eoriCheck = EoriCheckFormPage(Some(true))
         )
         underTest.steps shouldBe Array(
+          underTest.eoriCheck,
           underTest.customsWaivers,
           underTest.willYouClaim,
           underTest.mainBusinessCheck,
           underTest.acceptTerms,
-          underTest.eoriCheck,
           underTest.createUndertaking
         )
       }

@@ -22,26 +22,26 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 
 case class EligibilityJourney(
+  eoriCheck: EoriCheckFormPage = EoriCheckFormPage(),
+  signOutBadEori: SignOutBadEoriFormPage = SignOutBadEoriFormPage(),
   customsWaivers: CustomsWaiversFormPage = CustomsWaiversFormPage(),
   willYouClaim: WillYouClaimFormPage = WillYouClaimFormPage(),
   notEligible: NotEligibleFormPage = NotEligibleFormPage(),
   mainBusinessCheck: MainBusinessCheckFormPage = MainBusinessCheckFormPage(),
   signOut: SignOutFormPage = SignOutFormPage(),
   acceptTerms: AcceptTermsFormPage = AcceptTermsFormPage(),
-  eoriCheck: EoriCheckFormPage = EoriCheckFormPage(),
-  signOutBadEori: SignOutBadEoriFormPage = SignOutBadEoriFormPage(),
   createUndertaking: CreateUndertakingFormPage = CreateUndertakingFormPage()
 ) extends Journey {
 
   private val journeySteps = List(
+    eoriCheck,
+    signOutBadEori,
     customsWaivers,
     willYouClaim,
     notEligible,
     mainBusinessCheck,
     signOut,
     acceptTerms,
-    eoriCheck,
-    signOutBadEori,
     createUndertaking
   )
 
