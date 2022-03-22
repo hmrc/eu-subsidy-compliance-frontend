@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.catsSyntaxOptionId
-import com.ibm.icu.util.LocaleMatcher.Demotion
 import play.api.libs.json._
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result}

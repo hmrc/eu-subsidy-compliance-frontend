@@ -31,28 +31,13 @@ class BaseController(mcc: MessagesControllerComponents) extends FrontendControll
   protected def mandatory(key: String): Mapping[String] =
     text.transform[String](_.trim, s => s).verifying(required(key))
 
-  protected def mandatoryAndValid(key: String, regex: String): Mapping[String] =
-    text.transform[String](_.trim, s => s).verifying(combine(required(key), constraint(key, regex)))
-
   // TODO - if data is missing it's likely the session has expired.
   //        Redirect to a session expired page instead?
   protected def handleMissingSessionData(dataLabel: String) =
     throw new IllegalStateException(s"$dataLabel data missing on session")
 
-  private def combine[T](c1: Constraint[T], c2: Constraint[T]): Constraint[T] = Constraint { v =>
-    c1.apply(v) match {
-      case Valid => c2.apply(v)
-      case i: Invalid => i
-    }
-  }
-
   private def required(key: String): Constraint[String] = Constraint {
     case "" => Invalid(s"error.$key.required")
-    case _ => Valid
-  }
-
-  private def constraint(key: String, regex: String): Constraint[String] = Constraint {
-    case a if !a.matches(regex) => Invalid(s"error.$key.invalid")
     case _ => Valid
   }
 
