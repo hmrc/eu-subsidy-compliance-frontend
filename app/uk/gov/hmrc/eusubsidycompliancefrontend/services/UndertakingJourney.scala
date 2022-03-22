@@ -50,7 +50,7 @@ case class UndertakingJourney(
   override def previous(implicit r: Request[_]): Uri =
     if (isAmend) routes.UndertakingController.getAmendUndertakingDetails().url
     else if (requiredDetailsProvided && !isCurrentPageCYA) routes.UndertakingController.getCheckAnswers().url
-    else previousMap.get(r.uri).getOrElse(super.previous)
+    else previousMap.getOrElse(r.uri, super.previous)
 
   override def next(implicit request: Request[_]): Future[Result] =
     if (isAmend) Redirect(routes.UndertakingController.getAmendUndertakingDetails()).toFuture

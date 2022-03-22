@@ -17,12 +17,18 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.catsSyntaxOptionId
+import com.ibm.icu.util.LocaleMatcher.Demotion
 import play.api.libs.json._
+import play.api.mvc.Results.Redirect
+import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, NonHmrcSubsidy, OptionalEORI, OptionalTraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+
+import scala.concurrent.Future
 
 case class SubsidyJourney(
   reportPayment: ReportPaymentFormPage = ReportPaymentFormPage(),
@@ -46,6 +52,19 @@ case class SubsidyJourney(
   )
 
   def isAmend: Boolean = existingTransactionId.nonEmpty
+
+  override def next(implicit r: Request[_]): Future[Result] =
+    if (isAmend) Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
+    else super.next
+
+  def setReportPayment(v: Boolean): SubsidyJourney = this.copy(reportPayment = reportPayment.copy(value = v.some))
+  def setClaimAmount(b: BigDecimal): SubsidyJourney = this.copy(claimAmount = claimAmount.copy(value = b.some))
+  def setClaimDate(d: DateFormValues): SubsidyJourney = this.copy(claimDate = claimDate.copy(value = d.some))
+  def setClaimEori(oe: OptionalEORI): SubsidyJourney = this.copy(addClaimEori = addClaimEori.copy(oe.some))
+  def setPublicAuthority(a: String): SubsidyJourney = this.copy(publicAuthority = publicAuthority.copy(a.some))
+  def setTraderRef(o: OptionalTraderRef): SubsidyJourney = this.copy(traderRef = traderRef.copy(o.some))
+  def setCya(v: Boolean): SubsidyJourney = this.copy(cya = cya.copy(v.some))
+
 }
 
 object SubsidyJourney {

@@ -1327,21 +1327,44 @@ class SubsidyControllerSpec
         FakeRequest("GET", routes.SubsidyController.getChangeSubsidyClaim(transactionID).url)
       )
 
+      val subsidyJourneyWithReportPaymentForm =
+        subsidyJourney.copy(
+          reportPayment = ReportPaymentFormPage(Some(true)),
+          existingTransactionId = Some(SubsidyRef(transactionID))
+        )
+
       "throw technical error" when {
 
-        "todo" in {
-          // TODO
+        "undertaking has no reference" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking1.copy(reference = None).some))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "esc service returns an error retrieving subsidies" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking1.some))
+            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.failed(exception))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "store returns an error when attempting to store subsidy journey" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking1.some))
+            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies1))
+            mockPut[SubsidyJourney](subsidyJourneyWithReportPaymentForm, eori1)(Left(ConnectorError(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
         }
 
       }
 
       "redirect to check answers page" in {
-        val subsidyJourneyWithReportPaymentForm =
-          subsidyJourney.copy(
-            reportPayment = ReportPaymentFormPage(Some(true)),
-            existingTransactionId = Some(SubsidyRef(transactionID))
-          )
-
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGet[Undertaking](eori1)(Right(undertaking1.some))
@@ -1352,6 +1375,12 @@ class SubsidyControllerSpec
         val result = performAction()
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers().url)
+      }
+
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(() => performAction())
+        }
       }
 
     }

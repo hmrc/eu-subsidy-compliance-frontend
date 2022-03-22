@@ -47,17 +47,27 @@ class JourneyStore @Inject() (
     )
     with Store {
 
-  override def get[A : ClassTag](implicit eori: EORI, reads: Reads[A]): Future[Option[A]] =
-    get[A](eori)(dataKeyForType[A])
+  override def get[A : ClassTag](implicit eori: EORI, reads: Reads[A]): Future[Option[A]] = {
+    val res = get[A](eori)(dataKeyForType[A])
+    println(s"get returning: $res")
+    res
+  }
 
-  override def put[A](in: A)(implicit eori: EORI, writes: Writes[A]): Future[A] =
+  override def put[A](in: A)(implicit eori: EORI, writes: Writes[A]): Future[A] = {
+    println(s"put: storing $in")
     put[A](eori)(DataKey(in.getClass.getSimpleName), in).map(_ => in)
+  }
 
   // TODO - f should be an A => Option[A] - can just use get.fold(error)(f) then...
-  override def update[A : ClassTag](f: Option[A] => Option[A])(implicit eori: EORI, format: Format[A]): Future[A] =
+  override def update[A : ClassTag](f: Option[A] => Option[A])(implicit eori: EORI, format: Format[A]): Future[A] = {
+    println(s"update called")
     get
-      .map(f)
+      .map { r =>
+        println(s"processing $r")
+        f(r)
+      }
       .flatMap(x => x.fold(throw new IllegalStateException("trying to update non-existent model"))(put(_)))
+  }
 
   override def delete[A : ClassTag](implicit eori: EORI) =
     delete[A](eori)(dataKeyForType[A])

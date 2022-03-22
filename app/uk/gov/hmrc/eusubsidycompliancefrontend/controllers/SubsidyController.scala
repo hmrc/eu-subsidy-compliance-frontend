@@ -43,6 +43,7 @@ import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
+// TODO - consistent application of toFuture
 @Singleton
 class SubsidyController @Inject() (
   mcc: MessagesControllerComponents,
@@ -65,6 +66,38 @@ class SubsidyController @Inject() (
     with LeadOnlyUndertakingSupport {
 
   import escActionBuilders._
+
+  private val reportPaymentForm: Form[FormValues] = Form(
+    mapping("reportPayment" -> mandatory("reportPayment"))(FormValues.apply)(FormValues.unapply)
+  )
+
+  private val claimTraderRefForm: Form[OptionalTraderRef] = Form(
+    mapping(
+      "should-store-trader-ref" -> mandatory("should-store-trader-ref"),
+      "claim-trader-ref" -> mandatoryIfEqual("should-store-trader-ref", "true", nonEmptyText)
+    )(OptionalTraderRef.apply)(OptionalTraderRef.unapply)
+  )
+
+  private val claimPublicAuthorityForm: Form[String] = Form(
+    "claim-public-authority" -> mandatory("claim-public-authority")
+  )
+
+  private val claimAmountForm: Form[BigDecimal] = Form(
+    mapping(
+      "claim-amount" -> bigDecimal
+        .verifying("error.amount.tooBig", e => e.toString().length < 17)
+        .verifying("error.amount.incorrectFormat", e => e.scale == 2 || e.scale == 0)
+        .verifying("error.amount.tooSmall", e => e > 0.01)
+    )(identity)(Some(_))
+  )
+
+  private val claimDateForm = ClaimDateFormProvider(timeProvider).form
+
+  private val removeSubsidyClaimForm: Form[FormValues] = Form(
+    mapping("removeSubsidyClaim" -> mandatory("removeSubsidyClaim"))(FormValues.apply)(FormValues.unapply)
+  )
+
+  private val cyaForm: Form[FormValues] = Form(mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
 
   def getReportPayment: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
@@ -105,11 +138,15 @@ class SubsidyController @Inject() (
         .bindFromRequest()
         .fold(
           _ => throw new IllegalStateException("report payment form submission failed"),
-          form =>
+          form => {
+            println(s"postReport payment processing form: $form")
             for {
-              journey <- store.update[SubsidyJourney](updateReportPayment(form))
-              redirect <- getJourneyNext(journey)
+              _ <- println("postReportPayment - about to update").toFuture
+              journey <- store.update[SubsidyJourney]( _.map(_.setReportPayment(form.value.toBoolean)))
+              _ <- println(s"postReportPayment - update complete - got journey $journey").toFuture
+              redirect <- journey.next
             } yield redirect
+          }
         )
     }
   }
@@ -140,8 +177,8 @@ class SubsidyController @Inject() (
             BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture,
           form =>
             for {
-              journey <- store.update[SubsidyJourney](updateClaimAmount(form))
-              redirect <- getJourneyNext(journey)
+              journey <- store.update[SubsidyJourney](_.map(_.setClaimAmount(form)))
+              redirect <- journey.next
             } yield redirect
         )
 
@@ -180,8 +217,8 @@ class SubsidyController @Inject() (
             formWithErrors => BadRequest(addClaimDatePage(formWithErrors, previous)).toFuture,
             form =>
               for {
-                journey <- store.update[SubsidyJourney](updateClaimDate(form))
-                redirect <- getJourneyNext(journey)
+                journey <- store.update[SubsidyJourney](_.map(_.setClaimDate(form)))
+                redirect <- journey.next
               } yield redirect
           )
       }
@@ -216,8 +253,8 @@ class SubsidyController @Inject() (
             formWithErrors => Future.successful(BadRequest(addClaimEoriPage(formWithErrors, previous))),
             (form: OptionalEORI) =>
               for {
-                journey <- store.update[SubsidyJourney](updateClaimEori(form))
-                redirect <- getJourneyNext(journey)
+                journey <- store.update[SubsidyJourney](_.map(_.setClaimEori(form)))
+                redirect <- journey.next
               } yield redirect
           )
       }
@@ -248,8 +285,8 @@ class SubsidyController @Inject() (
             errors => Future.successful(BadRequest(addPublicAuthorityPage(errors, previous))),
             form =>
               for {
-                journey <- store.update[SubsidyJourney](updateClaimAuthority(form))
-                redirect <- getJourneyNext(journey)
+                journey <- store.update[SubsidyJourney](_.map(_.setPublicAuthority(form)))
+                redirect <- journey.next
               } yield redirect
           )
       }
@@ -280,8 +317,8 @@ class SubsidyController @Inject() (
             errors => BadRequest(addTraderReferencePage(errors, previous)).toFuture,
             form =>
               for {
-                updatedSubsidyJourney <- store.update[SubsidyJourney](updateOptionalTraderRef(form))
-                redirect <- getJourneyNext(updatedSubsidyJourney)
+                updatedSubsidyJourney <- store.update[SubsidyJourney](_.map(_.setTraderRef(form)))
+                redirect <- updatedSubsidyJourney.next
               } yield redirect
           )
       }
@@ -320,7 +357,7 @@ class SubsidyController @Inject() (
           form =>
             {
               for {
-                journey <- store.update[SubsidyJourney](updateCya(form)).map(Option(_)).toContext
+                journey <- store.update[SubsidyJourney](_.map(_.setCya(form.value.toBoolean))).toContext
                 _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
                 ref <- undertaking.reference.toContext
                 currentDate = timeProvider.today
@@ -376,7 +413,6 @@ class SubsidyController @Inject() (
       }
   }
 
-  // TODO - no coverage of this
   def getChangeSubsidyClaim(transactionId: String): Action[AnyContent] = withAuthenticatedUser.async {
     implicit request =>
       withLeadUndertaking { undertaking =>
@@ -436,77 +472,6 @@ class SubsidyController @Inject() (
     } yield Redirect(routes.SubsidyController.getReportPayment())
     result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
   }
-
-  // TODO - none of these are showing up as covered which is odd
-  private def updateSubsidyJourney(os: Option[SubsidyJourney])(f: SubsidyJourney => SubsidyJourney) = os.map(f)
-
-  private def updateReportPayment(f: FormValues)(os: Option[SubsidyJourney]) = updateSubsidyJourney(os) { s =>
-    println(s"updateReportPayment: $os")
-    s.copy(reportPayment = s.reportPayment.copy(value = Some(f.value.toBoolean)))
-  }
-
-  private def updateClaimAmount(b: BigDecimal)(os: Option[SubsidyJourney]) = updateSubsidyJourney(os) { s =>
-    s.copy(claimAmount = s.claimAmount.copy(value = Some(b)))
-  }
-
-  private def updateClaimDate(d: DateFormValues)(os: Option[SubsidyJourney]) = updateSubsidyJourney(os) { s =>
-    s.copy(claimDate = s.claimDate.copy(value = Some(d)))
-  }
-
-  private def updateClaimEori(oe: OptionalEORI)(os: Option[SubsidyJourney]) = updateSubsidyJourney(os) { s =>
-    s.copy(addClaimEori = s.addClaimEori.copy(value = oe.some))
-  }
-
-  private def updateClaimAuthority(pa: String)(os: Option[SubsidyJourney]) = updateSubsidyJourney(os) { s =>
-    s.copy(publicAuthority = s.publicAuthority.copy(value = pa.some))
-  }
-
-  private def updateOptionalTraderRef(otr: OptionalTraderRef)(os: Option[SubsidyJourney]) = updateSubsidyJourney(os) {
-    s =>
-      val updatedTraderRef = s.traderRef.copy(value = OptionalTraderRef(otr.setValue, otr.value).some)
-      s.copy(traderRef = updatedTraderRef)
-  }
-
-  private def updateCya(f: FormValues)(os: Option[SubsidyJourney]) = updateSubsidyJourney(os) { s =>
-    s.copy(cya = s.cya.copy(value = f.value.toBoolean.some))
-  }
-
-  // TODO - move this into SubsidyJourney (see UndertakingJourney.next)
-  private def getJourneyNext(journey: SubsidyJourney)(implicit request: Request[_]) =
-    if (journey.isAmend) Future.successful(Redirect(routes.SubsidyController.getCheckAnswers()))
-    else journey.next
-
-  private val reportPaymentForm: Form[FormValues] = Form(
-    mapping("reportPayment" -> mandatory("reportPayment"))(FormValues.apply)(FormValues.unapply)
-  )
-
-  private val claimTraderRefForm: Form[OptionalTraderRef] = Form(
-    mapping(
-      "should-store-trader-ref" -> mandatory("should-store-trader-ref"),
-      "claim-trader-ref" -> mandatoryIfEqual("should-store-trader-ref", "true", nonEmptyText)
-    )(OptionalTraderRef.apply)(OptionalTraderRef.unapply)
-  )
-
-  private val claimPublicAuthorityForm: Form[String] = Form(
-    "claim-public-authority" -> mandatory("claim-public-authority")
-  )
-
-  private val claimAmountForm: Form[BigDecimal] = Form(
-    mapping(
-      "claim-amount" -> bigDecimal
-        .verifying("error.amount.tooBig", e => e.toString().length < 17)
-        .verifying("error.amount.incorrectFormat", e => e.scale == 2 || e.scale == 0)
-        .verifying("error.amount.tooSmall", e => e > 0.01)
-    )(identity)(Some(_))
-  )
-
-  private val claimDateForm = ClaimDateFormProvider(timeProvider).form
-
-  private val removeSubsidyClaimForm: Form[FormValues] = Form(
-    mapping("removeSubsidyClaim" -> mandatory("removeSubsidyClaim"))(FormValues.apply)(FormValues.unapply)
-  )
-
-  private val cyaForm: Form[FormValues] = Form(mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
 
 }
 
