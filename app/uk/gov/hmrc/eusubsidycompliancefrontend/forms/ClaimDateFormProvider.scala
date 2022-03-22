@@ -27,7 +27,6 @@ import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, ZoneId}
 import scala.util.Try
 
-// TODO - switch to constraint functions like ClaimEoriFormProvider
 case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvider[DateFormValues] {
 
   private type RawFormValues = (String, String, String)
