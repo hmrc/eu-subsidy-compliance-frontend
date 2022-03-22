@@ -43,7 +43,6 @@ import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-// TODO - consistent application of toFuture
 @Singleton
 class SubsidyController @Inject() (
   mcc: MessagesControllerComponents,
@@ -250,7 +249,7 @@ class SubsidyController @Inject() (
         claimEoriForm
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(addClaimEoriPage(formWithErrors, previous))),
+            formWithErrors => BadRequest(addClaimEoriPage(formWithErrors, previous)).toFuture,
             (form: OptionalEORI) =>
               for {
                 journey <- store.update[SubsidyJourney](_.map(_.setClaimEori(form)))
@@ -282,7 +281,7 @@ class SubsidyController @Inject() (
         claimPublicAuthorityForm
           .bindFromRequest()
           .fold(
-            errors => Future.successful(BadRequest(addPublicAuthorityPage(errors, previous))),
+            errors => BadRequest(addPublicAuthorityPage(errors, previous)).toFuture,
             form =>
               for {
                 journey <- store.update[SubsidyJourney](_.map(_.setPublicAuthority(form)))
@@ -435,7 +434,7 @@ class SubsidyController @Inject() (
       subsides <- escService
         .retrieveSubsidy(SubsidyRetrieve(reference, None))
         .map(Some(_))
-        .recoverWith({ case _ => Future.successful(Option.empty[UndertakingSubsidies]) })
+        .recoverWith({ case _ => Option.empty[UndertakingSubsidies].toFuture })
         .toContext
       sub <- subsides.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext
     } yield sub
