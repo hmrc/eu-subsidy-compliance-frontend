@@ -138,11 +138,8 @@ class SubsidyController @Inject() (
         .fold(
           _ => throw new IllegalStateException("report payment form submission failed"),
           form => {
-            println(s"postReport payment processing form: $form")
             for {
-              _ <- println("postReportPayment - about to update").toFuture
               journey <- store.update[SubsidyJourney]( _.map(_.setReportPayment(form.value.toBoolean)))
-              _ <- println(s"postReportPayment - update complete - got journey $journey").toFuture
               redirect <- journey.next
             } yield redirect
           }
