@@ -30,7 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, DoubleEORIEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, Language, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, FormValues, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -126,7 +126,11 @@ class BusinessEntityControllerSpec
 
       "display the page" when {
 
-        def test(input: Option[String], businessEntityJourney: BusinessEntityJourney): Unit = {
+        def test(
+          input: Option[String],
+          businessEntityJourney: BusinessEntityJourney,
+          undertaking: Undertaking
+        ): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
@@ -136,7 +140,9 @@ class BusinessEntityControllerSpec
 
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("addBusiness.businesses-added.title", undertaking.name),
+            if (undertaking.undertakingBusinessEntity.size > 1)
+              messageFromMessageKey("addBusiness.businesses-added.title", undertaking.name)
+            else messageFromMessageKey("addBusiness.empty.title", undertaking.name),
             { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
 
@@ -152,11 +158,15 @@ class BusinessEntityControllerSpec
         }
 
         "user hasn't already answered the question" in {
-          test(None, BusinessEntityJourney())
+          test(None, BusinessEntityJourney(), undertaking)
+        }
+
+        "user hasn't already answered the question and has no BE in the undertaking" in {
+          test(None, BusinessEntityJourney(), undertaking.copy(undertakingBusinessEntity = List(businessEntity1)))
         }
 
         "user has already answered the question" in {
-          test(Some("true"), BusinessEntityJourney(addBusiness = AddBusinessFormPage(true.some)))
+          test(Some("true"), BusinessEntityJourney(addBusiness = AddBusinessFormPage(true.some)), undertaking)
         }
       }
 
@@ -244,6 +254,13 @@ class BusinessEntityControllerSpec
         "user is not an undertaking lead" in {
           testLeadOnlyRedirect(() => performAction())
         }
+      }
+
+      "Test to update add business" in {
+        val initialBE = BusinessEntityJourney()
+        val updatedBE = initialBE.copy(addBusiness = AddBusinessFormPage(true.some))
+        val result = controller.updateAddBusiness(FormValues("true"))(initialBE.some)
+        result shouldBe updatedBE.some
       }
 
     }
@@ -486,6 +503,16 @@ class BusinessEntityControllerSpec
         }
       }
 
+      "test to update the EORI" in {
+        val initialBE = BusinessEntityJourney(eori = AddEoriFormPage(value = EORI("GB123456789010").some))
+        val updatedBE = initialBE.copy(
+          eori = AddEoriFormPage(value = EORI("GB123456789012").some),
+          oldEORI = EORI("GB123456789010").some
+        )
+        val result = controller.updateEori(FormValues("GB123456789012"))(initialBE.some)
+        result shouldBe updatedBE.some
+      }
+
     }
 
     "handling request to get check your answers page" must {
@@ -527,6 +554,8 @@ class BusinessEntityControllerSpec
       }
 
       "display the page" in {
+
+        val previousUrl = routes.BusinessEntityController.getEori().url
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGet[Undertaking](eori1)(Right(undertaking.some))
@@ -537,6 +566,7 @@ class BusinessEntityControllerSpec
           performAction(),
           messageFromMessageKey("businessEntity.cya.title"),
           { doc =>
+            doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
             val rows =
               doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
                 val question = element.select(".govuk-summary-list__key").text()
@@ -822,15 +852,26 @@ class BusinessEntityControllerSpec
     "handling request to edit business entity" must {
 
       def performAction(eori: String) = controller.editBusinessEntity(eori)(FakeRequest())
+      val previousUrl = routes.BusinessEntityController.getEori().url
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
+
+        "call to get previous fails" in {
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGetPrevious[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
+          }
+          assertThrows[Exception](await(performAction(eori1)))
+        }
 
         "call to put business entity journey fails" in {
 
           val businessEntityJourney = BusinessEntityJourney.businessEntityJourneyForEori(undertaking1.some, eori1)
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockGetPrevious[BusinessEntityJourney](eori1)(Right(previousUrl))
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockPut[BusinessEntityJourney](businessEntityJourney, eori1)(Left(ConnectorError(exception)))
           }
@@ -848,6 +889,7 @@ class BusinessEntityControllerSpec
         )
         inSequence {
           mockAuthWithNecessaryEnrolment()
+          mockGetPrevious[BusinessEntityJourney](eori1)(Right(previousUrl))
           mockGet[Undertaking](eori1)(Right(undertaking1.copy(undertakingBusinessEntity = List(be)).some))
           mockPut[BusinessEntityJourney](businessEntityJourney, eori1)(Right(businessEntityJourney))
         }
@@ -855,6 +897,7 @@ class BusinessEntityControllerSpec
           performAction(eori4),
           messageFromMessageKey("businessEntity.cya.title"),
           { doc =>
+            doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
             val rows =
               doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
                 val question = element.select(".govuk-summary-list__key").text()
@@ -866,12 +909,6 @@ class BusinessEntityControllerSpec
           }
         )
 
-      }
-
-      "redirect to the account home page" when {
-        "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(() => performAction(eori4))
-        }
       }
 
     }

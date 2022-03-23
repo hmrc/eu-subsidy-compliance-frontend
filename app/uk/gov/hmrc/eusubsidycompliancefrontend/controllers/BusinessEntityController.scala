@@ -162,7 +162,7 @@ class BusinessEntityController @Inject() (
       store.get[BusinessEntityJourney].flatMap {
         case Some(journey) =>
           val eori = journey.eori.value.getOrElse(handleMissingSessionData("EORI"))
-          Ok(businessEntityCyaPage(eori)).toFuture
+          Ok(businessEntityCyaPage(eori, journey.previous)).toFuture
         case _ => handleMissingSessionData("CheckYourAnswers journey")
       }
     }
@@ -226,12 +226,14 @@ class BusinessEntityController @Inject() (
 
   def editBusinessEntity(eoriEntered: String): Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
-    withLeadUndertaking { undertaking =>
-      store
-        .put(BusinessEntityJourney.businessEntityJourneyForEori(undertaking.some, EORI(eoriEntered)))
-        .map(_ => Ok(businessEntityCyaPage(eoriEntered)))
+    journeyTraverseService.getPrevious[BusinessEntityJourney].flatMap { previous =>
+      withLeadUndertaking { undertaking =>
+        store
+          .put(BusinessEntityJourney.businessEntityJourneyForEori(undertaking.some, EORI(eoriEntered)))
+          .map(_ => Ok(businessEntityCyaPage(eoriEntered, previous)))
+      }
     }
+
   }
 
   def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = withAuthenticatedUser.async {
@@ -376,12 +378,12 @@ class BusinessEntityController @Inject() (
     f: BusinessEntityJourney => BusinessEntityJourney
   ) = beOpt.map(f)
 
-  private def updateEori(f: FormValues)(beOpt: Option[BusinessEntityJourney]) = updateBusinessEntityJourney(beOpt) {
+  def updateEori(f: FormValues)(beOpt: Option[BusinessEntityJourney]) = updateBusinessEntityJourney(beOpt) {
     beJourney =>
       beJourney.copy(eori = beJourney.eori.copy(value = EORI(f.value).some), oldEORI = beJourney.eori.value)
   }
 
-  private def updateAddBusiness(f: FormValues)(beOpt: Option[BusinessEntityJourney]) =
+  def updateAddBusiness(f: FormValues)(beOpt: Option[BusinessEntityJourney]) =
     updateBusinessEntityJourney(beOpt) { beJourney =>
       beJourney.copy(addBusiness = beJourney.addBusiness.copy(value = f.value.toBoolean.some))
     }
