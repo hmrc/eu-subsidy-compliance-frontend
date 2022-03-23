@@ -427,7 +427,8 @@ class UndertakingControllerSpec
             s" ${messageFromMessageKey("sector.hint.2")}",
           s"${messageFromMessageKey("sector.label.1")}" +
             s" ${messageFromMessageKey("sector.hint.1")}",
-          messageFromMessageKey("sector.label.0")
+          messageFromMessageKey("sector.label.0") +
+            s" ${messageFromMessageKey("sector.hint.0")}"
         )
 
         def test(undertakingJourney: UndertakingJourney, previousCall: String, inputValue: Option[String]): Unit = {
