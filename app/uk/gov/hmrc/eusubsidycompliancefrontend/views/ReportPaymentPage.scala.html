@@ -45,6 +45,22 @@
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"reportPayment"}
 @title = @{messages(s"$key.title")}
+
+@responsiveTableClass = @{"report-payment-table"}
+@date = @{"report-payment.table.head.date"}
+@amount = @{"report-payment.table.head.amount"}
+@eori = @{"report-payment.table.head.eori"}
+@publicAuthority = @{"report-payment.table.head.public-authority"}
+@ref = @{"report-payment.table.head.ref"}
+
+<style>
+  table.@responsiveTableClass td:nth-of-type(1):before { content: "@{messages(date)}" }
+  table.@responsiveTableClass td:nth-of-type(2):before { content: "@{messages(amount)}" }
+  table.@responsiveTableClass td:nth-of-type(3):before { content: "@{messages(eori)}" }
+  table.@responsiveTableClass td:nth-of-type(4):before { content: "@{messages(publicAuthority)}" }
+  table.@responsiveTableClass td:nth-of-type(5):before { content: "@{messages(ref)}" }
+</style>
+
 @layout(
   pageTitle = Some(title),
   backLinkEnabled = true,
@@ -68,6 +84,7 @@
     @if(subsidies.nonEmpty && subsidies.get.nonHMRCSubsidyUsage.nonEmpty) {
       @govukTable(
           Table(
+            classes = s"responsive-table ${responsiveTableClass}",
               attributes = Map("id" -> "subsidy-list"),
               rows = subsidies.get.nonHMRCSubsidyUsage.map { sub =>
                   Seq(
@@ -81,11 +98,11 @@
                   )
               },
           head = Some(Seq(
-              HeadCell(content = Text(messages(s"$key.table.head.date"))),
-              HeadCell(content = Text(messages(s"$key.table.head.amount"))),
-              HeadCell(content = Text(messages(s"$key.table.head.eori"))),
-              HeadCell(content = Text(messages(s"$key.table.head.public-authority"))),
-              HeadCell(content = Text(messages(s"$key.table.head.ref"))),
+              HeadCell(content = Text(messages(date))),
+              HeadCell(content = Text(messages(amount))),
+              HeadCell(content = Text(messages(eori))),
+              HeadCell(content = Text(messages(publicAuthority))),
+              HeadCell(content = Text(messages(ref))),
               HeadCell(content = HtmlContent(s"""<span class='govuk-visually-hidden'>${messages("common.change")}</span>""")),
               HeadCell(content = HtmlContent(s"""<span  class='govuk-visually-hidden'>${messages("common.remove")}</span>""")),
           )),
@@ -133,5 +150,5 @@
       ))
     @button("common.continue.only")
     <div><a href="@controllers.routes.AccountController.getAccountPage().url" class="govuk-link">@messages("common.go-account-home")</a></div>
-}
+  }
 }
