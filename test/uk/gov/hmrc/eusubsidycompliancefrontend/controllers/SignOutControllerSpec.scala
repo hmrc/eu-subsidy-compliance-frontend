@@ -60,7 +60,7 @@ class SignOutControllerSpec extends ControllerSpec {
         checkPageIsDisplayed(
           performAction(),
           messageFromMessageKey("signOut.title"),
-          doc => doc.select(".govuk-body").text() shouldBe "You have been signed out of this session."
+          doc => doc.select(".govuk-body").text() should include regex messageFromMessageKey("signOut.p1")
         )
 
       }
