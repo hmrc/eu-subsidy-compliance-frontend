@@ -207,7 +207,7 @@ undertaking.confirmation.p4=If you have any other businesses, you must add them 
 businessEntityEori.eoriInUse.error=This EORI is in use.
 
 lead-account-homepage.title = {0}
-lead-account-homepage.warning=You must report any de minimis aid (except Customs Duty waivers) {0} receives as soon as possible. If you do not report a de minimis aid payment every 90 days (or notify HMRC that you have not received any payments in that 90-day period), you will be ineligible to claim Customs Duty waivers
+lead-account-homepage.warning=This service is only to report payments, not claim payments. You must report any de minimis aid payments (less Customs Duty waivers) received as soon as possible. If you do not report a de minimis aid payment (less Customs Duty waivers) every 90 days (or notify HMRC that you have not received any payments in that 90-day period), you will be ineligible to claim Customs Duty waivers.
 lead-account-homepage.inset=Your next entry is due by {0}. You can report de minimis aid payment, or let HMRC know that you have not received any, by following the links in the Payments received section below.
 lead-account-homepage-overdue.inset=Your due date of {0} has passed. You have not submitted your return within the 90-day period.
 lead-account-homepage.cards.card1.heading=Payments received
