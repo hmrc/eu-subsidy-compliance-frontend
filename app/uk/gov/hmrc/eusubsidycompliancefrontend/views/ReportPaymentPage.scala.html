@@ -35,23 +35,34 @@
   govukTable: GovukTable
 )
 
-@(
+@(form: Form[_],
     subsidies: Option[UndertakingSubsidies] = None,
     undertaking: Undertaking,
     earliestAllowedDate: LocalDate,
     previousTaxYearEnd: LocalDate,
     currentTaxYearStart: LocalDate,
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
+@key = @{"reportPayment"}
+@title = @{messages(s"$key.title")}
 @layout(
-  pageTitle = Some(messages("report-payment.title")),
+  pageTitle = Some(title),
   backLinkEnabled = true,
   backLink = Some(controllers.routes.AccountController.getAccountPage().url)
 ) {
 
   @formHelper(action = controllers.routes.SubsidyController.postReportPayment) {
-    <span class="govuk-caption-xl">@undertaking.name</span>
-    @H1(messages("report-payment.title"))
+      @form.errors.map { err =>
+          @govukErrorSummary(ErrorSummary(
+              errorList = Seq(
+                  ErrorLink(
+                      href = Some(s"#${err.key}"),
+                      content = Text(s"${messages(s"${err.key}.${err.message}")}")
+                  )
+              ),
+              title = Text(messages("common.error.summary.title"))
+          ))
+      }
+    @H1(title)
 
     @if(subsidies.nonEmpty && subsidies.get.nonHMRCSubsidyUsage.nonEmpty) {
       @govukTable(
@@ -69,32 +80,57 @@
                   )
               },
           head = Some(Seq(
-              HeadCell(content = Text(messages("report-payment.table.head.date"))),
-              HeadCell(content = Text(messages("report-payment.table.head.amount"))),
-              HeadCell(content = Text(messages("report-payment.table.head.eori"))),
-              HeadCell(content = Text(messages("report-payment.table.head.public-authority"))),
-              HeadCell(content = Text(messages("report-payment.table.head.ref"))),
+              HeadCell(content = Text(messages(s"$key.table.head.date"))),
+              HeadCell(content = Text(messages(s"$key.table.head.amount"))),
+              HeadCell(content = Text(messages(s"$key.table.head.eori"))),
+              HeadCell(content = Text(messages(s"$key.table.head.public-authority"))),
+              HeadCell(content = Text(messages(s"$key.table.head.ref"))),
               HeadCell(content = HtmlContent(s"""<span class='govuk-visually-hidden'>${messages("common.change")}</span>""")),
               HeadCell(content = HtmlContent(s"""<span  class='govuk-visually-hidden'>${messages("common.remove")}</span>""")),
           )),
-          caption = Some(messages("report-payment.table.caption")),
+          caption = Some(messages(s"$key.table.caption")),
           captionClasses = "govuk-table__caption--m"
       ))
     } else {
-      @P(messages("report-payment.p1"))
+      @P(messages(s"$key.p1"))
     }
-
-
-    @P(messages("report-payment.p2"))
+      @P(messages(s"$key.p2"))
 
     <ul class="govuk-list govuk-list--bullet">
-      <li>@messages("report-payment.ul1-li1", earliestAllowedDate.toDisplayFormat, previousTaxYearEnd.toDisplayFormat)</li>
-      <li>@messages("report-payment.ul1-li2", currentTaxYearStart.toDisplayFormat)</li>
+      <li>@messages(s"$key.ul1-li1", earliestAllowedDate.toDisplayFormat, previousTaxYearEnd.toDisplayFormat)</li>
+      <li>@messages(s"$key.ul1-li2", currentTaxYearStart.toDisplayFormat)</li>
     </ul>
 
-    @P(messages("report-payment.p3"))
-    <input type=hidden name=reportPayment value=true>
-    @button("report-payment.button")
+    @P(messages(s"$key.p3"))
+      @P(messages(s"$key.p4"))
+      @govukRadios(Radios(
+          classes = "govuk-radios--inline",
+          errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+              content = Text(messages(s"$key.error.required"))
+          ))} else None,
+          fieldset = Some(Fieldset(
+              legend = Some(Legend(
+                  content = Text(messages(s"$key.legend")),
+                  classes = "govuk-fieldset__legend--m",
+                  isPageHeading = false
+              ))
+          )),
+          idPrefix = Some(key),
+          name = key,
+          items = Seq(
+              RadioItem(
+                  content = Text(messages("common.yes")),
+                  value = Some("true"),
+                  checked = form.data.exists(_._2 == "true")
+              ),
+              RadioItem(
+                  content = Text(messages("common.no")),
+                  value = Some("false"),
+                  checked = form.data.exists(_._2 == "false")
+              )
+          )
+      ))
+    @button("common.continue.only")
     <div><a href="@controllers.routes.AccountController.getAccountPage().url" class="govuk-link">@messages("common.go-account-home")</a></div>
 }
 }

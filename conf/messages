@@ -227,19 +227,22 @@ non-lead-account-homepage.link1 = Become administrator for {0}
 non-lead-account-homepage.link2 = View the [TODO: finalise copy] financial dashboard / de minimis aid balance for {0}
 non-lead-account-homepage.link3 = Remove yourself from this single undertaking
 
-report-payment.title=Report a de minimis aid payment
-report-payment.p1=You have not yet reported any payments.
-report-payment.p2=You will need to add the details of any payments of de minimis aid you received for:
-report-payment.ul1-li1=the previous 2 tax years (from {0} to {1})
-report-payment.ul1-li2=the current tax year (from {0} to date)
-report-payment.p3=You will not need details of the Customs Duty waiver as HMRC will already have this information.
-report-payment.table.caption=Payments received
-report-payment.table.head.date=Date
-report-payment.table.head.amount=Amount
-report-payment.table.head.eori=EORI number
-report-payment.table.head.public-authority=Public authority
-report-payment.table.head.ref=Your reference
-report-payment.button = Report a payment
+reportPayment.title=Report a de minimis aid payment (less Customs Duty waivers)
+reportPayment.p1=You have not yet reported any payments.
+reportPayment.p2=You will need to add the details of any payments of de minimis aid (less Customs Duty waivers) you received for:
+reportPayment.ul1-li1=the previous 2 tax years (from {0} to {1})
+reportPayment.ul1-li2=the current tax year (from {0} to date)
+reportPayment.p3=All payments need to be reported, even if you have already posted a form for the current tax year, and the previous two.
+reportPayment.p4=You will not need details of the Customs Duty waiver as HMRC will already have this information.
+reportPayment.table.caption=Payments received
+reportPayment.table.head.date=Date
+reportPayment.table.head.amount=Amount
+reportPayment.table.head.eori=EORI number
+reportPayment.table.head.public-authority=Public authority
+reportPayment.table.head.ref=Your reference
+reportPayment.legend=Do you have a de minimis aid payment (less Customs Duty waiver) to report?
+reportPayment.button = Report a payment
+reportPayment.error.required=Select yes if you have a de minimis aid payment (less Customs Duty waiver) to report?
 
 add-claim-amount.title=What was the amount of the payment?
 add-claim-amount.p1=This type of aid is measured in euros, so you must convert any aid received from pound sterling into euros using this <a class="govuk-link" href={0} target="_blank">exchange rate tool (external site, opens in a new tab)</a>:
@@ -252,6 +255,7 @@ add-claim-amount.error.amount.incorrectFormat=Enter number value of subsidy allo
 add-claim-amount.error.real = Enter number value of subsidy allocated in Euros, like €248.56
 
 add-claim-date.title=What date were you awarded the payment?
+add-claim-date.hint=For example, 27 07 2020
 add-claim-date.error.date.emptyfields=Enter a real date, like 23 11 2019
 add-claim-date.error.day.missing=The date you received your payment must include a day, like 23 11 2019
 add-claim-date.error.day-and-month.missing=The date you received your payment must include a day and month, like 23 11 2019
