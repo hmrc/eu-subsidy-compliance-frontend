@@ -56,6 +56,11 @@ case class SubsidyJourney(
     if (isAmend) Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
     else super.next
 
+  override def previous(implicit request: Request[_]): Journey.Uri = if (
+    request.uri == routes.SubsidyController.getReportPayment().url
+  ) routes.AccountController.getAccountPage().url
+  else super.previous
+
   def setReportPayment(v: Boolean): SubsidyJourney = this.copy(reportPayment = reportPayment.copy(value = v.some))
   def setClaimAmount(b: BigDecimal): SubsidyJourney = this.copy(claimAmount = claimAmount.copy(value = b.some))
   def setClaimDate(d: DateFormValues): SubsidyJourney = this.copy(claimDate = claimDate.copy(value = d.some))

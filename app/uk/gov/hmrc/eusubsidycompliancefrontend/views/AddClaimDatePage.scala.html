@@ -30,7 +30,8 @@
 )
 
 @(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
+@key = @{"add-claim-date"}
+@title = @{messages(s"$key.title")}
 @deriveErrorKey(message: String) = @{message match {
     case e: String if e.contains("day") => "claim-date-day"
     case e: String if e.contains("month") => "claim-date-month"
@@ -46,7 +47,7 @@
 }}
 
 @layout(
-  pageTitle = Some(messages("add-claim-date.title")),
+  pageTitle = Some(title),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -91,9 +92,12 @@
             value = form.data.get("year")
           )
         ),
+          hint = Some(Hint(
+              content = Text(messages(s"$key.hint"))
+          )),
         fieldset = Some(Fieldset(
           legend = Some(Legend(
-            content = Text(messages("add-claim-date.title")),
+            content = Text(title),
             classes = "govuk-fieldset__legend--xl",
             isPageHeading = true
           ))

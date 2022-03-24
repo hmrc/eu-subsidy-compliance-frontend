@@ -59,7 +59,7 @@ class SubsidyController @Inject() (
   addTraderReferencePage: AddTraderReferencePage,
   cyaPage: ClaimCheckYourAnswerPage,
   confirmRemovePage: ConfirmRemoveClaim,
-  timeProvider: TimeProvider,
+  timeProvider: TimeProvider
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
@@ -102,25 +102,28 @@ class SubsidyController @Inject() (
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
-      val result = for {
-        _ <- store.get[SubsidyJourney].toContext.orElse(store.put(SubsidyJourney()).toContext)
+      val result: OptionT[Future, Future[Result]] = for {
+        journey <- store.get[SubsidyJourney].toContext.orElse(store.put(SubsidyJourney()).toContext)
         reference <- undertaking.reference.toContext
-      } yield reference
-
-      result.foldF(handleMissingSessionData("Subsidy journey")) { reference =>
+      } yield {
+        val form = journey.reportPayment.value
+          .fold(reportPaymentForm)(bool => reportPaymentForm.fill(FormValues(bool.toString)))
         val currentDate = timeProvider.today
         retrieveSubsidiesOrNone(reference).map { subsidies =>
           Ok(
             reportPaymentPage(
+              form,
               subsidies,
               undertaking,
               currentDate.toEarliestTaxYearStart,
               currentDate.toTaxYearEnd.minusYears(1),
-              currentDate.toTaxYearStart
+              currentDate.toTaxYearStart,
+              journey.previous
             )
           )
         }
       }
+      result.foldF(handleMissingSessionData("Subsidy Journey"))(identity)
     }
   }
 
@@ -131,18 +134,20 @@ class SubsidyController @Inject() (
       .fallbackTo(Option.empty.toFuture)
 
   def postReportPayment: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    withLeadUndertaking { _ =>
+    withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
+      val previous = routes.AccountController.getAccountPage().url
       reportPaymentForm
         .bindFromRequest()
         .fold(
-          _ => throw new IllegalStateException("report payment form submission failed"),
-          form => {
+          formWithErrors => handleReportPaymentFormError(previous, undertaking, formWithErrors),
+          form =>
             for {
-              journey <- store.update[SubsidyJourney]( _.map(_.setReportPayment(form.value.toBoolean)))
-              redirect <- journey.next
+              journey <- store.update[SubsidyJourney](_.map(_.setReportPayment(form.value.toBoolean)))
+              redirect <-
+                if (form.value === "true") journey.next
+                else Redirect(routes.AccountController.getAccountPage()).toFuture
             } yield redirect
-          }
         )
     }
   }
@@ -468,6 +473,27 @@ class SubsidyController @Inject() (
     } yield Redirect(routes.SubsidyController.getReportPayment())
     result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
   }
+
+  private def handleReportPaymentFormError(
+    previous: String,
+    undertaking: Undertaking,
+    formWithErrors: Form[FormValues]
+  )(implicit hc: HeaderCarrier, request: AuthenticatedEscRequest[_]): Future[Result] =
+    retrieveSubsidiesOrNone(undertaking.reference.getOrElse(handleMissingSessionData("Undertaking Referencec"))).map {
+      subsidies =>
+        val currentDate = timeProvider.today
+        BadRequest(
+          reportPaymentPage(
+            formWithErrors,
+            subsidies,
+            undertaking,
+            currentDate.toEarliestTaxYearStart,
+            currentDate.toTaxYearEnd.minusYears(1),
+            currentDate.toTaxYearStart,
+            previous
+          )
+        )
+    }
 
 }
 
