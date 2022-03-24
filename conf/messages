@@ -245,10 +245,10 @@ reportPayment.button = Report a payment
 reportPayment.error.required=Select yes if you have a de minimis aid payment (less Customs Duty waiver) to report?
 
 add-claim-amount.title=What was the amount of the payment?
-add-claim-amount.p1=This type of aid is measured in euros, so you must convert any aid received from pound sterling into euros using this <a class="govuk-link" href={0} target="_blank">exchange rate tool (external site, opens in a new tab)</a>:
+add-claim-amount.p1=This type of aid is measured in euros. Convert any aid received from pound sterling into euros using this <a class="govuk-link" href={0} target="_blank">exchange rate tool (external site, opens in a new tab)</a>:
 add-claim-amount.l1 = Change the year to {0} and month to {1}
 add-claim-amount.l2 = Enter the amount of aid you received in pounds sterling
-add-claim-amount.l3 = Change the ‘From’ dropdown to ‘GBP’ and use the figure displayed below it (to the nearest euro)
+add-claim-amount.l3 = Change the ‘From’ dropdown to ‘GBP’ and use the figure displayed below it
 add-claim-amount.error.amount.tooSmall=Subsidy amount must be more than one cent, like €00.01
 add-claim-amount.error.amount.tooBig=Subsidy amount must be fewer than 17 characters
 add-claim-amount.error.amount.incorrectFormat=Enter number value of subsidy allocated in Euros, like €248.56
@@ -274,7 +274,7 @@ error.claim-public-authority.required=Enter the public authority
 
 add-claim-eori.title=Would you like to add an EORI number for the business that claimed the payment?
 add-claim-eori.label=This must be a GB EORI number
-add-claim-eori.hint=This is for your own records. It is not a mandatory field.
+add-claim-eori.hint=The EORI number must be from a business already in your undertaking. This is for your own records. It is not a mandatory field.
 should-claim-eori.error.required=Select yes if you would like to add a valid EORI number
 claim-eori.error.format=GB EORI number must be 12 or 15 digits
 claim-eori.error.required=GB EORI number must be 12 or 15 digits
