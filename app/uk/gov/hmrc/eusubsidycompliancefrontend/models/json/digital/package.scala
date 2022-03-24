@@ -73,7 +73,6 @@ package object digital {
           val processingDate = (responseCommon \ "processingDate").as[ZonedDateTime]
           val statusText = (responseCommon \ "statusText").asOpt[String]
           val returnParameters = (responseCommon \ "returnParameters").asOpt[List[Params]]
-          // TODO consider moving exception to connector
           throw new EisBadResponseException("NOT_OK", processingDate, statusText, returnParameters)
         case "OK" =>
           val responseDetail: JsLookupResult =
@@ -86,7 +85,6 @@ package object digital {
           val lastSubsidyUsageUpdt: LocalDate =
             (responseDetail \ "lastSubsidyUsageUpdt").as[LocalDate](new Reads[LocalDate] {
               override def reads(json: JsValue): JsResult[LocalDate] =
-                // TODO consider Either.catchOnly (cats)
                 JsSuccess(LocalDate.parse(json.as[String], eis.oddEisDateFormat))
             })
           val undertakingBusinessEntity: List[BusinessEntity] =
@@ -167,7 +165,6 @@ package object digital {
           val processingDate = (responseCommon \ "processingDate").as[ZonedDateTime]
           val statusText = (responseCommon \ "statusText").asOpt[String]
           val returnParameters = (responseCommon \ "returnParameters").asOpt[List[Params]]
-          // TODO consider moving exception to connector
           throw new EisBadResponseException("NOT_OK", processingDate, statusText, returnParameters)
         case "OK" =>
           val ref = (json \ "createUndertakingResponse" \ "responseDetail" \ "undertakingReference").as[String]

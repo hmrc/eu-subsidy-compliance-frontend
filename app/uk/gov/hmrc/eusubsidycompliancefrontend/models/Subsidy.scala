@@ -21,14 +21,13 @@ import java.time.LocalDate
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, PositiveSubsidyAmount, SubsidyRef, TraderRef}
 
-// TODO - hopefully we can delete this - need to get bits of SCP06 and SCP09 aligned
 case class Subsidy(
   subsidyUsageTransactionId: Option[SubsidyRef],
   allocationDate: LocalDate,
   submissionDate: LocalDate,
   publicAuthority: String, // no regex
   traderReference: Option[TraderRef], // no regex in create API but one in retrieve API!
-  nonHMRCSubsidyAmtEUR: PositiveSubsidyAmount, // TODO consider using sane names and write a bespoke formatter
+  nonHMRCSubsidyAmtEUR: PositiveSubsidyAmount,
   businessEntityIdentifier: Option[EORI],
   amendmentType: Option[EisSubsidyAmendmentType] = Option.empty
 )

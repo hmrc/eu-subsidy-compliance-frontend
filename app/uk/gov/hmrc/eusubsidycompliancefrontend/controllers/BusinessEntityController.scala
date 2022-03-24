@@ -218,8 +218,6 @@ class BusinessEntityController @Inject() (
         .fold(
           errors => throw new IllegalStateException(s"value hard-coded, form hacking? $errors"),
           _ => handleValidAnswers(undertaking)
-          // TODO try to get an undertaking for the eori of the added business, and only proceed if there isn't one
-          // TODO UX are figuring out the correct behaviour here so will come back to this
         )
     }
   }

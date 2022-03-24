@@ -68,7 +68,7 @@ object SubsidyUpdate {
         } else
           UndertakingSubsidyAmendment(
             (json \ "undertakingSubsidyAmendment").as[List[NonHmrcSubsidy]]
-          ) // TODO this can only be this if we can get the API aligned
+          )
       val id = (json \ "undertakingIdentifier").as[UndertakingRef]
       JsSuccess(SubsidyUpdate(id, update))
     }

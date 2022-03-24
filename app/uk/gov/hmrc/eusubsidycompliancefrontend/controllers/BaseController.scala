@@ -31,8 +31,6 @@ class BaseController(mcc: MessagesControllerComponents) extends FrontendControll
   protected def mandatory(key: String): Mapping[String] =
     text.transform[String](_.trim, s => s).verifying(required(key))
 
-  // TODO - if data is missing it's likely the session has expired.
-  //        Redirect to a session expired page instead?
   protected def handleMissingSessionData(dataLabel: String) =
     throw new IllegalStateException(s"$dataLabel data missing on session")
 
