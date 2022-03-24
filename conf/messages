@@ -182,7 +182,7 @@ businessEntity.cya.p1=By sending these details you are confirming that, to the b
 businessEntity.cya.change.eori=EORI number
 
 removeBusinessEntity.title= Remove business entity
-removeBusinessEntity.subtitle = Do you want to remove business entity?
+removeBusinessEntity.subtitle = Do you want to remove the business with EORI {0}?
 removeBusinessEntity.error.required = Select yes if you want to remove business entity.
 removeBusiness.error.required = Select yes if you want to remove business entity.
 
@@ -313,8 +313,11 @@ undertaking.amendUndertaking.summary-list.change.industry-sector = industry sect
 undertaking.amendUndertaking.p = By sending these details you are confirming that, to the best of your knowledge, they are correct
 
 #SignOut
-signOut.title = You have been removed from this undertaking
-signOut.p1 = You have been signed out of this session.
+signOut.title =You have been removed from this single undertaking
+signOut.p1 =Being removed from an undertaking does not take effect immediately.
+signOut.p2 = It could take up to 24 hours for the change to go through. This means you will still be in the single undertaking until the change happens.
+signOut.p3 = You can check on your status next time you login.
+signOut.p4 = You have been signed out of this session.
 
 #removeYourselfBusinessEntity
 removeYourselfBusinessEntity.title = Do you wish to remove yourself from {0}?
