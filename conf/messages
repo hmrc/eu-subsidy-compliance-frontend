@@ -207,7 +207,7 @@ undertaking.confirmation.p4=If you have any other businesses, you must add them 
 businessEntityEori.eoriInUse.error=This EORI is in use.
 
 lead-account-homepage.title = {0}
-lead-account-homepage.warning=You must report any de minimis aid (except Customs Duty waivers) {0} receives as soon as possible. If you do not report a de minimis aid payment every 90 days (or notify HMRC that you have not received any payments in that 90-day period), you will be ineligible to claim Customs Duty waivers
+lead-account-homepage.warning=This service is only to report payments, not claim payments. You must report any de minimis aid payments (less Customs Duty waivers) received as soon as possible. If you do not report a de minimis aid payment (less Customs Duty waivers) every 90 days (or notify HMRC that you have not received any payments in that 90-day period), you will be ineligible to claim Customs Duty waivers.
 lead-account-homepage.inset=Your next entry is due by {0}. You can report de minimis aid payment, or let HMRC know that you have not received any, by following the links in the Payments received section below.
 lead-account-homepage-overdue.inset=Your due date of {0} has passed. You have not submitted your return within the 90-day period.
 lead-account-homepage.cards.card1.heading=Payments received
@@ -217,14 +217,13 @@ lead-account-homepage.cards.card2.heading=Account
 lead-account-homepage.cards.card2.link1=View or amend your account details
 lead-account-homepage.cards.card2.link2=View financial dashboard
 lead-account-homepage.cards.card3.heading=Businesses in {0}
-lead-account-homepage.cards.card3.link1=View your businesses or Add a business to your account [TODO: Link text depends on businesses added]
 lead-account-homepage.cards.card3.link1View=View your businesses
 lead-account-homepage.cards.card3.link1Add=Add a business to your account
 lead-account-homepage.cards.card3.link2=Make another business the administrator
 
 non-lead-account-homepage.title = You are part of the single undertaking {0}
 non-lead-account-homepage.link1 = Become administrator for {0}
-non-lead-account-homepage.link2 = View the [TODO: finalise copy] financial dashboard / de minimis aid balance for {0}
+non-lead-account-homepage.link2 = View financial dashboard for {0}
 non-lead-account-homepage.link3 = Remove yourself from this single undertaking
 
 reportPayment.title=Report a de minimis aid payment (less Customs Duty waivers)
