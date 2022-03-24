@@ -41,13 +41,14 @@
     earliestAllowedDate: LocalDate,
     previousTaxYearEnd: LocalDate,
     currentTaxYearStart: LocalDate,
+   previous: Journey.Uri
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"reportPayment"}
 @title = @{messages(s"$key.title")}
 @layout(
   pageTitle = Some(title),
   backLinkEnabled = true,
-  backLink = Some(controllers.routes.AccountController.getAccountPage().url)
+  backLink = Some(previous)
 ) {
 
   @formHelper(action = controllers.routes.SubsidyController.postReportPayment) {

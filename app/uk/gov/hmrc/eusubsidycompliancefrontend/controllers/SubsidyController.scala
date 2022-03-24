@@ -117,7 +117,8 @@ class SubsidyController @Inject() (
               undertaking,
               currentDate.toEarliestTaxYearStart,
               currentDate.toTaxYearEnd.minusYears(1),
-              currentDate.toTaxYearStart
+              currentDate.toTaxYearStart,
+              journey.previous
             )
           )
         }
@@ -135,10 +136,11 @@ class SubsidyController @Inject() (
   def postReportPayment: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
+      val previous = routes.AccountController.getAccountPage().url
       reportPaymentForm
         .bindFromRequest()
         .fold(
-          formWithErrors => handleReportPaymentFormError(undertaking, formWithErrors),
+          formWithErrors => handleReportPaymentFormError(previous, undertaking, formWithErrors),
           form =>
             for {
               journey <- store.update[SubsidyJourney](_.map(_.setReportPayment(form.value.toBoolean)))
@@ -473,12 +475,12 @@ class SubsidyController @Inject() (
   }
 
   private def handleReportPaymentFormError(
+    previous: String,
     undertaking: Undertaking,
     formWithErrors: Form[FormValues]
   )(implicit hc: HeaderCarrier, request: AuthenticatedEscRequest[_]): Future[Result] =
     retrieveSubsidiesOrNone(undertaking.reference.getOrElse(handleMissingSessionData("Undertaking Referencec"))).map {
       subsidies =>
-        println(s"error key = ${formWithErrors.errors.head}")
         val currentDate = timeProvider.today
         BadRequest(
           reportPaymentPage(
@@ -487,7 +489,8 @@ class SubsidyController @Inject() (
             undertaking,
             currentDate.toEarliestTaxYearStart,
             currentDate.toTaxYearEnd.minusYears(1),
-            currentDate.toTaxYearStart
+            currentDate.toTaxYearStart,
+            previous
           )
         )
     }

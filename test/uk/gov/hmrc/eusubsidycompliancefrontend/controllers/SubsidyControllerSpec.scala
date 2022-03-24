@@ -68,7 +68,8 @@ class SubsidyControllerSpec
 
     "handling request to get report payment page" must {
 
-      def performAction() = controller.getReportPayment(FakeRequest())
+      def performAction() =
+        controller.getReportPayment(FakeRequest("GET", routes.SubsidyController.getReportPayment().url))
 
       "throw technical error" when {
         val exception = new Exception("oh no")
@@ -96,6 +97,8 @@ class SubsidyControllerSpec
 
       "display the page" when {
 
+        val previousUrl = routes.AccountController.getAccountPage().url
+
         def test(nonHMRCSubsidyUsage: List[NonHmrcSubsidy], subsidyJourney: SubsidyJourney) =
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -114,6 +117,7 @@ class SubsidyControllerSpec
             performAction(),
             messageFromMessageKey("reportPayment.title"),
             { doc =>
+              doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
               val button = doc.select("form")
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               selectedOptions.isEmpty shouldBe true
@@ -132,6 +136,7 @@ class SubsidyControllerSpec
             performAction(),
             messageFromMessageKey("reportPayment.title"),
             { doc =>
+              doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               selectedOptions.attr("value") shouldBe "true"
               val subsidyList = doc.select("#subsidy-list")
