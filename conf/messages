@@ -217,14 +217,13 @@ lead-account-homepage.cards.card2.heading=Account
 lead-account-homepage.cards.card2.link1=View or amend your account details
 lead-account-homepage.cards.card2.link2=View financial dashboard
 lead-account-homepage.cards.card3.heading=Businesses in {0}
-lead-account-homepage.cards.card3.link1=View your businesses or Add a business to your account [TODO: Link text depends on businesses added]
 lead-account-homepage.cards.card3.link1View=View your businesses
 lead-account-homepage.cards.card3.link1Add=Add a business to your account
 lead-account-homepage.cards.card3.link2=Make another business the administrator
 
 non-lead-account-homepage.title = You are part of the single undertaking {0}
 non-lead-account-homepage.link1 = Become administrator for {0}
-non-lead-account-homepage.link2 = View the [TODO: finalise copy] financial dashboard / de minimis aid balance for {0}
+non-lead-account-homepage.link2 = View financial dashboard for {0}
 non-lead-account-homepage.link3 = Remove yourself from this single undertaking
 
 report-payment.title=Report a de minimis aid payment
