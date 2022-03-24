@@ -146,6 +146,11 @@ sector.hint.3=An ‘agricultural product’ can be products such as: live animal
 undertaking.cya.title=Check your account details
 undertaking.cya.change.hidden.name = name of undertaking
 undertaking.cya.change.hidden.industry-sector = industry sector
+undertaking.cya.summary-list.name.key=Name of undertaking
+undertaking.cya.summary-list.eori.key=EORI number
+undertaking.cya.summary-list.sector.key=Industry sector
+undertaking.cya.summary-list.phone.key=Telephone number
+undertaking.cya.p=By sending these details you are confirming that, to the best of your knowledge, they are correct.
 
 addBusiness.empty.title=Add businesses within your organisation to {0}
 addBusiness.p1=This service is for businesses importing into Northern Ireland or claiming de minimis aid payments and Customs Duty waivers in the UK.
@@ -185,12 +190,6 @@ removeBusinessEntity.title= Remove business entity
 removeBusinessEntity.subtitle = Do you want to remove the business with EORI {0}?
 removeBusinessEntity.error.required = Select yes if you want to remove business entity.
 removeBusiness.error.required = Select yes if you want to remove business entity.
-
-undertaking.cya.summary-list.name.key=Name of undertaking
-undertaking.cya.summary-list.eori.key=EORI number
-undertaking.cya.summary-list.sector.key=Industry sector
-undertaking.cya.summary-list.phone.key=Telephone number
-undertaking.cya.p=By sending these details you are confirming that, to the best of your knowledge, they are correct.
 
 undertaking.confirmation.title=You have successfully created your single undertaking account
 undertaking.confirmation.h2=Account details
@@ -351,9 +350,8 @@ leadEORIChanged.link = <a href="{0}" class="govuk-link">Go to account home</a>
 noBusinessPresent.title = There are no other businesses added to {0}
 
 # Financial Dashboard
-dashboard.title = Financial Dashboard
-dashboard.overall.summary.heading = Summary of waivers: Total, tax years {0} to {1}
-dashboard.year.summary.heading = Summary of waivers: Tax year {0} to {1}
+dashboard.title = Summary of de minimis aid: Total, tax years {0} to {1}
+dashboard.year.summary.heading = Summary of de minimis aid: tax year {0} to {1}
 dashboard.customs.duty.heading = Customs Duty waivers claimed
 dashboard.de.minimis.aid.heading = de minimis aid (less Customs Duty waivers) payments
 dashboard.total.claimed.heading = Total claimed
