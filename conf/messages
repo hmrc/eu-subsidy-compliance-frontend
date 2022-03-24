@@ -1,5 +1,5 @@
 gov.uk = GOV.UK
-service.name = Report state aid payments for Northern Ireland businesses
+service.name = Report and check de minimis aid if you claimed a Northern Ireland waiver
 service.text = This is your new service
 
 generic.errorPrefix = Error:
@@ -382,8 +382,6 @@ updateUndeliveredEmail.p3 = This will be the only email address we use for:
 updateUndeliveredEmail.p3.list1 = updates on changes to the Customs Declaration Service
 updateUndeliveredEmail.p3.list2 = urgent updates about goods in customs
 updateUndeliveredEmail.p3.list3 = some financial notifications, including Direct Debit notices and VAT
-
-
 
 become-admin.title=Do you want to become the administrator for {0}
 become-admin.hint=As undertaking administrator, the business EORI number {0} will be responsible for reporting de minimis aid (less Customs Duty waivers) payments received by all businesses which are part of this single undertaking.
