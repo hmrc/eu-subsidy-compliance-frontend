@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 
 @this(
@@ -30,11 +31,10 @@
     govukSummaryList : GovukSummaryList
 )
 
-
 @(name: UndertakingName, eori: EORI, sector: Sector, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
+@key = @{"undertaking.cya"})
 @layout(
-    pageTitle = Some(messages("undertaking.cya.title")),
+    pageTitle = Some(messages(s"$key.title")),
     backLinkEnabled = true,
     backLink = Some(previous)
 ) {
@@ -43,13 +43,13 @@
             @*TODO - this might need to be a GovukInput *@
             <input type=hidden name=cya value=true>
 
-            <h1 class="govuk-heading-l">@messages("undertaking.cya.title")</h1>
+            @H1(messages(s"$key.title"))
 
             @govukSummaryList(SummaryList(
                 rows = Seq(
                     SummaryListRow(
                         key = Key(
-                            content = Text(messages("undertaking.cya.summary-list.name.key"))
+                            content = Text(messages(s"$key.summary-list.name.key"))
                         ),
                         value = Value(
                             content = Text(name)
@@ -59,14 +59,14 @@
                                 ActionItem(
                                     href = controllers.routes.UndertakingController.getUndertakingName().toString,
                                     content = Text(messages("common.cya.change")),
-                                    visuallyHiddenText = Some(messages("undertaking.cya.change.hidden.name"))
+                                    visuallyHiddenText = Some(messages(s"$key.change.hidden.name"))
                                 )
                             )
                         ))
                     ),
                     SummaryListRow(
                         key = Key(
-                            content = Text(messages("undertaking.cya.summary-list.eori.key"))
+                            content = Text(messages(s"$key.summary-list.eori.key"))
                         ),
                         value = Value(
                             content = Text(eori)
@@ -75,7 +75,7 @@
                     ),
                     SummaryListRow(
                         key = Key(
-                            content = Text(messages("undertaking.cya.summary-list.sector.key"))
+                            content = Text(messages(s"$key.summary-list.sector.key"))
                         ),
                         value = Value(
                             content = Text(messages(s"sector.label.$sector"))
@@ -85,7 +85,7 @@
                                 ActionItem(
                                     href = controllers.routes.UndertakingController.getSector().toString,
                                     content = Text(messages("common.cya.change")),
-                                    visuallyHiddenText = Some(messages("undertaking.cya.change.hidden.industry-sector"))
+                                    visuallyHiddenText = Some(messages(s"$key.change.hidden.industry-sector"))
                                 )
                             )
                         ))
@@ -93,9 +93,9 @@
                 )
             ))
 
-            <p class="govuk-body">@messages("undertaking.cya.p")</p>
+            @P(messages(s"$key.p"))
 
-            @button("common.continue")
+            @button("common.accept")
         }
 
 }

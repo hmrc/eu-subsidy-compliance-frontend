@@ -28,21 +28,21 @@
 )
 
 @(summary: FinancialDashboardSummary)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
+@key = @{"dashboard"}
+@title = @{messages(s"$key.title",summary.overall.startYear.toString, summary.overall.endYear.toString)}
 @layout(
-    pageTitle = Some(messages("dashboard.title")),
+    pageTitle = Some(title),
     backLinkEnabled = true,
     backLink = Some(routes.AccountController.getAccountPage().url)
 ) {
 
-    <h1 class="govuk-heading-l">@messages("dashboard.title")</h1>
+    <h1 class="govuk-heading-l">@title</h1>
 
-    @H2(messages("dashboard.overall.summary.heading", summary.overall.startYear.toString, summary.overall.endYear.toString))
     @govukSummaryList(SummaryList(
         rows = Seq(
             SummaryListRow(
                 key = Key(
-                    content = Text(messages("dashboard.customs.duty.heading"))
+                    content = Text(messages(s"$key.customs.duty.heading"))
                 ),
                 value = Value(
                     content = Text(summary.overall.hmrcSubsidyTotal.toEuros)
@@ -50,7 +50,7 @@
             ),
             SummaryListRow(
                 key = Key(
-                    content = Text(messages("dashboard.de.minimis.aid.heading"))
+                    content = Text(messages(s"$key.de.minimis.aid.heading"))
                 ),
                 value = Value(
                     content = Text(summary.overall.total.toEuros)
@@ -58,15 +58,15 @@
             ),
             SummaryListRow(
                 key = Key(
-                    content = Text(messages("dashboard.total.claimed.heading"))
+                    content = Text(messages(s"$key.total.claimed.heading"))
                 ),
                 value = Value(
                     content = Text(summary.overall.total.toEuros)
-                    )
+                )
             ),
             SummaryListRow(
                 key = Key(
-                    content = Text(messages("dashboard.sector.cap.heading", messages("dashboard.sector.name." + summary.overall.sector)))
+                    content = Text(messages(s"$key.sector.cap.heading", messages("dashboard.sector.name." + summary.overall.sector)))
                 ),
                 value = Value(
                     content = Text(summary.overall.sectorCap.toEuros)
@@ -74,7 +74,7 @@
             ),
             SummaryListRow(
                 key = Key(
-                    content = Text(messages("dashboard.allowance.remaining.heading"))
+                    content = Text(messages(s"$key.allowance.remaining.heading"))
                 ),
                 value = Value(
                     content = Text(summary.overall.allowanceRemaining.toEuros)
@@ -82,14 +82,15 @@
             )
         )
     ))
-    
+  <br>
+
     @for(taxYear <- summary.taxYears) {
         @H2(messages("dashboard.year.summary.heading", taxYear.startYear.toString, taxYear.endYear.toString))
         @govukSummaryList(SummaryList(
             rows = Seq(
                 SummaryListRow(
                     key = Key(
-                    content = Text(messages("dashboard.customs.duty.heading"))
+                    content = Text(messages(s"$key.customs.duty.heading"))
                     ),
                     value = Value(
                     content = Text(taxYear.hmrcSubsidyTotal.toEuros)
@@ -97,7 +98,7 @@
                 ),
                 SummaryListRow(
                     key = Key(
-                    content = Text(messages("dashboard.de.minimis.aid.heading"))
+                    content = Text(messages(s"$key.de.minimis.aid.heading"))
                     ),
                     value = Value(
                     content = Text(taxYear.nonHmrcSubsidyTotal.toEuros)
@@ -105,14 +106,14 @@
                 ),
                 SummaryListRow(
                     key = Key(
-                    content = Text(messages("dashboard.total.claimed.heading"))
+                    content = Text(messages(s"$key.total.claimed.heading"))
                     ),
                     value = Value(
                     content = Text(taxYear.total.toEuros)
                     )
                 )
             )
-        ))
+        ))<br>
     }
 
     <div><a href="@controllers.routes.AccountController.getAccountPage().url" class="govuk-link">@messages("common.go-account-home")</a></div>
