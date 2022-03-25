@@ -94,7 +94,7 @@ class UndertakingController @Inject() (
             errors => BadRequest(undertakingNamePage(errors, journey.previous)).toFuture,
             success = form => {
               for {
-                updatedUndertakingJourney <- store.update[UndertakingJourney](updateUndertakingName(form))
+                updatedUndertakingJourney <- store.update2[UndertakingJourney](updateUndertakingName(form))
                 redirect <- updatedUndertakingJourney.next
               } yield redirect
             }
@@ -137,7 +137,7 @@ class UndertakingController @Inject() (
           },
           form =>
             for {
-              updatedUndertakingJourney <- store.update[UndertakingJourney](updateUndertakingSector(form))
+              updatedUndertakingJourney <- store.update2[UndertakingJourney](updateUndertakingSector(form))
               redirect <- updatedUndertakingJourney.next
             } yield redirect
         )
@@ -165,7 +165,7 @@ class UndertakingController @Inject() (
         _ => throw new IllegalStateException("value hard-coded, form hacking?"),
         form => {
           val result = for {
-            updatedJourney <- store.update[UndertakingJourney](updateUndertakingCYA(form)).toContext
+            updatedJourney <- store.update2[UndertakingJourney](updateUndertakingCYA(form)).toContext
             undertakingName <- updatedJourney.name.value.toContext
             undertakingSector <- updatedJourney.sector.value.toContext
             undertaking = Undertaking(
@@ -220,7 +220,7 @@ class UndertakingController @Inject() (
         _ => throw new IllegalStateException("value hard-coded, form hacking?"),
         form =>
           store
-            .update[UndertakingJourney](updateUndertakingConfirmation(form))
+            .update2[UndertakingJourney](updateUndertakingConfirmation(form))
             .map { _ =>
               Redirect(routes.BusinessEntityController.getAddBusinessEntity())
             }
@@ -249,7 +249,7 @@ class UndertakingController @Inject() (
   }
 
   private def updateIsAmendState(value: Boolean)(implicit e: EORI): Future[UndertakingJourney] =
-    store.update[UndertakingJourney](jo => jo.map(_.copy(isAmend = value)))
+    store.update2[UndertakingJourney](_.copy(isAmend = value))
 
   def postAmendUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
@@ -293,29 +293,17 @@ class UndertakingController @Inject() (
       case None => handleMissingSessionData("Undertaking journey")
     }
 
-  private def updateUndertakingJourney(ujOpt: Option[UndertakingJourney])(f: UndertakingJourney => UndertakingJourney) =
-    ujOpt.map(f)
-
-  def updateUndertakingName(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
-    updateUndertakingJourney(ujOpt) { journey =>
+  private def updateUndertakingName(formValues: FormValues)(journey: UndertakingJourney) =
       journey.copy(name = journey.name.copy(value = Some(formValues.value)))
-    }
 
-  def updateUndertakingSector(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
-    updateUndertakingJourney(ujOpt) { journey =>
+  private def updateUndertakingSector(formValues: FormValues)(journey: UndertakingJourney) =
       journey.copy(sector = journey.sector.copy(value = Some(Sector(formValues.value.toInt))))
-    }
 
-  def updateUndertakingCYA(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
-    updateUndertakingJourney(ujOpt) { journey =>
+  private def updateUndertakingCYA(formValues: FormValues)(journey: UndertakingJourney) =
       journey.copy(cya = journey.cya.copy(value = Some(formValues.value.toBoolean)))
-    }
 
-  def updateUndertakingConfirmation(formValues: FormValues)(ujOpt: Option[UndertakingJourney]) =
-    updateUndertakingJourney(ujOpt) { journey =>
+  private def updateUndertakingConfirmation(formValues: FormValues)(journey: UndertakingJourney) =
       journey.copy(confirmation = journey.confirmation.copy(value = Some(formValues.value.toBoolean)))
-
-    }
 
   private val undertakingNameForm: Form[FormValues] = Form(
     mapping("undertakingName" -> mandatory("undertakingName"))(FormValues.apply)(FormValues.unapply).verifying(
