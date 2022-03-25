@@ -28,7 +28,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.VerifiedEm
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import utils.CommonTestData._
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

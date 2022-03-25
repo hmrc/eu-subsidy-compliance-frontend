@@ -24,7 +24,7 @@ import play.api.Configuration
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.RetrieveEmailConnectorImpl
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import utils.CommonTestData.{eori1}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

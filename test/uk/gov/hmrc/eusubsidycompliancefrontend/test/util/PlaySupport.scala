@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package uk.gov.hmrc.eusubsidycompliancefrontend.test.util
 
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.BeforeAndAfterAll
@@ -29,7 +29,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.TestMessagesApiProvid
 
 import scala.reflect.ClassTag
 
-// TODO - move this into test.util
 trait PlaySupport extends AnyWordSpec with Matchers with BeforeAndAfterAll with MockFactory {
 
   implicit val lang: Lang = Lang("en")

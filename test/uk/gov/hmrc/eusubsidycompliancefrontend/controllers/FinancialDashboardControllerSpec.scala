@@ -33,7 +33,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.CommonTestData.{undertaking, undertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{undertaking, undertakingSubsidies}
 
 import java.time.LocalDate
 

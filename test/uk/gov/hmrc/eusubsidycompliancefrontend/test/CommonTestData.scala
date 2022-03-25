@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package utils
+package uk.gov.hmrc.eusubsidycompliancefrontend.test
 
 import cats.implicits.catsSyntaxOptionId
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{DeclarationID, EORI, EisSubsidyAmendmentType, IndustrySectorLimit, Sector, SubsidyAmount, SubsidyRef, TaxType, TraderRef, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessCyaFormPage, AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
@@ -55,7 +55,7 @@ object CommonTestData {
 
   val subsidyAmount = SubsidyAmount(BigDecimal(123.45))
 
-  val declarationId   = DeclarationID("12345")
+  val declarationId = DeclarationID("12345")
 
   val traderRef = TraderRef("SomeTraderReference")
 

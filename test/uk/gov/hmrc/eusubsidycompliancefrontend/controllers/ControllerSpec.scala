@@ -24,7 +24,7 @@ import play.api.i18n._
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
 import play.api._
-import utils.PlaySupport
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.PlaySupport
 
 import scala.concurrent.Future
 

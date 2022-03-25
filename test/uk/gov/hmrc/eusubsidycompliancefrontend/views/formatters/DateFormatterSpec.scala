@@ -22,7 +22,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
-import utils.CommonTestData.fixedDate
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.fixedDate
 
 class DateFormatterSpec extends AnyWordSpecLike with MockitoSugar with Matchers {
 

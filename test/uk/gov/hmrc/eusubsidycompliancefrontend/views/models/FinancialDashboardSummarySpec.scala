@@ -21,7 +21,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.{agriculture, aquaculture, other, transport}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{IndustrySectorLimit, Sector, SubsidyAmount}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
-import utils.CommonTestData.{hmrcSubsidy, nonHmrcSubsidy, undertaking, undertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{hmrcSubsidy, nonHmrcSubsidy, undertaking, undertakingSubsidies}
 
 import java.time.LocalDate
 

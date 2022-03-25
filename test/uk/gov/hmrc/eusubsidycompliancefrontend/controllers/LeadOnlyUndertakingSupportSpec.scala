@@ -33,7 +33,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.CommonTestData.{eori1, eori3, undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, eori3, undertaking}
 
 import scala.concurrent.{ExecutionContext, Future}
 

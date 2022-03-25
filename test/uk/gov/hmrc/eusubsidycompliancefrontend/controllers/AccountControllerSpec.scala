@@ -31,7 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, 
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.CommonTestData.{undertaking, _}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{undertaking, _}
 
 import java.time.LocalDate
 import scala.concurrent.Future
