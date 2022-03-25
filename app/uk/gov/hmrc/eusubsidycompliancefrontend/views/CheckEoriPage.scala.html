@@ -29,12 +29,12 @@
 
 
 @(form: Form[_], eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
+@key = @{"eoricheck"}
+@title = @{messages(s"$key.title", eori)}
 @layout(
-    pageTitle = Some(messages("eoricheck.title")),
+    pageTitle = Some(title),
     hasErrors = form.hasErrors
 ) {
-
 
     @formHelper(action = controllers.routes.EligibilityController.postEoriCheck) {
         @form.errors.map { err =>
@@ -49,26 +49,22 @@
             ))
         }
 
-        <h1 class="govuk-heading-xl">@messages("eoricheck.title")</h1>
-        <h2 class="govuk-heading-m">@eori</h2>
-
-
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("eoricheck.error.required"))
+                content = Text(messages(s"$key.error.required"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("eoricheck.title")),
-                    classes = "govuk-visually-hidden",
-                    isPageHeading = false
+                    content = Text(title),
+                    classes = "govuk-fieldset__legend--xl",
+                    isPageHeading = true
                 ))
             )),
             hint = Some(Hint(
-                content = Text("This is the EORI number that is registered to your Government Gateway ID.")
+                content = Text(messages(s"$key.hint"))
             )),
-            idPrefix = Some("eoricheck"),
-            name = "eoricheck",
+            idPrefix = Some(key),
+            name = key,
             items = Seq(
                 RadioItem(
                     content = Text(messages("common.yes")),

@@ -758,7 +758,7 @@ class EligibilityControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("eoricheck.title"),
+            messageFromMessageKey("eoricheck.title", eori1),
             { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
 
@@ -825,7 +825,7 @@ class EligibilityControllerSpec
           }
           checkFormErrorIsDisplayed(
             performAction(),
-            messageFromMessageKey("eoricheck.title"),
+            messageFromMessageKey("eoricheck.title", eori1),
             messageFromMessageKey("eoricheck.error.required")
           )
         }
