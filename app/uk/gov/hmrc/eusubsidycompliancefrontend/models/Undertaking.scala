@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-import play.api.libs.json.{Json, OFormat}
+import cats.implicits.catsSyntaxOptionId
+import play.api.libs.functional.syntax.toFunctionalBuilderOps
+import play.api.libs.json.{JsObject, JsResult, JsSuccess, JsValue, Json, OFormat}
 
 import java.time.LocalDate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
@@ -56,4 +58,29 @@ case class Undertaking(
 
 object Undertaking {
   implicit val undertakingFormat: OFormat[Undertaking] = Json.format[Undertaking]
+  implicit val undertakingOptFormat: OFormat[Option[Undertaking]] = new OFormat[Option[Undertaking]] {
+    override def reads(json: JsValue): JsResult[Option[Undertaking]] =
+      (json \ "name")
+        .validateOpt[UndertakingName]
+        .flatMap {
+          case Some(_) =>
+            JsSuccess(
+              Undertaking(
+                (json \ "reference").asOpt[UndertakingRef],
+                (json \ "name").as[UndertakingName],
+                (json \ "industrySector").as[Sector],
+                (json \ "industrySectorLimit").asOpt[IndustrySectorLimit],
+                (json \ "lastSubsidyUsageUpdt").asOpt[LocalDate],
+                (json \ "undertakingBusinessEntity").as[List[BusinessEntity]]
+              ).some
+            )
+
+          case None => JsSuccess(None)
+        }
+
+    override def writes(o: Option[Undertaking]): JsObject = o match {
+      case Some(u) => Json.writes[Undertaking].writes(u)
+      case None => JsObject.empty
+    }
+  }
 }

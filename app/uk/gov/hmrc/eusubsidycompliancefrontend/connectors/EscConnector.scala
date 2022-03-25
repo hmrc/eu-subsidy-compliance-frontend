@@ -66,9 +66,8 @@ class EscConnector @Inject() (
     http
       .GET[HttpResponse](s"$escURL/$retrieveUndertakingPath$eori")
       .map(Right(_))
-      .recover {
-        case _: NotFoundException => Right(HttpResponse(NOT_FOUND, ""))
-        case ex => Left(ConnectorError(ex))
+      .recover { case ex =>
+        Left(ConnectorError(ex))
       }
 
   def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit

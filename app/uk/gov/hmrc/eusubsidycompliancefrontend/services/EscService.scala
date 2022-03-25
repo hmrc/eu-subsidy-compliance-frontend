@@ -55,17 +55,16 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
       case Left(_) => Right(None)
       case Right(value) =>
         value.status match {
-          case NOT_FOUND => Right(None)
           case NOT_ACCEPTABLE =>
             value
               .parseJSON[UpstreamErrorResponse]
               .fold(_ => sys.error("Error in parsing Upstream Error Response"), Left(_))
           case OK =>
             value
-              .parseJSON[Undertaking]
+              .parseJSON[Option[Undertaking]]
               .fold(
                 _ => sys.error(" Error in parsing undertaking"),
-                undertaking => Right(undertaking.some)
+                undertaking => Right(undertaking)
               )
         }
     }
