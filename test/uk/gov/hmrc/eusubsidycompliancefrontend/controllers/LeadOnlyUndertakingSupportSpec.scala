@@ -31,10 +31,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaki
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures.eori
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import utils.CommonTestData.{eori3, undertaking}
+import utils.CommonTestData.{eori1, eori3, undertaking}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -54,16 +53,16 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
     "invoke the function" when {
 
       def runTest() = {
-        val fakeRequest = authorisedRequestForEori(eori)
+        val fakeRequest = authorisedRequestForEori(eori1)
         val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
         status(result) shouldBe OK
       }
 
       "called with a request from a lead undertaking user where the cache is empty" in {
         inSequence {
-          mockGet[Undertaking](eori)(Right(Option.empty))
-          mockRetrieveUndertaking(eori)(undertaking.some.toFuture)
-          mockPut(undertaking, eori)(Right(undertaking))
+          mockGet[Undertaking](eori1)(Right(Option.empty))
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          mockPut(undertaking, eori1)(Right(undertaking))
         }
 
         runTest()
@@ -71,7 +70,7 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
 
       "called with a request from a lead undertaking user where the undertaking is cached" in {
         inSequence {
-          mockGet[Undertaking](eori)(Right(undertaking.some))
+          mockGet[Undertaking](eori1)(Right(undertaking.some))
         }
 
         runTest()
@@ -96,11 +95,11 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
 
       "no undertaking could be found for the eori associated with the request" in {
         inSequence {
-          mockGet[Undertaking](eori)(Right(Option.empty))
-          mockRetrieveUndertaking(eori)(Option.empty.toFuture)
+          mockGet[Undertaking](eori1)(Right(Option.empty))
+          mockRetrieveUndertaking(eori1)(Option.empty.toFuture)
         }
 
-        val fakeRequest = authorisedRequestForEori(eori)
+        val fakeRequest = authorisedRequestForEori(eori1)
 
         val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
 
@@ -112,7 +111,7 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
     "throw an error" when {
 
       def runTest() = {
-        val fakeRequest = authorisedRequestForEori(eori)
+        val fakeRequest = authorisedRequestForEori(eori1)
 
         val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
 
@@ -121,7 +120,7 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
 
       "an error occurred retrieving the undertaking from the cache" in {
         inSequence {
-          mockGet[Undertaking](eori)(Left(ConnectorError("Error")))
+          mockGet[Undertaking](eori1)(Left(ConnectorError("Error")))
         }
 
         runTest()
@@ -129,8 +128,8 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
 
       "an error occurred retrieving the undertaking from the backend" in {
         inSequence {
-          mockGet[Undertaking](eori)(Right(Option.empty))
-          mockRetrieveUndertaking(eori)(Future.failed(new RuntimeException("Some error")))
+          mockGet[Undertaking](eori1)(Right(Option.empty))
+          mockRetrieveUndertaking(eori1)(Future.failed(new RuntimeException("Some error")))
         }
 
         runTest()

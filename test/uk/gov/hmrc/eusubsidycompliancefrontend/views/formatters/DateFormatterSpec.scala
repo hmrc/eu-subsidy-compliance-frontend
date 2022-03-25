@@ -22,7 +22,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures.date
+import utils.CommonTestData.fixedDate
 
 class DateFormatterSpec extends AnyWordSpecLike with MockitoSugar with Matchers {
 
@@ -32,14 +32,14 @@ class DateFormatterSpec extends AnyWordSpecLike with MockitoSugar with Matchers 
       "return a correctly formatted date string" in {
         // Using mockito since scalamock doesn't seem able to handle the apply methods on the Messages trait.
         val mockMessages = mockMessagesFor("date.1", "January")
-        DateFormatter.govDisplayFormat(date)(mockMessages) shouldBe "1 January 2022"
+        DateFormatter.govDisplayFormat(fixedDate)(mockMessages) shouldBe "20 January 2021"
       }
     }
 
     "govDisplayFormatTruncated is called" should {
       "return a correct formatted date string with truncated month name" in {
         val mockMessages = mockMessagesFor("date.truncated.1", "Jan")
-        DateFormatter.govDisplayFormatTruncated(date)(mockMessages) shouldBe "1 Jan 2022"
+        DateFormatter.govDisplayFormatTruncated(fixedDate)(mockMessages) shouldBe "20 Jan 2021"
       }
     }
   }

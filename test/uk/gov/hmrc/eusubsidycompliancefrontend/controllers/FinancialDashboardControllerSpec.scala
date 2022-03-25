@@ -15,6 +15,7 @@
  */
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers
 import play.api.http.Status
@@ -26,14 +27,13 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.SubsidyRetrieve
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures.{undertaking, undertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.CommonTestData.{undertaking, undertakingSubsidies}
 
 import java.time.LocalDate
 
@@ -67,7 +67,7 @@ class FinancialDashboardControllerSpec extends ControllerSpec
 
       "return the dashboard page for a logged in user with a valid EORI" in {
         mockAuthWithNecessaryEnrolment()
-        mockGet(eori)(Right(Some(Fixtures.undertaking)))
+        mockGet(eori)(Right(Some(undertaking)))
 
         (mockEscService.retrieveSubsidy(_: SubsidyRetrieve)(_: HeaderCarrier))
           .expects(*, *)

@@ -148,7 +148,7 @@ class SubsidyControllerSpec
               subsidyList.select("thead > tr > th:nth-child(5)").text() shouldBe "Your reference"
 
               subsidyList.select("tbody > tr > td:nth-child(1)").text() shouldBe "1 Jan 2022"
-              subsidyList.select("tbody > tr > td:nth-child(2)").text() shouldBe "€1,234.56"
+              subsidyList.select("tbody > tr > td:nth-child(2)").text() shouldBe "€123.45"
               subsidyList.select("tbody > tr > td:nth-child(3)").text() shouldBe "GB123456789012"
               subsidyList.select("tbody > tr > td:nth-child(4)").text() shouldBe "Local Authority"
               subsidyList.select("tbody > tr > td:nth-child(5)").text() shouldBe "ABC123"
@@ -214,7 +214,7 @@ class SubsidyControllerSpec
       }
 
       "redirect to the next page" when {
-        def testRedirection(input: String, nextCall: String) = {
+        def testRedirection(input: String, nextCall: String): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
