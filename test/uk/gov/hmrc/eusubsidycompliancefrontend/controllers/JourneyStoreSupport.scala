@@ -41,9 +41,17 @@ trait JourneyStoreSupport { this: MockFactory =>
       .expects(input, eori, *)
       .returning(result.fold(Future.failed, Future.successful))
 
+  @deprecated("use mockUpdate2 and rename when all usages of this method removed", "")
   def mockUpdate[A](f: Option[A] => Option[A], eori: EORI)(result: Either[ConnectorError, A]) =
     (mockJourneyStore
       .update(_: Option[A] => Option[A])(_: ClassTag[A], _: EORI, _: Format[A]))
+      .expects(*, *, eori, *)
+      .returning(result.fold(Future.failed, Future.successful))
+
+  // TODO - rename when all usages of mockUpdate have been replaced
+  def mockUpdate2[A](f: A => A, eori: EORI)(result: Either[ConnectorError, A]) =
+    (mockJourneyStore
+      .update2(_: A => A)(_: ClassTag[A], _: EORI, _: Format[A]))
       .expects(*, *, eori, *)
       .returning(result.fold(Future.failed, Future.successful))
 

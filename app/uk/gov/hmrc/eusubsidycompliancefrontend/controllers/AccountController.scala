@@ -120,7 +120,7 @@ class AccountController @Inject() (
           .orElse(store.put[NilReturnJourney](NilReturnJourney()).toContext)
         updatedJourney <-
           if (isUpdateNeededForNilJourneyCounter(nilReturnJourney))
-            store.update[NilReturnJourney](updateNilReturnCounter).toContext
+            store.update2[NilReturnJourney](updateNilReturnCounter).toContext
           else nilReturnJourney.some.toContext
         result <- Ok(
           leadAccountPage(
@@ -140,12 +140,8 @@ class AccountController @Inject() (
     } else Ok(nonLeadAccountPage(undertaking)).toFuture
   }
 
-  private def updateNilReturnJourney(nrj: Option[NilReturnJourney])(f: NilReturnJourney => NilReturnJourney) =
-    nrj.map(f)
-
-  private def updateNilReturnCounter(nrj: Option[NilReturnJourney]) = updateNilReturnJourney(nrj) { nj =>
-    nj.copy(nilReturnCounter = nj.nilReturnCounter + 1)
-  }
+  // TODO - this could be a method on the journey class itself
+  private def updateNilReturnCounter(nrj: NilReturnJourney) = nrj.copy(nilReturnCounter = nrj.nilReturnCounter + 1)
 
   //nilReturnCounter is used to track when user has moved to home account page after nil return claim
   //This counter also helps in identifying when to display the success message which should be displayed only once

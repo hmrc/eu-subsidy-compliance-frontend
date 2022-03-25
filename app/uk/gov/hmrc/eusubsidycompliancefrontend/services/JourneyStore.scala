@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 import play.api.libs.json.{Format, Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.mongo.cache.{CacheIdType, DataKey, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
@@ -66,5 +67,9 @@ class JourneyStore @Inject() (
 
   private def dataKeyForType[A](implicit ct: ClassTag[A]) = DataKey[A](ct.runtimeClass.getSimpleName)
 
+  override def update2[A: ClassTag](f: A => A)(implicit eori: EORI, format: Format[A]): Future[A] =
+    get.toContext
+      .map(f)
+      .foldF(throw new IllegalStateException("trying to update non-existent model"))(e => put(e))
 }
 
