@@ -320,7 +320,8 @@ signOut.p3 = You can check on your status next time you login.
 signOut.p4 = You have been signed out of this session.
 
 #removeYourselfBusinessEntity
-removeYourselfBusinessEntity.title = Do you wish to remove yourself from {0}?
+removeYourselfBusinessEntity.title = Do you want to remove yourself from this single undertaking?
+removeYourselfBusinessEntity.hint = Select yes to remove yourself from the single undertaking. All receipts will remain with the undertaking administrator until you join another undertaking, or create a new undertaking.
 removeYourselfBusinessEntity.error.required = Select yes if you wish to remove yourself from {0}.
 
 noClaimNotification.title = Notify HMRC that {0} has not received de minimis aid payments (less Customs Duty waivers) in the past 90 days
