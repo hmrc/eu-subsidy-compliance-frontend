@@ -36,7 +36,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
-import utils.CommonTestData._
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 import java.time.LocalDate
 import scala.collection.JavaConverters._

@@ -38,7 +38,7 @@ case class ResponseCommon(
   status: EisStatus,
   statusText: EisStatusString,
   processingDate: LocalDateTime,
-  returnParameters: Option[List[Params]] // TODO make an option
+  returnParameters: Option[List[Params]]
 )
 
 object ResponseCommon {

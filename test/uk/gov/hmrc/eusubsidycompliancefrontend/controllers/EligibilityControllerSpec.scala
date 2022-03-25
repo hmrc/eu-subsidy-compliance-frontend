@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
-import utils.CommonTestData._
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 class EligibilityControllerSpec
     extends ControllerSpec

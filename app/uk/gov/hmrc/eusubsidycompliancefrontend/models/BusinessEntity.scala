@@ -19,7 +19,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
-// TODO consider renaming... UndertakingMember might make more sense
 case class BusinessEntity(
   businessEntityIdentifier: EORI,
   leadEORI: Boolean

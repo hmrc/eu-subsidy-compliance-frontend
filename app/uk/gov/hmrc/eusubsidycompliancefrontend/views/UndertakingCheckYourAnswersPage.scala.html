@@ -40,7 +40,6 @@
 ) {
 
         @formHelper(action = controllers.routes.UndertakingController.postCheckAnswers) {
-            @*TODO - this might need to be a GovukInput *@
             <input type=hidden name=cya value=true>
 
             @H1(messages(s"$key.title"))

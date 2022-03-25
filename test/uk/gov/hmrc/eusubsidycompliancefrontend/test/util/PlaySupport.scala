@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils
+package uk.gov.hmrc.eusubsidycompliancefrontend.test.util
 
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.BeforeAndAfterAll
@@ -52,7 +52,6 @@ trait PlaySupport extends AnyWordSpec with Matchers with BeforeAndAfterAll with 
 
   lazy val appConfig: AppConfig = instanceOf[AppConfig]
 
-  // TODO - consider replacing this with running(app) { } in tests
   abstract override def beforeAll(): Unit = {
     Play.start(fakeApplication)
     super.beforeAll()

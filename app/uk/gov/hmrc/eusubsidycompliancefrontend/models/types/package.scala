@@ -104,12 +104,6 @@ package object types extends SimpleJson {
         regex = """^[a-zA-Z0-9 '&.-]{1,40}$"""
       )
 
-  type PhoneNumber = String @@ PhoneNumber.Tag
-  object PhoneNumber
-      extends RegexValidatedString(
-        regex = """.{1,24}""" // TODO we should use a sane regex here e.g. """^[0-9 +]{1,24}$""" currently using EIS'
-      )
-
   type CountryCode = String @@ CountryCode.Tag
   object CountryCode
       extends RegexValidatedString(

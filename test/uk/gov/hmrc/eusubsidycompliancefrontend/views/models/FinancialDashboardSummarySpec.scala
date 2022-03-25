@@ -20,8 +20,8 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.{agriculture, aquaculture, other, transport}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{IndustrySectorLimit, Sector, SubsidyAmount}
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.Fixtures.{hmrcSubsidy, nonHmrcSubsidy, undertaking, undertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{hmrcSubsidy, nonHmrcSubsidy, undertaking, undertakingSubsidies}
 
 import java.time.LocalDate
 
@@ -49,8 +49,8 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
           endYear = end.getYear,
           hmrcSubsidyTotal = emptyUndertakingSubsidies.hmrcSubsidyTotalEUR,
           nonHmrcSubsidyTotal = emptyUndertakingSubsidies.nonHMRCSubsidyTotalEUR,
-          sector = Sector.other,
-          sectorCap = IndustrySectorLimit(BigDecimal(200000.00))
+          sector = Sector.transport,
+          sectorCap = IndustrySectorLimit(BigDecimal(12.34))
         ),
         taxYears = Seq(2021, 2020, 2019).map { year =>
           TaxYearSummary(
@@ -85,8 +85,8 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
           endYear = end.getYear,
           hmrcSubsidyTotal = undertakingSubsidies.hmrcSubsidyTotalEUR,
           nonHmrcSubsidyTotal = undertakingSubsidies.nonHMRCSubsidyTotalEUR,
-          sector = Sector.other,
-          sectorCap = IndustrySectorLimit(BigDecimal(200000.00))
+          sector = Sector.transport,
+          sectorCap = IndustrySectorLimit(BigDecimal(12.34))
         ),
         taxYears = Seq(
           TaxYearSummary(2021, SubsidyAmount(123.45), SubsidyAmount(123.45)),

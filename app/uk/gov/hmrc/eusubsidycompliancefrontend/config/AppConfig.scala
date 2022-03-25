@@ -44,7 +44,7 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   private val signOutUrlBase: String = config.get[String]("auth.sign-out.url")
 
   def signOutUrl(continueUrl: Option[String]): String =
-    continueUrl.fold(signOutUrlBase)(continue => s"$signOutUrlBase?continue=${continue}")
+    continueUrl.fold(signOutUrlBase)(continue => s"$signOutUrlBase?continue=$continue")
 
   val timeOutContinue: String = config.get[String](s"urls.timeOutContinue")
 

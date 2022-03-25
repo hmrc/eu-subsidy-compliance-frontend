@@ -32,7 +32,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaki
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.AddEoriFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
-import utils.CommonTestData._
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 class SelectNewLeadControllerSpec
     extends ControllerSpec

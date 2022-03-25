@@ -28,7 +28,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.NilReturnJourney.Forms.N
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EscService, NilReturnJourney, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.CommonTestData.{eori1, undertaking, undertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertakingRef}
 
 import java.time.LocalDate
 import scala.concurrent.Future

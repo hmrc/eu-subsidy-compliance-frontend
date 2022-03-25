@@ -24,7 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.SendEmailConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendRequest, EmailSendResult}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import utils.CommonTestData._
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

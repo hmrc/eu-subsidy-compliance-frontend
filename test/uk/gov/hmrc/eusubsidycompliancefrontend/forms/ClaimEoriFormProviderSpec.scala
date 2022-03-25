@@ -22,7 +22,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.OptionalEORI
 import ClaimEoriFormProvider.Fields._
-import utils.CommonTestData.{eori1, undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking}
 
 class ClaimEoriFormProviderSpec extends AnyWordSpecLike with Matchers {
 

@@ -24,7 +24,7 @@ import play.api.i18n._
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
 import play.api._
-import utils.PlaySupport
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.PlaySupport
 
 import scala.concurrent.Future
 
@@ -97,7 +97,7 @@ trait ControllerSpec extends PlaySupport {
       expectedTitle,
       { doc =>
         val errorSummary = doc.select(".govuk-error-summary")
-        errorSummary.select("a").text() shouldBe formErrors(0)
+        errorSummary.select("a").text() shouldBe formErrors.head
 
         val inputErrorMessages = doc.select(".govuk-error-message").text()
         inputErrorMessages shouldBe formErrors.map(e => s"Error: $e").mkString(" ")

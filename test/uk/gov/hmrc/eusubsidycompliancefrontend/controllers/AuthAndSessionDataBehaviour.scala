@@ -21,7 +21,7 @@ import play.api.Configuration
 import play.api.mvc.Result
 import uk.gov.hmrc.auth.core.{BearerTokenExpired, Enrolment, EnrolmentIdentifier, Enrolments, InvalidBearerToken, MissingBearerToken, NoActiveSession, SessionRecordNotFound}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import utils.CommonTestData.eori4
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori4
 
 import java.net.URLEncoder
 import scala.concurrent.Future

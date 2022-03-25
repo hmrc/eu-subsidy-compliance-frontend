@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import utils.CommonTestData._
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 

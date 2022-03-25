@@ -21,7 +21,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
 import play.api.mvc.Result
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
-import utils.CommonTestData.{eori3, undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori3, undertaking}
 
 import scala.concurrent.Future
 

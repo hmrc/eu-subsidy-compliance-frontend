@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package utils
+package uk.gov.hmrc.eusubsidycompliancefrontend.test
 
 import cats.implicits.catsSyntaxOptionId
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{DeclarationID, EORI, EisSubsidyAmendmentType, IndustrySectorLimit, Sector, SubsidyAmount, SubsidyRef, TaxType, TraderRef, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessCyaFormPage, AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
@@ -52,25 +52,53 @@ object CommonTestData {
   val optionalEORI = OptionalEORI("true", eori1.some)
 
   val undertakingRef = UndertakingRef("UR123456")
-  val nonHmrcSubsidyList = List(
-    NonHmrcSubsidy(
-      subsidyUsageTransactionId = None,
-      allocationDate = LocalDate.of(2022, 1, 1),
-      submissionDate = fixedDate,
-      publicAuthority = "Local Authority".some,
-      traderReference = TraderRef("ABC123").some,
-      nonHMRCSubsidyAmtEUR = SubsidyAmount(1234.56),
-      businessEntityIdentifier = eori1.some,
-      amendmentType = EisSubsidyAmendmentType("1").some
-    )
+
+  val subsidyAmount = SubsidyAmount(BigDecimal(123.45))
+
+  val declarationId = DeclarationID("12345")
+
+  val traderRef = TraderRef("SomeTraderReference")
+
+  val hmrcSubsidy = HmrcSubsidy(
+    declarationID = declarationId,
+    issueDate = Some(fixedDate),
+    acceptanceDate = fixedDate,
+    declarantEORI = eori1,
+    consigneeEORI = eori3,
+    taxType = Some(TaxType("1")),
+    amount = Some(subsidyAmount),
+    tradersOwnRefUCR = Some(traderRef)
   )
 
+  val nonHmrcSubsidy = NonHmrcSubsidy(
+    subsidyUsageTransactionId = None,
+    allocationDate = LocalDate.of(2022, 1, 1),
+    submissionDate = fixedDate,
+    publicAuthority = "Local Authority".some,
+    traderReference = TraderRef("ABC123").some,
+    nonHMRCSubsidyAmtEUR = subsidyAmount,
+    businessEntityIdentifier = eori1.some,
+    amendmentType = EisSubsidyAmendmentType("1").some
+  )
+
+  val nonHmrcSubsidyList = List(nonHmrcSubsidy)
+
   val nonHmrcSubsidyList1 = nonHmrcSubsidyList.map(_.copy(subsidyUsageTransactionId = SubsidyRef("TID1234").some))
+
+  val undertakingSubsidies = UndertakingSubsidies(
+    undertakingIdentifier = undertakingRef,
+    nonHMRCSubsidyTotalEUR = subsidyAmount,
+    nonHMRCSubsidyTotalGBP = subsidyAmount,
+    hmrcSubsidyTotalEUR = subsidyAmount,
+    hmrcSubsidyTotalGBP = subsidyAmount,
+    nonHMRCSubsidyUsage = List(nonHmrcSubsidy),
+    hmrcSubsidyUsage = List(hmrcSubsidy)
+  )
 
   val subsidyJourney = SubsidyJourney(
     publicAuthority = PublicAuthorityFormPage("Local Authority".some),
     traderRef = TraderRefFormPage(optionalTraderRef.some),
-    claimAmount = ClaimAmountFormPage(SubsidyAmount(1234.56).some),
+    claimAmount = ClaimAmountFormPage(subsidyAmount.some),
     addClaimEori = AddClaimEoriFormPage(optionalEORI.some),
     claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some)
   )
@@ -110,16 +138,6 @@ object CommonTestData {
   val subsidyRetrieve = SubsidyRetrieve(
     undertakingRef,
     None
-  )
-
-  val undertakingSubsidies = UndertakingSubsidies(
-    undertakingIdentifier = undertakingRef,
-    nonHMRCSubsidyTotalEUR = SubsidyAmount(1234.56),
-    nonHMRCSubsidyTotalGBP = SubsidyAmount(1234.56),
-    hmrcSubsidyTotalEUR = SubsidyAmount(1234.56),
-    hmrcSubsidyTotalGBP = SubsidyAmount(1234.56),
-    nonHMRCSubsidyUsage = nonHmrcSubsidyList,
-    hmrcSubsidyUsage = List.empty
   )
 
   val undertakingSubsidies1 = undertakingSubsidies.copy(nonHMRCSubsidyUsage = nonHmrcSubsidyList1)

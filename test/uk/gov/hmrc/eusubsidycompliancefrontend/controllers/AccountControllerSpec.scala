@@ -31,7 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, 
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.CommonTestData.{undertaking, _}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{undertaking, _}
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -98,7 +98,7 @@ class AccountControllerSpec
 
         def test(undertaking: Undertaking): Unit = {
 
-          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None), 0)
+          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -167,7 +167,7 @@ class AccountControllerSpec
           dueDate: String,
           isOverdue: Boolean
         ): Unit = {
-          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None), 0)
+          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -426,7 +426,7 @@ class AccountControllerSpec
         }
 
         "there is an error in storing Business entity  journey data" in {
-          val businessEntityData = BusinessEntityJourney.fromUndertakingOpt(None)
+          val businessEntityData = BusinessEntityJourney()
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
