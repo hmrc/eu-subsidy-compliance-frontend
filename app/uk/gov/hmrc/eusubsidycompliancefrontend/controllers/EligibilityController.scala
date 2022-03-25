@@ -175,7 +175,7 @@ class EligibilityController @Inject() (
   def getTerms: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[EligibilityJourney].map { previous =>
-      Ok(termsPage(previous, eori.toString))
+      Ok(termsPage(previous, eori))
     }
   }
 

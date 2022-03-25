@@ -115,7 +115,7 @@ package object digital {
         "requestCommon" -> requestCommon,
         "requestDetail" -> Json.obj(
           "idType" -> "EORI",
-          "idValue" -> o.toString
+          "idValue" -> o
         )
       )
     )

@@ -30,7 +30,7 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
 
   private val fakeTimeProvider = FakeTimeProvider.withFixedDate(day, month, year)
 
-  private val underTest = new ClaimDateFormProvider(fakeTimeProvider)
+  private val underTest = ClaimDateFormProvider(fakeTimeProvider)
 
   "claim date form validation" must {
 

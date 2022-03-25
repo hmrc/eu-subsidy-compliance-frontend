@@ -24,7 +24,7 @@ import play.api.Configuration
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.RetrieveEmailConnectorImpl
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -54,7 +54,7 @@ class RetrieveEmailConnectorSpec
 
   "RetrieveEmailConnectorSpec" when {
     "handling request to retrieve email address by eori" must {
-      val expectedUrl = s"$protocol://$host:$port/customs-data-store/eori/${eori1.toString}/verified-email"
+      val expectedUrl = s"$protocol://$host:$port/customs-data-store/eori/${eori1}/verified-email"
 
       behave like connectorBehaviour(
         mockGet(expectedUrl)(_),

@@ -97,7 +97,7 @@ trait ControllerSpec extends PlaySupport {
       expectedTitle,
       { doc =>
         val errorSummary = doc.select(".govuk-error-summary")
-        errorSummary.select("a").text() shouldBe formErrors(0)
+        errorSummary.select("a").text() shouldBe formErrors.head
 
         val inputErrorMessages = doc.select(".govuk-error-message").text()
         inputErrorMessages shouldBe formErrors.map(e => s"Error: $e").mkString(" ")

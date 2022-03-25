@@ -41,7 +41,7 @@ class EmailTemplateHelpers @Inject() (appConfig: AppConfig) {
     messagesApi: MessagesApi
   ) = {
     val lang = getLanguage
-    appConfig.templateIdsMap(configuration, lang.code).get(inputKey).getOrElse(s"no template for $inputKey")
+    appConfig.templateIdsMap(configuration, lang.code).getOrElse(inputKey, s"no template for $inputKey")
   }
 
 }

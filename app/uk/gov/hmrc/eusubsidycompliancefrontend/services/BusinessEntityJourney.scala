@@ -46,9 +46,6 @@ object BusinessEntityJourney {
 
   implicit val format: Format[BusinessEntityJourney] = Json.format[BusinessEntityJourney]
 
-  // TODO populate the Journey[s] from the undertaking, probably need to map them by eori
-  def fromUndertakingOpt(undertakingOpt: Option[Undertaking]): BusinessEntityJourney = BusinessEntityJourney()
-
   def businessEntityJourneyForEori(undertakingOpt: Option[Undertaking], eori: EORI): BusinessEntityJourney =
     undertakingOpt.fold(BusinessEntityJourney()) { _ =>
       BusinessEntityJourney(
