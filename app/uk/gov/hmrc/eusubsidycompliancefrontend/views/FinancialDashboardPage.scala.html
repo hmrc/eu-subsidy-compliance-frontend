@@ -37,39 +37,52 @@
 
     <h1 class="govuk-heading-l">@messages("dashboard.title")</h1>
 
-    <table class="govuk-table">
-        <caption class="govuk-table__caption govuk-table__caption--m">
-            @messages("dashboard.overall.summary.heading", summary.overall.startYear.toString, summary.overall.endYear.toString)
-        </caption>
-        <tbody class="govuk-table__body">
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header" colspan="3">@messages("dashboard.customs.duty.heading")</th>
-            </tr>
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell" colspan="3">@summary.overall.hmrcSubsidyTotal.toEuros</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header" colspan="3">@messages("dashboard.de.minimis.aid.heading")</th>
-            </tr>
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell" colspan="3">@summary.overall.total.toEuros</td>
-            </tr>
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">@messages("dashboard.total.claimed.heading")</th>
-                <th scope="row" class="govuk-table__header">
-                    @messages("dashboard.sector.cap.heading", messages("dashboard.sector.name." + summary.overall.sector))
-                </th>
-                <th scope="row" class="govuk-table__header">@messages("dashboard.allowance.remaining.heading")</th>
-                <td class="govuk-table__cell"></td>
-            </tr>
-            <tr class="govuk-table__row">
-                <td class="govuk-table__cell">@summary.overall.total.toEuros</td>
-                <td class="govuk-table__cell">@summary.overall.sectorCap.toEuros</td>
-                <td class="govuk-table__cell">@summary.overall.allowanceRemaining.toEuros</td>
-            </tr>
-        </tbody>
-    </table>
-
+    @H2(messages("dashboard.overall.summary.heading", summary.overall.startYear.toString, summary.overall.endYear.toString))
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages("dashboard.customs.duty.heading"))
+                ),
+                value = Value(
+                    content = Text(summary.overall.hmrcSubsidyTotal.toEuros)
+                )
+            ),
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages("dashboard.de.minimis.aid.heading"))
+                ),
+                value = Value(
+                    content = Text(summary.overall.total.toEuros)
+                )
+            ),
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages("dashboard.total.claimed.heading"))
+                ),
+                value = Value(
+                    content = Text(summary.overall.total.toEuros)
+                    )
+            ),
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages("dashboard.sector.cap.heading", messages("dashboard.sector.name." + summary.overall.sector)))
+                ),
+                value = Value(
+                    content = Text(summary.overall.sectorCap.toEuros)
+                )
+            ),
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages("dashboard.allowance.remaining.heading"))
+                ),
+                value = Value(
+                    content = Text(summary.overall.allowanceRemaining.toEuros)
+                )
+            )
+        )
+    ))
+    
     @for(taxYear <- summary.taxYears) {
         @H2(messages("dashboard.year.summary.heading", taxYear.startYear.toString, taxYear.endYear.toString))
         @govukSummaryList(SummaryList(
