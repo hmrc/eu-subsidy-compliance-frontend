@@ -102,8 +102,9 @@ eligibilityTerms.p3=It is the responsibility of the undertaking administrator to
 eligibilityTerms.p4=If you do not agree to these terms and conditions, you should <a href="{0}" class="govuk-link">sign out</a> now.
 
 
-eoricheck.title=Is this the EORI number you want to register?
-eoricheck.error.required=Select yes if this is the EORI number you want to register
+eoricheck.title = Is {0} the EORI number you want to register?
+eoricheck.hint = This is the EORI number that is registered to your Government Gateway ID.
+eoricheck.error.required = Select yes if this is the EORI number you want to register
 
 incorrectEori.title=Your EORI and Government Gateway ID do not match
 incorrectEori.p1-1=Please
