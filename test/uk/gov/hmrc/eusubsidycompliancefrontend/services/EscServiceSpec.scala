@@ -198,22 +198,8 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
 
       "return an error" when {
 
-        "the http response doesn't come back with status 200(created)" in {
-          mockRetrieveUndertaking(eori1)(Right(HttpResponse(ACCEPTED, undertakingJson, emptyHeaders)))
-          val result = service.retrieveUndertaking(eori1)
-          assertThrows[RuntimeException](await(result))
-        }
-
         "there is no json in the response, with status OK" in {
           mockRetrieveUndertaking(eori1)(Right(HttpResponse(OK, "hi")))
-          val result = service.retrieveUndertaking(eori1)
-          assertThrows[RuntimeException](await(result))
-        }
-
-        "the json in the response can't be parsed, with status 200(OK)" in {
-          val json = Json.parse("""{ "a" : 1 }""")
-
-          mockRetrieveUndertaking(eori1)(Right(HttpResponse(OK, json, emptyHeaders)))
           val result = service.retrieveUndertaking(eori1)
           assertThrows[RuntimeException](await(result))
         }

@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
+import cats.implicits.{catsSyntaxEq}
 import com.google.inject.{Inject, Singleton}
-import play.api.http.Status.{NOT_ACCEPTABLE, NOT_FOUND, OK}
+import play.api.http.Status.{NOT_ACCEPTABLE, OK}
 import play.api.libs.json.{JsResult, JsSuccess, JsValue, Reads}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
@@ -66,6 +66,8 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
                 _ => sys.error(" Error in parsing undertaking"),
                 undertaking => Right(undertaking)
               )
+
+          case _ => Right(None)
         }
     }
 
