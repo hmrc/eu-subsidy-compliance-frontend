@@ -178,12 +178,11 @@ class BecomeLeadControllerSpec
 
         "call to update new lead journey fails" in {
 
-          def update(newLeadJourneyOpt: Option[BecomeLeadJourney]) =
-            newLeadJourneyOpt.map(_.copy(becomeLeadEori = BecomeLeadEoriFormPage()))
+          def update(j: BecomeLeadJourney) = j.copy(becomeLeadEori = BecomeLeadEoriFormPage())
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney().some), eori1)(Left(ConnectorError(exception)))
+            mockUpdate2[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("becomeAdmin" -> "true")))
         }
@@ -213,24 +212,22 @@ class BecomeLeadControllerSpec
       "Successful" when {
         "redirect to accept when user submits true" in {
 
-          def update(newLeadJourneyOpt: Option[BecomeLeadJourney]) =
-            newLeadJourneyOpt.map(_.copy(becomeLeadEori = BecomeLeadEoriFormPage()))
+          def update(j: BecomeLeadJourney) = j.copy(becomeLeadEori = BecomeLeadEoriFormPage())
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney().some), eori1)(Right(newBecomeLeadJourney))
+            mockUpdate2[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
           }
           redirectLocation(performAction("becomeAdmin" -> "true")) shouldBe Some(routes.BecomeLeadController.getAcceptPromotionTerms().url)
         }
 
         "redirect to account homepage when user submits false" in {
 
-          def update(newLeadJourneyOpt: Option[BecomeLeadJourney]) =
-            newLeadJourneyOpt.map(_.copy(becomeLeadEori = BecomeLeadEoriFormPage()))
+          def update(j: BecomeLeadJourney) = j.copy(becomeLeadEori = BecomeLeadEoriFormPage())
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney().some), eori1)(Right(newBecomeLeadJourney))
+            mockUpdate2[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
           }
           redirectLocation(performAction("becomeAdmin" -> "false")) shouldBe Some(routes.AccountController.getAccountPage().url)
         }
@@ -526,11 +523,11 @@ class BecomeLeadControllerSpec
       "redirect" when {
 
         "redirect to promotion confirmation on success" in {
-          def update(newLeadJourneyOpt: Option[BecomeLeadJourney]) =
-            newLeadJourneyOpt.map(_.copy(becomeLeadEori = BecomeLeadEoriFormPage()))
+          def update(j: BecomeLeadJourney) = j.copy(becomeLeadEori = BecomeLeadEoriFormPage())
+
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney().some), eori1)(Right(newBecomeLeadJourney))
+            mockUpdate2[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
           }
           redirectLocation(performAction()) shouldBe routes.BecomeLeadController.getPromotionConfirmation().url.some
         }
@@ -545,11 +542,11 @@ class BecomeLeadControllerSpec
       "redirect" when {
 
         "redirect to promotion confirmation on success" in {
-          def update(newLeadJourneyOpt: Option[BecomeLeadJourney]) =
-            newLeadJourneyOpt.map(_.copy(becomeLeadEori = BecomeLeadEoriFormPage()))
+          def update(j: BecomeLeadJourney) = j.copy(becomeLeadEori = BecomeLeadEoriFormPage())
+
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney().some), eori1)(Right(newBecomeLeadJourney))
+            mockUpdate2[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
           }
           redirectLocation(performAction()) shouldBe routes.AccountController.getAccountPage().url.some
         }
