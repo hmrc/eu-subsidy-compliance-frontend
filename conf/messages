@@ -254,7 +254,7 @@ add-claim-amount.error.real = Enter number value of subsidy allocated in Euros, 
 
 add-claim-date.title=What date were you awarded the payment?
 add-claim-date.hint=For example, 27 07 2020
-add-claim-date.error.date.emptyfields=Enter a real date, like 23 11 2019
+add-claim-date.error.date.emptyfields=Enter the date you were awarded the payment
 add-claim-date.error.day.missing=The date you received your payment must include a day, like 23 11 2019
 add-claim-date.error.day-and-month.missing=The date you received your payment must include a day and month, like 23 11 2019
 add-claim-date.error.day-and-year.missing=The date you received your payment must include a day and year, like 23 11 2019
