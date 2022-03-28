@@ -396,8 +396,8 @@ become-admin-tandc.p4=EORI number {0} will be the administrator for this single 
 become-admin-tandc.h2-3=Declaration
 become-admin-tandc.p5=I agree to the terms and conditions.
 
-become-admin-confirmation.title=You have requested to become the administrator for this single undertaking
+become-admin-confirmation.title=You have asked to become the administrator for this single undertaking
 become-admin-confirmation.h2=What happens next
 become-admin-confirmation.p1=We have sent you a confirmation email.
-become-admin-confirmation.p2=The current lead (EORI number {0}) has been emailed with your request. If you do not receive a response within 7 days, please contact HMRC 
+become-admin-confirmation.p2=The current administrator (EORI number {0}) has been emailed with your request. If you do not receive a response within 7 days, please contact HMRC
 
