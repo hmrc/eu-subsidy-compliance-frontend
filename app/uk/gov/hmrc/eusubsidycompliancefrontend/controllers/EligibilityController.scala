@@ -82,7 +82,7 @@ class EligibilityController @Inject() (
       .bindFromRequest()
       .fold(
         errors => Future.successful(BadRequest(checkEoriPage(errors, eori))),
-        form => store.update[EligibilityJourney](updateEoriCheck(form.value.toBoolean)).flatMap(_.next)
+        form => store.update2[EligibilityJourney](updateEoriCheck(form.value.toBoolean)).flatMap(_.next)
       )
 
   }
@@ -107,7 +107,7 @@ class EligibilityController @Inject() (
         .bindFromRequest()
         .fold(
           errors => Future.successful(BadRequest(customsWaiversPage(errors, previous))),
-          form => store.update[EligibilityJourney](updateCustomWaiver(form.value.toBoolean)).flatMap(_.next)
+          form => store.update2[EligibilityJourney](updateCustomWaiver(form.value.toBoolean)).flatMap(_.next)
         )
     }
   }
@@ -132,7 +132,7 @@ class EligibilityController @Inject() (
         .bindFromRequest()
         .fold(
           errors => Future.successful(BadRequest(willYouClaimPage(errors, previous))),
-          form => store.update[EligibilityJourney](updateWillYouClaim(form.value.toBoolean)).flatMap(_.next)
+          form => store.update2[EligibilityJourney](updateWillYouClaim(form.value.toBoolean)).flatMap(_.next)
         )
     }
   }
@@ -163,7 +163,7 @@ class EligibilityController @Inject() (
           .bindFromRequest()
           .fold(
             errors => Future.successful(BadRequest(mainBusinessCheckPage(errors, eori, previous))),
-            form => store.update[EligibilityJourney](updateMainBusinessCheck(form.value.toBoolean)).flatMap(_.next)
+            form => store.update2[EligibilityJourney](updateMainBusinessCheck(form.value.toBoolean)).flatMap(_.next)
           )
       }
   }
@@ -186,7 +186,7 @@ class EligibilityController @Inject() (
       .fold(
         _ => throw new IllegalStateException("value hard-coded, form hacking?"),
         form =>
-          store.update[EligibilityJourney](updateAcceptTerms(form.value.toBoolean)).flatMap { eligibilityJourney =>
+          store.update2[EligibilityJourney](updateAcceptTerms(form.value.toBoolean)).flatMap { eligibilityJourney =>
             auditService.sendEvent(TermsAndConditionsAccepted(eori))
             eligibilityJourney.next
           }
@@ -212,47 +212,30 @@ class EligibilityController @Inject() (
       .fold(
         _ => throw new IllegalStateException("value hard-coded, form hacking?"),
         form =>
-          store.update[EligibilityJourney](updateCreateUndertaking(form.value.toBoolean)).map { _ =>
+          store.update2[EligibilityJourney](updateCreateUndertaking(form.value.toBoolean)).map { _ =>
             Redirect(routes.UndertakingController.getUndertakingName())
           }
       )
   }
 
-  private def updateEligibilityJourney(eligibilityJourneyOpt: Option[EligibilityJourney])(
-    f: EligibilityJourney => EligibilityJourney
-  ) = eligibilityJourneyOpt.map(f)
-
-  def updateWillYouClaim(newWillYouClaim: Boolean)(eligibilityJourneyOpt: Option[EligibilityJourney]) =
-    updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
+  // TODO - move these update methods into the Journey itself. They don't really belong here.
+  def updateWillYouClaim(newWillYouClaim: Boolean)(ej: EligibilityJourney) =
       ej.copy(willYouClaim = ej.willYouClaim.copy(value = Some(newWillYouClaim)))
-    }
 
-  def updateCustomWaiver(newCustomWaiver: Boolean)(eligibilityJourneyOpt: Option[EligibilityJourney]) =
-    updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
+  def updateCustomWaiver(newCustomWaiver: Boolean)(ej: EligibilityJourney) =
       ej.copy(customsWaivers = ej.customsWaivers.copy(value = Some(newCustomWaiver)))
-    }
 
-  def updateMainBusinessCheck(
-    newMainBusinessCheck: Boolean
-  )(eligibilityJourneyOpt: Option[EligibilityJourney]) = updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
+  def updateMainBusinessCheck(newMainBusinessCheck: Boolean)(ej: EligibilityJourney) =
     ej.copy(mainBusinessCheck = ej.mainBusinessCheck.copy(value = Some(newMainBusinessCheck)))
-  }
 
-  def updateAcceptTerms(newAcceptTerms: Boolean)(eligibilityJourneyOpt: Option[EligibilityJourney]) =
-    updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
+  def updateAcceptTerms(newAcceptTerms: Boolean)(ej: EligibilityJourney) =
       ej.copy(acceptTerms = ej.acceptTerms.copy(value = Some(newAcceptTerms)))
-    }
 
-  def updateEoriCheck(newEoriCheck: Boolean)(eligibilityJourneyOpt: Option[EligibilityJourney]) =
-    updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
-      ej.copy(eoriCheck = ej.eoriCheck.copy(value = Some(newEoriCheck)))
-    }
+  def updateEoriCheck(newEoriCheck: Boolean)(ej: EligibilityJourney) =
+    ej.copy(eoriCheck = ej.eoriCheck.copy(value = Some(newEoriCheck)))
 
-  def updateCreateUndertaking(
-    newCreateUndertaking: Boolean
-  )(eligibilityJourneyOpt: Option[EligibilityJourney]) = updateEligibilityJourney(eligibilityJourneyOpt) { ej =>
+  def updateCreateUndertaking(newCreateUndertaking: Boolean)(ej: EligibilityJourney) =
     ej.copy(createUndertaking = ej.createUndertaking.copy(value = Some(newCreateUndertaking)))
-  }
 
   lazy val customsWaiversForm: Form[FormValues] = Form(
     mapping("customswaivers" -> mandatory("customswaivers"))(FormValues.apply)(FormValues.unapply)

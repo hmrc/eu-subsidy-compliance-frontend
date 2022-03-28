@@ -293,6 +293,7 @@ class UndertakingController @Inject() (
       case None => handleMissingSessionData("Undertaking journey")
     }
 
+  // TODO - move these onto hte undertaking journey - they don't really belong here
   private def updateUndertakingName(formValues: FormValues)(journey: UndertakingJourney) =
       journey.copy(name = journey.name.copy(value = Some(formValues.value)))
 
