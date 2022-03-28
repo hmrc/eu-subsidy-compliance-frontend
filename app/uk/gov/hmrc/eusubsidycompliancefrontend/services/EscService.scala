@@ -25,7 +25,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRe
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
-import EscService.reads
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -57,9 +56,7 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
         value.status match {
           case NOT_FOUND => Right(None)
           case NOT_ACCEPTABLE =>
-            value
-              .parseJSON[UpstreamErrorResponse]
-              .fold(_ => sys.error("Error in parsing Upstream Error Response"), Left(_))
+            Left(UpstreamErrorResponse(s"EORI $eori does not exist in ETMP", NOT_ACCEPTABLE))
           case OK =>
             value
               .parseJSON[Undertaking]
@@ -67,6 +64,8 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
                 _ => sys.error(" Error in parsing undertaking"),
                 undertaking => Right(undertaking.some)
               )
+
+          case _ => Right(None)
         }
     }
 

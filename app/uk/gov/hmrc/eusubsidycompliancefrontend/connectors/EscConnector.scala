@@ -17,11 +17,10 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import com.google.inject.{Inject, Singleton}
-import play.api.http.Status.NOT_FOUND
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidyAmendment}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, NotFoundException}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -66,9 +65,8 @@ class EscConnector @Inject() (
     http
       .GET[HttpResponse](s"$escURL/$retrieveUndertakingPath$eori")
       .map(Right(_))
-      .recover {
-        case _: NotFoundException => Right(HttpResponse(NOT_FOUND, ""))
-        case ex => Left(ConnectorError(ex))
+      .recover { case ex =>
+        Left(ConnectorError(ex))
       }
 
   def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
