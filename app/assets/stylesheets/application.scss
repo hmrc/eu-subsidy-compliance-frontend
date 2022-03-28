@@ -27,6 +27,10 @@ $govuk-border-colour: #b1b4b6;
   }
 }
 
+table.responsive-table td:before {
+  display: none;
+}
+
 @media
 only screen and (max-width: 760px),
 (min-device-width: 768px) and (max-device-width: 1024px) {
@@ -67,6 +71,7 @@ only screen and (max-width: 760px),
       padding-left: 40%;
 
       &:before {
+        display: block;
         font-weight: bold;
         position: absolute;
         top: 10px;
@@ -74,6 +79,10 @@ only screen and (max-width: 760px),
         width: 35%;
         padding-right: 10px;
         white-space: nowrap;
+      }
+
+      &.responsive-nopad {
+        padding-left: 0;
       }
     }
 
