@@ -45,10 +45,27 @@
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"reportPayment"}
 @title = @{messages(s"$key.title")}
+
+@responsiveTableClass = @{s"report-payment-table"}
+@date = @{s"$key.table.head.date"}
+@amount = @{s"$key.table.head.amount"}
+@eori = @{s"$key.table.head.eori"}
+@publicAuthority = @{s"$key.table.head.public-authority"}
+@ref = @{s"$key.table.head.ref"}
+
+<style>
+      table.@responsiveTableClass td:nth-of-type(1):before { content: "@{messages(date)}" }
+      table.@responsiveTableClass td:nth-of-type(2):before { content: "@{messages(amount)}" }
+      table.@responsiveTableClass td:nth-of-type(3):before { content: "@{messages(eori)}" }
+      table.@responsiveTableClass td:nth-of-type(4):before { content: "@{messages(publicAuthority)}" }
+      table.@responsiveTableClass td:nth-of-type(5):before { content: "@{messages(ref)}" }
+</style>
+
 @layout(
   pageTitle = Some(title),
   backLinkEnabled = true,
-  backLink = Some(previous)
+  backLink = Some(previous),
+  hasErrors = form.hasErrors
 ) {
 
   @formHelper(action = controllers.routes.SubsidyController.postReportPayment) {
@@ -68,6 +85,7 @@
     @if(subsidies.nonEmpty && subsidies.get.nonHMRCSubsidyUsage.nonEmpty) {
       @govukTable(
           Table(
+            classes = s"responsive-table ${responsiveTableClass}",
               attributes = Map("id" -> "subsidy-list"),
               rows = subsidies.get.nonHMRCSubsidyUsage.map { sub =>
                   Seq(
@@ -76,16 +94,22 @@
                       TableRow(content = Text(sub.businessEntityIdentifier.getOrElse(""))),
                       TableRow(content = Text(sub.publicAuthority.getOrElse(""))),
                       TableRow(content = Text(sub.traderReference.getOrElse(""))),
-                      TableRow(content = HtmlContent(s"<a class='govuk-link' href=${controllers.routes.SubsidyController.getChangeSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>Change</a>")),
-                      TableRow(content = HtmlContent(s"<a class='govuk-link' href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>Remove</a>"))
+                      TableRow(
+                          content = HtmlContent(s"<a class='govuk-link' href=${controllers.routes.SubsidyController.getChangeSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>Change</a>"),
+                          classes="responsive-nopad"
+                      ),
+                      TableRow(
+                          content = HtmlContent(s"<a class='govuk-link' href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>Remove</a>"),
+                          classes="responsive-nopad"
+                      )
                   )
               },
           head = Some(Seq(
-              HeadCell(content = Text(messages(s"$key.table.head.date"))),
-              HeadCell(content = Text(messages(s"$key.table.head.amount"))),
-              HeadCell(content = Text(messages(s"$key.table.head.eori"))),
-              HeadCell(content = Text(messages(s"$key.table.head.public-authority"))),
-              HeadCell(content = Text(messages(s"$key.table.head.ref"))),
+              HeadCell(content = Text(messages(date))),
+              HeadCell(content = Text(messages(amount))),
+              HeadCell(content = Text(messages(eori))),
+              HeadCell(content = Text(messages(publicAuthority))),
+              HeadCell(content = Text(messages(ref))),
               HeadCell(content = HtmlContent(s"""<span class='govuk-visually-hidden'>${messages("common.change")}</span>""")),
               HeadCell(content = HtmlContent(s"""<span  class='govuk-visually-hidden'>${messages("common.remove")}</span>""")),
           )),
@@ -133,5 +157,5 @@
       ))
     @button("common.continue.only")
     <div><a href="@controllers.routes.AccountController.getAccountPage().url" class="govuk-link">@messages("common.go-account-home")</a></div>
-}
+  }
 }

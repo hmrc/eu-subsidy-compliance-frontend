@@ -1,4 +1,6 @@
 @import "lib/govuk-frontend/govuk/base";
+$govuk-border-colour: #b1b4b6;
+
 
 .fixed-min-height-card {
   background-color: #f8f8f8;
@@ -24,3 +26,73 @@
     min-height: 200px;
   }
 }
+
+table.responsive-table td:before {
+  display: none;
+}
+
+@media
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px) {
+
+  /* Force table to not be like tables anymore */
+  table.responsive-table,
+  table.responsive-table thead,
+  table.responsive-table tbody,
+  table.responsive-table th,
+  table.responsive-table td,
+  table.responsive-table tr {
+    display: block;
+  }
+
+  /* Hide table headers (but not display: none;, for accessibility) */
+  table.responsive-table {
+
+    caption {
+      width: 100%;
+    }
+
+    thead tr {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+
+    tr {
+      border-bottom: 2px solid $govuk-border-colour;
+      padding-top: 10px;
+    }
+
+    td {
+      /* Behave  like a "row" */
+      border: none;
+      border-bottom: 1px solid $govuk-border-colour;
+      position: relative;
+      padding-left: 40%;
+
+      &:before {
+        display: block;
+        font-weight: bold;
+        position: absolute;
+        top: 10px;
+        left: 0;
+        width: 35%;
+        padding-right: 10px;
+        white-space: nowrap;
+      }
+
+      &.responsive-nopad {
+        padding-left: 0;
+      }
+    }
+
+  }
+}
+
+
+
+
+
+
+
+
