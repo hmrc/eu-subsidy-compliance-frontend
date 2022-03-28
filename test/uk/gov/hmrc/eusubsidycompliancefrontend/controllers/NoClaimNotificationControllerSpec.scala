@@ -94,9 +94,9 @@ class NoClaimNotificationControllerSpec
       val nilReturnJourney = NilReturnJourney()
       val updatedNilReturnJourney = NilReturnJourney(NilReturnFormPage(true.some), 1)
 
-      def update(nrjOpt: Option[NilReturnJourney]) = nrjOpt.map { nrj =>
-        nrj.copy(nilReturn = nrj.nilReturn.copy(value = Some(true)), nilReturnCounter = 1)
-      }
+      def update(j: NilReturnJourney) =
+        j.copy(nilReturn = j.nilReturn.copy(value = Some(true)), nilReturnCounter = 1)
+
       def performAction(data: (String, String)*) = controller
         .postNoClaimNotification(
           FakeRequest()
@@ -110,9 +110,7 @@ class NoClaimNotificationControllerSpec
         val nilReturnJourney = NilReturnJourney()
         val updatedNilReturnJourney = NilReturnJourney(NilReturnFormPage(true.some), 1)
 
-        def update(nrjOpt: Option[NilReturnJourney]) = nrjOpt.map { nrj =>
-          nrj.copy(nilReturn = nrj.nilReturn.copy(value = Some(true)), nilReturnCounter = 1)
-        }
+        def update(j: NilReturnJourney) = j.copy(nilReturn = j.nilReturn.copy(value = Some(true)), nilReturnCounter = 1)
 
         val exception = new Exception("oh no")
 
@@ -121,8 +119,7 @@ class NoClaimNotificationControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockTimeProviderToday(currentDay)
-            mockUpdate[NilReturnJourney](_ => update(nilReturnJourney.some), eori1)(Left(ConnectorError(exception)))
-
+            mockUpdate2[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
         }
@@ -132,7 +129,7 @@ class NoClaimNotificationControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockTimeProviderToday(currentDay)
-            mockUpdate[NilReturnJourney](_ => update(nilReturnJourney.some), eori1)(Right(updatedNilReturnJourney))
+            mockUpdate2[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
             mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
               Left(ConnectorError(exception))
             )
@@ -164,7 +161,7 @@ class NoClaimNotificationControllerSpec
           mockAuthWithNecessaryEnrolment()
           mockGet[Undertaking](eori1)(Right(undertaking.some))
           mockTimeProviderToday(currentDay)
-          mockUpdate[NilReturnJourney](_ => update(nilReturnJourney.some), eori1)(Right(updatedNilReturnJourney))
+          mockUpdate2[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
           mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
             Right(undertakingRef)
           )
@@ -180,8 +177,8 @@ class NoClaimNotificationControllerSpec
       "test to update nil return values" in {
         val initialNilReturnJourney = NilReturnJourney()
         val updatedNilReturnJourney = NilReturnJourney(nilReturn = NilReturnFormPage(true.some), nilReturnCounter = 1)
-        val result = controller.updateNilReturnValues(FormValues("true"))(initialNilReturnJourney.some)
-        result shouldBe updatedNilReturnJourney.some
+        val result = controller.updateNilReturnValues(FormValues("true"))(initialNilReturnJourney)
+        result shouldBe updatedNilReturnJourney
       }
 
     }
