@@ -16,16 +16,15 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import cats.implicits.{catsSyntaxEq}
+import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
-import play.api.http.Status.{NOT_ACCEPTABLE, OK}
+import play.api.http.Status.{NOT_ACCEPTABLE, NOT_FOUND, OK}
 import play.api.libs.json.{JsResult, JsSuccess, JsValue, Reads}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
-import EscService.reads
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -55,16 +54,15 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
       case Left(_) => Right(None)
       case Right(value) =>
         value.status match {
+          case NOT_FOUND => Right(None)
           case NOT_ACCEPTABLE =>
-            value
-              .parseJSON[UpstreamErrorResponse]
-              .fold(_ => sys.error("Error in parsing Upstream Error Response"), Left(_))
+            Left(UpstreamErrorResponse(s"EORI $eori does not exist in ETMP", NOT_ACCEPTABLE))
           case OK =>
             value
-              .parseJSON[Option[Undertaking]]
+              .parseJSON[Undertaking]
               .fold(
                 _ => sys.error(" Error in parsing undertaking"),
-                undertaking => Right(undertaking)
+                undertaking => Right(undertaking.some)
               )
 
           case _ => Right(None)
