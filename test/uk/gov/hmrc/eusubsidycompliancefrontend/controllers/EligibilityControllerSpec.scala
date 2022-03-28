@@ -196,7 +196,7 @@ class EligibilityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[EligibilityJourney](eori)(Right(previousUrl))
-            mockUpdate2[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("customswaivers" -> "true")))
         }
@@ -224,7 +224,7 @@ class EligibilityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious(eori1)(Right(previousUrl))
-            mockUpdate2[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
               Right(eligibilityJourney.copy(customsWaivers = CustomsWaiversFormPage(inputValue.some)))
             )
           }
@@ -350,7 +350,7 @@ class EligibilityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious(eori)(Right(previousUrl))
-            mockUpdate2[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("willyouclaim" -> "true")))
         }
@@ -385,7 +385,7 @@ class EligibilityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious(eori)(Right(previousUrl))
-            mockUpdate2[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Right(updatedEJ))
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Right(updatedEJ))
           }
 
           checkIsRedirect(
@@ -564,7 +564,7 @@ class EligibilityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious(eori)(Right(previousUrl))
-            mockUpdate2[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("mainbusinesscheck" -> "true")))
         }
@@ -596,7 +596,7 @@ class EligibilityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious(eori)(Right(previousUrl))
-            mockUpdate2[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
               Right(updatedEligibilityJourney(input))
             )
           }
@@ -693,7 +693,7 @@ class EligibilityControllerSpec
         "call to update eligibility journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate2[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("terms" -> "true")))
         }
@@ -704,7 +704,7 @@ class EligibilityControllerSpec
         val updatedJourney = eligibilityJourney.copy(acceptTerms = AcceptTermsFormPage(true.some))
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockUpdate2[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Right(updatedJourney))
+          mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Right(updatedJourney))
           mockSendAuditEvent(expectedAuditEvent)
         }
         checkIsRedirect(performAction("terms" -> "true"), routes.EligibilityController.getCreateUndertaking().url)
@@ -806,7 +806,7 @@ class EligibilityControllerSpec
         "eligibility journey fail to update" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate2[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
               Left(ConnectorError(exception))
             )
           }
@@ -832,7 +832,7 @@ class EligibilityControllerSpec
         def testRedirection(input: Boolean, nextCall: String) =
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate2[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
               Right(EligibilityJourney(eoriCheck = EoriCheckFormPage(input.some)))
             )
 
@@ -933,7 +933,7 @@ class EligibilityControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate2[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
               Left(ConnectorError(exception))
             )
           }
@@ -946,7 +946,7 @@ class EligibilityControllerSpec
 
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockUpdate2[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
+          mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
             Right(EligibilityJourney(createUndertaking = CreateUndertakingFormPage(true.some)))
           )
         }

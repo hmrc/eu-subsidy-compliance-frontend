@@ -216,7 +216,7 @@ class AccountControllerSpec
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockTimeProviderToday(currentDate)
             mockGet[NilReturnJourney](eori1)(Right(nilReturnJourney.some))
-            mockUpdate2[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNJ))
+            mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNJ))
           }
           checkPageIsDisplayed(
             performAction(),

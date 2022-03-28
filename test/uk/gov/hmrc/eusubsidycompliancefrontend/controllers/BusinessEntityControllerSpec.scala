@@ -194,7 +194,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate2[BusinessEntityJourney](_ => update(businessEntityJourney), eori)(Left(ConnectorError(exception)))
+            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney), eori)(Left(ConnectorError(exception)))
           }
 
           assertThrows[Exception](await(performAction("addBusiness" -> "true")))
@@ -240,7 +240,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate2[BusinessEntityJourney](_ => update(BusinessEntityJourney()), eori)(
+            mockUpdate[BusinessEntityJourney](_ => update(BusinessEntityJourney()), eori)(
               Right(BusinessEntityJourney(addBusiness = AddBusinessFormPage(true.some)))
             )
           }
@@ -394,7 +394,7 @@ class BusinessEntityControllerSpec
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
             mockRetrieveUndertakingWithErrorResponse(eori4)(Right(None))
-            mockUpdate2[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(Left(ConnectorError(exception)))
           }
 
           assertThrows[Exception](await(performAction("businessEntityEori" -> "123456789010")))
@@ -485,7 +485,7 @@ class BusinessEntityControllerSpec
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
             mockRetrieveUndertakingWithErrorResponse(eori4)(Right(None))
-            mockUpdate2[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(Right(updatedBusinessJourney))
+            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(Right(updatedBusinessJourney))
           }
           checkIsRedirect(
             performAction("businessEntityEori" -> "123456789010"),

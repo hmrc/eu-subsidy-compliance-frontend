@@ -94,7 +94,7 @@ class BecomeLeadController @Inject() (
           },
         form =>
           store
-            .update2[BecomeLeadJourney](j => j.copy(becomeLeadEori = j.becomeLeadEori.copy(value = Some(form.value == "true"))))
+            .update[BecomeLeadJourney](j => j.copy(becomeLeadEori = j.becomeLeadEori.copy(value = Some(form.value == "true"))))
             .flatMap { _ =>
               if (form.value == "true") Future(Redirect(routes.BecomeLeadController.getAcceptPromotionTerms()))
               else Future(Redirect(routes.AccountController.getAccountPage()))
@@ -118,7 +118,7 @@ class BecomeLeadController @Inject() (
   def postAcceptPromotionTerms: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
-      .update2[BecomeLeadJourney](j => j.copy(acceptTerms = j.acceptTerms.copy(value = Some(true))))
+      .update[BecomeLeadJourney](j => j.copy(acceptTerms = j.acceptTerms.copy(value = Some(true))))
       .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getPromotionConfirmation())))
   }
 
@@ -170,7 +170,7 @@ class BecomeLeadController @Inject() (
   def getPromotionCleanup: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
-      .update2[BecomeLeadJourney](_ => BecomeLeadJourney())
+      .update[BecomeLeadJourney](_ => BecomeLeadJourney())
       .flatMap(_ => Future(Redirect(routes.AccountController.getAccountPage()))
     )
   }

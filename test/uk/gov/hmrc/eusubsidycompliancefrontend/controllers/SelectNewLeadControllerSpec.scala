@@ -178,7 +178,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate2[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
         }
@@ -188,7 +188,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate2[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockRetrieveEmail(eori4)(Left(ConnectorError(exception)))
@@ -201,7 +201,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate2[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -215,7 +215,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate2[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -253,7 +253,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate2[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -330,7 +330,7 @@ class SelectNewLeadControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
-            mockUpdate2[BusinessEntityJourney](
+            mockUpdate[BusinessEntityJourney](
               _ => update(businessEntityJourneyLead.copy(eori = AddEoriFormPage(eori4.some))),
               eori1
             )(Left(ConnectorError(exception)))
@@ -344,7 +344,7 @@ class SelectNewLeadControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
-            mockUpdate2[BusinessEntityJourney](
+            mockUpdate[BusinessEntityJourney](
               _ =>
                 update(
                   businessEntityJourneyLead
@@ -366,7 +366,7 @@ class SelectNewLeadControllerSpec
           mockAuthWithNecessaryEnrolment()
           mockGet[Undertaking](eori1)(Right(undertaking.some))
           mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
-          mockUpdate2[BusinessEntityJourney](
+          mockUpdate[BusinessEntityJourney](
             _ =>
               update(
                 businessEntityJourneyLead

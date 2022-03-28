@@ -120,7 +120,7 @@ class AccountController @Inject() (
           .orElse(store.put[NilReturnJourney](NilReturnJourney()).toContext)
         updatedJourney <-
           if (isUpdateNeededForNilJourneyCounter(nilReturnJourney))
-            store.update2[NilReturnJourney](updateNilReturnCounter).toContext
+            store.update[NilReturnJourney](updateNilReturnCounter).toContext
           else nilReturnJourney.some.toContext
         result <- Ok(
           leadAccountPage(

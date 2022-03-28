@@ -94,7 +94,7 @@ class UndertakingController @Inject() (
             errors => BadRequest(undertakingNamePage(errors, journey.previous)).toFuture,
             success = form => {
               for {
-                updatedUndertakingJourney <- store.update2[UndertakingJourney](updateUndertakingName(form))
+                updatedUndertakingJourney <- store.update[UndertakingJourney](updateUndertakingName(form))
                 redirect <- updatedUndertakingJourney.next
               } yield redirect
             }
@@ -137,7 +137,7 @@ class UndertakingController @Inject() (
           },
           form =>
             for {
-              updatedUndertakingJourney <- store.update2[UndertakingJourney](updateUndertakingSector(form))
+              updatedUndertakingJourney <- store.update[UndertakingJourney](updateUndertakingSector(form))
               redirect <- updatedUndertakingJourney.next
             } yield redirect
         )
@@ -165,7 +165,7 @@ class UndertakingController @Inject() (
         _ => throw new IllegalStateException("value hard-coded, form hacking?"),
         form => {
           val result = for {
-            updatedJourney <- store.update2[UndertakingJourney](updateUndertakingCYA(form)).toContext
+            updatedJourney <- store.update[UndertakingJourney](updateUndertakingCYA(form)).toContext
             undertakingName <- updatedJourney.name.value.toContext
             undertakingSector <- updatedJourney.sector.value.toContext
             undertaking = Undertaking(
@@ -220,7 +220,7 @@ class UndertakingController @Inject() (
         _ => throw new IllegalStateException("value hard-coded, form hacking?"),
         form =>
           store
-            .update2[UndertakingJourney](updateUndertakingConfirmation(form))
+            .update[UndertakingJourney](updateUndertakingConfirmation(form))
             .map { _ =>
               Redirect(routes.BusinessEntityController.getAddBusinessEntity())
             }
@@ -249,7 +249,7 @@ class UndertakingController @Inject() (
   }
 
   private def updateIsAmendState(value: Boolean)(implicit e: EORI): Future[UndertakingJourney] =
-    store.update2[UndertakingJourney](_.copy(isAmend = value))
+    store.update[UndertakingJourney](_.copy(isAmend = value))
 
   def postAmendUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>

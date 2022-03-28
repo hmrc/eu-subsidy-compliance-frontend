@@ -27,12 +27,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.UndertakingUpdated
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, FormValues, Language, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 import java.time.LocalDateTime
 import scala.collection.JavaConverters._
@@ -319,7 +319,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockUpdate2[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Left(ConnectorError(exception))
             )
           }
@@ -361,7 +361,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-            mockUpdate2[UndertakingJourney](identity, eori1)(
+            mockUpdate[UndertakingJourney](identity, eori1)(
               Right(updatedUndertaking)
             )
           }
@@ -524,7 +524,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[UndertakingJourney](eori1)(Right("undertaking-name"))
-            mockUpdate2[UndertakingJourney](_ => update(currentUndertaking), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[UndertakingJourney](_ => update(currentUndertaking), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("undertakingSector" -> "2")))
         }
@@ -563,7 +563,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[UndertakingJourney](eori1)(Right("undertaking-name"))
-            mockUpdate2[UndertakingJourney](_ => update(undertakingJourney), eori1)(Right(updatedUndertaking))
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourney), eori1)(Right(updatedUndertaking))
           }
           checkIsRedirect(performAction("undertakingSector" -> "3"), nextCall)
         }
@@ -699,12 +699,9 @@ class UndertakingControllerSpec
 
         "call to update undertaking journey fails" in {
 
-          def updateFunc(ujOpt: Option[UndertakingJourney]) =
-            ujOpt.map(x => x.copy(cya = x.cya.copy(value = true.some)))
-
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate2[UndertakingJourney](identity, eori1)(Left(ConnectorError(exception)))
+            mockUpdate[UndertakingJourney](identity, eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
         }
@@ -713,7 +710,7 @@ class UndertakingControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate2[UndertakingJourney](identity, eori1)(Left(ConnectorError(exception)))
+            mockUpdate[UndertakingJourney](identity, eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
         }
@@ -722,7 +719,7 @@ class UndertakingControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate2[UndertakingJourney](identity, eori1)(Left(ConnectorError(exception)))
+            mockUpdate[UndertakingJourney](identity, eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
         }
@@ -733,7 +730,7 @@ class UndertakingControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate2[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
+            mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
@@ -747,7 +744,7 @@ class UndertakingControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate2[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
+            mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
             mockRetrieveEmail(eori1)(Left(ConnectorError(exception)))
           }
@@ -764,7 +761,7 @@ class UndertakingControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate2[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
+            mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
             mockRetrieveEmail(eori)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockSendEmail(validEmailAddress, emailParameter, templateId)(Right(EmailSendResult.EmailSent))
@@ -835,7 +832,7 @@ class UndertakingControllerSpec
         "call to update undertaking confirmation fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate2[UndertakingJourney](_ => update(undertakingJourney), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("confirm" -> "true")))
         }
@@ -844,7 +841,7 @@ class UndertakingControllerSpec
       "redirect to next page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockUpdate2[UndertakingJourney](_ => update(undertakingJourney), eori1)(Right(undertakingJourneyComplete))
+          mockUpdate[UndertakingJourney](_ => update(undertakingJourney), eori1)(Right(undertakingJourneyComplete))
         }
 
         checkIsRedirect(performAction("confirm" -> "true"), routes.BusinessEntityController.getAddBusinessEntity().url)
@@ -898,7 +895,7 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockUpdate2[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Left(ConnectorError(exception))
             )
           }
@@ -938,7 +935,7 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockUpdate2[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(isAmend = true))
             )
           }
@@ -982,7 +979,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate2[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Left(ConnectorError(exception))
             )
           }
@@ -994,7 +991,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate2[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(name = UndertakingNameFormPage()))
             )
           }
@@ -1006,7 +1003,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate2[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(name = UndertakingNameFormPage()))
             )
           }
@@ -1018,7 +1015,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate2[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(name = UndertakingNameFormPage("true".some)))
             )
             mockRetrieveUndertaking(eori)(Future.failed(exception))
@@ -1030,7 +1027,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate2[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(name = UndertakingNameFormPage("true".some)))
             )
             mockRetrieveUndertaking(eori)(Future.successful(None))
@@ -1042,7 +1039,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate2[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(name = UndertakingNameFormPage("true".some)))
             )
             mockRetrieveUndertaking(eori)(Future.successful(undertaking1.copy(reference = None).some))
@@ -1056,7 +1053,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate2[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(isAmend = true))
             )
             mockRetrieveUndertaking(eori)(Future.successful(undertaking1.some))
@@ -1073,7 +1070,7 @@ class UndertakingControllerSpec
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGet[Undertaking](eori1)(Right(undertaking.some))
-          mockUpdate2[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
+          mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
             Right(undertakingJourneyComplete.copy(isAmend = true))
           )
           mockRetrieveUndertaking(eori)(Future.successful(undertaking1.some))

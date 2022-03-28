@@ -143,7 +143,7 @@ class SubsidyController @Inject() (
           formWithErrors => handleReportPaymentFormError(previous, undertaking, formWithErrors),
           form =>
             for {
-              journey <- store.update2[SubsidyJourney](_.setReportPayment(form.value.toBoolean))
+              journey <- store.update[SubsidyJourney](_.setReportPayment(form.value.toBoolean))
               redirect <-
                 if (form.value === "true") journey.next
                 else Redirect(routes.AccountController.getAccountPage()).toFuture
@@ -178,7 +178,7 @@ class SubsidyController @Inject() (
             BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture,
           form =>
             for {
-              journey <- store.update2[SubsidyJourney](_.setClaimAmount(form))
+              journey <- store.update[SubsidyJourney](_.setClaimAmount(form))
               redirect <- journey.next
             } yield redirect
         )
@@ -218,7 +218,7 @@ class SubsidyController @Inject() (
             formWithErrors => BadRequest(addClaimDatePage(formWithErrors, previous)).toFuture,
             form =>
               for {
-                journey <- store.update2[SubsidyJourney](_.setClaimDate(form))
+                journey <- store.update[SubsidyJourney](_.setClaimDate(form))
                 redirect <- journey.next
               } yield redirect
           )
@@ -254,7 +254,7 @@ class SubsidyController @Inject() (
             formWithErrors => BadRequest(addClaimEoriPage(formWithErrors, previous)).toFuture,
             (form: OptionalEORI) =>
               for {
-                journey <- store.update2[SubsidyJourney](_.setClaimEori(form))
+                journey <- store.update[SubsidyJourney](_.setClaimEori(form))
                 redirect <- journey.next
               } yield redirect
           )
@@ -286,7 +286,7 @@ class SubsidyController @Inject() (
             errors => BadRequest(addPublicAuthorityPage(errors, previous)).toFuture,
             form =>
               for {
-                journey <- store.update2[SubsidyJourney](_.setPublicAuthority(form))
+                journey <- store.update[SubsidyJourney](_.setPublicAuthority(form))
                 redirect <- journey.next
               } yield redirect
           )
@@ -318,7 +318,7 @@ class SubsidyController @Inject() (
             errors => BadRequest(addTraderReferencePage(errors, previous)).toFuture,
             form =>
               for {
-                updatedSubsidyJourney <- store.update2[SubsidyJourney](_.setTraderRef(form))
+                updatedSubsidyJourney <- store.update[SubsidyJourney](_.setTraderRef(form))
                 redirect <- updatedSubsidyJourney.next
               } yield redirect
           )
@@ -358,7 +358,7 @@ class SubsidyController @Inject() (
           form =>
             {
               for {
-                journey <- store.update2[SubsidyJourney](_.setCya(form.value.toBoolean)).toContext
+                journey <- store.update[SubsidyJourney](_.setCya(form.value.toBoolean)).toContext
                 _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
                 ref <- undertaking.reference.toContext
                 currentDate = timeProvider.today

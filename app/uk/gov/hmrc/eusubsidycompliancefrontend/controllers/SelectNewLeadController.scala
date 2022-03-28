@@ -87,7 +87,7 @@ class SelectNewLeadController @Inject() (
         val eoriBE = EORI(form.value)
         val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking Ref"))
         for {
-          _ <- store.update2[NewLeadJourney] { newLeadJourney =>
+          _ <- store.update[NewLeadJourney] { newLeadJourney =>
             val updatedLead = newLeadJourney.selectNewLead.copy(value = eoriBE.some)
             newLeadJourney.copy(selectNewLead = updatedLead)
           }
@@ -127,7 +127,7 @@ class SelectNewLeadController @Inject() (
       store.get[NewLeadJourney].flatMap {
         case Some(newLeadJourney) =>
           for {
-            _ <- store.update2[BusinessEntityJourney](b => b.copy(isLeadSelectJourney = None))
+            _ <- store.update[BusinessEntityJourney](b => b.copy(isLeadSelectJourney = None))
             _ <- store.put[NewLeadJourney](NewLeadJourney())
             selectedEORI = newLeadJourney.selectNewLead.value.getOrElse(handleMissingSessionData("selected EORI"))
           } yield Ok(leadEORIChangedPage(selectedEORI, undertaking.name))

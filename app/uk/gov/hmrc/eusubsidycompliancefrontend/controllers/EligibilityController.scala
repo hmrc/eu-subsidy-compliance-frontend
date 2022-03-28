@@ -82,7 +82,7 @@ class EligibilityController @Inject() (
       .bindFromRequest()
       .fold(
         errors => Future.successful(BadRequest(checkEoriPage(errors, eori))),
-        form => store.update2[EligibilityJourney](updateEoriCheck(form.value.toBoolean)).flatMap(_.next)
+        form => store.update[EligibilityJourney](updateEoriCheck(form.value.toBoolean)).flatMap(_.next)
       )
 
   }
@@ -107,7 +107,7 @@ class EligibilityController @Inject() (
         .bindFromRequest()
         .fold(
           errors => Future.successful(BadRequest(customsWaiversPage(errors, previous))),
-          form => store.update2[EligibilityJourney](updateCustomWaiver(form.value.toBoolean)).flatMap(_.next)
+          form => store.update[EligibilityJourney](updateCustomWaiver(form.value.toBoolean)).flatMap(_.next)
         )
     }
   }
@@ -132,7 +132,7 @@ class EligibilityController @Inject() (
         .bindFromRequest()
         .fold(
           errors => Future.successful(BadRequest(willYouClaimPage(errors, previous))),
-          form => store.update2[EligibilityJourney](updateWillYouClaim(form.value.toBoolean)).flatMap(_.next)
+          form => store.update[EligibilityJourney](updateWillYouClaim(form.value.toBoolean)).flatMap(_.next)
         )
     }
   }
@@ -163,7 +163,7 @@ class EligibilityController @Inject() (
           .bindFromRequest()
           .fold(
             errors => Future.successful(BadRequest(mainBusinessCheckPage(errors, eori, previous))),
-            form => store.update2[EligibilityJourney](updateMainBusinessCheck(form.value.toBoolean)).flatMap(_.next)
+            form => store.update[EligibilityJourney](updateMainBusinessCheck(form.value.toBoolean)).flatMap(_.next)
           )
       }
   }
@@ -186,7 +186,7 @@ class EligibilityController @Inject() (
       .fold(
         _ => throw new IllegalStateException("value hard-coded, form hacking?"),
         form =>
-          store.update2[EligibilityJourney](updateAcceptTerms(form.value.toBoolean)).flatMap { eligibilityJourney =>
+          store.update[EligibilityJourney](updateAcceptTerms(form.value.toBoolean)).flatMap { eligibilityJourney =>
             auditService.sendEvent(TermsAndConditionsAccepted(eori))
             eligibilityJourney.next
           }
@@ -212,7 +212,7 @@ class EligibilityController @Inject() (
       .fold(
         _ => throw new IllegalStateException("value hard-coded, form hacking?"),
         form =>
-          store.update2[EligibilityJourney](updateCreateUndertaking(form.value.toBoolean)).map { _ =>
+          store.update[EligibilityJourney](updateCreateUndertaking(form.value.toBoolean)).map { _ =>
             Redirect(routes.UndertakingController.getUndertakingName())
           }
       )

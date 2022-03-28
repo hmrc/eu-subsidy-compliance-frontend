@@ -83,7 +83,7 @@ class NoBusinessPresentControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking1.some))
-            mockUpdate2[BusinessEntityJourney](_ => update(businessEntityJourney1), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -94,7 +94,7 @@ class NoBusinessPresentControllerSpec
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGet[Undertaking](eori1)(Right(undertaking1.some))
-          mockUpdate2[BusinessEntityJourney](_ => update(businessEntityJourney1), eori1)(
+          mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1), eori1)(
             Right(businessEntityJourney1)
           )
         }

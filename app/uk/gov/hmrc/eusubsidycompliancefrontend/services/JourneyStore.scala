@@ -51,25 +51,17 @@ class JourneyStore @Inject() (
   override def get[A : ClassTag](implicit eori: EORI, reads: Reads[A]): Future[Option[A]] =
     get[A](eori)(dataKeyForType[A])
 
-
   override def put[A](in: A)(implicit eori: EORI, writes: Writes[A]): Future[A] =
     put[A](eori)(DataKey(in.getClass.getSimpleName), in).map(_ => in)
-
-  // TODO - f should be an A => Option[A] - can just use get.fold(error)(f) then...
-  override def update[A : ClassTag](f: Option[A] => Option[A])(implicit eori: EORI, format: Format[A]): Future[A] = {
-    get
-      .map(f)
-      .flatMap(x => x.fold(throw new IllegalStateException("trying to update non-existent model"))(put(_)))
-  }
 
   override def delete[A : ClassTag](implicit eori: EORI) =
     delete[A](eori)(dataKeyForType[A])
 
-  private def dataKeyForType[A](implicit ct: ClassTag[A]) = DataKey[A](ct.runtimeClass.getSimpleName)
-
-  override def update2[A: ClassTag](f: A => A)(implicit eori: EORI, format: Format[A]): Future[A] =
+  override def update[A: ClassTag](f: A => A)(implicit eori: EORI, format: Format[A]): Future[A] =
     get.toContext
       .map(f)
-      .foldF(throw new IllegalStateException("trying to update non-existent model"))(e => put(e))
+      .foldF(throw new IllegalStateException("trying to update non-existent model"))(put(_))
+
+  private def dataKeyForType[A](implicit ct: ClassTag[A]) = DataKey[A](ct.runtimeClass.getSimpleName)
 }
 

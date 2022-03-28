@@ -189,7 +189,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate2[SubsidyJourney](identity, eori1)(Left(ConnectorError(exception)))
+            mockUpdate[SubsidyJourney](identity, eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("reportPayment" -> "true")))
 
@@ -218,7 +218,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate2[SubsidyJourney](identity, eori1)(Right(subsidyJourney))
+            mockUpdate[SubsidyJourney](identity, eori1)(Right(subsidyJourney))
           }
           checkIsRedirect(performAction(("reportPayment", input)), nextCall)
         }
@@ -314,7 +314,7 @@ class SubsidyControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
-            mockUpdate2[SubsidyJourney](j => j.copy(claimDate = ClaimDateFormPage(updatedDate.some)), eori1)(
+            mockUpdate[SubsidyJourney](j => j.copy(claimDate = ClaimDateFormPage(updatedDate.some)), eori1)(
               Right(subsidyJourney.copy(claimDate = ClaimDateFormPage(updatedDate.some)))
             )
           }
@@ -499,7 +499,7 @@ class SubsidyControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
-            mockUpdate2[SubsidyJourney](_ => update(subsidyJourney), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("claim-amount" -> "123.45")))
         }
@@ -552,11 +552,6 @@ class SubsidyControllerSpec
           claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some)
         )
 
-        val subsidyJourney2 = SubsidyJourney(
-          reportPayment = ReportPaymentFormPage(true.some),
-          claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
-        )
-
         def update(subsidyJourney: SubsidyJourney) =
           subsidyJourney.copy(claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some))
 
@@ -564,7 +559,7 @@ class SubsidyControllerSpec
           mockAuthWithNecessaryEnrolment()
           mockGet[Undertaking](eori1)(Right(undertaking.some))
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
-          mockUpdate2[SubsidyJourney](_ => update(subsidyJourney), eori1)(Right(subsidyJourney))
+          mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Right(subsidyJourney))
         }
 
         checkIsRedirect(
@@ -695,7 +690,7 @@ class SubsidyControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGetPrevious[SubsidyJourney](eori1)(Right("add-claim-amount"))
-            mockUpdate2[SubsidyJourney](
+            mockUpdate[SubsidyJourney](
               _ => update(subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage(None))),
               eori1
             )(Left(ConnectorError(exception)))
@@ -759,7 +754,7 @@ class SubsidyControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGetPrevious[SubsidyJourney](eori1)(Right(routes.SubsidyController.getClaimAmount().url))
-            mockUpdate2[SubsidyJourney](_ => update(subsidyJourney, optionalEORI.some), eori1)(
+            mockUpdate[SubsidyJourney](_ => update(subsidyJourney, optionalEORI.some), eori1)(
               Right(updatedSubsidyJourney)
             )
           }
@@ -831,7 +826,7 @@ class SubsidyControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
-            mockUpdate2[SubsidyJourney](
+            mockUpdate[SubsidyJourney](
               j => j.copy(publicAuthority = PublicAuthorityFormPage(Some("My Authority"))),
               eori1
             )(
@@ -1256,7 +1251,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking1.some))
-            mockUpdate2[SubsidyJourney](_ => update(subsidyJourney), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")))
         }
@@ -1265,7 +1260,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking1.copy(reference = None).some))
-            mockUpdate2[SubsidyJourney](_ => update(subsidyJourney), eori1)(Right(updatedJourney))
+            mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Right(updatedJourney))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")))
         }
@@ -1274,7 +1269,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking1.some))
-            mockUpdate2[SubsidyJourney](_ => update(subsidyJourney), eori1)(Right(updatedJourney))
+            mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Right(updatedJourney))
             mockTimeProviderToday(currentDate)
             mockCreateSubsidy(
               undertakingRef,
@@ -1288,7 +1283,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking1.some))
-            mockUpdate2[SubsidyJourney](_ => update(subsidyJourney), eori1)(Right(updatedJourney))
+            mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Right(updatedJourney))
             mockTimeProviderToday(currentDate)
             mockCreateSubsidy(
               undertakingRef,
@@ -1309,7 +1304,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking1.some))
-            mockUpdate2[SubsidyJourney](
+            mockUpdate[SubsidyJourney](
               _ => update(subsidyJourneyExisting),
               eori1
             )(Right(updatedSJ))
@@ -1341,7 +1336,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking1.some))
-            mockUpdate2[SubsidyJourney](
+            mockUpdate[SubsidyJourney](
               _ => update(subsidyJourney),
               eori1
             )(Right(updatedSJ))

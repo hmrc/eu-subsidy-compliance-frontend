@@ -182,7 +182,7 @@ class BecomeLeadControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate2[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("becomeAdmin" -> "true")))
         }
@@ -216,7 +216,7 @@ class BecomeLeadControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate2[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
+            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
           }
           redirectLocation(performAction("becomeAdmin" -> "true")) shouldBe Some(routes.BecomeLeadController.getAcceptPromotionTerms().url)
         }
@@ -227,7 +227,7 @@ class BecomeLeadControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate2[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
+            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
           }
           redirectLocation(performAction("becomeAdmin" -> "false")) shouldBe Some(routes.AccountController.getAccountPage().url)
         }
@@ -527,7 +527,7 @@ class BecomeLeadControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate2[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
+            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
           }
           redirectLocation(performAction()) shouldBe routes.BecomeLeadController.getPromotionConfirmation().url.some
         }
@@ -546,7 +546,7 @@ class BecomeLeadControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate2[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
+            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
           }
           redirectLocation(performAction()) shouldBe routes.AccountController.getAccountPage().url.some
         }

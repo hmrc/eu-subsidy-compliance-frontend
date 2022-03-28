@@ -96,7 +96,7 @@ class BusinessEntityController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     def handleValidAnswer(form: FormValues) = {
-      if (form.value === "true") store.update2[BusinessEntityJourney](updateAddBusiness(form)).flatMap(_.next)
+      if (form.value === "true") store.update[BusinessEntityJourney](updateAddBusiness(form)).flatMap(_.next)
       else Redirect(routes.AccountController.getAccountPage()).toFuture
     }
 
@@ -138,7 +138,7 @@ class BusinessEntityController @Inject() (
 
         case Right(Some(_)) => getErrorResponse("businessEntityEori.eoriInUse", previous, form)
         case Left(_) => getErrorResponse(s"error.$businessEntityEori.required", previous, form)
-        case Right(None) => store.update2[BusinessEntityJourney](updateEori(form)).flatMap(_.next)
+        case Right(None) => store.update[BusinessEntityJourney](updateEori(form)).flatMap(_.next)
       }
 
     withLeadUndertaking { _ =>
