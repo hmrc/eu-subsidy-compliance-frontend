@@ -48,8 +48,12 @@ class SelectNewLeadController @Inject() (
 
   import escActionBuilders._
 
-  val promoteOtherAsLeadEmailToBusinessEntity = "promoteAsLeadEmailToBE"
-  val promoteOtherAsLeadEmailToLead = "promoteAsLeadEmailToLead"
+  private val promoteOtherAsLeadEmailToBusinessEntity = "promoteAsLeadEmailToBE"
+  private val promoteOtherAsLeadEmailToLead = "promoteAsLeadEmailToLead"
+
+  private lazy val selectNewLeadForm: Form[FormValues] = Form(
+    mapping("selectNewLead" -> mandatory("selectNewLead"))(FormValues.apply)(FormValues.unapply)
+  )
 
   def getSelectNewLead: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
@@ -83,11 +87,9 @@ class SelectNewLeadController @Inject() (
         val eoriBE = EORI(form.value)
         val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking Ref"))
         for {
-          _ <- store.update[NewLeadJourney] {
-            _.map { newLeadJourney =>
-              val updatedLead = newLeadJourney.selectNewLead.copy(value = eoriBE.some)
-              newLeadJourney.copy(selectNewLead = updatedLead)
-            }
+          _ <- store.update2[NewLeadJourney] { newLeadJourney =>
+            val updatedLead = newLeadJourney.selectNewLead.copy(value = eoriBE.some)
+            newLeadJourney.copy(selectNewLead = updatedLead)
           }
           _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
             eoriBE,
@@ -125,9 +127,7 @@ class SelectNewLeadController @Inject() (
       store.get[NewLeadJourney].flatMap {
         case Some(newLeadJourney) =>
           for {
-            _ <- store.update[BusinessEntityJourney] { businessEntityOpt =>
-              businessEntityOpt.map(_.copy(isLeadSelectJourney = None))
-            }
+            _ <- store.update2[BusinessEntityJourney](b => b.copy(isLeadSelectJourney = None))
             _ <- store.put[NewLeadJourney](NewLeadJourney())
             selectedEORI = newLeadJourney.selectNewLead.value.getOrElse(handleMissingSessionData("selected EORI"))
           } yield Ok(leadEORIChangedPage(selectedEORI, undertaking.name))
@@ -135,9 +135,5 @@ class SelectNewLeadController @Inject() (
       }
     }
   }
-
-  lazy val selectNewLeadForm: Form[FormValues] = Form(
-    mapping("selectNewLead" -> mandatory("selectNewLead"))(FormValues.apply)(FormValues.unapply)
-  )
 
 }
