@@ -40,6 +40,17 @@ case class BusinessEntityJourney(
     )
 
   def isAmend: Boolean = oldEORI.nonEmpty
+
+  def setEori(e: EORI): BusinessEntityJourney =
+    this.copy(
+      eori = eori.copy(value = e.some),
+      oldEORI = eori.value
+    )
+
+  def setAddBusiness(b: Boolean): BusinessEntityJourney =
+    this.copy(
+      addBusiness = addBusiness.copy(value = b.some))
+
 }
 
 object BusinessEntityJourney {

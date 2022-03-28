@@ -30,13 +30,13 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, DoubleEORIEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, FormValues, Language, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 import java.time.LocalDate
 import scala.collection.JavaConverters._
@@ -253,13 +253,6 @@ class BusinessEntityControllerSpec
         "user is not an undertaking lead" in {
           testLeadOnlyRedirect(() => performAction())
         }
-      }
-
-      "Test to update add business" in {
-        val initialBE = BusinessEntityJourney()
-        val updatedBE = initialBE.copy(addBusiness = AddBusinessFormPage(true.some))
-        val result = controller.updateAddBusiness(FormValues("true"))(initialBE)
-        result shouldBe updatedBE
       }
 
     }
@@ -492,16 +485,6 @@ class BusinessEntityControllerSpec
             routes.BusinessEntityController.getCheckYourAnswers().url
           )
         }
-      }
-
-      "test to update the EORI" in {
-        val initialBE = BusinessEntityJourney(eori = AddEoriFormPage(value = EORI("GB123456789010").some))
-        val updatedBE = initialBE.copy(
-          eori = AddEoriFormPage(value = EORI("GB123456789012").some),
-          oldEORI = EORI("GB123456789010").some
-        )
-        val result = controller.updateEori(FormValues("GB123456789012"))(initialBE)
-        result shouldBe updatedBE
       }
 
     }

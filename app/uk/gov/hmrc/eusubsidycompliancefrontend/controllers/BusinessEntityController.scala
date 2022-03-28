@@ -96,7 +96,7 @@ class BusinessEntityController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     def handleValidAnswer(form: FormValues) = {
-      if (form.value === "true") store.update[BusinessEntityJourney](updateAddBusiness(form)).flatMap(_.next)
+      if (form.value === "true") store.update[BusinessEntityJourney](_.setAddBusiness(form.value.toBoolean)).flatMap(_.next)
       else Redirect(routes.AccountController.getAccountPage()).toFuture
     }
 
@@ -138,7 +138,7 @@ class BusinessEntityController @Inject() (
 
         case Right(Some(_)) => getErrorResponse("businessEntityEori.eoriInUse", previous, form)
         case Left(_) => getErrorResponse(s"error.$businessEntityEori.required", previous, form)
-        case Right(None) => store.update[BusinessEntityJourney](updateEori(form)).flatMap(_.next)
+        case Right(None) => store.update[BusinessEntityJourney](_.setEori(EORI(form.value))).flatMap(_.next)
       }
 
     withLeadUndertaking { _ =>
@@ -357,16 +357,6 @@ class BusinessEntityController @Inject() (
           .put[BusinessEntityJourney](BusinessEntityJourney())
           .map(_ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
     }
-
-  // TODO - consider moving these methods onto the journey itself
-  def updateEori(f: FormValues)(journey: BusinessEntityJourney) =
-    journey.copy(eori = journey.eori.copy(
-      value = EORI(f.value).some),
-      oldEORI = journey.eori.value
-    )
-
-  def updateAddBusiness(f: FormValues)(journey: BusinessEntityJourney) =
-    journey.copy(addBusiness = journey.addBusiness.copy(value = f.value.toBoolean.some))
 
   lazy val addBusinessForm: Form[FormValues] = Form(
     mapping("addBusiness" -> mandatory("addBusiness"))(FormValues.apply)(FormValues.unapply)
