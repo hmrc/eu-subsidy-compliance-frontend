@@ -46,12 +46,12 @@
 @key = @{"reportPayment"}
 @title = @{messages(s"$key.title")}
 
-@responsiveTableClass = @{"report-payment-table"}
-@date = @{"report-payment.table.head.date"}
-@amount = @{"report-payment.table.head.amount"}
-@eori = @{"report-payment.table.head.eori"}
-@publicAuthority = @{"report-payment.table.head.public-authority"}
-@ref = @{"report-payment.table.head.ref"}
+@responsiveTableClass = @{s"report-payment-table"}
+@date = @{s"$key.table.head.date"}
+@amount = @{s"$key.table.head.amount"}
+@eori = @{s"$key.table.head.eori"}
+@publicAuthority = @{s"$key.table.head.public-authority"}
+@ref = @{s"$key.table.head.ref"}
 
 <style>
       table.@responsiveTableClass td:nth-of-type(1):before { content: "@{messages(date)}" }
@@ -64,7 +64,8 @@
 @layout(
   pageTitle = Some(title),
   backLinkEnabled = true,
-  backLink = Some(previous)
+  backLink = Some(previous),
+  hasErrors = form.hasErrors
 ) {
 
   @formHelper(action = controllers.routes.SubsidyController.postReportPayment) {
