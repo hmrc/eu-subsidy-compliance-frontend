@@ -204,14 +204,6 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
           assertThrows[RuntimeException](await(result))
         }
 
-        "status is NOt acceptable, but can't be parsed as UpstreamErrorResponse" in {
-          val json = Json.parse("""{ "a" : 1 }""")
-
-          mockRetrieveUndertaking(eori1)(Right(HttpResponse(NOT_ACCEPTABLE, json, emptyHeaders)))
-          val result = service.retrieveUndertaking(eori1)
-          assertThrows[RuntimeException](await(result))
-        }
-
       }
 
       "return successfully" when {
