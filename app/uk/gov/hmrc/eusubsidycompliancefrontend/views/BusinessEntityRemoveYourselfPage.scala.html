@@ -30,7 +30,7 @@
 
 @(form: Form[_], bs: BusinessEntity, previous: Journey.Uri, undertakingName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"removeYourselfBusinessEntity"}
-@title = @{messages(s"$key.title", undertakingName)}
+@title = @{messages(s"$key.title")}
 
 @layout(
     pageTitle = Some(title),
@@ -61,7 +61,7 @@
                     isPageHeading = false
                 ))
             )),
-            hint = None,
+            hint = Some(Hint(content = Text(messages(s"$key.hint")))),
             idPrefix = Some(key),
             name = key,
             items = Seq(
@@ -78,6 +78,6 @@
             )
         ))
 
-        @button("common.continue.only")
+        @button("common.continue")
     }
 }

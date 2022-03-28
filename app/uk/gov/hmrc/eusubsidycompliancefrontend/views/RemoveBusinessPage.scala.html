@@ -30,9 +30,10 @@
 
 
 @(form: Form[_], bs: BusinessEntity)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
+@key =@{"removeBusinessEntity"}
+@title = @{messages(s"$key.title")}
 @layout(
-  pageTitle = Some(messages("removeBusinessEntity.title")),
+  pageTitle = Some(title),
   hasErrors = form.hasErrors
 ) {
   @formHelper(action = controllers.routes.BusinessEntityController.postRemoveBusinessEntity(bs.businessEntityIdentifier)) {
@@ -48,7 +49,7 @@
       ))
     }
 
-    @H1(messages("removeBusinessEntity.title"))
+    @H1(title)
 
 
       @govukSummaryList(SummaryList(
@@ -72,7 +73,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("removeBusinessEntity.subtitle")),
+          content = Text(messages(s"$key.subtitle", bs.businessEntityIdentifier)),
           classes = "govuk-fieldset__legend--m",
           isPageHeading = false
         ))
