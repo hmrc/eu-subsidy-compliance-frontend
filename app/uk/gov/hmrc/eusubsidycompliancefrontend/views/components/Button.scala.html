@@ -16,11 +16,12 @@
 
 @this(govukButton: GovukButton)
 
-@(msg: String, href: Option[String] = None)(implicit messages: Messages)
+@(msg: String, href: Option[String] = None, preventDoubleClick: Boolean = true)(implicit messages: Messages)
 
 @govukButton(
     Button(
         content = Text(messages(msg)),
-        href = href
+        href = href,
+        preventDoubleClick = preventDoubleClick
     )
 )
