@@ -189,15 +189,14 @@ class BusinessEntityControllerSpec
 
         "call to update BusinessEntityJourney fails" in {
 
-          def updateFunc(beOpt: Option[BusinessEntityJourney]) =
-            beOpt.map(x => x.copy(addBusiness = x.addBusiness.copy(value = Some(true))))
+          def update(j: BusinessEntityJourney) = j.copy(addBusiness = j.addBusiness.copy(value = Some(true)))
+
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate[BusinessEntityJourney](_ => updateFunc(businessEntityJourney.some), eori)(
-              Left(ConnectorError(exception))
-            )
+            mockUpdate2[BusinessEntityJourney](_ => update(businessEntityJourney), eori)(Left(ConnectorError(exception)))
           }
+
           assertThrows[Exception](await(performAction("addBusiness" -> "true")))
         }
 
@@ -236,12 +235,12 @@ class BusinessEntityControllerSpec
         }
 
         "user selected Yes" in {
-          def updateFunc(beOpt: Option[BusinessEntityJourney]) =
-            beOpt.map(x => x.copy(addBusiness = x.addBusiness.copy(value = Some(true))))
+          def update(j: BusinessEntityJourney) = j.copy(addBusiness = j.addBusiness.copy(value = Some(true)))
+
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate[BusinessEntityJourney](_ => updateFunc(BusinessEntityJourney().some), eori)(
+            mockUpdate2[BusinessEntityJourney](_ => update(BusinessEntityJourney()), eori)(
               Right(BusinessEntityJourney(addBusiness = AddBusinessFormPage(true.some)))
             )
           }
@@ -259,8 +258,8 @@ class BusinessEntityControllerSpec
       "Test to update add business" in {
         val initialBE = BusinessEntityJourney()
         val updatedBE = initialBE.copy(addBusiness = AddBusinessFormPage(true.some))
-        val result = controller.updateAddBusiness(FormValues("true"))(initialBE.some)
-        result shouldBe updatedBE.some
+        val result = controller.updateAddBusiness(FormValues("true"))(initialBE)
+        result shouldBe updatedBE
       }
 
     }
@@ -382,24 +381,20 @@ class BusinessEntityControllerSpec
 
         "call to update business entity journey fails" in {
 
-          def update(opt: Option[BusinessEntityJourney]) = opt.map { businessEntity =>
-            businessEntity.copy(eori = businessEntity.eori.copy(value = Some(EORI("123456789010"))))
-          }
+          def update(j: BusinessEntityJourney) = j.copy(eori = j.eori.copy(value = Some(EORI("123456789010"))))
 
           val businessEntityJourney = BusinessEntityJourney()
             .copy(
               addBusiness = AddBusinessFormPage(true.some),
               eori = AddEoriFormPage(eori1.some)
             )
-            .some
+
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
             mockRetrieveUndertakingWithErrorResponse(eori4)(Right(None))
-            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(
-              Left(ConnectorError(exception))
-            )
+            mockUpdate2[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(Left(ConnectorError(exception)))
           }
 
           assertThrows[Exception](await(performAction("businessEntityEori" -> "123456789010")))
@@ -475,9 +470,7 @@ class BusinessEntityControllerSpec
         }
 
         "user is an undertaking lead" in {
-          def update(opt: Option[BusinessEntityJourney]) = opt.map { businessEntity =>
-            businessEntity.copy(eori = businessEntity.eori.copy(value = Some(eori4)))
-          }
+          def update(j: BusinessEntityJourney) = j.copy(eori = j.eori.copy(value = Some(eori4)))
 
           val businessEntityJourney = BusinessEntityJourney()
             .copy(
@@ -492,9 +485,7 @@ class BusinessEntityControllerSpec
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
             mockRetrieveUndertakingWithErrorResponse(eori4)(Right(None))
-            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney.some), eori1)(
-              Right(updatedBusinessJourney)
-            )
+            mockUpdate2[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(Right(updatedBusinessJourney))
           }
           checkIsRedirect(
             performAction("businessEntityEori" -> "123456789010"),
@@ -509,8 +500,8 @@ class BusinessEntityControllerSpec
           eori = AddEoriFormPage(value = EORI("GB123456789012").some),
           oldEORI = EORI("GB123456789010").some
         )
-        val result = controller.updateEori(FormValues("GB123456789012"))(initialBE.some)
-        result shouldBe updatedBE.some
+        val result = controller.updateEori(FormValues("GB123456789012"))(initialBE)
+        result shouldBe updatedBE
       }
 
     }
