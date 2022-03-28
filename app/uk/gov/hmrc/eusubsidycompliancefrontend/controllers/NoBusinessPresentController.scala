@@ -51,9 +51,7 @@ class NoBusinessPresentController @Inject() (
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       for {
-        _ <- store.update[BusinessEntityJourney] { businessEntityJourneyOpt =>
-          businessEntityJourneyOpt.map(_.copy(isLeadSelectJourney = true.some))
-        }
+        _ <- store.update2[BusinessEntityJourney](_.copy(isLeadSelectJourney = true.some))
       } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
     }
 
