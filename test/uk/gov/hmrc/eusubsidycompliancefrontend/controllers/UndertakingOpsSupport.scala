@@ -1,6 +1,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -51,5 +51,27 @@ trait UndertakingOpsSupport { this: ControllerSpec =>
     (mockEscService
       .removeMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
       .expects(undertakingRef, businessEntity, *)
+      .returning(result.fold(e => Future.failed(e), _.toFuture))
+
+  def mockCreateSubsidy(reference: UndertakingRef, subsidyUpdate: SubsidyUpdate)(
+    result: Either[ConnectorError, UndertakingRef]
+  ) =
+    (mockEscService
+      .createSubsidy(_: UndertakingRef, _: SubsidyUpdate)(_: HeaderCarrier))
+      .expects(reference, subsidyUpdate, *)
+      .returning(result.fold(e => Future.failed(e), _.toFuture))
+
+  def mockRetrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(result: Future[UndertakingSubsidies]) =
+    (mockEscService
+      .retrieveSubsidy(_: SubsidyRetrieve)(_: HeaderCarrier))
+      .expects(subsidyRetrieve, *)
+      .returning(result)
+
+  def mockRemoveSubsidy(reference: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(
+    result: Either[ConnectorError, UndertakingRef]
+  ) =
+    (mockEscService
+      .removeSubsidy(_: UndertakingRef, _: NonHmrcSubsidy)(_: HeaderCarrier))
+      .expects(reference, nonHmrcSubsidy, *)
       .returning(result.fold(e => Future.failed(e), _.toFuture))
 }

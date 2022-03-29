@@ -30,9 +30,8 @@ class NoBusinessPresentControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
-    with LeadOnlyRedirectSupport {
-
-  private val mockEscService = mock[EscService]
+    with LeadOnlyRedirectSupport
+    with UndertakingOpsSupport {
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
@@ -83,7 +82,9 @@ class NoBusinessPresentControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking1.some))
-            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1), eori1)(
+              Left(ConnectorError(exception))
+            )
           }
           assertThrows[Exception](await(performAction()))
 

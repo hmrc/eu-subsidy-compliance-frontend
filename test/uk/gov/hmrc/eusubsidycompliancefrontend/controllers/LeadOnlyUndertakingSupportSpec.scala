@@ -37,8 +37,13 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, eori3
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory with ScalaFutures with Matchers
-  with JourneyStoreSupport {
+class LeadOnlyUndertakingSupportSpec
+    extends AnyWordSpecLike
+    with MockFactory
+    with ScalaFutures
+    with Matchers
+    with JourneyStoreSupport
+    with UndertakingOpsSupport {
 
   private val mockEscService = mock[EscService]
 
@@ -135,14 +140,7 @@ class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory wi
         runTest()
       }
     }
-
   }
-
-  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result)
 
   private def authorisedRequestForEori(e: EORI) = AuthenticatedEscRequest(
     "Foo",

@@ -40,11 +40,9 @@ class SelectNewLeadControllerSpec
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with EmailSupport
-    with SendEmailSupport
     with AuditServiceSupport
-    with LeadOnlyRedirectSupport {
-
-  private val mockEscService = mock[EscService]
+    with LeadOnlyRedirectSupport
+    with UndertakingOpsSupport {
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),

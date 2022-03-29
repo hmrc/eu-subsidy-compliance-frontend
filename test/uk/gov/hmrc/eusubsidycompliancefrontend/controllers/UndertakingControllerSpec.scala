@@ -46,7 +46,6 @@ class UndertakingControllerSpec
     with AuthAndSessionDataBehaviour
     with JourneySupport
     with EmailSupport
-    with SendEmailSupport
     with AuditServiceSupport
     with UndertakingOpsSupport
     with TimeProviderSupport {

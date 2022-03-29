@@ -37,15 +37,15 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{undertaking,
 
 import java.time.LocalDate
 
-class FinancialDashboardControllerSpec extends ControllerSpec
-  with AuthSupport
-  with JourneyStoreSupport
-  with AuthAndSessionDataBehaviour
-  with Matchers
-  with ScalaFutures
-  with IntegrationPatience {
-
-  private val mockEscService = mock[EscService]
+class FinancialDashboardControllerSpec
+    extends ControllerSpec
+    with AuthSupport
+    with JourneyStoreSupport
+    with AuthAndSessionDataBehaviour
+    with Matchers
+    with ScalaFutures
+    with IntegrationPatience
+    with UndertakingOpsSupport {
 
   private val fakeTimeProvider = FakeTimeProvider.withFixedDate(1, 1, 2022)
 
@@ -53,13 +53,15 @@ class FinancialDashboardControllerSpec extends ControllerSpec
     inject.bind[AuthConnector].toInstance(mockAuthConnector),
     inject.bind[Store].toInstance(mockJourneyStore),
     inject.bind[EscService].toInstance(mockEscService),
-    inject.bind[TimeProvider].toInstance(fakeTimeProvider),
+    inject.bind[TimeProvider].toInstance(fakeTimeProvider)
   )
 
-  override def additionalConfig = Configuration.from(Map(
-    // Disable CSP n=once hashes in rendered output
-    "play.filters.csp.nonce.enabled" -> false,
-  ))
+  override def additionalConfig = Configuration.from(
+    Map(
+      // Disable CSP n=once hashes in rendered output
+      "play.filters.csp.nonce.enabled" -> false
+    )
+  )
 
   "FinancialDashboardController" when {
 
@@ -69,7 +71,8 @@ class FinancialDashboardControllerSpec extends ControllerSpec
         mockAuthWithNecessaryEnrolment()
         mockGet(eori)(Right(Some(undertaking)))
 
-        (mockEscService.retrieveSubsidy(_: SubsidyRetrieve)(_: HeaderCarrier))
+        (mockEscService
+          .retrieveSubsidy(_: SubsidyRetrieve)(_: HeaderCarrier))
           .expects(*, *)
           .returning(undertakingSubsidies.toFuture)
 

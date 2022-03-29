@@ -40,7 +40,9 @@ class NoClaimNotificationControllerSpec
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with AuditServiceSupport
-    with LeadOnlyRedirectSupport {
+    with LeadOnlyRedirectSupport
+    with UndertakingOpsSupport
+    with TimeProviderSupport {
 
   private val mockEscService = mock[EscService]
   private val mockTimeProvider = mock[TimeProvider]
@@ -119,7 +121,7 @@ class NoClaimNotificationControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockTimeProviderToday(currentDay)
+            mockTimeToday(currentDay)
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
@@ -129,7 +131,7 @@ class NoClaimNotificationControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockTimeProviderToday(currentDay)
+            mockTimeToday(currentDay)
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
             mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
               Left(ConnectorError(exception))
@@ -161,7 +163,7 @@ class NoClaimNotificationControllerSpec
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGet[Undertaking](eori1)(Right(undertaking.some))
-          mockTimeProviderToday(currentDay)
+          mockTimeToday(currentDay)
           mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
           mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
             Right(undertakingRef)
@@ -172,22 +174,8 @@ class NoClaimNotificationControllerSpec
           performAction("noClaimNotification" -> "true"),
           routes.AccountController.getAccountPage().url
         )
-
       }
-
     }
-
   }
-
-  private def mockCreateSubsidy(reference: UndertakingRef, subsidyUpdate: SubsidyUpdate)(
-    result: Either[ConnectorError, UndertakingRef]
-  ) =
-    (mockEscService
-      .createSubsidy(_: UndertakingRef, _: SubsidyUpdate)(_: HeaderCarrier))
-      .expects(reference, subsidyUpdate, *)
-      .returning(result.fold(e => Future.failed(e), _.toFuture))
-
-  private def mockTimeProviderToday(today: LocalDate) =
-    (mockTimeProvider.today _).expects().returning(today)
 
 }
