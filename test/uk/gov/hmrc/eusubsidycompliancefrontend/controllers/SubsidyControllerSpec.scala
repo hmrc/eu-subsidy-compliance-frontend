@@ -844,6 +844,18 @@ class SubsidyControllerSpec
         }
       }
 
+      "show form error" when {
+
+        "nothing is entered" in {
+          displayError("claim-public-authority" -> "")("error.claim-public-authority.required")
+
+        }
+
+        "public authority entered is more than 150 chars" in {
+          displayError("claim-public-authority" -> "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890")("error.publicAuthority.tooManyChars")
+        }
+      }
+
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {
           testLeadOnlyRedirect(() => performAction())
