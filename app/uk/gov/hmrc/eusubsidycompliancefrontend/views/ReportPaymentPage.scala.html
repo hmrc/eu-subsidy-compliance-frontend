@@ -91,9 +91,13 @@
                   Seq(
                   TableRow(content = Text(sub.allocationDate.toShortDisplayFormat)),
                       TableRow(content = Text(sub.nonHMRCSubsidyAmtEUR.toEuros)),
-                      TableRow(content = Text(sub.businessEntityIdentifier.getOrElse(""))),
-                      TableRow(content = Text(sub.publicAuthority.getOrElse(""))),
-                      TableRow(content = Text(sub.traderReference.getOrElse(""))),
+                      TableRow(content = sub.businessEntityIdentifier.fold(HtmlContent("&nbsp;"))(Text(_))),
+                      TableRow(content = if(sub.publicAuthority.isDefined) {Text(
+                          sub.publicAuthority.getOrElse("")
+                      )} else {HtmlContent("&nbsp;")}),
+                      TableRow(content = if(sub.traderReference.isDefined) {Text(
+                          sub.traderReference.getOrElse("")
+                      )} else {HtmlContent("&nbsp;")}),
                       TableRow(
                           content = HtmlContent(s"<a class='govuk-link' href=${controllers.routes.SubsidyController.getChangeSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>Change</a>"),
                           classes="responsive-nopad"
