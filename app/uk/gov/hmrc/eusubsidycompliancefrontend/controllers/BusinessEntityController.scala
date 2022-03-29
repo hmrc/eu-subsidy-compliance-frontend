@@ -258,7 +258,7 @@ class BusinessEntityController @Inject() (
             removeBusinessForm
               .bindFromRequest()
               .fold(
-                errors => Future.successful(BadRequest(removeBusinessPage(errors, removeBE))),
+                errors => BadRequest(removeBusinessPage(errors, removeBE)).toFuture,
                 success = form => {
                   form.value match {
                     case "true" =>
@@ -308,7 +308,7 @@ class BusinessEntityController @Inject() (
         removeYourselfBusinessForm
           .bindFromRequest()
           .fold(
-            errors => Future.successful(BadRequest(removeYourselfBEPage(errors, removeBE, previous, undertaking.name))),
+            errors => BadRequest(removeYourselfBEPage(errors, removeBE, previous, undertaking.name)).toFuture,
             form =>
               form.value match {
                 case "true" =>

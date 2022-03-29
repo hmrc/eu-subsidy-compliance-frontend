@@ -33,6 +33,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRe
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages.{BecomeLeadEoriFormPage, TermsAndConditionsFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
@@ -87,7 +88,7 @@ class BecomeLeadControllerSpec
     (mockEscService
       .addMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
       .expects(undertakingRef, businessEntity, *)
-      .returning(result.fold(e => Future.failed(e), Future.successful))
+      .returning(result.fold(e => Future.failed(e), _.toFuture))
 
   "BecomeLeadControllerSpec" when {
 
@@ -111,7 +112,7 @@ class BecomeLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[BecomeLeadJourney](eori1)(Right(None))
-            mockRetrieveUndertaking(eori1)(Future.successful(None))
+            mockRetrieveUndertaking(eori1)(None.toFuture)
           }
           assertThrows[Exception](await(performAction()))
 
@@ -124,7 +125,7 @@ class BecomeLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[BecomeLeadJourney](eori1)(Right(None))
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             mockPut[BecomeLeadJourney](newBecomeLeadJourney, eori)(Right(newBecomeLeadJourney))
           }
           checkPageIsDisplayed(
@@ -150,7 +151,7 @@ class BecomeLeadControllerSpec
                   .some
               )
             )
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking1.some))
+            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
           }
           checkPageIsDisplayed(
             performAction(),
@@ -191,19 +192,19 @@ class BecomeLeadControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(None))
+            mockRetrieveUndertaking(eori1)(None.toFuture)
           }
           assertThrows[Exception](await(performAction("badForm" -> "true")))
         }
 
-    }
+      }
 
       "Bad request" when {
         "form is incorrect" in {
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(Future.successful(Some(undertaking)))
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           }
           status(performAction("badForm" -> "true")) shouldBe BAD_REQUEST
         }
@@ -218,7 +219,9 @@ class BecomeLeadControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
           }
-          redirectLocation(performAction("becomeAdmin" -> "true")) shouldBe Some(routes.BecomeLeadController.getAcceptPromotionTerms().url)
+          redirectLocation(performAction("becomeAdmin" -> "true")) shouldBe Some(
+            routes.BecomeLeadController.getAcceptPromotionTerms().url
+          )
         }
 
         "redirect to account homepage when user submits false" in {
@@ -229,7 +232,9 @@ class BecomeLeadControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
           }
-          redirectLocation(performAction("becomeAdmin" -> "false")) shouldBe Some(routes.AccountController.getAccountPage().url)
+          redirectLocation(performAction("becomeAdmin" -> "false")) shouldBe Some(
+            routes.AccountController.getAccountPage().url
+          )
         }
       }
     }
@@ -332,7 +337,7 @@ class BecomeLeadControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
-            mockRetrieveUndertaking(eori4)(Future.successful(None))
+            mockRetrieveUndertaking(eori4)(None.toFuture)
           }
           assertThrows[Exception](await(performAction()(English.code)))
         }
@@ -341,7 +346,7 @@ class BecomeLeadControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
-            mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.copy(reference = None).some))
+            mockRetrieveUndertaking(eori4)(undertaking1.copy(reference = None).some.toFuture)
           }
           assertThrows[Exception](await(performAction()(English.code)))
         }
@@ -351,7 +356,7 @@ class BecomeLeadControllerSpec
             mockAuthWithEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
             mockRetrieveUndertaking(eori4)(
-              Future.successful(undertaking1.copy(undertakingBusinessEntity = List(businessEntity1)).some)
+              (undertaking1.copy(undertakingBusinessEntity = List(businessEntity1)).some).toFuture
             )
           }
           assertThrows[Exception](await(performAction()(English.code)))
@@ -362,7 +367,7 @@ class BecomeLeadControllerSpec
             mockAuthWithEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
             mockRetrieveUndertaking(eori4)(
-              Future.successful(undertaking1.copy(undertakingBusinessEntity = List(businessEntity4)).some)
+              undertaking1.copy(undertakingBusinessEntity = List(businessEntity4)).some.toFuture
             )
           }
           assertThrows[Exception](await(performAction()(English.code)))
@@ -372,7 +377,7 @@ class BecomeLeadControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
-            mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()(English.code)))
@@ -382,7 +387,7 @@ class BecomeLeadControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
-            mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Left(ConnectorError(exception)))
           }
@@ -393,7 +398,7 @@ class BecomeLeadControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
-            mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
             mockRetrieveEmail(eori4)(Left(ConnectorError(exception)))
@@ -408,7 +413,7 @@ class BecomeLeadControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
-            mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -424,7 +429,7 @@ class BecomeLeadControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
-            mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -446,7 +451,7 @@ class BecomeLeadControllerSpec
             mockGet[BecomeLeadJourney](eori4)(
               Right(newBecomeLeadJourney.copy(acceptTerms = TermsAndConditionsFormPage(true.some)).some)
             )
-            mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -493,7 +498,7 @@ class BecomeLeadControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
-            mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -518,7 +523,7 @@ class BecomeLeadControllerSpec
 
     "handling request to post Promotion Confirmation" must {
 
-      def performAction() = controller.postAcceptPromotionTerms(FakeRequest() )
+      def performAction() = controller.postAcceptPromotionTerms(FakeRequest())
 
       "redirect" when {
 
@@ -531,13 +536,12 @@ class BecomeLeadControllerSpec
           }
           redirectLocation(performAction()) shouldBe routes.BecomeLeadController.getPromotionConfirmation().url.some
         }
-       }
+      }
     }
-
 
     "handling request to getPromotionCleanup" must {
 
-      def performAction() = controller.getPromotionCleanup(FakeRequest() )
+      def performAction() = controller.getPromotionCleanup(FakeRequest())
 
       "redirect" when {
 

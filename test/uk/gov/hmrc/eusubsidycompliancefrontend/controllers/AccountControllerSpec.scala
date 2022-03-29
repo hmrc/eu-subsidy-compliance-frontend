@@ -79,7 +79,7 @@ class AccountControllerSpec
         result
           .fold(
             e => Future.failed(e),
-            Future.successful
+            _.toFuture
           )
       }
 
@@ -102,7 +102,7 @@ class AccountControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
             mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
@@ -171,7 +171,7 @@ class AccountControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
             mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
@@ -209,7 +209,7 @@ class AccountControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
             mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
@@ -303,7 +303,7 @@ class AccountControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori4)
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockPut[Undertaking](undertaking1, eori4)(Right(undertaking1))
             mockGet[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete.some))
             mockGet[UndertakingJourney](eori4)(Right(UndertakingJourney().some))
@@ -444,7 +444,7 @@ class AccountControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockRetrieveUndertaking(eori1)(Future.successful(undertaking.some))
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockPut[Undertaking](undertaking, eori1)(Left(ConnectorError(exception)))
 
           }
@@ -491,7 +491,7 @@ class AccountControllerSpec
               inSequence {
                 mockAuthWithNecessaryEnrolment()
                 mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-                mockRetrieveUndertaking(eori1)(Future.successful(None))
+                mockRetrieveUndertaking(eori1)(None.toFuture)
                 mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
                 mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
                 mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
@@ -503,7 +503,7 @@ class AccountControllerSpec
               inSequence {
                 mockAuthWithNecessaryEnrolment()
                 mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-                mockRetrieveUndertaking(eori1)(Future.successful(None))
+                mockRetrieveUndertaking(eori1)(None.toFuture)
                 mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
                 mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1.some))
                 mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))

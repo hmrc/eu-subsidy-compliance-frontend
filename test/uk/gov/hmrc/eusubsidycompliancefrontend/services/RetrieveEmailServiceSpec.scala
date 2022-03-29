@@ -27,6 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
@@ -41,7 +42,7 @@ class RetrieveEmailServiceSpec extends AnyWordSpec with Matchers with MockFactor
     (mockRetrieveEmailConnector
       .retrieveEmailByEORI(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
-      .returning(Future.successful(result))
+      .returning(result.toFuture)
 
   private val emptyHeaders = Map.empty[String, Seq[String]]
 

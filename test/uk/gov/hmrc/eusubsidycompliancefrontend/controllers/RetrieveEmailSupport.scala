@@ -20,6 +20,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.RetrieveEmailRespons
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.RetrieveEmailService
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -32,5 +33,5 @@ trait RetrieveEmailSupport { this: ControllerSpec =>
     (mockRetrieveEmailService
       .retrieveEmailByEORI(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
-      .returning(result.fold(e => Future.failed(e), Future.successful))
+      .returning(result.fold(e => Future.failed(e), _.toFuture))
 }

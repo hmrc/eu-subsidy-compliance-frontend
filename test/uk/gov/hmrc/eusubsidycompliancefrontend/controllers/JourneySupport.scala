@@ -22,6 +22,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{Journey, JourneyTraverseService}
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.Future
 import scala.reflect.ClassTag
@@ -34,6 +35,6 @@ trait JourneySupport { this: ControllerSpec =>
     (mockJourneyTraverseService
       .getPrevious(_: ClassTag[A], _: EORI, _: Request[_], _: Reads[A]))
       .expects(*, eori, *, *)
-      .returning(result.fold(e => Future.failed(e), Future.successful))
+      .returning(result.fold(e => Future.failed(e), _.toFuture))
 
 }

@@ -105,7 +105,7 @@ class EligibilityController @Inject() (
     eoriCheckForm
       .bindFromRequest()
       .fold(
-        errors => Future.successful(BadRequest(checkEoriPage(errors, eori))),
+        errors => BadRequest(checkEoriPage(errors, eori)).toFuture,
         form => store.update[EligibilityJourney](_.setEoriCheck(form.value.toBoolean)).flatMap(_.next)
       )
 
@@ -130,7 +130,7 @@ class EligibilityController @Inject() (
       customsWaiversForm
         .bindFromRequest()
         .fold(
-          errors => Future.successful(BadRequest(customsWaiversPage(errors, previous))),
+          errors => BadRequest(customsWaiversPage(errors, previous)).toFuture,
           form => store.update[EligibilityJourney](_.setCustomsWaiver(form.value.toBoolean)).flatMap(_.next)
         )
     }
@@ -155,7 +155,7 @@ class EligibilityController @Inject() (
       willYouClaimForm
         .bindFromRequest()
         .fold(
-          errors => Future.successful(BadRequest(willYouClaimPage(errors, previous))),
+          errors => BadRequest(willYouClaimPage(errors, previous)).toFuture,
           form => store.update[EligibilityJourney](_.setWillYouClaim(form.value.toBoolean)).flatMap(_.next)
         )
     }
@@ -186,7 +186,7 @@ class EligibilityController @Inject() (
         mainBusinessCheckForm
           .bindFromRequest()
           .fold(
-            errors => Future.successful(BadRequest(mainBusinessCheckPage(errors, eori, previous))),
+            errors => BadRequest(mainBusinessCheckPage(errors, eori, previous)).toFuture,
             form => store.update[EligibilityJourney](_.setMainBusinessCheck(form.value.toBoolean)).flatMap(_.next)
           )
       }
@@ -219,7 +219,7 @@ class EligibilityController @Inject() (
   }
 
   def getIncorrectEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    Future.successful(Ok(incorrectEoriPage()))
+    Ok(incorrectEoriPage()).toFuture
   }
 
   def getCreateUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>

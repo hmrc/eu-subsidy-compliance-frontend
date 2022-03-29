@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, ConnectorError}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SendEmailService
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
@@ -26,13 +27,11 @@ trait SendEmailSupport { this: ControllerSpec =>
 
   val mockSendEmailService = mock[SendEmailService]
 
-  def mockSendEmail(emailAddress: EmailAddress, emailParameters: EmailParameters, templateId: String)(result: Either[ConnectorError, EmailSendResult]) =
+  def mockSendEmail(emailAddress: EmailAddress, emailParameters: EmailParameters, templateId: String)(
+    result: Either[ConnectorError, EmailSendResult]
+  ) =
     (mockSendEmailService
       .sendEmail(_: EmailAddress, _: EmailParameters, _: String)(_: HeaderCarrier))
       .expects(emailAddress, emailParameters, templateId, *)
-      .returning(result.fold(e => Future.failed(e), Future.successful))
+      .returning(result.fold(e => Future.failed(e), _.toFuture))
 }
-
-
-
-

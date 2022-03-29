@@ -27,6 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
@@ -69,7 +70,7 @@ class BecomeLeadController @Inject() (
     (becomeLeadJourneyOpt, undertakingOpt) match {
       case (Some(journey), Some(undertaking)) =>
         val form = journey.becomeLeadEori.value.fold(becomeAdminForm)(e => becomeAdminForm.fill(FormValues(e.toString)))
-        Future.successful(Ok(becomeAdminPage(form, undertaking.name, eori)))
+        Ok(becomeAdminPage(form, undertaking.name, eori)).toFuture
       case (None, Some(undertaking)) => // initialise the empty Journey model
         store.put(BecomeLeadJourney()).map { _ =>
           Ok(becomeAdminPage(becomeAdminForm, undertaking.name, eori))
