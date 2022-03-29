@@ -203,8 +203,6 @@ undertaking.confirmation.p2=We have sent you a confirmation email, which include
 undertaking.confirmation.p3=You must tell HMRC about all de minimis aid payments (less Customs Duty waivers), and those of any businesses in {0}, received during the current tax year and previous 2 tax years, from all UK public authorities, including central and local government.
 undertaking.confirmation.p4=If you have any other businesses, you must add them to {0}.
 
-businessEntityEori.eoriInUse.error=This EORI is in use.
-
 lead-account-homepage.title = {0}
 lead-account-homepage.warning=This service is only to report payments, not claim payments. You must report any de minimis aid payments (less Customs Duty waivers) received as soon as possible. If you do not report a de minimis aid payment (less Customs Duty waivers) every 90 days (or notify HMRC that you have not received any payments in that 90-day period), you will be ineligible to claim Customs Duty waivers.
 lead-account-homepage.inset=Your next entry is due by {0}. You can report de minimis aid payment, or let HMRC know that you have not received any, by following the links in the Payments received section below.

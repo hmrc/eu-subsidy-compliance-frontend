@@ -461,8 +461,8 @@ class BusinessEntityControllerSpec
 
         "eori submitted is not stored in SMTP" in {
           testEORIvalidation("businessEntityEori" -> "123456789010")(
-            Left(UpstreamErrorResponse("EORi not preent in SMTP", 406)),
-            "businessEntityEori.eoriInUse"
+            Left(UpstreamErrorResponse("EORI not present in SMTP", 406)),
+            "error.businessEntityEori.required"
           )
         }
 
