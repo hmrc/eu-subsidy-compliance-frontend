@@ -254,17 +254,17 @@ add-claim-amount.error.real = Enter number value of subsidy allocated in Euros, 
 
 add-claim-date.title=What date were you awarded the payment?
 add-claim-date.hint=For example, 27 07 2020
-add-claim-date.error.date.emptyfields=Enter a real date, like 23 11 2019
-add-claim-date.error.day.missing=The date you received your payment must include a day, like 23 11 2019
-add-claim-date.error.day-and-month.missing=The date you received your payment must include a day and month, like 23 11 2019
-add-claim-date.error.day-and-year.missing=The date you received your payment must include a day and year, like 23 11 2019
-add-claim-date.error.month.missing=The date you received your payment must include a month, like 23 11 2019
-add-claim-date.error.month-and-year.missing=The date you received your payment must include a month and year, like 23 11 2019
-add-claim-date.error.year.missing=The date you received your payment must include a year, like 23 11 2019
+add-claim-date.error.date.emptyfields=Enter the date you were awarded the payment
+add-claim-date.error.day.missing=The date you were awarded the payment must include a day
+add-claim-date.error.day-and-month.missing=The date you were awarded the payment must include a day and month
+add-claim-date.error.day-and-year.missing=The date you were awarded the payment must include a day and year
+add-claim-date.error.month.missing=The date you were awarded the payment must include a month
+add-claim-date.error.month-and-year.missing=The date you were awarded the payment must include a month and year
+add-claim-date.error.year.missing=The date you were awarded the payment must include a year
 add-claim-date.error.date.invalidentry=Enter a real date, like 23 11 2019
 add-claim-date.error.date.invalid=Enter a real date, like 23 11 2019
-add-claim-date.error.date.outside-allowed-tax-year-range = Enter the date you received payment. Date must be {0}, or later.
-add-claim-date.error.date.in-future = Enter a date within the current tax year, or the previous two (between {0} and {1})
+add-claim-date.error.date.outside-allowed-tax-year-range = Enter the date you were awarded the payment. Date must be {0}, or later.
+add-claim-date.error.date.in-future = The date you were awarded the payment must be in the past
 
 add-claim-public-authority.title=Which public authority granted the payment?
 add-claim-public-authority.hint=For example, Invest NI, NI Direct.
