@@ -28,6 +28,8 @@ case class NilReturnJourney(nilReturn: NilReturnFormPage = NilReturnFormPage(), 
   def hasNilJourneyStarted = nilReturnCounter == 1 //means user has clicked on the check box to do nil return submission
   def isNilJourneyDoneRecently =
     nilReturnCounter == 2 //means the page previous to current page was to submit the nil return
+
+  def setNilReturnValues(b: Boolean) = this.copy(nilReturn = nilReturn.copy(value = Some(b)), nilReturnCounter = 1)
 }
 
 object NilReturnJourney {
