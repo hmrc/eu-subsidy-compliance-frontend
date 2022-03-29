@@ -131,7 +131,7 @@ class EligibilityController @Inject() (
         .bindFromRequest()
         .fold(
           errors => Future.successful(BadRequest(customsWaiversPage(errors, previous))),
-          form => store.update[EligibilityJourney](_.setCustomWaiver(form.value.toBoolean)).flatMap(_.next)
+          form => store.update[EligibilityJourney](_.setCustomsWaiver(form.value.toBoolean)).flatMap(_.next)
         )
     }
   }

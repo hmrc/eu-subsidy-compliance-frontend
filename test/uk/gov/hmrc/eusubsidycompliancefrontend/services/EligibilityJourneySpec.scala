@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
+import cats.implicits.catsSyntaxOptionId
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.{CustomsWaiversFormPage, EoriCheckFormPage, MainBusinessCheckFormPage, WillYouClaimFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.{AcceptTermsFormPage, CreateUndertakingFormPage, CustomsWaiversFormPage, EoriCheckFormPage, MainBusinessCheckFormPage, WillYouClaimFormPage}
 
 class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
 
@@ -106,6 +107,39 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
 
     }
 
+    "set methods are called" should {
+
+      "return an updated instance with the specified WillYouClaim boolean value" in {
+        EligibilityJourney().setWillYouClaim(true) shouldBe
+          EligibilityJourney(willYouClaim = WillYouClaimFormPage(true.some))
+      }
+
+      "return an updated instance with the specified CustomsWaiver boolean value" in {
+        EligibilityJourney().setCustomsWaiver(true) shouldBe
+          EligibilityJourney(customsWaivers = CustomsWaiversFormPage(true.some))
+      }
+
+      "return an updated instance with the specified MainBusinessCheck boolean value" in {
+        EligibilityJourney().setMainBusinessCheck(true) shouldBe
+          EligibilityJourney(mainBusinessCheck = MainBusinessCheckFormPage(true.some))
+      }
+
+      "return an updated instance with the specified AcceptTerms boolean value" in {
+        EligibilityJourney().setAcceptTerms(true) shouldBe
+          EligibilityJourney(acceptTerms = AcceptTermsFormPage(true.some))
+      }
+
+      "return an updated instance with the specified EoriCheck boolean value" in {
+        EligibilityJourney().setEoriCheck(true) shouldBe
+          EligibilityJourney(eoriCheck = EoriCheckFormPage(true.some))
+      }
+
+      "return an updated instance with the specified CreateUndertaking boolean value" in {
+        EligibilityJourney().setCreateUndertaking(true) shouldBe
+          EligibilityJourney(createUndertaking = CreateUndertakingFormPage(true.some))
+      }
+
+    }
   }
 
 }

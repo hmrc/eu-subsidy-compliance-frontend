@@ -59,7 +59,7 @@ case class EligibilityJourney(
   def setWillYouClaim(newWillYouClaim: Boolean): EligibilityJourney =
     this.copy(willYouClaim = willYouClaim.copy(value = Some(newWillYouClaim)))
 
-  def setCustomWaiver(newCustomWaiver: Boolean): EligibilityJourney =
+  def setCustomsWaiver(newCustomWaiver: Boolean): EligibilityJourney =
     this.copy(customsWaivers = customsWaivers.copy(value = Some(newCustomWaiver)))
 
   def setMainBusinessCheck(newMainBusinessCheck: Boolean): EligibilityJourney =
