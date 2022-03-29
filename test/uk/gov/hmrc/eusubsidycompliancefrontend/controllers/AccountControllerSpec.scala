@@ -31,7 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, 
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{undertaking, _}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -203,9 +203,7 @@ class AccountControllerSpec
           currentDate: LocalDate
         ): Unit = {
 
-          def update(njOpt: Option[NilReturnJourney]) = njOpt.map { nj =>
-            nj.copy(nilReturnCounter = nj.nilReturnCounter + 1)
-          }
+          def update(nj: NilReturnJourney) = nj.copy(nilReturnCounter = nj.nilReturnCounter + 1)
           val updatedNJ = nilReturnJourney.copy(nilReturnCounter = nilReturnJourney.nilReturnCounter + 1)
 
           inSequence {
@@ -218,7 +216,7 @@ class AccountControllerSpec
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockTimeProviderToday(currentDate)
             mockGet[NilReturnJourney](eori1)(Right(nilReturnJourney.some))
-            mockUpdate[NilReturnJourney](_ => update(nilReturnJourney.some), eori1)(Right(updatedNJ))
+            mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNJ))
           }
           checkPageIsDisplayed(
             performAction(),

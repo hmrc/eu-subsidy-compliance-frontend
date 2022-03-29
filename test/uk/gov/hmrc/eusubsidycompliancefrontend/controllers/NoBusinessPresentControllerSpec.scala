@@ -75,8 +75,7 @@ class NoBusinessPresentControllerSpec
     "handling request to post No Business Pesent" must {
       def performAction() = controller.postNoBusinessPresent(FakeRequest())
 
-      def update(businessEntityOpt: Option[BusinessEntityJourney]) =
-        businessEntityOpt.map(_.copy(isLeadSelectJourney = true.some))
+      def update(j: BusinessEntityJourney) = j.copy(isLeadSelectJourney = true.some)
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
@@ -84,7 +83,7 @@ class NoBusinessPresentControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking1.some))
-            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1.some), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -95,7 +94,7 @@ class NoBusinessPresentControllerSpec
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGet[Undertaking](eori1)(Right(undertaking1.some))
-          mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1.some), eori1)(
+          mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1), eori1)(
             Right(businessEntityJourney1)
           )
         }

@@ -180,8 +180,7 @@ class EligibilityControllerSpec
 
       val eligibilityJourney = EligibilityJourney(eoriCheck = EoriCheckFormPage(value = true.some))
 
-      def update(eligibilityJourneyOpt: Option[EligibilityJourney]) = eligibilityJourneyOpt
-        .map(_.copy(customsWaivers = CustomsWaiversFormPage(true.some)))
+      def update(ej: EligibilityJourney) = ej.copy(customsWaivers = CustomsWaiversFormPage(true.some))
 
       "throw technical error" when {
 
@@ -197,7 +196,7 @@ class EligibilityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious[EligibilityJourney](eori)(Right(previousUrl))
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("customswaivers" -> "true")))
         }
@@ -225,7 +224,7 @@ class EligibilityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious(eori1)(Right(previousUrl))
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
               Right(eligibilityJourney.copy(customsWaivers = CustomsWaiversFormPage(inputValue.some)))
             )
           }
@@ -245,11 +244,6 @@ class EligibilityControllerSpec
 
       }
 
-      "test for update customer waiver" in {
-        val updatedJourney = eligibilityJourney.copy(customsWaivers = CustomsWaiversFormPage(value = false.some))
-        val result = controller.updateCustomWaiver(false)(eligibilityJourney.some)
-        result shouldBe updatedJourney.some
-      }
     }
 
     "handling request to get will you claim" must {
@@ -334,8 +328,7 @@ class EligibilityControllerSpec
         willYouClaim = WillYouClaimFormPage(false.some)
       )
 
-      def update(ejOpt: Option[EligibilityJourney]) = ejOpt
-        .map(ej => ej.copy(willYouClaim = ej.willYouClaim.copy(value = true.some)))
+      def update(ej: EligibilityJourney) = ej.copy(willYouClaim = ej.willYouClaim.copy(value = true.some))
 
       "throw technical error" when {
 
@@ -352,7 +345,7 @@ class EligibilityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious(eori)(Right(previousUrl))
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("willyouclaim" -> "true")))
         }
@@ -387,7 +380,7 @@ class EligibilityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious(eori)(Right(previousUrl))
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Right(updatedEJ))
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Right(updatedEJ))
           }
 
           checkIsRedirect(
@@ -406,11 +399,6 @@ class EligibilityControllerSpec
 
       }
 
-      "test for update will you claim" in {
-        val updatedJourney = eligibilityJourney.copy(willYouClaim = WillYouClaimFormPage(true.some))
-        val result = controller.updateWillYouClaim(true)(eligibilityJourney.some)
-        result shouldBe updatedJourney.some
-      }
     }
 
     "handling request to get Not eligible" must {
@@ -548,8 +536,8 @@ class EligibilityControllerSpec
       def updatedEligibilityJourney(input: Boolean) =
         eligibilityJourney.copy(mainBusinessCheck = MainBusinessCheckFormPage(input.some))
 
-      def update(ejOpt: Option[EligibilityJourney]) = ejOpt
-        .map(ej => ej.copy(mainBusinessCheck = ej.mainBusinessCheck.copy(value = true.some)))
+      def update(ej: EligibilityJourney) =
+        ej.copy(mainBusinessCheck = ej.mainBusinessCheck.copy(value = true.some))
 
       "throw technical error" when {
 
@@ -566,7 +554,7 @@ class EligibilityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious(eori)(Right(previousUrl))
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("mainbusinesscheck" -> "true")))
         }
@@ -598,7 +586,7 @@ class EligibilityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGetPrevious(eori)(Right(previousUrl))
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
               Right(updatedEligibilityJourney(input))
             )
           }
@@ -615,11 +603,6 @@ class EligibilityControllerSpec
 
       }
 
-      "test for update main business check" in {
-        val updatedJourney = eligibilityJourney.copy(mainBusinessCheck = MainBusinessCheckFormPage(value = true.some))
-        val result = controller.updateMainBusinessCheck(true)(eligibilityJourney.some)
-        result shouldBe updatedJourney.some
-      }
     }
 
     "handling request to get terms" must {
@@ -681,8 +664,7 @@ class EligibilityControllerSpec
         signOut = SignOutFormPage(true.some)
       )
 
-      def update(ejOpt: Option[EligibilityJourney]) = ejOpt
-        .map(ej => ej.copy(acceptTerms = ej.acceptTerms.copy(value = true.some)))
+      def update(ej: EligibilityJourney) = ej.copy(acceptTerms = ej.acceptTerms.copy(value = true.some))
 
       "throw technical error" when {
 
@@ -696,7 +678,7 @@ class EligibilityControllerSpec
         "call to update eligibility journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("terms" -> "true")))
         }
@@ -707,16 +689,10 @@ class EligibilityControllerSpec
         val updatedJourney = eligibilityJourney.copy(acceptTerms = AcceptTermsFormPage(true.some))
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(Right(updatedJourney))
+          mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Right(updatedJourney))
           mockSendAuditEvent(expectedAuditEvent)
         }
         checkIsRedirect(performAction("terms" -> "true"), routes.EligibilityController.getCreateUndertaking().url)
-      }
-
-      "test for update terms and conditions" in {
-        val updatedJourney = eligibilityJourney.copy(acceptTerms = AcceptTermsFormPage(value = true.some))
-        val result = controller.updateAcceptTerms(true)(eligibilityJourney.some)
-        result shouldBe updatedJourney.some
       }
 
     }
@@ -802,15 +778,14 @@ class EligibilityControllerSpec
             .withFormUrlEncodedBody(data: _*)
         )
 
-      def update(eligibilityJourneyOpt: Option[EligibilityJourney]) = eligibilityJourneyOpt
-        .map(_.copy(customsWaivers = CustomsWaiversFormPage(true.some)))
+      def update(ej: EligibilityJourney) = ej.copy(customsWaivers = CustomsWaiversFormPage(true.some))
 
       "throw technical error" when {
 
         "eligibility journey fail to update" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
               Left(ConnectorError(exception))
             )
           }
@@ -836,7 +811,7 @@ class EligibilityControllerSpec
         def testRedirection(input: Boolean, nextCall: String) =
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
               Right(EligibilityJourney(eoriCheck = EoriCheckFormPage(input.some)))
             )
 
@@ -849,12 +824,6 @@ class EligibilityControllerSpec
         "No is selected" in {
           testRedirection(false, routes.EligibilityController.getIncorrectEori().url)
         }
-      }
-
-      "test for update eori check" in {
-        val updatedJourney = EligibilityJourney().copy(eoriCheck = EoriCheckFormPage(value = true.some))
-        val result = controller.updateEoriCheck(true)(EligibilityJourney().some)
-        result shouldBe updatedJourney.some
       }
 
     }
@@ -922,8 +891,7 @@ class EligibilityControllerSpec
             .withFormUrlEncodedBody(data: _*)
         )
 
-      def update(eligibilityJourneyOpt: Option[EligibilityJourney]) = eligibilityJourneyOpt
-        .map(_.copy(createUndertaking = CreateUndertakingFormPage(true.some)))
+      def update(ej: EligibilityJourney) = ej.copy(createUndertaking = CreateUndertakingFormPage(true.some))
 
       "throw technical error" when {
 
@@ -938,7 +906,7 @@ class EligibilityControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
               Left(ConnectorError(exception))
             )
           }
@@ -951,7 +919,7 @@ class EligibilityControllerSpec
 
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockUpdate[EligibilityJourney](_ => update(eligibilityJourney.some), eori1)(
+          mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
             Right(EligibilityJourney(createUndertaking = CreateUndertakingFormPage(true.some)))
           )
         }
@@ -964,13 +932,6 @@ class EligibilityControllerSpec
 
       }
 
-      "test for update Create Undertaking" in {
-
-        val initialEJ = eligibilityJourney.copy(createUndertaking = CreateUndertakingFormPage())
-        val updatedJourney = initialEJ.copy(createUndertaking = CreateUndertakingFormPage(value = true.some))
-        val result = controller.updateCreateUndertaking(true)(initialEJ.some)
-        result shouldBe updatedJourney.some
-      }
     }
   }
 

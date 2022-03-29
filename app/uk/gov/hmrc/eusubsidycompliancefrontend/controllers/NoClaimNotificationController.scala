@@ -66,7 +66,7 @@ class NoClaimNotificationController @Inject() (
             val nilSubmissionDate = timeProvider.today
             val result = for {
               reference <- undertaking.reference.toContext
-              _ <- store.update[NilReturnJourney](updateNilReturnValues(form)).toContext
+              _ <- store.update[NilReturnJourney](_.setNilReturnValues(form.value.toBoolean)).toContext
               _ <- escService
                 .createSubsidy(reference, SubsidyUpdate(reference, NilSubmissionDate(nilSubmissionDate)))
                 .toContext
@@ -82,14 +82,7 @@ class NoClaimNotificationController @Inject() (
     }
   }
 
-  def updateNilReturnJourney(nrj: Option[NilReturnJourney])(f: NilReturnJourney => NilReturnJourney) =
-    nrj.map(f)
-
-  def updateNilReturnValues(f: FormValues)(nrj: Option[NilReturnJourney]) = updateNilReturnJourney(nrj) { nj =>
-    nj.copy(nilReturn = nj.nilReturn.copy(value = Some(f.value.toBoolean)), nilReturnCounter = 1)
-  }
-
-  lazy val noClaimForm: Form[FormValues] = Form(
+  private val noClaimForm: Form[FormValues] = Form(
     mapping("noClaimNotification" -> mandatory("noClaimNotification"))(FormValues.apply)(FormValues.unapply)
   )
 

@@ -23,12 +23,12 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, FormValues, NilSubmissionDate, SubsidyUpdate, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NilSubmissionDate, SubsidyUpdate, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NilReturnJourney.Forms.NilReturnFormPage
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EscService, NilReturnJourney, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertakingRef}
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -94,9 +94,9 @@ class NoClaimNotificationControllerSpec
       val nilReturnJourney = NilReturnJourney()
       val updatedNilReturnJourney = NilReturnJourney(NilReturnFormPage(true.some), 1)
 
-      def update(nrjOpt: Option[NilReturnJourney]) = nrjOpt.map { nrj =>
-        nrj.copy(nilReturn = nrj.nilReturn.copy(value = Some(true)), nilReturnCounter = 1)
-      }
+      def update(j: NilReturnJourney) =
+        j.copy(nilReturn = j.nilReturn.copy(value = Some(true)), nilReturnCounter = 1)
+
       def performAction(data: (String, String)*) = controller
         .postNoClaimNotification(
           FakeRequest()
@@ -110,9 +110,7 @@ class NoClaimNotificationControllerSpec
         val nilReturnJourney = NilReturnJourney()
         val updatedNilReturnJourney = NilReturnJourney(NilReturnFormPage(true.some), 1)
 
-        def update(nrjOpt: Option[NilReturnJourney]) = nrjOpt.map { nrj =>
-          nrj.copy(nilReturn = nrj.nilReturn.copy(value = Some(true)), nilReturnCounter = 1)
-        }
+        def update(j: NilReturnJourney) = j.copy(nilReturn = j.nilReturn.copy(value = Some(true)), nilReturnCounter = 1)
 
         val exception = new Exception("oh no")
 
@@ -121,8 +119,7 @@ class NoClaimNotificationControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockTimeProviderToday(currentDay)
-            mockUpdate[NilReturnJourney](_ => update(nilReturnJourney.some), eori1)(Left(ConnectorError(exception)))
-
+            mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
         }
@@ -132,7 +129,7 @@ class NoClaimNotificationControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockTimeProviderToday(currentDay)
-            mockUpdate[NilReturnJourney](_ => update(nilReturnJourney.some), eori1)(Right(updatedNilReturnJourney))
+            mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
             mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
               Left(ConnectorError(exception))
             )
@@ -164,7 +161,7 @@ class NoClaimNotificationControllerSpec
           mockAuthWithNecessaryEnrolment()
           mockGet[Undertaking](eori1)(Right(undertaking.some))
           mockTimeProviderToday(currentDay)
-          mockUpdate[NilReturnJourney](_ => update(nilReturnJourney.some), eori1)(Right(updatedNilReturnJourney))
+          mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
           mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
             Right(undertakingRef)
           )
@@ -175,13 +172,6 @@ class NoClaimNotificationControllerSpec
           routes.AccountController.getAccountPage().url
         )
 
-      }
-
-      "test to update nil return values" in {
-        val initialNilReturnJourney = NilReturnJourney()
-        val updatedNilReturnJourney = NilReturnJourney(nilReturn = NilReturnFormPage(true.some), nilReturnCounter = 1)
-        val result = controller.updateNilReturnValues(FormValues("true"))(initialNilReturnJourney.some)
-        result shouldBe updatedNilReturnJourney.some
       }
 
     }

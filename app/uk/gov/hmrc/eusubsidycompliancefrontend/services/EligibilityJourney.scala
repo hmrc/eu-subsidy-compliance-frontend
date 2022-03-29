@@ -56,6 +56,23 @@ case class EligibilityJourney(
         case _ => false
       }.toArray
 
+  def setWillYouClaim(newWillYouClaim: Boolean): EligibilityJourney =
+    this.copy(willYouClaim = willYouClaim.copy(value = Some(newWillYouClaim)))
+
+  def setCustomsWaiver(newCustomWaiver: Boolean): EligibilityJourney =
+    this.copy(customsWaivers = customsWaivers.copy(value = Some(newCustomWaiver)))
+
+  def setMainBusinessCheck(newMainBusinessCheck: Boolean): EligibilityJourney =
+    this.copy(mainBusinessCheck = mainBusinessCheck.copy(value = Some(newMainBusinessCheck)))
+
+  def setAcceptTerms(newAcceptTerms: Boolean): EligibilityJourney =
+    this.copy(acceptTerms = acceptTerms.copy(value = Some(newAcceptTerms)))
+
+  def setEoriCheck(newEoriCheck: Boolean): EligibilityJourney =
+    this.copy(eoriCheck = eoriCheck.copy(value = Some(newEoriCheck)))
+
+  def setCreateUndertaking(newCreateUndertaking: Boolean): EligibilityJourney =
+    this.copy(createUndertaking = createUndertaking.copy(value = Some(newCreateUndertaking)))
 }
 
 object EligibilityJourney {

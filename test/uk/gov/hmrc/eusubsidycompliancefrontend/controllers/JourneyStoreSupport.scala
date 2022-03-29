@@ -41,9 +41,9 @@ trait JourneyStoreSupport { this: MockFactory =>
       .expects(input, eori, *)
       .returning(result.fold(Future.failed, Future.successful))
 
-  def mockUpdate[A](f: Option[A] => Option[A], eori: EORI)(result: Either[ConnectorError, A]) =
+  def mockUpdate[A](f: A => A, eori: EORI)(result: Either[ConnectorError, A]) =
     (mockJourneyStore
-      .update(_: Option[A] => Option[A])(_: ClassTag[A], _: EORI, _: Format[A]))
+      .update(_: A => A)(_: ClassTag[A], _: EORI, _: Format[A]))
       .expects(*, *, eori, *)
       .returning(result.fold(Future.failed, Future.successful))
 

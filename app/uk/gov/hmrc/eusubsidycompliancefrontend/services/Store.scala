@@ -30,7 +30,7 @@ trait Store {
 
   def put[A](in: A)(implicit eori: EORI, writes: Writes[A]): Future[A]
 
-  def update[A : ClassTag](f: Option[A] => Option[A])(implicit eori: EORI, format: Format[A]): Future[A]
+  def update[A : ClassTag](f: A => A)(implicit eori: EORI, format: Format[A]): Future[A]
 
   def delete[A : ClassTag](implicit eori: EORI): Future[Unit]
 

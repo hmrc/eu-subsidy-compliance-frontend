@@ -94,12 +94,7 @@ class BecomeLeadController @Inject() (
           },
         form =>
           store
-            .update[BecomeLeadJourney] {
-              _.map { becomeLeadJourney =>
-                becomeLeadJourney
-                  .copy(becomeLeadEori = becomeLeadJourney.becomeLeadEori.copy(value = Some(form.value == "true")))
-              }
-            }
+            .update[BecomeLeadJourney](j => j.copy(becomeLeadEori = j.becomeLeadEori.copy(value = Some(form.value == "true"))))
             .flatMap { _ =>
               if (form.value == "true") Future(Redirect(routes.BecomeLeadController.getAcceptPromotionTerms()))
               else Future(Redirect(routes.AccountController.getAccountPage()))
@@ -123,14 +118,8 @@ class BecomeLeadController @Inject() (
   def postAcceptPromotionTerms: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
-      .update[BecomeLeadJourney] {
-        _.map { becomeLeadJourney =>
-          becomeLeadJourney.copy(acceptTerms = becomeLeadJourney.acceptTerms.copy(value = Some(true)))
-        }
-      }
-      .flatMap { _ =>
-        Future(Redirect(routes.BecomeLeadController.getPromotionConfirmation()))
-      }
+      .update[BecomeLeadJourney](j => j.copy(acceptTerms = j.acceptTerms.copy(value = Some(true))))
+      .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getPromotionConfirmation())))
   }
 
   def getPromotionConfirmation: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
@@ -181,15 +170,12 @@ class BecomeLeadController @Inject() (
   def getPromotionCleanup: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
-      .update[BecomeLeadJourney] {
-        _.map(_ => BecomeLeadJourney())
-      }
-      .flatMap { _ =>
-        Future(Redirect(routes.AccountController.getAccountPage()))
-      }
+      .update[BecomeLeadJourney](_ => BecomeLeadJourney())
+      .flatMap(_ => Future(Redirect(routes.AccountController.getAccountPage()))
+    )
   }
 
-  lazy val becomeAdminForm: Form[FormValues] = Form(
+  private val becomeAdminForm: Form[FormValues] = Form(
     mapping("becomeAdmin" -> mandatory("becomeAdmin"))(FormValues.apply)(FormValues.unapply)
   )
 }

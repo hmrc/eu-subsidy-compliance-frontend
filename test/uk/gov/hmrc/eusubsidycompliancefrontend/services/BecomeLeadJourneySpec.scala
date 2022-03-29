@@ -22,7 +22,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 
 class BecomeLeadJourneySpec extends AnyWordSpecLike with Matchers {
 
-  "BecomeLeadJourneySpec" when {
+  "BecomeLeadJourney" when {
 
     "steps is called" should {
 
@@ -35,6 +35,7 @@ class BecomeLeadJourneySpec extends AnyWordSpecLike with Matchers {
         )
       }
     }
+
     "uris correct" should {
 
       "Become lead" in {
@@ -55,5 +56,6 @@ class BecomeLeadJourneySpec extends AnyWordSpecLike with Matchers {
           .url
       }
     }
+
   }
 }

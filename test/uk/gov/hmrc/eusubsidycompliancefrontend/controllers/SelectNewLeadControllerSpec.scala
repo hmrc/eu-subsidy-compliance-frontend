@@ -171,15 +171,14 @@ class SelectNewLeadControllerSpec
         val exception = new Exception("oh no!")
         val emailParamsBE = SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promoteAsLeadEmailToBE")
 
-        def update(newLeadJourneyOpt: Option[NewLeadJourney]) =
-          newLeadJourneyOpt.map(_.copy(selectNewLead = SelectNewLeadFormPage(eori4.some)))
+        def update(j: NewLeadJourney) = j.copy(selectNewLead = SelectNewLeadFormPage(eori4.some))
 
         "call to update new lead journey fails" in {
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
         }
@@ -189,7 +188,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockRetrieveEmail(eori4)(Left(ConnectorError(exception)))
@@ -202,7 +201,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -216,7 +215,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -243,8 +242,7 @@ class SelectNewLeadControllerSpec
 
       "redirect to next page" when {
 
-        def update(newLeadJourneyOpt: Option[NewLeadJourney]): Option[NewLeadJourney] =
-          newLeadJourneyOpt.map(_.copy(selectNewLead = SelectNewLeadFormPage(eori4.some)))
+        def update(j: NewLeadJourney) = j.copy(selectNewLead = SelectNewLeadFormPage(eori4.some))
 
         def testRedirection(templateIdBE: String, templateIdLead: String, lang: String): Unit = {
 
@@ -255,7 +253,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney().some), eori1)(
+            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -292,8 +290,7 @@ class SelectNewLeadControllerSpec
       def performAction() = controller.getLeadEORIChanged(FakeRequest())
       behave like authBehaviour(() => performAction())
 
-      def update(businessEntityJourneyOpt: Option[BusinessEntityJourney]) =
-        businessEntityJourneyOpt.map(_.copy(isLeadSelectJourney = None))
+      def update(b: BusinessEntityJourney) = b.copy(isLeadSelectJourney = None)
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
@@ -334,7 +331,7 @@ class SelectNewLeadControllerSpec
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
             mockUpdate[BusinessEntityJourney](
-              _ => update(businessEntityJourneyLead.copy(eori = AddEoriFormPage(eori4.some)).some),
+              _ => update(businessEntityJourneyLead.copy(eori = AddEoriFormPage(eori4.some))),
               eori1
             )(Left(ConnectorError(exception)))
           }
@@ -352,7 +349,6 @@ class SelectNewLeadControllerSpec
                 update(
                   businessEntityJourneyLead
                     .copy(eori = AddEoriFormPage(eori4.some))
-                    .some
                 ),
               eori1
             )(Right(businessEntityJourneyLead))
@@ -375,7 +371,6 @@ class SelectNewLeadControllerSpec
               update(
                 businessEntityJourneyLead
                   .copy(eori = AddEoriFormPage(eori4.some))
-                  .some
               ),
             eori1
           )(Right(businessEntityJourneyLead))

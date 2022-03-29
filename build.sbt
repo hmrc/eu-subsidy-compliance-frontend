@@ -39,7 +39,7 @@ lazy val microservice = Project(appName, file("."))
     ),
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;.*repositories.*;" +
       ".*BuildInfo.*;.*javascript.*;.*Routes.*;.*GuiceInjector;" +
-      ".*ControllerConfiguration;.*testonly.*;.*syntax.*;.*models.*;.*views.*;.*config.*",
+      ".*ControllerConfiguration;.*testonly.*;.*models.*;.*views.*;.*config.*",
     ScoverageKeys.coverageMinimumStmtTotal := 90,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
