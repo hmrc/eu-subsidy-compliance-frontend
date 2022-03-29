@@ -57,7 +57,6 @@ POST       /lead-undertaking-add-eori                                           
 GET        /lead-undertaking-check-your-answers-business                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getCheckYourAnswers
 POST       /lead-undertaking-check-your-answers-business                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postCheckYourAnswers
 
-GET        /lead-undertaking-update-member/:eori                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.editBusinessEntity(eori)
 GET        /lead-undertaking-remove-business-entity/:eori                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveBusinessEntity(eori)
 POST       /lead-undertaking-remove-business-entity/:eori                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveBusinessEntity(eori)
 

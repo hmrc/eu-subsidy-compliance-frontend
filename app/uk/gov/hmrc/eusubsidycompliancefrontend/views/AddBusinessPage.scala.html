@@ -74,11 +74,6 @@
                   actions = Some(Actions(
                       items = Seq(
                           ActionItem(
-                              href = routes.BusinessEntityController.editBusinessEntity(b.businessEntityIdentifier).toString,
-                              content = HtmlContent(s"<span aria-hidden='true'>${messages("common.change")}</span>"),
-                              visuallyHiddenText = Some(messages("common.change") + " " + messages("addBusiness.change-remove.snippet") + " " + b.businessEntityIdentifier)
-                          ),
-                          ActionItem(
                               href = routes.BusinessEntityController.getRemoveBusinessEntity(b.businessEntityIdentifier).toString,
                               content = HtmlContent(s"<span aria-hidden='true'>${messages("common.remove")}</span>"),
                               visuallyHiddenText = Some(messages("common.remove") + " " + messages("addBusiness.change-remove.snippet") + " " + b.businessEntityIdentifier)

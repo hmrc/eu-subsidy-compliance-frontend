@@ -222,18 +222,6 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def editBusinessEntity(eoriEntered: String): Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    journeyTraverseService.getPrevious[BusinessEntityJourney].flatMap { previous =>
-      withLeadUndertaking { undertaking =>
-        store
-          .put(BusinessEntityJourney.businessEntityJourneyForEori(undertaking.some, EORI(eoriEntered)))
-          .map(_ => Ok(businessEntityCyaPage(eoriEntered, previous)))
-      }
-    }
-
-  }
-
   def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = withAuthenticatedUser.async {
     implicit request =>
       withLeadUndertaking { _ =>
