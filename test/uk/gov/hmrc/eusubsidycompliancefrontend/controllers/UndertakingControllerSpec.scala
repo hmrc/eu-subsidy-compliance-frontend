@@ -30,6 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, Under
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
@@ -76,7 +77,7 @@ class UndertakingControllerSpec
     (mockEscService
       .createUndertaking(_: Undertaking)(_: HeaderCarrier))
       .expects(undertaking, *)
-      .returning(result.fold(e => Future.failed(e), Future.successful))
+      .returning(result.fold(e => Future.failed(e), _.toFuture))
 
   private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
     (mockEscService
@@ -88,7 +89,7 @@ class UndertakingControllerSpec
     (mockEscService
       .updateUndertaking(_: Undertaking)(_: HeaderCarrier))
       .expects(undertaking, *)
-      .returning(result.fold(e => Future.failed(e), Future.successful))
+      .returning(result.fold(e => Future.failed(e), _.toFuture))
 
   private def mockTimeProviderNow(now: LocalDateTime) =
     (mockTimeProvider.now _).expects().returning(now)
@@ -1030,7 +1031,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(name = UndertakingNameFormPage("true".some)))
             )
-            mockRetrieveUndertaking(eori)(Future.successful(None))
+            mockRetrieveUndertaking(eori)(None.toFuture)
           }
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
         }
@@ -1042,7 +1043,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(name = UndertakingNameFormPage("true".some)))
             )
-            mockRetrieveUndertaking(eori)(Future.successful(undertaking1.copy(reference = None).some))
+            mockRetrieveUndertaking(eori)(undertaking1.copy(reference = None).some.toFuture)
           }
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
         }
@@ -1056,7 +1057,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(isAmend = true))
             )
-            mockRetrieveUndertaking(eori)(Future.successful(undertaking1.some))
+            mockRetrieveUndertaking(eori)(undertaking1.some.toFuture)
             mockUpdateUndertaking(updatedUndertaking)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
@@ -1073,7 +1074,7 @@ class UndertakingControllerSpec
           mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
             Right(undertakingJourneyComplete.copy(isAmend = true))
           )
-          mockRetrieveUndertaking(eori)(Future.successful(undertaking1.some))
+          mockRetrieveUndertaking(eori)(undertaking1.some.toFuture)
           mockUpdateUndertaking(updatedUndertaking)(Right(undertakingRef))
           mockSendAuditEvent(
             UndertakingUpdated("1123", eori1, undertakingRef, undertaking1.name, undertaking1.industrySector)

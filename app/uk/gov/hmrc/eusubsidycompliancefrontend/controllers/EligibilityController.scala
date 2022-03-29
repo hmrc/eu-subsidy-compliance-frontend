@@ -29,7 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, Eligibili
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class EligibilityController @Inject() (

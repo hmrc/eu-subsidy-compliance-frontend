@@ -26,6 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NilSubmissionDate, SubsidyUpdate, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NilReturnJourney.Forms.NilReturnFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.HeaderCarrier
@@ -184,7 +185,7 @@ class NoClaimNotificationControllerSpec
     (mockEscService
       .createSubsidy(_: UndertakingRef, _: SubsidyUpdate)(_: HeaderCarrier))
       .expects(reference, subsidyUpdate, *)
-      .returning(result.fold(e => Future.failed(e), Future.successful))
+      .returning(result.fold(e => Future.failed(e), _.toFuture))
 
   private def mockTimeProviderToday(today: LocalDate) =
     (mockTimeProvider.today _).expects().returning(today)

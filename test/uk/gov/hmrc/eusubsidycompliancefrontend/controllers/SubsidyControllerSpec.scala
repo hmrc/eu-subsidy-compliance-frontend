@@ -28,6 +28,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustom
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{SubsidyRef, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
@@ -1051,7 +1052,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies))
+            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies.toFuture)
           }
           assertThrows[Exception](await(performAction(transactionId)))
         }
@@ -1084,7 +1085,7 @@ class SubsidyControllerSpec
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGet[Undertaking](eori1)(Right(undertaking.some))
-          mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies1))
+          mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies1.toFuture)
         }
         checkPageIsDisplayed(
           performAction(transactionId),
@@ -1143,7 +1144,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies1))
+            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies1.toFuture)
             mockRemoveSubsidy(undertakingRef, nonHmrcSubsidyList1.head)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("removeSubsidyClaim" -> "true")("TID1234")))
@@ -1157,7 +1158,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies1))
+            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies1.toFuture)
           }
           checkFormErrorIsDisplayed(
             performAction()("TID1234"),
@@ -1173,7 +1174,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies1))
+            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies1.toFuture)
             mockRemoveSubsidy(undertakingRef, nonHmrcSubsidyList1.head)(Right(undertakingRef))
             mockSendAuditEvent[NonCustomsSubsidyRemoved](AuditEvent.NonCustomsSubsidyRemoved("1123", undertakingRef))
           }
@@ -1433,7 +1434,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking1.some))
-            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies1))
+            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies1.toFuture)
             mockPut[SubsidyJourney](subsidyJourneyWithReportPaymentForm, eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -1445,7 +1446,7 @@ class SubsidyControllerSpec
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGet[Undertaking](eori1)(Right(undertaking1.some))
-          mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(Future.successful(undertakingSubsidies1))
+          mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies1.toFuture)
           mockPut[SubsidyJourney](subsidyJourneyWithReportPaymentForm, eori1)(
             Right(subsidyJourneyWithReportPaymentForm)
           )
@@ -1478,7 +1479,7 @@ class SubsidyControllerSpec
     (mockEscService
       .removeSubsidy(_: UndertakingRef, _: NonHmrcSubsidy)(_: HeaderCarrier))
       .expects(reference, nonHmrcSubsidy, *)
-      .returning(result.fold(e => Future.failed(e), Future.successful))
+      .returning(result.fold(e => Future.failed(e), _.toFuture))
 
   private def mockCreateSubsidy(reference: UndertakingRef, subsidyUpdate: SubsidyUpdate)(
     result: Either[ConnectorError, UndertakingRef]
@@ -1486,7 +1487,7 @@ class SubsidyControllerSpec
     (mockEscService
       .createSubsidy(_: UndertakingRef, _: SubsidyUpdate)(_: HeaderCarrier))
       .expects(reference, subsidyUpdate, *)
-      .returning(result.fold(e => Future.failed(e), Future.successful))
+      .returning(result.fold(e => Future.failed(e), _.toFuture))
 
   private def mockTimeProviderToday(today: LocalDate) =
     (mockTimeProvider.today _).expects().returning(today)

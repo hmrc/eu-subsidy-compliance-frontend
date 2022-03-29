@@ -23,6 +23,7 @@ import play.api.libs.json.Json
 import play.api.mvc.{Headers, Request}
 import play.api.test.FakeRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions.auditHeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
@@ -72,19 +73,19 @@ class AuditServiceImplSpec extends Matchers with AnyWordSpecLike with MockFactor
         )
 
         "a 'Successful' AuditResult is given" in {
-          mockSendExtendedEvent(extendedDataEvent)(Future.successful(AuditResult.Success))
+          mockSendExtendedEvent(extendedDataEvent)(AuditResult.Success.toFuture)
 
           service.sendEvent(auditEvent) shouldBe (())
         }
 
         "a 'Disabled' audit result is given" in {
-          mockSendExtendedEvent(extendedDataEvent)(Future.successful(AuditResult.Disabled))
+          mockSendExtendedEvent(extendedDataEvent)(AuditResult.Disabled.toFuture)
 
           service.sendEvent(auditEvent) shouldBe (())
         }
 
         "a 'Failure' audit result is given" in {
-          mockSendExtendedEvent(extendedDataEvent)(Future.successful(AuditResult.Failure("")))
+          mockSendExtendedEvent(extendedDataEvent)(AuditResult.Failure("").toFuture)
 
           service.sendEvent(auditEvent) shouldBe (())
         }
