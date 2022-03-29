@@ -22,6 +22,7 @@ import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.{Form, Uri}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
@@ -59,10 +60,19 @@ case class UndertakingJourney(
 
   def isEmpty: Boolean = steps.flatMap(_.value).isEmpty
 
-  def isCurrentPageCYA(implicit request: Request[_]) = request.uri == routes.UndertakingController.getCheckAnswers().url
+  def isCurrentPageCYA(implicit request: Request[_]): Boolean =
+    request.uri == routes.UndertakingController.getCheckAnswers().url
 
-  private def requiredDetailsProvided =
-    Seq(name, sector).map(_.value.isDefined) == Seq(true, true)
+  private def requiredDetailsProvided = Seq(name, sector).map(_.value.isDefined) == Seq(true, true)
+
+  def setUndertakingName(n: String): UndertakingJourney = this.copy(name = name.copy(value = Some(n)))
+
+  def setUndertakingSector(s: Int): UndertakingJourney = this.copy(sector = sector.copy(value = Some(Sector(s))))
+
+  def setUndertakingCYA(b: Boolean): UndertakingJourney = this.copy(cya = cya.copy(value = Some(b)))
+
+  def setUndertakingConfirmation(b: Boolean): UndertakingJourney =
+    this.copy(confirmation = confirmation.copy(value = Some(b)))
 
 }
 
