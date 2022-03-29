@@ -19,7 +19,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessCyaFormPage, AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
@@ -56,14 +55,6 @@ case class BusinessEntityJourney(
 object BusinessEntityJourney {
 
   implicit val format: Format[BusinessEntityJourney] = Json.format[BusinessEntityJourney]
-
-  def businessEntityJourneyForEori(undertakingOpt: Option[Undertaking], eori: EORI): BusinessEntityJourney =
-    undertakingOpt.fold(BusinessEntityJourney()) { _ =>
-      BusinessEntityJourney(
-        addBusiness = AddBusinessFormPage(true.some),
-        eori = AddEoriFormPage(eori.some)
-      )
-    }
 
   object FormPages {
 
