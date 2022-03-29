@@ -975,7 +975,7 @@ class BusinessEntityControllerSpec
           eori4,
           undertaking.name,
           undertakingRef,
-          "9 October 2022",
+          "10 October 2022",
           "removeThemselfEmailToBE"
         )
 
@@ -1101,7 +1101,7 @@ class BusinessEntityControllerSpec
               English.code,
               "template_remove_yourself_be_EN",
               "template_remove_yourself_lead_EN",
-              "9 October 2022"
+              "10 October 2022"
             )
           }
 
@@ -1110,7 +1110,7 @@ class BusinessEntityControllerSpec
               Welsh.code,
               "template_remove_yourself_be_CY",
               "template_remove_yourself_lead_CY",
-              "9 Hydref 2022"
+              "10 Hydref 2022"
             )
           }
         }
@@ -1232,7 +1232,7 @@ class BusinessEntityControllerSpec
             eori4,
             undertaking.name,
             undertakingRef,
-            "9 October 2022",
+            "10 October 2022",
             "removeMemberEmailToBE"
           )
 
@@ -1307,7 +1307,7 @@ class BusinessEntityControllerSpec
               eori4,
               undertaking.name,
               undertakingRef,
-              "9 October 2022",
+              "10 October 2022",
               "removeMemberEmailToBE"
             )
             val emailParameterLead = DoubleEORIAndDateEmailParameter(
@@ -1315,7 +1315,7 @@ class BusinessEntityControllerSpec
               eori4,
               undertaking.name,
               undertakingRef,
-              "9 October 2022",
+              "10 October 2022",
               "removeMemberEmailToLead"
             )
             testRedirection(
@@ -1334,7 +1334,7 @@ class BusinessEntityControllerSpec
               eori4,
               undertaking.name,
               undertakingRef,
-              "9 Hydref 2022",
+              "10 Hydref 2022",
               "removeMemberEmailToBE"
             )
             val emailParameterLead = DoubleEORIAndDateEmailParameter(
@@ -1342,7 +1342,7 @@ class BusinessEntityControllerSpec
               eori4,
               undertaking.name,
               undertakingRef,
-              "9 Hydref 2022",
+              "10 Hydref 2022",
               "removeMemberEmailToLead"
             )
             testRedirection(

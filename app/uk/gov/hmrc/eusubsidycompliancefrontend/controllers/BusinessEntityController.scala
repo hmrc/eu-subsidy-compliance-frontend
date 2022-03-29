@@ -276,7 +276,7 @@ class BusinessEntityController @Inject() (
                 success = form => {
                   form.value match {
                     case "true" =>
-                      val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today)
+                      val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
                       for {
                         _ <- escService.removeMember(undertakingRef, removeBE)
                         _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
@@ -326,7 +326,7 @@ class BusinessEntityController @Inject() (
             form =>
               form.value match {
                 case "true" =>
-                  val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today)
+                  val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
                   val leadEORI = undertaking.getLeadEORI
                   for {
                     _ <- escService.removeMember(undertakingRef, removeBE)
