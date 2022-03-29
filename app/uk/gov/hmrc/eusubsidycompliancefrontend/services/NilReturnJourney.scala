@@ -25,11 +25,35 @@ case class NilReturnJourney(nilReturn: NilReturnFormPage = NilReturnFormPage(), 
     extends Journey {
   override def steps: Array[FormPage[_]] = Array(nilReturn)
 
-  def hasNilJourneyStarted = nilReturnCounter == 1 //means user has clicked on the check box to do nil return submission
-  def isNilJourneyDoneRecently =
-    nilReturnCounter == 2 //means the page previous to current page was to submit the nil return
+  // Has user clicked on the check box to do nil return submission
+  def hasNilJourneyStarted: Boolean = nilReturnCounter == 1
 
-  def setNilReturnValues(b: Boolean) = this.copy(nilReturn = nilReturn.copy(value = Some(b)), nilReturnCounter = 1)
+  // Means the page previous to current page was to submit the nil return
+  def isNilJourneyDoneRecently: Boolean = nilReturnCounter == 2
+
+  def setNilReturnValues(b: Boolean): NilReturnJourney =
+    this.copy(nilReturn = nilReturn.copy(value = Some(b)), nilReturnCounter = 1)
+
+  def incrementNilReturnCounter: NilReturnJourney = this.copy(nilReturnCounter = nilReturnCounter + 1)
+
+  /**
+   * nilReturnCounter is used to track when user has moved to home account page after nil return claim
+   *
+   * This counter also helps in identifying when to display the success message which should be displayed only once
+   *
+   * By default,  NilReturnJourney has counter set to 0. When user submit on No claim page, the count is set to 1,
+   * indicating user has started the nil return journey.
+   *
+   * Home account has logic to update the counter only if hasNilJourneyStarted or isNilJourneyDoneRecently.
+   *
+   * Since the journey has started, when the user is redirected to home account, counter get updated to 2.
+   *
+   * Home page has logic to display the message only if the isNilJourneyDoneRecently . At this point the message will be
+   * displayed. If user refreshes or return to home page via another journey, counter is updated and success message is
+   * no longer displayed. Since neither the nil journey has just started nor finished recently, counter will no longer
+   * be updated because of this func logic and will be reset to 1 if user goes on to nil return journey again.
+   */
+  def canIncrementNilReturnCounter: Boolean = hasNilJourneyStarted || isNilJourneyDoneRecently
 }
 
 object NilReturnJourney {
@@ -46,7 +70,6 @@ object NilReturnJourney {
     object NilReturnFormPage {
       implicit val nilReturnFormPageFormat: OFormat[NilReturnFormPage] = Json.format
     }
-
   }
 
 }
