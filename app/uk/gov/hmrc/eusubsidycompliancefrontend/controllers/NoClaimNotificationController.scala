@@ -82,7 +82,7 @@ class NoClaimNotificationController @Inject() (
     }
   }
 
-  lazy val noClaimForm: Form[FormValues] = Form(
+  private val noClaimForm: Form[FormValues] = Form(
     mapping("noClaimNotification" -> mandatory("noClaimNotification"))(FormValues.apply)(FormValues.unapply)
   )
 

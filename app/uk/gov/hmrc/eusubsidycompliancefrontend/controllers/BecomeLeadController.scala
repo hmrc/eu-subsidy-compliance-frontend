@@ -175,7 +175,7 @@ class BecomeLeadController @Inject() (
     )
   }
 
-  lazy val becomeAdminForm: Form[FormValues] = Form(
+  private val becomeAdminForm: Form[FormValues] = Form(
     mapping("becomeAdmin" -> mandatory("becomeAdmin"))(FormValues.apply)(FormValues.unapply)
   )
 }

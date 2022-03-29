@@ -54,27 +54,27 @@ class EligibilityController @Inject() (
 
   import escActionBuilders._
 
-  lazy val customsWaiversForm: Form[FormValues] = Form(
+  private val customsWaiversForm: Form[FormValues] = Form(
     mapping("customswaivers" -> mandatory("customswaivers"))(FormValues.apply)(FormValues.unapply)
   )
 
-  lazy val mainBusinessCheckForm: Form[FormValues] = Form(
+  private val mainBusinessCheckForm: Form[FormValues] = Form(
     mapping("mainbusinesscheck" -> mandatory("mainbusinesscheck"))(FormValues.apply)(FormValues.unapply)
   )
 
-  lazy val willYouClaimForm: Form[FormValues] = Form(
+  private val willYouClaimForm: Form[FormValues] = Form(
     mapping("willyouclaim" -> mandatory("willyouclaim"))(FormValues.apply)(FormValues.unapply)
   )
 
-  lazy val termsForm: Form[FormValues] = Form(
+  private val termsForm: Form[FormValues] = Form(
     mapping("terms" -> mandatory("terms"))(FormValues.apply)(FormValues.unapply)
   )
 
-  lazy val eoriCheckForm: Form[FormValues] = Form(
+  private val eoriCheckForm: Form[FormValues] = Form(
     mapping("eoricheck" -> mandatory("eoricheck"))(FormValues.apply)(FormValues.unapply)
   )
 
-  lazy val createUndertakingForm: Form[FormValues] = Form(
+  private val createUndertakingForm: Form[FormValues] = Form(
     mapping("createUndertaking" -> mandatory("createUndertaking"))(FormValues.apply)(FormValues.unapply)
   )
 

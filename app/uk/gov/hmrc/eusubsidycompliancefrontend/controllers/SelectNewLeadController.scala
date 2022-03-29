@@ -51,7 +51,7 @@ class SelectNewLeadController @Inject() (
   private val promoteOtherAsLeadEmailToBusinessEntity = "promoteAsLeadEmailToBE"
   private val promoteOtherAsLeadEmailToLead = "promoteAsLeadEmailToLead"
 
-  private lazy val selectNewLeadForm: Form[FormValues] = Form(
+  private val selectNewLeadForm: Form[FormValues] = Form(
     mapping("selectNewLead" -> mandatory("selectNewLead"))(FormValues.apply)(FormValues.unapply)
   )
 

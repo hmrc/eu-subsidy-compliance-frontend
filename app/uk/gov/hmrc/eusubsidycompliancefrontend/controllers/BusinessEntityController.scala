@@ -358,21 +358,21 @@ class BusinessEntityController @Inject() (
           .map(_ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
     }
 
-  lazy val addBusinessForm: Form[FormValues] = Form(
+  private val addBusinessForm: Form[FormValues] = Form(
     mapping("addBusiness" -> mandatory("addBusiness"))(FormValues.apply)(FormValues.unapply)
   )
 
-  lazy val removeBusinessForm: Form[FormValues] = Form(
+  private val removeBusinessForm: Form[FormValues] = Form(
     mapping("removeBusiness" -> mandatory("removeBusiness"))(FormValues.apply)(FormValues.unapply)
   )
 
-  lazy val removeYourselfBusinessForm: Form[FormValues] = Form(
+  private val removeYourselfBusinessForm: Form[FormValues] = Form(
     mapping("removeYourselfBusinessEntity" -> mandatory("removeYourselfBusinessEntity"))(FormValues.apply)(
       FormValues.unapply
     )
   )
 
-  lazy val eoriForm: Form[FormValues] = Form(
+  private val eoriForm: Form[FormValues] = Form(
     mapping("businessEntityEori" -> mandatory("businessEntityEori"))(eoriEntered =>
       FormValues(s"$eoriPrefix$eoriEntered")
     )(eori => eori.value.drop(2).some)
@@ -383,6 +383,6 @@ class BusinessEntityController @Inject() (
       .verifying("businessEntityEori.regex.error", eori => eori.value.matches(EORI.regex))
   )
 
-  lazy val cyaForm: Form[FormValues] = Form(mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
+  private val cyaForm: Form[FormValues] = Form(mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
 
 }
