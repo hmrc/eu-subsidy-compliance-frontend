@@ -153,7 +153,7 @@ undertaking.cya.summary-list.phone.key=Telephone number
 undertaking.cya.p=By sending these details you are confirming that, to the best of your knowledge, they are correct.
 
 addBusiness.empty.title=Add businesses within your organisation to {0}
-addBusiness.p1=This service is for businesses importing into Northern Ireland or claiming de minimis aid payments and Customs Duty waivers in the UK.
+addBusiness.p1=This service is for businesses importing into Northern Ireland who are claiming Customs Duty waivers.
 addBusiness.p2=For this service, HMRC needs to group together related businesses within a company or organisation into a ‘single undertaking’. Businesses within an undertaking are identified by their EORI number.
 addBusiness.p3=You must add any business to this single undertaking that has claimed a Customs Duty waiver in this tax year, or the two previous tax years.
 addBusiness.p4=You do not need to add international businesses which do not qualify for the Customs Duty waiver, or de minimis aid payments from the UK government.
