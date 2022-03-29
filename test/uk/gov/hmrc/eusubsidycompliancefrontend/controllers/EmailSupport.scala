@@ -16,22 +16,31 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.RetrieveEmailResponse
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult, RetrieveEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.RetrieveEmailService
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{RetrieveEmailService, SendEmailService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-trait RetrieveEmailSupport { this: ControllerSpec =>
+trait EmailSupport { this: ControllerSpec =>
 
   val mockRetrieveEmailService: RetrieveEmailService = mock[RetrieveEmailService]
+  val mockSendEmailService = mock[SendEmailService]
 
   def mockRetrieveEmail(eori: EORI)(result: Either[ConnectorError, RetrieveEmailResponse]) =
     (mockRetrieveEmailService
       .retrieveEmailByEORI(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
+      .returning(result.fold(e => Future.failed(e), _.toFuture))
+
+  def mockSendEmail(emailAddress: EmailAddress, emailParameters: EmailParameters, templateId: String)(
+    result: Either[ConnectorError, EmailSendResult]
+  ) =
+    (mockSendEmailService
+      .sendEmail(_: EmailAddress, _: EmailParameters, _: String)(_: HeaderCarrier))
+      .expects(emailAddress, emailParameters, templateId, *)
       .returning(result.fold(e => Future.failed(e), _.toFuture))
 }

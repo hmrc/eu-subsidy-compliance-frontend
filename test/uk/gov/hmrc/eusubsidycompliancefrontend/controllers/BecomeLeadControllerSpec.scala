@@ -44,11 +44,9 @@ class BecomeLeadControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
-    with RetrieveEmailSupport
-    with SendEmailSupport
-    with AuditServiceSupport {
-
-  private val mockEscService = mock[EscService]
+    with EmailSupport
+    with AuditServiceSupport
+    with UndertakingOpsSupport {
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
@@ -75,20 +73,6 @@ class BecomeLeadControllerSpec
   )
 
   private val controller = instanceOf[BecomeLeadController]
-
-  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result)
-
-  private def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
-    result: Either[ConnectorError, UndertakingRef]
-  ) =
-    (mockEscService
-      .addMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
-      .expects(undertakingRef, businessEntity, *)
-      .returning(result.fold(e => Future.failed(e), _.toFuture))
 
   "BecomeLeadControllerSpec" when {
 

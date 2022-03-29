@@ -45,12 +45,11 @@ class UndertakingControllerSpec
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with JourneySupport
-    with RetrieveEmailSupport
+    with EmailSupport
     with SendEmailSupport
-    with AuditServiceSupport {
-
-  private val mockEscService = mock[EscService]
-  private val mockTimeProvider = mock[TimeProvider]
+    with AuditServiceSupport
+    with UndertakingOpsSupport
+    with TimeProviderSupport {
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
@@ -72,27 +71,6 @@ class UndertakingControllerSpec
       )
     )
   )
-
-  private def mockCreateUndertaking(undertaking: Undertaking)(result: Either[ConnectorError, UndertakingRef]) =
-    (mockEscService
-      .createUndertaking(_: Undertaking)(_: HeaderCarrier))
-      .expects(undertaking, *)
-      .returning(result.fold(e => Future.failed(e), _.toFuture))
-
-  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result)
-
-  private def mockUpdateUndertaking(undertaking: Undertaking)(result: Either[ConnectorError, UndertakingRef]) =
-    (mockEscService
-      .updateUndertaking(_: Undertaking)(_: HeaderCarrier))
-      .expects(undertaking, *)
-      .returning(result.fold(e => Future.failed(e), _.toFuture))
-
-  private def mockTimeProviderNow(now: LocalDateTime) =
-    (mockTimeProvider.now _).expects().returning(now)
 
   private val controller = instanceOf[UndertakingController]
   val exception = new Exception("oh no")

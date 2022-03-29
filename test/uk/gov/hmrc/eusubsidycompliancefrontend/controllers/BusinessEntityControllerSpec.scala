@@ -48,13 +48,11 @@ class BusinessEntityControllerSpec
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with JourneySupport
-    with RetrieveEmailSupport
-    with SendEmailSupport
+    with EmailSupport
     with AuditServiceSupport
-    with LeadOnlyRedirectSupport {
-
-  private val mockEscService = mock[EscService]
-  private val mockTimeProvider = mock[TimeProvider]
+    with LeadOnlyRedirectSupport
+    with UndertakingOpsSupport
+    with TimeProviderSupport {
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
@@ -387,7 +385,9 @@ class BusinessEntityControllerSpec
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
             mockRetrieveUndertakingWithErrorResponse(eori4)(Right(None))
-            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(
+              Left(ConnectorError(exception))
+            )
           }
 
           assertThrows[Exception](await(performAction("businessEntityEori" -> "123456789010")))
@@ -1296,39 +1296,6 @@ class BusinessEntityControllerSpec
       routes.BusinessEntityController.getEori().url
     )
   )
-
-  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result)
-
-  private def mockRetrieveUndertakingWithErrorResponse(
-    eori: EORI
-  )(result: Either[UpstreamErrorResponse, Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertakingWithErrorResponse(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result.toFuture)
-
-  private def mockRemoveMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
-    result: Either[ConnectorError, UndertakingRef]
-  ) =
-    (mockEscService
-      .removeMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
-      .expects(undertakingRef, businessEntity, *)
-      .returning(result.fold(e => Future.failed(e), _.toFuture))
-
-  private def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
-    result: Either[ConnectorError, UndertakingRef]
-  ) =
-    (mockEscService
-      .addMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
-      .expects(undertakingRef, businessEntity, *)
-      .returning(result.fold(e => Future.failed(e), _.toFuture))
-
-  private def mockTimeToday(now: LocalDate) =
-    (mockTimeProvider.today _).expects().returning(now)
 
 }
 

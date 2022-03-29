@@ -39,7 +39,7 @@ class SelectNewLeadControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
-    with RetrieveEmailSupport
+    with EmailSupport
     with SendEmailSupport
     with AuditServiceSupport
     with LeadOnlyRedirectSupport {
