@@ -244,11 +244,6 @@ class EligibilityControllerSpec
 
       }
 
-      "test for update customer waiver" in {
-        val updatedJourney = eligibilityJourney.copy(customsWaivers = CustomsWaiversFormPage(value = false.some))
-        val result = controller.updateCustomWaiver(false)(eligibilityJourney)
-        result shouldBe updatedJourney
-      }
     }
 
     "handling request to get will you claim" must {
@@ -404,11 +399,6 @@ class EligibilityControllerSpec
 
       }
 
-      "test for update will you claim" in {
-        val updatedJourney = eligibilityJourney.copy(willYouClaim = WillYouClaimFormPage(true.some))
-        val result = controller.updateWillYouClaim(true)(eligibilityJourney)
-        result shouldBe updatedJourney
-      }
     }
 
     "handling request to get Not eligible" must {
@@ -613,11 +603,6 @@ class EligibilityControllerSpec
 
       }
 
-      "test for update main business check" in {
-        val updatedJourney = eligibilityJourney.copy(mainBusinessCheck = MainBusinessCheckFormPage(value = true.some))
-        val result = controller.updateMainBusinessCheck(true)(eligibilityJourney)
-        result shouldBe updatedJourney
-      }
     }
 
     "handling request to get terms" must {
@@ -708,12 +693,6 @@ class EligibilityControllerSpec
           mockSendAuditEvent(expectedAuditEvent)
         }
         checkIsRedirect(performAction("terms" -> "true"), routes.EligibilityController.getCreateUndertaking().url)
-      }
-
-      "test for update terms and conditions" in {
-        val updatedJourney = eligibilityJourney.copy(acceptTerms = AcceptTermsFormPage(value = true.some))
-        val result = controller.updateAcceptTerms(true)(eligibilityJourney)
-        result shouldBe updatedJourney
       }
 
     }
@@ -847,12 +826,6 @@ class EligibilityControllerSpec
         }
       }
 
-      "test for update eori check" in {
-        val updatedJourney = EligibilityJourney().copy(eoriCheck = EoriCheckFormPage(value = true.some))
-        val result = controller.updateEoriCheck(true)(EligibilityJourney())
-        result shouldBe updatedJourney
-      }
-
     }
 
     "handling request to getIncorrectEori" must {
@@ -959,13 +932,6 @@ class EligibilityControllerSpec
 
       }
 
-      "test for update Create Undertaking" in {
-
-        val initialEJ = eligibilityJourney.copy(createUndertaking = CreateUndertakingFormPage())
-        val updatedJourney = initialEJ.copy(createUndertaking = CreateUndertakingFormPage(value = true.some))
-        val result = controller.updateCreateUndertaking(true)(initialEJ)
-        result shouldBe updatedJourney
-      }
     }
   }
 
