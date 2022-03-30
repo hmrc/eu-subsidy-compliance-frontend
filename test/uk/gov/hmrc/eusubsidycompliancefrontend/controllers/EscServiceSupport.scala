@@ -43,7 +43,7 @@ trait EscServiceSupport { this: ControllerSpec =>
     eori: EORI
   )(result: Either[UpstreamErrorResponse, Option[Undertaking]]) =
     (mockEscService
-      .retrieveUndertakingWithErrorResponse(_: EORI)(_: HeaderCarrier))
+      .retrieveUndertakingAndHandleErrors(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
       .returning(result.toFuture)
 

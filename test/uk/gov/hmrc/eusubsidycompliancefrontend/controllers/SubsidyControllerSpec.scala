@@ -1090,6 +1090,7 @@ class SubsidyControllerSpec
             nonHmrcSubsidy.traderReference.getOrElse("")
           )
         )
+
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGet[Undertaking](eori1)(Right(undertaking.some))
@@ -1474,6 +1475,7 @@ class SubsidyControllerSpec
     }
 
   }
+}
 
 object SubsidyControllerSpec {
   case class RemoveSubsidyRow(key: String, value: String)
