@@ -23,11 +23,11 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.SendEmailConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendRequest, EmailSendResult}
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class SendEmailServiceSpec extends AnyWordSpec with Matchers with MockFactory {
 
@@ -37,7 +37,7 @@ class SendEmailServiceSpec extends AnyWordSpec with Matchers with MockFactory {
     (mockSendEmailConnector
       .sendEmail(_: EmailSendRequest)(_: HeaderCarrier))
       .expects(emailSendRequest, *)
-      .returning(Future.successful(result))
+      .returning(result.toFuture)
 
   private val service = new SendEmailService(mockSendEmailConnector)
 

@@ -29,14 +29,13 @@ class UpdateEmailAddressControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
-    with ScalaFutures {
-
-  private val mockEscService = mock[EscService]
+    with ScalaFutures
+    with EscServiceSupport {
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
-    bind[EscService].toInstance(mockEscService),
+    bind[EscService].toInstance(mockEscService)
   )
 
   private val redirectUrl = "manage-email-cds/service/eu-subsidy-compliance-frontend"

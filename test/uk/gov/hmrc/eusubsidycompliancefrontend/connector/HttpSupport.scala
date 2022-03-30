@@ -19,6 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.connector
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should._
 import play.api.libs.json.Writes
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -56,7 +57,7 @@ trait HttpSupport { this: MockFactory with Matchers ⇒
           h.extraHeaders shouldBe Seq.empty
           true
       })
-      .returning(response.fold(Future.failed[A](new Exception("Test exception message")))(Future.successful))
+      .returning(response.fold(Future.failed[A](new Exception("Test exception message")))(_.toFuture))
 
   def mockPost[A](url: String, headers: Seq[(String, String)], body: A)(
     result: Option[HttpResponse]
@@ -72,6 +73,6 @@ trait HttpSupport { this: MockFactory with Matchers ⇒
       .returning(
         result.fold[Future[HttpResponse]](
           Future.failed(new Exception("Test exception message"))
-        )(Future.successful)
+        )(_.toFuture)
       )
 }

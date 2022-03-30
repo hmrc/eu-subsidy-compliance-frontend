@@ -21,6 +21,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.{EmptyPredicate, Predicate}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, EmptyRetrieval, Retrieval, ~}
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,11 +43,11 @@ trait AuthSupport { this: ControllerSpec =>
       .returning(result)
 
   def mockAuthWithNoRetrievals(): Unit =
-    mockAuth(EmptyPredicate, EmptyRetrieval)(Future.successful(()))
+    mockAuth(EmptyPredicate, EmptyRetrieval)(().toFuture)
 
   def mockAuthWithAuthRetrievals(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) =
     mockAuth(Enrolment("HMRC-ESC-ORG"), authRetrievals)(
-      Future.successful(new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments)
+      (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
 
   val authRetrievals: Retrieval[Option[Credentials] ~ Option[String] ~ Enrolments] =

@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.syntax
 
 import cats.data.OptionT
 import cats.implicits._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,7 +42,7 @@ object OptionTSyntax {
   }
 
   implicit class ValueToOptionTOps[A](val a: A) extends AnyVal {
-    def toContext: OptionT[Future, A] = OptionT(Future.successful(Option(a)))
+    def toContext: OptionT[Future, A] = OptionT(Option(a).toFuture)
   }
 
   implicit class OptionToOptionTOps[A](val o: Option[A]) extends AnyVal {

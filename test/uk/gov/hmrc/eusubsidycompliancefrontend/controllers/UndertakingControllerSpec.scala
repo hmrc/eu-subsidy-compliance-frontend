@@ -26,15 +26,14 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.ModifyUndertakingRow
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.UndertakingUpdated
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.LocalDateTime
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
 
@@ -44,12 +43,10 @@ class UndertakingControllerSpec
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with JourneySupport
-    with RetrieveEmailSupport
-    with SendEmailSupport
-    with AuditServiceSupport {
-
-  private val mockEscService = mock[EscService]
-  private val mockTimeProvider = mock[TimeProvider]
+    with EmailSupport
+    with AuditServiceSupport
+    with EscServiceSupport
+    with TimeProviderSupport {
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
@@ -71,27 +68,6 @@ class UndertakingControllerSpec
       )
     )
   )
-
-  private def mockCreateUndertaking(undertaking: Undertaking)(result: Either[ConnectorError, UndertakingRef]) =
-    (mockEscService
-      .createUndertaking(_: Undertaking)(_: HeaderCarrier))
-      .expects(undertaking, *)
-      .returning(result.fold(e => Future.failed(e), Future.successful))
-
-  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result)
-
-  private def mockUpdateUndertaking(undertaking: Undertaking)(result: Either[ConnectorError, UndertakingRef]) =
-    (mockEscService
-      .updateUndertaking(_: Undertaking)(_: HeaderCarrier))
-      .expects(undertaking, *)
-      .returning(result.fold(e => Future.failed(e), Future.successful))
-
-  private def mockTimeProviderNow(now: LocalDateTime) =
-    (mockTimeProvider.now _).expects().returning(now)
 
   private val controller = instanceOf[UndertakingController]
   val exception = new Exception("oh no")
@@ -1030,7 +1006,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(name = UndertakingNameFormPage("true".some)))
             )
-            mockRetrieveUndertaking(eori)(Future.successful(None))
+            mockRetrieveUndertaking(eori)(None.toFuture)
           }
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
         }
@@ -1042,7 +1018,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(name = UndertakingNameFormPage("true".some)))
             )
-            mockRetrieveUndertaking(eori)(Future.successful(undertaking1.copy(reference = None).some))
+            mockRetrieveUndertaking(eori)(undertaking1.copy(reference = None).some.toFuture)
           }
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
         }
@@ -1056,7 +1032,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(isAmend = true))
             )
-            mockRetrieveUndertaking(eori)(Future.successful(undertaking1.some))
+            mockRetrieveUndertaking(eori)(undertaking1.some.toFuture)
             mockUpdateUndertaking(updatedUndertaking)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
@@ -1073,7 +1049,7 @@ class UndertakingControllerSpec
           mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
             Right(undertakingJourneyComplete.copy(isAmend = true))
           )
-          mockRetrieveUndertaking(eori)(Future.successful(undertaking1.some))
+          mockRetrieveUndertaking(eori)(undertaking1.some.toFuture)
           mockUpdateUndertaking(updatedUndertaking)(Right(undertakingRef))
           mockSendAuditEvent(
             UndertakingUpdated("1123", eori1, undertakingRef, undertaking1.name, undertaking1.industrySector)

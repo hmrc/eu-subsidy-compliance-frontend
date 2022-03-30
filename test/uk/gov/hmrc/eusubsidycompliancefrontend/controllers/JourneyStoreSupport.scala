@@ -21,6 +21,7 @@ import play.api.libs.json.{Format, Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.Future
 import scala.reflect.ClassTag
@@ -33,24 +34,24 @@ trait JourneyStoreSupport { this: MockFactory =>
     (mockJourneyStore
       .get(_: ClassTag[Any], _: EORI, _: Reads[Any]))
       .expects(*, eori, *)
-      .returning(result.fold(Future.failed, Future.successful))
+      .returning(result.fold(Future.failed, _.toFuture))
 
   def mockPut[A](input: A, eori: EORI)(result: Either[ConnectorError, A]) =
     (mockJourneyStore
       .put(_: A)(_: EORI, _: Writes[A]))
       .expects(input, eori, *)
-      .returning(result.fold(Future.failed, Future.successful))
+      .returning(result.fold(Future.failed, _.toFuture))
 
   def mockUpdate[A](f: A => A, eori: EORI)(result: Either[ConnectorError, A]) =
     (mockJourneyStore
       .update(_: A => A)(_: ClassTag[A], _: EORI, _: Format[A]))
       .expects(*, *, eori, *)
-      .returning(result.fold(Future.failed, Future.successful))
+      .returning(result.fold(Future.failed, _.toFuture))
 
   def mockDelete[A](eori: EORI)(result: Either[ConnectorError, Unit]) =
     (mockJourneyStore
       .delete(_: ClassTag[A], _: EORI))
       .expects(*, eori)
-      .returning(result.fold(Future.failed, Future.successful))
+      .returning(result.fold(Future.failed, _.toFuture))
 
 }

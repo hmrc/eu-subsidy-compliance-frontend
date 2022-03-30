@@ -22,16 +22,13 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NilSubmissionDate, SubsidyUpdate, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NilReturnJourney.Forms.NilReturnFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
-import scala.concurrent.Future
 
 class NoClaimNotificationControllerSpec
     extends ControllerSpec
@@ -39,10 +36,9 @@ class NoClaimNotificationControllerSpec
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with AuditServiceSupport
-    with LeadOnlyRedirectSupport {
-
-  private val mockEscService = mock[EscService]
-  private val mockTimeProvider = mock[TimeProvider]
+    with LeadOnlyRedirectSupport
+    with EscServiceSupport
+    with TimeProviderSupport {
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
@@ -118,7 +114,7 @@ class NoClaimNotificationControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockTimeProviderToday(currentDay)
+            mockTimeToday(currentDay)
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
@@ -128,7 +124,7 @@ class NoClaimNotificationControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockTimeProviderToday(currentDay)
+            mockTimeToday(currentDay)
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
             mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
               Left(ConnectorError(exception))
@@ -160,7 +156,7 @@ class NoClaimNotificationControllerSpec
         inSequence {
           mockAuthWithNecessaryEnrolment()
           mockGet[Undertaking](eori1)(Right(undertaking.some))
-          mockTimeProviderToday(currentDay)
+          mockTimeToday(currentDay)
           mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
           mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
             Right(undertakingRef)
@@ -171,22 +167,8 @@ class NoClaimNotificationControllerSpec
           performAction("noClaimNotification" -> "true"),
           routes.AccountController.getAccountPage().url
         )
-
       }
-
     }
-
   }
-
-  private def mockCreateSubsidy(reference: UndertakingRef, subsidyUpdate: SubsidyUpdate)(
-    result: Either[ConnectorError, UndertakingRef]
-  ) =
-    (mockEscService
-      .createSubsidy(_: UndertakingRef, _: SubsidyUpdate)(_: HeaderCarrier))
-      .expects(reference, subsidyUpdate, *)
-      .returning(result.fold(e => Future.failed(e), Future.successful))
-
-  private def mockTimeProviderToday(today: LocalDate) =
-    (mockTimeProvider.today _).expects().returning(today)
 
 }

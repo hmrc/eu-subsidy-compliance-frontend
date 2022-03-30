@@ -37,8 +37,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, eori3
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class LeadOnlyUndertakingSupportSpec extends AnyWordSpecLike with MockFactory with ScalaFutures with Matchers
-  with JourneyStoreSupport {
+class LeadOnlyUndertakingSupportSpec
+    extends AnyWordSpecLike
+    with MockFactory
+    with ScalaFutures
+    with Matchers
+    with JourneyStoreSupport {
 
   private val mockEscService = mock[EscService]
 
