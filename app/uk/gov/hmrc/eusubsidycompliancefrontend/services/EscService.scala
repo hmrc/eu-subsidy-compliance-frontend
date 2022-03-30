@@ -16,14 +16,17 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
+import cats.data.EitherT
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
-import play.api.http.Status.{NOT_ACCEPTABLE, NOT_FOUND, OK}
+import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.{JsResult, JsSuccess, JsValue, Reads}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
+import uk.gov.hmrc.http.UpstreamErrorResponse.WithStatusCode
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,32 +45,27 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
       .map(handleResponse[UndertakingRef](_, "update undertaking"))
 
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]] =
-    retrieveUndertakingWithErrorResponse(eori).map {
-      case Left(_) => None
+    retrieveUndertakingAndHandleErrors(eori).map {
       case Right(undertakingOpt) => undertakingOpt
+      case Left(ex) => throw ex
     }
 
-  def retrieveUndertakingWithErrorResponse(
-    eori: EORI
-  )(implicit hc: HeaderCarrier): Future[Either[UpstreamErrorResponse, Option[Undertaking]]] =
-    escConnector.retrieveUndertaking(eori).map {
-      case Left(_) => Right(None)
-      case Right(value) =>
-        value.status match {
-          case NOT_FOUND => Right(None)
-          case NOT_ACCEPTABLE =>
-            Left(UpstreamErrorResponse(s"EORI $eori does not exist in ETMP", NOT_ACCEPTABLE))
-          case OK =>
-            value
-              .parseJSON[Undertaking]
-              .fold(
-                _ => sys.error(" Error in parsing undertaking"),
-                undertaking => Right(undertaking.some)
-              )
+  // TODO - this method could be private since our public API just throws an exception or returns an option
+  def retrieveUndertakingAndHandleErrors(eori: EORI)(implicit hc: HeaderCarrier) = {
 
-          case _ => Right(None)
-        }
-    }
+    def parseResponse(response: HttpResponse) =
+      response
+        .parseJSON[Undertaking]
+        .map(j => Right(j.some))
+        .getOrElse(sys.error("Error parsing Undertaking in ESC response"))
+
+    EitherT(escConnector.retrieveUndertaking(eori))
+      .flatMapF(r => parseResponse(r).toFuture)
+      .recover {
+        case WithStatusCode(NOT_FOUND) => None
+      }
+      .value
+  }
 
   def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
     hc: HeaderCarrier

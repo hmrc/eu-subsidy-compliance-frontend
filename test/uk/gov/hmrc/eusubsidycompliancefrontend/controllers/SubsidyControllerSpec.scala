@@ -73,6 +73,16 @@ class SubsidyControllerSpec
       "throw technical error" when {
         val exception = new Exception("oh no")
 
+        "call to get undertaking from EIS fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(Option.empty))
+            mockRetrieveUndertaking(eori1)(Future.failed(new RuntimeException("Oh no!")))
+          }
+
+          assertThrows[Exception](await(performAction()))
+        }
+
         "call to get subsidy journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -1464,8 +1474,6 @@ class SubsidyControllerSpec
     }
 
   }
-
-}
 
 object SubsidyControllerSpec {
   case class RemoveSubsidyRow(key: String, value: String)
