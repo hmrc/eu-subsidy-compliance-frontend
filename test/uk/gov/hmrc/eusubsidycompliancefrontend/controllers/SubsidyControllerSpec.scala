@@ -846,13 +846,26 @@ class SubsidyControllerSpec
 
       "show form error" when {
 
+        def displayError(data: (String, String)*)(messageKey: String) = {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney.copy(traderRef = TraderRefFormPage()))))
+          }
+          checkFormErrorIsDisplayed(
+            performAction(data: _*),
+            messageFromMessageKey("add-claim-public-authority.title"),
+            messageFromMessageKey(messageKey)
+          )
+        }
+
         "nothing is entered" in {
           displayError("claim-public-authority" -> "")("error.claim-public-authority.required")
 
         }
 
         "public authority entered is more than 150 chars" in {
-          displayError("claim-public-authority" -> "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890")("error.claim-public-authority.tooManyChars")
+          displayError("claim-public-authority" -> "x" * 151)("error.claim-public-authority.tooManyChars")
         }
       }
 
