@@ -79,6 +79,7 @@ class SubsidyController @Inject() (
 
   private val claimPublicAuthorityForm: Form[String] = Form(
     "claim-public-authority" -> mandatory("claim-public-authority")
+      .verifying("error.claim-public-authority.tooManyChars", _.length < 151)
   )
 
   private val claimAmountForm: Form[BigDecimal] = Form(
