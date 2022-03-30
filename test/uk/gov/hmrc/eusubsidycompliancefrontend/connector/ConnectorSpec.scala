@@ -16,12 +16,13 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connector
 
+import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import org.scalatest.matchers.should._
 import org.scalatest.wordspec._
 import play.api.libs.json.JsString
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
+import uk.gov.hmrc.http.HttpResponse
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -30,20 +31,21 @@ trait ConnectorSpec { this: Matchers with AnyWordSpecLike =>
 
   val currentDate = LocalDate.of(2021, 1, 20)
 
-  def connectorBehaviour(
+  // TODO - any changes here may break the email connector specs - check
+  def connectorBehaviour[A](
     mockResponse: Option[HttpResponse] => Unit,
-    performCall: () => Future[Either[ConnectorError, HttpResponse]]
+    performCall: () => Future[Either[A, HttpResponse]]
   ) = {
+
     "do a get http call and return the result" in {
       List(
         HttpResponse(200, "{}"),
         HttpResponse(200, JsString("hi"), Map.empty[String, Seq[String]]),
-        HttpResponse(500, "{}")
       ).foreach { httpResponse =>
         withClue(s"For http response [${httpResponse.toString}]") {
           mockResponse(Some(httpResponse))
 
-          await(performCall()) shouldBe Right(httpResponse)
+          performCall().futureValue shouldBe Right(httpResponse)
         }
       }
     }

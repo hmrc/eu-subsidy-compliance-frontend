@@ -48,8 +48,8 @@ class EscConnector @Inject() (
     http
       .POST[Undertaking, HttpResponse](s"$escURL/$createUndertakingPath", undertaking)
       .map(Right(_))
-      .recover { case e =>
-        Left(ConnectorError(e))
+      .recover {
+        case e => Left(ConnectorError(e))
       }
 
   def updateUndertaking(
@@ -62,13 +62,14 @@ class EscConnector @Inject() (
         Left(ConnectorError(e))
       }
 
-  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[UpstreamErrorResponse, HttpResponse]] =
+  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]] =
     http
       .GET[HttpResponse](s"$escURL/$retrieveUndertakingPath$eori")
       .map { r =>
         if (r.status == OK) Right(r)
-        else Left(UpstreamErrorResponse(s"Unexpected response from ESC - got HTTP ${r.status}", r.status))
+        else Left(ConnectorError(UpstreamErrorResponse(s"Unexpected response from ESC - got HTTP ${r.status}", r.status)))
       }
+      .recover { case e => Left(ConnectorError(e)) }
 
   def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
     hc: HeaderCarrier

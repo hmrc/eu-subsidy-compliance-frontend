@@ -50,8 +50,7 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
       case Left(ex) => throw ex
     }
 
-  // TODO - this method could be private since our public API just throws an exception or returns an option
-  def retrieveUndertakingAndHandleErrors(eori: EORI)(implicit hc: HeaderCarrier) = {
+  def retrieveUndertakingAndHandleErrors(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[Undertaking]]] = {
 
     def parseResponse(response: HttpResponse) =
       response
@@ -62,7 +61,7 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
     EitherT(escConnector.retrieveUndertaking(eori))
       .flatMapF(r => parseResponse(r).toFuture)
       .recover {
-        case WithStatusCode(NOT_FOUND) => None
+        case ConnectorError(_, WithStatusCode(NOT_FOUND)) => None
       }
       .value
   }
