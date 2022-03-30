@@ -25,6 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -95,10 +96,10 @@ class BusinessEntityController @Inject() (
   def postAddBusinessEntity: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    def handleValidAnswer(form: FormValues) = {
-      if (form.value === "true") store.update[BusinessEntityJourney](_.setAddBusiness(form.value.toBoolean)).flatMap(_.next)
+    def handleValidAnswer(form: FormValues) =
+      if (form.value === "true")
+        store.update[BusinessEntityJourney](_.setAddBusiness(form.value.toBoolean)).flatMap(_.next)
       else Redirect(routes.AccountController.getAccountPage()).toFuture
-    }
 
     withLeadUndertaking { undertaking =>
       addBusinessForm
@@ -135,10 +136,9 @@ class BusinessEntityController @Inject() (
 
     def handleValidEori(form: FormValues, previous: Uri): Future[Result] =
       escService.retrieveUndertakingAndHandleErrors(EORI(form.value)).flatMap {
-
         case Right(Some(_)) => getErrorResponse("businessEntityEori.eoriInUse", previous, form)
         case Left(_) => getErrorResponse(s"error.$businessEntityEori.required", previous, form)
-        case Right(None) => store.update[BusinessEntityJourney](_.setEori(EORI(form.value))).flatMap(_.next)
+        case Right(None) => store.update[BusinessEntityJourney](_.setEori(form.value)).flatMap(_.next)
       }
 
     withLeadUndertaking { _ =>
@@ -160,7 +160,8 @@ class BusinessEntityController @Inject() (
       store.get[BusinessEntityJourney].flatMap {
         case Some(journey) =>
           val eori = journey.eori.value.getOrElse(handleMissingSessionData("EORI"))
-          Ok(businessEntityCyaPage(eori, journey.previous)).toFuture
+          val validEori = getValidEori(eori)
+          Ok(businessEntityCyaPage(validEori, journey.previous)).toFuture
         case _ => handleMissingSessionData("CheckYourAnswers journey")
       }
     }
@@ -175,7 +176,8 @@ class BusinessEntityController @Inject() (
         .map(_.getOrElse(handleMissingSessionData("BusinessEntity Journey")))
       undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("undertaking ref"))
       eoriBE = businessEntityJourney.eori.value.getOrElse(handleMissingSessionData("BE EORI"))
-      businessEntity = BusinessEntity(eoriBE, leadEORI = false) // resetting the journey as it's final CYA page
+      validBEEORI = EORI(getValidEori(eoriBE))
+      businessEntity = BusinessEntity(validBEEORI, leadEORI = false) // resetting the journey as it's final CYA page
       _ <- {
         if (businessEntityJourney.isAmend) {
           escService.removeMember(
@@ -186,7 +188,7 @@ class BusinessEntityController @Inject() (
         escService.addMember(undertakingRef, businessEntity)
       }
       _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
-        eoriBE,
+        validBEEORI,
         None,
         AddMemberEmailToBusinessEntity,
         undertaking,
@@ -195,7 +197,7 @@ class BusinessEntityController @Inject() (
       )
       _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
         eori,
-        eoriBE.some,
+        validBEEORI.some,
         AddMemberEmailToLead,
         undertaking,
         undertakingRef,
@@ -205,8 +207,11 @@ class BusinessEntityController @Inject() (
       _ <- store.delete[Undertaking]
       _ =
         if (businessEntityJourney.isAmend)
-          auditService.sendEvent(AuditEvent.BusinessEntityUpdated(undertakingRef, request.authorityId, eori, eoriBE))
-        else auditService.sendEvent(AuditEvent.BusinessEntityAdded(undertakingRef, request.authorityId, eori, eoriBE))
+          auditService.sendEvent(
+            AuditEvent.BusinessEntityUpdated(undertakingRef, request.authorityId, eori, validBEEORI)
+          )
+        else
+          auditService.sendEvent(AuditEvent.BusinessEntityAdded(undertakingRef, request.authorityId, eori, validBEEORI))
       redirect <- getNext(businessEntityJourney)(eori)
     } yield redirect
 
@@ -373,14 +378,21 @@ class BusinessEntityController @Inject() (
   )
 
   private val eoriForm: Form[FormValues] = Form(
-    mapping("businessEntityEori" -> mandatory("businessEntityEori"))(eoriEntered =>
-      FormValues(s"$eoriPrefix$eoriEntered")
-    )(eori => eori.value.drop(2).some)
+    mapping("businessEntityEori" -> mandatory("businessEntityEori"))(FormValues.apply)(FormValues.unapply)
       .verifying(
         "businessEntityEori.error.incorrect-length",
-        eori => eori.value.length == 14 || eori.value.length == 17
+        eoriEntered => {
+          val eori = getValidEori(eoriEntered.value)
+          eori.length == 14 || eori.length == 17
+        }
       )
-      .verifying("businessEntityEori.regex.error", eori => eori.value.matches(EORI.regex))
+      .verifying(
+        "businessEntityEori.regex.error",
+        eoriEntered => {
+          val eori = getValidEori(eoriEntered.value)
+          eori.matches(EORI.regex)
+        }
+      )
   )
 
   private val cyaForm: Form[FormValues] = Form(mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))

@@ -16,12 +16,13 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import cats.implicits.catsSyntaxOptionId
+import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessCyaFormPage, AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
+import BusinessEntityJourney._
 
 case class BusinessEntityJourney(
   addBusiness: AddBusinessFormPage = AddBusinessFormPage(),
@@ -40,21 +41,27 @@ case class BusinessEntityJourney(
 
   def isAmend: Boolean = oldEORI.nonEmpty
 
-  def setEori(e: EORI): BusinessEntityJourney =
+  def setEori(e: String): BusinessEntityJourney =
     this.copy(
       eori = eori.copy(value = e.some),
-      oldEORI = eori.value
+      oldEORI = eori.value.map(e => EORI(getValidEori(e)))
     )
 
   def setAddBusiness(b: Boolean): BusinessEntityJourney =
-    this.copy(
-      addBusiness = addBusiness.copy(value = b.some))
+    this.copy(addBusiness = addBusiness.copy(value = b.some))
 
 }
 
 object BusinessEntityJourney {
 
+  val eoriPrefix = "GB"
+
   implicit val format: Format[BusinessEntityJourney] = Json.format[BusinessEntityJourney]
+
+  def isEoriPrefixGB(eoriEntered: String) = eoriEntered.take(2) === "GB"
+
+  def getValidEori(eoriEntered: String) =
+    if (isEoriPrefixGB(eoriEntered)) eoriEntered else s"$eoriPrefix$eoriEntered"
 
   object FormPages {
 
@@ -63,7 +70,9 @@ object BusinessEntityJourney {
     case class AddBusinessFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getAddBusinessEntity().url
     }
-    case class AddEoriFormPage(value: Form[EORI] = None) extends FormPage[EORI] { def uri = controller.getEori().url }
+    case class AddEoriFormPage(value: Form[String] = None) extends FormPage[String] {
+      def uri = controller.getEori().url
+    }
     case class AddBusinessCyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getCheckYourAnswers().url
     }
