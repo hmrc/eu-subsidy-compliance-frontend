@@ -41,7 +41,7 @@ class AccountControllerSpec
     with AuthAndSessionDataBehaviour
     with EmailSupport
     with TimeProviderSupport
-    with UndertakingOpsSupport {
+    with EscServiceSupport {
 
   override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
@@ -83,7 +83,7 @@ class AccountControllerSpec
             mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-            mockTimeProviderToday(fixedDate)
+            mockTimeToday(fixedDate)
             mockGet[NilReturnJourney](eori1)(Right(None))
             mockPut[NilReturnJourney](nilJourneyCreate, eori1)(Right(nilJourneyCreate))
           }
@@ -152,7 +152,7 @@ class AccountControllerSpec
             mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-            mockTimeProviderToday(currentDate)
+            mockTimeToday(currentDate)
             mockGet[NilReturnJourney](eori1)(Right(None))
             mockPut[NilReturnJourney](nilJourneyCreate, eori1)(Right(nilJourneyCreate))
           }
@@ -190,7 +190,7 @@ class AccountControllerSpec
             mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-            mockTimeProviderToday(currentDate)
+            mockTimeToday(currentDate)
             mockGet[NilReturnJourney](eori1)(Right(nilReturnJourney.some))
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNJ))
           }
@@ -284,7 +284,7 @@ class AccountControllerSpec
             mockGet[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete.some))
             mockGet[UndertakingJourney](eori4)(Right(UndertakingJourney().some))
             mockGet[BusinessEntityJourney](eori4)(Right(businessEntityJourney.some))
-            mockTimeProviderToday(fixedDate)
+            mockTimeToday(fixedDate)
           }
 
           checkPageIsDisplayed(

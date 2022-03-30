@@ -22,17 +22,13 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NilSubmissionDate, SubsidyUpdate, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NilReturnJourney.Forms.NilReturnFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
-import scala.concurrent.Future
 
 class NoClaimNotificationControllerSpec
     extends ControllerSpec
@@ -41,11 +37,8 @@ class NoClaimNotificationControllerSpec
     with AuthAndSessionDataBehaviour
     with AuditServiceSupport
     with LeadOnlyRedirectSupport
-    with UndertakingOpsSupport
+    with EscServiceSupport
     with TimeProviderSupport {
-
-  private val mockEscService = mock[EscService]
-  private val mockTimeProvider = mock[TimeProvider]
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),

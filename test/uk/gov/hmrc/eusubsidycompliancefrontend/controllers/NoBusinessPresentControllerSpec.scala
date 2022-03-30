@@ -31,7 +31,7 @@ class NoBusinessPresentControllerSpec
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with LeadOnlyRedirectSupport
-    with UndertakingOpsSupport {
+    with EscServiceSupport {
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),

@@ -47,7 +47,7 @@ class SubsidyControllerSpec
     with JourneySupport
     with AuditServiceSupport
     with LeadOnlyRedirectSupport
-    with UndertakingOpsSupport
+    with EscServiceSupport
     with TimeProviderSupport {
 
   override def overrideBindings = List(

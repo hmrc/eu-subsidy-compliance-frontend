@@ -45,7 +45,7 @@ class FinancialDashboardControllerSpec
     with Matchers
     with ScalaFutures
     with IntegrationPatience
-    with UndertakingOpsSupport {
+    with EscServiceSupport {
 
   private val fakeTimeProvider = FakeTimeProvider.withFixedDate(1, 1, 2022)
 

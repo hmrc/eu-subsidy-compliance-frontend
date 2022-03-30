@@ -32,7 +32,6 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class RetrieveEmailServiceSpec extends AnyWordSpec with Matchers with MockFactory {
 

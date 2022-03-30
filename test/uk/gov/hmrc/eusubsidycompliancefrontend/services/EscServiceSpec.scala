@@ -34,7 +34,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
   private val mockEscConnector: EscConnector = mock[EscConnector]

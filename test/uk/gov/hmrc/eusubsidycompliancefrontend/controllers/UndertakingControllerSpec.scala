@@ -26,16 +26,14 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.ModifyUndertakingRow
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.UndertakingUpdated
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.LocalDateTime
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
 
@@ -47,7 +45,7 @@ class UndertakingControllerSpec
     with JourneySupport
     with EmailSupport
     with AuditServiceSupport
-    with UndertakingOpsSupport
+    with EscServiceSupport
     with TimeProviderSupport {
 
   override def overrideBindings = List(

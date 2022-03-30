@@ -29,18 +29,17 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, DoubleEORIEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult, EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
+import uk.gov.hmrc.http.UpstreamErrorResponse
 
 import java.time.LocalDate
 import scala.collection.JavaConverters._
-import scala.concurrent.Future
 
 class BusinessEntityControllerSpec
     extends ControllerSpec
@@ -51,7 +50,7 @@ class BusinessEntityControllerSpec
     with EmailSupport
     with AuditServiceSupport
     with LeadOnlyRedirectSupport
-    with UndertakingOpsSupport
+    with EscServiceSupport
     with TimeProviderSupport {
 
   override def overrideBindings = List(

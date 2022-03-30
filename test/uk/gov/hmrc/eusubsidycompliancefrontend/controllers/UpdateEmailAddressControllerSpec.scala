@@ -30,7 +30,7 @@ class UpdateEmailAddressControllerSpec
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with ScalaFutures
-    with UndertakingOpsSupport {
+    with EscServiceSupport {
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),

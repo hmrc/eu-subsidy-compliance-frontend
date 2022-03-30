@@ -42,7 +42,7 @@ class SelectNewLeadControllerSpec
     with EmailSupport
     with AuditServiceSupport
     with LeadOnlyRedirectSupport
-    with UndertakingOpsSupport {
+    with EscServiceSupport {
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),

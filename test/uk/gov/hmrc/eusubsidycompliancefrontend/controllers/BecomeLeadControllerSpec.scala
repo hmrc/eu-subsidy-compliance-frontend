@@ -29,12 +29,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages.{BecomeLeadEoriFormPage, TermsAndConditionsFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 import scala.concurrent.Future
@@ -46,7 +44,7 @@ class BecomeLeadControllerSpec
     with AuthAndSessionDataBehaviour
     with EmailSupport
     with AuditServiceSupport
-    with UndertakingOpsSupport {
+    with EscServiceSupport {
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),

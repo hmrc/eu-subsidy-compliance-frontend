@@ -42,8 +42,7 @@ class LeadOnlyUndertakingSupportSpec
     with MockFactory
     with ScalaFutures
     with Matchers
-    with JourneyStoreSupport
-    with UndertakingOpsSupport {
+    with JourneyStoreSupport {
 
   private val mockEscService = mock[EscService]
 
@@ -140,7 +139,14 @@ class LeadOnlyUndertakingSupportSpec
         runTest()
       }
     }
+
   }
+
+  private def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
+    (mockEscService
+      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
+      .expects(eori, *)
+      .returning(result)
 
   private def authorisedRequestForEori(e: EORI) = AuthenticatedEscRequest(
     "Foo",
