@@ -97,7 +97,7 @@
                       TableRow(
                           content = HtmlContent(
                               s"""<a class='govuk-link' href=${controllers.routes.SubsidyController.getChangeSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>
-                                 Change<span class="govuk-visually-hidden"> payment, dated ${sub.allocationDate.toShortDisplayFormat}</span>
+                                 ${messages("common.change")}<span class="govuk-visually-hidden"> ${messages("reportPayment.payment-dated")} ${sub.allocationDate.toShortDisplayFormat}</span>
                               </a>""".stripMargin
                           ),
                           classes="responsive-nopad"
@@ -105,7 +105,7 @@
                       TableRow(
                           content = HtmlContent(
                               s"""<a class='govuk-link' href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>
-                                 Remove<span class="govuk-visually-hidden"> payment, dated ${sub.allocationDate.toShortDisplayFormat}</span>
+                                 ${messages("common.remove")}<span class="govuk-visually-hidden"> ${messages("reportPayment.payment-dated")} ${sub.allocationDate.toShortDisplayFormat}</span>
                               </a>""".stripMargin
                           ),
                           classes="responsive-nopad"
