@@ -239,6 +239,7 @@ reportPayment.table.head.ref=Your reference
 reportPayment.legend=Do you have a de minimis aid payment (less Customs Duty waiver) to report?
 reportPayment.button = Report a payment
 reportPayment.error.required=Select yes if you have a de minimis aid payment (less Customs Duty waiver) to report?
+reportPayment.payment-dated = payment, dated
 
 add-claim-amount.title=What was the amount of the payment?
 add-claim-amount.p1=This type of aid is measured in euros. Convert any aid received from pound sterling into euros using this <a class="govuk-link" href={0} target="_blank">exchange rate tool (external site, opens in a new tab)</a>:
