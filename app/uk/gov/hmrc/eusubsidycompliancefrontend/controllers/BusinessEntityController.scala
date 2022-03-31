@@ -19,6 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import play.api.data.Form
 import play.api.data.Forms.mapping
+import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
@@ -59,8 +60,6 @@ class BusinessEntityController @Inject() (
     with LeadOnlyUndertakingSupport {
 
   import escActionBuilders._
-
-  private val eoriPrefix = "GB"
 
   private val AddMemberEmailToBusinessEntity = "addMemberEmailToBE"
   private val AddMemberEmailToLead = "addMemberEmailToLead"
@@ -377,22 +376,24 @@ class BusinessEntityController @Inject() (
     )
   )
 
+  private val isEoriLengthValid = Constraint[String] { eori: String =>
+    if (getValidEori(eori).length === 14 || getValidEori(eori).length === 17) Valid
+    else Invalid("businessEntityEori.error.incorrect-length")
+  }
+
+  private val isEoriValid = Constraint[String] { eori: String =>
+    if (getValidEori(eori).matches(EORI.regex)) Valid
+    else Invalid("businessEntityEori.regex.error")
+  }
+
   private val eoriForm: Form[FormValues] = Form(
-    mapping("businessEntityEori" -> mandatory("businessEntityEori"))(FormValues.apply)(FormValues.unapply)
-      .verifying(
-        "businessEntityEori.error.incorrect-length",
-        eoriEntered => {
-          val eori = getValidEori(eoriEntered.value)
-          eori.length == 14 || eori.length == 17
-        }
-      )
-      .verifying(
-        "businessEntityEori.regex.error",
-        eoriEntered => {
-          val eori = getValidEori(eoriEntered.value)
-          eori.matches(EORI.regex)
-        }
-      )
+    mapping(
+      "businessEntityEori" -> mandatory("businessEntityEori")
+        .verifying(isEoriLengthValid)
+        .verifying(isEoriValid)
+    )(FormValues.apply)(
+      FormValues.unapply
+    )
   )
 
   private val cyaForm: Form[FormValues] = Form(mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
