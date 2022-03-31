@@ -25,7 +25,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityUpdate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyAmount, SubsidyRef, TraderRef, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.getValidClaimAmount
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -225,11 +227,12 @@ object AuditEvent {
         publicAuthority = subsidyJourney.publicAuthority.value.fold(sys.error("public Authority missing"))(Some(_)),
         traderReference =
           subsidyJourney.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
-        nonHMRCSubsidyAmtEUR =
-          SubsidyAmount(subsidyJourney.claimAmount.value.getOrElse(sys.error("claimAmount missing from journey"))),
+        nonHMRCSubsidyAmtEUR = subsidyJourney.claimAmount.value
+          .map(amt => SubsidyAmount(BigDecimal(getValidClaimAmount(amt))))
+          .getOrElse(sys.error("claimAmount is missing")),
         businessEntityIdentifier =
           subsidyJourney.addClaimEori.value.fold(sys.error("eori value missing"))(optionalEORI =>
-            optionalEORI.value.map(EORI(_))
+            optionalEORI.value.map(e => EORI(getValidEori(e)))
           ),
         subsidyUsageTransactionId = subsidyJourney.existingTransactionId
       )
@@ -281,11 +284,12 @@ object AuditEvent {
         publicAuthority = subsidyJourney.publicAuthority.value.fold(sys.error("public Authority missing"))(Some(_)),
         traderReference =
           subsidyJourney.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
-        nonHMRCSubsidyAmtEUR =
-          SubsidyAmount(subsidyJourney.claimAmount.value.getOrElse(sys.error("claimAmount missing from journey"))),
+        nonHMRCSubsidyAmtEUR = subsidyJourney.claimAmount.value
+          .map(amt => SubsidyAmount(BigDecimal(getValidClaimAmount(amt))))
+          .getOrElse(sys.error("claimAmount is missing")),
         businessEntityIdentifier =
           subsidyJourney.addClaimEori.value.fold(sys.error("eori value missing"))(optionalEORI =>
-            optionalEORI.value.map(EORI(_))
+            optionalEORI.value.map(e => EORI(getValidEori(e)))
           ),
         subsidyUsageTransactionId = subsidyJourney.existingTransactionId
       )

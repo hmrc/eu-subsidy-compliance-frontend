@@ -62,7 +62,7 @@ case class SubsidyJourney(
   else super.previous
 
   def setReportPayment(v: Boolean): SubsidyJourney = this.copy(reportPayment = reportPayment.copy(value = v.some))
-  def setClaimAmount(b: BigDecimal): SubsidyJourney = this.copy(claimAmount = claimAmount.copy(value = b.some))
+  def setClaimAmount(b: String): SubsidyJourney = this.copy(claimAmount = claimAmount.copy(value = b.some))
   def setClaimDate(d: DateFormValues): SubsidyJourney = this.copy(claimDate = claimDate.copy(value = d.some))
   def setClaimEori(oe: OptionalEORI): SubsidyJourney = this.copy(addClaimEori = addClaimEori.copy(oe.some))
   def setPublicAuthority(a: String): SubsidyJourney = this.copy(publicAuthority = publicAuthority.copy(a.some))
@@ -72,6 +72,12 @@ case class SubsidyJourney(
 }
 
 object SubsidyJourney {
+  val claimAmountPrefix = "€"
+
+  def isClaimAmountPrefixEuros(amountEntered: String) = amountEntered.take(1) === claimAmountPrefix
+
+  def getValidClaimAmount(amountEntered: String) =
+    if (isClaimAmountPrefixEuros(amountEntered)) amountEntered.drop(1) else amountEntered
 
   val claimAmountPrefix = "€"
 
@@ -88,7 +94,7 @@ object SubsidyJourney {
     SubsidyJourney(
       reportPayment = ReportPaymentFormPage(true.some),
       claimDate = ClaimDateFormPage(DateFormValues.fromDate(nonHmrcSubsidy.allocationDate).some),
-      claimAmount = ClaimAmountFormPage(nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.some),
+      claimAmount = ClaimAmountFormPage(nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.toString().some),
       addClaimEori = AddClaimEoriFormPage(getAddClaimEORI(nonHmrcSubsidy.businessEntityIdentifier).some),
       publicAuthority = PublicAuthorityFormPage(nonHmrcSubsidy.publicAuthority.orElse("".some)),
       traderRef = TraderRefFormPage(getAddTraderRef(nonHmrcSubsidy.traderReference).some),
@@ -111,7 +117,7 @@ object SubsidyJourney {
     case class ClaimDateFormPage(value: Form[DateFormValues] = None) extends FormPage[DateFormValues] {
       def uri = controller.getClaimDate().url
     }
-    case class ClaimAmountFormPage(value: Form[BigDecimal] = None) extends FormPage[BigDecimal] {
+    case class ClaimAmountFormPage(value: Form[String] = None) extends FormPage[String] {
       def uri = controller.getClaimAmount().url
     }
     case class AddClaimEoriFormPage(value: Form[OptionalEORI] = None) extends FormPage[OptionalEORI] {

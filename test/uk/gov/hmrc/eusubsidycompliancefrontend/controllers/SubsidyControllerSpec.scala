@@ -638,7 +638,7 @@ class SubsidyControllerSpec
               subsidyJourney.addClaimEori.value match {
                 case Some(OptionalEORI(input, eori)) =>
                   selectedOptions.attr("value") shouldBe input
-                  inputText shouldBe eori.map(_.drop(2)).getOrElse("")
+                  inputText shouldBe eori.getOrElse("")
                 case _ => selectedOptions.isEmpty shouldBe true
               }
 
@@ -741,8 +741,11 @@ class SubsidyControllerSpec
 
         }
 
-        "yes is selected but no eori entered is invalid" in {
-          testFormError(Some(List("should-claim-eori" -> "true", "claim-eori" -> "12345")), "claim-eori.error.format")
+        "yes is selected but eori entered is invalid" in {
+          testFormError(
+            Some(List("should-claim-eori" -> "true", "claim-eori" -> "GB1234567890")),
+            "claim-eori.error.format"
+          )
 
         }
 
@@ -774,10 +777,17 @@ class SubsidyControllerSpec
           checkIsRedirect(performAction(inputAnswer: _*), routes.SubsidyController.getAddClaimPublicAuthority().url)
         }
 
-        "user selected yes and enter eori number" in {
+        "user selected yes and enter a valid  eori number" in {
           testRedirect(
             OptionalEORI("true", "123456789013".some),
             List("should-claim-eori" -> "true", "claim-eori" -> "123456789013")
+          )
+        }
+
+        "user selected yes and enter a valid eori number with GB" in {
+          testRedirect(
+            OptionalEORI("true", "GB123456789013".some),
+            List("should-claim-eori" -> "true", "claim-eori" -> "GB123456789013")
           )
         }
 

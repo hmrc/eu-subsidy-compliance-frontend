@@ -58,7 +58,7 @@ object BusinessEntityJourney {
 
   implicit val format: Format[BusinessEntityJourney] = Json.format[BusinessEntityJourney]
 
-  def isEoriPrefixGB(eoriEntered: String) = eoriEntered.take(2) === "GB"
+  def isEoriPrefixGB(eoriEntered: String) = eoriEntered.take(2) === eoriPrefix
 
   def getValidEori(eoriEntered: String) =
     if (isEoriPrefixGB(eoriEntered)) eoriEntered else s"$eoriPrefix$eoriEntered"

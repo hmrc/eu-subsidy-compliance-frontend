@@ -46,6 +46,7 @@ import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 @Singleton
 class SubsidyController @Inject() (
@@ -87,12 +88,11 @@ class SubsidyController @Inject() (
   )
 
   private val isClaimAmountTooBig = Constraint[String] { claimAmount: String =>
-    val amount = getValidClaimAmount(claimAmount)
-    if (amount.length < 17) Valid else Invalid("error.amount.tooBig")
+    if (SubsidyJourney.getValidClaimAmount(claimAmount).length < 17) Valid else Invalid("error.amount.tooBig")
   }
 
   private val isClaimAmountFormatCorrect = Constraint[String] { claimAmount: String =>
-    val amount = getValidClaimAmount(claimAmount)
+    val amount = SubsidyJourney.getValidClaimAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid("error.amount.incorrectFormat"),
       amount => if (amount.scale == 2 || amount.scale == 0) Valid else Invalid("error.amount.incorrectFormat")
@@ -202,9 +202,9 @@ class SubsidyController @Inject() (
         .fold(
           formWithErrors =>
             BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture,
-          form =>
+          claimAmountEntered =>
             for {
-              journey <- store.update[SubsidyJourney](_.setClaimAmount(form))
+              journey <- store.update[SubsidyJourney](_.setClaimAmount(claimAmountEntered))
               redirect <- journey.next
             } yield redirect
         )
@@ -360,11 +360,11 @@ class SubsidyController @Inject() (
         journey <- store.get[SubsidyJourney].toContext
         _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
         claimDate <- journey.claimDate.value.toContext
-        amount <- journey.claimAmount.value.toContext
+        amount <- journey.claimAmount.value.map(amt => BigDecimal(getValidClaimAmount(amt))).toContext
         optionalEori <- journey.addClaimEori.value.toContext
         authority <- journey.publicAuthority.value.toContext
         optionalTraderRef <- journey.traderRef.value.toContext
-        claimEori = optionalEori.value.map(EORI(_))
+        claimEori = optionalEori.value.map(e => EORI(e))
         traderRef = optionalTraderRef.value.map(TraderRef(_))
         previous = journey.previous
       } yield Ok(cyaPage(claimDate, amount, claimEori, authority, traderRef, previous))
@@ -542,7 +542,11 @@ object SubsidyController {
             // this shouldn't be optional, is required in create API but not retrieve
             publicAuthority = Some(journey.publicAuthority.value.get),
             traderReference = journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
-            nonHMRCSubsidyAmtEUR = SubsidyAmount(journey.claimAmount.value.get),
+            nonHMRCSubsidyAmtEUR = SubsidyAmount(
+              BigDecimal(
+                journey.claimAmount.value.map(getValidClaimAmount).getOrElse(sys.error("Claim amount Missing"))
+              )
+            ),
             businessEntityIdentifier = journey.addClaimEori.value.fold(sys.error("eori value missing"))(oprionalEORI =>
               oprionalEORI.value.map(EORI(_))
             ),
