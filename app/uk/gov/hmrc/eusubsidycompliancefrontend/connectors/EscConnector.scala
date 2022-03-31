@@ -17,10 +17,11 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import com.google.inject.{Inject, Singleton}
+import play.api.http.Status.OK
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidyAmendment}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,8 +48,8 @@ class EscConnector @Inject() (
     http
       .POST[Undertaking, HttpResponse](s"$escURL/$createUndertakingPath", undertaking)
       .map(Right(_))
-      .recover { case e =>
-        Left(ConnectorError(e))
+      .recover {
+        case e => Left(ConnectorError(e))
       }
 
   def updateUndertaking(
@@ -61,12 +62,12 @@ class EscConnector @Inject() (
         Left(ConnectorError(e))
       }
 
-  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]] =
+  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[UpstreamErrorResponse, HttpResponse]] =
     http
       .GET[HttpResponse](s"$escURL/$retrieveUndertakingPath$eori")
-      .map(Right(_))
-      .recover { case ex =>
-        Left(ConnectorError(ex))
+      .map { r =>
+        if (r.status == OK) Right(r)
+        else Left(UpstreamErrorResponse(s"Unexpected response - got HTTP ${r.status}", r.status))
       }
 
   def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit

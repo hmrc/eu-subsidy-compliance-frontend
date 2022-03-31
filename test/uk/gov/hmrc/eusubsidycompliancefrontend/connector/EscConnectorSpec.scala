@@ -16,20 +16,24 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connector
 
+import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
+import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class EscConnectorSpec extends AnyWordSpec with Matchers with MockFactory with HttpSupport with ConnectorSpec {
+class EscConnectorSpec extends AnyWordSpec with Matchers with MockFactory with HttpSupport with ConnectorSpec
+  with ScalaFutures {
 
   private val (protocol, host, port) = ("http", "host", "123")
 
@@ -47,7 +51,7 @@ class EscConnectorSpec extends AnyWordSpec with Matchers with MockFactory with H
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  "EscConnectorSpec" when {
+  "EscConnector" when {
 
     "handling request to create Undertaking" must {
 
@@ -70,11 +74,36 @@ class EscConnectorSpec extends AnyWordSpec with Matchers with MockFactory with H
     }
 
     "handling request to retrieve Undertaking" must {
-      val expectedUrl = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/$eori1"
-      behave like connectorBehaviour(
-        mockGet(expectedUrl)(_),
-        () => connector.retrieveUndertaking(eori1)
-      )
+
+      val url = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/$eori1"
+
+      def mockGetResponse(r: HttpResponse) = mockGet(url)(r.some)
+
+      def errorFor(status: Int) = UpstreamErrorResponse(s"Unexpected response - got HTTP $status", status)
+
+      "return a successful response where an undertaking exists" in {
+        val response = HttpResponse(200, "{}")
+        mockGetResponse(response)
+        connector.retrieveUndertaking(eori1).futureValue shouldBe Right(response)
+      }
+
+      "return a successful response where an undertaking does not exist" in {
+        val response = HttpResponse(404, "")
+        mockGetResponse(response)
+        connector.retrieveUndertaking(eori1).futureValue shouldBe Left(errorFor(NOT_FOUND))
+      }
+
+      "return an unsuccessful response where the downstream service returns a HTTP 400" in {
+        val response = HttpResponse(400, "")
+        mockGetResponse(response)
+        connector.retrieveUndertaking(eori1).futureValue shouldBe Left(errorFor(BAD_REQUEST))
+      }
+
+      "return an unsuccessful response where the downstream service returns a HTTP 500" in {
+        val response = HttpResponse(500, "")
+        mockGetResponse(response)
+        connector.retrieveUndertaking(eori1).futureValue shouldBe Left(errorFor(INTERNAL_SERVER_ERROR))
+      }
 
     }
 

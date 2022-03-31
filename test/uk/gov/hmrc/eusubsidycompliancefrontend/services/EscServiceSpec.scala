@@ -21,16 +21,16 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.Assertion
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.http.Status.NOT_ACCEPTABLE
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -55,7 +55,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       .expects(undertaking, *)
       .returning(result.toFuture)
 
-  private def mockRetrieveUndertaking(eori: EORI)(result: Either[ConnectorError, HttpResponse]) =
+  private def mockRetrieveUndertaking(eori: EORI)(result: Either[UpstreamErrorResponse, HttpResponse]) =
     (mockEscConnector
       .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
@@ -95,13 +95,6 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
 
   private val undertakingRefJson = Json.toJson(undertakingRef)
   private val undertakingJson: JsValue = Json.toJson(undertaking)
-  private val upstreamErrorResponse = Json.parse(s"""
-                                                     |{
-                                                     |"message" : "Invalid EORI",
-                                                     |"statusCode" : 406
-                                                     |}
-                                                     |""".stripMargin)
-
   private val undertakingSubsidiesJson = Json.toJson(undertakingSubsidies)
 
   private val emptyHeaders = Map.empty[String, Seq[String]]
@@ -194,7 +187,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       }
     }
 
-    "handling request to retrieve  an undertaking" must {
+    "handling request to retrieve an undertaking" must {
 
       "return an error" when {
 
@@ -216,19 +209,22 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
             await(result) shouldBe undertaking.some
           }
 
-          "http response status is 404 and response body is not there" in {
-            mockRetrieveUndertaking(eori1)(Right(HttpResponse(NOT_FOUND, " ")))
-            val result = service.retrieveUndertaking(eori1)
-            await(result) shouldBe None
-          }
-
-          "http response status is 406 and response body is parsed" in {
-            mockRetrieveUndertaking(eori1)(Right(HttpResponse(NOT_ACCEPTABLE, upstreamErrorResponse, emptyHeaders)))
-            val result = service.retrieveUndertaking(eori1)
-            await(result) shouldBe None
+          "http response status is 404 and response body is empty" in {
+            mockRetrieveUndertaking(eori1)(Left(UpstreamErrorResponse("Unexpected response - got HTTP 404", NOT_FOUND)))
+            await(service.retrieveUndertaking(eori1)) shouldBe None
           }
 
         }
+
+        "return an error" when {
+
+          "http response status is 406 and response body is parsed" in {
+            val ex = UpstreamErrorResponse("Unexpected response - got HTTP 406", NOT_ACCEPTABLE)
+            mockRetrieveUndertaking(eori1)(Left(ex))
+            an[UpstreamErrorResponse] should be thrownBy await(service.retrieveUndertaking(eori1))
+          }
+        }
+
       }
     }
 

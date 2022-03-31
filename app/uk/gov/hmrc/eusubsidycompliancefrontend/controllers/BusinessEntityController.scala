@@ -134,7 +134,7 @@ class BusinessEntityController @Inject() (
       BadRequest(eoriPage(eoriForm.withError(businessEntityEori, errorMessageKey).fill(form), previous)).toFuture
 
     def handleValidEori(form: FormValues, previous: Uri): Future[Result] =
-      escService.retrieveUndertakingWithErrorResponse(EORI(form.value)).flatMap {
+      escService.retrieveUndertakingAndHandleErrors(EORI(form.value)).flatMap {
 
         case Right(Some(_)) => getErrorResponse("businessEntityEori.eoriInUse", previous, form)
         case Left(_) => getErrorResponse(s"error.$businessEntityEori.required", previous, form)
