@@ -47,10 +47,12 @@
 ) {
     @H1(messages("lead-account-homepage.title", undertaking.name))
 
-  @govukWarningText(WarningText(
-    iconFallbackText = messages("common.warning"),
-    content = Text(messages("lead-account-homepage.warning"))
-  ))
+    @if(!isNilReturnDoneRecently) {
+        @govukWarningText(WarningText(
+            iconFallbackText = messages("common.warning"),
+            content = Text(messages("lead-account-homepage.warning"))
+        ))
+    }
 
     @if(isTimeToReport) {
         @govukInsetText(InsetText(
