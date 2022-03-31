@@ -31,7 +31,6 @@ trait ConnectorSpec { this: Matchers with AnyWordSpecLike =>
 
   val currentDate = LocalDate.of(2021, 1, 20)
 
-  // TODO - any changes here may break the email connector specs - check
   def connectorBehaviour[A](
     mockResponse: Option[HttpResponse] => Unit,
     performCall: () => Future[Either[A, HttpResponse]]

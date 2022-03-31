@@ -209,14 +209,14 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
             await(result) shouldBe undertaking.some
           }
 
-        }
-
-        "return an error" when {
-
-          "http response status is 404 and response body is not there" in {
+          "http response status is 404 and response body is empty" in {
             mockRetrieveUndertaking(eori1)(Left(UpstreamErrorResponse("Unexpected response - got HTTP 404", NOT_FOUND)))
             await(service.retrieveUndertaking(eori1)) shouldBe None
           }
+
+        }
+
+        "return an error" when {
 
           "http response status is 406 and response body is parsed" in {
             val ex = UpstreamErrorResponse("Unexpected response - got HTTP 406", NOT_ACCEPTABLE)
@@ -224,6 +224,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
             an[UpstreamErrorResponse] should be thrownBy await(service.retrieveUndertaking(eori1))
           }
         }
+
       }
     }
 
