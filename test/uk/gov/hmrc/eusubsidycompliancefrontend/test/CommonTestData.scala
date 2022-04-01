@@ -54,6 +54,7 @@ object CommonTestData {
   val undertakingRef = UndertakingRef("UR123456")
 
   val subsidyAmount = SubsidyAmount(BigDecimal(123.45))
+  val nonHmrcSubsidyAmount = SubsidyAmount(BigDecimal(543.21))
 
   val declarationId = DeclarationID("12345")
 
@@ -76,7 +77,7 @@ object CommonTestData {
     submissionDate = fixedDate,
     publicAuthority = "Local Authority".some,
     traderReference = TraderRef("ABC123").some,
-    nonHMRCSubsidyAmtEUR = subsidyAmount,
+    nonHMRCSubsidyAmtEUR = nonHmrcSubsidyAmount,
     businessEntityIdentifier = eori1.some,
     amendmentType = EisSubsidyAmendmentType("1").some
   )
@@ -87,8 +88,8 @@ object CommonTestData {
 
   val undertakingSubsidies = UndertakingSubsidies(
     undertakingIdentifier = undertakingRef,
-    nonHMRCSubsidyTotalEUR = subsidyAmount,
-    nonHMRCSubsidyTotalGBP = subsidyAmount,
+    nonHMRCSubsidyTotalEUR = nonHmrcSubsidyAmount,
+    nonHMRCSubsidyTotalGBP = nonHmrcSubsidyAmount,
     hmrcSubsidyTotalEUR = subsidyAmount,
     hmrcSubsidyTotalGBP = subsidyAmount,
     nonHMRCSubsidyUsage = List(nonHmrcSubsidy),

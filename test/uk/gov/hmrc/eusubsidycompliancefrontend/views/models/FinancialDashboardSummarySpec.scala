@@ -89,9 +89,9 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
           sectorCap = IndustrySectorLimit(BigDecimal(12.34))
         ),
         taxYears = Seq(
-          TaxYearSummary(2021, SubsidyAmount(123.45), SubsidyAmount(123.45)),
-          TaxYearSummary(2020, SubsidyAmount(123.45), SubsidyAmount(123.45)),
-          TaxYearSummary(2019, SubsidyAmount(123.45), SubsidyAmount(123.45))
+          TaxYearSummary(2021, SubsidyAmount(123.45), SubsidyAmount(543.21)),
+          TaxYearSummary(2020, SubsidyAmount(123.45), SubsidyAmount(543.21)),
+          TaxYearSummary(2019, SubsidyAmount(123.45), SubsidyAmount(543.21))
         )
       )
 
