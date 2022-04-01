@@ -25,6 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityUpdate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyAmount, SubsidyRef, TraderRef, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney
 
 import java.time.{LocalDate, LocalDateTime}
@@ -226,7 +227,7 @@ object AuditEvent {
         traderReference =
           subsidyJourney.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
         nonHMRCSubsidyAmtEUR =
-          SubsidyAmount(subsidyJourney.claimAmount.value.getOrElse(sys.error("claimAmount missing from journey"))),
+          SubsidyAmount(subsidyJourney.claimAmount.value.getOrElse(sys.error("claimAmount is missing"))),
         businessEntityIdentifier =
           subsidyJourney.addClaimEori.value.fold(sys.error("eori value missing"))(optionalEORI =>
             optionalEORI.value.map(EORI(_))
@@ -282,7 +283,7 @@ object AuditEvent {
         traderReference =
           subsidyJourney.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
         nonHMRCSubsidyAmtEUR =
-          SubsidyAmount(subsidyJourney.claimAmount.value.getOrElse(sys.error("claimAmount missing from journey"))),
+          SubsidyAmount(subsidyJourney.claimAmount.value.getOrElse(sys.error("claimAmount is missing"))),
         businessEntityIdentifier =
           subsidyJourney.addClaimEori.value.fold(sys.error("eori value missing"))(optionalEORI =>
             optionalEORI.value.map(EORI(_))

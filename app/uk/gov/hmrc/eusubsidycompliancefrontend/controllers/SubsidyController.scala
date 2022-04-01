@@ -46,6 +46,7 @@ import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Try
 
 @Singleton
 class SubsidyController @Inject() (
@@ -202,9 +203,9 @@ class SubsidyController @Inject() (
         .fold(
           formWithErrors =>
             BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture,
-          form =>
+          claimAmountEntered =>
             for {
-              journey <- store.update[SubsidyJourney](_.setClaimAmount(form))
+              journey <- store.update[SubsidyJourney](_.setClaimAmount(claimAmountEntered))
               redirect <- journey.next
             } yield redirect
         )
@@ -542,7 +543,8 @@ object SubsidyController {
             // this shouldn't be optional, is required in create API but not retrieve
             publicAuthority = Some(journey.publicAuthority.value.get),
             traderReference = journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
-            nonHMRCSubsidyAmtEUR = SubsidyAmount(journey.claimAmount.value.get),
+            nonHMRCSubsidyAmtEUR =
+              SubsidyAmount(journey.claimAmount.value.getOrElse(sys.error("Claim amount Missing"))),
             businessEntityIdentifier = journey.addClaimEori.value.fold(sys.error("eori value missing"))(oprionalEORI =>
               oprionalEORI.value.map(EORI(_))
             ),

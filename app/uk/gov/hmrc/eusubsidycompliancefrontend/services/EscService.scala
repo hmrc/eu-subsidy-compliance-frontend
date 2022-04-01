@@ -114,7 +114,6 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
               identity
             )
     )
-
 }
 
 object EscService {

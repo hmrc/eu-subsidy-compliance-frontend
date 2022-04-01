@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyControllerSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyRemoved
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{SubsidyAmount, SubsidyRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -431,7 +431,7 @@ class SubsidyControllerSpec
             SubsidyJourney(
               reportPayment = ReportPaymentFormPage(true.some),
               claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
-              claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some)
+              claimAmount = ClaimAmountFormPage(value = subsidyAmount.some)
             )
           )
         }
@@ -502,7 +502,7 @@ class SubsidyControllerSpec
           )
 
           def update(subsidyJourney: SubsidyJourney) =
-            subsidyJourney.copy(claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some))
+            subsidyJourney.copy(claimAmount = ClaimAmountFormPage(value = subsidyAmount.some))
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -741,8 +741,11 @@ class SubsidyControllerSpec
 
         }
 
-        "yes is selected but no eori entered is invalid" in {
-          testFormError(Some(List("should-claim-eori" -> "true", "claim-eori" -> "12345")), "claim-eori.error.format")
+        "yes is selected but eori entered is invalid" in {
+          testFormError(
+            Some(List("should-claim-eori" -> "true", "claim-eori" -> "GB1234567890")),
+            "claim-eori.error.format"
+          )
 
         }
 
@@ -774,10 +777,17 @@ class SubsidyControllerSpec
           checkIsRedirect(performAction(inputAnswer: _*), routes.SubsidyController.getAddClaimPublicAuthority().url)
         }
 
-        "user selected yes and enter eori number" in {
+        "user selected yes and enter a valid  eori number" in {
           testRedirect(
             OptionalEORI("true", "123456789013".some),
             List("should-claim-eori" -> "true", "claim-eori" -> "123456789013")
+          )
+        }
+
+        "user selected yes and enter a valid eori number with GB" in {
+          testRedirect(
+            OptionalEORI("true", "GB123456789013".some),
+            List("should-claim-eori" -> "true", "claim-eori" -> "GB123456789013")
           )
         }
 
@@ -1422,7 +1432,7 @@ class SubsidyControllerSpec
         subsidyJourney.copy(
           reportPayment = ReportPaymentFormPage(Some(true)),
           claimAmount = ClaimAmountFormPage(Some(nonHmrcSubsidyAmount)),
-          existingTransactionId = Some(SubsidyRef(transactionID)),
+          existingTransactionId = Some(SubsidyRef(transactionID))
         )
 
       "throw technical error" when {

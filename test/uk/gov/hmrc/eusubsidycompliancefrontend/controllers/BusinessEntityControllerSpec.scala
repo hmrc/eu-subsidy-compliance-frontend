@@ -32,6 +32,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, Em
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -89,7 +90,8 @@ class BusinessEntityControllerSpec
 
   private val controller = instanceOf[BusinessEntityController]
 
-  private val invalidEOris = List("GB1234567890", "AB1234567890", "GB1234567890123")
+  private val invalidEOris = List("GA1234567890", "AB1234567890")
+  private val invalidLengthEOris = List("1234567890", "12345678901234", "GB1234567890")
   private val currentDate = LocalDate.of(2022, 10, 9)
 
   "BusinessEntityControllerSpec" when {
@@ -328,7 +330,7 @@ class BusinessEntityControllerSpec
           )
         }
 
-        "user has already answered the question" in {
+        "user has already answered the question with prefix GB" in {
           test(
             BusinessEntityJourney().copy(
               addBusiness = AddBusinessFormPage(true.some),
@@ -439,6 +441,15 @@ class BusinessEntityControllerSpec
           }
         }
 
+        "eori is submitted has invalid length" in {
+          invalidLengthEOris.foreach { eori =>
+            withClue(s" For eori :: $eori") {
+              test("businessEntityEori" -> eori)("businessEntityEori.error.incorrect-length")
+            }
+
+          }
+        }
+
         "eori submitted is already in use" in {
           testEORIvalidation("businessEntityEori" -> "123456789010")(
             Right(undertaking1.some),
@@ -461,28 +472,37 @@ class BusinessEntityControllerSpec
           testLeadOnlyRedirect(() => performAction())
         }
 
-        "user is an undertaking lead" in {
-          def update(j: BusinessEntityJourney) = j.copy(eori = j.eori.copy(value = Some(eori4)))
-
+        "user is an undertaking lead and eori entered prefixed with/without GB" in {
           val businessEntityJourney = BusinessEntityJourney()
             .copy(
               addBusiness = AddBusinessFormPage(true.some),
               eori = AddEoriFormPage(eori1.some)
             )
 
-          val updatedBusinessJourney =
-            businessEntityJourney.copy(eori = businessEntityJourney.eori.copy(value = Some(eori4)))
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
-            mockRetrieveUndertakingWithErrorResponse(eori4)(Right(None))
-            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(Right(updatedBusinessJourney))
+          def update(j: BusinessEntityJourney, eoriEntered: EORI) =
+            j.copy(eori = j.eori.copy(value = Some(eoriEntered)))
+          def updatedBusinessJourney(eoriEntered: EORI) =
+            businessEntityJourney.copy(eori = businessEntityJourney.eori.copy(value = Some(eoriEntered)))
+          List("123456789010", "GB123456789013").foreach { eoriEntered =>
+            withClue(s" For eori entered :: $eoriEntered") {
+              val validEori = EORI(getValidEori(eoriEntered))
+              inSequence {
+                mockAuthWithNecessaryEnrolment()
+                mockGet[Undertaking](eori1)(Right(undertaking.some))
+                mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
+                mockRetrieveUndertakingWithErrorResponse(validEori)(Right(None))
+                mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney, validEori), eori1)(
+                  Right(updatedBusinessJourney(validEori))
+                )
+              }
+              checkIsRedirect(
+                performAction("businessEntityEori" -> eoriEntered),
+                routes.BusinessEntityController.getCheckYourAnswers().url
+              )
+            }
+
           }
-          checkIsRedirect(
-            performAction("businessEntityEori" -> "123456789010"),
-            routes.BusinessEntityController.getCheckYourAnswers().url
-          )
+
         }
       }
 

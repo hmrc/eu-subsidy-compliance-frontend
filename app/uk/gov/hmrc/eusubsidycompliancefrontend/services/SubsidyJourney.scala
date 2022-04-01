@@ -73,9 +73,9 @@ case class SubsidyJourney(
 
 object SubsidyJourney {
 
-  val claimAmountPrefix = "€"
-
   implicit val format: Format[SubsidyJourney] = Json.format[SubsidyJourney]
+
+  val claimAmountPrefix = "€"
 
   def isClaimAmountPrefixEuros(amountEntered: String) = amountEntered.take(1) === claimAmountPrefix
 
