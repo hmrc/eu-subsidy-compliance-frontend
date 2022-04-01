@@ -71,6 +71,9 @@
       errorMessage = if (form.hasErrors) {
           Some(ErrorMessage(content = Text(messages(s"$key.${form.errors.head.message}" ))))
       } else None,
+      hint = Some(Hint(
+        content = Text(messages("add-claim-amount.hint"))
+      )),
       label = Label(
         classes = "govuk-visually-hidden",
         isPageHeading = false,
