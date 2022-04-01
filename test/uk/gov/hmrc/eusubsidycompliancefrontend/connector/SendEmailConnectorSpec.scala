@@ -21,7 +21,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.SendEmailConnectorImpl
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.SendEmailConnector
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.emailSendRequest
@@ -30,9 +30,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class SendEmailConnectorSpec extends AnyWordSpec with Matchers with MockFactory with HttpSupport with ConnectorSpec {
 
-  val (protocol, host, port) = ("http", "host", "123")
+  private val (protocol, host, port) = ("http", "host", "123")
 
-  val config = Configuration(
+  private val config = Configuration(
     ConfigFactory.parseString(s"""
                                  | microservice.services.email-send {
                                  |    protocol = "$protocol"
@@ -42,10 +42,9 @@ class SendEmailConnectorSpec extends AnyWordSpec with Matchers with MockFactory 
                                  |""".stripMargin)
   )
 
-  val connector = new SendEmailConnectorImpl(mockHttp, new ServicesConfig(config))
+  private val connector = new SendEmailConnector(mockHttp, new ServicesConfig(config))
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-  val responseHeaders            = Map.empty[String, Seq[String]]
+  implicit private val hc: HeaderCarrier = HeaderCarrier()
 
   "SendEmailConnectorSpec" when {
     "handling request to send  email address " must {
