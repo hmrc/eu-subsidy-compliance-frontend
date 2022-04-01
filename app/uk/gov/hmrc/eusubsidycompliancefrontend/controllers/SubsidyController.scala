@@ -365,7 +365,7 @@ class SubsidyController @Inject() (
         optionalEori <- journey.addClaimEori.value.toContext
         authority <- journey.publicAuthority.value.toContext
         optionalTraderRef <- journey.traderRef.value.toContext
-        claimEori = optionalEori.value.map(e => EORI(e))
+        claimEori = optionalEori.value.map(EORI(_))
         traderRef = optionalTraderRef.value.map(TraderRef(_))
         previous = journey.previous
       } yield Ok(cyaPage(claimDate, amount, claimEori, authority, traderRef, previous))

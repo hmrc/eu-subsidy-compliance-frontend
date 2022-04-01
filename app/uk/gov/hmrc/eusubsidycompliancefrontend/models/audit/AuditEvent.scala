@@ -230,7 +230,7 @@ object AuditEvent {
           SubsidyAmount(subsidyJourney.claimAmount.value.getOrElse(sys.error("claimAmount is missing"))),
         businessEntityIdentifier =
           subsidyJourney.addClaimEori.value.fold(sys.error("eori value missing"))(optionalEORI =>
-            optionalEORI.value.map(e => EORI(getValidEori(e)))
+            optionalEORI.value.map(EORI(_))
           ),
         subsidyUsageTransactionId = subsidyJourney.existingTransactionId
       )
@@ -286,7 +286,7 @@ object AuditEvent {
           SubsidyAmount(subsidyJourney.claimAmount.value.getOrElse(sys.error("claimAmount is missing"))),
         businessEntityIdentifier =
           subsidyJourney.addClaimEori.value.fold(sys.error("eori value missing"))(optionalEORI =>
-            optionalEORI.value.map(e => EORI(getValidEori(e)))
+            optionalEORI.value.map(EORI(_))
           ),
         subsidyUsageTransactionId = subsidyJourney.existingTransactionId
       )

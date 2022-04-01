@@ -159,8 +159,7 @@ class BusinessEntityController @Inject() (
       store.get[BusinessEntityJourney].flatMap {
         case Some(journey) =>
           val eori = journey.eori.value.getOrElse(handleMissingSessionData("EORI"))
-          val validEori = getValidEori(eori)
-          Ok(businessEntityCyaPage(validEori, journey.previous)).toFuture
+          Ok(businessEntityCyaPage(eori, journey.previous)).toFuture
         case _ => handleMissingSessionData("CheckYourAnswers journey")
       }
     }
@@ -175,8 +174,7 @@ class BusinessEntityController @Inject() (
         .map(_.getOrElse(handleMissingSessionData("BusinessEntity Journey")))
       undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("undertaking ref"))
       eoriBE = businessEntityJourney.eori.value.getOrElse(handleMissingSessionData("BE EORI"))
-      validBEEORI = EORI(getValidEori(eoriBE))
-      businessEntity = BusinessEntity(validBEEORI, leadEORI = false) // resetting the journey as it's final CYA page
+      businessEntity = BusinessEntity(eoriBE, leadEORI = false) // resetting the journey as it's final CYA page
       _ <- {
         if (businessEntityJourney.isAmend) {
           escService.removeMember(
@@ -187,7 +185,7 @@ class BusinessEntityController @Inject() (
         escService.addMember(undertakingRef, businessEntity)
       }
       _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
-        validBEEORI,
+        eoriBE,
         None,
         AddMemberEmailToBusinessEntity,
         undertaking,
@@ -196,7 +194,7 @@ class BusinessEntityController @Inject() (
       )
       _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
         eori,
-        validBEEORI.some,
+        eoriBE.some,
         AddMemberEmailToLead,
         undertaking,
         undertakingRef,
@@ -207,10 +205,10 @@ class BusinessEntityController @Inject() (
       _ =
         if (businessEntityJourney.isAmend)
           auditService.sendEvent(
-            AuditEvent.BusinessEntityUpdated(undertakingRef, request.authorityId, eori, validBEEORI)
+            AuditEvent.BusinessEntityUpdated(undertakingRef, request.authorityId, eori, eoriBE)
           )
         else
-          auditService.sendEvent(AuditEvent.BusinessEntityAdded(undertakingRef, request.authorityId, eori, validBEEORI))
+          auditService.sendEvent(AuditEvent.BusinessEntityAdded(undertakingRef, request.authorityId, eori, eoriBE))
       redirect <- getNext(businessEntityJourney)(eori)
     } yield redirect
 

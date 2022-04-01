@@ -34,17 +34,17 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
     EoriNumber -> mandatoryIfEqual(YesNoRadioButton, "true", eoriNumberMapping)
   )(OptionalEORI.apply)(OptionalEORI.unapply)
 
-  private lazy val eoriEntered = Constraint[String] { eori: String =>
+  private val eoriEntered = Constraint[String] { eori: String =>
     if (eori.isEmpty) Invalid("error.required")
     else Valid
   }
 
-  private lazy val enteredEoriIsValid = Constraint[String] { eori: String =>
+  private val enteredEoriIsValid = Constraint[String] { eori: String =>
     if (getValidEori(eori).matches(EORI.regex)) Valid
     else Invalid("error.format")
   }
 
-  private lazy val eoriIsPartOfUndertaking = Constraint[String] { eori: String =>
+  private val eoriIsPartOfUndertaking = Constraint[String] { eori: String =>
     undertaking.undertakingBusinessEntity
       .find(_.businessEntityIdentifier.toString == getValidEori(eori))
       .map(_ => Valid)
