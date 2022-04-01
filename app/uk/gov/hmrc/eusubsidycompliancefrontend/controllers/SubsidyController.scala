@@ -19,8 +19,11 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.data.OptionT
 import cats.implicits._
 import play.api.data.Form
-import play.api.data.Forms.{bigDecimal, mapping, nonEmptyText}
+import play.api.data.validation.{Constraint, Invalid, Valid}
+import play.api.data.Forms.{mapping, nonEmptyText}
 import play.api.mvc._
+
+import scala.util.Try
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
@@ -30,6 +33,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{NonCustomsSubsidyAdded, NonCustomsSubsidyRemoved, NonCustomsSubsidyUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, TraderRef, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.{getValidClaimAmount}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -82,13 +86,34 @@ class SubsidyController @Inject() (
       .verifying("error.claim-public-authority.tooManyChars", _.length < 151)
   )
 
+  private val isClaimAmountTooBig = Constraint[String] { claimAmount: String =>
+    val amount = getValidClaimAmount(claimAmount)
+    if (amount.length < 17) Valid else Invalid("error.amount.tooBig")
+  }
+
+  private val isClaimAmountFormatCorrect = Constraint[String] { claimAmount: String =>
+    val amount = getValidClaimAmount(claimAmount)
+    Try(BigDecimal(amount)).fold(
+      _ => Invalid("error.amount.incorrectFormat"),
+      amount => if (amount.scale == 2 || amount.scale == 0) Valid else Invalid("error.amount.incorrectFormat")
+    )
+  }
+
+  private val isClaimAmountTooSmall = Constraint[String] { claimAmount: String =>
+    val amount = getValidClaimAmount(claimAmount)
+    Try(BigDecimal(amount)).fold(
+      _ => Invalid("error.amount.incorrectFormat"),
+      amount => if (amount > 0.01) Valid else Invalid("error.amount.tooSmall")
+    )
+  }
+
   private val claimAmountForm: Form[BigDecimal] = Form(
     mapping(
-      "claim-amount" -> bigDecimal
-        .verifying("error.amount.tooBig", e => e.toString().length < 17)
-        .verifying("error.amount.incorrectFormat", e => e.scale == 2 || e.scale == 0)
-        .verifying("error.amount.tooSmall", e => e > 0.01)
-    )(identity)(Some(_))
+      "claim-amount" -> nonEmptyText
+        .verifying(isClaimAmountTooBig)
+        .verifying(isClaimAmountFormatCorrect)
+        .verifying(isClaimAmountTooSmall)
+    )(amt => BigDecimal(getValidClaimAmount(amt)))(a => Some(a.toString))
   )
 
   private val claimDateForm = ClaimDateFormProvider(timeProvider).form

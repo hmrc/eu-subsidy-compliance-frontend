@@ -536,7 +536,7 @@ class SubsidyControllerSpec
         }
 
         "nothing is entered" in {
-          displayError("claim-amount" -> "")("add-claim-amount.error.real")
+          displayError("claim-amount" -> "")("add-claim-amount.error.required")
 
         }
         "claim amount entered in wrong format" in {
@@ -553,28 +553,32 @@ class SubsidyControllerSpec
 
       }
 
-      "redirect to next page" in {
+      "redirect to next page when claim amount is prefixed with euro sign or not and have commas and space" in {
 
-        val subsidyJourney = SubsidyJourney(
-          reportPayment = ReportPaymentFormPage(true.some),
-          claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
-          claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some)
-        )
+        List("123.45", "€123.45", "12  3.4 5", "1,23.4,5", "€12  3.4 5").foreach { claimAmount =>
+          withClue(s" For amount :: $claimAmount") {
+            val subsidyJourney = SubsidyJourney(
+              reportPayment = ReportPaymentFormPage(true.some),
+              claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
+              claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some)
+            )
 
-        def update(subsidyJourney: SubsidyJourney) =
-          subsidyJourney.copy(claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some))
+            def update(subsidyJourney: SubsidyJourney) =
+              subsidyJourney.copy(claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some))
 
-        inSequence {
-          mockAuthWithNecessaryEnrolment()
-          mockGet[Undertaking](eori1)(Right(undertaking.some))
-          mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
-          mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Right(subsidyJourney))
+            inSequence {
+              mockAuthWithNecessaryEnrolment()
+              mockGet[Undertaking](eori1)(Right(undertaking.some))
+              mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+              mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Right(subsidyJourney))
+            }
+
+            checkIsRedirect(
+              performAction("claim-amount" -> claimAmount),
+              routes.SubsidyController.getAddClaimEori().url
+            )
+          }
         }
-
-        checkIsRedirect(
-          performAction("claim-amount" -> "123.45"),
-          routes.SubsidyController.getAddClaimEori().url
-        )
 
       }
 

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import cats.implicits.catsSyntaxOptionId
+import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import play.api.libs.json._
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result}
@@ -73,7 +73,16 @@ case class SubsidyJourney(
 
 object SubsidyJourney {
 
+  val claimAmountPrefix = "€"
+
   implicit val format: Format[SubsidyJourney] = Json.format[SubsidyJourney]
+
+  def isClaimAmountPrefixEuros(amountEntered: String) = amountEntered.take(1) === claimAmountPrefix
+
+  def trimAmount(amount: String) = amount.trim.replaceAll(",", "").replaceAll("\\s", "")
+
+  def getValidClaimAmount(amountEntered: String) =
+    if (isClaimAmountPrefixEuros(amountEntered)) trimAmount(amountEntered.drop(1)) else trimAmount(amountEntered)
 
   def fromNonHmrcSubsidy(nonHmrcSubsidy: NonHmrcSubsidy): SubsidyJourney =
     SubsidyJourney(
