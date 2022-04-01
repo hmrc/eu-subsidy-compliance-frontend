@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import com.google.inject.{ImplementedBy, Inject, Singleton}
+import com.google.inject.{Inject, Singleton}
 import play.api.Logging
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Request
@@ -29,36 +29,24 @@ import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
-@ImplementedBy(classOf[AuditServiceImpl])
-trait AuditService {
-
-  def sendEvent[A <: AuditEvent](auditEvent: A)(implicit
-    hc: HeaderCarrier,
-    writes: Writes[A],
-    request: Request[_]
-  ): Unit
-}
-
 @Singleton
-class AuditServiceImpl @Inject() (auditConnector: AuditConnector)(implicit ec: ExecutionContext)
-    extends AuditService
-    with Logging {
+class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: ExecutionContext) extends Logging {
 
   private val auditSource: String = "eu-subsidy-compliance-frontend"
 
-  override def sendEvent[A <: AuditEvent](
-    auditEvent: A
-  )(implicit
-    hc: HeaderCarrier,
+  def sendEvent[A <: AuditEvent](auditEvent: A)(
+    implicit hc: HeaderCarrier,
     writes: Writes[A],
     request: Request[_]
   ): Unit = {
+
     val extendedDataEvent = ExtendedDataEvent(
       auditSource = auditSource,
       auditType = auditEvent.auditType,
       detail = Json.toJson(auditEvent),
       tags = hc.toAuditTags(auditEvent.transactionName, request.uri)
     )
+
     auditConnector.sendExtendedEvent(extendedDataEvent).onComplete {
       case Success(_) => ()
       case Failure(e) =>
