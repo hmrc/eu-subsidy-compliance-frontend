@@ -638,7 +638,7 @@ class SubsidyControllerSpec
               subsidyJourney.addClaimEori.value match {
                 case Some(OptionalEORI(input, eori)) =>
                   selectedOptions.attr("value") shouldBe input
-                  inputText shouldBe eori.getOrElse("")
+                  inputText shouldBe eori.map(_.drop(2)).getOrElse("")
                 case _ => selectedOptions.isEmpty shouldBe true
               }
 
