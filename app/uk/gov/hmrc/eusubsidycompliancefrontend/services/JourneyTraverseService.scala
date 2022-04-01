@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import com.google.inject.{ImplementedBy, Inject, Singleton}
+import com.google.inject.{Inject, Singleton}
 import play.api.libs.json.Reads
 import play.api.mvc.Request
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -25,17 +25,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
-@ImplementedBy(classOf[JourneyTraverseServiceImpl])
-trait JourneyTraverseService {
-
-  def getPrevious[A <: Journey : ClassTag](implicit eori: EORI, request: Request[_], reads: Reads[A]): Future[Uri]
-
-}
-
 @Singleton
-class JourneyTraverseServiceImpl @Inject() (store: Store)(implicit ec: ExecutionContext)
-    extends JourneyTraverseService {
-  override def getPrevious[A <: Journey : ClassTag](implicit
+class JourneyTraverseService @Inject() (store: Store)(implicit ec: ExecutionContext) {
+
+  def getPrevious[A <: Journey : ClassTag](implicit
     eori: EORI,
     request: Request[_],
     reads: Reads[A]
@@ -47,4 +40,5 @@ class JourneyTraverseServiceImpl @Inject() (store: Store)(implicit ec: Execution
       }
     }
   }
+
 }

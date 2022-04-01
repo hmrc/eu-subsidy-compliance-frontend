@@ -21,10 +21,10 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.RetrieveEmailConnectorImpl
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.RetrieveEmailConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -35,9 +35,9 @@ class RetrieveEmailConnectorSpec
     with HttpSupport
     with ConnectorSpec {
 
-  val (protocol, host, port) = ("http", "host", "123")
+  private val (protocol, host, port) = ("http", "host", "123")
 
-  val config = Configuration(
+  private val config = Configuration(
     ConfigFactory.parseString(s"""
                                  | microservice.services.cds {
                                  |    protocol = "$protocol"
@@ -47,12 +47,11 @@ class RetrieveEmailConnectorSpec
                                  |""".stripMargin)
   )
 
-  val connector = new RetrieveEmailConnectorImpl(mockHttp, new ServicesConfig(config))
+  private val connector = new RetrieveEmailConnector(mockHttp, new ServicesConfig(config))
 
-  implicit val hc: HeaderCarrier = HeaderCarrier()
-  val responseHeaders            = Map.empty[String, Seq[String]]
+  implicit private val hc: HeaderCarrier = HeaderCarrier()
 
-  "RetrieveEmailConnectorSpec" when {
+  "RetrieveEmailConnector" when {
     "handling request to retrieve email address by eori" must {
       val expectedUrl = s"$protocol://$host:$port/customs-data-store/eori/${eori1}/verified-email"
 

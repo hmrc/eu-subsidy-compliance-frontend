@@ -33,11 +33,11 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class AuditServiceImplSpec extends Matchers with AnyWordSpecLike with MockFactory {
+class AuditServiceSpec extends Matchers with AnyWordSpecLike with MockFactory {
 
-  val mockAuditConnector = mock[AuditConnector]
+  private val mockAuditConnector = mock[AuditConnector]
 
-  def mockSendExtendedEvent(expectedEvent: ExtendedDataEvent)(result: Future[AuditResult]) =
+  private def mockSendExtendedEvent(expectedEvent: ExtendedDataEvent)(result: Future[AuditResult]) =
     (mockAuditConnector
       .sendExtendedEvent(_: ExtendedDataEvent)(_: HeaderCarrier, _: ExecutionContext))
       .expects(where { case (actualEvent, _, _) =>
@@ -49,9 +49,9 @@ class AuditServiceImplSpec extends Matchers with AnyWordSpecLike with MockFactor
       })
       .returning(result)
 
-  val service = new AuditServiceImpl(mockAuditConnector)
+  private val service = new AuditService(mockAuditConnector)
 
-  "AuditServiceImpl" when {
+  "AuditService" when {
 
     "handling requests to audit an event" must {
 

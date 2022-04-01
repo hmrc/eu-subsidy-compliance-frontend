@@ -16,36 +16,30 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
-import com.google.inject.{ImplementedBy, Inject, Singleton}
+import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendRequest
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-@ImplementedBy(classOf[SendEmailConnectorImpl])
-trait SendEmailConnector {
-  def sendEmail(emailSendRequest: EmailSendRequest)(implicit
-    hc: HeaderCarrier
-  ): Future[Either[ConnectorError, HttpResponse]]
-}
-
 @Singleton
-class SendEmailConnectorImpl @Inject() (http: HttpClient, servicesConfig: ServicesConfig)(implicit
-  ec: ExecutionContext
-) extends SendEmailConnector {
+class SendEmailConnector @Inject() (
+  http: HttpClient,
+  servicesConfig: ServicesConfig
+)(implicit ec: ExecutionContext
+) {
 
-  private val baseUrl: String = servicesConfig.baseUrl("email-send")
-  private val sendEmailUrl: String = s"$baseUrl/hmrc/email"
+  private lazy val baseUrl: String = servicesConfig.baseUrl("email-send")
+  private lazy val sendEmailUrl: String = s"$baseUrl/hmrc/email"
 
-  override def sendEmail(emailSendRequest: EmailSendRequest)(implicit
-    hc: HeaderCarrier
-  ): Future[Either[ConnectorError, HttpResponse]] =
+  def sendEmail(
+    emailSendRequest: EmailSendRequest
+  )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]] =
     http
       .POST[EmailSendRequest, HttpResponse](sendEmailUrl, emailSendRequest)
       .map(Right(_))
       .recover { case e => Left(ConnectorError(e)) }
-
 }
