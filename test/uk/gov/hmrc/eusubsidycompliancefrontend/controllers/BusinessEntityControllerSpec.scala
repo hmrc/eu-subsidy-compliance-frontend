@@ -314,7 +314,7 @@ class BusinessEntityControllerSpec
               doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
 
               val input = doc.select(".govuk-input").attr("value")
-              input shouldBe businessEntityJourney.eori.value.getOrElse("")
+              input shouldBe businessEntityJourney.eori.value.map(_.drop(2)).getOrElse("")
 
               val button = doc.select("form")
               button.attr("action") shouldBe routes.BusinessEntityController.postEori().url
@@ -335,15 +335,6 @@ class BusinessEntityControllerSpec
             BusinessEntityJourney().copy(
               addBusiness = AddBusinessFormPage(true.some),
               eori = AddEoriFormPage(eori1.some)
-            )
-          )
-        }
-
-        "user has already answered the question without prefix GB" in {
-          test(
-            BusinessEntityJourney().copy(
-              addBusiness = AddBusinessFormPage(true.some),
-              eori = AddEoriFormPage("123456789013".some)
             )
           )
         }
@@ -481,7 +472,7 @@ class BusinessEntityControllerSpec
           testLeadOnlyRedirect(() => performAction())
         }
 
-        "user is an undertaking lead and eori entered prefixed with GB or not" in {
+        "user is an undertaking lead and eori entered prefixed with/without GB" in {
           val businessEntityJourney = BusinessEntityJourney()
             .copy(
               addBusiness = AddBusinessFormPage(true.some),

@@ -137,7 +137,7 @@ class BusinessEntityController @Inject() (
       escService.retrieveUndertakingAndHandleErrors(EORI(form.value)).flatMap {
         case Right(Some(_)) => getErrorResponse("businessEntityEori.eoriInUse", previous, form)
         case Left(_) => getErrorResponse(s"error.$businessEntityEori.required", previous, form)
-        case Right(None) => store.update[BusinessEntityJourney](_.setEori(form.value)).flatMap(_.next)
+        case Right(None) => store.update[BusinessEntityJourney](_.setEori(EORI(form.value))).flatMap(_.next)
       }
 
     withLeadUndertaking { _ =>
@@ -391,9 +391,7 @@ class BusinessEntityController @Inject() (
       "businessEntityEori" -> mandatory("businessEntityEori")
         .verifying(isEoriLengthValid)
         .verifying(isEoriValid)
-    )(FormValues.apply)(
-      FormValues.unapply
-    )
+    )(eoriEntered => FormValues(getValidEori(eoriEntered)))(eori => eori.value.drop(2).some)
   )
 
   private val cyaForm: Form[FormValues] = Form(mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))

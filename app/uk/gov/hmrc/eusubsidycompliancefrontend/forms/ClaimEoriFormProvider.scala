@@ -54,6 +54,7 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
   private val eoriNumberMapping: Mapping[String] =
     text
       .verifying(eoriEntered)
+      .transform(e => getValidEori(e), (s: String) => s.drop(2))
       .verifying(enteredEoriIsValid)
       .verifying(eoriIsPartOfUndertaking)
 

@@ -88,11 +88,12 @@ class SubsidyController @Inject() (
   )
 
   private val isClaimAmountTooBig = Constraint[String] { claimAmount: String =>
-    if (SubsidyJourney.getValidClaimAmount(claimAmount).length < 17) Valid else Invalid("error.amount.tooBig")
+    val amount = getValidClaimAmount(claimAmount)
+    if (amount.length < 17) Valid else Invalid("error.amount.tooBig")
   }
 
   private val isClaimAmountFormatCorrect = Constraint[String] { claimAmount: String =>
-    val amount = SubsidyJourney.getValidClaimAmount(claimAmount)
+    val amount = getValidClaimAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid("error.amount.incorrectFormat"),
       amount => if (amount.scale == 2 || amount.scale == 0) Valid else Invalid("error.amount.incorrectFormat")
@@ -360,7 +361,7 @@ class SubsidyController @Inject() (
         journey <- store.get[SubsidyJourney].toContext
         _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
         claimDate <- journey.claimDate.value.toContext
-        amount <- journey.claimAmount.value.map(amt => BigDecimal(getValidClaimAmount(amt))).toContext
+        amount <- journey.claimAmount.value.toContext
         optionalEori <- journey.addClaimEori.value.toContext
         authority <- journey.publicAuthority.value.toContext
         optionalTraderRef <- journey.traderRef.value.toContext
@@ -542,11 +543,8 @@ object SubsidyController {
             // this shouldn't be optional, is required in create API but not retrieve
             publicAuthority = Some(journey.publicAuthority.value.get),
             traderReference = journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
-            nonHMRCSubsidyAmtEUR = SubsidyAmount(
-              BigDecimal(
-                journey.claimAmount.value.map(getValidClaimAmount).getOrElse(sys.error("Claim amount Missing"))
-              )
-            ),
+            nonHMRCSubsidyAmtEUR =
+              SubsidyAmount(journey.claimAmount.value.getOrElse(sys.error("Claim amount Missing"))),
             businessEntityIdentifier = journey.addClaimEori.value.fold(sys.error("eori value missing"))(oprionalEORI =>
               oprionalEORI.value.map(EORI(_))
             ),

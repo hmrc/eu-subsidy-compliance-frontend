@@ -22,7 +22,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessCyaFormPage, AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
-import BusinessEntityJourney._
 
 case class BusinessEntityJourney(
   addBusiness: AddBusinessFormPage = AddBusinessFormPage(),
@@ -41,10 +40,10 @@ case class BusinessEntityJourney(
 
   def isAmend: Boolean = oldEORI.nonEmpty
 
-  def setEori(e: String): BusinessEntityJourney =
+  def setEori(e: EORI): BusinessEntityJourney =
     this.copy(
       eori = eori.copy(value = e.some),
-      oldEORI = eori.value.map(e => EORI(getValidEori(e)))
+      oldEORI = eori.value
     )
 
   def setAddBusiness(b: Boolean): BusinessEntityJourney =
@@ -70,7 +69,7 @@ object BusinessEntityJourney {
     case class AddBusinessFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getAddBusinessEntity().url
     }
-    case class AddEoriFormPage(value: Form[String] = None) extends FormPage[String] {
+    case class AddEoriFormPage(value: Form[EORI] = None) extends FormPage[EORI] {
       def uri = controller.getEori().url
     }
     case class AddBusinessCyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {

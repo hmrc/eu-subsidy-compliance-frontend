@@ -22,6 +22,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.OptionalEORI
 import ClaimEoriFormProvider.Fields._
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking}
 
 class ClaimEoriFormProviderSpec extends AnyWordSpecLike with Matchers {
@@ -36,6 +37,10 @@ class ClaimEoriFormProviderSpec extends AnyWordSpecLike with Matchers {
 
     "return no errors for a submission where an EORI was entered" in {
       validateAndCheckSucess("true", Some(eori1.drop(2)))
+    }
+
+    "return no errors for a submission where an EORI was entered with prefix GB" in {
+      validateAndCheckSucess("true", Some(eori1))
     }
 
     "return an error if no fields are selected" in {
@@ -58,10 +63,13 @@ class ClaimEoriFormProviderSpec extends AnyWordSpecLike with Matchers {
 
   private def validateAndCheckSucess(radioButton: String, eoriNumber: Option[String]) = {
     val result = processForm(radioButton, eoriNumber)
-    result mustBe Right(OptionalEORI(radioButton, eoriNumber.map(e => s"GB$e")))
+    result mustBe Right(OptionalEORI(radioButton, eoriNumber.map(getValidEori)))
   }
 
-  private def validateAndCheckError(radioButton: String, eoriNumber: Option[String])(errorField: String, errorMessage: String, args: String*) = {
+  private def validateAndCheckError(
+    radioButton: String,
+    eoriNumber: Option[String]
+  )(errorField: String, errorMessage: String, args: String*) = {
     val result = processForm(radioButton, eoriNumber)
 
     val foundExpectedErrorMessage = result.leftSideValue match {
@@ -73,13 +81,12 @@ class ClaimEoriFormProviderSpec extends AnyWordSpecLike with Matchers {
       s"got result $result which did not contain expected error $errorMessage for field $errorField"
   }
 
-  private def processForm(radioButton: String, eoriNumber: Option[String]) = {
+  private def processForm(radioButton: String, eoriNumber: Option[String]) =
     underTest.form.mapping.bind(
       Map(
         YesNoRadioButton -> radioButton,
-        EoriNumber -> eoriNumber.getOrElse(""),
+        EoriNumber -> eoriNumber.getOrElse("")
       )
     )
-  }
 
 }

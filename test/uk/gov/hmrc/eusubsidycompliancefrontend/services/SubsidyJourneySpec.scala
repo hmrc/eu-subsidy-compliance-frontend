@@ -25,7 +25,7 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{SubsidyAmount, SubsidyRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, OptionalEORI, OptionalTraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 
@@ -41,7 +41,7 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
     }
 
     "return an updated instance with the specified value when setClaimAmount is called" in {
-      val value = "12.34"
+      val value = SubsidyAmount(BigDecimal("123.45"))
       SubsidyJourney().setClaimAmount(value) shouldBe SubsidyJourney(claimAmount = ClaimAmountFormPage(value.some))
     }
 
