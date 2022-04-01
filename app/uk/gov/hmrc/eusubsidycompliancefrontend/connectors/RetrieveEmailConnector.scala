@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
-import com.google.inject.{ImplementedBy, Inject, Singleton}
+import com.google.inject.{Inject, Singleton}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -25,22 +25,17 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
-@ImplementedBy(classOf[RetrieveEmailConnectorImpl])
-trait RetrieveEmailConnector {
-
-  def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]]
-
-}
-
 @Singleton
-class RetrieveEmailConnectorImpl @Inject() (http: HttpClient, servicesConfig: ServicesConfig)(implicit
-  ec: ExecutionContext
-) extends RetrieveEmailConnector {
+class RetrieveEmailConnector @Inject() (
+  http: HttpClient,
+  servicesConfig: ServicesConfig
+)(implicit ec: ExecutionContext) {
 
-  val cdsURL: String = servicesConfig.baseUrl("cds")
+  lazy private val cdsURL: String = servicesConfig.baseUrl("cds")
 
   def getUri(eori: EORI) = s"$cdsURL/customs-data-store/eori/${eori}/verified-email"
-  override def retrieveEmailByEORI(
+
+  def retrieveEmailByEORI(
     eori: EORI
   )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]] =
     http
