@@ -44,13 +44,13 @@ case class UndertakingJourney(
     cya,
     confirmation
   )
-  private val previousMap: Map[String, Uri] = Map(
-    routes.UndertakingController.getUndertakingName().url -> routes.EligibilityController.getCreateUndertaking().url
+  private lazy val previousMap: Map[String, Uri] = Map(
+    routes.UndertakingController.getUndertakingName().url -> routes.EligibilityController.getCreateUndertaking().url,
+    routes.UndertakingController.getSector().url -> routes.UndertakingController.getUndertakingName().url
   )
 
   override def previous(implicit r: Request[_]): Uri =
     if (isAmend) routes.UndertakingController.getAmendUndertakingDetails().url
-    else if (requiredDetailsProvided && !isCurrentPageCYA) routes.UndertakingController.getCheckAnswers().url
     else previousMap.getOrElse(r.uri, super.previous)
 
   override def next(implicit request: Request[_]): Future[Result] =

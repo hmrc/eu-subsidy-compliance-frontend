@@ -237,7 +237,7 @@ class UndertakingControllerSpec
         }
 
         "undertaking journey is there in store and user has already answered the questions and all answers are complete" in {
-          testDisplay(undertakingJourneyComplete, routes.UndertakingController.getCheckAnswers().url)
+          testDisplay(undertakingJourneyComplete, routes.EligibilityController.getCreateUndertaking().url)
         }
 
         "undertaking journey is there in store and user hasn't  answered any questions" in {
@@ -440,7 +440,7 @@ class UndertakingControllerSpec
               name = UndertakingNameFormPage("TestUndertaking1".some),
               sector = UndertakingSectorFormPage(Sector(2).some)
             ),
-            previousCall = routes.UndertakingController.getCheckAnswers().url,
+            previousCall = routes.UndertakingController.getUndertakingName().url,
             inputValue = "2".some
           )
         }
