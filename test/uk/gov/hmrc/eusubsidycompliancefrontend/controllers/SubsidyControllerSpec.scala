@@ -431,7 +431,7 @@ class SubsidyControllerSpec
             SubsidyJourney(
               reportPayment = ReportPaymentFormPage(true.some),
               claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
-              claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some)
+              claimAmount = ClaimAmountFormPage(value = subsidyAmount.some)
             )
           )
         }
@@ -502,7 +502,7 @@ class SubsidyControllerSpec
           )
 
           def update(subsidyJourney: SubsidyJourney) =
-            subsidyJourney.copy(claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some))
+            subsidyJourney.copy(claimAmount = ClaimAmountFormPage(value = subsidyAmount.some))
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -1432,7 +1432,7 @@ class SubsidyControllerSpec
         subsidyJourney.copy(
           reportPayment = ReportPaymentFormPage(Some(true)),
           claimAmount = ClaimAmountFormPage(Some(nonHmrcSubsidyAmount)),
-          existingTransactionId = Some(SubsidyRef(transactionID)),
+          existingTransactionId = Some(SubsidyRef(transactionID))
         )
 
       "throw technical error" when {

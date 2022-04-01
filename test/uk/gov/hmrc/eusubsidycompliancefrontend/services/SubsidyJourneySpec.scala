@@ -35,11 +35,13 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
 
     "return an updated instance with the specified value when setReportPayment is called" in {
       val value = true
-      SubsidyJourney().setReportPayment(value) shouldBe SubsidyJourney(reportPayment = ReportPaymentFormPage(value.some))
+      SubsidyJourney().setReportPayment(value) shouldBe SubsidyJourney(reportPayment =
+        ReportPaymentFormPage(value.some)
+      )
     }
 
     "return an updated instance with the specified value when setClaimAmount is called" in {
-      val value = BigDecimal(12.34)
+      val value = "12.34"
       SubsidyJourney().setClaimAmount(value) shouldBe SubsidyJourney(claimAmount = ClaimAmountFormPage(value.some))
     }
 
@@ -55,7 +57,9 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
 
     "return an updated instance with the specified value when setPublicAuthority is called" in {
       val value = "Some Public Authority"
-      SubsidyJourney().setPublicAuthority(value) shouldBe SubsidyJourney(publicAuthority = PublicAuthorityFormPage(value.some))
+      SubsidyJourney().setPublicAuthority(value) shouldBe SubsidyJourney(publicAuthority =
+        PublicAuthorityFormPage(value.some)
+      )
     }
 
     "return an updated instance with the specified value when setTraderRef is called" in {
