@@ -193,10 +193,11 @@ removeBusiness.error.required = Select yes if you want to remove business entity
 
 undertaking.confirmation.title=You have successfully created your single undertaking account
 undertaking.confirmation.h2=Account details
-undertaking.confirmation.h3={0}
+undertaking.confirmation.undertaking-name=Undertaking name
+undertaking.confirmation.name={0}
 undertaking.confirmation.ref.p1=Account reference number
 undertaking.confirmation.ref.p2=Account administrator
-undertaking.confirmation.ref.eori-prefix=EORI
+undertaking.confirmation.ref.eori=EORI {0}
 undertaking.confirmation.p1=You are now the lead for this account.
 undertaking.confirmation.h2-2=What happens next
 undertaking.confirmation.p2=We have sent you a confirmation email, which includes the above account reference number.

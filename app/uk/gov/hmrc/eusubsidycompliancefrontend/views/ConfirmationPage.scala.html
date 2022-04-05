@@ -25,27 +25,32 @@
     layout: Layout,
     formHelper: FormWithCSRF,
     button: components.Button,
-    govukNotificationBanner : GovukNotificationBanner
+    govukNotificationBanner : GovukNotificationBanner,
+    govukSummaryList: GovukSummaryList
 )
 
 
 @(ref: UndertakingRef, name: UndertakingName, eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @html = {
-    <p class="govuk-notification-banner__heading">
-        @messages("undertaking.confirmation.h2")
-    </p>
-    <p class="govuk-body"><strong>@messages("undertaking.confirmation.h3", name)</strong></p>
-    <p class="govuk-body">
-        @messages("undertaking.confirmation.ref.p1")<br>
-        <strong>@ref</strong>
-    </p>
-    <p class="govuk-body">
-        @messages("undertaking.confirmation.ref.p2")<br>
-        <strong>@messages("undertaking.confirmation.ref.eori-prefix") @eori</strong>
-    </p>
-
-
+    <h2 class="govuk-notification-banner__heading">@messages("undertaking.confirmation.h2")</h2>
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(content = Text(messages("undertaking.confirmation.undertaking-name"))),
+                value = Value(content = Text(messages("undertaking.confirmation.name", name)))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages("undertaking.confirmation.ref.p1"))),
+                value = Value(content = Text(ref))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages("undertaking.confirmation.ref.p2"))),
+                value = Value(content = Text(messages("undertaking.confirmation.ref.eori", eori)))
+            )
+        ),
+        classes = "govuk-summary-list--no-border"
+    ))
 }
 
 @layout(
