@@ -40,10 +40,8 @@
 
         <h1 class="govuk-heading-xl">@title</h1>
         <h2 class="govuk-heading-m">@messages(s"$key.h2", eori)</h2>
+        <p class="govuk-body">@Html(messages(s"$key.p1", appConfig.exitSurveyUrl))</p>
         <input type=hidden name=createUndertaking value=true>
         @button("common.continue")
-        <p class="govuk-body">@Html(messages(s"$key.p1", appConfig.exitSurveyUrl)) </p>
-
-
     }
 }
