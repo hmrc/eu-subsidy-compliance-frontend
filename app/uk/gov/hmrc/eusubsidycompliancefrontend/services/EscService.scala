@@ -80,11 +80,9 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
       .removeMember(undertakingRef, businessEntity)
       .map(handleResponse[UndertakingRef](_, "remove member"))
 
-  def createSubsidy(undertakingRef: UndertakingRef, subsidyUpdate: SubsidyUpdate)(implicit
-    hc: HeaderCarrier
-  ): Future[UndertakingRef] =
+  def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
     escConnector
-      .createSubsidy(undertakingRef, subsidyUpdate)
+      .createSubsidy(subsidyUpdate)
       .map(handleResponse[UndertakingRef](_, "create subsidy"))
 
   def retrieveSubsidy(

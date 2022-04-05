@@ -389,7 +389,7 @@ class SubsidyController @Inject() (
                 _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
                 ref <- undertaking.reference.toContext
                 currentDate = timeProvider.today
-                _ <- escService.createSubsidy(ref, toSubsidyUpdate(journey, ref, currentDate)).toContext
+                _ <- escService.createSubsidy(toSubsidyUpdate(journey, ref, currentDate)).toContext
                 _ <- store.put(SubsidyJourney()).toContext
                 _ =
                   if (journey.isAmend)

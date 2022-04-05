@@ -90,7 +90,7 @@ class EscConnector @Inject() (
         Left(ConnectorError(e))
       }
 
-  def createSubsidy(undertakingRef: UndertakingRef, subsidyUpdate: SubsidyUpdate)(implicit
+  def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit
     hc: HeaderCarrier
   ): Future[Either[ConnectorError, HttpResponse]] =
     http
