@@ -109,10 +109,7 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
         else
           response
             .parseJSON[A]
-            .fold(
-              _ => sys.error(s"Error parsing response for $action"),
-              identity
-            )
+            .getOrElse(sys.error(s"Error parsing response for $action"))
     )
 }
 
