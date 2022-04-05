@@ -479,10 +479,7 @@ class EligibilityControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            List(
-              messageFromMessageKey("mainbusinesscheck.title"),
-              messageFromMessageKey("mainbusinesscheck.legend", eori1)
-            ).mkString(" "),
+            messageFromMessageKey("mainbusinesscheck.title"),
             { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
 
@@ -571,10 +568,7 @@ class EligibilityControllerSpec
 
           checkFormErrorIsDisplayed(
             performAction(),
-            List(
-              messageFromMessageKey("mainbusinesscheck.title"),
-              messageFromMessageKey("mainbusinesscheck.legend", eori1)
-            ).mkString(" "),
+            messageFromMessageKey("mainbusinesscheck.title"),
             messageFromMessageKey("mainbusinesscheck.error.required")
           )
         }
