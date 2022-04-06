@@ -50,7 +50,7 @@
             content = Text(messages(s"$key.warning"))
         ))
         <p class="govuk-body">@messages(s"$key.p3")</p>
-        <p class="govuk-body">@Html(messages(s"$key.p4", appConfig.exitSurveyUrl))</p>
+        <p class="govuk-body">@Html(messages(s"$key.p4", appConfig.signOutUrl(continueUrl = Some(appConfig.exitSurveyUrl))))</p>
         <input type=hidden name=terms value=true>
         @button("common.accept-continue")
     }

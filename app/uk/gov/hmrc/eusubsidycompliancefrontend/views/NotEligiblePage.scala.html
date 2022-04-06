@@ -25,5 +25,5 @@
   <h1 class="govuk-heading-xl">@messages("notEligible.title")</h1>
   <p class="govuk-body">@messages("notEligible.p1")</p>
   <p class="govuk-body">@Html(messages("notEligible.p2"))</p>
-  <p class="govuk-body"><a class="govuk-link" href="@controllers.routes.SignOutController.signOut()">@messages("common.sign-out")</a></p>
+  <p class="govuk-body"><a class="govuk-link" href="@{appConfig.signOutUrl(continueUrl = Some(appConfig.exitSurveyUrl))}">@messages("common.sign-out")</a></p>
 }

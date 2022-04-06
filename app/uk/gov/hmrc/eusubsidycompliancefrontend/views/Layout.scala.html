@@ -81,7 +81,7 @@
     headBlock = Some(hmrcHead(headBlock = Some(head), nonce = CSPNonce.get)),
     headerBlock = Some(hmrcStandardHeader(
         serviceUrl  = Some(routes.AccountController.getAccountPage().url),
-        signOutUrl = if(showSignOutLink) Some(appConfig.exitSurveyUrl) else None)
+        signOutUrl = if(showSignOutLink) Some(appConfig.signOutUrl(continueUrl = Some(appConfig.exitSurveyUrl))) else None)
     ),
     scriptsBlock = Some(hmrcScripts(nonce = CSPNonce.get)),
     footerBlock = Some(hmrcStandardFooter()),
