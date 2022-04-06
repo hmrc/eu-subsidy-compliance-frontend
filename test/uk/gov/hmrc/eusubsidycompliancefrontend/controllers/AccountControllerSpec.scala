@@ -24,7 +24,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NilReturnJourney.Forms.NilReturnFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, EscService, NilReturnJourney, RetrieveEmailService, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -86,6 +86,7 @@ class AccountControllerSpec
             mockTimeToday(fixedDate)
             mockGet[NilReturnJourney](eori1)(Right(None))
             mockPut[NilReturnJourney](nilJourneyCreate, eori1)(Right(nilJourneyCreate))
+            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies.toFuture)
           }
           checkPageIsDisplayed(
             performAction(),
@@ -155,6 +156,7 @@ class AccountControllerSpec
             mockTimeToday(currentDate)
             mockGet[NilReturnJourney](eori1)(Right(None))
             mockPut[NilReturnJourney](nilJourneyCreate, eori1)(Right(nilJourneyCreate))
+            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies.toFuture)
           }
           checkPageIsDisplayed(
             performAction(),
@@ -193,6 +195,7 @@ class AccountControllerSpec
             mockTimeToday(currentDate)
             mockGet[NilReturnJourney](eori1)(Right(nilReturnJourney.some))
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNJ))
+            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies.toFuture)
           }
           checkPageIsDisplayed(
             performAction(),
@@ -209,6 +212,34 @@ class AccountControllerSpec
                 val body = doc.select(".govuk-notification-banner").text
                 body should include regex ""
               }
+          )
+        }
+
+        def testTimeToReportAndNeverSubmitted(
+                              undertaking: Undertaking,
+                              currentDate: LocalDate
+                            ): Unit = {
+          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
+            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
+            mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+            mockTimeToday(currentDate)
+            mockGet[NilReturnJourney](eori1)(Right(None))
+            mockPut[NilReturnJourney](nilJourneyCreate, eori1)(Right(nilJourneyCreate))
+            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies.copy(nonHMRCSubsidyUsage = List.empty, hmrcSubsidyUsage = List.empty).toFuture)
+          }
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("lead-account-homepage.title", undertaking.name),
+            doc => {
+              val htmlBody = doc.select(".govuk-inset-text").text
+              htmlBody shouldBe messageFromMessageKey("lead-account-homepage-never-submitted-overdue")
+            }
           )
         }
 
@@ -251,6 +282,14 @@ class AccountControllerSpec
             isTimeToReport = false,
             dueDate = "1 March 2022",
             isOverdue = true
+          )
+        }
+
+        "today's over 90 days from the undertaking creation and no subsidies created" in {
+          val lastUpdatedDate = LocalDate.of(2021, 12, 1)
+          testTimeToReportAndNeverSubmitted(
+            undertaking.copy(lastSubsidyUsageUpdt = lastUpdatedDate.some),
+            currentDate = lastUpdatedDate.plusDays(91)
           )
         }
 

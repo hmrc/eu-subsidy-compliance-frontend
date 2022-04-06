@@ -27,7 +27,9 @@ case class UndertakingSubsidies(
   hmrcSubsidyTotalGBP: SubsidyAmount,
   nonHMRCSubsidyUsage: List[NonHmrcSubsidy],
   hmrcSubsidyUsage: List[HmrcSubsidy]
-)
+) {
+  def hasNeverSubmitted: Boolean = nonHMRCSubsidyUsage.isEmpty
+}
 
 object UndertakingSubsidies {
   implicit val format: Format[UndertakingSubsidies] = Json.format[UndertakingSubsidies]
