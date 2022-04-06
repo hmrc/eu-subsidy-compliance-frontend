@@ -630,9 +630,6 @@ class EligibilityControllerSpec
           messageFromMessageKey("eligibilityTerms.title"),
           { doc =>
             doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
-
-            val bodyHtml = doc.select(".govuk-body").html()
-            bodyHtml should include regex messageFromMessageKey("eligibilityTerms.p4", appConfig.exitSurveyUrl)
             val button = doc.select("form")
             button.attr("action") shouldBe routes.EligibilityController.postTerms().url
 
@@ -867,8 +864,6 @@ class EligibilityControllerSpec
           { doc =>
             doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
 
-            val bodyHtml = doc.select(".govuk-body").html()
-            bodyHtml should include regex messageFromMessageKey("createUndertaking.p1", appConfig.exitSurveyUrl)
             val button = doc.select("form")
             button.attr("action") shouldBe routes.EligibilityController.postCreateUndertaking().url
 
