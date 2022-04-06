@@ -32,21 +32,21 @@ class EscConnector @Inject() (
   servicesConfig: ServicesConfig
 )(implicit ec: ExecutionContext) {
 
-  private lazy val escURL: String = servicesConfig.baseUrl("esc")
+  private lazy val escUrl: String = servicesConfig.baseUrl("esc")
 
-  private val createUndertakingPath = "eu-subsidy-compliance/undertaking"
-  private val updateUndertakingPath = "eu-subsidy-compliance/undertaking/update"
-  private val retrieveUndertakingPath = "eu-subsidy-compliance/undertaking/"
-  private val addMemberPath = "eu-subsidy-compliance/undertaking/member"
-  private val removeMemberPath = "eu-subsidy-compliance/undertaking/member/remove"
-  private val updateSubsidyPath = "eu-subsidy-compliance/subsidy/update"
-  private val retrieveSubsidyPath = "eu-subsidy-compliance/subsidy/retrieve"
+  private lazy val createUndertakingUrl = s"$escUrl/eu-subsidy-compliance/undertaking"
+  private lazy val updateUndertakingUrl = s"$escUrl/eu-subsidy-compliance/undertaking/update"
+  private lazy val retrieveUndertakingUrl = s"$escUrl/eu-subsidy-compliance/undertaking"
+  private lazy val addMemberUrl = s"$escUrl/eu-subsidy-compliance/undertaking/member"
+  private lazy val removeMemberUrl = s"$escUrl/eu-subsidy-compliance/undertaking/member/remove"
+  private lazy val updateSubsidyUrl = s"$escUrl/eu-subsidy-compliance/subsidy/update"
+  private lazy val retrieveSubsidyUrl = s"$escUrl/eu-subsidy-compliance/subsidy/retrieve"
 
   def createUndertaking(
     undertaking: Undertaking
   )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]] =
     http
-      .POST[Undertaking, HttpResponse](s"$escURL/$createUndertakingPath", undertaking)
+      .POST[Undertaking, HttpResponse](createUndertakingUrl, undertaking)
       .map(Right(_))
       .recover {
         case e => Left(ConnectorError(e))
@@ -56,7 +56,7 @@ class EscConnector @Inject() (
     undertaking: Undertaking
   )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]] =
     http
-      .POST[Undertaking, HttpResponse](s"$escURL/$updateUndertakingPath", undertaking)
+      .POST[Undertaking, HttpResponse](updateUndertakingUrl, undertaking)
       .map(Right(_))
       .recover { case e =>
         Left(ConnectorError(e))
@@ -64,7 +64,7 @@ class EscConnector @Inject() (
 
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[UpstreamErrorResponse, HttpResponse]] =
     http
-      .GET[HttpResponse](s"$escURL/$retrieveUndertakingPath$eori")
+      .GET[HttpResponse](s"$retrieveUndertakingUrl/$eori")
       .map { r =>
         if (r.status == OK) Right(r)
         else Left(UpstreamErrorResponse(s"Unexpected response - got HTTP ${r.status}", r.status))
@@ -74,7 +74,7 @@ class EscConnector @Inject() (
     hc: HeaderCarrier
   ): Future[Either[ConnectorError, HttpResponse]] =
     http
-      .POST[BusinessEntity, HttpResponse](s"$escURL/$addMemberPath/$undertakingRef", businessEntity)
+      .POST[BusinessEntity, HttpResponse](s"$addMemberUrl/$undertakingRef", businessEntity)
       .map(Right(_))
       .recover { case e =>
         Left(ConnectorError(e))
@@ -84,7 +84,7 @@ class EscConnector @Inject() (
     hc: HeaderCarrier
   ): Future[Either[ConnectorError, HttpResponse]] =
     http
-      .POST[BusinessEntity, HttpResponse](s"$escURL/$removeMemberPath/$undertakingRef", businessEntity)
+      .POST[BusinessEntity, HttpResponse](s"$removeMemberUrl/$undertakingRef", businessEntity)
       .map(Right(_))
       .recover { case e =>
         Left(ConnectorError(e))
@@ -94,7 +94,7 @@ class EscConnector @Inject() (
     hc: HeaderCarrier
   ): Future[Either[ConnectorError, HttpResponse]] =
     http
-      .POST[SubsidyUpdate, HttpResponse](s"$escURL/$updateSubsidyPath", subsidyUpdate)
+      .POST[SubsidyUpdate, HttpResponse](updateSubsidyUrl, subsidyUpdate)
       .map(Right(_))
       .recover { case e =>
         Left(ConnectorError(e))
@@ -104,7 +104,7 @@ class EscConnector @Inject() (
     hc: HeaderCarrier
   ): Future[Either[ConnectorError, HttpResponse]] =
     http
-      .POST[SubsidyUpdate, HttpResponse](s"$escURL/$updateSubsidyPath", toSubsidyDelete(nonHmrcSubsidy, undertakingRef))
+      .POST[SubsidyUpdate, HttpResponse](updateSubsidyUrl, toSubsidyDelete(nonHmrcSubsidy, undertakingRef))
       .map(Right(_))
       .recover { case e =>
         Left(ConnectorError(e))
@@ -114,7 +114,7 @@ class EscConnector @Inject() (
     subsidyRetrieve: SubsidyRetrieve
   )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]] =
     http
-      .POST[SubsidyRetrieve, HttpResponse](s"$escURL/$retrieveSubsidyPath", subsidyRetrieve)
+      .POST[SubsidyRetrieve, HttpResponse](retrieveSubsidyUrl, subsidyRetrieve)
       .map(Right(_))
       .recover { case e =>
         Left(ConnectorError(e))
@@ -125,6 +125,7 @@ class EscConnector @Inject() (
       undertakingIdentifier = undertakingRef,
       update = UndertakingSubsidyAmendment(
         List(
+          // TODO - is there a centralised definition of the allowed amendment types?
           nonHmrcSubsidy.copy(amendmentType = Some(EisSubsidyAmendmentType("3")))
         )
       )
