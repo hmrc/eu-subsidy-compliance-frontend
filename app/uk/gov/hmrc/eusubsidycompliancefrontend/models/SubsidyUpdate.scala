@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import java.time.LocalDate
-
 import cats.implicits._
 import play.api.libs.json.{JsResult, _}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EisSubsidyAmendmentType, UndertakingRef}
 
 import scala.reflect.ClassTag
 
@@ -73,4 +72,12 @@ object SubsidyUpdate {
       JsSuccess(SubsidyUpdate(id, update))
     }
   }
+
+  def forDelete(undertakingIdentifier: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy): SubsidyUpdate =
+    SubsidyUpdate(
+      undertakingIdentifier,
+      UndertakingSubsidyAmendment(List(
+        nonHmrcSubsidy.copy(amendmentType = Some(EisSubsidyAmendmentType("3")))
+      ))
+    )
 }

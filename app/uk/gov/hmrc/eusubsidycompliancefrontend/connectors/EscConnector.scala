@@ -32,7 +32,6 @@ class EscConnector @Inject() (
   servicesConfig: ServicesConfig
 )(implicit ec: ExecutionContext) {
 
-  // TODO - can this be shared amongst other connectors?
   type ConnectorResult = Future[Either[ConnectorError, HttpResponse]]
 
   private lazy val escUrl: String = servicesConfig.baseUrl("esc")
@@ -73,25 +72,15 @@ class EscConnector @Inject() (
     undertakingRef: UndertakingRef,
     nonHmrcSubsidy: NonHmrcSubsidy
   )(implicit hc: HeaderCarrier): ConnectorResult =
-    makeRequest(_.POST[SubsidyUpdate, HttpResponse](updateSubsidyUrl, toSubsidyDelete(nonHmrcSubsidy, undertakingRef)))
+    makeRequest(_.POST[SubsidyUpdate, HttpResponse](
+      updateSubsidyUrl, SubsidyUpdate.forDelete(undertakingRef, nonHmrcSubsidy)
+    ))
 
   def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): ConnectorResult =
     makeRequest(_.POST[SubsidyRetrieve, HttpResponse](retrieveSubsidyUrl, subsidyRetrieve))
 
-  private def toSubsidyDelete(nonHmrcSubsidy: NonHmrcSubsidy, undertakingRef: UndertakingRef) =
-    SubsidyUpdate(
-      undertakingIdentifier = undertakingRef,
-      update = UndertakingSubsidyAmendment(
-        List(
-          // TODO - is there a centralised definition of the allowed amendment types?
-          nonHmrcSubsidy.copy(amendmentType = Some(EisSubsidyAmendmentType("3")))
-        )
-      )
-    )
-
-  private def makeRequest(f: HttpClient => Future[HttpResponse]): ConnectorResult =
-  // TODO - does EitherT give us any advantage here?
-    f(http) map { r: HttpResponse =>
+  private def makeRequest(request: HttpClient => Future[HttpResponse]): ConnectorResult =
+    request(http) map { r: HttpResponse =>
       if (r.status == OK) Right(r)
       else Left(ConnectorError(
         UpstreamErrorResponse(s"Unexpected response - got HTTP ${r.status}", r.status)
