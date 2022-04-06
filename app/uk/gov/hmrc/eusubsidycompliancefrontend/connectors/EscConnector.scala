@@ -18,8 +18,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import com.google.inject.{Inject, Singleton}
 import play.api.http.Status.OK
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -68,6 +68,7 @@ class EscConnector @Inject() (
   def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit hc: HeaderCarrier): ConnectorResult =
     makeRequest(_.POST[SubsidyUpdate, HttpResponse](updateSubsidyUrl, subsidyUpdate))
 
+  // TODO - add test coverage for this
   def removeSubsidy(
     undertakingRef: UndertakingRef,
     nonHmrcSubsidy: NonHmrcSubsidy
