@@ -414,7 +414,7 @@ class BusinessEntityControllerSpec
 
         def testEORIvalidation(
           data: (String, String)*
-        )(retrieveResponse: Either[UpstreamErrorResponse, Option[Undertaking]], errorMessageKey: String): Unit = {
+        )(retrieveResponse: Either[ConnectorError, Option[Undertaking]], errorMessageKey: String): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
@@ -459,7 +459,7 @@ class BusinessEntityControllerSpec
 
         "eori submitted is not stored in SMTP" in {
           testEORIvalidation("businessEntityEori" -> "123456789010")(
-            Left(UpstreamErrorResponse("EORI not present in SMTP", 406)),
+            Left(ConnectorError(UpstreamErrorResponse("EORI not present in SMTP", 406))),
             "error.businessEntityEori.required"
           )
         }

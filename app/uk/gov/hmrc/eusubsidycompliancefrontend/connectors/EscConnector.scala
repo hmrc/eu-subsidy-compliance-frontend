@@ -32,6 +32,9 @@ class EscConnector @Inject() (
   servicesConfig: ServicesConfig
 )(implicit ec: ExecutionContext) {
 
+  // TODO - can this be shared amongst other connectors?
+  type ConnectorResult = Future[Either[ConnectorError, HttpResponse]]
+
   private lazy val escUrl: String = servicesConfig.baseUrl("esc")
 
   private lazy val createUndertakingUrl = s"$escUrl/eu-subsidy-compliance/undertaking"
@@ -42,83 +45,38 @@ class EscConnector @Inject() (
   private lazy val updateSubsidyUrl = s"$escUrl/eu-subsidy-compliance/subsidy/update"
   private lazy val retrieveSubsidyUrl = s"$escUrl/eu-subsidy-compliance/subsidy/retrieve"
 
-  def createUndertaking(
-    undertaking: Undertaking
-  )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]] =
-    http
-      .POST[Undertaking, HttpResponse](createUndertakingUrl, undertaking)
-      .map(Right(_))
-      .recover {
-        case e => Left(ConnectorError(e))
-      }
+  def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): ConnectorResult =
+    makeRequest(_.POST[Undertaking, HttpResponse](createUndertakingUrl, undertaking))
 
-  def updateUndertaking(
-    undertaking: Undertaking
-  )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]] =
-    http
-      .POST[Undertaking, HttpResponse](updateUndertakingUrl, undertaking)
-      .map(Right(_))
-      .recover { case e =>
-        Left(ConnectorError(e))
-      }
+  def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): ConnectorResult =
+    makeRequest(_.POST[Undertaking, HttpResponse](updateUndertakingUrl, undertaking))
 
-  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[UpstreamErrorResponse, HttpResponse]] =
-    http
-      .GET[HttpResponse](s"$retrieveUndertakingUrl/$eori")
-      .map { r =>
-        if (r.status == OK) Right(r)
-        else Left(UpstreamErrorResponse(s"Unexpected response - got HTTP ${r.status}", r.status))
-      }
+  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): ConnectorResult =
+    makeRequest(_.GET[HttpResponse](s"$retrieveUndertakingUrl/$eori"))
 
-  def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
-    hc: HeaderCarrier
-  ): Future[Either[ConnectorError, HttpResponse]] =
-    http
-      .POST[BusinessEntity, HttpResponse](s"$addMemberUrl/$undertakingRef", businessEntity)
-      .map(Right(_))
-      .recover { case e =>
-        Left(ConnectorError(e))
-      }
+  def addMember(
+    undertakingRef: UndertakingRef,
+    businessEntity: BusinessEntity
+  )(implicit hc: HeaderCarrier): ConnectorResult =
+    makeRequest(_.POST[BusinessEntity, HttpResponse](s"$addMemberUrl/$undertakingRef", businessEntity))
 
-  def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
-    hc: HeaderCarrier
-  ): Future[Either[ConnectorError, HttpResponse]] =
-    http
-      .POST[BusinessEntity, HttpResponse](s"$removeMemberUrl/$undertakingRef", businessEntity)
-      .map(Right(_))
-      .recover { case e =>
-        Left(ConnectorError(e))
-      }
+  def removeMember(
+    undertakingRef: UndertakingRef,
+    businessEntity: BusinessEntity
+  )(implicit hc: HeaderCarrier): ConnectorResult =
+    makeRequest(_.POST[BusinessEntity, HttpResponse](s"$removeMemberUrl/$undertakingRef", businessEntity))
 
-  def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit
-    hc: HeaderCarrier
-  ): Future[Either[ConnectorError, HttpResponse]] =
-    http
-      .POST[SubsidyUpdate, HttpResponse](updateSubsidyUrl, subsidyUpdate)
-      .map(Right(_))
-      .recover { case e =>
-        Left(ConnectorError(e))
-      }
+  def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit hc: HeaderCarrier): ConnectorResult =
+    makeRequest(_.POST[SubsidyUpdate, HttpResponse](updateSubsidyUrl, subsidyUpdate))
 
-  def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit
-    hc: HeaderCarrier
-  ): Future[Either[ConnectorError, HttpResponse]] =
-    http
-      .POST[SubsidyUpdate, HttpResponse](updateSubsidyUrl, toSubsidyDelete(nonHmrcSubsidy, undertakingRef))
-      .map(Right(_))
-      .recover { case e =>
-        Left(ConnectorError(e))
-      }
+  def removeSubsidy(
+    undertakingRef: UndertakingRef,
+    nonHmrcSubsidy: NonHmrcSubsidy
+  )(implicit hc: HeaderCarrier): ConnectorResult =
+    makeRequest(_.POST[SubsidyUpdate, HttpResponse](updateSubsidyUrl, toSubsidyDelete(nonHmrcSubsidy, undertakingRef)))
 
-  def retrieveSubsidy(
-    subsidyRetrieve: SubsidyRetrieve
-  )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]] =
-    http
-      .POST[SubsidyRetrieve, HttpResponse](retrieveSubsidyUrl, subsidyRetrieve)
-      .map(Right(_))
-      .recover { case e =>
-        Left(ConnectorError(e))
-      }
+  def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): ConnectorResult =
+    makeRequest(_.POST[SubsidyRetrieve, HttpResponse](retrieveSubsidyUrl, subsidyRetrieve))
 
   private def toSubsidyDelete(nonHmrcSubsidy: NonHmrcSubsidy, undertakingRef: UndertakingRef) =
     SubsidyUpdate(
@@ -130,5 +88,16 @@ class EscConnector @Inject() (
         )
       )
     )
+
+  private def makeRequest(f: HttpClient => Future[HttpResponse]): ConnectorResult =
+  // TODO - does EitherT give us any advantage here?
+    f(http) map { r: HttpResponse =>
+      if (r.status == OK) Right(r)
+      else Left(ConnectorError(
+        UpstreamErrorResponse(s"Unexpected response - got HTTP ${r.status}", r.status)
+      ))
+    } recover {
+      case e: Exception => Left(ConnectorError(e))
+    }
 
 }

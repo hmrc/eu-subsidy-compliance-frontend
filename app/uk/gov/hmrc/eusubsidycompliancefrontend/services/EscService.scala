@@ -50,7 +50,7 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
       case Left(ex) => throw ex
     }
 
-  def retrieveUndertakingAndHandleErrors(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[UpstreamErrorResponse, Option[Undertaking]]] = {
+  def retrieveUndertakingAndHandleErrors(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[Undertaking]]] = {
 
     def parseResponse(response: HttpResponse) =
       response
@@ -61,7 +61,7 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
     EitherT(escConnector.retrieveUndertaking(eori))
       .flatMapF(r => parseResponse(r).toFuture)
       .recover {
-        case WithStatusCode(NOT_FOUND) => None
+        case ConnectorError(_, WithStatusCode(NOT_FOUND)) => None
       }
       .value
   }

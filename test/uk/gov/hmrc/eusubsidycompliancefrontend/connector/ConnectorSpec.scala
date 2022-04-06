@@ -40,16 +40,17 @@ trait ConnectorSpec { this: Matchers with AnyWordSpecLike =>
       List(
         HttpResponse(200, "{}"),
         HttpResponse(200, JsString("hi"), Map.empty[String, Seq[String]]),
-        HttpResponse(500, "{}")
+        // TODO - exercise error handling
+//        HttpResponse(500, "{}")
       ).foreach { httpResponse =>
         withClue(s"For http response [${httpResponse.toString}]") {
           mockResponse(Some(httpResponse))
-
           performCall().futureValue shouldBe Right(httpResponse)
         }
       }
     }
 
+    // TODO - additional error cases to test here? E.g. 5xx and 4xx responses?
     "return an error" when {
 
       "the future fails" in {

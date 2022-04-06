@@ -25,6 +25,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
 import play.api.http.Status.{BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -79,7 +80,8 @@ class EscConnectorSpec extends AnyWordSpec with Matchers with MockFactory with H
 
       def mockGetResponse(r: HttpResponse) = mockGet(url)(r.some)
 
-      def errorFor(status: Int) = UpstreamErrorResponse(s"Unexpected response - got HTTP $status", status)
+      def errorFor(status: Int) =
+        ConnectorError(UpstreamErrorResponse(s"Unexpected response - got HTTP $status", status))
 
       "return a successful response where an undertaking exists" in {
         val response = HttpResponse(200, "{}")
@@ -87,7 +89,7 @@ class EscConnectorSpec extends AnyWordSpec with Matchers with MockFactory with H
         connector.retrieveUndertaking(eori1).futureValue shouldBe Right(response)
       }
 
-      "return a successful response where an undertaking does not exist" in {
+      "return an unsuccessful response where an undertaking does not exist" in {
         val response = HttpResponse(404, "")
         mockGetResponse(response)
         connector.retrieveUndertaking(eori1).futureValue shouldBe Left(errorFor(NOT_FOUND))

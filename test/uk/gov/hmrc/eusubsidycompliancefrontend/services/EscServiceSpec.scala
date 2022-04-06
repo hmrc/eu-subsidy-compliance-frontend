@@ -55,7 +55,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       .expects(undertaking, *)
       .returning(result.toFuture)
 
-  private def mockRetrieveUndertaking(eori: EORI)(result: Either[UpstreamErrorResponse, HttpResponse]) =
+  private def mockRetrieveUndertaking(eori: EORI)(result: Either[ConnectorError, HttpResponse]) =
     (mockEscConnector
       .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
@@ -210,7 +210,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
           }
 
           "http response status is 404 and response body is empty" in {
-            mockRetrieveUndertaking(eori1)(Left(UpstreamErrorResponse("Unexpected response - got HTTP 404", NOT_FOUND)))
+            mockRetrieveUndertaking(eori1)(Left(ConnectorError(UpstreamErrorResponse("Unexpected response - got HTTP 404", NOT_FOUND))))
             await(service.retrieveUndertaking(eori1)) shouldBe None
           }
 
@@ -220,8 +220,8 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
 
           "http response status is 406 and response body is parsed" in {
             val ex = UpstreamErrorResponse("Unexpected response - got HTTP 406", NOT_ACCEPTABLE)
-            mockRetrieveUndertaking(eori1)(Left(ex))
-            an[UpstreamErrorResponse] should be thrownBy await(service.retrieveUndertaking(eori1))
+            mockRetrieveUndertaking(eori1)(Left(ConnectorError(ex)))
+            a[ConnectorError] should be thrownBy await(service.retrieveUndertaking(eori1))
           }
         }
 

@@ -16,17 +16,18 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, NonHmrcSubsidy, SubsidyRetrieve, SubsidyUpdate, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.http.{HeaderCarrier, UpstreamErrorResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
 trait EscServiceSupport { this: ControllerSpec =>
 
   val mockEscService = mock[EscService]
+
   def mockCreateUndertaking(undertaking: Undertaking)(result: Either[ConnectorError, UndertakingRef]) =
     (mockEscService
       .createUndertaking(_: Undertaking)(_: HeaderCarrier))
@@ -41,7 +42,7 @@ trait EscServiceSupport { this: ControllerSpec =>
 
   def mockRetrieveUndertakingWithErrorResponse(
     eori: EORI
-  )(result: Either[UpstreamErrorResponse, Option[Undertaking]]) =
+  )(result: Either[ConnectorError, Option[Undertaking]]) =
     (mockEscService
       .retrieveUndertakingAndHandleErrors(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
