@@ -74,6 +74,7 @@ class EscConnectorSpec extends AnyWordSpec with Matchers with MockFactory with H
 
     }
 
+    // TODO - should be sufficient to use connector behaiour
     "handling request to retrieve Undertaking" must {
 
       val url = s"$protocol://$host:$port/eu-subsidy-compliance/undertaking/$eori1"
