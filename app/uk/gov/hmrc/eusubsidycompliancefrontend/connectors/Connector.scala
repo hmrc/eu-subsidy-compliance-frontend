@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
-import play.api.http.Status.OK
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.http.{HttpClient, HttpResponse, UpstreamErrorResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
+import Connector.ConnectorSyntax._
 
 trait Connector {
 
@@ -32,13 +32,20 @@ trait Connector {
     request: HttpClient => Future[HttpResponse]
   )(implicit ec: ExecutionContext): ConnectorResult =
     request(http) map { r: HttpResponse =>
-      // TODO - this should cover the full range of 200 responses
-      if (r.status == OK) Right(r)
-      else Left(ConnectorError(
-        UpstreamErrorResponse(s"Unexpected response - got HTTP ${r.status}", r.status)
-      ))
+      if (r.status.isSuccess) Right(r)
+      else Left(ConnectorError(UpstreamErrorResponse(s"Unexpected response - got HTTP ${r.status}", r.status)))
     } recover {
       case e: Exception => Left(ConnectorError(e))
     }
+
+}
+
+object Connector {
+
+  object ConnectorSyntax {
+    implicit class ResponseStatusOps(val status: Int) extends AnyVal {
+      def isSuccess: Boolean = status >= 200 && status < 300
+    }
+  }
 
 }
