@@ -38,7 +38,6 @@ trait ConnectorSpec { this: Matchers with AnyWordSpecLike =>
 
     "do a get http call and return the result" in {
       List(
-        // TODO - cover range of 200 responses?
         HttpResponse(200, "{}"),
         HttpResponse(200, JsString("hi"), Map.empty[String, Seq[String]]),
       ).foreach { httpResponse =>
@@ -49,7 +48,6 @@ trait ConnectorSpec { this: Matchers with AnyWordSpecLike =>
       }
     }
 
-    // TODO - any value in inspecting the actual value inside the Left?
     "return an error" when {
 
       "the server returns a 4xx response" in {

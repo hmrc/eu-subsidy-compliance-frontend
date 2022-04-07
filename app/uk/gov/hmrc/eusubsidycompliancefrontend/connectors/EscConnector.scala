@@ -65,7 +65,6 @@ class EscConnector @Inject() (
   def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit hc: HeaderCarrier): ConnectorResult =
     makeRequest(_.POST[SubsidyUpdate, HttpResponse](updateSubsidyUrl, subsidyUpdate))
 
-  // TODO - add test coverage for this
   def removeSubsidy(
     undertakingRef: UndertakingRef,
     nonHmrcSubsidy: NonHmrcSubsidy
