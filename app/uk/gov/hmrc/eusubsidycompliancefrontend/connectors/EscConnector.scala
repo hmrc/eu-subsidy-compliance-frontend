@@ -17,22 +17,19 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import com.google.inject.{Inject, Singleton}
-import play.api.http.Status.OK
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class EscConnector @Inject() (
-  http: HttpClient,
+  override protected val http: HttpClient,
   servicesConfig: ServicesConfig
-)(implicit ec: ExecutionContext) {
-
-  type ConnectorResult = Future[Either[ConnectorError, HttpResponse]]
+)(implicit ec: ExecutionContext) extends Connector {
 
   private lazy val escUrl: String = servicesConfig.baseUrl("esc")
 
@@ -79,15 +76,5 @@ class EscConnector @Inject() (
 
   def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): ConnectorResult =
     makeRequest(_.POST[SubsidyRetrieve, HttpResponse](retrieveSubsidyUrl, subsidyRetrieve))
-
-  private def makeRequest(request: HttpClient => Future[HttpResponse]): ConnectorResult =
-    request(http) map { r: HttpResponse =>
-      if (r.status == OK) Right(r)
-      else Left(ConnectorError(
-        UpstreamErrorResponse(s"Unexpected response - got HTTP ${r.status}", r.status)
-      ))
-    } recover {
-      case e: Exception => Left(ConnectorError(e))
-    }
 
 }
