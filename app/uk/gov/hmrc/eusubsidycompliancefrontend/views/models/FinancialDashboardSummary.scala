@@ -92,7 +92,7 @@ object FinancialDashboardSummary {
 
     val hmrcSubsidiesByTaxYearStart: Map[LocalDate, SubsidyAmount] = sumByTaxYear(
       subsidies.hmrcSubsidyUsage
-        .map(i => i.acceptanceDate.toTaxYearStart -> i.amount.getOrElse(SubsidyAmount.Zero))
+        .map(i => i.acceptanceDate.toTaxYearStart -> i.hmrcSubsidyAmtEUR.getOrElse(SubsidyAmount.Zero))
     )
 
     val nonHmrcSubsidiesByTaxYearStart: Map[LocalDate, SubsidyAmount] = sumByTaxYear(
