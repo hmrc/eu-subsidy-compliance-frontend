@@ -20,16 +20,11 @@ import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 import org.scalatest.matchers.should._
 import org.scalatest.wordspec._
 import play.api.libs.json.JsString
-import play.api.test.Helpers._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.http.HttpResponse
 
-import java.time.LocalDate
 import scala.concurrent.Future
 
 trait ConnectorSpec { this: Matchers with AnyWordSpecLike =>
-
-  val currentDate = LocalDate.of(2021, 1, 20)
 
   def connectorBehaviour[A](
     mockResponse: Option[HttpResponse] => Unit,
@@ -63,42 +58,6 @@ trait ConnectorSpec { this: Matchers with AnyWordSpecLike =>
       "the future fails" in {
         mockResponse(None)
         performCall().futureValue.isLeft shouldBe true
-      }
-
-    }
-  }
-
-  // TODO - review usages of this method
-  def connectorBehaviourWithMockTime(
-    mockResponse: Option[HttpResponse] => Unit,
-    performCall: () => Future[Either[ConnectorError, HttpResponse]],
-    mockTimeResponse: LocalDate => Unit
-  ) = {
-    "do a get http call and return the result" in {
-
-      List(
-        HttpResponse(200, "{}"),
-        HttpResponse(200, JsString("hi"), Map.empty[String, Seq[String]]),
-        HttpResponse(500, "{}")
-      ).foreach { httpResponse =>
-        withClue(s"For http response [${httpResponse.toString}]") {
-
-          mockTimeResponse(currentDate)
-          mockResponse(Some(httpResponse))
-
-          await(performCall()) shouldBe Right(httpResponse)
-        }
-      }
-    }
-
-    "return an error" when {
-
-      "the future fails" in {
-
-        mockTimeResponse(currentDate)
-        mockResponse(None)
-
-        await(performCall()).isLeft shouldBe true
       }
 
     }
