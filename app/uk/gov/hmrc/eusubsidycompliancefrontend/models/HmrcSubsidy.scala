@@ -28,7 +28,8 @@ case class HmrcSubsidy(
   declarantEORI: EORI, // n.b. SCP09 uses looser validation but will stick with ours
   consigneeEORI: EORI,
   taxType: Option[TaxType],
-  amount: Option[SubsidyAmount],
+  hmrcSubsidyAmtGBP: Option[SubsidyAmount],
+  hmrcSubsidyAmtEUR: Option[SubsidyAmount],
   tradersOwnRefUCR: Option[TraderRef]
 )
 

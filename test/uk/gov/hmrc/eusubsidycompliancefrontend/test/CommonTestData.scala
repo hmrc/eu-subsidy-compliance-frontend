@@ -67,7 +67,8 @@ object CommonTestData {
     declarantEORI = eori1,
     consigneeEORI = eori3,
     taxType = Some(TaxType("1")),
-    amount = Some(subsidyAmount),
+    hmrcSubsidyAmtGBP = Some(subsidyAmount),
+    hmrcSubsidyAmtEUR = Some(subsidyAmount),
     tradersOwnRefUCR = Some(traderRef)
   )
 
