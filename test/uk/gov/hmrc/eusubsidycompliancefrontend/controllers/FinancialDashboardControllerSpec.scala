@@ -25,15 +25,13 @@ import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, route, 
 import play.api.{Configuration, inject}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.SubsidyRetrieve
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{undertaking, undertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{undertaking, undertakingSubsidies}
 
 import java.time.LocalDate
 
@@ -70,11 +68,7 @@ class FinancialDashboardControllerSpec
       "return the dashboard page for a logged in user with a valid EORI" in {
         mockAuthWithNecessaryEnrolment()
         mockGet(eori)(Right(Some(undertaking)))
-
-        (mockEscService
-          .retrieveSubsidy(_: SubsidyRetrieve)(_: HeaderCarrier))
-          .expects(*, *)
-          .returning(undertakingSubsidies.toFuture)
+        mockGetOrCreate(eori, () => undertakingSubsidies.toFuture)(Right(undertakingSubsidies))
 
         running(fakeApplication) {
           val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard().url)

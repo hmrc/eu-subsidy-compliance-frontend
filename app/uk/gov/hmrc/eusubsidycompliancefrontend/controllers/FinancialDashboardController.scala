@@ -16,21 +16,21 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.data.OptionT
+import cats.implicits._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
-import cats.implicits._
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class FinancialDashboardController @Inject() (
@@ -47,6 +47,7 @@ class FinancialDashboardController @Inject() (
 
   def getFinancialDashboard: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
     // The search period covers the current tax year to date, and the previous 2 tax years.
     val searchDateStart = timeProvider.today.toEarliestTaxYearStart
     val searchDateEnd = timeProvider.today
@@ -54,23 +55,24 @@ class FinancialDashboardController @Inject() (
 
     val searchRange = Some((searchDateStart, searchDateEnd))
 
-    val subsidies: Future[(Undertaking, UndertakingSubsidies)] = for {
-      // TODO - this can use toContext (also check for other direct usage of OptionT)
-      undertaking <- OptionT(store.get[Undertaking]).getOrElse(handleMissingSessionData("Undertaking"))
+    val result = for {
+      undertaking <- store.get[Undertaking].toContext
       r = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking reference"))
       s = SubsidyRetrieve(r, searchRange)
-      // TODO - look at caching this
-      subsidies <- escService.retrieveSubsidy(s)
+      subsidies <- store.getOrCreate(() => escService.retrieveSubsidy(s)).toContext
     } yield (undertaking, subsidies)
 
-    subsidies.map { case (undertaking, subsidies) =>
-      Ok(
-        financialDashboardPage(
-          FinancialDashboardSummary
-            .fromUndertakingSubsidies(undertaking, subsidies, searchDateStart, currentTaxYearEnd)
+    result.map {
+      case (undertaking, subsidies) =>
+        val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
+          undertaking,
+          subsidies,
+          searchDateStart,
+          currentTaxYearEnd
         )
-      )
-    }
+
+        Ok(financialDashboardPage(summary))
+    }.getOrElse(handleMissingSessionData("Undertaking"))
 
   }
 
