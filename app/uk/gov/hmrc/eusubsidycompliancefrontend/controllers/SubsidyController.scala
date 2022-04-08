@@ -33,7 +33,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{NonCustomsSubsidyAdded, NonCustomsSubsidyRemoved, NonCustomsSubsidyUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, TraderRef, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.{getValidClaimAmount}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.getValidClaimAmount
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -130,7 +130,7 @@ class SubsidyController @Inject() (
       implicit val eori: EORI = request.eoriNumber
 
       val result: OptionT[Future, Future[Result]] = for {
-        journey <- store.get[SubsidyJourney].toContext.orElse(store.put(SubsidyJourney()).toContext)
+        journey <- store.getOrCreate[SubsidyJourney](SubsidyJourney()).toContext
         reference <- undertaking.reference.toContext
       } yield {
         val form = journey.reportPayment.value

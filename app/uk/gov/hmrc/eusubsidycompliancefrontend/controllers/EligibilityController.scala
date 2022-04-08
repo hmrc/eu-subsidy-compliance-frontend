@@ -215,7 +215,6 @@ class EligibilityController @Inject() (
             eligibilityJourney.next
           }
       )
-
   }
 
   def getIncorrectEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>

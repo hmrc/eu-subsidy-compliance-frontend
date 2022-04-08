@@ -87,17 +87,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockGet[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to put subsidy journey fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockGet[SubsidyJourney](eori1)(Right(None))
-            mockPut[SubsidyJourney](SubsidyJourney(), eori1)(Left(ConnectorError(exception)))
+            mockGetOrCreate[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -112,12 +102,11 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+            mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
             mockTimeToday(currentDate)
             mockRetrieveSubsidy(subsidyRetrieve)(
               Future(undertakingSubsidies.copy(nonHMRCSubsidyUsage = nonHMRCSubsidyUsage))
             )
-
           }
 
         "user hasn't already answered the question" in {
