@@ -55,9 +55,11 @@ class FinancialDashboardController @Inject() (
     val searchRange = Some((searchDateStart, searchDateEnd))
 
     val subsidies: Future[(Undertaking, UndertakingSubsidies)] = for {
+      // TODO - this can use toContext (also check for other direct usage of OptionT)
       undertaking <- OptionT(store.get[Undertaking]).getOrElse(handleMissingSessionData("Undertaking"))
       r = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking reference"))
       s = SubsidyRetrieve(r, searchRange)
+      // TODO - look at caching this
       subsidies <- escService.retrieveSubsidy(s)
     } yield (undertaking, subsidies)
 
