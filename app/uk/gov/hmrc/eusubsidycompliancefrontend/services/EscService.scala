@@ -50,7 +50,7 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
       case Left(ex) => throw ex
     }
 
-  def retrieveUndertakingAndHandleErrors(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[UpstreamErrorResponse, Option[Undertaking]]] = {
+  def retrieveUndertakingAndHandleErrors(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[Undertaking]]] = {
 
     def parseResponse(response: HttpResponse) =
       response
@@ -61,7 +61,7 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
     EitherT(escConnector.retrieveUndertaking(eori))
       .flatMapF(r => parseResponse(r).toFuture)
       .recover {
-        case WithStatusCode(NOT_FOUND) => None
+        case ConnectorError(_, WithStatusCode(NOT_FOUND)) => None
       }
       .value
   }
@@ -80,11 +80,9 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
       .removeMember(undertakingRef, businessEntity)
       .map(handleResponse[UndertakingRef](_, "remove member"))
 
-  def createSubsidy(undertakingRef: UndertakingRef, subsidyUpdate: SubsidyUpdate)(implicit
-    hc: HeaderCarrier
-  ): Future[UndertakingRef] =
+  def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
     escConnector
-      .createSubsidy(undertakingRef, subsidyUpdate)
+      .createSubsidy(subsidyUpdate)
       .map(handleResponse[UndertakingRef](_, "create subsidy"))
 
   def retrieveSubsidy(
@@ -109,10 +107,7 @@ class EscService @Inject() (escConnector: EscConnector)(implicit ec: ExecutionCo
         else
           response
             .parseJSON[A]
-            .fold(
-              _ => sys.error(s"Error parsing response for $action"),
-              identity
-            )
+            .getOrElse(sys.error(s"Error parsing response for $action"))
     )
 }
 

@@ -25,7 +25,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityUpdate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyAmount, SubsidyRef, TraderRef, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney
 
 import java.time.{LocalDate, LocalDateTime}

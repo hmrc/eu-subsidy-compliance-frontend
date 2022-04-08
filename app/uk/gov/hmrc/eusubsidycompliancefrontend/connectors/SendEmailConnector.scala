@@ -17,29 +17,23 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import com.google.inject.{Inject, Singleton}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendRequest
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class SendEmailConnector @Inject() (
-  http: HttpClient,
+  override protected val http: HttpClient,
   servicesConfig: ServicesConfig
-)(implicit ec: ExecutionContext
-) {
+)(implicit ec: ExecutionContext) extends Connector {
 
   private lazy val baseUrl: String = servicesConfig.baseUrl("email-send")
   private lazy val sendEmailUrl: String = s"$baseUrl/hmrc/email"
 
-  def sendEmail(
-    emailSendRequest: EmailSendRequest
-  )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, HttpResponse]] =
-    http
-      .POST[EmailSendRequest, HttpResponse](sendEmailUrl, emailSendRequest)
-      .map(Right(_))
-      .recover { case e => Left(ConnectorError(e)) }
+  def sendEmail(request: EmailSendRequest)(implicit hc: HeaderCarrier): ConnectorResult =
+    makeRequest(_.POST[EmailSendRequest, HttpResponse](sendEmailUrl, request))
+
 }

@@ -55,7 +55,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       .expects(undertaking, *)
       .returning(result.toFuture)
 
-  private def mockRetrieveUndertaking(eori: EORI)(result: Either[UpstreamErrorResponse, HttpResponse]) =
+  private def mockRetrieveUndertaking(eori: EORI)(result: Either[ConnectorError, HttpResponse]) =
     (mockEscConnector
       .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)
@@ -77,12 +77,12 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       .expects(undertakingRef, businessEntity, *)
       .returning(result.toFuture)
 
-  private def mockCreateSubsidy(undertakingRef: UndertakingRef, subsidyUpdate: SubsidyUpdate)(
+  private def mockCreateSubsidy(subsidyUpdate: SubsidyUpdate)(
     result: Either[ConnectorError, HttpResponse]
   ) =
     (mockEscConnector
-      .createSubsidy(_: UndertakingRef, _: SubsidyUpdate)(_: HeaderCarrier))
-      .expects(undertakingRef, subsidyUpdate, *)
+      .createSubsidy(_: SubsidyUpdate)(_: HeaderCarrier))
+      .expects(subsidyUpdate, *)
       .returning(result.toFuture)
 
   private def mockRetrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(
@@ -210,7 +210,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
           }
 
           "http response status is 404 and response body is empty" in {
-            mockRetrieveUndertaking(eori1)(Left(UpstreamErrorResponse("Unexpected response - got HTTP 404", NOT_FOUND)))
+            mockRetrieveUndertaking(eori1)(Left(ConnectorError(UpstreamErrorResponse("Unexpected response - got HTTP 404", NOT_FOUND))))
             await(service.retrieveUndertaking(eori1)) shouldBe None
           }
 
@@ -220,8 +220,8 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
 
           "http response status is 406 and response body is parsed" in {
             val ex = UpstreamErrorResponse("Unexpected response - got HTTP 406", NOT_ACCEPTABLE)
-            mockRetrieveUndertaking(eori1)(Left(ex))
-            an[UpstreamErrorResponse] should be thrownBy await(service.retrieveUndertaking(eori1))
+            mockRetrieveUndertaking(eori1)(Left(ConnectorError(ex)))
+            a[ConnectorError] should be thrownBy await(service.retrieveUndertaking(eori1))
           }
         }
 
@@ -323,30 +323,30 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       "return an error" when {
 
         def isError(): Assertion = {
-          val result = service.createSubsidy(undertakingRef, subsidyUpdate)
+          val result = service.createSubsidy(subsidyUpdate)
           assertThrows[RuntimeException](await(result))
         }
 
         "the http call fails" in {
-          mockCreateSubsidy(undertakingRef, subsidyUpdate)(Left(ConnectorError("")))
+          mockCreateSubsidy(subsidyUpdate)(Left(ConnectorError("")))
           isError()
         }
 
         "the http response doesn't come back with status 200(OK)" in {
-          mockCreateSubsidy(undertakingRef, subsidyUpdate)(
+          mockCreateSubsidy(subsidyUpdate)(
             Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders))
           )
           isError()
         }
 
         "there is no json in the response" in {
-          mockCreateSubsidy(undertakingRef, subsidyUpdate)(Right(HttpResponse(OK, "hi")))
+          mockCreateSubsidy(subsidyUpdate)(Right(HttpResponse(OK, "hi")))
           isError()
         }
 
         "the json in the response can't be parsed" in {
           val json = Json.parse("""{ "a" : 1 }""")
-          mockCreateSubsidy(undertakingRef, subsidyUpdate)(Right(HttpResponse(OK, json, emptyHeaders)))
+          mockCreateSubsidy(subsidyUpdate)(Right(HttpResponse(OK, json, emptyHeaders)))
           isError()
         }
 
@@ -355,8 +355,8 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       "return successfully" when {
 
         "the http call succeeds and the body of the response can be parsed" in {
-          mockCreateSubsidy(undertakingRef, subsidyUpdate)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
-          val result = service.createSubsidy(undertakingRef, subsidyUpdate)
+          mockCreateSubsidy(subsidyUpdate)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
+          val result = service.createSubsidy(subsidyUpdate)
           await(result) shouldBe undertakingRef
         }
       }

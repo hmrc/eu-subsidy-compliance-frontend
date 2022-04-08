@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
+import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
