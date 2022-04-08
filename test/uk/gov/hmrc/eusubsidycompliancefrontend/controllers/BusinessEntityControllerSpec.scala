@@ -111,16 +111,6 @@ class BusinessEntityControllerSpec
           }
           assertThrows[Exception](await(performAction()))
         }
-
-        "call to store undertaking fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-            mockPut[Undertaking](undertaking, eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
       }
 
       "display the page" when {
@@ -134,7 +124,6 @@ class BusinessEntityControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-            mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
           }
 
           checkPageIsDisplayed(
