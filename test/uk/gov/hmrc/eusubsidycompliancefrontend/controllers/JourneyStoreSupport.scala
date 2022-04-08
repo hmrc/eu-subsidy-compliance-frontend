@@ -36,6 +36,12 @@ trait JourneyStoreSupport { this: MockFactory =>
       .expects(*, eori, *)
       .returning(result.fold(Future.failed, _.toFuture))
 
+  def mockGetOrCreate[A](eori: EORI)(result: Either[ConnectorError, A]) =
+    (mockJourneyStore
+      .getOrCreate(_: A)(_: ClassTag[A], _: EORI, _: Format[A]))
+      .expects(*, *, eori, *)
+      .returning(result.fold(Future.failed, _.toFuture))
+
   def mockGetOrCreate[A](eori: EORI, f: () => Future[A])(result: Either[ConnectorError, A]) =
     (mockJourneyStore
       .getOrCreate(_: () => Future[A])(_: ClassTag[A], _: EORI, _: Format[A]))

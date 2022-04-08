@@ -99,9 +99,9 @@ class AccountController @Inject() (
 
   private def getOrCreateJourneys(u: UndertakingJourney = UndertakingJourney())(implicit e: EORI) =
     for {
-      ej <- store.get[EligibilityJourney].toContext.orElse(store.put(EligibilityJourney()).toContext)
-      uj <- store.get[UndertakingJourney].toContext.orElse(store.put(u).toContext)
-      _ <- store.get[BusinessEntityJourney].toContext.orElse(store.put(BusinessEntityJourney()).toContext)
+      ej <- store.getOrCreate[EligibilityJourney](EligibilityJourney()).toContext
+      uj <- store.getOrCreate[UndertakingJourney](u).toContext
+      _  <- store.getOrCreate[BusinessEntityJourney](BusinessEntityJourney()).toContext
     } yield (ej, uj)
 
   private def renderAccountPage(undertaking: Undertaking)(implicit r: AuthenticatedEscRequest[AnyContent]) = {
@@ -114,10 +114,7 @@ class AccountController @Inject() (
 
     if (undertaking.isLeadEORI(eori)) {
       val result = for {
-        nilReturnJourney <- store
-          .get[NilReturnJourney]
-          .toContext
-          .orElse(store.put[NilReturnJourney](NilReturnJourney()).toContext)
+        nilReturnJourney <- store.getOrCreate[NilReturnJourney](NilReturnJourney()).toContext
         updatedJourney <-
           if (nilReturnJourney.canIncrementNilReturnCounter)
             store.update[NilReturnJourney](_.incrementNilReturnCounter).toContext
