@@ -17,6 +17,8 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1}
+
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
@@ -49,15 +51,10 @@
             ))
         }
 
+        @H1(messages(title))
+
         @govukCheckboxes(Checkboxes(
             name = "value",
-            fieldset = Some(Fieldset(
-                legend = Some(Legend(
-                    isPageHeading = true,
-                    classes = "govuk-fieldset__legend--xl",
-                    content = Text(title)
-                ))
-            )),
             hint = None,
             idPrefix = Some(key),
              errorMessage = if(form.hasErrors) {Some(ErrorMessage(
@@ -68,11 +65,17 @@
                     content = Text(messages(s"$key.value")),
                     value = "true",
                     name = Some(key),
-                    checked = form.data.exists(_._2 == "true")
+                    checked = form.data.exists(_._2 == "true"),
+                    attributes = if(form.hasErrors) Map("aria-describedby" -> key) else Map()
                 )
             )
-
         ))
+
+
+
+
+
+
         @button("common.submit")
         <div><a href="@controllers.routes.AccountController.getAccountPage().url" class="govuk-link">@messages("common.go-account-home")</a></div>
     }
