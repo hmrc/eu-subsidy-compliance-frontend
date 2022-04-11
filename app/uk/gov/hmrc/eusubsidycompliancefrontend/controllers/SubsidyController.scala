@@ -23,7 +23,6 @@ import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.Forms.{mapping, nonEmptyText}
 import play.api.mvc._
 
-import scala.util.Try
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
@@ -154,11 +153,15 @@ class SubsidyController @Inject() (
     }
   }
 
-  private def retrieveSubsidiesOrNone(r: UndertakingRef)(implicit hc: HeaderCarrier) =
-    escService
-      .retrieveSubsidy(SubsidyRetrieve(r, None))
+  private def retrieveSubsidiesOrNone(r: UndertakingRef)(implicit eori: EORI, hc: HeaderCarrier) = {
+    // The search period covers the current tax year to date, and the previous 2 tax years.
+    val today = timeProvider.today
+    val searchRange = Some((today.toEarliestTaxYearStart, today))
+
+    store.getOrCreate[UndertakingSubsidies](() => escService.retrieveSubsidy(SubsidyRetrieve(r, searchRange)))
       .map(Option(_))
       .fallbackTo(Option.empty.toFuture)
+  }
 
   def postReportPayment: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
@@ -390,6 +393,7 @@ class SubsidyController @Inject() (
                 ref <- undertaking.reference.toContext
                 currentDate = timeProvider.today
                 _ <- escService.createSubsidy(toSubsidyUpdate(journey, ref, currentDate)).toContext
+                _ <- store.delete[UndertakingSubsidies].toContext
                 _ <- store.put(SubsidyJourney()).toContext
                 _ =
                   if (journey.isAmend)
@@ -417,6 +421,7 @@ class SubsidyController @Inject() (
 
   def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = withAuthenticatedUser.async {
     implicit request =>
+      implicit val eori: EORI = request.eoriNumber
       withLeadUndertaking { undertaking =>
         val result = for {
           reference <- undertaking.reference.toContext
@@ -429,6 +434,7 @@ class SubsidyController @Inject() (
 
   def postRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = withAuthenticatedUser.async {
     implicit request =>
+      implicit val eori: EORI = request.eoriNumber
       withLeadUndertaking { undertaking =>
         removeSubsidyClaimForm
           .bindFromRequest()
@@ -458,15 +464,11 @@ class SubsidyController @Inject() (
   private def getNonHmrcSubsidy(
     transactionId: String,
     reference: UndertakingRef
-  )(implicit hc: HeaderCarrier): OptionT[Future, NonHmrcSubsidy] =
-    for {
-      subsides <- escService
-        .retrieveSubsidy(SubsidyRetrieve(reference, None))
-        .map(Some(_))
+  )(implicit hc: HeaderCarrier, e: EORI): OptionT[Future, NonHmrcSubsidy] =
+      retrieveSubsidiesOrNone(reference)
         .recoverWith({ case _ => Option.empty[UndertakingSubsidies].toFuture })
         .toContext
-      sub <- subsides.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext
-    } yield sub
+        .flatMap(_.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext)
 
   private def handleRemoveSubsidyFormError(
     formWithErrors: Form[FormValues],
@@ -476,6 +478,8 @@ class SubsidyController @Inject() (
     hc: HeaderCarrier,
     request: AuthenticatedEscRequest[_]
   ): Future[Result] = {
+    implicit val eori: EORI = request.eoriNumber
+
     val result = for {
       reference <- undertaking.reference.toContext
       nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
@@ -488,12 +492,14 @@ class SubsidyController @Inject() (
     undertaking: Undertaking
   )(implicit
     hc: HeaderCarrier,
-    request: AuthenticatedEscRequest[_]
+    request: AuthenticatedEscRequest[_],
+    e: EORI
   ): Future[Result] = {
     val result = for {
       reference <- undertaking.reference.toContext
       nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
       _ <- escService.removeSubsidy(reference, nonHmrcSubsidy).toContext
+      _ <- store.delete[UndertakingSubsidies].toContext
       _ = auditService.sendEvent[NonCustomsSubsidyRemoved](
         AuditEvent.NonCustomsSubsidyRemoved(request.authorityId, reference)
       )
@@ -505,7 +511,7 @@ class SubsidyController @Inject() (
     previous: String,
     undertaking: Undertaking,
     formWithErrors: Form[FormValues]
-  )(implicit hc: HeaderCarrier, request: AuthenticatedEscRequest[_]): Future[Result] =
+  )(implicit hc: HeaderCarrier, request: AuthenticatedEscRequest[_], e: EORI): Future[Result] =
     retrieveSubsidiesOrNone(undertaking.reference.getOrElse(handleMissingSessionData("Undertaking Referencec"))).map {
       subsidies =>
         val currentDate = timeProvider.today

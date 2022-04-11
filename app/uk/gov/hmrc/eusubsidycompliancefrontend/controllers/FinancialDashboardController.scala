@@ -49,11 +49,8 @@ class FinancialDashboardController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     // The search period covers the current tax year to date, and the previous 2 tax years.
-    val searchDateStart = timeProvider.today.toEarliestTaxYearStart
-    val searchDateEnd = timeProvider.today
-    val currentTaxYearEnd = timeProvider.today.toTaxYearEnd
-
-    val searchRange = Some((searchDateStart, searchDateEnd))
+    val today = timeProvider.today
+    val searchRange = Some((today.toEarliestTaxYearStart, today))
 
     val result = for {
       undertaking <- store.get[Undertaking].toContext
@@ -67,8 +64,8 @@ class FinancialDashboardController @Inject() (
         val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
           undertaking,
           subsidies,
-          searchDateStart,
-          currentTaxYearEnd
+          today.toEarliestTaxYearStart,
+          today.toTaxYearEnd
         )
 
         Ok(financialDashboardPage(summary))
