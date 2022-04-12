@@ -42,7 +42,14 @@ trait JourneyStoreSupport { this: MockFactory =>
       .expects(*, *, eori, *)
       .returning(result.fold(Future.failed, _.toFuture))
 
+  @deprecated("User mockOrCreateF instead of having to specifiy unused thunk")
   def mockGetOrCreate[A](eori: EORI, f: () => Future[A])(result: Either[ConnectorError, A]) =
+    (mockJourneyStore
+      .getOrCreate(_: () => Future[A])(_: ClassTag[A], _: EORI, _: Format[A]))
+      .expects(*, *, eori, *)
+      .returning(result.fold(Future.failed, _.toFuture))
+
+  def mockGetOrCreateF[A](eori: EORI)(result: Either[ConnectorError, A]) =
     (mockJourneyStore
       .getOrCreate(_: () => Future[A])(_: ClassTag[A], _: EORI, _: Format[A]))
       .expects(*, *, eori, *)
