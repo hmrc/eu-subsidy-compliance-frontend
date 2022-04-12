@@ -21,7 +21,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -122,6 +122,7 @@ class AccountController @Inject() (
           if (nilReturnJourney.canIncrementNilReturnCounter)
             store.update[NilReturnJourney](_.incrementNilReturnCounter).toContext
           else nilReturnJourney.some.toContext
+        subsidies <- escService.retrieveSubsidy(SubsidyRetrieve(undertaking.reference.get, None)).toContext
         result <- Ok(
           leadAccountPage(
             undertaking,
@@ -130,7 +131,8 @@ class AccountController @Inject() (
             dueDate,
             isOverdue,
             updatedJourney.isNilJourneyDoneRecently,
-            currentDay.plusDays(dueDays).toDisplayFormat
+            currentDay.plusDays(dueDays).toDisplayFormat,
+            subsidies.hasNeverSubmitted
           )
         ).toFuture.toContext
       } yield result
