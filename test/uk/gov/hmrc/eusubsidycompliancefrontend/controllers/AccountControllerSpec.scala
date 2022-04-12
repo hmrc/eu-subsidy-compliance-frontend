@@ -24,12 +24,12 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, SubsidyRetrieve, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NilReturnJourney.Forms.NilReturnFormPage
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, EscService, NilReturnJourney, RetrieveEmailService, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -84,10 +84,8 @@ class AccountControllerSpec
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
             mockTimeToday(fixedDate)
-            mockGet[NilReturnJourney](eori1)(Right(None))
-            mockPut[NilReturnJourney](nilJourneyCreate, eori1)(Right(nilJourneyCreate))
+            mockGetOrCreate(eori1)(Right(nilJourneyCreate))
             mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies.toFuture)
-            mockGetOrCreate[NilReturnJourney](eori1)(Right(nilJourneyCreate))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -155,9 +153,9 @@ class AccountControllerSpec
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
             mockTimeToday(currentDate)
-            mockGet[NilReturnJourney](eori1)(Right(None))
-            mockPut[NilReturnJourney](nilJourneyCreate, eori1)(Right(nilJourneyCreate))
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilJourneyCreate))
+            // TODO - review this
+            mockRetrieveSubsidy(subsidyRetrieve)(undertakingSubsidies.toFuture)
           }
           checkPageIsDisplayed(
             performAction(),
@@ -226,12 +224,11 @@ class AccountControllerSpec
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
-            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
-            mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+            mockGetOrCreate(eori1)(Right(eligibilityJourneyComplete))
+            mockGetOrCreate(eori1)(Right(UndertakingJourney()))
+            mockGetOrCreate(eori1)(Right(businessEntityJourney))
             mockTimeToday(currentDate)
-            mockGet[NilReturnJourney](eori1)(Right(None))
-            mockPut[NilReturnJourney](nilJourneyCreate, eori1)(Right(nilJourneyCreate))
+            mockGetOrCreate(eori1)(Right(nilJourneyCreate))
             mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies.copy(nonHMRCSubsidyUsage = List.empty, hmrcSubsidyUsage = List.empty).toFuture)
           }
           checkPageIsDisplayed(
