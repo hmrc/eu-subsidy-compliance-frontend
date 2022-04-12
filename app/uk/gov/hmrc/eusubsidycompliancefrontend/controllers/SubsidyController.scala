@@ -39,7 +39,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 import java.time.LocalDate
@@ -134,8 +133,10 @@ class SubsidyController @Inject() (
       } yield {
         val form = journey.reportPayment.value
           .fold(reportPaymentForm)(bool => reportPaymentForm.fill(FormValues(bool.toString)))
+
         val currentDate = timeProvider.today
-        retrieveSubsidiesOrNone(reference).map { subsidies =>
+
+        retrieveSubsidies(reference).map { subsidies =>
           Ok(
             reportPaymentPage(
               form,
@@ -149,11 +150,13 @@ class SubsidyController @Inject() (
           )
         }
       }
+
       result.foldF(handleMissingSessionData("Subsidy Journey"))(identity)
     }
   }
 
-  private def retrieveSubsidiesOrNone(r: UndertakingRef)(implicit eori: EORI, hc: HeaderCarrier) = {
+  private def retrieveSubsidies(r: UndertakingRef)(implicit request: AuthenticatedEscRequest[AnyContent]) = {
+    implicit val eori: EORI = request.eoriNumber
     // The search period covers the current tax year to date, and the previous 2 tax years.
     val today = timeProvider.today
     val searchRange = Some((today.toEarliestTaxYearStart, today))
@@ -220,7 +223,7 @@ class SubsidyController @Inject() (
         previous = subsidyJourney.previous
         resultFormSubmit <- handleFormSubmit(previous, addClaimDate).toContext
       } yield resultFormSubmit
-      result.getOrElse(handleMissingSessionData(" Subsidy journey"))
+      result.getOrElse(handleMissingSessionData("Subsidy journey"))
     }
   }
 
@@ -381,31 +384,34 @@ class SubsidyController @Inject() (
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
+      def handleValidSubmission(form: FormValues) = {
+        val result = for {
+          journey <- store.update[SubsidyJourney](_.setCya(form.value.toBoolean)).toContext
+          _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
+          ref <- undertaking.reference.toContext
+          currentDate = timeProvider.today
+          _ <- escService.createSubsidy(toSubsidyUpdate(journey, ref, currentDate)).toContext
+          _ <- store.delete[UndertakingSubsidies].toContext
+          _ <- store.put(SubsidyJourney()).toContext
+          _ =
+            if (journey.isAmend)
+              auditService.sendEvent[NonCustomsSubsidyUpdated](
+                AuditEvent.NonCustomsSubsidyUpdated(request.authorityId, ref, journey, currentDate)
+              )
+            else
+              auditService.sendEvent[NonCustomsSubsidyAdded](
+                AuditEvent.NonCustomsSubsidyAdded(request.authorityId, eori, ref, journey, currentDate)
+              )
+        } yield Redirect(routes.SubsidyController.getReportPayment())
+
+        result.getOrElse(sys.error("Error processing subsidy cya form submission"))
+      }
+
       cyaForm
         .bindFromRequest()
         .fold(
           _ => sys.error("Error processing subsidy cya form submission"),
-          form =>
-            {
-              for {
-                journey <- store.update[SubsidyJourney](_.setCya(form.value.toBoolean)).toContext
-                _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
-                ref <- undertaking.reference.toContext
-                currentDate = timeProvider.today
-                _ <- escService.createSubsidy(toSubsidyUpdate(journey, ref, currentDate)).toContext
-                _ <- store.delete[UndertakingSubsidies].toContext
-                _ <- store.put(SubsidyJourney()).toContext
-                _ =
-                  if (journey.isAmend)
-                    auditService.sendEvent[NonCustomsSubsidyUpdated](
-                      AuditEvent.NonCustomsSubsidyUpdated(request.authorityId, ref, journey, currentDate)
-                    )
-                  else
-                    auditService.sendEvent[NonCustomsSubsidyAdded](
-                      AuditEvent.NonCustomsSubsidyAdded(request.authorityId, eori, ref, journey, currentDate)
-                    )
-              } yield Redirect(routes.SubsidyController.getReportPayment())
-            }.getOrElse(sys.error("Error processing subsidy cya form submission"))
+          form => handleValidSubmission(form)
         )
     }
   }
@@ -421,11 +427,10 @@ class SubsidyController @Inject() (
 
   def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = withAuthenticatedUser.async {
     implicit request =>
-      implicit val eori: EORI = request.eoriNumber
       withLeadUndertaking { undertaking =>
         val result = for {
           reference <- undertaking.reference.toContext
-          subsidies <- retrieveSubsidiesOrNone(reference).toContext
+          subsidies <- retrieveSubsidies(reference).toContext
           sub <- subsidies.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext
         } yield Ok(confirmRemovePage(removeSubsidyClaimForm, sub))
         result.fold(handleMissingSessionData("Subsidy Journey"))(identity)
@@ -434,7 +439,6 @@ class SubsidyController @Inject() (
 
   def postRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = withAuthenticatedUser.async {
     implicit request =>
-      implicit val eori: EORI = request.eoriNumber
       withLeadUndertaking { undertaking =>
         removeSubsidyClaimForm
           .bindFromRequest()
@@ -464,8 +468,8 @@ class SubsidyController @Inject() (
   private def getNonHmrcSubsidy(
     transactionId: String,
     reference: UndertakingRef
-  )(implicit hc: HeaderCarrier, e: EORI): OptionT[Future, NonHmrcSubsidy] =
-      retrieveSubsidiesOrNone(reference)
+  )(implicit r: AuthenticatedEscRequest[AnyContent]): OptionT[Future, NonHmrcSubsidy] =
+      retrieveSubsidies(reference)
         .recoverWith({ case _ => Option.empty[UndertakingSubsidies].toFuture })
         .toContext
         .flatMap(_.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext)
@@ -474,12 +478,7 @@ class SubsidyController @Inject() (
     formWithErrors: Form[FormValues],
     transactionId: String,
     undertaking: Undertaking
-  )(implicit
-    hc: HeaderCarrier,
-    request: AuthenticatedEscRequest[_]
-  ): Future[Result] = {
-    implicit val eori: EORI = request.eoriNumber
-
+  )(implicit request: AuthenticatedEscRequest[AnyContent]): Future[Result] = {
     val result = for {
       reference <- undertaking.reference.toContext
       nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
@@ -490,11 +489,9 @@ class SubsidyController @Inject() (
   private def handleRemoveSubsidyValidAnswer(
     transactionId: String,
     undertaking: Undertaking
-  )(implicit
-    hc: HeaderCarrier,
-    request: AuthenticatedEscRequest[_],
-    e: EORI
-  ): Future[Result] = {
+  )(implicit request: AuthenticatedEscRequest[AnyContent]): Future[Result] = {
+    implicit val eori: EORI = request.eoriNumber
+
     val result = for {
       reference <- undertaking.reference.toContext
       nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
@@ -504,6 +501,7 @@ class SubsidyController @Inject() (
         AuditEvent.NonCustomsSubsidyRemoved(request.authorityId, reference)
       )
     } yield Redirect(routes.SubsidyController.getReportPayment())
+
     result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
   }
 
@@ -511,22 +509,25 @@ class SubsidyController @Inject() (
     previous: String,
     undertaking: Undertaking,
     formWithErrors: Form[FormValues]
-  )(implicit hc: HeaderCarrier, request: AuthenticatedEscRequest[_], e: EORI): Future[Result] =
-    retrieveSubsidiesOrNone(undertaking.reference.getOrElse(handleMissingSessionData("Undertaking Referencec"))).map {
-      subsidies =>
-        val currentDate = timeProvider.today
-        BadRequest(
-          reportPaymentPage(
-            formWithErrors,
-            subsidies,
-            undertaking,
-            currentDate.toEarliestTaxYearStart,
-            currentDate.toTaxYearEnd.minusYears(1),
-            currentDate.toTaxYearStart,
-            previous
-          )
+  )(implicit request: AuthenticatedEscRequest[AnyContent]): Future[Result] = {
+
+    val reference = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking Reference"))
+
+    retrieveSubsidies(reference).map { subsidies =>
+      val currentDate = timeProvider.today
+      BadRequest(
+        reportPaymentPage(
+          formWithErrors,
+          subsidies,
+          undertaking,
+          currentDate.toEarliestTaxYearStart,
+          currentDate.toTaxYearEnd.minusYears(1),
+          currentDate.toTaxYearStart,
+          previous
         )
+      )
     }
+  }
 
 }
 
