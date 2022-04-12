@@ -69,7 +69,7 @@ date.truncated.12=Dec
 customswaivers.title=Do you, or any business in your organisation, claim Customs Duty waivers?
 customswaivers.error.required=Select yes if you, or any business in your organisation, claim Customs Duty waivers
 
-mainbusinesscheck.error.required=Select if you will be responsible for reporting de minimis aid for this undertaking
+mainbusinesscheck.error.required=Select yes if the business will be responsible for reporting de minimis aid for this undertaking
 mainbusinesscheck.title=Reporting de minimis aid payments (less Customs Duty waivers) as a single undertaking
 mainbusinesscheck.h2=What are de minimis aid payments (less Customs Duty waivers)?
 mainbusinesscheck.p1=De minimis aid payments (less Customs Duty waivers) could include employment allowances, subsidised contracts, loans or grants, from organisations like Invest NI and NI Direct. If you are unsure if aid you claim is counted as de minimis aid payments (less Customs Duty waivers) you should contact the provider.
