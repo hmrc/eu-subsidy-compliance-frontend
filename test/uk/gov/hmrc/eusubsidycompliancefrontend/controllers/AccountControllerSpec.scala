@@ -85,7 +85,7 @@ class AccountControllerSpec
             mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
             mockTimeToday(fixedDate)
             mockGetOrCreate(eori1)(Right(nilJourneyCreate))
-            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies.toFuture)
+            mockGetOrCreateF(eori1)(Right(undertakingSubsidies))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -154,8 +154,7 @@ class AccountControllerSpec
             mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
             mockTimeToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilJourneyCreate))
-            // TODO - review this
-            mockRetrieveSubsidy(subsidyRetrieve)(undertakingSubsidies.toFuture)
+            mockGetOrCreateF(eori1)(Right(undertakingSubsidies))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -194,7 +193,7 @@ class AccountControllerSpec
             mockTimeToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilReturnJourney))
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNJ))
-            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies.toFuture)
+            mockGetOrCreateF(eori1)(Right(undertakingSubsidies))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -214,11 +213,10 @@ class AccountControllerSpec
           )
         }
 
-        def testTimeToReportAndNeverSubmitted(
-                              undertaking: Undertaking,
-                              currentDate: LocalDate
-                            ): Unit = {
+        def testTimeToReportAndNeverSubmitted(undertaking: Undertaking, currentDate: LocalDate): Unit = {
+
           val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
+
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
@@ -229,8 +227,12 @@ class AccountControllerSpec
             mockGetOrCreate(eori1)(Right(businessEntityJourney))
             mockTimeToday(currentDate)
             mockGetOrCreate(eori1)(Right(nilJourneyCreate))
-            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies.copy(nonHMRCSubsidyUsage = List.empty, hmrcSubsidyUsage = List.empty).toFuture)
+            mockGetOrCreateF(eori1)(Right(undertakingSubsidies.copy(
+              nonHMRCSubsidyUsage = List.empty,
+              hmrcSubsidyUsage = List.empty
+            )))
           }
+
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("lead-account-homepage.title", undertaking.name),
