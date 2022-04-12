@@ -49,6 +49,8 @@ case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvide
       .verifying(Constraint(dateInAllowedRange(_)))
       .transform(
         { case (d, m, y) =>
+          // day month and year string first formatted like d M YYYY, to get rid of 0 prefix in day/month value entered by the User
+          //The formatted string then changed to LocalDate to fetch the date and month using the getDayOfMonth,getMonthValue  functions
           val date = LocalDate.parse(LocalDate.of(y.toInt, m.toInt, d.toInt).format(dateFormatter), dateFormatter)
           DateFormValues(date.getDayOfMonth.toString, date.getMonthValue.toString, y)
         },

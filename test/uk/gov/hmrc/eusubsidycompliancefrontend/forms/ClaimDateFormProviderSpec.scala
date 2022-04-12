@@ -20,13 +20,16 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.json.digital.dateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
+
+import java.time.LocalDate
 
 class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
 
-  private val day   = 1
+  private val day = 1
   private val month = 1
-  private val year  = 2022
+  private val year = 2022
 
   private val fakeTimeProvider = FakeTimeProvider.withFixedDate(day, month, year)
 
@@ -75,11 +78,11 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
     }
 
     "return date in future error if date is in the future" in {
-      validateAndCheckError((day + 1).toString, "1", "9999")("date.in-future", "06 04 2019", "05 04 2021")
+      validateAndCheckError((day + 1).toString, "1", "9999")("date.in-future", "6 4 2019", "5 4 2021")
     }
 
     "return date outside of tax year range error for date before the start of the tax year range" in {
-      validateAndCheckError("1", "1", "1900")("date.outside-allowed-tax-year-range", "06 04 2019")
+      validateAndCheckError("1", "1", "1900")("date.outside-allowed-tax-year-range", "6 4 2019")
     }
 
     "return no errors for todays date" in {
@@ -94,31 +97,37 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
       validateAndCheckSuccess("6", "4", (year - 3).toString)
     }
 
+    "return no errors for a date with 0 as prefix in month" in {
+      validateAndCheckSuccess("6", "04", (year - 3).toString)
+    }
+
   }
 
   private def validateAndCheckSuccess(d: String, m: String, y: String) = {
     val result: Either[Seq[FormError], DateFormValues] = underTest.form.mapping.bind(
       Map(
-        "day"   -> d,
+        "day" -> d,
         "month" -> m,
-        "year"  -> y
+        "year" -> y
       )
     )
-    result mustBe Right(DateFormValues(d, m, y))
+    val date = LocalDate.parse(LocalDate.of(y.toInt, m.toInt, d.toInt).format(dateFormatter), dateFormatter)
+    val dateFormValues = DateFormValues(date.getDayOfMonth.toString, date.getMonthValue.toString, y)
+    result mustBe Right(dateFormValues)
   }
 
   private def validateAndCheckError(d: String, m: String, y: String)(errorMessage: String, args: String*) = {
     val result = underTest.form.mapping.bind(
       Map(
-        "day"   -> d,
+        "day" -> d,
         "month" -> m,
-        "year"  -> y
+        "year" -> y
       )
     )
 
     val foundExpectedErrorMessage = result.leftSideValue match {
       case Left(errors) => errors.contains(FormError("", s"add-claim-date.error.$errorMessage", args))
-      case _            => false
+      case _ => false
     }
 
     foundExpectedErrorMessage mustBe true
