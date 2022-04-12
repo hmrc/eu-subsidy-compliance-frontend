@@ -28,7 +28,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustom
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
@@ -105,7 +104,7 @@ class SubsidyControllerSpec
             mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
             mockTimeToday(currentDate)
             mockTimeToday(currentDate)
-            mockGetOrCreate[UndertakingSubsidies](eori1, () => subsidies.toFuture)(Right(subsidies))
+            mockGetOrCreateF[UndertakingSubsidies](eori1)(Right(subsidies))
           }
         }
 
@@ -201,7 +200,7 @@ class SubsidyControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockTimeToday(currentDate)
-            mockGetOrCreate[SubsidyRetrieve](eori1, () => subsidyRetrieve.toFuture)(Left(ConnectorError(exception)))
+            mockGetOrCreateF(eori1)(Left(ConnectorError(exception)))
             mockTimeToday(currentDate)
           }
           checkFormErrorIsDisplayed(
@@ -1054,7 +1053,7 @@ class SubsidyControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockTimeToday(LocalDate.of(2022, 1, 1))
-            mockGetOrCreate[UndertakingSubsidies](eori1, () => undertakingSubsidies.toFuture)(Left(ConnectorError(exception)))
+            mockGetOrCreateF(eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction(transactionId)))
         }
@@ -1064,7 +1063,7 @@ class SubsidyControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockTimeToday(LocalDate.of(2022, 1, 1))
-            mockGetOrCreate[UndertakingSubsidies](eori1, () => undertakingSubsidies.toFuture)(Right(undertakingSubsidies))
+            mockGetOrCreateF(eori1)(Right(undertakingSubsidies))
           }
           assertThrows[Exception](await(performAction(transactionId)))
         }
@@ -1099,7 +1098,7 @@ class SubsidyControllerSpec
           mockAuthWithNecessaryEnrolment()
           mockGet[Undertaking](eori1)(Right(undertaking.some))
           mockTimeToday(LocalDate.of(2022, 1, 1))
-          mockGetOrCreate[UndertakingSubsidies](eori1, () => undertakingSubsidies1.toFuture)(Right(undertakingSubsidies1))
+          mockGetOrCreateF(eori1)(Right(undertakingSubsidies1))
         }
         checkPageIsDisplayed(
           performAction(transactionId),
@@ -1150,7 +1149,7 @@ class SubsidyControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockTimeToday(LocalDate.of(2022, 1, 1))
-            mockGetOrCreate[UndertakingSubsidies](eori1, () => undertakingSubsidies1.toFuture)(Left(ConnectorError(exception)))
+            mockGetOrCreateF(eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("removeSubsidyClaim" -> "true")("TID1234")))
         }
@@ -1160,7 +1159,7 @@ class SubsidyControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockTimeToday(LocalDate.of(2022, 1, 1))
-            mockGetOrCreate[UndertakingSubsidies](eori1, () => undertakingSubsidies1.toFuture)(Right(undertakingSubsidies1))
+            mockGetOrCreateF(eori1)(Right(undertakingSubsidies1))
             mockRemoveSubsidy(undertakingRef, nonHmrcSubsidyList1.head)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("removeSubsidyClaim" -> "true")("TID1234")))
@@ -1175,7 +1174,7 @@ class SubsidyControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockTimeToday(LocalDate.of(2022, 1, 1))
-            mockGetOrCreate[UndertakingSubsidies](eori1, () => undertakingSubsidies1.toFuture)(Right(undertakingSubsidies1))
+            mockGetOrCreateF(eori1)(Right(undertakingSubsidies1))
           }
           checkFormErrorIsDisplayed(
             performAction()("TID1234"),
@@ -1192,7 +1191,7 @@ class SubsidyControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockTimeToday(LocalDate.of(2022, 1, 1))
-            mockGetOrCreate[UndertakingSubsidies](eori1, () => undertakingSubsidies1.toFuture)(Right(undertakingSubsidies1))
+            mockGetOrCreateF(eori1)(Right(undertakingSubsidies1))
             mockRemoveSubsidy(undertakingRef, nonHmrcSubsidyList1.head)(Right(undertakingRef))
             mockDelete(eori1)(Right(()))
             mockSendAuditEvent[NonCustomsSubsidyRemoved](AuditEvent.NonCustomsSubsidyRemoved("1123", undertakingRef))
