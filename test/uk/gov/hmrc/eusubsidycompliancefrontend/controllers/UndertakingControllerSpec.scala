@@ -629,24 +629,17 @@ class UndertakingControllerSpec
           assertThrows[Exception](await(performAction()))
         }
 
-        "call to get undertaking journey fetches the journey without undertaking name" in {
+      }
+
+      "redirect" when {
+        "call to get undertaking journey fetches the journey without undertaking sector" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[UndertakingJourney](eori1)(
               Right(undertakingJourneyComplete.copy(name = UndertakingNameFormPage()).some)
             )
           }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to get undertaking journey fetches the journey without undertaking sector" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(
-              Right(undertakingJourneyComplete.copy(sector = UndertakingSectorFormPage()).some)
-            )
-          }
-          assertThrows[Exception](await(performAction()))
+          redirectLocation(performAction()) shouldBe Some(routes.UndertakingController.getSector().url)
         }
       }
 

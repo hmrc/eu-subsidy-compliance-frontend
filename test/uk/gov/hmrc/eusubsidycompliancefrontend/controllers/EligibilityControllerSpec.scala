@@ -273,6 +273,16 @@ class EligibilityControllerSpec
 
       }
 
+      "redirect" when {
+        "on previous question not answered" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[EligibilityJourney](eori1)(Right(EligibilityJourney().some))
+          }
+          redirectLocation(performAction()) shouldBe Some(routes.EligibilityController.getCustomsWaivers().url)
+        }
+      }
+
       "display the page" when {
 
         val previousUrl = routes.EligibilityController.getCustomsWaivers().url
@@ -301,13 +311,13 @@ class EligibilityControllerSpec
         }
 
         "user hasn't answered the question" in {
-          testDisplay(EligibilityJourney())
+          testDisplay(EligibilityJourney(customsWaivers = CustomsWaiversFormPage(false.some)))
         }
 
         "user has already answered the question" in {
           List(true, false).foreach { inputValue =>
             withClue(s" For input value :: $inputValue") {
-              testDisplay(EligibilityJourney(willYouClaim = WillYouClaimFormPage(inputValue.some)))
+              testDisplay(EligibilityJourney(customsWaivers = CustomsWaiversFormPage(false.some), willYouClaim = WillYouClaimFormPage(inputValue.some)))
             }
           }
         }
