@@ -157,10 +157,8 @@ class SubsidyController @Inject() (
 
   private def retrieveSubsidies(r: UndertakingRef)(implicit request: AuthenticatedEscRequest[AnyContent]) = {
     implicit val eori: EORI = request.eoriNumber
-    // The search period covers the current tax year to date, and the previous 2 tax years.
-    val today = timeProvider.today
-    // TODO - consider moving this into syntax
-    val searchRange = Some((today.toEarliestTaxYearStart, today))
+
+    val searchRange = timeProvider.today.toSearchRange.some
 
     store.getOrCreate[UndertakingSubsidies](() => escService.retrieveSubsidy(SubsidyRetrieve(r, searchRange)))
       .map(Option(_))

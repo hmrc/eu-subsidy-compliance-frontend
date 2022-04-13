@@ -88,4 +88,12 @@ class TaxYearHelpersSpec extends AnyWordSpecLike with Matchers {
 
   }
 
+  "searchRange" must {
+
+    "return a valid 3 tax year search range for the specified date" in {
+      TaxYearHelpers.searchRange(BeforeTaxYearEnd) mustBe (LocalDate.parse("2019-04-06"), BeforeTaxYearEnd)
+    }
+    
+  }
+
 }

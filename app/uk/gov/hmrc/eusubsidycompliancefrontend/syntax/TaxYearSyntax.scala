@@ -24,10 +24,9 @@ object TaxYearSyntax {
 
   implicit class LocalDateTaxYearOps(val d: LocalDate) extends AnyVal {
     def toTaxYearStart: LocalDate = TaxYearHelpers.taxYearStartForDate(d)
-
     def toTaxYearEnd: LocalDate = TaxYearHelpers.taxYearEndForDate(d)
-
     def toEarliestTaxYearStart: LocalDate = TaxYearHelpers.earliestAllowedDate(d)
+    def toSearchRange: (LocalDate, LocalDate) = TaxYearHelpers.searchRange(d)
   }
 
 }
