@@ -83,20 +83,10 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockGet[NewLeadJourney](eori1)(Left(ConnectorError(exception)))
+            mockGetOrCreate[NewLeadJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
-        }
-
-        "call to put New lead journey fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockGet[NewLeadJourney](eori1)(Right(None))
-            mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
         }
       }
 
@@ -106,8 +96,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockGet[NewLeadJourney](eori1)(Right(None))
-            mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Right(NewLeadJourney()))
+            mockGetOrCreate[NewLeadJourney](eori1)(Right(NewLeadJourney()))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -127,7 +116,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking1.some))
-            mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
+            mockGetOrCreate[NewLeadJourney](eori1)(Right(newLeadJourney))
           }
           checkPageIsDisplayed(
             performAction(),

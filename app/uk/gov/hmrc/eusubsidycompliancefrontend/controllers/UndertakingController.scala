@@ -29,7 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingNa
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.{FutureOptionToOptionTOps, FutureToOptionTOps, OptionToOptionTOps}
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
@@ -132,7 +132,7 @@ class UndertakingController @Inject() (
             val result: OptionT[Future, Result] = for {
               undertakingJourney <- store.get[UndertakingJourney].toContext
               undertakingName <- undertakingJourney.name.value.toContext
-            } yield (BadRequest(undertakingSectorPage(errors, previous, undertakingName)))
+            } yield BadRequest(undertakingSectorPage(errors, previous, undertakingName))
             result.fold(handleMissingSessionData("Undertaking Journey"))(identity)
           },
           form =>

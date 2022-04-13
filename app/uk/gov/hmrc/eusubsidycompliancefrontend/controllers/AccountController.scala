@@ -16,17 +16,17 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.catsSyntaxOptionId
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -47,7 +47,7 @@ class AccountController @Inject() (
 )(implicit
   val appConfig: AppConfig,
   executionContext: ExecutionContext
-) extends BaseController(mcc) {
+) extends BaseController(mcc)  {
 
   import escActionBuilders._
 
@@ -99,43 +99,44 @@ class AccountController @Inject() (
 
   private def getOrCreateJourneys(u: UndertakingJourney = UndertakingJourney())(implicit e: EORI) =
     for {
-      ej <- store.get[EligibilityJourney].toContext.orElse(store.put(EligibilityJourney()).toContext)
-      uj <- store.get[UndertakingJourney].toContext.orElse(store.put(u).toContext)
-      _ <- store.get[BusinessEntityJourney].toContext.orElse(store.put(BusinessEntityJourney()).toContext)
+      ej <- store.getOrCreate[EligibilityJourney](EligibilityJourney()).toContext
+      uj <- store.getOrCreate[UndertakingJourney](u).toContext
+      _  <- store.getOrCreate[BusinessEntityJourney](BusinessEntityJourney()).toContext
     } yield (ej, uj)
 
   private def renderAccountPage(undertaking: Undertaking)(implicit r: AuthenticatedEscRequest[AnyContent]) = {
-    implicit val eori = r.eoriNumber
+    implicit val eori: EORI = r.eoriNumber
+
     val currentDay = timeProvider.today
 
     val isTimeToReport = ReportReminderHelpers.isTimeToReport(undertaking.lastSubsidyUsageUpdt, currentDay)
     val dueDate = ReportReminderHelpers.dueDateToReport(undertaking.lastSubsidyUsageUpdt).map(_.toDisplayFormat)
     val isOverdue = ReportReminderHelpers.isOverdue(undertaking.lastSubsidyUsageUpdt, currentDay)
 
+    def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] =
+      if (n.canIncrementNilReturnCounter) store.update[NilReturnJourney](_.incrementNilReturnCounter)
+      else n.toFuture
+
     if (undertaking.isLeadEORI(eori)) {
       val result = for {
-        nilReturnJourney <- store
-          .get[NilReturnJourney]
-          .toContext
-          .orElse(store.put[NilReturnJourney](NilReturnJourney()).toContext)
-        updatedJourney <-
-          if (nilReturnJourney.canIncrementNilReturnCounter)
-            store.update[NilReturnJourney](_.incrementNilReturnCounter).toContext
-          else nilReturnJourney.some.toContext
-        subsidies <- escService.retrieveSubsidy(SubsidyRetrieve(undertaking.reference.get, None)).toContext
-        result <- Ok(
+        nilReturnJourney <- store.getOrCreate[NilReturnJourney](NilReturnJourney()).toContext
+        updatedJourney <- updateNilReturnJourney(nilReturnJourney).toContext
+        undertakingReference <- undertaking.reference.toContext
+        searchRange = Some((currentDay.toEarliestTaxYearStart, currentDay))
+        retrieveRequest = SubsidyRetrieve(undertakingReference, searchRange)
+        subsidies <- store.getOrCreate[UndertakingSubsidies](() => escService.retrieveSubsidy(retrieveRequest)).toContext
+      } yield Ok(
           leadAccountPage(
-            undertaking,
-            undertaking.getAllNonLeadEORIs().nonEmpty,
-            isTimeToReport,
-            dueDate,
-            isOverdue,
-            updatedJourney.isNilJourneyDoneRecently,
-            currentDay.plusDays(dueDays).toDisplayFormat,
-            subsidies.hasNeverSubmitted
-          )
-        ).toFuture.toContext
-      } yield result
+          undertaking,
+          undertaking.getAllNonLeadEORIs().nonEmpty,
+          isTimeToReport,
+          dueDate,
+          isOverdue,
+          updatedJourney.isNilJourneyDoneRecently,
+          currentDay.plusDays(dueDays).toDisplayFormat,
+          subsidies.hasNeverSubmitted
+        )
+      )
 
       result.getOrElse(handleMissingSessionData("Nil Return Journey"))
 

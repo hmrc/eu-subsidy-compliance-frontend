@@ -28,6 +28,10 @@ trait Store {
 
   def get[A : ClassTag](implicit eori: EORI, reads: Reads[A]): Future[Option[A]]
 
+  def getOrCreate[A : ClassTag](default: A)(implicit eori: EORI, format: Format[A]): Future[A]
+
+  def getOrCreate[A : ClassTag](f: () => Future[A])(implicit eori: EORI, format: Format[A]): Future[A]
+
   def put[A](in: A)(implicit eori: EORI, writes: Writes[A]): Future[A]
 
   def update[A : ClassTag](f: A => A)(implicit eori: EORI, format: Format[A]): Future[A]

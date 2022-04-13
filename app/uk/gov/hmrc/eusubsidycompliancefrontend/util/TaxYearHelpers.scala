@@ -35,4 +35,7 @@ object TaxYearHelpers {
   // of the earliest tax year.
   def earliestAllowedDate(d: LocalDate): LocalDate = taxYearStartForDate(d).minusYears(2)
 
+  // Returns the date range for the standard 3 tax year search range. That is, the current and previous 2 tax years.
+  def searchRange(d: LocalDate): (LocalDate, LocalDate) = (earliestAllowedDate(d), d)
+
 }

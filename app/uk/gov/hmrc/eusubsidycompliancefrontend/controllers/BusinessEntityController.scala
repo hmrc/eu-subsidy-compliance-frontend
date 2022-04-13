@@ -72,23 +72,19 @@ class BusinessEntityController @Inject() (
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
-      val result = for {
-        journey <- store.get[BusinessEntityJourney].toContext
-        _ <- store.put[Undertaking](undertaking).toContext
-      } yield journey
+      store.get[BusinessEntityJourney].toContext
+        .fold(handleMissingSessionData("Business Entity Journey")) { journey =>
+          val form = journey.addBusiness.value
+            .fold(addBusinessForm)(bool => addBusinessForm.fill(FormValues(bool.toString)))
 
-      result.fold(handleMissingSessionData("Business Entity Journey")) { journey =>
-        val form = journey.addBusiness.value
-          .fold(addBusinessForm)(bool => addBusinessForm.fill(FormValues(bool.toString)))
-
-        Ok(
-          addBusinessPage(
-            form,
-            undertaking.name,
-            undertaking.undertakingBusinessEntity
+          Ok(
+            addBusinessPage(
+              form,
+              undertaking.name,
+              undertaking.undertakingBusinessEntity
+            )
           )
-        )
-      }
+        }
     }
   }
 

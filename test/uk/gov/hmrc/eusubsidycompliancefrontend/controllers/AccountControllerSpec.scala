@@ -24,12 +24,12 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, SubsidyRetrieve, Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NilReturnJourney.Forms.NilReturnFormPage
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EligibilityJourney, EscService, NilReturnJourney, RetrieveEmailService, Store, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
 import java.time.LocalDate
 import scala.concurrent.Future
@@ -80,13 +80,12 @@ class AccountControllerSpec
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
-            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
-            mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+            mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
             mockTimeToday(fixedDate)
-            mockGet[NilReturnJourney](eori1)(Right(None))
-            mockPut[NilReturnJourney](nilJourneyCreate, eori1)(Right(nilJourneyCreate))
-            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies.toFuture)
+            mockGetOrCreate(eori1)(Right(nilJourneyCreate))
+            mockGetOrCreateF(eori1)(Right(undertakingSubsidies))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -150,13 +149,12 @@ class AccountControllerSpec
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
-            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
-            mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+            mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
             mockTimeToday(currentDate)
-            mockGet[NilReturnJourney](eori1)(Right(None))
-            mockPut[NilReturnJourney](nilJourneyCreate, eori1)(Right(nilJourneyCreate))
-            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies.toFuture)
+            mockGetOrCreate[NilReturnJourney](eori1)(Right(nilJourneyCreate))
+            mockGetOrCreateF(eori1)(Right(undertakingSubsidies))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -189,13 +187,13 @@ class AccountControllerSpec
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
-            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
-            mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+            mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
             mockTimeToday(currentDate)
-            mockGet[NilReturnJourney](eori1)(Right(nilReturnJourney.some))
+            mockGetOrCreate[NilReturnJourney](eori1)(Right(nilReturnJourney))
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNJ))
-            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies.toFuture)
+            mockGetOrCreateF(eori1)(Right(undertakingSubsidies))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -215,24 +213,26 @@ class AccountControllerSpec
           )
         }
 
-        def testTimeToReportAndNeverSubmitted(
-                              undertaking: Undertaking,
-                              currentDate: LocalDate
-                            ): Unit = {
+        def testTimeToReportAndNeverSubmitted(undertaking: Undertaking, currentDate: LocalDate): Unit = {
+
           val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
+
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
-            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
-            mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+            mockGetOrCreate(eori1)(Right(eligibilityJourneyComplete))
+            mockGetOrCreate(eori1)(Right(UndertakingJourney()))
+            mockGetOrCreate(eori1)(Right(businessEntityJourney))
             mockTimeToday(currentDate)
-            mockGet[NilReturnJourney](eori1)(Right(None))
-            mockPut[NilReturnJourney](nilJourneyCreate, eori1)(Right(nilJourneyCreate))
-            mockRetrieveSubsidy(SubsidyRetrieve(undertakingRef, None))(undertakingSubsidies.copy(nonHMRCSubsidyUsage = List.empty, hmrcSubsidyUsage = List.empty).toFuture)
+            mockGetOrCreate(eori1)(Right(nilJourneyCreate))
+            mockGetOrCreateF(eori1)(Right(undertakingSubsidies.copy(
+              nonHMRCSubsidyUsage = List.empty,
+              hmrcSubsidyUsage = List.empty
+            )))
           }
+
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("lead-account-homepage.title", undertaking.name),
@@ -297,7 +297,7 @@ class AccountControllerSpec
           testNilReturnSuccessMessage(
             undertaking1,
             NilReturnJourney(NilReturnFormPage(value = true.some), 1),
-            true,
+            hasFiledNilReturnRecently = true,
             LocalDate.of(2022, 3, 18)
           )
         }
@@ -305,7 +305,7 @@ class AccountControllerSpec
           testNilReturnSuccessMessage(
             undertaking1,
             NilReturnJourney(NilReturnFormPage(value = true.some), 2),
-            false,
+            hasFiledNilReturnRecently = false,
             LocalDate.of(2022, 3, 18)
           )
         }
@@ -320,9 +320,9 @@ class AccountControllerSpec
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockPut[Undertaking](undertaking1, eori4)(Right(undertaking1))
-            mockGet[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete.some))
-            mockGet[UndertakingJourney](eori4)(Right(UndertakingJourney().some))
-            mockGet[BusinessEntityJourney](eori4)(Right(businessEntityJourney.some))
+            mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
+            mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
+            mockGetOrCreate[BusinessEntityJourney](eori4)(Right(businessEntityJourney))
             mockTimeToday(fixedDate)
           }
 
@@ -375,81 +375,34 @@ class AccountControllerSpec
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
-            mockGet[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
+            mockGetOrCreate[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
         }
 
-        "there is an error in storing eligibility journey data" in {
+        "there is an error in retrieving undertaking journey data" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
-            mockGet[EligibilityJourney](eori1)(Right(None))
-            mockPut[EligibilityJourney](EligibilityJourney(), eori1)(Left(ConnectorError(exception)))
+            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
+            mockGetOrCreate[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
         }
 
-        "there is an error in retrieving  undertaking  journey data" in {
+        "there is an error in fetching Business entity journey data" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
-            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete.some))
-            mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
-        "there is an error in storing undertaking journey data" in {
-
-          val undertakingData = UndertakingJourney.fromUndertaking(undertaking)
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
-            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete.some))
-            mockGet[UndertakingJourney](eori1)(Right(None))
-            mockPut[UndertakingJourney](undertakingData, eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
-        "there is an error in fetching Business entity  journey data" in {
-
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
-            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
-            mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
-            mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
-        "there is an error in storing Business entity  journey data" in {
-          val businessEntityData = BusinessEntityJourney()
-
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
-            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
-            mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
-            mockGet[BusinessEntityJourney](eori1)(Right(None))
-            mockPut[BusinessEntityJourney](businessEntityData, eori1)(Left(ConnectorError(exception)))
+            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+            mockGetOrCreate[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -495,9 +448,9 @@ class AccountControllerSpec
                 mockAuthWithNecessaryEnrolment()
                 mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
                 mockRetrieveUndertaking(eori1)(None.toFuture)
-                mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete.some))
-                mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
-                mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+                mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
+                mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+                mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
               }
               checkIsRedirect(performAction(), routes.EligibilityController.firstEmptyPage())
             }
@@ -507,9 +460,9 @@ class AccountControllerSpec
                 mockAuthWithNecessaryEnrolment()
                 mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
                 mockRetrieveUndertaking(eori1)(None.toFuture)
-                mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
-                mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
-                mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+                mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+                mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+                mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
               }
               checkIsRedirect(performAction(), routes.UndertakingController.firstEmptyPage())
             }
@@ -519,9 +472,9 @@ class AccountControllerSpec
                 mockAuthWithNecessaryEnrolment()
                 mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
                 mockRetrieveUndertaking(eori1)(None.toFuture)
-                mockGet[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete.some))
-                mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1.some))
-                mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+                mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+                mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1))
+                mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
               }
               checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity())
             }

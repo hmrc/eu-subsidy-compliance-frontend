@@ -16,16 +16,18 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import javax.inject.{Inject, Singleton}
 import play.api.Configuration
 import play.api.libs.json.{Format, Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.JourneyStore.DefaultCacheTtl
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.mongo.cache.{CacheIdType, DataKey, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
-import scala.concurrent.duration.{DAYS, FiniteDuration}
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.language.postfixOps
 import scala.reflect.ClassTag
 
 object EoriIdType extends CacheIdType[EORI] {
@@ -42,7 +44,7 @@ class JourneyStore @Inject() (
       collectionName = "journeyStore",
       ttl = configuration
         .getOptional[FiniteDuration]("mongodb.journeyStore.expireAfter")
-        .getOrElse(FiniteDuration(30, DAYS)),
+        .getOrElse(DefaultCacheTtl),
       timestampSupport = new CurrentTimestampSupport,
       cacheIdType = EoriIdType
     )
@@ -54,7 +56,15 @@ class JourneyStore @Inject() (
   override def put[A](in: A)(implicit eori: EORI, writes: Writes[A]): Future[A] =
     put[A](eori)(DataKey(in.getClass.getSimpleName), in).map(_ => in)
 
-  override def delete[A : ClassTag](implicit eori: EORI) =
+  override def getOrCreate[A : ClassTag](default: A)(implicit eori: EORI, format: Format[A]): Future[A] =
+    get[A].toContext
+      .getOrElseF(put(default))
+
+  override def getOrCreate[A : ClassTag](f: () => Future[A])(implicit eori: EORI, format: Format[A]): Future[A] =
+    get[A].toContext
+      .getOrElseF(f().flatMap(put[A]))
+
+  override def delete[A : ClassTag](implicit eori: EORI): Future[Unit] =
     delete[A](eori)(dataKeyForType[A])
 
   override def update[A: ClassTag](f: A => A)(implicit eori: EORI, format: Format[A]): Future[A] =
@@ -65,3 +75,6 @@ class JourneyStore @Inject() (
   private def dataKeyForType[A](implicit ct: ClassTag[A]) = DataKey[A](ct.runtimeClass.getSimpleName)
 }
 
+object JourneyStore {
+  val DefaultCacheTtl: FiniteDuration = 24 hours
+}

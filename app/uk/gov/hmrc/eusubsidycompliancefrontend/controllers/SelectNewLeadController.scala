@@ -61,7 +61,7 @@ class SelectNewLeadController @Inject() (
       implicit val eori = request.eoriNumber
 
       val result = for {
-        journey <- store.get[NewLeadJourney].toContext.orElse(store.put(NewLeadJourney()).toContext)
+        journey <- store.getOrCreate[NewLeadJourney](NewLeadJourney()).toContext
         form = journey.selectNewLead.value.fold(selectNewLeadForm)(e => selectNewLeadForm.fill(FormValues(e)))
       } yield Ok(selectNewLeadPage(form, previous, undertaking.name, undertaking.getAllNonLeadEORIs()))
 
