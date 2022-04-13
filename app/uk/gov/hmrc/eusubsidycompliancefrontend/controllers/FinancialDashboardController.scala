@@ -48,9 +48,10 @@ class FinancialDashboardController @Inject() (
   def getFinancialDashboard: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    // The search period covers the current tax year to date, and the previous 2 tax years.
     val today = timeProvider.today
-    val searchRange = Some((today.toEarliestTaxYearStart, today))
+
+    // The search period covers the current tax year to date, and the previous 2 tax years.
+    val searchRange = today.toSearchRange.some
 
     val result = for {
       undertaking <- store.get[Undertaking].toContext
