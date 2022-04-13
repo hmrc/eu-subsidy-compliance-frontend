@@ -28,7 +28,6 @@ import scala.reflect.ClassTag
 @Singleton
 class JourneyTraverseService @Inject() (store: Store)(implicit ec: ExecutionContext) {
 
-  // TODO - is this a duplicate of the other method in controllers?
   def getPrevious[A <: Journey : ClassTag](implicit
     eori: EORI,
     request: Request[_],

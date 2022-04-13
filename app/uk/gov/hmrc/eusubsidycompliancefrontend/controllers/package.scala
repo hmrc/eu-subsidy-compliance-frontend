@@ -30,7 +30,6 @@ package object controllers {
 
   implicit val undertakingFormat: Format[Undertaking] = Json.format[Undertaking]
 
-  // TODO - review usages of this method
   def getPrevious[A <: Journey : ClassTag](
     store: Store
   )(implicit
