@@ -108,16 +108,20 @@ class UndertakingController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       ensureUndertakingJourneyPresent(_) { journey =>
-        val form = journey.sector.value.fold(undertakingSectorForm)(sector =>
-          undertakingSectorForm.fill(FormValues(sector.id.toString))
-        )
-        Ok(
-          undertakingSectorPage(
-            form,
-            journey.previous,
-            journey.name.value.getOrElse("")
+        if(!journey.isEligibleForStep) {
+          Redirect(journey.previous).toFuture
+        } else {
+          val form = journey.sector.value.fold(undertakingSectorForm)(sector =>
+            undertakingSectorForm.fill(FormValues(sector.id.toString))
           )
-        ).toFuture
+          Ok(
+            undertakingSectorPage(
+              form,
+              journey.previous,
+              journey.name.value.getOrElse("")
+            )
+          ).toFuture
+        }
       }
     }
   }
@@ -152,7 +156,7 @@ class UndertakingController @Inject() (
           undertakingName <- journey.name.value.toContext
           undertakingSector <- journey.sector.value.toContext
         } yield Ok(cyaPage(UndertakingName(undertakingName), eori, undertakingSector, journey.previous))
-        result.fold(handleMissingSessionData("Undertaking Journey Name/Sector"))(identity)
+        result.fold(Redirect(journey.previous))(identity)
       case _ => handleMissingSessionData("Undertaking journey")
     }
   }

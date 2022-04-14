@@ -362,22 +362,15 @@ class SubsidyControllerSpec
           assertThrows[Exception](await(performAction()))
         }
 
-        "call to get subsidy journey passes but return None " in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
-            mockGet[SubsidyJourney](eori1)(Right(None))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
+      }
+      "redirect" when {
         "call to get subsidy journey come back with no claim date " in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[SubsidyJourney](eori1)(Right(SubsidyJourney().some))
           }
-          assertThrows[Exception](await(performAction()))
+          redirectLocation(performAction()) shouldBe Some(routes.SubsidyController.getClaimDate().url)
         }
       }
 

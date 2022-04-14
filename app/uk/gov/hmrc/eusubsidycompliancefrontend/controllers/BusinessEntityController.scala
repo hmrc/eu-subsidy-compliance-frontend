@@ -113,8 +113,12 @@ class BusinessEntityController @Inject() (
       journeyTraverseService.getPrevious[BusinessEntityJourney].flatMap { previous =>
         store.get[BusinessEntityJourney].flatMap {
           case Some(journey) =>
-            val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori)))
-            Ok(eoriPage(form, previous)).toFuture
+            if(!journey.isEligibleForStep) {
+              Redirect(journey.previous).toFuture
+            } else {
+              val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori)))
+              Ok(eoriPage(form, previous)).toFuture
+            }
           case _ => handleMissingSessionData("Business Entity Journey")
         }
       }
@@ -154,8 +158,11 @@ class BusinessEntityController @Inject() (
     withLeadUndertaking { _ =>
       store.get[BusinessEntityJourney].flatMap {
         case Some(journey) =>
-          val eori = journey.eori.value.getOrElse(handleMissingSessionData("EORI"))
-          Ok(businessEntityCyaPage(eori, journey.previous)).toFuture
+          if(!journey.isEligibleForStep) {
+            Redirect(journey.previous).toFuture
+          } else {
+            Ok(businessEntityCyaPage(journey.eori.value.get, journey.previous)).toFuture
+          }
         case _ => handleMissingSessionData("CheckYourAnswers journey")
       }
     }

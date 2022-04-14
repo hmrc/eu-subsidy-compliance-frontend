@@ -47,6 +47,10 @@ trait Journey {
       .find(_.value.isEmpty)
       .map(e => redirectWithSession(e.uri))
 
+  def isEligibleForStep(implicit r: Request[_]) =
+    if (previousIndex < 0) true
+    else steps(previousIndex).value.nonEmpty
+
   private def currentIndex(implicit r: Request[_]): Int = steps.indexWhere(e => r.uri == e.uri)
   private def previousIndex(implicit r: Request[_]) = currentIndex - 1
   private def nextIndex(implicit r: Request[_]) = currentIndex + 1

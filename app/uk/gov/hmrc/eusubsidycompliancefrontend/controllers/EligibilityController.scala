@@ -117,10 +117,14 @@ class EligibilityController @Inject() (
       .get[EligibilityJourney]
       .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
       .map { journey =>
-        val form = journey.customsWaivers.value.fold(customsWaiversForm)(customWaiverBool =>
-          customsWaiversForm.fill(FormValues(customWaiverBool.toString))
-        )
-        Ok(customsWaiversPage(form, journey.previous))
+        if(!journey.isEligibleForStep) {
+          Redirect(journey.previous)
+        } else {
+          val form = journey.customsWaivers.value.fold(customsWaiversForm)(customWaiverBool =>
+            customsWaiversForm.fill(FormValues(customWaiverBool.toString))
+          )
+          Ok(customsWaiversPage(form, journey.previous))
+        }
       }
   }
 
@@ -142,11 +146,15 @@ class EligibilityController @Inject() (
       .get[EligibilityJourney]
       .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
       .map { journey =>
+        if(!journey.isEligibleForStep) {
+          Redirect(journey.previous)
+        } else {
         val form = journey.willYouClaim.value.fold(willYouClaimForm)(willYouClaimBool =>
           willYouClaimForm.fill(FormValues(willYouClaimBool.toString))
         )
         Ok(willYouClaimPage(form, journey.previous))
       }
+    }
   }
 
   def postWillYouClaim: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>

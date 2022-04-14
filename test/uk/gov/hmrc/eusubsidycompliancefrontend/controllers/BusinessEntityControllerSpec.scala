@@ -524,15 +524,18 @@ class BusinessEntityControllerSpec
           assertThrows[Exception](await(performAction()))
         }
 
+
+      }
+
+      "redirect" when {
         "call to fetch Business Entity journey returns journey without eori" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[Undertaking](eori1)(Right(undertaking.some))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.copy(eori = AddEoriFormPage()).some))
           }
-          assertThrows[Exception](await(performAction()))
+          redirectLocation(performAction()) shouldBe Some(routes.BusinessEntityController.getEori().url)
         }
-
       }
 
       "display the page" in {

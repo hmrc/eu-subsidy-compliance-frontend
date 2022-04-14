@@ -102,7 +102,8 @@ object CommonTestData {
     traderRef = TraderRefFormPage(optionalTraderRef.some),
     claimAmount = ClaimAmountFormPage(subsidyAmount.some),
     addClaimEori = AddClaimEoriFormPage(optionalEORI.some),
-    claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some)
+    claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some),
+    reportPayment = ReportPaymentFormPage(true.some)
   )
 
   val subsidyUpdate = SubsidyUpdate(

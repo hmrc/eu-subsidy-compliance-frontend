@@ -22,7 +22,6 @@ import play.api.data.Form
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.Forms.{mapping, nonEmptyText}
 import play.api.mvc._
-
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
@@ -195,7 +194,7 @@ class SubsidyController @Inject() (
         val form = subsidyJourney.claimAmount.value.fold(claimAmountForm)(claimAmountForm.fill)
         Ok(addClaimAmountPage(form, previous, addClaimDate.year, addClaimDate.month))
       }
-      result.getOrElse(handleMissingSessionData("Subsidy journey"))
+      result.getOrElse(Redirect(routes.SubsidyController.getClaimDate()))
     }
   }
 
@@ -233,7 +232,11 @@ class SubsidyController @Inject() (
         case Some(journey) =>
           journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
             val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
-            Ok(addClaimDatePage(form, previous)).toFuture
+            if(!journey.isEligibleForStep) {
+              Redirect(journey.previous).toFuture
+            } else {
+              Ok(addClaimDatePage(form, previous)).toFuture
+            }
           }
         case _ => handleMissingSessionData("Subsidy journey")
       }
@@ -265,10 +268,14 @@ class SubsidyController @Inject() (
       store.get[SubsidyJourney].flatMap {
         case Some(journey) =>
           journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
-            val form = journey.addClaimEori.value.fold(claimEoriForm) { optionalEORI =>
-              claimEoriForm.fill(OptionalEORI(optionalEORI.setValue, optionalEORI.value))
+            if(!journey.isEligibleForStep) {
+              Redirect(routes.SubsidyController.getClaimDate()).toFuture
+            } else {
+              val form = journey.addClaimEori.value.fold(claimEoriForm) { optionalEORI =>
+                claimEoriForm.fill(OptionalEORI(optionalEORI.setValue, optionalEORI.value))
+              }
+              Ok(addClaimEoriPage(form, previous)).toFuture
             }
-            Ok(addClaimEoriPage(form, previous)).toFuture
           }
         case _ => handleMissingSessionData("Subsidy journey")
       }
@@ -300,8 +307,12 @@ class SubsidyController @Inject() (
       store.get[SubsidyJourney].flatMap {
         case Some(journey) =>
           journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
-            val form = journey.publicAuthority.value.fold(claimPublicAuthorityForm)(claimPublicAuthorityForm.fill)
-            Ok(addPublicAuthorityPage(form, previous)).toFuture
+            if(!journey.isEligibleForStep) {
+              Redirect(journey.previous).toFuture
+            } else {
+              val form = journey.publicAuthority.value.fold(claimPublicAuthorityForm)(claimPublicAuthorityForm.fill)
+              Ok(addPublicAuthorityPage(form, previous)).toFuture
+            }
           }
         case _ => handleMissingSessionData("Subsidy journey")
       }
@@ -331,10 +342,14 @@ class SubsidyController @Inject() (
       implicit val eori: EORI = request.eoriNumber
       store.get[SubsidyJourney].flatMap {
         case Some(journey) =>
-          val form = journey.traderRef.value.fold(claimTraderRefForm) { optionalTraderRef =>
-            claimTraderRefForm.fill(OptionalTraderRef(optionalTraderRef.setValue, optionalTraderRef.value))
+          if(!journey.isEligibleForStep) {
+            Redirect(journey.previous).toFuture
+          } else {
+            val form = journey.traderRef.value.fold(claimTraderRefForm) { optionalTraderRef =>
+              claimTraderRefForm.fill(OptionalTraderRef(optionalTraderRef.setValue, optionalTraderRef.value))
+            }
+            Ok(addTraderReferencePage(form, journey.previous)).toFuture
           }
-          Ok(addTraderReferencePage(form, journey.previous)).toFuture
         case _ => handleMissingSessionData("Subsidy journey")
       }
     }
@@ -375,7 +390,7 @@ class SubsidyController @Inject() (
         previous = journey.previous
       } yield Ok(cyaPage(claimDate, amount, claimEori, authority, traderRef, previous))
 
-      result.getOrElse(handleMissingSessionData("Subsidy journey"))
+      result.getOrElse(Redirect(routes.SubsidyController.getAddClaimReference()))
     }
   }
 
