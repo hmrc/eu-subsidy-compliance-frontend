@@ -117,8 +117,8 @@ class EligibilityController @Inject() (
       .get[EligibilityJourney]
       .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
       .map { journey =>
-        if(journey.eoriCheck.value.isEmpty) {
-          Redirect(routes.EligibilityController.getEoriCheck())
+        if(!journey.isEligibleForStep) {
+          Redirect(journey.previous)
         } else {
           val form = journey.customsWaivers.value.fold(customsWaiversForm)(customWaiverBool =>
             customsWaiversForm.fill(FormValues(customWaiverBool.toString))
@@ -146,8 +146,8 @@ class EligibilityController @Inject() (
       .get[EligibilityJourney]
       .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
       .map { journey =>
-        if(journey.customsWaivers.value.isEmpty) {
-          Redirect(routes.EligibilityController.getCustomsWaivers())
+        if(!journey.isEligibleForStep) {
+          Redirect(journey.previous)
         } else {
         val form = journey.willYouClaim.value.fold(willYouClaimForm)(willYouClaimBool =>
           willYouClaimForm.fill(FormValues(willYouClaimBool.toString))

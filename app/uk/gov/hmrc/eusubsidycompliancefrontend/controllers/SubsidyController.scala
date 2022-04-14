@@ -22,7 +22,6 @@ import play.api.data.Form
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.Forms.{mapping, nonEmptyText}
 import play.api.mvc._
-
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
@@ -233,8 +232,8 @@ class SubsidyController @Inject() (
         case Some(journey) =>
           journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
             val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
-            if(journey.reportPayment.value.isEmpty) {
-              Redirect(routes.SubsidyController.getReportPayment()).toFuture
+            if(!journey.isEligibleForStep) {
+              Redirect(journey.previous).toFuture
             } else {
               Ok(addClaimDatePage(form, previous)).toFuture
             }
@@ -269,7 +268,7 @@ class SubsidyController @Inject() (
       store.get[SubsidyJourney].flatMap {
         case Some(journey) =>
           journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
-            if(journey.claimDate.value.isEmpty) {
+            if(!journey.isEligibleForStep) {
               Redirect(routes.SubsidyController.getClaimDate()).toFuture
             } else {
               val form = journey.addClaimEori.value.fold(claimEoriForm) { optionalEORI =>
@@ -308,8 +307,8 @@ class SubsidyController @Inject() (
       store.get[SubsidyJourney].flatMap {
         case Some(journey) =>
           journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
-            if(journey.addClaimEori.value.isEmpty) {
-              Redirect(routes.SubsidyController.getAddClaimEori()).toFuture
+            if(!journey.isEligibleForStep) {
+              Redirect(journey.previous).toFuture
             } else {
               val form = journey.publicAuthority.value.fold(claimPublicAuthorityForm)(claimPublicAuthorityForm.fill)
               Ok(addPublicAuthorityPage(form, previous)).toFuture
@@ -343,8 +342,8 @@ class SubsidyController @Inject() (
       implicit val eori: EORI = request.eoriNumber
       store.get[SubsidyJourney].flatMap {
         case Some(journey) =>
-          if(journey.publicAuthority.value.isEmpty) {
-            Redirect(routes.SubsidyController.getAddClaimPublicAuthority()).toFuture
+          if(!journey.isEligibleForStep) {
+            Redirect(journey.previous).toFuture
           } else {
             val form = journey.traderRef.value.fold(claimTraderRefForm) { optionalTraderRef =>
               claimTraderRefForm.fill(OptionalTraderRef(optionalTraderRef.setValue, optionalTraderRef.value))

@@ -113,9 +113,8 @@ class BusinessEntityController @Inject() (
       journeyTraverseService.getPrevious[BusinessEntityJourney].flatMap { previous =>
         store.get[BusinessEntityJourney].flatMap {
           case Some(journey) =>
-            val isEligible = journey.addBusiness.value.nonEmpty
-            if(!isEligible) {
-              Redirect(routes.UndertakingController.getUndertakingName().url).toFuture
+            if(!journey.isEligibleForStep) {
+              Redirect(journey.previous).toFuture
             } else {
               val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori)))
               Ok(eoriPage(form, previous)).toFuture
@@ -159,11 +158,10 @@ class BusinessEntityController @Inject() (
     withLeadUndertaking { _ =>
       store.get[BusinessEntityJourney].flatMap {
         case Some(journey) =>
-          val eori = journey.eori.value
-          if(eori.isEmpty) {
-            Redirect(routes.BusinessEntityController.getEori()).toFuture
+          if(!journey.isEligibleForStep) {
+            Redirect(journey.previous).toFuture
           } else {
-            Ok(businessEntityCyaPage(eori.get, journey.previous)).toFuture
+            Ok(businessEntityCyaPage(journey.eori.value.get, journey.previous)).toFuture
           }
         case _ => handleMissingSessionData("CheckYourAnswers journey")
       }
