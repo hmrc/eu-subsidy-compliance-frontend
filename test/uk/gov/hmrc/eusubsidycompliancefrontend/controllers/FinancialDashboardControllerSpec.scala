@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.implicits.catsSyntaxOptionId
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers
 import play.api.http.Status
@@ -26,6 +27,7 @@ import play.api.{Configuration, inject}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{undertaking, undertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
@@ -66,7 +68,7 @@ class FinancialDashboardControllerSpec
 
       "return the dashboard page for a logged in user with a valid EORI" in {
         mockAuthWithNecessaryEnrolment()
-        mockGet(eori)(Right(Some(undertaking)))
+        mockRetrieveUndertaking(eori)(undertaking.some.toFuture)
         mockGetOrCreateF(eori)(Right(undertakingSubsidies))
 
         running(fakeApplication) {

@@ -20,8 +20,8 @@ import cats.implicits._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.SubsidyRetrieve
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
@@ -54,7 +54,7 @@ class FinancialDashboardController @Inject() (
     val searchRange = today.toSearchRange.some
 
     val result = for {
-      undertaking <- store.get[Undertaking].toContext
+      undertaking <- escService.retrieveUndertaking(eori).toContext
       r = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking reference"))
       s = SubsidyRetrieve(r, searchRange)
       subsidies <- store.getOrCreate(() => escService.retrieveSubsidy(s)).toContext

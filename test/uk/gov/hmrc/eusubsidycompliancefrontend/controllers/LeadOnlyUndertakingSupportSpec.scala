@@ -27,13 +27,13 @@ import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, eori3, undertaking}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, eori3, undertaking}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -48,7 +48,6 @@ class LeadOnlyUndertakingSupportSpec
 
   private val underTest = new FrontendController(mock[MessagesControllerComponents]) with LeadOnlyUndertakingSupport {
     override protected val escService: EscService = mockEscService
-    override protected val store: Store = mockJourneyStore
     override protected implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
   }
 
@@ -62,19 +61,9 @@ class LeadOnlyUndertakingSupportSpec
         status(result) shouldBe OK
       }
 
-      "called with a request from a lead undertaking user where the cache is empty" in {
+      "called with a request from a lead undertaking user" in {
         inSequence {
-          mockGet[Undertaking](eori1)(Right(Option.empty))
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-          mockPut(undertaking, eori1)(Right(undertaking))
-        }
-
-        runTest()
-      }
-
-      "called with a request from a lead undertaking user where the undertaking is cached" in {
-        inSequence {
-          mockGet[Undertaking](eori1)(Right(undertaking.some))
         }
 
         runTest()
@@ -86,7 +75,7 @@ class LeadOnlyUndertakingSupportSpec
 
       "called with a request from a non-lead undertaking user" in {
         inSequence {
-          mockGet[Undertaking](eori3)(Right(undertaking.some))
+          mockRetrieveUndertaking(eori3)(undertaking.some.toFuture)
         }
 
         val fakeRequest = authorisedRequestForEori(eori3)
@@ -99,7 +88,6 @@ class LeadOnlyUndertakingSupportSpec
 
       "no undertaking could be found for the eori associated with the request" in {
         inSequence {
-          mockGet[Undertaking](eori1)(Right(Option.empty))
           mockRetrieveUndertaking(eori1)(Option.empty.toFuture)
         }
 
@@ -122,17 +110,8 @@ class LeadOnlyUndertakingSupportSpec
         a[RuntimeException] shouldBe thrownBy(result.futureValue)
       }
 
-      "an error occurred retrieving the undertaking from the cache" in {
-        inSequence {
-          mockGet[Undertaking](eori1)(Left(ConnectorError("Error")))
-        }
-
-        runTest()
-      }
-
       "an error occurred retrieving the undertaking from the backend" in {
         inSequence {
-          mockGet[Undertaking](eori1)(Right(Option.empty))
           mockRetrieveUndertaking(eori1)(Future.failed(new RuntimeException("Some error")))
         }
 

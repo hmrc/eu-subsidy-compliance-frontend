@@ -42,7 +42,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class BusinessEntityController @Inject() (
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
-  override val store: Store,
+  store: Store,
   override val escService: EscService,
   journeyTraverseService: JourneyTraverseService,
   timeProvider: TimeProvider,

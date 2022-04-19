@@ -22,9 +22,10 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NilSubmissionDate, SubsidyUpdate, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NilSubmissionDate, SubsidyUpdate}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NilReturnJourney.Forms.NilReturnFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
@@ -60,7 +61,7 @@ class NoClaimNotificationControllerSpec
 
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockGet[Undertaking](eori)(Right(undertaking.some))
+          mockRetrieveUndertaking(eori)(undertaking.some.toFuture)
         }
         checkPageIsDisplayed(
           performAction(),
@@ -113,7 +114,7 @@ class NoClaimNotificationControllerSpec
         "call to update  Nil return journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeToday(currentDay)
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Left(ConnectorError(exception)))
           }
@@ -123,7 +124,7 @@ class NoClaimNotificationControllerSpec
         "call to create Subsidy fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeToday(currentDay)
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
             mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
@@ -140,7 +141,7 @@ class NoClaimNotificationControllerSpec
         "check box is not checked" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking.some))
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           }
 
           checkFormErrorIsDisplayed(
@@ -155,7 +156,7 @@ class NoClaimNotificationControllerSpec
 
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockGet[Undertaking](eori1)(Right(undertaking.some))
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeToday(currentDay)
           mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
           mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(

@@ -49,7 +49,7 @@ import scala.util.Try
 class SubsidyController @Inject() (
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
-  override val store: Store,
+  store: Store,
   override val escService: EscService,
   journeyTraverseService: JourneyTraverseService,
   auditService: AuditService,

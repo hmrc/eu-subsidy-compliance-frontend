@@ -79,7 +79,6 @@ class AccountControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
@@ -148,7 +147,6 @@ class AccountControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
@@ -186,7 +184,6 @@ class AccountControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
@@ -221,7 +218,6 @@ class AccountControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
             mockGetOrCreate(eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate(eori1)(Right(UndertakingJourney()))
             mockGetOrCreate(eori1)(Right(businessEntityJourney))
@@ -319,7 +315,6 @@ class AccountControllerSpec
             mockAuthWithEnrolment(eori4)
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-            mockPut[Undertaking](undertaking1, eori4)(Right(undertaking1))
             mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
             mockGetOrCreate[BusinessEntityJourney](eori4)(Right(businessEntityJourney))
@@ -374,7 +369,6 @@ class AccountControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
             mockGetOrCreate[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -386,7 +380,6 @@ class AccountControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
@@ -399,7 +392,6 @@ class AccountControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockPut[Undertaking](undertaking, eori1)(Right(undertaking))
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockGetOrCreate[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
@@ -408,17 +400,6 @@ class AccountControllerSpec
 
         }
 
-        "there is an error in storing Undertaking data" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockPut[Undertaking](undertaking, eori1)(Left(ConnectorError(exception)))
-
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
       }
 
       "redirect to next page" when {

@@ -21,8 +21,9 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 class NoBusinessPresentControllerSpec
@@ -51,7 +52,7 @@ class NoBusinessPresentControllerSpec
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockGet[Undertaking](eori1)(Right(undertaking.some))
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
         }
         checkPageIsDisplayed(
           performAction(),
@@ -81,7 +82,7 @@ class NoBusinessPresentControllerSpec
         "call to update business entity journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[Undertaking](eori1)(Right(undertaking1.some))
+            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1), eori1)(
               Left(ConnectorError(exception))
             )
@@ -94,7 +95,7 @@ class NoBusinessPresentControllerSpec
       "redirect to next page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockGet[Undertaking](eori1)(Right(undertaking1.some))
+          mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
           mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1), eori1)(
             Right(businessEntityJourney1)
           )
