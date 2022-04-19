@@ -36,7 +36,7 @@ import scala.concurrent.ExecutionContext
 class NoClaimNotificationController @Inject() (
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
-  override val store: Store,
+  store: Store,
   override val escService: EscService,
   auditService: AuditService,
   timeProvider: TimeProvider,

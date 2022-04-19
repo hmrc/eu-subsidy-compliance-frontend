@@ -37,7 +37,7 @@ class SelectNewLeadController @Inject() (
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
   override val escService: EscService,
-  override val store: Store,
+  store: Store,
   sendEmailHelperService: SendEmailHelperService,
   auditService: AuditService,
   selectNewLeadPage: SelectNewLeadPage,

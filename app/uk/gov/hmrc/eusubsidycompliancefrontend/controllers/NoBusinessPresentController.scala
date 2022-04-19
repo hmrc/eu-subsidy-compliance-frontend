@@ -32,7 +32,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 class NoBusinessPresentController @Inject() (
   mcc: MessagesControllerComponents,
   escActionBuilders: EscActionBuilders,
-  override val store: Store,
+  store: Store,
   override val escService: EscService,
   noBusinessPresentPage: NoBusinessPresentPage
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
