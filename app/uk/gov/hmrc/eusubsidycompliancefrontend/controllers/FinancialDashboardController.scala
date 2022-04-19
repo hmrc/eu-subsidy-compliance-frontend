@@ -54,7 +54,7 @@ class FinancialDashboardController @Inject() (
     val searchRange = today.toSearchRange.some
 
     val result = for {
-      undertaking <- store.get[Undertaking].toContext
+      undertaking <- escService.retrieveUndertaking(eori).toContext
       r = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking reference"))
       s = SubsidyRetrieve(r, searchRange)
       subsidies <- store.getOrCreate(() => escService.retrieveSubsidy(s)).toContext
