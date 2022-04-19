@@ -20,19 +20,20 @@ import cats.implicits.catsSyntaxOptionId
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
 import play.api.mvc.Result
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori3, undertaking}
 
 import scala.concurrent.Future
 
 trait LeadOnlyRedirectSupport extends MockFactory with Matchers {
-  this: AuthAndSessionDataBehaviour with JourneyStoreSupport with ControllerSpec =>
+  this: AuthAndSessionDataBehaviour with JourneyStoreSupport with ControllerSpec with EscServiceSupport =>
 
   protected def testLeadOnlyRedirect(f: () => Future[Result]) = {
     inSequence {
       mockAuthWithEnrolment(eori3)
-      mockGet[Undertaking](eori3)(Right(undertaking.some))
+      mockRetrieveUndertaking(eori3)(undertaking.some.toFuture)
     }
+
     checkIsRedirect(f(), routes.AccountController.getAccountPage().url)
   }
 

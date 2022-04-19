@@ -27,13 +27,13 @@ import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, eori3, undertaking}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, eori3, undertaking}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -48,7 +48,6 @@ class LeadOnlyUndertakingSupportSpec
 
   private val underTest = new FrontendController(mock[MessagesControllerComponents]) with LeadOnlyUndertakingSupport {
     override protected val escService: EscService = mockEscService
-    override protected val store: Store = mockJourneyStore
     override protected implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
   }
 
