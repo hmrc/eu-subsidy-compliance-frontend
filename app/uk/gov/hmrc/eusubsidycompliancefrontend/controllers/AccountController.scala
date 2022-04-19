@@ -89,7 +89,6 @@ class AccountController @Inject() (
     u: Undertaking
   )(implicit r: AuthenticatedEscRequest[AnyContent], e: EORI): Future[Result] = {
     val result = for {
-      _ <- store.put(u).toContext
       _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(u))
       result <- renderAccountPage(u).toContext
     } yield result
