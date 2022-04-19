@@ -35,7 +35,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Fo
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{undertaking, _}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.UpstreamErrorResponse
 
@@ -523,7 +524,6 @@ class BusinessEntityControllerSpec
           }
           assertThrows[Exception](await(performAction()))
         }
-
 
       }
 
@@ -1083,6 +1083,8 @@ class BusinessEntityControllerSpec
               }
               val button = doc.select("form")
               button.attr("action") shouldBe routes.BusinessEntityController.postRemoveBusinessEntity(eori4).url
+
+              doc.select(".govuk-hint").text() should include(CommonTestData.eori4)
 
             }
           )

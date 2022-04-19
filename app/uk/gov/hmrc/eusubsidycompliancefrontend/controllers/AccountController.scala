@@ -47,7 +47,7 @@ class AccountController @Inject() (
 )(implicit
   val appConfig: AppConfig,
   executionContext: ExecutionContext
-) extends BaseController(mcc)  {
+) extends BaseController(mcc) {
 
   import escActionBuilders._
 
@@ -100,7 +100,7 @@ class AccountController @Inject() (
     for {
       ej <- store.getOrCreate[EligibilityJourney](EligibilityJourney()).toContext
       uj <- store.getOrCreate[UndertakingJourney](u).toContext
-      _  <- store.getOrCreate[BusinessEntityJourney](BusinessEntityJourney()).toContext
+      _ <- store.getOrCreate[BusinessEntityJourney](BusinessEntityJourney()).toContext
     } yield (ej, uj)
 
   private def renderAccountPage(undertaking: Undertaking)(implicit r: AuthenticatedEscRequest[AnyContent]) = {
@@ -123,9 +123,11 @@ class AccountController @Inject() (
         undertakingReference <- undertaking.reference.toContext
         searchRange = Some((currentDay.toEarliestTaxYearStart, currentDay))
         retrieveRequest = SubsidyRetrieve(undertakingReference, searchRange)
-        subsidies <- store.getOrCreate[UndertakingSubsidies](() => escService.retrieveSubsidy(retrieveRequest)).toContext
+        subsidies <- store
+          .getOrCreate[UndertakingSubsidies](() => escService.retrieveSubsidy(retrieveRequest))
+          .toContext
       } yield Ok(
-          leadAccountPage(
+        leadAccountPage(
           undertaking,
           undertaking.getAllNonLeadEORIs().nonEmpty,
           isTimeToReport,

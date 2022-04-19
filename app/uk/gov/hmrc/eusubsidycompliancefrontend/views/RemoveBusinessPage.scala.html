@@ -78,7 +78,9 @@
           isPageHeading = false
         ))
       )),
-      hint = None,
+      hint = Some(Hint(
+        content = Text(messages(s"$key.hint", bs.businessEntityIdentifier))
+      )),
       idPrefix = Some("removeBusiness"),
       name = "removeBusiness",
       items = Seq(
