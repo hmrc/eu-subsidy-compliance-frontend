@@ -5,24 +5,25 @@ import sbt._
 
 object AppDependencies {
 
-  val bootStrapVersion = "5.21.0"
-  val hmrcMongoVersion = "0.62.0"
-  val compile          = Seq(
+  val bootStrapVersion = "5.23.0"
+  val hmrcMongoVersion = "0.63.0"
+
+  val compile = Seq(
     "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"    % bootStrapVersion,
-    "uk.gov.hmrc"       %% "play-frontend-hmrc"            % "3.7.0-play-28",
+    "uk.gov.hmrc"       %% "play-frontend-hmrc"            % "3.14.0-play-28",
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"            % hmrcMongoVersion,
     "org.typelevel"     %% "cats-core"                     % "2.7.0",
     "ai.x"              %% "play-json-extensions"          % "0.42.0",
-    "com.chuusai"       %% "shapeless"                     % "2.3.8",
+    "com.chuusai"       %% "shapeless"                     % "2.3.9",
     "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.11.0-play-28"
   )
 
   val test = Seq(
     "uk.gov.hmrc"         %% "bootstrap-test-play-28"  % bootStrapVersion % Test,
-    "uk.gov.hmrc.mongo"   %% "hmrc-mongo-test-play-28" % "0.62.0"         % Test,
-    "org.jsoup"            % "jsoup"                   % "1.13.1"         % Test,
+    "uk.gov.hmrc.mongo"   %% "hmrc-mongo-test-play-28" % hmrcMongoVersion % Test,
+    "org.jsoup"            % "jsoup"                   % "1.14.3"         % Test,
     "com.vladsch.flexmark" % "flexmark-all"            % "0.36.8"         % "test, it",
-    "org.scalatestplus"   %% "mockito-3-4"             % "3.2.7.0"        % "test, it",
+    "org.scalatestplus"   %% "mockito-3-4"             % "3.2.10.0"       % "test, it",
     "org.scalamock"       %% "scalamock"               % "5.2.0"          % Test
   )
 }
