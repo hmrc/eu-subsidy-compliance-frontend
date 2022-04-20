@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import cats.data.{EitherT, OptionT}
+import cats.data.EitherT
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
 import play.api.http.Status.{NOT_FOUND, OK}
@@ -27,7 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.{FutureOptionToOptionTOps, ValueToOptionTOps}
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.http.UpstreamErrorResponse.WithStatusCode
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
 
@@ -39,9 +39,7 @@ class EscService @Inject() (
   undertakingCache: UndertakingCache
 )(implicit ec: ExecutionContext) {
 
-  // TODO - is it safe to cache a copy of the created undertaking here with the ref set?
-  // TODO - review this API - make EORI implicit?
-  def createUndertaking(undertaking: Undertaking, eori: EORI)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
+  def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingRef] =
     escConnector
       .createUndertaking(undertaking)
       .map { response =>
@@ -56,11 +54,10 @@ class EscService @Inject() (
       .updateUndertaking(undertaking)
       .map { response =>
         val ref = handleResponse[UndertakingRef](response, "update undertaking")
-        undertakingCache.delete(ref)
+        undertakingCache.deleteUndertaking(ref)
         ref
       }
 
-  // TODO - this needs to handle fetching from the cache
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]] =
         undertakingCache
         .get[Undertaking](eori)
@@ -101,7 +98,7 @@ class EscService @Inject() (
       .addMember(undertakingRef, businessEntity)
       .map { response =>
         val ref = handleResponse[UndertakingRef](response, "add member")
-        undertakingCache.delete(ref)
+        undertakingCache.deleteUndertaking(ref)
         ref
       }
 
@@ -112,7 +109,7 @@ class EscService @Inject() (
       .removeMember(undertakingRef, businessEntity)
       .map { response =>
         val ref = handleResponse[UndertakingRef](response, "add member")
-        undertakingCache.delete(ref)
+        undertakingCache.deleteUndertaking(ref)
         ref
       }
 
@@ -121,7 +118,7 @@ class EscService @Inject() (
       .createSubsidy(subsidyUpdate)
       .map { response =>
         val ref = handleResponse[UndertakingRef](response, "add member")
-        undertakingCache.delete(ref)
+        undertakingCache.deleteUndertaking(ref)
         ref
       }
 

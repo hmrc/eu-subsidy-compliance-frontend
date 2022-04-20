@@ -63,8 +63,7 @@ class UndertakingCache @Inject() (
       .map(_ => in)
   }
 
-  // TODO - consider renaming this to delete undertaking
-  def delete[A : ClassTag](ref: UndertakingRef): Future[Unit] = {
+  def deleteUndertaking(ref: UndertakingRef): Future[Unit] = {
     println(s"Undertaking cache DELETE: $ref")
     cache
       .collection
