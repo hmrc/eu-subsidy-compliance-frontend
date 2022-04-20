@@ -42,7 +42,7 @@ class UndertakingCache @Inject() (
   configuration: Configuration
 )(implicit ec: ExecutionContext) {
 
-  private val cache = new MongoCacheRepository[EORI](
+  private lazy val cache = new MongoCacheRepository[EORI](
     mongoComponent = mongoComponent,
     collectionName = "undertakingCache",
     ttl = DefaultCacheTtl,
@@ -56,7 +56,7 @@ class UndertakingCache @Inject() (
       .get[A](eori)(dataKeyForType[A])
   }
 
-  def put[A : ClassTag](eori: EORI, in: A)(implicit writes: Writes[A]): Future[A] = {
+  def put[A](eori: EORI, in: A)(implicit writes: Writes[A]): Future[A] = {
     println(s"Undertaking cache PUT: $eori")
     cache
       .put[A](eori)(DataKey(in.getClass.getSimpleName), in)

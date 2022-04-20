@@ -120,6 +120,8 @@ object CommonTestData {
     List(businessEntity1, businessEntity2)
   )
 
+  val undertakingWithoutRef = undertaking.copy(reference = None)
+
   val undertaking1 = Undertaking(
     undertakingRef.some,
     UndertakingName("TestUndertaking"),
