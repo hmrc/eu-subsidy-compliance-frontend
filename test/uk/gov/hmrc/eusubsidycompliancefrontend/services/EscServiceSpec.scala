@@ -121,7 +121,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   private implicit val e: EORI = CommonTestData.eori1
 
-  "EscServiceSpec" when {
+  "EscService" when {
 
     "handling request to create an undertaking" must {
 

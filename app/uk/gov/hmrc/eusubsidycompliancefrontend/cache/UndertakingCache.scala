@@ -17,12 +17,12 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.cache
 
 import com.mongodb.WriteConcern
-import org.mongodb.scala.model.Filters
-import play.api.Configuration
+import org.mongodb.scala.MongoCollection
+import org.mongodb.scala.model.{Filters, IndexOptions, Indexes}
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.UndertakingCache.DefaultCacheTtl
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.mongo.cache.{CacheIdType, DataKey, MongoCacheRepository}
+import uk.gov.hmrc.mongo.cache.{CacheIdType, CacheItem, DataKey, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
 import javax.inject.{Inject, Singleton}
@@ -35,43 +35,50 @@ object EoriIdType extends CacheIdType[EORI] {
   override def run: EORI => EORI = identity
 }
 
-// TODO - got access to the collection so there may be a way forward here
 @Singleton
 class UndertakingCache @Inject() (
-  mongoComponent: MongoComponent,
-  configuration: Configuration
-)(implicit ec: ExecutionContext) {
-
-  private lazy val cache = new MongoCacheRepository[EORI](
+  mongoComponent: MongoComponent
+)(implicit ec: ExecutionContext) extends MongoCacheRepository[EORI](
     mongoComponent = mongoComponent,
     collectionName = "undertakingCache",
     ttl = DefaultCacheTtl,
     timestampSupport = new CurrentTimestampSupport,
     cacheIdType = EoriIdType
-  )
+  ) {
 
-  def get[A : ClassTag](eori: EORI)(implicit reads: Reads[A]): Future[Option[A]] = {
-    println(s"Undertaking cache GET: $eori")
-    cache
-      .get[A](eori)(dataKeyForType[A])
-  }
+  // Ensure the custom index data.Undertaking.reference is present
+  private lazy val indexedCollection: Future[MongoCollection[CacheItem]] =
+    for {
+      _ <- collection.createIndex(
+        Indexes.ascending("data.Undertaking.reference"),
+        IndexOptions()
+          .background(false)
+          .name("undertakingReference")
+          .sparse(false)
+          .unique(false)
+      ).headOption()
+    } yield collection
 
-  def put[A](eori: EORI, in: A)(implicit writes: Writes[A]): Future[A] = {
-    println(s"Undertaking cache PUT: $eori")
-    cache
-      .put[A](eori)(DataKey(in.getClass.getSimpleName), in)
-      .map(_ => in)
-  }
+  def get[A : ClassTag](eori: EORI)(implicit reads: Reads[A]): Future[Option[A]] =
+    indexedCollection.flatMap { _ =>
+      super
+        .get[A](eori)(dataKeyForType[A])
+      }
 
-  def deleteUndertaking(ref: UndertakingRef): Future[Unit] = {
-    println(s"Undertaking cache DELETE: $ref")
-    cache
-      .collection
-      .withWriteConcern(WriteConcern.ACKNOWLEDGED)
-      .deleteMany(Filters.equal("data.Undertaking.reference", ref))
-      .toFuture()
-      .map(_ => ())
-  }
+  def put[A](eori: EORI, in: A)(implicit writes: Writes[A]): Future[A] =
+    indexedCollection.flatMap { _ =>
+      super
+        .put[A](eori)(DataKey(in.getClass.getSimpleName), in)
+        .map(_ => in)
+    }
+
+  def deleteUndertaking(ref: UndertakingRef): Future[Unit] =
+      indexedCollection.flatMap { c =>
+        c.withWriteConcern(WriteConcern.ACKNOWLEDGED)
+          .deleteMany(Filters.equal("data.Undertaking.reference", ref))
+          .toFuture()
+          .map(_ => ())
+      }
 
   private def dataKeyForType[A](implicit ct: ClassTag[A]) = DataKey[A](ct.runtimeClass.getSimpleName)
 
