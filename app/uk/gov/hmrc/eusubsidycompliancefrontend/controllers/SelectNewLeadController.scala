@@ -130,8 +130,10 @@ class SelectNewLeadController @Inject() (
             _ <- store.update[BusinessEntityJourney](b => b.copy(isLeadSelectJourney = None))
             _ <- store.put[NewLeadJourney](NewLeadJourney())
             selectedEORI = newLeadJourney.selectNewLead.value
-          } yield selectedEORI.fold(Redirect(newLeadJourney.previous))(eori => Ok(leadEORIChangedPage(eori, undertaking.name)))
-        case None => handleMissingSessionData("New Lead journey")
+          } yield selectedEORI.fold(Redirect(newLeadJourney.previous))(eori =>
+            Ok(leadEORIChangedPage(eori, undertaking.name))
+          )
+        case None => Redirect(routes.SelectNewLeadController.getSelectNewLead()).toFuture
       }
     }
   }

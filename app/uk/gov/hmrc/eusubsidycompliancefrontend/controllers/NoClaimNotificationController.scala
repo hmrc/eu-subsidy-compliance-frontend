@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyNilReturn
@@ -30,7 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class NoClaimNotificationController @Inject() (
@@ -58,24 +58,26 @@ class NoClaimNotificationController @Inject() (
       implicit val eori = request.eoriNumber
       val previous = routes.AccountController.getAccountPage().url
 
+      def handleValidNoClaim(form: FormValues): Future[Result] = {
+        val nilSubmissionDate = timeProvider.today
+        val result = for {
+          reference <- undertaking.reference.toContext
+          _ <- store.update[NilReturnJourney](_.setNilReturnValues(form.value.toBoolean)).toContext
+          _ <- escService.createSubsidy(SubsidyUpdate(reference, NilSubmissionDate(nilSubmissionDate))).toContext
+          _ = auditService
+            .sendEvent(
+              NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate)
+            )
+        } yield Redirect(routes.AccountController.getAccountPage())
+
+        result.getOrElse(handleMissingSessionData("Undertaking ref"))
+      }
+
       noClaimForm
         .bindFromRequest()
         .fold(
           errors => BadRequest(noClaimNotificationPage(errors, previous, undertaking.name)).toFuture,
-          form => {
-            val nilSubmissionDate = timeProvider.today
-            val result = for {
-              reference <- undertaking.reference.toContext
-              _ <- store.update[NilReturnJourney](_.setNilReturnValues(form.value.toBoolean)).toContext
-              _ <- escService.createSubsidy(SubsidyUpdate(reference, NilSubmissionDate(nilSubmissionDate))).toContext
-              _ = auditService
-                .sendEvent(
-                  NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate)
-                )
-            } yield Redirect(routes.AccountController.getAccountPage())
-
-            result.getOrElse(handleMissingSessionData("Undertaking ref"))
-          }
+          handleValidNoClaim
         )
     }
   }

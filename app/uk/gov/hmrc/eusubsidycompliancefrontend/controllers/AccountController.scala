@@ -100,7 +100,6 @@ class AccountController @Inject() (
     for {
       ej <- store.getOrCreate[EligibilityJourney](EligibilityJourney()).toContext
       uj <- store.getOrCreate[UndertakingJourney](u).toContext
-      _ <- store.getOrCreate[BusinessEntityJourney](BusinessEntityJourney()).toContext
     } yield (ej, uj)
 
   private def renderAccountPage(undertaking: Undertaking)(implicit r: AuthenticatedEscRequest[AnyContent]) = {
