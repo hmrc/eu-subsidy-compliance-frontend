@@ -294,16 +294,6 @@ class SelectNewLeadControllerSpec
 
         }
 
-        "call to fetch new lead journey came back with None" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[NewLeadJourney](eori1)(Right(None))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
         "call to fetch new lead journey came back with response but there is no selected EORI in it" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -386,9 +376,20 @@ class SelectNewLeadControllerSpec
 
       }
 
-      "redirect to the account home page" when {
+      "redirect to next page" when {
+
         "user is not an undertaking lead" in {
           testLeadOnlyRedirect(performAction)
+        }
+
+        "call to fetch new lead journey came back with None" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[NewLeadJourney](eori1)(Right(None))
+          }
+          checkIsRedirect(performAction(), routes.SelectNewLeadController.getSelectNewLead().url)
+
         }
       }
 

@@ -81,7 +81,6 @@ class AccountControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-            mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
             mockTimeToday(fixedDate)
             mockGetOrCreate(eori1)(Right(nilJourneyCreate))
             mockGetOrCreateF(eori1)(Right(undertakingSubsidies))
@@ -149,7 +148,6 @@ class AccountControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-            mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
             mockTimeToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilJourneyCreate))
             mockGetOrCreateF(eori1)(Right(undertakingSubsidies))
@@ -186,7 +184,6 @@ class AccountControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-            mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
             mockTimeToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilReturnJourney))
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNJ))
@@ -220,13 +217,16 @@ class AccountControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate(eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate(eori1)(Right(UndertakingJourney()))
-            mockGetOrCreate(eori1)(Right(businessEntityJourney))
             mockTimeToday(currentDate)
             mockGetOrCreate(eori1)(Right(nilJourneyCreate))
-            mockGetOrCreateF(eori1)(Right(undertakingSubsidies.copy(
-              nonHMRCSubsidyUsage = List.empty,
-              hmrcSubsidyUsage = List.empty
-            )))
+            mockGetOrCreateF(eori1)(
+              Right(
+                undertakingSubsidies.copy(
+                  nonHMRCSubsidyUsage = List.empty,
+                  hmrcSubsidyUsage = List.empty
+                )
+              )
+            )
           }
 
           checkPageIsDisplayed(
@@ -317,7 +317,6 @@ class AccountControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
-            mockGetOrCreate[BusinessEntityJourney](eori4)(Right(businessEntityJourney))
             mockTimeToday(fixedDate)
           }
 
@@ -394,7 +393,6 @@ class AccountControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-            mockGetOrCreate[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -431,7 +429,6 @@ class AccountControllerSpec
                 mockRetrieveUndertaking(eori1)(None.toFuture)
                 mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
                 mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-                mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
               }
               checkIsRedirect(performAction(), routes.EligibilityController.firstEmptyPage())
             }
@@ -443,7 +440,6 @@ class AccountControllerSpec
                 mockRetrieveUndertaking(eori1)(None.toFuture)
                 mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
                 mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-                mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
               }
               checkIsRedirect(performAction(), routes.UndertakingController.firstEmptyPage())
             }
@@ -455,7 +451,6 @@ class AccountControllerSpec
                 mockRetrieveUndertaking(eori1)(None.toFuture)
                 mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
                 mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1))
-                mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
               }
               checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity())
             }
