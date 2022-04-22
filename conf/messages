@@ -245,7 +245,7 @@ reportPayment.error.required=Select yes if you have a de minimis aid payment (le
 reportPayment.payment-dated = payment, dated
 
 add-claim-amount.title=What was the amount of the payment?
-add-claim-amount.p1=This type of aid is measured in euros. Convert any aid received from pound sterling into euros using this <a class="govuk-link" href={0} target="_blank">exchange rate tool (external site, opens in a new tab)</a>:
+add-claim-amount.p1=This type of aid is measured in euros. You can convert any aid received from pounds sterling into euros by using this <a class="govuk-link" href={0} target="_blank">exchange rate tool (external site, opens in a new tab)</a> following the steps below:
 add-claim-amount.l1 = Change the year to {0} and month to {1}
 add-claim-amount.l2 = Enter the amount of aid you received in pounds sterling
 add-claim-amount.l3 = Change the ‘From’ dropdown to ‘GBP’ and use the figure displayed below it
