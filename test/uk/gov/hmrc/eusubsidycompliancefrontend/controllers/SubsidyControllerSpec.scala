@@ -256,16 +256,6 @@ class SubsidyControllerSpec
 
         }
 
-        "call to get sessions returns none" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(None))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
       }
 
       "display the page" when {
@@ -292,9 +282,20 @@ class SubsidyControllerSpec
 
       }
 
-      "redirect to the account home page" when {
-        "user is not an undertaking lead" in {
+      "redirect " when {
+
+        "user is not an undertaking lead to account home page" in {
           testLeadOnlyRedirect(performAction)
+        }
+
+        "call to get sessions returns none, to subsidy start journey" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(None))
+          }
+          checkIsRedirect(performAction(), routes.SubsidyController.getReportPayment().url)
+
         }
       }
     }
@@ -591,15 +592,6 @@ class SubsidyControllerSpec
           assertThrows[Exception](await(performAction()))
         }
 
-        " the call to get subsidy journey comes back empty" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(None))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
       }
 
       "display the page" when {
@@ -649,9 +641,18 @@ class SubsidyControllerSpec
 
       }
 
-      "redirect to the account home page" when {
-        "user is not an undertaking lead" in {
+      "redirect " when {
+        "user is not an undertaking lead, to the account home page" in {
           testLeadOnlyRedirect(performAction)
+        }
+
+        "the call to get subsidy journey comes back empty, to subsidy start journey page" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(None))
+          }
+          checkIsRedirect(performAction(), routes.SubsidyController.getReportPayment().url)
         }
       }
     }
@@ -895,15 +896,6 @@ class SubsidyControllerSpec
           assertThrows[Exception](await(performAction()))
         }
 
-        "the call to get subsidy journey comes back empty" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(None))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
       }
 
       "display the page" when {
@@ -959,9 +951,19 @@ class SubsidyControllerSpec
 
       }
 
-      "redirect to the account home page" when {
-        "user is not an undertaking lead" in {
+      "redirect " when {
+
+        "user is not an undertaking lead, to the account home page" in {
           testLeadOnlyRedirect(performAction)
+        }
+
+        "the call to get subsidy journey comes back empty, to Start of the journey" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(None))
+          }
+          checkIsRedirect(performAction(), routes.SubsidyController.getReportPayment().url)
         }
       }
 

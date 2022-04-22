@@ -448,7 +448,7 @@ class SubsidyController @Inject() (
           subsidies <- retrieveSubsidies(reference).toContext
           sub <- subsidies.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext
         } yield Ok(confirmRemovePage(removeSubsidyClaimForm, sub))
-        result.fold(Redirect(routes.SubsidyController.getReportPayment()))(identity)
+        result.fold(handleMissingSessionData("Subsidy Journey"))(identity)
       }
   }
 
@@ -476,7 +476,7 @@ class SubsidyController @Inject() (
           subsidyJourney = SubsidyJourney.fromNonHmrcSubsidy(nonHmrcSubsidy)
           _ <- store.put(subsidyJourney).toContext
         } yield Redirect(routes.SubsidyController.getCheckAnswers())
-        result.fold(Redirect(routes.SubsidyController.getReportPayment()))(identity)
+        result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
       }
   }
 
