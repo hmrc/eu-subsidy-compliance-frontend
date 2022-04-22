@@ -108,7 +108,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
+            mockGetOrCreate[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -124,7 +124,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+            mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
           }
 
           checkPageIsDisplayed(
@@ -247,38 +247,16 @@ class BusinessEntityControllerSpec
     }
 
     "handling request to get EORI Page" must {
-      def performAction() = controller.getEori(FakeRequest())
+      def performAction() = controller.getEori(FakeRequest("GET", routes.BusinessEntityController.getEori().url))
 
       "throw technical error" when {
         val exception = new Exception("oh no")
-
-        "call to get previous uri fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetPrevious[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
 
         "call to get business entity journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetPrevious[BusinessEntityJourney](eori1)(Right("/add-member"))
             mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
-        "call to get business entity journey came back empty" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetPrevious[BusinessEntityJourney](eori1)(Right("/add-member"))
-            mockGet[BusinessEntityJourney](eori1)(Right(None))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -289,11 +267,10 @@ class BusinessEntityControllerSpec
       "display the page" when {
 
         def test(businessEntityJourney: BusinessEntityJourney): Unit = {
-          val previousUrl = "add-member"
+          val previousUrl = routes.BusinessEntityController.getAddBusinessEntity().url
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetPrevious[BusinessEntityJourney](eori1)(Right(previousUrl))
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
           }
 
@@ -331,9 +308,19 @@ class BusinessEntityControllerSpec
 
       }
 
-      "redirect to the account home page" when {
+      "redirect " when {
         "user is not an undertaking lead" in {
           testLeadOnlyRedirect(performAction)
+        }
+
+        "call to get business entity journey came back empty" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[BusinessEntityJourney](eori1)(Right(None))
+          }
+          checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity().url)
+
         }
       }
 
@@ -516,18 +503,10 @@ class BusinessEntityControllerSpec
 
         }
 
-        "call to fetch Business Entity journey returns Nothing" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(None))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
       }
 
       "redirect" when {
+
         "call to fetch Business Entity journey returns journey without eori" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -535,6 +514,15 @@ class BusinessEntityControllerSpec
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.copy(eori = AddEoriFormPage()).some))
           }
           redirectLocation(performAction()) shouldBe Some(routes.BusinessEntityController.getEori().url)
+        }
+
+        "call to fetch Business Entity journey returns Nothing" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[BusinessEntityJourney](eori1)(Right(None))
+          }
+          checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity().url)
         }
       }
 

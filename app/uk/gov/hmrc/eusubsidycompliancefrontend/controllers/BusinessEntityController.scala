@@ -74,7 +74,6 @@ class BusinessEntityController @Inject() (
       store
         .getOrCreate[BusinessEntityJourney](BusinessEntityJourney())
         .map { journey =>
-          println(" journey is ::" + journey)
           val form = journey.addBusiness.value
             .fold(addBusinessForm)(bool => addBusinessForm.fill(FormValues(bool.toString)))
 
