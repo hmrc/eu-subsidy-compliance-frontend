@@ -33,6 +33,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
+// TODO - review this for opportunities to avoid blowing the cache
 @Singleton
 class EscService @Inject() (
   escConnector: EscConnector,
@@ -59,20 +60,20 @@ class EscService @Inject() (
       }
 
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]] =
-        undertakingCache
-        .get[Undertaking](eori)
-        .toContext
-        .orElseF {
-          retrieveUndertakingAndHandleErrors(eori).flatMap {
-            case Right(Some(undertaking)) =>
-              // TODO - review this - why do we map over the reference?
-              undertaking.reference.map(r => undertakingCache.put(eori, undertaking))
-              undertaking.some.toFuture
-            case Right(None) => Option.empty[Undertaking].toFuture
-            case Left(ex) => Future.failed[Option[Undertaking]](ex)
-          }
+    undertakingCache
+      .get[Undertaking](eori)
+      .toContext
+      .orElseF {
+        retrieveUndertakingAndHandleErrors(eori).flatMap {
+          case Right(Some(undertaking)) =>
+            // TODO - review this - why do we map over the reference?
+            undertaking.reference.map(r => undertakingCache.put(eori, undertaking))
+            undertaking.some.toFuture
+          case Right(None) => Option.empty[Undertaking].toFuture
+          case Left(ex) => Future.failed[Option[Undertaking]](ex)
         }
-        .value
+      }
+      .value
 
   def retrieveUndertakingAndHandleErrors(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[Undertaking]]] = {
 
@@ -112,32 +113,40 @@ class EscService @Inject() (
         ref
       }
 
-  // TODO - check this - we shouldn't need to delete the undertaking here
   def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
     escConnector
       .createSubsidy(subsidyUpdate)
       .map { response =>
-        // TODO - delete cached subsidy data for all users
         val ref = handleResponse[UndertakingRef](response, "add member")
-//        undertakingCache.deleteUndertaking(ref)
+        undertakingCache.deleteUndertakingSubsidies(ref)
         ref
       }
 
-  // TODO - shift caching into this method
   def retrieveSubsidy(
     subsidyRetrieve: SubsidyRetrieve
-  )(implicit hc: HeaderCarrier): Future[UndertakingSubsidies] =
-    escConnector
-      .retrieveSubsidy(subsidyRetrieve)
-      .map(handleResponse[UndertakingSubsidies](_, "retrieve subsidy"))
+  )(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingSubsidies] = {
+    undertakingCache
+      .get[UndertakingSubsidies](eori)
+      .toContext
+      .getOrElseF {
+        escConnector.retrieveSubsidy(subsidyRetrieve)
+          .flatMap { response =>
+            val result: UndertakingSubsidies = handleResponse[UndertakingSubsidies](response, "subsidy retrieve")
+            undertakingCache.put(eori, result)
+          }
+      }
+  }
 
-  // TODO - shift cache handling into this method
   def removeSubsidy(undertakingRef: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(implicit
     hc: HeaderCarrier
   ): Future[UndertakingRef] =
     escConnector
       .removeSubsidy(undertakingRef, nonHmrcSubsidy)
-      .map(handleResponse[UndertakingRef](_, "remove subsidy"))
+      .map{ response =>
+        val ref = handleResponse[UndertakingRef](response, "remove subsidy")
+        undertakingCache.deleteUndertakingSubsidies(ref)
+        ref
+      }
 
   private def handleResponse[A](r: Either[ConnectorError, HttpResponse], action: String)(implicit reads: Reads[A]): A =
     r.fold(

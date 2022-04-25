@@ -159,8 +159,8 @@ class SubsidyController @Inject() (
 
     val searchRange = timeProvider.today.toSearchRange.some
 
-    store
-      .getOrCreate[UndertakingSubsidies](() => escService.retrieveSubsidy(SubsidyRetrieve(r, searchRange)))
+    escService
+      .retrieveSubsidy(SubsidyRetrieve(r, searchRange))
       .map(Option(_))
       .fallbackTo(Option.empty.toFuture)
   }
