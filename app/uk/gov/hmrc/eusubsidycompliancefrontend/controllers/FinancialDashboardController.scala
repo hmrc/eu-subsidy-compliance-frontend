@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.data.OptionT
 import cats.implicits._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.SubsidyRetrieve
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -30,7 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class FinancialDashboardController @Inject() (
@@ -53,15 +54,15 @@ class FinancialDashboardController @Inject() (
     // The search period covers the current tax year to date, and the previous 2 tax years.
     val searchRange = today.toSearchRange.some
 
-    val result = for {
+    val result: OptionT[Future, (Undertaking, UndertakingSubsidies)] = for {
       undertaking <- escService.retrieveUndertaking(eori).toContext
-      r = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking reference"))
+      r <- undertaking.reference.toContext
       s = SubsidyRetrieve(r, searchRange)
       subsidies <- store.getOrCreate(() => escService.retrieveSubsidy(s)).toContext
     } yield (undertaking, subsidies)
 
-    result.map {
-      case (undertaking, subsidies) =>
+    result
+      .map { case (undertaking, subsidies) =>
         val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
           undertaking,
           subsidies,
@@ -70,7 +71,8 @@ class FinancialDashboardController @Inject() (
         )
 
         Ok(financialDashboardPage(summary))
-    }.getOrElse(handleMissingSessionData("Undertaking"))
+      }
+      .getOrElse(handleMissingSessionData("Undertaking"))
 
   }
 

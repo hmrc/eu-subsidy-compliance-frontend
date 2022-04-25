@@ -62,25 +62,17 @@ class UndertakingController @Inject() (
 
   def firstEmptyPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[UndertakingJourney].map {
-      case Some(journey) =>
-        journey.firstEmpty
-          .fold(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))(identity)
-      case _ => handleMissingSessionData("Undertaking journey")
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).map { journey =>
+      journey.firstEmpty
+        .fold(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))(identity)
     }
   }
 
   def getUndertakingName: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[UndertakingJourney].flatMap {
-      case Some(journey) =>
-        val form = journey.name.value.fold(undertakingNameForm)(name => undertakingNameForm.fill(FormValues(name)))
-        Ok(undertakingNamePage(form, journey.previous)).toFuture
-      case None => // initialise the empty Journey model
-        val journey = UndertakingJourney()
-        store.put(journey).map { _ =>
-          Ok(undertakingNamePage(undertakingNameForm, UndertakingJourney().previous))
-        }
+    store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
+      val form = journey.name.value.fold(undertakingNameForm)(name => undertakingNameForm.fill(FormValues(name)))
+      Ok(undertakingNamePage(form, journey.previous)).toFuture
     }
   }
 
@@ -108,7 +100,7 @@ class UndertakingController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       ensureUndertakingJourneyPresent(_) { journey =>
-        if(!journey.isEligibleForStep) {
+        if (!journey.isEligibleForStep) {
           Redirect(journey.previous).toFuture
         } else {
           val form = journey.sector.value.fold(undertakingSectorForm)(sector =>
@@ -157,7 +149,7 @@ class UndertakingController @Inject() (
           undertakingSector <- journey.sector.value.toContext
         } yield Ok(cyaPage(UndertakingName(undertakingName), eori, undertakingSector, journey.previous))
         result.fold(Redirect(journey.previous))(identity)
-      case _ => handleMissingSessionData("Undertaking journey")
+      case _ => Redirect(routes.UndertakingController.getUndertakingName()).toFuture
     }
   }
 
@@ -290,7 +282,7 @@ class UndertakingController @Inject() (
   }
 
   private def ensureUndertakingJourneyPresent(j: Option[UndertakingJourney])(f: UndertakingJourney => Future[Result]) =
-    j.fold(handleMissingSessionData("Undertaking journey"))(f)
+    j.fold(Redirect(routes.UndertakingController.getUndertakingName()).toFuture)(f)
 
   private val undertakingNameForm: Form[FormValues] = Form(
     mapping("undertakingName" -> mandatory("undertakingName"))(FormValues.apply)(FormValues.unapply).verifying(

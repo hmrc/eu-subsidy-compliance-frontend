@@ -24,7 +24,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
@@ -71,11 +71,9 @@ class BusinessEntityController @Inject() (
   def getAddBusinessEntity: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
-
       store
-        .get[BusinessEntityJourney]
-        .toContext
-        .fold(handleMissingSessionData("Business Entity Journey")) { journey =>
+        .getOrCreate[BusinessEntityJourney](BusinessEntityJourney())
+        .map { journey =>
           val form = journey.addBusiness.value
             .fold(addBusinessForm)(bool => addBusinessForm.fill(FormValues(bool.toString)))
 
@@ -112,18 +110,17 @@ class BusinessEntityController @Inject() (
   def getEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
-      journeyTraverseService.getPrevious[BusinessEntityJourney].flatMap { previous =>
-        store.get[BusinessEntityJourney].flatMap {
-          case Some(journey) =>
-            if (!journey.isEligibleForStep) {
-              Redirect(journey.previous).toFuture
-            } else {
-              val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori)))
-              Ok(eoriPage(form, previous)).toFuture
-            }
-          case _ => handleMissingSessionData("Business Entity Journey")
-        }
+      store.get[BusinessEntityJourney].flatMap {
+        case Some(journey) =>
+          if (!journey.isEligibleForStep) {
+            Redirect(journey.previous).toFuture
+          } else {
+            val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori)))
+            Ok(eoriPage(form, journey.previous)).toFuture
+          }
+        case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture
       }
+
     }
   }
 
@@ -165,7 +162,7 @@ class BusinessEntityController @Inject() (
           } else {
             Ok(businessEntityCyaPage(journey.eori.value.get, journey.previous)).toFuture
           }
-        case _ => handleMissingSessionData("CheckYourAnswers journey")
+        case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture
       }
     }
   }
@@ -173,40 +170,44 @@ class BusinessEntityController @Inject() (
   def postCheckYourAnswers: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    def handleValidAnswers(undertaking: Undertaking) = for {
-      businessEntityJourney <- store
-        .get[BusinessEntityJourney]
-        .map(_.getOrElse(handleMissingSessionData("BusinessEntity Journey")))
-      undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("undertaking ref"))
-      eoriBE = businessEntityJourney.eori.value.getOrElse(handleMissingSessionData("BE EORI"))
+    def handleValidAnswersC(undertaking: Undertaking) = for {
+      businessEntityJourney <- store.get[BusinessEntityJourney].toContext
+      undertakingRef <- undertaking.reference.toContext
+      eoriBE <- businessEntityJourney.eori.value.toContext
       businessEntity = BusinessEntity(eoriBE, leadEORI = false) // resetting the journey as it's final CYA page
       _ <- {
         if (businessEntityJourney.isAmend) {
-          escService.removeMember(
-            undertakingRef,
-            businessEntity.copy(businessEntityIdentifier = businessEntityJourney.oldEORI.get)
-          )
+          escService
+            .removeMember(
+              undertakingRef,
+              businessEntity.copy(businessEntityIdentifier = businessEntityJourney.oldEORI.get)
+            )
+            .toContext
         }
-        escService.addMember(undertakingRef, businessEntity)
+        escService.addMember(undertakingRef, businessEntity).toContext
       }
-      _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
-        eoriBE,
-        None,
-        AddMemberEmailToBusinessEntity,
-        undertaking,
-        undertakingRef,
-        None
-      )
-      _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
-        eori,
-        eoriBE.some,
-        AddMemberEmailToLead,
-        undertaking,
-        undertakingRef,
-        None
-      )
+      _ <- sendEmailHelperService
+        .retrieveEmailAddressAndSendEmail(
+          eoriBE,
+          None,
+          AddMemberEmailToBusinessEntity,
+          undertaking,
+          undertakingRef,
+          None
+        )
+        .toContext
+      _ <- sendEmailHelperService
+        .retrieveEmailAddressAndSendEmail(
+          eori,
+          eoriBE.some,
+          AddMemberEmailToLead,
+          undertaking,
+          undertakingRef,
+          None
+        )
+        .toContext
       // Clear the cached undertaking so it's retrieved on the next access
-      _ <- store.delete[Undertaking]
+      _ <- store.delete[Undertaking].toContext
       _ =
         if (businessEntityJourney.isAmend)
           auditService.sendEvent(
@@ -214,7 +215,7 @@ class BusinessEntityController @Inject() (
           )
         else
           auditService.sendEvent(AuditEvent.BusinessEntityAdded(undertakingRef, request.authorityId, eori, eoriBE))
-      redirect <- getNext(businessEntityJourney)(eori)
+      redirect <- getNext(businessEntityJourney)(eori).toContext
     } yield redirect
 
     withLeadUndertaking { undertaking =>
@@ -222,7 +223,7 @@ class BusinessEntityController @Inject() (
         .bindFromRequest()
         .fold(
           errors => throw new IllegalStateException(s"value hard-coded, form hacking? $errors"),
-          _ => handleValidAnswers(undertaking)
+          _ => handleValidAnswersC(undertaking).fold(handleMissingSessionData("BusinessEntity Data"))(identity)
         )
     }
   }
@@ -234,7 +235,7 @@ class BusinessEntityController @Inject() (
           case Some(undertaking) =>
             val removeBE = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
             Ok(removeBusinessPage(removeBusinessForm, removeBE))
-          case _ => handleMissingSessionData("Undertaking journey")
+          case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity())
         }
       }
   }
@@ -249,13 +250,52 @@ class BusinessEntityController @Inject() (
         val removeBE = undertaking.getBusinessEntityByEORI(eori)
         Ok(removeYourselfBEPage(removeYourselfBusinessForm, removeBE, previous, undertaking.name))
 
-      case _ => handleMissingSessionData("Undertaking journey")
+      case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity())
     }
   }
 
   def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = withAuthenticatedUser.async {
     implicit request =>
       implicit val eori: EORI = request.eoriNumber
+
+      def handleValidBE(
+        form: FormValues,
+        undertakingRef: UndertakingRef,
+        removeBE: BusinessEntity,
+        undertaking: Undertaking
+      ) =
+        form.value match {
+          case "true" =>
+            val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
+            for {
+              _ <- escService.removeMember(undertakingRef, removeBE)
+              _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+                EORI(eoriEntered),
+                None,
+                RemoveMemberEmailToBusinessEntity,
+                undertaking,
+                undertakingRef,
+                removalEffectiveDateString.some
+              )
+              _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+                eori,
+                EORI(eoriEntered).some,
+                RemoveMemberEmailToLead,
+                undertaking,
+                undertakingRef,
+                removalEffectiveDateString.some
+              )
+              // Clear the cached undertaking so it's retrieved on the next access
+              _ <- store.delete[Undertaking]
+              _ = auditService
+                .sendEvent(
+                  AuditEvent
+                    .BusinessEntityRemoved(undertakingRef, request.authorityId, eori, EORI(eoriEntered))
+                )
+            } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
+          case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture
+        }
+
       withLeadUndertaking { _ =>
         escService.retrieveUndertaking(EORI(eoriEntered)).flatMap {
           case Some(undertaking) =>
@@ -266,39 +306,7 @@ class BusinessEntityController @Inject() (
               .bindFromRequest()
               .fold(
                 errors => BadRequest(removeBusinessPage(errors, removeBE)).toFuture,
-                success = form => {
-                  form.value match {
-                    case "true" =>
-                      val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
-                      for {
-                        _ <- escService.removeMember(undertakingRef, removeBE)
-                        _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
-                          EORI(eoriEntered),
-                          None,
-                          RemoveMemberEmailToBusinessEntity,
-                          undertaking,
-                          undertakingRef,
-                          removalEffectiveDateString.some
-                        )
-                        _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
-                          eori,
-                          EORI(eoriEntered).some,
-                          RemoveMemberEmailToLead,
-                          undertaking,
-                          undertakingRef,
-                          removalEffectiveDateString.some
-                        )
-                        // Clear the cached undertaking so it's retrieved on the next access
-                        _ <- store.delete[Undertaking]
-                        _ = auditService
-                          .sendEvent(
-                            AuditEvent
-                              .BusinessEntityRemoved(undertakingRef, request.authorityId, eori, EORI(eoriEntered))
-                          )
-                      } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
-                    case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture
-                  }
-                }
+                success = form => handleValidBE(form, undertakingRef, removeBE, undertaking)
               )
           case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture
         }
@@ -312,41 +320,41 @@ class BusinessEntityController @Inject() (
       case Some(undertaking) =>
         val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("undertaking reference"))
         val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(loggedInEORI)
+        def handleValidBE(form: FormValues) = form.value match {
+          case "true" =>
+            val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
+            val leadEORI = undertaking.getLeadEORI
+            for {
+              _ <- escService.removeMember(undertakingRef, removeBE)
+              _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+                loggedInEORI,
+                None,
+                RemoveThemselfEmailToBusinessEntity,
+                undertaking,
+                undertakingRef,
+                removalEffectiveDateString.some
+              )
+              _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+                leadEORI,
+                loggedInEORI.some,
+                RemoveThemselfEmailToLead,
+                undertaking,
+                undertakingRef,
+                removalEffectiveDateString.some
+              )
+              _ = auditService
+                .sendEvent(
+                  AuditEvent
+                    .BusinessEntityRemovedSelf(undertakingRef, request.authorityId, leadEORI, loggedInEORI)
+                )
+            } yield Redirect(routes.SignOutController.signOut())
+          case _ => Redirect(routes.AccountController.getAccountPage()).toFuture
+        }
         removeYourselfBusinessForm
           .bindFromRequest()
           .fold(
             errors => BadRequest(removeYourselfBEPage(errors, removeBE, previous, undertaking.name)).toFuture,
-            form =>
-              form.value match {
-                case "true" =>
-                  val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
-                  val leadEORI = undertaking.getLeadEORI
-                  for {
-                    _ <- escService.removeMember(undertakingRef, removeBE)
-                    _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
-                      loggedInEORI,
-                      None,
-                      RemoveThemselfEmailToBusinessEntity,
-                      undertaking,
-                      undertakingRef,
-                      removalEffectiveDateString.some
-                    )
-                    _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
-                      leadEORI,
-                      loggedInEORI.some,
-                      RemoveThemselfEmailToLead,
-                      undertaking,
-                      undertakingRef,
-                      removalEffectiveDateString.some
-                    )
-                    _ = auditService
-                      .sendEvent(
-                        AuditEvent
-                          .BusinessEntityRemovedSelf(undertakingRef, request.authorityId, leadEORI, loggedInEORI)
-                      )
-                  } yield Redirect(routes.SignOutController.signOut())
-                case _ => Future(Redirect(routes.AccountController.getAccountPage()))
-              }
+            form => handleValidBE(form)
           )
 
       case _ => handleMissingSessionData("Undertaking journey")

@@ -81,18 +81,10 @@ class UndertakingControllerSpec
 
       "throw technical error" when {
 
-        "call to fetch undertaking journey fails" in {
+        "call to Get Or Create undertaking journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to fetch undertaking journey comes back empty" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Right(None))
+            mockGetOrCreate[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -103,7 +95,7 @@ class UndertakingControllerSpec
         "undertaking journey is present and  is not None and is complete" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+            mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete))
           }
           checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity().url)
         }
@@ -113,7 +105,7 @@ class UndertakingControllerSpec
           def testRedirect(undertakingJourney: UndertakingJourney, redirectTo: String) = {
             inSequence {
               mockAuthWithNecessaryEnrolment()
-              mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
+              mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourney))
             }
             checkIsRedirect(performAction(), redirectTo)
           }
@@ -161,6 +153,7 @@ class UndertakingControllerSpec
           }
 
         }
+
       }
 
     }
@@ -170,34 +163,13 @@ class UndertakingControllerSpec
       def performAction() =
         controller.getUndertakingName(FakeRequest(GET, routes.UndertakingController.getUndertakingName().url))
 
-      "throw technical error" when {
-
-        "call to fetch undertaking journey fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to store undertaking journey fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Right(None))
-            mockPut[UndertakingJourney](UndertakingJourney(), eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-      }
-
       "display the page" when {
 
         def testDisplay(undertakingJourney: UndertakingJourney, backUrl: String) = {
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
+            mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourney))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -217,8 +189,7 @@ class UndertakingControllerSpec
         "no undertaking journey is there in store" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Right(None))
-            mockPut[UndertakingJourney](UndertakingJourney(), eori1)(Right(UndertakingJourney()))
+            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -243,6 +214,7 @@ class UndertakingControllerSpec
         "undertaking journey is there in store and user hasn't  answered any questions" in {
           testDisplay(UndertakingJourney(), routes.EligibilityController.getCreateUndertaking().url)
         }
+
         "undertaking journey is there in store and user has answered the question but journey is not complete" in {
           testDisplay(
             UndertakingJourney(
@@ -376,13 +348,6 @@ class UndertakingControllerSpec
           assertThrows[Exception](await(performAction()))
         }
 
-        "call to fetch undertaking journey passes  but return no undertaking journey" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Right(None))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
       }
 
       "display the page" when {
@@ -453,6 +418,17 @@ class UndertakingControllerSpec
           )
         }
 
+      }
+
+      "redirect to journey start page" when {
+
+        "call to fetch undertaking journey passes  but return no undertaking journey" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[UndertakingJourney](eori1)(Right(None))
+          }
+          checkIsRedirect(performAction(), routes.UndertakingController.getUndertakingName().url)
+        }
       }
 
     }
@@ -621,14 +597,6 @@ class UndertakingControllerSpec
           assertThrows[Exception](await(performAction()))
         }
 
-        "call to get undertaking journey fetches nothing" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[UndertakingJourney](eori1)(Right(None))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
       }
 
       "redirect" when {
@@ -640,6 +608,14 @@ class UndertakingControllerSpec
             )
           }
           redirectLocation(performAction()) shouldBe Some(routes.UndertakingController.getSector().url)
+        }
+
+        "to journey start when call to get undertaking journey fetches nothing" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockGet[UndertakingJourney](eori1)(Right(None))
+          }
+          checkIsRedirect(performAction(), routes.UndertakingController.getUndertakingName().url)
         }
       }
 
@@ -849,15 +825,6 @@ class UndertakingControllerSpec
           assertThrows[Exception](await(performAction()))
         }
 
-        "call to get undertaking journey fetches nothing" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[UndertakingJourney](eori1)(Right(None))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
         "call to update the undertaking journey fails" in {
 
           inSequence {
@@ -925,6 +892,19 @@ class UndertakingControllerSpec
               rows shouldBe expectedRows
             }
           )
+        }
+
+      }
+
+      "redirect to journey start page" when {
+
+        "call to get undertaking journey fetches nothing" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[UndertakingJourney](eori1)(Right(None))
+          }
+          checkIsRedirect(performAction(), routes.UndertakingController.getUndertakingName().url)
         }
 
       }

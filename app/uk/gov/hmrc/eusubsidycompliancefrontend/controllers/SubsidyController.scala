@@ -159,7 +159,8 @@ class SubsidyController @Inject() (
 
     val searchRange = timeProvider.today.toSearchRange.some
 
-    store.getOrCreate[UndertakingSubsidies](() => escService.retrieveSubsidy(SubsidyRetrieve(r, searchRange)))
+    store
+      .getOrCreate[UndertakingSubsidies](() => escService.retrieveSubsidy(SubsidyRetrieve(r, searchRange)))
       .map(Option(_))
       .fallbackTo(Option.empty.toFuture)
   }
@@ -232,13 +233,13 @@ class SubsidyController @Inject() (
         case Some(journey) =>
           journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
             val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
-            if(!journey.isEligibleForStep) {
+            if (!journey.isEligibleForStep) {
               Redirect(journey.previous).toFuture
             } else {
               Ok(addClaimDatePage(form, previous)).toFuture
             }
           }
-        case _ => handleMissingSessionData("Subsidy journey")
+        case _ => Redirect(routes.SubsidyController.getReportPayment()).toFuture
       }
     }
   }
@@ -268,7 +269,7 @@ class SubsidyController @Inject() (
       store.get[SubsidyJourney].flatMap {
         case Some(journey) =>
           journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
-            if(!journey.isEligibleForStep) {
+            if (!journey.isEligibleForStep) {
               Redirect(routes.SubsidyController.getClaimDate()).toFuture
             } else {
               val form = journey.addClaimEori.value.fold(claimEoriForm) { optionalEORI =>
@@ -277,7 +278,7 @@ class SubsidyController @Inject() (
               Ok(addClaimEoriPage(form, previous)).toFuture
             }
           }
-        case _ => handleMissingSessionData("Subsidy journey")
+        case _ => Redirect(routes.SubsidyController.getReportPayment()).toFuture
       }
     }
   }
@@ -307,14 +308,14 @@ class SubsidyController @Inject() (
       store.get[SubsidyJourney].flatMap {
         case Some(journey) =>
           journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
-            if(!journey.isEligibleForStep) {
+            if (!journey.isEligibleForStep) {
               Redirect(journey.previous).toFuture
             } else {
               val form = journey.publicAuthority.value.fold(claimPublicAuthorityForm)(claimPublicAuthorityForm.fill)
               Ok(addPublicAuthorityPage(form, previous)).toFuture
             }
           }
-        case _ => handleMissingSessionData("Subsidy journey")
+        case _ => Redirect(routes.SubsidyController.getReportPayment()).toFuture
       }
     }
   }
@@ -342,7 +343,7 @@ class SubsidyController @Inject() (
       implicit val eori: EORI = request.eoriNumber
       store.get[SubsidyJourney].flatMap {
         case Some(journey) =>
-          if(!journey.isEligibleForStep) {
+          if (!journey.isEligibleForStep) {
             Redirect(journey.previous).toFuture
           } else {
             val form = journey.traderRef.value.fold(claimTraderRefForm) { optionalTraderRef =>
@@ -350,7 +351,7 @@ class SubsidyController @Inject() (
             }
             Ok(addTraderReferencePage(form, journey.previous)).toFuture
           }
-        case _ => handleMissingSessionData("Subsidy journey")
+        case _ => Redirect(routes.SubsidyController.getReportPayment()).toFuture
       }
     }
   }
@@ -483,10 +484,10 @@ class SubsidyController @Inject() (
     transactionId: String,
     reference: UndertakingRef
   )(implicit r: AuthenticatedEscRequest[AnyContent]): OptionT[Future, NonHmrcSubsidy] =
-      retrieveSubsidies(reference)
-        .recoverWith({ case _ => Option.empty[UndertakingSubsidies].toFuture })
-        .toContext
-        .flatMap(_.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext)
+    retrieveSubsidies(reference)
+      .recoverWith({ case _ => Option.empty[UndertakingSubsidies].toFuture })
+      .toContext
+      .flatMap(_.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext)
 
   private def handleRemoveSubsidyFormError(
     formWithErrors: Form[FormValues],
