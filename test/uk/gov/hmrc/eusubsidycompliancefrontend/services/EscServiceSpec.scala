@@ -17,11 +17,13 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.catsSyntaxOptionId
-import org.scalamock.scalatest.MockFactory
+import org.mockito.ArgumentMatchers.{any, eq => argEq}
+import org.mockito.Mockito.when
 import org.scalatest.Assertion
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.libs.json.{JsValue, Json, Reads, Writes}
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.UndertakingCache
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
@@ -38,79 +40,65 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.reflect.ClassTag
 
-class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
+class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
+
   private val mockEscConnector: EscConnector = mock[EscConnector]
+
   private val mockUndertakingCache: UndertakingCache = mock[UndertakingCache]
+
   private val service: EscService = new EscService(mockEscConnector, mockUndertakingCache)
 
   private def mockCreateUndertaking(undertaking: Undertaking)(
     result: Either[ConnectorError, HttpResponse]
   ) =
-    (mockEscConnector
-      .createUndertaking(_: Undertaking)(_: HeaderCarrier))
-      .expects(undertaking, *)
-      .returning(result.toFuture)
+    when(mockEscConnector.createUndertaking(argEq(undertaking))(any()))
+      .thenReturn(result.toFuture)
 
   private def mockUpdateUndertaking(undertaking: Undertaking)(
     result: Either[ConnectorError, HttpResponse]
   ) =
-    (mockEscConnector
-      .updateUndertaking(_: Undertaking)(_: HeaderCarrier))
-      .expects(undertaking, *)
-      .returning(result.toFuture)
+    when(mockEscConnector.updateUndertaking(argEq(undertaking))(any()))
+      .thenReturn(result.toFuture)
 
   private def mockRetrieveUndertaking(eori: EORI)(result: Either[ConnectorError, HttpResponse]) =
-    (mockEscConnector
-      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result.toFuture)
+    when(mockEscConnector.retrieveUndertaking(argEq(eori))(any()))
+      .thenReturn(result.toFuture)
 
   private def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
     result: Either[ConnectorError, HttpResponse]
   ) =
-    (mockEscConnector
-      .addMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
-      .expects(undertakingRef, businessEntity, *)
-      .returning(result.toFuture)
+    when(mockEscConnector.addMember(argEq(undertakingRef), argEq(businessEntity))(any()))
+      .thenReturn(result.toFuture)
 
   private def mockRemoveMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
     result: Either[ConnectorError, HttpResponse]
   ) =
-    (mockEscConnector
-      .removeMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
-      .expects(undertakingRef, businessEntity, *)
-      .returning(result.toFuture)
+    when(mockEscConnector.removeMember(argEq(undertakingRef), argEq(businessEntity))(any()))
+      .thenReturn(result.toFuture)
 
   private def mockCreateSubsidy(subsidyUpdate: SubsidyUpdate)(
     result: Either[ConnectorError, HttpResponse]
   ) =
-    (mockEscConnector
-      .createSubsidy(_: SubsidyUpdate)(_: HeaderCarrier))
-      .expects(subsidyUpdate, *)
-      .returning(result.toFuture)
+    when(mockEscConnector.createSubsidy(argEq(subsidyUpdate))(any()))
+      .thenReturn(result.toFuture)
 
   private def mockRetrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(
     result: Either[ConnectorError, HttpResponse]
   ) =
-    (mockEscConnector
-      .retrieveSubsidy(_: SubsidyRetrieve)(_: HeaderCarrier))
-      .expects(subsidyRetrieve, *)
-      .returning(result.toFuture)
+    when(mockEscConnector.retrieveSubsidy(argEq(subsidyRetrieve))(any()))
+      .thenReturn(result.toFuture)
 
   private def mockCachePut[A](eori: EORI, in: A)(result: Either[Exception, A]) =
-    (mockUndertakingCache.put(_: EORI, _: A)(_: Writes[A]))
-      .expects(eori, in, *)
-      .returning(result.fold(Future.failed, _.toFuture))
+    when(mockUndertakingCache.put(argEq(eori), argEq(in))(any()))
+      .thenReturn(result.fold(Future.failed, _.toFuture))
 
-  private def mockCacheGet[A](eori: EORI)(result: Either[Exception, Option[A]]) =
-    (mockUndertakingCache.get(_: EORI)(_: ClassTag[A], _: Reads[A]))
-      .expects(eori, *, *)
-      .returning(result.fold(Future.failed, _.toFuture))
+  private def mockCacheGet[A : ClassTag](eori: EORI)(result: Either[Exception, Option[A]]) =
+    when(mockUndertakingCache.get[A](argEq(eori))(any(), any()))
+      .thenReturn(result.fold(Future.failed, _.toFuture))
 
   private def mockCacheDeleteUndertaking(ref: UndertakingRef)(result: Either[Exception, Unit]) =
-    (mockUndertakingCache.deleteUndertaking(_: UndertakingRef))
-      .expects(ref)
-      .returning(result.fold(Future.failed, _.toFuture))
+    when(mockUndertakingCache.deleteUndertaking(argEq(ref)))
+      .thenReturn(result.fold(Future.failed, _.toFuture))
 
   private val undertakingRefJson = Json.toJson(undertakingRef)
   private val undertakingJson: JsValue = Json.toJson(undertaking)
@@ -214,7 +202,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
       "return an error" when {
 
         "there is no json in the response, with status OK" in {
-          mockCacheGet(eori1)(Right(None))
+          mockCacheGet[Undertaking](eori1)(Right(None))
           mockRetrieveUndertaking(eori1)(Right(HttpResponse(OK, "hi")))
           val result = service.retrieveUndertaking(eori1)
           assertThrows[RuntimeException](await(result))
@@ -227,7 +215,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
         "the http call succeeds the body of the response can be parsed" when {
 
           "http response status is 200 and response can be parsed" in {
-            mockCacheGet(eori1)(Right(None))
+            mockCacheGet[Undertaking](eori1)(Right(None))
             mockRetrieveUndertaking(eori1)(Right(HttpResponse(OK, undertakingJson, emptyHeaders)))
             mockCachePut(eori1, undertaking)(Right(undertaking))
             val result = service.retrieveUndertaking(eori1)
@@ -235,7 +223,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
           }
 
           "http response status is 404 and response body is empty" in {
-            mockCacheGet(eori1)(Right(None))
+            mockCacheGet[Undertaking](eori1)(Right(None))
             mockRetrieveUndertaking(eori1)(Left(ConnectorError(UpstreamErrorResponse("Unexpected response - got HTTP 404", NOT_FOUND))))
             await(service.retrieveUndertaking(eori1)) shouldBe None
           }
@@ -246,7 +234,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockFactory {
 
           "http response status is 406 and response body is parsed" in {
             val ex = UpstreamErrorResponse("Unexpected response - got HTTP 406", NOT_ACCEPTABLE)
-            mockCacheGet(eori1)(Right(None))
+            mockCacheGet[Undertaking](eori1)(Right(None))
             mockRetrieveUndertaking(eori1)(Left(ConnectorError(ex)))
             a[ConnectorError] should be thrownBy await(service.retrieveUndertaking(eori1))
           }

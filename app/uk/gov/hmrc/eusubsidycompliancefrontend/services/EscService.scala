@@ -65,9 +65,7 @@ class EscService @Inject() (
         .orElseF {
           retrieveUndertakingAndHandleErrors(eori).flatMap {
             case Right(Some(undertaking)) =>
-              println(s"Caching undertaking: $undertaking")
               undertaking.reference.map(r => undertakingCache.put(eori, undertaking))
-              println(s"Cached undertaking")
               undertaking.some.toFuture
             case Right(None) => Option.empty[Undertaking].toFuture
             case Left(ex) => Future.failed[Option[Undertaking]](ex)
