@@ -65,6 +65,7 @@ class EscService @Inject() (
         .orElseF {
           retrieveUndertakingAndHandleErrors(eori).flatMap {
             case Right(Some(undertaking)) =>
+              // TODO - review this - why do we map over the reference?
               undertaking.reference.map(r => undertakingCache.put(eori, undertaking))
               undertaking.some.toFuture
             case Right(None) => Option.empty[Undertaking].toFuture
@@ -111,12 +112,14 @@ class EscService @Inject() (
         ref
       }
 
+  // TODO - check this - we shouldn't need to delete the undertaking here
   def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
     escConnector
       .createSubsidy(subsidyUpdate)
       .map { response =>
+        // TODO - delete cached subsidy data for all users
         val ref = handleResponse[UndertakingRef](response, "add member")
-        undertakingCache.deleteUndertaking(ref)
+//        undertakingCache.deleteUndertaking(ref)
         ref
       }
 

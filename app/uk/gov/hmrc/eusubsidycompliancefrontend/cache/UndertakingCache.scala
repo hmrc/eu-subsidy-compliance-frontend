@@ -46,7 +46,7 @@ class UndertakingCache @Inject() (
     cacheIdType = EoriIdType
   ) {
 
-  // Ensure the custom index data.Undertaking.reference is present
+  // Ensure additional indexes for undertaking and undertaking subsidies deletion are present.
   private lazy val indexedCollection: Future[MongoCollection[CacheItem]] =
     for {
       _ <- collection.createIndex(
@@ -54,6 +54,14 @@ class UndertakingCache @Inject() (
         IndexOptions()
           .background(false)
           .name("undertakingReference")
+          .sparse(false)
+          .unique(false)
+      ).headOption()
+      _ <- collection.createIndex(
+        Indexes.ascending("data.UndertakingSubsidies.undertakingIdentifier"),
+        IndexOptions()
+          .background(false)
+          .name("undertakingSubsidiesIdentifier")
           .sparse(false)
           .unique(false)
       ).headOption()
@@ -79,6 +87,14 @@ class UndertakingCache @Inject() (
           .toFuture()
           .map(_ => ())
       }
+
+  def deleteUndertakingSubsidies(ref: UndertakingRef): Future[Unit] =
+    indexedCollection.flatMap { c =>
+      c.withWriteConcern(WriteConcern.ACKNOWLEDGED)
+        .deleteMany(Filters.equal("data.UndertakingSubsidies.undertakingIdentifier", ref))
+        .toFuture()
+        .map(_ => ())
+    }
 
   private def dataKeyForType[A](implicit ct: ClassTag[A]) = DataKey[A](ct.runtimeClass.getSimpleName)
 

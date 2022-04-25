@@ -22,8 +22,8 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.test.DefaultAwaitTimeout
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, IndustrySectorLimit, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, IndustrySectorLimit, SubsidyAmount, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
@@ -47,7 +47,7 @@ class UndertakingCacheSpec
   private val businessEntity1 = BusinessEntity(EORI(eori1), leadEORI = true)
   private val businessEntity2 = BusinessEntity(EORI(eori2), leadEORI = false)
 
-  private val undertaking1 = Undertaking(
+  private val undertaking = Undertaking(
     undertakingRef.some,
     UndertakingName("TestUndertaking"),
     transport,
@@ -56,39 +56,85 @@ class UndertakingCacheSpec
     List(businessEntity1, businessEntity2)
   )
 
+  private val undertakingSubsidies = UndertakingSubsidies(
+    undertakingIdentifier = undertakingRef,
+    nonHMRCSubsidyTotalEUR = SubsidyAmount(0.0),
+    nonHMRCSubsidyTotalGBP = SubsidyAmount(0.0),
+    hmrcSubsidyTotalEUR = SubsidyAmount(0.0),
+    hmrcSubsidyTotalGBP = SubsidyAmount(0.0),
+    nonHMRCSubsidyUsage = List.empty,
+    hmrcSubsidyUsage = List.empty
+  )
+
   "UndertakingCache" when {
 
-    "get is called" must {
+    "get Undertaking is called" must {
 
       "return None when the cache is empty" in {
         repository.get[Undertaking](eori1).futureValue shouldBe None
       }
 
       "return None where there is no matching item in the cache" in {
-        repository.put(eori1, undertaking1).futureValue shouldBe undertaking1
+        repository.put(eori1, undertaking).futureValue shouldBe undertaking
         repository.get[Undertaking](eori2).futureValue shouldBe None
       }
 
       "return the item where present in the cache" in {
-        repository.put(eori1, undertaking1).futureValue shouldBe undertaking1
-        repository.get[Undertaking](eori1).futureValue should contain(undertaking1)
+        repository.put(eori1, undertaking).futureValue shouldBe undertaking
+        repository.get[Undertaking](eori1).futureValue should contain(undertaking)
       }
     }
 
     "deleteUndertaking is called" must {
 
       "do nothing if no matching undertaking references are found" in {
-        repository.put(eori1, undertaking1).futureValue shouldBe undertaking1
+        repository.put(eori1, undertaking).futureValue shouldBe undertaking
         repository.deleteUndertaking(UndertakingRef("foo")).futureValue shouldBe (())
-        repository.get[Undertaking](eori1).futureValue should contain(undertaking1)
+        repository.get[Undertaking](eori1).futureValue should contain(undertaking)
       }
 
       "delete matching undertakings with the specified ref" in {
-        repository.put(eori1, undertaking1).futureValue shouldBe undertaking1
-        repository.put(eori2, undertaking1).futureValue shouldBe undertaking1
+        repository.put(eori1, undertaking).futureValue shouldBe undertaking
+        repository.put(eori2, undertaking).futureValue shouldBe undertaking
         repository.deleteUndertaking(undertakingRef).futureValue shouldBe (())
         repository.get[Undertaking](eori1).futureValue shouldBe None
         repository.get[Undertaking](eori2).futureValue shouldBe None
+      }
+
+    }
+
+    "get UndertakingSubsidies is called" must {
+
+      "return None when the cache is empty" in {
+        repository.get[UndertakingSubsidies](eori1).futureValue shouldBe None
+      }
+
+      "return None where there is no matching item in the cache" in {
+        repository.put(eori1, undertakingSubsidies).futureValue shouldBe undertakingSubsidies
+        repository.get[UndertakingSubsidies](eori2).futureValue shouldBe None
+      }
+
+      "return the item where present in the cache" in {
+        repository.put(eori1, undertakingSubsidies).futureValue shouldBe undertakingSubsidies
+        repository.get[UndertakingSubsidies](eori1).futureValue should contain(undertakingSubsidies)
+      }
+
+    }
+
+    "deleteUndertakingSubsidies is called" must {
+
+      "do nothing if no matching undertaking references are found" in {
+        repository.put(eori1, undertakingSubsidies).futureValue shouldBe undertakingSubsidies
+        repository.deleteUndertakingSubsidies(UndertakingRef("foo")).futureValue shouldBe (())
+        repository.get[UndertakingSubsidies](eori1).futureValue should contain(undertakingSubsidies)
+      }
+
+      "delete matching undertakings with the specified ref" in {
+        repository.put(eori1, undertakingSubsidies).futureValue shouldBe undertakingSubsidies
+        repository.put(eori2, undertakingSubsidies).futureValue shouldBe undertakingSubsidies
+        repository.deleteUndertakingSubsidies(undertakingRef).futureValue shouldBe (())
+        repository.get[UndertakingSubsidies](eori1).futureValue shouldBe None
+        repository.get[UndertakingSubsidies](eori2).futureValue shouldBe None
       }
 
     }
