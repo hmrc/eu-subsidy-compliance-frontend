@@ -83,7 +83,7 @@ class AccountControllerSpec
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockTimeToday(fixedDate)
             mockGetOrCreate(eori1)(Right(nilJourneyCreate))
-            mockGetOrCreateF(eori1)(Right(undertakingSubsidies))
+            mockRetrieveSubsidy(subsidyRetrieveForFixedDate)(undertakingSubsidies.toFuture)
           }
           checkPageIsDisplayed(
             performAction(),
@@ -150,7 +150,7 @@ class AccountControllerSpec
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockTimeToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilJourneyCreate))
-            mockGetOrCreateF(eori1)(Right(undertakingSubsidies))
+            mockRetrieveSubsidy(subsidyRetrieveForDate(currentDate))(undertakingSubsidies.toFuture)
           }
           checkPageIsDisplayed(
             performAction(),
@@ -186,10 +186,11 @@ class AccountControllerSpec
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockTimeToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilReturnJourney))
+<<<<<<< HEAD
             if(hasFiledNilReturnRecently) {
               mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNJ))
             }
-            mockGetOrCreateF(eori1)(Right(undertakingSubsidies))
+            mockRetrieveSubsidy(subsidyRetrieveForDate(currentDate))(undertakingSubsidies.toFuture)
           }
           checkPageIsDisplayed(
             performAction(),
@@ -221,13 +222,11 @@ class AccountControllerSpec
             mockGetOrCreate(eori1)(Right(UndertakingJourney()))
             mockTimeToday(currentDate)
             mockGetOrCreate(eori1)(Right(nilJourneyCreate))
-            mockGetOrCreateF(eori1)(
-              Right(
-                undertakingSubsidies.copy(
-                  nonHMRCSubsidyUsage = List.empty,
-                  hmrcSubsidyUsage = List.empty
-                )
-              )
+            mockRetrieveSubsidy(subsidyRetrieveForDate(currentDate))(
+              undertakingSubsidies.copy(
+                nonHMRCSubsidyUsage = List.empty,
+                hmrcSubsidyUsage = List.empty
+              ).toFuture
             )
           }
 
