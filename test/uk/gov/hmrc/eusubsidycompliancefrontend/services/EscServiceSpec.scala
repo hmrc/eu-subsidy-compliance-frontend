@@ -40,7 +40,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.reflect.ClassTag
 
-// TODO - review coverage of caching logic and ensure all cases are covered
 class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   private val mockEscConnector: EscConnector = mock[EscConnector]
@@ -99,6 +98,10 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   private def mockCacheDeleteUndertaking(ref: UndertakingRef)(result: Either[Exception, Unit]) =
     when(mockUndertakingCache.deleteUndertaking(argEq(ref)))
+      .thenReturn(result.fold(Future.failed, _.toFuture))
+
+  private def mockCacheDeleteUndertakingSubsidies(ref: UndertakingRef)(result: Either[Exception, Unit]) =
+    when(mockUndertakingCache.deleteUndertakingSubsidies(argEq(ref)))
       .thenReturn(result.fold(Future.failed, _.toFuture))
 
   private val undertakingRefJson = Json.toJson(undertakingRef)
@@ -374,7 +377,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
         "the http call succeeds and the body of the response can be parsed" in {
           mockCreateSubsidy(subsidyUpdate)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
-          mockCacheDeleteUndertaking(undertakingRef)(Right(()))
+          mockCacheDeleteUndertakingSubsidies(undertakingRef)(Right(()))
           val result = service.createSubsidy(subsidyUpdate)
           await(result) shouldBe undertakingRef
         }
