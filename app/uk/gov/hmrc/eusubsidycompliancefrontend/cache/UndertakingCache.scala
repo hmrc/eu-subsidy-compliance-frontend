@@ -82,9 +82,7 @@ class UndertakingCache @Inject() (
         .map(_ => in)
     }
 
-  def deleteUndertaking(ref: UndertakingRef): Future[Unit] = {
-    println(s"Deleting Undertaking with ref: $ref from cache")
-
+  def deleteUndertaking(ref: UndertakingRef): Future[Unit] =
     indexedCollection.flatMap { c =>
       c.updateMany(
           filter = Filters.equal(UndertakingReference, ref),
@@ -93,12 +91,8 @@ class UndertakingCache @Inject() (
         .toFuture()
         .map(_ => ())
     }
-  }
 
-
-  def deleteUndertakingSubsidies(ref: UndertakingRef): Future[Unit] = {
-    println(s"Deleting UndertakingSubsidies with ref: $ref from cache")
-
+  def deleteUndertakingSubsidies(ref: UndertakingRef): Future[Unit] =
     indexedCollection.flatMap { c =>
       c.updateMany(
           filter = Filters.equal(UndertakingSubsidiesIdentifier, ref),
@@ -107,7 +101,6 @@ class UndertakingCache @Inject() (
         .toFuture()
         .map(_ => ())
     }
-  }
 
   private def dataKeyForType[A](implicit ct: ClassTag[A]) = DataKey[A](ct.runtimeClass.getSimpleName)
 
