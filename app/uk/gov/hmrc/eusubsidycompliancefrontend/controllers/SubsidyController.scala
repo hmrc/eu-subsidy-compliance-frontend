@@ -497,6 +497,7 @@ class SubsidyController @Inject() (
       reference <- undertaking.reference.toContext
       nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
     } yield BadRequest(confirmRemovePage(formWithErrors, nonHmrcSubsidy))
+
     result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
   }
 
@@ -504,8 +505,6 @@ class SubsidyController @Inject() (
     transactionId: String,
     undertaking: Undertaking
   )(implicit request: AuthenticatedEscRequest[AnyContent]): Future[Result] = {
-    implicit val eori: EORI = request.eoriNumber
-
     val result = for {
       reference <- undertaking.reference.toContext
       nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
