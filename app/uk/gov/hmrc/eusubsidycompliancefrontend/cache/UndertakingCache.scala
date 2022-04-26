@@ -18,9 +18,10 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.cache
 
 import com.mongodb.WriteConcern
 import org.mongodb.scala.MongoCollection
-import org.mongodb.scala.model.{Filters, IndexOptions, Indexes}
+import org.mongodb.scala.model.{Filters, IndexOptions, Indexes, Updates}
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.UndertakingCache.DefaultCacheTtl
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.mongo.cache.{CacheIdType, CacheItem, DataKey, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
@@ -80,21 +81,32 @@ class UndertakingCache @Inject() (
         .map(_ => in)
     }
 
-  def deleteUndertaking(ref: UndertakingRef): Future[Unit] =
-      indexedCollection.flatMap { c =>
-        c.withWriteConcern(WriteConcern.ACKNOWLEDGED)
-          .deleteMany(Filters.equal("data.Undertaking.reference", ref))
-          .toFuture()
-          .map(_ => ())
-      }
+  def deleteUndertaking(ref: UndertakingRef): Future[Unit] = {
+    println(s"Deleting Undertaking with ref: $ref from cache")
 
-  def deleteUndertakingSubsidies(ref: UndertakingRef): Future[Unit] =
     indexedCollection.flatMap { c =>
-      c.withWriteConcern(WriteConcern.ACKNOWLEDGED)
-        .deleteMany(Filters.equal("data.UndertakingSubsidies.undertakingIdentifier", ref))
+      c.updateMany(
+          filter = Filters.equal("data.Undertaking.reference", ref),
+          update = Updates.unset(s"data.${dataKeyForType[Undertaking].unwrap}")
+        )
         .toFuture()
         .map(_ => ())
     }
+  }
+
+
+  def deleteUndertakingSubsidies(ref: UndertakingRef): Future[Unit] = {
+    println(s"Deleting UndertakingSubsidies with ref: $ref from cache")
+
+    indexedCollection.flatMap { c =>
+      c.updateMany(
+        filter = Filters.equal("data.UndertakingSubsidies.undertakingIdentifier", ref),
+        update = Updates.unset(s"data.${dataKeyForType[UndertakingSubsidies].unwrap}")
+      )
+        .toFuture()
+        .map(_ => ())
+    }
+  }
 
   private def dataKeyForType[A](implicit ct: ClassTag[A]) = DataKey[A](ct.runtimeClass.getSimpleName)
 

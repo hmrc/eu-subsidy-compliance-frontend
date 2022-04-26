@@ -101,6 +101,20 @@ class UndertakingCacheSpec
         repository.get[Undertaking](eori2).futureValue shouldBe None
       }
 
+      "leave undertaking subsidies but not undertakings present in the cache" in {
+        repository.put(eori1, undertaking).futureValue shouldBe undertaking
+        repository.put(eori2, undertaking).futureValue shouldBe undertaking
+        repository.put[UndertakingSubsidies](eori1, undertakingSubsidies).futureValue shouldBe undertakingSubsidies
+        repository.put[UndertakingSubsidies](eori2, undertakingSubsidies).futureValue shouldBe undertakingSubsidies
+
+        repository.deleteUndertaking(undertakingRef).futureValue shouldBe (())
+
+        repository.get[Undertaking](eori1).futureValue shouldBe None
+        repository.get[Undertaking](eori2).futureValue shouldBe None
+        repository.get[UndertakingSubsidies](eori1).futureValue should contain(undertakingSubsidies)
+        repository.get[UndertakingSubsidies](eori2).futureValue should contain(undertakingSubsidies)
+      }
+
     }
 
     "get UndertakingSubsidies is called" must {
@@ -129,10 +143,24 @@ class UndertakingCacheSpec
         repository.get[UndertakingSubsidies](eori1).futureValue should contain(undertakingSubsidies)
       }
 
-      "delete matching undertakings with the specified ref" in {
+      "delete matching undertaking subsidies with the specified ref" in {
         repository.put(eori1, undertakingSubsidies).futureValue shouldBe undertakingSubsidies
         repository.put(eori2, undertakingSubsidies).futureValue shouldBe undertakingSubsidies
         repository.deleteUndertakingSubsidies(undertakingRef).futureValue shouldBe (())
+        repository.get[UndertakingSubsidies](eori1).futureValue shouldBe None
+        repository.get[UndertakingSubsidies](eori2).futureValue shouldBe None
+      }
+
+      "leave undertakings but not undertaking subsidies present in the cache" in {
+        repository.put[Undertaking](eori1, undertaking).futureValue shouldBe undertaking
+        repository.put[Undertaking](eori2, undertaking).futureValue shouldBe undertaking
+        repository.put[UndertakingSubsidies](eori1, undertakingSubsidies).futureValue shouldBe undertakingSubsidies
+        repository.put[UndertakingSubsidies](eori2, undertakingSubsidies).futureValue shouldBe undertakingSubsidies
+
+        repository.deleteUndertakingSubsidies(undertakingRef).futureValue shouldBe (())
+
+        repository.get[Undertaking](eori1).futureValue should contain(undertaking)
+        repository.get[Undertaking](eori2).futureValue should contain(undertaking)
         repository.get[UndertakingSubsidies](eori1).futureValue shouldBe None
         repository.get[UndertakingSubsidies](eori2).futureValue shouldBe None
       }
