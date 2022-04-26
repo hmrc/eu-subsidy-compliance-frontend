@@ -39,7 +39,6 @@ class FinancialDashboardController @Inject() (
   escService: EscService,
   financialDashboardPage: FinancialDashboardPage,
   mcc: MessagesControllerComponents,
-  store: Store,
   timeProvider: TimeProvider
 )(implicit val appConfig: AppConfig, ec: ExecutionContext)
     extends BaseController(mcc) {
@@ -58,7 +57,7 @@ class FinancialDashboardController @Inject() (
       undertaking <- escService.retrieveUndertaking(eori).toContext
       r <- undertaking.reference.toContext
       s = SubsidyRetrieve(r, searchRange)
-      subsidies <- store.getOrCreate(() => escService.retrieveSubsidy(s)).toContext
+      subsidies <- escService.retrieveSubsidy(s).toContext
     } yield (undertaking, subsidies)
 
     result

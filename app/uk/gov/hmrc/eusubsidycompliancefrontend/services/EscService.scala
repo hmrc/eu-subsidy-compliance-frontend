@@ -33,7 +33,6 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-// TODO - review this for opportunities to avoid blowing the cache
 @Singleton
 class EscService @Inject() (
   escConnector: EscConnector,
@@ -43,20 +42,23 @@ class EscService @Inject() (
   def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingRef] =
     escConnector
       .createUndertaking(undertaking)
-      .map { response =>
-        val ref = handleResponse[UndertakingRef](response, "create undertaking")
-        undertakingCache.put(eori, undertaking.copy(reference = ref.some))
-        ref
+      .flatMap { response =>
+        for {
+          ref <- handleResponse[UndertakingRef](response, "create undertaking").toFuture
+          _ <- undertakingCache.put[Undertaking](eori, undertaking.copy(reference = ref.some))
+        } yield ref
       }
 
 
-  def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
+  def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingRef] =
     escConnector
       .updateUndertaking(undertaking)
-      .map { response =>
-        val ref = handleResponse[UndertakingRef](response, "update undertaking")
-        undertakingCache.deleteUndertaking(ref)
-        ref
+      .flatMap { response =>
+        for {
+          ref <- handleResponse[UndertakingRef](response, "update undertaking").toFuture
+          _ <- undertakingCache.deleteUndertaking(ref)
+          _ <- undertakingCache.put[Undertaking](eori, undertaking)
+        } yield ref
       }
 
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]] =
@@ -67,7 +69,7 @@ class EscService @Inject() (
         retrieveUndertakingAndHandleErrors(eori).flatMap {
           case Right(Some(undertaking)) =>
             // TODO - review this - why do we map over the reference?
-            undertaking.reference.map(r => undertakingCache.put(eori, undertaking))
+            undertaking.reference.map(r => undertakingCache.put[Undertaking](eori, undertaking))
             undertaking.some.toFuture
           case Right(None) => Option.empty[Undertaking].toFuture
           case Left(ex) => Future.failed[Option[Undertaking]](ex)
@@ -96,10 +98,11 @@ class EscService @Inject() (
   ): Future[UndertakingRef] =
     escConnector
       .addMember(undertakingRef, businessEntity)
-      .map { response =>
-        val ref = handleResponse[UndertakingRef](response, "add member")
-        undertakingCache.deleteUndertaking(ref)
-        ref
+      .flatMap { response =>
+        for {
+          ref <- handleResponse[UndertakingRef] (response, "add member").toFuture
+          _ <- undertakingCache.deleteUndertaking(ref)
+        } yield ref
       }
 
   def removeMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
@@ -107,19 +110,21 @@ class EscService @Inject() (
   ): Future[UndertakingRef] =
     escConnector
       .removeMember(undertakingRef, businessEntity)
-      .map { response =>
-        val ref = handleResponse[UndertakingRef](response, "add member")
-        undertakingCache.deleteUndertaking(ref)
-        ref
+      .flatMap { response =>
+        for {
+          ref <- handleResponse[UndertakingRef](response, "add member").toFuture
+          _ <- undertakingCache.deleteUndertaking(ref)
+        } yield ref
       }
 
   def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
     escConnector
       .createSubsidy(subsidyUpdate)
-      .map { response =>
-        val ref = handleResponse[UndertakingRef](response, "add member")
-        undertakingCache.deleteUndertakingSubsidies(ref)
-        ref
+      .flatMap { response =>
+        for {
+          ref <- handleResponse[UndertakingRef] (response, "add member").toFuture
+          _ <- undertakingCache.deleteUndertakingSubsidies(ref)
+        } yield ref
       }
 
   def retrieveSubsidy(
@@ -132,7 +137,7 @@ class EscService @Inject() (
         escConnector.retrieveSubsidy(subsidyRetrieve)
           .flatMap { response =>
             val result: UndertakingSubsidies = handleResponse[UndertakingSubsidies](response, "subsidy retrieve")
-            undertakingCache.put(eori, result)
+            undertakingCache.put[UndertakingSubsidies](eori, result)
           }
       }
   }
@@ -142,10 +147,11 @@ class EscService @Inject() (
   ): Future[UndertakingRef] =
     escConnector
       .removeSubsidy(undertakingRef, nonHmrcSubsidy)
-      .map{ response =>
-        val ref = handleResponse[UndertakingRef](response, "remove subsidy")
-        undertakingCache.deleteUndertakingSubsidies(ref)
-        ref
+      .flatMap{ response =>
+        for {
+          ref <- handleResponse[UndertakingRef] (response, "remove subsidy").toFuture
+          _ <- undertakingCache.deleteUndertakingSubsidies(ref)
+        } yield ref
       }
 
   private def handleResponse[A](r: Either[ConnectorError, HttpResponse], action: String)(implicit reads: Reads[A]): A =

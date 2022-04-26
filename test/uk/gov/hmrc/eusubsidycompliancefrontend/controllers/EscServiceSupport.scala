@@ -50,8 +50,8 @@ trait EscServiceSupport { this: ControllerSpec =>
 
   def mockUpdateUndertaking(undertaking: Undertaking)(result: Either[ConnectorError, UndertakingRef]) =
     (mockEscService
-      .updateUndertaking(_: Undertaking)(_: HeaderCarrier))
-      .expects(undertaking, *)
+      .updateUndertaking(_: Undertaking)(_: HeaderCarrier, _: EORI))
+      .expects(undertaking, *, *)
       .returning(result.fold(e => Future.failed(e), _.toFuture))
 
   def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(

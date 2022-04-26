@@ -406,7 +406,6 @@ class SubsidyController @Inject() (
           ref <- undertaking.reference.toContext
           currentDate = timeProvider.today
           _ <- escService.createSubsidy(toSubsidyUpdate(journey, ref, currentDate)).toContext
-          _ <- store.delete[UndertakingSubsidies].toContext
           _ <- store.put(SubsidyJourney()).toContext
           _ =
             if (journey.isAmend)
@@ -511,7 +510,6 @@ class SubsidyController @Inject() (
       reference <- undertaking.reference.toContext
       nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
       _ <- escService.removeSubsidy(reference, nonHmrcSubsidy).toContext
-      _ <- store.delete[UndertakingSubsidies].toContext
       _ = auditService.sendEvent[NonCustomsSubsidyRemoved](
         AuditEvent.NonCustomsSubsidyRemoved(request.authorityId, reference)
       )

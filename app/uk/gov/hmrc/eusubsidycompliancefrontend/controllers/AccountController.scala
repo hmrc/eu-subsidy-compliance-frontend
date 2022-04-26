@@ -122,9 +122,7 @@ class AccountController @Inject() (
         undertakingReference <- undertaking.reference.toContext
         searchRange = Some((currentDay.toEarliestTaxYearStart, currentDay))
         retrieveRequest = SubsidyRetrieve(undertakingReference, searchRange)
-        subsidies <- store
-          .getOrCreate[UndertakingSubsidies](() => escService.retrieveSubsidy(retrieveRequest))
-          .toContext
+        subsidies <- escService.retrieveSubsidy(retrieveRequest).toContext
       } yield Ok(
         leadAccountPage(
           undertaking,
