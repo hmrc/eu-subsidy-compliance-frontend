@@ -112,13 +112,13 @@ class AccountController @Inject() (
     val isOverdue = ReportReminderHelpers.isOverdue(undertaking.lastSubsidyUsageUpdt, currentDay)
 
     def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] =
-      if (n.canIncrementNilReturnCounter) store.update[NilReturnJourney](_.incrementNilReturnCounter)
+      if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
       else n.toFuture
 
     if (undertaking.isLeadEORI(eori)) {
       val result = for {
         nilReturnJourney <- store.getOrCreate[NilReturnJourney](NilReturnJourney()).toContext
-        updatedJourney <- updateNilReturnJourney(nilReturnJourney).toContext
+        _ <- updateNilReturnJourney(nilReturnJourney).toContext
         undertakingReference <- undertaking.reference.toContext
         searchRange = Some((currentDay.toEarliestTaxYearStart, currentDay))
         retrieveRequest = SubsidyRetrieve(undertakingReference, searchRange)
@@ -132,7 +132,7 @@ class AccountController @Inject() (
           isTimeToReport,
           dueDate,
           isOverdue,
-          updatedJourney.isNilJourneyDoneRecently,
+          nilReturnJourney.displayNotification,
           currentDay.plusDays(dueDays).toDisplayFormat,
           subsidies.hasNeverSubmitted
         )

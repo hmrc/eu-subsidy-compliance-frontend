@@ -175,8 +175,8 @@ class AccountControllerSpec
           currentDate: LocalDate
         ): Unit = {
 
-          def update(nj: NilReturnJourney) = nj.copy(nilReturnCounter = nj.nilReturnCounter + 1)
-          val updatedNJ = nilReturnJourney.copy(nilReturnCounter = nilReturnJourney.nilReturnCounter + 1)
+          def update(nj: NilReturnJourney) = nj.copy(displayNotification = false)
+          val updatedNJ = nilReturnJourney.copy(displayNotification = false)
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -186,7 +186,9 @@ class AccountControllerSpec
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockTimeToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilReturnJourney))
-            mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNJ))
+            if(hasFiledNilReturnRecently) {
+              mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNJ))
+            }
             mockGetOrCreateF(eori1)(Right(undertakingSubsidies))
           }
           checkPageIsDisplayed(
@@ -292,7 +294,7 @@ class AccountControllerSpec
         "user has recently filed the Nil Return " in {
           testNilReturnSuccessMessage(
             undertaking1,
-            NilReturnJourney(NilReturnFormPage(value = true.some), 1),
+            NilReturnJourney(NilReturnFormPage(value = true.some), true),
             hasFiledNilReturnRecently = true,
             LocalDate.of(2022, 3, 18)
           )
@@ -300,7 +302,7 @@ class AccountControllerSpec
         "user has recently filed the Nil Return but user refreshed the home account " in {
           testNilReturnSuccessMessage(
             undertaking1,
-            NilReturnJourney(NilReturnFormPage(value = true.some), 2),
+            NilReturnJourney(NilReturnFormPage(value = true.some)),
             hasFiledNilReturnRecently = false,
             LocalDate.of(2022, 3, 18)
           )

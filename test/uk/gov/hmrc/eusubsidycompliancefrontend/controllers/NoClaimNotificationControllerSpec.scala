@@ -89,10 +89,10 @@ class NoClaimNotificationControllerSpec
     "handling request  to post No claim notification " must {
 
       val nilReturnJourney = NilReturnJourney()
-      val updatedNilReturnJourney = NilReturnJourney(NilReturnFormPage(true.some), 1)
+      val updatedNilReturnJourney = NilReturnJourney(NilReturnFormPage(true.some), true)
 
       def update(j: NilReturnJourney) =
-        j.copy(nilReturn = j.nilReturn.copy(value = Some(true)), nilReturnCounter = 1)
+        j.copy(nilReturn = j.nilReturn.copy(value = Some(true)), false)
 
       def performAction(data: (String, String)*) = controller
         .postNoClaimNotification(
@@ -105,9 +105,9 @@ class NoClaimNotificationControllerSpec
       "throw technical error" when {
 
         val nilReturnJourney = NilReturnJourney()
-        val updatedNilReturnJourney = NilReturnJourney(NilReturnFormPage(true.some), 1)
+        val updatedNilReturnJourney = NilReturnJourney(NilReturnFormPage(true.some), false)
 
-        def update(j: NilReturnJourney) = j.copy(nilReturn = j.nilReturn.copy(value = Some(true)), nilReturnCounter = 1)
+        def update(j: NilReturnJourney) = j.copy(nilReturn = j.nilReturn.copy(value = Some(true)), false)
 
         val exception = new Exception("oh no")
 
