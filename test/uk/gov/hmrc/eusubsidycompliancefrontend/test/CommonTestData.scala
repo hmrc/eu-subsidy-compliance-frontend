@@ -73,7 +73,7 @@ object CommonTestData {
   )
 
   val nonHmrcSubsidy = NonHmrcSubsidy(
-    subsidyUsageTransactionId = None,
+    subsidyUsageTransactionId = Some(SubsidyRef("AB12345")),
     allocationDate = LocalDate.of(2022, 1, 1),
     submissionDate = fixedDate,
     publicAuthority = "Local Authority".some,

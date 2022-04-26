@@ -40,6 +40,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.reflect.ClassTag
 
+// TODO - review coverage of caching logic and ensure all cases are covered
 class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   private val mockEscConnector: EscConnector = mock[EscConnector]
@@ -415,7 +416,9 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
       "return successfully" when {
 
         "the http call succeeds and the body of the response can be parsed" in {
+          mockCacheGet[UndertakingSubsidies](eori1)(Right(Option.empty))
           mockRetrieveSubsidy(subsidyRetrieve)(Right(HttpResponse(OK, undertakingSubsidiesJson, emptyHeaders)))
+          mockCachePut(eori1, undertakingSubsidies)(Right(undertakingSubsidies))
           val result = service.retrieveSubsidy(subsidyRetrieve)
           await(result) shouldBe undertakingSubsidies
         }
