@@ -16,12 +16,10 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.cache
 
-import com.mongodb.WriteConcern
 import org.mongodb.scala.MongoCollection
 import org.mongodb.scala.model.{Filters, IndexOptions, Indexes, Updates}
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.UndertakingCache.DefaultCacheTtl
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.mongo.cache.{CacheIdType, CacheItem, DataKey, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
@@ -47,11 +45,14 @@ class UndertakingCache @Inject() (
     cacheIdType = EoriIdType
   ) {
 
+  private val UndertakingReference = "data.Undertaking.reference"
+  private val UndertakingSubsidiesIdentifier = "data.UndertakingSubsidies.undertakingIdentifier"
+
   // Ensure additional indexes for undertaking and undertaking subsidies deletion are present.
   private lazy val indexedCollection: Future[MongoCollection[CacheItem]] =
     for {
       _ <- collection.createIndex(
-        Indexes.ascending("data.Undertaking.reference"),
+        Indexes.ascending(UndertakingReference),
         IndexOptions()
           .background(false)
           .name("undertakingReference")
@@ -59,7 +60,7 @@ class UndertakingCache @Inject() (
           .unique(false)
       ).headOption()
       _ <- collection.createIndex(
-        Indexes.ascending("data.UndertakingSubsidies.undertakingIdentifier"),
+        Indexes.ascending(UndertakingSubsidiesIdentifier),
         IndexOptions()
           .background(false)
           .name("undertakingSubsidiesIdentifier")
@@ -86,8 +87,8 @@ class UndertakingCache @Inject() (
 
     indexedCollection.flatMap { c =>
       c.updateMany(
-          filter = Filters.equal("data.Undertaking.reference", ref),
-          update = Updates.unset(s"data.${dataKeyForType[Undertaking].unwrap}")
+          filter = Filters.equal(UndertakingReference, ref),
+          update = Updates.unset(s"data.Undertaking")
         )
         .toFuture()
         .map(_ => ())
@@ -100,9 +101,9 @@ class UndertakingCache @Inject() (
 
     indexedCollection.flatMap { c =>
       c.updateMany(
-        filter = Filters.equal("data.UndertakingSubsidies.undertakingIdentifier", ref),
-        update = Updates.unset(s"data.${dataKeyForType[UndertakingSubsidies].unwrap}")
-      )
+          filter = Filters.equal(UndertakingSubsidiesIdentifier, ref),
+          update = Updates.unset(s"data.UndertakingSubsidies")
+        )
         .toFuture()
         .map(_ => ())
     }
