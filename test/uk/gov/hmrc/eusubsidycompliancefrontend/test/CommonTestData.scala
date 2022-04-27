@@ -146,15 +146,13 @@ object CommonTestData {
     None
   )
 
-  def subsidyRetrieveForDate(d: LocalDate) = {
-    println(s"Got date: $d")
+  def subsidyRetrieveForDate(d: LocalDate) =
     subsidyRetrieve.copy(
       inDateRange = Some((
         d.toEarliestTaxYearStart,
         d
       ))
     )
-  }
 
   val subsidyRetrieveForFixedDate = subsidyRetrieve.copy(
     inDateRange = Some((LocalDate.of(2018, 4, 6), LocalDate.of(2021, 1, 20)))
