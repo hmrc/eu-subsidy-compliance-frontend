@@ -86,7 +86,7 @@ class UndertakingCache @Inject() (
     indexedCollection.flatMap { c =>
       c.updateMany(
           filter = Filters.equal(UndertakingReference, ref),
-          update = Updates.unset(s"data.Undertaking")
+          update = Updates.unset("data.Undertaking")
         )
         .toFuture()
         .map(_ => ())
@@ -96,7 +96,7 @@ class UndertakingCache @Inject() (
     indexedCollection.flatMap { c =>
       c.updateMany(
           filter = Filters.equal(UndertakingSubsidiesIdentifier, ref),
-          update = Updates.unset(s"data.UndertakingSubsidies")
+          update = Updates.unset("data.UndertakingSubsidies")
         )
         .toFuture()
         .map(_ => ())
