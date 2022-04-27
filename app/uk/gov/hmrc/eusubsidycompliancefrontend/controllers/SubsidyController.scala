@@ -159,8 +159,8 @@ class SubsidyController @Inject() (
 
     val searchRange = timeProvider.today.toSearchRange.some
 
-    store
-      .getOrCreate[UndertakingSubsidies](() => escService.retrieveSubsidy(SubsidyRetrieve(r, searchRange)))
+    escService
+      .retrieveSubsidy(SubsidyRetrieve(r, searchRange))
       .map(Option(_))
       .fallbackTo(Option.empty.toFuture)
   }
@@ -406,7 +406,6 @@ class SubsidyController @Inject() (
           ref <- undertaking.reference.toContext
           currentDate = timeProvider.today
           _ <- escService.createSubsidy(toSubsidyUpdate(journey, ref, currentDate)).toContext
-          _ <- store.delete[UndertakingSubsidies].toContext
           _ <- store.put(SubsidyJourney()).toContext
           _ =
             if (journey.isAmend)
@@ -498,6 +497,7 @@ class SubsidyController @Inject() (
       reference <- undertaking.reference.toContext
       nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
     } yield BadRequest(confirmRemovePage(formWithErrors, nonHmrcSubsidy))
+
     result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
   }
 
@@ -505,13 +505,10 @@ class SubsidyController @Inject() (
     transactionId: String,
     undertaking: Undertaking
   )(implicit request: AuthenticatedEscRequest[AnyContent]): Future[Result] = {
-    implicit val eori: EORI = request.eoriNumber
-
     val result = for {
       reference <- undertaking.reference.toContext
       nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
       _ <- escService.removeSubsidy(reference, nonHmrcSubsidy).toContext
-      _ <- store.delete[UndertakingSubsidies].toContext
       _ = auditService.sendEvent[NonCustomsSubsidyRemoved](
         AuditEvent.NonCustomsSubsidyRemoved(request.authorityId, reference)
       )

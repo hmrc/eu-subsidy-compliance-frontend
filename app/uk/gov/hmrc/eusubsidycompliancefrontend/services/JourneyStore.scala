@@ -60,10 +60,6 @@ class JourneyStore @Inject() (
     get[A].toContext
       .getOrElseF(put(default))
 
-  override def getOrCreate[A : ClassTag](f: () => Future[A])(implicit eori: EORI, format: Format[A]): Future[A] =
-    get[A].toContext
-      .getOrElseF(f().flatMap(put[A]))
-
   override def delete[A : ClassTag](implicit eori: EORI): Future[Unit] =
     delete[A](eori)(dataKeyForType[A])
 

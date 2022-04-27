@@ -30,8 +30,8 @@ trait EscServiceSupport { this: ControllerSpec =>
 
   def mockCreateUndertaking(undertaking: Undertaking)(result: Either[ConnectorError, UndertakingRef]) =
     (mockEscService
-      .createUndertaking(_: Undertaking)(_: HeaderCarrier))
-      .expects(undertaking, *)
+      .createUndertaking(_: Undertaking)(_: HeaderCarrier, _: EORI))
+      .expects(undertaking, *, *)
       .returning(result.fold(e => Future.failed(e), _.toFuture))
 
   def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
@@ -80,8 +80,8 @@ trait EscServiceSupport { this: ControllerSpec =>
 
   def mockRetrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(result: Future[UndertakingSubsidies]) =
     (mockEscService
-      .retrieveSubsidy(_: SubsidyRetrieve)(_: HeaderCarrier))
-      .expects(subsidyRetrieve, *)
+      .retrieveSubsidy(_: SubsidyRetrieve)(_: HeaderCarrier, _: EORI))
+      .expects(subsidyRetrieve, *, *)
       .returning(result)
 
   def mockRemoveSubsidy(reference: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(

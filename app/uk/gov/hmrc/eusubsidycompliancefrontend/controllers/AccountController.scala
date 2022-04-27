@@ -22,7 +22,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEsc
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -122,9 +122,7 @@ class AccountController @Inject() (
         undertakingReference <- undertaking.reference.toContext
         searchRange = Some((currentDay.toEarliestTaxYearStart, currentDay))
         retrieveRequest = SubsidyRetrieve(undertakingReference, searchRange)
-        subsidies <- store
-          .getOrCreate[UndertakingSubsidies](() => escService.retrieveSubsidy(retrieveRequest))
-          .toContext
+        subsidies <- escService.retrieveSubsidy(retrieveRequest).toContext
       } yield Ok(
         leadAccountPage(
           undertaking,

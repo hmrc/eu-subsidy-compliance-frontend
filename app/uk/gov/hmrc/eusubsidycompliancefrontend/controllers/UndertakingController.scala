@@ -172,7 +172,7 @@ class UndertakingController @Inject() (
               None,
               List(BusinessEntity(eori, leadEORI = true))
             )
-            undertakingCreated <- createUndertakingAndSendEmail(undertaking, eori, updatedJourney).toContext
+            undertakingCreated <- createUndertakingAndSendEmail(undertaking, updatedJourney).toContext
           } yield undertakingCreated
           result.fold(handleMissingSessionData("Undertaking create journey"))(identity)
         }
@@ -181,9 +181,8 @@ class UndertakingController @Inject() (
 
   private def createUndertakingAndSendEmail(
     undertaking: Undertaking,
-    eori: EORI,
     undertakingJourney: UndertakingJourney
-  )(implicit request: AuthenticatedEscRequest[_]): Future[Result] =
+  )(implicit request: AuthenticatedEscRequest[_], eori: EORI): Future[Result] =
     for {
       ref <- escService.createUndertaking(undertaking)
       _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(

@@ -30,6 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.Sel
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -73,7 +74,7 @@ object CommonTestData {
   )
 
   val nonHmrcSubsidy = NonHmrcSubsidy(
-    subsidyUsageTransactionId = None,
+    subsidyUsageTransactionId = Some(SubsidyRef("AB12345")),
     allocationDate = LocalDate.of(2022, 1, 1),
     submissionDate = fixedDate,
     publicAuthority = "Local Authority".some,
@@ -120,6 +121,8 @@ object CommonTestData {
     List(businessEntity1, businessEntity2)
   )
 
+  val undertakingWithoutRef = undertaking.copy(reference = None)
+
   val undertaking1 = Undertaking(
     undertakingRef.some,
     UndertakingName("TestUndertaking"),
@@ -141,6 +144,18 @@ object CommonTestData {
   val subsidyRetrieve = SubsidyRetrieve(
     undertakingRef,
     None
+  )
+
+  def subsidyRetrieveForDate(d: LocalDate) =
+    subsidyRetrieve.copy(
+      inDateRange = Some((
+        d.toEarliestTaxYearStart,
+        d
+      ))
+    )
+
+  val subsidyRetrieveForFixedDate = subsidyRetrieve.copy(
+    inDateRange = Some((LocalDate.of(2018, 4, 6), LocalDate.of(2021, 1, 20)))
   )
 
   val undertakingSubsidies1 = undertakingSubsidies.copy(nonHMRCSubsidyUsage = nonHmrcSubsidyList1)
