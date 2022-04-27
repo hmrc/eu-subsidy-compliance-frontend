@@ -186,7 +186,6 @@ class AccountControllerSpec
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockTimeToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilReturnJourney))
-<<<<<<< HEAD
             if(hasFiledNilReturnRecently) {
               mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNJ))
             }
