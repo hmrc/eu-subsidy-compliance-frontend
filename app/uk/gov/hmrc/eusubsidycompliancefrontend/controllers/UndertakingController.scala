@@ -20,7 +20,7 @@ import cats.data.OptionT
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
@@ -39,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class UndertakingController @Inject() (
   mcc: MessagesControllerComponents,
-  escActionBuilders: EscActionBuilders,
+  escCDSActionBuilder: EscCDSActionBuilders,
   store: Store,
   override val escService: EscService,
   journeyTraverseService: JourneyTraverseService,
@@ -57,10 +57,10 @@ class UndertakingController @Inject() (
 ) extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
 
-  import escActionBuilders._
+  import escCDSActionBuilder._
   val CreateUndertaking = "createUndertaking"
 
-  def firstEmptyPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def firstEmptyPage: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).map { journey =>
       journey.firstEmpty
@@ -68,7 +68,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getUndertakingName: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getUndertakingName: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       val form = journey.name.value.fold(undertakingNameForm)(name => undertakingNameForm.fill(FormValues(name)))
@@ -76,7 +76,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def postUndertakingName: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postUndertakingName: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
@@ -96,7 +96,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getSector: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getSector: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       ensureUndertakingJourneyPresent(_) { journey =>
@@ -118,7 +118,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def postSector: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postSector: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[UndertakingJourney].flatMap { previous =>
       undertakingSectorForm
@@ -140,7 +140,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getCheckAnswers: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getCheckAnswers: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
@@ -153,7 +153,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def postCheckAnswers: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postCheckAnswers: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     cyaForm
       .bindFromRequest()
@@ -202,12 +202,13 @@ class UndertakingController @Inject() (
       _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
     } yield Redirect(routes.UndertakingController.getConfirmation(ref, undertakingJourney.name.value.getOrElse("")))
 
-  def getConfirmation(ref: String, name: String): Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    Ok(confirmationPage(UndertakingRef(ref), UndertakingName(name), eori)).toFuture
+  def getConfirmation(ref: String, name: String): Action[AnyContent] = withCDSAuthenticatedUser.async {
+    implicit request =>
+      implicit val eori: EORI = request.eoriNumber
+      Ok(confirmationPage(UndertakingRef(ref), UndertakingName(name), eori)).toFuture
   }
 
-  def postConfirmation: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postConfirmation: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     confirmationForm
       .bindFromRequest()
@@ -222,7 +223,7 @@ class UndertakingController @Inject() (
       )
   }
 
-  def getAmendUndertakingDetails: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getAmendUndertakingDetails: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -246,7 +247,7 @@ class UndertakingController @Inject() (
   private def updateIsAmendState(value: Boolean)(implicit e: EORI): Future[UndertakingJourney] =
     store.update[UndertakingJourney](_.copy(isAmend = value))
 
-  def postAmendUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postAmendUndertaking: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
 

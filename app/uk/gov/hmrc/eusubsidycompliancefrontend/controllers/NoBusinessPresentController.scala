@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BusinessEntityJourney, EscService, Store}
@@ -31,23 +31,23 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 @Singleton
 class NoBusinessPresentController @Inject() (
   mcc: MessagesControllerComponents,
-  escActionBuilders: EscActionBuilders,
+  escCDSActionBuilder: EscCDSActionBuilders,
   store: Store,
   override val escService: EscService,
   noBusinessPresentPage: NoBusinessPresentPage
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
-  import escActionBuilders._
+  import escCDSActionBuilder._
 
-  def getNoBusinessPresent: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getNoBusinessPresent: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       val previous = routes.AccountController.getAccountPage().url
       Ok(noBusinessPresentPage(undertaking.name, previous)).toFuture
     }
   }
 
-  def postNoBusinessPresent: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postNoBusinessPresent: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       for {

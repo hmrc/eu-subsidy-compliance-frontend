@@ -28,7 +28,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 class SignOutController @Inject() (
   mcc: MessagesControllerComponents,
   timedOutPage: TimedOut,
-  signOutPage: SignOutPage
+  signOutPage: SignOutPage,
+  cdsEnrolmentMissingPage: CdsEnrolmentMissingPage
 )(implicit val appConfig: AppConfig)
     extends BaseController(mcc)
     with I18nSupport
@@ -40,6 +41,11 @@ class SignOutController @Inject() (
 
   val signOut: Action[AnyContent] = Action { implicit request =>
     Ok(signOutPage()).withNewSession
+  }
+
+  val noCdsEnrolment: Action[AnyContent] = Action { implicit request =>
+    Ok(cdsEnrolmentMissingPage()).withNewSession
+
   }
 
 }

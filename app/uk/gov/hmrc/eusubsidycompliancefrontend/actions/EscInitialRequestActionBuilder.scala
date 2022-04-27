@@ -16,23 +16,25 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.actions
 
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import cats.implicits.catsSyntaxEq
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.auth.core.retrieve.v2._
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{ActionBuilder, AnyContent, BodyParser, ControllerComponents, Request, Result, Results}
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolment, Enrolments, InsufficientEnrolments, InternalError, NoActiveSession}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
-import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-@Singleton
-class EscRequestActionBuilder @Inject() (
+class EscInitialRequestActionBuilder @Inject() (
   val config: Configuration,
   val env: Environment,
   val authConnector: AuthConnector,
@@ -45,7 +47,8 @@ class EscRequestActionBuilder @Inject() (
     with AuthorisedFunctions
     with I18nSupport {
 
-  private val EnrolmentKey = "HMRC-ESC-ORG"
+  private val EccEnrolmentKey = "HMRC-ESC-ORG"
+  private val CdsEnrolmentKey = "HMRC-CUS-ORG"
   private val EnrolmentIdentifier = "EORINumber"
 
   val messagesApi: MessagesApi = mcc.messagesApi
@@ -56,17 +59,20 @@ class EscRequestActionBuilder @Inject() (
     request: Request[A],
     block: AuthenticatedEscRequest[A] => Future[Result]
   ): Future[Result] =
-    authorised(Enrolment(EnrolmentKey))
+    authorised()
       .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](
         Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
       ) {
         case Some(credentials) ~ Some(groupId) ~ enrolments =>
-          enrolments
-            .getEnrolment(EnrolmentKey)
-            .flatMap(_.getIdentifier(EnrolmentIdentifier))
-            .fold(throw new IllegalStateException("no eori provided")) { identifier =>
-              block(AuthenticatedEscRequest(credentials.providerId, groupId, request, EORI(identifier.value)))
-            }
+          (enrolments.getEnrolment(EccEnrolmentKey), enrolments.getEnrolment(CdsEnrolmentKey)) match {
+            case (Some(eccEnrolment), Some(cdsEnrolment)) =>
+              val identifier: String = EscInitialRequestActionBuilder
+                .getIdentifier(eccEnrolment, cdsEnrolment, EnrolmentIdentifier)
+                .fold(throw new IllegalStateException("no eori provided"))(identity)
+              block(AuthenticatedEscRequest(credentials.providerId, groupId, request, EORI(identifier)))
+            case _ => Redirect(routes.EligibilityController.getCustomsWaivers()).toFuture
+
+          }
         case _ ~ _ => Future.failed(throw InternalError())
       }(hc(request), executionContext)
       .recover(handleFailure(request))
@@ -74,7 +80,16 @@ class EscRequestActionBuilder @Inject() (
   private def handleFailure(implicit request: Request[_]): PartialFunction[Throwable, Result] = {
     case _: NoActiveSession =>
       Redirect(appConfig.ggSignInUrl, Map("continue" -> Seq(request.uri), "origin" -> Seq(origin)))
-    case _: InsufficientEnrolments =>
-      Redirect(appConfig.eccEscSubscribeUrl)
+
   }
+}
+
+object EscInitialRequestActionBuilder {
+  def getIdentifier(eccEnrolment: Enrolment, cdsEnrolment: Enrolment, enrolmentIdentifier: String) =
+    for {
+      eccEnrolmentId <- eccEnrolment.getIdentifier(enrolmentIdentifier)
+      cdsEnrolmentId <- cdsEnrolment.getIdentifier(enrolmentIdentifier)
+      bool = (eccEnrolmentId.value === cdsEnrolmentId.value)
+    } yield if (bool) eccEnrolmentId.value else throw new IllegalStateException("EOris are not identical")
+
 }

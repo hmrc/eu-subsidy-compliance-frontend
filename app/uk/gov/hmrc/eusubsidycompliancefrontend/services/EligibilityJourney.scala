@@ -22,11 +22,11 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 
 case class EligibilityJourney(
-  eoriCheck: EoriCheckFormPage = EoriCheckFormPage(),
-  signOutBadEori: SignOutBadEoriFormPage = SignOutBadEoriFormPage(),
   customsWaivers: CustomsWaiversFormPage = CustomsWaiversFormPage(),
   willYouClaim: WillYouClaimFormPage = WillYouClaimFormPage(),
   notEligible: NotEligibleFormPage = NotEligibleFormPage(),
+  eoriCheck: EoriCheckFormPage = EoriCheckFormPage(),
+  signOutBadEori: SignOutBadEoriFormPage = SignOutBadEoriFormPage(),
   mainBusinessCheck: MainBusinessCheckFormPage = MainBusinessCheckFormPage(),
   signOut: SignOutFormPage = SignOutFormPage(),
   acceptTerms: AcceptTermsFormPage = AcceptTermsFormPage(),
@@ -34,11 +34,11 @@ case class EligibilityJourney(
 ) extends Journey {
 
   private val journeySteps = List(
-    eoriCheck,
-    signOutBadEori,
     customsWaivers,
     willYouClaim,
     notEligible,
+    eoriCheck,
+    signOutBadEori,
     mainBusinessCheck,
     signOut,
     acceptTerms,
@@ -49,18 +49,12 @@ case class EligibilityJourney(
     journeySteps
       // Remove steps based on user responses during the eligibility journey.
       .filterNot {
-        case WillYouClaimFormPage(_) => customsWaivers.value.contains(true)
-        case NotEligibleFormPage(_) => Seq(customsWaivers.value, willYouClaim.value).flatten.contains(true)
+        case WillYouClaimFormPage(_) => true
+        case NotEligibleFormPage(_) => true
         case SignOutFormPage(_) => mainBusinessCheck.value.contains(true)
         case SignOutBadEoriFormPage(_) => eoriCheck.value.contains(true)
         case _ => false
       }.toArray
-
-  def setWillYouClaim(newWillYouClaim: Boolean): EligibilityJourney =
-    this.copy(willYouClaim = willYouClaim.copy(value = Some(newWillYouClaim)))
-
-  def setCustomsWaiver(newCustomWaiver: Boolean): EligibilityJourney =
-    this.copy(customsWaivers = customsWaivers.copy(value = Some(newCustomWaiver)))
 
   def setMainBusinessCheck(newMainBusinessCheck: Boolean): EligibilityJourney =
     this.copy(mainBusinessCheck = mainBusinessCheck.copy(value = Some(newMainBusinessCheck)))

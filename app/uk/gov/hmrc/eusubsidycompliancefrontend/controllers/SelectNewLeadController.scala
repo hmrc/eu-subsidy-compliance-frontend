@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromoted
@@ -35,7 +35,7 @@ import scala.concurrent.ExecutionContext
 
 class SelectNewLeadController @Inject() (
   mcc: MessagesControllerComponents,
-  escActionBuilders: EscActionBuilders,
+  escCDSActionBuilder: EscCDSActionBuilders,
   override val escService: EscService,
   store: Store,
   sendEmailHelperService: SendEmailHelperService,
@@ -46,7 +46,7 @@ class SelectNewLeadController @Inject() (
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
 
-  import escActionBuilders._
+  import escCDSActionBuilder._
 
   private val promoteOtherAsLeadEmailToBusinessEntity = "promoteAsLeadEmailToBE"
   private val promoteOtherAsLeadEmailToLead = "promoteAsLeadEmailToLead"
@@ -55,7 +55,7 @@ class SelectNewLeadController @Inject() (
     mapping("selectNewLead" -> mandatory("selectNewLead"))(FormValues.apply)(FormValues.unapply)
   )
 
-  def getSelectNewLead: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getSelectNewLead: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       val previous = routes.AccountController.getAccountPage().url
       implicit val eori = request.eoriNumber
@@ -69,7 +69,7 @@ class SelectNewLeadController @Inject() (
     }
   }
 
-  def postSelectNewLead: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postSelectNewLead: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -120,7 +120,7 @@ class SelectNewLeadController @Inject() (
     }
   }
 
-  def getLeadEORIChanged = withAuthenticatedUser.async { implicit request =>
+  def getLeadEORIChanged = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 

@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyNilReturn
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyUpdate}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class NoClaimNotificationController @Inject() (
   mcc: MessagesControllerComponents,
-  escActionBuilders: EscActionBuilders,
+  escCDSActionBuilder: EscCDSActionBuilders,
   store: Store,
   override val escService: EscService,
   auditService: AuditService,
@@ -44,16 +44,16 @@ class NoClaimNotificationController @Inject() (
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
-  import escActionBuilders._
+  import escCDSActionBuilder._
 
-  def getNoClaimNotification: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getNoClaimNotification: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       val previous = routes.AccountController.getAccountPage().url
       Ok(noClaimNotificationPage(noClaimForm, previous, undertaking.name)).toFuture
     }
   }
 
-  def postNoClaimNotification: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postNoClaimNotification: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori = request.eoriNumber
       val previous = routes.AccountController.getAccountPage().url
