@@ -20,7 +20,7 @@ import cats.data.EitherT
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
 import play.api.http.Status.{NOT_FOUND, OK}
-import play.api.libs.json.{JsResult, JsSuccess, JsValue, Reads}
+import play.api.libs.json.{JsSuccess, JsValue, Reads}
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.UndertakingCache
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
@@ -68,16 +68,18 @@ class EscService @Inject() (
       .orElseF {
         retrieveUndertakingAndHandleErrors(eori).flatMap {
           case Right(Some(undertaking)) =>
-            // TODO - review this - why do we map over the reference?
-            undertaking.reference.map(r => undertakingCache.put[Undertaking](eori, undertaking))
-            undertaking.some.toFuture
+            undertakingCache
+              .put[Undertaking](eori, undertaking)
+              .map(_ => undertaking.some)
           case Right(None) => Option.empty[Undertaking].toFuture
           case Left(ex) => Future.failed[Option[Undertaking]](ex)
         }
       }
       .value
 
-  def retrieveUndertakingAndHandleErrors(eori: EORI)(implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[Undertaking]]] = {
+  def retrieveUndertakingAndHandleErrors(
+    eori: EORI
+  )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[Undertaking]]] = {
 
     def parseResponse(response: HttpResponse) =
       response
@@ -167,13 +169,10 @@ class EscService @Inject() (
 }
 
 object EscService {
-  implicit val reads: Reads[UpstreamErrorResponse] = new Reads[UpstreamErrorResponse] {
-    override def reads(json: JsValue): JsResult[UpstreamErrorResponse] =
-      JsSuccess(
-        UpstreamErrorResponse(
-          (json \ "message").as[String],
-          (json \ "statusCode").as[Int]
-        )
-      )
-  }
+  implicit val reads: Reads[UpstreamErrorResponse] = (json: JsValue) => JsSuccess(
+    UpstreamErrorResponse(
+      (json \ "message").as[String],
+      (json \ "statusCode").as[Int]
+    )
+  )
 }
