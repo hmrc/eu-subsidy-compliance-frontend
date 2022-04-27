@@ -50,14 +50,13 @@ class EscService @Inject() (
       }
 
 
-  def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingRef] =
+  def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
     escConnector
       .updateUndertaking(undertaking)
       .flatMap { response =>
         for {
           ref <- handleResponse[UndertakingRef](response, "update undertaking").toFuture
           _ <- undertakingCache.deleteUndertaking(ref)
-          _ <- undertakingCache.put[Undertaking](eori, undertaking)
         } yield ref
       }
 
