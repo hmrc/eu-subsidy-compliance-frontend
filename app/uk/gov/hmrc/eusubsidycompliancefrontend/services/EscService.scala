@@ -20,7 +20,7 @@ import cats.data.EitherT
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
 import play.api.http.Status.{NOT_FOUND, OK}
-import play.api.libs.json.{JsSuccess, JsValue, Reads}
+import play.api.libs.json.Reads
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.UndertakingCache
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
@@ -29,7 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.http.UpstreamErrorResponse.WithStatusCode
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -165,13 +165,4 @@ class EscService @Inject() (
             .parseJSON[A]
             .getOrElse(sys.error(s"Error parsing response for $action"))
     )
-}
-
-object EscService {
-  implicit val reads: Reads[UpstreamErrorResponse] = (json: JsValue) => JsSuccess(
-    UpstreamErrorResponse(
-      (json \ "message").as[String],
-      (json \ "statusCode").as[Int]
-    )
-  )
 }
