@@ -14,12 +14,13 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import views.html.helper.CSPNonce
 
 
 @this(
@@ -39,7 +40,7 @@
     backLink = Some(previous)
 ) {
 
-        @formHelper(action = controllers.routes.UndertakingController.postCheckAnswers) {
+        @formHelper(action = routes.UndertakingController.postCheckAnswers) {
             <input type=hidden name=cya value=true>
 
             @H1(messages(s"$key.title"))
@@ -56,7 +57,7 @@
                         actions = Some(Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = controllers.routes.UndertakingController.getUndertakingName().toString,
+                                    href = routes.UndertakingController.getUndertakingName().toString,
                                     content = Text(messages("common.cya.change")),
                                     visuallyHiddenText = Some(messages(s"$key.change.hidden.name"))
                                 )
@@ -82,7 +83,7 @@
                         actions = Some(Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = controllers.routes.UndertakingController.getSector().toString,
+                                    href = routes.UndertakingController.getSector().toString,
                                     content = Text(messages("common.cya.change")),
                                     visuallyHiddenText = Some(messages(s"$key.change.hidden.industry-sector"))
                                 )
@@ -94,7 +95,9 @@
 
             @P(messages(s"$key.p"))
 
-            @button("common.accept")
+            @button("common.accept", id = Some("submit-button"))
+            <script @{CSPNonce.attr} type="text/javascript" src="@controllers.routes.Assets.versioned("javascript/disableFormButtonOnClick.js")"></script>
+            <script @{CSPNonce.attr}>disableButtonOnClick("submit-button")</script>
         }
 
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
@@ -22,6 +22,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
+@import views.html.helper.CSPNonce
 
 @this(
     layout: Layout,
@@ -40,7 +41,7 @@
     backLink = Some(previous)
 ) {
 
-    @formHelper(action = controllers.routes.SubsidyController.postCheckAnswers) {
+    @formHelper(action = routes.SubsidyController.postCheckAnswers) {
         <input type=hidden name=cya value=true>
 
         @H1(messages("subsidy.cya.title"))
@@ -57,7 +58,7 @@
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = controllers.routes.SubsidyController.getClaimDate().url,
+                                href = routes.SubsidyController.getClaimDate().url,
                                 content = Text(messages("common.cya.change")),
                                 visuallyHiddenText = Some(messages("subsidy.cya.change.hidden.payment-date"))
                             )
@@ -74,7 +75,7 @@
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = controllers.routes.SubsidyController.getClaimAmount().url,
+                                href = routes.SubsidyController.getClaimAmount().url,
                                 content = Text(messages("common.cya.change")),
                                 visuallyHiddenText = Some(messages("subsidy.cya.change.hidden.payment-amount"))
                             )
@@ -91,7 +92,7 @@
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = controllers.routes.SubsidyController.getAddClaimEori().url,
+                                href = routes.SubsidyController.getAddClaimEori().url,
                                 content = Text(messages("common.cya.change")),
                                 visuallyHiddenText = Some(messages("subsidy.cya.change.hidden.eori-number"))
                             )
@@ -108,7 +109,7 @@
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = controllers.routes.SubsidyController.getAddClaimPublicAuthority().url,
+                                href = routes.SubsidyController.getAddClaimPublicAuthority().url,
                                 content = Text(messages("common.cya.change")),
                                 visuallyHiddenText = Some(messages("subsidy.cya.change.hidden.public-authority"))
                             )
@@ -125,7 +126,7 @@
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = controllers.routes.SubsidyController.getAddClaimReference().url,
+                                href = routes.SubsidyController.getAddClaimReference().url,
                                 content = Text(messages("common.cya.change")),
                                 visuallyHiddenText = Some(messages("subsidy.cya.change.hidden.your-reference"))
                             )
@@ -137,6 +138,8 @@
 
         @P(messages("subsidy.cya.p1"))
 
-        @button("common.accept")
+        @button("common.accept", id = Some("submit-button"))
+        <script @{CSPNonce.attr} type="text/javascript" src="@controllers.routes.Assets.versioned("javascript/disableFormButtonOnClick.js")"></script>
+        <script @{CSPNonce.attr}>disableButtonOnClick("submit-button")</script>
     }
 }
