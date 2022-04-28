@@ -473,7 +473,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
         "the http call succeeds and the body of the response can be parsed" in {
           mockCacheGet[UndertakingSubsidies](eori1)(Right(Option.empty))
           mockRemoveSubsidy(undertakingRef, nonHmrcSubsidy)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
-          mockCacheDeleteUndertakingSubsidies(undertakingRef)(Right(undertakingSubsidies))
+          mockCacheDeleteUndertakingSubsidies(undertakingRef)(Right(()))
           val result = service.removeSubsidy(undertakingRef, nonHmrcSubsidy)
           await(result) shouldBe undertakingRef
         }
