@@ -226,6 +226,13 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
         "the http call succeeds the body of the response can be parsed" when {
 
+          "the undertaking is present in the cache" in {
+            mockCacheGet[Undertaking](eori1)(Right(undertaking.some))
+            mockCachePut(eori1, undertaking)(Right(undertaking))
+            val result = service.retrieveUndertaking(eori1)
+            await(result) shouldBe undertaking.some
+          }
+
           "http response status is 200 and response can be parsed" in {
             mockCacheGet[Undertaking](eori1)(Right(None))
             mockRetrieveUndertaking(eori1)(Right(HttpResponse(OK, undertakingJson, emptyHeaders)))
@@ -425,6 +432,13 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
       }
 
       "return successfully" when {
+
+        "the undertaking subsidies are present in the cache" in {
+          mockCacheGet[UndertakingSubsidies](eori1)(Right(undertakingSubsidies.some))
+          mockCachePut(eori1, undertakingSubsidies)(Right(undertakingSubsidies))
+          val result = service.retrieveSubsidy(subsidyRetrieve)
+          await(result) shouldBe undertakingSubsidies
+        }
 
         "the http call succeeds and the body of the response can be parsed" in {
           mockCacheGet[UndertakingSubsidies](eori1)(Right(Option.empty))
