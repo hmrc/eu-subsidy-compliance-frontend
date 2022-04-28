@@ -88,6 +88,14 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
     when(mockEscConnector.retrieveSubsidy(argEq(subsidyRetrieve))(any()))
       .thenReturn(result.toFuture)
 
+  private def mockRemoveSubsidy(
+    undertakingRef: UndertakingRef,
+    nonHmrcSubsidy: NonHmrcSubsidy
+  )(result: Either[ConnectorError, HttpResponse]) = {
+    when(mockEscConnector.removeSubsidy(argEq(undertakingRef), argEq(nonHmrcSubsidy))(any()))
+      .thenReturn(result.toFuture)
+  }
+
   private def mockCachePut[A](eori: EORI, in: A)(result: Either[Exception, A]) =
     when(mockUndertakingCache.put(argEq(eori), argEq(in))(any()))
       .thenReturn(result.fold(Future.failed, _.toFuture))
@@ -217,6 +225,13 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
       "return successfully" when {
 
         "the http call succeeds the body of the response can be parsed" when {
+
+          "the undertaking is present in the cache" in {
+            mockCacheGet[Undertaking](eori1)(Right(undertaking.some))
+            mockCachePut(eori1, undertaking)(Right(undertaking))
+            val result = service.retrieveUndertaking(eori1)
+            await(result) shouldBe undertaking.some
+          }
 
           "http response status is 200 and response can be parsed" in {
             mockCacheGet[Undertaking](eori1)(Right(None))
@@ -418,6 +433,13 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       "return successfully" when {
 
+        "the undertaking subsidies are present in the cache" in {
+          mockCacheGet[UndertakingSubsidies](eori1)(Right(undertakingSubsidies.some))
+          mockCachePut(eori1, undertakingSubsidies)(Right(undertakingSubsidies))
+          val result = service.retrieveSubsidy(subsidyRetrieve)
+          await(result) shouldBe undertakingSubsidies
+        }
+
         "the http call succeeds and the body of the response can be parsed" in {
           mockCacheGet[UndertakingSubsidies](eori1)(Right(Option.empty))
           mockRetrieveSubsidy(subsidyRetrieve)(Right(HttpResponse(OK, undertakingSubsidiesJson, emptyHeaders)))
@@ -426,6 +448,51 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
           await(result) shouldBe undertakingSubsidies
         }
       }
+    }
+
+    "handling request to remove subsidy" must {
+
+      "return an error" when {
+
+        def isError(): Assertion = {
+          val result = service.removeSubsidy(undertakingRef, nonHmrcSubsidy)
+          assertThrows[RuntimeException](await(result))
+        }
+
+        "the http call fails" in {
+          mockRemoveSubsidy(undertakingRef, nonHmrcSubsidy)(Left(ConnectorError("")))
+          isError()
+        }
+
+        "the http response doesn't come back with status 200(OK)" in {
+          mockRemoveSubsidy(undertakingRef, nonHmrcSubsidy)(Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders)))
+          isError()
+        }
+
+        "there is no json in the response" in {
+          mockRemoveSubsidy(undertakingRef, nonHmrcSubsidy)(Right(HttpResponse(OK, "hi")))
+          isError()
+        }
+
+        "the json in the response can't be parsed" in {
+          val json = Json.parse("""{ "a" : 1 }""")
+          mockRemoveSubsidy(undertakingRef, nonHmrcSubsidy)(Right(HttpResponse(OK, json, emptyHeaders)))
+          isError()
+        }
+
+      }
+
+      "return successfully" when {
+
+        "the http call succeeds and the body of the response can be parsed" in {
+          mockCacheGet[UndertakingSubsidies](eori1)(Right(Option.empty))
+          mockRemoveSubsidy(undertakingRef, nonHmrcSubsidy)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
+          mockCacheDeleteUndertakingSubsidies(undertakingRef)(Right(()))
+          val result = service.removeSubsidy(undertakingRef, nonHmrcSubsidy)
+          await(result) shouldBe undertakingRef
+        }
+      }
+
     }
 
   }
