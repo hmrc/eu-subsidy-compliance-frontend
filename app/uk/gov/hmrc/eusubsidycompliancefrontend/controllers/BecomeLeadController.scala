@@ -150,6 +150,8 @@ class BecomeLeadController @Inject() (
             undertakingRef,
             None
           )
+          // Flush any stale undertaking journey data
+           _ <- store.delete[UndertakingJourney]
           _ = auditService.sendEvent[BusinessEntityPromotedSelf](
             AuditEvent.BusinessEntityPromotedSelf(
               undertakingRef,
