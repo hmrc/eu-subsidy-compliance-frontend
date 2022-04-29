@@ -88,10 +88,10 @@
 
 @content = {
     <div class="govuk-!-margin-bottom-6">
-    @contentBlock
+        @contentBlock
     </div>
     <div class="govuk-!-display-none-print">
-    @hmrcReportTechnicalIssueHelper()
+        @hmrcReportTechnicalIssueHelper()
     </div>
 }
 
@@ -106,4 +106,4 @@
     footerBlock = Some(hmrcStandardFooter()),
     beforeContentBlock = Some(beforeContentWrapper),
     mainContentLayout = mainContentLayout
-)(contentBlock)
+)(content)
