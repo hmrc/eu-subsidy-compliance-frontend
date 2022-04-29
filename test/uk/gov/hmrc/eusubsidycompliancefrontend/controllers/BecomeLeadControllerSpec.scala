@@ -440,6 +440,7 @@ class BecomeLeadControllerSpec
             mockSendEmail(validEmailAddress, newLeadParams, templateIdNewLead)(Right(EmailSendResult.EmailSent))
             mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockSendEmail(validEmailAddress, oldLeadParams, templateIdOldLead)(Right(EmailSendResult.EmailSent))
+            mockDelete[UndertakingJourney](eori4)(Right(()))
             mockSendAuditEvent[BusinessEntityPromotedSelf](
               AuditEvent.BusinessEntityPromotedSelf(undertakingRef, "1123", eori1, eori4)
             )
@@ -491,6 +492,7 @@ class BecomeLeadControllerSpec
             mockSendEmail(validEmailAddress, oldLeadParams, "template_removed_as_lead_email_to_previous_lead_EN")(
               Right(EmailSendResult.EmailSent)
             )
+            mockDelete[UndertakingJourney](eori4)(Right(()))
             mockSendAuditEvent[BusinessEntityPromotedSelf](
               AuditEvent.BusinessEntityPromotedSelf(undertakingRef, "1123", eori1, eori4)
             )
