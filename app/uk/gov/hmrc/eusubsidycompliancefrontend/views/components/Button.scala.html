@@ -19,10 +19,20 @@
 @(msg: String, href: Option[String] = None, preventDoubleClick: Boolean = true, id: Option[String] = None)(implicit messages: Messages)
 
 @govukButton(
-    Button(
-        content = Text(messages(msg)),
-        href = href,
-        preventDoubleClick = preventDoubleClick,
-        attributes = id.fold(Map("" -> ""))(e => Map("id" -> e))
+    id.fold(
+     Button(
+      content = Text(messages(msg)),
+      href = href,
+      preventDoubleClick = preventDoubleClick
+     )
+
+    )(id =>
+     Button(
+      content = Text(messages(msg)),
+      href = href,
+      preventDoubleClick = preventDoubleClick,
+      attributes = Map("id" -> id)
+     )
+
     )
 )
