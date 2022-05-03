@@ -22,7 +22,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscCDSActionBuilders, EscNoEnrolmentActionBuilders}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscCDSActionBuilders, EscInitialActionBuilder, EscNoEnrolmentActionBuilders, EscRequestCDSActionBuilder}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
@@ -139,7 +139,7 @@ class EligibilityController @Inject() (
                 journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck =>
                   eoriCheckForm.fill(FormValues(eoriCheck.toString))
                 )
-              Ok(checkEoriPage(form, eori, journey.previous))
+              Ok(checkEoriPage(form, eori, routes.EligibilityController.getCustomsWaivers().url))
             case _ => handleMissingSessionData("Eligibility journey")
           }
         case EmailType.UnVerifiedEmail =>
@@ -153,20 +153,17 @@ class EligibilityController @Inject() (
 
   def postEoriCheck: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    journeyTraverseService
-      .getPrevious[EligibilityJourney]
-      .flatMap { previous =>
-        eoriCheckForm
-          .bindFromRequest()
-          .fold(
-            errors => BadRequest(checkEoriPage(errors, eori, previous)).toFuture,
-            form => store.update[EligibilityJourney](_.setEoriCheck(form.value.toBoolean)).flatMap(_.next)
-          )
-      }
+    eoriCheckForm
+      .bindFromRequest()
+      .fold(
+        errors =>
+          BadRequest(checkEoriPage(errors, eori, routes.EligibilityController.getCustomsWaivers().url)).toFuture,
+        form => store.update[EligibilityJourney](_.setEoriCheck(form.value.toBoolean)).flatMap(_.next)
+      )
 
   }
 
-  def getNotEligible: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
+  def getNotEligible: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     Ok(notEligiblePage()).toFuture
   }
 

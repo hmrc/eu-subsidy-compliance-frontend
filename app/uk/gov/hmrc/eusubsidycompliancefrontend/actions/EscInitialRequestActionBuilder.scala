@@ -70,8 +70,13 @@ class EscInitialRequestActionBuilder @Inject() (
                 .getIdentifier(eccEnrolment, cdsEnrolment, EnrolmentIdentifier)
                 .fold(throw new IllegalStateException("no eori provided"))(identity)
               block(AuthenticatedEscRequest(credentials.providerId, groupId, request, EORI(identifier)))
-            case _ => Redirect(routes.EligibilityController.getCustomsWaivers()).toFuture
 
+            case (Some(eccEnrolment), None) =>
+              val identifier: String = eccEnrolment
+                .getIdentifier(EnrolmentIdentifier)
+                .fold(throw new IllegalStateException("no eori provided"))(_.value)
+              block(AuthenticatedEscRequest(credentials.providerId, groupId, request, EORI(identifier)))
+            case _ => Redirect(routes.EligibilityController.getCustomsWaivers()).toFuture
           }
         case _ ~ _ => Future.failed(throw InternalError())
       }(hc(request), executionContext)

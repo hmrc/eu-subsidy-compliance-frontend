@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.data.OptionT
 import cats.implicits._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscCDSActionBuilders, EscInitialActionBuilder}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking, UndertakingSubsidies}
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class FinancialDashboardController @Inject() (
-  escCDSActionBuilder: EscCDSActionBuilders,
+  escInitialActionBuilders: EscInitialActionBuilder,
   escService: EscService,
   financialDashboardPage: FinancialDashboardPage,
   mcc: MessagesControllerComponents,
@@ -43,9 +43,9 @@ class FinancialDashboardController @Inject() (
 )(implicit val appConfig: AppConfig, ec: ExecutionContext)
     extends BaseController(mcc) {
 
-  import escCDSActionBuilder._
+  import escInitialActionBuilders._
 
-  def getFinancialDashboard: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def getFinancialDashboard: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     val today = timeProvider.today

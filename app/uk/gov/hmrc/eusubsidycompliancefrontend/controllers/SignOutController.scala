@@ -16,31 +16,104 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.implicits.catsSyntaxOptionId
 import com.google.inject.{Inject, Singleton}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.BusinessEntity
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EscService, RetrieveEmailService, SendEmailHelperService}
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.{FutureToOptionTOps, OptionToOptionTOps}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.TimedOut
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class SignOutController @Inject() (
   mcc: MessagesControllerComponents,
+  escCDSActionBuilder: EscCDSActionBuilders,
+  retrieveEmailService: RetrieveEmailService,
+  escService: EscService,
+  sendEmailHelperService: SendEmailHelperService,
+  auditService: AuditService,
   timedOutPage: TimedOut,
   signOutPage: SignOutPage,
-  cdsEnrolmentMissingPage: CdsEnrolmentMissingPage
-)(implicit val appConfig: AppConfig)
+  cdsEnrolmentMissingPage: CdsEnrolmentMissingPage,
+  timeProvider: TimeProvider
+)(implicit val appConfig: AppConfig, executionContext: ExecutionContext)
     extends BaseController(mcc)
     with I18nSupport
     with Logging {
+
+  import escCDSActionBuilder._
+
+  private val RemoveThemselfEmailToBusinessEntity = "removeThemselfEmailToBE"
+  private val RemoveThemselfEmailToLead = "removeThemselfEmailToLead"
 
   val signOutFromTimeout: Action[AnyContent] = Action { implicit request =>
     Ok(timedOutPage()).withNewSession
   }
 
-  val signOut: Action[AnyContent] = Action { implicit request =>
-    Ok(signOutPage()).withNewSession
+  val signOut: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    retrieveEmailService.retrieveEmailByEORI(eori) flatMap { response =>
+      response.emailType match {
+        case EmailType.VerifiedEmail =>
+          escService.retrieveUndertaking(eori).flatMap {
+            case Some(undertaking) =>
+              val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
+              val result = for {
+                undertakingRef <- undertaking.reference.toContext
+                removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(eori)
+                leadEORI = undertaking.getLeadEORI
+                _ <- escService.removeMember(undertakingRef, removeBE).toContext
+                _ <- sendEmailHelperService
+                  .retrieveEmailAddressAndSendEmail(
+                    eori,
+                    None,
+                    RemoveThemselfEmailToBusinessEntity,
+                    undertaking,
+                    undertakingRef,
+                    removalEffectiveDateString.some
+                  )
+                  .toContext
+                _ <- sendEmailHelperService
+                  .retrieveEmailAddressAndSendEmail(
+                    leadEORI,
+                    eori.some,
+                    RemoveThemselfEmailToLead,
+                    undertaking,
+                    undertakingRef,
+                    removalEffectiveDateString.some
+                  )
+                  .toContext
+                _ = auditService
+                  .sendEvent(
+                    AuditEvent
+                      .BusinessEntityRemovedSelf(undertakingRef, request.authorityId, leadEORI, eori)
+                  )
+              } yield ()
+              result.fold(handleMissingSessionData("Undertaking Ref"))(_ => Ok(signOutPage()).withNewSession)
+
+            case None => handleMissingSessionData("Undertaking journey")
+          }
+
+        case EmailType.UnVerifiedEmail =>
+          Redirect(routes.UpdateEmailAddressController.updateUnverifiedEmailAddress()).toFuture
+        case EmailType.UnDeliverableEmail =>
+          Redirect(routes.UpdateEmailAddressController.updateUndeliveredEmailAddress()).toFuture
+      }
+    }
+
   }
 
   val noCdsEnrolment: Action[AnyContent] = Action { implicit request =>

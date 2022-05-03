@@ -62,7 +62,12 @@ class AccountController @Inject() (
 
   private def handleUndertakingNotCreated(implicit e: EORI): Future[Result] = {
     val result = getOrCreateJourneys().map {
-      case (ej, uj) if !ej.isComplete && uj.isEmpty => Redirect(routes.EligibilityController.firstEmptyPage())
+      case (ej, uj) if !ej.isComplete && uj.isEmpty =>
+        if (ej.eoriCheck.value.contains(true)) {
+          Redirect(routes.EligibilityController.firstEmptyPage())
+        } else {
+          Redirect(routes.EligibilityController.getCustomsWaivers())
+        }
       case (_, uj) if !uj.isComplete => Redirect(routes.UndertakingController.firstEmptyPage())
       case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity())
     }

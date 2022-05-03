@@ -49,6 +49,7 @@ case class EligibilityJourney(
     journeySteps
       // Remove steps based on user responses during the eligibility journey.
       .filterNot {
+        case CustomsWaiversFormPage(_) => true
         case WillYouClaimFormPage(_) => true
         case NotEligibleFormPage(_) => true
         case SignOutFormPage(_) => mainBusinessCheck.value.contains(true)
