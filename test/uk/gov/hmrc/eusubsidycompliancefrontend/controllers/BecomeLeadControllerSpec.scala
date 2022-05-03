@@ -51,7 +51,7 @@ class BecomeLeadControllerSpec
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[RetrieveEmailService].toInstance(mockRetrieveEmailService),
-    bind[SendEmailService].toInstance(mockSendEmailService),
+    bind[SendEmailHelperService].toInstance(mockSendEmailHelperService),
     bind[AuditService].toInstance(mockAuditService)
   )
 
@@ -87,7 +87,6 @@ class BecomeLeadControllerSpec
             mockGet[BecomeLeadJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
-
         }
 
         "call to fetch undertaking returns None" in {
