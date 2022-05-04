@@ -434,7 +434,7 @@ class BecomeLeadControllerSpec
           assertThrows[Exception](await(performAction()(English.code)))
         }
 
-        "call to retrieve email address of new lead fails" in {
+        "request to send email fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
@@ -460,7 +460,7 @@ class BecomeLeadControllerSpec
             mockSendEmail(validEmailAddress, newLeadParams, "template_promoted_themself_as_lead_email_to_lead_EN")(
               Right(EmailSendResult.EmailSent)
             )
-            mockRetrieveEmail(eori1)(Left(ConnectorError(exception)))
+            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promotedAsLeadToNewLead", undertaking1, undertakingRef, None)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()(English.code)))
         }
@@ -472,7 +472,7 @@ class BecomeLeadControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promotedAsLeadToNewLead", undertaking1, undertakingRef, None)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()("fr")))
         }
@@ -481,11 +481,7 @@ class BecomeLeadControllerSpec
 
       "display the page" when {
 
-        def testDisplay(templateIdNewLead: String, templateIdOldLead: String, lang: String): Unit = {
-          val newLeadParams =
-            SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promotedAsLeadToNewLead")
-          val oldLeadParams =
-            SingleEORIEmailParameter(eori1, undertaking1.name, undertakingRef, "removedAsLeadToOldLead")
+        def testDisplay(lang: Language): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(
@@ -494,10 +490,8 @@ class BecomeLeadControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockSendEmail(validEmailAddress, newLeadParams, templateIdNewLead)(Right(EmailSendResult.EmailSent))
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockSendEmail(validEmailAddress, oldLeadParams, templateIdOldLead)(Right(EmailSendResult.EmailSent))
+            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promotedAsLeadToNewLead", undertaking1, undertakingRef, None)(Right(EmailSent))
+            mockRetrieveEmailAddressAndSendEmail(eori1, None, "removedAsLeadToOldLead", undertaking1, undertakingRef, None)(Right(EmailSent))
             mockDelete[UndertakingJourney](eori4)(Right(()))
             mockSendAuditEvent[BusinessEntityPromotedSelf](
               AuditEvent.BusinessEntityPromotedSelf(undertakingRef, "1123", eori1, eori4)
@@ -505,26 +499,17 @@ class BecomeLeadControllerSpec
           }
 
           checkPageIsDisplayed(
-            performAction()(lang),
+            performAction()(lang.code),
             messageFromMessageKey("become-admin-confirmation.title")
           )
         }
 
         "when user has selected English language" in {
-          testDisplay(
-            "template_promoted_themself_as_lead_email_to_lead_EN",
-            "template_removed_as_lead_email_to_previous_lead_EN",
-            English.code
-          )
+          testDisplay(English)
         }
 
         "when user has selected Welsh language" in {
-          testDisplay(
-            "template_promoted_themself_as_lead_email_to_lead_CY",
-            "template_removed_as_lead_email_to_previous_lead_CY",
-            Welsh.code
-          )
-
+          testDisplay(Welsh)
         }
 
       }
@@ -532,24 +517,14 @@ class BecomeLeadControllerSpec
       "redirect to next page" when {
 
         "become lead journey doesn't contains accept terms" in {
-          val newLeadParams =
-            SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promotedAsLeadToNewLead")
-          val oldLeadParams =
-            SingleEORIEmailParameter(eori1, undertaking1.name, undertakingRef, "removedAsLeadToOldLead")
           inSequence {
             mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockSendEmail(validEmailAddress, newLeadParams, "template_promoted_themself_as_lead_email_to_lead_EN")(
-              Right(EmailSendResult.EmailSent)
-            )
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockSendEmail(validEmailAddress, oldLeadParams, "template_removed_as_lead_email_to_previous_lead_EN")(
-              Right(EmailSendResult.EmailSent)
-            )
+            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promotedAsLeadToNewLead", undertaking1, undertakingRef, None)(Right(EmailSent))
+            mockRetrieveEmailAddressAndSendEmail(eori1, None, "removedAsLeadToOldLead", undertaking1, undertakingRef, None)(Right(EmailSent))
             mockDelete[UndertakingJourney](eori4)(Right(()))
             mockSendAuditEvent[BusinessEntityPromotedSelf](
               AuditEvent.BusinessEntityPromotedSelf(undertakingRef, "1123", eori1, eori4)

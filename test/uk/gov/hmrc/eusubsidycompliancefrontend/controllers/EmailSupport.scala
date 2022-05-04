@@ -16,9 +16,11 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import play.api.i18n.MessagesApi
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{RetrieveEmailService, SendEmailHelperService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
@@ -44,4 +46,23 @@ trait EmailSupport { this: ControllerSpec =>
       .sendEmail(_: EmailAddress, _: EmailParameters, _: String)(_: HeaderCarrier, _: ExecutionContext))
       .expects(emailAddress, emailParameters, templateId, *, *)
       .returning(result.fold(e => Future.failed(e), _.toFuture))
+
+  def mockRetrieveEmailAddressAndSendEmail(
+    eori1: EORI,
+    eori2: Option[EORI],
+    key: String,
+    undertaking: Undertaking,
+    undertakingRef: UndertakingRef,
+    removeEffectiveDate: Option[String]
+  )(result: Either[ConnectorError, EmailSendResult]) =
+    (mockSendEmailHelperService
+      .retrieveEmailAddressAndSendEmail(
+        _: EORI,
+        _: Option[EORI],
+        _: String,
+        _: Undertaking,
+        _: UndertakingRef,
+        _: Option[String])(_: HeaderCarrier, _: ExecutionContext, _: AuthenticatedEscRequest[_], _: MessagesApi))
+      .expects(eori1, eori2, key, undertaking, undertakingRef, removeEffectiveDate, *, *, *, *)
+      .returning(result.fold(Future.failed, _.toFuture))
 }

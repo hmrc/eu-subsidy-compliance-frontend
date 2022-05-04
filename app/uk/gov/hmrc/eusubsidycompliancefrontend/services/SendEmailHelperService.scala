@@ -44,11 +44,13 @@ class SendEmailHelperService @Inject() (
   configuration: Configuration
 ) extends Logging {
 
+  // TODO - review how this method is used - can other methods be provided?
   def retrieveEmailAddressAndSendEmail(
     eori1: EORI,
     eori2: Option[EORI],
-    key: String,
+    key: String, // TODO - should this be an enum?
     undertaking: Undertaking,
+    // TODO - do we need to pass the ref separately if we're passing the undertaking in?
     undertakingRef: UndertakingRef,
     removeEffectiveDate: Option[String]
   )(implicit
