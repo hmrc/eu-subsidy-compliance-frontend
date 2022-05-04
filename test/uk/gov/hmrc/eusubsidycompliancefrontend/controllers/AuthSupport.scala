@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.{EmptyPredicate, Predicate}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, EmptyRetrieval, Retrieval, ~}
+import uk.gov.hmrc.auth.core.retrieve.{CompositeRetrieval, Credentials, EmptyRetrieval, OptionalRetrieval, Retrieval, ~}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -30,6 +30,8 @@ trait AuthSupport { this: ControllerSpec =>
 
   import AuthSupport._
   val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  val EccEnrolmentKey = "HMRC-ESC-ORG"
+  val CdsEnrolmentKey = "HMRC-CUS-ORG"
 
   def mockAuth[R](predicate: Predicate, retrieval: Retrieval[R])(
     result: Future[R]
@@ -45,13 +47,33 @@ trait AuthSupport { this: ControllerSpec =>
   def mockAuthWithNoRetrievals(): Unit =
     mockAuth(EmptyPredicate, EmptyRetrieval)(().toFuture)
 
-  def mockAuthWithAuthRetrievals(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) =
-    mockAuth(Enrolment("HMRC-ESC-ORG"), authRetrievals)(
+  def mockAuthWithAuthRetrievalsNoPredicate(
+    enrolments: Enrolments,
+    providerId: String,
+    groupIdentifier: Option[String]
+  ) =
+    mockAuth(EmptyPredicate, authRetrievals)(
+      (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
+    )
+
+  def mockAuthNoEnrolmentsRetrievals(
+    providerId: String,
+    groupIdentifier: Option[String]
+  ) =
+    mockAuth(EmptyPredicate, authRetrievalsNoEnrolment)(
+      (new ~(Credentials(providerId, "type").some, groupIdentifier)).toFuture
+    )
+
+  def mockAuthWithCDsAuthRetrievals(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) =
+    mockAuth(Enrolment(CdsEnrolmentKey), authRetrievals)(
       (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
 
   val authRetrievals: Retrieval[Option[Credentials] ~ Option[String] ~ Enrolments] =
     Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
+
+  val authRetrievalsNoEnrolment: Retrieval[Option[Credentials] ~ Option[String]] =
+    Retrievals.credentials and Retrievals.groupIdentifier
 
 }
 

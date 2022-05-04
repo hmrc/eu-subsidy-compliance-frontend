@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import cats.implicits.catsSyntaxOptionId
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.{AcceptTermsFormPage, CreateUndertakingFormPage, CustomsWaiversFormPage, EoriCheckFormPage, MainBusinessCheckFormPage, WillYouClaimFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.{AcceptTermsFormPage, CreateUndertakingFormPage, EoriCheckFormPage, MainBusinessCheckFormPage, WillYouClaimFormPage}
 
 class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
 
@@ -32,40 +32,6 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
         underTest.steps shouldBe Array(
           underTest.eoriCheck,
           underTest.signOutBadEori,
-          underTest.customsWaivers,
-          underTest.willYouClaim,
-          underTest.notEligible,
-          underTest.mainBusinessCheck,
-          underTest.signOut,
-          underTest.acceptTerms,
-          underTest.createUndertaking
-        )
-      }
-
-      "remove will you claim and notEligible steps if customs waivers form has true value" in {
-        val underTest = EligibilityJourney(
-          customsWaivers = CustomsWaiversFormPage(Some(true))
-        )
-        underTest.steps shouldBe Array(
-          underTest.eoriCheck,
-          underTest.signOutBadEori,
-          underTest.customsWaivers,
-          underTest.mainBusinessCheck,
-          underTest.signOut,
-          underTest.acceptTerms,
-          underTest.createUndertaking
-        )
-      }
-
-      "remove not eligible step if do you claim form has true value" in {
-        val underTest = EligibilityJourney(
-          willYouClaim = WillYouClaimFormPage(Some(true))
-        )
-        underTest.steps shouldBe Array(
-          underTest.eoriCheck,
-          underTest.signOutBadEori,
-          underTest.customsWaivers,
-          underTest.willYouClaim,
           underTest.mainBusinessCheck,
           underTest.signOut,
           underTest.acceptTerms,
@@ -81,8 +47,6 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
         underTest.steps shouldBe Array(
           underTest.eoriCheck,
           underTest.signOutBadEori,
-          underTest.customsWaivers,
-          underTest.willYouClaim,
           underTest.mainBusinessCheck,
           underTest.acceptTerms,
           underTest.createUndertaking
@@ -97,8 +61,6 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
         )
         underTest.steps shouldBe Array(
           underTest.eoriCheck,
-          underTest.customsWaivers,
-          underTest.willYouClaim,
           underTest.mainBusinessCheck,
           underTest.acceptTerms,
           underTest.createUndertaking
@@ -108,16 +70,6 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
     }
 
     "set methods are called" should {
-
-      "return an updated instance with the specified WillYouClaim boolean value" in {
-        EligibilityJourney().setWillYouClaim(true) shouldBe
-          EligibilityJourney(willYouClaim = WillYouClaimFormPage(true.some))
-      }
-
-      "return an updated instance with the specified CustomsWaiver boolean value" in {
-        EligibilityJourney().setCustomsWaiver(true) shouldBe
-          EligibilityJourney(customsWaivers = CustomsWaiversFormPage(true.some))
-      }
 
       "return an updated instance with the specified MainBusinessCheck boolean value" in {
         EligibilityJourney().setMainBusinessCheck(true) shouldBe

@@ -22,7 +22,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscCDSActionBuilders, EscInitialActionBuilder, EscNoEnrolmentActionBuilders, EscRequestCDSActionBuilder}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscCDSActionBuilders, EscNoEnrolmentActionBuilders}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
@@ -128,6 +128,10 @@ class EligibilityController @Inject() (
 
   }
 
+  def getNotEligible: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
+    Ok(notEligiblePage()).toFuture
+  }
+
   def getEoriCheck: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     retrieveEmailService.retrieveEmailByEORI(eori) flatMap {
@@ -161,10 +165,6 @@ class EligibilityController @Inject() (
         form => store.update[EligibilityJourney](_.setEoriCheck(form.value.toBoolean)).flatMap(_.next)
       )
 
-  }
-
-  def getNotEligible: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
-    Ok(notEligiblePage()).toFuture
   }
 
   def getMainBusinessCheck: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>

@@ -30,6 +30,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessE
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language}
+
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages.{BecomeLeadEoriFormPage, TermsAndConditionsFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -83,8 +86,8 @@ class BecomeLeadControllerSpec
         val exception = new Exception("oh no!")
         "call to fetch new lead journey fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[BecomeLeadJourney](eori1)(Left(ConnectorError(exception)))
+            mockAuthWithEccEnrolmentOnly(eori4)
+            mockGet[BecomeLeadJourney](eori4)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -92,23 +95,22 @@ class BecomeLeadControllerSpec
 
         "call to fetch undertaking returns None" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[BecomeLeadJourney](eori1)(Right(None))
-            mockRetrieveUndertaking(eori1)(None.toFuture)
+            mockAuthWithEccEnrolmentOnly(eori4)
+            mockGet[BecomeLeadJourney](eori4)(Right(None))
+            mockRetrieveUndertaking(eori4)(None.toFuture)
           }
           assertThrows[Exception](await(performAction()))
-
         }
       }
 
       "display the page" when {
 
-        "new lead journey is blank " in {
+        "Become lead journey is blank " in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[BecomeLeadJourney](eori1)(Right(None))
-            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockPut[BecomeLeadJourney](newBecomeLeadJourney, eori)(Right(newBecomeLeadJourney))
+            mockAuthWithEccEnrolmentOnly(eori4)
+            mockGet[BecomeLeadJourney](eori4)(Right(None))
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+            mockPut[BecomeLeadJourney](newBecomeLeadJourney, eori4)(Right(newBecomeLeadJourney))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -123,17 +125,18 @@ class BecomeLeadControllerSpec
           )
 
         }
+
         "new lead journey already exists" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[BecomeLeadJourney](eori1)(
+            mockAuthWithEccEnrolmentOnly(eori4)
+            mockGet[BecomeLeadJourney](eori4)(
               Right(
                 newBecomeLeadJourney
                   .copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = Some(true)))
                   .some
               )
             )
-            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
           }
           checkPageIsDisplayed(
             performAction(),
@@ -164,75 +167,82 @@ class BecomeLeadControllerSpec
           def update(j: BecomeLeadJourney) = j.copy(becomeLeadEori = BecomeLeadEoriFormPage())
 
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Left(ConnectorError(exception)))
+            mockAuthWithEccEnrolmentOnly(eori4)
+            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori4)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("becomeAdmin" -> "true")))
         }
 
-        "call to retrieve journey fails on bad form branch" in {
+        "call to retrieve journey fails on bad form data" in {
 
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(None.toFuture)
+            mockAuthWithEccEnrolmentOnly(eori4)
+            mockRetrieveUndertaking(eori4)(None.toFuture)
           }
           assertThrows[Exception](await(performAction("badForm" -> "true")))
         }
 
       }
 
-      "Bad request" when {
-        "form is incorrect" in {
+      "Display form error" when {
+
+        "Nothing is submitted" in {
 
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockAuthWithEccEnrolmentOnly(eori4)
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
           }
-          status(performAction("badForm" -> "true")) shouldBe BAD_REQUEST
+          checkFormErrorIsDisplayed(
+            performAction(),
+            messageFromMessageKey("become-admin.title", undertaking1.name),
+            messageFromMessageKey("becomeAdmin.error.required")
+          )
         }
       }
 
-      "Successful" when {
-        "redirect to accept when user submits true" in {
+      "Redirect to next page" when {
 
+        def testRedirection(input: String, nextCall: String) = {
           def update(j: BecomeLeadJourney) = j.copy(becomeLeadEori = BecomeLeadEoriFormPage())
 
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
+            mockAuthWithEccEnrolmentOnly(eori4)
+            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori4)(Right(newBecomeLeadJourney))
           }
-          redirectLocation(performAction("becomeAdmin" -> "true")) shouldBe Some(
-            routes.BecomeLeadController.getAcceptPromotionTerms().url
-          )
+          checkIsRedirect(performAction("becomeAdmin" -> input), nextCall)
         }
 
-        "redirect to account homepage when user submits false" in {
+        "user submits Yes, redirect to accept terms" in {
+          testRedirection("true", routes.BecomeLeadController.getAcceptPromotionTerms().url)
+        }
 
-          def update(j: BecomeLeadJourney) = j.copy(becomeLeadEori = BecomeLeadEoriFormPage())
-
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
-          }
-          redirectLocation(performAction("becomeAdmin" -> "false")) shouldBe Some(
-            routes.AccountController.getAccountPage().url
-          )
+        "user submits No, redirect to account homepage" in {
+          testRedirection("false", routes.AccountController.getAccountPage().url)
         }
       }
     }
 
-    "handling request to get Become Lead Eori Terms" must {
+    "handling request to get accept Promotion Terms" must {
 
       def performAction() = controller.getAcceptPromotionTerms(FakeRequest())
-      behave like authBehaviour(() => performAction())
+      behave like authBehaviourWithPredicate(() => performAction())
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
 
-        "call to fetch new lead journey fails" in {
+        "call to retrieve email address fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[BecomeLeadJourney](eori1)(Left(ConnectorError(exception)))
+            mockAuthWithNecessaryEnrolment(eori4)
+            mockRetrieveEmail(eori4)(Left(ConnectorError(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to fetch new become lead journey fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment(eori4)
+            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockGet[BecomeLeadJourney](eori4)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -243,8 +253,9 @@ class BecomeLeadControllerSpec
       "display the page" in {
 
         inSequence {
-          mockAuthWithNecessaryEnrolment()
-          mockGet[BecomeLeadJourney](eori1)(
+          mockAuthWithNecessaryEnrolment(eori4)
+          mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+          mockGet[BecomeLeadJourney](eori4)(
             Right(
               newBecomeLeadJourney
                 .copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = Some(true)))
@@ -259,30 +270,78 @@ class BecomeLeadControllerSpec
 
       }
 
-      "redirect when becomelead is false" in {
+      "redirect to next page" when {
+        def testRedirectNotVerifiedEmail(emailType: EmailType, nextCall: String) = {
+          inSequence {
+            mockAuthWithNecessaryEnrolment(eori4)
+            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, validEmailAddress.some)))
+          }
 
-        inSequence {
-          mockAuthWithNecessaryEnrolment()
-          mockGet[BecomeLeadJourney](eori1)(
-            Right(
-              newBecomeLeadJourney
-                .copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = Some(false)))
-                .some
-            )
+          checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateUnverifiedEmailAddress().url)
+        }
+
+        "retrieve email address is not verified" in {
+          testRedirectNotVerifiedEmail(
+            EmailType.UnVerifiedEmail,
+            routes.UpdateEmailAddressController.updateUnverifiedEmailAddress().url
           )
         }
-        redirectLocation(performAction()) shouldBe Some(routes.BecomeLeadController.getBecomeLeadEori().url)
-      }
 
-      "redirect when no journey found" in {
-
-        inSequence {
-          mockAuthWithNecessaryEnrolment()
-          mockGet[BecomeLeadJourney](eori1)(Right(None))
+        "retrieve email address is Undeliverable" in {
+          testRedirectNotVerifiedEmail(
+            EmailType.UnDeliverableEmail,
+            routes.UpdateEmailAddressController.updateUndeliveredEmailAddress().url
+          )
         }
-        redirectLocation(performAction()) shouldBe Some(routes.BecomeLeadController.getBecomeLeadEori().url)
+
+        def testRedirectVerifiedEmail(nextCall: String) = {
+          inSequence {
+            mockAuthWithNecessaryEnrolment(eori4)
+            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockGet[BecomeLeadJourney](eori4)(
+              Right(
+                newBecomeLeadJourney
+                  .copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = None))
+                  .some
+              )
+            )
+          }
+          checkIsRedirect(performAction(), nextCall)
+        }
+
+        "retrieve email address is verified and becomeLeadEori is None" in {
+          testRedirectVerifiedEmail(routes.BecomeLeadController.getBecomeLeadEori().url)
+        }
+
+        "when no journey found" in {
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment(eori4)
+            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockGet[BecomeLeadJourney](eori4)(Right(None))
+          }
+          checkIsRedirect(performAction(), routes.BecomeLeadController.getBecomeLeadEori().url)
+        }
       }
 
+    }
+
+    "handling request to post accept Promotion Terms" must {
+
+      def performAction() = controller.postAcceptPromotionTerms(FakeRequest())
+
+      "redirect" when {
+
+        "redirect to promotion confirmation on success" in {
+          def update(j: BecomeLeadJourney) = j.copy(becomeLeadEori = BecomeLeadEoriFormPage())
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment(eori4)
+            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori4)(Right(newBecomeLeadJourney))
+          }
+          redirectLocation(performAction()) shouldBe routes.BecomeLeadController.getPromotionConfirmation().url.some
+        }
+      }
     }
 
     "handling request to get Promotion Confirmation" must {
@@ -300,7 +359,7 @@ class BecomeLeadControllerSpec
 
         "call to fetch become lead journey fails" in {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()(English.code)))
@@ -308,7 +367,7 @@ class BecomeLeadControllerSpec
 
         "call to fetch undertaking fails" in {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
             mockRetrieveUndertaking(eori4)(Future.failed(exception))
           }
@@ -317,7 +376,7 @@ class BecomeLeadControllerSpec
 
         "call to fetch undertaking passes but come back wth no undertaking" in {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
             mockRetrieveUndertaking(eori4)(None.toFuture)
           }
@@ -326,7 +385,7 @@ class BecomeLeadControllerSpec
 
         "call to fetch undertaking passes but come back wth undertaking with no undertaking ref" in {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
             mockRetrieveUndertaking(eori4)(undertaking1.copy(reference = None).some.toFuture)
           }
@@ -335,7 +394,7 @@ class BecomeLeadControllerSpec
 
         "call to fetch undertaking come back with undertaking with logged In EORI absent" in {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
             mockRetrieveUndertaking(eori4)(
               (undertaking1.copy(undertakingBusinessEntity = List(businessEntity1)).some).toFuture
@@ -346,7 +405,7 @@ class BecomeLeadControllerSpec
 
         "call to fetch undertaking come back with undertaking with lead EORI absent" in {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
             mockRetrieveUndertaking(eori4)(
               undertaking1.copy(undertakingBusinessEntity = List(businessEntity4)).some.toFuture
@@ -357,7 +416,7 @@ class BecomeLeadControllerSpec
 
         "call to update new lead fails" in {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Left(ConnectorError(exception)))
@@ -367,7 +426,7 @@ class BecomeLeadControllerSpec
 
         "call to update old lead fails" in {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
@@ -378,7 +437,7 @@ class BecomeLeadControllerSpec
 
         "call to retrieve email address of new lead fails" in {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
@@ -393,7 +452,7 @@ class BecomeLeadControllerSpec
           val newLeadParams =
             SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promotedAsLeadToNewLead")
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
@@ -409,7 +468,7 @@ class BecomeLeadControllerSpec
 
         "language is other than english /welsh" in {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
@@ -429,7 +488,7 @@ class BecomeLeadControllerSpec
           val oldLeadParams =
             SingleEORIEmailParameter(eori1, undertaking1.name, undertakingRef, "removedAsLeadToOldLead")
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(
               Right(newBecomeLeadJourney.copy(acceptTerms = TermsAndConditionsFormPage(true.some)).some)
             )
@@ -479,7 +538,7 @@ class BecomeLeadControllerSpec
           val oldLeadParams =
             SingleEORIEmailParameter(eori1, undertaking1.name, undertakingRef, "removedAsLeadToOldLead")
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
@@ -505,24 +564,6 @@ class BecomeLeadControllerSpec
 
     }
 
-    "handling request to post Promotion Confirmation" must {
-
-      def performAction() = controller.postAcceptPromotionTerms(FakeRequest())
-
-      "redirect" when {
-
-        "redirect to promotion confirmation on success" in {
-          def update(j: BecomeLeadJourney) = j.copy(becomeLeadEori = BecomeLeadEoriFormPage())
-
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
-          }
-          redirectLocation(performAction()) shouldBe routes.BecomeLeadController.getPromotionConfirmation().url.some
-        }
-      }
-    }
-
     "handling request to getPromotionCleanup" must {
 
       def performAction() = controller.getPromotionCleanup(FakeRequest())
@@ -533,8 +574,8 @@ class BecomeLeadControllerSpec
           def update(j: BecomeLeadJourney) = j.copy(becomeLeadEori = BecomeLeadEoriFormPage())
 
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori1)(Right(newBecomeLeadJourney))
+            mockAuthWithNecessaryEnrolment(eori4)
+            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori4)(Right(newBecomeLeadJourney))
           }
           redirectLocation(performAction()) shouldBe routes.AccountController.getAccountPage().url.some
         }

@@ -77,7 +77,7 @@ class SelectNewLeadControllerSpec
     "handling request to get Select New Lead" must {
 
       def performAction() = controller.getSelectNewLead(FakeRequest())
-      behave like authBehaviour(() => performAction())
+      behave like authBehaviourWithPredicate(() => performAction())
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
@@ -277,7 +277,7 @@ class SelectNewLeadControllerSpec
     "handling request to get lead EORI changed" must {
 
       def performAction() = controller.getLeadEORIChanged(FakeRequest())
-      behave like authBehaviour(() => performAction())
+      behave like authBehaviourWithPredicate(() => performAction())
 
       def update(b: BusinessEntityJourney) = b.copy(isLeadSelectJourney = None)
 
@@ -332,7 +332,7 @@ class SelectNewLeadControllerSpec
               eori1
             )(Right(businessEntityJourneyLead))
 
-            mockPut[NewLeadJourney](NewLeadJourney(), eori)(Left(ConnectorError(exception)))
+            mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -353,7 +353,7 @@ class SelectNewLeadControllerSpec
               ),
             eori1
           )(Right(businessEntityJourneyLead))
-          mockPut[NewLeadJourney](NewLeadJourney(), eori)(Right(NewLeadJourney()))
+          mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Right(NewLeadJourney()))
         }
         checkPageIsDisplayed(
           performAction(),

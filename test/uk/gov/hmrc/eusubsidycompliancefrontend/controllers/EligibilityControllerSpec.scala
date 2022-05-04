@@ -21,8 +21,9 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -33,13 +34,15 @@ class EligibilityControllerSpec
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with JourneySupport
-    with AuditServiceSupport {
+    with AuditServiceSupport
+    with EmailSupport {
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[JourneyTraverseService].toInstance(mockJourneyTraverseService),
-    bind[AuditService].toInstance(mockAuditService)
+    bind[AuditService].toInstance(mockAuditService),
+    bind[RetrieveEmailService].toInstance(mockRetrieveEmailService)
   )
 
   private val controller = instanceOf[EligibilityController]
@@ -100,45 +103,21 @@ class EligibilityControllerSpec
 
       def performAction() = controller
         .getCustomsWaivers(
-          FakeRequest("GET", routes.EligibilityController.getCustomsWaivers().url)
-            .withFormUrlEncodedBody()
+          FakeRequest()
         )
 
-      "throw technical error" when {
-
-        "call to get eligibility journey fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to get eligibility journey passes but come back empty" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[EligibilityJourney](eori1)(Right(None))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-      }
-
-      "display the page" when {
-        val previousUrl = routes.EligibilityController.getEoriCheck().url
+      "display the page" in {
 
         val eligibilityJourney = EligibilityJourney(eoriCheck = EoriCheckFormPage(true.some))
 
         def testDisplay(eligibilityJourney: EligibilityJourney) = {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourney.some))
+            mockAuthWithNoEnrolment()
           }
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("customswaivers.title"),
             { doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
 
               eligibilityJourney.customsWaivers.value match {
@@ -152,20 +131,7 @@ class EligibilityControllerSpec
           )
         }
 
-        "user hasn't answered the question" in {
-          testDisplay(eligibilityJourney)
-        }
-
-        "user has already answered te question" in {
-          List(true, false).foreach { inputValue =>
-            withClue(s" For input value:: $inputValue") {
-              testDisplay(eligibilityJourney.copy(customsWaivers = CustomsWaiversFormPage(inputValue.some)))
-            }
-
-          }
-
-        }
-
+        testDisplay(eligibilityJourney)
       }
     }
 
@@ -176,38 +142,11 @@ class EligibilityControllerSpec
             .withFormUrlEncodedBody(data: _*)
         )
 
-      val previousUrl = routes.EligibilityController.getEoriCheck().url
-
-      val eligibilityJourney = EligibilityJourney(eoriCheck = EoriCheckFormPage(value = true.some))
-
-      def update(ej: EligibilityJourney) = ej.copy(customsWaivers = CustomsWaiversFormPage(true.some))
-
-      "throw technical error" when {
-
-        "call to get previous fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[EligibilityJourney](eori)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction("customswaivers" -> "true")))
-        }
-
-        "call to update eligibility journey fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[EligibilityJourney](eori)(Right(previousUrl))
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction("customswaivers" -> "true")))
-        }
-      }
-
       "display form error" when {
 
         "nothing is submitted" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[EligibilityJourney](eori)(Right(previousUrl))
+            mockAuthWithNoEnrolment()
           }
 
           checkFormErrorIsDisplayed(
@@ -222,11 +161,7 @@ class EligibilityControllerSpec
 
         def testRedirection(inputValue: Boolean, nextCall: String) = {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGetPrevious(eori1)(Right(previousUrl))
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
-              Right(eligibilityJourney.copy(customsWaivers = CustomsWaiversFormPage(inputValue.some)))
-            )
+            mockAuthWithNoEnrolment()
           }
           checkIsRedirect(
             performAction("customswaivers" -> inputValue.toString),
@@ -235,7 +170,7 @@ class EligibilityControllerSpec
         }
 
         "Yes is selected" in {
-          testRedirection(true, routes.EligibilityController.getMainBusinessCheck().url)
+          testRedirection(true, routes.EligibilityController.getEoriCheck().url)
         }
 
         "No is selected" in {
@@ -253,75 +188,28 @@ class EligibilityControllerSpec
             .withFormUrlEncodedBody()
         )
 
-      "throw technical error" when {
-
-        "call to get eligibility fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to get eligibility passes but fetches nothing" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[EligibilityJourney](eori1)(Right(None))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-      }
-
-      "redirect" when {
-        "on previous question not answered" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[EligibilityJourney](eori1)(Right(EligibilityJourney().some))
-          }
-          redirectLocation(performAction()) shouldBe Some(routes.EligibilityController.getCustomsWaivers().url)
-        }
-      }
-
-      "display the page" when {
+      "display the page" in {
 
         val previousUrl = routes.EligibilityController.getCustomsWaivers().url
 
-        def testDisplay(eligibilityJourney: EligibilityJourney) = {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourney.some))
+        inSequence {
+          mockAuthWithNoEnrolment()
+        }
+        checkPageIsDisplayed(
+          performAction(),
+          messageFromMessageKey("willyouclaim.title"),
+          { doc =>
+            doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
+            val selectedOptions = doc.select(".govuk-radios__input[checked]")
+            selectedOptions.isEmpty shouldBe true
+            val button = doc.select("form")
+            button.attr("action") shouldBe routes.EligibilityController.postWillYouClaim().url
+
           }
-          checkPageIsDisplayed(
-            performAction(),
-            messageFromMessageKey("willyouclaim.title"),
-            { doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
-              val selectedOptions = doc.select(".govuk-radios__input[checked]")
+        )
 
-              eligibilityJourney.willYouClaim.value match {
-                case Some(value) => selectedOptions.attr("value") shouldBe value.toString
-                case None => selectedOptions.isEmpty shouldBe true
-              }
-              val button = doc.select("form")
-              button.attr("action") shouldBe routes.EligibilityController.postWillYouClaim().url
-
-            }
-          )
-        }
-
-        "user hasn't answered the question" in {
-          testDisplay(EligibilityJourney(customsWaivers = CustomsWaiversFormPage(false.some)))
-        }
-
-        "user has already answered the question" in {
-          List(true, false).foreach { inputValue =>
-            withClue(s" For input value :: $inputValue") {
-              testDisplay(EligibilityJourney(customsWaivers = CustomsWaiversFormPage(false.some), willYouClaim = WillYouClaimFormPage(inputValue.some)))
-            }
-          }
-        }
       }
+
     }
 
     "handling request to post will you claim" must {
@@ -332,42 +220,11 @@ class EligibilityControllerSpec
             .withFormUrlEncodedBody(data: _*)
         )
 
-      val previousUrl = routes.EligibilityController.getCustomsWaivers().url
-
-      val eligibilityJourney = EligibilityJourney(
-        willYouClaim = WillYouClaimFormPage(false.some)
-      )
-
-      def update(ej: EligibilityJourney) = ej.copy(willYouClaim = ej.willYouClaim.copy(value = true.some))
-
-      "throw technical error" when {
-
-        "call to get previous fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[EligibilityJourney](eori)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to get update eligibility journey fails" in {
-
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGetPrevious(eori)(Right(previousUrl))
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction("willyouclaim" -> "true")))
-        }
-
-      }
-
       "show form error" when {
 
         "nothing is submitted" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[EligibilityJourney](eori)(Right(previousUrl))
+            mockAuthWithNoEnrolment()
           }
 
           checkFormErrorIsDisplayed(
@@ -381,18 +238,9 @@ class EligibilityControllerSpec
       "redirect to next page" when {
 
         def testRedirection(input: Boolean, nextCall: String) = {
-          val eligibilityJourney = EligibilityJourney(
-            eoriCheck = EoriCheckFormPage(true.some),
-            customsWaivers = CustomsWaiversFormPage(false.some)
-          )
-          val updatedEJ =
-            eligibilityJourney.copy(willYouClaim = eligibilityJourney.willYouClaim.copy(value = input.some))
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGetPrevious(eori)(Right(previousUrl))
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Right(updatedEJ))
+            mockAuthWithNoEnrolment()
           }
-
           checkIsRedirect(
             performAction("willyouclaim" -> input.toString),
             nextCall
@@ -400,7 +248,7 @@ class EligibilityControllerSpec
         }
 
         "Yes is selected" in {
-          testRedirection(true, routes.EligibilityController.getMainBusinessCheck().url)
+          testRedirection(true, routes.EligibilityController.getEoriCheck().url)
         }
 
         "No is selected" in {
@@ -421,7 +269,7 @@ class EligibilityControllerSpec
 
       "display the page" in {
         inSequence {
-          mockAuthWithNecessaryEnrolment()
+          mockAuthWithNoEnrolment()
         }
         checkPageIsDisplayed(
           performAction(),
@@ -429,6 +277,179 @@ class EligibilityControllerSpec
         )
 
       }
+    }
+
+    "handling request to get EORI check" must {
+
+      def performAction() = controller
+        .getEoriCheck(
+          FakeRequest("GET", routes.EligibilityController.getEoriCheck().url)
+            .withFormUrlEncodedBody()
+        )
+
+      "throw technical error" when {
+
+        "call to retrieve email  fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(Left(ConnectorError(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to get eligibility fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(
+              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("some@test.com").some))
+            )
+            mockGet[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "call to get eligibility passes but fetches nothing" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(
+              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("some@test.com").some))
+            )
+            mockGet[EligibilityJourney](eori1)(Right(None))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+      }
+
+      "display the page" when {
+
+        def testDisplay(eligibilityJourney: EligibilityJourney) = {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(
+              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("some@test.com").some))
+            )
+            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourney.some))
+          }
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("eoricheck.title", eori1),
+            { doc =>
+              val selectedOptions = doc.select(".govuk-radios__input[checked]")
+
+              eligibilityJourney.eoriCheck.value match {
+                case Some(value) => selectedOptions.attr("value") shouldBe value.toString
+                case None => selectedOptions.isEmpty shouldBe true
+
+              }
+              val button = doc.select("form")
+              button.attr("action") shouldBe routes.EligibilityController.postEoriCheck().url
+
+            }
+          )
+        }
+
+        "user hasn't answered the question" in {
+          testDisplay(EligibilityJourney(acceptTerms = AcceptTermsFormPage(true.some)))
+        }
+
+        "user has already answered the question" in {
+          List(true, false).foreach { inputValue =>
+            withClue(s" For input value :: $inputValue") {
+              testDisplay(
+                EligibilityJourney(
+                  acceptTerms = AcceptTermsFormPage(true.some),
+                  eoriCheck = EoriCheckFormPage(inputValue.some)
+                )
+              )
+            }
+          }
+        }
+
+      }
+
+      "redirect to next page" when {
+
+        "retrieved email is Unverified" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(
+              Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, EmailAddress("some@test.com").some))
+            )
+          }
+          checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateUnverifiedEmailAddress().url)
+        }
+
+        "retrieved email is UnDeliverable" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveEmail(eori1)(
+              Right(RetrieveEmailResponse(EmailType.UnDeliverableEmail, EmailAddress("some@test.com").some))
+            )
+          }
+          checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateUndeliveredEmailAddress().url)
+        }
+
+      }
+    }
+
+    "handling request to post EORI check" must {
+
+      def performAction(data: (String, String)*) = controller
+        .postEoriCheck(
+          FakeRequest("POST", routes.EligibilityController.postEoriCheck().url)
+            .withFormUrlEncodedBody(data: _*)
+        )
+
+      def update(ej: EligibilityJourney) = ej.copy(customsWaivers = CustomsWaiversFormPage(true.some))
+
+      "throw technical error" when {
+
+        "eligibility journey fail to update" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
+              Left(ConnectorError(exception))
+            )
+          }
+          assertThrows[Exception](await(performAction("eoricheck" -> "true")))
+        }
+      }
+
+      "display form error" when {
+        "nothing is submitted" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+          }
+          checkFormErrorIsDisplayed(
+            performAction(),
+            messageFromMessageKey("eoricheck.title", eori1),
+            messageFromMessageKey("eoricheck.error.required")
+          )
+        }
+      }
+
+      "redirect to next page" when {
+
+        def testRedirection(input: Boolean, nextCall: String) =
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
+              Right(EligibilityJourney(eoriCheck = EoriCheckFormPage(input.some)))
+            )
+
+            checkIsRedirect(performAction("eoricheck" -> input.toString), nextCall)
+          }
+
+        "yes is selected" in {
+          testRedirection(true, routes.EligibilityController.getMainBusinessCheck().url)
+        }
+
+        "No is selected" in {
+          testRedirection(false, routes.EligibilityController.getIncorrectEori().url)
+        }
+      }
+
     }
 
     "handling request to get not eligible to lead" must {
@@ -480,7 +501,7 @@ class EligibilityControllerSpec
 
       "display the page" when {
 
-        val previousUrl = routes.EligibilityController.getNotEligible().url
+        val previousUrl = routes.EligibilityController.getEoriCheck().url
 
         def testDisplay(eligibilityJourney: EligibilityJourney) = {
           inSequence {
@@ -514,13 +535,23 @@ class EligibilityControllerSpec
         }
 
         "user hasn't answered the question" in {
-          testDisplay(EligibilityJourney(mainBusinessCheck = MainBusinessCheckFormPage(true.some)))
+          testDisplay(
+            EligibilityJourney(
+              eoriCheck = EoriCheckFormPage(true.some),
+              mainBusinessCheck = MainBusinessCheckFormPage(true.some)
+            )
+          )
         }
 
         "user has already answered the question" in {
           List(true, false).foreach { inputValue =>
             withClue(s" For input value :: $inputValue") {
-              testDisplay(EligibilityJourney(mainBusinessCheck = MainBusinessCheckFormPage(inputValue.some)))
+              testDisplay(
+                EligibilityJourney(
+                  eoriCheck = EoriCheckFormPage(true.some),
+                  mainBusinessCheck = MainBusinessCheckFormPage(inputValue.some)
+                )
+              )
             }
           }
         }
@@ -551,7 +582,7 @@ class EligibilityControllerSpec
         "call to get previous fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[EligibilityJourney](eori)(Left(ConnectorError(exception)))
+            mockGetPrevious[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -560,7 +591,7 @@ class EligibilityControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious(eori)(Right(previousUrl))
+            mockGetPrevious(eori1)(Right(previousUrl))
             mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("mainbusinesscheck" -> "true")))
@@ -573,7 +604,7 @@ class EligibilityControllerSpec
         "nothing is submitted" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[EligibilityJourney](eori)(Right(previousUrl))
+            mockGetPrevious[EligibilityJourney](eori1)(Right(previousUrl))
           }
 
           checkFormErrorIsDisplayed(
@@ -589,7 +620,7 @@ class EligibilityControllerSpec
         def testRedirection(input: Boolean, nextCall: String) = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious(eori)(Right(previousUrl))
+            mockGetPrevious(eori1)(Right(previousUrl))
             mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
               Right(updatedEligibilityJourney(input))
             )
@@ -698,137 +729,6 @@ class EligibilityControllerSpec
 
     }
 
-    "handling request to get EORI check" must {
-
-      def performAction() = controller
-        .getEoriCheck(
-          FakeRequest("GET", routes.EligibilityController.getEoriCheck().url)
-            .withFormUrlEncodedBody()
-        )
-
-      "throw technical error" when {
-
-        "call to get eligibility fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to get eligibility passes but fetches nothing" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[EligibilityJourney](eori1)(Right(None))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-      }
-
-      "display the page" when {
-
-        def testDisplay(eligibilityJourney: EligibilityJourney) = {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourney.some))
-          }
-          checkPageIsDisplayed(
-            performAction(),
-            messageFromMessageKey("eoricheck.title", eori1),
-            { doc =>
-              val selectedOptions = doc.select(".govuk-radios__input[checked]")
-
-              eligibilityJourney.eoriCheck.value match {
-                case Some(value) => selectedOptions.attr("value") shouldBe value.toString
-                case None => selectedOptions.isEmpty shouldBe true
-
-              }
-              val button = doc.select("form")
-              button.attr("action") shouldBe routes.EligibilityController.postEoriCheck().url
-
-            }
-          )
-        }
-
-        "user hasn't answered the question" in {
-          testDisplay(EligibilityJourney(acceptTerms = AcceptTermsFormPage(true.some)))
-        }
-
-        "user has already answered the question" in {
-          List(true, false).foreach { inputValue =>
-            withClue(s" For input value :: $inputValue") {
-              testDisplay(
-                EligibilityJourney(
-                  acceptTerms = AcceptTermsFormPage(true.some),
-                  eoriCheck = EoriCheckFormPage(inputValue.some)
-                )
-              )
-            }
-          }
-        }
-
-      }
-    }
-
-    "handling request to post EORI check" must {
-
-      def performAction(data: (String, String)*) = controller
-        .postEoriCheck(
-          FakeRequest("POST", routes.EligibilityController.postEoriCheck().url)
-            .withFormUrlEncodedBody(data: _*)
-        )
-
-      def update(ej: EligibilityJourney) = ej.copy(customsWaivers = CustomsWaiversFormPage(true.some))
-
-      "throw technical error" when {
-
-        "eligibility journey fail to update" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
-              Left(ConnectorError(exception))
-            )
-          }
-          assertThrows[Exception](await(performAction("eoricheck" -> "true")))
-        }
-      }
-
-      "display form error" when {
-        "nothing is submitted" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-          }
-          checkFormErrorIsDisplayed(
-            performAction(),
-            messageFromMessageKey("eoricheck.title", eori1),
-            messageFromMessageKey("eoricheck.error.required")
-          )
-        }
-      }
-
-      "redirect to next page" when {
-
-        def testRedirection(input: Boolean, nextCall: String) =
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
-              Right(EligibilityJourney(eoriCheck = EoriCheckFormPage(input.some)))
-            )
-
-            checkIsRedirect(performAction("eoricheck" -> input.toString), nextCall)
-          }
-
-        "yes is selected" in {
-          testRedirection(true, routes.EligibilityController.getCustomsWaivers().url)
-        }
-        "No is selected" in {
-          testRedirection(false, routes.EligibilityController.getIncorrectEori().url)
-        }
-      }
-
-    }
-
     "handling request to getIncorrectEori" must {
       def performAction() = controller
         .getIncorrectEori(
@@ -854,7 +754,7 @@ class EligibilityControllerSpec
         "call to get previous fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[EligibilityJourney](eori)(Left(ConnectorError(exception)))
+            mockGetPrevious[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -866,7 +766,7 @@ class EligibilityControllerSpec
         val previousUrl = routes.EligibilityController.getTerms().url
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockGetPrevious[EligibilityJourney](eori)(Right(routes.EligibilityController.getTerms().url))
+          mockGetPrevious[EligibilityJourney](eori1)(Right(routes.EligibilityController.getTerms().url))
         }
         checkPageIsDisplayed(
           performAction(),

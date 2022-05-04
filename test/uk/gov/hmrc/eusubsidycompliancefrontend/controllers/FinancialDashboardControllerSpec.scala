@@ -28,7 +28,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{subsidyRetrieveForDate, undertaking, undertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, subsidyRetrieveForDate, undertaking, undertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
@@ -67,8 +67,8 @@ class FinancialDashboardControllerSpec
     "getFinancialDashboard is called" must {
 
       "return the dashboard page for a logged in user with a valid EORI" in {
-        mockAuthWithNecessaryEnrolment()
-        mockRetrieveUndertaking(eori)(undertaking.some.toFuture)
+        mockAuthWithEccEnrolmentOnly(eori1)
+        mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
         mockRetrieveSubsidy(subsidyRetrieveForDate(fakeTimeProvider.today))(undertakingSubsidies.toFuture)
 
         running(fakeApplication) {
