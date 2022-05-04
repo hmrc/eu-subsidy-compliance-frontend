@@ -24,12 +24,11 @@ import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.English
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, SingleEORIAndDateEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, BusinessEntityJourney, EscService, JourneyTraverseService, RetrieveEmailService, SendEmailService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EscService, RetrieveEmailService, SendEmailHelperService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
@@ -53,9 +52,9 @@ class SignOutControllerSpec
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[RetrieveEmailService].toInstance(mockRetrieveEmailService),
-    bind[SendEmailService].toInstance(mockSendEmailService),
     bind[TimeProvider].toInstance(mockTimeProvider),
-    bind[AuditService].toInstance(mockAuditService)
+    bind[AuditService].toInstance(mockAuditService),
+    bind[SendEmailHelperService].toInstance(mockSendEmailHelperService)
   )
 
   private val controller = instanceOf[SignOutController]
@@ -158,33 +157,30 @@ class SignOutControllerSpec
       }
 
       "display the page" in {
-        val emailParamBE = SingleEORIAndDateEmailParameter(
-          eori4,
-          undertaking.name,
-          undertakingRef,
-          effectiveRemovalDate,
-          "removeThemselfEmailToBE"
-        )
-        val emailParamLead = DoubleEORIAndDateEmailParameter(
-          eori1,
-          eori4,
-          undertaking.name,
-          undertakingRef,
-          effectiveRemovalDate,
-          "removeThemselfEmailToLead"
-        )
         inSequence {
           mockAuthWithNecessaryEnrolment(eori4)
           mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
           mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
           mockTimeToday(currentDate)
           mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-          mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-          mockSendEmail(validEmailAddress, emailParamBE, "template_remove_yourself_be_EN")(
+          mockRetrieveEmailAddressAndSendEmail(
+            eori4,
+            None,
+            "removeThemselfEmailToBE",
+            undertaking1,
+            undertakingRef,
+            effectiveRemovalDate.some
+          )(
             Right(EmailSendResult.EmailSent)
           )
-          mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-          mockSendEmail(validEmailAddress, emailParamLead, "template_remove_yourself_lead_EN")(
+          mockRetrieveEmailAddressAndSendEmail(
+            eori1,
+            eori4.some,
+            "removeThemselfEmailToLead",
+            undertaking1,
+            undertakingRef,
+            effectiveRemovalDate.some
+          )(
             Right(EmailSendResult.EmailSent)
           )
           mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf(undertakingRef, "1123", eori1, eori4))
