@@ -26,31 +26,31 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   val welshLanguageSupportEnabled: Boolean =
     config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
 
-  lazy val ggSignInUrl: String = config.get[String](s"urls.ggSignInUrl")
-  lazy val ggSignOutUrl: String = config.get[String](s"urls.ggSignOutUrl")
-  lazy val eccEscSubscribeUrl: String = config.get[String](s"urls.eccEscSubscribeUrl")
-  lazy val exchangeRateToolUrl: String = config.get[String](s"urls.exchangeRateToolUrl")
-  lazy val emailFrontendUrl: String = config.get[String]("microservice.services.customs-email-frontend.url")
-  lazy val exitSurveyUrl: String = config.get[String]("urls.feedback-survey")
-  lazy val contactFrontendUrl: String =
+  val ggSignInUrl: String = config.get[String](s"urls.ggSignInUrl")
+  val ggSignOutUrl: String = config.get[String](s"urls.ggSignOutUrl")
+  val eccEscSubscribeUrl: String = config.get[String](s"urls.eccEscSubscribeUrl")
+  val exchangeRateToolUrl: String = config.get[String](s"urls.exchangeRateToolUrl")
+  val emailFrontendUrl: String = config.get[String]("microservice.services.customs-email-frontend.url")
+  val exitSurveyUrl: String = config.get[String]("urls.feedback-survey")
+  val contactFrontendUrl: String =
     contactFrontendConfig.baseUrl.getOrElse(sys.error("Could not find config for contact frontend url"))
 
-  lazy val contactFormServiceIdentifier: String =
+  val contactFormServiceIdentifier: String =
     contactFrontendConfig.serviceId.getOrElse(sys.error("Could not find config for contact frontend service id"))
 
-  lazy val betaFeedbackUrlNoAuth: String = s"$contactFrontendUrl/contact/beta-feedback?service=$contactFormServiceIdentifier"
+  val betaFeedbackUrlNoAuth: String = s"$contactFrontendUrl/contact/beta-feedback?service=$contactFormServiceIdentifier"
   lazy val sessionTimeout = config.get[String]("application.session.maxAge")
 
-  private lazy val signOutUrlBase: String = config.get[String]("auth.sign-out.url")
+  private val signOutUrlBase: String = config.get[String]("auth.sign-out.url")
 
   def signOutUrl(continueUrl: Option[String]): String =
     continueUrl.fold(signOutUrlBase)(continue => s"$signOutUrlBase?continue=$continue")
 
-  lazy val timeOutContinue: String = config.get[String](s"urls.timeOutContinue")
+  val timeOutContinue: String = config.get[String](s"urls.timeOutContinue")
 
-  lazy val authTimeoutSeconds: Int = config.get[FiniteDuration]("auth.sign-out.inactivity-timeout").toSeconds.toInt
+  val authTimeoutSeconds: Int = config.get[FiniteDuration]("auth.sign-out.inactivity-timeout").toSeconds.toInt
 
-  lazy val authTimeoutCountdownSeconds: Int =
+  val authTimeoutCountdownSeconds: Int =
     config.get[FiniteDuration]("auth.sign-out.inactivity-countdown").toSeconds.toInt
 
   def templateIdsMap(config: Configuration, langCode: String) = Map(

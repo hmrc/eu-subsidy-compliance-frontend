@@ -19,28 +19,19 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.Configuration
 import play.api.test.Helpers._
-import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.SendEmailConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendRequest, EmailSendResult}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
-import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class SendEmailHelperServiceSpec extends AnyWordSpec with Matchers with MockFactory {
+class SendEmailServiceSpec extends AnyWordSpec with Matchers with MockFactory {
 
   private val mockSendEmailConnector: SendEmailConnector = mock[SendEmailConnector]
-
-  // TODO - if needed spin up an application to avoid jumping through hoops like this
-  private val fakeConfig = new AppConfig(
-    Configuration.empty,
-    new ContactFrontendConfig(Configuration.empty)
-  )
 
   private def mockSendEmail(emailSendRequest: EmailSendRequest)(result: Either[ConnectorError, HttpResponse]) =
     (mockSendEmailConnector
@@ -48,18 +39,13 @@ class SendEmailHelperServiceSpec extends AnyWordSpec with Matchers with MockFact
       .expects(emailSendRequest, *)
       .returning(result.toFuture)
 
-  private val service = new SendEmailHelperService(
-    fakeConfig,
-    mock[RetrieveEmailService],
-    mockSendEmailConnector,
-    Configuration.empty
-  )
+  private val service = new SendEmailService(mockSendEmailConnector)
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private val templatedId = "templateId1"
 
-  "SendEmailHelperService" when {
+  "SendEmailServiceImplSpec" when {
 
     " handling request to send email" must {
 
