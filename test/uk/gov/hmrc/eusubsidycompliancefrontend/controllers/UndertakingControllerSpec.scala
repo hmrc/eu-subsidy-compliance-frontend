@@ -25,7 +25,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.ModifyUndertakingRow
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.UndertakingUpdated
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
@@ -53,7 +53,7 @@ class UndertakingControllerSpec
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[JourneyTraverseService].toInstance(mockJourneyTraverseService),
-    bind[SendEmailHelperService].toInstance(mockSendEmailHelperService),
+    bind[SendEmailService].toInstance(mockSendEmailService),
     bind[RetrieveEmailService].toInstance(mockRetrieveEmailService),
     bind[AuditService].toInstance(mockAuditService),
     bind[TimeProvider].toInstance(mockTimeProvider)
@@ -682,7 +682,7 @@ class UndertakingControllerSpec
 
         }
 
-        "call to send email fails" in {
+        "call to retrieve email address fails" in {
 
           val updatedUndertakingJourney =
             undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage(false.some))
@@ -691,7 +691,7 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertakingCreated, undertakingRef,None)(Left(ConnectorError(exception)))
+            mockRetrieveEmail(eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
 
@@ -708,7 +708,8 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(eori, None, "createUndertaking", undertakingCreated, undertakingRef, None)(Right(EmailSent))
+            mockRetrieveEmail(eori)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockSendEmail(validEmailAddress, emailParameter, templateId)(Right(EmailSendResult.EmailSent))
             mockTimeProviderNow(timeNow)
             mockSendAuditEvent(createUndertakingAuditEvent)
           }
