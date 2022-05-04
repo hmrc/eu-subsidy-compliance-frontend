@@ -25,11 +25,10 @@ import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIEmailParameter, SingleEORIEmailParameter}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailType, RetrieveEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.AddEoriFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -158,8 +157,6 @@ class SelectNewLeadControllerSpec
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
-        val emailParamsBE = SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promoteAsLeadEmailToBE")
-
         def update(j: NewLeadJourney) = j.copy(selectNewLead = SelectNewLeadFormPage(eori4.some))
 
         "call to update new lead journey fails" in {
@@ -172,7 +169,7 @@ class SelectNewLeadControllerSpec
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
         }
 
-        "call to fetch business entity email address fails" in {
+        "call to send email fails" in {
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -180,34 +177,19 @@ class SelectNewLeadControllerSpec
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
-            mockRetrieveEmail(eori4)(Left(ConnectorError(exception)))
+            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promoteAsLeadEmailToBE", undertaking, undertakingRef, None)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
         }
 
-        "call to fetch lead email address fails" in {
-
+        "language is not supported" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockSendEmail(validEmailAddress, emailParamsBE, "template_BE_as_lead_EN")(Right(EmailSendResult.EmailSent))
-            mockRetrieveEmail(eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
-        }
-
-        "language is other than english /welsh" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
-              Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
-            )
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promoteAsLeadEmailToBE", undertaking, undertakingRef, None)(Right(EmailSendResult.EmailSent))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4)("fr")))
         }
@@ -233,36 +215,29 @@ class SelectNewLeadControllerSpec
 
         def update(j: NewLeadJourney) = j.copy(selectNewLead = SelectNewLeadFormPage(eori4.some))
 
-        def testRedirection(templateIdBE: String, templateIdLead: String, lang: String): Unit = {
-
-          val emailParamsBE =
-            SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promoteAsLeadEmailToBE")
-          val emailParamLead =
-            DoubleEORIEmailParameter(eori1, eori4, undertaking.name, undertakingRef, "promoteAsLeadEmailToLead")
+        def testRedirection(lang: Language): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockSendEmail(validEmailAddress, emailParamsBE, templateIdBE)(Right(EmailSendResult.EmailSent))
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockSendEmail(validEmailAddress, emailParamLead, templateIdLead)(Right(EmailSendResult.EmailSent))
+            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promoteAsLeadEmailToBE", undertaking, undertakingRef, None)(Right(EmailSendResult.EmailSent))
+            mockRetrieveEmailAddressAndSendEmail(eori1, eori4.some, "promoteAsLeadEmailToLead", undertaking, undertakingRef, None)(Right(EmailSendResult.EmailSent))
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
           }
           checkIsRedirect(
-            performAction("selectNewLead" -> eori4)(lang),
+            performAction("selectNewLead" -> eori4)(lang.code),
             routes.SelectNewLeadController.getLeadEORIChanged()
           )
         }
 
         "the language selected by user is  English" in {
-          testRedirection("template_BE_as_lead_EN", "template_BE_as_lead_mail_to_lead_EN", English.code)
+          testRedirection(English)
         }
 
         "the language selected by user is  Welsh" in {
-          testRedirection("template_BE_as_lead_CY", "template_BE_as_lead_mail_to_lead_CY", Welsh.code)
+          testRedirection(Welsh)
         }
       }
 
