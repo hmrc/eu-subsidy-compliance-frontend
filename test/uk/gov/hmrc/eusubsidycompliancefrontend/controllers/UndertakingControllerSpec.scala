@@ -24,6 +24,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.ModifyUndertakingRow
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.UndertakingUpdated
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingName}
@@ -700,7 +701,7 @@ class UndertakingControllerSpec
 
       "redirect to confirmation page" when {
 
-        def testRedirection(lang: String, templateId: String): Unit = {
+        def testRedirection(lang: Language): Unit = {
 
           val updatedUndertakingJourney = undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage(false.some))
 
@@ -713,17 +714,17 @@ class UndertakingControllerSpec
             mockSendAuditEvent(createUndertakingAuditEvent)
           }
           checkIsRedirect(
-            performAction("cya" -> "true")(lang),
+            performAction("cya" -> "true")(lang.code),
             routes.UndertakingController.getConfirmation(undertakingRef, undertakingCreated.name).url
           )
         }
 
         "all api calls are successful and english language is selected" in {
-          testRedirection(Language.English.code, "template_EN")
+          testRedirection(English)
         }
 
         "all api calls are successful and Welsh language is selected" in {
-          testRedirection(Language.Welsh.code, "template_CY")
+          testRedirection(Welsh)
         }
 
       }

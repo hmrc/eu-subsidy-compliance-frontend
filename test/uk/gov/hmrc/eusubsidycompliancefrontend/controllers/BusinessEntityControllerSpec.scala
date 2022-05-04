@@ -622,7 +622,7 @@ class BusinessEntityControllerSpec
           assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
         }
 
-        "call to retrieve email and  send  fails for BE" in {
+        "call to send email fails" in {
 
           val businessEntity = BusinessEntity(businessEntityIdentifier = eori2, leadEORI = false)
           inSequence {
