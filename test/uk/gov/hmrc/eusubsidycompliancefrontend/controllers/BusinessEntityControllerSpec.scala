@@ -27,8 +27,8 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityControllerSpec.CheckYourAnswersRowBE
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, DoubleEORIEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
@@ -93,6 +93,7 @@ class BusinessEntityControllerSpec
 
   private val invalidEOris = List("GA1234567890", "AB1234567890")
   private val invalidLengthEOris = List("1234567890", "12345678901234", "GB1234567890")
+  private val currentDate = LocalDate.of(2022, 10, 9)
 
   "BusinessEntityControllerSpec" when {
 
@@ -572,6 +573,8 @@ class BusinessEntityControllerSpec
 
       "throw technical error" when {
         val exception = new Exception("oh no")
+        val emailParametersBE = SingleEORIEmailParameter(eori2, undertaking.name, undertakingRef, "addMemberEmailToBE")
+
         "call to get undertaking return undertaking without undertaking ref" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -627,9 +630,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(eori2, None, "addMemberEmailToBE", undertaking, undertakingRef, None)(
-              Left(ConnectorError(exception))
-            )
+            mockRetrieveEmail(eori2)(Left(ConnectorError(exception)))
           }
 
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
@@ -643,19 +644,37 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(eori2, None, "addMemberEmailToBE", undertaking, undertakingRef, None)(
-              Right(EmailSendResult.EmailSent)
-            )
-            mockRetrieveEmailAddressAndSendEmail(
-              eori1,
-              eori2.some,
-              "addMemberEmailToLead",
-              undertaking,
-              undertakingRef,
-              None
-            )(
-              Left(ConnectorError(exception))
-            )
+            mockRetrieveEmail(eori2)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
+          }
+          assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
+        }
+
+        "call to retrieve email for lead EORI fails" in {
+
+          val businessEntity = BusinessEntity(businessEntityIdentifier = eori2, leadEORI = false)
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
+            mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
+            mockRetrieveEmail(eori2)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockSendEmail(validEmailAddress, emailParametersBE, "template_add_be_EN")(Right(EmailSendResult.EmailSent))
+            mockRetrieveEmail(eori1)(Left(ConnectorError(exception)))
+          }
+          assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
+        }
+
+        "call to retrieve Lead EORI email address returns None" in {
+
+          val businessEntity = BusinessEntity(businessEntityIdentifier = eori2, leadEORI = false)
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
+            mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
+            mockRetrieveEmail(eori2)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockSendEmail(validEmailAddress, emailParametersBE, "template_add_be_EN")(Right(EmailSendResult.EmailSent))
+            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
         }
@@ -681,22 +700,19 @@ class BusinessEntityControllerSpec
           resettedBusinessJourney: BusinessEntityJourney
         ): Unit = {
           val businessEntity = BusinessEntity(eori2, leadEORI = false)
+          val emailParametersBE =
+            SingleEORIEmailParameter(eori2, undertaking.name, undertakingRef, "addMemberEmailToBE")
+          val emailParametersLead =
+            DoubleEORIEmailParameter(eori1, eori2, undertaking.name, undertakingRef, "addMemberEmailToLead")
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(eori2, None, "addMemberEmailToBE", undertaking, undertakingRef, None)(
-              Right(EmailSendResult.EmailSent)
-            )
-            mockRetrieveEmailAddressAndSendEmail(
-              eori1,
-              eori2.some,
-              "addMemberEmailToLead",
-              undertaking,
-              undertakingRef,
-              None
-            )(
+            mockRetrieveEmail(eori2)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockSendEmail(validEmailAddress, emailParametersBE, "template_add_be_EN")(Right(EmailSendResult.EmailSent))
+            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockSendEmail(validEmailAddress, emailParametersLead, "template_add_lead_EN")(
               Right(EmailSendResult.EmailSent)
             )
             mockDelete[Undertaking](eori1)(Right(()))
@@ -708,25 +724,21 @@ class BusinessEntityControllerSpec
 
         def testRedirectionLang(lang: String, templateIdBE: String, templateIdLead: String): Unit = {
 
+          val emailParametersBE =
+            SingleEORIEmailParameter(eori2, undertaking.name, undertakingRef, "addMemberEmailToBE")
+          val emailParametersLead =
+            DoubleEORIEmailParameter(eori1, eori2, undertaking.name, undertakingRef, "addMemberEmailToLead")
+
           val businessEntity = BusinessEntity(businessEntityIdentifier = eori2, leadEORI = false)
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(eori2, None, "addMemberEmailToBE", undertaking, undertakingRef, None)(
-              Right(EmailSendResult.EmailSent)
-            )
-            mockRetrieveEmailAddressAndSendEmail(
-              eori1,
-              eori2.some,
-              "addMemberEmailToLead",
-              undertaking,
-              undertakingRef,
-              None
-            )(
-              Right(EmailSendResult.EmailSent)
-            )
+            mockRetrieveEmail(eori2)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockSendEmail(validEmailAddress, emailParametersBE, templateIdBE)(Right(EmailSendResult.EmailSent))
+            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockSendEmail(validEmailAddress, emailParametersLead, templateIdLead)(Right(EmailSendResult.EmailSent))
             mockDelete[Undertaking](eori1)(Right(()))
             mockSendAuditEvent(businessEntityAddedEvent)
             mockPut[BusinessEntityJourney](BusinessEntityJourney(), eori1)(Right(BusinessEntityJourney()))
@@ -770,6 +782,10 @@ class BusinessEntityControllerSpec
           updatedBusinessJourney: BusinessEntityJourney
         ): Unit = {
           val businessEntity = BusinessEntity(eori2, leadEORI = false)
+          val emailParametersBE =
+            SingleEORIEmailParameter(eori2, undertaking.name, undertakingRef, "addMemberEmailToBE")
+          val emailParametersLead =
+            DoubleEORIEmailParameter(eori1, eori2, undertaking.name, undertakingRef, "addMemberEmailToLead")
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -779,17 +795,10 @@ class BusinessEntityControllerSpec
               businessEntity.copy(businessEntityIdentifier = businessEntityJourney.oldEORI.get)
             )(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(eori2, None, "addMemberEmailToBE", undertaking, undertakingRef, None)(
-              Right(EmailSendResult.EmailSent)
-            )
-            mockRetrieveEmailAddressAndSendEmail(
-              eori1,
-              eori2.some,
-              "addMemberEmailToLead",
-              undertaking,
-              undertakingRef,
-              None
-            )(
+            mockRetrieveEmail(eori2)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockSendEmail(validEmailAddress, emailParametersBE, "template_add_be_EN")(Right(EmailSendResult.EmailSent))
+            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockSendEmail(validEmailAddress, emailParametersLead, "template_add_lead_EN")(
               Right(EmailSendResult.EmailSent)
             )
             mockDelete[Undertaking](eori1)(Right(()))
@@ -872,6 +881,7 @@ class BusinessEntityControllerSpec
         )
 
       "throw a technical error" when {
+        val exception = new Exception("oh no!")
 
         "call to retrieve undertaking returns undertaking having no BE with that eori" in {
           inSequence {
@@ -902,23 +912,26 @@ class BusinessEntityControllerSpec
 
       "redirect to next page" when {
 
-        def testRedirection(input: String, nextCall: String): Unit = {
+        "user selected yes as input" when {
           inSequence {
             mockAuthWithEORIEnrolment(eori4)
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
           }
           checkIsRedirect(
-            performAction("removeYourselfBusinessEntity" -> input),
-            nextCall
+            performAction("removeYourselfBusinessEntity" -> "true"),
+            routes.SignOutController.signOut().url
           )
-
-        }
-        "user select yes as input" when {
-          testRedirection("true", routes.SignOutController.signOut().url)
         }
 
-        "user selects No as input" in {
-          testRedirection("false", routes.AccountController.getAccountPage().url)
+        "user selected No as input" in {
+          inSequence {
+            mockAuthWithEORIEnrolment(eori4)
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+          }
+          checkIsRedirect(
+            performAction("removeYourselfBusinessEntity" -> "false"),
+            routes.AccountController.getAccountPage().url
+          )
         }
       }
 
@@ -989,7 +1002,6 @@ class BusinessEntityControllerSpec
         )
 
       val effectiveDate = LocalDate.of(2022, 10, 9)
-      val effectiveDateString = "10 October 2022"
 
       "throw a technical error" when {
         val exception = new Exception("oh no!")
@@ -1013,54 +1025,38 @@ class BusinessEntityControllerSpec
           assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
         }
 
-        "call to fetch and send  email to business entity fails" in {
+        "call to fetch business entity email address fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment(eori1)
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockTimeToday(effectiveDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(
-              eori4,
-              None,
-              "removeMemberEmailToBE",
-              undertaking1,
-              undertakingRef,
-              effectiveDateString.some
-            )(
-              Left(ConnectorError(exception))
-            )
+            mockRetrieveEmail(eori4)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
         }
 
-        "call to fetch and send email to lead EORI fails" in {
+        "call to fetch LeadEORI email address fails" in {
+          val emailParameterBE = SingleEORIAndDateEmailParameter(
+            eori4,
+            undertaking.name,
+            undertakingRef,
+            "10 October 2022",
+            "removeMemberEmailToBE"
+          )
+
           inSequence {
             mockAuthWithNecessaryEnrolment(eori1)
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockTimeToday(effectiveDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(
-              eori4,
-              None,
-              "removeMemberEmailToBE",
-              undertaking1,
-              undertakingRef,
-              effectiveDateString.some
-            )(
+            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockSendEmail(validEmailAddress, emailParameterBE, "template_remove_be_EN")(
               Right(EmailSendResult.EmailSent)
             )
-            mockRetrieveEmailAddressAndSendEmail(
-              eori1,
-              eori4.some,
-              "removeMemberEmailToLead",
-              undertaking1,
-              undertakingRef,
-              effectiveDateString.some
-            )(
-              Left(ConnectorError(exception))
-            )
+            mockRetrieveEmail(eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
         }
@@ -1087,40 +1083,88 @@ class BusinessEntityControllerSpec
 
       "redirect to next page" when {
 
-        "user select yes as input" in {
+        def testRedirection(
+          emailParametersBE: EmailParameters,
+          emailParametersLead: EmailParameters,
+          templateIdBE: String,
+          templateIdLead: String,
+          lang: String
+        ): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment(eori1)
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockTimeToday(effectiveDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(
-              eori4,
-              None,
-              "removeMemberEmailToBE",
-              undertaking1,
-              undertakingRef,
-              effectiveDateString.some
-            )(
-              Right(EmailSendResult.EmailSent)
-            )
-            mockRetrieveEmailAddressAndSendEmail(
-              eori1,
-              eori4.some,
-              "removeMemberEmailToLead",
-              undertaking1,
-              undertakingRef,
-              effectiveDateString.some
-            )(
-              Right(EmailSendResult.EmailSent)
-            )
+            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockSendEmail(validEmailAddress, emailParametersBE, templateIdBE)(Right(EmailSendResult.EmailSent))
+            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockSendEmail(validEmailAddress, emailParametersLead, templateIdLead)(Right(EmailSendResult.EmailSent))
             mockDelete[Undertaking](eori1)(Right(()))
             mockSendAuditEvent(AuditEvent.BusinessEntityRemoved(undertakingRef, "1123", eori1, eori4))
           }
           checkIsRedirect(
-            performAction("removeBusiness" -> "true")(eori4),
+            performAction("removeBusiness" -> "true")(eori4, lang),
             routes.BusinessEntityController.getAddBusinessEntity().url
           )
+        }
+
+        "user select yes as input" when {
+
+          "User has selected English language" in {
+
+            val emailParameterBE = SingleEORIAndDateEmailParameter(
+              eori4,
+              undertaking.name,
+              undertakingRef,
+              "10 October 2022",
+              "removeMemberEmailToBE"
+            )
+            val emailParameterLead = DoubleEORIAndDateEmailParameter(
+              eori1,
+              eori4,
+              undertaking.name,
+              undertakingRef,
+              "10 October 2022",
+              "removeMemberEmailToLead"
+            )
+            testRedirection(
+              emailParameterBE,
+              emailParameterLead,
+              "template_remove_be_EN",
+              "template_remove_lead_EN",
+              English.code
+            )
+
+          }
+
+          "User has selected Welsh language" in {
+
+            val emailParameterBE = SingleEORIAndDateEmailParameter(
+              eori4,
+              undertaking.name,
+              undertakingRef,
+              "10 Hydref 2022",
+              "removeMemberEmailToBE"
+            )
+            val emailParameterLead = DoubleEORIAndDateEmailParameter(
+              eori1,
+              eori4,
+              undertaking.name,
+              undertakingRef,
+              "10 Hydref 2022",
+              "removeMemberEmailToLead"
+            )
+            testRedirection(
+              emailParameterBE,
+              emailParameterLead,
+              "template_remove_be_CY",
+              "template_remove_lead_CY",
+              Welsh.code
+            )
+
+          }
+
         }
 
         "user selects No as input" in {

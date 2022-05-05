@@ -25,10 +25,11 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.English
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, SingleEORIAndDateEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EscService, RetrieveEmailService, SendEmailHelperService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EscService, RetrieveEmailService, SendEmailHelperService, SendEmailService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
@@ -52,16 +53,13 @@ class SignOutControllerSpec
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[RetrieveEmailService].toInstance(mockRetrieveEmailService),
+    bind[SendEmailService].toInstance(mockSendEmailService),
     bind[TimeProvider].toInstance(mockTimeProvider),
-    bind[AuditService].toInstance(mockAuditService),
-    bind[SendEmailHelperService].toInstance(mockSendEmailHelperService)
+    bind[AuditService].toInstance(mockAuditService)
   )
 
   private val controller = instanceOf[SignOutController]
-
-  private val currentDate = LocalDate.of(2021, 10, 9)
-
-  private val effectiveRemovalDate = "10 October 2021"
+  private val currentDate = LocalDate.of(2022, 10, 9)
 
   override def additionalConfig: Configuration = super.additionalConfig.withFallback(
     Configuration(
@@ -156,41 +154,63 @@ class SignOutControllerSpec
         }
       }
 
-      "display the page" in {
-        inSequence {
-          mockAuthWithNecessaryEnrolment(eori4)
-          mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-          mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
-          mockTimeToday(currentDate)
-          mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-          mockRetrieveEmailAddressAndSendEmail(
+      "display the page" when {
+
+        def testDisplay(lang: String, templateIdBe: String, templateIdLead: String, effectiveRemovalDate: String) = {
+          val emailParamBE = SingleEORIAndDateEmailParameter(
             eori4,
-            None,
-            "removeThemselfEmailToBE",
-            undertaking1,
+            undertaking.name,
             undertakingRef,
-            effectiveRemovalDate.some
-          )(
-            Right(EmailSendResult.EmailSent)
+            effectiveRemovalDate,
+            "removeThemselfEmailToBE"
           )
-          mockRetrieveEmailAddressAndSendEmail(
+          val emailParamLead = DoubleEORIAndDateEmailParameter(
             eori1,
-            eori4.some,
-            "removeThemselfEmailToLead",
-            undertaking1,
+            eori4,
+            undertaking.name,
             undertakingRef,
-            effectiveRemovalDate.some
-          )(
-            Right(EmailSendResult.EmailSent)
+            effectiveRemovalDate,
+            "removeThemselfEmailToLead"
           )
-          mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf(undertakingRef, "1123", eori1, eori4))
+          inSequence {
+            mockAuthWithNecessaryEnrolment(eori4)
+            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
+            mockTimeToday(currentDate)
+            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
+            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockSendEmail(validEmailAddress, emailParamBE, templateIdBe)(
+              Right(EmailSendResult.EmailSent)
+            )
+            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockSendEmail(validEmailAddress, emailParamLead, templateIdLead)(Right(EmailSendResult.EmailSent))
+            mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf(undertakingRef, "1123", eori1, eori4))
+          }
+
+          checkPageIsDisplayed(
+            performAction(lang),
+            messageFromMessageKey("signOut.title"),
+            doc => doc.select(".govuk-body").text() should include regex messageFromMessageKey("signOut.p1")
+          )
         }
 
-        checkPageIsDisplayed(
-          performAction(),
-          messageFromMessageKey("signOut.title"),
-          doc => doc.select(".govuk-body").text() should include regex messageFromMessageKey("signOut.p1")
-        )
+        "the language of the service is English" in {
+          testDisplay(
+            English.code,
+            "template_remove_yourself_be_EN",
+            "template_remove_yourself_lead_EN",
+            "10 October 2022"
+          )
+        }
+
+        "the language of the service is Welsh" in {
+          testDisplay(
+            Welsh.code,
+            "template_remove_yourself_be_CY",
+            "template_remove_yourself_lead_CY",
+            "10 Hydref 2022"
+          )
+        }
 
       }
 
