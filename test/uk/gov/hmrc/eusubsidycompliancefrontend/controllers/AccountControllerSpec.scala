@@ -46,7 +46,6 @@ class AccountControllerSpec
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
-    bind[RetrieveEmailService].toInstance(mockRetrieveEmailService),
     bind[TimeProvider].toInstance(mockTimeProvider)
   )
 

@@ -16,15 +16,19 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
+import cats.implicits.catsSyntaxOptionId
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
+import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.SendEmailConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{RetrieveEmailConnector, SendEmailConnector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendRequest, EmailSendResult}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.VerifiedEmail
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendRequest, EmailSendResult, EmailType, RetrieveEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
@@ -34,13 +38,19 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class SendEmailHelperServiceSpec extends AnyWordSpec with Matchers with MockFactory {
 
-  private val mockSendEmailConnector: SendEmailConnector = mock[SendEmailConnector]
-
-  // TODO - if needed spin up an application to avoid jumping through hoops like this
   private val fakeConfig = new AppConfig(
     Configuration.empty,
     new ContactFrontendConfig(Configuration.empty)
   )
+
+  private val emptyHeaders = Map.empty[String, Seq[String]]
+
+  private val validEmailResponseJson = Json.toJson(validEmailResponse)
+  private val inValidEmailResponseJson = Json.toJson(inValidEmailResponse)
+  private val undeliverableResponseJson = Json.toJson(undeliverableEmailResponse)
+
+  private val mockSendEmailConnector: SendEmailConnector = mock[SendEmailConnector]
+  private val mockRetrieveEmailConnector = mock[RetrieveEmailConnector]
 
   private def mockSendEmail(emailSendRequest: EmailSendRequest)(result: Either[ConnectorError, HttpResponse]) =
     (mockSendEmailConnector
@@ -48,10 +58,16 @@ class SendEmailHelperServiceSpec extends AnyWordSpec with Matchers with MockFact
       .expects(emailSendRequest, *)
       .returning(result.toFuture)
 
+  private def mockRetrieveEmail(eori: EORI)(result: Either[ConnectorError, HttpResponse]) =
+    (mockRetrieveEmailConnector
+      .retrieveEmailByEORI(_: EORI)(_: HeaderCarrier))
+      .expects(eori, *)
+      .returning(result.toFuture)
+
   private val service = new SendEmailHelperService(
     fakeConfig,
-    mock[RetrieveEmailService],
     mockSendEmailConnector,
+    mockRetrieveEmailConnector,
     Configuration.empty
   )
 
@@ -93,6 +109,67 @@ class SendEmailHelperServiceSpec extends AnyWordSpec with Matchers with MockFact
 
     }
 
+  }
+
+
+  "handling request to retrieve email by eori" must {
+
+    "return an error" when {
+
+      "the http call fails" in {
+        mockRetrieveEmail(eori1)(Left(ConnectorError("")))
+        val result = service.retrieveEmailByEORI(eori1)
+        assertThrows[RuntimeException](await(result))
+      }
+
+      "the http response doesn't come back with status 200(OK) or 404" in {
+        mockRetrieveEmail(eori1)(Right(HttpResponse(BAD_REQUEST, validEmailResponseJson, emptyHeaders)))
+        val result = service.retrieveEmailByEORI(eori1)
+        assertThrows[RuntimeException](await(result))
+      }
+
+      "there is no json in the response" in {
+        mockRetrieveEmail(eori1)(Right(HttpResponse(OK, "hi")))
+        val result = service.retrieveEmailByEORI(eori1)
+        assertThrows[RuntimeException](await(result))
+      }
+
+      "the json in the response can't be parsed" in {
+        val json = Json.parse("""{ "a" : 1 }""")
+
+        mockRetrieveEmail(eori1)(Right(HttpResponse(OK, json, emptyHeaders)))
+        val result = service.retrieveEmailByEORI(eori1)
+        assertThrows[RuntimeException](await(result))
+      }
+
+    }
+
+    "return successfully" when {
+
+      "the http call return with 200 and valid email address response" in {
+        mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+        val result = service.retrieveEmailByEORI(eori1)
+        await(result) shouldBe RetrieveEmailResponse(VerifiedEmail, validEmailAddress.some)
+      }
+
+      "the http call return with 404 " in {
+        mockRetrieveEmail(eori1)(Right(HttpResponse(NOT_FOUND, " ")))
+        val result = service.retrieveEmailByEORI(eori1)
+        await(result) shouldBe RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)
+      }
+
+      "the http call return with 200 but the email is Undeliverable " in {
+        mockRetrieveEmail(eori1)(Right(HttpResponse(OK, undeliverableResponseJson, emptyHeaders)))
+        val result = service.retrieveEmailByEORI(eori1)
+        await(result) shouldBe RetrieveEmailResponse(EmailType.UnDeliverableEmail, undeliverableEmailAddress.some)
+      }
+
+      "the http call return with 200 but the email is invalid " in {
+        mockRetrieveEmail(eori1)(Right(HttpResponse(OK, inValidEmailResponseJson, emptyHeaders)))
+        val result = service.retrieveEmailByEORI(eori1)
+        await(result) shouldBe RetrieveEmailResponse(EmailType.UnVerifiedEmail, inValidEmailAddress.some)
+      }
+    }
   }
 
 }

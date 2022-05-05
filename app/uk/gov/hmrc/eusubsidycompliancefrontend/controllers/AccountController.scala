@@ -41,7 +41,8 @@ class AccountController @Inject() (
   escService: EscService,
   leadAccountPage: LeadAccountPage,
   nonLeadAccountPage: NonLeadAccountPage,
-  timeProvider: TimeProvider
+  timeProvider: TimeProvider,
+  emailService: SendEmailHelperService
 )(implicit
   val appConfig: AppConfig,
   executionContext: ExecutionContext
