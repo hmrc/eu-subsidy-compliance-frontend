@@ -17,10 +17,9 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscInitialActionBuilder
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -37,48 +36,38 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AccountController @Inject() (
   mcc: MessagesControllerComponents,
-  escActionBuilders: EscActionBuilders,
+  escInitialActionBuilders: EscInitialActionBuilder,
   store: Store,
   escService: EscService,
   leadAccountPage: LeadAccountPage,
   nonLeadAccountPage: NonLeadAccountPage,
-  timeProvider: TimeProvider,
-  retrieveEmailService: RetrieveEmailService
+  timeProvider: TimeProvider
 )(implicit
   val appConfig: AppConfig,
   executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import escActionBuilders._
+  import escInitialActionBuilders._
 
   private val dueDays = 90
 
-  def getAccountPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    retrieveEmailService.retrieveEmailByEORI(eori) flatMap {
-      _.emailType match {
-        case EmailType.VerifiedEmail => getUndertakingAndHandleResponse
-        case EmailType.UnVerifiedEmail =>
-          Redirect(routes.UpdateEmailAddressController.updateUnverifiedEmailAddress()).toFuture
-        case EmailType.UnDeliverableEmail =>
-          Redirect(routes.UpdateEmailAddressController.updateUndeliveredEmailAddress()).toFuture
+  def getAccountPage: Action[AnyContent] =
+    withAuthenticatedUser.async { implicit request =>
+      implicit val eori: EORI = request.eoriNumber
+      escService.retrieveUndertaking(eori) flatMap {
+        case Some(u) => handleExistingUndertaking(u)
+        case None => handleUndertakingNotCreated
       }
-    }
-  }
-
-  private def getUndertakingAndHandleResponse(implicit
-    r: AuthenticatedEscRequest[AnyContent],
-    e: EORI
-  ): Future[Result] =
-    escService.retrieveUndertaking(r.eoriNumber) flatMap {
-      case Some(u) => handleExistingUndertaking(u)
-      case None => handleUndertakingNotCreated
     }
 
   private def handleUndertakingNotCreated(implicit e: EORI): Future[Result] = {
     val result = getOrCreateJourneys().map {
-      case (ej, uj) if !ej.isComplete && uj.isEmpty => Redirect(routes.EligibilityController.firstEmptyPage())
+      case (ej, uj) if !ej.isComplete && uj.isEmpty =>
+        if (ej.eoriCheck.value.contains(true)) {
+          Redirect(routes.EligibilityController.firstEmptyPage())
+        } else {
+          Redirect(routes.EligibilityController.getCustomsWaivers())
+        }
       case (_, uj) if !uj.isComplete => Redirect(routes.UndertakingController.firstEmptyPage())
       case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity())
     }

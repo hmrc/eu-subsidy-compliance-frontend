@@ -19,12 +19,13 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscCDSActionBuilders, EscInitialActionBuilder}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -36,11 +37,13 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class BecomeLeadController @Inject() (
   mcc: MessagesControllerComponents,
-  escActionBuilders: EscActionBuilders,
+  escCDSActionBuilder: EscCDSActionBuilders,
+  escInitialActionBuilders: EscInitialActionBuilder,
   store: Store,
   escService: EscService,
   sendEmailHelperService: SendEmailHelperService,
   auditService: AuditService,
+  retrieveEmailService: RetrieveEmailService,
   becomeAdminPage: BecomeAdminPage,
   becomeAdminTermsAndConditionsPage: BecomeAdminTermsAndConditionsPage,
   becomeAdminConfirmationPage: BecomeAdminConfirmationPage
@@ -49,7 +52,8 @@ class BecomeLeadController @Inject() (
   executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import escActionBuilders._
+  import escCDSActionBuilder._
+  import escInitialActionBuilders._
 
   private val PromotedAsNewLead = "promotedAsLeadToNewLead"
   private val RemovedAsLead = "removedAsLeadToOldLead"
@@ -95,35 +99,53 @@ class BecomeLeadController @Inject() (
           },
         form =>
           store
-            .update[BecomeLeadJourney](j => j.copy(becomeLeadEori = j.becomeLeadEori.copy(value = Some(form.value == "true"))))
+            .update[BecomeLeadJourney](j =>
+              j.copy(becomeLeadEori = j.becomeLeadEori.copy(value = Some(form.value == "true")))
+            )
             .flatMap { _ =>
-              if (form.value == "true") Future(Redirect(routes.BecomeLeadController.getAcceptPromotionTerms()))
-              else Future(Redirect(routes.AccountController.getAccountPage()))
+              if (form.value == "true") {
+                Redirect(routes.BecomeLeadController.getAcceptPromotionTerms()).toFuture
+              } else Future(Redirect(routes.AccountController.getAccountPage()))
             }
       )
   }
 
-  def getAcceptPromotionTerms: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  /**
+    * This route should check for the CDS enrolment to allow email if BE request to be a Lead.
+    * @return
+    */
+
+  def getAcceptPromotionTerms: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[BecomeLeadJourney].flatMap {
-      case Some(journey) =>
-        if (journey.becomeLeadEori.value.getOrElse(false)) {
-          Future(Ok(becomeAdminTermsAndConditionsPage(eori)))
-        } else {
-          Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori()))
-        }
-      case None => Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori()))
+    retrieveEmailService.retrieveEmailByEORI(eori) flatMap { response =>
+      response.emailType match {
+        case EmailType.VerifiedEmail =>
+          store.get[BecomeLeadJourney].flatMap {
+            case Some(journey) =>
+              if (journey.becomeLeadEori.value.getOrElse(false)) {
+                Future(Ok(becomeAdminTermsAndConditionsPage(eori)))
+              } else {
+                Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori()))
+              }
+            case None => Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori()))
+          }
+        case EmailType.UnVerifiedEmail =>
+          Redirect(routes.UpdateEmailAddressController.updateUnverifiedEmailAddress()).toFuture
+        case EmailType.UnDeliverableEmail =>
+          Redirect(routes.UpdateEmailAddressController.updateUndeliveredEmailAddress()).toFuture
+      }
     }
+
   }
 
-  def postAcceptPromotionTerms: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postAcceptPromotionTerms: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .update[BecomeLeadJourney](j => j.copy(acceptTerms = j.acceptTerms.copy(value = Some(true))))
       .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getPromotionConfirmation())))
   }
 
-  def getPromotionConfirmation: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getPromotionConfirmation: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[BecomeLeadJourney].flatMap {
       case Some(journey) =>
@@ -170,12 +192,11 @@ class BecomeLeadController @Inject() (
     }
   }
 
-  def getPromotionCleanup: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getPromotionCleanup: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .update[BecomeLeadJourney](_ => BecomeLeadJourney())
-      .flatMap(_ => Future(Redirect(routes.AccountController.getAccountPage()))
-    )
+      .flatMap(_ => Future(Redirect(routes.AccountController.getAccountPage())))
   }
 
   private val becomeAdminForm: Form[FormValues] = Form(

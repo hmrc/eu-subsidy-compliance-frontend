@@ -16,16 +16,19 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.implicits.catsSyntaxEq
+
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscCDSActionBuilders, EscNoEnrolmentActionBuilders}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EligibilityJourney, JourneyTraverseService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EligibilityJourney, JourneyTraverseService, RetrieveEmailService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
@@ -45,14 +48,17 @@ class EligibilityController @Inject() (
   checkEoriPage: CheckEoriPage,
   incorrectEoriPage: IncorrectEoriPage,
   createUndertakingPage: CreateUndertakingPage,
-  escActionBuilders: EscActionBuilders,
+  escNonEnrolmentActionBuilders: EscNoEnrolmentActionBuilders,
+  escCDSActionBuilder: EscCDSActionBuilders,
+  retrieveEmailService: RetrieveEmailService,
   store: Store
 )(implicit
   val appConfig: AppConfig,
   executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import escActionBuilders._
+  import escNonEnrolmentActionBuilders._
+  import escCDSActionBuilder._
 
   private val customsWaiversForm: Form[FormValues] = Form(
     mapping("customswaivers" -> mandatory("customswaivers"))(FormValues.apply)(FormValues.unapply)
@@ -78,7 +84,7 @@ class EligibilityController @Inject() (
     mapping("createUndertaking" -> mandatory("createUndertaking"))(FormValues.apply)(FormValues.unapply)
   )
 
-  def firstEmptyPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def firstEmptyPage: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .get[EligibilityJourney]
@@ -88,92 +94,80 @@ class EligibilityController @Inject() (
       }
   }
 
-  def getEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getCustomsWaivers: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
+    val form = customsWaiversForm
+    Ok(customsWaiversPage(form)).toFuture
+  }
+
+  def postCustomsWaivers: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
+    customsWaiversForm
+      .bindFromRequest()
+      .fold(
+        errors => BadRequest(customsWaiversPage(errors)).toFuture,
+        form => Redirect(getNext(form)).toFuture
+      )
+  }
+
+  private def getNext(form: FormValues) = if (form.value == "true") routes.EligibilityController.getEoriCheck()
+  else routes.EligibilityController.getWillYouClaim()
+
+  def getWillYouClaim: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
+    val form = willYouClaimForm
+    Ok(willYouClaimPage(form, routes.EligibilityController.getCustomsWaivers().url)).toFuture
+  }
+
+  def postWillYouClaim: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
+    willYouClaimForm
+      .bindFromRequest()
+      .fold(
+        errors => BadRequest(willYouClaimPage(errors, routes.EligibilityController.getCustomsWaivers().url)).toFuture,
+        form =>
+          if (form.value === "true") Redirect(routes.EligibilityController.getEoriCheck()).toFuture
+          else Redirect(routes.EligibilityController.getNotEligible()).toFuture
+      )
+
+  }
+
+  def getNotEligible: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
+    Ok(notEligiblePage()).toFuture
+  }
+
+  def getEoriCheck: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[EligibilityJourney].map {
-      case Some(journey) =>
-        val form =
-          journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck => eoriCheckForm.fill(FormValues(eoriCheck.toString)))
-        Ok(checkEoriPage(form, eori))
-      case _ => handleMissingSessionData("Eligibility journey")
+    retrieveEmailService.retrieveEmailByEORI(eori) flatMap {
+      _.emailType match {
+        case EmailType.VerifiedEmail =>
+          store.get[EligibilityJourney].map {
+            case Some(journey) =>
+              val form =
+                journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck =>
+                  eoriCheckForm.fill(FormValues(eoriCheck.toString))
+                )
+              Ok(checkEoriPage(form, eori, routes.EligibilityController.getCustomsWaivers().url))
+            case _ => handleMissingSessionData("Eligibility journey")
+          }
+        case EmailType.UnVerifiedEmail =>
+          Redirect(routes.UpdateEmailAddressController.updateUnverifiedEmailAddress()).toFuture
+        case EmailType.UnDeliverableEmail =>
+          Redirect(routes.UpdateEmailAddressController.updateUndeliveredEmailAddress()).toFuture
+      }
     }
 
   }
 
-  def postEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postEoriCheck: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     eoriCheckForm
       .bindFromRequest()
       .fold(
-        errors => BadRequest(checkEoriPage(errors, eori)).toFuture,
+        errors =>
+          BadRequest(checkEoriPage(errors, eori, routes.EligibilityController.getCustomsWaivers().url)).toFuture,
         form => store.update[EligibilityJourney](_.setEoriCheck(form.value.toBoolean)).flatMap(_.next)
       )
 
   }
 
-  def getCustomsWaivers: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store
-      .get[EligibilityJourney]
-      .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
-      .map { journey =>
-        if(!journey.isEligibleForStep) {
-          Redirect(journey.previous)
-        } else {
-          val form = journey.customsWaivers.value.fold(customsWaiversForm)(customWaiverBool =>
-            customsWaiversForm.fill(FormValues(customWaiverBool.toString))
-          )
-          Ok(customsWaiversPage(form, journey.previous))
-        }
-      }
-  }
-
-  def postCustomsWaivers: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    journeyTraverseService.getPrevious[EligibilityJourney].flatMap { previous =>
-      customsWaiversForm
-        .bindFromRequest()
-        .fold(
-          errors => BadRequest(customsWaiversPage(errors, previous)).toFuture,
-          form => store.update[EligibilityJourney](_.setCustomsWaiver(form.value.toBoolean)).flatMap(_.next)
-        )
-    }
-  }
-
-  def getWillYouClaim: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store
-      .get[EligibilityJourney]
-      .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
-      .map { journey =>
-        if(!journey.isEligibleForStep) {
-          Redirect(journey.previous)
-        } else {
-        val form = journey.willYouClaim.value.fold(willYouClaimForm)(willYouClaimBool =>
-          willYouClaimForm.fill(FormValues(willYouClaimBool.toString))
-        )
-        Ok(willYouClaimPage(form, journey.previous))
-      }
-    }
-  }
-
-  def postWillYouClaim: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    journeyTraverseService.getPrevious[EligibilityJourney].flatMap { previous =>
-      willYouClaimForm
-        .bindFromRequest()
-        .fold(
-          errors => BadRequest(willYouClaimPage(errors, previous)).toFuture,
-          form => store.update[EligibilityJourney](_.setWillYouClaim(form.value.toBoolean)).flatMap(_.next)
-        )
-    }
-  }
-
-  def getNotEligible: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    Ok(notEligiblePage()).toFuture
-  }
-
-  def getMainBusinessCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getMainBusinessCheck: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .get[EligibilityJourney]
@@ -186,7 +180,7 @@ class EligibilityController @Inject() (
       }
   }
 
-  def postMainBusinessCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postMainBusinessCheck: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService
       .getPrevious[EligibilityJourney]
@@ -200,18 +194,18 @@ class EligibilityController @Inject() (
       }
   }
 
-  def getNotEligibleToLead: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getNotEligibleToLead: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     Ok(notEligibleToLeadPage()).toFuture
   }
 
-  def getTerms: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getTerms: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[EligibilityJourney].map { previous =>
       Ok(termsPage(previous, eori))
     }
   }
 
-  def postTerms: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postTerms: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     termsForm
       .bindFromRequest()
@@ -225,18 +219,18 @@ class EligibilityController @Inject() (
       )
   }
 
-  def getIncorrectEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getIncorrectEori: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     Ok(incorrectEoriPage()).toFuture
   }
 
-  def getCreateUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getCreateUndertaking: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     journeyTraverseService.getPrevious[EligibilityJourney].map { previous =>
       Ok(createUndertakingPage(previous, eori))
     }
   }
 
-  def postCreateUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postCreateUndertaking: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     createUndertakingForm
       .bindFromRequest()

@@ -148,10 +148,12 @@ object CommonTestData {
 
   def subsidyRetrieveForDate(d: LocalDate) =
     subsidyRetrieve.copy(
-      inDateRange = Some((
-        d.toEarliestTaxYearStart,
-        d
-      ))
+      inDateRange = Some(
+        (
+          d.toEarliestTaxYearStart,
+          d
+        )
+      )
     )
 
   val subsidyRetrieveForFixedDate = subsidyRetrieve.copy(
@@ -163,6 +165,7 @@ object CommonTestData {
   val eligibilityJourneyNotComplete = EligibilityJourney(
     customsWaivers = CustomsWaiversFormPage(true.some),
     willYouClaim = WillYouClaimFormPage(true.some),
+    eoriCheck = EoriCheckFormPage(true.some),
     notEligible = NotEligibleFormPage(false.some),
     mainBusinessCheck = MainBusinessCheckFormPage(true.some),
     signOut = SignOutFormPage(false.some),

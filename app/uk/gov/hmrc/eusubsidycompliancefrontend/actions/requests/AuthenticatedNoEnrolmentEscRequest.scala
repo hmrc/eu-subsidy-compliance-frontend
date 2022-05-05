@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.actions
+package uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests
 
-import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import play.api.mvc.{Request, WrappedRequest}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
-import javax.inject.{Inject, Singleton}
-
-@Singleton
-class EscActionBuilders @Inject() (
-  escRequestActionBuilder: EscRequestActionBuilder
-) {
-
-  val withAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] = escRequestActionBuilder
-}
+case class AuthenticatedNoEnrolmentEscRequest[A](
+  authorityId: String,
+  groupId: String,
+  request: Request[A]
+) extends WrappedRequest[A](request)

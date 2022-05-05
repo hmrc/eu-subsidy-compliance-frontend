@@ -407,3 +407,7 @@ become-admin-confirmation.h2=What happens next
 become-admin-confirmation.p1=We have sent you a confirmation email.
 become-admin-confirmation.p2=The current administrator (EORI number {0}) has been emailed with your request.
 
+#CDS Enrolment missing
+cdsEnrolmentMissing.title = You must register for the Custom Declaration Service (CDS)
+cdsEnrolmentMissing.p1 = Find out how to <a href="https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service" class="govuk-link">register for the Custom Declaration Service</a>
+cdsEnrolmentMissing.p2 = You have been logged out.

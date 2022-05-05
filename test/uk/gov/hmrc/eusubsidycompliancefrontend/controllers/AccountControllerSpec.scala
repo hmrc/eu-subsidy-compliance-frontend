@@ -23,7 +23,6 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NilReturnJourney.Forms.NilReturnFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -76,8 +75,7 @@ class AccountControllerSpec
 
           val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockNoPredicateAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
@@ -143,8 +141,7 @@ class AccountControllerSpec
         ): Unit = {
           val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockNoPredicateAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
@@ -179,14 +176,13 @@ class AccountControllerSpec
           val updatedNJ = nilReturnJourney.copy(displayNotification = false)
 
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockNoPredicateAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockTimeToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilReturnJourney))
-            if(hasFiledNilReturnRecently) {
+            if (hasFiledNilReturnRecently) {
               mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNJ))
             }
             mockRetrieveSubsidy(subsidyRetrieveForDate(currentDate))(undertakingSubsidies.toFuture)
@@ -214,18 +210,19 @@ class AccountControllerSpec
           val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
 
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockNoPredicateAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate(eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate(eori1)(Right(UndertakingJourney()))
             mockTimeToday(currentDate)
             mockGetOrCreate(eori1)(Right(nilJourneyCreate))
             mockRetrieveSubsidy(subsidyRetrieveForDate(currentDate))(
-              undertakingSubsidies.copy(
-                nonHMRCSubsidyUsage = List.empty,
-                hmrcSubsidyUsage = List.empty
-              ).toFuture
+              undertakingSubsidies
+                .copy(
+                  nonHMRCSubsidyUsage = List.empty,
+                  hmrcSubsidyUsage = List.empty
+                )
+                .toFuture
             )
           }
 
@@ -260,6 +257,7 @@ class AccountControllerSpec
             isOverdue = false
           )
         }
+
         "today's date is exactly 76 days from the last day of subsidy report " in {
           testTimeToReport(
             undertaking.copy(lastSubsidyUsageUpdt = LocalDate.of(2021, 12, 1).some),
@@ -297,6 +295,7 @@ class AccountControllerSpec
             LocalDate.of(2022, 3, 18)
           )
         }
+
         "user has recently filed the Nil Return but user refreshed the home account " in {
           testNilReturnSuccessMessage(
             undertaking1,
@@ -310,33 +309,63 @@ class AccountControllerSpec
 
       "display the non-lead account home page" when {
 
-        "valid request for non-lead user is made" in {
-          inSequence {
-            mockAuthWithEnrolment(eori4)
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-            mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
-            mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
-            mockTimeToday(fixedDate)
+        "valid request for non-lead user is made" when {
+
+          "Both CDS and ECC enrolmnents are present" in {
+            inSequence {
+              mockAuthWithEORIEnrolment(eori4)
+              mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+              mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
+              mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
+              mockTimeToday(fixedDate)
+            }
+
+            checkPageIsDisplayed(
+              performAction(),
+              messageFromMessageKey("non-lead-account-homepage.title", undertaking1.name),
+              { doc =>
+                val testBody = doc.select(".govuk-list").text
+                testBody should include regex messageFromMessageKey(
+                  "non-lead-account-homepage.link1",
+                  undertaking1.name
+                )
+
+                val htmlBody = doc.select(".govuk-list").html
+                htmlBody should include regex routes.BecomeLeadController.getBecomeLeadEori().url
+                htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard().url
+                htmlBody should include regex routes.BusinessEntityController.getRemoveYourselfBusinessEntity().url
+
+              }
+            )
           }
 
-          checkPageIsDisplayed(
-            performAction(),
-            messageFromMessageKey("non-lead-account-homepage.title", undertaking1.name),
-            { doc =>
-              val testBody = doc.select(".govuk-list").text
-              testBody should include regex messageFromMessageKey(
-                "non-lead-account-homepage.link1",
-                undertaking1.name
-              )
-
-              val htmlBody = doc.select(".govuk-list").html
-              htmlBody should include regex routes.BecomeLeadController.getBecomeLeadEori().url
-              htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard().url
-              htmlBody should include regex routes.BusinessEntityController.getRemoveYourselfBusinessEntity().url
-
+          "Only ECC enrolment is present" in {
+            inSequence {
+              mockAuthWithEccEnrolmentOnly(eori4)
+              mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+              mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
+              mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
+              mockTimeToday(fixedDate)
             }
-          )
+
+            checkPageIsDisplayed(
+              performAction(),
+              messageFromMessageKey("non-lead-account-homepage.title", undertaking1.name),
+              { doc =>
+                val testBody = doc.select(".govuk-list").text
+                testBody should include regex messageFromMessageKey(
+                  "non-lead-account-homepage.link1",
+                  undertaking1.name
+                )
+
+                val htmlBody = doc.select(".govuk-list").html
+                htmlBody should include regex routes.BecomeLeadController.getBecomeLeadEori().url
+                htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard().url
+                htmlBody should include regex routes.BusinessEntityController.getRemoveYourselfBusinessEntity().url
+
+              }
+            )
+          }
 
         }
       }
@@ -344,19 +373,9 @@ class AccountControllerSpec
       "throw technical error" when {
         val exception = new Exception("oh no")
 
-        "there is error in retrieving the email" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
         "there is error in retrieving the undertaking" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockNoPredicateAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction()))
@@ -365,8 +384,7 @@ class AccountControllerSpec
 
         "there is an error in fetching eligibility journey data" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockNoPredicateAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
@@ -376,8 +394,7 @@ class AccountControllerSpec
 
         "there is an error in retrieving undertaking journey data" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockNoPredicateAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
@@ -388,8 +405,7 @@ class AccountControllerSpec
 
         "there is an error in fetching Business entity journey data" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockNoPredicateAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
@@ -402,58 +418,64 @@ class AccountControllerSpec
 
       "redirect to next page" when {
 
-        "Non verified email is retrieved from cds api" in {
+        "No enrolment is present" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, validEmailAddress.some)))
+            mockAuthWithNoEnrolmentNoCheck()
           }
-          checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateUnverifiedEmailAddress().url)
+          checkIsRedirect(performAction(), routes.EligibilityController.getCustomsWaivers().url)
         }
 
-        "Undeliverable email is retrieved from cds api" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnDeliverableEmail, validEmailAddress.some)))
+        "Only ECC enrolment" when {
+
+          "retrieve undertaking journey is not there" in {
+            inSequence {
+              mockAuthWithEccEnrolmentOnly(eori1)
+              mockRetrieveUndertaking(eori1)(None.toFuture)
+              mockGetOrCreate[EligibilityJourney](eori1)(Right(EligibilityJourney()))
+              mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+            }
+            checkIsRedirect(performAction(), routes.EligibilityController.getCustomsWaivers().url)
           }
-          checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateUndeliveredEmailAddress().url)
+
         }
 
-        "email is retrieved from cds api" when {
+        "Only CDS enrolment is present" in {
+          inSequence {
+            mockAuthWithCDSEnrolmentOnly()
+          }
+          checkIsRedirect(performAction(), routes.EligibilityController.getCustomsWaivers().url)
+        }
 
-          "there is no existing retrieve undertaking" when {
+        "Both CDS nd ECC enrolment present and there is no existing retrieve undertaking" when {
 
-            "eligibility Journey is not complete and undertaking Journey is blank" in {
-              inSequence {
-                mockAuthWithNecessaryEnrolment()
-                mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-                mockRetrieveUndertaking(eori1)(None.toFuture)
-                mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
-                mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-              }
-              checkIsRedirect(performAction(), routes.EligibilityController.firstEmptyPage())
+          "eligibility Journey is not complete and undertaking Journey is blank" in {
+            inSequence {
+              mockNoPredicateAuthWithNecessaryEnrolment()
+              mockRetrieveUndertaking(eori1)(None.toFuture)
+              mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
+              mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             }
+            checkIsRedirect(performAction(), routes.EligibilityController.firstEmptyPage())
+          }
 
-            "eligibility Journey  is complete and undertaking Journey is not complete" in {
-              inSequence {
-                mockAuthWithNecessaryEnrolment()
-                mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-                mockRetrieveUndertaking(eori1)(None.toFuture)
-                mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
-                mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-              }
-              checkIsRedirect(performAction(), routes.UndertakingController.firstEmptyPage())
+          "eligibility Journey  is complete and undertaking Journey is not complete" in {
+            inSequence {
+              mockNoPredicateAuthWithNecessaryEnrolment()
+              mockRetrieveUndertaking(eori1)(None.toFuture)
+              mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+              mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             }
+            checkIsRedirect(performAction(), routes.UndertakingController.firstEmptyPage())
+          }
 
-            "eligibility Journey  and undertaking Journey are  complete" in {
-              inSequence {
-                mockAuthWithNecessaryEnrolment()
-                mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-                mockRetrieveUndertaking(eori1)(None.toFuture)
-                mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
-                mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1))
-              }
-              checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity())
+          "eligibility Journey  and undertaking Journey are  complete" in {
+            inSequence {
+              mockNoPredicateAuthWithNecessaryEnrolment()
+              mockRetrieveUndertaking(eori1)(None.toFuture)
+              mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+              mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1))
             }
+            checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity())
           }
         }
 

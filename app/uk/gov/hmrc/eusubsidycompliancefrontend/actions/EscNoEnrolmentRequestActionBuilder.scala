@@ -16,37 +16,34 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.actions
 
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.auth.core.retrieve.v2._
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{ActionBuilder, AnyContent, BodyParser, ControllerComponents, Request, Result, Results}
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, InternalError, NoActiveSession}
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
-import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedNoEnrolmentEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-@Singleton
-class EscRequestActionBuilder @Inject() (
+class EscNoEnrolmentRequestActionBuilder @Inject() (
   val config: Configuration,
   val env: Environment,
+  val store: Store,
   val authConnector: AuthConnector,
   mcc: ControllerComponents
 )(implicit val executionContext: ExecutionContext, appConfig: AppConfig)
-    extends ActionBuilder[AuthenticatedEscRequest, AnyContent]
+    extends ActionBuilder[AuthenticatedNoEnrolmentEscRequest, AnyContent]
     with FrontendHeaderCarrierProvider
     with Results
     with AuthRedirects
     with AuthorisedFunctions
     with I18nSupport {
-
-  private val EnrolmentKey = "HMRC-ESC-ORG"
-  private val EnrolmentIdentifier = "EORINumber"
 
   val messagesApi: MessagesApi = mcc.messagesApi
 
@@ -54,19 +51,15 @@ class EscRequestActionBuilder @Inject() (
 
   override def invokeBlock[A](
     request: Request[A],
-    block: AuthenticatedEscRequest[A] => Future[Result]
+    block: AuthenticatedNoEnrolmentEscRequest[A] => Future[Result]
   ): Future[Result] =
-    authorised(Enrolment(EnrolmentKey))
-      .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](
-        Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
+    authorised()
+      .retrieve[Option[Credentials] ~ Option[String]](
+        Retrievals.credentials and Retrievals.groupIdentifier
       ) {
-        case Some(credentials) ~ Some(groupId) ~ enrolments =>
-          enrolments
-            .getEnrolment(EnrolmentKey)
-            .flatMap(_.getIdentifier(EnrolmentIdentifier))
-            .fold(throw new IllegalStateException("no eori provided")) { identifier =>
-              block(AuthenticatedEscRequest(credentials.providerId, groupId, request, EORI(identifier.value)))
-            }
+        case Some(credentials) ~ Some(groupId) =>
+          block(AuthenticatedNoEnrolmentEscRequest(credentials.providerId, groupId, request))
+
         case _ ~ _ => Future.failed(throw InternalError())
       }(hc(request), executionContext)
       .recover(handleFailure(request))
@@ -74,7 +67,5 @@ class EscRequestActionBuilder @Inject() (
   private def handleFailure(implicit request: Request[_]): PartialFunction[Throwable, Result] = {
     case _: NoActiveSession =>
       Redirect(appConfig.ggSignInUrl, Map("continue" -> Seq(request.uri), "origin" -> Seq(origin)))
-    case _: InsufficientEnrolments =>
-      Redirect(appConfig.eccEscSubscribeUrl)
   }
 }

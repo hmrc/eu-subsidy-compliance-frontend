@@ -21,7 +21,7 @@ import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscCDSActionBuilders, EscInitialActionBuilder}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
@@ -41,7 +41,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class BusinessEntityController @Inject() (
   mcc: MessagesControllerComponents,
-  escActionBuilders: EscActionBuilders,
+  escInitialActionBuilders: EscInitialActionBuilder,
+  escCDSActionBuilder: EscCDSActionBuilders,
   store: Store,
   override val escService: EscService,
   journeyTraverseService: JourneyTraverseService,
@@ -59,16 +60,15 @@ class BusinessEntityController @Inject() (
 ) extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
 
-  import escActionBuilders._
+  import escInitialActionBuilders._
+  import escCDSActionBuilder._
 
   private val AddMemberEmailToBusinessEntity = "addMemberEmailToBE"
   private val AddMemberEmailToLead = "addMemberEmailToLead"
   private val RemoveMemberEmailToBusinessEntity = "removeMemberEmailToBE"
   private val RemoveMemberEmailToLead = "removeMemberEmailToLead"
-  private val RemoveThemselfEmailToBusinessEntity = "removeThemselfEmailToBE"
-  private val RemoveThemselfEmailToLead = "removeThemselfEmailToLead"
 
-  def getAddBusinessEntity: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getAddBusinessEntity: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
       store
@@ -88,7 +88,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postAddBusinessEntity: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postAddBusinessEntity: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def handleValidAnswer(form: FormValues) =
@@ -107,7 +107,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def getEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getEori: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       store.get[BusinessEntityJourney].flatMap {
@@ -124,7 +124,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postEori: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     val businessEntityEori = "businessEntityEori"
@@ -151,7 +151,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def getCheckYourAnswers: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getCheckYourAnswers: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     withLeadUndertaking { _ =>
@@ -167,7 +167,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postCheckYourAnswers: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postCheckYourAnswers: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def handleValidAnswersC(undertaking: Undertaking) = for {
@@ -228,7 +228,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = withAuthenticatedUser.async {
+  def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = withCDSAuthenticatedUser.async {
     implicit request =>
       withLeadUndertaking { _ =>
         escService.retrieveUndertaking(EORI(eoriEntered)).map {
@@ -254,7 +254,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = withAuthenticatedUser.async {
+  def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = withCDSAuthenticatedUser.async {
     implicit request =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -318,36 +318,9 @@ class BusinessEntityController @Inject() (
     val previous = routes.AccountController.getAccountPage().url
     escService.retrieveUndertaking(loggedInEORI).flatMap {
       case Some(undertaking) =>
-        val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("undertaking reference"))
         val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(loggedInEORI)
         def handleValidBE(form: FormValues) = form.value match {
-          case "true" =>
-            val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
-            val leadEORI = undertaking.getLeadEORI
-            for {
-              _ <- escService.removeMember(undertakingRef, removeBE)
-              _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
-                loggedInEORI,
-                None,
-                RemoveThemselfEmailToBusinessEntity,
-                undertaking,
-                undertakingRef,
-                removalEffectiveDateString.some
-              )
-              _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
-                leadEORI,
-                loggedInEORI.some,
-                RemoveThemselfEmailToLead,
-                undertaking,
-                undertakingRef,
-                removalEffectiveDateString.some
-              )
-              _ = auditService
-                .sendEvent(
-                  AuditEvent
-                    .BusinessEntityRemovedSelf(undertakingRef, request.authorityId, leadEORI, loggedInEORI)
-                )
-            } yield Redirect(routes.SignOutController.signOut())
+          case "true" => Redirect(routes.SignOutController.signOut()).toFuture
           case _ => Redirect(routes.AccountController.getAccountPage()).toFuture
         }
         removeYourselfBusinessForm
@@ -357,7 +330,7 @@ class BusinessEntityController @Inject() (
             form => handleValidBE(form)
           )
 
-      case _ => handleMissingSessionData("Undertaking journey")
+      case None => handleMissingSessionData("Undertaking journey")
     }
   }
 

@@ -47,7 +47,7 @@ class NoBusinessPresentControllerSpec
     "handling request to get No Business Present" must {
       def performAction() = controller.getNoBusinessPresent(FakeRequest())
 
-      behave like authBehaviour(() => performAction())
+      behave like authBehaviourWithPredicate(() => performAction())
 
       "display the page" in {
         inSequence {

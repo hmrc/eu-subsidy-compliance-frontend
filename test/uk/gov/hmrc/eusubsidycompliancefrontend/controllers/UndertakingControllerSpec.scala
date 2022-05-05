@@ -553,7 +553,7 @@ class UndertakingControllerSpec
           ),
           ModifyUndertakingRow(
             messageFromMessageKey("undertaking.cya.summary-list.eori.key"),
-            eori,
+            eori1,
             "" // User cannot change the EORI on the undertaking
           ),
           ModifyUndertakingRow(
@@ -708,7 +708,7 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockRetrieveEmail(eori)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
+            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockSendEmail(validEmailAddress, emailParameter, templateId)(Right(EmailSendResult.EmailSent))
             mockTimeProviderNow(timeNow)
             mockSendAuditEvent(createUndertakingAuditEvent)
@@ -967,7 +967,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(name = UndertakingNameFormPage("true".some)))
             )
-            mockRetrieveUndertaking(eori)(Future.failed(exception))
+            mockRetrieveUndertaking(eori1)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
         }
@@ -979,7 +979,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(name = UndertakingNameFormPage("true".some)))
             )
-            mockRetrieveUndertaking(eori)(None.toFuture)
+            mockRetrieveUndertaking(eori1)(None.toFuture)
           }
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
         }
@@ -991,7 +991,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(name = UndertakingNameFormPage("true".some)))
             )
-            mockRetrieveUndertaking(eori)(undertaking1.copy(reference = None).some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking1.copy(reference = None).some.toFuture)
           }
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
         }
@@ -1005,7 +1005,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(isAmend = true))
             )
-            mockRetrieveUndertaking(eori)(undertaking1.some.toFuture)
+            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             mockUpdateUndertaking(updatedUndertaking)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
@@ -1022,7 +1022,7 @@ class UndertakingControllerSpec
           mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
             Right(undertakingJourneyComplete.copy(isAmend = true))
           )
-          mockRetrieveUndertaking(eori)(undertaking1.some.toFuture)
+          mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
           mockUpdateUndertaking(updatedUndertaking)(Right(undertakingRef))
           mockSendAuditEvent(
             UndertakingUpdated("1123", eori1, undertakingRef, undertaking1.name, undertaking1.industrySector)

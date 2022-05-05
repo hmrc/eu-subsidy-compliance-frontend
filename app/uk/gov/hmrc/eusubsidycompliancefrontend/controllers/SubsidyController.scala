@@ -22,7 +22,7 @@ import play.api.data.Form
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.Forms.{mapping, nonEmptyText}
 import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.toSubsidyUpdate
@@ -48,7 +48,7 @@ import scala.util.Try
 @Singleton
 class SubsidyController @Inject() (
   mcc: MessagesControllerComponents,
-  escActionBuilders: EscActionBuilders,
+  escCDSActionBuilder: EscCDSActionBuilders,
   store: Store,
   override val escService: EscService,
   journeyTraverseService: JourneyTraverseService,
@@ -66,7 +66,7 @@ class SubsidyController @Inject() (
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
 
-  import escActionBuilders._
+  import escCDSActionBuilder._
 
   private val reportPaymentForm: Form[FormValues] = Form(
     mapping("reportPayment" -> mandatory("reportPayment"))(FormValues.apply)(FormValues.unapply)
@@ -122,7 +122,7 @@ class SubsidyController @Inject() (
 
   private val cyaForm: Form[FormValues] = Form(mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
 
-  def getReportPayment: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getReportPayment: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -165,7 +165,7 @@ class SubsidyController @Inject() (
       .fallbackTo(Option.empty.toFuture)
   }
 
-  def postReportPayment: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postReportPayment: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
       val previous = routes.AccountController.getAccountPage().url
@@ -184,7 +184,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getClaimAmount: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getClaimAmount: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       val result: OptionT[Future, Result] = for {
@@ -199,7 +199,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postAddClaimAmount: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postAddClaimAmount: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def handleFormSubmit(previous: Journey.Uri, addClaimDate: DateFormValues) =
@@ -226,7 +226,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getClaimDate: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getClaimDate: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       store.get[SubsidyJourney].flatMap {
@@ -244,7 +244,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postClaimDate: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postClaimDate: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       getPrevious[SubsidyJourney](store).flatMap { previous =>
@@ -262,7 +262,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getAddClaimEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getAddClaimEori: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
       val claimEoriForm = ClaimEoriFormProvider(undertaking).form
@@ -283,7 +283,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postAddClaimEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postAddClaimEori: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
       val claimEoriForm = ClaimEoriFormProvider(undertaking).form
@@ -302,7 +302,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getAddClaimPublicAuthority: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getAddClaimPublicAuthority: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       store.get[SubsidyJourney].flatMap {
@@ -320,7 +320,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postAddClaimPublicAuthority: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postAddClaimPublicAuthority: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       getPrevious[SubsidyJourney](store).flatMap { previous =>
@@ -338,7 +338,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getAddClaimReference: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getAddClaimReference: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       store.get[SubsidyJourney].flatMap {
@@ -356,7 +356,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postAddClaimReference: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postAddClaimReference: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
@@ -374,7 +374,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getCheckAnswers: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getCheckAnswers: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -395,7 +395,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postCheckAnswers: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postCheckAnswers: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -439,7 +439,7 @@ class SubsidyController @Inject() (
       _ <- journey.traderRef.value.orElse(handleMissingSessionData("trader ref"))
     } yield ()
 
-  def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = withAuthenticatedUser.async {
+  def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = withCDSAuthenticatedUser.async {
     implicit request =>
       withLeadUndertaking { undertaking =>
         val result = for {
@@ -451,7 +451,7 @@ class SubsidyController @Inject() (
       }
   }
 
-  def postRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = withAuthenticatedUser.async {
+  def postRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = withCDSAuthenticatedUser.async {
     implicit request =>
       withLeadUndertaking { undertaking =>
         removeSubsidyClaimForm
@@ -465,7 +465,7 @@ class SubsidyController @Inject() (
       }
   }
 
-  def getChangeSubsidyClaim(transactionId: String): Action[AnyContent] = withAuthenticatedUser.async {
+  def getChangeSubsidyClaim(transactionId: String): Action[AnyContent] = withCDSAuthenticatedUser.async {
     implicit request =>
       withLeadUndertaking { undertaking =>
         implicit val eori: EORI = request.eoriNumber

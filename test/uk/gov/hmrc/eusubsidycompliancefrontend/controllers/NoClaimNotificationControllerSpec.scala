@@ -55,13 +55,13 @@ class NoClaimNotificationControllerSpec
     "handling request to get No claim notification" must {
 
       def performAction() = controller.getNoClaimNotification(FakeRequest())
-      behave like authBehaviour(() => performAction())
+      behave like authBehaviourWithPredicate(() => performAction())
 
       "display the page" in {
 
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockRetrieveUndertaking(eori)(undertaking.some.toFuture)
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
         }
         checkPageIsDisplayed(
           performAction(),
