@@ -37,9 +37,8 @@ import java.util.Locale
 import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
 
-// TODO - rename this to EmailService once SendEmailService and RetrieveEmailService have been integrated
 @Singleton
-class SendEmailHelperService @Inject() (
+class EmailService @Inject() (
   appConfig: AppConfig,
   sendEmailConnector: SendEmailConnector,
   retrieveEmailConnector: RetrieveEmailConnector,

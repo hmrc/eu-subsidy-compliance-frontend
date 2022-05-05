@@ -41,7 +41,7 @@ class BecomeLeadController @Inject() (
   escInitialActionBuilders: EscInitialActionBuilder,
   store: Store,
   escService: EscService,
-  sendEmailHelperService: SendEmailHelperService,
+  sendEmailHelperService: EmailService,
   auditService: AuditService,
   retrieveEmailService: RetrieveEmailService,
   becomeAdminPage: BecomeAdminPage,

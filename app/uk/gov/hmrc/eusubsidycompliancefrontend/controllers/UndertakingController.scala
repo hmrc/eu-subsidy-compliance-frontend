@@ -43,7 +43,7 @@ class UndertakingController @Inject() (
   store: Store,
   override val escService: EscService,
   journeyTraverseService: JourneyTraverseService,
-  sendEmailHelperService: SendEmailHelperService,
+  sendEmailHelperService: EmailService,
   timeProvider: TimeProvider,
   auditService: AuditService,
   undertakingNamePage: UndertakingNamePage,

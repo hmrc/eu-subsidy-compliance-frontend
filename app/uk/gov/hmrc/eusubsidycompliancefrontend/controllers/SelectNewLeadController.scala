@@ -42,7 +42,7 @@ class SelectNewLeadController @Inject() (
   escCDSActionBuilder: EscCDSActionBuilders,
   override val escService: EscService,
   store: Store,
-  sendEmailHelperService: SendEmailHelperService,
+  sendEmailHelperService: EmailService,
   auditService: AuditService,
   selectNewLeadPage: SelectNewLeadPage,
   leadEORIChangedPage: LeadEORIChangedPage,

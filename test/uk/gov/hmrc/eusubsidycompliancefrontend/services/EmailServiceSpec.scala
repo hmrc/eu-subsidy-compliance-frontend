@@ -36,7 +36,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class SendEmailHelperServiceSpec extends AnyWordSpec with Matchers with MockFactory {
+class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory {
 
   private val fakeConfig = new AppConfig(
     Configuration.empty,
@@ -64,7 +64,7 @@ class SendEmailHelperServiceSpec extends AnyWordSpec with Matchers with MockFact
       .expects(eori, *)
       .returning(result.toFuture)
 
-  private val service = new SendEmailHelperService(
+  private val service = new EmailService(
     fakeConfig,
     mockSendEmailConnector,
     mockRetrieveEmailConnector,

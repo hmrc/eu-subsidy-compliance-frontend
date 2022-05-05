@@ -47,7 +47,7 @@ class BusinessEntityController @Inject() (
   override val escService: EscService,
   journeyTraverseService: JourneyTraverseService,
   timeProvider: TimeProvider,
-  sendEmailHelperService: SendEmailHelperService,
+  sendEmailHelperService: EmailService,
   auditService: AuditService,
   addBusinessPage: AddBusinessPage,
   eoriPage: BusinessEntityEoriPage,
