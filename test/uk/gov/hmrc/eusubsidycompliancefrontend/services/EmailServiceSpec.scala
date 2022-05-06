@@ -25,15 +25,15 @@ import play.api.Configuration
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.RequestHeader
-import play.api.test.{DefaultAwaitTimeout, FakeRequest}
 import play.api.test.Helpers._
+import play.api.test.{DefaultAwaitTimeout, FakeRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{RetrieveEmailConnector, SendEmailConnector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.VerifiedEmail
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendRequest, EmailSendResult, EmailType, RetrieveEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendRequest, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -46,7 +46,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
   private val templatedId: String = "templateId1"
 
-  private val fakeConfig = new AppConfig(
+  private val fakeAppConfig = new AppConfig(
     Configuration.from(Map(
       "email-send" -> Map[String, String](
         "create-undertaking-template-en" -> templatedId,
@@ -88,10 +88,9 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
       .returning(result.toFuture)
 
   private val service = new EmailService(
-    fakeConfig,
+    fakeAppConfig,
     mockSendEmailConnector,
-    mockRetrieveEmailConnector,
-    Configuration.empty
+    mockRetrieveEmailConnector
   )
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -152,38 +151,6 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
           mockSendEmail(emailSendRequest)(Right(HttpResponse(ACCEPTED, "")))
           val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
           result.futureValue shouldBe EmailSent
-        }
-
-      }
-
-    }
-
-    "handling request to send email" must {
-
-      "return an error" when {
-
-        "the http call fails" in {
-          mockSendEmail(emailSendRequest)(Left(ConnectorError("")))
-          val result = service.sendEmail(validEmailAddress, emailParameter, templatedId)
-          assertThrows[RuntimeException](await(result))
-        }
-      }
-
-      "return Email sent successfully" when {
-
-        "request came back with status Accepted and request can be parsed" in {
-          mockSendEmail(emailSendRequest)(Right(HttpResponse(ACCEPTED, "")))
-          val result = service.sendEmail(validEmailAddress, emailParameter, templatedId)
-          await(result) shouldBe EmailSendResult.EmailSent
-        }
-      }
-
-      "return Email sent failure" when {
-
-        "request came back with status != Accepted " in {
-          mockSendEmail(emailSendRequest)(Right(HttpResponse(OK, "")))
-          val result = service.sendEmail(validEmailAddress, emailParameter, templatedId)
-          await(result) shouldBe EmailSendResult.EmailSentFailure
         }
 
       }

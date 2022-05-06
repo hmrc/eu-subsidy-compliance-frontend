@@ -17,19 +17,19 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.catsSyntaxOptionId
-import play.api.{Configuration, Logging}
+import com.google.inject.Inject
+import play.api.Logging
+import play.api.http.Status.{ACCEPTED, NOT_FOUND, OK}
 import play.api.i18n.I18nSupport.RequestWithMessagesApi
 import play.api.i18n.MessagesApi
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress, EmailAddressResponse, Language, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
-import com.google.inject.Inject
-import play.api.http.Status.{ACCEPTED, NOT_FOUND, OK}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{RetrieveEmailConnector, SendEmailConnector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, DoubleEORIEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendRequest, EmailSendResult, EmailType, RetrieveEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -42,7 +42,6 @@ class EmailService @Inject() (
   appConfig: AppConfig,
   sendEmailConnector: SendEmailConnector,
   retrieveEmailConnector: RetrieveEmailConnector,
-  configuration: Configuration
 ) extends Logging {
 
   // TODO - review how this method is used - can other methods be provided?
@@ -71,8 +70,8 @@ class EmailService @Inject() (
   ): Future[EmailSendResult] =
     for {
       retrieveEmailResponse <- retrieveEmailByEORI(eori1)
-      templateId = getEmailTemplateId(configuration, key)
-      emailParameter = getEmailParams(key, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
+      templateId = getEmailTemplateId(key)
+      emailParameter = buildEmailParameters(key, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
       emailAddress = getEmailAddress(retrieveEmailResponse)
       result <- sendEmail(emailAddress, emailParameter, templateId)
     } yield result
@@ -93,8 +92,7 @@ class EmailService @Inject() (
         }
     }
 
-  //If the email is Undeliverable or invalid, it does give a status of OK sometimes but its response is different
-  //this method is identifying that response and returning the RetrieveEmailResponse
+  // TODO - consider moving this logic onto the email address response class itself.
   private def handleEmailAddressResponse(emailAddressResponse: EmailAddressResponse): RetrieveEmailResponse =
     emailAddressResponse match {
       case EmailAddressResponse(email, Some(_), None) => RetrieveEmailResponse(EmailType.VerifiedEmail, email.some)
@@ -109,7 +107,7 @@ class EmailService @Inject() (
     case _ => sys.error(" No Verified email found")
   }
 
-  private def getEmailParams(
+  private def buildEmailParameters(
     key: String,
     eori1: EORI,
     eori2: Option[EORI],
@@ -132,8 +130,7 @@ class EmailService @Inject() (
       case other => sys.error(s"Found unsupported language code $other")
     }
 
-  // TODO - remove unused config param
-  private def getEmailTemplateId(configuration: Configuration, inputKey: String)(implicit
+  private def getEmailTemplateId(inputKey: String)(implicit
     request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
   ) = {
@@ -141,8 +138,7 @@ class EmailService @Inject() (
     appConfig.templateIdsMap(lang.code).getOrElse(inputKey, s"no template for $inputKey")
   }
 
-  // TODO - review test coverage and make this private
-  def sendEmail(emailAddress: EmailAddress, emailParameters: EmailParameters, templateId: String)(implicit
+  private def sendEmail(emailAddress: EmailAddress, emailParameters: EmailParameters, templateId: String)(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[EmailSendResult] =
