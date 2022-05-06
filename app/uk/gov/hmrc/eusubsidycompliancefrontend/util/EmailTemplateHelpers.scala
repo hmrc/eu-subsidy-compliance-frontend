@@ -36,12 +36,13 @@ class EmailTemplateHelpers @Inject() (appConfig: AppConfig) {
       case other => sys.error(s"Found unsupported language code $other")
     }
 
+  // TODO - is this needed? Could it be moved into the EmailService?
   def getEmailTemplateId(configuration: Configuration, inputKey: String)(implicit
     request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
   ) = {
     val lang = getLanguage
-    appConfig.templateIdsMap(configuration, lang.code).getOrElse(inputKey, s"no template for $inputKey")
+    appConfig.templateIdsMap(lang.code).getOrElse(inputKey, s"no template for $inputKey")
   }
 
 }

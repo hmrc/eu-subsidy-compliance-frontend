@@ -132,12 +132,13 @@ class EmailService @Inject() (
       case other => sys.error(s"Found unsupported language code $other")
     }
 
+  // TODO - remove unused config param
   private def getEmailTemplateId(configuration: Configuration, inputKey: String)(implicit
     request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
   ) = {
     val lang = getLanguage
-    appConfig.templateIdsMap(configuration, lang.code).getOrElse(inputKey, s"no template for $inputKey")
+    appConfig.templateIdsMap(lang.code).getOrElse(inputKey, s"no template for $inputKey")
   }
 
   // TODO - review test coverage and make this private
