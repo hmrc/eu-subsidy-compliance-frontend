@@ -44,13 +44,11 @@ class EmailService @Inject() (
   retrieveEmailConnector: RetrieveEmailConnector,
 ) extends Logging {
 
-  // TODO - review how this method is used - can other methods be provided?
   def retrieveEmailAddressAndSendEmail(
     eori1: EORI,
     eori2: Option[EORI],
-    key: String, // TODO - should this be an enum?
+    key: String,
     undertaking: Undertaking,
-    // TODO - do we need to pass the ref separately if we're passing the undertaking in?
     undertakingRef: UndertakingRef,
     removeEffectiveDate: Option[String]
   )(implicit
@@ -92,7 +90,6 @@ class EmailService @Inject() (
         }
     }
 
-  // TODO - consider moving this logic onto the email address response class itself.
   private def handleEmailAddressResponse(emailAddressResponse: EmailAddressResponse): RetrieveEmailResponse =
     emailAddressResponse match {
       case EmailAddressResponse(email, Some(_), None) => RetrieveEmailResponse(EmailType.VerifiedEmail, email.some)
