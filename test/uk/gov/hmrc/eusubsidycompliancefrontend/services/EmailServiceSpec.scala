@@ -87,6 +87,11 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
       .expects(eori, *)
       .returning(result.toFuture)
 
+  private def mockMessagesResponse = {
+    (mockMessagesApi.preferred(_: RequestHeader)).expects(*).returning(mockMessages)
+    (() => mockMessages.lang).expects().returning(Lang("en"))
+  }
+
   private val service = new EmailService(
     fakeAppConfig,
     mockSendEmailConnector,
@@ -98,7 +103,6 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
   private implicit val mockMessagesApi: MessagesApi = mock[MessagesApi]
   private val mockMessages = mock[Messages]
 
-  // TODO - make send email method private and test indirectly
   "SendEmailHelperService" when {
 
     "retrieveEmailAddressAndSendEmail is called" must {
@@ -113,27 +117,21 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
         "no email address is found" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, inValidEmailResponseJson, emptyHeaders)))
-          // TODO - factor this out if it works :/
-          (mockMessagesApi.preferred(_: RequestHeader)).expects(*).returning(mockMessages)
-          (() => mockMessages.lang).expects().returning(Lang("en"))
+          mockMessagesResponse
           val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
           result.failed.futureValue shouldBe a[RuntimeException]
         }
 
         "the email address is undeliverable" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, undeliverableResponseJson, emptyHeaders)))
-          // TODO - factor this out if it works :/
-          (mockMessagesApi.preferred(_: RequestHeader)).expects(*).returning(mockMessages)
-          (() => mockMessages.lang).expects().returning(Lang("en"))
+          mockMessagesResponse
           val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
           result.failed.futureValue shouldBe a[RuntimeException]
         }
 
         "there is an error sending the email" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
-          // TODO - factor this out if it works :/
-          (mockMessagesApi.preferred(_: RequestHeader)).expects(*).returning(mockMessages)
-          (() => mockMessages.lang).expects().returning(Lang("en"))
+          mockMessagesResponse
           mockSendEmail(emailSendRequest)(Left(ConnectorError("Error")))
           val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
           result.failed.futureValue shouldBe a[ConnectorError]
@@ -145,9 +143,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
         "the email is sent successfully" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
-          // TODO - factor this out if it works :/
-          (mockMessagesApi.preferred(_: RequestHeader)).expects(*).returning(mockMessages)
-          (() => mockMessages.lang).expects().returning(Lang("en"))
+          mockMessagesResponse
           mockSendEmail(emailSendRequest)(Right(HttpResponse(ACCEPTED, "")))
           val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
           result.futureValue shouldBe EmailSent
