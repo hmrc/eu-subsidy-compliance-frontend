@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests
 
 import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
 case class AuthenticatedNoEnrolmentEscRequest[A](
   authorityId: String,
