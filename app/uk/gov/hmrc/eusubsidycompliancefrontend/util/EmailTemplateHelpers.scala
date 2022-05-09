@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.util
 
-import play.api.Configuration
 import play.api.i18n.I18nSupport.RequestWithMessagesApi
 import play.api.i18n.MessagesApi
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
@@ -36,8 +35,7 @@ class EmailTemplateHelpers @Inject() (appConfig: AppConfig) {
       case other => sys.error(s"Found unsupported language code $other")
     }
 
-  // TODO - is this needed? Could it be moved into the EmailService?
-  def getEmailTemplateId(configuration: Configuration, inputKey: String)(implicit
+  def getEmailTemplateId(inputKey: String)(implicit
     request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
   ) = {

@@ -53,7 +53,6 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   lazy val authTimeoutCountdownSeconds: Int =
     config.get[FiniteDuration]("auth.sign-out.inactivity-countdown").toSeconds.toInt
 
-  // TODO - why pass in the configuration?
   def templateIdsMap(langCode: String) = Map(
     "createUndertaking" -> config.get[String](s"email-send.create-undertaking-template-$langCode"),
     "addMemberEmailToBE" -> config.get[String](s"email-send.add-member-to-be-template-$langCode"),
