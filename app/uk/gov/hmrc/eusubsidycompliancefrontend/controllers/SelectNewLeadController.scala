@@ -17,21 +17,29 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import play.api.Configuration
 import play.api.data.Form
 import play.api.data.Forms.mapping
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, Language, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromoted
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, DoubleEORIEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.{EmailNotSent, EmailSent}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult, EmailType}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
+import java.util.Locale
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class SelectNewLeadController @Inject() (
   mcc: MessagesControllerComponents,
@@ -41,7 +49,8 @@ class SelectNewLeadController @Inject() (
   sendEmailHelperService: SendEmailHelperService,
   auditService: AuditService,
   selectNewLeadPage: SelectNewLeadPage,
-  leadEORIChangedPage: LeadEORIChangedPage
+  leadEORIChangedPage: LeadEORIChangedPage,
+  emailNotVerifiedForLeadPromotionPage: EmailNotVerifiedForLeadPromotionPage
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
@@ -91,14 +100,7 @@ class SelectNewLeadController @Inject() (
             val updatedLead = newLeadJourney.selectNewLead.copy(value = eoriBE.some)
             newLeadJourney.copy(selectNewLead = updatedLead)
           }
-          _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
-            eoriBE,
-            None,
-            promoteOtherAsLeadEmailToBusinessEntity,
-            undertaking,
-            undertakingRef,
-            None
-          )
+          _ = auditService.sendEvent(BusinessEntityPromoted(undertakingRef, request.authorityId, eori, eoriBE))
           _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
             eori,
             eoriBE.some,
@@ -107,9 +109,50 @@ class SelectNewLeadController @Inject() (
             undertakingRef,
             None
           )
-          _ = auditService.sendEvent(BusinessEntityPromoted(undertakingRef, request.authorityId, eori, eoriBE))
-        } yield Redirect(routes.SelectNewLeadController.getLeadEORIChanged())
+          result <- sendEmailHelperService
+            .retrieveEmailAddressAndSendEmail(
+              eoriBE,
+              None,
+              promoteOtherAsLeadEmailToBusinessEntity,
+              undertaking,
+              undertakingRef,
+              None
+            )
+            .map(redirectTo)
+        } yield result
       }
+
+//      def handleFormSubmission1(form: FormValues) = {
+//        val eoriBE = EORI(form.value)
+//        val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking Ref"))
+//        for {
+//          _ <- store.update[NewLeadJourney] { newLeadJourney =>
+//            val updatedLead = newLeadJourney.selectNewLead.copy(value = eoriBE.some)
+//            newLeadJourney.copy(selectNewLead = updatedLead)
+//          }
+//        } yield ()
+//        auditService.sendEvent(BusinessEntityPromoted(undertakingRef, request.authorityId, eori, eoriBE))
+//        sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+//          eori,
+//          eoriBE.some,
+//          promoteOtherAsLeadEmailToLead,
+//          undertaking,
+//          undertakingRef,
+//          None
+//        )
+//
+//        sendEmailHelperService
+//          .retrieveEmailAddressAndSendEmail(
+//            eoriBE,
+//            None,
+//            promoteOtherAsLeadEmailToBusinessEntity,
+//            undertaking,
+//            undertakingRef,
+//            None
+//          )
+//          .map(redirectTo)
+//
+//      }
 
       selectNewLeadForm
         .bindFromRequest()
@@ -118,6 +161,13 @@ class SelectNewLeadController @Inject() (
           handleFormSubmission
         )
     }
+  }
+// TODO implement the same check while removing and adding BE member once the guidance pages for them are designed
+  /// may be combined them into one function
+  private def redirectTo(emailResult: EmailSendResult) = emailResult match {
+    case EmailNotSent => Redirect(routes.SelectNewLeadController.emailNotVerified)
+    case EmailSent => Redirect(routes.SelectNewLeadController.getLeadEORIChanged())
+    case _ => handleMissingSessionData("Email result Response")
   }
 
   def getLeadEORIChanged = withCDSAuthenticatedUser.async { implicit request =>
@@ -135,6 +185,17 @@ class SelectNewLeadController @Inject() (
           )
         case None => Redirect(routes.SelectNewLeadController.getSelectNewLead()).toFuture
       }
+    }
+  }
+
+  def emailNotVerified = withCDSAuthenticatedUser.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.get[NewLeadJourney].flatMap {
+      case Some(newLeadJourney) =>
+        val beEori =
+          newLeadJourney.selectNewLead.value.getOrElse(handleMissingSessionData("Selected EORi for promotion"))
+        store.put[NewLeadJourney](NewLeadJourney()).map(_ => Ok(emailNotVerifiedForLeadPromotionPage(beEori)))
+      case None => Redirect(routes.SelectNewLeadController.getSelectNewLead()).toFuture
     }
   }
 

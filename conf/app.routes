@@ -119,3 +119,4 @@ GET        /lead-undertaking-no-business-present                                
 POST       /lead-undertaking-no-business-present                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.postNoBusinessPresent
 
 GET        /financial-dashboard                                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinancialDashboardController.getFinancialDashboard
+GET        /lead-undertaking-promote-business-entity-email-unverified                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.emailNotVerified
