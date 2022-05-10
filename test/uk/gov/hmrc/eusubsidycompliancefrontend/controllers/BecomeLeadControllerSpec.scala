@@ -445,9 +445,6 @@ class BecomeLeadControllerSpec
         }
 
         "call to retrieve email address of old lead fails" in {
-
-          val newLeadParams =
-            SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promotedAsLeadToNewLead")
           inSequence {
             mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
