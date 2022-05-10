@@ -49,7 +49,7 @@ class SelectNewLeadControllerSpec
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
-    bind[EmailService].toInstance(mockSendEmailHelperService),
+    bind[EmailService].toInstance(mockEmailService),
     bind[AuditService].toInstance(mockAuditService)
   )
 

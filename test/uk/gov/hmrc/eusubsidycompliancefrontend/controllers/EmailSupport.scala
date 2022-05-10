@@ -29,10 +29,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait EmailSupport { this: ControllerSpec =>
 
-  val mockSendEmailHelperService = mock[EmailService]
+  val mockEmailService = mock[EmailService]
 
   def mockRetrieveEmail(eori: EORI)(result: Either[ConnectorError, RetrieveEmailResponse]) =
-    (mockSendEmailHelperService
+    (mockEmailService
       .retrieveEmailByEORI(_: EORI)(_: HeaderCarrier, _: ExecutionContext))
       .expects(eori, *, *)
       .returning(result.fold(e => Future.failed(e), _.toFuture))
@@ -45,7 +45,7 @@ trait EmailSupport { this: ControllerSpec =>
     undertakingRef: UndertakingRef,
     removeEffectiveDate: Option[String]
   )(result: Either[ConnectorError, EmailSendResult]) =
-    (mockSendEmailHelperService
+    (mockEmailService
       .retrieveEmailAddressAndSendEmail(
         _: EORI,
         _: Option[EORI],

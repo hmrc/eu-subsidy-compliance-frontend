@@ -32,7 +32,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, Em
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language}
-
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages.{BecomeLeadEoriFormPage, TermsAndConditionsFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -53,7 +52,7 @@ class BecomeLeadControllerSpec
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
-    bind[EmailService].toInstance(mockSendEmailHelperService),
+    bind[EmailService].toInstance(mockEmailService),
     bind[AuditService].toInstance(mockAuditService)
   )
 
@@ -456,9 +455,6 @@ class BecomeLeadControllerSpec
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockSendEmail(validEmailAddress, newLeadParams, "template_promoted_themself_as_lead_email_to_lead_EN")(
-              Right(EmailSendResult.EmailSent)
-            )
             mockRetrieveEmailAddressAndSendEmail(eori4, None, "promotedAsLeadToNewLead", undertaking1, undertakingRef, None)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()(English.code)))

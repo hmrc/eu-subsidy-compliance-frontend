@@ -54,7 +54,7 @@ class UndertakingControllerSpec
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[JourneyTraverseService].toInstance(mockJourneyTraverseService),
-    bind[EmailService].toInstance(mockSendEmailHelperService),
+    bind[EmailService].toInstance(mockEmailService),
     bind[AuditService].toInstance(mockAuditService),
     bind[TimeProvider].toInstance(mockTimeProvider)
   )

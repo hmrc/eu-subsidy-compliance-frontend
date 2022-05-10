@@ -42,7 +42,7 @@ class EligibilityControllerSpec
     bind[Store].toInstance(mockJourneyStore),
     bind[JourneyTraverseService].toInstance(mockJourneyTraverseService),
     bind[AuditService].toInstance(mockAuditService),
-    bind[RetrieveEmailService].toInstance(mockRetrieveEmailService)
+    bind[EmailService].toInstance(mockEmailService)
   )
 
   private val controller = instanceOf[EligibilityController]

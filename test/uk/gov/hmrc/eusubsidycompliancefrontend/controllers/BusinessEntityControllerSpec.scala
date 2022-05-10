@@ -20,6 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -54,12 +55,12 @@ class BusinessEntityControllerSpec
     with EscServiceSupport
     with TimeProviderSupport {
 
-  override def overrideBindings = List(
+  override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[JourneyTraverseService].toInstance(mockJourneyTraverseService),
-    bind[EmailService].toInstance(mockSendEmailHelperService),
+    bind[EmailService].toInstance(mockEmailService),
     bind[TimeProvider].toInstance(mockTimeProvider),
     bind[AuditService].toInstance(mockAuditService)
   )
@@ -819,39 +820,39 @@ class BusinessEntityControllerSpec
             mockAuthWithEORIEnrolment(eori4)
             mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
           }
-          assertThrows[Exception](await(performAction()(English.code)))
+          assertThrows[Exception](await(performAction()))
         }
 
         "call to remove BE fails" in {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            mockAuthWithEORIEnrolment(eori4)
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockTimeToday(currentDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction("removeYourselfBusinessEntity" -> "true")(English.code)))
+          assertThrows[Exception](await(performAction("removeYourselfBusinessEntity" -> "true")))
         }
 
         "call to send email fails" in {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            mockAuthWithEORIEnrolment(eori4)
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockTimeToday(currentDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
             mockRetrieveEmailAddressAndSendEmail(eori4, None, "removeThemselfEmailToBE", undertaking1, undertakingRef, "10 October 2022".some)(Left(ConnectorError(new RuntimeException())))
           }
-          assertThrows[Exception](await(performAction("removeYourselfBusinessEntity" -> "true")(English.code)))
+          assertThrows[Exception](await(performAction("removeYourselfBusinessEntity" -> "true")))
         }
 
         "language is unsupported" in {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            mockAuthWithEORIEnrolment(eori4)
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockTimeToday(currentDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
             mockRetrieveEmailAddressAndSendEmail(eori4, None, "removeThemselfEmailToBE", undertaking1, undertakingRef, "10 October 2022".some)(Right(EmailSent))
           }
-          assertThrows[Exception](await(performAction("removeYourselfBusinessEntity" -> "true")("fr")))
+          assertThrows[Exception](await(performAction("removeYourselfBusinessEntity" -> "true")))
         }
 
       }
@@ -879,7 +880,7 @@ class BusinessEntityControllerSpec
 
           def testRedirection(lang: Language, effectiveRemovalDate: String): Unit = {
             inSequence {
-              mockAuthWithEnrolment(eori4)
+              mockAuthWithEORIEnrolment(eori4)
               mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
               mockTimeToday(currentDate)
               mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
@@ -888,7 +889,7 @@ class BusinessEntityControllerSpec
               mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf(undertakingRef, "1123", eori1, eori4))
             }
             checkIsRedirect(
-              performAction("removeYourselfBusinessEntity" -> "true")(lang.code),
+              performAction("removeYourselfBusinessEntity" -> "true"),
               routes.SignOutController.signOut().url
             )
 

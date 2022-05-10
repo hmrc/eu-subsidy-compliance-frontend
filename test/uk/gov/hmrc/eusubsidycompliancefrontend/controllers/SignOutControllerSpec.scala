@@ -20,16 +20,17 @@ import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.English
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, SingleEORIAndDateEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, AuditServiceSupport, EscService, RetrieveEmailService, SendEmailHelperService, SendEmailService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
@@ -48,12 +49,11 @@ class SignOutControllerSpec
     with TimeProviderSupport
     with AuditServiceSupport {
 
-  override def overrideBindings = List(
+  override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
-    bind[RetrieveEmailService].toInstance(mockRetrieveEmailService),
-    bind[SendEmailService].toInstance(mockSendEmailService),
+    bind[EmailService].toInstance(mockEmailService),
     bind[TimeProvider].toInstance(mockTimeProvider),
     bind[AuditService].toInstance(mockAuditService)
   )
@@ -154,62 +154,34 @@ class SignOutControllerSpec
         }
       }
 
+      // TODO - review this - should set the lang code and pass in the date string for comparison
       "display the page" when {
 
-        def testDisplay(lang: String, templateIdBe: String, templateIdLead: String, effectiveRemovalDate: String) = {
-          val emailParamBE = SingleEORIAndDateEmailParameter(
-            eori4,
-            undertaking.name,
-            undertakingRef,
-            effectiveRemovalDate,
-            "removeThemselfEmailToBE"
-          )
-          val emailParamLead = DoubleEORIAndDateEmailParameter(
-            eori1,
-            eori4,
-            undertaking.name,
-            undertakingRef,
-            effectiveRemovalDate,
-            "removeThemselfEmailToLead"
-          )
+        def testDisplay(): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment(eori4)
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(currentDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockSendEmail(validEmailAddress, emailParamBE, templateIdBe)(
-              Right(EmailSendResult.EmailSent)
-            )
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockSendEmail(validEmailAddress, emailParamLead, templateIdLead)(Right(EmailSendResult.EmailSent))
+            mockRetrieveEmailAddressAndSendEmail(eori4, None, "removeThemselfEmailToBE", undertaking1, undertakingRef, "10 October 2022". some)(Right(EmailSent))
+            mockRetrieveEmailAddressAndSendEmail(eori1, eori4.some, "removeThemselfEmailToLead", undertaking1, undertakingRef, "10 October 2022". some)(Right(EmailSent))
             mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf(undertakingRef, "1123", eori1, eori4))
           }
 
           checkPageIsDisplayed(
-            performAction(lang),
+            performAction(),
             messageFromMessageKey("signOut.title"),
             doc => doc.select(".govuk-body").text() should include regex messageFromMessageKey("signOut.p1")
           )
         }
 
         "the language of the service is English" in {
-          testDisplay(
-            English.code,
-            "template_remove_yourself_be_EN",
-            "template_remove_yourself_lead_EN",
-            "10 October 2022"
-          )
+          testDisplay()
         }
 
         "the language of the service is Welsh" in {
-          testDisplay(
-            Welsh.code,
-            "template_remove_yourself_be_CY",
-            "template_remove_yourself_lead_CY",
-            "10 Hydref 2022"
-          )
+          testDisplay()
         }
 
       }

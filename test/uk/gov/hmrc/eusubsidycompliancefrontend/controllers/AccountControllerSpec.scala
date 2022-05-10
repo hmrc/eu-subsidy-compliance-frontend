@@ -47,7 +47,7 @@ class AccountControllerSpec
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[TimeProvider].toInstance(mockTimeProvider),
-    bind[EmailService].toInstance(mockSendEmailHelperService)
+    bind[EmailService].toInstance(mockEmailService)
   )
 
   override def additionalConfig: Configuration = super.additionalConfig.withFallback(
