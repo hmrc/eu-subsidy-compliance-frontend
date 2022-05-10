@@ -157,7 +157,7 @@ object CommonTestData {
     )
 
   val subsidyRetrieveForFixedDate = subsidyRetrieve.copy(
-    inDateRange = Some((LocalDate.of(2018, 4, 6), LocalDate.of(2021, 1, 20)))
+    inDateRange = Some((LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 20)))
   )
 
   val undertakingSubsidies1 = undertakingSubsidies.copy(nonHMRCSubsidyUsage = nonHmrcSubsidyList1)
