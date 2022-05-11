@@ -54,18 +54,16 @@ class SendEmailHelperService @Inject() (
     executionContext: ExecutionContext,
     request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
-  ): Future[EmailSendResult] =
-    for {
-      retrieveEmailResponse <- retrieveEmailService.retrieveEmailByEORI(eori1)
-      templateId = getEmailTemplateId(configuration, key)
-      emailParameter = getEmailParams(key, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
-      emailAddress = getEmailAddress(retrieveEmailResponse)
-      result <- sendEmailService.sendEmail(emailAddress, emailParameter, templateId)
-    } yield result
+  ): Future[EmailSendResult] = retrieveEmailService.retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
+    retrieveEmailResponse.emailType match {
+      case EmailType.VerifiedEmail =>
+        val templateId = getEmailTemplateId(configuration, key)
+        val emailParameter = getEmailParams(key, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
+        val emailAddress = retrieveEmailResponse.emailAddress.getOrElse(sys.error("email not found"))
+        sendEmailService.sendEmail(emailAddress, emailParameter, templateId)
+      case _ => Future.successful(EmailSendResult.EmailNotSent)
+    }
 
-  private def getEmailAddress(retrieveEmailResponse: RetrieveEmailResponse) = retrieveEmailResponse.emailType match {
-    case EmailType.VerifiedEmail => retrieveEmailResponse.emailAddress.getOrElse(sys.error("email not found"))
-    case _ => sys.error(" No Verified email found")
   }
 
   private def getEmailParams(

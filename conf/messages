@@ -411,3 +411,9 @@ become-admin-confirmation.p2=The current administrator (EORI number {0}) has bee
 cdsEnrolmentMissing.title = You must register for the Custom Declaration Service (CDS)
 cdsEnrolmentMissing.p1 = Find out how to <a href="https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service" class="govuk-link">register for the Custom Declaration Service</a>
 cdsEnrolmentMissing.p2 = You have been logged out.
+
+#emailUnverifiedForLeadPromotion
+emailUnverifiedForLeadPromotion.title = {0} does not have a verified e-mail address
+emailUnverifiedForLeadPromotion.p1 = The selected EORI number does not have a verified email address. This means they will not be notified that you have asked them to become undertaking administrator.
+emailUnverifiedForLeadPromotion.p2 = The business/EORI number you have added will need to <a href="https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service" class="govuk-link">register with CDS</a>.
+emailUnverifiedForLeadPromotion.p3 = They will then need to login to the service and accept the terms and conditions before they can become the undertaking administrator.

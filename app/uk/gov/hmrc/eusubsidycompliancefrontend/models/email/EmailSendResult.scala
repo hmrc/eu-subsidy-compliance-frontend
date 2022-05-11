@@ -27,6 +27,8 @@ object EmailSendResult {
 
   case object EmailSent extends EmailSendResult
   case object EmailSentFailure extends EmailSendResult
+  case object EmailNotSent extends EmailSendResult
 
   implicit val format: Format[EmailSendResult] = Jsonx.formatSealed[EmailSendResult]
+
 }

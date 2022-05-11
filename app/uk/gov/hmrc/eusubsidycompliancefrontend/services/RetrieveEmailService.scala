@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import com.google.inject.{Inject, Singleton}
 import play.api.http.Status._
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.RetrieveEmailConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.EmailAddressResponse
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, EmailAddressResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
