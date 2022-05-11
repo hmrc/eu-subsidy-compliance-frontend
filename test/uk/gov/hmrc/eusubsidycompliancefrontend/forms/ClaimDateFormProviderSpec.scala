@@ -78,11 +78,11 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
     }
 
     "return date in future error if date is in the future" in {
-      validateAndCheckError((day + 1).toString, "1", "9999")("date.in-future", "6 4 2019", "5 4 2021")
+      validateAndCheckError((day + 1).toString, "1", "9999")("date.in-future", "1 1 2021", "5 4 2021")
     }
 
     "return date outside of tax year range error for date before the start of the tax year range" in {
-      validateAndCheckError("1", "1", "1900")("date.outside-allowed-tax-year-range", "6 4 2019")
+      validateAndCheckError("1", "1", "1900")("date.outside-allowed-tax-year-range", "1 1 2021")
     }
 
     "return no errors for todays date" in {
@@ -94,11 +94,11 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
     }
 
     "return no errors for a date in the past that is equal to the start of the allowed tax year range" in {
-      validateAndCheckSuccess("6", "4", (year - 3).toString)
+      validateAndCheckSuccess("1", "1", "2021")
     }
 
     "return no errors for a date with 0 as prefix in month" in {
-      validateAndCheckSuccess("6", "04", (year - 3).toString)
+      validateAndCheckSuccess("6", "04", (year-1).toString)
     }
 
   }

@@ -82,7 +82,7 @@ class FinancialDashboardControllerSpec
             .fromUndertakingSubsidies(
               undertaking = undertaking,
               subsidies = undertakingSubsidies,
-              startDate = LocalDate.parse("2019-04-06"),
+              startDate = LocalDate.parse("2021-01-01"),
               endDate = fakeTimeProvider.today
             )
 

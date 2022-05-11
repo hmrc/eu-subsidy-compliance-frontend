@@ -20,6 +20,8 @@ import java.time.{LocalDate, Month}
 
 object TaxYearHelpers {
 
+  private val EarliestSupportedDate = LocalDate.of(2021, 1, 1)
+
   def taxYearStartForDate(d: LocalDate): LocalDate = {
     val taxYearStartForDateYear = LocalDate.of(d.getYear, Month.APRIL, 6)
     if (d.isBefore(taxYearStartForDateYear)) taxYearStartForDateYear.minusYears(1)
@@ -33,7 +35,11 @@ object TaxYearHelpers {
 
   // Since the allowed date range is the current and previous 2 tax years the earliest allowed date is then the start
   // of the earliest tax year.
-  def earliestAllowedDate(d: LocalDate): LocalDate = taxYearStartForDate(d).minusYears(2)
+  def earliestAllowedDate(d: LocalDate): LocalDate = {
+    val startDate = taxYearStartForDate(d).minusYears(2)
+    if (startDate.isBefore(EarliestSupportedDate)) EarliestSupportedDate
+    else startDate
+  }
 
   // Returns the date range for the standard 3 tax year search range. That is, the current and previous 2 tax years.
   def searchRange(d: LocalDate): (LocalDate, LocalDate) = (earliestAllowedDate(d), d)
