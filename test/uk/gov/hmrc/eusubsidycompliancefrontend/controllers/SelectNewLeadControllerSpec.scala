@@ -490,10 +490,6 @@ class SelectNewLeadControllerSpec
 
       "redirect to next page" when {
 
-        "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(performAction)
-        }
-
         "call to fetch new lead journey came back with None" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()

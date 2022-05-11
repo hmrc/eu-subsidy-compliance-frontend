@@ -17,29 +17,25 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
-import play.api.Configuration
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.i18n.MessagesApi
+
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, Language, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromoted
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, DoubleEORIEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.{EmailNotSent, EmailSent}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult, EmailType}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
-import java.util.Locale
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class SelectNewLeadController @Inject() (
   mcc: MessagesControllerComponents,
@@ -121,38 +117,6 @@ class SelectNewLeadController @Inject() (
             .map(redirectTo)
         } yield result
       }
-
-//      def handleFormSubmission1(form: FormValues) = {
-//        val eoriBE = EORI(form.value)
-//        val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking Ref"))
-//        for {
-//          _ <- store.update[NewLeadJourney] { newLeadJourney =>
-//            val updatedLead = newLeadJourney.selectNewLead.copy(value = eoriBE.some)
-//            newLeadJourney.copy(selectNewLead = updatedLead)
-//          }
-//        } yield ()
-//        auditService.sendEvent(BusinessEntityPromoted(undertakingRef, request.authorityId, eori, eoriBE))
-//        sendEmailHelperService.retrieveEmailAddressAndSendEmail(
-//          eori,
-//          eoriBE.some,
-//          promoteOtherAsLeadEmailToLead,
-//          undertaking,
-//          undertakingRef,
-//          None
-//        )
-//
-//        sendEmailHelperService
-//          .retrieveEmailAddressAndSendEmail(
-//            eoriBE,
-//            None,
-//            promoteOtherAsLeadEmailToBusinessEntity,
-//            undertaking,
-//            undertakingRef,
-//            None
-//          )
-//          .map(redirectTo)
-//
-//      }
 
       selectNewLeadForm
         .bindFromRequest()
