@@ -25,8 +25,8 @@ import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.English
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, SingleEORIAndDateEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailType, RetrieveEmailResponse}
@@ -166,34 +166,33 @@ class SignOutControllerSpec
         }
       }
 
-      // TODO - review this - should set the lang code and pass in the date string for comparison
       "display the page" when {
 
-        def testDisplay(): Unit = {
+        def testDisplay(language: Language, effectiveDate: String): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment(eori4)
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(currentDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(eori4, None, "removeThemselfEmailToBE", undertaking1, undertakingRef, "10 October 2022". some)(Right(EmailSent))
-            mockRetrieveEmailAddressAndSendEmail(eori1, eori4.some, "removeThemselfEmailToLead", undertaking1, undertakingRef, "10 October 2022". some)(Right(EmailSent))
+            mockRetrieveEmailAddressAndSendEmail(eori4, None, "removeThemselfEmailToBE", undertaking1, undertakingRef, effectiveDate.some)(Right(EmailSent))
+            mockRetrieveEmailAddressAndSendEmail(eori1, eori4.some, "removeThemselfEmailToLead", undertaking1, undertakingRef, effectiveDate.some)(Right(EmailSent))
             mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf(undertakingRef, "1123", eori1, eori4))
           }
 
           checkPageIsDisplayed(
-            performAction(),
+            performAction(language.code),
             messageFromMessageKey("signOut.title"),
             doc => doc.select(".govuk-body").text() should include regex messageFromMessageKey("signOut.p1")
           )
         }
 
         "the language of the service is English" in {
-          testDisplay()
+          testDisplay(English, "10 October 2022")
         }
 
         "the language of the service is Welsh" in {
-          testDisplay()
+          testDisplay(Welsh, "10 Hydref 2022")
         }
 
       }
