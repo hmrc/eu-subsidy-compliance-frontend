@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
+import org.scalatest.concurrent.ScalaFutures
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -53,6 +54,7 @@ class BusinessEntityControllerSpec
     with AuditServiceSupport
     with LeadOnlyRedirectSupport
     with EscServiceSupport
+    with ScalaFutures
     with TimeProviderSupport {
 
   override def overrideBindings: List[GuiceableModule] = List(
@@ -804,6 +806,7 @@ class BusinessEntityControllerSpec
       }
     }
 
+
     "handling request to post remove yourself business entity" must {
 
       def performAction(data: (String, String)*) = controller
@@ -821,38 +824,6 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
           }
           assertThrows[Exception](await(performAction()))
-        }
-
-        "call to remove BE fails" in {
-          inSequence {
-            mockAuthWithEORIEnrolment(eori4)
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-            mockTimeToday(currentDate)
-            mockRemoveMember(undertakingRef, businessEntity4)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction("removeYourselfBusinessEntity" -> "true")))
-        }
-
-        "call to send email fails" in {
-          inSequence {
-            mockAuthWithEORIEnrolment(eori4)
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-            mockTimeToday(currentDate)
-            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(eori4, None, "removeThemselfEmailToBE", undertaking1, undertakingRef, "10 October 2022".some)(Left(ConnectorError(new RuntimeException())))
-          }
-          assertThrows[Exception](await(performAction("removeYourselfBusinessEntity" -> "true")))
-        }
-
-        "language is unsupported" in {
-          inSequence {
-            mockAuthWithEORIEnrolment(eori4)
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-            mockTimeToday(currentDate)
-            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(eori4, None, "removeThemselfEmailToBE", undertaking1, undertakingRef, "10 October 2022".some)(Right(EmailSent))
-          }
-          assertThrows[Exception](await(performAction("removeYourselfBusinessEntity" -> "true")))
         }
 
       }
@@ -876,34 +847,7 @@ class BusinessEntityControllerSpec
 
       "redirect to next page" when {
 
-        "user select yes as input" when {
-
-          def testRedirection(lang: Language, effectiveRemovalDate: String): Unit = {
-            inSequence {
-              mockAuthWithEORIEnrolment(eori4)
-              mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-              mockTimeToday(currentDate)
-              mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-              mockRetrieveEmailAddressAndSendEmail(eori4, None, "removeThemselfEmailToBE", undertaking1, undertakingRef, effectiveRemovalDate.some)(Right(EmailSent))
-              mockRetrieveEmailAddressAndSendEmail(eori1, eori4.some, "removeThemselfEmailToLead", undertaking1, undertakingRef, effectiveRemovalDate.some)(Right(EmailSent))
-              mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf(undertakingRef, "1123", eori1, eori4))
-            }
-            checkIsRedirect(
-              performAction("removeYourselfBusinessEntity" -> "true"),
-              routes.SignOutController.signOut().url
-            )
-
-          }
-          "the language of the application is English" in {
-            testRedirection(English, "10 October 2022")
-          }
-
-          "the language of the application is Welsh" in {
-            testRedirection(Welsh, "10 Hydref 2022")
-          }
-        }
-
-        "user selects No as input" in {
+        "user selected yes as input" when {
           inSequence {
             mockAuthWithEORIEnrolment(eori4)
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)

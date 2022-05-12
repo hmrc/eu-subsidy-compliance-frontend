@@ -47,7 +47,7 @@ class BusinessEntityController @Inject() (
   override val escService: EscService,
   journeyTraverseService: JourneyTraverseService,
   timeProvider: TimeProvider,
-  sendEmailHelperService: EmailService,
+  emailService: EmailService,
   auditService: AuditService,
   addBusinessPage: AddBusinessPage,
   eoriPage: BusinessEntityEoriPage,
@@ -186,7 +186,7 @@ class BusinessEntityController @Inject() (
         }
         escService.addMember(undertakingRef, businessEntity).toContext
       }
-      _ <- sendEmailHelperService
+      _ <- emailService
         .retrieveEmailAddressAndSendEmail(
           eoriBE,
           None,
@@ -196,7 +196,7 @@ class BusinessEntityController @Inject() (
           None
         )
         .toContext
-      _ <- sendEmailHelperService
+      _ <- emailService
         .retrieveEmailAddressAndSendEmail(
           eori,
           eoriBE.some,
@@ -269,7 +269,7 @@ class BusinessEntityController @Inject() (
             val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
             for {
               _ <- escService.removeMember(undertakingRef, removeBE)
-              _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+              _ <- emailService.retrieveEmailAddressAndSendEmail(
                 EORI(eoriEntered),
                 None,
                 RemoveMemberEmailToBusinessEntity,
@@ -277,7 +277,7 @@ class BusinessEntityController @Inject() (
                 undertakingRef,
                 removalEffectiveDateString.some
               )
-              _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+              _ <- emailService.retrieveEmailAddressAndSendEmail(
                 eori,
                 EORI(eoriEntered).some,
                 RemoveMemberEmailToLead,

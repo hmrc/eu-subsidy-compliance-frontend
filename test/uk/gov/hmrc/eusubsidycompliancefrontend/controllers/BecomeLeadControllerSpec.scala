@@ -439,20 +439,7 @@ class BecomeLeadControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
-            mockRetrieveEmail(eori4)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()(English.code)))
-        }
-
-        "call to retrieve email address of old lead fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment(eori4)
-            mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-            mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
-            mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promotedAsLeadToNewLead", undertaking1, undertakingRef, None)(Left(ConnectorError(exception)))
+            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promotedAsLeadToNewLead", undertaking1, undertakingRef, None)(Left(ConnectorError("Error")))
           }
           assertThrows[Exception](await(performAction()(English.code)))
         }
