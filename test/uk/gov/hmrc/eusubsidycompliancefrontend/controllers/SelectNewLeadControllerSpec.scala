@@ -28,6 +28,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.{EmailNotSent, EmailSent}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.AddEoriFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
@@ -177,7 +178,7 @@ class SelectNewLeadControllerSpec
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
-            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promoteAsLeadEmailToBE", undertaking, undertakingRef, None)(Left(ConnectorError(exception)))
+            mockRetrieveEmailAddressAndSendEmail(eori1, eori4.some, "promoteAsLeadEmailToLead", undertaking, undertakingRef, None)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
         }
@@ -189,7 +190,6 @@ class SelectNewLeadControllerSpec
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
-            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promoteAsLeadEmailToBE", undertaking, undertakingRef, None)(Right(EmailSendResult.EmailSent))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4)("fr")))
         }
@@ -216,25 +216,9 @@ class SelectNewLeadControllerSpec
         def update(j: NewLeadJourney) = j.copy(selectNewLead = SelectNewLeadFormPage(eori4.some))
 
         def testRedirection(
-          templateIdBE: String,
-          templateIdLead: String,
-          lang: String,
-          emailType: EmailType,
-          emailSendResult: EmailSendResult,
+          lang: Language,
           nextCall: String
         ): Unit = {
-
-          val emailParamsBE =
-            SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promoteAsLeadEmailToBE")
-          val emailParamLead =
-            DoubleEORIEmailParameter(eori1, eori4, undertaking.name, undertakingRef, "promoteAsLeadEmailToLead")
-
-        def testRedirection(templateIdBE: String, templateIdLead: String, lang: String): Unit = {
-
-          val emailParamsBE =
-            SingleEORIEmailParameter(eori4, undertaking1.name, undertakingRef, "promoteAsLeadEmailToBE")
-          val emailParamLead =
-            DoubleEORIEmailParameter(eori1, eori4, undertaking.name, undertakingRef, "promoteAsLeadEmailToLead")
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -242,40 +226,31 @@ class SelectNewLeadControllerSpec
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
-            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promoteAsLeadEmailToBE", undertaking, undertakingRef, None)(Right(EmailSendResult.EmailSent))
-            mockRetrieveEmailAddressAndSendEmail(eori1, eori4.some, "promoteAsLeadEmailToLead", undertaking, undertakingRef, None)(Right(EmailSendResult.EmailSent))
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
+            mockRetrieveEmailAddressAndSendEmail(eori1, eori4.some, "promoteAsLeadEmailToLead", undertaking, undertakingRef, None)(Right(EmailSendResult.EmailSent))
+            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promoteAsLeadEmailToBE", undertaking, undertakingRef, None)(Right(EmailSendResult.EmailSent))
           }
           checkIsRedirect(
-            performAction("selectNewLead" -> eori4)(lang),
+            performAction("selectNewLead" -> eori4)(lang.code),
             nextCall
+          )
         }
 
         "the language selected by user is  English" in {
           testRedirection(
-            "template_BE_as_lead_EN",
-            "template_BE_as_lead_mail_to_lead_EN",
-            English.code,
-            EmailType.VerifiedEmail,
-            EmailSendResult.EmailSent,
+            English,
             routes.SelectNewLeadController.getLeadEORIChanged().url
           )
         }
 
         "the language selected by user is  Welsh" in {
           testRedirection(
-            "template_BE_as_lead_CY",
-            "template_BE_as_lead_mail_to_lead_CY",
-            Welsh.code,
-            EmailType.VerifiedEmail,
-            EmailSendResult.EmailSent,
+            Welsh,
             routes.SelectNewLeadController.getLeadEORIChanged().url
           )
         }
 
         "email address of BE is unverified" in {
-          val emailParamLead =
-            DoubleEORIEmailParameter(eori1, eori4, undertaking.name, undertakingRef, "promoteAsLeadEmailToLead")
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -283,11 +258,8 @@ class SelectNewLeadControllerSpec
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockSendEmail(validEmailAddress, emailParamLead, "template_BE_as_lead_mail_to_lead_EN")(
-              Right(EmailSendResult.EmailSent)
-            )
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, validEmailAddress.some)))
+            mockRetrieveEmailAddressAndSendEmail(eori1, eori4.some, "promoteAsLeadEmailToLead", undertaking, undertakingRef, None)(Right(EmailSent))
+            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promoteAsLeadEmailToBE", undertaking, undertakingRef, None)(Right(EmailNotSent))
           }
           checkIsRedirect(
             performAction("selectNewLead" -> eori4)(English.code),
@@ -431,8 +403,6 @@ class SelectNewLeadControllerSpec
       def performAction() = controller.emailNotVerified(FakeRequest())
       behave like authBehaviourWithPredicate(() => performAction())
 
-      def update(b: BusinessEntityJourney) = b.copy(isLeadSelectJourney = None)
-
       "throw technical error" when {
         val exception = new Exception("oh no!")
         "call to get New lead journey  fails" in {
@@ -463,7 +433,7 @@ class SelectNewLeadControllerSpec
         }
         checkPageIsDisplayed(
           performAction(),
-          messageFromMessageKey("emailUnverifiedForLeadPromotion.title", eori4.toString),
+          messageFromMessageKey("emailUnverifiedForLeadPromotion.title", eori4),
           isLeadJourney = true
         )
 

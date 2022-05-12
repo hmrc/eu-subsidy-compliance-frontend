@@ -56,23 +56,16 @@ class EmailService @Inject() (
     executionContext: ExecutionContext,
     request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
-  ): Future[EmailSendResult] = retrieveEmailService.retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
+  ): Future[EmailSendResult] = retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
     retrieveEmailResponse.emailType match {
       case EmailType.VerifiedEmail =>
-        val templateId = getEmailTemplateId(configuration, key)
-        val emailParameter = getEmailParams(key, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
+        val templateId = getEmailTemplateId(key)
+        val emailParameter = buildEmailParameters(key, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
         val emailAddress = retrieveEmailResponse.emailAddress.getOrElse(sys.error("email not found"))
-        sendEmailService.sendEmail(emailAddress, emailParameter, templateId)
+        sendEmail(emailAddress, emailParameter, templateId)
       case _ => Future.successful(EmailSendResult.EmailNotSent)
     }
-  ): Future[EmailSendResult] =
-    for {
-      retrieveEmailResponse <- retrieveEmailByEORI(eori1)
-      templateId = getEmailTemplateId(key)
-      emailParameter = buildEmailParameters(key, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
-      emailAddress = getEmailAddress(retrieveEmailResponse)
-      result <- sendEmail(emailAddress, emailParameter, templateId)
-    } yield result
+  }
 
   def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RetrieveEmailResponse] =
     retrieveEmailConnector.retrieveEmailByEORI(eori).map {
@@ -98,11 +91,6 @@ class EmailService @Inject() (
       case EmailAddressResponse(email, None, None) => RetrieveEmailResponse(EmailType.UnVerifiedEmail, email.some)
       case _ => sys.error("Email address response is not valid")
     }
-
-  private def getEmailAddress(retrieveEmailResponse: RetrieveEmailResponse) = retrieveEmailResponse.emailType match {
-    case EmailType.VerifiedEmail => retrieveEmailResponse.emailAddress.getOrElse(sys.error("email not found"))
-    case _ => sys.error(" No Verified email found")
-  }
 
   private def buildEmailParameters(
     key: String,
