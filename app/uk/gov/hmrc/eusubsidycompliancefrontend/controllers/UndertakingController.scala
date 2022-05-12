@@ -304,7 +304,9 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getUndertakignDisabled: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request => }
+  def getUndertakingDisabled: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { undertaking => }
+  }
 
   def getNext(form: FormValues) = if (form.value == "true")
     routes.UndertakingController.getDisableUndertakingWarning()

@@ -51,7 +51,7 @@ class EscService @Inject() (
 
   def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
     escConnector
-      .updateUndertaking(undertaking)
+      .updateUndertking(undertaking)
       .flatMap { response =>
         for {
           ref <- handleResponse[UndertakingRef](response, "update undertaking").toFuture

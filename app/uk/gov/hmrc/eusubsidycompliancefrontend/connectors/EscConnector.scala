@@ -29,7 +29,8 @@ import scala.concurrent.ExecutionContext
 class EscConnector @Inject() (
   override protected val http: HttpClient,
   servicesConfig: ServicesConfig
-)(implicit ec: ExecutionContext) extends Connector {
+)(implicit ec: ExecutionContext)
+    extends Connector {
 
   private lazy val escUrl: String = servicesConfig.baseUrl("esc")
 
@@ -69,9 +70,12 @@ class EscConnector @Inject() (
     undertakingRef: UndertakingRef,
     nonHmrcSubsidy: NonHmrcSubsidy
   )(implicit hc: HeaderCarrier): ConnectorResult =
-    makeRequest(_.POST[SubsidyUpdate, HttpResponse](
-      updateSubsidyUrl, SubsidyUpdate.forDelete(undertakingRef, nonHmrcSubsidy)
-    ))
+    makeRequest(
+      _.POST[SubsidyUpdate, HttpResponse](
+        updateSubsidyUrl,
+        SubsidyUpdate.forDelete(undertakingRef, nonHmrcSubsidy)
+      )
+    )
 
   def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): ConnectorResult =
     makeRequest(_.POST[SubsidyRetrieve, HttpResponse](retrieveSubsidyUrl, subsidyRetrieve))
