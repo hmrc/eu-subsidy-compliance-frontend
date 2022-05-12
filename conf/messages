@@ -12,6 +12,7 @@ common.continue=Save and continue
 common.accept-continue=Accept and continue
 common.continue.only=Continue
 common.accept=Accept and send
+common.disable= Disable undertaking
 common.go-account-home = Go to account home
 common.cya.change = Change
 
@@ -216,6 +217,7 @@ lead-account-homepage.cards.card1.link2= Notify HMRC that {0} has not received d
 lead-account-homepage.cards.card2.heading=Account
 lead-account-homepage.cards.card2.link1=View or amend your account details
 lead-account-homepage.cards.card2.link2=View financial dashboard
+lead-account-homepage.cards.card2.link3=Disable undertaking
 lead-account-homepage.cards.card3.heading=Businesses in {0}
 lead-account-homepage.cards.card3.link1View=View your businesses
 lead-account-homepage.cards.card3.link1Add=Add a business to your account
@@ -417,3 +419,16 @@ emailUnverifiedForLeadPromotion.title = {0} does not have a verified e-mail addr
 emailUnverifiedForLeadPromotion.p1 = The selected EORI number does not have a verified email address. This means they will not be notified that you have asked them to become undertaking administrator.
 emailUnverifiedForLeadPromotion.p2 = The business/EORI number you have added will need to <a href="https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service" class="govuk-link">register with CDS</a>.
 emailUnverifiedForLeadPromotion.p3 = They will then need to login to the service and accept the terms and conditions before they can become the undertaking administrator.
+
+#disableUndertakingWarning
+disableUndertakingWarning.title = Disable the single undertaking {0}
+disableUndertakingWarning.warning =You cannot undo this process
+disableUndertakingWarning.p1 =If you choose to disable this undertaking:
+disableUndertakingWarning.li1=This undertaking will be permanently disabled and will not be able to claim Customs Duty waivers
+disableUndertakingWarning.li2=You will no longer be able to access this undertaking
+disableUndertakingWarning.li3=You can create a new undertaking or join another existing undertaking
+disableUndertakingWarning.li4=All transactions related to this undertaking will remain with it, in its disabled state, until you create a new undertaking, or join another existing undertaking
+
+#disableUndertakingConfirm
+disableUndertakingConfirm.title = Are you sure you want to disable the single undertaking {0} ?
+disableUndertakingConfirm.error.required = Select Yes if you want to disable the single undertaking.

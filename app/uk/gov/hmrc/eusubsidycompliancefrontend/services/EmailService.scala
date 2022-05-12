@@ -41,7 +41,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class EmailService @Inject() (
   appConfig: AppConfig,
   sendEmailConnector: SendEmailConnector,
-  retrieveEmailConnector: RetrieveEmailConnector,
+  retrieveEmailConnector: RetrieveEmailConnector
 ) extends Logging {
 
   def retrieveEmailAddressAndSendEmail(

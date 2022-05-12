@@ -50,7 +50,9 @@ class UndertakingController @Inject() (
   undertakingSectorPage: UndertakingSectorPage,
   cyaPage: UndertakingCheckYourAnswersPage,
   confirmationPage: ConfirmationPage,
-  amendUndertakingPage: AmendUndertakingPage
+  amendUndertakingPage: AmendUndertakingPage,
+  disableUndertakingWarningPage: DisableUndertakingWarningPage,
+  disableUndertakingConfirmPage: DisableUndertakingConfirmPage
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -281,6 +283,33 @@ class UndertakingController @Inject() (
     }
   }
 
+  def getDisableUndertakingWarning: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking(undertaking => Ok(disableUndertakingWarningPage(undertaking.name.toString)).toFuture)
+  }
+
+  def getDisableUndertakingConfirm: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking(undertaking =>
+      Ok(disableUndertakingConfirmPage(disableUndertakingConfirmForm, undertaking.name)).toFuture
+    )
+  }
+
+  def postDisableUndertakingConfirm: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { undertaking =>
+      disableUndertakingConfirmForm
+        .bindFromRequest()
+        .fold(
+          errors => BadRequest(disableUndertakingConfirmPage(errors, undertaking.name)).toFuture,
+          form => Redirect(getNext(form)).toFuture
+        )
+    }
+  }
+
+  def getUndertakignDisabled: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request => }
+
+  def getNext(form: FormValues) = if (form.value == "true")
+    routes.UndertakingController.getDisableUndertakingWarning()
+  else routes.AccountController.getAccountPage()
+
   private def ensureUndertakingJourneyPresent(j: Option[UndertakingJourney])(f: UndertakingJourney => Future[Result]) =
     j.fold(Redirect(routes.UndertakingController.getUndertakingName()).toFuture)(f)
 
@@ -307,6 +336,10 @@ class UndertakingController @Inject() (
 
   private val amendUndertakingForm: Form[FormValues] = Form(
     mapping("amendUndertaking" -> mandatory("amendUndertaking"))(FormValues.apply)(FormValues.unapply)
+  )
+
+  private val disableUndertakingConfirmForm: Form[FormValues] = Form(
+    mapping("disableUndertakingConfirm" -> mandatory("disableUndertakingConfirm"))(FormValues.apply)(FormValues.unapply)
   )
 
 }

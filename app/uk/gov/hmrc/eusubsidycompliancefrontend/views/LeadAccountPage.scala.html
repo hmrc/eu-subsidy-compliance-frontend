@@ -47,7 +47,13 @@
 ) {
     @H1(messages("lead-account-homepage.title", undertaking.name))
 
-    @if(!isNilReturnDoneRecently) {
+    @if(isNilReturnDoneRecently) {
+        @govukNotificationBanner(NotificationBanner(
+            content = HtmlContent(html),
+            bannerType = Some("success"),
+            disableAutoFocus = Some(true)
+        ))
+    } else {
         @govukWarningText(WarningText(
             iconFallbackText = messages("common.warning"),
             content = Text(messages("lead-account-homepage.warning"))
@@ -72,17 +78,6 @@
         ))
     }
 
-    @if(isNilReturnDoneRecently) {
-
-        @govukNotificationBanner(NotificationBanner(
-            content = HtmlContent(html),
-            bannerType = Some("success"),
-            disableAutoFocus = Some(true)
-        ))
-
-    }
-
-
   <div class="govuk-grid-column-one-third">
     <div class="govuk-card govuk-card--contained govuk-card fixed-min-height-card">
       <h2 class="govuk-heading-s">@messages("lead-account-homepage.cards.card1.heading")</h2>
@@ -99,6 +94,7 @@
       <ul class="govuk-list govuk-list--spaced">
         <li><a href="@routes.UndertakingController.getAmendUndertakingDetails()" class="govuk-link">@messages("lead-account-homepage.cards.card2.link1")</a></li>
         <li><a href="@routes.FinancialDashboardController.getFinancialDashboard()" class="govuk-link">@messages("lead-account-homepage.cards.card2.link2")</a></li>
+          <li><a href="@routes.UndertakingController.getDisableUndertakingWarning()" class="govuk-link">@messages("lead-account-homepage.cards.card2.link3")</a></li>
       </ul>
     </div>
   </div>
