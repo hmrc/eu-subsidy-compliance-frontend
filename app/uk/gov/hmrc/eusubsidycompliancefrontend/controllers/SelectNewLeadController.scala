@@ -42,7 +42,7 @@ class SelectNewLeadController @Inject() (
   escCDSActionBuilder: EscCDSActionBuilders,
   override val escService: EscService,
   store: Store,
-  sendEmailHelperService: EmailService,
+  emailService: EmailService,
   auditService: AuditService,
   selectNewLeadPage: SelectNewLeadPage,
   leadEORIChangedPage: LeadEORIChangedPage,
@@ -97,7 +97,7 @@ class SelectNewLeadController @Inject() (
             newLeadJourney.copy(selectNewLead = updatedLead)
           }
           _ = auditService.sendEvent(BusinessEntityPromoted(undertakingRef, request.authorityId, eori, eoriBE))
-          _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+          _ <- emailService.retrieveEmailAddressAndSendEmail(
             eori,
             eoriBE.some,
             promoteOtherAsLeadEmailToLead,
@@ -105,7 +105,7 @@ class SelectNewLeadController @Inject() (
             undertakingRef,
             None
           )
-          result <- sendEmailHelperService
+          result <- emailService
             .retrieveEmailAddressAndSendEmail(
               eoriBE,
               None,
