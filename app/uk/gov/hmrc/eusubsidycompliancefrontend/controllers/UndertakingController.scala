@@ -52,7 +52,8 @@ class UndertakingController @Inject() (
   confirmationPage: ConfirmationPage,
   amendUndertakingPage: AmendUndertakingPage,
   disableUndertakingWarningPage: DisableUndertakingWarningPage,
-  disableUndertakingConfirmPage: DisableUndertakingConfirmPage
+  disableUndertakingConfirmPage: DisableUndertakingConfirmPage,
+  undertakingDisabledPage: UndertakingDisabledPage
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -305,11 +306,15 @@ class UndertakingController @Inject() (
   }
 
   def getUndertakingDisabled: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
-    withLeadUndertaking { undertaking => }
+    withLeadUndertaking { undertaking =>
+      escService.disableUndertaking(undertaking).map { _ =>
+        Ok(undertakingDisabledPage())
+      }
+    }
   }
 
   def getNext(form: FormValues) = if (form.value == "true")
-    routes.UndertakingController.getDisableUndertakingWarning()
+    routes.UndertakingController.getUndertakingDisabled()
   else routes.AccountController.getAccountPage()
 
   private def ensureUndertakingJourneyPresent(j: Option[UndertakingJourney])(f: UndertakingJourney => Future[Result]) =

@@ -432,3 +432,12 @@ disableUndertakingWarning.li4=All transactions related to this undertaking will 
 #disableUndertakingConfirm
 disableUndertakingConfirm.title = Are you sure you want to disable the single undertaking {0} ?
 disableUndertakingConfirm.error.required = Select Yes if you want to disable the single undertaking.
+
+
+#undertakingDisabled
+undertakingDisabled.title = You have disabled this single undertaking
+undertakingDisabled.p1 = We have sent all businesses that were part of this single undertaking a confirmation email.
+undertakingDisabled.p2= You have been logged out of the account.
+undertakingDisabled.h2= Actions
+undertakingDisabled.p3 = <a href="{0}" class="govuk-link">Create a new undertaking</a>
+undertakingDisabled.p4 = <a href="{0}" class="govuk-link">What did you think of this service?</a>(takes 30 seconds)
