@@ -59,7 +59,7 @@ class NoClaimNotificationController @Inject() (
       val previous = routes.AccountController.getAccountPage().url
 
       def handleValidNoClaim(form: FormValues): Future[Result] = {
-        val nilSubmissionDate = timeProvider.today
+        val nilSubmissionDate = timeProvider.today.plusDays(1)
         val result = for {
           reference <- undertaking.reference.toContext
           _ <- store.update[NilReturnJourney](e => e.copy(displayNotification = true)).toContext

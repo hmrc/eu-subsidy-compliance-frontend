@@ -37,13 +37,14 @@ object EoriIdType extends CacheIdType[EORI] {
 @Singleton
 class UndertakingCache @Inject() (
   mongoComponent: MongoComponent
-)(implicit ec: ExecutionContext) extends MongoCacheRepository[EORI](
-    mongoComponent = mongoComponent,
-    collectionName = "undertakingCache",
-    ttl = DefaultCacheTtl,
-    timestampSupport = new CurrentTimestampSupport,
-    cacheIdType = EoriIdType
-  ) {
+)(implicit ec: ExecutionContext)
+    extends MongoCacheRepository[EORI](
+      mongoComponent = mongoComponent,
+      collectionName = "undertakingCache",
+      ttl = DefaultCacheTtl,
+      timestampSupport = new CurrentTimestampSupport,
+      cacheIdType = EoriIdType
+    ) {
 
   private val UndertakingReference = "data.Undertaking.reference"
   private val UndertakingSubsidiesIdentifier = "data.UndertakingSubsidies.undertakingIdentifier"
@@ -51,29 +52,33 @@ class UndertakingCache @Inject() (
   // Ensure additional indexes for undertaking and undertaking subsidies deletion are present.
   private lazy val indexedCollection: Future[MongoCollection[CacheItem]] =
     for {
-      _ <- collection.createIndex(
-        Indexes.ascending(UndertakingReference),
-        IndexOptions()
-          .background(false)
-          .name("undertakingReference")
-          .sparse(false)
-          .unique(false)
-      ).headOption()
-      _ <- collection.createIndex(
-        Indexes.ascending(UndertakingSubsidiesIdentifier),
-        IndexOptions()
-          .background(false)
-          .name("undertakingSubsidiesIdentifier")
-          .sparse(false)
-          .unique(false)
-      ).headOption()
+      _ <- collection
+        .createIndex(
+          Indexes.ascending(UndertakingReference),
+          IndexOptions()
+            .background(false)
+            .name("undertakingReference")
+            .sparse(false)
+            .unique(false)
+        )
+        .headOption()
+      _ <- collection
+        .createIndex(
+          Indexes.ascending(UndertakingSubsidiesIdentifier),
+          IndexOptions()
+            .background(false)
+            .name("undertakingSubsidiesIdentifier")
+            .sparse(false)
+            .unique(false)
+        )
+        .headOption()
     } yield collection
 
   def get[A : ClassTag](eori: EORI)(implicit reads: Reads[A]): Future[Option[A]] =
     indexedCollection.flatMap { _ =>
       super
         .get[A](eori)(dataKeyForType[A])
-      }
+    }
 
   def put[A](eori: EORI, in: A)(implicit writes: Writes[A]): Future[A] =
     indexedCollection.flatMap { _ =>
@@ -85,20 +90,18 @@ class UndertakingCache @Inject() (
   def deleteUndertaking(ref: UndertakingRef): Future[Unit] =
     indexedCollection.flatMap { c =>
       c.updateMany(
-          filter = Filters.equal(UndertakingReference, ref),
-          update = Updates.unset("data.Undertaking")
-        )
-        .toFuture()
+        filter = Filters.equal(UndertakingReference, ref),
+        update = Updates.unset("data.Undertaking")
+      ).toFuture()
         .map(_ => ())
     }
 
   def deleteUndertakingSubsidies(ref: UndertakingRef): Future[Unit] =
     indexedCollection.flatMap { c =>
       c.updateMany(
-          filter = Filters.equal(UndertakingSubsidiesIdentifier, ref),
-          update = Updates.unset("data.UndertakingSubsidies")
-        )
-        .toFuture()
+        filter = Filters.equal(UndertakingSubsidiesIdentifier, ref),
+        update = Updates.unset("data.UndertakingSubsidies")
+      ).toFuture()
         .map(_ => ())
     }
 
