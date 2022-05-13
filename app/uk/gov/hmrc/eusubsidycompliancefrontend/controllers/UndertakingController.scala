@@ -322,14 +322,15 @@ class UndertakingController @Inject() (
       _ <- store.delete[SubsidyJourney]
     } yield ()
 
-  def handleFormSubmission(form: FormValues, undertaking: Undertaking)(implicit hc: HeaderCarrier) = if (
-    form.value == "true"
-  ) {
-    for {
-      _ <- escService.disableUndertaking(undertaking)
-      _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
-    } yield Redirect(routes.UndertakingController.getUndertakingDisabled())
-  } else Redirect(routes.AccountController.getAccountPage()).toFuture
+  private def handleFormSubmission(form: FormValues, undertaking: Undertaking)(implicit
+    hc: HeaderCarrier
+  ): Future[Result] =
+    if (form.value == "true") {
+      for {
+        _ <- escService.disableUndertaking(undertaking)
+        _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
+      } yield Redirect(routes.UndertakingController.getUndertakingDisabled())
+    } else Redirect(routes.AccountController.getAccountPage()).toFuture
 
   private def ensureUndertakingJourneyPresent(j: Option[UndertakingJourney])(f: UndertakingJourney => Future[Result]) =
     j.fold(Redirect(routes.UndertakingController.getUndertakingName()).toFuture)(f)
