@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.data.OptionT
+import cats.implicits._
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -306,12 +307,30 @@ class UndertakingController @Inject() (
   }
 
   def getUndertakingDisabled: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    implicit val eori = request.eoriNumber
     withLeadUndertaking { undertaking =>
-      escService.disableUndertaking(undertaking).map { _ =>
-        Ok(undertakingDisabledPage())
+      escService.disableUndertaking(undertaking).flatMap { _ =>
+        resetAllJourneys.flatMap { _ => //Reset All journeys for lead
+          undertaking.undertakingBusinessEntity
+            .traverse { be =>
+              resetAllJourneys(be.businessEntityIdentifier) //Reset All journeys for BE members
+            }
+            .map(_ => Ok(undertakingDisabledPage()))
+        }
       }
     }
   }
+
+  private def resetAllJourneys(implicit eori: EORI) =
+    for {
+      _ <- store.delete[EligibilityJourney]
+      _ <- store.delete[UndertakingJourney]
+      _ <- store.delete[NewLeadJourney]
+      _ <- store.delete[NilReturnJourney]
+      _ <- store.delete[BusinessEntityJourney]
+      _ <- store.delete[BecomeLeadJourney]
+      _ <- store.delete[SubsidyJourney]
+    } yield ()
 
   def getNext(form: FormValues) = if (form.value == "true")
     routes.UndertakingController.getUndertakingDisabled()

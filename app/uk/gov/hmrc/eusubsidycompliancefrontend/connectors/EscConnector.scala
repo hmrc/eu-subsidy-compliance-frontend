@@ -67,11 +67,8 @@ class EscConnector @Inject() (
   )(implicit hc: HeaderCarrier): ConnectorResult =
     makeRequest(_.POST[BusinessEntity, HttpResponse](s"$removeMemberUrl/$undertakingRef", businessEntity))
 
-  def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit hc: HeaderCarrier): ConnectorResult = {
-
-    println(" subsidy update for create subsidy::" + subsidyUpdate)
+  def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit hc: HeaderCarrier): ConnectorResult =
     makeRequest(_.POST[SubsidyUpdate, HttpResponse](updateSubsidyUrl, subsidyUpdate))
-  }
 
   def removeSubsidy(
     undertakingRef: UndertakingRef,
