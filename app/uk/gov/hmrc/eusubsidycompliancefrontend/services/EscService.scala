@@ -64,8 +64,9 @@ class EscService @Inject() (
       .disableUndertaking(undertaking)
       .flatMap { response =>
         for {
-          ref <- handleResponse[UndertakingRef](response, "update undertaking").toFuture
+          ref <- handleResponse[UndertakingRef](response, "disable undertaking").toFuture
           _ <- undertakingCache.deleteUndertaking(ref)
+          _ <- undertakingCache.deleteUndertakingSubsidies(ref)
         } yield ref
       }
 
@@ -138,8 +139,7 @@ class EscService @Inject() (
         } yield ref
       }
 
-  def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit hc: HeaderCarrier): Future[UndertakingRef] = {
-    println(" subsidy uooadte::" + subsidyUpdate)
+  def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
     escConnector
       .createSubsidy(subsidyUpdate)
       .flatMap { response =>
@@ -149,7 +149,6 @@ class EscService @Inject() (
           _ <- undertakingCache.deleteUndertaking(ref)
         } yield ref
       }
-  }
 
   def retrieveSubsidy(
     subsidyRetrieve: SubsidyRetrieve
