@@ -94,7 +94,6 @@ class BusinessEntityControllerSpec
 
   private val invalidEOris = List("GA1234567890", "AB1234567890")
   private val invalidLengthEOris = List("1234567890", "12345678901234", "GB1234567890")
-  private val currentDate = LocalDate.of(2022, 10, 9)
 
   "BusinessEntityControllerSpec" when {
 
@@ -816,8 +815,6 @@ class BusinessEntityControllerSpec
         )
 
       "throw a technical error" when {
-        val exception = new Exception("oh no!")
-
         "call to retrieve undertaking returns undertaking having no BE with that eori" in {
           inSequence {
             mockAuthWithEORIEnrolment(eori4)
