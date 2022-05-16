@@ -41,9 +41,8 @@ class BecomeLeadController @Inject() (
   escInitialActionBuilders: EscInitialActionBuilder,
   store: Store,
   escService: EscService,
-  sendEmailHelperService: SendEmailHelperService,
+  emailService: EmailService,
   auditService: AuditService,
-  retrieveEmailService: RetrieveEmailService,
   becomeAdminPage: BecomeAdminPage,
   becomeAdminTermsAndConditionsPage: BecomeAdminTermsAndConditionsPage,
   becomeAdminConfirmationPage: BecomeAdminConfirmationPage
@@ -117,7 +116,7 @@ class BecomeLeadController @Inject() (
 
   def getAcceptPromotionTerms: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    retrieveEmailService.retrieveEmailByEORI(eori) flatMap { response =>
+    emailService.retrieveEmailByEORI(eori) flatMap { response =>
       response.emailType match {
         case EmailType.VerifiedEmail =>
           store.get[BecomeLeadJourney].flatMap {
@@ -162,9 +161,9 @@ class BecomeLeadController @Inject() (
             .fold(handleMissingSessionData("lead Business Entity"))(_.copy(leadEORI = false))
           _ <- escService.addMember(undertakingRef, newLead)
           _ <- escService.addMember(undertakingRef, oldLead)
-          _ <- sendEmailHelperService
+          _ <- emailService
             .retrieveEmailAddressAndSendEmail(eori, None, PromotedAsNewLead, retrievedUndertaking, undertakingRef, None)
-          _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+          _ <- emailService.retrieveEmailAddressAndSendEmail(
             oldLead.businessEntityIdentifier,
             None,
             RemovedAsLead,

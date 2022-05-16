@@ -17,8 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxEq
-
-import javax.inject.{Inject, Singleton}
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc._
@@ -28,10 +26,11 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EligibilityJourney, JourneyTraverseService, RetrieveEmailService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
@@ -50,15 +49,15 @@ class EligibilityController @Inject() (
   createUndertakingPage: CreateUndertakingPage,
   escNonEnrolmentActionBuilders: EscNoEnrolmentActionBuilders,
   escCDSActionBuilder: EscCDSActionBuilders,
-  retrieveEmailService: RetrieveEmailService,
+  emailService: EmailService,
   store: Store
 )(implicit
   val appConfig: AppConfig,
   executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import escNonEnrolmentActionBuilders._
   import escCDSActionBuilder._
+  import escNonEnrolmentActionBuilders._
 
   private val customsWaiversForm: Form[FormValues] = Form(
     mapping("customswaivers" -> mandatory("customswaivers"))(FormValues.apply)(FormValues.unapply)
@@ -134,7 +133,7 @@ class EligibilityController @Inject() (
 
   def getEoriCheck: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    retrieveEmailService.retrieveEmailByEORI(eori) flatMap {
+    emailService.retrieveEmailByEORI(eori) flatMap {
       _.emailType match {
         case EmailType.VerifiedEmail =>
           store.get[EligibilityJourney].map {

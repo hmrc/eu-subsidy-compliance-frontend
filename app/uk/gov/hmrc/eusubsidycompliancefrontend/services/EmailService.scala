@@ -16,18 +16,21 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import play.api.Configuration
+import cats.implicits.catsSyntaxOptionId
+import com.google.inject.Inject
+import play.api.Logging
+import play.api.http.Status.{ACCEPTED, NOT_FOUND, OK}
 import play.api.i18n.I18nSupport.RequestWithMessagesApi
 import play.api.i18n.MessagesApi
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{RetrieveEmailConnector, SendEmailConnector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
-import com.google.inject.Inject
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, DoubleEORIEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendResult, EmailType, RetrieveEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
 import uk.gov.hmrc.http.HeaderCarrier
 
 import java.util.Locale
@@ -35,12 +38,11 @@ import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SendEmailHelperService @Inject() (
+class EmailService @Inject() (
   appConfig: AppConfig,
-  retrieveEmailService: RetrieveEmailService,
-  sendEmailService: SendEmailService,
-  configuration: Configuration
-) {
+  sendEmailConnector: SendEmailConnector,
+  retrieveEmailConnector: RetrieveEmailConnector,
+) extends Logging {
 
   def retrieveEmailAddressAndSendEmail(
     eori1: EORI,
@@ -54,19 +56,43 @@ class SendEmailHelperService @Inject() (
     executionContext: ExecutionContext,
     request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
-  ): Future[EmailSendResult] = retrieveEmailService.retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
+  ): Future[EmailSendResult] = retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
     retrieveEmailResponse.emailType match {
       case EmailType.VerifiedEmail =>
-        val templateId = getEmailTemplateId(configuration, key)
-        val emailParameter = getEmailParams(key, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
+        val templateId = getEmailTemplateId(key)
+        val emailParameter = buildEmailParameters(key, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
         val emailAddress = retrieveEmailResponse.emailAddress.getOrElse(sys.error("email not found"))
-        sendEmailService.sendEmail(emailAddress, emailParameter, templateId)
+        sendEmail(emailAddress, emailParameter, templateId)
       case _ => Future.successful(EmailSendResult.EmailNotSent)
     }
-
   }
 
-  private def getEmailParams(
+  def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RetrieveEmailResponse] =
+    retrieveEmailConnector.retrieveEmailByEORI(eori).map {
+      case Left(error) => throw error
+      case Right(value) =>
+        value.status match {
+          case NOT_FOUND => RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)
+          case OK =>
+            value
+              .parseJSON[EmailAddressResponse]
+              .fold(_ => sys.error("Error in parsing Email Address"), handleEmailAddressResponse)
+
+          case _ => sys.error("Error in retrieving Email Address Response")
+
+        }
+    }
+
+  private def handleEmailAddressResponse(emailAddressResponse: EmailAddressResponse): RetrieveEmailResponse =
+    emailAddressResponse match {
+      case EmailAddressResponse(email, Some(_), None) => RetrieveEmailResponse(EmailType.VerifiedEmail, email.some)
+      case EmailAddressResponse(email, Some(_), Some(_)) =>
+        RetrieveEmailResponse(EmailType.UnDeliverableEmail, email.some)
+      case EmailAddressResponse(email, None, None) => RetrieveEmailResponse(EmailType.UnVerifiedEmail, email.some)
+      case _ => sys.error("Email address response is not valid")
+    }
+
+  private def buildEmailParameters(
     key: String,
     eori1: EORI,
     eori2: Option[EORI],
@@ -89,12 +115,27 @@ class SendEmailHelperService @Inject() (
       case other => sys.error(s"Found unsupported language code $other")
     }
 
-  private def getEmailTemplateId(configuration: Configuration, inputKey: String)(implicit
+  private def getEmailTemplateId(inputKey: String)(implicit
     request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
   ) = {
     val lang = getLanguage
-    appConfig.templateIdsMap(configuration, lang.code).getOrElse(inputKey, s"no template for $inputKey")
+    appConfig.templateIdsMap(lang.code).getOrElse(inputKey, s"no template for $inputKey")
   }
+
+  private def sendEmail(emailAddress: EmailAddress, emailParameters: EmailParameters, templateId: String)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[EmailSendResult] =
+    sendEmailConnector.sendEmail(EmailSendRequest(List(emailAddress), templateId, emailParameters)).map {
+      case Left(error) => throw ConnectorError(s"Error in Sending Email ${emailParameters.description}", error)
+      case Right(value) =>
+        value.status match {
+          case ACCEPTED => EmailSendResult.EmailSent
+          case other =>
+            logger.warn(s"Response for send email call came back with status : $other")
+            EmailSendResult.EmailSentFailure
+        }
+    }
 
 }

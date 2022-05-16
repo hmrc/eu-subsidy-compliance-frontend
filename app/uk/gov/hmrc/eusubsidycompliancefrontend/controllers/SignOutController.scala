@@ -27,12 +27,11 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.BusinessEntity
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EscService, RetrieveEmailService, SendEmailHelperService}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EmailService, EscService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.{FutureToOptionTOps, OptionToOptionTOps}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.TimedOut
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import scala.concurrent.ExecutionContext
@@ -41,9 +40,8 @@ import scala.concurrent.ExecutionContext
 class SignOutController @Inject() (
   mcc: MessagesControllerComponents,
   escCDSActionBuilder: EscCDSActionBuilders,
-  retrieveEmailService: RetrieveEmailService,
   escService: EscService,
-  sendEmailHelperService: SendEmailHelperService,
+  emailService: EmailService,
   auditService: AuditService,
   timedOutPage: TimedOut,
   signOutPage: SignOutPage,
@@ -65,7 +63,7 @@ class SignOutController @Inject() (
 
   val signOut: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    retrieveEmailService.retrieveEmailByEORI(eori) flatMap { response =>
+    emailService.retrieveEmailByEORI(eori) flatMap { response =>
       response.emailType match {
         case EmailType.VerifiedEmail =>
           escService.retrieveUndertaking(eori).flatMap {
@@ -76,7 +74,7 @@ class SignOutController @Inject() (
                 removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(eori)
                 leadEORI = undertaking.getLeadEORI
                 _ <- escService.removeMember(undertakingRef, removeBE).toContext
-                _ <- sendEmailHelperService
+                _ <- emailService
                   .retrieveEmailAddressAndSendEmail(
                     eori,
                     None,
@@ -86,7 +84,7 @@ class SignOutController @Inject() (
                     removalEffectiveDateString.some
                   )
                   .toContext
-                _ <- sendEmailHelperService
+                _ <- emailService
                   .retrieveEmailAddressAndSendEmail(
                     leadEORI,
                     eori.some,

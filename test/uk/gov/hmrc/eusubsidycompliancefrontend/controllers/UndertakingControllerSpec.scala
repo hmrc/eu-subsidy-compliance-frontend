@@ -24,8 +24,9 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.ModifyUndertakingRow
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.UndertakingUpdated
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailType, RetrieveEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
@@ -53,8 +54,7 @@ class UndertakingControllerSpec
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[JourneyTraverseService].toInstance(mockJourneyTraverseService),
-    bind[SendEmailService].toInstance(mockSendEmailService),
-    bind[RetrieveEmailService].toInstance(mockRetrieveEmailService),
+    bind[EmailService].toInstance(mockEmailService),
     bind[AuditService].toInstance(mockAuditService),
     bind[TimeProvider].toInstance(mockTimeProvider)
   )
@@ -682,7 +682,7 @@ class UndertakingControllerSpec
 
         }
 
-        "call to retrieve email address fails" in {
+        "call to send email fails" in {
 
           val updatedUndertakingJourney =
             undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage(false.some))
@@ -691,7 +691,7 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockRetrieveEmail(eori1)(Left(ConnectorError(exception)))
+            mockRetrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertakingCreated, undertakingRef,None)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
 
@@ -700,7 +700,7 @@ class UndertakingControllerSpec
 
       "redirect to confirmation page" when {
 
-        def testRedirection(lang: String, templateId: String): Unit = {
+        def testRedirection(lang: Language): Unit = {
 
           val updatedUndertakingJourney = undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage(false.some))
 
@@ -708,23 +708,22 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockSendEmail(validEmailAddress, emailParameter, templateId)(Right(EmailSendResult.EmailSent))
+            mockRetrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertakingCreated, undertakingRef, None)(Right(EmailSent))
             mockTimeProviderNow(timeNow)
             mockSendAuditEvent(createUndertakingAuditEvent)
           }
           checkIsRedirect(
-            performAction("cya" -> "true")(lang),
+            performAction("cya" -> "true")(lang.code),
             routes.UndertakingController.getConfirmation(undertakingRef, undertakingCreated.name).url
           )
         }
 
         "all api calls are successful and english language is selected" in {
-          testRedirection(Language.English.code, "template_EN")
+          testRedirection(English)
         }
 
         "all api calls are successful and Welsh language is selected" in {
-          testRedirection(Language.Welsh.code, "template_CY")
+          testRedirection(Welsh)
         }
 
       }
