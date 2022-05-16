@@ -64,7 +64,7 @@ class SubsidyControllerSpec
   private val currentDate = LocalDate.of(2022, 10, 9)
 
   private val subsidyRetrieveWithDates = subsidyRetrieve.copy(
-    inDateRange = Some((LocalDate.of(2021, 1, 1), LocalDate.of(2022, 10, 9)))
+    inDateRange = Some((LocalDate.of(2020, 4, 6), LocalDate.of(2022, 10, 9)))
   )
 
   "SubsidyControllerSpec" when {
