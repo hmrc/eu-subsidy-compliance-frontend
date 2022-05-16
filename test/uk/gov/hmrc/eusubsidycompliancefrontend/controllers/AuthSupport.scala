@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.{EmptyPredicate, Predicate}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, EmptyRetrieval, Retrieval, ~}
+import uk.gov.hmrc.auth.core.retrieve.{CompositeRetrieval, Credentials, EmptyRetrieval, OptionalRetrieval, Retrieval, ~}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
 

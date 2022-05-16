@@ -20,9 +20,9 @@ import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.mvc.Result
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
-import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.{BearerTokenExpired, Enrolment, EnrolmentIdentifier, Enrolments, InvalidBearerToken, MissingBearerToken, NoActiveSession, SessionRecordNotFound}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, eori4}
 
 import java.net.URLEncoder
 import scala.concurrent.Future
