@@ -307,16 +307,13 @@ class UndertakingController @Inject() (
   }
 
   def getUndertakingDisabled: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
-    implicit val eori = request.eoriNumber
     withLeadUndertaking { undertaking =>
       escService.disableUndertaking(undertaking).flatMap { _ =>
-        resetAllJourneys.flatMap { _ => //Reset All journeys for lead
-          undertaking.undertakingBusinessEntity
-            .traverse { be =>
-              resetAllJourneys(be.businessEntityIdentifier) //Reset All journeys for BE members
-            }
-            .map(_ => Ok(undertakingDisabledPage()))
-        }
+        undertaking.undertakingBusinessEntity
+          .traverse { be =>
+            resetAllJourneys(be.businessEntityIdentifier) //Reset All journeys for lead and BE members
+          }
+          .map(_ => Ok(undertakingDisabledPage()))
       }
     }
   }

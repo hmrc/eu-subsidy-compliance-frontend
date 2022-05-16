@@ -31,8 +31,13 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class EscConnectorSpec extends AnyWordSpec with Matchers with MockFactory with HttpSupport with ConnectorSpec
-  with ScalaFutures {
+class EscConnectorSpec
+    extends AnyWordSpec
+    with Matchers
+    with MockFactory
+    with HttpSupport
+    with ConnectorSpec
+    with ScalaFutures {
 
   private val (protocol, host, port) = ("http", "host", "123")
   private val baseUrl = s"$protocol://$host:$port/eu-subsidy-compliance"
@@ -64,6 +69,13 @@ class EscConnectorSpec extends AnyWordSpec with Matchers with MockFactory with H
       behave like connectorBehaviour(
         mockPost(s"$baseUrl/undertaking/update", Seq.empty, undertaking)(_),
         () => connector.updateUndertaking(undertaking)
+      )
+    }
+
+    "handling request to disable Undertaking" must {
+      behave like connectorBehaviour(
+        mockPost(s"$baseUrl/undertaking/disable", Seq.empty, undertaking)(_),
+        () => connector.disableUndertaking(undertaking)
       )
     }
 

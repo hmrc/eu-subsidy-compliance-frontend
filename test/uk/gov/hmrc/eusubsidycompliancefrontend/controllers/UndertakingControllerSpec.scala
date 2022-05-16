@@ -691,7 +691,14 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertakingCreated, undertakingRef,None)(Left(ConnectorError(exception)))
+            mockRetrieveEmailAddressAndSendEmail(
+              eori1,
+              None,
+              "createUndertaking",
+              undertakingCreated,
+              undertakingRef,
+              None
+            )(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
 
@@ -708,7 +715,14 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertakingCreated, undertakingRef, None)(Right(EmailSent))
+            mockRetrieveEmailAddressAndSendEmail(
+              eori1,
+              None,
+              "createUndertaking",
+              undertakingCreated,
+              undertakingRef,
+              None
+            )(Right(EmailSent))
             mockTimeProviderNow(timeNow)
             mockSendAuditEvent(createUndertakingAuditEvent)
           }
@@ -1030,6 +1044,96 @@ class UndertakingControllerSpec
         checkIsRedirect(performAction("amendUndertaking" -> "true"), routes.AccountController.getAccountPage().url)
       }
 
+    }
+
+    "handling request to get Disable undertaking warning" must {
+      def performAction() = controller.getDisableUndertakingWarning(FakeRequest())
+
+      "display the page" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+        }
+        checkPageIsDisplayed(
+          performAction(),
+          messageFromMessageKey("disableUndertakingWarning.title", undertaking.name),
+          doc => doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
+        )
+      }
+
+    }
+
+    "handling request to get Disable undertaking confirm" must {
+      def performAction() = controller.getDisableUndertakingConfirm(FakeRequest())
+
+      "display the page" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+        }
+        checkPageIsDisplayed(
+          performAction(),
+          messageFromMessageKey("disableUndertakingConfirm.title", undertaking.name),
+          { doc =>
+            doc.select(".govuk-back-link").attr("href") shouldBe routes.UndertakingController
+              .getDisableUndertakingWarning()
+              .url
+            val form = doc.select("form")
+            form
+              .attr("action") shouldBe routes.UndertakingController.postDisableUndertakingConfirm().url
+          }
+        )
+      }
+
+    }
+
+    "handling request to get Undertaking Disabled" must {
+      def performAction() = controller.getUndertakingDisabled(FakeRequest())
+
+      "throw technical error" when {
+        "call to disable undertaking fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockDisableUndertaking(undertaking)(Left(ConnectorError(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+      }
+
+      "display the page" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
+          mockDisableUndertaking(undertaking1)(Right(undertakingRef))
+          mockDelete[EligibilityJourney](eori1)(Right(()))
+          mockDelete[UndertakingJourney](eori1)(Right(()))
+          mockDelete[NewLeadJourney](eori1)(Right(()))
+          mockDelete[NilReturnJourney](eori1)(Right(()))
+          mockDelete[BusinessEntityJourney](eori1)(Right(()))
+          mockDelete[BecomeLeadJourney](eori1)(Right(()))
+          mockDelete[SubsidyJourney](eori1)(Right(()))
+          mockDelete[EligibilityJourney](eori4)(Right(()))
+          mockDelete[UndertakingJourney](eori4)(Right(()))
+          mockDelete[NewLeadJourney](eori4)(Right(()))
+          mockDelete[NilReturnJourney](eori4)(Right(()))
+          mockDelete[BusinessEntityJourney](eori4)(Right(()))
+          mockDelete[BecomeLeadJourney](eori4)(Right(()))
+          mockDelete[SubsidyJourney](eori4)(Right(()))
+        }
+        checkPageIsDisplayed(
+          performAction(),
+          messageFromMessageKey("undertakingDisabled.title"),
+          { doc =>
+            val body = doc.select(".govuk-body").html()
+            body should include regex messageFromMessageKey(
+              "undertakingDisabled.p3",
+              routes.AccountController.getAccountPage().url
+            )
+
+          }
+        )
+      }
     }
   }
 }
