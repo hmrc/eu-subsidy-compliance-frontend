@@ -111,19 +111,19 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
         "the email retrieval fails" in {
           mockRetrieveEmail(eori1)(Left(ConnectorError(new RuntimeException())))
-          val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
           result.failed.futureValue shouldBe a[ConnectorError]
         }
 
         "no email address is found" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, inValidEmailResponseJson, emptyHeaders)))
-          val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
           result.futureValue shouldBe EmailNotSent
         }
 
         "the email address is undeliverable" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, undeliverableResponseJson, emptyHeaders)))
-          val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
           result.futureValue shouldBe EmailNotSent
         }
 
@@ -131,7 +131,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockMessagesResponse
           mockSendEmail(emailSendRequest)(Left(ConnectorError("Error")))
-          val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
           result.failed.futureValue shouldBe a[ConnectorError]
         }
 
@@ -143,7 +143,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockMessagesResponse
           mockSendEmail(emailSendRequest)(Right(HttpResponse(ACCEPTED, "")))
-          val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
           result.futureValue shouldBe EmailSent
         }
 

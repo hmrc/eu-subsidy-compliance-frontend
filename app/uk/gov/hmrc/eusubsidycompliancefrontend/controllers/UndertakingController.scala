@@ -190,7 +190,7 @@ class UndertakingController @Inject() (
   )(implicit request: AuthenticatedEscRequest[_], eori: EORI): Future[Result] =
     for {
       ref <- escService.createUndertaking(undertaking)
-      _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+      _ <- sendEmailHelperService.sendEmail(
         eori,
         None,
         CreateUndertaking,

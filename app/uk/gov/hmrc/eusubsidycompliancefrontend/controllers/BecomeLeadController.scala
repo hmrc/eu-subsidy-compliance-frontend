@@ -162,8 +162,8 @@ class BecomeLeadController @Inject() (
           _ <- escService.addMember(undertakingRef, newLead)
           _ <- escService.addMember(undertakingRef, oldLead)
           _ <- emailService
-            .retrieveEmailAddressAndSendEmail(eori, None, PromotedAsNewLead, retrievedUndertaking, undertakingRef, None)
-          _ <- emailService.retrieveEmailAddressAndSendEmail(
+            .sendEmail(eori, None, PromotedAsNewLead, retrievedUndertaking, undertakingRef, None)
+          _ <- emailService.sendEmail(
             oldLead.businessEntityIdentifier,
             None,
             RemovedAsLead,

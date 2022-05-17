@@ -44,10 +44,11 @@ class EmailService @Inject() (
   retrieveEmailConnector: RetrieveEmailConnector
 ) extends Logging {
 
-  def retrieveEmailAddressAndSendEmail(
+  // TODO - review call sites to determine how missing ref is handled
+  def sendEmail(
     eori1: EORI,
     eori2: Option[EORI],
-    key: String,
+    templateKey: String,
     undertaking: Undertaking,
     undertakingRef: UndertakingRef,
     removeEffectiveDate: Option[String]
@@ -59,8 +60,8 @@ class EmailService @Inject() (
   ): Future[EmailSendResult] = retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
     retrieveEmailResponse.emailType match {
       case EmailType.VerifiedEmail =>
-        val templateId = getEmailTemplateId(key)
-        val emailParameter = buildEmailParameters(key, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
+        val templateId = getEmailTemplateId(templateKey)
+        val emailParameter = buildEmailParameters(templateKey, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
         val emailAddress = retrieveEmailResponse.emailAddress.getOrElse(sys.error("email not found"))
         sendEmail(emailAddress, emailParameter, templateId)
       case _ => Future.successful(EmailSendResult.EmailNotSent)

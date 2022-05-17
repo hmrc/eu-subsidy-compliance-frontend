@@ -75,7 +75,7 @@ class SignOutController @Inject() (
                 leadEORI = undertaking.getLeadEORI
                 _ <- escService.removeMember(undertakingRef, removeBE).toContext
                 _ <- emailService
-                  .retrieveEmailAddressAndSendEmail(
+                  .sendEmail(
                     eori,
                     None,
                     RemoveThemselfEmailToBusinessEntity,
@@ -85,7 +85,7 @@ class SignOutController @Inject() (
                   )
                   .toContext
                 _ <- emailService
-                  .retrieveEmailAddressAndSendEmail(
+                  .sendEmail(
                     leadEORI,
                     eori.some,
                     RemoveThemselfEmailToLead,

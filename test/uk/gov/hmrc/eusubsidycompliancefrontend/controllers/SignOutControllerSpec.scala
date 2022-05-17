@@ -163,8 +163,8 @@ class SignOutControllerSpec
             mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(currentDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(eori4, None, "removeThemselfEmailToBE", undertaking1, undertakingRef, effectiveDate.some)(Right(EmailSent))
-            mockRetrieveEmailAddressAndSendEmail(eori1, eori4.some, "removeThemselfEmailToLead", undertaking1, undertakingRef, effectiveDate.some)(Right(EmailSent))
+            mockSendEmail(eori4, None, "removeThemselfEmailToBE", undertaking1, undertakingRef, effectiveDate.some)(Right(EmailSent))
+            mockSendEmail(eori1, eori4.some, "removeThemselfEmailToLead", undertaking1, undertakingRef, effectiveDate.some)(Right(EmailSent))
             mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf(undertakingRef, "1123", eori1, eori4))
           }
 

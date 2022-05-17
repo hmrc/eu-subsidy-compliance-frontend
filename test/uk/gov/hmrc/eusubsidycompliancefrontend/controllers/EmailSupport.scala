@@ -37,7 +37,7 @@ trait EmailSupport { this: ControllerSpec =>
       .expects(eori, *, *)
       .returning(result.fold(e => Future.failed(e), _.toFuture))
 
-  def mockRetrieveEmailAddressAndSendEmail(
+  def mockSendEmail(
     eori1: EORI,
     eori2: Option[EORI],
     key: String,
@@ -46,7 +46,7 @@ trait EmailSupport { this: ControllerSpec =>
     removeEffectiveDate: Option[String]
   )(result: Either[ConnectorError, EmailSendResult]) =
     (mockEmailService
-      .retrieveEmailAddressAndSendEmail(
+      .sendEmail(
         _: EORI,
         _: Option[EORI],
         _: String,

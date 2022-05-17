@@ -187,7 +187,7 @@ class BusinessEntityController @Inject() (
         escService.addMember(undertakingRef, businessEntity).toContext
       }
       _ <- emailService
-        .retrieveEmailAddressAndSendEmail(
+        .sendEmail(
           eoriBE,
           None,
           AddMemberEmailToBusinessEntity,
@@ -197,7 +197,7 @@ class BusinessEntityController @Inject() (
         )
         .toContext
       _ <- emailService
-        .retrieveEmailAddressAndSendEmail(
+        .sendEmail(
           eori,
           eoriBE.some,
           AddMemberEmailToLead,
@@ -269,7 +269,7 @@ class BusinessEntityController @Inject() (
             val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
             for {
               _ <- escService.removeMember(undertakingRef, removeBE)
-              _ <- emailService.retrieveEmailAddressAndSendEmail(
+              _ <- emailService.sendEmail(
                 EORI(eoriEntered),
                 None,
                 RemoveMemberEmailToBusinessEntity,
@@ -277,7 +277,7 @@ class BusinessEntityController @Inject() (
                 undertakingRef,
                 removalEffectiveDateString.some
               )
-              _ <- emailService.retrieveEmailAddressAndSendEmail(
+              _ <- emailService.sendEmail(
                 eori,
                 EORI(eoriEntered).some,
                 RemoveMemberEmailToLead,
