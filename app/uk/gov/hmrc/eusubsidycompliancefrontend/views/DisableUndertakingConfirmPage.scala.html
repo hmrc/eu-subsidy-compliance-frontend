@@ -25,7 +25,8 @@
         button: components.Button,
         govukErrorSummary: GovukErrorSummary,
         govukRadios : GovukRadios,
-        govukSummaryList: GovukSummaryList
+        govukSummaryList: GovukSummaryList,
+        govukButton: GovukButton
 )
 
 @(form: Form[_], undertakingName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -79,7 +80,7 @@
             classes = "govuk-radios--inline"
         ))
 
-        @button("common.disable")
+        @button("common.disable", None, true, None, Some("govuk-button--warning"))
 
     }
 
