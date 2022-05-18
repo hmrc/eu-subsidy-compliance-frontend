@@ -320,4 +320,17 @@ object AuditEvent {
   object UndertakingUpdated {
     implicit val writes: Writes[UndertakingUpdated] = Json.writes
   }
+
+  final case class UndertakingDisabled(
+    ggDetails: String,
+    undertakingReference: UndertakingRef,
+    disablementStartDate: LocalDate
+  ) extends AuditEvent {
+    override val auditType: String = "UndertakingDisabled"
+    override val transactionName: String = "UndertakingDisabled"
+  }
+
+  object UndertakingDisabled {
+    implicit val writes: Writes[UndertakingDisabled] = Json.writes
+  }
 }

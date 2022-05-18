@@ -25,7 +25,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.ModifyUndertakingRow
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.UndertakingUpdated
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language}
@@ -35,6 +35,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
+import java.time.LocalDate
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
 
@@ -102,7 +103,7 @@ class UndertakingControllerSpec
 
         "undertaking journey is present and  is not None and is not complete" when {
 
-          def testRedirect(undertakingJourney: UndertakingJourney, redirectTo: String) = {
+          def testRedirect(undertakingJourney: UndertakingJourney, redirectTo: String): Unit = {
             inSequence {
               mockAuthWithNecessaryEnrolment()
               mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourney))
@@ -165,7 +166,7 @@ class UndertakingControllerSpec
 
       "display the page" when {
 
-        def testDisplay(undertakingJourney: UndertakingJourney, backUrl: String) = {
+        def testDisplay(undertakingJourney: UndertakingJourney, backUrl: String): Unit = {
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -1094,6 +1095,7 @@ class UndertakingControllerSpec
             .withFormUrlEncodedBody(data: _*)
         )
 
+      val currentDate = LocalDate.of(2022, 10, 9)
       "throw technical error" when {
         "call to disable undertaking fails" in {
           inSequence {
@@ -1142,6 +1144,8 @@ class UndertakingControllerSpec
             mockDelete[BusinessEntityJourney](eori4)(Right(()))
             mockDelete[BecomeLeadJourney](eori4)(Right(()))
             mockDelete[SubsidyJourney](eori4)(Right(()))
+            mockTimeToday(currentDate)
+            mockSendAuditEvent[UndertakingDisabled](UndertakingDisabled("1123", undertakingRef, currentDate))
           }
           checkIsRedirect(
             performAction("disableUndertakingConfirm" -> "true"),

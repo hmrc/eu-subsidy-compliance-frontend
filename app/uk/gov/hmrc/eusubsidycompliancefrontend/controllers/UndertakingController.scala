@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUndertaking, UndertakingUpdated}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUndertaking, UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -322,14 +322,20 @@ class UndertakingController @Inject() (
       _ <- store.delete[SubsidyJourney]
     } yield ()
 
-  def handleFormSubmission(form: FormValues, undertaking: Undertaking)(implicit hc: HeaderCarrier) = if (
-    form.value == "true"
-  ) {
-    for {
-      _ <- escService.disableUndertaking(undertaking)
-      _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
-    } yield Redirect(routes.UndertakingController.getUndertakingDisabled())
-  } else Redirect(routes.AccountController.getAccountPage()).toFuture
+  private def handleFormSubmission(form: FormValues, undertaking: Undertaking)(implicit
+    hc: HeaderCarrier,
+    request: AuthenticatedEscRequest[_]
+  ): Future[Result] =
+    if (form.value == "true") {
+      for {
+        _ <- escService.disableUndertaking(undertaking)
+        _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
+        ref = undertaking.reference.fold(handleMissingSessionData("Undertking reference"))(identity)
+        _ = auditService.sendEvent[UndertakingDisabled](
+          UndertakingDisabled(request.authorityId, ref, timeProvider.today)
+        )
+      } yield Redirect(routes.UndertakingController.getUndertakingDisabled())
+    } else Redirect(routes.AccountController.getAccountPage()).toFuture
 
   private def ensureUndertakingJourneyPresent(j: Option[UndertakingJourney])(f: UndertakingJourney => Future[Result]) =
     j.fold(Redirect(routes.UndertakingController.getUndertakingName()).toFuture)(f)
