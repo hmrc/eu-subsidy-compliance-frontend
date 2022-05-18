@@ -302,7 +302,7 @@ class UndertakingController @Inject() (
         .bindFromRequest()
         .fold(
           errors => BadRequest(disableUndertakingConfirmPage(errors, undertaking.name)).toFuture,
-          form => getNext(form, undertaking)
+          form => handleFormSubmission(form, undertaking)
         )
     }
   }
@@ -322,7 +322,9 @@ class UndertakingController @Inject() (
       _ <- store.delete[SubsidyJourney]
     } yield ()
 
-  def getNext(form: FormValues, undertaking: Undertaking)(implicit hc: HeaderCarrier) = if (form.value == "true") {
+  def handleFormSubmission(form: FormValues, undertaking: Undertaking)(implicit hc: HeaderCarrier) = if (
+    form.value == "true"
+  ) {
     for {
       _ <- escService.disableUndertaking(undertaking)
       _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
