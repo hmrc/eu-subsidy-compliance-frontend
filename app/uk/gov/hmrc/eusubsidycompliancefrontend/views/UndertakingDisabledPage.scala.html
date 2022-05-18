@@ -35,7 +35,7 @@
     <p class="govuk-body">@messages(s"$key.p1")</p>
     <p class="govuk-body">@messages(s"$key.p2")</p>
     @H2(heading)
-    <p class="govuk-body">@Html(messages(s"$key.p3", controllers.routes.EligibilityController.getCustomsWaivers().url))</p>
+    <p class="govuk-body">@Html(messages(s"$key.p3", controllers.routes.AccountController.getAccountPage().url))</p>
     <p class="govuk-body">@Html(messages(s"$key.p4", appConfig.signOutUrl(continueUrl = Some(appConfig.exitSurveyUrl))))</p>
 
 }

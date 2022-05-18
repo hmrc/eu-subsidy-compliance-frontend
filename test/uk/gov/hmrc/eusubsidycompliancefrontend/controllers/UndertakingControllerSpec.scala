@@ -1094,6 +1094,8 @@ class UndertakingControllerSpec
           FakeRequest(POST, routes.UndertakingController.getDisableUndertakingConfirm().url)
             .withFormUrlEncodedBody(data: _*)
         )
+
+      val currentDate = LocalDate.of(2022, 10, 9)
       "throw technical error" when {
         "call to disable undertaking fails" in {
           inSequence {
@@ -1142,6 +1144,8 @@ class UndertakingControllerSpec
             mockDelete[BusinessEntityJourney](eori4)(Right(()))
             mockDelete[BecomeLeadJourney](eori4)(Right(()))
             mockDelete[SubsidyJourney](eori4)(Right(()))
+            mockTimeToday(currentDate)
+            mockSendAuditEvent[UndertakingDisabled](UndertakingDisabled("1123", undertakingRef, currentDate))
           }
           checkIsRedirect(
             performAction("disableUndertakingConfirm" -> "true"),

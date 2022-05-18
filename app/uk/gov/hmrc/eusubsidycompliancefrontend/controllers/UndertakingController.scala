@@ -323,12 +323,17 @@ class UndertakingController @Inject() (
     } yield ()
 
   private def handleFormSubmission(form: FormValues, undertaking: Undertaking)(implicit
-    hc: HeaderCarrier
+    hc: HeaderCarrier,
+    request: AuthenticatedEscRequest[_]
   ): Future[Result] =
     if (form.value == "true") {
       for {
         _ <- escService.disableUndertaking(undertaking)
         _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
+        ref = undertaking.reference.fold(handleMissingSessionData("Undertking reference"))(identity)
+        _ = auditService.sendEvent[UndertakingDisabled](
+          UndertakingDisabled(request.authorityId, ref, timeProvider.today)
+        )
       } yield Redirect(routes.UndertakingController.getUndertakingDisabled())
     } else Redirect(routes.AccountController.getAccountPage()).toFuture
 
