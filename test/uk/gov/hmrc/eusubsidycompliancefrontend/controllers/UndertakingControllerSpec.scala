@@ -1087,39 +1087,88 @@ class UndertakingControllerSpec
 
     }
 
-    "handling request to get Undertaking Disabled" must {
-      def performAction() = controller.getUndertakingDisabled(FakeRequest())
+    "handling request to post Disable undertaking confirm" must {
+      def performAction(data: (String, String)*) = controller
+        .postDisableUndertakingConfirm(
+          FakeRequest(POST, routes.UndertakingController.getDisableUndertakingConfirm().url)
+            .withFormUrlEncodedBody(data: _*)
+        )
 
       "throw technical error" when {
         "call to disable undertaking fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockDisableUndertaking(undertaking)(Left(ConnectorError(exception)))
+            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
+            mockDisableUndertaking(undertaking1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction("disableUndertakingConfirm" -> "true")))
         }
       }
+
+      "display the error" when {
+
+        "Nothing is submitted" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          }
+          checkFormErrorIsDisplayed(
+            performAction(),
+            messageFromMessageKey("disableUndertakingConfirm.title", undertaking1.name),
+            messageFromMessageKey("disableUndertakingConfirm.error.required")
+          )
+
+        }
+      }
+
+      "redirect to next page" when {
+
+        "user select Yes" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
+            mockDisableUndertaking(undertaking1)(Right(undertakingRef))
+            mockDelete[EligibilityJourney](eori1)(Right(()))
+            mockDelete[UndertakingJourney](eori1)(Right(()))
+            mockDelete[NewLeadJourney](eori1)(Right(()))
+            mockDelete[NilReturnJourney](eori1)(Right(()))
+            mockDelete[BusinessEntityJourney](eori1)(Right(()))
+            mockDelete[BecomeLeadJourney](eori1)(Right(()))
+            mockDelete[SubsidyJourney](eori1)(Right(()))
+            mockDelete[EligibilityJourney](eori4)(Right(()))
+            mockDelete[UndertakingJourney](eori4)(Right(()))
+            mockDelete[NewLeadJourney](eori4)(Right(()))
+            mockDelete[NilReturnJourney](eori4)(Right(()))
+            mockDelete[BusinessEntityJourney](eori4)(Right(()))
+            mockDelete[BecomeLeadJourney](eori4)(Right(()))
+            mockDelete[SubsidyJourney](eori4)(Right(()))
+          }
+          checkIsRedirect(
+            performAction("disableUndertakingConfirm" -> "true"),
+            routes.UndertakingController.getUndertakingDisabled().url
+          )
+        }
+
+        "user selected No" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          }
+          checkIsRedirect(
+            performAction("disableUndertakingConfirm" -> "false"),
+            routes.AccountController.getAccountPage().url
+          )
+        }
+      }
+
+    }
+
+    "handling request to get Undertaking Disabled" must {
+      def performAction() = controller.getUndertakingDisabled(FakeRequest())
 
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-          mockDisableUndertaking(undertaking1)(Right(undertakingRef))
-          mockDelete[EligibilityJourney](eori1)(Right(()))
-          mockDelete[UndertakingJourney](eori1)(Right(()))
-          mockDelete[NewLeadJourney](eori1)(Right(()))
-          mockDelete[NilReturnJourney](eori1)(Right(()))
-          mockDelete[BusinessEntityJourney](eori1)(Right(()))
-          mockDelete[BecomeLeadJourney](eori1)(Right(()))
-          mockDelete[SubsidyJourney](eori1)(Right(()))
-          mockDelete[EligibilityJourney](eori4)(Right(()))
-          mockDelete[UndertakingJourney](eori4)(Right(()))
-          mockDelete[NewLeadJourney](eori4)(Right(()))
-          mockDelete[NilReturnJourney](eori4)(Right(()))
-          mockDelete[BusinessEntityJourney](eori4)(Right(()))
-          mockDelete[BecomeLeadJourney](eori4)(Right(()))
-          mockDelete[SubsidyJourney](eori4)(Right(()))
         }
         checkPageIsDisplayed(
           performAction(),

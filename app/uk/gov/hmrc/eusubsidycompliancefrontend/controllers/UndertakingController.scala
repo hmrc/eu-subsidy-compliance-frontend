@@ -33,6 +33,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -301,21 +302,13 @@ class UndertakingController @Inject() (
         .bindFromRequest()
         .fold(
           errors => BadRequest(disableUndertakingConfirmPage(errors, undertaking.name)).toFuture,
-          form => Redirect(getNext(form)).toFuture
+          form => getNext(form, undertaking)
         )
     }
   }
 
   def getUndertakingDisabled: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
-    withLeadUndertaking { undertaking =>
-      escService.disableUndertaking(undertaking).flatMap { _ =>
-        undertaking.undertakingBusinessEntity
-          .traverse { be =>
-            resetAllJourneys(be.businessEntityIdentifier) //Reset All journeys for lead and BE members
-          }
-          .map(_ => Ok(undertakingDisabledPage()))
-      }
-    }
+    Ok(undertakingDisabledPage()).toFuture
   }
 
   private def resetAllJourneys(implicit eori: EORI) =
@@ -329,9 +322,12 @@ class UndertakingController @Inject() (
       _ <- store.delete[SubsidyJourney]
     } yield ()
 
-  def getNext(form: FormValues) = if (form.value == "true")
-    routes.UndertakingController.getUndertakingDisabled()
-  else routes.AccountController.getAccountPage()
+  def getNext(form: FormValues, undertaking: Undertaking)(implicit hc: HeaderCarrier) = if (form.value == "true") {
+    for {
+      _ <- escService.disableUndertaking(undertaking)
+      _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
+    } yield Redirect(routes.UndertakingController.getUndertakingDisabled())
+  } else Redirect(routes.AccountController.getAccountPage()).toFuture
 
   private def ensureUndertakingJourneyPresent(j: Option[UndertakingJourney])(f: UndertakingJourney => Future[Result]) =
     j.fold(Redirect(routes.UndertakingController.getUndertakingName()).toFuture)(f)
