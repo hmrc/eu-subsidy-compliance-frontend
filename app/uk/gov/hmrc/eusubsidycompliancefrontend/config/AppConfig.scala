@@ -38,7 +38,9 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   lazy val contactFormServiceIdentifier: String =
     contactFrontendConfig.serviceId.getOrElse(sys.error("Could not find config for contact frontend service id"))
 
-  lazy val betaFeedbackUrlNoAuth: String = s"$contactFrontendUrl/contact/beta-feedback?service=$contactFormServiceIdentifier"
+  lazy val betaFeedbackUrlNoAuth: String =
+    s"$contactFrontendUrl/contact/beta-feedback?service=$contactFormServiceIdentifier"
+
   lazy val sessionTimeout = config.get[String]("application.session.maxAge")
 
   private lazy val signOutUrlBase: String = config.get[String]("auth.sign-out.url")

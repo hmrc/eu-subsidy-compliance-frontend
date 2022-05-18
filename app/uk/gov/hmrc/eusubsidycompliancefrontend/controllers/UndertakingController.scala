@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.data.OptionT
+import cats.implicits._
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -32,6 +33,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -50,7 +52,10 @@ class UndertakingController @Inject() (
   undertakingSectorPage: UndertakingSectorPage,
   cyaPage: UndertakingCheckYourAnswersPage,
   confirmationPage: ConfirmationPage,
-  amendUndertakingPage: AmendUndertakingPage
+  amendUndertakingPage: AmendUndertakingPage,
+  disableUndertakingWarningPage: DisableUndertakingWarningPage,
+  disableUndertakingConfirmPage: DisableUndertakingConfirmPage,
+  undertakingDisabledPage: UndertakingDisabledPage
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -281,6 +286,51 @@ class UndertakingController @Inject() (
     }
   }
 
+  def getDisableUndertakingWarning: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking(undertaking => Ok(disableUndertakingWarningPage(undertaking.name.toString)).toFuture)
+  }
+
+  def getDisableUndertakingConfirm: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking(undertaking =>
+      Ok(disableUndertakingConfirmPage(disableUndertakingConfirmForm, undertaking.name)).toFuture
+    )
+  }
+
+  def postDisableUndertakingConfirm: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { undertaking =>
+      disableUndertakingConfirmForm
+        .bindFromRequest()
+        .fold(
+          errors => BadRequest(disableUndertakingConfirmPage(errors, undertaking.name)).toFuture,
+          form => handleFormSubmission(form, undertaking)
+        )
+    }
+  }
+
+  def getUndertakingDisabled: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    Ok(undertakingDisabledPage()).toFuture
+  }
+
+  private def resetAllJourneys(implicit eori: EORI) =
+    for {
+      _ <- store.delete[EligibilityJourney]
+      _ <- store.delete[UndertakingJourney]
+      _ <- store.delete[NewLeadJourney]
+      _ <- store.delete[NilReturnJourney]
+      _ <- store.delete[BusinessEntityJourney]
+      _ <- store.delete[BecomeLeadJourney]
+      _ <- store.delete[SubsidyJourney]
+    } yield ()
+
+  def handleFormSubmission(form: FormValues, undertaking: Undertaking)(implicit hc: HeaderCarrier) = if (
+    form.value == "true"
+  ) {
+    for {
+      _ <- escService.disableUndertaking(undertaking)
+      _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
+    } yield Redirect(routes.UndertakingController.getUndertakingDisabled())
+  } else Redirect(routes.AccountController.getAccountPage()).toFuture
+
   private def ensureUndertakingJourneyPresent(j: Option[UndertakingJourney])(f: UndertakingJourney => Future[Result]) =
     j.fold(Redirect(routes.UndertakingController.getUndertakingName()).toFuture)(f)
 
@@ -307,6 +357,10 @@ class UndertakingController @Inject() (
 
   private val amendUndertakingForm: Form[FormValues] = Form(
     mapping("amendUndertaking" -> mandatory("amendUndertaking"))(FormValues.apply)(FormValues.unapply)
+  )
+
+  private val disableUndertakingConfirmForm: Form[FormValues] = Form(
+    mapping("disableUndertakingConfirm" -> mandatory("disableUndertakingConfirm"))(FormValues.apply)(FormValues.unapply)
   )
 
 }

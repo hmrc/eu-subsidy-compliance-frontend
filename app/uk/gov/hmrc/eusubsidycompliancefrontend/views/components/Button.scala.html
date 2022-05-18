@@ -16,14 +16,15 @@
 
 @this(govukButton: GovukButton)
 
-@(msg: String, href: Option[String] = None, preventDoubleClick: Boolean = true, id: Option[String] = None)(implicit messages: Messages)
+@(msg: String, href: Option[String] = None, preventDoubleClick: Boolean = true, id: Option[String] = None, classes: Option[String] = None)(implicit messages: Messages)
 
 @govukButton(
     id.fold(
      Button(
       content = Text(messages(msg)),
       href = href,
-      preventDoubleClick = preventDoubleClick
+      preventDoubleClick = preventDoubleClick,
+      classes = classes.getOrElse("")
      )
 
     )(id =>
@@ -31,7 +32,8 @@
       content = Text(messages(msg)),
       href = href,
       preventDoubleClick = preventDoubleClick,
-      attributes = Map("id" -> id)
+      attributes = Map("id" -> id),
+      classes = classes.getOrElse("")
      )
 
     )
