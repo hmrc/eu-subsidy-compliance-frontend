@@ -32,6 +32,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -64,6 +65,8 @@ class UndertakingController @Inject() (
 
   import escCDSActionBuilder._
   val CreateUndertaking = "createUndertaking"
+  val DisableUndertakingLead = "disableUndertakingLead"
+  val DisableUndertakingBE = "disableUndertakingBE"
 
   def firstEmptyPage: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -330,10 +333,29 @@ class UndertakingController @Inject() (
       for {
         _ <- escService.disableUndertaking(undertaking)
         _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
-        ref = undertaking.reference.fold(handleMissingSessionData("Undertking reference"))(identity)
+        ref = undertaking.reference.fold(handleMissingSessionData("Undertaking reference"))(identity)
         _ = auditService.sendEvent[UndertakingDisabled](
           UndertakingDisabled(request.authorityId, ref, timeProvider.today)
         )
+        disablementDate = DateFormatter.govDisplayFormat(timeProvider.today)
+        _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+          request.eoriNumber,
+          None,
+          DisableUndertakingLead,
+          undertaking,
+          ref,
+          disablementDate.some
+        )
+        _ <- undertaking.undertakingBusinessEntity.filterNot(_.leadEORI).traverse { _ =>
+          sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+            request.eoriNumber,
+            None,
+            DisableUndertakingBE,
+            undertaking,
+            ref,
+            disablementDate.some
+          )
+        }
       } yield Redirect(routes.UndertakingController.getUndertakingDisabled())
     } else Redirect(routes.AccountController.getAccountPage()).toFuture
 
