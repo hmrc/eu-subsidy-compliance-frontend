@@ -59,17 +59,6 @@ class EscService @Inject() (
         } yield ref
       }
 
-  def disableUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
-    escConnector
-      .disableUndertaking(undertaking)
-      .flatMap { response =>
-        for {
-          ref <- handleResponse[UndertakingRef](response, "disable undertaking").toFuture
-          _ <- undertakingCache.deleteUndertaking(ref)
-          _ <- undertakingCache.deleteUndertakingSubsidies(ref)
-        } yield ref
-      }
-
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]] =
     undertakingCache
       .get[Undertaking](eori)
@@ -125,6 +114,7 @@ class EscService @Inject() (
         for {
           ref <- handleResponse[UndertakingRef](response, "add member").toFuture
           _ <- undertakingCache.deleteUndertaking(ref)
+          _ <- undertakingCache.deleteUndertakingSubsidies(ref)
         } yield ref
       }
 
