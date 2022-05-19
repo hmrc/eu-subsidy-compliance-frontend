@@ -1097,11 +1097,11 @@ class UndertakingControllerSpec
 
       val currentDate = LocalDate.of(2022, 10, 9)
       "throw technical error" when {
-        "call to disable undertaking fails" in {
+        "call to remove member fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockDisableUndertaking(undertaking1)(Left(ConnectorError(exception)))
+            mockRemoveMember(undertakingRef, businessEntity1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("disableUndertakingConfirm" -> "true")))
         }
@@ -1129,7 +1129,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockDisableUndertaking(undertaking1)(Right(undertakingRef))
+            mockRemoveMember(undertakingRef, businessEntity1)(Right(undertakingRef))
             mockDelete[EligibilityJourney](eori1)(Right(()))
             mockDelete[UndertakingJourney](eori1)(Right(()))
             mockDelete[NewLeadJourney](eori1)(Right(()))

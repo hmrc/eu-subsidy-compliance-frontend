@@ -91,10 +91,9 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
   private def mockRemoveSubsidy(
     undertakingRef: UndertakingRef,
     nonHmrcSubsidy: NonHmrcSubsidy
-  )(result: Either[ConnectorError, HttpResponse]) = {
+  )(result: Either[ConnectorError, HttpResponse]) =
     when(mockEscConnector.removeSubsidy(argEq(undertakingRef), argEq(nonHmrcSubsidy))(any()))
       .thenReturn(result.toFuture)
-  }
 
   private def mockCachePut[A](eori: EORI, in: A)(result: Either[Exception, A]) =
     when(mockUndertakingCache.put(argEq(eori), argEq(in))(any()))
@@ -243,7 +242,9 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
           "http response status is 404 and response body is empty" in {
             mockCacheGet[Undertaking](eori1)(Right(None))
-            mockRetrieveUndertaking(eori1)(Left(ConnectorError(UpstreamErrorResponse("Unexpected response - got HTTP 404", NOT_FOUND))))
+            mockRetrieveUndertaking(eori1)(
+              Left(ConnectorError(UpstreamErrorResponse("Unexpected response - got HTTP 404", NOT_FOUND)))
+            )
             await(service.retrieveUndertaking(eori1)) shouldBe None
           }
 
@@ -346,6 +347,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
         "the http call succeeds and the body of the response can be parsed" in {
           mockRemoveMember(undertakingRef, businessEntity3)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
           mockCacheDeleteUndertaking(undertakingRef)(Right(()))
+          mockCacheDeleteUndertakingSubsidies(undertakingRef)(Right(()))
           val result = service.removeMember(undertakingRef, businessEntity3)
           await(result) shouldBe undertakingRef
         }
@@ -465,7 +467,9 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
         }
 
         "the http response doesn't come back with status 200(OK)" in {
-          mockRemoveSubsidy(undertakingRef, nonHmrcSubsidy)(Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders)))
+          mockRemoveSubsidy(undertakingRef, nonHmrcSubsidy)(
+            Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders))
+          )
           isError()
         }
 
