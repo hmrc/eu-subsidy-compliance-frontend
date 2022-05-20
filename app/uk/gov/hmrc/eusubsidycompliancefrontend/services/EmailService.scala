@@ -87,8 +87,7 @@ class EmailService @Inject() (
   private def handleEmailAddressResponse(emailAddressResponse: EmailAddressResponse): RetrieveEmailResponse =
     emailAddressResponse match {
       case EmailAddressResponse(email, Some(_), None) => RetrieveEmailResponse(EmailType.VerifiedEmail, email.some)
-      case EmailAddressResponse(email, Some(_), Some(_)) =>
-        RetrieveEmailResponse(EmailType.UnDeliverableEmail, email.some)
+      case EmailAddressResponse(email, Some(_), Some(_)) => RetrieveEmailResponse(EmailType.UnDeliverableEmail, email.some)
       case EmailAddressResponse(email, None, None) => RetrieveEmailResponse(EmailType.UnVerifiedEmail, email.some)
       case _ => sys.error("Email address response is not valid")
     }

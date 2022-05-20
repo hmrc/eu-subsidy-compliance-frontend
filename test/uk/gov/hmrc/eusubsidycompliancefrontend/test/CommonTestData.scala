@@ -224,7 +224,8 @@ object CommonTestData {
   val undeliverableEmailResponse =
     EmailAddressResponse(undeliverableEmailAddress, dateTime, Some(Undeliverable("eventid1")))
   val validEmailResponse = EmailAddressResponse(validEmailAddress, dateTime, None)
-  val inValidEmailResponse = EmailAddressResponse(inValidEmailAddress, None, None)
+  val unverifiedEmailResponse = EmailAddressResponse(validEmailAddress, None, None)
+  val inValidEmailResponse = EmailAddressResponse(inValidEmailAddress, None, Some(Undeliverable("foo")))
 
   val undertakingCreated =
     Undertaking(None, UndertakingName("TestUndertaking"), transport, None, None, List(businessEntity5))
