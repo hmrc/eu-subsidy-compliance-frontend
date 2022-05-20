@@ -327,10 +327,10 @@ class UndertakingController @Inject() (
     request: AuthenticatedEscRequest[_]
   ): Future[Result] =
     if (form.value == "true") {
+      val ref = undertaking.reference.fold(handleMissingSessionData("Undertking reference"))(identity)
       for {
-        _ <- escService.disableUndertaking(undertaking)
+        _ <- escService.removeMember(ref, undertaking.getBusinessEntityByEORI(request.eoriNumber))
         _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
-        ref = undertaking.reference.fold(handleMissingSessionData("Undertking reference"))(identity)
         _ = auditService.sendEvent[UndertakingDisabled](
           UndertakingDisabled(request.authorityId, ref, timeProvider.today)
         )

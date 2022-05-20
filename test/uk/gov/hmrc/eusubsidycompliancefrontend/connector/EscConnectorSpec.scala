@@ -72,13 +72,6 @@ class EscConnectorSpec
       )
     }
 
-    "handling request to disable Undertaking" must {
-      behave like connectorBehaviour(
-        mockPost(s"$baseUrl/undertaking/disable", Seq.empty, undertaking)(_),
-        () => connector.disableUndertaking(undertaking)
-      )
-    }
-
     "handling request to retrieve Undertaking" must {
       behave like connectorBehaviour(
         mockGet(s"$baseUrl/undertaking/$eori1")(_),
