@@ -114,7 +114,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
   "SendEmailHelperService" when {
 
-    "retrieveEmailAddressAndSendEmail is called" must {
+    "sendEmail is called" must {
 
       "return an error" when {
 
@@ -191,7 +191,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
   }
 
 
-  "handling request to retrieve email by eori" must {
+  "retrieveEmailByEORI is called" must {
 
     "return an error" when {
 
