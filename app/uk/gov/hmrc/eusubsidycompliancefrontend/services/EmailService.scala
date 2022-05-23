@@ -112,7 +112,7 @@ class EmailService @Inject() (
     request.request.messages(messagesApi).lang.code.toLowerCase(Locale.UK) match {
       case English.code => English
       case Welsh.code => Welsh
-      case other => sys.error(s"Found unsupported language code $other")
+      case other => sys.error(s"Unsupported language code: $other")
     }
 
   private def getEmailTemplateId(inputKey: String)(implicit

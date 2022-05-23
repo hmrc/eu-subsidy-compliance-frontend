@@ -157,6 +157,13 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
           result.failed.futureValue shouldBe a[ConnectorError]
         }
 
+        "the template could not be found" in {
+          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+          mockMessagesResponse("en")
+          val result = service.sendEmail(eori1, None, "thisTemplateDoesNotExist", undertaking, undertakingRef, None)
+          result.failed.futureValue shouldBe a[RuntimeException]
+        }
+
       }
 
       "return success" when {
