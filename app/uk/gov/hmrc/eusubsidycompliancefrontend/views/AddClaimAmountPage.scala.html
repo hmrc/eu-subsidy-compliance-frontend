@@ -25,7 +25,8 @@
   button: components.Button,
   govukErrorSummary: GovukErrorSummary,
   govukRadios : GovukRadios,
-  govukInput : GovukInput
+  govukInput : GovukInput,
+  govukInsetText : GovukInsetText
 )
 
 @(form: Form[_], previous: Journey.Uri, currentYear: String, currentMonth: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -56,7 +57,10 @@
   @formHelper(action = controllers.routes.SubsidyController.postAddClaimAmount()) {
 
     @H1(messages("add-claim-amount.title"))
-    @P(messages("add-claim-amount.p1", appConfig.exchangeRateToolUrl))
+      @P(messages("add-claim-amount.p1"))
+      @govukInsetText(InsetText(
+          content = Text(messages("add-claim-amount.inset"))))
+    @P(messages("add-claim-amount.p2", appConfig.exchangeRateToolUrl))
       <ul class="govuk-list govuk-list--number">
           <li>@{messages(s"$key.l1", currentYear, currentMonth)}</li>
           <li>@{messages(s"$key.l2")}</li>
