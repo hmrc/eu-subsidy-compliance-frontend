@@ -61,6 +61,7 @@ class EmailService @Inject() (
       case EmailType.VerifiedEmail =>
         val templateId = getEmailTemplateId(key)
         val emailParameter = buildEmailParameters(key, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
+        println(" email paramterer::" + emailParameter)
         val emailAddress = retrieveEmailResponse.emailAddress.getOrElse(sys.error("email not found"))
         sendEmail(emailAddress, emailParameter, templateId)
       case _ => Future.successful(EmailSendResult.EmailNotSent)

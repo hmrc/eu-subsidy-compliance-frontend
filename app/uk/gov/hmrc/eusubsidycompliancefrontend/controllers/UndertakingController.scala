@@ -32,6 +32,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -64,6 +65,8 @@ class UndertakingController @Inject() (
 
   import escCDSActionBuilder._
   val CreateUndertaking = "createUndertaking"
+  val DisableUndertakingLead = "disableUndertakingLead"
+  val DisableUndertakingBE = "disableUndertakingBE"
 
   def firstEmptyPage: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -327,10 +330,28 @@ class UndertakingController @Inject() (
     request: AuthenticatedEscRequest[_]
   ): Future[Result] =
     if (form.value == "true") {
-      val ref = undertaking.reference.fold(handleMissingSessionData("Undertking reference"))(identity)
+      val ref = undertaking.reference.fold(handleMissingSessionData("Undertaking reference"))(identity)
       for {
         _ <- escService.removeMember(ref, undertaking.getBusinessEntityByEORI(request.eoriNumber))
+        _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+          request.eoriNumber,
+          None,
+          DisableUndertakingLead,
+          undertaking,
+          ref,
+          DateFormatter.govDisplayFormat(timeProvider.today).some
+        )
         _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
+        _ <- undertaking.undertakingBusinessEntity.traverse(be =>
+          sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+            request.eoriNumber,
+            None,
+            DisableUndertakingBE,
+            undertaking,
+            ref,
+            DateFormatter.govDisplayFormat(timeProvider.today).some
+          )
+        )
         _ = auditService.sendEvent[UndertakingDisabled](
           UndertakingDisabled(request.authorityId, ref, timeProvider.today)
         )

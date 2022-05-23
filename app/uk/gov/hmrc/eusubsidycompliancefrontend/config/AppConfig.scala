@@ -72,6 +72,10 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
     "promotedAsLeadToNewLead" -> config.get[String](
       s"email-send.promoted-themself-email-to-new-lead-template-$langCode"
     ),
-    "removedAsLeadToOldLead" -> config.get[String](s"email-send.removed_as_lead-email-to-old-lead-template-$langCode")
+    "removedAsLeadToOldLead" -> config.get[String](s"email-send.removed_as_lead-email-to-old-lead-template-$langCode"),
+    "disableUndertakingLead" -> config.get[String](
+      s"email-send.undertaking-disable-email-to-lead-template-$langCode"
+    ),
+    "disableUndertakingBE" -> config.get[String](s"email-send.undertaking-disable-email-to-be-template-$langCode")
   )
 }

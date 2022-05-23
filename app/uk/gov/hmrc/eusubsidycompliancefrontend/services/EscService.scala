@@ -112,7 +112,7 @@ class EscService @Inject() (
       .removeMember(undertakingRef, businessEntity)
       .flatMap { response =>
         for {
-          ref <- handleResponse[UndertakingRef](response, "add member").toFuture
+          ref <- handleResponse[UndertakingRef](response, "Remove member").toFuture
           _ <- undertakingCache.deleteUndertaking(ref)
           _ <- undertakingCache.deleteUndertakingSubsidies(ref)
         } yield ref
