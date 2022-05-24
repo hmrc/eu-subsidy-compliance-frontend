@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.test
 import cats.implicits.catsSyntaxOptionId
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, DoubleEORIEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{DeclarationID, EORI, EisSubsidyAmendmentType, IndustrySectorLimit, Sector, SubsidyAmount, SubsidyRef, TaxType, TraderRef, UndertakingName, UndertakingRef}
@@ -230,8 +230,12 @@ object CommonTestData {
   val undertakingCreated =
     Undertaking(None, UndertakingName("TestUndertaking"), transport, None, None, List(businessEntity5))
 
-  val emailParameter = SingleEORIEmailParameter(eori1, undertaking.name, undertakingRef, "createUndertaking")
-  val emailSendRequest = EmailSendRequest(List(EmailAddress("user@test.com")), "templateId1", emailParameter)
+  val singleEORIEmailParameter = SingleEORIEmailParameter(eori1, undertaking.name, undertakingRef, "createUndertaking")
+  val singleEORIAndDateEmailParameter = SingleEORIAndDateEmailParameter(eori1, undertaking.name, undertakingRef, dateTime.toString, "createUndertaking")
+  val doubleEORIEmailParameter = DoubleEORIEmailParameter(eori1, eori2, undertaking.name, undertakingRef, "createUndertaking")
+  val doubleEORIAndDateParameter = DoubleEORIAndDateEmailParameter(eori1, eori2, undertaking.name, undertakingRef, dateTime.toString, "createUndertaking")
+
+  val emailSendRequest = EmailSendRequest(List(EmailAddress("user@test.com")), "templateId1", singleEORIEmailParameter)
 
   val eligibilityJourney = EligibilityJourney(
     customsWaivers = CustomsWaiversFormPage(true.some),

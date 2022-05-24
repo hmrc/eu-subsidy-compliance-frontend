@@ -184,6 +184,30 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
           result.futureValue shouldBe EmailSent
         }
 
+        "the email is sent successfully with a removeEffectiveDate value" in {
+          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+          mockMessagesResponse()
+          mockSendEmail(emailSendRequest.copy(parameters = singleEORIAndDateEmailParameter))(Right(HttpResponse(ACCEPTED, "")))
+          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, dateTime.toString.some)
+          result.futureValue shouldBe EmailSent
+        }
+
+        "the email is sent successfully with a second eori" in {
+          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+          mockMessagesResponse()
+          mockSendEmail(emailSendRequest.copy(parameters = doubleEORIEmailParameter))(Right(HttpResponse(ACCEPTED, "")))
+          val result = service.sendEmail(eori1, Some(eori2), "createUndertaking", undertaking, undertakingRef, None)
+          result.futureValue shouldBe EmailSent
+        }
+
+        "the email is sent successfully with a second eori and a removeEffectiveDate value" in {
+          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+          mockMessagesResponse()
+          mockSendEmail(emailSendRequest.copy(parameters = doubleEORIAndDateParameter))(Right(HttpResponse(ACCEPTED, "")))
+          val result = service.sendEmail(eori1, Some(eori2), "createUndertaking", undertaking, undertakingRef, dateTime.toString.some)
+          result.futureValue shouldBe EmailSent
+        }
+
       }
 
     }
