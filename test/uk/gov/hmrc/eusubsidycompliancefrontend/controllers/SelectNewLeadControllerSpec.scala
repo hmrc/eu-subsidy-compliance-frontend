@@ -178,7 +178,7 @@ class SelectNewLeadControllerSpec
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
-            mockSendEmail(eori1, eori4.some, "promoteAsLeadEmailToLead", undertaking, undertakingRef, None)(Left(ConnectorError(exception)))
+            mockSendEmail(eori1, eori4.some, "promoteAsLeadEmailToLead", undertaking, None)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
         }
@@ -227,8 +227,8 @@ class SelectNewLeadControllerSpec
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
-            mockSendEmail(eori1, eori4.some, "promoteAsLeadEmailToLead", undertaking, undertakingRef, None)(Right(EmailSendResult.EmailSent))
-            mockSendEmail(eori4, None, "promoteAsLeadEmailToBE", undertaking, undertakingRef, None)(Right(EmailSendResult.EmailSent))
+            mockSendEmail(eori1, eori4.some, "promoteAsLeadEmailToLead", undertaking, None)(Right(EmailSendResult.EmailSent))
+            mockSendEmail(eori4, None, "promoteAsLeadEmailToBE", undertaking, None)(Right(EmailSendResult.EmailSent))
           }
           checkIsRedirect(
             performAction("selectNewLead" -> eori4)(lang.code),
@@ -258,8 +258,8 @@ class SelectNewLeadControllerSpec
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
-            mockSendEmail(eori1, eori4.some, "promoteAsLeadEmailToLead", undertaking, undertakingRef, None)(Right(EmailSent))
-            mockSendEmail(eori4, None, "promoteAsLeadEmailToBE", undertaking, undertakingRef, None)(Right(EmailNotSent))
+            mockSendEmail(eori1, eori4.some, "promoteAsLeadEmailToLead", undertaking, None)(Right(EmailSent))
+            mockSendEmail(eori4, None, "promoteAsLeadEmailToBE", undertaking, None)(Right(EmailNotSent))
           }
           checkIsRedirect(
             performAction("selectNewLead" -> eori4)(English.code),

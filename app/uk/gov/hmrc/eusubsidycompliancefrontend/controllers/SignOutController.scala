@@ -74,26 +74,8 @@ class SignOutController @Inject() (
                 removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(eori)
                 leadEORI = undertaking.getLeadEORI
                 _ <- escService.removeMember(undertakingRef, removeBE).toContext
-                _ <- emailService
-                  .sendEmail(
-                    eori,
-                    None,
-                    RemoveThemselfEmailToBusinessEntity,
-                    undertaking,
-                    undertakingRef,
-                    removalEffectiveDateString.some
-                  )
-                  .toContext
-                _ <- emailService
-                  .sendEmail(
-                    leadEORI,
-                    eori.some,
-                    RemoveThemselfEmailToLead,
-                    undertaking,
-                    undertakingRef,
-                    removalEffectiveDateString.some
-                  )
-                  .toContext
+                _ <- emailService.sendEmail(eori, None, RemoveThemselfEmailToBusinessEntity, undertaking, removalEffectiveDateString.some).toContext
+                _ <- emailService.sendEmail(leadEORI, eori.some, RemoveThemselfEmailToLead, undertaking, removalEffectiveDateString.some).toContext
                 _ = auditService
                   .sendEvent(
                     AuditEvent

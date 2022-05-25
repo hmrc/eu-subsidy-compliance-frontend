@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.i18n.MessagesApi
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -42,7 +42,6 @@ trait EmailSupport { this: ControllerSpec =>
     eori2: Option[EORI],
     key: String,
     undertaking: Undertaking,
-    undertakingRef: UndertakingRef,
     removeEffectiveDate: Option[String]
   )(result: Either[ConnectorError, EmailSendResult]) =
     (mockEmailService
@@ -51,8 +50,7 @@ trait EmailSupport { this: ControllerSpec =>
         _: Option[EORI],
         _: String,
         _: Undertaking,
-        _: UndertakingRef,
         _: Option[String])(_: HeaderCarrier, _: ExecutionContext, _: AuthenticatedEscRequest[_], _: MessagesApi))
-      .expects(eori1, eori2, key, undertaking, undertakingRef, removeEffectiveDate, *, *, *, *)
+      .expects(eori1, eori2, key, undertaking, removeEffectiveDate, *, *, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
 }

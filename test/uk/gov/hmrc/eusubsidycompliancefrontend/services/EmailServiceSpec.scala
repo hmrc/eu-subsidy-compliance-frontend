@@ -119,32 +119,32 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
         "the email retrieval fails" in {
           mockRetrieveEmail(eori1)(Left(ConnectorError(new RuntimeException())))
-          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, None)
           result.failed.futureValue shouldBe a[ConnectorError]
         }
 
         "no email address is found" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, unverifiedEmailResponseJson, emptyHeaders)))
-          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, None)
           result.futureValue shouldBe EmailNotSent
         }
 
         "the email address is undeliverable" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, undeliverableResponseJson, emptyHeaders)))
-          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, None)
           result.futureValue shouldBe EmailNotSent
         }
 
         "the email address response is invalid" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, inValidEmailResponseJson, emptyHeaders)))
-          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, None)
           result.failed.futureValue shouldBe a[RuntimeException]
         }
 
         "the language code is not supported" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockMessagesResponse("de")
-          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, None)
           result.failed.futureValue shouldBe a[RuntimeException]
         }
 
@@ -152,14 +152,14 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockMessagesResponse()
           mockSendEmail(emailSendRequest)(Left(ConnectorError("Error")))
-          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, None)
           result.failed.futureValue shouldBe a[ConnectorError]
         }
 
         "the template could not be found" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockMessagesResponse()
-          val result = service.sendEmail(eori1, None, "thisTemplateDoesNotExist", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, None, "thisTemplateDoesNotExist", undertaking, None)
           result.failed.futureValue shouldBe a[RuntimeException]
         }
 
@@ -171,7 +171,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockMessagesResponse()
           mockSendEmail(emailSendRequest)(Right(HttpResponse(ACCEPTED, "")))
-          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, None)
           result.futureValue shouldBe EmailSent
         }
 
@@ -179,7 +179,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockMessagesResponse("cy")
           mockSendEmail(emailSendRequest)(Right(HttpResponse(ACCEPTED, "")))
-          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, None)
           result.futureValue shouldBe EmailSent
         }
 
@@ -187,7 +187,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockMessagesResponse()
           mockSendEmail(emailSendRequest.copy(parameters = singleEoriWithDateEmailParameters))(Right(HttpResponse(ACCEPTED, "")))
-          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, dateTime.toString.some)
+          val result = service.sendEmail(eori1, None, "createUndertaking", undertaking, dateTime.toString.some)
           result.futureValue shouldBe EmailSent
         }
 
@@ -195,7 +195,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockMessagesResponse()
           mockSendEmail(emailSendRequest.copy(parameters = doubleEoriEmailParameters))(Right(HttpResponse(ACCEPTED, "")))
-          val result = service.sendEmail(eori1, Some(eori2), "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, Some(eori2), "createUndertaking", undertaking, None)
           result.futureValue shouldBe EmailSent
         }
 
@@ -203,7 +203,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockMessagesResponse()
           mockSendEmail(emailSendRequest.copy(parameters = doubleEoriWithDateEmailParameters))(Right(HttpResponse(ACCEPTED, "")))
-          val result = service.sendEmail(eori1, Some(eori2), "createUndertaking", undertaking, undertakingRef, dateTime.toString.some)
+          val result = service.sendEmail(eori1, Some(eori2), "createUndertaking", undertaking, dateTime.toString.some)
           result.futureValue shouldBe EmailSent
         }
 

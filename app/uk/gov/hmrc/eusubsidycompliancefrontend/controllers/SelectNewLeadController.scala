@@ -97,23 +97,8 @@ class SelectNewLeadController @Inject() (
             newLeadJourney.copy(selectNewLead = updatedLead)
           }
           _ = auditService.sendEvent(BusinessEntityPromoted(undertakingRef, request.authorityId, eori, eoriBE))
-          _ <- emailService.sendEmail(
-            eori,
-            eoriBE.some,
-            promoteOtherAsLeadEmailToLead,
-            undertaking,
-            undertakingRef,
-            None
-          )
-          result <- emailService
-            .sendEmail(
-              eoriBE,
-              None,
-              promoteOtherAsLeadEmailToBusinessEntity,
-              undertaking,
-              undertakingRef,
-              None
-            )
+          _ <- emailService.sendEmail(eori, eoriBE.some, promoteOtherAsLeadEmailToLead, undertaking, None)
+          result <- emailService.sendEmail(eoriBE, None, promoteOtherAsLeadEmailToBusinessEntity, undertaking, None)
             .map(redirectTo)
         } yield result
       }
@@ -126,10 +111,10 @@ class SelectNewLeadController @Inject() (
         )
     }
   }
-// TODO implement the same check while removing and adding BE member once the guidance pages for them are designed
-  /// may be combined them into one function
+  // TODO - implement the same check while removing and adding BE member once the guidance pages for them are designed.
+  //        May be combined them into one function.
   private def redirectTo(emailResult: EmailSendResult) = emailResult match {
-    case EmailNotSent => Redirect(routes.SelectNewLeadController.emailNotVerified)
+    case EmailNotSent => Redirect(routes.SelectNewLeadController.emailNotVerified())
     case EmailSent => Redirect(routes.SelectNewLeadController.getLeadEORIChanged())
     case _ => handleMissingSessionData("Email result Response")
   }

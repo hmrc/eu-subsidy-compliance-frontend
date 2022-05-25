@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.data.OptionT
-import cats.implicits._
+import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -45,7 +45,7 @@ class UndertakingController @Inject() (
   store: Store,
   override val escService: EscService,
   journeyTraverseService: JourneyTraverseService,
-  sendEmailHelperService: EmailService,
+  emailService: EmailService,
   timeProvider: TimeProvider,
   auditService: AuditService,
   undertakingNamePage: UndertakingNamePage,
@@ -190,14 +190,7 @@ class UndertakingController @Inject() (
   )(implicit request: AuthenticatedEscRequest[_], eori: EORI): Future[Result] =
     for {
       ref <- escService.createUndertaking(undertaking)
-      _ <- sendEmailHelperService.sendEmail(
-        eori,
-        None,
-        CreateUndertaking,
-        undertaking,
-        ref,
-        None
-      )
+      _ <- emailService.sendEmail(eori, None, CreateUndertaking, undertaking.copy(reference = ref.some), None)
       auditEventCreateUndertaking = AuditEvent.CreateUndertaking(
         request.authorityId,
         ref,

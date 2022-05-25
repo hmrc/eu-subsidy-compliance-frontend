@@ -43,28 +43,30 @@ class EmailService @Inject() (
   retrieveEmailConnector: RetrieveEmailConnector
 ) extends Logging {
 
-  // TODO - review call sites to determine how missing ref is handled
   def sendEmail(
     eori1: EORI,
     eori2: Option[EORI],
     templateKey: String,
     undertaking: Undertaking,
-    undertakingRef: UndertakingRef,
     removeEffectiveDate: Option[String]
   )(implicit
     hc: HeaderCarrier,
     executionContext: ExecutionContext,
     request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
-  ): Future[EmailSendResult] = retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
-    retrieveEmailResponse.emailType match {
-      case EmailType.VerifiedEmail =>
-        val templateId = getEmailTemplateId(templateKey)
-        val parameters = EmailParameters(eori1, eori2, undertaking.name, undertakingRef, removeEffectiveDate)
-        retrieveEmailResponse.emailAddress.map { emailAddress =>
-          sendEmail(emailAddress, parameters, templateId)
-        } getOrElse sys.error("Email address not found")
-      case _ => Future.successful(EmailSendResult.EmailNotSent)
+  ): Future[EmailSendResult] = {
+    // TODO - ensure this is covered
+    val undertakingRef: UndertakingRef = undertaking.reference.getOrElse(sys.error("No reference found on undertaking"))
+    retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
+      retrieveEmailResponse.emailType match {
+        case EmailType.VerifiedEmail =>
+          val templateId = getEmailTemplateId(templateKey)
+          val parameters = EmailParameters(eori1, eori2, undertaking.name, undertakingRef, removeEffectiveDate)
+          retrieveEmailResponse.emailAddress.map { emailAddress =>
+            sendEmail(emailAddress, parameters, templateId)
+          } getOrElse sys.error("Email address not found")
+        case _ => Future.successful(EmailSendResult.EmailNotSent)
+      }
     }
   }
 
