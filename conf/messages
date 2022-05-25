@@ -249,10 +249,12 @@ reportPayment.payment-dated = payment, dated
 add-claim-amount.title=What was the amount of the payment?
 add-claim-amount.p1=This type of aid is measured in euros.
 add-claim-amount.inset=If your payment is already in euros, skip the steps below and enter the amount in the box.
-add-claim-amount.p2=if you need to convert sterling into euros, use this <a class="govuk-link" href={0} target="_blank">exchange rate tool (opens in a new tab)</a>, then follow steps 1 to 3:
-add-claim-amount.l1 = Change the year to {0} and month to {1}
-add-claim-amount.l2 = Enter the amount of aid you received in pounds sterling
-add-claim-amount.l3 = Change the ‘From’ dropdown to ‘GBP’ and use the figure displayed below it
+add-claim-amount.p2=if you need to convert sterling into euros, then follow steps 1 to 5:
+add-claim-amount.l1= Use this <a class="govuk-link" href={0} target="_blank">exchange rate tool (opens in a new tab)</a>
+add-claim-amount.l2 = Change the year to {0} and month to {1}
+add-claim-amount.l3 = Enter the amount of aid you received in pounds sterling
+add-claim-amount.l4 = Change the ‘From’ dropdown to ‘GBP’ and use the figure displayed below it
+add-claim-amount.l5 = Enter amount in the box below
 add-claim-amount.hint = You must enter the amount of aid in Euros, including two decimal places, like 248.56
 add-claim-amount.error.amount.tooSmall=Subsidy amount must be more than one cent, like €00.01
 add-claim-amount.error.amount.tooBig=Subsidy amount must be fewer than 17 characters
