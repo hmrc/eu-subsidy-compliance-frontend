@@ -60,11 +60,13 @@
       @P(messages("add-claim-amount.p1"))
       @govukInsetText(InsetText(
           content = Text(messages("add-claim-amount.inset"))))
-    @P(messages("add-claim-amount.p2", appConfig.exchangeRateToolUrl))
+    @P(messages("add-claim-amount.p2"))
       <ul class="govuk-list govuk-list--number">
-          <li>@{messages(s"$key.l1", currentYear, currentMonth)}</li>
-          <li>@{messages(s"$key.l2")}</li>
+          <li>@Html(messages(s"$key.l1", appConfig.exchangeRateToolUrl))</li>
+          <li>@{messages(s"$key.l2",currentYear, currentMonth)}</li>
           <li>@{messages(s"$key.l3")}</li>
+          <li>@{messages(s"$key.l4")}</li>
+          <li>@{messages(s"$key.l5")}</li>
       </ul>
 
     @govukInput(Input(
