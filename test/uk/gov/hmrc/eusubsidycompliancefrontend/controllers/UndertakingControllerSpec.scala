@@ -27,6 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
@@ -1095,13 +1096,14 @@ class UndertakingControllerSpec
             .withFormUrlEncodedBody(data: _*)
         )
 
-      val currentDate = LocalDate.of(2022, 10, 9)
+      val currentDate = LocalDate.of(2021, 10, 9)
       "throw technical error" when {
-        "call to remove member fails" in {
+
+        "call to disable member fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockRemoveMember(undertakingRef, businessEntity1)(Left(ConnectorError(exception)))
+            mockDisableUndertaking(undertaking1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("disableUndertakingConfirm" -> "true")))
         }
@@ -1129,7 +1131,16 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockRemoveMember(undertakingRef, businessEntity1)(Right(undertakingRef))
+            mockDisableUndertaking(undertaking1)(Right(undertakingRef))
+            mockTimeToday(currentDate)
+            mockRetrieveEmailAddressAndSendEmail(
+              eori1,
+              None,
+              "disableUndertakingLead",
+              undertaking1,
+              undertakingRef,
+              "9 October 2021".some
+            )(Right(EmailSendResult.EmailSent))
             mockDelete[EligibilityJourney](eori1)(Right(()))
             mockDelete[UndertakingJourney](eori1)(Right(()))
             mockDelete[NewLeadJourney](eori1)(Right(()))
@@ -1144,7 +1155,15 @@ class UndertakingControllerSpec
             mockDelete[BusinessEntityJourney](eori4)(Right(()))
             mockDelete[BecomeLeadJourney](eori4)(Right(()))
             mockDelete[SubsidyJourney](eori4)(Right(()))
-            mockTimeToday(currentDate)
+            mockRetrieveEmailAddressAndSendEmail(
+              eori1,
+              eori4.some,
+              "disableUndertakingBE",
+              undertaking1,
+              undertakingRef,
+              "9 October 2021".some,
+              true
+            )(Right(EmailSendResult.EmailSent))
             mockSendAuditEvent[UndertakingDisabled](UndertakingDisabled("1123", undertakingRef, currentDate))
           }
           checkIsRedirect(

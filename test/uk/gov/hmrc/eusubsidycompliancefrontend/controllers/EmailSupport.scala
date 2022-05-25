@@ -43,16 +43,26 @@ trait EmailSupport { this: ControllerSpec =>
     key: String,
     undertaking: Undertaking,
     undertakingRef: UndertakingRef,
-    removeEffectiveDate: Option[String]
+    removeEffectiveDate: Option[String],
+    isDisableBEEmail: Boolean = false
   )(result: Either[ConnectorError, EmailSendResult]) =
-    (mockEmailService
-      .retrieveEmailAddressAndSendEmail(
-        _: EORI,
-        _: Option[EORI],
-        _: String,
-        _: Undertaking,
-        _: UndertakingRef,
-        _: Option[String])(_: HeaderCarrier, _: ExecutionContext, _: AuthenticatedEscRequest[_], _: MessagesApi))
-      .expects(eori1, eori2, key, undertaking, undertakingRef, removeEffectiveDate, *, *, *, *)
+    (
+      mockEmailService
+        .retrieveEmailAddressAndSendEmail(
+          _: EORI,
+          _: Option[EORI],
+          _: String,
+          _: Undertaking,
+          _: UndertakingRef,
+          _: Option[String],
+          _: Boolean
+        )(
+          _: HeaderCarrier,
+          _: ExecutionContext,
+          _: AuthenticatedEscRequest[_],
+          _: MessagesApi
+        )
+      )
+      .expects(eori1, eori2, key, undertaking, undertakingRef, removeEffectiveDate, isDisableBEEmail, *, *, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
 }

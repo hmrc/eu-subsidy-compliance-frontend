@@ -332,30 +332,32 @@ class UndertakingController @Inject() (
     if (form.value == "true") {
       val ref = undertaking.reference.fold(handleMissingSessionData("Undertaking reference"))(identity)
       for {
-        _ <- escService.removeMember(ref, undertaking.getBusinessEntityByEORI(request.eoriNumber))
+        _ <- escService.disableUndertaking(undertaking)
+        currentDate = timeProvider.today
         _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
           request.eoriNumber,
           None,
           DisableUndertakingLead,
           undertaking,
           ref,
-          DateFormatter.govDisplayFormat(timeProvider.today).some
+          DateFormatter.govDisplayFormat(currentDate).some
         )
         _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
         _ <- undertaking.undertakingBusinessEntity
           .filterNot(_.leadEORI)
-          .traverse(_ =>
+          .traverse(be =>
             sendEmailHelperService.retrieveEmailAddressAndSendEmail(
               request.eoriNumber,
-              None,
+              be.businessEntityIdentifier.some,
               DisableUndertakingBE,
               undertaking,
               ref,
-              DateFormatter.govDisplayFormat(timeProvider.today).some
+              DateFormatter.govDisplayFormat(currentDate).some,
+              true
             )
           )
         _ = auditService.sendEvent[UndertakingDisabled](
-          UndertakingDisabled(request.authorityId, ref, timeProvider.today)
+          UndertakingDisabled(request.authorityId, ref, currentDate)
         )
       } yield Redirect(routes.UndertakingController.getUndertakingDisabled())
     } else Redirect(routes.AccountController.getAccountPage()).toFuture

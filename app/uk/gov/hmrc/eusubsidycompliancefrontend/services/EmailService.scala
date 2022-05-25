@@ -45,25 +45,33 @@ class EmailService @Inject() (
 ) extends Logging {
 
   def retrieveEmailAddressAndSendEmail(
-    eori1: EORI,
-    eori2: Option[EORI],
+    eoriParam1: EORI,
+    eoriParam2: Option[EORI],
     key: String,
     undertaking: Undertaking,
     undertakingRef: UndertakingRef,
-    removeEffectiveDate: Option[String]
+    removeEffectiveDate: Option[String],
+    isDisableBEEmail: Boolean = false
   )(implicit
     hc: HeaderCarrier,
     executionContext: ExecutionContext,
     request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
-  ): Future[EmailSendResult] = retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
-    retrieveEmailResponse.emailType match {
-      case EmailType.VerifiedEmail =>
-        val templateId = getEmailTemplateId(key)
-        val emailParameter = buildEmailParameters(key, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
-        val emailAddress = retrieveEmailResponse.emailAddress.getOrElse(sys.error("email not found"))
-        sendEmail(emailAddress, emailParameter, templateId)
-      case _ => Future.successful(EmailSendResult.EmailNotSent)
+  ): Future[EmailSendResult] = {
+    val emailEORI = if (isDisableBEEmail) eoriParam2.getOrElse(sys.error(" eori2 not present")) else eoriParam1
+    retrieveEmailByEORI(emailEORI).flatMap { retrieveEmailResponse =>
+      retrieveEmailResponse.emailType match {
+        case EmailType.VerifiedEmail =>
+          val templateId = getEmailTemplateId(key)
+          val emailParameter =
+            if (isDisableBEEmail)
+              buildEmailParameters(key, eoriParam1, None, undertaking, undertakingRef, removeEffectiveDate)
+            else
+              buildEmailParameters(key, eoriParam1, eoriParam2, undertaking, undertakingRef, removeEffectiveDate)
+          val emailAddress = retrieveEmailResponse.emailAddress.getOrElse(sys.error("email not found"))
+          sendEmail(emailAddress, emailParameter, templateId)
+        case _ => Future.successful(EmailSendResult.EmailNotSent)
+      }
     }
   }
 

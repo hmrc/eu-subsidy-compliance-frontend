@@ -92,4 +92,10 @@ trait EscServiceSupport { this: ControllerSpec =>
       .expects(reference, nonHmrcSubsidy, *)
       .returning(result.fold(e => Future.failed(e), _.toFuture))
 
+  def mockDisableUndertaking(undertaking: Undertaking)(result: Either[ConnectorError, UndertakingRef]) =
+    (mockEscService
+      .disableUndertaking(_: Undertaking)(_: HeaderCarrier))
+      .expects(undertaking, *)
+      .returning(result.fold(e => Future.failed(e), _.toFuture))
+
 }
