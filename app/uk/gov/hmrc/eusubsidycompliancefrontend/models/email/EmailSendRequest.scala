@@ -22,7 +22,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.EmailAddress
 final case class EmailSendRequest(
   to: List[EmailAddress],
   templateId: String,
-  parameters: NewEmailParameters,
+  parameters: EmailParameters,
   force: Boolean = true
 )
 
