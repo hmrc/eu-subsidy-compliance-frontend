@@ -342,16 +342,18 @@ class UndertakingController @Inject() (
           DateFormatter.govDisplayFormat(timeProvider.today).some
         )
         _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
-        _ <- undertaking.undertakingBusinessEntity.traverse(be =>
-          sendEmailHelperService.retrieveEmailAddressAndSendEmail(
-            request.eoriNumber,
-            None,
-            DisableUndertakingBE,
-            undertaking,
-            ref,
-            DateFormatter.govDisplayFormat(timeProvider.today).some
+        _ <- undertaking.undertakingBusinessEntity
+          .filterNot(_.leadEORI)
+          .traverse(_ =>
+            sendEmailHelperService.retrieveEmailAddressAndSendEmail(
+              request.eoriNumber,
+              None,
+              DisableUndertakingBE,
+              undertaking,
+              ref,
+              DateFormatter.govDisplayFormat(timeProvider.today).some
+            )
           )
-        )
         _ = auditService.sendEvent[UndertakingDisabled](
           UndertakingDisabled(request.authorityId, ref, timeProvider.today)
         )

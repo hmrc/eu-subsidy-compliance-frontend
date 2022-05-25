@@ -47,22 +47,26 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
   private val templatedId: String = "templateId1"
 
   private val fakeAppConfig = new AppConfig(
-    Configuration.from(Map(
-      "email-send" -> Map[String, String](
-        "create-undertaking-template-en" -> templatedId,
-        "send.add-member-to-be-template-en" -> templatedId,
-        "add-member-to-be-template-en" -> templatedId,
-        "add-member-to-lead-template-en" -> templatedId,
-        "remove-member-to-be-template-en" -> templatedId,
-        "remove-member-to-lead-template-en" -> templatedId,
-        "promote-other-as-lead-to-be-template-en" -> templatedId,
-        "promote-other-as-lead-to-lead-template-en" -> templatedId,
-        "member-remove-themself-email-to-be-template-en" -> templatedId,
-        "member-remove-themself-email-to-lead-template-en" -> templatedId,
-        "promoted-themself-email-to-new-lead-template-en" -> templatedId,
-        "removed_as_lead-email-to-old-lead-template-en" -> templatedId,
+    Configuration.from(
+      Map(
+        "email-send" -> Map[String, String](
+          "create-undertaking-template-en" -> templatedId,
+          "send.add-member-to-be-template-en" -> templatedId,
+          "add-member-to-be-template-en" -> templatedId,
+          "add-member-to-lead-template-en" -> templatedId,
+          "remove-member-to-be-template-en" -> templatedId,
+          "remove-member-to-lead-template-en" -> templatedId,
+          "promote-other-as-lead-to-be-template-en" -> templatedId,
+          "promote-other-as-lead-to-lead-template-en" -> templatedId,
+          "member-remove-themself-email-to-be-template-en" -> templatedId,
+          "member-remove-themself-email-to-lead-template-en" -> templatedId,
+          "promoted-themself-email-to-new-lead-template-en" -> templatedId,
+          "removed_as_lead-email-to-old-lead-template-en" -> templatedId,
+          "undertaking-disable-email-to-lead-template-en" -> templatedId,
+          "undertaking-disable-email-to-be-template-en" -> templatedId
+        )
       )
-    )),
+    ),
     new ContactFrontendConfig(Configuration.empty)
   )
 
@@ -111,19 +115,40 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
         "the email retrieval fails" in {
           mockRetrieveEmail(eori1)(Left(ConnectorError(new RuntimeException())))
-          val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.retrieveEmailAddressAndSendEmail(
+            eori1,
+            None,
+            "createUndertaking",
+            undertaking,
+            undertakingRef,
+            None
+          )
           result.failed.futureValue shouldBe a[ConnectorError]
         }
 
         "no email address is found" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, inValidEmailResponseJson, emptyHeaders)))
-          val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.retrieveEmailAddressAndSendEmail(
+            eori1,
+            None,
+            "createUndertaking",
+            undertaking,
+            undertakingRef,
+            None
+          )
           result.futureValue shouldBe EmailNotSent
         }
 
         "the email address is undeliverable" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, undeliverableResponseJson, emptyHeaders)))
-          val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.retrieveEmailAddressAndSendEmail(
+            eori1,
+            None,
+            "createUndertaking",
+            undertaking,
+            undertakingRef,
+            None
+          )
           result.futureValue shouldBe EmailNotSent
         }
 
@@ -131,7 +156,14 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockMessagesResponse
           mockSendEmail(emailSendRequest)(Left(ConnectorError("Error")))
-          val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.retrieveEmailAddressAndSendEmail(
+            eori1,
+            None,
+            "createUndertaking",
+            undertaking,
+            undertakingRef,
+            None
+          )
           result.failed.futureValue shouldBe a[ConnectorError]
         }
 
@@ -143,7 +175,14 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockMessagesResponse
           mockSendEmail(emailSendRequest)(Right(HttpResponse(ACCEPTED, "")))
-          val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.retrieveEmailAddressAndSendEmail(
+            eori1,
+            None,
+            "createUndertaking",
+            undertaking,
+            undertakingRef,
+            None
+          )
           result.futureValue shouldBe EmailSent
         }
 
@@ -152,7 +191,6 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
     }
 
   }
-
 
   "handling request to retrieve email by eori" must {
 
