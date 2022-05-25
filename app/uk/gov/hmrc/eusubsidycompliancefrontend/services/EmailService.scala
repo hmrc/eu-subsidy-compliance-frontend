@@ -22,7 +22,6 @@ import play.api.Logging
 import play.api.http.Status.{ACCEPTED, NOT_FOUND, OK}
 import play.api.i18n.I18nSupport.RequestWithMessagesApi
 import play.api.i18n.MessagesApi
-import play.api.libs.json.Json
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{RetrieveEmailConnector, SendEmailConnector}
@@ -61,9 +60,10 @@ class EmailService @Inject() (
     retrieveEmailResponse.emailType match {
       case EmailType.VerifiedEmail =>
         val templateId = getEmailTemplateId(templateKey)
-        val parameters = EmailParameters(eori1, eori2, undertaking.name, undertakingRef, removeEffectiveDate, templateKey)
-        val emailAddress = retrieveEmailResponse.emailAddress.getOrElse(sys.error("email not found"))
-        sendEmail(emailAddress, parameters, templateId)
+        val parameters = EmailParameters(eori1, eori2, undertaking.name, undertakingRef, removeEffectiveDate)
+        retrieveEmailResponse.emailAddress.map { emailAddress =>
+          sendEmail(emailAddress, parameters, templateId)
+        } getOrElse sys.error("Email address not found")
       case _ => Future.successful(EmailSendResult.EmailNotSent)
     }
   }
@@ -110,12 +110,9 @@ class EmailService @Inject() (
   private def sendEmail(emailAddress: EmailAddress, parameters: EmailParameters, templateId: String)(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext
-  ): Future[EmailSendResult] = {
-    val request = EmailSendRequest(List(emailAddress), templateId, parameters)
-    val requestJson = Json.toJson(request)
-    println(s"Sending request: $requestJson")
+  ): Future[EmailSendResult] =
     sendEmailConnector.sendEmail(EmailSendRequest(List(emailAddress), templateId, parameters)).map {
-      case Left(error) => throw ConnectorError(s"Error in Sending Email ${parameters.description}", error)
+      case Left(error) => throw ConnectorError(s"Error sending email: $templateId", error)
       case Right(value) =>
         value.status match {
           case ACCEPTED => EmailSendResult.EmailSent
@@ -124,6 +121,5 @@ class EmailService @Inject() (
             EmailSendResult.EmailSentFailure
         }
     }
-  }
 
 }

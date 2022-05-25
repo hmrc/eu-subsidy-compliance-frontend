@@ -229,10 +229,10 @@ object CommonTestData {
   val undertakingCreated =
     Undertaking(None, UndertakingName("TestUndertaking"), transport, None, None, List(businessEntity5))
 
-  val singleEoriEmailParameters = EmailParameters(eori1, None, undertaking.name, undertakingRef, None, "createUndertaking")
-  val singleEoriWithDateEmailParameters = EmailParameters(eori1, None, undertaking.name, undertakingRef, dateTime.toString.some, "createUndertaking")
-  val doubleEoriEmailParameters = EmailParameters(eori1, eori2.some, undertaking.name, undertakingRef, None, "createUndertaking")
-  val doubleEoriWithDateEmailParameters = EmailParameters(eori1, eori2.some, undertaking.name, undertakingRef, dateTime.toString.some, "createUndertaking")
+  val singleEoriEmailParameters = EmailParameters(eori1, None, undertaking.name, undertakingRef, None)
+  val singleEoriWithDateEmailParameters = EmailParameters(eori1, None, undertaking.name, undertakingRef, dateTime.toString.some)
+  val doubleEoriEmailParameters = EmailParameters(eori1, eori2.some, undertaking.name, undertakingRef, None)
+  val doubleEoriWithDateEmailParameters = EmailParameters(eori1, eori2.some, undertaking.name, undertakingRef, dateTime.toString.some)
 
   val emailSendRequest = EmailSendRequest(List(EmailAddress("user@test.com")), "templateId1", singleEoriEmailParameters)
 

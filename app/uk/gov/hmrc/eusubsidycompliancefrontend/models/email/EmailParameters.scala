@@ -25,7 +25,6 @@ case class EmailParameters(
   undertakingName: UndertakingName,
   undertakingRef: UndertakingRef,
   effectiveDate: Option[String],
-  description: String, // TODO - how is this field used? seems to be a proxy for template name
 )
 
 object EmailParameters {

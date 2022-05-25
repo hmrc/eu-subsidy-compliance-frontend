@@ -46,7 +46,6 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
   private val templates = List(
     "create-undertaking-template",
-    "send.add-member-to-be-template",
     "add-member-to-be-template",
     "add-member-to-lead-template",
     "remove-member-to-be-template",
