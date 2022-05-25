@@ -21,6 +21,20 @@ import ai.x.play.json.Jsonx
 import play.api.libs.json.{Format, JsObject, JsResult, JsValue, Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
 
+// TODO - rename this when complex classes have been removed
+case class NewEmailParameters(
+  eori: EORI,
+  beEORI: Option[EORI], // TODO - verify that options are rendered correctly
+  undertakingName: UndertakingName,
+  undertakingRef: UndertakingRef,
+  effectiveDate: Option[String], // TODO - verify that options are rendered correctly
+  description: String, // TODO - how is this field used? seems to be a proxy for template name
+)
+
+object NewEmailParameters {
+  implicit val format = Json.format[NewEmailParameters]
+}
+
 sealed trait EmailParameterType
 
 object EmailParameterType {

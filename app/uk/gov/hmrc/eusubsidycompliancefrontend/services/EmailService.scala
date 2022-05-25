@@ -22,14 +22,14 @@ import play.api.Logging
 import play.api.http.Status.{ACCEPTED, NOT_FOUND, OK}
 import play.api.i18n.I18nSupport.RequestWithMessagesApi
 import play.api.i18n.MessagesApi
+import play.api.libs.json.Json
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{RetrieveEmailConnector, SendEmailConnector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, DoubleEORIEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -61,9 +61,9 @@ class EmailService @Inject() (
     retrieveEmailResponse.emailType match {
       case EmailType.VerifiedEmail =>
         val templateId = getEmailTemplateId(templateKey)
-        val emailParameter = buildEmailParameters(templateKey, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
+        val parameters = NewEmailParameters(eori1, eori2, undertaking.name, undertakingRef, removeEffectiveDate, templateKey)
         val emailAddress = retrieveEmailResponse.emailAddress.getOrElse(sys.error("email not found"))
-        sendEmail(emailAddress, emailParameter, templateId)
+        sendEmail(emailAddress, parameters, templateId)
       case _ => Future.successful(EmailSendResult.EmailNotSent)
     }
   }
@@ -92,22 +92,6 @@ class EmailService @Inject() (
       case _ => sys.error("Email address response is not valid")
     }
 
-  private def buildEmailParameters(
-    key: String,
-    eori1: EORI,
-    eori2: Option[EORI],
-    undertaking: Undertaking,
-    undertakingRef: UndertakingRef,
-    removeEffectiveDate: Option[String]
-  ): EmailParameters =
-    (eori2, removeEffectiveDate) match {
-      case (None, None) => SingleEORIEmailParameter(eori1, undertaking.name, undertakingRef, key)
-      case (None, Some(date)) => SingleEORIAndDateEmailParameter(eori1, undertaking.name, undertakingRef, date, key)
-      case (Some(eori), None) => DoubleEORIEmailParameter(eori1, eori, undertaking.name, undertakingRef, key)
-      case (Some(eori), Some(date)) =>
-        DoubleEORIAndDateEmailParameter(eori1, eori, undertaking.name, undertakingRef, date, key)
-    }
-
   private def getLanguage(implicit request: AuthenticatedEscRequest[_], messagesApi: MessagesApi): Language =
     request.request.messages(messagesApi).lang.code.toLowerCase(Locale.UK) match {
       case English.code => English
@@ -123,12 +107,15 @@ class EmailService @Inject() (
     appConfig.templateIdsMap(lang.code).getOrElse(inputKey, s"no template for $inputKey")
   }
 
-  private def sendEmail(emailAddress: EmailAddress, emailParameters: EmailParameters, templateId: String)(implicit
+  private def sendEmail(emailAddress: EmailAddress, parameters: NewEmailParameters, templateId: String)(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext
-  ): Future[EmailSendResult] =
-    sendEmailConnector.sendEmail(EmailSendRequest(List(emailAddress), templateId, emailParameters)).map {
-      case Left(error) => throw ConnectorError(s"Error in Sending Email ${emailParameters.description}", error)
+  ): Future[EmailSendResult] = {
+    val request = EmailSendRequest(List(emailAddress), templateId, parameters)
+    val requestJson = Json.toJson(request)
+    println(s"Sending request: $requestJson")
+    sendEmailConnector.sendEmail(EmailSendRequest(List(emailAddress), templateId, parameters)).map {
+      case Left(error) => throw ConnectorError(s"Error in Sending Email ${parameters.description}", error)
       case Right(value) =>
         value.status match {
           case ACCEPTED => EmailSendResult.EmailSent
@@ -137,5 +124,6 @@ class EmailService @Inject() (
             EmailSendResult.EmailSentFailure
         }
     }
+  }
 
 }
