@@ -21,10 +21,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingNa
 
 case class EmailParameters(
   eori: EORI,
-  beEORI: Option[EORI], // TODO - verify that options are rendered correctly
+  beEORI: Option[EORI],
   undertakingName: UndertakingName,
   undertakingRef: UndertakingRef,
-  effectiveDate: Option[String], // TODO - verify that options are rendered correctly
+  effectiveDate: Option[String],
   description: String, // TODO - how is this field used? seems to be a proxy for template name
 )
 

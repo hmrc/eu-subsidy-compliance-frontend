@@ -24,7 +24,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.RequestHeader
+import play.api.mvc.{AnyContentAsEmpty, RequestHeader}
 import play.api.test.Helpers._
 import play.api.test.{DefaultAwaitTimeout, FakeRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
@@ -108,11 +108,11 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
   )
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private implicit val fakeRequest = AuthenticatedEscRequest("Foo", "Bar", FakeRequest(), EORI("GB121212121212"))
+  private implicit val fakeRequest: AuthenticatedEscRequest[AnyContentAsEmpty.type] = AuthenticatedEscRequest("Foo", "Bar", FakeRequest(), EORI("GB121212121212"))
   private implicit val mockMessagesApi: MessagesApi = mock[MessagesApi]
   private val mockMessages = mock[Messages]
 
-  "SendEmailHelperService" when {
+  "EmailService" when {
 
     "sendEmail is called" must {
 
@@ -159,7 +159,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
         "the template could not be found" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
-          mockMessagesResponse("en")
+          mockMessagesResponse()
           val result = service.sendEmail(eori1, None, "thisTemplateDoesNotExist", undertaking, undertakingRef, None)
           result.failed.futureValue shouldBe a[RuntimeException]
         }
@@ -213,7 +213,6 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
     }
 
   }
-
 
   "retrieveEmailByEORI is called" must {
 

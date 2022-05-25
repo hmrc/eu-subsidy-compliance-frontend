@@ -218,11 +218,11 @@ object CommonTestData {
   val inValidEmailAddress = EmailAddress("invalid@email.com")
   val undeliverableEmailAddress = EmailAddress("undeliverable@address.com")
 
-  val dateTime = Some(LocalDateTime.of(2021, 1, 9, 10, 10))
+  val dateTime = LocalDateTime.of(2021, 1, 9, 10, 10)
 
   val undeliverableEmailResponse =
-    EmailAddressResponse(undeliverableEmailAddress, dateTime, Some(Undeliverable("eventid1")))
-  val validEmailResponse = EmailAddressResponse(validEmailAddress, dateTime, None)
+    EmailAddressResponse(undeliverableEmailAddress, dateTime.some, Some(Undeliverable("eventid1")))
+  val validEmailResponse = EmailAddressResponse(validEmailAddress, dateTime.some, None)
   val unverifiedEmailResponse = EmailAddressResponse(validEmailAddress, None, None)
   val inValidEmailResponse = EmailAddressResponse(inValidEmailAddress, None, Some(Undeliverable("foo")))
 
