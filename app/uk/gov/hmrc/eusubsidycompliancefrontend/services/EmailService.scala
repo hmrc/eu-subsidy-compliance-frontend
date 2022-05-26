@@ -45,6 +45,38 @@ class EmailService @Inject() (
 
   def sendEmail(
     eori1: EORI,
+    templateKey: String,
+    undertaking: Undertaking,
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, r: AuthenticatedEscRequest[_], m: MessagesApi): Future[EmailSendResult] =
+    sendEmail(eori1, None, templateKey, undertaking, None)
+
+  def sendEmail(
+    eori1: EORI,
+    eori2: EORI,
+    templateKey: String,
+    undertaking: Undertaking,
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, r: AuthenticatedEscRequest[_], m: MessagesApi): Future[EmailSendResult] =
+    sendEmail(eori1, eori2.some, templateKey, undertaking, None)
+
+  def sendEmail(
+    eori1: EORI,
+    templateKey: String,
+    undertaking: Undertaking,
+    removeEffectiveDate: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, r: AuthenticatedEscRequest[_], m: MessagesApi): Future[EmailSendResult] =
+    sendEmail(eori1, None, templateKey, undertaking, removeEffectiveDate.some)
+
+  def sendEmail(
+    eori1: EORI,
+    eori2: EORI,
+    templateKey: String,
+    undertaking: Undertaking,
+    removeEffectiveDate: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, r: AuthenticatedEscRequest[_], m: MessagesApi): Future[EmailSendResult] =
+    sendEmail(eori1, eori2.some, templateKey, undertaking, removeEffectiveDate.some)
+
+  private def sendEmail(
+    eori1: EORI,
     eori2: Option[EORI],
     templateKey: String,
     undertaking: Undertaking,

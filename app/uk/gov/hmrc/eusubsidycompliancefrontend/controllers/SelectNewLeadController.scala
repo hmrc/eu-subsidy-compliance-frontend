@@ -97,8 +97,8 @@ class SelectNewLeadController @Inject() (
             newLeadJourney.copy(selectNewLead = updatedLead)
           }
           _ = auditService.sendEvent(BusinessEntityPromoted(undertakingRef, request.authorityId, eori, eoriBE))
-          _ <- emailService.sendEmail(eori, eoriBE.some, promoteOtherAsLeadEmailToLead, undertaking, None)
-          result <- emailService.sendEmail(eoriBE, None, promoteOtherAsLeadEmailToBusinessEntity, undertaking, None)
+          _ <- emailService.sendEmail(eori, eoriBE, promoteOtherAsLeadEmailToLead, undertaking)
+          result <- emailService.sendEmail(eoriBE, promoteOtherAsLeadEmailToBusinessEntity, undertaking)
             .map(redirectTo)
         } yield result
       }

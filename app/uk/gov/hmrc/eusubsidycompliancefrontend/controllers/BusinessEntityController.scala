@@ -186,8 +186,8 @@ class BusinessEntityController @Inject() (
         }
         escService.addMember(undertakingRef, businessEntity).toContext
       }
-      _ <- emailService.sendEmail(eoriBE, None, AddMemberEmailToBusinessEntity, undertaking, None).toContext
-      _ <- emailService.sendEmail(eori, eoriBE.some, AddMemberEmailToLead, undertaking, None).toContext
+      _ <- emailService.sendEmail(eoriBE, AddMemberEmailToBusinessEntity, undertaking).toContext
+      _ <- emailService.sendEmail(eori, eoriBE, AddMemberEmailToLead, undertaking).toContext
       // Clear the cached undertaking so it's retrieved on the next access
       _ <- store.delete[Undertaking].toContext
       _ =
@@ -251,8 +251,8 @@ class BusinessEntityController @Inject() (
             val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
             for {
               _ <- escService.removeMember(undertakingRef, removeBE)
-              _ <- emailService.sendEmail(EORI(eoriEntered), None, RemoveMemberEmailToBusinessEntity, undertaking, removalEffectiveDateString.some)
-              _ <- emailService.sendEmail(eori, EORI(eoriEntered).some, RemoveMemberEmailToLead, undertaking, removalEffectiveDateString.some)
+              _ <- emailService.sendEmail(EORI(eoriEntered), RemoveMemberEmailToBusinessEntity, undertaking, removalEffectiveDateString)
+              _ <- emailService.sendEmail(eori, EORI(eoriEntered), RemoveMemberEmailToLead, undertaking, removalEffectiveDateString)
               // Clear the cached undertaking so it's retrieved on the next access
               _ <- store.delete[Undertaking]
               _ = auditService

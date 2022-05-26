@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.catsSyntaxOptionId
 import com.google.inject.{Inject, Singleton}
 import play.api.Logging
 import play.api.i18n.I18nSupport
@@ -74,8 +73,8 @@ class SignOutController @Inject() (
                 removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(eori)
                 leadEORI = undertaking.getLeadEORI
                 _ <- escService.removeMember(undertakingRef, removeBE).toContext
-                _ <- emailService.sendEmail(eori, None, RemoveThemselfEmailToBusinessEntity, undertaking, removalEffectiveDateString.some).toContext
-                _ <- emailService.sendEmail(leadEORI, eori.some, RemoveThemselfEmailToLead, undertaking, removalEffectiveDateString.some).toContext
+                _ <- emailService.sendEmail(eori, RemoveThemselfEmailToBusinessEntity, undertaking, removalEffectiveDateString).toContext
+                _ <- emailService.sendEmail(leadEORI, eori, RemoveThemselfEmailToLead, undertaking, removalEffectiveDateString).toContext
                 _ = auditService
                   .sendEvent(
                     AuditEvent

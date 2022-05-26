@@ -190,7 +190,7 @@ class UndertakingController @Inject() (
   )(implicit request: AuthenticatedEscRequest[_], eori: EORI): Future[Result] =
     for {
       ref <- escService.createUndertaking(undertaking)
-      _ <- emailService.sendEmail(eori, None, CreateUndertaking, undertaking.copy(reference = ref.some), None)
+      _ <- emailService.sendEmail(eori, CreateUndertaking, undertaking.copy(reference = ref.some))
       auditEventCreateUndertaking = AuditEvent.CreateUndertaking(
         request.authorityId,
         ref,
