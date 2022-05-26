@@ -269,10 +269,10 @@ class BecomeLeadControllerSpec
         def testRedirectNotVerifiedEmail(emailType: EmailType, nextCall: String) = {
           inSequence {
             mockAuthWithNecessaryEnrolment(eori4)
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, validEmailAddress.some)))
+            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(emailType, validEmailAddress.some)))
           }
 
-          checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateUnverifiedEmailAddress().url)
+          checkIsRedirect(performAction(), nextCall)
         }
 
         "retrieve email address is not verified" in {
