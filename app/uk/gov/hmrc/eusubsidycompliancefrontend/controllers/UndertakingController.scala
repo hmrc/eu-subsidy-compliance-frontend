@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.data.OptionT
-import cats.implicits.catsSyntaxOptionId
+import cats.implicits._
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -280,7 +280,7 @@ class UndertakingController @Inject() (
   }
 
   def getDisableUndertakingWarning: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
-    withLeadUndertaking(undertaking => Ok(disableUndertakingWarningPage(undertaking.name.toString)).toFuture)
+    withLeadUndertaking(undertaking => Ok(disableUndertakingWarningPage(undertaking.name)).toFuture)
   }
 
   def getDisableUndertakingConfirm: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
@@ -320,7 +320,7 @@ class UndertakingController @Inject() (
     request: AuthenticatedEscRequest[_]
   ): Future[Result] =
     if (form.value == "true") {
-      val ref = undertaking.reference.fold(handleMissingSessionData("Undertking reference"))(identity)
+      val ref = undertaking.reference.fold(handleMissingSessionData("Undertaking reference"))(identity)
       for {
         _ <- escService.removeMember(ref, undertaking.getBusinessEntityByEORI(request.eoriNumber))
         _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
