@@ -186,26 +186,8 @@ class BusinessEntityController @Inject() (
         }
         escService.addMember(undertakingRef, businessEntity).toContext
       }
-      _ <- emailService
-        .retrieveEmailAddressAndSendEmail(
-          eoriBE,
-          None,
-          AddMemberEmailToBusinessEntity,
-          undertaking,
-          undertakingRef,
-          None
-        )
-        .toContext
-      _ <- emailService
-        .retrieveEmailAddressAndSendEmail(
-          eori,
-          eoriBE.some,
-          AddMemberEmailToLead,
-          undertaking,
-          undertakingRef,
-          None
-        )
-        .toContext
+      _ <- emailService.sendEmail(eoriBE, AddMemberEmailToBusinessEntity, undertaking).toContext
+      _ <- emailService.sendEmail(eori, eoriBE, AddMemberEmailToLead, undertaking).toContext
       // Clear the cached undertaking so it's retrieved on the next access
       _ <- store.delete[Undertaking].toContext
       _ =
@@ -222,7 +204,7 @@ class BusinessEntityController @Inject() (
       cyaForm
         .bindFromRequest()
         .fold(
-          errors => throw new IllegalStateException(s"value hard-coded, form hacking? $errors"),
+          errors => throw new IllegalStateException(s"Error processing BusinessEntity CYA form: $errors"),
           _ => handleValidAnswersC(undertaking).fold(handleMissingSessionData("BusinessEntity Data"))(identity)
         )
     }
@@ -269,28 +251,13 @@ class BusinessEntityController @Inject() (
             val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
             for {
               _ <- escService.removeMember(undertakingRef, removeBE)
-              _ <- emailService.retrieveEmailAddressAndSendEmail(
-                EORI(eoriEntered),
-                None,
-                RemoveMemberEmailToBusinessEntity,
-                undertaking,
-                undertakingRef,
-                removalEffectiveDateString.some
-              )
-              _ <- emailService.retrieveEmailAddressAndSendEmail(
-                eori,
-                EORI(eoriEntered).some,
-                RemoveMemberEmailToLead,
-                undertaking,
-                undertakingRef,
-                removalEffectiveDateString.some
-              )
+              _ <- emailService.sendEmail(EORI(eoriEntered), RemoveMemberEmailToBusinessEntity, undertaking, removalEffectiveDateString)
+              _ <- emailService.sendEmail(eori, EORI(eoriEntered), RemoveMemberEmailToLead, undertaking, removalEffectiveDateString)
               // Clear the cached undertaking so it's retrieved on the next access
               _ <- store.delete[Undertaking]
               _ = auditService
                 .sendEvent(
-                  AuditEvent
-                    .BusinessEntityRemoved(undertakingRef, request.authorityId, eori, EORI(eoriEntered))
+                  AuditEvent.BusinessEntityRemoved(undertakingRef, request.authorityId, eori, EORI(eoriEntered))
                 )
             } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
           case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture

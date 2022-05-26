@@ -692,14 +692,7 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(
-              eori1,
-              None,
-              "createUndertaking",
-              undertakingCreated,
-              undertakingRef,
-              None
-            )(Left(ConnectorError(exception)))
+            mockSendEmail(eori1, "createUndertaking", undertakingCreated.copy(reference = undertakingRef.some))(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
 
@@ -716,14 +709,7 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(
-              eori1,
-              None,
-              "createUndertaking",
-              undertakingCreated,
-              undertakingRef,
-              None
-            )(Right(EmailSent))
+            mockSendEmail(eori1, "createUndertaking", undertakingCreated.copy(reference = undertakingRef.some))(Right(EmailSent))
             mockTimeProviderNow(timeNow)
             mockSendAuditEvent(createUndertakingAuditEvent)
           }

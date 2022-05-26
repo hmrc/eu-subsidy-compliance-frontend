@@ -24,7 +24,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
 import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.RequestHeader
+import play.api.mvc.{AnyContentAsEmpty, RequestHeader}
 import play.api.test.Helpers._
 import play.api.test.{DefaultAwaitTimeout, FakeRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
@@ -44,33 +44,41 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with ScalaFutures with DefaultAwaitTimeout {
 
+  private val templates = List(
+    "create-undertaking-template",
+    "add-member-to-be-template",
+    "add-member-to-lead-template",
+    "remove-member-to-be-template",
+    "remove-member-to-lead-template",
+    "promote-other-as-lead-to-be-template",
+    "promote-other-as-lead-to-lead-template",
+    "member-remove-themself-email-to-be-template",
+    "member-remove-themself-email-to-lead-template",
+    "promoted-themself-email-to-new-lead-template",
+    "removed_as_lead-email-to-old-lead-template",
+  )
+
   private val templatedId: String = "templateId1"
 
-  private val fakeAppConfig = new AppConfig(
-    Configuration.from(Map(
-      "email-send" -> Map[String, String](
-        "create-undertaking-template-en" -> templatedId,
-        "send.add-member-to-be-template-en" -> templatedId,
-        "add-member-to-be-template-en" -> templatedId,
-        "add-member-to-lead-template-en" -> templatedId,
-        "remove-member-to-be-template-en" -> templatedId,
-        "remove-member-to-lead-template-en" -> templatedId,
-        "promote-other-as-lead-to-be-template-en" -> templatedId,
-        "promote-other-as-lead-to-lead-template-en" -> templatedId,
-        "member-remove-themself-email-to-be-template-en" -> templatedId,
-        "member-remove-themself-email-to-lead-template-en" -> templatedId,
-        "promoted-themself-email-to-new-lead-template-en" -> templatedId,
-        "removed_as_lead-email-to-old-lead-template-en" -> templatedId,
-      )
-    )),
-    new ContactFrontendConfig(Configuration.empty)
-  )
+  private val fakeAppConfig = {
+    new AppConfig(
+      Configuration.from(Map(
+        "email-send" ->
+          List(
+            templates.map(t => s"$t-en" -> templatedId),
+            templates.map(t => s"$t-cy" -> templatedId),
+          ).flatten.toMap,
+      )),
+      new ContactFrontendConfig(Configuration.empty)
+    )
+  }
 
   private val emptyHeaders = Map.empty[String, Seq[String]]
 
   private val validEmailResponseJson = Json.toJson(validEmailResponse)
   private val inValidEmailResponseJson = Json.toJson(inValidEmailResponse)
   private val undeliverableResponseJson = Json.toJson(undeliverableEmailResponse)
+  private val unverifiedEmailResponseJson = Json.toJson(unverifiedEmailResponse)
 
   private val mockSendEmailConnector: SendEmailConnector = mock[SendEmailConnector]
   private val mockRetrieveEmailConnector = mock[RetrieveEmailConnector]
@@ -87,9 +95,9 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
       .expects(eori, *)
       .returning(result.toFuture)
 
-  private def mockMessagesResponse = {
+  private def mockMessagesResponse(langCode: String = "en") = {
     (mockMessagesApi.preferred(_: RequestHeader)).expects(*).returning(mockMessages)
-    (() => mockMessages.lang).expects().returning(Lang("en"))
+    (() => mockMessages.lang).expects().returning(Lang(langCode))
   }
 
   private val service = new EmailService(
@@ -99,51 +107,108 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
   )
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private implicit val fakeRequest = AuthenticatedEscRequest("Foo", "Bar", FakeRequest(), EORI("GB121212121212"))
+  private implicit val fakeRequest: AuthenticatedEscRequest[AnyContentAsEmpty.type] = AuthenticatedEscRequest("Foo", "Bar", FakeRequest(), EORI("GB121212121212"))
   private implicit val mockMessagesApi: MessagesApi = mock[MessagesApi]
   private val mockMessages = mock[Messages]
 
-  "SendEmailHelperService" when {
+  "EmailService" when {
 
-    "retrieveEmailAddressAndSendEmail is called" must {
+    "sendEmail is called" must {
 
       "return an error" when {
 
+        "there is no reference on the undertaking" in {
+          a[RuntimeException] shouldBe
+            thrownBy(service.sendEmail(eori1, "createUndertaking", undertaking.copy(reference = None)))
+        }
+
         "the email retrieval fails" in {
           mockRetrieveEmail(eori1)(Left(ConnectorError(new RuntimeException())))
-          val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, "createUndertaking", undertaking)
           result.failed.futureValue shouldBe a[ConnectorError]
         }
 
         "no email address is found" in {
-          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, inValidEmailResponseJson, emptyHeaders)))
-          val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, unverifiedEmailResponseJson, emptyHeaders)))
+          val result = service.sendEmail(eori1, "createUndertaking", undertaking)
           result.futureValue shouldBe EmailNotSent
         }
 
         "the email address is undeliverable" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, undeliverableResponseJson, emptyHeaders)))
-          val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, "createUndertaking", undertaking)
           result.futureValue shouldBe EmailNotSent
+        }
+
+        "the email address response is invalid" in {
+          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, inValidEmailResponseJson, emptyHeaders)))
+          val result = service.sendEmail(eori1, "createUndertaking", undertaking)
+          result.failed.futureValue shouldBe a[RuntimeException]
+        }
+
+        "the language code is not supported" in {
+          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+          mockMessagesResponse("de")
+          val result = service.sendEmail(eori1, "createUndertaking", undertaking)
+          result.failed.futureValue shouldBe a[RuntimeException]
         }
 
         "there is an error sending the email" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
-          mockMessagesResponse
+          mockMessagesResponse()
           mockSendEmail(emailSendRequest)(Left(ConnectorError("Error")))
-          val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, "createUndertaking", undertaking)
           result.failed.futureValue shouldBe a[ConnectorError]
+        }
+
+        "the template could not be found" in {
+          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+          mockMessagesResponse()
+          val result = service.sendEmail(eori1, "thisTemplateDoesNotExist", undertaking)
+          result.failed.futureValue shouldBe a[RuntimeException]
         }
 
       }
 
       "return success" when {
 
-        "the email is sent successfully" in {
+        "the email is sent successfully with language code en" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
-          mockMessagesResponse
+          mockMessagesResponse()
           mockSendEmail(emailSendRequest)(Right(HttpResponse(ACCEPTED, "")))
-          val result = service.retrieveEmailAddressAndSendEmail(eori1, None, "createUndertaking", undertaking, undertakingRef, None)
+          val result = service.sendEmail(eori1, "createUndertaking", undertaking)
+          result.futureValue shouldBe EmailSent
+        }
+
+        "the email is sent successfully with language code cy" in {
+          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+          mockMessagesResponse("cy")
+          mockSendEmail(emailSendRequest)(Right(HttpResponse(ACCEPTED, "")))
+          val result = service.sendEmail(eori1, "createUndertaking", undertaking)
+          result.futureValue shouldBe EmailSent
+        }
+
+        "the email is sent successfully with a removeEffectiveDate value" in {
+          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+          mockMessagesResponse()
+          mockSendEmail(emailSendRequest.copy(parameters = singleEoriWithDateEmailParameters))(Right(HttpResponse(ACCEPTED, "")))
+          val result = service.sendEmail(eori1, "createUndertaking", undertaking, dateTime.toString)
+          result.futureValue shouldBe EmailSent
+        }
+
+        "the email is sent successfully with a second eori" in {
+          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+          mockMessagesResponse()
+          mockSendEmail(emailSendRequest.copy(parameters = doubleEoriEmailParameters))(Right(HttpResponse(ACCEPTED, "")))
+          val result = service.sendEmail(eori1, eori2, "createUndertaking", undertaking)
+          result.futureValue shouldBe EmailSent
+        }
+
+        "the email is sent successfully with a second eori and a removeEffectiveDate value" in {
+          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+          mockMessagesResponse()
+          mockSendEmail(emailSendRequest.copy(parameters = doubleEoriWithDateEmailParameters))(Right(HttpResponse(ACCEPTED, "")))
+          val result = service.sendEmail(eori1, eori2, "createUndertaking", undertaking, dateTime.toString)
           result.futureValue shouldBe EmailSent
         }
 
@@ -153,8 +218,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
   }
 
-
-  "handling request to retrieve email by eori" must {
+  "retrieveEmailByEORI is called" must {
 
     "return an error" when {
 
@@ -188,28 +252,28 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
     "return successfully" when {
 
-      "the http call return with 200 and valid email address response" in {
+      "the http call returns a 200 and valid email address response" in {
         mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
         val result = service.retrieveEmailByEORI(eori1)
         await(result) shouldBe RetrieveEmailResponse(VerifiedEmail, validEmailAddress.some)
       }
 
-      "the http call return with 404 " in {
+      "the http call returns a 404" in {
         mockRetrieveEmail(eori1)(Right(HttpResponse(NOT_FOUND, " ")))
         val result = service.retrieveEmailByEORI(eori1)
         await(result) shouldBe RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)
       }
 
-      "the http call return with 200 but the email is Undeliverable " in {
+      "the http call returns a 200 but the email is Undeliverable" in {
         mockRetrieveEmail(eori1)(Right(HttpResponse(OK, undeliverableResponseJson, emptyHeaders)))
         val result = service.retrieveEmailByEORI(eori1)
         await(result) shouldBe RetrieveEmailResponse(EmailType.UnDeliverableEmail, undeliverableEmailAddress.some)
       }
 
-      "the http call return with 200 but the email is invalid " in {
-        mockRetrieveEmail(eori1)(Right(HttpResponse(OK, inValidEmailResponseJson, emptyHeaders)))
+      "the http call returns a 200 but the email is invalid" in {
+        mockRetrieveEmail(eori1)(Right(HttpResponse(OK, unverifiedEmailResponseJson, emptyHeaders)))
         val result = service.retrieveEmailByEORI(eori1)
-        await(result) shouldBe RetrieveEmailResponse(EmailType.UnVerifiedEmail, inValidEmailAddress.some)
+        await(result) shouldBe RetrieveEmailResponse(EmailType.UnVerifiedEmail, validEmailAddress.some)
       }
     }
   }

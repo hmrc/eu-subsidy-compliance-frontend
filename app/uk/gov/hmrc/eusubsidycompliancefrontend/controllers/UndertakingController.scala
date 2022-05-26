@@ -45,7 +45,7 @@ class UndertakingController @Inject() (
   store: Store,
   override val escService: EscService,
   journeyTraverseService: JourneyTraverseService,
-  sendEmailHelperService: EmailService,
+  emailService: EmailService,
   timeProvider: TimeProvider,
   auditService: AuditService,
   undertakingNamePage: UndertakingNamePage,
@@ -190,14 +190,7 @@ class UndertakingController @Inject() (
   )(implicit request: AuthenticatedEscRequest[_], eori: EORI): Future[Result] =
     for {
       ref <- escService.createUndertaking(undertaking)
-      _ <- sendEmailHelperService.retrieveEmailAddressAndSendEmail(
-        eori,
-        None,
-        CreateUndertaking,
-        undertaking,
-        ref,
-        None
-      )
+      _ <- emailService.sendEmail(eori, CreateUndertaking, undertaking.copy(reference = ref.some))
       auditEventCreateUndertaking = AuditEvent.CreateUndertaking(
         request.authorityId,
         ref,
@@ -287,7 +280,7 @@ class UndertakingController @Inject() (
   }
 
   def getDisableUndertakingWarning: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
-    withLeadUndertaking(undertaking => Ok(disableUndertakingWarningPage(undertaking.name.toString)).toFuture)
+    withLeadUndertaking(undertaking => Ok(disableUndertakingWarningPage(undertaking.name)).toFuture)
   }
 
   def getDisableUndertakingConfirm: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
@@ -327,7 +320,7 @@ class UndertakingController @Inject() (
     request: AuthenticatedEscRequest[_]
   ): Future[Result] =
     if (form.value == "true") {
-      val ref = undertaking.reference.fold(handleMissingSessionData("Undertking reference"))(identity)
+      val ref = undertaking.reference.fold(handleMissingSessionData("Undertaking reference"))(identity)
       for {
         _ <- escService.removeMember(ref, undertaking.getBusinessEntityByEORI(request.eoriNumber))
         _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))

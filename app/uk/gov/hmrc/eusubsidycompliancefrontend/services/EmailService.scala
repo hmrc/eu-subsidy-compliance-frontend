@@ -26,10 +26,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEsc
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{RetrieveEmailConnector, SendEmailConnector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.{DoubleEORIAndDateEmailParameter, DoubleEORIEmailParameter, SingleEORIAndDateEmailParameter, SingleEORIEmailParameter}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -44,26 +43,61 @@ class EmailService @Inject() (
   retrieveEmailConnector: RetrieveEmailConnector
 ) extends Logging {
 
-  def retrieveEmailAddressAndSendEmail(
+  def sendEmail(
+    eori1: EORI,
+    templateKey: String,
+    undertaking: Undertaking,
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, r: AuthenticatedEscRequest[_], m: MessagesApi): Future[EmailSendResult] =
+    sendEmail(eori1, None, templateKey, undertaking, None)
+
+  def sendEmail(
+    eori1: EORI,
+    eori2: EORI,
+    templateKey: String,
+    undertaking: Undertaking,
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, r: AuthenticatedEscRequest[_], m: MessagesApi): Future[EmailSendResult] =
+    sendEmail(eori1, eori2.some, templateKey, undertaking, None)
+
+  def sendEmail(
+    eori1: EORI,
+    templateKey: String,
+    undertaking: Undertaking,
+    removeEffectiveDate: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, r: AuthenticatedEscRequest[_], m: MessagesApi): Future[EmailSendResult] =
+    sendEmail(eori1, None, templateKey, undertaking, removeEffectiveDate.some)
+
+  def sendEmail(
+    eori1: EORI,
+    eori2: EORI,
+    templateKey: String,
+    undertaking: Undertaking,
+    removeEffectiveDate: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, r: AuthenticatedEscRequest[_], m: MessagesApi): Future[EmailSendResult] =
+    sendEmail(eori1, eori2.some, templateKey, undertaking, removeEffectiveDate.some)
+
+  private def sendEmail(
     eori1: EORI,
     eori2: Option[EORI],
-    key: String,
+    templateKey: String,
     undertaking: Undertaking,
-    undertakingRef: UndertakingRef,
     removeEffectiveDate: Option[String]
   )(implicit
     hc: HeaderCarrier,
     executionContext: ExecutionContext,
     request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
-  ): Future[EmailSendResult] = retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
-    retrieveEmailResponse.emailType match {
-      case EmailType.VerifiedEmail =>
-        val templateId = getEmailTemplateId(key)
-        val emailParameter = buildEmailParameters(key, eori1, eori2, undertaking, undertakingRef, removeEffectiveDate)
-        val emailAddress = retrieveEmailResponse.emailAddress.getOrElse(sys.error("email not found"))
-        sendEmail(emailAddress, emailParameter, templateId)
-      case _ => Future.successful(EmailSendResult.EmailNotSent)
+  ): Future[EmailSendResult] = {
+    val undertakingRef: UndertakingRef = undertaking.reference.getOrElse(sys.error("No reference found on undertaking"))
+    retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
+      retrieveEmailResponse.emailType match {
+        case EmailType.VerifiedEmail =>
+          val templateId = getEmailTemplateId(templateKey)
+          val parameters = EmailParameters(eori1, eori2, undertaking.name, undertakingRef, removeEffectiveDate)
+          retrieveEmailResponse.emailAddress.map { emailAddress =>
+            sendEmail(emailAddress, parameters, templateId)
+          } getOrElse sys.error("Email address not found")
+        case _ => Future.successful(EmailSendResult.EmailNotSent)
+      }
     }
   }
 
@@ -86,33 +120,16 @@ class EmailService @Inject() (
   private def handleEmailAddressResponse(emailAddressResponse: EmailAddressResponse): RetrieveEmailResponse =
     emailAddressResponse match {
       case EmailAddressResponse(email, Some(_), None) => RetrieveEmailResponse(EmailType.VerifiedEmail, email.some)
-      case EmailAddressResponse(email, Some(_), Some(_)) =>
-        RetrieveEmailResponse(EmailType.UnDeliverableEmail, email.some)
+      case EmailAddressResponse(email, Some(_), Some(_)) => RetrieveEmailResponse(EmailType.UnDeliverableEmail, email.some)
       case EmailAddressResponse(email, None, None) => RetrieveEmailResponse(EmailType.UnVerifiedEmail, email.some)
       case _ => sys.error("Email address response is not valid")
-    }
-
-  private def buildEmailParameters(
-    key: String,
-    eori1: EORI,
-    eori2: Option[EORI],
-    undertaking: Undertaking,
-    undertakingRef: UndertakingRef,
-    removeEffectiveDate: Option[String]
-  ): EmailParameters =
-    (eori2, removeEffectiveDate) match {
-      case (None, None) => SingleEORIEmailParameter(eori1, undertaking.name, undertakingRef, key)
-      case (None, Some(date)) => SingleEORIAndDateEmailParameter(eori1, undertaking.name, undertakingRef, date, key)
-      case (Some(eori), None) => DoubleEORIEmailParameter(eori1, eori, undertaking.name, undertakingRef, key)
-      case (Some(eori), Some(date)) =>
-        DoubleEORIAndDateEmailParameter(eori1, eori, undertaking.name, undertakingRef, date, key)
     }
 
   private def getLanguage(implicit request: AuthenticatedEscRequest[_], messagesApi: MessagesApi): Language =
     request.request.messages(messagesApi).lang.code.toLowerCase(Locale.UK) match {
       case English.code => English
       case Welsh.code => Welsh
-      case other => sys.error(s"Found unsupported language code $other")
+      case other => sys.error(s"Unsupported language code: $other")
     }
 
   private def getEmailTemplateId(inputKey: String)(implicit
@@ -123,12 +140,12 @@ class EmailService @Inject() (
     appConfig.templateIdsMap(lang.code).getOrElse(inputKey, s"no template for $inputKey")
   }
 
-  private def sendEmail(emailAddress: EmailAddress, emailParameters: EmailParameters, templateId: String)(implicit
+  private def sendEmail(emailAddress: EmailAddress, parameters: EmailParameters, templateId: String)(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext
   ): Future[EmailSendResult] =
-    sendEmailConnector.sendEmail(EmailSendRequest(List(emailAddress), templateId, emailParameters)).map {
-      case Left(error) => throw ConnectorError(s"Error in Sending Email ${emailParameters.description}", error)
+    sendEmailConnector.sendEmail(EmailSendRequest(List(emailAddress), templateId, parameters)).map {
+      case Left(error) => throw ConnectorError(s"Error sending email: $templateId", error)
       case Right(value) =>
         value.status match {
           case ACCEPTED => EmailSendResult.EmailSent

@@ -17,13 +17,12 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.test
 
 import cats.implicits.catsSyntaxOptionId
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailParameters.SingleEORIEmailParameter
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{DeclarationID, EORI, EisSubsidyAmendmentType, IndustrySectorLimit, Sector, SubsidyAmount, SubsidyRef, TaxType, TraderRef, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessCyaFormPage, AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
@@ -219,18 +218,23 @@ object CommonTestData {
   val inValidEmailAddress = EmailAddress("invalid@email.com")
   val undeliverableEmailAddress = EmailAddress("undeliverable@address.com")
 
-  val dateTime = Some(LocalDateTime.of(2021, 1, 9, 10, 10))
+  val dateTime = LocalDateTime.of(2021, 1, 9, 10, 10)
 
   val undeliverableEmailResponse =
-    EmailAddressResponse(undeliverableEmailAddress, dateTime, Some(Undeliverable("eventid1")))
-  val validEmailResponse = EmailAddressResponse(validEmailAddress, dateTime, None)
-  val inValidEmailResponse = EmailAddressResponse(inValidEmailAddress, None, None)
+    EmailAddressResponse(undeliverableEmailAddress, dateTime.some, Some(Undeliverable("eventid1")))
+  val validEmailResponse = EmailAddressResponse(validEmailAddress, dateTime.some, None)
+  val unverifiedEmailResponse = EmailAddressResponse(validEmailAddress, None, None)
+  val inValidEmailResponse = EmailAddressResponse(inValidEmailAddress, None, Some(Undeliverable("foo")))
 
   val undertakingCreated =
     Undertaking(None, UndertakingName("TestUndertaking"), transport, None, None, List(businessEntity5))
 
-  val emailParameter = SingleEORIEmailParameter(eori1, undertaking.name, undertakingRef, "createUndertaking")
-  val emailSendRequest = EmailSendRequest(List(EmailAddress("user@test.com")), "templateId1", emailParameter)
+  val singleEoriEmailParameters = EmailParameters(eori1, None, undertaking.name, undertakingRef, None)
+  val singleEoriWithDateEmailParameters = EmailParameters(eori1, None, undertaking.name, undertakingRef, dateTime.toString.some)
+  val doubleEoriEmailParameters = EmailParameters(eori1, eori2.some, undertaking.name, undertakingRef, None)
+  val doubleEoriWithDateEmailParameters = EmailParameters(eori1, eori2.some, undertaking.name, undertakingRef, dateTime.toString.some)
+
+  val emailSendRequest = EmailSendRequest(List(EmailAddress("user@test.com")), "templateId1", singleEoriEmailParameters)
 
   val eligibilityJourney = EligibilityJourney(
     customsWaivers = CustomsWaiversFormPage(true.some),

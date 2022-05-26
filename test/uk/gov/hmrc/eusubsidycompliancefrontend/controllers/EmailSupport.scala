@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.i18n.MessagesApi
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -37,22 +37,63 @@ trait EmailSupport { this: ControllerSpec =>
       .expects(eori, *, *)
       .returning(result.fold(e => Future.failed(e), _.toFuture))
 
-  def mockRetrieveEmailAddressAndSendEmail(
+  def mockSendEmail(
     eori1: EORI,
-    eori2: Option[EORI],
     key: String,
     undertaking: Undertaking,
-    undertakingRef: UndertakingRef,
-    removeEffectiveDate: Option[String]
   )(result: Either[ConnectorError, EmailSendResult]) =
     (mockEmailService
-      .retrieveEmailAddressAndSendEmail(
+      .sendEmail(
         _: EORI,
-        _: Option[EORI],
+        _: String,
+        _: Undertaking)(_: HeaderCarrier, _: ExecutionContext, _: AuthenticatedEscRequest[_], _: MessagesApi))
+      .expects(eori1, key, undertaking, *, *, *, *)
+      .returning(result.fold(Future.failed, _.toFuture))
+
+  def mockSendEmail(
+    eori1: EORI,
+    eori2: EORI,
+    key: String,
+    undertaking: Undertaking,
+  )(result: Either[ConnectorError, EmailSendResult]) =
+    (mockEmailService
+      .sendEmail(
+        _: EORI,
+        _: EORI,
+        _: String,
+        _: Undertaking)(_: HeaderCarrier, _: ExecutionContext, _: AuthenticatedEscRequest[_], _: MessagesApi))
+      .expects(eori1, eori2, key, undertaking, *, *, *, *)
+      .returning(result.fold(Future.failed, _.toFuture))
+
+  def mockSendEmail(
+    eori1: EORI,
+    key: String,
+    undertaking: Undertaking,
+    removeEffectiveDate: String
+  )(result: Either[ConnectorError, EmailSendResult]) =
+    (mockEmailService
+      .sendEmail(
+        _: EORI,
         _: String,
         _: Undertaking,
-        _: UndertakingRef,
-        _: Option[String])(_: HeaderCarrier, _: ExecutionContext, _: AuthenticatedEscRequest[_], _: MessagesApi))
-      .expects(eori1, eori2, key, undertaking, undertakingRef, removeEffectiveDate, *, *, *, *)
+        _: String)(_: HeaderCarrier, _: ExecutionContext, _: AuthenticatedEscRequest[_], _: MessagesApi))
+      .expects(eori1, key, undertaking, removeEffectiveDate, *, *, *, *)
+      .returning(result.fold(Future.failed, _.toFuture))
+
+  def mockSendEmail(
+    eori1: EORI,
+    eori2: EORI,
+    key: String,
+    undertaking: Undertaking,
+    removeEffectiveDate: String
+  )(result: Either[ConnectorError, EmailSendResult]) =
+    (mockEmailService
+      .sendEmail(
+        _: EORI,
+        _: EORI,
+        _: String,
+        _: Undertaking,
+        _: String)(_: HeaderCarrier, _: ExecutionContext, _: AuthenticatedEscRequest[_], _: MessagesApi))
+      .expects(eori1, eori2, key, undertaking, removeEffectiveDate, *, *, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
 }

@@ -269,10 +269,10 @@ class BecomeLeadControllerSpec
         def testRedirectNotVerifiedEmail(emailType: EmailType, nextCall: String) = {
           inSequence {
             mockAuthWithNecessaryEnrolment(eori4)
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, validEmailAddress.some)))
+            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(emailType, validEmailAddress.some)))
           }
 
-          checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateUnverifiedEmailAddress().url)
+          checkIsRedirect(performAction(), nextCall)
         }
 
         "retrieve email address is not verified" in {
@@ -437,7 +437,7 @@ class BecomeLeadControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promotedAsLeadToNewLead", undertaking1, undertakingRef, None)(Left(ConnectorError("Error")))
+            mockSendEmail(eori4, "promotedAsLeadToNewLead", undertaking1)(Left(ConnectorError("Error")))
           }
           assertThrows[Exception](await(performAction()(English.code)))
         }
@@ -449,7 +449,7 @@ class BecomeLeadControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promotedAsLeadToNewLead", undertaking1, undertakingRef, None)(Left(ConnectorError(exception)))
+            mockSendEmail(eori4, "promotedAsLeadToNewLead", undertaking1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()("fr")))
         }
@@ -467,8 +467,8 @@ class BecomeLeadControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promotedAsLeadToNewLead", undertaking1, undertakingRef, None)(Right(EmailSent))
-            mockRetrieveEmailAddressAndSendEmail(eori1, None, "removedAsLeadToOldLead", undertaking1, undertakingRef, None)(Right(EmailSent))
+            mockSendEmail(eori4, "promotedAsLeadToNewLead", undertaking1)(Right(EmailSent))
+            mockSendEmail(eori1, "removedAsLeadToOldLead", undertaking1)(Right(EmailSent))
             mockDelete[UndertakingJourney](eori4)(Right(()))
             mockSendAuditEvent[BusinessEntityPromotedSelf](
               AuditEvent.BusinessEntityPromotedSelf(undertakingRef, "1123", eori1, eori4)
@@ -500,8 +500,8 @@ class BecomeLeadControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
-            mockRetrieveEmailAddressAndSendEmail(eori4, None, "promotedAsLeadToNewLead", undertaking1, undertakingRef, None)(Right(EmailSent))
-            mockRetrieveEmailAddressAndSendEmail(eori1, None, "removedAsLeadToOldLead", undertaking1, undertakingRef, None)(Right(EmailSent))
+            mockSendEmail(eori4, "promotedAsLeadToNewLead", undertaking1)(Right(EmailSent))
+            mockSendEmail(eori1, "removedAsLeadToOldLead", undertaking1)(Right(EmailSent))
             mockDelete[UndertakingJourney](eori4)(Right(()))
             mockSendAuditEvent[BusinessEntityPromotedSelf](
               AuditEvent.BusinessEntityPromotedSelf(undertakingRef, "1123", eori1, eori4)

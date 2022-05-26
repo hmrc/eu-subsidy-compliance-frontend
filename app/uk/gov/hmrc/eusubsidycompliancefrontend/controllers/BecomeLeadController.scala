@@ -161,16 +161,8 @@ class BecomeLeadController @Inject() (
             .fold(handleMissingSessionData("lead Business Entity"))(_.copy(leadEORI = false))
           _ <- escService.addMember(undertakingRef, newLead)
           _ <- escService.addMember(undertakingRef, oldLead)
-          _ <- emailService
-            .retrieveEmailAddressAndSendEmail(eori, None, PromotedAsNewLead, retrievedUndertaking, undertakingRef, None)
-          _ <- emailService.retrieveEmailAddressAndSendEmail(
-            oldLead.businessEntityIdentifier,
-            None,
-            RemovedAsLead,
-            retrievedUndertaking,
-            undertakingRef,
-            None
-          )
+          _ <- emailService.sendEmail(eori, PromotedAsNewLead, retrievedUndertaking)
+          _ <- emailService.sendEmail(oldLead.businessEntityIdentifier, RemovedAsLead, retrievedUndertaking)
           // Flush any stale undertaking journey data
            _ <- store.delete[UndertakingJourney]
           _ = auditService.sendEvent[BusinessEntityPromotedSelf](
