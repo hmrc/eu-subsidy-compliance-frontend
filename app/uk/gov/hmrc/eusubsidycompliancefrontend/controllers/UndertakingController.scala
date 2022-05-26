@@ -318,7 +318,7 @@ class UndertakingController @Inject() (
   ): Future[Result] =
     if (form.value == "true") {
       for {
-        _ <- escService.removeMember(undertaking.reference, undertaking.getBusinessEntityByEORI(request.eoriNumber))
+        _ <- escService.disableUndertaking(undertaking)
         _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
         _ = auditService.sendEvent[UndertakingDisabled](
           UndertakingDisabled(request.authorityId, undertaking.reference, timeProvider.today)
