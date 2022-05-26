@@ -55,7 +55,6 @@ class EmailService @Inject() (
     request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
   ): Future[EmailSendResult] = {
-    // TODO - ensure this is covered
     val undertakingRef: UndertakingRef = undertaking.reference.getOrElse(sys.error("No reference found on undertaking"))
     retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
       retrieveEmailResponse.emailType match {
