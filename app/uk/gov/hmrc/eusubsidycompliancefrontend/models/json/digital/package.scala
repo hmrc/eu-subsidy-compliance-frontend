@@ -77,7 +77,8 @@ package object digital {
         case "OK" =>
           val responseDetail: JsLookupResult =
             retrieveUndertakingResponse \ "retrieveUndertakingResponse" \ "responseDetail"
-          val undertakingRef: Option[String] = (responseDetail \ "undertakingReference").asOpt[String]
+          // TODO - ok to make this mandatory? Check API
+          val undertakingRef: UndertakingRef = (responseDetail \ "undertakingReference").as[UndertakingRef]
           val undertakingName: UndertakingName = (responseDetail \ "undertakingName").as[UndertakingName]
           val industrySector: Sector = (responseDetail \ "industrySector").as[Sector]
           val industrySectorLimit: IndustrySectorLimit =
@@ -91,7 +92,7 @@ package object digital {
             (responseDetail \ "undertakingBusinessEntity").as[List[BusinessEntity]]
           JsSuccess(
             Undertaking(
-              undertakingRef.map(UndertakingRef(_)),
+              undertakingRef,
               undertakingName,
               industrySector,
               industrySectorLimit.some,

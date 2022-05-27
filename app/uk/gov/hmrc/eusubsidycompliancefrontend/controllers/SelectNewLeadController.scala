@@ -90,7 +90,7 @@ class SelectNewLeadController @Inject() (
 
       def handleFormSubmission(form: FormValues) = {
         val eoriBE = EORI(form.value)
-        val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking Ref"))
+        val undertakingRef = undertaking.reference
         for {
           _ <- store.update[NewLeadJourney] { newLeadJourney =>
             val updatedLead = newLeadJourney.selectNewLead.copy(value = eoriBE.some)

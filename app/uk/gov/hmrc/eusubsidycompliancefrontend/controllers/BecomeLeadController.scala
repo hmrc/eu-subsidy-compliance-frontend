@@ -152,7 +152,7 @@ class BecomeLeadController @Inject() (
           retrievedUndertaking <- escService
             .retrieveUndertaking(eori)
             .map(_.getOrElse(handleMissingSessionData("Undertaking")))
-          undertakingRef = retrievedUndertaking.reference.getOrElse(handleMissingSessionData("Undertaking ref"))
+          undertakingRef = retrievedUndertaking.reference
           newLead = retrievedUndertaking.undertakingBusinessEntity
             .find(_.businessEntityIdentifier == eori)
             .fold(handleMissingSessionData("lead Business Entity"))(_.copy(leadEORI = true))

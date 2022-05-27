@@ -39,13 +39,14 @@ class EscService @Inject() (
   undertakingCache: UndertakingCache
 )(implicit ec: ExecutionContext) {
 
-  def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingRef] =
+  def createUndertaking(undertaking: WriteableUndertaking)(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingRef] =
     escConnector
       .createUndertaking(undertaking)
       .flatMap { response =>
         for {
           ref <- handleResponse[UndertakingRef](response, "create undertaking").toFuture
-          _ <- undertakingCache.put[Undertaking](eori, undertaking.copy(reference = ref.some))
+          // TODO - should we actually fetch the undertaking here since we don't have all the data?
+          _ <- undertakingCache.put[Undertaking](eori, undertaking.toUndertakingWithRef(ref))
         } yield ref
       }
 

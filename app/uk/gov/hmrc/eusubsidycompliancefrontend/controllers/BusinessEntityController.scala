@@ -266,7 +266,7 @@ class BusinessEntityController @Inject() (
       withLeadUndertaking { _ =>
         escService.retrieveUndertaking(EORI(eoriEntered)).flatMap {
           case Some(undertaking) =>
-            val undertakingRef = undertaking.reference.getOrElse(handleMissingSessionData("undertaking reference"))
+            val undertakingRef = undertaking.reference
             val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
 
             removeBusinessForm

@@ -28,7 +28,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EmailService, EscService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.{FutureToOptionTOps, OptionToOptionTOps}
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._

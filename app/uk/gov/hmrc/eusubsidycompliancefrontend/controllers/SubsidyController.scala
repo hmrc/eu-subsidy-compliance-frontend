@@ -521,11 +521,8 @@ class SubsidyController @Inject() (
     previous: String,
     undertaking: Undertaking,
     formWithErrors: Form[FormValues]
-  )(implicit request: AuthenticatedEscRequest[AnyContent]): Future[Result] = {
-
-    val reference = undertaking.reference.getOrElse(handleMissingSessionData("Undertaking Reference"))
-
-    retrieveSubsidies(reference).map { subsidies =>
+  )(implicit request: AuthenticatedEscRequest[AnyContent]): Future[Result] =
+    retrieveSubsidies(undertaking.reference).map { subsidies =>
       val currentDate = timeProvider.today
       BadRequest(
         reportPaymentPage(
@@ -539,7 +536,6 @@ class SubsidyController @Inject() (
         )
       )
     }
-  }
 
 }
 
