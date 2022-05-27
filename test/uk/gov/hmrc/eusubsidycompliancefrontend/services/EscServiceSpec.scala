@@ -158,7 +158,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
         "the http call succeeds and the body of the response can be parsed" in {
           mockCreateUndertaking(writeableUndertaking)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
-          mockCachePut(eori1, undertaking)(Right(undertaking))
+          mockCachePut(eori1, writeableUndertaking.toUndertakingWithRef(undertakingRef))(Right(undertaking))
           val result = service.createUndertaking(writeableUndertaking)
           await(result) shouldBe undertakingRef
         }
