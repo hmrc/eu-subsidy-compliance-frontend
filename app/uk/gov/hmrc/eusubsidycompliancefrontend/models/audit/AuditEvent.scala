@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.audit
 
 import play.api.libs.json.{Json, Writes}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.WriteableUndertaking
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.UndertakingCreate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityAddeed.BusinessDetailsAdded
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoteItself.BusinessEntityPromoteItselfDetails
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoted.LeadPromoteDetails
@@ -52,7 +52,7 @@ object AuditEvent {
 
   final case class CreateUndertaking(
     ggDetails: String,
-    eisRequest: WriteableUndertaking,
+    eisRequest: UndertakingCreate,
     eisResponse: EISResponse
   ) extends AuditEvent {
     override val auditType: String = "CreateUndertakingEIS"
@@ -64,7 +64,7 @@ object AuditEvent {
     def apply(
       ggCredId: String,
       ref: UndertakingRef,
-      undertaking: WriteableUndertaking,
+      undertaking: UndertakingCreate,
       timeNow: LocalDateTime
     ): CreateUndertaking = {
       val eisResponse = EISResponse(

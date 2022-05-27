@@ -27,7 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUndertaking, UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking, WriteableUndertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking, UndertakingCreate}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -169,7 +169,7 @@ class UndertakingController @Inject() (
             updatedJourney <- store.update[UndertakingJourney](_.setUndertakingCYA(form.value.toBoolean)).toContext
             undertakingName <- updatedJourney.name.value.toContext
             undertakingSector <- updatedJourney.sector.value.toContext
-            undertaking = WriteableUndertaking(
+            undertaking = UndertakingCreate(
               name = UndertakingName(undertakingName),
               industrySector = undertakingSector,
               List(BusinessEntity(eori, leadEORI = true))
@@ -182,7 +182,7 @@ class UndertakingController @Inject() (
   }
 
   private def createUndertakingAndSendEmail(
-    undertaking: WriteableUndertaking,
+    undertaking: UndertakingCreate,
     undertakingJourney: UndertakingJourney
   )(implicit request: AuthenticatedEscRequest[_], eori: EORI): Future[Result] =
     for {

@@ -22,27 +22,6 @@ import java.time.LocalDate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 
-// TODO - naming - UndertakingCreate better?
-case class WriteableUndertaking(
-  name: UndertakingName,
-  industrySector: Sector,
-  undertakingBusinessEntity: List[BusinessEntity]
-) {
-
-  def toUndertakingWithRef(ref: UndertakingRef): Undertaking = Undertaking(
-    reference = ref,
-    name = name,
-    industrySector = industrySector,
-    industrySectorLimit = None,
-    lastSubsidyUsageUpdt = None,
-    undertakingBusinessEntity = undertakingBusinessEntity
-  )
-}
-
-object WriteableUndertaking {
-  implicit val writeableUndertakingFormat: OFormat[WriteableUndertaking] = Json.format[WriteableUndertaking]
-}
-
 case class Undertaking(
   reference: UndertakingRef,
   name: UndertakingName,

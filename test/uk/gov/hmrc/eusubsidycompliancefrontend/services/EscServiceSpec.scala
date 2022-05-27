@@ -48,7 +48,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   private val service: EscService = new EscService(mockEscConnector, mockUndertakingCache)
 
-  private def mockCreateUndertaking(undertaking: WriteableUndertaking)(
+  private def mockCreateUndertaking(undertaking: UndertakingCreate)(
     result: Either[ConnectorError, HttpResponse]
   ) =
     when(mockEscConnector.createUndertaking(argEq(undertaking))(any()))
