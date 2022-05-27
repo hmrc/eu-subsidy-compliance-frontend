@@ -48,7 +48,7 @@ class UndertakingCacheSpec
   private val businessEntity2 = BusinessEntity(EORI(eori2), leadEORI = false)
 
   private val undertaking = Undertaking(
-    undertakingRef.some,
+    undertakingRef,
     UndertakingName("TestUndertaking"),
     transport,
     IndustrySectorLimit(12.34).some,

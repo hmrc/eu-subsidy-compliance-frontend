@@ -112,7 +112,7 @@ object CommonTestData {
   )
 
   val undertaking = Undertaking(
-    undertakingRef.some,
+    undertakingRef,
     UndertakingName("TestUndertaking"),
     transport,
     IndustrySectorLimit(12.34).some,
@@ -120,10 +120,14 @@ object CommonTestData {
     List(businessEntity1, businessEntity2)
   )
 
-  val undertakingWithoutRef = undertaking.copy(reference = None)
+  val writeableUndertaking = WriteableUndertaking(
+    UndertakingName("TestUndertaking"),
+    transport,
+    List(businessEntity1)
+  )
 
   val undertaking1 = Undertaking(
-    undertakingRef.some,
+    undertakingRef,
     UndertakingName("TestUndertaking"),
     transport,
     IndustrySectorLimit(12.34).some,
@@ -132,7 +136,7 @@ object CommonTestData {
   )
 
   val undertaking2 = Undertaking(
-    undertakingRef.some,
+    undertakingRef,
     UndertakingName("TestUndertaking"),
     transport,
     IndustrySectorLimit(12.34).some,
@@ -227,7 +231,7 @@ object CommonTestData {
   val inValidEmailResponse = EmailAddressResponse(inValidEmailAddress, None, Some(Undeliverable("foo")))
 
   val undertakingCreated =
-    Undertaking(None, UndertakingName("TestUndertaking"), transport, None, None, List(businessEntity5))
+    WriteableUndertaking(UndertakingName("TestUndertaking"), transport, List(businessEntity5))
 
   val singleEoriEmailParameters = EmailParameters(eori1, None, undertaking.name, undertakingRef, None)
   val singleEoriWithDateEmailParameters = EmailParameters(eori1, None, undertaking.name, undertakingRef, dateTime.toString.some)

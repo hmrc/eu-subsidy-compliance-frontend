@@ -61,7 +61,7 @@ class EscConnectorSpec
     "handling request to create Undertaking" must {
       behave like connectorBehaviour(
         mockPost(s"$baseUrl/undertaking", Seq.empty, undertaking)(_),
-        () => connector.createUndertaking(undertaking)
+        () => connector.createUndertaking(writeableUndertaking)
       )
     }
 

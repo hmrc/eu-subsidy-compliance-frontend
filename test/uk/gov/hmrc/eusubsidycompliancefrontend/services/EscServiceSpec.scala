@@ -48,7 +48,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   private val service: EscService = new EscService(mockEscConnector, mockUndertakingCache)
 
-  private def mockCreateUndertaking(undertaking: Undertaking)(
+  private def mockCreateUndertaking(undertaking: WriteableUndertaking)(
     result: Either[ConnectorError, HttpResponse]
   ) =
     when(mockEscConnector.createUndertaking(argEq(undertaking))(any()))
@@ -127,28 +127,28 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
       "return an error" when {
 
         "the http call fails" in {
-          mockCreateUndertaking(undertaking)(Left(ConnectorError("")))
-          val result = service.createUndertaking(undertaking)
+          mockCreateUndertaking(writeableUndertaking)(Left(ConnectorError("")))
+          val result = service.createUndertaking(writeableUndertaking)
           assertThrows[RuntimeException](await(result))
         }
 
         "the http response doesn't come back with status 201(created)" in {
-          mockCreateUndertaking(undertaking)(Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders)))
-          val result = service.createUndertaking(undertaking)
+          mockCreateUndertaking(writeableUndertaking)(Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders)))
+          val result = service.createUndertaking(writeableUndertaking)
           assertThrows[RuntimeException](await(result))
         }
 
         "there is no json in the response" in {
-          mockCreateUndertaking(undertaking)(Right(HttpResponse(OK, "hi")))
-          val result = service.createUndertaking(undertaking)
+          mockCreateUndertaking(writeableUndertaking)(Right(HttpResponse(OK, "hi")))
+          val result = service.createUndertaking(writeableUndertaking)
           assertThrows[RuntimeException](await(result))
         }
 
         "the json in the response can't be parsed" in {
           val json = Json.parse("""{ "a" : 1 }""")
 
-          mockCreateUndertaking(undertaking)(Right(HttpResponse(OK, json, emptyHeaders)))
-          val result = service.createUndertaking(undertaking)
+          mockCreateUndertaking(writeableUndertaking)(Right(HttpResponse(OK, json, emptyHeaders)))
+          val result = service.createUndertaking(writeableUndertaking)
           assertThrows[RuntimeException](await(result))
         }
 
@@ -157,9 +157,9 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
       "return successfully" when {
 
         "the http call succeeds and the body of the response can be parsed" in {
-          mockCreateUndertaking(undertakingWithoutRef)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
+          mockCreateUndertaking(writeableUndertaking)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
           mockCachePut(eori1, undertaking)(Right(undertaking))
-          val result = service.createUndertaking(undertakingWithoutRef)
+          val result = service.createUndertaking(writeableUndertaking)
           await(result) shouldBe undertakingRef
         }
       }
