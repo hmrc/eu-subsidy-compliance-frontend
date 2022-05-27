@@ -692,7 +692,9 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockSendEmail(eori1, "createUndertaking", undertakingCreated.toUndertakingWithRef(undertakingRef))(Left(ConnectorError(exception)))
+            mockSendEmail(eori1, "createUndertaking", undertakingCreated.toUndertakingWithRef(undertakingRef))(
+              Left(ConnectorError(exception))
+            )
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
 
@@ -709,7 +711,9 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockSendEmail(eori1, "createUndertaking", undertakingCreated.toUndertakingWithRef(undertakingRef))(Right(EmailSent))
+            mockSendEmail(eori1, "createUndertaking", undertakingCreated.toUndertakingWithRef(undertakingRef))(
+              Right(EmailSent)
+            )
             mockTimeProviderNow(timeNow)
             mockSendAuditEvent(createUndertakingAuditEvent)
           }
@@ -1071,11 +1075,11 @@ class UndertakingControllerSpec
 
       val currentDate = LocalDate.of(2022, 10, 9)
       "throw technical error" when {
-        "call to remove member fails" in {
+        "call to remove disable fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockRemoveMember(undertakingRef, businessEntity1)(Left(ConnectorError(exception)))
+            mockDisableUndertaking(undertaking1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("disableUndertakingConfirm" -> "true")))
         }
@@ -1103,7 +1107,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockRemoveMember(undertakingRef, businessEntity1)(Right(undertakingRef))
+            mockDisableUndertaking(undertaking1)(Right(undertakingRef))
             mockDelete[EligibilityJourney](eori1)(Right(()))
             mockDelete[UndertakingJourney](eori1)(Right(()))
             mockDelete[NewLeadJourney](eori1)(Right(()))
