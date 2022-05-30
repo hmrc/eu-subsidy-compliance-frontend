@@ -984,19 +984,6 @@ class UndertakingControllerSpec
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
         }
 
-        // TODO - is this scenario valid?
-//        "call to retrieve undertaking passes but  undertaking was fetched with no undertaking ref" in {
-//          inSequence {
-//            mockAuthWithNecessaryEnrolment()
-//            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-//            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
-//              Right(undertakingJourneyComplete.copy(name = UndertakingNameFormPage("true".some)))
-//            )
-//            mockRetrieveUndertaking(eori1)(undertaking1.copy(reference = None).some.toFuture)
-//          }
-//          assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
-//        }
-
         "call to update undertaking fails" in {
           val updatedUndertaking =
             undertaking1.copy(name = UndertakingName("TestUndertaking"), industrySector = Sector(1))

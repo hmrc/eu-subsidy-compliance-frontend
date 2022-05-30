@@ -26,7 +26,6 @@ case class Undertaking(
   reference: UndertakingRef,
   name: UndertakingName,
   industrySector: Sector,
-  // TODO - should these be options? review API docs
   industrySectorLimit: Option[IndustrySectorLimit],
   lastSubsidyUsageUpdt: Option[LocalDate],
   undertakingBusinessEntity: List[BusinessEntity]
