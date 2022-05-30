@@ -45,7 +45,6 @@ class EscService @Inject() (
       .flatMap { response =>
         for {
           ref <- handleResponse[UndertakingRef](response, "create undertaking").toFuture
-          // TODO - should we actually fetch the undertaking here since we don't have all the data?
           _ <- undertakingCache.put[Undertaking](eori, undertaking.toUndertakingWithRef(ref))
         } yield ref
       }

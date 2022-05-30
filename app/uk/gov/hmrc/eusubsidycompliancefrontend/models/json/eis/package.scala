@@ -157,7 +157,6 @@ package object eis {
     }
 
   // convenience reads so we can store a created undertaking
-  // TODO - confirm that this change is ok
   val undertakingRequestReads: Reads[UndertakingCreate] = new Reads[UndertakingCreate] {
     override def reads(json: JsValue): JsResult[UndertakingCreate] = {
       val businessEntity: BusinessEntity = BusinessEntity(
