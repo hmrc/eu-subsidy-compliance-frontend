@@ -77,7 +77,6 @@ package object digital {
         case "OK" =>
           val responseDetail: JsLookupResult =
             retrieveUndertakingResponse \ "retrieveUndertakingResponse" \ "responseDetail"
-          // TODO - ok to make this mandatory? Check API
           val undertakingRef: UndertakingRef = (responseDetail \ "undertakingReference").as[UndertakingRef]
           val undertakingName: UndertakingName = (responseDetail \ "undertakingName").as[UndertakingName]
           val industrySector: Sector = (responseDetail \ "industrySector").as[Sector]

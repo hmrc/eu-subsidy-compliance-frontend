@@ -16,9 +16,12 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
+import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{UndertakingName, UndertakingRef}
+
+import java.time.LocalDate
 
 case class UndertakingCreate(
   name: UndertakingName,
