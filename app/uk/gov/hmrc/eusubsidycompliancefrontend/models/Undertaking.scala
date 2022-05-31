@@ -23,7 +23,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 
 case class Undertaking(
-  reference: Option[UndertakingRef],
+  reference: UndertakingRef,
   name: UndertakingName,
   industrySector: Sector,
   industrySectorLimit: Option[IndustrySectorLimit],

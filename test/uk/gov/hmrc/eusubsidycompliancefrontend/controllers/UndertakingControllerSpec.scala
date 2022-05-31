@@ -692,7 +692,7 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockSendEmail(eori1, "createUndertaking", undertakingCreated.copy(reference = undertakingRef.some))(Left(ConnectorError(exception)))
+            mockSendEmail(eori1, "createUndertaking", undertakingCreated.toUndertakingWithRef(undertakingRef))(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
 
@@ -709,7 +709,7 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockSendEmail(eori1, "createUndertaking", undertakingCreated.copy(reference = undertakingRef.some))(Right(EmailSent))
+            mockSendEmail(eori1, "createUndertaking", undertakingCreated.toUndertakingWithRef(undertakingRef))(Right(EmailSent))
             mockTimeProviderNow(timeNow)
             mockSendAuditEvent(createUndertakingAuditEvent)
           }
@@ -980,18 +980,6 @@ class UndertakingControllerSpec
               Right(undertakingJourneyComplete.copy(name = UndertakingNameFormPage("true".some)))
             )
             mockRetrieveUndertaking(eori1)(None.toFuture)
-          }
-          assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
-        }
-
-        "call to retrieve undertaking passes but  undertaking was fetched with no undertaking ref" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
-              Right(undertakingJourneyComplete.copy(name = UndertakingNameFormPage("true".some)))
-            )
-            mockRetrieveUndertaking(eori1)(undertaking1.copy(reference = None).some.toFuture)
           }
           assertThrows[Exception](await(performAction("amendUndertaking" -> "true")))
         }

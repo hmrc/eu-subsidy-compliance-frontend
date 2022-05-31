@@ -39,13 +39,13 @@ class EscService @Inject() (
   undertakingCache: UndertakingCache
 )(implicit ec: ExecutionContext) {
 
-  def createUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingRef] =
+  def createUndertaking(undertaking: UndertakingCreate)(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingRef] =
     escConnector
       .createUndertaking(undertaking)
       .flatMap { response =>
         for {
           ref <- handleResponse[UndertakingRef](response, "create undertaking").toFuture
-          _ <- undertakingCache.put[Undertaking](eori, undertaking.copy(reference = ref.some))
+          _ <- undertakingCache.put[Undertaking](eori, undertaking.toUndertakingWithRef(ref))
         } yield ref
       }
 

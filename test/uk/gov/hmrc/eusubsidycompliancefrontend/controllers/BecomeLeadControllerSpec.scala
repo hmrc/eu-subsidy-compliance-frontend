@@ -378,15 +378,6 @@ class BecomeLeadControllerSpec
           assertThrows[Exception](await(performAction()(English.code)))
         }
 
-        "call to fetch undertaking passes but come back wth undertaking with no undertaking ref" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment(eori4)
-            mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
-            mockRetrieveUndertaking(eori4)(undertaking1.copy(reference = None).some.toFuture)
-          }
-          assertThrows[Exception](await(performAction()(English.code)))
-        }
-
         "call to fetch undertaking come back with undertaking with logged In EORI absent" in {
           inSequence {
             mockAuthWithNecessaryEnrolment(eori4)

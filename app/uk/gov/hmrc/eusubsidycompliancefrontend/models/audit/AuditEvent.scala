@@ -17,14 +17,14 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.audit
 
 import play.api.libs.json.{Json, Writes}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.UndertakingCreate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityAddeed.BusinessDetailsAdded
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoteItself.BusinessEntityPromoteItselfDetails
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoted.LeadPromoteDetails
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityUpdated.BusinessDetailsUpdated
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyAmount, SubsidyRef, TraderRef, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyAmount, SubsidyRef, TraderRef, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney
 
 import java.time.{LocalDate, LocalDateTime}
@@ -52,7 +52,7 @@ object AuditEvent {
 
   final case class CreateUndertaking(
     ggDetails: String,
-    eisRequest: Undertaking,
+    eisRequest: UndertakingCreate,
     eisResponse: EISResponse
   ) extends AuditEvent {
     override val auditType: String = "CreateUndertakingEIS"
@@ -64,7 +64,7 @@ object AuditEvent {
     def apply(
       ggCredId: String,
       ref: UndertakingRef,
-      undertaking: Undertaking,
+      undertaking: UndertakingCreate,
       timeNow: LocalDateTime
     ): CreateUndertaking = {
       val eisResponse = EISResponse(
@@ -74,8 +74,7 @@ object AuditEvent {
         )
       )
       AuditEvent.CreateUndertaking(ggCredId, undertaking, eisResponse)
-    }
-    import uk.gov.hmrc.eusubsidycompliancefrontend.models.json.digital.undertakingFormat //Do not delete
+    } //Do not delete
     implicit val writes: Writes[CreateUndertaking] = Json.writes
   }
 

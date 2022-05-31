@@ -126,15 +126,6 @@ class SignOutControllerSpec
           assertThrows[Exception](await(performAction()))
         }
 
-        "call to retrieve Undertaking fetches Undertaking without UndertakingRef" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment(eori4)
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.copy(reference = None).some))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
         "call to remove member fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment(eori4)

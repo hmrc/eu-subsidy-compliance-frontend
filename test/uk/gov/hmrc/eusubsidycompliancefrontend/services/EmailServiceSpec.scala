@@ -117,11 +117,6 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
       "return an error" when {
 
-        "there is no reference on the undertaking" in {
-          a[RuntimeException] shouldBe
-            thrownBy(service.sendEmail(eori1, "createUndertaking", undertaking.copy(reference = None)))
-        }
-
         "the email retrieval fails" in {
           mockRetrieveEmail(eori1)(Left(ConnectorError(new RuntimeException())))
           val result = service.sendEmail(eori1, "createUndertaking", undertaking)

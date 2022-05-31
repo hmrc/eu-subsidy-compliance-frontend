@@ -28,7 +28,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{RetrieveEmailConnecto
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -87,12 +87,11 @@ class EmailService @Inject() (
     request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
   ): Future[EmailSendResult] = {
-    val undertakingRef: UndertakingRef = undertaking.reference.getOrElse(sys.error("No reference found on undertaking"))
     retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
       retrieveEmailResponse.emailType match {
         case EmailType.VerifiedEmail =>
           val templateId = getEmailTemplateId(templateKey)
-          val parameters = EmailParameters(eori1, eori2, undertaking.name, undertakingRef, removeEffectiveDate)
+          val parameters = EmailParameters(eori1, eori2, undertaking.name, undertaking.reference, removeEffectiveDate)
           retrieveEmailResponse.emailAddress.map { emailAddress =>
             sendEmail(emailAddress, parameters, templateId)
           } getOrElse sys.error("Email address not found")

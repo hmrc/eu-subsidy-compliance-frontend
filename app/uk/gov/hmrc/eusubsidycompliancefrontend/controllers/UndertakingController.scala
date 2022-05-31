@@ -27,7 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUndertaking, UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking, UndertakingCreate}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -169,12 +169,9 @@ class UndertakingController @Inject() (
             updatedJourney <- store.update[UndertakingJourney](_.setUndertakingCYA(form.value.toBoolean)).toContext
             undertakingName <- updatedJourney.name.value.toContext
             undertakingSector <- updatedJourney.sector.value.toContext
-            undertaking = Undertaking(
-              None,
+            undertaking = UndertakingCreate(
               name = UndertakingName(undertakingName),
               industrySector = undertakingSector,
-              None,
-              None,
               List(BusinessEntity(eori, leadEORI = true))
             )
             undertakingCreated <- createUndertakingAndSendEmail(undertaking, updatedJourney).toContext
@@ -185,12 +182,12 @@ class UndertakingController @Inject() (
   }
 
   private def createUndertakingAndSendEmail(
-    undertaking: Undertaking,
+    undertaking: UndertakingCreate,
     undertakingJourney: UndertakingJourney
   )(implicit request: AuthenticatedEscRequest[_], eori: EORI): Future[Result] =
     for {
       ref <- escService.createUndertaking(undertaking)
-      _ <- emailService.sendEmail(eori, CreateUndertaking, undertaking.copy(reference = ref.some))
+      _ <- emailService.sendEmail(eori, CreateUndertaking, undertaking.toUndertakingWithRef(ref))
       auditEventCreateUndertaking = AuditEvent.CreateUndertaking(
         request.authorityId,
         ref,
@@ -320,12 +317,11 @@ class UndertakingController @Inject() (
     request: AuthenticatedEscRequest[_]
   ): Future[Result] =
     if (form.value == "true") {
-      val ref = undertaking.reference.fold(handleMissingSessionData("Undertaking reference"))(identity)
       for {
-        _ <- escService.removeMember(ref, undertaking.getBusinessEntityByEORI(request.eoriNumber))
+        _ <- escService.removeMember(undertaking.reference, undertaking.getBusinessEntityByEORI(request.eoriNumber))
         _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
         _ = auditService.sendEvent[UndertakingDisabled](
-          UndertakingDisabled(request.authorityId, ref, timeProvider.today)
+          UndertakingDisabled(request.authorityId, undertaking.reference, timeProvider.today)
         )
       } yield Redirect(routes.UndertakingController.getUndertakingDisabled())
     } else Redirect(routes.AccountController.getAccountPage()).toFuture
