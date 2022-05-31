@@ -46,16 +46,26 @@ class EmailService @Inject() (
   def sendEmail(
     eori1: EORI,
     templateKey: String,
-    undertaking: Undertaking,
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext, r: AuthenticatedEscRequest[_], m: MessagesApi): Future[EmailSendResult] =
+    undertaking: Undertaking
+  )(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext,
+    r: AuthenticatedEscRequest[_],
+    m: MessagesApi
+  ): Future[EmailSendResult] =
     sendEmail(eori1, None, templateKey, undertaking, None)
 
   def sendEmail(
     eori1: EORI,
     eori2: EORI,
     templateKey: String,
-    undertaking: Undertaking,
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext, r: AuthenticatedEscRequest[_], m: MessagesApi): Future[EmailSendResult] =
+    undertaking: Undertaking
+  )(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext,
+    r: AuthenticatedEscRequest[_],
+    m: MessagesApi
+  ): Future[EmailSendResult] =
     sendEmail(eori1, eori2.some, templateKey, undertaking, None)
 
   def sendEmail(
@@ -63,7 +73,12 @@ class EmailService @Inject() (
     templateKey: String,
     undertaking: Undertaking,
     removeEffectiveDate: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext, r: AuthenticatedEscRequest[_], m: MessagesApi): Future[EmailSendResult] =
+  )(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext,
+    r: AuthenticatedEscRequest[_],
+    m: MessagesApi
+  ): Future[EmailSendResult] =
     sendEmail(eori1, None, templateKey, undertaking, removeEffectiveDate.some)
 
   def sendEmail(
@@ -72,7 +87,12 @@ class EmailService @Inject() (
     templateKey: String,
     undertaking: Undertaking,
     removeEffectiveDate: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext, r: AuthenticatedEscRequest[_], m: MessagesApi): Future[EmailSendResult] =
+  )(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext,
+    r: AuthenticatedEscRequest[_],
+    m: MessagesApi
+  ): Future[EmailSendResult] =
     sendEmail(eori1, eori2.some, templateKey, undertaking, removeEffectiveDate.some)
 
   private def sendEmail(
@@ -86,19 +106,18 @@ class EmailService @Inject() (
     executionContext: ExecutionContext,
     request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
-  ): Future[EmailSendResult] = {
+  ): Future[EmailSendResult] =
     retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
       retrieveEmailResponse.emailType match {
         case EmailType.VerifiedEmail =>
           val templateId = getEmailTemplateId(templateKey)
-          val parameters = EmailParameters(eori1, eori2, undertaking.name, undertaking.reference, removeEffectiveDate)
+          val parameters = EmailParameters(eori1, eori2, undertaking.name, removeEffectiveDate)
           retrieveEmailResponse.emailAddress.map { emailAddress =>
             sendEmail(emailAddress, parameters, templateId)
           } getOrElse sys.error("Email address not found")
         case _ => Future.successful(EmailSendResult.EmailNotSent)
       }
     }
-  }
 
   def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RetrieveEmailResponse] =
     retrieveEmailConnector.retrieveEmailByEORI(eori).map {
@@ -119,7 +138,8 @@ class EmailService @Inject() (
   private def handleEmailAddressResponse(emailAddressResponse: EmailAddressResponse): RetrieveEmailResponse =
     emailAddressResponse match {
       case EmailAddressResponse(email, Some(_), None) => RetrieveEmailResponse(EmailType.VerifiedEmail, email.some)
-      case EmailAddressResponse(email, Some(_), Some(_)) => RetrieveEmailResponse(EmailType.UnDeliverableEmail, email.some)
+      case EmailAddressResponse(email, Some(_), Some(_)) =>
+        RetrieveEmailResponse(EmailType.UnDeliverableEmail, email.some)
       case EmailAddressResponse(email, None, None) => RetrieveEmailResponse(EmailType.UnVerifiedEmail, email.some)
       case _ => sys.error("Email address response is not valid")
     }
