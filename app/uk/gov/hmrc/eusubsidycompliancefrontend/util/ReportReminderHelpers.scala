@@ -20,22 +20,22 @@ import java.time.LocalDate
 
 object ReportReminderHelpers {
 
-  val ONE_DAY_BEFORE_REMINDER_DAY = 75
-  val ONE_DAY_AFTER_DUE_DAY = 91
-  val REPORT_DEMINIMIS_DUE_DAY = 90
+  private val OneDayBeforeRemdinderDay = 75
+  private val OneDayAfterDueDay = 91
+  private val ReportDeminimisDueDay = 90
 
   def isTimeToReport(od: Option[LocalDate], currentDate: LocalDate): Boolean =
     od.exists { lastUpdated =>
-      lastUpdated.plusDays(ONE_DAY_BEFORE_REMINDER_DAY).isBefore(currentDate) &&
-      lastUpdated.plusDays(ONE_DAY_AFTER_DUE_DAY).isAfter(currentDate)
+      lastUpdated.plusDays(OneDayBeforeRemdinderDay).isBefore(currentDate) &&
+      lastUpdated.plusDays(OneDayAfterDueDay).isAfter(currentDate)
     }
 
   def dueDateToReport(od: Option[LocalDate]): Option[LocalDate] =
-    od.map(_.plusDays(REPORT_DEMINIMIS_DUE_DAY))
+    od.map(_.plusDays(ReportDeminimisDueDay))
 
   def isOverdue(od: Option[LocalDate], currentDate: LocalDate): Boolean =
     od.fold(false) { date =>
-      date.isBefore(currentDate.minusDays(REPORT_DEMINIMIS_DUE_DAY))
+      date.isBefore(currentDate.minusDays(ReportDeminimisDueDay))
     }
 
 }
