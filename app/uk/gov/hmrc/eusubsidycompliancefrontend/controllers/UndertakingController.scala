@@ -298,7 +298,7 @@ class UndertakingController @Inject() (
   }
 
   def getUndertakingDisabled: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
-    Ok(undertakingDisabledPage()).toFuture
+    Ok(undertakingDisabledPage()).withNewSession.toFuture
   }
 
   private def resetAllJourneys(implicit eori: EORI) =

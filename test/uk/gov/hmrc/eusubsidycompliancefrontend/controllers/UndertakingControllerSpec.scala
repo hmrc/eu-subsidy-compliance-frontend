@@ -1154,15 +1154,7 @@ class UndertakingControllerSpec
         }
         checkPageIsDisplayed(
           performAction(),
-          messageFromMessageKey("undertakingDisabled.title"),
-          { doc =>
-            val body = doc.select(".govuk-body").html()
-            body should include regex messageFromMessageKey(
-              "undertakingDisabled.p3",
-              routes.AccountController.getAccountPage().url
-            )
-
-          }
+          messageFromMessageKey("undertakingDisabled.title")
         )
       }
     }

@@ -439,8 +439,8 @@ disableUndertakingConfirm.error.required = Select Yes if you want to disable the
 #undertakingDisabled
 undertakingDisabled.title = You have disabled this single undertaking
 undertakingDisabled.p1 = We have sent all businesses that were part of this single undertaking a confirmation email.
-undertakingDisabled.p2= You have been logged out of the account.
-undertakingDisabled.h2= Actions
-undertakingDisabled.p3 = <a href="{0}" class="govuk-link">Create a new undertaking</a>
+undertakingDisabled.inset.p1= The change does not take effect immediately and may take up to 24 hours to go through.
+undertakingDisabled.inset.p2=During this 24-hour period, you will still be in the undertaking, until the update happens, but will not be able make any changes to the undertaking.
+undertakingDisabled.p2 = You have been logged out of the account.
 undertakingDisabled.p4 = <a href="{0}" class="govuk-link">What did you think of this service?</a>(takes 30 seconds)
 
