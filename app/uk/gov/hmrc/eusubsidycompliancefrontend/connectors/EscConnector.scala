@@ -36,6 +36,7 @@ class EscConnector @Inject() (
 
   private lazy val createUndertakingUrl = s"$escUrl/eu-subsidy-compliance/undertaking"
   private lazy val updateUndertakingUrl = s"$escUrl/eu-subsidy-compliance/undertaking/update"
+  private lazy val disableUpdateUndertakingUrl = s"$escUrl/eu-subsidy-compliance/undertaking/disable"
   private lazy val retrieveUndertakingUrl = s"$escUrl/eu-subsidy-compliance/undertaking"
   private lazy val addMemberUrl = s"$escUrl/eu-subsidy-compliance/undertaking/member"
   private lazy val removeMemberUrl = s"$escUrl/eu-subsidy-compliance/undertaking/member/remove"
@@ -47,6 +48,9 @@ class EscConnector @Inject() (
 
   def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): ConnectorResult =
     makeRequest(_.POST[Undertaking, HttpResponse](updateUndertakingUrl, undertaking))
+
+  def disableUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): ConnectorResult =
+    makeRequest(_.POST[Undertaking, HttpResponse](disableUpdateUndertakingUrl, undertaking))
 
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): ConnectorResult =
     makeRequest(_.GET[HttpResponse](s"$retrieveUndertakingUrl/$eori"))
