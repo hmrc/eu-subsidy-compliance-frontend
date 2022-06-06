@@ -20,19 +20,14 @@ import cats.implicits.catsSyntaxOptionId
 import com.google.inject.Inject
 import play.api.Logging
 import play.api.http.Status.{ACCEPTED, NOT_FOUND, OK}
-import play.api.i18n.I18nSupport.RequestWithMessagesApi
-import play.api.i18n.MessagesApi
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{RetrieveEmailConnector, SendEmailConnector}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.util.Locale
 import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,26 +41,16 @@ class EmailService @Inject() (
   def sendEmail(
     eori1: EORI,
     templateKey: String,
-    undertaking: Undertaking
-  )(implicit
-    hc: HeaderCarrier,
-    ec: ExecutionContext,
-    r: AuthenticatedEscRequest[_],
-    m: MessagesApi
-  ): Future[EmailSendResult] =
+    undertaking: Undertaking,
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmailSendResult] =
     sendEmail(eori1, None, templateKey, undertaking, None)
 
   def sendEmail(
     eori1: EORI,
     eori2: EORI,
     templateKey: String,
-    undertaking: Undertaking
-  )(implicit
-    hc: HeaderCarrier,
-    ec: ExecutionContext,
-    r: AuthenticatedEscRequest[_],
-    m: MessagesApi
-  ): Future[EmailSendResult] =
+    undertaking: Undertaking,
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmailSendResult] =
     sendEmail(eori1, eori2.some, templateKey, undertaking, None)
 
   def sendEmail(
@@ -73,12 +58,7 @@ class EmailService @Inject() (
     templateKey: String,
     undertaking: Undertaking,
     removeEffectiveDate: String
-  )(implicit
-    hc: HeaderCarrier,
-    ec: ExecutionContext,
-    r: AuthenticatedEscRequest[_],
-    m: MessagesApi
-  ): Future[EmailSendResult] =
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmailSendResult] =
     sendEmail(eori1, None, templateKey, undertaking, removeEffectiveDate.some)
 
   def sendEmail(
@@ -87,12 +67,7 @@ class EmailService @Inject() (
     templateKey: String,
     undertaking: Undertaking,
     removeEffectiveDate: String
-  )(implicit
-    hc: HeaderCarrier,
-    ec: ExecutionContext,
-    r: AuthenticatedEscRequest[_],
-    m: MessagesApi
-  ): Future[EmailSendResult] =
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmailSendResult] =
     sendEmail(eori1, eori2.some, templateKey, undertaking, removeEffectiveDate.some)
 
   private def sendEmail(
@@ -104,9 +79,7 @@ class EmailService @Inject() (
   )(implicit
     hc: HeaderCarrier,
     executionContext: ExecutionContext,
-    request: AuthenticatedEscRequest[_],
-    messagesApi: MessagesApi
-  ): Future[EmailSendResult] =
+  ): Future[EmailSendResult] = {
     retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
       retrieveEmailResponse.emailType match {
         case EmailType.VerifiedEmail =>
@@ -144,19 +117,8 @@ class EmailService @Inject() (
       case _ => sys.error("Email address response is not valid")
     }
 
-  private def getLanguage(implicit request: AuthenticatedEscRequest[_], messagesApi: MessagesApi): Language =
-    request.request.messages(messagesApi).lang.code.toLowerCase(Locale.UK) match {
-      case English.code => English
-      case Welsh.code => Welsh
-      case other => sys.error(s"Unsupported language code: $other")
-    }
-
-  private def getEmailTemplateId(inputKey: String)(implicit
-    request: AuthenticatedEscRequest[_],
-    messagesApi: MessagesApi
-  ) =
-    appConfig.templateIdsMap(getLanguage.code)
-    .getOrElse(inputKey, s"no template for $inputKey")
+  private def getEmailTemplateId(inputKey: String) =
+    appConfig.templateIds.getOrElse(inputKey, s"no template for $inputKey")
 
   private def sendEmail(emailAddress: EmailAddress, parameters: EmailParameters, templateId: String)(implicit
     hc: HeaderCarrier,

@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import play.api.i18n.MessagesApi
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
@@ -46,8 +44,8 @@ trait EmailSupport { this: ControllerSpec =>
       .sendEmail(
         _: EORI,
         _: String,
-        _: Undertaking)(_: HeaderCarrier, _: ExecutionContext, _: AuthenticatedEscRequest[_], _: MessagesApi))
-      .expects(eori1, key, undertaking, *, *, *, *)
+        _: Undertaking)(_: HeaderCarrier, _: ExecutionContext))
+      .expects(eori1, key, undertaking, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
 
   def mockSendEmail(
@@ -61,8 +59,8 @@ trait EmailSupport { this: ControllerSpec =>
         _: EORI,
         _: EORI,
         _: String,
-        _: Undertaking)(_: HeaderCarrier, _: ExecutionContext, _: AuthenticatedEscRequest[_], _: MessagesApi))
-      .expects(eori1, eori2, key, undertaking, *, *, *, *)
+        _: Undertaking)(_: HeaderCarrier, _: ExecutionContext))
+      .expects(eori1, eori2, key, undertaking, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
 
   def mockSendEmail(
@@ -76,8 +74,8 @@ trait EmailSupport { this: ControllerSpec =>
         _: EORI,
         _: String,
         _: Undertaking,
-        _: String)(_: HeaderCarrier, _: ExecutionContext, _: AuthenticatedEscRequest[_], _: MessagesApi))
-      .expects(eori1, key, undertaking, removeEffectiveDate, *, *, *, *)
+        _: String)(_: HeaderCarrier, _: ExecutionContext))
+      .expects(eori1, key, undertaking, removeEffectiveDate, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
 
   def mockSendEmail(
@@ -93,7 +91,7 @@ trait EmailSupport { this: ControllerSpec =>
         _: EORI,
         _: String,
         _: Undertaking,
-        _: String)(_: HeaderCarrier, _: ExecutionContext, _: AuthenticatedEscRequest[_], _: MessagesApi))
-      .expects(eori1, eori2, key, undertaking, removeEffectiveDate, *, *, *, *)
+        _: String)(_: HeaderCarrier, _: ExecutionContext))
+      .expects(eori1, eori2, key, undertaking, removeEffectiveDate, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
 }

@@ -55,10 +55,8 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   lazy val authTimeoutCountdownSeconds: Int =
     config.get[FiniteDuration]("auth.sign-out.inactivity-countdown").toSeconds.toInt
 
-
+  // TODO - can these keys be defined in one place?
   lazy val templateIds = List(
-    // TODO - look into this - the keys here are different to those assumed in the config. Figure out where they
-    //        are defined and centralise so they can be used in config and controllers.
     "addMemberToBE",
     "addMemberToLead",
     "createUndertaking",
@@ -72,6 +70,4 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
     "removedAsLeadToOldLead",
   ).map(t => t -> config.get[String](s"email-send.$t")).toMap
 
-  // TODO - remove langcode parameter - now unused
-  def templateIdsMap(langCode: String): Map[String, String] = templateIds
 }

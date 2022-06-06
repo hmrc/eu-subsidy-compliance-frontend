@@ -22,12 +22,9 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
-import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContentAsEmpty, RequestHeader}
+import play.api.test.DefaultAwaitTimeout
 import play.api.test.Helpers._
-import play.api.test.{DefaultAwaitTimeout, FakeRequest}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{RetrieveEmailConnector, SendEmailConnector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
@@ -91,11 +88,6 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
       .expects(eori, *)
       .returning(result.toFuture)
 
-  private def mockMessagesResponse(langCode: String = "en") = {
-    (mockMessagesApi.preferred(_: RequestHeader)).expects(*).returning(mockMessages)
-    (() => mockMessages.lang).expects().returning(Lang(langCode))
-  }
-
   private val service = new EmailService(
     fakeAppConfig,
     mockSendEmailConnector,
@@ -103,9 +95,6 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
   )
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private implicit val fakeRequest: AuthenticatedEscRequest[AnyContentAsEmpty.type] = AuthenticatedEscRequest("Foo", "Bar", FakeRequest(), EORI("GB121212121212"))
-  private implicit val mockMessagesApi: MessagesApi = mock[MessagesApi]
-  private val mockMessages = mock[Messages]
 
   "EmailService" when {
 
@@ -137,16 +126,8 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
           result.failed.futureValue shouldBe a[RuntimeException]
         }
 
-        "the language code is not supported" in {
-          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
-          mockMessagesResponse("de")
-          val result = service.sendEmail(eori1, "createUndertaking", undertaking)
-          result.failed.futureValue shouldBe a[RuntimeException]
-        }
-
         "there is an error sending the email" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
-          mockMessagesResponse()
           mockSendEmail(emailSendRequest)(Left(ConnectorError("Error")))
           val result = service.sendEmail(eori1, "createUndertaking", undertaking)
           result.failed.futureValue shouldBe a[ConnectorError]
@@ -154,7 +135,6 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
         "the template could not be found" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
-          mockMessagesResponse()
           val result = service.sendEmail(eori1, "thisTemplateDoesNotExist", undertaking)
           result.failed.futureValue shouldBe a[RuntimeException]
         }
@@ -165,7 +145,6 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
         "the email is sent successfully with language code en" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
-          mockMessagesResponse()
           mockSendEmail(emailSendRequest)(Right(HttpResponse(ACCEPTED, "")))
           val result = service.sendEmail(eori1, "createUndertaking", undertaking)
           result.futureValue shouldBe EmailSent
@@ -173,7 +152,6 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
         "the email is sent successfully with language code cy" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
-          mockMessagesResponse("cy")
           mockSendEmail(emailSendRequest)(Right(HttpResponse(ACCEPTED, "")))
           val result = service.sendEmail(eori1, "createUndertaking", undertaking)
           result.futureValue shouldBe EmailSent
@@ -181,7 +159,6 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
         "the email is sent successfully with a removeEffectiveDate value" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
-          mockMessagesResponse()
           mockSendEmail(emailSendRequest.copy(parameters = singleEoriWithDateEmailParameters))(Right(HttpResponse(ACCEPTED, "")))
           val result = service.sendEmail(eori1, "createUndertaking", undertaking, dateTime.toString)
           result.futureValue shouldBe EmailSent
@@ -189,7 +166,6 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
         "the email is sent successfully with a second eori" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
-          mockMessagesResponse()
           mockSendEmail(emailSendRequest.copy(parameters = doubleEoriEmailParameters))(Right(HttpResponse(ACCEPTED, "")))
           val result = service.sendEmail(eori1, eori2, "createUndertaking", undertaking)
           result.futureValue shouldBe EmailSent
@@ -197,7 +173,6 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
         "the email is sent successfully with a second eori and a removeEffectiveDate value" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
-          mockMessagesResponse()
           mockSendEmail(emailSendRequest.copy(parameters = doubleEoriWithDateEmailParameters))(Right(HttpResponse(ACCEPTED, "")))
           val result = service.sendEmail(eori1, eori2, "createUndertaking", undertaking, dateTime.toString)
           result.futureValue shouldBe EmailSent
