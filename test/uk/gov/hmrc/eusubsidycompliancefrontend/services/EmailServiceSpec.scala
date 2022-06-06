@@ -44,31 +44,27 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with ScalaFutures with DefaultAwaitTimeout {
 
-  private val templates = List(
-    "create-undertaking-template",
-    "add-member-to-be-template",
-    "add-member-to-lead-template",
-    "remove-member-to-be-template",
-    "remove-member-to-lead-template",
-    "promote-other-as-lead-to-be-template",
-    "promote-other-as-lead-to-lead-template",
-    "member-remove-themself-email-to-be-template",
-    "member-remove-themself-email-to-lead-template",
-    "promoted-themself-email-to-new-lead-template",
-    "removed_as_lead-email-to-old-lead-template",
+  private val templates = Map(
+    "addMemberToBE" -> "templateId1",
+    "addMemberToLead" -> "templateId1",
+    "createUndertaking" -> "templateId1",
+    "memberRemoveThemselfToBE" -> "templateId1",
+    "memberRemoveThemselfToLead" -> "templateId1",
+    "promoteOtherAsLeadToBE" -> "templateId1",
+    "promoteOtherAsLeadToLead" -> "templateId1",
+    "promotedThemselfToNewLead" -> "templateId1",
+    "removeMemberToBE" -> "templateId1",
+    "removeMemberToLead" -> "templateId1",
+    "removedAsLeadToOldLead" -> "templateId1",
   )
 
-  private val templatedId: String = "templateId1"
+  private val templateConfig = Configuration.from(Map(
+    "email-send" -> templates
+  ))
 
   private val fakeAppConfig = {
     new AppConfig(
-      Configuration.from(Map(
-        "email-send" ->
-          List(
-            templates.map(t => s"$t-en" -> templatedId),
-            templates.map(t => s"$t-cy" -> templatedId),
-          ).flatten.toMap,
-      )),
+      templateConfig,
       new ContactFrontendConfig(Configuration.empty)
     )
   }

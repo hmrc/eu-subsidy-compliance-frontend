@@ -154,10 +154,9 @@ class EmailService @Inject() (
   private def getEmailTemplateId(inputKey: String)(implicit
     request: AuthenticatedEscRequest[_],
     messagesApi: MessagesApi
-  ) = {
-    val lang = getLanguage
-    appConfig.templateIdsMap(lang.code).getOrElse(inputKey, s"no template for $inputKey")
-  }
+  ) =
+    appConfig.templateIdsMap(getLanguage.code)
+    .getOrElse(inputKey, s"no template for $inputKey")
 
   private def sendEmail(emailAddress: EmailAddress, parameters: EmailParameters, templateId: String)(implicit
     hc: HeaderCarrier,
