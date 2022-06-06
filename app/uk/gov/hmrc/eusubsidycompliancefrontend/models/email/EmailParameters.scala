@@ -23,8 +23,7 @@ case class EmailParameters(
   eori: EORI,
   beEORI: Option[EORI],
   undertakingName: UndertakingName,
-  undertakingRef: UndertakingRef,
-  effectiveDate: Option[String],
+  effectiveDate: Option[String]
 )
 
 object EmailParameters {
