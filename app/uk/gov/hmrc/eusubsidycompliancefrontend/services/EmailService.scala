@@ -79,7 +79,7 @@ class EmailService @Inject() (
   )(implicit
     hc: HeaderCarrier,
     executionContext: ExecutionContext,
-  ): Future[EmailSendResult] = {
+  ): Future[EmailSendResult] =
     retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
       retrieveEmailResponse.emailType match {
         case EmailType.VerifiedEmail =>

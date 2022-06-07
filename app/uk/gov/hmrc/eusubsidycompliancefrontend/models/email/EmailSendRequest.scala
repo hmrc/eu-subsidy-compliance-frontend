@@ -21,7 +21,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.EmailAddress
 
 final case class EmailSendRequest(
   to: List[EmailAddress],
-  templateId: String,
+  templateId: String, // TODO - make this an enum
   parameters: EmailParameters,
   force: Boolean = true
 )

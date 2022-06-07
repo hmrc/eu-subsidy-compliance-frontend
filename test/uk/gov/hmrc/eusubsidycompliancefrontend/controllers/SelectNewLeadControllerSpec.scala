@@ -17,8 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
-import com.typesafe.config.ConfigFactory
-import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Cookie
@@ -52,21 +50,6 @@ class SelectNewLeadControllerSpec
     bind[EscService].toInstance(mockEscService),
     bind[EmailService].toInstance(mockEmailService),
     bind[AuditService].toInstance(mockAuditService)
-  )
-
-  override def additionalConfig: Configuration = super.additionalConfig.withFallback(
-    Configuration(
-      ConfigFactory.parseString(s"""
-                                   |
-                                   |play.i18n.langs = ["en", "cy", "fr"]
-                                   | email-send {
-                                   |    promote-other-as-lead-to-be-template-en = "template_BE_as_lead_EN"
-                                   |    promote-other-as-lead-to-be-template-cy = "template_BE_as_lead_CY"
-                                   |    promote-other-as-lead-to-lead-template-en = "template_BE_as_lead_mail_to_lead_EN"
-                                   |    promote-other-as-lead-to-lead-template-cy = "template_BE_as_lead_mail_to_lead_CY"
-                                   |  }
-                                   |""".stripMargin)
-    )
   )
 
   private val controller = instanceOf[SelectNewLeadController]

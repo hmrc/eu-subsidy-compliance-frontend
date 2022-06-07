@@ -19,6 +19,8 @@ import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate
+
 import scala.concurrent.duration.FiniteDuration
 
 @Singleton
@@ -55,19 +57,8 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   lazy val authTimeoutCountdownSeconds: Int =
     config.get[FiniteDuration]("auth.sign-out.inactivity-countdown").toSeconds.toInt
 
-  // TODO - can these keys be defined in one place?
-  lazy val templateIds = List(
-    "addMemberToBE",
-    "addMemberToLead",
-    "createUndertaking",
-    "memberRemoveThemselfToBE",
-    "memberRemoveThemselfToLead",
-    "promoteOtherAsLeadToBE",
-    "promoteOtherAsLeadToLead",
-    "promotedThemselfToNewLead",
-    "removeMemberToBE",
-    "removeMemberToLead",
-    "removedAsLeadToOldLead",
-  ).map(t => t -> config.get[String](s"email-send.$t")).toMap
+  lazy val templateIds: Map[String, String] = EmailTemplate.values.map { template =>
+    template.entryName -> config.get[String](s"email-send.${template.entryName}")
+  }.toMap
 
 }

@@ -30,7 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{RetrieveEmailConnecto
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.{EmailNotSent, EmailSent}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.VerifiedEmail
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendRequest, EmailType, RetrieveEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendRequest, EmailTemplate, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -41,19 +41,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with ScalaFutures with DefaultAwaitTimeout {
 
-  private val templates = Map(
-    "addMemberToBE" -> "templateId1",
-    "addMemberToLead" -> "templateId1",
-    "createUndertaking" -> "templateId1",
-    "memberRemoveThemselfToBE" -> "templateId1",
-    "memberRemoveThemselfToLead" -> "templateId1",
-    "promoteOtherAsLeadToBE" -> "templateId1",
-    "promoteOtherAsLeadToLead" -> "templateId1",
-    "promotedThemselfToNewLead" -> "templateId1",
-    "removeMemberToBE" -> "templateId1",
-    "removeMemberToLead" -> "templateId1",
-    "removedAsLeadToOldLead" -> "templateId1",
-  )
+  private val templates = EmailTemplate.values
+    .map(t => t.entryName -> "templateId1")
+    .toMap
 
   private val templateConfig = Configuration.from(Map(
     "email-send" -> templates
