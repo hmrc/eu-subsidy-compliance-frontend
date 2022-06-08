@@ -303,18 +303,7 @@ class EligibilityControllerSpec
             mockRetrieveEmail(eori1)(
               Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("some@test.com").some))
             )
-            mockGet[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to get eligibility passes but fetches nothing" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(
-              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("some@test.com").some))
-            )
-            mockGet[EligibilityJourney](eori1)(Right(None))
+            mockGetOrCreate[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -329,7 +318,7 @@ class EligibilityControllerSpec
             mockRetrieveEmail(eori1)(
               Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("some@test.com").some))
             )
-            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourney.some))
+            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourney))
           }
           checkPageIsDisplayed(
             performAction(),

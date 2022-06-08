@@ -24,7 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscCDSActionBuilders, Es
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.{UnDeliverableEmail, UnVerifiedEmail, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -107,8 +107,9 @@ class EligibilityController @Inject() (
       )
   }
 
-  private def getNext(form: FormValues) = if (form.value == "true") routes.EligibilityController.getEoriCheck()
-  else routes.EligibilityController.getWillYouClaim()
+  private def getNext(form: FormValues) =
+    if (form.value == "true") routes.EligibilityController.getEoriCheck()
+    else routes.EligibilityController.getWillYouClaim()
 
   def getWillYouClaim: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
     val form = willYouClaimForm
@@ -135,23 +136,18 @@ class EligibilityController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     emailService.retrieveEmailByEORI(eori) flatMap {
       _.emailType match {
-        case EmailType.VerifiedEmail =>
-          store.get[EligibilityJourney].map {
-            case Some(journey) =>
-              val form =
-                journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck =>
-                  eoriCheckForm.fill(FormValues(eoriCheck.toString))
-                )
-              Ok(checkEoriPage(form, eori, routes.EligibilityController.getCustomsWaivers().url))
-            case _ => handleMissingSessionData("Eligibility journey")
-          }
-        case EmailType.UnVerifiedEmail =>
-          Redirect(routes.UpdateEmailAddressController.updateUnverifiedEmailAddress()).toFuture
-        case EmailType.UnDeliverableEmail =>
-          Redirect(routes.UpdateEmailAddressController.updateUndeliveredEmailAddress()).toFuture
+        case VerifiedEmail =>
+          // User may have been redirected here from ECC so ensure the EligibilityJourney is present if not already.
+          store.getOrCreate[EligibilityJourney](EligibilityJourney()).map { journey =>
+            val form = journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck =>
+              eoriCheckForm.fill(FormValues(eoriCheck.toString))
+            )
+            Ok(checkEoriPage(form, eori, routes.EligibilityController.getCustomsWaivers().url))
+        }
+        case UnVerifiedEmail => Redirect(routes.UpdateEmailAddressController.updateUnverifiedEmailAddress()).toFuture
+        case UnDeliverableEmail => Redirect(routes.UpdateEmailAddressController.updateUndeliveredEmailAddress()).toFuture
       }
     }
-
   }
 
   def postEoriCheck: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
