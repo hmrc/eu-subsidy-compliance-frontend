@@ -444,3 +444,7 @@ undertakingDisabled.inset.p2=During this 24-hour period, you will still be in th
 undertakingDisabled.p2 = You have been logged out of the account.
 undertakingDisabled.p4 = <a href="{0}" class="govuk-link">What did you think of this service?</a>(takes 30 seconds)
 
+#undertakingDisabledMessage
+undertakingDisabledMessage.title = This undertaking has been disabled
+undertakingDisabledMessage.p1=The change does not effect immediately and may take up to 24 hours to go through.
+undertakingDisabledMessage.p2=During this 24-hour period, you will still be in undertaking, until the update happens, but will not be able to make any changes to the undertaking.

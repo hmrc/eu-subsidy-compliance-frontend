@@ -62,13 +62,15 @@ class AccountController @Inject() (
 
   private def handleUndertakingNotCreated(implicit e: EORI): Future[Result] = {
     val result = getOrCreateJourneys().map {
-      case (ej, uj) if !ej.isComplete && uj.isEmpty =>
+      case (_, _, dj) if dj.isDisabled(timeProvider.now) =>
+        Redirect(routes.UndertakingController.getDisableUndertakingMessage)
+      case (ej, uj, _) if !ej.isComplete && uj.isEmpty =>
         if (ej.eoriCheck.value.contains(true)) {
           Redirect(routes.EligibilityController.firstEmptyPage())
         } else {
           Redirect(routes.EligibilityController.getCustomsWaivers())
         }
-      case (_, uj) if !uj.isComplete => Redirect(routes.UndertakingController.firstEmptyPage())
+      case (_, uj, _) if !uj.isComplete => Redirect(routes.UndertakingController.firstEmptyPage())
       case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity())
     }
     result.getOrElse(handleMissingSessionData("Account Home - Undertaking not created -"))
@@ -78,8 +80,11 @@ class AccountController @Inject() (
     u: Undertaking
   )(implicit r: AuthenticatedEscRequest[AnyContent], e: EORI): Future[Result] = {
     val result = for {
-      _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(u))
-      result <- renderAccountPage(u).toContext
+      (_, _, dj) <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(u))
+      result <-
+        if (dj.isDisabled(timeProvider.now))
+          Redirect(routes.UndertakingController.getDisableUndertakingMessage).toContext
+        else renderAccountPage(u).toContext
     } yield result
 
     result.getOrElse(handleMissingSessionData("Account Home - Existing Undertaking -"))
@@ -89,7 +94,8 @@ class AccountController @Inject() (
     for {
       ej <- store.getOrCreate[EligibilityJourney](EligibilityJourney()).toContext
       uj <- store.getOrCreate[UndertakingJourney](u).toContext
-    } yield (ej, uj)
+      dj <- store.getOrCreate[DisableJourney](DisableJourney()).toContext
+    } yield (ej, uj, dj)
 
   private def renderAccountPage(undertaking: Undertaking)(implicit r: AuthenticatedEscRequest[AnyContent]) = {
     implicit val eori: EORI = r.eoriNumber

@@ -55,7 +55,8 @@ class UndertakingController @Inject() (
   amendUndertakingPage: AmendUndertakingPage,
   disableUndertakingWarningPage: DisableUndertakingWarningPage,
   disableUndertakingConfirmPage: DisableUndertakingConfirmPage,
-  undertakingDisabledPage: UndertakingDisabledPage
+  undertakingDisabledPage: UndertakingDisabledPage,
+  undertakingDisabledMessagePage: UndertakingDisabledMessagePage
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -301,6 +302,10 @@ class UndertakingController @Inject() (
     Ok(undertakingDisabledPage()).withNewSession.toFuture
   }
 
+  def getDisableUndertakingMessage: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    Ok(undertakingDisabledMessagePage()).withNewSession.toFuture
+  }
+
   private def resetAllJourneys(implicit eori: EORI) =
     for {
       _ <- store.delete[EligibilityJourney]
@@ -320,11 +325,22 @@ class UndertakingController @Inject() (
       for {
         _ <- escService.disableUndertaking(undertaking)
         _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
+        _ <- undertaking.undertakingBusinessEntity.traverse(be => disableJourneyUpdate(be.businessEntityIdentifier))
         _ = auditService.sendEvent[UndertakingDisabled](
           UndertakingDisabled(request.authorityId, undertaking.reference, timeProvider.today)
         )
       } yield Redirect(routes.UndertakingController.getUndertakingDisabled())
     } else Redirect(routes.AccountController.getAccountPage()).toFuture
+
+  private def disableJourneyUpdate(implicit eori: EORI) =
+    store.get[DisableJourney].flatMap {
+      case Some(_) =>
+        for {
+          _ <- store.update[DisableJourney](_.setDisableFlag(true))
+          _ <- store.update[DisableJourney](_.setDisableBy(timeProvider.now.plusDays(1)))
+        } yield ()
+      case None => Future.successful(())
+    }
 
   private def ensureUndertakingJourneyPresent(j: Option[UndertakingJourney])(f: UndertakingJourney => Future[Result]) =
     j.fold(Redirect(routes.UndertakingController.getUndertakingName()).toFuture)(f)

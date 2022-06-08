@@ -19,6 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import cats.data.EitherT
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
+import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.Reads
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.UndertakingCache
@@ -37,14 +38,18 @@ import scala.concurrent.{ExecutionContext, Future}
 class EscService @Inject() (
   escConnector: EscConnector,
   undertakingCache: UndertakingCache
-)(implicit ec: ExecutionContext) {
+)(implicit ec: ExecutionContext)
+    extends Logging {
 
-  def createUndertaking(undertaking: UndertakingCreate)(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingRef] =
+  def createUndertaking(
+    undertaking: UndertakingCreate
+  )(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingRef] =
     escConnector
       .createUndertaking(undertaking)
       .flatMap { response =>
         for {
           ref <- handleResponse[UndertakingRef](response, "create undertaking").toFuture
+          _ = logger.info(s"Undertaking created  with reference Id :: $ref")
           _ <- undertakingCache.put[Undertaking](eori, undertaking.toUndertakingWithRef(ref))
         } yield ref
       }
@@ -55,6 +60,7 @@ class EscService @Inject() (
       .flatMap { response =>
         for {
           ref <- handleResponse[UndertakingRef](response, "update undertaking").toFuture
+          _ = logger.info(s"Undertaking updated  with reference Id :: $ref")
           _ <- undertakingCache.deleteUndertaking(ref)
         } yield ref
       }
@@ -65,6 +71,7 @@ class EscService @Inject() (
       .flatMap { response =>
         for {
           ref <- handleResponse[UndertakingRef](response, "disable undertaking").toFuture
+          _ = logger.info(s"Undertaking disabled  with reference Id :: $ref")
           _ <- undertakingCache.deleteUndertaking(ref)
           _ <- undertakingCache.deleteUndertakingSubsidies(ref)
         } yield ref
