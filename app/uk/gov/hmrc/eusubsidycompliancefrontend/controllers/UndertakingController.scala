@@ -195,7 +195,7 @@ class UndertakingController @Inject() (
         timeProvider.now
       )
       _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
-    } yield Redirect(routes.UndertakingController.getConfirmation(ref, undertakingJourney.name.value.getOrElse("")))
+    } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity)
 
   def getConfirmation(ref: String, name: String): Action[AnyContent] = withCDSAuthenticatedUser.async {
     implicit request =>

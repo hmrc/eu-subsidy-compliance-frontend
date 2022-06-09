@@ -41,8 +41,7 @@ case class UndertakingJourney(
   override def steps = Array(
     name,
     sector,
-    cya,
-    confirmation
+    cya
   )
   private lazy val previousMap: Map[String, Uri] = Map(
     routes.UndertakingController.getUndertakingName().url -> routes.EligibilityController.getCreateUndertaking().url,
