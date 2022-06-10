@@ -29,7 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{Undertak
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -137,7 +137,7 @@ class UndertakingControllerSpec
                 sector = UndertakingSectorFormPage(Sector(1).some),
                 cya = UndertakingCyaFormPage(true.some)
               ),
-              routes.UndertakingController.postConfirmation().url
+              routes.BusinessEntityController.getAddBusinessEntity().url
             )
           }
 
@@ -618,6 +618,7 @@ class UndertakingControllerSpec
             .withCookies(Cookie("PLAY_LANG", lang))
             .withFormUrlEncodedBody(data: _*)
         )
+      def update(u: UndertakingJourney) = u.copy(undertakingSuccessDisplay = true)
 
       "throw technical error" when {
 
@@ -675,11 +676,13 @@ class UndertakingControllerSpec
 
           val updatedUndertakingJourney =
             undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage(false.some))
+          val updatedUj = updatedUndertakingJourney.copy(undertakingSuccessDisplay = true)
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(Right(updatedUj))
             mockSendEmail(eori1, "createUndertaking", undertakingCreated.toUndertakingWithRef(undertakingRef))(
               Left(ConnectorError(exception))
             )
@@ -689,16 +692,17 @@ class UndertakingControllerSpec
         }
       }
 
-      "redirect to confirmation page" when {
+      "redirect to Business Entity Add page" when {
 
         def testRedirection(lang: Language): Unit = {
 
           val updatedUndertakingJourney = undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage(false.some))
-
+          val updatedUj = updatedUndertakingJourney.copy(undertakingSuccessDisplay = true)
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(Right(updatedUj))
             mockSendEmail(eori1, "createUndertaking", undertakingCreated.toUndertakingWithRef(undertakingRef))(
               Right(EmailSent)
             )
@@ -707,7 +711,7 @@ class UndertakingControllerSpec
           }
           checkIsRedirect(
             performAction("cya" -> "true")(lang.code),
-            routes.UndertakingController.getConfirmation(undertakingRef, undertakingCreated.name).url
+            routes.BusinessEntityController.getAddBusinessEntity().url
           )
         }
 
@@ -728,61 +732,19 @@ class UndertakingControllerSpec
       def performAction() = controller.getConfirmation(undertakingRef, undertaking1.name)(
         FakeRequest(GET, routes.UndertakingController.getConfirmation(undertakingRef, undertaking1.name).url)
       )
-
+      def update(uj: UndertakingJourney) = uj.copy(undertakingSuccessDisplay = false)
+      val updatedUJ = undertakingJourneyComplete.copy(undertakingSuccessDisplay = false)
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolment()
+          mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(Right(updatedUJ))
         }
 
         checkPageIsDisplayed(
           performAction(),
-          messageFromMessageKey("undertaking.confirmation.title"),
-          { doc =>
-            val heading2 = doc.select(".govuk-body").text()
-            heading2 should include regex messageFromMessageKey("undertaking.confirmation.name", undertaking1.name)
-            heading2 should include regex messageFromMessageKey("undertaking.confirmation.p4", undertaking1.name)
-          }
+          messageFromMessageKey("undertaking.confirmation.title")
         )
 
-      }
-
-    }
-
-    "handling request to Post Confirmation page" must {
-
-      def performAction(data: (String, String)*) =
-        controller.postConfirmation(FakeRequest().withFormUrlEncodedBody(data: _*))
-      def update(u: UndertakingJourney) =
-        u.copy(undertakingSuccessDisplay = UndertakingConfirmationFormPage(value = true.some))
-
-      val undertakingJourney =
-        undertakingJourneyComplete.copy(undertakingSuccessDisplay = UndertakingConfirmationFormPage(value = None))
-
-      "throw technical error" when {
-
-        "confirmation form is empty" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to update undertaking confirmation fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockUpdate[UndertakingJourney](_ => update(undertakingJourney), eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction("confirm" -> "true")))
-        }
-      }
-
-      "redirect to next page" in {
-        inSequence {
-          mockAuthWithNecessaryEnrolment()
-          mockUpdate[UndertakingJourney](_ => update(undertakingJourney), eori1)(Right(undertakingJourneyComplete))
-        }
-
-        checkIsRedirect(performAction("confirm" -> "true"), routes.BusinessEntityController.getAddBusinessEntity().url)
       }
 
     }

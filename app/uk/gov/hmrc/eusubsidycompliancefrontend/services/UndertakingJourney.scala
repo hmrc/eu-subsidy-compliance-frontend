@@ -102,9 +102,6 @@ object UndertakingJourney {
       implicit val undertakingSectorFormPage: OFormat[UndertakingSectorFormPage] = Json.format
     }
     object UndertakingCyaFormPage { implicit val undertakingCyaFormPage: OFormat[UndertakingCyaFormPage] = Json.format }
-    object UndertakingConfirmationFormPage {
-      implicit val undertakingConfirmationFormPage: OFormat[UndertakingConfirmationFormPage] = Json.format
-    }
 
   }
 }
