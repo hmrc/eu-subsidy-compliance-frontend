@@ -141,18 +141,6 @@ class UndertakingControllerSpec
             )
           }
 
-          "undertaking journey contains confirmation" in {
-            testRedirect(
-              UndertakingJourney(
-                name = UndertakingNameFormPage("TestUndertaking".some),
-                sector = UndertakingSectorFormPage(Sector(1).some),
-                cya = UndertakingCyaFormPage(true.some),
-                confirmation = UndertakingConfirmationFormPage(true.some)
-              ),
-              routes.BusinessEntityController.getAddBusinessEntity().url
-            )
-          }
-
         }
 
       }
@@ -764,10 +752,11 @@ class UndertakingControllerSpec
 
       def performAction(data: (String, String)*) =
         controller.postConfirmation(FakeRequest().withFormUrlEncodedBody(data: _*))
-      def update(u: UndertakingJourney) = u.copy(confirmation = UndertakingConfirmationFormPage(value = true.some))
+      def update(u: UndertakingJourney) =
+        u.copy(undertakingSuccessDisplay = UndertakingConfirmationFormPage(value = true.some))
 
       val undertakingJourney =
-        undertakingJourneyComplete.copy(confirmation = UndertakingConfirmationFormPage(value = None))
+        undertakingJourneyComplete.copy(undertakingSuccessDisplay = UndertakingConfirmationFormPage(value = None))
 
       "throw technical error" when {
 

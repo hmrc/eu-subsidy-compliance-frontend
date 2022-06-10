@@ -41,8 +41,6 @@
     backLinkEnabled = false,
     backLink = None
 ) {
-
-    @formHelper(action = controllers.routes.UndertakingController.postConfirmation) {
         <input type=hidden name=confirm value=true>
         @govukPanel(Panel(
             title = Text(title),
@@ -58,5 +56,5 @@
             <a class="govuk-link" href=@controllers.routes.AccountController.getAccountPage()>@messages("common.go-account-home")</a>
         </div>
 
-    }
+
 }

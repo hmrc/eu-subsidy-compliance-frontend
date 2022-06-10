@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.{Form, Uri}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.Future
@@ -34,7 +34,7 @@ case class UndertakingJourney(
   name: UndertakingNameFormPage = UndertakingNameFormPage(),
   sector: UndertakingSectorFormPage = UndertakingSectorFormPage(),
   cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
-  confirmation: UndertakingConfirmationFormPage = UndertakingConfirmationFormPage(),
+  undertakingSuccessDisplay: Boolean = false,
   isAmend: Boolean = false
 ) extends Journey {
 
@@ -70,9 +70,6 @@ case class UndertakingJourney(
 
   def setUndertakingCYA(b: Boolean): UndertakingJourney = this.copy(cya = cya.copy(value = Some(b)))
 
-  def setUndertakingConfirmation(b: Boolean): UndertakingJourney =
-    this.copy(confirmation = confirmation.copy(value = Some(b)))
-
 }
 
 object UndertakingJourney {
@@ -96,9 +93,6 @@ object UndertakingJourney {
     }
     case class UndertakingCyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getCheckAnswers().url
-    }
-    case class UndertakingConfirmationFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.postConfirmation().url
     }
 
     object UndertakingNameFormPage {

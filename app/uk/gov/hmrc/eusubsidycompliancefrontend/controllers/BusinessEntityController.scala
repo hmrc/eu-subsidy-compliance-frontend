@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.data.OptionT
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import play.api.data.Form
 import play.api.data.Forms.mapping
@@ -95,10 +96,14 @@ class BusinessEntityController @Inject() (
       if (form.value === "true")
         store.update[BusinessEntityJourney](_.setAddBusiness(form.value.toBoolean)).flatMap(_.next)
       else {
-
-        Redirect(
-          routes.UndertakingController.getConfirmation(undertaking.reference, undertaking.name)
-        ).toFuture
+        val result: OptionT[Future, Result] = for {
+          uj <- store.get[UndertakingJourney].toContext
+          nextCall =
+            if (uj.undertakingSuccessDisplay)
+              Redirect(routes.UndertakingController.getConfirmation(undertaking.reference, undertaking.name))
+            else Redirect(routes.AccountController.getAccountPage())
+        } yield nextCall
+        result.fold(handleMissingSessionData(" Undertaking Journey"))(identity)
       }
 
     withLeadUndertaking { undertaking =>

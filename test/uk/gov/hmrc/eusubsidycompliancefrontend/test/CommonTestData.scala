@@ -184,15 +184,13 @@ object CommonTestData {
   val undertakingJourneyComplete = UndertakingJourney(
     name = UndertakingNameFormPage("TestUndertaking".some),
     sector = UndertakingSectorFormPage(Sector(1).some),
-    cya = UndertakingCyaFormPage(true.some),
-    confirmation = UndertakingConfirmationFormPage(true.some)
+    cya = UndertakingCyaFormPage(true.some)
   )
 
   val undertakingJourneyComplete1 = UndertakingJourney(
     name = UndertakingNameFormPage("TestUndertaking1".some),
     sector = UndertakingSectorFormPage(Sector(2).some),
     cya = UndertakingCyaFormPage(true.some),
-    confirmation = UndertakingConfirmationFormPage(true.some),
     isAmend = true
   )
 
