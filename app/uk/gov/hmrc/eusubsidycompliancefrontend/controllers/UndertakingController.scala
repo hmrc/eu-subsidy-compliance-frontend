@@ -26,6 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEsc
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUndertaking, UndertakingDisabled, UndertakingUpdated}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking, UndertakingCreate}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -63,8 +64,6 @@ class UndertakingController @Inject() (
     with LeadOnlyUndertakingSupport {
 
   import escCDSActionBuilder._
-  val CreateUndertaking = "createUndertaking"
-
   def firstEmptyPage: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).map { journey =>
@@ -188,8 +187,8 @@ class UndertakingController @Inject() (
       ref <- escService.createUndertaking(undertaking)
       _ <- store.update[UndertakingJourney](
         _.copy(undertakingSuccessDisplay = true)
-      ) //setting the undertakingSuccessDisplay to true on undertaking creation
-      _ <- emailService.sendEmail(eori, CreateUndertaking, undertaking.toUndertakingWithRef(ref))
+      ) // setting the undertakingSuccessDisplay to true on undertaking creation
+      _ <- emailService.sendEmail(eori, EmailTemplate.CreateUndertaking, undertaking.toUndertakingWithRef(ref))
       auditEventCreateUndertaking = AuditEvent.CreateUndertaking(
         request.authorityId,
         ref,

@@ -40,40 +40,40 @@ class EmailService @Inject() (
 
   def sendEmail(
     eori1: EORI,
-    templateKey: String,
+    template: EmailTemplate,
     undertaking: Undertaking,
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmailSendResult] =
-    sendEmail(eori1, None, templateKey, undertaking, None)
+    sendEmail(eori1, None, template, undertaking, None)
 
   def sendEmail(
     eori1: EORI,
     eori2: EORI,
-    templateKey: String,
+    template: EmailTemplate,
     undertaking: Undertaking,
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmailSendResult] =
-    sendEmail(eori1, eori2.some, templateKey, undertaking, None)
+    sendEmail(eori1, eori2.some, template, undertaking, None)
 
   def sendEmail(
     eori1: EORI,
-    templateKey: String,
+    template: EmailTemplate,
     undertaking: Undertaking,
     removeEffectiveDate: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmailSendResult] =
-    sendEmail(eori1, None, templateKey, undertaking, removeEffectiveDate.some)
+    sendEmail(eori1, None, template, undertaking, removeEffectiveDate.some)
 
   def sendEmail(
     eori1: EORI,
     eori2: EORI,
-    templateKey: String,
+    template: EmailTemplate,
     undertaking: Undertaking,
     removeEffectiveDate: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmailSendResult] =
-    sendEmail(eori1, eori2.some, templateKey, undertaking, removeEffectiveDate.some)
+    sendEmail(eori1, eori2.some, template, undertaking, removeEffectiveDate.some)
 
   private def sendEmail(
     eori1: EORI,
     eori2: Option[EORI],
-    templateKey: String,
+    template: EmailTemplate,
     undertaking: Undertaking,
     removeEffectiveDate: Option[String]
   )(implicit
@@ -83,7 +83,7 @@ class EmailService @Inject() (
     retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
       retrieveEmailResponse.emailType match {
         case EmailType.VerifiedEmail =>
-          val templateId = getEmailTemplateId(templateKey)
+          val templateId = getEmailTemplateId(template.entryName)
           val parameters = EmailParameters(eori1, eori2, undertaking.name, removeEffectiveDate)
           retrieveEmailResponse.emailAddress.map { emailAddress =>
             sendEmail(emailAddress, parameters, templateId)
@@ -117,6 +117,7 @@ class EmailService @Inject() (
       case _ => sys.error("Email address response is not valid")
     }
 
+  // TODO - could this take an EmailTemplate instead?
   private def getEmailTemplateId(inputKey: String) =
     appConfig.templateIds.getOrElse(inputKey, s"no template for $inputKey")
 

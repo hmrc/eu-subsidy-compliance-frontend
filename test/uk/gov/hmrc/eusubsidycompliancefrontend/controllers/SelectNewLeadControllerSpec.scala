@@ -27,6 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.{EmailNotSent, EmailSent}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromoteOtherAsLeadToBusinessEntity, PromoteOtherAsLeadToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.AddEoriFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
@@ -161,7 +162,7 @@ class SelectNewLeadControllerSpec
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
-            mockSendEmail(eori1, eori4, "promoteAsLeadEmailToLead", undertaking)(Left(ConnectorError(exception)))
+            mockSendEmail(eori1, eori4, PromoteOtherAsLeadToLead, undertaking)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
         }
@@ -210,8 +211,8 @@ class SelectNewLeadControllerSpec
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
-            mockSendEmail(eori1, eori4, "promoteAsLeadEmailToLead", undertaking)(Right(EmailSendResult.EmailSent))
-            mockSendEmail(eori4, "promoteAsLeadEmailToBE", undertaking)(Right(EmailSendResult.EmailSent))
+            mockSendEmail(eori1, eori4, PromoteOtherAsLeadToLead, undertaking)(Right(EmailSendResult.EmailSent))
+            mockSendEmail(eori4, PromoteOtherAsLeadToBusinessEntity, undertaking)(Right(EmailSendResult.EmailSent))
           }
           checkIsRedirect(
             performAction("selectNewLead" -> eori4)(lang.code),
@@ -241,8 +242,8 @@ class SelectNewLeadControllerSpec
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
-            mockSendEmail(eori1, eori4, "promoteAsLeadEmailToLead", undertaking)(Right(EmailSent))
-            mockSendEmail(eori4, "promoteAsLeadEmailToBE", undertaking)(Right(EmailNotSent))
+            mockSendEmail(eori1, eori4, PromoteOtherAsLeadToLead, undertaking)(Right(EmailSent))
+            mockSendEmail(eori4, PromoteOtherAsLeadToBusinessEntity, undertaking)(Right(EmailNotSent))
           }
           checkIsRedirect(
             performAction("selectNewLead" -> eori4)(English.code),

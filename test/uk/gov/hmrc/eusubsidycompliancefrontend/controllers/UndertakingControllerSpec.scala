@@ -27,6 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.CreateUndertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
@@ -683,7 +684,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(Right(updatedUj))
-            mockSendEmail(eori1, "createUndertaking", undertakingCreated.toUndertakingWithRef(undertakingRef))(
+            mockSendEmail(eori1, CreateUndertaking, undertakingCreated.toUndertakingWithRef(undertakingRef))(
               Left(ConnectorError(exception))
             )
           }
@@ -703,7 +704,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(Right(updatedUj))
-            mockSendEmail(eori1, "createUndertaking", undertakingCreated.toUndertakingWithRef(undertakingRef))(
+            mockSendEmail(eori1, CreateUndertaking, undertakingCreated.toUndertakingWithRef(undertakingRef))(
               Right(EmailSent)
             )
             mockTimeProviderNow(timeNow)

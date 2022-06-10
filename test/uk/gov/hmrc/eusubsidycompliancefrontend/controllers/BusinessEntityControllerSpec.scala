@@ -30,6 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityControl
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{AddMemberToBusinessEntity, AddMemberToLead, RemoveMemberToBusinessEntity, RemoveMemberToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, Language, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
@@ -639,7 +640,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
-            mockSendEmail(eori2, "addMemberEmailToBE", undertaking)(Left(ConnectorError(exception)))
+            mockSendEmail(eori2, AddMemberToBusinessEntity, undertaking)(Left(ConnectorError(exception)))
           }
 
           assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
@@ -671,8 +672,8 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
-            mockSendEmail(eori2, "addMemberEmailToBE", undertaking)(Right(EmailSent))
-            mockSendEmail(eori1, eori2, "addMemberEmailToLead", undertaking)(Right(EmailSent))
+            mockSendEmail(eori2, AddMemberToBusinessEntity, undertaking)(Right(EmailSent))
+            mockSendEmail(eori1, eori2, AddMemberToLead, undertaking)(Right(EmailSent))
             mockDelete[Undertaking](eori1)(Right(()))
             mockSendAuditEvent(businessEntityAddedEvent)
             mockPut[BusinessEntityJourney](resetBusinessJourney, eori1)(Right(BusinessEntityJourney()))
@@ -688,8 +689,8 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
-            mockSendEmail(eori2, "addMemberEmailToBE", undertaking)(Right(EmailSent))
-            mockSendEmail(eori1, eori2, "addMemberEmailToLead", undertaking)(Right(EmailSent))
+            mockSendEmail(eori2, AddMemberToBusinessEntity, undertaking)(Right(EmailSent))
+            mockSendEmail(eori1, eori2, AddMemberToLead, undertaking)(Right(EmailSent))
             mockDelete[Undertaking](eori1)(Right(()))
             mockSendAuditEvent(businessEntityAddedEvent)
             mockPut[BusinessEntityJourney](BusinessEntityJourney(), eori1)(Right(BusinessEntityJourney()))
@@ -743,8 +744,8 @@ class BusinessEntityControllerSpec
               businessEntity.copy(businessEntityIdentifier = businessEntityJourney.oldEORI.get)
             )(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
-            mockSendEmail(eori2, "addMemberEmailToBE", undertaking)(Right(EmailSent))
-            mockSendEmail(eori1, eori2, "addMemberEmailToLead", undertaking)(Right(EmailSent))
+            mockSendEmail(eori2, AddMemberToBusinessEntity, undertaking)(Right(EmailSent))
+            mockSendEmail(eori1, eori2, AddMemberToLead, undertaking)(Right(EmailSent))
             mockDelete[Undertaking](eori1)(Right(()))
             mockSendAuditEvent(businessEntityUpdatedEvent)
             mockPut[BusinessEntityJourney](updatedBusinessJourney, eori1)(Right(BusinessEntityJourney()))
@@ -974,9 +975,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockTimeToday(effectiveDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockSendEmail(eori4, "removeMemberEmailToBE", undertaking1, "10 October 2022")(
-              Left(ConnectorError(new RuntimeException()))
-            )
+            mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, "10 October 2022")(Left(ConnectorError(new RuntimeException())))
           }
           assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
         }
@@ -1010,8 +1009,8 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockTimeToday(effectiveDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockSendEmail(eori4, "removeMemberEmailToBE", undertaking1, date)(Right(EmailSent))
-            mockSendEmail(eori1, eori4, "removeMemberEmailToLead", undertaking1, date)(Right(EmailSent))
+            mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, date)(Right(EmailSent))
+            mockSendEmail(eori1, eori4, RemoveMemberToLead, undertaking1, date)(Right(EmailSent))
             mockDelete[Undertaking](eori1)(Right(()))
             mockSendAuditEvent(AuditEvent.BusinessEntityRemoved(undertakingRef, "1123", eori1, eori4))
           }
