@@ -34,7 +34,7 @@ case class UndertakingJourney(
   name: UndertakingNameFormPage = UndertakingNameFormPage(),
   sector: UndertakingSectorFormPage = UndertakingSectorFormPage(),
   cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
-  undertakingSuccessDisplay: Boolean = false,
+  undertakingSuccessDisplay: Boolean = false, // Flag to check if undertaking success screen needs to be displayed
   isAmend: Boolean = false
 ) extends Journey {
 
