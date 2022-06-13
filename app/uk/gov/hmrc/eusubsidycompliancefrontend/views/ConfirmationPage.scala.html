@@ -32,7 +32,7 @@
 
 @html = {
 @Html(messages(s"$key.undertaking-name"))<br>@Html(messages(s"$key.name", name))<br><br>
-@Html(messages(s"$key.ref.p1"))<br>@Html(messages(s"$key.ref.eori", eori))
+@Html(messages(s"$key.ref.p1"))<br><strong>@Html(messages(s"$key.ref.eori", eori))</strong>
 }
 @key = @{"undertaking.confirmation"}
 @title = @{messages(s"$key.title")}
