@@ -31,7 +31,7 @@
 @(ref: UndertakingRef, name: UndertakingName, eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @html = {
-@Html(messages(s"$key.undertaking-name"))<br>@Html(messages(s"$key.name", name))<br><br>
+@Html(messages(s"$key.undertaking-name"))<br><strong>@Html(messages(s"$key.name", name))</strong><br><br>
 @Html(messages(s"$key.ref.p1"))<br><strong>@Html(messages(s"$key.ref.eori", eori))</strong>
 }
 @key = @{"undertaking.confirmation"}
