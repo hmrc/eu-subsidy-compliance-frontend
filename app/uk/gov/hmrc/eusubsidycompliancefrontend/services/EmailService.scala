@@ -83,10 +83,9 @@ class EmailService @Inject() (
     retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
       retrieveEmailResponse.emailType match {
         case EmailType.VerifiedEmail =>
-          val templateId = getEmailTemplateId(template.entryName)
           val parameters = EmailParameters(eori1, eori2, undertaking.name, removeEffectiveDate)
           retrieveEmailResponse.emailAddress.map { emailAddress =>
-            sendEmail(emailAddress, parameters, templateId)
+            sendEmail(emailAddress, parameters, getTemplateId(template))
           } getOrElse sys.error("Email address not found")
         case _ => Future.successful(EmailSendResult.EmailNotSent)
       }
@@ -102,9 +101,7 @@ class EmailService @Inject() (
             value
               .parseJSON[EmailAddressResponse]
               .fold(_ => sys.error("Error in parsing Email Address"), handleEmailAddressResponse)
-
           case _ => sys.error("Error in retrieving Email Address Response")
-
         }
     }
 
@@ -117,9 +114,8 @@ class EmailService @Inject() (
       case _ => sys.error("Email address response is not valid")
     }
 
-  // TODO - could this take an EmailTemplate instead?
-  private def getEmailTemplateId(inputKey: String) =
-    appConfig.templateIds.getOrElse(inputKey, s"no template for $inputKey")
+  private def getTemplateId(template: EmailTemplate) =
+    appConfig.templateIds.getOrElse(template.entryName, s"no template for ${template.entryName}")
 
   private def sendEmail(emailAddress: EmailAddress, parameters: EmailParameters, templateId: String)(implicit
     hc: HeaderCarrier,
