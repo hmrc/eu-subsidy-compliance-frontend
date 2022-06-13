@@ -186,7 +186,9 @@ class UndertakingController @Inject() (
   )(implicit request: AuthenticatedEscRequest[_], eori: EORI): Future[Result] =
     for {
       ref <- escService.createUndertaking(undertaking)
-      _ <- store.update[UndertakingJourney](_.copy(undertakingSuccessDisplay = true))
+      _ <- store.update[UndertakingJourney](
+        _.copy(undertakingSuccessDisplay = true)
+      ) //setting the undertakingSuccessDisplay to true on undertaking creation
       _ <- emailService.sendEmail(eori, CreateUndertaking, undertaking.toUndertakingWithRef(ref))
       auditEventCreateUndertaking = AuditEvent.CreateUndertaking(
         request.authorityId,
@@ -201,7 +203,9 @@ class UndertakingController @Inject() (
     implicit request =>
       implicit val eori: EORI = request.eoriNumber
       for {
-        _ <- store.update[UndertakingJourney](_.copy(undertakingSuccessDisplay = false))
+        _ <- store.update[UndertakingJourney](
+          _.copy(undertakingSuccessDisplay = false)
+        ) //setting undertakingSuccessDisplay false when screen is displayed so it is not displayed the next time user click on No on Add member page
       } yield (Ok(confirmationPage(UndertakingRef(ref), UndertakingName(name), eori)))
   }
 
