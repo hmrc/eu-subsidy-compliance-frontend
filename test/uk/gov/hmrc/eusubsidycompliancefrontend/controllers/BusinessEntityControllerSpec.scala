@@ -218,12 +218,31 @@ class BusinessEntityControllerSpec
 
       "redirect to the next page" when {
 
-        "user selected No" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+        "user selected No" when {
+
+          "undertaking success display flag is off" in {
+            inSequence {
+              mockAuthWithNecessaryEnrolment()
+              mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+              mockGet[UndertakingJourney](eori1)(Right(Some(undertakingJourneyComplete)))
+            }
+            checkIsRedirect(performAction("addBusiness" -> "false"), routes.AccountController.getAccountPage().url)
           }
-          checkIsRedirect(performAction("addBusiness" -> "false"), routes.AccountController.getAccountPage().url)
+
+          "undertaking success display flag is on" in {
+            inSequence {
+              mockAuthWithNecessaryEnrolment()
+              mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+              mockGet[UndertakingJourney](eori1)(
+                Right(Some(undertakingJourneyComplete.copy(undertakingSuccessDisplay = true)))
+              )
+            }
+            checkIsRedirect(
+              performAction("addBusiness" -> "false"),
+              routes.UndertakingController.getConfirmation(undertakingRef, undertaking.name).url
+            )
+          }
+
         }
 
         "user selected Yes" in {
@@ -797,7 +816,6 @@ class BusinessEntityControllerSpec
       }
     }
 
-
     "handling request to post remove yourself business entity" must {
 
       def performAction(data: (String, String)*) = controller
@@ -956,7 +974,9 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockTimeToday(effectiveDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockSendEmail(eori4, "removeMemberEmailToBE", undertaking1, "10 October 2022")(Left(ConnectorError(new RuntimeException())))
+            mockSendEmail(eori4, "removeMemberEmailToBE", undertaking1, "10 October 2022")(
+              Left(ConnectorError(new RuntimeException()))
+            )
           }
           assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
         }
