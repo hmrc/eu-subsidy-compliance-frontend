@@ -26,7 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromoted
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.{EmailNotSent, EmailSent}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromoteOtherAsLeadToBusinessEntity, PromoteOtherAsLeadToLead}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedOtherAsLeadToBusinessEntity, PromotedOtherAsLeadToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -93,8 +93,8 @@ class SelectNewLeadController @Inject() (
             newLeadJourney.copy(selectNewLead = updatedLead)
           }
           _ = auditService.sendEvent(BusinessEntityPromoted(undertakingRef, request.authorityId, eori, eoriBE))
-          _ <- emailService.sendEmail(eori, eoriBE, PromoteOtherAsLeadToLead, undertaking)
-          result <- emailService.sendEmail(eoriBE, PromoteOtherAsLeadToBusinessEntity, undertaking)
+          _ <- emailService.sendEmail(eori, eoriBE, PromotedOtherAsLeadToLead, undertaking)
+          result <- emailService.sendEmail(eoriBE, PromotedOtherAsLeadToBusinessEntity, undertaking)
             .map(redirectTo)
         } yield result
       }

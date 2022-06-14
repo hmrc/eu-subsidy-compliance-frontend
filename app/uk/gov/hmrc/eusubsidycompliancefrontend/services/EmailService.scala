@@ -84,8 +84,9 @@ class EmailService @Inject() (
       retrieveEmailResponse.emailType match {
         case EmailType.VerifiedEmail =>
           val parameters = EmailParameters(eori1, eori2, undertaking.name, removeEffectiveDate)
+          val templateId = appConfig.getTemplateId(template).getOrElse(s"No template ID for email template: $template")
           retrieveEmailResponse.emailAddress.map { emailAddress =>
-            sendEmail(emailAddress, parameters, getTemplateId(template))
+            sendEmail(emailAddress, parameters, templateId)
           } getOrElse sys.error("Email address not found")
         case _ => Future.successful(EmailSendResult.EmailNotSent)
       }
@@ -113,9 +114,6 @@ class EmailService @Inject() (
       case EmailAddressResponse(email, None, None) => RetrieveEmailResponse(EmailType.UnVerifiedEmail, email.some)
       case _ => sys.error("Email address response is not valid")
     }
-
-  private def getTemplateId(template: EmailTemplate) =
-    appConfig.templateIds.getOrElse(template.entryName, s"no template for ${template.entryName}")
 
   private def sendEmail(emailAddress: EmailAddress, parameters: EmailParameters, templateId: String)(implicit
     hc: HeaderCarrier,

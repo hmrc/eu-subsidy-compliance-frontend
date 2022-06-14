@@ -257,8 +257,6 @@ class BusinessEntityController @Inject() (
             val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
             for {
               _ <- escService.removeMember(undertakingRef, removeBE)
-              _ <- emailService.sendEmail(EORI(eoriEntered), RemoveMemberEmailToBusinessEntity, undertaking, removalEffectiveDateString)
-              _ <- emailService.sendEmail(eori, EORI(eoriEntered), RemoveMemberEmailToLead, undertaking, removalEffectiveDateString)
               _ <- emailService.sendEmail(EORI(eoriEntered), RemoveMemberToBusinessEntity, undertaking, removalEffectiveDateString)
               _ <- emailService.sendEmail(eori, EORI(eoriEntered), RemoveMemberToLead, undertaking, removalEffectiveDateString)
               // Clear the cached undertaking so it's retrieved on the next access

@@ -25,6 +25,7 @@ import scala.concurrent.duration.FiniteDuration
 
 @Singleton
 class AppConfig @Inject() (config: Configuration, contactFrontendConfig: ContactFrontendConfig) {
+
   val welshLanguageSupportEnabled: Boolean =
     config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
 
@@ -57,8 +58,10 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   lazy val authTimeoutCountdownSeconds: Int =
     config.get[FiniteDuration]("auth.sign-out.inactivity-countdown").toSeconds.toInt
 
-  lazy val templateIds: Map[String, String] = EmailTemplate.values.map { template =>
-    template.entryName -> config.get[String](s"email-send.${template.entryName}")
+  private lazy val templateIds = EmailTemplate.values.map { template =>
+    template -> config.get[String](s"email-send.${template.entryName}")
   }.toMap
+
+  def getTemplateId(template: EmailTemplate): Option[String] = templateIds.get(template)
 
 }
