@@ -22,17 +22,15 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityControllerSpec.CheckYourAnswersRowBE
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{AddMemberToBusinessEntity, AddMemberToLead, RemoveMemberToBusinessEntity, RemoveMemberToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, Language, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -584,10 +582,9 @@ class BusinessEntityControllerSpec
     }
 
     "handling request to post check yor answers" must {
-      def performAction(data: (String, String)*)(lang: String) = controller
+      def performAction(data: (String, String)*) = controller
         .postCheckYourAnswers(
           FakeRequest("POST", routes.BusinessEntityController.getCheckYourAnswers().url)
-            .withCookies(Cookie("PLAY_LANG", lang))
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -600,7 +597,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
+          assertThrows[Exception](await(performAction("cya" -> "true")))
         }
 
         "call to get business entity returns nothing" in {
@@ -609,7 +606,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[BusinessEntityJourney](eori1)(Right(None))
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
+          assertThrows[Exception](await(performAction("cya" -> "true")))
         }
 
         "call to get business entity  return  without EORI" in {
@@ -618,7 +615,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.copy(eori = AddEoriFormPage(None)).some))
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
+          assertThrows[Exception](await(performAction("cya" -> "true")))
         }
 
         "call to add member to BE undertaking fails" in {
@@ -630,7 +627,7 @@ class BusinessEntityControllerSpec
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
             mockAddMember(undertakingRef, businessEntity)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")(English.code)))
+          assertThrows[Exception](await(performAction("cya" -> "true")))
         }
 
         "call to send email fails" in {
@@ -643,18 +640,7 @@ class BusinessEntityControllerSpec
             mockSendEmail(eori2, AddMemberToBusinessEntity, undertaking)(Left(ConnectorError(exception)))
           }
 
-          assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
-        }
-
-        "language is unsupported" in {
-          val businessEntity = BusinessEntity(businessEntityIdentifier = eori2, leadEORI = false)
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
-            mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
-          }
-          assertThrows[Exception](await(performAction("cya" -> "true")("fr")))
+          assertThrows[Exception](await(performAction("cya" -> "true")))
         }
 
       }
@@ -678,38 +664,10 @@ class BusinessEntityControllerSpec
             mockSendAuditEvent(businessEntityAddedEvent)
             mockPut[BusinessEntityJourney](resetBusinessJourney, eori1)(Right(BusinessEntityJourney()))
           }
-          checkIsRedirect(performAction("cya" -> "true")(English.code), nextCall)
+          checkIsRedirect(performAction("cya" -> "true"), nextCall)
         }
 
-        def testRedirectionLang(lang: Language): Unit = {
-
-          val businessEntity = BusinessEntity(businessEntityIdentifier = eori2, leadEORI = false)
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
-            mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
-            mockSendEmail(eori2, AddMemberToBusinessEntity, undertaking)(Right(EmailSent))
-            mockSendEmail(eori1, eori2, AddMemberToLead, undertaking)(Right(EmailSent))
-            mockDelete[Undertaking](eori1)(Right(()))
-            mockSendAuditEvent(businessEntityAddedEvent)
-            mockPut[BusinessEntityJourney](BusinessEntityJourney(), eori1)(Right(BusinessEntityJourney()))
-          }
-          checkIsRedirect(
-            performAction("cya" -> "true")(lang.code),
-            routes.BusinessEntityController.getAddBusinessEntity().url
-          )
-        }
-
-        "all api calls are successful and English language is selected" in {
-          testRedirectionLang(English)
-        }
-
-        "all api calls are successful and Welsh language is selected" in {
-          testRedirectionLang(Welsh)
-        }
-
-        "all api calls are successful and is Select lead journey " in {
+        "all api calls are successful and user on Select lead journey" in {
           testRedirection(
             businessEntityJourneyLead,
             routes.SelectNewLeadController.getSelectNewLead().url,
@@ -717,7 +675,7 @@ class BusinessEntityControllerSpec
           )
         }
 
-        "all api calls are successful and is normal add business entity journey " in {
+        "all api calls are successful and user on normal add business entity journey" in {
           testRedirection(
             businessEntityJourney1,
             routes.BusinessEntityController.getAddBusinessEntity().url,
@@ -750,7 +708,7 @@ class BusinessEntityControllerSpec
             mockSendAuditEvent(businessEntityUpdatedEvent)
             mockPut[BusinessEntityJourney](updatedBusinessJourney, eori1)(Right(BusinessEntityJourney()))
           }
-          checkIsRedirect(performAction("cya" -> "true")(English.code), nextCall)
+          checkIsRedirect(performAction("cya" -> "true"), nextCall)
         }
 
         "all api calls are successful and is normal edit business entity journey " in {
@@ -764,7 +722,7 @@ class BusinessEntityControllerSpec
 
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(() => performAction()(English.code))
+          testLeadOnlyRedirect(() => performAction())
         }
       }
 
@@ -937,10 +895,9 @@ class BusinessEntityControllerSpec
 
     "handling request to post remove business entity" must {
 
-      def performAction(data: (String, String)*)(eori: EORI, language: String = English.code) = controller
+      def performAction(data: (String, String)*)(eori: EORI) = controller
         .postRemoveBusinessEntity(eori)(
           FakeRequest("POST", routes.BusinessEntityController.postRemoveBusinessEntity(eori4).url)
-            .withCookies(Cookie("PLAY_LANG", language))
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -1002,7 +959,7 @@ class BusinessEntityControllerSpec
 
       "redirect to next page" when {
 
-        def testRedirection(lang: Language, date: String): Unit = {
+        def testRedirection(date: String): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment(eori1)
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -1015,7 +972,7 @@ class BusinessEntityControllerSpec
             mockSendAuditEvent(AuditEvent.BusinessEntityRemoved(undertakingRef, "1123", eori1, eori4))
           }
           checkIsRedirect(
-            performAction("removeBusiness" -> "true")(eori4, lang.code),
+            performAction("removeBusiness" -> "true")(eori4),
             routes.BusinessEntityController.getAddBusinessEntity().url
           )
         }
@@ -1023,11 +980,7 @@ class BusinessEntityControllerSpec
         "user select yes as input" when {
 
           "User has selected English language" in {
-            testRedirection(English, "10 October 2022")
-          }
-
-          "User has selected Welsh language" in {
-            testRedirection(Welsh, "10 Hydref 2022")
+            testRedirection("10 October 2022")
           }
 
         }
@@ -1047,7 +1000,7 @@ class BusinessEntityControllerSpec
 
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(() => performAction()(eori4, English.code))
+          testLeadOnlyRedirect(() => performAction()(eori4))
         }
       }
 

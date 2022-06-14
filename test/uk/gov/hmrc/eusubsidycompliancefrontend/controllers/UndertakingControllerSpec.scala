@@ -19,12 +19,12 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.implicits.catsSyntaxOptionId
 import play.api.Configuration
 import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.ModifyUndertakingRow
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.CreateUndertaking
@@ -51,7 +51,7 @@ class UndertakingControllerSpec
     with EscServiceSupport
     with TimeProviderSupport {
 
-  override def overrideBindings = List(
+  override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
@@ -695,7 +695,7 @@ class UndertakingControllerSpec
 
       "redirect to Business Entity Add page" when {
 
-        def testRedirection(lang: Language): Unit = {
+        def testRedirection(): Unit = {
 
           val updatedUndertakingJourney = undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage(false.some))
           val updatedUj = updatedUndertakingJourney.copy(undertakingSuccessDisplay = true)
@@ -716,12 +716,8 @@ class UndertakingControllerSpec
           )
         }
 
-        "all api calls are successful and english language is selected" in {
-          testRedirection(English)
-        }
-
-        "all api calls are successful and Welsh language is selected" in {
-          testRedirection(Welsh)
+        "all api calls are successful" in {
+          testRedirection()
         }
 
       }
