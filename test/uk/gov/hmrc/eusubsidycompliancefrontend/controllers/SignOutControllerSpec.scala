@@ -21,15 +21,14 @@ import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{MemberRemoveSelfToBusinessEntity, MemberRemoveSelfToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -99,9 +98,8 @@ class SignOutControllerSpec
 
     "handling request to get sign out" must {
 
-      def performAction(lang: String = English.code) = controller.signOut(
+      def performAction() = controller.signOut(
         FakeRequest("GET", routes.SignOutController.signOut().url)
-          .withCookies(Cookie("PLAY_LANG", lang))
       )
 
       "throw technical error" when {
@@ -137,41 +135,31 @@ class SignOutControllerSpec
           assertThrows[Exception](await(performAction()))
         }
 
-        "language is other than english /welsh" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment(eori4)
-          }
-          assertThrows[Exception](await(performAction("fr")))
-        }
       }
 
       "display the page" when {
 
-        def testDisplay(language: Language, effectiveDate: String): Unit = {
+        def testDisplay(effectiveDate: String): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment(eori4)
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(currentDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockSendEmail(eori4, "removeThemselfEmailToBE", undertaking1, effectiveDate)(Right(EmailSent))
-            mockSendEmail(eori1, eori4, "removeThemselfEmailToLead", undertaking1, effectiveDate)(Right(EmailSent))
+            mockSendEmail(eori4, MemberRemoveSelfToBusinessEntity, undertaking1, effectiveDate)(Right(EmailSent))
+            mockSendEmail(eori1, eori4, MemberRemoveSelfToLead, undertaking1, effectiveDate)(Right(EmailSent))
             mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf(undertakingRef, "1123", eori1, eori4))
           }
 
           checkPageIsDisplayed(
-            performAction(language.code),
+            performAction(),
             messageFromMessageKey("signOut.title"),
             doc => doc.select(".govuk-body").text() should include regex messageFromMessageKey("signOut.p1")
           )
         }
 
-        "the language of the service is English" in {
-          testDisplay(English, "10 October 2022")
-        }
-
-        "the language of the service is Welsh" in {
-          testDisplay(Welsh, "10 Hydref 2022")
+        "for a valid request" in {
+          testDisplay("10 October 2022")
         }
 
       }

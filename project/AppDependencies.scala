@@ -15,7 +15,8 @@ object AppDependencies {
     "org.typelevel"     %% "cats-core"                     % "2.7.0",
     "ai.x"              %% "play-json-extensions"          % "0.42.0",
     "com.chuusai"       %% "shapeless"                     % "2.3.9",
-    "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.11.0-play-28"
+    "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.11.0-play-28",
+    "com.beachape"      %% "enumeratum"                    % "1.7.0"
   )
 
   val test = Seq(

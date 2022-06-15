@@ -19,15 +19,14 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.data.Forms.mapping
-
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
-
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromoted
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.{EmailNotSent, EmailSent}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedOtherAsLeadToBusinessEntity, PromotedOtherAsLeadToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -52,9 +51,6 @@ class SelectNewLeadController @Inject() (
     with LeadOnlyUndertakingSupport {
 
   import escCDSActionBuilder._
-
-  private val promoteOtherAsLeadEmailToBusinessEntity = "promoteAsLeadEmailToBE"
-  private val promoteOtherAsLeadEmailToLead = "promoteAsLeadEmailToLead"
 
   private val selectNewLeadForm: Form[FormValues] = Form(
     mapping("selectNewLead" -> mandatory("selectNewLead"))(FormValues.apply)(FormValues.unapply)
@@ -97,8 +93,8 @@ class SelectNewLeadController @Inject() (
             newLeadJourney.copy(selectNewLead = updatedLead)
           }
           _ = auditService.sendEvent(BusinessEntityPromoted(undertakingRef, request.authorityId, eori, eoriBE))
-          _ <- emailService.sendEmail(eori, eoriBE, promoteOtherAsLeadEmailToLead, undertaking)
-          result <- emailService.sendEmail(eoriBE, promoteOtherAsLeadEmailToBusinessEntity, undertaking)
+          _ <- emailService.sendEmail(eori, eoriBE, PromotedOtherAsLeadToLead, undertaking)
+          result <- emailService.sendEmail(eoriBE, PromotedOtherAsLeadToBusinessEntity, undertaking)
             .map(redirectTo)
         } yield result
       }

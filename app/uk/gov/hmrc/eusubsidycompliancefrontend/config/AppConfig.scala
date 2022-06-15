@@ -19,10 +19,13 @@ import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 
 import javax.inject.{Inject, Singleton}
 import play.api.Configuration
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate
+
 import scala.concurrent.duration.FiniteDuration
 
 @Singleton
 class AppConfig @Inject() (config: Configuration, contactFrontendConfig: ContactFrontendConfig) {
+
   val welshLanguageSupportEnabled: Boolean =
     config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
 
@@ -41,7 +44,7 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   lazy val betaFeedbackUrlNoAuth: String =
     s"$contactFrontendUrl/contact/beta-feedback?service=$contactFormServiceIdentifier"
 
-  lazy val sessionTimeout = config.get[String]("application.session.maxAge")
+  lazy val sessionTimeout: String = config.get[String]("application.session.maxAge")
 
   private lazy val signOutUrlBase: String = config.get[String]("auth.sign-out.url")
 
@@ -55,23 +58,10 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   lazy val authTimeoutCountdownSeconds: Int =
     config.get[FiniteDuration]("auth.sign-out.inactivity-countdown").toSeconds.toInt
 
-  def templateIdsMap(langCode: String) = Map(
-    "createUndertaking" -> config.get[String](s"email-send.create-undertaking-template-$langCode"),
-    "addMemberEmailToBE" -> config.get[String](s"email-send.add-member-to-be-template-$langCode"),
-    "addMemberEmailToLead" -> config.get[String](s"email-send.add-member-to-lead-template-$langCode"),
-    "removeMemberEmailToBE" -> config.get[String](s"email-send.remove-member-to-be-template-$langCode"),
-    "removeMemberEmailToLead" -> config.get[String](s"email-send.remove-member-to-lead-template-$langCode"),
-    "promoteAsLeadEmailToBE" -> config.get[String](s"email-send.promote-other-as-lead-to-be-template-$langCode"),
-    "promoteAsLeadEmailToLead" -> config.get[String](s"email-send.promote-other-as-lead-to-lead-template-$langCode"),
-    "removeThemselfEmailToBE" -> config.get[String](
-      s"email-send.member-remove-themself-email-to-be-template-$langCode"
-    ),
-    "removeThemselfEmailToLead" -> config.get[String](
-      s"email-send.member-remove-themself-email-to-lead-template-$langCode"
-    ),
-    "promotedAsLeadToNewLead" -> config.get[String](
-      s"email-send.promoted-themself-email-to-new-lead-template-$langCode"
-    ),
-    "removedAsLeadToOldLead" -> config.get[String](s"email-send.removed_as_lead-email-to-old-lead-template-$langCode")
-  )
+  private lazy val templateIds = EmailTemplate.values.map { template =>
+    template -> config.get[String](s"email-send.${template.entryName}")
+  }.toMap
+
+  def getTemplateId(template: EmailTemplate): Option[String] = templateIds.get(template)
+
 }

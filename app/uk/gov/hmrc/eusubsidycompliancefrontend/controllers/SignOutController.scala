@@ -24,6 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.BusinessEntity
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{MemberRemoveSelfToBusinessEntity, MemberRemoveSelfToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EmailService, EscService}
@@ -53,9 +54,6 @@ class SignOutController @Inject() (
 
   import escCDSActionBuilder._
 
-  private val RemoveThemselfEmailToBusinessEntity = "removeThemselfEmailToBE"
-  private val RemoveThemselfEmailToLead = "removeThemselfEmailToLead"
-
   val signOutFromTimeout: Action[AnyContent] = Action { implicit request =>
     Ok(timedOutPage()).withNewSession
   }
@@ -73,8 +71,8 @@ class SignOutController @Inject() (
                 removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(eori)
                 leadEORI = undertaking.getLeadEORI
                 _ <- escService.removeMember(undertakingRef, removeBE).toContext
-                _ <- emailService.sendEmail(eori, RemoveThemselfEmailToBusinessEntity, undertaking, removalEffectiveDateString).toContext
-                _ <- emailService.sendEmail(leadEORI, eori, RemoveThemselfEmailToLead, undertaking, removalEffectiveDateString).toContext
+                _ <- emailService.sendEmail(eori, MemberRemoveSelfToBusinessEntity, undertaking, removalEffectiveDateString).toContext
+                _ <- emailService.sendEmail(leadEORI, eori, MemberRemoveSelfToLead, undertaking, removalEffectiveDateString).toContext
                 _ = auditService
                   .sendEvent(
                     AuditEvent

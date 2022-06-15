@@ -20,15 +20,14 @@ import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.inject.bind
-import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedSelfToNewLead, RemovedAsLeadToFormerLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages.{BecomeLeadEoriFormPage, TermsAndConditionsFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -341,10 +340,9 @@ class BecomeLeadControllerSpec
 
     "handling request to get Promotion Confirmation" must {
 
-      def performAction(data: (String, String)*)(lang: String) = controller
+      def performAction(data: (String, String)*) = controller
         .getPromotionConfirmation(
           FakeRequest()
-            .withCookies(Cookie("PLAY_LANG", lang))
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -357,7 +355,7 @@ class BecomeLeadControllerSpec
             mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction()(English.code)))
+          assertThrows[Exception](await(performAction()))
         }
 
         "call to fetch undertaking fails" in {
@@ -366,7 +364,7 @@ class BecomeLeadControllerSpec
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
             mockRetrieveUndertaking(eori4)(Future.failed(exception))
           }
-          assertThrows[Exception](await(performAction()(English.code)))
+          assertThrows[Exception](await(performAction()))
         }
 
         "call to fetch undertaking passes but come back wth no undertaking" in {
@@ -375,7 +373,7 @@ class BecomeLeadControllerSpec
             mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
             mockRetrieveUndertaking(eori4)(None.toFuture)
           }
-          assertThrows[Exception](await(performAction()(English.code)))
+          assertThrows[Exception](await(performAction()))
         }
 
         "call to fetch undertaking come back with undertaking with logged In EORI absent" in {
@@ -386,7 +384,7 @@ class BecomeLeadControllerSpec
               (undertaking1.copy(undertakingBusinessEntity = List(businessEntity1)).some).toFuture
             )
           }
-          assertThrows[Exception](await(performAction()(English.code)))
+          assertThrows[Exception](await(performAction()))
         }
 
         "call to fetch undertaking come back with undertaking with lead EORI absent" in {
@@ -397,7 +395,7 @@ class BecomeLeadControllerSpec
               undertaking1.copy(undertakingBusinessEntity = List(businessEntity4)).some.toFuture
             )
           }
-          assertThrows[Exception](await(performAction()(English.code)))
+          assertThrows[Exception](await(performAction()))
         }
 
         "call to update new lead fails" in {
@@ -407,7 +405,7 @@ class BecomeLeadControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction()(English.code)))
+          assertThrows[Exception](await(performAction()))
         }
 
         "call to update old lead fails" in {
@@ -418,7 +416,7 @@ class BecomeLeadControllerSpec
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction()(English.code)))
+          assertThrows[Exception](await(performAction()))
         }
 
         "request to send email fails" in {
@@ -428,28 +426,16 @@ class BecomeLeadControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
-            mockSendEmail(eori4, "promotedAsLeadToNewLead", undertaking1)(Left(ConnectorError("Error")))
+            mockSendEmail(eori4, PromotedSelfToNewLead, undertaking1)(Left(ConnectorError("Error")))
           }
-          assertThrows[Exception](await(performAction()(English.code)))
-        }
-
-        "language is other than english /welsh" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment(eori4)
-            mockGet[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney.some))
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-            mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
-            mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
-            mockSendEmail(eori4, "promotedAsLeadToNewLead", undertaking1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()("fr")))
+          assertThrows[Exception](await(performAction()))
         }
 
       }
 
       "display the page" when {
 
-        def testDisplay(lang: Language): Unit = {
+        def testDisplay(): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment(eori4)
             mockGet[BecomeLeadJourney](eori4)(
@@ -458,8 +444,8 @@ class BecomeLeadControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
-            mockSendEmail(eori4, "promotedAsLeadToNewLead", undertaking1)(Right(EmailSent))
-            mockSendEmail(eori1, "removedAsLeadToOldLead", undertaking1)(Right(EmailSent))
+            mockSendEmail(eori4, PromotedSelfToNewLead, undertaking1)(Right(EmailSent))
+            mockSendEmail(eori1, RemovedAsLeadToFormerLead, undertaking1)(Right(EmailSent))
             mockDelete[UndertakingJourney](eori4)(Right(()))
             mockSendAuditEvent[BusinessEntityPromotedSelf](
               AuditEvent.BusinessEntityPromotedSelf(undertakingRef, "1123", eori1, eori4)
@@ -467,17 +453,13 @@ class BecomeLeadControllerSpec
           }
 
           checkPageIsDisplayed(
-            performAction()(lang.code),
+            performAction(),
             messageFromMessageKey("become-admin-confirmation.title")
           )
         }
 
-        "when user has selected English language" in {
-          testDisplay(English)
-        }
-
-        "when user has selected Welsh language" in {
-          testDisplay(Welsh)
+        "for a successful request" in {
+          testDisplay()
         }
 
       }
@@ -491,15 +473,15 @@ class BecomeLeadControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
-            mockSendEmail(eori4, "promotedAsLeadToNewLead", undertaking1)(Right(EmailSent))
-            mockSendEmail(eori1, "removedAsLeadToOldLead", undertaking1)(Right(EmailSent))
+            mockSendEmail(eori4, PromotedSelfToNewLead, undertaking1)(Right(EmailSent))
+            mockSendEmail(eori1, RemovedAsLeadToFormerLead, undertaking1)(Right(EmailSent))
             mockDelete[UndertakingJourney](eori4)(Right(()))
             mockSendAuditEvent[BusinessEntityPromotedSelf](
               AuditEvent.BusinessEntityPromotedSelf(undertakingRef, "1123", eori1, eori4)
             )
           }
 
-          checkIsRedirect(performAction()(English.code), routes.BecomeLeadController.getBecomeLeadEori())
+          checkIsRedirect(performAction(), routes.BecomeLeadController.getBecomeLeadEori())
 
         }
       }

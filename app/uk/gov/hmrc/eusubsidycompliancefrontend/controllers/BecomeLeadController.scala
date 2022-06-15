@@ -25,6 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedSelfToNewLead, RemovedAsLeadToFormerLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -53,9 +54,6 @@ class BecomeLeadController @Inject() (
 
   import escCDSActionBuilder._
   import escInitialActionBuilders._
-
-  private val PromotedAsNewLead = "promotedAsLeadToNewLead"
-  private val RemovedAsLead = "removedAsLeadToOldLead"
 
   def getBecomeLeadEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -161,8 +159,8 @@ class BecomeLeadController @Inject() (
             .fold(handleMissingSessionData("lead Business Entity"))(_.copy(leadEORI = false))
           _ <- escService.addMember(undertakingRef, newLead)
           _ <- escService.addMember(undertakingRef, oldLead)
-          _ <- emailService.sendEmail(eori, PromotedAsNewLead, retrievedUndertaking)
-          _ <- emailService.sendEmail(oldLead.businessEntityIdentifier, RemovedAsLead, retrievedUndertaking)
+          _ <- emailService.sendEmail(eori, PromotedSelfToNewLead, retrievedUndertaking)
+          _ <- emailService.sendEmail(oldLead.businessEntityIdentifier, RemovedAsLeadToFormerLead, retrievedUndertaking)
           // Flush any stale undertaking journey data
            _ <- store.delete[UndertakingJourney]
           _ = auditService.sendEvent[BusinessEntityPromotedSelf](

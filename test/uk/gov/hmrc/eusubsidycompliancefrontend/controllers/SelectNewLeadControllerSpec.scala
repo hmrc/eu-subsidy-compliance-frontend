@@ -17,19 +17,16 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
-import com.typesafe.config.ConfigFactory
-import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.Language.{English, Welsh}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.{EmailNotSent, EmailSent}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedOtherAsLeadToBusinessEntity, PromotedOtherAsLeadToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.AddEoriFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -52,21 +49,6 @@ class SelectNewLeadControllerSpec
     bind[EscService].toInstance(mockEscService),
     bind[EmailService].toInstance(mockEmailService),
     bind[AuditService].toInstance(mockAuditService)
-  )
-
-  override def additionalConfig: Configuration = super.additionalConfig.withFallback(
-    Configuration(
-      ConfigFactory.parseString(s"""
-                                   |
-                                   |play.i18n.langs = ["en", "cy", "fr"]
-                                   | email-send {
-                                   |    promote-other-as-lead-to-be-template-en = "template_BE_as_lead_EN"
-                                   |    promote-other-as-lead-to-be-template-cy = "template_BE_as_lead_CY"
-                                   |    promote-other-as-lead-to-lead-template-en = "template_BE_as_lead_mail_to_lead_EN"
-                                   |    promote-other-as-lead-to-lead-template-cy = "template_BE_as_lead_mail_to_lead_CY"
-                                   |  }
-                                   |""".stripMargin)
-    )
   )
 
   private val controller = instanceOf[SelectNewLeadController]
@@ -148,10 +130,9 @@ class SelectNewLeadControllerSpec
 
     "handling request to post select new lead" must {
 
-      def performAction(data: (String, String)*)(lang: String) = controller
+      def performAction(data: (String, String)*) = controller
         .postSelectNewLead(
           FakeRequest()
-            .withCookies(Cookie("PLAY_LANG", lang))
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -167,7 +148,7 @@ class SelectNewLeadControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
+          assertThrows[Exception](await(performAction("selectNewLead" -> eori4)))
         }
 
         "call to send email fails" in {
@@ -178,20 +159,9 @@ class SelectNewLeadControllerSpec
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
-            mockSendEmail(eori1, eori4, "promoteAsLeadEmailToLead", undertaking)(Left(ConnectorError(exception)))
+            mockSendEmail(eori1, eori4, PromotedOtherAsLeadToLead, undertaking)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction("selectNewLead" -> eori4)(English.code)))
-        }
-
-        "language is not supported" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
-              Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
-            )
-          }
-          assertThrows[Exception](await(performAction("selectNewLead" -> eori4)("fr")))
+          assertThrows[Exception](await(performAction("selectNewLead" -> eori4)))
         }
 
       }
@@ -204,7 +174,7 @@ class SelectNewLeadControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           }
           checkFormErrorIsDisplayed(
-            performAction()(English.code),
+            performAction(),
             messageFromMessageKey("selectNewLead.title", undertaking.name),
             messageFromMessageKey("selectNewLead.error.required")
           )
@@ -215,11 +185,7 @@ class SelectNewLeadControllerSpec
 
         def update(j: NewLeadJourney) = j.copy(selectNewLead = SelectNewLeadFormPage(eori4.some))
 
-        def testRedirection(
-          lang: Language,
-          nextCall: String
-        ): Unit = {
-
+        def testRedirection(nextCall: String): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -227,27 +193,17 @@ class SelectNewLeadControllerSpec
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
-            mockSendEmail(eori1, eori4, "promoteAsLeadEmailToLead", undertaking)(Right(EmailSendResult.EmailSent))
-            mockSendEmail(eori4, "promoteAsLeadEmailToBE", undertaking)(Right(EmailSendResult.EmailSent))
+            mockSendEmail(eori1, eori4, PromotedOtherAsLeadToLead, undertaking)(Right(EmailSendResult.EmailSent))
+            mockSendEmail(eori4, PromotedOtherAsLeadToBusinessEntity, undertaking)(Right(EmailSendResult.EmailSent))
           }
           checkIsRedirect(
-            performAction("selectNewLead" -> eori4)(lang.code),
+            performAction("selectNewLead" -> eori4),
             nextCall
           )
         }
 
-        "the language selected by user is  English" in {
-          testRedirection(
-            English,
-            routes.SelectNewLeadController.getLeadEORIChanged().url
-          )
-        }
-
-        "the language selected by user is  Welsh" in {
-          testRedirection(
-            Welsh,
-            routes.SelectNewLeadController.getLeadEORIChanged().url
-          )
+        "for a valid request" in {
+          testRedirection(routes.SelectNewLeadController.getLeadEORIChanged().url)
         }
 
         "email address of BE is unverified" in {
@@ -258,11 +214,11 @@ class SelectNewLeadControllerSpec
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
-            mockSendEmail(eori1, eori4, "promoteAsLeadEmailToLead", undertaking)(Right(EmailSent))
-            mockSendEmail(eori4, "promoteAsLeadEmailToBE", undertaking)(Right(EmailNotSent))
+            mockSendEmail(eori1, eori4, PromotedOtherAsLeadToLead, undertaking)(Right(EmailSent))
+            mockSendEmail(eori4, PromotedOtherAsLeadToBusinessEntity, undertaking)(Right(EmailNotSent))
           }
           checkIsRedirect(
-            performAction("selectNewLead" -> eori4)(English.code),
+            performAction("selectNewLead" -> eori4),
             routes.SelectNewLeadController.emailNotVerified().url
           )
 
@@ -271,7 +227,7 @@ class SelectNewLeadControllerSpec
 
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(() => performAction()(English.code))
+          testLeadOnlyRedirect(() => performAction())
         }
       }
 

@@ -25,6 +25,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscCDSActionBuilders, EscInitialActionBuilder}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{AddMemberToBusinessEntity, AddMemberToLead, RemoveMemberToBusinessEntity, RemoveMemberToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
@@ -63,11 +64,6 @@ class BusinessEntityController @Inject() (
 
   import escInitialActionBuilders._
   import escCDSActionBuilder._
-
-  private val AddMemberEmailToBusinessEntity = "addMemberEmailToBE"
-  private val AddMemberEmailToLead = "addMemberEmailToLead"
-  private val RemoveMemberEmailToBusinessEntity = "removeMemberEmailToBE"
-  private val RemoveMemberEmailToLead = "removeMemberEmailToLead"
 
   def getAddBusinessEntity: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
@@ -196,8 +192,8 @@ class BusinessEntityController @Inject() (
         }
         escService.addMember(undertakingRef, businessEntity).toContext
       }
-      _ <- emailService.sendEmail(eoriBE, AddMemberEmailToBusinessEntity, undertaking).toContext
-      _ <- emailService.sendEmail(eori, eoriBE, AddMemberEmailToLead, undertaking).toContext
+      _ <- emailService.sendEmail(eoriBE, AddMemberToBusinessEntity, undertaking).toContext
+      _ <- emailService.sendEmail(eori, eoriBE, AddMemberToLead, undertaking).toContext
       // Clear the cached undertaking so it's retrieved on the next access
       _ <- store.delete[Undertaking].toContext
       _ =
@@ -261,19 +257,8 @@ class BusinessEntityController @Inject() (
             val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
             for {
               _ <- escService.removeMember(undertakingRef, removeBE)
-              _ <- emailService.sendEmail(
-                EORI(eoriEntered),
-                RemoveMemberEmailToBusinessEntity,
-                undertaking,
-                removalEffectiveDateString
-              )
-              _ <- emailService.sendEmail(
-                eori,
-                EORI(eoriEntered),
-                RemoveMemberEmailToLead,
-                undertaking,
-                removalEffectiveDateString
-              )
+              _ <- emailService.sendEmail(EORI(eoriEntered), RemoveMemberToBusinessEntity, undertaking, removalEffectiveDateString)
+              _ <- emailService.sendEmail(eori, EORI(eoriEntered), RemoveMemberToLead, undertaking, removalEffectiveDateString)
               // Clear the cached undertaking so it's retrieved on the next access
               _ <- store.delete[Undertaking]
               _ = auditService
