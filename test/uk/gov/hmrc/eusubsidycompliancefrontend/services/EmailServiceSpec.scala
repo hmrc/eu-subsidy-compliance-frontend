@@ -128,14 +128,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
       "return success" when {
 
-        "the email is sent successfully with language code en" in {
-          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
-          mockSendEmail(emailSendRequest)(Right(HttpResponse(ACCEPTED, "")))
-          val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
-          result.futureValue shouldBe EmailSent
-        }
-
-        "the email is sent successfully with language code cy" in {
+        "the email is sent successfully" in {
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockSendEmail(emailSendRequest)(Right(HttpResponse(ACCEPTED, "")))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)

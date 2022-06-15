@@ -20,7 +20,6 @@ import cats.implicits.catsSyntaxOptionId
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.mvc.Cookie
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -29,7 +28,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{Undertak
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.CreateUndertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingName}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Language}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -613,10 +612,9 @@ class UndertakingControllerSpec
 
     "handling request to Post Check your Answers call" must {
 
-      def performAction(data: (String, String)*)(lang: String) =
+      def performAction(data: (String, String)*) =
         controller.postCheckAnswers(
           FakeRequest(POST, routes.UndertakingController.getCheckAnswers().url)
-            .withCookies(Cookie("PLAY_LANG", lang))
             .withFormUrlEncodedBody(data: _*)
         )
       def update(u: UndertakingJourney) = u.copy(undertakingSuccessDisplay = true)
@@ -630,7 +628,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
           }
-          assertThrows[Exception](await(performAction()(Language.English.code)))
+          assertThrows[Exception](await(performAction()))
         }
 
         "call to update undertaking journey fails" in {
@@ -639,7 +637,7 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
+          assertThrows[Exception](await(performAction("cya" -> "true")))
         }
 
         "updated undertaking journey don't have undertaking name" in {
@@ -648,7 +646,7 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
+          assertThrows[Exception](await(performAction("cya" -> "true")))
         }
 
         "updated undertaking journey don't have undertaking sector" in {
@@ -657,7 +655,7 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockUpdate[UndertakingJourney](identity, eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
+          assertThrows[Exception](await(performAction("cya" -> "true")))
         }
 
         "call to create undertaking fails" in {
@@ -669,7 +667,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
+          assertThrows[Exception](await(performAction("cya" -> "true")))
 
         }
 
@@ -688,7 +686,7 @@ class UndertakingControllerSpec
               Left(ConnectorError(exception))
             )
           }
-          assertThrows[Exception](await(performAction("cya" -> "true")(Language.English.code)))
+          assertThrows[Exception](await(performAction("cya" -> "true")))
 
         }
       }
@@ -711,7 +709,7 @@ class UndertakingControllerSpec
             mockSendAuditEvent(createUndertakingAuditEvent)
           }
           checkIsRedirect(
-            performAction("cya" -> "true")(lang.code),
+            performAction("cya" -> "true"),
             routes.BusinessEntityController.getAddBusinessEntity().url
           )
         }

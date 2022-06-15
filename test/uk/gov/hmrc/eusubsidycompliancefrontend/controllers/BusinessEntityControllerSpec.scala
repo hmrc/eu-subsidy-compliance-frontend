@@ -977,12 +977,8 @@ class BusinessEntityControllerSpec
           )
         }
 
-        "user select yes as input" when {
-
-          "User has selected English language" in {
-            testRedirection("10 October 2022")
-          }
-
+        "user select yes as input" in {
+          testRedirection("10 October 2022")
         }
 
         "user selects No as input" in {
