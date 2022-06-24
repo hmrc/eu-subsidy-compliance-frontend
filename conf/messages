@@ -442,3 +442,9 @@ undertakingDisabled.inset.p2=During this 24-hour period, you will still be in th
 undertakingDisabled.p2 = You have been logged out of the account.
 undertakingDisabled.p4 = <a href="{0}" class="govuk-link">What did you think of this service?</a>(takes 30 seconds)
 
+
+#addMemberEmailUnverified
+
+addMemberEmailUnverified.title = The business member you have added to your undertaking does not have a verified email address associated with their EORI number
+addMemberEmailUnverified.inset=This means the business member will not be notified that you have asked them to join your undertaking.
+addMemberEmailUnverified.p1=In order for them to be notified, the business member's EORI number must be associated with a valid email address, which can be acquired by <a href="https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service" class="govuk-link">register with CDS</a>.

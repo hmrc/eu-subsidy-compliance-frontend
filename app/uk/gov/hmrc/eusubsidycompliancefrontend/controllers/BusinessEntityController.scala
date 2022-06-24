@@ -25,6 +25,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscCDSActionBuilders, EscInitialActionBuilder}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.{EmailNotSent, EmailSent}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{AddMemberToBusinessEntity, AddMemberToLead, RemoveMemberToBusinessEntity, RemoveMemberToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
@@ -55,7 +57,8 @@ class BusinessEntityController @Inject() (
   eoriPage: BusinessEntityEoriPage,
   removeYourselfBEPage: BusinessEntityRemoveYourselfPage,
   businessEntityCyaPage: BusinessEntityCYAPage,
-  removeBusinessPage: RemoveBusinessPage
+  removeBusinessPage: RemoveBusinessPage,
+  addMemberEmailUnverifiedPage: AddMemberEmailNotVerifiedPage
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -192,8 +195,6 @@ class BusinessEntityController @Inject() (
         }
         escService.addMember(undertakingRef, businessEntity).toContext
       }
-      _ <- emailService.sendEmail(eoriBE, AddMemberToBusinessEntity, undertaking).toContext
-      _ <- emailService.sendEmail(eori, eoriBE, AddMemberToLead, undertaking).toContext
       // Clear the cached undertaking so it's retrieved on the next access
       _ <- store.delete[Undertaking].toContext
       _ =
@@ -203,7 +204,12 @@ class BusinessEntityController @Inject() (
           )
         else
           auditService.sendEvent(AuditEvent.BusinessEntityAdded(undertakingRef, request.authorityId, eori, eoriBE))
-      redirect <- getNext(businessEntityJourney)(eori).toContext
+
+      _ <- emailService.sendEmail(eori, eoriBE, AddMemberToLead, undertaking).toContext
+      redirect <- emailService
+        .sendEmail(eoriBE, AddMemberToBusinessEntity, undertaking)
+        .flatMap(emailResult => redirectTo(emailResult, businessEntityJourney))
+        .toContext
     } yield redirect
 
     withLeadUndertaking { undertaking =>
@@ -214,6 +220,18 @@ class BusinessEntityController @Inject() (
           _ => handleValidAnswersC(undertaking).fold(handleMissingSessionData("BusinessEntity Data"))(identity)
         )
     }
+  }
+
+  private def redirectTo(emailResult: EmailSendResult, businessEntityJourney: BusinessEntityJourney)(implicit
+    eori: EORI
+  ): Future[Result] = emailResult match {
+    case EmailNotSent =>
+      store
+        .put[BusinessEntityJourney](BusinessEntityJourney())
+        .map(_ => Redirect(routes.BusinessEntityController.addMemberEmailUnVerified()))
+
+    case EmailSent => getNext(businessEntityJourney)(eori)
+    case _ => handleMissingSessionData("Email result Response")
   }
 
   def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = withCDSAuthenticatedUser.async {
@@ -257,8 +275,19 @@ class BusinessEntityController @Inject() (
             val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
             for {
               _ <- escService.removeMember(undertakingRef, removeBE)
-              _ <- emailService.sendEmail(EORI(eoriEntered), RemoveMemberToBusinessEntity, undertaking, removalEffectiveDateString)
-              _ <- emailService.sendEmail(eori, EORI(eoriEntered), RemoveMemberToLead, undertaking, removalEffectiveDateString)
+              _ <- emailService.sendEmail(
+                EORI(eoriEntered),
+                RemoveMemberToBusinessEntity,
+                undertaking,
+                removalEffectiveDateString
+              )
+              _ <- emailService.sendEmail(
+                eori,
+                EORI(eoriEntered),
+                RemoveMemberToLead,
+                undertaking,
+                removalEffectiveDateString
+              )
               // Clear the cached undertaking so it's retrieved on the next access
               _ <- store.delete[Undertaking]
               _ = auditService
@@ -305,6 +334,10 @@ class BusinessEntityController @Inject() (
 
       case None => handleMissingSessionData("Undertaking journey")
     }
+  }
+
+  def addMemberEmailUnVerified = withCDSAuthenticatedUser.async { implicit request =>
+    Ok(addMemberEmailUnverifiedPage()).toFuture
   }
 
   private def getNext(businessEntityJourney: BusinessEntityJourney)(implicit EORI: EORI): Future[Result] =
