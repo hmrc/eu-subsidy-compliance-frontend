@@ -47,7 +47,45 @@ trait ConnectorSpec { this: Matchers with AnyWordSpecLike =>
 
       "the server returns a 4xx response" in {
         mockResponse(Some(HttpResponse(404, "")))
-        performCall().futureValue.isRight shouldBe true
+        performCall().futureValue.isLeft shouldBe true
+      }
+
+      "the server returns a 5xx response" in {
+        mockResponse(Some(HttpResponse(500, "")))
+        performCall().futureValue.isLeft shouldBe true
+      }
+
+      "the future fails" in {
+        mockResponse(None)
+        performCall().futureValue.isLeft shouldBe true
+      }
+
+    }
+  }
+
+  def connectorBehaviourForRetrieveEmail[A](
+    mockResponse: Option[HttpResponse] => Unit,
+    performCall: () => Future[Either[A, HttpResponse]]
+  ) = {
+
+    "do a get http call and return the result" in {
+      List(
+        HttpResponse(200, "{}"),
+        HttpResponse(404, "{}"),
+        HttpResponse(200, JsString("hi"), Map.empty[String, Seq[String]])
+      ).foreach { httpResponse =>
+        withClue(s"For http response [${httpResponse.toString}]") {
+          mockResponse(Some(httpResponse))
+          performCall().futureValue shouldBe Right(httpResponse)
+        }
+      }
+    }
+
+    "return an error" when {
+
+      "the server returns a 4xx response except 404" in {
+        mockResponse(Some(HttpResponse(400, "")))
+        performCall().futureValue.isLeft shouldBe true
       }
 
       "the server returns a 5xx response" in {

@@ -36,6 +36,6 @@ class RetrieveEmailConnector @Inject() (
   private def getUri(eori: EORI) = s"$cdsURL/customs-data-store/eori/$eori/verified-email"
 
   def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): ConnectorResult =
-    makeRequest(_.GET[HttpResponse](getUri(eori)))
+    makeRequest(_.GET[HttpResponse](getUri(eori)), true)
 
 }

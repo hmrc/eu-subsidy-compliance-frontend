@@ -29,10 +29,11 @@ trait Connector {
   protected val http: HttpClient
 
   protected def makeRequest(
-    request: HttpClient => Future[HttpResponse]
+    request: HttpClient => Future[HttpResponse],
+    isRetrieveEmail: Boolean = false
   )(implicit ec: ExecutionContext): ConnectorResult =
     request(http) map { r: HttpResponse =>
-      if (r.status.isSuccess) Right(r)
+      if (r.status.isSuccess(isRetrieveEmail)) Right(r)
       else Left(ConnectorError(UpstreamErrorResponse(s"Unexpected response - got HTTP ${r.status}", r.status)))
     } recover { case e: Exception =>
       Left(ConnectorError(e))
@@ -44,7 +45,8 @@ object Connector {
 
   object ConnectorSyntax {
     implicit class ResponseStatusOps(val status: Int) extends AnyVal {
-      def isSuccess: Boolean = (status == 404) || (status >= 200 && status < 300)
+      def isSuccess(isRetrieveEmail: Boolean): Boolean =
+        if (isRetrieveEmail) (status == 404) || (status >= 200 && status < 300) else (status >= 200 && status < 300)
     }
   }
 

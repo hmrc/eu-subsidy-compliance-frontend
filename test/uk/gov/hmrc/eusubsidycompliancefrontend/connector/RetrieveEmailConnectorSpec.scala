@@ -55,7 +55,7 @@ class RetrieveEmailConnectorSpec
 
   "RetrieveEmailConnector" when {
     "handling request to retrieve email address by eori" must {
-      behave like connectorBehaviour(
+      behave like connectorBehaviourForRetrieveEmail(
         mockGet(expectedUrl)(_),
         () => connector.retrieveEmailByEORI(eori1)
       )
