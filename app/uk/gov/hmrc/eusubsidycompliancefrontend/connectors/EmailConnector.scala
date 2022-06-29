@@ -16,19 +16,14 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailConnector.ConnectorSyntax.ResponseStatusOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.http.{HttpClient, HttpResponse, UpstreamErrorResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
-import Connector.ConnectorSyntax._
 
-trait Connector {
-
-  type ConnectorResult = Future[Either[ConnectorError, HttpResponse]]
-
-  protected val http: HttpClient
-
-  protected def makeRequest(
+trait EmailConnector extends Connector {
+  override protected def makeRequest(
     request: HttpClient => Future[HttpResponse]
   )(implicit ec: ExecutionContext): ConnectorResult =
     request(http) map { r: HttpResponse =>
@@ -40,11 +35,11 @@ trait Connector {
 
 }
 
-object Connector {
+object EmailConnector {
 
   object ConnectorSyntax {
     implicit class ResponseStatusOps(val status: Int) extends AnyVal {
-      def isSuccess: Boolean = status >= 200 && status < 300
+      def isSuccess: Boolean = (status == 404) || (status >= 200 && status < 300)
     }
   }
 

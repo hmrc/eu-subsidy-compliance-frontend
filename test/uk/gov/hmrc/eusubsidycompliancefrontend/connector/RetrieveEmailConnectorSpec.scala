@@ -23,9 +23,8 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.RetrieveEmailConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -34,7 +33,7 @@ class RetrieveEmailConnectorSpec
     with Matchers
     with MockFactory
     with HttpSupport
-    with ConnectorSpec {
+    with EmailConnectorSpec {
 
   private val (protocol, host, port) = ("http", "host", "123")
 
@@ -61,12 +60,6 @@ class RetrieveEmailConnectorSpec
       )
     }
 
-    "handling request to retrieve email address by eori with response 404" in {
-      inSequence {
-        mockGet(expectedUrl)(Some(HttpResponse(404, "")))
-      }
-      connector.retrieveEmailByEORI(eori1).futureValue.isRight shouldBe true
-    }
   }
 
 }
