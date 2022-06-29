@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.{Form, Uri}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.Future
@@ -34,14 +34,15 @@ case class UndertakingJourney(
   name: UndertakingNameFormPage = UndertakingNameFormPage(),
   sector: UndertakingSectorFormPage = UndertakingSectorFormPage(),
   cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
-  undertakingSuccessDisplay: Boolean = false, // Flag to check if undertaking success screen needs to be displayed
+  confirmation: UndertakingConfirmationFormPage = UndertakingConfirmationFormPage(),
   isAmend: Boolean = false
 ) extends Journey {
 
   override def steps = Array(
     name,
     sector,
-    cya
+    cya,
+    confirmation
   )
   private lazy val previousMap: Map[String, Uri] = Map(
     routes.UndertakingController.getUndertakingName().url -> routes.EligibilityController.getCreateUndertaking().url,
@@ -70,6 +71,9 @@ case class UndertakingJourney(
 
   def setUndertakingCYA(b: Boolean): UndertakingJourney = this.copy(cya = cya.copy(value = Some(b)))
 
+  def setUndertakingConfirmation(b: Boolean): UndertakingJourney =
+    this.copy(confirmation = confirmation.copy(value = Some(b)))
+
 }
 
 object UndertakingJourney {
@@ -94,6 +98,9 @@ object UndertakingJourney {
     case class UndertakingCyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getCheckAnswers().url
     }
+    case class UndertakingConfirmationFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
+      def uri = controller.postConfirmation().url
+    }
 
     object UndertakingNameFormPage {
       implicit val undertakingNameFormPage: OFormat[UndertakingNameFormPage] = Json.format
@@ -102,6 +109,9 @@ object UndertakingJourney {
       implicit val undertakingSectorFormPage: OFormat[UndertakingSectorFormPage] = Json.format
     }
     object UndertakingCyaFormPage { implicit val undertakingCyaFormPage: OFormat[UndertakingCyaFormPage] = Json.format }
+    object UndertakingConfirmationFormPage {
+      implicit val undertakingConfirmationFormPage: OFormat[UndertakingConfirmationFormPage] = Json.format
+    }
 
   }
 }

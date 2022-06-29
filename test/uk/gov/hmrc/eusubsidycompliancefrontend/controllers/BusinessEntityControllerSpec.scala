@@ -218,31 +218,12 @@ class BusinessEntityControllerSpec
 
       "redirect to the next page" when {
 
-        "user selected No" when {
-
-          "undertaking success display flag is off" in {
-            inSequence {
-              mockAuthWithNecessaryEnrolment()
-              mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-              mockGet[UndertakingJourney](eori1)(Right(Some(undertakingJourneyComplete)))
-            }
-            checkIsRedirect(performAction("addBusiness" -> "false"), routes.AccountController.getAccountPage().url)
+        "user selected No" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           }
-
-          "undertaking success display flag is on" in {
-            inSequence {
-              mockAuthWithNecessaryEnrolment()
-              mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-              mockGet[UndertakingJourney](eori1)(
-                Right(Some(undertakingJourneyComplete.copy(undertakingSuccessDisplay = true)))
-              )
-            }
-            checkIsRedirect(
-              performAction("addBusiness" -> "false"),
-              routes.UndertakingController.getConfirmation(undertakingRef, undertaking.name).url
-            )
-          }
-
+          checkIsRedirect(performAction("addBusiness" -> "false"), routes.AccountController.getAccountPage().url)
         }
 
         "user selected Yes" in {
