@@ -33,7 +33,7 @@ class RetrieveEmailConnectorSpec
     with Matchers
     with MockFactory
     with HttpSupport
-    with ConnectorSpec {
+    with EmailConnectorSpec {
 
   private val (protocol, host, port) = ("http", "host", "123")
 
@@ -50,16 +50,16 @@ class RetrieveEmailConnectorSpec
   private val connector = new RetrieveEmailConnector(mockHttp, new ServicesConfig(config))
 
   implicit private val hc: HeaderCarrier = HeaderCarrier()
+  val expectedUrl = s"$protocol://$host:$port/customs-data-store/eori/$eori1/verified-email"
 
   "RetrieveEmailConnector" when {
     "handling request to retrieve email address by eori" must {
-      val expectedUrl = s"$protocol://$host:$port/customs-data-store/eori/${eori1}/verified-email"
-
-      behave like connectorBehaviour(
+      behave like connectorBehaviourForRetrieveEmail(
         mockGet(expectedUrl)(_),
         () => connector.retrieveEmailByEORI(eori1)
       )
     }
+
   }
 
 }
