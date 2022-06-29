@@ -34,8 +34,8 @@ trait Connector {
     request(http) map { r: HttpResponse =>
       if (r.status.isSuccess) Right(r)
       else Left(ConnectorError(UpstreamErrorResponse(s"Unexpected response - got HTTP ${r.status}", r.status)))
-    } recover {
-      case e: Exception => Left(ConnectorError(e))
+    } recover { case e: Exception =>
+      Left(ConnectorError(e))
     }
 
 }
@@ -44,7 +44,7 @@ object Connector {
 
   object ConnectorSyntax {
     implicit class ResponseStatusOps(val status: Int) extends AnyVal {
-      def isSuccess: Boolean = status >= 200 && status < 300
+      def isSuccess: Boolean = (status == 404) || (status >= 200 && status < 300)
     }
   }
 

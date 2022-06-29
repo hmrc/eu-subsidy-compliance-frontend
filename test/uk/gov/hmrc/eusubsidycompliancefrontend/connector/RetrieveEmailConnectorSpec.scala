@@ -23,8 +23,9 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.RetrieveEmailConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import org.scalatest.concurrent.ScalaFutures.convertScalaFuture
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -50,15 +51,21 @@ class RetrieveEmailConnectorSpec
   private val connector = new RetrieveEmailConnector(mockHttp, new ServicesConfig(config))
 
   implicit private val hc: HeaderCarrier = HeaderCarrier()
+  val expectedUrl = s"$protocol://$host:$port/customs-data-store/eori/$eori1/verified-email"
 
   "RetrieveEmailConnector" when {
     "handling request to retrieve email address by eori" must {
-      val expectedUrl = s"$protocol://$host:$port/customs-data-store/eori/${eori1}/verified-email"
-
       behave like connectorBehaviour(
         mockGet(expectedUrl)(_),
         () => connector.retrieveEmailByEORI(eori1)
       )
+    }
+
+    "handling request to retrieve email address by eori with response 404" in {
+      inSequence {
+        mockGet(expectedUrl)(Some(HttpResponse(404, "")))
+      }
+      connector.retrieveEmailByEORI(eori1).futureValue.isRight shouldBe true
     }
   }
 

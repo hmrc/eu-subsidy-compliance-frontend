@@ -28,7 +28,8 @@ import scala.concurrent.ExecutionContext
 class SendEmailConnector @Inject() (
   override protected val http: HttpClient,
   servicesConfig: ServicesConfig
-)(implicit ec: ExecutionContext) extends Connector {
+)(implicit ec: ExecutionContext)
+    extends Connector {
 
   private lazy val baseUrl: String = servicesConfig.baseUrl("email-send")
   private lazy val sendEmailUrl: String = s"$baseUrl/hmrc/email"

@@ -28,11 +28,12 @@ import scala.concurrent.ExecutionContext
 class RetrieveEmailConnector @Inject() (
   override protected val http: HttpClient,
   servicesConfig: ServicesConfig
-)(implicit ec: ExecutionContext) extends Connector {
+)(implicit ec: ExecutionContext)
+    extends Connector {
 
   lazy private val cdsURL: String = servicesConfig.baseUrl("cds")
 
-  private def getUri(eori: EORI) = s"$cdsURL/customs-data-store/eori/${eori}/verified-email"
+  private def getUri(eori: EORI) = s"$cdsURL/customs-data-store/eori/$eori/verified-email"
 
   def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): ConnectorResult =
     makeRequest(_.GET[HttpResponse](getUri(eori)))

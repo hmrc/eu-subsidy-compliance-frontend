@@ -27,6 +27,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityControllerSpec.CheckYourAnswersRowBE
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{AddMemberToBusinessEntity, AddMemberToLead, RemoveMemberToBusinessEntity, RemoveMemberToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -650,7 +651,9 @@ class BusinessEntityControllerSpec
         def testRedirection(
           businessEntityJourney: BusinessEntityJourney,
           nextCall: String,
-          resetBusinessJourney: BusinessEntityJourney
+          resetBusinessJourney: BusinessEntityJourney,
+          emailSendResultBE: EmailSendResult = EmailSent,
+          emailSendResultLead: EmailSendResult = EmailSent
         ): Unit = {
           val businessEntity = BusinessEntity(eori2, leadEORI = false)
           inSequence {
@@ -658,8 +661,8 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
-            mockSendEmail(eori2, AddMemberToBusinessEntity, undertaking)(Right(EmailSent))
-            mockSendEmail(eori1, eori2, AddMemberToLead, undertaking)(Right(EmailSent))
+            mockSendEmail(eori2, AddMemberToBusinessEntity, undertaking)(Right(emailSendResultBE))
+            mockSendEmail(eori1, eori2, AddMemberToLead, undertaking)(Right(emailSendResultLead))
             mockDelete[Undertaking](eori1)(Right(()))
             mockSendAuditEvent(businessEntityAddedEvent)
             mockPut[BusinessEntityJourney](resetBusinessJourney, eori1)(Right(BusinessEntityJourney()))
@@ -675,12 +678,32 @@ class BusinessEntityControllerSpec
           )
         }
 
-        "all api calls are successful and user on normal add business entity journey" in {
-          testRedirection(
-            businessEntityJourney1,
-            routes.BusinessEntityController.getAddBusinessEntity().url,
-            BusinessEntityJourney()
-          )
+        "all api calls are successful and user on normal add business entity journey" when {
+          "Business entity to be added has no email address and return 404" in {
+            testRedirection(
+              businessEntityJourney1,
+              routes.BusinessEntityController.getAddBusinessEntity().url,
+              BusinessEntityJourney(),
+              EmailSendResult.EmailNotSent
+            )
+          }
+          "Business entity to be added has unverified email address" in {
+            testRedirection(
+              businessEntityJourney1,
+              routes.BusinessEntityController.getAddBusinessEntity().url,
+              BusinessEntityJourney(),
+              EmailSendResult.EmailNotSent
+            )
+          }
+          "Business entity to be added has undeliverable email address" in {
+            testRedirection(
+              businessEntityJourney1,
+              routes.BusinessEntityController.getAddBusinessEntity().url,
+              BusinessEntityJourney(),
+              EmailSendResult.EmailNotSent
+            )
+          }
+
         }
       }
 
@@ -932,7 +955,9 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockTimeToday(effectiveDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, "10 October 2022")(Left(ConnectorError(new RuntimeException())))
+            mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, "10 October 2022")(
+              Left(ConnectorError(new RuntimeException()))
+            )
           }
           assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
         }

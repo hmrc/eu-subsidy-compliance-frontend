@@ -41,7 +41,7 @@ class EmailService @Inject() (
   def sendEmail(
     eori1: EORI,
     template: EmailTemplate,
-    undertaking: Undertaking,
+    undertaking: Undertaking
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmailSendResult] =
     sendEmail(eori1, None, template, undertaking, None)
 
@@ -49,7 +49,7 @@ class EmailService @Inject() (
     eori1: EORI,
     eori2: EORI,
     template: EmailTemplate,
-    undertaking: Undertaking,
+    undertaking: Undertaking
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmailSendResult] =
     sendEmail(eori1, eori2.some, template, undertaking, None)
 
@@ -78,7 +78,7 @@ class EmailService @Inject() (
     removeEffectiveDate: Option[String]
   )(implicit
     hc: HeaderCarrier,
-    executionContext: ExecutionContext,
+    executionContext: ExecutionContext
   ): Future[EmailSendResult] =
     retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
       retrieveEmailResponse.emailType match {
