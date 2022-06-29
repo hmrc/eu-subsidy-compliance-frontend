@@ -19,11 +19,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
 
+
+
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
     button: components.Button,
-        govukPanel : GovukPanel,
+    govukNotificationBanner : GovukNotificationBanner,
     govukSummaryList: GovukSummaryList
 )
 
@@ -31,30 +33,44 @@
 @(ref: UndertakingRef, name: UndertakingName, eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @html = {
-@Html(messages(s"$key.undertaking-name"))<br><strong>@Html(messages(s"$key.name", name))</strong><br><br>
-@Html(messages(s"$key.ref.p1"))<br><strong>@Html(messages(s"$key.ref.eori", eori))</strong>
+    <h2 class="govuk-notification-banner__heading">@messages("undertaking.confirmation.h2")</h2>
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(content = Text(messages("undertaking.confirmation.undertaking-name"))),
+                value = Value(content = Text(messages("undertaking.confirmation.name", name)))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages("undertaking.confirmation.ref.p1"))),
+                value = Value(content = Text(messages("undertaking.confirmation.ref.eori", eori)))
+            )
+        ),
+        classes = "govuk-summary-list--no-border"
+    ))
 }
-@key = @{"undertaking.confirmation"}
-@title = @{messages(s"$key.title")}
+
 @layout(
-    pageTitle = Some(title),
+    pageTitle = Some(messages("undertaking.confirmation.title")),
     backLinkEnabled = false,
     backLink = None
 ) {
+
+    @formHelper(action = controllers.routes.UndertakingController.postConfirmation) {
         <input type=hidden name=confirm value=true>
-        @govukPanel(Panel(
-            title = Text(title),
-            classes = "govuk-!-margin-bottom-7",
-            content = HtmlContent(html)
+
+        @H1(messages("undertaking.confirmation.title"), Some("govuk-heading-l"))
+
+        @govukNotificationBanner(NotificationBanner(
+            content = HtmlContent(html),
+            bannerType = Some("success"),
+            disableAutoFocus = Some(true)
         ))
-        @P(messages(s"$key.p1"))
-        @H2(messages(s"$key.h2-2"))
-        @P(messages(s"$key.p2", name))
-        @P(messages(s"$key.p3", name))
 
-        <div>
-            <a class="govuk-link" href=@controllers.routes.AccountController.getAccountPage()>@messages("common.go-account-home")</a>
-        </div>
+        @H2(messages("undertaking.confirmation.h2-2"))
+        @P(messages("undertaking.confirmation.p2"))
+        @P(messages("undertaking.confirmation.p3", name))
+        @P(messages("undertaking.confirmation.p4", name))
 
-
+        @button("common.continue.only")
+    }
 }

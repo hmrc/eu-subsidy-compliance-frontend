@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.data.OptionT
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import play.api.data.Form
 import play.api.data.Forms.mapping
@@ -88,19 +87,10 @@ class BusinessEntityController @Inject() (
   def postAddBusinessEntity: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    def handleValidAnswer(form: FormValues, undertaking: Undertaking) =
+    def handleValidAnswer(form: FormValues) =
       if (form.value === "true")
         store.update[BusinessEntityJourney](_.setAddBusiness(form.value.toBoolean)).flatMap(_.next)
-      else {
-        val result: OptionT[Future, Result] = for {
-          uj <- store.get[UndertakingJourney].toContext
-          nextCall =
-            if (uj.undertakingSuccessDisplay)
-              Redirect(routes.UndertakingController.getConfirmation(undertaking.reference, undertaking.name))
-            else Redirect(routes.AccountController.getAccountPage())
-        } yield nextCall
-        result.fold(handleMissingSessionData(" Undertaking Journey"))(identity)
-      }
+      else Redirect(routes.AccountController.getAccountPage()).toFuture
 
     withLeadUndertaking { undertaking =>
       addBusinessForm
@@ -108,7 +98,7 @@ class BusinessEntityController @Inject() (
         .fold(
           errors =>
             BadRequest(addBusinessPage(errors, undertaking.name, undertaking.undertakingBusinessEntity)).toFuture,
-          formValues => handleValidAnswer(formValues, undertaking)
+          handleValidAnswer
         )
     }
   }
@@ -257,8 +247,19 @@ class BusinessEntityController @Inject() (
             val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
             for {
               _ <- escService.removeMember(undertakingRef, removeBE)
-              _ <- emailService.sendEmail(EORI(eoriEntered), RemoveMemberToBusinessEntity, undertaking, removalEffectiveDateString)
-              _ <- emailService.sendEmail(eori, EORI(eoriEntered), RemoveMemberToLead, undertaking, removalEffectiveDateString)
+              _ <- emailService.sendEmail(
+                EORI(eoriEntered),
+                RemoveMemberToBusinessEntity,
+                undertaking,
+                removalEffectiveDateString
+              )
+              _ <- emailService.sendEmail(
+                eori,
+                EORI(eoriEntered),
+                RemoveMemberToLead,
+                undertaking,
+                removalEffectiveDateString
+              )
               // Clear the cached undertaking so it's retrieved on the next access
               _ <- store.delete[Undertaking]
               _ = auditService

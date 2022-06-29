@@ -173,7 +173,7 @@ class UndertakingController @Inject() (
               industrySector = undertakingSector,
               List(BusinessEntity(eori, leadEORI = true))
             )
-            undertakingCreated <- createUndertakingAndSendEmail(undertaking).toContext
+            undertakingCreated <- createUndertakingAndSendEmail(undertaking, updatedJourney).toContext
           } yield undertakingCreated
           result.fold(handleMissingSessionData("Undertaking create journey"))(identity)
         }
@@ -181,13 +181,11 @@ class UndertakingController @Inject() (
   }
 
   private def createUndertakingAndSendEmail(
-    undertaking: UndertakingCreate
+    undertaking: UndertakingCreate,
+    undertakingJourney: UndertakingJourney
   )(implicit request: AuthenticatedEscRequest[_], eori: EORI): Future[Result] =
     for {
       ref <- escService.createUndertaking(undertaking)
-      _ <- store.update[UndertakingJourney](
-        _.copy(undertakingSuccessDisplay = true)
-      ) // setting the undertakingSuccessDisplay to true on undertaking creation
       _ <- emailService.sendEmail(eori, EmailTemplate.CreateUndertaking, undertaking.toUndertakingWithRef(ref))
       auditEventCreateUndertaking = AuditEvent.CreateUndertaking(
         request.authorityId,
@@ -196,16 +194,27 @@ class UndertakingController @Inject() (
         timeProvider.now
       )
       _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
-    } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity)
+    } yield Redirect(routes.UndertakingController.getConfirmation(ref, undertakingJourney.name.value.getOrElse("")))
 
   def getConfirmation(ref: String, name: String): Action[AnyContent] = withCDSAuthenticatedUser.async {
     implicit request =>
       implicit val eori: EORI = request.eoriNumber
-      for {
-        _ <- store.update[UndertakingJourney](
-          _.copy(undertakingSuccessDisplay = false)
-        ) //setting undertakingSuccessDisplay false when screen is displayed so it is not displayed the next time user click on No on Add member page
-      } yield (Ok(confirmationPage(UndertakingRef(ref), UndertakingName(name), eori)))
+      Ok(confirmationPage(UndertakingRef(ref), UndertakingName(name), eori)).toFuture
+  }
+
+  def postConfirmation: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    confirmationForm
+      .bindFromRequest()
+      .fold(
+        _ => throw new IllegalStateException("value hard-coded, form hacking?"),
+        form =>
+          store
+            .update[UndertakingJourney](_.setUndertakingConfirmation(form.value.toBoolean))
+            .map { _ =>
+              Redirect(routes.BusinessEntityController.getAddBusinessEntity())
+            }
+      )
   }
 
   def getAmendUndertakingDetails: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
@@ -335,6 +344,10 @@ class UndertakingController @Inject() (
   )
 
   private val cyaForm: Form[FormValues] = Form(mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
+
+  private val confirmationForm: Form[FormValues] = Form(
+    mapping("confirm" -> mandatory("confirm"))(FormValues.apply)(FormValues.unapply)
+  )
 
   private val amendUndertakingForm: Form[FormValues] = Form(
     mapping("amendUndertaking" -> mandatory("amendUndertaking"))(FormValues.apply)(FormValues.unapply)
