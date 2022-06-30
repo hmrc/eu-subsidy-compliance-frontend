@@ -31,6 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOption
 import uk.gov.hmrc.http.UpstreamErrorResponse.WithStatusCode
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -164,6 +165,13 @@ class EscService @Inject() (
           ref <- handleResponse[UndertakingRef](response, "remove subsidy").toFuture
           _ <- undertakingCache.deleteUndertakingSubsidies(ref)
         } yield ref
+      }
+
+  def retrieveExchangeRate(date: LocalDate)(implicit hc: HeaderCarrier): Future[ExchangeRate] =
+    escConnector
+      .retrieveExchangeRate(date)
+      .map { response =>
+        handleResponse[ExchangeRate](response, "exchange rate")
       }
 
   private def handleResponse[A](r: Either[ConnectorError, HttpResponse], action: String)(implicit reads: Reads[A]): A =

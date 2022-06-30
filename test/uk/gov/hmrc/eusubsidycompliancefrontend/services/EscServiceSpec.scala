@@ -82,9 +82,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
     when(mockEscConnector.createSubsidy(argEq(subsidyUpdate))(any()))
       .thenReturn(result.toFuture)
 
-  private def mockRetrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(
-    result: Either[ConnectorError, HttpResponse]
-  ) =
+  private def mockRetrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(result: Either[ConnectorError, HttpResponse]) =
     when(mockEscConnector.retrieveSubsidy(argEq(subsidyRetrieve))(any()))
       .thenReturn(result.toFuture)
 
@@ -111,9 +109,14 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
     when(mockUndertakingCache.deleteUndertakingSubsidies(argEq(ref)))
       .thenReturn(result.fold(Future.failed, _.toFuture))
 
+  private def mockRetrieveExchangeRate(date: LocalDate)(result: Either[ConnectorError, HttpResponse]) =
+    when(mockEscConnector.retrieveExchangeRate(argEq(date))(any()))
+      .thenReturn(result.toFuture)
+
   private val undertakingRefJson = Json.toJson(undertakingRef)
   private val undertakingJson: JsValue = Json.toJson(undertaking)
   private val undertakingSubsidiesJson = Json.toJson(undertakingSubsidies)
+  private val exchangeRateJson = Json.toJson(exchangeRate)
 
   private val emptyHeaders = Map.empty[String, Seq[String]]
 
@@ -312,32 +315,32 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       "return an error" when {
 
-        def isError(): Assertion = {
+        def isError: Assertion = {
           val result = service.removeMember(undertakingRef, businessEntity3)
           assertThrows[RuntimeException](await(result))
         }
 
         "the http call fails" in {
           mockRemoveMember(undertakingRef, businessEntity3)(Left(ConnectorError("")))
-          isError()
+          isError
         }
 
         "the http response doesn't come back with status 200(OK)" in {
           mockRemoveMember(undertakingRef, businessEntity3)(
             Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders))
           )
-          isError()
+          isError
         }
 
         "there is no json in the response" in {
           mockRemoveMember(undertakingRef, businessEntity3)(Right(HttpResponse(OK, "hi")))
-          isError()
+          isError
         }
 
         "the json in the response can't be parsed" in {
           val json = Json.parse("""{ "a" : 1 }""")
           mockRemoveMember(undertakingRef, businessEntity3)(Right(HttpResponse(OK, json, emptyHeaders)))
-          isError()
+          isError
         }
 
       }
@@ -360,32 +363,32 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       "return an error" when {
 
-        def isError(): Assertion = {
+        def isError: Assertion = {
           val result = service.createSubsidy(subsidyUpdate)
           assertThrows[RuntimeException](await(result))
         }
 
         "the http call fails" in {
           mockCreateSubsidy(subsidyUpdate)(Left(ConnectorError("")))
-          isError()
+          isError
         }
 
         "the http response doesn't come back with status 200(OK)" in {
           mockCreateSubsidy(subsidyUpdate)(
             Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders))
           )
-          isError()
+          isError
         }
 
         "there is no json in the response" in {
           mockCreateSubsidy(subsidyUpdate)(Right(HttpResponse(OK, "hi")))
-          isError()
+          isError
         }
 
         "the json in the response can't be parsed" in {
           val json = Json.parse("""{ "a" : 1 }""")
           mockCreateSubsidy(subsidyUpdate)(Right(HttpResponse(OK, json, emptyHeaders)))
-          isError()
+          isError
         }
 
       }
@@ -405,30 +408,30 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       "return an error" when {
 
-        def isError(): Assertion = {
+        def isError: Assertion = {
           val result = service.retrieveSubsidy(subsidyRetrieve)
           assertThrows[RuntimeException](await(result))
         }
 
         "the http call fails" in {
           mockRetrieveSubsidy(subsidyRetrieve)(Left(ConnectorError("")))
-          isError()
+          isError
         }
 
         "the http response doesn't come back with status 200(OK)" in {
           mockRetrieveSubsidy(subsidyRetrieve)(Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders)))
-          isError()
+          isError
         }
 
         "there is no json in the response" in {
           mockRetrieveSubsidy(subsidyRetrieve)(Right(HttpResponse(OK, "hi")))
-          isError()
+          isError
         }
 
         "the json in the response can't be parsed" in {
           val json = Json.parse("""{ "a" : 1 }""")
           mockRetrieveSubsidy(subsidyRetrieve)(Right(HttpResponse(OK, json, emptyHeaders)))
-          isError()
+          isError
         }
 
       }
@@ -456,32 +459,32 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
       "return an error" when {
 
-        def isError(): Assertion = {
+        def isError: Assertion = {
           val result = service.removeSubsidy(undertakingRef, nonHmrcSubsidy)
           assertThrows[RuntimeException](await(result))
         }
 
         "the http call fails" in {
           mockRemoveSubsidy(undertakingRef, nonHmrcSubsidy)(Left(ConnectorError("")))
-          isError()
+          isError
         }
 
         "the http response doesn't come back with status 200(OK)" in {
           mockRemoveSubsidy(undertakingRef, nonHmrcSubsidy)(
             Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders))
           )
-          isError()
+          isError
         }
 
         "there is no json in the response" in {
           mockRemoveSubsidy(undertakingRef, nonHmrcSubsidy)(Right(HttpResponse(OK, "hi")))
-          isError()
+          isError
         }
 
         "the json in the response can't be parsed" in {
           val json = Json.parse("""{ "a" : 1 }""")
           mockRemoveSubsidy(undertakingRef, nonHmrcSubsidy)(Right(HttpResponse(OK, json, emptyHeaders)))
-          isError()
+          isError
         }
 
       }
@@ -495,6 +498,39 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
           val result = service.removeSubsidy(undertakingRef, nonHmrcSubsidy)
           await(result) shouldBe undertakingRef
         }
+      }
+
+    }
+
+    "handling request to retrieve exchange rate" must {
+
+      "return an error" when {
+
+        "the http call fails" in {
+          mockRetrieveExchangeRate(fixedDate)(Left(ConnectorError("Error")))
+          assertThrows[RuntimeException](await(service.retrieveExchangeRate(fixedDate)))
+        }
+
+        "the http response is not successful" in {
+          mockRetrieveExchangeRate(fixedDate)(Right(HttpResponse(BAD_REQUEST, exchangeRateJson, emptyHeaders)))
+          assertThrows[RuntimeException](await(service.retrieveExchangeRate(fixedDate)))
+        }
+
+        "the response body could not be parsed" in {
+          mockRetrieveExchangeRate(fixedDate)(Right(HttpResponse(OK, "This is not valid json", emptyHeaders)))
+          assertThrows[RuntimeException](await(service.retrieveExchangeRate(fixedDate)))
+        }
+
+      }
+
+      "return successfully" when {
+
+        "the http call succeeds and the body of the response can be parsed" in {
+          mockRetrieveExchangeRate(fixedDate)(Right(HttpResponse(OK, exchangeRateJson, emptyHeaders)))
+          val result = service.retrieveExchangeRate(fixedDate)
+          await(result) shouldBe exchangeRate
+        }
+
       }
 
     }
