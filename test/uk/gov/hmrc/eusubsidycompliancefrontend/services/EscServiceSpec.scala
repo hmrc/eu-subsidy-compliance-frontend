@@ -20,6 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.mockito.Mockito.when
 import org.scalatest.Assertion
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
@@ -40,7 +41,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.reflect.ClassTag
 
-class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
+class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with ScalaFutures with IntegrationPatience {
 
   private val mockEscConnector: EscConnector = mock[EscConnector]
 
@@ -131,28 +132,24 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
         "the http call fails" in {
           mockCreateUndertaking(writeableUndertaking)(Left(ConnectorError("")))
-          val result = service.createUndertaking(writeableUndertaking)
-          assertThrows[RuntimeException](await(result))
+          service.createUndertaking(writeableUndertaking).failed.futureValue shouldBe a[RuntimeException]
         }
 
         "the http response doesn't come back with status 201(created)" in {
           mockCreateUndertaking(writeableUndertaking)(Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders)))
-          val result = service.createUndertaking(writeableUndertaking)
-          assertThrows[RuntimeException](await(result))
+          service.createUndertaking(writeableUndertaking).failed.futureValue shouldBe a[RuntimeException]
         }
 
         "there is no json in the response" in {
           mockCreateUndertaking(writeableUndertaking)(Right(HttpResponse(OK, "hi")))
-          val result = service.createUndertaking(writeableUndertaking)
-          assertThrows[RuntimeException](await(result))
+          service.createUndertaking(writeableUndertaking).failed.futureValue shouldBe a[RuntimeException]
         }
 
         "the json in the response can't be parsed" in {
           val json = Json.parse("""{ "a" : 1 }""")
 
           mockCreateUndertaking(writeableUndertaking)(Right(HttpResponse(OK, json, emptyHeaders)))
-          val result = service.createUndertaking(writeableUndertaking)
-          assertThrows[RuntimeException](await(result))
+          service.createUndertaking(writeableUndertaking).failed.futureValue shouldBe a[RuntimeException]
         }
 
       }
@@ -162,8 +159,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
         "the http call succeeds and the body of the response can be parsed" in {
           mockCreateUndertaking(writeableUndertaking)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
           mockCachePut(eori1, writeableUndertaking.toUndertakingWithRef(undertakingRef))(Right(undertaking))
-          val result = service.createUndertaking(writeableUndertaking)
-          await(result) shouldBe undertakingRef
+          service.createUndertaking(writeableUndertaking).futureValue shouldBe undertakingRef
         }
       }
     }
@@ -174,28 +170,25 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
         "the http call fails" in {
           mockUpdateUndertaking(undertaking)(Left(ConnectorError("")))
-          val result = service.updateUndertaking(undertaking)
-          assertThrows[RuntimeException](await(result))
+          service.updateUndertaking(undertaking).failed.futureValue shouldBe a[RuntimeException]
         }
 
         "the http response doesn't come back with status 201(created)" in {
           mockUpdateUndertaking(undertaking)(Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders)))
           val result = service.updateUndertaking(undertaking)
-          assertThrows[RuntimeException](await(result))
+          result.failed.futureValue shouldBe a[RuntimeException]
         }
 
         "there is no json in the response" in {
           mockUpdateUndertaking(undertaking)(Right(HttpResponse(OK, "hi")))
-          val result = service.updateUndertaking(undertaking)
-          assertThrows[RuntimeException](await(result))
+          service.updateUndertaking(undertaking).failed.futureValue shouldBe a[RuntimeException]
         }
 
         "the json in the response can't be parsed" in {
           val json = Json.parse("""{ "a" : 1 }""")
 
           mockUpdateUndertaking(undertaking)(Right(HttpResponse(OK, json, emptyHeaders)))
-          val result = service.updateUndertaking(undertaking)
-          assertThrows[RuntimeException](await(result))
+          service.updateUndertaking(undertaking).failed.futureValue shouldBe a[RuntimeException]
         }
 
       }
@@ -205,8 +198,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
         "the http call succeeds and the body of the response can be parsed" in {
           mockUpdateUndertaking(undertaking)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
           mockCacheDeleteUndertaking(undertakingRef)(Right(()))
-          val result = service.updateUndertaking(undertaking)
-          await(result) shouldBe undertakingRef
+          service.updateUndertaking(undertaking).futureValue shouldBe undertakingRef
         }
       }
     }
@@ -218,8 +210,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
         "there is no json in the response, with status OK" in {
           mockCacheGet[Undertaking](eori1)(Right(None))
           mockRetrieveUndertaking(eori1)(Right(HttpResponse(OK, "hi")))
-          val result = service.retrieveUndertaking(eori1)
-          assertThrows[RuntimeException](await(result))
+          service.retrieveUndertaking(eori1).failed.futureValue shouldBe a[RuntimeException]
         }
 
       }
@@ -231,16 +222,14 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
           "the undertaking is present in the cache" in {
             mockCacheGet[Undertaking](eori1)(Right(undertaking.some))
             mockCachePut(eori1, undertaking)(Right(undertaking))
-            val result = service.retrieveUndertaking(eori1)
-            await(result) shouldBe undertaking.some
+            service.retrieveUndertaking(eori1).futureValue shouldBe undertaking.some
           }
 
           "http response status is 200 and response can be parsed" in {
             mockCacheGet[Undertaking](eori1)(Right(None))
             mockRetrieveUndertaking(eori1)(Right(HttpResponse(OK, undertakingJson, emptyHeaders)))
             mockCachePut(eori1, undertaking)(Right(undertaking))
-            val result = service.retrieveUndertaking(eori1)
-            await(result) shouldBe undertaking.some
+            service.retrieveUndertaking(eori1).futureValue shouldBe undertaking.some
           }
 
           "http response status is 404 and response body is empty" in {
@@ -248,7 +237,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
             mockRetrieveUndertaking(eori1)(
               Left(ConnectorError(UpstreamErrorResponse("Unexpected response - got HTTP 404", NOT_FOUND)))
             )
-            await(service.retrieveUndertaking(eori1)) shouldBe None
+            service.retrieveUndertaking(eori1).futureValue shouldBe None
           }
 
         }
@@ -259,7 +248,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
             val ex = UpstreamErrorResponse("Unexpected response - got HTTP 406", NOT_ACCEPTABLE)
             mockCacheGet[Undertaking](eori1)(Right(None))
             mockRetrieveUndertaking(eori1)(Left(ConnectorError(ex)))
-            a[ConnectorError] should be thrownBy await(service.retrieveUndertaking(eori1))
+            service.retrieveUndertaking(eori1).failed.futureValue shouldBe a[ConnectorError]
           }
         }
 
@@ -272,30 +261,26 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
         "the http call fails" in {
           mockAddMember(undertakingRef, businessEntity3)(Left(ConnectorError("")))
-          val result = service.addMember(undertakingRef, businessEntity3)
-          assertThrows[RuntimeException](await(result))
+          service.addMember(undertakingRef, businessEntity3).failed.futureValue shouldBe a[RuntimeException]
         }
 
         "the http response doesn't come back with status 200(OK)" in {
           mockAddMember(undertakingRef, businessEntity3)(
             Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders))
           )
-          val result = service.addMember(undertakingRef, businessEntity3)
-          assertThrows[RuntimeException](await(result))
+          service.addMember(undertakingRef, businessEntity3).failed.futureValue shouldBe a[RuntimeException]
         }
 
         "there is no json in the response" in {
           mockAddMember(undertakingRef, businessEntity3)(Right(HttpResponse(OK, "hi")))
-          val result = service.addMember(undertakingRef, businessEntity3)
-          assertThrows[RuntimeException](await(result))
+          service.addMember(undertakingRef, businessEntity3).failed.futureValue shouldBe a[RuntimeException]
         }
 
         "the json in the response can't be parsed" in {
           val json = Json.parse("""{ "a" : 1 }""")
 
           mockAddMember(undertakingRef, businessEntity3)(Right(HttpResponse(OK, json, emptyHeaders)))
-          val result = service.addMember(undertakingRef, businessEntity3)
-          assertThrows[RuntimeException](await(result))
+          service.addMember(undertakingRef, businessEntity3).failed.futureValue shouldBe a[RuntimeException]
         }
 
       }
@@ -306,7 +291,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
           mockAddMember(undertakingRef, businessEntity3)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
           mockCacheDeleteUndertaking(undertakingRef)(Right(()))
           val result = service.addMember(undertakingRef, businessEntity3)
-          await(result) shouldBe undertakingRef
+          result.futureValue shouldBe undertakingRef
         }
       }
     }
@@ -317,7 +302,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
         def isError: Assertion = {
           val result = service.removeMember(undertakingRef, businessEntity3)
-          assertThrows[RuntimeException](await(result))
+          result.failed.futureValue shouldBe a[RuntimeException]
         }
 
         "the http call fails" in {
@@ -351,8 +336,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
           mockRemoveMember(undertakingRef, businessEntity3)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
           mockCacheDeleteUndertaking(undertakingRef)(Right(()))
           mockCacheDeleteUndertakingSubsidies(undertakingRef)(Right(()))
-          val result = service.removeMember(undertakingRef, businessEntity3)
-          await(result) shouldBe undertakingRef
+          service.removeMember(undertakingRef, businessEntity3).futureValue shouldBe undertakingRef
         }
       }
     }
@@ -365,7 +349,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
         def isError: Assertion = {
           val result = service.createSubsidy(subsidyUpdate)
-          assertThrows[RuntimeException](await(result))
+          result.failed.futureValue shouldBe a[RuntimeException]
         }
 
         "the http call fails" in {
@@ -398,8 +382,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
         "the http call succeeds and the body of the response can be parsed" in {
           mockCreateSubsidy(subsidyUpdate)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
           mockCacheDeleteUndertakingSubsidies(undertakingRef)(Right(()))
-          val result = service.createSubsidy(subsidyUpdate)
-          await(result) shouldBe undertakingRef
+          service.createSubsidy(subsidyUpdate).futureValue shouldBe undertakingRef
         }
       }
     }
@@ -409,8 +392,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
       "return an error" when {
 
         def isError: Assertion = {
-          val result = service.retrieveSubsidy(subsidyRetrieve)
-          assertThrows[RuntimeException](await(result))
+          service.retrieveSubsidy(subsidyRetrieve).failed.futureValue shouldBe a[RuntimeException]
         }
 
         "the http call fails" in {
@@ -441,16 +423,14 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
         "the undertaking subsidies are present in the cache" in {
           mockCacheGet[UndertakingSubsidies](eori1)(Right(undertakingSubsidies.some))
           mockCachePut(eori1, undertakingSubsidies)(Right(undertakingSubsidies))
-          val result = service.retrieveSubsidy(subsidyRetrieve)
-          await(result) shouldBe undertakingSubsidies
+          service.retrieveSubsidy(subsidyRetrieve).futureValue shouldBe undertakingSubsidies
         }
 
         "the http call succeeds and the body of the response can be parsed" in {
           mockCacheGet[UndertakingSubsidies](eori1)(Right(Option.empty))
           mockRetrieveSubsidy(subsidyRetrieve)(Right(HttpResponse(OK, undertakingSubsidiesJson, emptyHeaders)))
           mockCachePut(eori1, undertakingSubsidies)(Right(undertakingSubsidies))
-          val result = service.retrieveSubsidy(subsidyRetrieve)
-          await(result) shouldBe undertakingSubsidies
+          service.retrieveSubsidy(subsidyRetrieve).futureValue shouldBe undertakingSubsidies
         }
       }
     }
@@ -460,8 +440,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
       "return an error" when {
 
         def isError: Assertion = {
-          val result = service.removeSubsidy(undertakingRef, nonHmrcSubsidy)
-          assertThrows[RuntimeException](await(result))
+          service.removeSubsidy(undertakingRef, nonHmrcSubsidy).failed.futureValue shouldBe a[RuntimeException]
         }
 
         "the http call fails" in {
@@ -496,7 +475,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
           mockRemoveSubsidy(undertakingRef, nonHmrcSubsidy)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
           mockCacheDeleteUndertakingSubsidies(undertakingRef)(Right(()))
           val result = service.removeSubsidy(undertakingRef, nonHmrcSubsidy)
-          await(result) shouldBe undertakingRef
+          result.futureValue shouldBe undertakingRef
         }
       }
 
@@ -508,17 +487,17 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
         "the http call fails" in {
           mockRetrieveExchangeRate(fixedDate)(Left(ConnectorError("Error")))
-          assertThrows[RuntimeException](await(service.retrieveExchangeRate(fixedDate)))
+          service.retrieveExchangeRate(fixedDate).failed.futureValue shouldBe a[RuntimeException]
         }
 
         "the http response is not successful" in {
           mockRetrieveExchangeRate(fixedDate)(Right(HttpResponse(BAD_REQUEST, exchangeRateJson, emptyHeaders)))
-          assertThrows[RuntimeException](await(service.retrieveExchangeRate(fixedDate)))
+          service.retrieveExchangeRate(fixedDate).failed.futureValue shouldBe a[RuntimeException]
         }
 
         "the response body could not be parsed" in {
           mockRetrieveExchangeRate(fixedDate)(Right(HttpResponse(OK, "This is not valid json", emptyHeaders)))
-          assertThrows[RuntimeException](await(service.retrieveExchangeRate(fixedDate)))
+          service.retrieveExchangeRate(fixedDate).failed.futureValue shouldBe a[RuntimeException]
         }
 
       }
@@ -527,8 +506,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
         "the http call succeeds and the body of the response can be parsed" in {
           mockRetrieveExchangeRate(fixedDate)(Right(HttpResponse(OK, exchangeRateJson, emptyHeaders)))
-          val result = service.retrieveExchangeRate(fixedDate)
-          await(result) shouldBe exchangeRate
+          service.retrieveExchangeRate(fixedDate).futureValue shouldBe exchangeRate
         }
 
       }
