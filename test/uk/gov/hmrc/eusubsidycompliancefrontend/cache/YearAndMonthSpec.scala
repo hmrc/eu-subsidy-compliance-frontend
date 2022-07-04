@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.cache
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class YearAndMonthTest extends AnyWordSpec with Matchers {
+class YearAndMonthSpec extends AnyWordSpec with Matchers {
 
   "YearAndMonth" should {
 

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.gov.hmrc.eusubsidycompliancefrontend.cache
 
 import org.scalatest.concurrent.ScalaFutures
@@ -28,18 +44,17 @@ class ExchangeRateCacheSpec
   "ExchangeRateCache" should {
 
     "return None when the cache is empty" in {
-      repository.get[YearAndMonth](yearMonth1).futureValue shouldBe None
+      repository.get[ExchangeRate](yearMonth1).futureValue shouldBe None
     }
 
     "return None when there is no matching item in the cache" in {
       repository.put(yearMonth1, exchangeRate1).futureValue shouldBe exchangeRate1
-      repository.get[YearAndMonth](yearMonth2).futureValue shouldBe None
+      repository.get[ExchangeRate](yearMonth2).futureValue shouldBe None
     }
 
     "return the item when present in the cache" in {
       repository.put(yearMonth2, exchangeRate2).futureValue shouldBe exchangeRate2
-      Thread.sleep(10000)
-      repository.get[YearAndMonth](yearMonth2).futureValue shouldBe exchangeRate2
+      repository.get[ExchangeRate](yearMonth2).futureValue shouldBe Some(exchangeRate2)
     }
 
   }

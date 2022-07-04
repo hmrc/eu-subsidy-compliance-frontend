@@ -16,16 +16,15 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.cache
 
-import play.api.libs.json.{Json, Reads, Writes}
+import play.api.libs.json._
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.ExchangeRateCache.DefaultCacheTtl
-import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 import uk.gov.hmrc.mongo.cache.{CacheIdType, DataKey, MongoCacheRepository}
+import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.concurrent.duration.FiniteDuration
-import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
 import scala.reflect.ClassTag
 
@@ -34,8 +33,6 @@ case class YearAndMonth(year: Int, month: Int) {
 }
 
 object YearAndMonth {
-  // TODO - may need to customise this to allow deser from string.
-  implicit val format = Json.format[YearAndMonth]
   def fromDate(d: LocalDate): YearAndMonth = YearAndMonth(d.getYear, d.getMonthValue)
 }
 
@@ -57,7 +54,10 @@ class ExchangeRateCache @Inject() (
 
   def get[A : ClassTag](key: YearAndMonth)(implicit reads: Reads[A]): Future[Option[A]] = {
     super.findById(key).map { maybeItem =>
-      maybeItem.map(item => item.data.as[A])
+      maybeItem.map { cacheItem =>
+        // TODO - does cacheItem have syntax for this?
+        (cacheItem.data \ dataKeyForType[A].unwrap).as[A]
+      }
     }
   }
 
