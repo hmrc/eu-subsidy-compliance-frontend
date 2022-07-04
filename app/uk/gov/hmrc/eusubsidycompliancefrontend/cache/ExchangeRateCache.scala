@@ -16,22 +16,26 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.cache
 
+import play.api.libs.json.{Json, Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.ExchangeRateCache.DefaultCacheTtl
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
-import uk.gov.hmrc.mongo.cache.{CacheIdType, MongoCacheRepository}
+import uk.gov.hmrc.mongo.cache.{CacheIdType, DataKey, MongoCacheRepository}
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration.FiniteDuration
 import scala.concurrent.duration.DurationInt
 import scala.language.postfixOps
+import scala.reflect.ClassTag
 
 case class YearAndMonth(year: Int, month: Int) {
-  override def toString: String = f"$year%04d$month%02d"
+  override def toString: String = f"$year%04d-$month%02d"
 }
 
 object YearAndMonth {
+  // TODO - may need to customise this to allow deser from string.
+  implicit val format = Json.format[YearAndMonth]
   def fromDate(d: LocalDate): YearAndMonth = YearAndMonth(d.getYear, d.getMonthValue)
 }
 
@@ -49,10 +53,21 @@ class ExchangeRateCache @Inject() (
     ttl = DefaultCacheTtl,
     timestampSupport = new CurrentTimestampSupport,
     cacheIdType = YearAndMonthIdType
-  )
-    {
+  ) {
 
+  def get[A : ClassTag](key: YearAndMonth)(implicit reads: Reads[A]): Future[Option[A]] = {
+    super.findById(key).map { maybeItem =>
+      maybeItem.map(item => item.data.as[A])
+    }
+  }
 
+  def put[A : ClassTag](key: YearAndMonth, in: A)(implicit writes: Writes[A]): Future[A] =
+    super
+      .put[A](key)(dataKeyForType[A], in)
+      .map(_ => in)
+
+  // TODO - can this be put in a shared location?
+  private def dataKeyForType[A](implicit ct: ClassTag[A]) = DataKey[A](ct.runtimeClass.getSimpleName)
 }
 
 object ExchangeRateCache {

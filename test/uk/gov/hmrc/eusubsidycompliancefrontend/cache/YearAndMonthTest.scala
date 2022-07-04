@@ -25,12 +25,12 @@ class YearAndMonthTest extends AnyWordSpec with Matchers {
 
     "generate the expected string representation when toString is called" in {
       val underTest = YearAndMonth(2001, 12)
-      underTest.toString shouldBe "200112"
+      underTest.toString shouldBe "2001-12"
     }
 
     "pad the year and month values correctly" in {
       val underTest = YearAndMonth(1, 1)
-      underTest.toString shouldBe "000101"
+      underTest.toString shouldBe "0001-01"
     }
   }
 
