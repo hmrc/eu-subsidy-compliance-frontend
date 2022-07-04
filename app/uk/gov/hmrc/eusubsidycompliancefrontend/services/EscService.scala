@@ -21,7 +21,7 @@ import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.Reads
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.UndertakingCache
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.{ExchangeRateCache, UndertakingCache}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
@@ -37,7 +37,8 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class EscService @Inject() (
   escConnector: EscConnector,
-  undertakingCache: UndertakingCache
+  undertakingCache: UndertakingCache,
+  exchangeRateCache: ExchangeRateCache
 )(implicit ec: ExecutionContext) {
 
   def createUndertaking(undertaking: UndertakingCreate)(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingRef] =

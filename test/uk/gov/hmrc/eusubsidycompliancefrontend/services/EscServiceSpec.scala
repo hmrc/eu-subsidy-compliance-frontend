@@ -26,7 +26,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.UndertakingCache
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.{ExchangeRateCache, UndertakingCache}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
@@ -47,7 +47,13 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
 
   private val mockUndertakingCache: UndertakingCache = mock[UndertakingCache]
 
-  private val service: EscService = new EscService(mockEscConnector, mockUndertakingCache)
+  private val mockExchangeRateCache: ExchangeRateCache = mock[ExchangeRateCache]
+
+  private val service: EscService = new EscService(
+    mockEscConnector,
+    mockUndertakingCache,
+    mockExchangeRateCache
+  )
 
   private def mockCreateUndertaking(undertaking: UndertakingCreate)(
     result: Either[ConnectorError, HttpResponse]
