@@ -18,7 +18,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.cache
 
 import play.api.libs.json._
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.ExchangeRateCache.DefaultCacheTtl
-import uk.gov.hmrc.mongo.cache.{CacheIdType, DataKey, MongoCacheRepository}
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.Helpers.dataKeyForType
+import uk.gov.hmrc.mongo.cache.{CacheIdType, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
 import java.time.LocalDate
@@ -52,22 +53,14 @@ class ExchangeRateCache @Inject() (
     cacheIdType = YearAndMonthIdType
   ) {
 
-  def get[A : ClassTag](key: YearAndMonth)(implicit reads: Reads[A]): Future[Option[A]] = {
-    super.findById(key).map { maybeItem =>
-      maybeItem.map { cacheItem =>
-        // TODO - does cacheItem have syntax for this?
-        (cacheItem.data \ dataKeyForType[A].unwrap).as[A]
-      }
-    }
-  }
+  def get[A : ClassTag](key: YearAndMonth)(implicit reads: Reads[A]): Future[Option[A]] =
+    super.get[A](key)(dataKeyForType[A])
 
   def put[A : ClassTag](key: YearAndMonth, in: A)(implicit writes: Writes[A]): Future[A] =
     super
       .put[A](key)(dataKeyForType[A], in)
       .map(_ => in)
 
-  // TODO - can this be put in a shared location?
-  private def dataKeyForType[A](implicit ct: ClassTag[A]) = DataKey[A](ct.runtimeClass.getSimpleName)
 }
 
 object ExchangeRateCache {
