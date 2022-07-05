@@ -26,6 +26,8 @@ object EmailTemplate extends Enum[EmailTemplate] {
   case object AddMemberToBusinessEntity extends EmailTemplate
   case object AddMemberToLead extends EmailTemplate
   case object CreateUndertaking extends EmailTemplate
+  case object DisableUndertakingToLead extends EmailTemplate
+  case object DisableUndertakingToBusinessEntity extends EmailTemplate
   case object MemberRemoveSelfToBusinessEntity extends EmailTemplate
   case object MemberRemoveSelfToLead extends EmailTemplate
   case object PromotedOtherAsLeadToBusinessEntity extends EmailTemplate

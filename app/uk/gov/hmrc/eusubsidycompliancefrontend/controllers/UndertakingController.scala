@@ -27,12 +27,14 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUndertaking, UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking, UndertakingCreate}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -291,7 +293,7 @@ class UndertakingController @Inject() (
         .bindFromRequest()
         .fold(
           errors => BadRequest(disableUndertakingConfirmPage(errors, undertaking.name)).toFuture,
-          form => handleFormSubmission(form, undertaking)
+          form => handleDisableUndertakingFormSubmission(form, undertaking)
         )
     }
   }
@@ -311,7 +313,7 @@ class UndertakingController @Inject() (
       _ <- store.delete[SubsidyJourney]
     } yield ()
 
-  private def handleFormSubmission(form: FormValues, undertaking: Undertaking)(implicit
+  private def handleDisableUndertakingFormSubmission(form: FormValues, undertaking: Undertaking)(implicit
     hc: HeaderCarrier,
     request: AuthenticatedEscRequest[_]
   ): Future[Result] =
@@ -322,8 +324,24 @@ class UndertakingController @Inject() (
         _ = auditService.sendEvent[UndertakingDisabled](
           UndertakingDisabled(request.authorityId, undertaking.reference, timeProvider.today)
         )
+        formattedDate = DateFormatter.govDisplayFormat(timeProvider.today)
+        _ <- emailService.sendEmail(
+          request.eoriNumber,
+          DisableUndertakingToLead,
+          undertaking,
+          formattedDate
+        )
+        _ <- undertaking.undertakingBusinessEntity.filterNot(_.leadEORI).traverse { _ =>
+          emailService.sendEmail(
+            request.eoriNumber,
+            DisableUndertakingToBusinessEntity,
+            undertaking,
+            formattedDate
+          )
+        }
       } yield Redirect(routes.UndertakingController.getUndertakingDisabled())
-    } else Redirect(routes.AccountController.getAccountPage()).toFuture
+    }
+    else Redirect(routes.AccountController.getAccountPage()).toFuture
 
   private def ensureUndertakingJourneyPresent(j: Option[UndertakingJourney])(f: UndertakingJourney => Future[Result]) =
     j.fold(Redirect(routes.UndertakingController.getUndertakingName()).toFuture)(f)
