@@ -21,7 +21,7 @@ import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.Reads
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.{ExchangeRateCache, UndertakingCache}
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.{ExchangeRateCache, UndertakingCache, YearAndMonth}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
@@ -168,12 +168,21 @@ class EscService @Inject() (
         } yield ref
       }
 
-  def retrieveExchangeRate(date: LocalDate)(implicit hc: HeaderCarrier): Future[ExchangeRate] =
-    escConnector
-      .retrieveExchangeRate(date)
-      .map { response =>
-        handleResponse[ExchangeRate](response, "exchange rate")
+  def retrieveExchangeRate(date: LocalDate)(implicit hc: HeaderCarrier): Future[ExchangeRate] = {
+    val cacheKey = YearAndMonth.fromDate(date)
+
+    exchangeRateCache
+      .get[ExchangeRate](cacheKey)
+      .toContext
+      .getOrElseF {
+        escConnector
+          .retrieveExchangeRate(date)
+          .flatMap { response =>
+            val result = handleResponse[ExchangeRate](response, "exchange rate")
+            exchangeRateCache.put(cacheKey, result)
+          }
       }
+  }
 
   private def handleResponse[A](r: Either[ConnectorError, HttpResponse], action: String)(implicit reads: Reads[A]): A =
     r.fold(
