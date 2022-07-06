@@ -528,6 +528,11 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
           service.retrieveExchangeRate(fixedDate).futureValue shouldBe exchangeRate
         }
 
+        "an item is present in the cache" in {
+          mockExchangeRateCacheGet(YearAndMonth.fromDate(fixedDate))(Right(exchangeRate.some))
+          service.retrieveExchangeRate(fixedDate).futureValue shouldBe exchangeRate
+        }
+
       }
 
     }
