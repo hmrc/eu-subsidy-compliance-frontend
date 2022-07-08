@@ -23,6 +23,7 @@ import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext
 
 @Singleton
@@ -42,6 +43,7 @@ class EscConnector @Inject() (
   private lazy val removeMemberUrl = s"$escUrl/eu-subsidy-compliance/undertaking/member/remove"
   private lazy val updateSubsidyUrl = s"$escUrl/eu-subsidy-compliance/subsidy/update"
   private lazy val retrieveSubsidyUrl = s"$escUrl/eu-subsidy-compliance/subsidy/retrieve"
+  private lazy val retrieveExchangeRateUrl = s"$escUrl/eu-subsidy-compliance/exchangerate"
 
   def createUndertaking(undertaking: UndertakingCreate)(implicit hc: HeaderCarrier): ConnectorResult =
     makeRequest(_.POST[UndertakingCreate, HttpResponse](createUndertakingUrl, undertaking))
@@ -83,5 +85,8 @@ class EscConnector @Inject() (
 
   def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): ConnectorResult =
     makeRequest(_.POST[SubsidyRetrieve, HttpResponse](retrieveSubsidyUrl, subsidyRetrieve))
+
+  def retrieveExchangeRate(date: LocalDate)(implicit hc: HeaderCarrier): ConnectorResult =
+    makeRequest(_.GET[HttpResponse](s"$retrieveExchangeRateUrl/$date"))
 
 }

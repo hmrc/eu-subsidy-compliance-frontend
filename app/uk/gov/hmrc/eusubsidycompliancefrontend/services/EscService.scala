@@ -21,7 +21,7 @@ import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.Reads
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.UndertakingCache
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.{ExchangeRateCache, UndertakingCache, YearAndMonth}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
@@ -31,12 +31,14 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOption
 import uk.gov.hmrc.http.UpstreamErrorResponse.WithStatusCode
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EscService @Inject() (
   escConnector: EscConnector,
-  undertakingCache: UndertakingCache
+  undertakingCache: UndertakingCache,
+  exchangeRateCache: ExchangeRateCache
 )(implicit ec: ExecutionContext) {
 
   def createUndertaking(undertaking: UndertakingCreate)(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingRef] =
@@ -165,6 +167,22 @@ class EscService @Inject() (
           _ <- undertakingCache.deleteUndertakingSubsidies(ref)
         } yield ref
       }
+
+  def retrieveExchangeRate(date: LocalDate)(implicit hc: HeaderCarrier): Future[ExchangeRate] = {
+    val cacheKey = YearAndMonth.fromDate(date)
+
+    exchangeRateCache
+      .get[ExchangeRate](cacheKey)
+      .toContext
+      .getOrElseF {
+        escConnector
+          .retrieveExchangeRate(date)
+          .flatMap { response =>
+            val result = handleResponse[ExchangeRate](response, "exchange rate")
+            exchangeRateCache.put(cacheKey, result)
+          }
+      }
+  }
 
   private def handleResponse[A](r: Either[ConnectorError, HttpResponse], action: String)(implicit reads: Reads[A]): A =
     r.fold(

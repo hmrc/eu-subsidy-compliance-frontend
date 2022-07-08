@@ -29,6 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EscConnectorSpec
@@ -113,6 +114,16 @@ class EscConnectorSpec
         () => connector.retrieveSubsidy(subsidyRetrieve)
       )
     }
+
+    "handling request to retrieve exchange rate" must {
+      val date = LocalDate.of(2020, 1, 1)
+
+      behave like connectorBehaviour(
+        mockGet(s"$baseUrl/exchangerate/$date")(_),
+        () => connector.retrieveExchangeRate(date)
+      )
+    }
+
   }
 
 }

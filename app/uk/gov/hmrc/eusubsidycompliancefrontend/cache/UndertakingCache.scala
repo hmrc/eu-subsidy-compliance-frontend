@@ -19,6 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.cache
 import org.mongodb.scala.MongoCollection
 import org.mongodb.scala.model.{Filters, IndexOptions, Indexes, Updates}
 import play.api.libs.json.{Reads, Writes}
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.Helpers.dataKeyForType
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.UndertakingCache.DefaultCacheTtl
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.mongo.cache.{CacheIdType, CacheItem, DataKey, MongoCacheRepository}
@@ -104,8 +105,6 @@ class UndertakingCache @Inject() (
       ).toFuture()
         .map(_ => ())
     }
-
-  private def dataKeyForType[A](implicit ct: ClassTag[A]) = DataKey[A](ct.runtimeClass.getSimpleName)
 
 }
 
