@@ -245,7 +245,13 @@ reportPayment.button = Report a payment
 reportPayment.error.required=Select yes if you have a de minimis aid payment (less Customs Duty waiver) to report?
 reportPayment.payment-dated = payment, dated
 
-add-claim-amount.title=What was the amount of the payment?
+add-claim-amount.title = What currency was the payment in?
+add-claim-amount.hint = Select one option.
+add-claim-amount.eur = Euros
+add-claim-amount.gbp = Pounds sterling
+add-claim-amount.input-label = Enter amount
+add-claim-amount.input-hint = Figure should include two decimal places, like 248.56
+
 add-claim-amount.p1=This type of aid is measured in euros.
 add-claim-amount.inset=If your payment is already in euros, skip the steps below and enter the amount in the box.
 add-claim-amount.p2=if you need to convert sterling into euros, then follow steps 1 to 5:
@@ -254,7 +260,6 @@ add-claim-amount.l2 = Change the year to {0} and month to {1}.
 add-claim-amount.l3 = Enter the amount of aid you received in pounds sterling.
 add-claim-amount.l4 = Change the ‘From’ dropdown to ‘GBP’ and use the figure displayed below it.
 add-claim-amount.l5 = Enter amount in the box below.
-add-claim-amount.hint = You must enter the amount of aid in Euros, including two decimal places, like 248.56
 add-claim-amount.error.amount.tooSmall=Subsidy amount must be more than one cent, like €00.01
 add-claim-amount.error.amount.tooBig=Subsidy amount must be fewer than 17 characters
 add-claim-amount.error.required= Enter number value of subsidy allocated in Euros, like €248.56
