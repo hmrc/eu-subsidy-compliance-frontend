@@ -71,18 +71,22 @@ case class SubsidyJourney(
 
 }
 
+// TODO - move amount parsing and validation into form provider
 object SubsidyJourney {
 
   implicit val format: Format[SubsidyJourney] = Json.format[SubsidyJourney]
 
-  val claimAmountPrefix = "€"
+  // TODO - move and refactor these checks - just getting things working first
+  def isClaimAmountPrefixEuros(amountEntered: String) = amountEntered.take(1) == "€"
+  def isClaimAmountPrefixPounds(amountEntered: String) = amountEntered.take(1) == "£"
 
-  def isClaimAmountPrefixEuros(amountEntered: String) = amountEntered.take(1) === claimAmountPrefix
 
   def trimAmount(amount: String) = amount.trim.replaceAll(",", "").replaceAll("\\s", "")
 
   def getValidClaimAmount(amountEntered: String) =
-    if (isClaimAmountPrefixEuros(amountEntered)) trimAmount(amountEntered.drop(1)) else trimAmount(amountEntered)
+    if (isClaimAmountPrefixEuros(amountEntered) || isClaimAmountPrefixPounds(amountEntered))
+      trimAmount(amountEntered.drop(1))
+    else trimAmount(amountEntered)
 
   def fromNonHmrcSubsidy(nonHmrcSubsidy: NonHmrcSubsidy): SubsidyJourney =
     SubsidyJourney(

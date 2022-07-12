@@ -46,7 +46,7 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
 
   private val eoriIsPartOfUndertaking = Constraint[String] { eori: String =>
     undertaking.undertakingBusinessEntity
-      .find(_.businessEntityIdentifier.toString == getValidEori(eori))
+      .find(_.businessEntityIdentifier == getValidEori(eori))
       .map(_ => Valid)
       .getOrElse(Invalid(s"error.not-in-undertaking"))
   }
@@ -58,6 +58,7 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
       .verifying(enteredEoriIsValid)
       .verifying(eoriIsPartOfUndertaking)
 
+  // TODO - can this be shared?
   private val radioButtonSelected = Constraint[String] { r: String =>
     if (r.isEmpty) Invalid(s"error.$YesNoRadioButton.required")
     else Valid
