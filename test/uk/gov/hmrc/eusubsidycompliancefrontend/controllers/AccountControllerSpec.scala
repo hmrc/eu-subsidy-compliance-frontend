@@ -79,9 +79,9 @@ class AccountControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+            mockRetrieveSubsidy(subsidyRetrieve.copy(inDateRange = None))(undertakingSubsidies.toFuture)
             mockTimeToday(fixedDate)
             mockGetOrCreate(eori1)(Right(nilJourneyCreate))
-            mockRetrieveSubsidy(subsidyRetrieveForFixedDate)(undertakingSubsidies.toFuture)
           }
           checkPageIsDisplayed(
             performAction(),
@@ -145,9 +145,9 @@ class AccountControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+            mockRetrieveSubsidy(subsidyRetrieve.copy(inDateRange = None))(undertakingSubsidies.copy(nonHMRCSubsidyUsage = List(nonHmrcSubsidy.copy(submissionDate = undertaking.lastSubsidyUsageUpdt.get))).toFuture)
             mockTimeToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilJourneyCreate))
-            mockRetrieveSubsidy(subsidyRetrieveForDate(currentDate))(undertakingSubsidies.toFuture)
           }
           checkPageIsDisplayed(
             performAction(),
@@ -180,12 +180,12 @@ class AccountControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+            mockRetrieveSubsidy(subsidyRetrieve.copy(inDateRange = None))(undertakingSubsidies.toFuture)
             mockTimeToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilReturnJourney))
             if (hasFiledNilReturnRecently) {
               mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNJ))
             }
-            mockRetrieveSubsidy(subsidyRetrieveForDate(currentDate))(undertakingSubsidies.toFuture)
           }
           checkPageIsDisplayed(
             performAction(),
@@ -202,37 +202,6 @@ class AccountControllerSpec
                 val body = doc.select(".govuk-notification-banner").text
                 body should include regex ""
               }
-          )
-        }
-
-        def testTimeToReportAndNeverSubmitted(undertaking: Undertaking, currentDate: LocalDate): Unit = {
-
-          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
-
-          inSequence {
-            mockNoPredicateAuthWithNecessaryEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate(eori1)(Right(eligibilityJourneyComplete))
-            mockGetOrCreate(eori1)(Right(UndertakingJourney()))
-            mockTimeToday(currentDate)
-            mockGetOrCreate(eori1)(Right(nilJourneyCreate))
-            mockRetrieveSubsidy(subsidyRetrieveForDate(currentDate))(
-              undertakingSubsidies
-                .copy(
-                  nonHMRCSubsidyUsage = List.empty,
-                  hmrcSubsidyUsage = List.empty
-                )
-                .toFuture
-            )
-          }
-
-          checkPageIsDisplayed(
-            performAction(),
-            messageFromMessageKey("lead-account-homepage.title", undertaking.name),
-            doc => {
-              val htmlBody = doc.select(".govuk-inset-text").text
-              htmlBody shouldBe messageFromMessageKey("lead-account-homepage-never-submitted-overdue")
-            }
           )
         }
 
@@ -279,14 +248,6 @@ class AccountControllerSpec
           )
         }
 
-        "today's over 90 days from the undertaking creation and no subsidies created" in {
-          val lastUpdatedDate = LocalDate.of(2021, 12, 1)
-          testTimeToReportAndNeverSubmitted(
-            undertaking.copy(lastSubsidyUsageUpdt = lastUpdatedDate.some),
-            currentDate = lastUpdatedDate.plusDays(91)
-          )
-        }
-
         "user has recently filed the Nil Return " in {
           testNilReturnSuccessMessage(
             undertaking1,
@@ -317,6 +278,7 @@ class AccountControllerSpec
               mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
               mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
               mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
+              mockRetrieveSubsidy(subsidyRetrieve.copy(inDateRange = None))(undertakingSubsidies.toFuture)
               mockTimeToday(fixedDate)
             }
 
@@ -345,6 +307,7 @@ class AccountControllerSpec
               mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
               mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
               mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
+              mockRetrieveSubsidy(subsidyRetrieve.copy(inDateRange = None))(undertakingSubsidies.toFuture)
               mockTimeToday(fixedDate)
             }
 

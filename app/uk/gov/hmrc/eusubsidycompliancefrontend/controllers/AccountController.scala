@@ -21,7 +21,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscInitialActionBuilder
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -30,6 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, Time
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
+import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -76,7 +77,9 @@ class AccountController @Inject() (
   )(implicit r: AuthenticatedEscRequest[AnyContent], e: EORI): Future[Result] = {
     val result = for {
       _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(u))
-      result <- renderAccountPage(u).toContext
+      retrieveRequest = SubsidyRetrieve(u.reference, None)
+      subsidies <- escService.retrieveSubsidy(retrieveRequest).toContext
+      result <- renderAccountPage(u, subsidies).toContext
     } yield result
 
     result.getOrElse(handleMissingSessionData("Account Home - Existing Undertaking -"))
@@ -88,14 +91,19 @@ class AccountController @Inject() (
       uj <- store.getOrCreate[UndertakingJourney](u).toContext
     } yield (ej, uj)
 
-  private def renderAccountPage(undertaking: Undertaking)(implicit r: AuthenticatedEscRequest[AnyContent]) = {
+  private def renderAccountPage(undertaking: Undertaking, undertakingSubsidies: UndertakingSubsidies)(implicit r: AuthenticatedEscRequest[AnyContent]) = {
     implicit val eori: EORI = r.eoriNumber
 
     val currentDay = timeProvider.today
+    implicit val localDateOrdering: Ordering[LocalDate] = Ordering.by(_.toEpochDay)
+    val lastSubmitted: Option[LocalDate] = undertakingSubsidies.nonHMRCSubsidyUsage.map(e => e.submissionDate) match {
+      case Nil => undertaking.lastSubsidyUsageUpdt
+      case  a  => Some(a.max)
+    }
 
-    val isTimeToReport = ReportReminderHelpers.isTimeToReport(undertaking.lastSubsidyUsageUpdt, currentDay)
-    val dueDate = ReportReminderHelpers.dueDateToReport(undertaking.lastSubsidyUsageUpdt).map(_.toDisplayFormat)
-    val isOverdue = ReportReminderHelpers.isOverdue(undertaking.lastSubsidyUsageUpdt, currentDay)
+    val isTimeToReport = ReportReminderHelpers.isTimeToReport(lastSubmitted, currentDay)
+    val dueDate = ReportReminderHelpers.dueDateToReport(lastSubmitted).map(_.toDisplayFormat)
+    val isOverdue = ReportReminderHelpers.isOverdue(lastSubmitted, currentDay)
 
     def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] =
       if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
@@ -105,10 +113,6 @@ class AccountController @Inject() (
       val result = for {
         nilReturnJourney <- store.getOrCreate[NilReturnJourney](NilReturnJourney()).toContext
         _ <- updateNilReturnJourney(nilReturnJourney).toContext
-        undertakingReference <- undertaking.reference.toContext
-        searchRange = Some((currentDay.toEarliestTaxYearStart, currentDay))
-        retrieveRequest = SubsidyRetrieve(undertakingReference, searchRange)
-        subsidies <- escService.retrieveSubsidy(retrieveRequest).toContext
       } yield Ok(
         leadAccountPage(
           undertaking,
@@ -118,7 +122,7 @@ class AccountController @Inject() (
           isOverdue,
           nilReturnJourney.displayNotification,
           currentDay.plusDays(dueDays).toDisplayFormat,
-          subsidies.hasNeverSubmitted
+          undertakingSubsidies.hasNeverSubmitted
         )
       )
 
