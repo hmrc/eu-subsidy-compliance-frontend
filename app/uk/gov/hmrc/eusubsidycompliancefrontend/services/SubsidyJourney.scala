@@ -22,7 +22,7 @@ import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef, TraderRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, NonHmrcSubsidy, OptionalEORI, OptionalTraderRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ClaimAmount, DateFormValues, NonHmrcSubsidy, OptionalEORI, OptionalTraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -62,7 +62,7 @@ case class SubsidyJourney(
   else super.previous
 
   def setReportPayment(v: Boolean): SubsidyJourney = this.copy(reportPayment = reportPayment.copy(value = v.some))
-  def setClaimAmount(b: BigDecimal): SubsidyJourney = this.copy(claimAmount = claimAmount.copy(value = b.some))
+  def setClaimAmount(c: ClaimAmount): SubsidyJourney = this.copy(claimAmount = claimAmount.copy(value = c.some))
   def setClaimDate(d: DateFormValues): SubsidyJourney = this.copy(claimDate = claimDate.copy(value = d.some))
   def setClaimEori(oe: OptionalEORI): SubsidyJourney = this.copy(addClaimEori = addClaimEori.copy(oe.some))
   def setPublicAuthority(a: String): SubsidyJourney = this.copy(publicAuthority = publicAuthority.copy(a.some))
@@ -92,7 +92,7 @@ object SubsidyJourney {
     SubsidyJourney(
       reportPayment = ReportPaymentFormPage(true.some),
       claimDate = ClaimDateFormPage(DateFormValues.fromDate(nonHmrcSubsidy.allocationDate).some),
-      claimAmount = ClaimAmountFormPage(nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.some),
+      claimAmount = ClaimAmountFormPage(ClaimAmount("EUR", nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.toString()).some),
       addClaimEori = AddClaimEoriFormPage(getAddClaimEORI(nonHmrcSubsidy.businessEntityIdentifier).some),
       publicAuthority = PublicAuthorityFormPage(nonHmrcSubsidy.publicAuthority.orElse("".some)),
       traderRef = TraderRefFormPage(getAddTraderRef(nonHmrcSubsidy.traderReference).some),
@@ -115,7 +115,7 @@ object SubsidyJourney {
     case class ClaimDateFormPage(value: Form[DateFormValues] = None) extends FormPage[DateFormValues] {
       def uri = controller.getClaimDate().url
     }
-    case class ClaimAmountFormPage(value: Form[BigDecimal] = None) extends FormPage[BigDecimal] {
+    case class ClaimAmountFormPage(value: Form[ClaimAmount] = None) extends FormPage[ClaimAmount] {
       def uri = controller.getClaimAmount().url
     }
     case class AddClaimEoriFormPage(value: Form[OptionalEORI] = None) extends FormPage[OptionalEORI] {

@@ -26,7 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.getValidC
 
 import scala.util.Try
 
-class ClaimAmountFormProvider extends FormProvider[ClaimAmount] {
+case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
 
   override protected def mapping: Mapping[ClaimAmount] = Forms.mapping(
     Fields.CurrencyCode ->

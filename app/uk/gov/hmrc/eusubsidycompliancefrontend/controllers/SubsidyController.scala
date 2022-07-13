@@ -19,19 +19,17 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.data.OptionT
 import cats.implicits._
 import play.api.data.Form
-import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.Forms.{mapping, nonEmptyText}
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.toSubsidyUpdate
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimDateFormProvider, ClaimEoriFormProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimAmountFormProvider, ClaimDateFormProvider, ClaimEoriFormProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{NonCustomsSubsidyAdded, NonCustomsSubsidyRemoved, NonCustomsSubsidyUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, TraderRef, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.getValidClaimAmount
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -43,7 +41,6 @@ import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 @Singleton
 class SubsidyController @Inject() (
@@ -84,37 +81,9 @@ class SubsidyController @Inject() (
       .verifying("error.claim-public-authority.tooManyChars", _.length < 151)
   )
 
-  private val isClaimAmountTooBig = Constraint[String] { claimAmount: String =>
-    val amount = getValidClaimAmount(claimAmount)
-    if (amount.length < 17) Valid else Invalid("error.amount.tooBig")
-  }
+  private val claimAmountForm: Form[ClaimAmount] = ClaimAmountFormProvider().form
 
-  private val isClaimAmountFormatCorrect = Constraint[String] { claimAmount: String =>
-    val amount = getValidClaimAmount(claimAmount)
-    Try(BigDecimal(amount)).fold(
-      _ => Invalid("error.amount.incorrectFormat"),
-      amount => if (amount.scale == 2 || amount.scale == 0) Valid else Invalid("error.amount.incorrectFormat")
-    )
-  }
-
-  private val isClaimAmountTooSmall = Constraint[String] { claimAmount: String =>
-    val amount = getValidClaimAmount(claimAmount)
-    Try(BigDecimal(amount)).fold(
-      _ => Invalid("error.amount.incorrectFormat"),
-      amount => if (amount > 0.01) Valid else Invalid("error.amount.tooSmall")
-    )
-  }
-
-  private val claimAmountForm: Form[BigDecimal] = Form(
-    mapping(
-      "claim-amount" -> nonEmptyText
-        .verifying(isClaimAmountTooBig)
-        .verifying(isClaimAmountFormatCorrect)
-        .verifying(isClaimAmountTooSmall)
-    )(amt => BigDecimal(getValidClaimAmount(amt)))(a => Some(a.toString))
-  )
-
-  private val claimDateForm = ClaimDateFormProvider(timeProvider).form
+  private val claimDateForm: Form[DateFormValues] = ClaimDateFormProvider(timeProvider).form
 
   private val removeSubsidyClaimForm: Form[FormValues] = Form(
     mapping("removeSubsidyClaim" -> mandatory("removeSubsidyClaim"))(FormValues.apply)(FormValues.unapply)
@@ -389,7 +358,8 @@ class SubsidyController @Inject() (
         claimEori = optionalEori.value.map(EORI(_))
         traderRef = optionalTraderRef.value.map(TraderRef(_))
         previous = journey.previous
-      } yield Ok(cyaPage(claimDate, amount, claimEori, authority, traderRef, previous))
+        // TODO - amount should be stored as a big decimal - review this
+      } yield Ok(cyaPage(claimDate, BigDecimal(amount.amount), claimEori, authority, traderRef, previous))
 
       result.getOrElse(Redirect(routes.SubsidyController.getAddClaimReference()))
     }
@@ -559,7 +529,8 @@ object SubsidyController {
             publicAuthority = Some(journey.publicAuthority.value.get),
             traderReference = journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
             nonHMRCSubsidyAmtEUR =
-              SubsidyAmount(journey.claimAmount.value.getOrElse(sys.error("Claim amount Missing"))),
+              // TODO - store big decimal amount or provide method to do the conversion
+              SubsidyAmount(journey.claimAmount.value.map(a => BigDecimal(a.amount)).getOrElse(sys.error("Claim amount Missing"))),
             businessEntityIdentifier = journey.addClaimEori.value.fold(sys.error("eori value missing"))(oprionalEORI =>
               oprionalEORI.value.map(EORI(_))
             ),
