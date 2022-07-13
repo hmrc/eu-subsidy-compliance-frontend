@@ -391,10 +391,6 @@ class SubsidyControllerSpec
             performAction(),
             messageFromMessageKey("add-claim-amount.title"),
             { doc =>
-              val text = doc.select(".govuk-list").text
-              text should include regex subsidyJourney.claimDate.value.map(_.year).getOrElse("")
-              text should include regex subsidyJourney.claimDate.value.map(_.month).getOrElse("")
-
               val input = doc.select(".govuk-input").attr("value")
               input shouldBe subsidyJourney.claimAmount.value.map(_.toString()).getOrElse("")
 

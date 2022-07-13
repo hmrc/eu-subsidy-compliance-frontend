@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
-import play.api.data.Forms.{bigDecimal, nonEmptyText, text}
+import play.api.data.Forms.{nonEmptyText, text}
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.{Form, Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
