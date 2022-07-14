@@ -97,10 +97,13 @@ object CommonTestData {
     hmrcSubsidyUsage = List(hmrcSubsidy)
   )
 
+  // TODO - do we also need an EUR fixture?
+  val claimAmount = ClaimAmount("GBP", subsidyAmount.toString())
+
   val subsidyJourney = SubsidyJourney(
     publicAuthority = PublicAuthorityFormPage("Local Authority".some),
     traderRef = TraderRefFormPage(optionalTraderRef.some),
-    claimAmount = ClaimAmountFormPage(subsidyAmount.some),
+    claimAmount = ClaimAmountFormPage(ClaimAmount("GBP", subsidyAmount.toString()).some),
     addClaimEori = AddClaimEoriFormPage(optionalEORI.some),
     claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some),
     reportPayment = ReportPaymentFormPage(true.some)

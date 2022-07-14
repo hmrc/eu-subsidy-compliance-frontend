@@ -415,7 +415,7 @@ class SubsidyControllerSpec
             SubsidyJourney(
               reportPayment = ReportPaymentFormPage(true.some),
               claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
-              claimAmount = ClaimAmountFormPage(value = subsidyAmount.some)
+              claimAmount = ClaimAmountFormPage(value = claimAmount.some)
             )
           )
         }
@@ -486,7 +486,7 @@ class SubsidyControllerSpec
           )
 
           def update(subsidyJourney: SubsidyJourney) =
-            subsidyJourney.copy(claimAmount = ClaimAmountFormPage(value = subsidyAmount.some))
+            subsidyJourney.copy(claimAmount = ClaimAmountFormPage(value = claimAmount.some))
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
@@ -537,6 +537,7 @@ class SubsidyControllerSpec
 
       }
 
+      // TODO - ensure these inputs are covered in the form provider tests with £ prefix too
       "redirect to next page when claim amount is prefixed with euro sign or not and have commas and space" in {
 
         List("123.45", "€123.45", "12  3.4 5", "1,23.4,5", "€12  3.4 5").foreach { claimAmount =>
@@ -544,11 +545,11 @@ class SubsidyControllerSpec
             val subsidyJourney = SubsidyJourney(
               reportPayment = ReportPaymentFormPage(true.some),
               claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
-              claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some)
+              claimAmount = ClaimAmountFormPage(ClaimAmount("EUR", "123.45").some)
             )
 
             def update(subsidyJourney: SubsidyJourney) =
-              subsidyJourney.copy(claimAmount = ClaimAmountFormPage(BigDecimal(123.45).some))
+              subsidyJourney.copy(claimAmount = ClaimAmountFormPage(ClaimAmount("EURO", "123.45").some))
 
             inSequence {
               mockAuthWithNecessaryEnrolment()
@@ -1406,7 +1407,7 @@ class SubsidyControllerSpec
       val subsidyJourneyWithReportPaymentForm =
         subsidyJourney.copy(
           reportPayment = ReportPaymentFormPage(Some(true)),
-          claimAmount = ClaimAmountFormPage(Some(nonHmrcSubsidyAmount)),
+          claimAmount = ClaimAmountFormPage(claimAmount.some),
           existingTransactionId = Some(SubsidyRef(transactionID))
         )
 
