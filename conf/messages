@@ -251,6 +251,7 @@ add-claim-amount.eur = Euros
 add-claim-amount.gbp = Pounds sterling
 add-claim-amount.input-label = Enter amount
 add-claim-amount.input-hint = Figure should include two decimal places, like 248.56
+add-claim-amount.error.currency-code.required = Select the currency that the payment was made in.
 
 add-claim-amount.p1=This type of aid is measured in euros.
 add-claim-amount.inset=If your payment is already in euros, skip the steps below and enter the amount in the box.

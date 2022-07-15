@@ -44,7 +44,7 @@
         name = inputIdentifier,
         prefix = Some(PrefixOrSuffix(content = Text("€"))),
         errorMessage = if (form.hasErrors && form.errors.head.key == inputIdentifier) {
-            Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}")))
+            Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.message}")}")))
         } else None,
         value = form.data.get(inputIdentifier),
         label = Label(content = Text(messages("add-claim-amount.input-label"))),
@@ -59,7 +59,7 @@
         name = inputIdentifier,
         prefix = Some(PrefixOrSuffix(content = Text("£"))),
         errorMessage = if (form.hasErrors && form.errors.head.key == inputIdentifier) {
-            Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}")))
+            Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.message}")}")))
         } else None,
         value = form.data.get(inputIdentifier),
         label = Label(content = Text(messages("add-claim-amount.input-label"))),
@@ -103,7 +103,7 @@
         )),
         hint = Some(Hint(content = Text(messages("add-claim-amount.hint")))),
         errorMessage = if (form.hasErrors && form.errors.head.key == radioIdentifier) {
-            Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}")))
+            Some(ErrorMessage(content = Text(s"${messages(s"$key.${form.errors.head.message}")}")))
         } else None,
         name = radioIdentifier,
         items = Seq(

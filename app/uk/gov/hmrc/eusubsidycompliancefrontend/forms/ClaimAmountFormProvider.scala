@@ -20,7 +20,7 @@ import play.api.data.Forms.{nonEmptyText, text}
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.{Form, Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Fields.YesNoRadioButton
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields.CurrencyCode
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ClaimAmount
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.getValidClaimAmount
 
@@ -65,8 +65,12 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
   }
 
   // TODO - can this be shared?
+  // TODO - test coverage of this in provider spec?
   private val radioButtonSelected = Constraint[String] { r: String =>
-    if (r.isEmpty) Invalid(s"error.$YesNoRadioButton.required")
+//    if (r.isEmpty) Invalid(s"error.$CurrencyCode.required")
+//    if (r.isEmpty) Invalid(s"error.currency-code.required")
+//    if (r.isEmpty) Invalid(s"claim-amount.error.currency-code.required")
+    if (r.isEmpty) Invalid(s"error.currency-code.required")
     else Valid
   }
 

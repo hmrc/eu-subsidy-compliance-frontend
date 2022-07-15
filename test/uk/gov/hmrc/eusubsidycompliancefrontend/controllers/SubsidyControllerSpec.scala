@@ -23,6 +23,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyControllerSpec.RemoveSubsidyRow
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyRemoved
@@ -392,7 +393,7 @@ class SubsidyControllerSpec
             messageFromMessageKey("add-claim-amount.title"),
             { doc =>
               val input = doc.select(".govuk-input").attr("value")
-              input shouldBe subsidyJourney.claimAmount.value.map(_.toString()).getOrElse("")
+              input shouldBe subsidyJourney.claimAmount.value.map(_.amount).getOrElse("")
 
               val button = doc.select("form")
               button.attr("action") shouldBe routes.SubsidyController.postAddClaimAmount().url
@@ -494,7 +495,10 @@ class SubsidyControllerSpec
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
             mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction("claim-amount" -> "123.45")))
+          assertThrows[Exception](await(performAction(
+            ClaimAmountFormProvider.Fields.ClaimAmount -> "123.45",
+            ClaimAmountFormProvider.Fields.CurrencyCode -> "GBP",
+          )))
         }
       }
 
@@ -512,6 +516,8 @@ class SubsidyControllerSpec
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
           }
 
+          println(s"Got error message key: $errorMessageKey")
+
           checkFormErrorIsDisplayed(
             performAction(data: _*),
             messageFromMessageKey("add-claim-amount.title"),
@@ -519,10 +525,19 @@ class SubsidyControllerSpec
           )
         }
 
-        "nothing is entered" in {
-          displayError("claim-amount" -> "")("add-claim-amount.error.required")
-
+        "no currency code has been selected" in {
+          displayError(
+            ClaimAmountFormProvider.Fields.CurrencyCode -> "",
+            ClaimAmountFormProvider.Fields.ClaimAmount -> "",
+          )("add-claim-amount.error.currency-code.required")
         }
+
+        "nothing is entered" in {
+          displayError(
+            "claim-amount" -> ""
+          )("add-claim-amount.error.required")
+        }
+
         "claim amount entered in wrong format" in {
           displayError("claim-amount" -> "123.4")("add-claim-amount.error.amount.incorrectFormat")
         }
