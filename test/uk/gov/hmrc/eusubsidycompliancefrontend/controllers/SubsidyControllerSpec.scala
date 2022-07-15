@@ -1434,7 +1434,7 @@ class SubsidyControllerSpec
       val subsidyJourneyWithReportPaymentForm =
         subsidyJourney.copy(
           reportPayment = ReportPaymentFormPage(Some(true)),
-          claimAmount = ClaimAmountFormPage(claimAmount.some),
+          claimAmount = ClaimAmountFormPage(ClaimAmount("EUR", nonHmrcSubsidyAmount.toString).some),
           existingTransactionId = Some(SubsidyRef(transactionID))
         )
 

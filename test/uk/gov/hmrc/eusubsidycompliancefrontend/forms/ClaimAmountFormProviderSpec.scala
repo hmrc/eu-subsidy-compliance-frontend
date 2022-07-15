@@ -76,7 +76,7 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
         )
 
         amounts.foreach { amount =>
-          validateAndCheckError("GBP", amount)(Fields.ClaimAmount, "error.amount.tooBig")
+          validateAndCheckError("GBP", amount)(Fields.ClaimAmount, "error.tooBig")
         }
 
       }
@@ -95,7 +95,7 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
         )
 
         amounts.foreach { amount =>
-          validateAndCheckError("GBP", amount)(Fields.ClaimAmount, "error.amount.incorrectFormat")
+          validateAndCheckError("GBP", amount)(Fields.ClaimAmount, "error.incorrectFormat")
         }
 
       }
@@ -105,11 +105,11 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
     "return an amount too small error" when {
 
       "the amount is zero" in {
-        validateAndCheckError("GBP", "0")(Fields.ClaimAmount, "error.amount.tooSmall")
+        validateAndCheckError("GBP", "0")(Fields.ClaimAmount, "error.tooSmall")
       }
 
       "the amount is negative" in {
-        validateAndCheckError("GBP", "-2")(Fields.ClaimAmount, "error.amount.tooSmall")
+        validateAndCheckError("GBP", "-2")(Fields.ClaimAmount, "error.tooSmall")
       }
 
     }
