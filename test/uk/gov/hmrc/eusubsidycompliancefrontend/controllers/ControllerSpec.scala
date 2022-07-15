@@ -40,7 +40,9 @@ trait ControllerSpec extends PlaySupport {
 
   def messageFromMessageKey(messageKey: String, args: Any*)(implicit messagesApi: MessagesApi): String = {
     val m = messagesApi(messageKey, args: _*)
-    if (m === messageKey) sys.error(s"Could not find message for key `$messageKey`")
+    println(s"messageFromMessageKey: looking for message '$messageKey''")
+    // TODO - why are we duplicating the logic further down the call chain?
+    if (m === messageKey) sys.error(s"messageFromMessageKey: Could not find message for key `$messageKey`")
     else m
   }
 
@@ -78,9 +80,12 @@ trait ControllerSpec extends PlaySupport {
       expectedTitle,
       { doc =>
         val errorSummary = doc.select(".govuk-error-summary")
-        errorSummary.select("a").text() shouldBe formError
+        val errorSummaryContent = errorSummary.select("a").text()
+        println(s"Error summary content: '$errorSummaryContent''")
+        errorSummaryContent shouldBe formError
 
         val inputErrorMessage = doc.select(".govuk-error-message").text()
+        println(s"input error message content: '$inputErrorMessage''")
         inputErrorMessage shouldBe s"Error: $formError"
       },
       expectedStatus

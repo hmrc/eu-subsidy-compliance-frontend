@@ -43,10 +43,10 @@
         id = inputIdentifier,
         name = inputIdentifier,
         prefix = Some(PrefixOrSuffix(content = Text("€"))),
-        errorMessage = if (form.hasErrors && form.errors.head.key == inputIdentifier) {
-            Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.message}")}")))
+        errorMessage = if (form.data.get(radioIdentifier).contains("EUR") && form.hasErrors && form.errors.head.key == inputIdentifier) {
+            Some(ErrorMessage(content = Text(s"${messages(s"$key.${form.errors.head.key}.${form.errors.head.message}")}")))
         } else None,
-        value = form.data.get(inputIdentifier),
+        value = if (form.data.get(radioIdentifier).contains("EUR")) form.data.get(inputIdentifier) else None,
         label = Label(content = Text(messages("add-claim-amount.input-label"))),
         hint = Some(Hint(content = Text(messages("add-claim-amount.input-hint")))),
         classes = "govuk-input govuk-input--width-20"
@@ -58,10 +58,10 @@
         id = inputIdentifier,
         name = inputIdentifier,
         prefix = Some(PrefixOrSuffix(content = Text("£"))),
-        errorMessage = if (form.hasErrors && form.errors.head.key == inputIdentifier) {
-            Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.message}")}")))
+        errorMessage = if (form.data.get(radioIdentifier).contains("GBP") && form.hasErrors && form.errors.head.key == inputIdentifier) {
+            Some(ErrorMessage(content = Text(s"${messages(s"$key.${form.errors.head.key}.${form.errors.head.message}")}")))
         } else None,
-        value = form.data.get(inputIdentifier),
+        value = if (form.data.get(radioIdentifier).contains("GBP")) form.data.get(inputIdentifier) else None,
         label = Label(content = Text(messages("add-claim-amount.input-label"))),
         hint = Some(Hint(content = Text(messages("add-claim-amount.input-hint")))),
         classes = "govuk-input govuk-input--width-20"
@@ -81,7 +81,7 @@
           errorList = Seq(
               ErrorLink(
                   href = Some(s"#${form.errors.head.key}"),
-                  content = Text(s"${messages(s"$key.${form.errors.head.message}")}"),
+                  content = Text(s"${messages(s"$key.${form.errors.head.key}.${form.errors.head.message}")}"),
                   attributes = Map("class" ->"govuk-link")
               )
           ),
@@ -103,25 +103,25 @@
         )),
         hint = Some(Hint(content = Text(messages("add-claim-amount.hint")))),
         errorMessage = if (form.hasErrors && form.errors.head.key == radioIdentifier) {
-            Some(ErrorMessage(content = Text(s"${messages(s"$key.${form.errors.head.message}")}")))
+            Some(ErrorMessage(content = Text(s"${messages(s"$key.${form.errors.head.key}.${form.errors.head.message}")}")))
         } else None,
         name = radioIdentifier,
         items = Seq(
             RadioItem(
                 content = Text(messages("add-claim-amount.eur")),
                 value = Some("EUR"),
-                checked = form.data.get(radioIdentifier).contains("radioIdentifier"),
+                checked = form.data.get(radioIdentifier).contains("EUR"),
                 conditionalHtml = Some(eurInputHtml)
             ),
             RadioItem(
                 content = Text(messages("add-claim-amount.gbp")),
-                checked = form.data.get(radioIdentifier).contains("radioIdentifier"),
+                checked = form.data.get(radioIdentifier).contains("GBP"),
                 value = Some("GBP"),
                 conditionalHtml = Some(gbpInputHtml)
             ))
         ))
 
-    @button("common.continue")
+        @button("common.continue")
 
     }
 }

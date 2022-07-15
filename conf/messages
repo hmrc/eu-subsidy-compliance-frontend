@@ -251,7 +251,14 @@ add-claim-amount.eur = Euros
 add-claim-amount.gbp = Pounds sterling
 add-claim-amount.input-label = Enter amount
 add-claim-amount.input-hint = Figure should include two decimal places, like 248.56
-add-claim-amount.error.currency-code.required = Select the currency that the payment was made in.
+
+# Form validation errors
+add-claim-amount.currency-code.error.required = Select the currency that the payment was made in.
+add-claim-amount.claim-amount.error.required = Enter number value of subsidy allocated, like 248.56
+add-claim-amount.claim-amount.error.incorrectFormat = Enter number value of subsidy allocated, like 248.56
+add-claim-amount.claim-amount.error.tooBig=Subsidy amount must be fewer than 17 characters
+# TODO - confirm logic here - is 0.01 an allowable amount?
+add-claim-amount.claim-amount.error.tooSmall=Subsidy amount must be more than one cent or penny e.g 0.02
 
 add-claim-amount.p1=This type of aid is measured in euros.
 add-claim-amount.inset=If your payment is already in euros, skip the steps below and enter the amount in the box.
@@ -261,12 +268,14 @@ add-claim-amount.l2 = Change the year to {0} and month to {1}.
 add-claim-amount.l3 = Enter the amount of aid you received in pounds sterling.
 add-claim-amount.l4 = Change the ‘From’ dropdown to ‘GBP’ and use the figure displayed below it.
 add-claim-amount.l5 = Enter amount in the box below.
-add-claim-amount.error.amount.tooSmall=Subsidy amount must be more than one cent, like €00.01
-add-claim-amount.error.amount.tooBig=Subsidy amount must be fewer than 17 characters
-add-claim-amount.error.required= Enter number value of subsidy allocated in Euros, like €248.56
-add-claim-amount.error.amount.incorrectFormat=Enter number value of subsidy allocated in Euros, like €248.56
-add-claim-amount.error.real = Enter number value of subsidy allocated in Euros, like €248.56
-add-claim-amount.error.required = Enter number value of subsidy allocated in Euros, like €248.56
+
+# Original error messages
+# TODO - remove when ids migrated
+#add-claim-amount.error.amount.tooSmall=Subsidy amount must be more than one cent, like €00.01
+#add-claim-amount.error.required= Enter number value of subsidy allocated in Euros, like €248.56
+#add-claim-amount.error.amount.incorrectFormat=Enter number value of subsidy allocated in Euros, like €248.56
+#add-claim-amount.error.real = Enter number value of subsidy allocated in Euros, like €248.56
+#add-claim-amount.error.required = Required - Enter number value of subsidy allocated in Euros, like €248.56
 
 add-claim-date.title=What date were you awarded the payment?
 add-claim-date.hint=For example, 27 07 2020

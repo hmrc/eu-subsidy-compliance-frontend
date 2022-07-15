@@ -33,7 +33,7 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
       text
         .verifying(radioButtonSelected),
     Fields.ClaimAmount ->
-      nonEmptyText
+      text
         .verifying(isClaimAmountTooBig)
         .verifying(isClaimAmountFormatCorrect)
         .verifying(isClaimAmountTooSmall)
@@ -45,32 +45,33 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
 
   private val isClaimAmountTooBig = Constraint[String] { claimAmount: String =>
     val amount = getValidClaimAmount(claimAmount)
-    if (amount.length < 17) Valid else Invalid("error.amount.tooBig")
+    if (amount.length < 17) Valid else Invalid("error.tooBig")
   }
 
   private val isClaimAmountFormatCorrect = Constraint[String] { claimAmount: String =>
     val amount = getValidClaimAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
-      _ => Invalid("error.amount.incorrectFormat"),
-      amount => if (amount.scale == 2 || amount.scale == 0) Valid else Invalid("error.amount.incorrectFormat")
+      _ => Invalid("error.incorrectFormat"),
+      amount => if (amount.scale == 2 || amount.scale == 0) Valid else Invalid("error.incorrectFormat")
     )
   }
 
   private val isClaimAmountTooSmall = Constraint[String] { claimAmount: String =>
     val amount = getValidClaimAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
-      _ => Invalid("error.amount.incorrectFormat"),
-      amount => if (amount > 0.01) Valid else Invalid("error.amount.tooSmall")
+      _ => Invalid("error.incorrectFormat"),
+      amount => if (amount > 0.01) Valid else Invalid("error.tooSmall")
     )
   }
 
   // TODO - can this be shared?
   // TODO - test coverage of this in provider spec?
   private val radioButtonSelected = Constraint[String] { r: String =>
+    println(s"Radio Button Selected: ${r.nonEmpty}")
 //    if (r.isEmpty) Invalid(s"error.$CurrencyCode.required")
 //    if (r.isEmpty) Invalid(s"error.currency-code.required")
 //    if (r.isEmpty) Invalid(s"claim-amount.error.currency-code.required")
-    if (r.isEmpty) Invalid(s"error.currency-code.required")
+    if (r.isEmpty) Invalid(s"currency-code.error.required")
     else Valid
   }
 

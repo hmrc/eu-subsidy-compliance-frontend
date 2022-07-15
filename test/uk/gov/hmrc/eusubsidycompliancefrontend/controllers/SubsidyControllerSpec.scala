@@ -516,38 +516,46 @@ class SubsidyControllerSpec
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
           }
 
-          println(s"Got error message key: $errorMessageKey")
+          val titleMessage = messageFromMessageKey("add-claim-amount.title")
+          println(s"testcase: Looking for message: $errorMessageKey")
+          val errorMessage = messageFromMessageKey(errorMessageKey)
+          println(s"testcase: Found message with key: '$errorMessageKey' content: '$errorMessage''")
 
           checkFormErrorIsDisplayed(
             performAction(data: _*),
-            messageFromMessageKey("add-claim-amount.title"),
-            messageFromMessageKey(errorMessageKey)
+            titleMessage,
+            errorMessage
           )
         }
 
         "no currency code has been selected" in {
-          displayError(
-            ClaimAmountFormProvider.Fields.CurrencyCode -> "",
-            ClaimAmountFormProvider.Fields.ClaimAmount -> "",
-          )("add-claim-amount.error.currency-code.required")
+          displayError()("add-claim-amount.currency-code.error.required")
         }
 
         "nothing is entered" in {
-          displayError(
-            "claim-amount" -> ""
-          )("add-claim-amount.error.required")
+          displayError(ClaimAmountFormProvider.Fields.CurrencyCode -> "GBP")("add-claim-amount.claim-amount.error.required")
         }
 
         "claim amount entered in wrong format" in {
-          displayError("claim-amount" -> "123.4")("add-claim-amount.error.amount.incorrectFormat")
+          displayError(
+            ClaimAmountFormProvider.Fields.CurrencyCode -> "GBP",
+            ClaimAmountFormProvider.Fields.ClaimAmount -> "123.4"
+          )("add-claim-amount.claim-amount.error.incorrectFormat")
         }
 
         "claim amount entered is more than 17 chars" in {
-          displayError("claim-amount" -> "1234567890.12345678")("add-claim-amount.error.amount.tooBig")
+          displayError(
+            ClaimAmountFormProvider.Fields.CurrencyCode -> "GBP",
+            ClaimAmountFormProvider.Fields.ClaimAmount -> "1234567890.12345678",
+          )("add-claim-amount.claim-amount.error.tooBig")
         }
 
+        // TODO - check the logic here - test suggests 0.01 is allowed :/
         "claim amount entered is too small < 0.01" in {
-          displayError("claim-amount" -> "00.01")("add-claim-amount.error.amount.tooSmall")
+          displayError(
+            ClaimAmountFormProvider.Fields.CurrencyCode -> "GBP",
+            ClaimAmountFormProvider.Fields.ClaimAmount -> "0.01"
+          )("add-claim-amount.claim-amount.error.tooSmall")
         }
 
       }
@@ -556,15 +564,16 @@ class SubsidyControllerSpec
       "redirect to next page when claim amount is prefixed with euro sign or not and have commas and space" in {
 
         List("123.45", "€123.45", "12  3.4 5", "1,23.4,5", "€12  3.4 5").foreach { claimAmount =>
+          println(s"Processing claimAmount: $claimAmount")
           withClue(s" For amount :: $claimAmount") {
             val subsidyJourney = SubsidyJourney(
               reportPayment = ReportPaymentFormPage(true.some),
               claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
-              claimAmount = ClaimAmountFormPage(ClaimAmount("EUR", "123.45").some)
+              claimAmount = ClaimAmountFormPage(ClaimAmount("EUR", claimAmount).some)
             )
 
             def update(subsidyJourney: SubsidyJourney) =
-              subsidyJourney.copy(claimAmount = ClaimAmountFormPage(ClaimAmount("EURO", "123.45").some))
+              subsidyJourney.copy(claimAmount = ClaimAmountFormPage(ClaimAmount("EUR", claimAmount).some))
 
             inSequence {
               mockAuthWithNecessaryEnrolment()
@@ -574,7 +583,10 @@ class SubsidyControllerSpec
             }
 
             checkIsRedirect(
-              performAction("claim-amount" -> claimAmount),
+              performAction(
+                ClaimAmountFormProvider.Fields.CurrencyCode -> "EUR",
+                ClaimAmountFormProvider.Fields.ClaimAmount -> claimAmount
+              ),
               routes.SubsidyController.getAddClaimEori().url
             )
           }
