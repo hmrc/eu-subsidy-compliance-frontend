@@ -22,7 +22,6 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ClaimAmount
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.getValidClaimAmount
 
 class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
 
@@ -83,7 +82,6 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
 
     }
 
-    // TODO - format error if user entered prefix != currency code?
     "return an incorrect format error" when {
 
       "the amount does not confirm to the required format" in {
@@ -129,8 +127,7 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
 
   private def validateAndCheckSuccess(currencyCode: String, amount: String) = {
     val result = processForm(currencyCode, amount)
-    // TODO - this should be part of the form handling, not in the subs journey
-    val parsedAmount = getValidClaimAmount(amount)
+    val parsedAmount = amount.replaceAll("[^\\d.]*", "")
     result mustBe  Right(ClaimAmount(currencyCode, parsedAmount))
   }
 
