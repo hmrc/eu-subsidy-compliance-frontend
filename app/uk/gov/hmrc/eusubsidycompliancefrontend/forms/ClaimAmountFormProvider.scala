@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
-import play.api.data.Forms.{nonEmptyText, text}
+import play.api.data.Forms.text
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.{Form, Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
@@ -68,10 +68,8 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
   // TODO - test coverage of this in provider spec?
   private val radioButtonSelected = Constraint[String] { r: String =>
     println(s"Radio Button Selected: ${r.nonEmpty}")
-//    if (r.isEmpty) Invalid(s"error.$CurrencyCode.required")
-//    if (r.isEmpty) Invalid(s"error.currency-code.required")
-//    if (r.isEmpty) Invalid(s"claim-amount.error.currency-code.required")
-    if (r.isEmpty) Invalid(s"currency-code.error.required")
+    // TODO - do we need to use the fieldname here?
+    if (r.isEmpty) Invalid(s"$CurrencyCode.error.required")
     else Valid
   }
 
