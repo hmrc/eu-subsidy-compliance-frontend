@@ -100,6 +100,17 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
 
       }
 
+      "the currency prefix does not match the selected currency code" in {
+        val scenarios = Seq(
+          "GBP" -> "€100.00",
+          "EUR" -> "£100.00",
+        )
+
+        scenarios.foreach { params =>
+          validateAndCheckError(params._1, params._2)("", "error.incorrectFormat")
+        }
+      }
+
     }
 
     "return an amount too small error" when {

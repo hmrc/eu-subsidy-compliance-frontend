@@ -34,21 +34,22 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
         .verifying(radioButtonSelected),
     Fields.ClaimAmount ->
       text
-        .verifying(isClaimAmountTooBig)
-        .verifying(isClaimAmountFormatCorrect)
-        .verifying(isClaimAmountTooSmall)
-        // TODO - temporary fudge until the code is moved out of the SubsidyJourney
-        .transform(getValidClaimAmount, identity[String])
+        .verifying(claimAmountIsBelowMaximumLength)
+        .verifying(claimAmountFormatIsValid)
+        .verifying(claimAmountAboveMinimumAllowedValue)
   )(ClaimAmount.apply)(ClaimAmount.unapply)
+    .verifying(claimAmountCurrencyMatchesSelection)
+    // TODO - temporary fudge until the code is moved out of the SubsidyJourney
+    .transform(c => c.copy(amount = getValidClaimAmount(c.amount)), identity[ClaimAmount])
 
   override def form: Form[ClaimAmount] = Form(mapping)
 
-  private val isClaimAmountTooBig = Constraint[String] { claimAmount: String =>
+  private val claimAmountIsBelowMaximumLength = Constraint[String] { claimAmount: String =>
     val amount = getValidClaimAmount(claimAmount)
     if (amount.length < 17) Valid else Invalid("error.tooBig")
   }
 
-  private val isClaimAmountFormatCorrect = Constraint[String] { claimAmount: String =>
+  private val claimAmountFormatIsValid = Constraint[String] { claimAmount: String =>
     val amount = getValidClaimAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid("error.incorrectFormat"),
@@ -56,7 +57,7 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
     )
   }
 
-  private val isClaimAmountTooSmall = Constraint[String] { claimAmount: String =>
+  private val claimAmountAboveMinimumAllowedValue = Constraint[String] { claimAmount: String =>
     val amount = getValidClaimAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid("error.incorrectFormat"),
@@ -67,10 +68,21 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
   // TODO - can this be shared?
   // TODO - test coverage of this in provider spec?
   private val radioButtonSelected = Constraint[String] { r: String =>
-    println(s"Radio Button Selected: ${r.nonEmpty}")
     // TODO - do we need to use the fieldname here?
     if (r.isEmpty) Invalid(s"$CurrencyCode.error.required")
     else Valid
+  }
+
+  // Verify that the user hasn't entered a currency symbol which doesn't match the currency they selected
+  // TODO - test coverage of this in provider test
+  private val claimAmountCurrencyMatchesSelection = Constraint[ClaimAmount] { claimAmount: ClaimAmount =>
+    // TODO - cleaner way to express this
+    claimAmount.amount.head match {
+      // TODO - enums
+      case '£' => if (claimAmount.currencyCode == "GBP") Valid else Invalid("error.incorrectFormat")
+      case '€' => if (claimAmount.currencyCode == "EUR") Valid else Invalid("error.incorrectFormat")
+      case _ => Valid
+    }
   }
 
 }

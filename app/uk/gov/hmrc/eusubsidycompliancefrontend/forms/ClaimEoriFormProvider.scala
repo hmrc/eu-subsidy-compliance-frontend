@@ -58,7 +58,6 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
       .verifying(enteredEoriIsValid)
       .verifying(eoriIsPartOfUndertaking)
 
-  // TODO - can this be shared?
   private val radioButtonSelected = Constraint[String] { r: String =>
     if (r.isEmpty) Invalid(s"error.$YesNoRadioButton.required")
     else Valid
