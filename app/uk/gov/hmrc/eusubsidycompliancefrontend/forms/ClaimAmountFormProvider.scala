@@ -21,7 +21,7 @@ import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.{Form, Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{IncorrectFormat, Required, TooBig, TooSmall}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ClaimAmount
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ClaimAmount, CurrencyCode}
 
 import scala.util.Try
 
@@ -30,7 +30,8 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
   override protected def mapping: Mapping[ClaimAmount] = Forms.mapping(
     Fields.CurrencyCode ->
       text
-        .verifying(currencyCodeIsValid),
+        .verifying(currencyCodeIsValid)
+        .transform(CurrencyCode.withName, (c: CurrencyCode) => c.entryName),
     Fields.ClaimAmount ->
       text
         .verifying(claimAmountIsBelowMaximumLength)
@@ -64,9 +65,10 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
 
   // Verify that the user hasn't entered a currency symbol which doesn't match the currency they selected
   private val claimAmountCurrencyMatchesSelection = Constraint[ClaimAmount] { claimAmount: ClaimAmount =>
+    // TODO - review this following introduction of CurrencyCode enum
     claimAmount.amount.head match {
-      case '£' if claimAmount.currencyCode != "GBP" => Invalid(IncorrectFormat)
-      case '€' if claimAmount.currencyCode != "EUR" => Invalid(IncorrectFormat)
+      case '£' if claimAmount.currencyCode.entryName != "GBP" => Invalid(IncorrectFormat)
+      case '€' if claimAmount.currencyCode.entryName != "EUR" => Invalid(IncorrectFormat)
       case c if Seq('£', '€').contains(c) => Valid
       case c if !c.isDigit => Invalid(IncorrectFormat)
       case _ => Valid

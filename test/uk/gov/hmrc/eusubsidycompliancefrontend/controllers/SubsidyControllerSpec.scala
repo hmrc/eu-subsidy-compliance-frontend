@@ -24,6 +24,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyControllerSpec.RemoveSubsidyRow
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.EUR
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyRemoved
@@ -569,11 +570,11 @@ class SubsidyControllerSpec
             val subsidyJourney = SubsidyJourney(
               reportPayment = ReportPaymentFormPage(true.some),
               claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
-              claimAmount = ClaimAmountFormPage(ClaimAmount("EUR", claimAmount).some)
+              claimAmount = ClaimAmountFormPage(ClaimAmount(EUR, claimAmount).some)
             )
 
             def update(subsidyJourney: SubsidyJourney) =
-              subsidyJourney.copy(claimAmount = ClaimAmountFormPage(ClaimAmount("EUR", claimAmount).some))
+              subsidyJourney.copy(claimAmount = ClaimAmountFormPage(ClaimAmount(EUR, claimAmount).some))
 
             inSequence {
               mockAuthWithNecessaryEnrolment()
@@ -1434,7 +1435,7 @@ class SubsidyControllerSpec
       val subsidyJourneyWithReportPaymentForm =
         subsidyJourney.copy(
           reportPayment = ReportPaymentFormPage(Some(true)),
-          claimAmount = ClaimAmountFormPage(ClaimAmount("EUR", nonHmrcSubsidyAmount.toString).some),
+          claimAmount = ClaimAmountFormPage(ClaimAmount(EUR, nonHmrcSubsidyAmount.toString).some),
           existingTransactionId = Some(SubsidyRef(transactionID))
         )
 

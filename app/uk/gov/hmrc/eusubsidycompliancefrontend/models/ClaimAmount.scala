@@ -16,12 +16,25 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
+import enumeratum.{Enum, EnumEntry, PlayJsonEnum}
 import play.api.libs.json.{Json, OFormat}
 
-// TODO - make currency code an enum
+import scala.collection.immutable
+
+sealed abstract class CurrencyCode(val symbol: Char) extends EnumEntry
+
+object CurrencyCode extends Enum[CurrencyCode] with PlayJsonEnum[CurrencyCode] {
+
+  case object GBP extends CurrencyCode('£')
+  case object EUR extends CurrencyCode('€')
+
+  override def values: immutable.IndexedSeq[CurrencyCode] = findValues
+
+}
+
 // TODO - provide a toEuros method to do the conversion with a given exchange rate.
 // TODO - would potentially be nicer to have amount as a BigDecimal if form bindings work ok
-case class ClaimAmount(currencyCode: String, amount: String)
+case class ClaimAmount(currencyCode: CurrencyCode, amount: String)
 
 object ClaimAmount {
   implicit val claimAmountFormat: OFormat[ClaimAmount] = Json.format[ClaimAmount]

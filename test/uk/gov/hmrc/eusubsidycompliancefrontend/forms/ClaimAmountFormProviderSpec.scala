@@ -22,7 +22,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{IncorrectFormat, TooBig, TooSmall}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ClaimAmount
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ClaimAmount, CurrencyCode}
 
 class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
 
@@ -98,7 +98,7 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
         }
 
       }
-      
+
       "an invalid currency code is specified" in {
         validateAndCheckError("THB", "100.00")(Fields.CurrencyCode, IncorrectFormat)
       }
@@ -133,7 +133,7 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
   private def validateAndCheckSuccess(currencyCode: String, amount: String) = {
     val result = processForm(currencyCode, amount)
     val parsedAmount = amount.replaceAll("[^\\d.]*", "")
-    result mustBe  Right(ClaimAmount(currencyCode, parsedAmount))
+    result mustBe  Right(ClaimAmount(CurrencyCode.withName(currencyCode), parsedAmount))
   }
 
   private def validateAndCheckError(currencyCode: String, amount: String)(field: String, errorMessage: String) = {

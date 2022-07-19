@@ -21,6 +21,7 @@ import play.api.libs.json._
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.EUR
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ClaimAmount, DateFormValues, NonHmrcSubsidy, OptionalEORI, OptionalTraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
@@ -79,7 +80,7 @@ object SubsidyJourney {
     SubsidyJourney(
       reportPayment = ReportPaymentFormPage(true.some),
       claimDate = ClaimDateFormPage(DateFormValues.fromDate(nonHmrcSubsidy.allocationDate).some),
-      claimAmount = ClaimAmountFormPage(ClaimAmount("EUR", nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.toString()).some),
+      claimAmount = ClaimAmountFormPage(ClaimAmount(EUR, nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.toString()).some),
       addClaimEori = AddClaimEoriFormPage(getAddClaimEORI(nonHmrcSubsidy.businessEntityIdentifier).some),
       publicAuthority = PublicAuthorityFormPage(nonHmrcSubsidy.publicAuthority.orElse("".some)),
       traderRef = TraderRefFormPage(getAddTraderRef(nonHmrcSubsidy.traderReference).some),
