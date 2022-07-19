@@ -19,8 +19,9 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 import play.api.data.Forms.text
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.{Form, Forms, Mapping}
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{IncorrectFormat, Required, TooBig, TooSmall}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{IncorrectFormat, TooBig, TooSmall}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ClaimAmount, CurrencyCode}
 
 import scala.util.Try
@@ -43,15 +44,17 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
 
   override def form: Form[ClaimAmount] = Form(mapping)
 
+  private val allowedCurrencySymbols = CurrencyCode.values.map(_.symbol)
+
   private val claimAmountIsBelowMaximumLength = Constraint[String] { claimAmount: String =>
-    if (cleanAmount(claimAmount).length < 17) Valid else Invalid("error.tooBig")
+    if (cleanAmount(claimAmount).length < 17) Valid else Invalid(TooBig)
   }
 
   private val claimAmountFormatIsValid = Constraint[String] { claimAmount: String =>
     val amount = cleanAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
-      _ => Invalid("error.incorrectFormat"),
-      amount => if (amount.scale == 2 || amount.scale == 0) Valid else Invalid("error.incorrectFormat")
+      _ => Invalid(IncorrectFormat),
+      amount => if (amount.scale == 2 || amount.scale == 0) Valid else Invalid(IncorrectFormat)
     )
   }
 
@@ -65,21 +68,17 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
 
   // Verify that the user hasn't entered a currency symbol which doesn't match the currency they selected
   private val claimAmountCurrencyMatchesSelection = Constraint[ClaimAmount] { claimAmount: ClaimAmount =>
-    // TODO - review this following introduction of CurrencyCode enum
     claimAmount.amount.head match {
-      case '£' if claimAmount.currencyCode.entryName != "GBP" => Invalid(IncorrectFormat)
-      case '€' if claimAmount.currencyCode.entryName != "EUR" => Invalid(IncorrectFormat)
-      case c if Seq('£', '€').contains(c) => Valid
+      case GBP.symbol if claimAmount.currencyCode != GBP => Invalid(IncorrectFormat)
+      case EUR.symbol if claimAmount.currencyCode != EUR => Invalid(IncorrectFormat)
+      case c if allowedCurrencySymbols.contains(c) => Valid
       case c if !c.isDigit => Invalid(IncorrectFormat)
       case _ => Valid
     }
   }
 
-  // TODO - use an enum for currency codes
-  private val ValidCurrencyCodes = List("GBP", "EUR")
-
   private val currencyCodeIsValid = Constraint[String] { currencyCode: String =>
-    if (currencyCode.isEmpty || !ValidCurrencyCodes.contains(currencyCode)) Invalid(IncorrectFormat)
+    if (currencyCode.isEmpty || !CurrencyCode.namesToValuesMap.contains(currencyCode)) Invalid(IncorrectFormat)
     else Valid
   }
 
