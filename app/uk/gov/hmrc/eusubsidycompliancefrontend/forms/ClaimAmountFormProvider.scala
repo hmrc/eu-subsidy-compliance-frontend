@@ -30,7 +30,7 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
   override protected def mapping: Mapping[ClaimAmount] = Forms.mapping(
     Fields.CurrencyCode ->
       text
-        .verifying(radioButtonSelected),
+        .verifying(radioButtonSelected(s"$CurrencyCode.error.required")),
     Fields.ClaimAmount ->
       // TODO - use clean amount to transform the input
       text
@@ -62,14 +62,6 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
       _ => Invalid("error.incorrectFormat"),
       amount => if (amount > 0.01) Valid else Invalid("error.tooSmall")
     )
-  }
-
-  // TODO - can this be shared?
-  // TODO - test coverage of this in provider spec?
-  private val radioButtonSelected = Constraint[String] { r: String =>
-    // TODO - do we need to use the fieldname here?
-    if (r.isEmpty) Invalid(s"$CurrencyCode.error.required")
-    else Valid
   }
 
   // Verify that the user hasn't entered a currency symbol which doesn't match the currency they selected
