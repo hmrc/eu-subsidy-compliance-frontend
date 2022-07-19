@@ -20,6 +20,7 @@ import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{IncorrectFormat, TooBig, TooSmall}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ClaimAmount
 
@@ -75,7 +76,7 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
         )
 
         amounts.foreach { amount =>
-          validateAndCheckError("GBP", amount)(Fields.ClaimAmount, "error.tooBig")
+          validateAndCheckError("GBP", amount)(Fields.ClaimAmount, TooBig)
         }
 
       }
@@ -93,9 +94,13 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
         )
 
         amounts.foreach { amount =>
-          validateAndCheckError("GBP", amount)(Fields.ClaimAmount, "error.incorrectFormat")
+          validateAndCheckError("GBP", amount)(Fields.ClaimAmount, IncorrectFormat)
         }
 
+      }
+      
+      "an invalid currency code is specified" in {
+        validateAndCheckError("THB", "100.00")(Fields.CurrencyCode, IncorrectFormat)
       }
 
       "the currency prefix does not match the selected currency code" in {
@@ -105,7 +110,7 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
         )
 
         scenarios.foreach { params =>
-          validateAndCheckError(params._1, params._2)("", "error.incorrectFormat")
+          validateAndCheckError(params._1, params._2)("", IncorrectFormat)
         }
       }
 
@@ -114,11 +119,11 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
     "return an amount too small error" when {
 
       "the amount is zero" in {
-        validateAndCheckError("GBP", "0")(Fields.ClaimAmount, "error.tooSmall")
+        validateAndCheckError("GBP", "0")(Fields.ClaimAmount, TooSmall)
       }
 
       "the amount is negative" in {
-        validateAndCheckError("GBP", "-2")(Fields.ClaimAmount, "error.tooSmall")
+        validateAndCheckError("GBP", "-2")(Fields.ClaimAmount, TooSmall)
       }
 
     }

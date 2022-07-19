@@ -23,6 +23,7 @@ trait FormProvider[T] {
   protected def mapping: Mapping[T]
   def form: Form[T]
 
+  // TODO - is this ever triggered? (Looks like selection check is handled by the gov radio code)
   def radioButtonSelected(errorMessage: String): Constraint[String] = Constraint[String] { r: String =>
     if (r.isEmpty) Invalid(errorMessage)
     else Valid

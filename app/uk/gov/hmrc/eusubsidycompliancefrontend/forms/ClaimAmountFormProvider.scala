@@ -19,8 +19,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 import play.api.data.Forms.text
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.{Form, Forms, Mapping}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{IncorrectFormat, Required, TooBig, TooSmall}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields.CurrencyCode
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ClaimAmount
 
 import scala.util.Try
@@ -30,9 +30,8 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
   override protected def mapping: Mapping[ClaimAmount] = Forms.mapping(
     Fields.CurrencyCode ->
       text
-        .verifying(radioButtonSelected(s"$CurrencyCode.error.required")),
+        .verifying(currencyCodeIsValid),
     Fields.ClaimAmount ->
-      // TODO - use clean amount to transform the input
       text
         .verifying(claimAmountIsBelowMaximumLength)
         .verifying(claimAmountFormatIsValid)
@@ -44,8 +43,7 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
   override def form: Form[ClaimAmount] = Form(mapping)
 
   private val claimAmountIsBelowMaximumLength = Constraint[String] { claimAmount: String =>
-    val amount = cleanAmount(claimAmount)
-    if (amount.length < 17) Valid else Invalid("error.tooBig")
+    if (cleanAmount(claimAmount).length < 17) Valid else Invalid("error.tooBig")
   }
 
   private val claimAmountFormatIsValid = Constraint[String] { claimAmount: String =>
@@ -59,20 +57,28 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
   private val claimAmountAboveMinimumAllowedValue = Constraint[String] { claimAmount: String =>
     val amount = cleanAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
-      _ => Invalid("error.incorrectFormat"),
-      amount => if (amount > 0.01) Valid else Invalid("error.tooSmall")
+      _ => Invalid(IncorrectFormat),
+      amount => if (amount > 0.01) Valid else Invalid(TooSmall)
     )
   }
 
   // Verify that the user hasn't entered a currency symbol which doesn't match the currency they selected
   private val claimAmountCurrencyMatchesSelection = Constraint[ClaimAmount] { claimAmount: ClaimAmount =>
     claimAmount.amount.head match {
-      case '£' if claimAmount.currencyCode != "GBP" => Invalid("error.incorrectFormat")
-      case '€' if claimAmount.currencyCode != "EUR" => Invalid("error.incorrectFormat")
+      case '£' if claimAmount.currencyCode != "GBP" => Invalid(IncorrectFormat)
+      case '€' if claimAmount.currencyCode != "EUR" => Invalid(IncorrectFormat)
       case c if Seq('£', '€').contains(c) => Valid
-      case c if !c.isDigit => Invalid("error.incorrectFormat")
+      case c if !c.isDigit => Invalid(IncorrectFormat)
       case _ => Valid
     }
+  }
+
+  // TODO - use an enum for currency codes
+  private val ValidCurrencyCodes = List("GBP", "EUR")
+
+  private val currencyCodeIsValid = Constraint[String] { currencyCode: String =>
+    if (currencyCode.isEmpty || !ValidCurrencyCodes.contains(currencyCode)) Invalid(IncorrectFormat)
+    else Valid
   }
 
   private def cleanAmount(a: String) =
@@ -81,8 +87,18 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
 }
 
 object ClaimAmountFormProvider {
+
   object Fields {
     val CurrencyCode = "currency-code"
     val ClaimAmount = "claim-amount"
   }
+
+  // TODO - share these across form providers?
+  object Errors {
+    val IncorrectFormat = "error.incorrectFormat"
+    val Required = "error.required"
+    val TooBig = "error.tooBig"
+    val TooSmall = "error.tooSmall"
+  }
+
 }
