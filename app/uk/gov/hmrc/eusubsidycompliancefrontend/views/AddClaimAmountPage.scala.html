@@ -41,7 +41,7 @@
 @eurInputHtml = {
     @govukInput(Input(
         id = inputIdentifier,
-        name = inputIdentifier,
+        name = "claim-amount-eur",
         prefix = Some(PrefixOrSuffix(content = Text("€"))),
         errorMessage = if (form.data.get(radioIdentifier).contains("EUR") && form.hasErrors && form.errors.head.key == inputIdentifier) {
             Some(ErrorMessage(content = Text(s"${messages(s"$key.${form.errors.head.key}.${form.errors.head.message}")}")))
@@ -56,7 +56,7 @@
 @gbpInputHtml = {
     @govukInput(Input(
         id = inputIdentifier,
-        name = inputIdentifier,
+        name = "claim-amount-gbp",
         prefix = Some(PrefixOrSuffix(content = Text("£"))),
         errorMessage = if (form.data.get(radioIdentifier).contains("GBP") && form.hasErrors && form.errors.head.key == inputIdentifier) {
             Some(ErrorMessage(content = Text(s"${messages(s"$key.${form.errors.head.key}.${form.errors.head.message}")}")))

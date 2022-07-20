@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import enumeratum.{Enum, EnumEntry, PlayJsonEnum}
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 
 import scala.collection.immutable
 
@@ -38,4 +39,19 @@ case class ClaimAmount(currencyCode: CurrencyCode, amount: String)
 
 object ClaimAmount {
   implicit val claimAmountFormat: OFormat[ClaimAmount] = Json.format[ClaimAmount]
+
+  // TODO - clean this up
+  //      - define as to/from form methods?
+  def fromForm(currencyCode: CurrencyCode, amountEUR: Option[String], amountGBP: Option[String]): ClaimAmount =
+    currencyCode match {
+      case GBP => ClaimAmount(GBP, amountGBP.getOrElse(""))
+      case EUR => ClaimAmount(EUR, amountEUR.getOrElse(""))
+    }
+
+  def toForm(claimAmount: ClaimAmount): Option[(CurrencyCode, Option[String], Option[String])] =
+    claimAmount match {
+      case ClaimAmount(GBP, amount) => Some(GBP, None, Some(amount))
+      case ClaimAmount(EUR, amount) => Some(EUR, Some(amount), None)
+    }
+
 }

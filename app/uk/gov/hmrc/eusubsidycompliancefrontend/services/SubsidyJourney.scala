@@ -30,6 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.Future
 
+// TODO - add in a page for the confirmation step
 case class SubsidyJourney(
   reportPayment: ReportPaymentFormPage = ReportPaymentFormPage(),
   claimDate: ClaimDateFormPage = ClaimDateFormPage(),
@@ -53,6 +54,7 @@ case class SubsidyJourney(
 
   def isAmend: Boolean = existingTransactionId.nonEmpty
 
+  // TODO - possible for this to handle the GBP confirmation step logic?
   override def next(implicit r: Request[_]): Future[Result] =
     if (isAmend) Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
     else super.next

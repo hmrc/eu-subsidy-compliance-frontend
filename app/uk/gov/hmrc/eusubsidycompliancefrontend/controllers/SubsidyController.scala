@@ -26,6 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEsc
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.toSubsidyUpdate
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimAmountFormProvider, ClaimDateFormProvider, ClaimEoriFormProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.GBP
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{NonCustomsSubsidyAdded, NonCustomsSubsidyRemoved, NonCustomsSubsidyUpdated}
@@ -58,6 +59,7 @@ class SubsidyController @Inject() (
   addTraderReferencePage: AddTraderReferencePage,
   cyaPage: ClaimCheckYourAnswerPage,
   confirmRemovePage: ConfirmRemoveClaim,
+  confirmConvertedAmountPage: ConfirmClaimAmountConversionToEuros,
   timeProvider: TimeProvider
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
@@ -171,7 +173,7 @@ class SubsidyController @Inject() (
   def postAddClaimAmount: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    def handleFormSubmit(previous: Journey.Uri, addClaimDate: DateFormValues) =
+    def handleFormSubmit(previous: Journey.Uri, addClaimDate: DateFormValues): Future[Result] =
       claimAmountForm
         .bindFromRequest()
         .fold(
@@ -179,11 +181,15 @@ class SubsidyController @Inject() (
             println(s"Form with errors: $formWithErrors")
             BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture
           },
-          claimAmountEntered =>
+          claimAmountEntered => {
+            println(s"Got claim amount: $claimAmountEntered")
             for {
               journey <- store.update[SubsidyJourney](_.setClaimAmount(claimAmountEntered))
-              redirect <- journey.next
+              // TODO - move this check into the SubsidyJourney
+              // TODO - add in redirect to confirmation page
+              redirect <- if (claimAmountEntered.currencyCode == GBP) Redirect(routes.SubsidyController.getConfirmClaimAmount()).toFuture else journey.next
             } yield redirect
+          }
         )
 
     withLeadUndertaking { _ =>
@@ -196,6 +202,14 @@ class SubsidyController @Inject() (
       result.getOrElse(handleMissingSessionData("Subsidy journey"))
     }
   }
+
+  def getConfirmClaimAmount: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      Ok(confirmConvertedAmountPage()).toFuture
+    }
+  }
+
+  def postConfirmClaimAmount: Action[AnyContent] = ???
 
   def getClaimDate: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>

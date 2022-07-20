@@ -23,34 +23,41 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Err
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ClaimAmount, CurrencyCode}
+import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 import scala.util.Try
 
 case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
 
+  // TODO - clean this up if the apply/unapply stuff works
   override protected def mapping: Mapping[ClaimAmount] = Forms.mapping(
     Fields.CurrencyCode ->
       text
         .verifying(currencyCodeIsValid)
         .transform(CurrencyCode.withName, (c: CurrencyCode) => c.entryName),
-    Fields.ClaimAmount ->
-      text
-        .verifying(claimAmountIsBelowMaximumLength)
-        .verifying(claimAmountFormatIsValid)
-        .verifying(claimAmountAboveMinimumAllowedValue)
-  )(ClaimAmount.apply)(ClaimAmount.unapply)
+    Fields.ClaimAmountEUR -> mandatoryIfEqual(Fields.CurrencyCode, EUR.entryName, claimAmountMapping),
+    Fields.ClaimAmountGBP -> mandatoryIfEqual(Fields.CurrencyCode, GBP.entryName, claimAmountMapping),
+  )(ClaimAmount.fromForm)(ClaimAmount.toForm)
     .verifying(claimAmountCurrencyMatchesSelection)
     .transform(c => c.copy(amount = cleanAmount(c.amount)), identity[ClaimAmount])
 
   override def form: Form[ClaimAmount] = Form(mapping)
 
+  private def claimAmountMapping: Mapping[String] =
+    text
+      .verifying(claimAmountIsBelowMaximumLength)
+      .verifying(claimAmountFormatIsValid)
+      .verifying(claimAmountAboveMinimumAllowedValue)
+
   private val allowedCurrencySymbols = CurrencyCode.values.map(_.symbol)
 
   private val claimAmountIsBelowMaximumLength = Constraint[String] { claimAmount: String =>
+    println(s"validating claim amount length: $claimAmount")
     if (cleanAmount(claimAmount).length < 17) Valid else Invalid(TooBig)
   }
 
   private val claimAmountFormatIsValid = Constraint[String] { claimAmount: String =>
+    println(s"validating claim amount format: $claimAmount")
     val amount = cleanAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid(IncorrectFormat),
@@ -59,6 +66,7 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
   }
 
   private val claimAmountAboveMinimumAllowedValue = Constraint[String] { claimAmount: String =>
+    println(s"validating claim amount above minimum: $claimAmount")
     val amount = cleanAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid(IncorrectFormat),
@@ -68,6 +76,7 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
 
   // Verify that the user hasn't entered a currency symbol which doesn't match the currency they selected
   private val claimAmountCurrencyMatchesSelection = Constraint[ClaimAmount] { claimAmount: ClaimAmount =>
+    println(s"validating amount and currency code match: $claimAmount")
     claimAmount.amount.head match {
       case GBP.symbol if claimAmount.currencyCode != GBP => Invalid(IncorrectFormat)
       case EUR.symbol if claimAmount.currencyCode != EUR => Invalid(IncorrectFormat)
@@ -78,6 +87,7 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
   }
 
   private val currencyCodeIsValid = Constraint[String] { currencyCode: String =>
+    println(s"validating currency code: $currencyCode")
     if (currencyCode.isEmpty || !CurrencyCode.namesToValuesMap.contains(currencyCode)) Invalid(IncorrectFormat)
     else Valid
   }
@@ -92,6 +102,8 @@ object ClaimAmountFormProvider {
   object Fields {
     val CurrencyCode = "currency-code"
     val ClaimAmount = "claim-amount"
+    val ClaimAmountGBP = "claim-amount-gbp"
+    val ClaimAmountEUR = "claim-amount-eur"
   }
 
   // TODO - share these across form providers?
