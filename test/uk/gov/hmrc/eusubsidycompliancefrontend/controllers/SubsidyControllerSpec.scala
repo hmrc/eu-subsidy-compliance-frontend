@@ -393,7 +393,8 @@ class SubsidyControllerSpec
             performAction(),
             messageFromMessageKey("add-claim-amount.title"),
             { doc =>
-              val input = doc.select(".govuk-input").attr("value")
+              // TODO - add a test case to verify that the EUR field is also correctly populated
+              val input = doc.getElementById("claim-amount-gbp").attributes().get("value")
               input shouldBe subsidyJourney.claimAmount.value.map(_.amount).getOrElse("")
 
               val button = doc.select("form")
@@ -497,7 +498,7 @@ class SubsidyControllerSpec
             mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction(
-            ClaimAmountFormProvider.Fields.ClaimAmount -> "123.45",
+            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "123.45",
             ClaimAmountFormProvider.Fields.CurrencyCode -> "GBP",
           )))
         }
@@ -534,29 +535,29 @@ class SubsidyControllerSpec
         }
 
         "nothing is entered" in {
-          displayError(ClaimAmountFormProvider.Fields.CurrencyCode -> "GBP")("add-claim-amount.claim-amount.error.required")
+          displayError(ClaimAmountFormProvider.Fields.CurrencyCode -> "GBP")("add-claim-amount.claim-amount-gbp.error.required")
         }
 
         "claim amount entered in wrong format" in {
           displayError(
             ClaimAmountFormProvider.Fields.CurrencyCode -> "GBP",
-            ClaimAmountFormProvider.Fields.ClaimAmount -> "123.4"
-          )("add-claim-amount.claim-amount.error.incorrectFormat")
+            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "123.4"
+          )("add-claim-amount.claim-amount-gbp.error.incorrectFormat")
         }
 
         "claim amount entered is more than 17 chars" in {
           displayError(
             ClaimAmountFormProvider.Fields.CurrencyCode -> "GBP",
-            ClaimAmountFormProvider.Fields.ClaimAmount -> "1234567890.12345678",
-          )("add-claim-amount.claim-amount.error.tooBig")
+            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "1234567890.12345678",
+          )("add-claim-amount.claim-amount-gbp.error.tooBig")
         }
 
         // TODO - check the logic here - test suggests 0.01 is allowed :/
         "claim amount entered is too small < 0.01" in {
           displayError(
             ClaimAmountFormProvider.Fields.CurrencyCode -> "GBP",
-            ClaimAmountFormProvider.Fields.ClaimAmount -> "0.01"
-          )("add-claim-amount.claim-amount.error.tooSmall")
+            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "0.01"
+          )("add-claim-amount.claim-amount-gbp.error.tooSmall")
         }
 
       }
@@ -586,7 +587,7 @@ class SubsidyControllerSpec
             checkIsRedirect(
               performAction(
                 ClaimAmountFormProvider.Fields.CurrencyCode -> "EUR",
-                ClaimAmountFormProvider.Fields.ClaimAmount -> claimAmount
+                ClaimAmountFormProvider.Fields.ClaimAmountEUR -> claimAmount
               ),
               routes.SubsidyController.getAddClaimEori().url
             )

@@ -29,7 +29,6 @@ import scala.util.Try
 
 case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
 
-  // TODO - clean this up if the apply/unapply stuff works
   override protected def mapping: Mapping[ClaimAmount] = Forms.mapping(
     Fields.CurrencyCode ->
       text
@@ -101,7 +100,6 @@ object ClaimAmountFormProvider {
 
   object Fields {
     val CurrencyCode = "currency-code"
-    val ClaimAmount = "claim-amount"
     val ClaimAmountGBP = "claim-amount-gbp"
     val ClaimAmountEUR = "claim-amount-eur"
   }

@@ -22,6 +22,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{IncorrectFormat, TooBig, TooSmall}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ClaimAmount, CurrencyCode}
 
 class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
@@ -42,7 +43,7 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
         )
 
         amounts.foreach { amount =>
-          validateAndCheckSuccess("GBP", amount)
+          validateAndCheckSuccess(GBP, amount)
         }
     }
 
@@ -57,7 +58,7 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
         )
 
         amounts.foreach { amount =>
-          validateAndCheckSuccess("EUR", amount)
+          validateAndCheckSuccess(EUR, amount)
         }
       }
 
@@ -76,7 +77,7 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
         )
 
         amounts.foreach { amount =>
-          validateAndCheckError("GBP", amount)(Fields.ClaimAmount, TooBig)
+          validateAndCheckError(GBP.entryName, amountGBP = amount)(Fields.ClaimAmountGBP, TooBig)
         }
 
       }
@@ -94,7 +95,7 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
         )
 
         amounts.foreach { amount =>
-          validateAndCheckError("GBP", amount)(Fields.ClaimAmount, IncorrectFormat)
+          validateAndCheckError(GBP.entryName, amountGBP = amount)(Fields.ClaimAmountGBP, IncorrectFormat)
         }
 
       }
@@ -104,14 +105,8 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
       }
 
       "the currency prefix does not match the selected currency code" in {
-        val scenarios = Seq(
-          "GBP" -> "€100.00",
-          "EUR" -> "£100.00",
-        )
-
-        scenarios.foreach { params =>
-          validateAndCheckError(params._1, params._2)("", IncorrectFormat)
-        }
+        validateAndCheckError("GBP", amountGBP = "€100.00")("", IncorrectFormat)
+        validateAndCheckError("EUR", amountEUR = "£100.00")("", IncorrectFormat)
       }
 
     }
@@ -119,25 +114,28 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
     "return an amount too small error" when {
 
       "the amount is zero" in {
-        validateAndCheckError("GBP", "0")(Fields.ClaimAmount, TooSmall)
+        validateAndCheckError("GBP", amountGBP = "0")(Fields.ClaimAmountGBP, TooSmall)
       }
 
       "the amount is negative" in {
-        validateAndCheckError("GBP", "-2")(Fields.ClaimAmount, TooSmall)
+        validateAndCheckError("GBP", amountGBP = "-2")(Fields.ClaimAmountGBP, TooSmall)
       }
 
     }
 
   }
 
-  private def validateAndCheckSuccess(currencyCode: String, amount: String) = {
-    val result = processForm(currencyCode, amount)
+  private def validateAndCheckSuccess(currencyCode: CurrencyCode, amount: String) = {
+    val result = currencyCode match {
+      case EUR => processForm(currencyCode.entryName, amount, "")
+      case GBP => processForm(currencyCode.entryName, "", amount)
+    }
     val parsedAmount = amount.replaceAll("[^\\d.]*", "")
-    result mustBe  Right(ClaimAmount(CurrencyCode.withName(currencyCode), parsedAmount))
+    result mustBe  Right(ClaimAmount(currencyCode, parsedAmount))
   }
 
-  private def validateAndCheckError(currencyCode: String, amount: String)(field: String, errorMessage: String) = {
-    val result = processForm(currencyCode, amount)
+  private def validateAndCheckError(currencyCode: String, amountEUR: String = "", amountGBP: String = "")(field: String, errorMessage: String) = {
+    val result = processForm(currencyCode, amountEUR, amountGBP)
 
     val foundExpectedErrorMessage = result.leftSideValue match {
       case Left(errors) => errors.contains(FormError(field, s"$errorMessage"))
@@ -148,11 +146,12 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
       s"got result $result which did not contain expected error $errorMessage for field $field"
   }
 
-  private def processForm(currencyCode: String, amount: String): Either[Seq[FormError], ClaimAmount] =
+  private def processForm(currencyCode: String, amountEUR: String, amountGBP: String): Either[Seq[FormError], ClaimAmount] =
     underTest.form.mapping.bind(
       Map(
         Fields.CurrencyCode -> currencyCode,
-        Fields.ClaimAmount -> amount
+        Fields.ClaimAmountEUR -> amountEUR,
+        Fields.ClaimAmountGBP -> amountGBP,
       )
     )
 

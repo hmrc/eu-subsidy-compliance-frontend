@@ -36,17 +36,18 @@
 @title = @{messages(s"$key.title")}
 
 @radioIdentifier = @{"currency-code"}
-@inputIdentifier = @{"claim-amount"}
+@inputIdentifierEUR = @{"claim-amount-eur"}
+@inputIdentifierGBP = @{"claim-amount-gbp"}
 
 @eurInputHtml = {
     @govukInput(Input(
-        id = inputIdentifier,
-        name = "claim-amount-eur",
+        id = inputIdentifierEUR,
+        name = inputIdentifierEUR,
         prefix = Some(PrefixOrSuffix(content = Text("€"))),
-        errorMessage = if (form.data.get(radioIdentifier).contains("EUR") && form.hasErrors && form.errors.head.key == inputIdentifier) {
+        errorMessage = if (form.data.get(radioIdentifier).contains("EUR") && form.hasErrors && form.errors.head.key == inputIdentifierEUR) {
             Some(ErrorMessage(content = Text(s"${messages(s"$key.${form.errors.head.key}.${form.errors.head.message}")}")))
         } else None,
-        value = if (form.data.get(radioIdentifier).contains("EUR")) form.data.get(inputIdentifier) else None,
+        value = if (form.data.get(radioIdentifier).contains("EUR")) form.data.get(inputIdentifierEUR) else None,
         label = Label(content = Text(messages("add-claim-amount.input-label"))),
         hint = Some(Hint(content = Text(messages("add-claim-amount.input-hint")))),
         classes = "govuk-input govuk-input--width-20"
@@ -55,13 +56,13 @@
 
 @gbpInputHtml = {
     @govukInput(Input(
-        id = inputIdentifier,
-        name = "claim-amount-gbp",
+        id = inputIdentifierGBP,
+        name = inputIdentifierGBP,
         prefix = Some(PrefixOrSuffix(content = Text("£"))),
-        errorMessage = if (form.data.get(radioIdentifier).contains("GBP") && form.hasErrors && form.errors.head.key == inputIdentifier) {
+        errorMessage = if (form.data.get(radioIdentifier).contains("GBP") && form.hasErrors && form.errors.head.key == inputIdentifierGBP) {
             Some(ErrorMessage(content = Text(s"${messages(s"$key.${form.errors.head.key}.${form.errors.head.message}")}")))
         } else None,
-        value = if (form.data.get(radioIdentifier).contains("GBP")) form.data.get(inputIdentifier) else None,
+        value = if (form.data.get(radioIdentifier).contains("GBP")) form.data.get(inputIdentifierGBP) else None,
         label = Label(content = Text(messages("add-claim-amount.input-label"))),
         hint = Some(Hint(content = Text(messages("add-claim-amount.input-hint")))),
         classes = "govuk-input govuk-input--width-20"
