@@ -286,7 +286,7 @@ add-claim-amount.l5 = Enter amount in the box below.
 #add-claim-amount.error.required = Required - Enter number value of subsidy allocated in Euros, like €248.56
 
 confirm-converted-amount.title = Your amount in euros
-confirm-converted-amount.p1 = Your pounds sterling amount of £{0}, converted to euros, is €{1}
+confirm-converted-amount.p1 = Your pounds sterling amount of {0}, converted to euros, is {1}
 
 add-claim-date.title=What date were you awarded the payment?
 add-claim-date.hint=For example, 27 07 2020

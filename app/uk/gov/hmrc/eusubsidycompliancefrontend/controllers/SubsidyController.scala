@@ -26,11 +26,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEsc
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.toSubsidyUpdate
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimAmountFormProvider, ClaimDateFormProvider, ClaimEoriFormProvider}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.GBP
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{NonCustomsSubsidyAdded, NonCustomsSubsidyRemoved, NonCustomsSubsidyUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, TraderRef, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms.ClaimAmountFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -38,6 +39,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.BigDecimalOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 import java.time.LocalDate
@@ -205,24 +207,10 @@ class SubsidyController @Inject() (
   }
 
   def getConfirmClaimAmount: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
-
-    def convertPoundsToEuros(date: LocalDate, claimAmount: ClaimAmount) = {
-      claimAmount.currencyCode match {
-        case GBP =>
-          for {
-            exchangeRate <- escService.retrieveExchangeRate(date)
-            rate = exchangeRate.rate
-            _ = println(s"Computing ${claimAmount.amount} / $rate")
-            converted = BigDecimal(claimAmount.amount) / rate
-            _ = println(s"Result: €$converted")
-          } yield converted
-        case _ => sys.error(s"cannot convert $claimAmount to EUR")
-      }
-    }
-
     withLeadUndertaking { _ =>
       implicit val eori = request.eoriNumber
 
+      // TODO - factor out the common parts or stash the result somewhere
       val result = for {
         subsidyJourney <- store.get[SubsidyJourney].toContext
         claimAmount <- subsidyJourney.claimAmount.value.toContext
@@ -232,14 +220,49 @@ class SubsidyController @Inject() (
         // TODO - this should come from the journey
         previous = routes.SubsidyController.getClaimAmount().url
         // TODO - confirm what rounding rules are needed on the converted amount
-      } yield Ok(confirmConvertedAmountPage(previous, claimAmount.amount, euroAmount.toEuros))
+      } yield Ok(confirmConvertedAmountPage(previous, BigDecimal(claimAmount.amount).toPounds, euroAmount.toEuros))
 
       result.getOrElse(handleMissingSessionData("Subsidy claim amount conversion from GBP"))
+    }
+  }
+
+  // TODO - check nav - back loses memory of GBP? If so this will need to be handled
+  def postConfirmClaimAmount: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori = request.eoriNumber
+      // TODO - factor out the common parts or stash the result somewhere
+      val result = for {
+        subsidyJourney <- store.get[SubsidyJourney].toContext
+        claimAmount <- subsidyJourney.claimAmount.value.toContext
+        claimDate <- subsidyJourney.claimDate.value.toContext
+        euroAmount <- convertPoundsToEuros(claimDate.toLocalDate, claimAmount).toContext
+        updatedSubsidyJourney = subsidyJourney.copy(claimAmount = ClaimAmountFormPage(ClaimAmount(EUR, euroAmount.toEuros).some))
+        _ <- store.put[SubsidyJourney](updatedSubsidyJourney).toContext
+        // TODO - this should come from the journey
+        previous = routes.SubsidyController.getConfirmClaimAmount().url
+        // TODO - confirm what rounding rules are needed on the converted amount
+        redirect <- updatedSubsidyJourney.next.toContext
+      } yield redirect
+
+      result.getOrElse(handleMissingSessionData("Subsidy claim amount conversion from GBP"))
+
 
     }
   }
 
-  def postConfirmClaimAmount: Action[AnyContent] = ???
+  private def convertPoundsToEuros(date: LocalDate, claimAmount: ClaimAmount)(implicit hc: HeaderCarrier) = {
+    claimAmount.currencyCode match {
+      case GBP =>
+        for {
+          exchangeRate <- escService.retrieveExchangeRate(date)
+          rate = exchangeRate.rate
+          _ = println(s"Computing ${claimAmount.amount} / $rate")
+          converted = BigDecimal(claimAmount.amount) / rate
+          _ = println(s"Result: €$converted")
+        } yield converted
+      case _ => sys.error(s"cannot convert $claimAmount to EUR")
+    }
+  }
 
   def getClaimDate: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>

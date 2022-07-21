@@ -79,7 +79,7 @@ GET        /lead-undertaking-add-payment-amount                                 
 POST       /lead-undertaking-add-payment-amount                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimAmount
 
 GET        /lead-undertaking-check-converted-amount                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getConfirmClaimAmount
-GET        /lead-undertaking-check-converted-amount                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postConfirmClaimAmount
+POST       /lead-undertaking-check-converted-amount                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postConfirmClaimAmount
 
 GET        /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getClaimDate
 POST       /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postClaimDate

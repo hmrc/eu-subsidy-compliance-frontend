@@ -38,7 +38,6 @@ object BigDecimalFormatter {
 
   private def roundingMode = RoundingMode.DOWN
 
-  // TODO - test coverage of the rounding mode
   def toEuros(amount: BigDecimal): String = eurFormatter.format(amount.setScale(2, roundingMode))
   def toPounds(amount: BigDecimal): String = gbpFormatter.format(amount.setScale(2, roundingMode))
 
