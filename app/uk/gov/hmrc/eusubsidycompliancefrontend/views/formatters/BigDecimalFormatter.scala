@@ -22,19 +22,30 @@ import scala.math.BigDecimal.RoundingMode
 
 object BigDecimalFormatter {
 
-  val currencyFormatter: NumberFormat = {
+  private val eurFormatter: NumberFormat = {
     val cf = NumberFormat.getCurrencyInstance(new Locale("en", "GB"))
     cf.setCurrency(Currency.getInstance(new Locale("en", "GB")))
     cf.setCurrency(Currency.getInstance("EUR"))
     cf
   }
 
+  private val gbpFormatter: NumberFormat = {
+    val cf = NumberFormat.getCurrencyInstance(new Locale("en", "GB"))
+    cf.setCurrency(Currency.getInstance(new Locale("en", "GB")))
+    cf.setCurrency(Currency.getInstance("GBP"))
+    cf
+  }
+
+  private def roundingMode = RoundingMode.DOWN
+
   // TODO - test coverage of the rounding mode
-  def toEuros(amount: BigDecimal): String = currencyFormatter.format(amount.setScale(2, RoundingMode.HALF_DOWN))
+  def toEuros(amount: BigDecimal): String = eurFormatter.format(amount.setScale(2, roundingMode))
+  def toPounds(amount: BigDecimal): String = gbpFormatter.format(amount.setScale(2, roundingMode))
 
   object Syntax {
     implicit class BigDecimalOps(val b: BigDecimal) extends AnyVal {
       def toEuros: String = BigDecimalFormatter.toEuros(b)
+      def toPounds: String = BigDecimalFormatter.toPounds(b)
     }
   }
 
