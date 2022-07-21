@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters
 
 import java.text.NumberFormat
 import java.util.{Currency, Locale}
+import scala.math.BigDecimal.RoundingMode
 
 object BigDecimalFormatter {
 
@@ -28,7 +29,8 @@ object BigDecimalFormatter {
     cf
   }
 
-  def toEuros(amount: BigDecimal): String = currencyFormatter.format(amount.setScale(2))
+  // TODO - test coverage of the rounding mode
+  def toEuros(amount: BigDecimal): String = currencyFormatter.format(amount.setScale(2, RoundingMode.HALF_DOWN))
 
   object Syntax {
     implicit class BigDecimalOps(val b: BigDecimal) extends AnyVal {

@@ -14,14 +14,18 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components.Text
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
+@import uk.gov.hmrc.govukfrontend.views.html.components.Text
 
 @this(layout: Layout)
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(previous: Journey.Uri, poundsAmount: String, eurosAmount: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some("title")) {
-    <h1 class="govuk-heading-xl">Temp Converted Amount Page</h1>
-    <p class="govuk-body">TODO - show the converted GBP -> EUR amount</p>
+@layout(
+ pageTitle = Some(messages("confirm-converted-amount.title")),
+ backLinkEnabled = true,
+) {
+    <h1 class="govuk-heading-xl">@messages("confirm-converted-amount.title")</h1>
+    <p class="govuk-body">@messages("confirm-converted-amount.p1", poundsAmount, eurosAmount)</p>
 }

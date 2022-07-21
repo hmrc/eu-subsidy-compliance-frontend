@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Json, OFormat}
 
+// TODO - introduce currency code enum here too?
 case class ExchangeRate(from: String, to: String, rate: BigDecimal)
 
 object ExchangeRate {

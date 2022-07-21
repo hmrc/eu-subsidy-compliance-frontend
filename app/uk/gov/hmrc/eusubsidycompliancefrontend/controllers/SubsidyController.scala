@@ -36,6 +36,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.BigDecimalOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
@@ -204,8 +205,37 @@ class SubsidyController @Inject() (
   }
 
   def getConfirmClaimAmount: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+
+    def convertPoundsToEuros(date: LocalDate, claimAmount: ClaimAmount) = {
+      claimAmount.currencyCode match {
+        case GBP =>
+          for {
+            exchangeRate <- escService.retrieveExchangeRate(date)
+            rate = exchangeRate.rate
+            _ = println(s"Computing ${claimAmount.amount} / $rate")
+            converted = BigDecimal(claimAmount.amount) / rate
+            _ = println(s"Result: €$converted")
+          } yield converted
+        case _ => sys.error(s"cannot convert $claimAmount to EUR")
+      }
+    }
+
     withLeadUndertaking { _ =>
-      Ok(confirmConvertedAmountPage()).toFuture
+      implicit val eori = request.eoriNumber
+
+      val result = for {
+        subsidyJourney <- store.get[SubsidyJourney].toContext
+        claimAmount <- subsidyJourney.claimAmount.value.toContext
+        claimDate <- subsidyJourney.claimDate.value.toContext
+        euroAmount <- convertPoundsToEuros(claimDate.toLocalDate, claimAmount).toContext
+        _ = println(s"getConfirmClaimAmount: got euroAmount: $euroAmount")
+        // TODO - this should come from the journey
+        previous = routes.SubsidyController.getClaimAmount().url
+        // TODO - confirm what rounding rules are needed on the converted amount
+      } yield Ok(confirmConvertedAmountPage(previous, claimAmount.amount, euroAmount.toEuros))
+
+      result.getOrElse(handleMissingSessionData("Subsidy claim amount conversion from GBP"))
+
     }
   }
 
