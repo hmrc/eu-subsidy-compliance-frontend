@@ -190,7 +190,7 @@ class SubsidyController @Inject() (
               journey <- store.update[SubsidyJourney](_.setClaimAmount(claimAmountEntered))
               // TODO - move this check into the SubsidyJourney
               // TODO - add in redirect to confirmation page
-              redirect <- if (claimAmountEntered.currencyCode == GBP) Redirect(routes.SubsidyController.getConfirmClaimAmount()).toFuture else journey.next
+              redirect <- journey.next
             } yield redirect
           }
         )
@@ -218,7 +218,7 @@ class SubsidyController @Inject() (
         euroAmount <- convertPoundsToEuros(claimDate.toLocalDate, claimAmount).toContext
         _ = println(s"getConfirmClaimAmount: got euroAmount: $euroAmount")
         // TODO - this should come from the journey
-        previous = routes.SubsidyController.getClaimAmount().url
+        previous = subsidyJourney.previous
         // TODO - confirm what rounding rules are needed on the converted amount
       } yield Ok(confirmConvertedAmountPage(previous, BigDecimal(claimAmount.amount).toPounds, euroAmount.toEuros))
 
@@ -236,7 +236,7 @@ class SubsidyController @Inject() (
         claimAmount <- subsidyJourney.claimAmount.value.toContext
         claimDate <- subsidyJourney.claimDate.value.toContext
         euroAmount <- convertPoundsToEuros(claimDate.toLocalDate, claimAmount).toContext
-        updatedSubsidyJourney = subsidyJourney.copy(claimAmount = ClaimAmountFormPage(ClaimAmount(EUR, euroAmount.toEuros).some))
+        updatedSubsidyJourney = subsidyJourney.setConvertedClaimAmount(ClaimAmount(EUR, euroAmount.toEuros))
         _ <- store.put[SubsidyJourney](updatedSubsidyJourney).toContext
         // TODO - this should come from the journey
         previous = routes.SubsidyController.getConfirmClaimAmount().url

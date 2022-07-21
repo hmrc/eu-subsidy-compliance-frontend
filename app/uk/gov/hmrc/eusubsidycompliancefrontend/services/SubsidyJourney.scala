@@ -30,11 +30,11 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.Future
 
-// TODO - add in a page for the confirmation step
 case class SubsidyJourney(
   reportPayment: ReportPaymentFormPage = ReportPaymentFormPage(),
   claimDate: ClaimDateFormPage = ClaimDateFormPage(),
   claimAmount: ClaimAmountFormPage = ClaimAmountFormPage(),
+  convertedClaimAmountConfirmation: ConvertedClaimAmountConfirmationPage = ConvertedClaimAmountConfirmationPage(),
   addClaimEori: AddClaimEoriFormPage = AddClaimEoriFormPage(),
   publicAuthority: PublicAuthorityFormPage = PublicAuthorityFormPage(),
   traderRef: TraderRefFormPage = TraderRefFormPage(),
@@ -46,6 +46,7 @@ case class SubsidyJourney(
     reportPayment,
     claimDate,
     claimAmount,
+    convertedClaimAmountConfirmation,
     addClaimEori,
     publicAuthority,
     traderRef,
@@ -54,7 +55,6 @@ case class SubsidyJourney(
 
   def isAmend: Boolean = existingTransactionId.nonEmpty
 
-  // TODO - possible for this to handle the GBP confirmation step logic?
   override def next(implicit r: Request[_]): Future[Result] =
     if (isAmend) Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
     else super.next
@@ -66,6 +66,8 @@ case class SubsidyJourney(
 
   def setReportPayment(v: Boolean): SubsidyJourney = this.copy(reportPayment = reportPayment.copy(value = v.some))
   def setClaimAmount(c: ClaimAmount): SubsidyJourney = this.copy(claimAmount = claimAmount.copy(value = c.some))
+  def setConvertedClaimAmount(c: ClaimAmount): SubsidyJourney =
+    this.copy(convertedClaimAmountConfirmation = convertedClaimAmountConfirmation.copy(value = c.some))
   def setClaimDate(d: DateFormValues): SubsidyJourney = this.copy(claimDate = claimDate.copy(value = d.some))
   def setClaimEori(oe: OptionalEORI): SubsidyJourney = this.copy(addClaimEori = addClaimEori.copy(oe.some))
   def setPublicAuthority(a: String): SubsidyJourney = this.copy(publicAuthority = publicAuthority.copy(a.some))
@@ -108,6 +110,9 @@ object SubsidyJourney {
     case class ClaimAmountFormPage(value: Form[ClaimAmount] = None) extends FormPage[ClaimAmount] {
       def uri = controller.getClaimAmount().url
     }
+    case class ConvertedClaimAmountConfirmationPage(value: Form[ClaimAmount] = None) extends FormPage[ClaimAmount] {
+      def uri = controller.getConfirmClaimAmount().url
+    }
     case class AddClaimEoriFormPage(value: Form[OptionalEORI] = None) extends FormPage[OptionalEORI] {
       def uri = controller.getAddClaimEori().url
     }
@@ -126,6 +131,7 @@ object SubsidyJourney {
     }
     object ClaimDateFormPage { implicit val claimDateFormPageFormat: OFormat[ClaimDateFormPage] = Json.format }
     object ClaimAmountFormPage { implicit val claimAmountFormPageFormat: OFormat[ClaimAmountFormPage] = Json.format }
+    object ConvertedClaimAmountConfirmationPage { implicit val convertedClaimAmountConfirmationPageFormat: OFormat[ConvertedClaimAmountConfirmationPage] = Json.format }
     object AddClaimEoriFormPage { implicit val claimAmountFormPageFormat: OFormat[AddClaimEoriFormPage] = Json.format }
     object PublicAuthorityFormPage {
       implicit val claimAmountFormPageFormat: OFormat[PublicAuthorityFormPage] = Json.format
