@@ -73,19 +73,39 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
       SubsidyJourney().setCya(value) shouldBe SubsidyJourney(cya = CyaFormPage(value.some))
     }
 
-    "return a redirect to the next page in the journey if not on amend journey" in {
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, "/")
-      val result = SubsidyJourney().next
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) should contain(routes.SubsidyController.getReportPayment().url)
+    "when next is called" should {
+
+      "return a redirect to the next page in the journey if not on amend journey" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, "/")
+        val result = SubsidyJourney().next
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.SubsidyController.getReportPayment().url)
+      }
+
+      "return a redirect to the check your answers page if on amend journey" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, "/")
+        val result = SubsidyJourney(existingTransactionId = SubsidyRef("SomeRef").some).next
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers().url)
+      }
+
+      "skip the confirm converted amount page if an amount in Euros is entered" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, "/")
+        val result = SubsidyJourney().next
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.SubsidyController.getAddClaimEori().url)
+      }
+
+      "return the confirm converted amount page if an amount in Pounds sterling is entered" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, "/")
+        val result = SubsidyJourney().next
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.SubsidyController.getConfirmClaimAmount().url)
+      }
+
     }
 
-    "return a redirect to the check your answers page if on amend journey" in {
-      implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, "/")
-      val result = SubsidyJourney(existingTransactionId = SubsidyRef("SomeRef").some).next
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers().url)
-    }
+    // TODO - are tests for previous needed too?
 
   }
 

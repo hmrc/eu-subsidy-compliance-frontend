@@ -28,8 +28,9 @@
 @(previous: Journey.Uri, poundsAmount: String, eurosAmount: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
- pageTitle = Some(messages("confirm-converted-amount.title")),
- backLinkEnabled = true,
+    pageTitle = Some(messages("confirm-converted-amount.title")),
+    backLinkEnabled = true,
+    backLink = Some(previous)
 ) {
 
     <h1 class="govuk-heading-xl">@messages("confirm-converted-amount.title")</h1>

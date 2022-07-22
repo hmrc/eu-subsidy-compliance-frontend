@@ -21,7 +21,7 @@ import play.api.libs.json._
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.EUR
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ClaimAmount, DateFormValues, NonHmrcSubsidy, OptionalEORI, OptionalTraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
@@ -56,13 +56,24 @@ case class SubsidyJourney(
   def isAmend: Boolean = existingTransactionId.nonEmpty
 
   override def next(implicit r: Request[_]): Future[Result] =
-    if (isAmend) Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
+    if (isAmend)
+      Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
+    else if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion)
+      Redirect(routes.SubsidyController.getAddClaimEori()).toFuture
     else super.next
 
-  override def previous(implicit request: Request[_]): Journey.Uri = if (
-    request.uri == routes.SubsidyController.getReportPayment().url
-  ) routes.AccountController.getAccountPage().url
-  else super.previous
+  override def previous(implicit request: Request[_]): Journey.Uri = {
+    if (reportPayment.isCurrentPage)
+      routes.AccountController.getAccountPage().url
+    else if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion)
+      claimAmount.uri
+    else super.previous
+  }
+
+  // When navigating back or forward we should skip the currency conversion step if the user has already entered a
+  // claim amount in Euros.
+  private def shouldSkipCurrencyConversion(implicit r: Request[_]): Boolean =
+    claimAmount.value.map(_.currencyCode).contains(EUR)
 
   def setReportPayment(v: Boolean): SubsidyJourney = this.copy(reportPayment = reportPayment.copy(value = v.some))
   def setClaimAmount(c: ClaimAmount): SubsidyJourney = this.copy(claimAmount = claimAmount.copy(value = c.some))

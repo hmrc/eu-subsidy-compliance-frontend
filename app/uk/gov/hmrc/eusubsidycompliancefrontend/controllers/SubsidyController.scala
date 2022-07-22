@@ -217,12 +217,11 @@ class SubsidyController @Inject() (
         claimDate <- subsidyJourney.claimDate.value.toContext
         euroAmount <- convertPoundsToEuros(claimDate.toLocalDate, claimAmount).toContext
         _ = println(s"getConfirmClaimAmount: got euroAmount: $euroAmount")
-        // TODO - this should come from the journey
         previous = subsidyJourney.previous
         // TODO - confirm what rounding rules are needed on the converted amount
       } yield Ok(confirmConvertedAmountPage(previous, BigDecimal(claimAmount.amount).toPounds, euroAmount.toEuros))
 
-      result.getOrElse(handleMissingSessionData("Subsidy claim amount conversion from GBP"))
+      result.getOrElse(handleMissingSessionData("Subsidy claim amount conversion"))
     }
   }
 
@@ -236,21 +235,17 @@ class SubsidyController @Inject() (
         claimAmount <- subsidyJourney.claimAmount.value.toContext
         claimDate <- subsidyJourney.claimDate.value.toContext
         euroAmount <- convertPoundsToEuros(claimDate.toLocalDate, claimAmount).toContext
-        updatedSubsidyJourney = subsidyJourney.setConvertedClaimAmount(ClaimAmount(EUR, euroAmount.toEuros))
+        updatedSubsidyJourney = subsidyJourney.setConvertedClaimAmount(ClaimAmount(EUR, euroAmount.toRoundedAmount.toString()))
         _ <- store.put[SubsidyJourney](updatedSubsidyJourney).toContext
-        // TODO - this should come from the journey
-        previous = routes.SubsidyController.getConfirmClaimAmount().url
         // TODO - confirm what rounding rules are needed on the converted amount
         redirect <- updatedSubsidyJourney.next.toContext
       } yield redirect
 
-      result.getOrElse(handleMissingSessionData("Subsidy claim amount conversion from GBP"))
-
-
+      result.getOrElse(handleMissingSessionData("Subsidy claim amount conversion"))
     }
   }
 
-  private def convertPoundsToEuros(date: LocalDate, claimAmount: ClaimAmount)(implicit hc: HeaderCarrier) = {
+  private def convertPoundsToEuros(date: LocalDate, claimAmount: ClaimAmount)(implicit hc: HeaderCarrier) =
     claimAmount.currencyCode match {
       case GBP =>
         for {
@@ -259,10 +254,9 @@ class SubsidyController @Inject() (
           _ = println(s"Computing ${claimAmount.amount} / $rate")
           converted = BigDecimal(claimAmount.amount) / rate
           _ = println(s"Result: €$converted")
-        } yield converted
-      case _ => sys.error(s"cannot convert $claimAmount to EUR")
+        } yield converted.some
+      case EUR => Future.successful(None)
     }
-  }
 
   def getClaimDate: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
@@ -413,6 +407,13 @@ class SubsidyController @Inject() (
   }
 
   def getCheckAnswers: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    def getEuroAmount(j: SubsidyJourney) =
+      if (j.claimAmount.value.map(_.currencyCode).contains(GBP)) {
+        val res = j.convertedClaimAmountConfirmation.value
+        println(s"User entered amount in GBP: Displaying $res")
+        res
+      } else j.claimAmount.value
+
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -420,7 +421,8 @@ class SubsidyController @Inject() (
         journey <- store.get[SubsidyJourney].toContext
         _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
         claimDate <- journey.claimDate.value.toContext
-        amount <- journey.claimAmount.value.toContext
+        amount <- getEuroAmount(journey).toContext
+        _ = println(s"For comprehension - has amount: $amount")
         optionalEori <- journey.addClaimEori.value.toContext
         authority <- journey.publicAuthority.value.toContext
         optionalTraderRef <- journey.traderRef.value.toContext
@@ -599,8 +601,11 @@ object SubsidyController {
             traderReference = journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
             nonHMRCSubsidyAmtEUR =
               // TODO - store big decimal amount or provide method to do the conversion
-              SubsidyAmount(journey.claimAmount.value.map(a => BigDecimal(a.amount)).getOrElse(sys.error("Claim amount Missing"))),
-            businessEntityIdentifier = journey.addClaimEori.value.fold(sys.error("eori value missing"))(oprionalEORI =>
+              if (journey.claimAmount.value.map(_.currencyCode).contains(EUR))
+                SubsidyAmount(journey.claimAmount.value.map(a => BigDecimal(a.amount)).getOrElse(sys.error("Claim amount Missing")))
+              else
+                SubsidyAmount(journey.convertedClaimAmountConfirmation.value.map(a => BigDecimal(a.amount)).getOrElse(sys.error("Converted claim amount Missing"))),
+              businessEntityIdentifier = journey.addClaimEori.value.fold(sys.error("eori value missing"))(oprionalEORI =>
               oprionalEORI.value.map(EORI(_))
             ),
             amendmentType = journey.existingTransactionId.fold(Some(EisSubsidyAmendmentType("1")))(_ =>
