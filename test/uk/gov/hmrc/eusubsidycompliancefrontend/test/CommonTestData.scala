@@ -104,7 +104,7 @@ object CommonTestData {
   val subsidyJourney = SubsidyJourney(
     publicAuthority = PublicAuthorityFormPage("Local Authority".some),
     traderRef = TraderRefFormPage(optionalTraderRef.some),
-    claimAmount = ClaimAmountFormPage(ClaimAmount(GBP, subsidyAmount.toString()).some),
+    claimAmount = ClaimAmountFormPage(claimAmountEuros.some),
     addClaimEori = AddClaimEoriFormPage(optionalEORI.some),
     claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some),
     reportPayment = ReportPaymentFormPage(true.some)

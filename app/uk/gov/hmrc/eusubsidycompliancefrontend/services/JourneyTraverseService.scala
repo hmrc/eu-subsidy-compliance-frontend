@@ -28,6 +28,7 @@ import scala.reflect.ClassTag
 @Singleton
 class JourneyTraverseService @Inject() (store: Store)(implicit ec: ExecutionContext) {
 
+  // TODO - this just calls previous on the subsidy journey - is it really necessary?
   def getPrevious[A <: Journey : ClassTag](implicit
     eori: EORI,
     request: Request[_],

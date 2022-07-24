@@ -302,7 +302,7 @@ class SubsidyController @Inject() (
         case Some(journey) =>
           journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
             if (!journey.isEligibleForStep) {
-              Redirect(routes.SubsidyController.getClaimDate()).toFuture
+              Redirect(previous).toFuture
             } else {
               val form = journey.addClaimEori.value.fold(claimEoriForm) { optionalEORI =>
                 claimEoriForm.fill(OptionalEORI(optionalEORI.setValue, optionalEORI.value))

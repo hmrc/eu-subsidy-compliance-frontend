@@ -77,6 +77,11 @@ case class SubsidyJourney(
     else super.previous
   }
 
+  // TODO - explicit test coverage for this
+  override def isEligibleForStep(implicit r: Request[_]): Boolean =
+    if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.value.isDefined
+    else super.isEligibleForStep
+
   // When navigating back or forward we should skip the currency conversion step if the user has already entered a
   // claim amount in Euros.
   private def shouldSkipCurrencyConversion(implicit r: Request[_]): Boolean =
