@@ -409,6 +409,7 @@ class SubsidyController @Inject() (
   def getCheckAnswers: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     def getEuroAmount(j: SubsidyJourney) =
       if (j.claimAmount.value.map(_.currencyCode).contains(GBP)) {
+        println(s"claim amount entered: ${j.claimAmount}")
         val res = j.convertedClaimAmountConfirmation.value
         println(s"User entered amount in GBP: Displaying $res")
         res

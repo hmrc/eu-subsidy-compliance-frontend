@@ -28,7 +28,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, OptionalEORI, OptionalTraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.claimAmount
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{claimAmountEuros, claimAmountPounds}
 
 class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures {
 
@@ -42,7 +42,7 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
     }
 
     "return an updated instance with the specified value when setClaimAmount is called" in {
-      val value = claimAmount
+      val value = claimAmountPounds
       SubsidyJourney().setClaimAmount(value) shouldBe SubsidyJourney(claimAmount = ClaimAmountFormPage(value.some))
     }
 
@@ -90,22 +90,52 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
       }
 
       "skip the confirm converted amount page if an amount in Euros is entered" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, "/")
-        val result = SubsidyJourney().next
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getClaimAmount().url)
+        val result = SubsidyJourney(claimAmount = ClaimAmountFormPage(claimAmountEuros.some)).next
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) should contain(routes.SubsidyController.getAddClaimEori().url)
       }
 
       "return the confirm converted amount page if an amount in Pounds sterling is entered" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, "/")
-        val result = SubsidyJourney().next
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getClaimAmount().url)
+        val result = SubsidyJourney(claimAmount = ClaimAmountFormPage(claimAmountPounds.some)).next
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) should contain(routes.SubsidyController.getConfirmClaimAmount().url)
       }
 
     }
 
-    // TODO - are tests for previous needed too?
+    "when previous is called" should {
+
+      "return URI to the account home page if current page is report payment" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getReportPayment().url)
+        SubsidyJourney().previous shouldBe routes.AccountController.getAccountPage().url
+      }
+
+      "return URI to confirm converted amount page if current page is add claim EORI and the amount entered is in GBP" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getAddClaimEori().url)
+        val result = SubsidyJourney(claimAmount = ClaimAmountFormPage(claimAmountPounds.some)).previous
+        result shouldBe routes.SubsidyController.getConfirmClaimAmount().url
+      }
+
+      "return URI to claimAmount page if current page is add claim EORI and the amount entered was in EUR" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getAddClaimEori().url)
+        val result = SubsidyJourney(claimAmount = ClaimAmountFormPage(claimAmountEuros.some)).previous
+        result shouldBe routes.SubsidyController.getClaimAmount().url
+      }
+
+      "return to the previous page otherwise" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getAddClaimReference().url)
+        SubsidyJourney().previous shouldBe routes.SubsidyController.getAddClaimPublicAuthority().url
+      }
+
+    }
 
   }
 

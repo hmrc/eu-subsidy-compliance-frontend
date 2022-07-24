@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.test
 
 import cats.implicits.catsSyntaxOptionId
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.GBP
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
@@ -98,8 +98,8 @@ object CommonTestData {
     hmrcSubsidyUsage = List(hmrcSubsidy)
   )
 
-  // TODO - do we also need an EUR fixture?
-  val claimAmount = ClaimAmount(GBP, subsidyAmount.toString())
+  val claimAmountPounds = ClaimAmount(GBP, subsidyAmount.toString())
+  val claimAmountEuros = ClaimAmount(EUR, subsidyAmount.toString())
 
   val subsidyJourney = SubsidyJourney(
     publicAuthority = PublicAuthorityFormPage("Local Authority".some),

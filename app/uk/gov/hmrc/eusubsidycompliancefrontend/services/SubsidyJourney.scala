@@ -56,11 +56,18 @@ case class SubsidyJourney(
   def isAmend: Boolean = existingTransactionId.nonEmpty
 
   override def next(implicit r: Request[_]): Future[Result] =
-    if (isAmend)
+    if (isAmend) {
+      println(s"on amend joureny - redirecting to check answers page")
       Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
-    else if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion)
+    }
+    else if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion) {
+      println(s"user submitted an EUR claim amount - skipping exchange rate")
       Redirect(routes.SubsidyController.getAddClaimEori()).toFuture
-    else super.next
+    }
+    else {
+      println(s"no special behaviour needed - deferring to standard next method")
+      super.next
+    }
 
   override def previous(implicit request: Request[_]): Journey.Uri = {
     if (reportPayment.isCurrentPage)
@@ -95,6 +102,7 @@ object SubsidyJourney {
     SubsidyJourney(
       reportPayment = ReportPaymentFormPage(true.some),
       claimDate = ClaimDateFormPage(DateFormValues.fromDate(nonHmrcSubsidy.allocationDate).some),
+      // TODO - review usage here - need to check claim amount is populated correctly for GBP and EUR cases
       claimAmount = ClaimAmountFormPage(ClaimAmount(EUR, nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.toString()).some),
       addClaimEori = AddClaimEoriFormPage(getAddClaimEORI(nonHmrcSubsidy.businessEntityIdentifier).some),
       publicAuthority = PublicAuthorityFormPage(nonHmrcSubsidy.publicAuthority.orElse("".some)),

@@ -418,7 +418,7 @@ class SubsidyControllerSpec
             SubsidyJourney(
               reportPayment = ReportPaymentFormPage(true.some),
               claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
-              claimAmount = ClaimAmountFormPage(value = claimAmount.some)
+              claimAmount = ClaimAmountFormPage(value = claimAmountPounds.some)
             )
           )
         }
@@ -489,7 +489,7 @@ class SubsidyControllerSpec
           )
 
           def update(subsidyJourney: SubsidyJourney) =
-            subsidyJourney.copy(claimAmount = ClaimAmountFormPage(value = claimAmount.some))
+            subsidyJourney.copy(claimAmount = ClaimAmountFormPage(value = claimAmountPounds.some))
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
