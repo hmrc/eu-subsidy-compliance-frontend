@@ -132,6 +132,24 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
         result shouldBe routes.SubsidyController.getClaimAmount().url
       }
 
+      "return URI to the referring page if it is valid and matches a SubsidyJourney page on the amend journey" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getCheckAnswers().url)
+            .withHeaders("Referer" -> routes.SubsidyController.getClaimDate().url)
+
+        val result = SubsidyJourney(existingTransactionId = SubsidyRef("foo").some).previous
+        result shouldBe routes.SubsidyController.getClaimDate().url
+      }
+
+      "return URI to check your answers page if request for any page that is not the CYA page" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getCheckAnswers().url)
+            .withHeaders("Referer" -> routes.SubsidyController.getClaimDate().url)
+
+        val result = SubsidyJourney(existingTransactionId = SubsidyRef("foo").some).previous
+        result shouldBe routes.SubsidyController.getClaimDate().url
+      }
+
       "return to the previous page otherwise" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getAddClaimReference().url)
