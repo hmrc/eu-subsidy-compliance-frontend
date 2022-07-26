@@ -55,60 +55,27 @@ case class SubsidyJourney(
     cya
   )
 
-  def isAmend: Boolean = {
-    println(s"isAmend: ${existingTransactionId.nonEmpty}")
-    existingTransactionId.nonEmpty
-  }
+  val isAmend: Boolean = existingTransactionId.nonEmpty
 
-  // TODO - review this and simplify where possible
   override def next(implicit r: Request[_]): Future[Result] =
-    if (isAmend && shouldSkipCurrencyConversion) {
-      println(s"on amend journey - redirecting to check answers page")
-      Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
-    }
-    // TODO - cover this case
-    else if (isAmend && claimAmount.isCurrentPage && !shouldSkipCurrencyConversion) {
-      println(s"SubsidyJourney: user has entered GBP amount on amend journey - redirecting to confirmation page")
-      Redirect(routes.SubsidyController.getConfirmClaimAmount()).toFuture
-    }
-    // TODO - cover this case
-    else if (isAmend && convertedClaimAmountConfirmation.isCurrentPage) {
-      println(s"SubsidyJourney - user has confirmed GBP-EUR conversion on amend - redirecting to check answers")
-      Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
-    }
-    else if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion) {
-      println(s"user submitted an EUR claim amount - skipping exchange rate")
-      Redirect(routes.SubsidyController.getAddClaimEori()).toFuture
-    }
-    else {
-      println(s"no special behaviour needed - deferring to standard next method")
-      super.next
-    }
+    if (isAmend)
+      if (shouldSkipCurrencyConversion) Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
+      else if (claimAmount.isCurrentPage && !shouldSkipCurrencyConversion) Redirect(routes.SubsidyController.getConfirmClaimAmount()).toFuture
+      else if (convertedClaimAmountConfirmation.isCurrentPage) Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
+      else super.next
+    else
+      if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion) Redirect(routes.SubsidyController.getAddClaimEori()).toFuture
+      else super.next
 
-  // TODO - review and simplify where possible
-  override def previous(implicit request: Request[_]): Journey.Uri = {
-    if (reportPayment.isCurrentPage)
-      routes.AccountController.getAccountPage().url
-    else if (!isAmend && addClaimEori.isCurrentPage && shouldSkipCurrencyConversion)
-      claimAmount.uri
-    else if (isAmend && convertedClaimAmountConfirmation.isCurrentPage) {
-      claimAmount.uri
-    }
-    else if (isAmend && !cya.isCurrentPage) {
-      println(s"previous: On amend journey and request did not originate from CYA so setting back to CYA")
-      cya.uri
-    }
-    else if (isAmend) {
-      println(s"On amend journey - Request has referer: ${request.headers.get("Referer")}")
-
-      extractAndParseRefererUrl
-        .getOrElse(routes.SubsidyController.getReportPayment().url)
-    }
-    else {
-      println("previous: no other cases triggered - delegating to super.previous")
-      super.previous
-    }
-  }
+  override def previous(implicit request: Request[_]): Journey.Uri =
+    if (reportPayment.isCurrentPage) routes.AccountController.getAccountPage().url
+    else if (isAmend)
+      if (convertedClaimAmountConfirmation.isCurrentPage) claimAmount.uri
+      else if (!cya.isCurrentPage) cya.uri
+      else extractAndParseRefererUrl.getOrElse(routes.SubsidyController.getReportPayment().url)
+    else
+      if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.uri
+      else super.previous
 
   private def extractAndParseRefererUrl(implicit request: Request[_]): Option[String] =
     request
@@ -120,7 +87,6 @@ case class SubsidyJourney(
       .flatMap(getStepWithPath)
       .map(_.uri)
 
-  // TODO - explicit test coverage for this
   override def isEligibleForStep(implicit r: Request[_]): Boolean =
     if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.value.isDefined
     else super.isEligibleForStep
@@ -193,16 +159,12 @@ object SubsidyJourney {
       def uri = controller.getCheckAnswers().url
     }
 
-    object ReportPaymentFormPage {
-      implicit val reportPaymentFormPageFormat: OFormat[ReportPaymentFormPage] = Json.format
-    }
+    object ReportPaymentFormPage { implicit val reportPaymentFormPageFormat: OFormat[ReportPaymentFormPage] = Json.format }
     object ClaimDateFormPage { implicit val claimDateFormPageFormat: OFormat[ClaimDateFormPage] = Json.format }
     object ClaimAmountFormPage { implicit val claimAmountFormPageFormat: OFormat[ClaimAmountFormPage] = Json.format }
     object ConvertedClaimAmountConfirmationPage { implicit val convertedClaimAmountConfirmationPageFormat: OFormat[ConvertedClaimAmountConfirmationPage] = Json.format }
     object AddClaimEoriFormPage { implicit val claimAmountFormPageFormat: OFormat[AddClaimEoriFormPage] = Json.format }
-    object PublicAuthorityFormPage {
-      implicit val claimAmountFormPageFormat: OFormat[PublicAuthorityFormPage] = Json.format
-    }
+    object PublicAuthorityFormPage { implicit val claimAmountFormPageFormat: OFormat[PublicAuthorityFormPage] = Json.format }
     object TraderRefFormPage { implicit val claimAmountFormPageFormat: OFormat[TraderRefFormPage] = Json.format }
     object CyaFormPage { implicit val claimAmountFormPageFormat: OFormat[CyaFormPage] = Json.format }
 
