@@ -46,6 +46,12 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
       SubsidyJourney().setClaimAmount(value) shouldBe SubsidyJourney(claimAmount = ClaimAmountFormPage(value.some))
     }
 
+    "return an updated instance with the specified value when setConvertedClaimAmount is called" in {
+      val value = claimAmountPounds
+      SubsidyJourney().setConvertedClaimAmount(value) shouldBe
+        SubsidyJourney(convertedClaimAmountConfirmation = ConvertedClaimAmountConfirmationPage(value.some))
+    }
+
     "return an updated instance with the specified value when setClaimDate is called" in {
       val value = DateFormValues("1", "2", "3")
       SubsidyJourney().setClaimDate(value) shouldBe SubsidyJourney(claimDate = ClaimDateFormPage(value.some))
@@ -82,16 +88,6 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
         redirectLocation(result) should contain(routes.SubsidyController.getReportPayment().url)
       }
 
-      "return a redirect to the check your answers page if on amend journey" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, "/")
-        val result = SubsidyJourney(
-          existingTransactionId = SubsidyRef("SomeRef").some,
-          claimAmount = ClaimAmountFormPage(claimAmountEuros.some),
-        ).next
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers().url)
-      }
-
       "skip the confirm converted amount page if an amount in Euros is entered" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getClaimAmount().url)
@@ -106,6 +102,33 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
         val result = SubsidyJourney(claimAmount = ClaimAmountFormPage(claimAmountPounds.some)).next
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) should contain(routes.SubsidyController.getConfirmClaimAmount().url)
+      }
+
+      "return a redirect to the confirm claim amount page if a GBP amount is entered on the amend journey" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routes.SubsidyController.getClaimAmount().url)
+        val result = SubsidyJourney(
+          existingTransactionId = SubsidyRef("SomeRef").some,
+          claimAmount = ClaimAmountFormPage(claimAmountPounds.some),
+        ).next
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.SubsidyController.getConfirmClaimAmount().url)
+      }
+
+      "return a redirect to the check your answers page if a GBP to EUR conversion has been confirmed" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routes.SubsidyController.getConfirmClaimAmount().url)
+        val result = SubsidyJourney(existingTransactionId = SubsidyRef("SomeRef").some).next
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers().url)
+      }
+
+      "return a redirect to the check your answers page if an EUR amount is entered on the amend journey" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routes.SubsidyController.getClaimAmount().url)
+        val result = SubsidyJourney(
+          existingTransactionId = SubsidyRef("SomeRef").some,
+          claimAmount = ClaimAmountFormPage(claimAmountEuros.some),
+        ).next
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers().url)
       }
 
     }
@@ -132,6 +155,24 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
         result shouldBe routes.SubsidyController.getClaimAmount().url
       }
 
+      "return URI to claimAmount page if current page is confirm converted amount on the amend journey" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getConfirmClaimAmount().url)
+        val result = SubsidyJourney(
+          claimAmount = ClaimAmountFormPage(claimAmountPounds.some),
+          existingTransactionId = SubsidyRef("Foo").some
+        ).previous
+        result shouldBe routes.SubsidyController.getClaimAmount().url
+      }
+
+      "return URI to check your answers page if request for any page that is not the CYA page" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getClaimDate().url)
+
+        val result = SubsidyJourney(existingTransactionId = SubsidyRef("foo").some).previous
+        result shouldBe routes.SubsidyController.getCheckAnswers().url
+      }
+
       "return URI to the referring page if it is valid and matches a SubsidyJourney page on the amend journey" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getCheckAnswers().url)
@@ -141,13 +182,22 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
         result shouldBe routes.SubsidyController.getClaimDate().url
       }
 
-      "return URI to check your answers page if request for any page that is not the CYA page" in {
+      "return URI to report payment page if referer URL not in SubsidyJourney on the amend journey" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getCheckAnswers().url)
-            .withHeaders("Referer" -> routes.SubsidyController.getClaimDate().url)
+            .withHeaders("Referer" -> routes.AccountController.getAccountPage().url)
 
         val result = SubsidyJourney(existingTransactionId = SubsidyRef("foo").some).previous
-        result shouldBe routes.SubsidyController.getClaimDate().url
+        result shouldBe routes.SubsidyController.getReportPayment().url
+      }
+
+      "return URI to report payment page if referer URL could not be parsed on the amend journey" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getCheckAnswers().url)
+            .withHeaders("Referer" -> "this is not a valid url")
+
+        val result = SubsidyJourney(existingTransactionId = SubsidyRef("foo").some).previous
+        result shouldBe routes.SubsidyController.getReportPayment().url
       }
 
       "return to the previous page otherwise" in {

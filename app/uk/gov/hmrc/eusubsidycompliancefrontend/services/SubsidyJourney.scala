@@ -30,6 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import java.net.URI
 import scala.concurrent.Future
+import scala.util.Try
 
 case class SubsidyJourney(
   reportPayment: ReportPaymentFormPage = ReportPaymentFormPage(),
@@ -65,10 +66,12 @@ case class SubsidyJourney(
       println(s"on amend journey - redirecting to check answers page")
       Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
     }
+    // TODO - cover this case
     else if (isAmend && claimAmount.isCurrentPage && !shouldSkipCurrencyConversion) {
       println(s"SubsidyJourney: user has entered GBP amount on amend journey - redirecting to confirmation page")
       Redirect(routes.SubsidyController.getConfirmClaimAmount()).toFuture
     }
+    // TODO - cover this case
     else if (isAmend && convertedClaimAmountConfirmation.isCurrentPage) {
       println(s"SubsidyJourney - user has confirmed GBP-EUR conversion on amend - redirecting to check answers")
       Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
@@ -97,16 +100,8 @@ case class SubsidyJourney(
     }
     else if (isAmend) {
       println(s"On amend journey - Request has referer: ${request.headers.get("Referer")}")
-      val referer = request.headers.get("Referer")
-      println(s"Extracted refer: $referer")
 
-      println(s"cya uri is: ${cya.uri}")
-
-      // TODO - review this - handle malformed (should never happen unless someone is crafting requests)
-      referer
-        .map(u => URI.create(u).getPath)
-        .flatMap(stepWithPath)
-        .map(_.uri)
+      extractAndParseRefererUrl
         .getOrElse(routes.SubsidyController.getReportPayment().url)
     }
     else {
@@ -114,6 +109,16 @@ case class SubsidyJourney(
       super.previous
     }
   }
+
+  private def extractAndParseRefererUrl(implicit request: Request[_]): Option[String] =
+    request
+      .headers.get("Referer")
+      .flatMap { u =>
+        Try(URI.create(u))
+          .fold(_ => None, uri => Some(uri.getPath))
+      }
+      .flatMap(getStepWithPath)
+      .map(_.uri)
 
   // TODO - explicit test coverage for this
   override def isEligibleForStep(implicit r: Request[_]): Boolean =
