@@ -407,6 +407,8 @@ class SubsidyController @Inject() (
   }
 
   def getCheckAnswers: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+
+    // TODO - the logic isn't quite right here - if we're on the amend journey we may not have the amount
     def getEuroAmount(j: SubsidyJourney) =
       if (j.claimAmount.value.map(_.currencyCode).contains(GBP)) {
         println(s"claim amount entered: ${j.claimAmount}")
@@ -418,21 +420,31 @@ class SubsidyController @Inject() (
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
 
+      // TODO - where do we fall through here?
       val result: OptionT[Future, Result] = for {
         journey <- store.get[SubsidyJourney].toContext
+        _ = println("got subs journey")
         _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
+        _ = println("validated subs journey")
         claimDate <- journey.claimDate.value.toContext
+        _ = println("got claim date")
         amount <- getEuroAmount(journey).toContext
         _ = println(s"For comprehension - has amount: $amount")
         optionalEori <- journey.addClaimEori.value.toContext
+        _ = println(s"got optional eori")
         authority <- journey.publicAuthority.value.toContext
+        _ = println(s"got authority")
         optionalTraderRef <- journey.traderRef.value.toContext
+        _ = println(s"got opt trader ref")
         claimEori = optionalEori.value.map(EORI(_))
+        _ = println(s"got claim eori")
         traderRef = optionalTraderRef.value.map(TraderRef(_))
+        _ = println(s"got optional trader ref")
         previous = journey.previous
         // TODO - amount should be stored as a big decimal - review this
       } yield Ok(cyaPage(claimDate, BigDecimal(amount.amount), claimEori, authority, traderRef, previous))
 
+      // TODO - this should delegate to the next method on the subsidy journey - need a nice way to do this
       result.getOrElse(Redirect(routes.SubsidyController.getAddClaimReference()))
     }
   }

@@ -53,11 +53,23 @@ case class SubsidyJourney(
     cya
   )
 
-  def isAmend: Boolean = existingTransactionId.nonEmpty
+  def isAmend: Boolean = {
+    println(s"isAmend: ${existingTransactionId.nonEmpty}")
+    existingTransactionId.nonEmpty
+  }
 
+  // TODO - review this and simplify where possible
   override def next(implicit r: Request[_]): Future[Result] =
-    if (isAmend) {
-      println(s"on amend joureny - redirecting to check answers page")
+    if (isAmend && shouldSkipCurrencyConversion) {
+      println(s"on amend journey - redirecting to check answers page")
+      Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
+    }
+    else if (isAmend && claimAmount.isCurrentPage && !shouldSkipCurrencyConversion) {
+      println(s"SubsidyJourney: user has entered GBP amount on amend journey - redirecting to confirmation page")
+      Redirect(routes.SubsidyController.getConfirmClaimAmount()).toFuture
+    }
+    else if (isAmend && convertedClaimAmountConfirmation.isCurrentPage) {
+      println(s"SubsidyJourney - user has confirmed GBP-EUR conversion on amend - redirecting to check answers")
       Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
     }
     else if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion) {

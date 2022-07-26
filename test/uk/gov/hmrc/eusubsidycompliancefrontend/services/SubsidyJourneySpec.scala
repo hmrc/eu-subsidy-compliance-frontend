@@ -84,7 +84,10 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
 
       "return a redirect to the check your answers page if on amend journey" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, "/")
-        val result = SubsidyJourney(existingTransactionId = SubsidyRef("SomeRef").some).next
+        val result = SubsidyJourney(
+          existingTransactionId = SubsidyRef("SomeRef").some,
+          claimAmount = ClaimAmountFormPage(claimAmountEuros.some),
+        ).next
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers().url)
       }
