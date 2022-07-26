@@ -21,13 +21,14 @@ import play.api.libs.json._
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.EUR
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef, TraderRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ClaimAmount, DateFormValues, NonHmrcSubsidy, OptionalEORI, OptionalTraderRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
+import java.net.URI
 import scala.concurrent.Future
 
 case class SubsidyJourney(
@@ -81,12 +82,37 @@ case class SubsidyJourney(
       super.next
     }
 
+  // TODO - review and simplify where possible
   override def previous(implicit request: Request[_]): Journey.Uri = {
     if (reportPayment.isCurrentPage)
       routes.AccountController.getAccountPage().url
-    else if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion)
+    else if (!isAmend && addClaimEori.isCurrentPage && shouldSkipCurrencyConversion)
       claimAmount.uri
-    else super.previous
+    else if (isAmend && convertedClaimAmountConfirmation.isCurrentPage) {
+      claimAmount.uri
+    }
+    else if (isAmend && !cya.isCurrentPage) {
+      println(s"previous: On amend journey and request did not originate from CYA so setting back to CYA")
+      cya.uri
+    }
+    else if (isAmend) {
+      println(s"On amend journey - Request has referer: ${request.headers.get("Referer")}")
+      val referer = request.headers.get("Referer")
+      println(s"Extracted refer: $referer")
+
+      println(s"cya uri is: ${cya.uri}")
+
+      // TODO - review this - handle malformed (should never happen unless someone is crafting requests)
+      referer
+        .map(u => URI.create(u).getPath)
+        .flatMap(stepWithPath)
+        .map(_.uri)
+        .getOrElse(routes.SubsidyController.getReportPayment().url)
+    }
+    else {
+      println("previous: no other cases triggered - delegating to super.previous")
+      super.previous
+    }
   }
 
   // TODO - explicit test coverage for this
@@ -96,7 +122,7 @@ case class SubsidyJourney(
 
   // When navigating back or forward we should skip the currency conversion step if the user has already entered a
   // claim amount in Euros.
-  private def shouldSkipCurrencyConversion(implicit r: Request[_]): Boolean =
+  private def shouldSkipCurrencyConversion: Boolean =
     claimAmount.value.map(_.currencyCode).contains(EUR)
 
   def setReportPayment(v: Boolean): SubsidyJourney = this.copy(reportPayment = reportPayment.copy(value = v.some))

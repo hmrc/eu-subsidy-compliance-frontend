@@ -31,7 +31,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{NonCustomsSubsidyAdded, NonCustomsSubsidyRemoved, NonCustomsSubsidyUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, TraderRef, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms.ClaimAmountFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -307,6 +306,7 @@ class SubsidyController @Inject() (
               val form = journey.addClaimEori.value.fold(claimEoriForm) { optionalEORI =>
                 claimEoriForm.fill(OptionalEORI(optionalEORI.setValue, optionalEORI.value))
               }
+              println(s"Showing add claim EORI form with previous URI: $previous")
               Ok(addClaimEoriPage(form, previous)).toFuture
             }
           }

@@ -50,8 +50,8 @@ object ClaimAmount {
 
   def toForm(claimAmount: ClaimAmount): Option[(CurrencyCode, Option[String], Option[String])] =
     claimAmount match {
-      case ClaimAmount(GBP, amount) => Some(GBP, None, Some(amount))
-      case ClaimAmount(EUR, amount) => Some(EUR, Some(amount), None)
+      case ClaimAmount(GBP, amount) => Some((GBP, None, Some(amount)))
+      case ClaimAmount(EUR, amount) => Some((EUR, Some(amount), None))
     }
 
 }

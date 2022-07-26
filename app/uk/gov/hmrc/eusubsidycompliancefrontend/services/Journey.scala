@@ -49,6 +49,11 @@ trait Journey {
       .find(_.value.isEmpty)
       .map(e => redirectWithSession(e.uri))
 
+  // TODO - review test coverage
+  def stepWithPath(path: String): Option[FormPage[_]] =
+    steps
+      .find(_.uri == path)
+
   def isEligibleForStep(implicit r: Request[_]): Boolean =
     if (previousIndex < 0) true
     else steps(previousIndex).value.nonEmpty
