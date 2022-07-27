@@ -16,23 +16,21 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters
 
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
+
 import java.text.NumberFormat
 import java.util.{Currency, Locale}
 import scala.math.BigDecimal.RoundingMode
 
 object BigDecimalFormatter {
 
-  private val eurFormatter: NumberFormat = {
-    val cf = NumberFormat.getCurrencyInstance(new Locale("en", "GB"))
-    cf.setCurrency(Currency.getInstance(new Locale("en", "GB")))
-    cf.setCurrency(Currency.getInstance("EUR"))
-    cf
-  }
+  private val eurFormatter: NumberFormat = numberFormatForCurrency(EUR)
+  private val gbpFormatter: NumberFormat = numberFormatForCurrency(GBP)
 
-  private val gbpFormatter: NumberFormat = {
+  private def numberFormatForCurrency(c: CurrencyCode) = {
     val cf = NumberFormat.getCurrencyInstance(new Locale("en", "GB"))
-    cf.setCurrency(Currency.getInstance(new Locale("en", "GB")))
-    cf.setCurrency(Currency.getInstance("GBP"))
+    cf.setCurrency(Currency.getInstance(c.entryName))
     cf
   }
 

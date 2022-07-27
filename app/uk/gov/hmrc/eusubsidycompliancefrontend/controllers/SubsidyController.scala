@@ -224,7 +224,6 @@ class SubsidyController @Inject() (
     }
   }
 
-  // TODO - check nav - back loses memory of GBP? If so this will need to be handled
   def postConfirmClaimAmount: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori = request.eoriNumber
