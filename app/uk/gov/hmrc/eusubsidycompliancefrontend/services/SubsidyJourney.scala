@@ -93,8 +93,7 @@ case class SubsidyJourney(
 
   // When navigating back or forward we should skip the currency conversion step if the user has already entered a
   // claim amount in Euros.
-  private def shouldSkipCurrencyConversion: Boolean =
-    claimAmount.value.map(_.currencyCode).contains(EUR)
+  private def shouldSkipCurrencyConversion: Boolean = claimAmountInEuros
 
   def setReportPayment(v: Boolean): SubsidyJourney = this.copy(reportPayment = reportPayment.copy(value = v.some))
   def setClaimAmount(c: ClaimAmount): SubsidyJourney = this.copy(claimAmount = claimAmount.copy(value = c.some))
@@ -106,11 +105,12 @@ case class SubsidyJourney(
   def setTraderRef(o: OptionalTraderRef): SubsidyJourney = this.copy(traderRef = traderRef.copy(o.some))
   def setCya(v: Boolean): SubsidyJourney = this.copy(cya = cya.copy(v.some))
 
-  def getClaimAmount: Option[BigDecimal] =
-    claimAmount
-      .value
-      .map(a => BigDecimal(a.amount))
+  def getClaimAmount: Option[BigDecimal] = claimAmountToBigDecimal(claimAmount)
+  def getConvertedClaimAmount: Option[BigDecimal] = claimAmountToBigDecimal(convertedClaimAmountConfirmation)
 
+  def claimAmountInEuros: Boolean = claimAmount.value.map(_.currencyCode).contains(EUR)
+
+  private def claimAmountToBigDecimal(f: FormPage[ClaimAmount]) = f.value.map(a => BigDecimal(a.amount))
 }
 
 object SubsidyJourney {

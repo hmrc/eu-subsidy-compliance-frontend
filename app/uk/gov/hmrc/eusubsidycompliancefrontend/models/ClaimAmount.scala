@@ -26,7 +26,6 @@ sealed abstract class CurrencyCode(val symbol: Char) extends EnumEntry
 
 object CurrencyCode extends Enum[CurrencyCode] with PlayJsonEnum[CurrencyCode] {
 
-  // TODO - confirm that we really do need the symbols?
   case object GBP extends CurrencyCode('£')
   case object EUR extends CurrencyCode('€')
 
