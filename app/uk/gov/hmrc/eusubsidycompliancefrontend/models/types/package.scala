@@ -135,7 +135,7 @@ package object types extends SimpleJson {
 
   type EisSubsidyAmendmentType = String @@ EisSubsidyAmendmentType.Tag
   object EisSubsidyAmendmentType
-      extends RegexValidatedString( // TODO: consider enum
+      extends RegexValidatedString(
         regex = "1|2|3"
       )
 

@@ -99,7 +99,6 @@ object ClaimAmountFormProvider {
     val ClaimAmountEUR = "claim-amount-eur"
   }
 
-  // TODO - share these across form providers?
   object Errors {
     val IncorrectFormat = "error.incorrectFormat"
     val Required = "error.required"
