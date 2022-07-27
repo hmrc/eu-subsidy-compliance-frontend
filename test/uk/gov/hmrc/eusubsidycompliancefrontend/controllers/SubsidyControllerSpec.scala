@@ -666,7 +666,61 @@ class SubsidyControllerSpec
 
     }
 
-    "handling request to post claim amount currency confirmation" in {
+    "handling request to post claim amount currency confirmation" must {
+
+      def performAction() = controller.postConfirmClaimAmount(
+        FakeRequest(POST, routes.SubsidyController.postConfirmClaimAmount().url)
+      )
+
+      "throw technical error" when {
+
+        "the call to fetch the subsidy journey fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
+          }
+
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "the call to retrieve the exchange rate fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.copy(claimAmount = ClaimAmountFormPage(claimAmountPounds.some)).some))
+            mockRetrieveExchangeRate(claimDate)(Future.failed(exception))
+          }
+
+          assertThrows[Exception](await(performAction()))
+        }
+
+      }
+
+      "redirect to next page" when {
+
+        "the user submits the form to accept the exchange rate" in {
+          val subsidyJourneyWithPoundsAmount = subsidyJourney.copy(
+            claimAmount = ClaimAmountFormPage(claimAmountPounds.some),
+            convertedClaimAmountConfirmation = ConvertedClaimAmountConfirmationPage(ClaimAmount(EUR, "138.55").some)
+          )
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.copy(claimAmount = ClaimAmountFormPage(claimAmountPounds.some)).some))
+            mockRetrieveExchangeRate(claimDate)(exchangeRate.toFuture)
+            mockPut[SubsidyJourney](subsidyJourneyWithPoundsAmount, eori1)(Right(subsidyJourneyWithPoundsAmount))
+          }
+
+          println(s"subsidyJourney fixture: $subsidyJourneyWithPoundsAmount")
+          println(s"eori1: $eori1")
+          val result = performAction()
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) should contain(routes.SubsidyController.getAddClaimEori().url)
+        }
+
+      }
 
     }
 

@@ -19,6 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import com.google.inject.{Inject, Singleton}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.http.HttpConfiguration
 import play.api.i18n._
 import play.api.mvc.{Call, Result}
@@ -28,7 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.PlaySupport
 
 import scala.concurrent.Future
 
-trait ControllerSpec extends PlaySupport {
+trait ControllerSpec extends PlaySupport with ScalaFutures with IntegrationPatience {
 
   def checkIsRedirect(result: Future[Result], expectedRedirectLocation: String): Unit = {
     status(result) shouldBe SEE_OTHER
