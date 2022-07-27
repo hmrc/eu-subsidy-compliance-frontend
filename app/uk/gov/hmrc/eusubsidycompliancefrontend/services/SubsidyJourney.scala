@@ -121,7 +121,6 @@ object SubsidyJourney {
     SubsidyJourney(
       reportPayment = ReportPaymentFormPage(true.some),
       claimDate = ClaimDateFormPage(DateFormValues.fromDate(nonHmrcSubsidy.allocationDate).some),
-      // TODO - review usage here - need to check claim amount is populated correctly for GBP and EUR cases
       claimAmount = ClaimAmountFormPage(ClaimAmount(EUR, nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.toString()).some),
       addClaimEori = AddClaimEoriFormPage(getAddClaimEORI(nonHmrcSubsidy.businessEntityIdentifier).some),
       publicAuthority = PublicAuthorityFormPage(nonHmrcSubsidy.publicAuthority.orElse("".some)),

@@ -49,7 +49,6 @@ trait Journey {
       .find(_.value.isEmpty)
       .map(e => redirectWithSession(e.uri))
 
-  // TODO - review test coverage
   def getStepWithPath(path: String): Option[FormPage[_]] =
     steps
       .find(_.uri == path)
