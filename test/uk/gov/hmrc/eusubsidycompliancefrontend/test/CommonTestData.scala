@@ -274,5 +274,5 @@ object CommonTestData {
   val businessEntityAddedEvent = AuditEvent.BusinessEntityAdded(undertakingRef, "1123", eori1, eori2)
   val businessEntityUpdatedEvent = AuditEvent.BusinessEntityUpdated(undertakingRef, "1123", eori1, eori2)
 
-  val exchangeRate = ExchangeRate("EUR", "GBP", BigDecimal(0.891))
+  val exchangeRate = ExchangeRate(EUR, GBP, BigDecimal(0.891))
 }
