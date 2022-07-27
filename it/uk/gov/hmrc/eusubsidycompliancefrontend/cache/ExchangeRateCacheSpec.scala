@@ -20,6 +20,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.test.DefaultAwaitTimeout
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ExchangeRate
 import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
@@ -38,8 +39,8 @@ class ExchangeRateCacheSpec
   private val yearMonth1 = YearAndMonth(2022, 1)
   private val yearMonth2 = YearAndMonth(2022, 6)
 
-  private val exchangeRate1 = ExchangeRate("EUR", "GBP", BigDecimal(0.867))
-  private val exchangeRate2 = ExchangeRate("EUR", "GBP", BigDecimal(0.807))
+  private val exchangeRate1 = ExchangeRate(EUR, GBP, BigDecimal(0.867))
+  private val exchangeRate2 = ExchangeRate(EUR, GBP, BigDecimal(0.807))
 
   "ExchangeRateCache" should {
 
