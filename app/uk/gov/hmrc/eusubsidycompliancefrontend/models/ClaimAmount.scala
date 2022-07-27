@@ -26,6 +26,7 @@ sealed abstract class CurrencyCode(val symbol: Char) extends EnumEntry
 
 object CurrencyCode extends Enum[CurrencyCode] with PlayJsonEnum[CurrencyCode] {
 
+  // TODO - confirm that we really do need the symbols?
   case object GBP extends CurrencyCode('£')
   case object EUR extends CurrencyCode('€')
 
@@ -33,15 +34,11 @@ object CurrencyCode extends Enum[CurrencyCode] with PlayJsonEnum[CurrencyCode] {
 
 }
 
-// TODO - provide a toEuros method to do the conversion with a given exchange rate.
-// TODO - would potentially be nicer to have amount as a BigDecimal if form bindings work ok
 case class ClaimAmount(currencyCode: CurrencyCode, amount: String)
 
 object ClaimAmount {
   implicit val claimAmountFormat: OFormat[ClaimAmount] = Json.format[ClaimAmount]
 
-  // TODO - clean this up
-  //      - define as to/from form methods?
   def fromForm(currencyCode: CurrencyCode, amountEUR: Option[String], amountGBP: Option[String]): ClaimAmount =
     currencyCode match {
       case GBP => ClaimAmount(GBP, amountGBP.getOrElse(""))

@@ -225,8 +225,7 @@ object AuditEvent {
         traderReference =
           subsidyJourney.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
         nonHMRCSubsidyAmtEUR =
-          // TODO - amount should be big decimal
-          SubsidyAmount(subsidyJourney.claimAmount.value.map(a => BigDecimal(a.amount)).getOrElse(sys.error("claimAmount is missing"))),
+          SubsidyAmount(subsidyJourney.getClaimAmount.getOrElse(sys.error("claimAmount is missing"))),
         businessEntityIdentifier =
           subsidyJourney.addClaimEori.value.fold(sys.error("eori value missing"))(optionalEORI =>
             optionalEORI.value.map(EORI(_))
@@ -282,8 +281,7 @@ object AuditEvent {
         traderReference =
           subsidyJourney.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
         nonHMRCSubsidyAmtEUR =
-        // TODO - amount should be big decimal
-          SubsidyAmount(subsidyJourney.claimAmount.value.map(a => BigDecimal(a.amount)).getOrElse(sys.error("claimAmount is missing"))),
+          SubsidyAmount(subsidyJourney.getClaimAmount.getOrElse(sys.error("claimAmount is missing"))),
         businessEntityIdentifier =
           subsidyJourney.addClaimEori.value.fold(sys.error("eori value missing"))(optionalEORI =>
             optionalEORI.value.map(EORI(_))

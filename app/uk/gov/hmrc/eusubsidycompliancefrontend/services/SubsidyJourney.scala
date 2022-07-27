@@ -106,6 +106,11 @@ case class SubsidyJourney(
   def setTraderRef(o: OptionalTraderRef): SubsidyJourney = this.copy(traderRef = traderRef.copy(o.some))
   def setCya(v: Boolean): SubsidyJourney = this.copy(cya = cya.copy(v.some))
 
+  def getClaimAmount: Option[BigDecimal] =
+    claimAmount
+      .value
+      .map(a => BigDecimal(a.amount))
+
 }
 
 object SubsidyJourney {
