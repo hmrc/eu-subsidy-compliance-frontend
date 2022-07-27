@@ -101,6 +101,8 @@ object CommonTestData {
   val claimAmountPounds = ClaimAmount(GBP, subsidyAmount.toString())
   val claimAmountEuros = ClaimAmount(EUR, subsidyAmount.toString())
 
+  val claimDate = LocalDate.of(2022, 1, 1)
+
   val subsidyJourney = SubsidyJourney(
     publicAuthority = PublicAuthorityFormPage("Local Authority".some),
     traderRef = TraderRefFormPage(optionalTraderRef.some),

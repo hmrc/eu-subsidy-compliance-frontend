@@ -127,7 +127,7 @@ class NoClaimNotificationControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeToday(currentDay)
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
-            mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay.plusDays(1))))(
+            mockCreateSubsidy(SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay.plusDays(1))))(
               Left(ConnectorError(exception))
             )
           }
@@ -159,7 +159,7 @@ class NoClaimNotificationControllerSpec
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeToday(currentDay)
           mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
-          mockCreateSubsidy(undertakingRef, SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay.plusDays(1))))(
+          mockCreateSubsidy(SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay.plusDays(1))))(
             Right(undertakingRef)
           )
           mockSendAuditEvent(

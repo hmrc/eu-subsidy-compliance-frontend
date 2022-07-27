@@ -433,6 +433,7 @@ class SubsidyControllerSpec
 
     }
 
+    // TODO - coverage of redirect to confirm claim amount page for GBP amount
     "handling request to Post claim amount" must {
 
       def performAction(data: (String, String)*) = controller
@@ -604,6 +605,71 @@ class SubsidyControllerSpec
 
     }
 
+    "handling request to get claim amount currency conversion page" when {
+
+      def performAction() = controller.getConfirmClaimAmount(
+        FakeRequest(GET, routes.SubsidyController.getConfirmClaimAmount().url)
+      )
+
+      "throw a technical error" when {
+
+        "the call to fetch the subsidy journey fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
+          }
+
+          assertThrows[Exception](await(performAction()))
+        }
+
+        "the call to retrieve the exchange rate fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.copy(claimAmount = ClaimAmountFormPage(claimAmountPounds.some)).some))
+            mockRetrieveExchangeRate(claimDate)(Future.failed(exception))
+          }
+
+          assertThrows[Exception](await(performAction()))
+        }
+
+      }
+
+      "display the page" when {
+
+        "a successful request is made" in {
+
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.copy(claimAmount = ClaimAmountFormPage(claimAmountPounds.some)).some))
+            mockRetrieveExchangeRate(claimDate)(exchangeRate.toFuture)
+          }
+
+          checkPageIsDisplayed(
+            result = performAction(),
+            expectedTitle = messageFromMessageKey("confirm-converted-amount.title"),
+          )
+
+        }
+
+      }
+
+      "redirect" when {
+
+        "user is not an undertaking lead, to the account home page" in {
+          testLeadOnlyRedirect(() => performAction())
+        }
+
+      }
+
+    }
+
+    "handling request to post claim amount currency confirmation" in {
+
+    }
+
     "handling request to get Add Claim Eori" must {
 
       def performAction() = controller
@@ -613,7 +679,7 @@ class SubsidyControllerSpec
 
         val exception = new Exception("oh no")
 
-        " the call to get subsidy journey fails" in {
+        "the call to get subsidy journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -1326,7 +1392,6 @@ class SubsidyControllerSpec
             mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Right(updatedJourney))
             mockTimeToday(currentDate)
             mockCreateSubsidy(
-              undertakingRef,
               SubsidyController.toSubsidyUpdate(subsidyJourney, undertakingRef, currentDate)
             )(Left(ConnectorError(exception)))
           }
@@ -1340,7 +1405,6 @@ class SubsidyControllerSpec
             mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Right(updatedJourney))
             mockTimeToday(currentDate)
             mockCreateSubsidy(
-              undertakingRef,
               SubsidyController.toSubsidyUpdate(subsidyJourney, undertakingRef, currentDate)
             )(Right(undertakingRef))
             mockPut[SubsidyJourney](SubsidyJourney(), eori1)(Left(ConnectorError(exception)))
@@ -1364,7 +1428,6 @@ class SubsidyControllerSpec
             )(Right(updatedSJ))
             mockTimeToday(currentDate)
             mockCreateSubsidy(
-              undertakingRef,
               SubsidyController.toSubsidyUpdate(updatedSJ, undertakingRef, currentDate)
             )(Right(undertakingRef))
             mockPut[SubsidyJourney](SubsidyJourney(), eori1)(Right(SubsidyJourney()))
@@ -1396,7 +1459,6 @@ class SubsidyControllerSpec
             )(Right(updatedSJ))
             mockTimeToday(currentDate)
             mockCreateSubsidy(
-              undertakingRef,
               SubsidyController.toSubsidyUpdate(updatedSJ, undertakingRef, currentDate)
             )(Right(undertakingRef))
             mockPut[SubsidyJourney](SubsidyJourney(), eori1)(Right(SubsidyJourney()))
