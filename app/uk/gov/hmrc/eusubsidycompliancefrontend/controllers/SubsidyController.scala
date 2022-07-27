@@ -180,11 +180,9 @@ class SubsidyController @Inject() (
         .bindFromRequest()
         .fold(
           formWithErrors => {
-            println(s"Form with errors: $formWithErrors")
             BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture
           },
           claimAmountEntered => {
-            println(s"Got claim amount: $claimAmountEntered")
             for {
               journey <- store.update[SubsidyJourney](_.setClaimAmount(claimAmountEntered))
               // TODO - move this check into the SubsidyJourney
@@ -215,7 +213,6 @@ class SubsidyController @Inject() (
         claimAmount <- subsidyJourney.claimAmount.value.toContext
         claimDate <- subsidyJourney.claimDate.value.toContext
         euroAmount <- convertPoundsToEuros(claimDate.toLocalDate, claimAmount).toContext
-        _ = println(s"getConfirmClaimAmount: got euroAmount: $euroAmount")
         previous = subsidyJourney.previous
         // TODO - confirm what rounding rules are needed on the converted amount
       } yield Ok(confirmConvertedAmountPage(previous, BigDecimal(claimAmount.amount).toPounds, euroAmount.toEuros))
@@ -249,9 +246,7 @@ class SubsidyController @Inject() (
         for {
           exchangeRate <- escService.retrieveExchangeRate(date)
           rate = exchangeRate.rate
-          _ = println(s"Computing ${claimAmount.amount} / $rate")
           converted = BigDecimal(claimAmount.amount) / rate
-          _ = println(s"Result: €$converted")
         } yield converted.some
       case EUR => Future.successful(None)
     }
@@ -305,7 +300,6 @@ class SubsidyController @Inject() (
               val form = journey.addClaimEori.value.fold(claimEoriForm) { optionalEORI =>
                 claimEoriForm.fill(OptionalEORI(optionalEORI.setValue, optionalEORI.value))
               }
-              println(s"Showing add claim EORI form with previous URI: $previous")
               Ok(addClaimEoriPage(form, previous)).toFuture
             }
           }
@@ -410,35 +404,23 @@ class SubsidyController @Inject() (
     // TODO - the logic isn't quite right here - if we're on the amend journey we may not have the amount
     def getEuroAmount(j: SubsidyJourney) =
       if (j.claimAmount.value.map(_.currencyCode).contains(GBP)) {
-        println(s"claim amount entered: ${j.claimAmount}")
         val res = j.convertedClaimAmountConfirmation.value
-        println(s"User entered amount in GBP: Displaying $res")
         res
       } else j.claimAmount.value
 
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
 
-      // TODO - where do we fall through here?
       val result: OptionT[Future, Result] = for {
         journey <- store.get[SubsidyJourney].toContext
-        _ = println("got subs journey")
         _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
-        _ = println("validated subs journey")
         claimDate <- journey.claimDate.value.toContext
-        _ = println("got claim date")
         amount <- getEuroAmount(journey).toContext
-        _ = println(s"For comprehension - has amount: $amount")
         optionalEori <- journey.addClaimEori.value.toContext
-        _ = println(s"got optional eori")
         authority <- journey.publicAuthority.value.toContext
-        _ = println(s"got authority")
         optionalTraderRef <- journey.traderRef.value.toContext
-        _ = println(s"got opt trader ref")
         claimEori = optionalEori.value.map(EORI(_))
-        _ = println(s"got claim eori")
         traderRef = optionalTraderRef.value.map(TraderRef(_))
-        _ = println(s"got optional trader ref")
         previous = journey.previous
         // TODO - amount should be stored as a big decimal - review this
       } yield Ok(cyaPage(claimDate, BigDecimal(amount.amount), claimEori, authority, traderRef, previous))

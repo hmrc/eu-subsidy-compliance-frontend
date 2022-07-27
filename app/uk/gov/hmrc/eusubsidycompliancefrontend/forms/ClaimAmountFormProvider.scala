@@ -51,12 +51,10 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
   private val allowedCurrencySymbols = CurrencyCode.values.map(_.symbol)
 
   private val claimAmountIsBelowMaximumLength = Constraint[String] { claimAmount: String =>
-    println(s"validating claim amount length: $claimAmount")
     if (cleanAmount(claimAmount).length < 17) Valid else Invalid(TooBig)
   }
 
   private val claimAmountFormatIsValid = Constraint[String] { claimAmount: String =>
-    println(s"validating claim amount format: $claimAmount")
     val amount = cleanAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid(IncorrectFormat),
@@ -65,7 +63,6 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
   }
 
   private val claimAmountAboveMinimumAllowedValue = Constraint[String] { claimAmount: String =>
-    println(s"validating claim amount above minimum: $claimAmount")
     val amount = cleanAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid(IncorrectFormat),
@@ -75,7 +72,6 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
 
   // Verify that the user hasn't entered a currency symbol which doesn't match the currency they selected
   private val claimAmountCurrencyMatchesSelection = Constraint[ClaimAmount] { claimAmount: ClaimAmount =>
-    println(s"validating amount and currency code match: $claimAmount")
     claimAmount.amount.head match {
       case GBP.symbol if claimAmount.currencyCode != GBP => Invalid(IncorrectFormat)
       case EUR.symbol if claimAmount.currencyCode != EUR => Invalid(IncorrectFormat)
@@ -86,7 +82,6 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
   }
 
   private val currencyCodeIsValid = Constraint[String] { currencyCode: String =>
-    println(s"validating currency code: $currencyCode")
     if (currencyCode.isEmpty || !CurrencyCode.namesToValuesMap.contains(currencyCode)) Invalid(IncorrectFormat)
     else Valid
   }

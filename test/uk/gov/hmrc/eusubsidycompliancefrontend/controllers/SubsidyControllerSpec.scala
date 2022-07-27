@@ -520,9 +520,7 @@ class SubsidyControllerSpec
           }
 
           val titleMessage = messageFromMessageKey("add-claim-amount.title")
-          println(s"testcase: Looking for message: $errorMessageKey")
           val errorMessage = messageFromMessageKey(errorMessageKey)
-          println(s"testcase: Found message with key: '$errorMessageKey' content: '$errorMessage''")
 
           checkFormErrorIsDisplayed(
             performAction(data: _*),
@@ -567,7 +565,6 @@ class SubsidyControllerSpec
       "redirect to next page when claim amount is prefixed with euro sign or not and have commas and space" in {
 
         List("123.45", "€123.45", "12  3.4 5", "1,23.4,5", "€12  3.4 5").foreach { claimAmount =>
-          println(s"Processing claimAmount: $claimAmount")
           withClue(s" For amount :: $claimAmount") {
             val subsidyJourney = SubsidyJourney(
               reportPayment = ReportPaymentFormPage(true.some),
@@ -713,8 +710,6 @@ class SubsidyControllerSpec
             mockPut[SubsidyJourney](subsidyJourneyWithPoundsAmount, eori1)(Right(subsidyJourneyWithPoundsAmount))
           }
 
-          println(s"subsidyJourney fixture: $subsidyJourneyWithPoundsAmount")
-          println(s"eori1: $eori1")
           val result = performAction()
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) should contain(routes.SubsidyController.getAddClaimEori().url)
@@ -791,7 +786,7 @@ class SubsidyControllerSpec
 
       }
 
-      "redirect " when {
+      "redirect" when {
         "user is not an undertaking lead, to the account home page" in {
           testLeadOnlyRedirect(performAction)
         }
