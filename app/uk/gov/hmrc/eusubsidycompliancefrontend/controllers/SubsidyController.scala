@@ -179,11 +179,8 @@ class SubsidyController @Inject() (
       claimAmountForm
         .bindFromRequest()
         .fold(
-          formWithErrors => {
-            println(s"Form has errors apparently - so returning bad request")
-            println(s"form with errors: $formWithErrors")
-            BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture
-          },
+          formWithErrors =>
+            BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture,
           claimAmountEntered => for {
             journey <- store.update[SubsidyJourney](_.setClaimAmount(claimAmountEntered))
             redirect <- journey.next
