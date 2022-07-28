@@ -24,7 +24,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyControllerSpec.RemoveSubsidyRow
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.EUR
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyRemoved
@@ -384,7 +384,10 @@ class SubsidyControllerSpec
 
       "display the page" when {
 
-        def test(subsidyJourney: SubsidyJourney): Unit = {
+        val claimAmountEurosId = "claim-amount-eur"
+        val claimAmountPoundsId = "claim-amount-gbp"
+
+        def test(subsidyJourney: SubsidyJourney, elementId: String): Unit = {
           mockAuthWithNecessaryEnrolment()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
@@ -393,8 +396,7 @@ class SubsidyControllerSpec
             performAction(),
             messageFromMessageKey("add-claim-amount.title"),
             { doc =>
-              // TODO - add a test case to verify that the EUR field is also correctly populated
-              val input = doc.getElementById("claim-amount-gbp").attributes().get("value")
+              val input = doc.getElementById(elementId).attributes().get("value")
               input shouldBe subsidyJourney.claimAmount.value.map(_.amount).getOrElse("")
 
               val button = doc.select("form")
@@ -404,22 +406,45 @@ class SubsidyControllerSpec
           )
         }
 
-        "user hasn't already answered the question" in {
+        "user hasn't already answered the question - EUR input field should be empty" in {
           test(
             SubsidyJourney(
               reportPayment = ReportPaymentFormPage(true.some),
               claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
-            )
+            ),
+            claimAmountEurosId
           )
         }
 
-        "user has already answered the question" in {
+        "user hasn't already answered the question - GBP input field should be empty" in {
+          test(
+            SubsidyJourney(
+              reportPayment = ReportPaymentFormPage(true.some),
+              claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
+            ),
+            claimAmountPoundsId
+          )
+        }
+
+        "user has already entered a EUR amount" in {
+          test(
+            SubsidyJourney(
+              reportPayment = ReportPaymentFormPage(true.some),
+              claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
+              claimAmount = ClaimAmountFormPage(value = claimAmountEuros.some)
+            ),
+            claimAmountEurosId
+          )
+        }
+
+        "user has already entered a GBP amount" in {
           test(
             SubsidyJourney(
               reportPayment = ReportPaymentFormPage(true.some),
               claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
               claimAmount = ClaimAmountFormPage(value = claimAmountPounds.some)
-            )
+            ),
+            claimAmountPoundsId
           )
         }
 
@@ -433,8 +458,7 @@ class SubsidyControllerSpec
 
     }
 
-    // TODO - coverage of redirect to confirm claim amount page for GBP amount
-    "handling request to Post claim amount" must {
+    "handling request to post claim amount" must {
 
       def performAction(data: (String, String)*) = controller
         .postAddClaimAmount(
@@ -534,65 +558,108 @@ class SubsidyControllerSpec
         }
 
         "nothing is entered" in {
-          displayError(ClaimAmountFormProvider.Fields.CurrencyCode -> "GBP")("add-claim-amount.claim-amount-gbp.error.required")
-        }
-
-        "claim amount entered in wrong format" in {
-          displayError(
-            ClaimAmountFormProvider.Fields.CurrencyCode -> "GBP",
-            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "123.4"
-          )("add-claim-amount.claim-amount-gbp.error.incorrectFormat")
-        }
-
-        "claim amount entered is more than 17 chars" in {
-          displayError(
-            ClaimAmountFormProvider.Fields.CurrencyCode -> "GBP",
-            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "1234567890.12345678",
-          )("add-claim-amount.claim-amount-gbp.error.tooBig")
-        }
-
-        // TODO - check the logic here - test suggests 0.01 is allowed :/
-        "claim amount entered is too small < 0.01" in {
-          displayError(
-            ClaimAmountFormProvider.Fields.CurrencyCode -> "GBP",
-            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "0.01"
-          )("add-claim-amount.claim-amount-gbp.error.tooSmall")
-        }
-
-      }
-
-      // TODO - ensure these inputs are covered in the form provider tests with £ prefix too
-      "redirect to next page when claim amount is prefixed with euro sign or not and have commas and space" in {
-
-        List("123.45", "€123.45", "12  3.4 5", "1,23.4,5", "€12  3.4 5").foreach { claimAmount =>
-          withClue(s" For amount :: $claimAmount") {
-            val subsidyJourney = SubsidyJourney(
-              reportPayment = ReportPaymentFormPage(true.some),
-              claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
-              claimAmount = ClaimAmountFormPage(ClaimAmount(EUR, claimAmount).some)
-            )
-
-            def update(subsidyJourney: SubsidyJourney) =
-              subsidyJourney.copy(claimAmount = ClaimAmountFormPage(ClaimAmount(EUR, claimAmount).some))
-
-            inSequence {
-              mockAuthWithNecessaryEnrolment()
-              mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-              mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
-              mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Right(subsidyJourney))
-            }
-
-            checkIsRedirect(
-              performAction(
-                ClaimAmountFormProvider.Fields.CurrencyCode -> "EUR",
-                ClaimAmountFormProvider.Fields.ClaimAmountEUR -> claimAmount
-              ),
-              routes.SubsidyController.getAddClaimEori().url
-            )
+          CurrencyCode.values.foreach { c =>
+            displayError(
+              ClaimAmountFormProvider.Fields.CurrencyCode -> c.entryName,
+            )(s"add-claim-amount.claim-amount-${c.entryName.toLowerCase}.error.required")
           }
         }
 
+        "claim amount entered in wrong format" in {
+          CurrencyCode.values.foreach { c =>
+            displayError(
+              ClaimAmountFormProvider.Fields.CurrencyCode -> c.entryName,
+              ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "123.4"
+            )(s"add-claim-amount.claim-amount-${c.entryName.toLowerCase}.error.incorrectFormat")
+          }
+        }
+
+        "claim amount entered in GBP is more than 17 chars" in {
+          displayError(
+            ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
+            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "1234567890.12345678",
+          )(s"add-claim-amount.claim-amount-${GBP.entryName.toLowerCase}.error.tooBig")
+        }
+
+        "claim amount entered in EUR is more than 17 chars" in {
+          displayError(
+            ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName,
+            ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "1234567890.12345678",
+          )(s"add-claim-amount.claim-amount-${EUR.entryName.toLowerCase}.error.tooBig")
+        }
+
+        "claim amount entered in GBP is too small" in {
+          displayError(
+            ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
+            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "0.00"
+          )(s"add-claim-amount.claim-amount-${GBP.entryName.toLowerCase}.error.tooSmall")
+        }
+
+        "claim amount entered in EUR is too small" in {
+          displayError(
+            ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName,
+            ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "0.00"
+          )(s"add-claim-amount.claim-amount-${EUR.entryName.toLowerCase}.error.tooSmall")
+        }
+
       }
+
+      "redirect to the add claim eori page if an EUR amount is entered" in {
+        val subsidyJourney = SubsidyJourney(
+          reportPayment = ReportPaymentFormPage(true.some),
+          claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
+        )
+
+        val claimAmount = "100.00"
+
+        val subsidyJourneyWithClaimAmount = subsidyJourney.copy(
+          claimAmount = ClaimAmountFormPage(ClaimAmount(EUR, claimAmount).some)
+        )
+
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+          mockUpdate[SubsidyJourney](_ => subsidyJourneyWithClaimAmount, eori1)(Right(subsidyJourneyWithClaimAmount))
+        }
+
+        checkIsRedirect(
+          performAction(
+            ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName,
+            ClaimAmountFormProvider.Fields.ClaimAmountEUR -> claimAmount
+          ),
+          routes.SubsidyController.getAddClaimEori().url
+        )
+    }
+
+    "redirect to the confirm converted amount page if a GBP amount is entered" in {
+      val subsidyJourney = SubsidyJourney(
+        reportPayment = ReportPaymentFormPage(true.some),
+        claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
+      )
+
+      val claimAmount = "100.00"
+
+      val subsidyJourneyWithClaimAmount = subsidyJourney.copy(
+        claimAmount = ClaimAmountFormPage(ClaimAmount(GBP, claimAmount).some)
+      )
+
+      inSequence {
+        mockAuthWithNecessaryEnrolment()
+        mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+        mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+        mockUpdate[SubsidyJourney](_ => subsidyJourneyWithClaimAmount, eori1)(Right(subsidyJourney))
+      }
+
+      checkIsRedirect(
+        performAction(
+          ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
+          ClaimAmountFormProvider.Fields.ClaimAmountGBP -> claimAmount
+        ),
+        routes.SubsidyController.getConfirmClaimAmount().url
+      )
+
+    }
 
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {

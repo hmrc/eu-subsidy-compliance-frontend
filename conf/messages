@@ -266,7 +266,7 @@ add-claim-amount.claim-amount-eur.error.required = Enter number value of subsidy
 add-claim-amount.claim-amount-eur.error.incorrectFormat = Enter number value of subsidy allocated, like 248.56
 add-claim-amount.claim-amount-eur.error.tooBig=Subsidy amount must be fewer than 17 characters
 # TODO - confirm logic here - is 0.01 an allowable amount?
-add-claim-amount.claim-amount-eur.error.tooSmall=Subsidy amount must be more than one penny e.g 0.02
+add-claim-amount.claim-amount-eur.error.tooSmall=Subsidy amount must be more than one cent e.g 0.02
 
 add-claim-amount.p1=This type of aid is measured in euros.
 add-claim-amount.inset=If your payment is already in euros, skip the steps below and enter the amount in the box.
