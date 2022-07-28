@@ -524,7 +524,7 @@ class SubsidyControllerSpec
           }
           assertThrows[Exception](await(performAction(
             ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "123.45",
-            ClaimAmountFormProvider.Fields.CurrencyCode -> "GBP",
+            ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
           )))
         }
       }

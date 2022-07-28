@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 
-class BigDecimalFormatterSoec extends AnyWordSpecLike with Matchers {
+class BigDecimalFormatterSpec extends AnyWordSpecLike with Matchers {
 
   "BigDecimalFormatter" when {
 
@@ -47,7 +47,7 @@ class BigDecimalFormatterSoec extends AnyWordSpecLike with Matchers {
         BigDecimalFormatter.toPounds(BigDecimal(1)) shouldBe "£1.00"
       }
 
-      "format numbers greater than 100 with comma separators" in {
+      "format numbers greater than 999.99 with comma separators" in {
         BigDecimalFormatter.toPounds(BigDecimal(1000)) shouldBe "£1,000.00"
         BigDecimalFormatter.toPounds(BigDecimal(1000000)) shouldBe "£1,000,000.00"
       }
