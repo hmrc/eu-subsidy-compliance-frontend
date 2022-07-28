@@ -36,6 +36,8 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
       "handling valid GBP form submissions" in {
         val amounts = Seq(
           "100",
+          "0.01",
+          "£0.01",
           "100.00",
           "£100.00",
           "10  0.00",
@@ -53,6 +55,8 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
       "handling valid EUR form submissions" in {
         val amounts = Seq(
           "100",
+          "0.01",
+          "€0.01",
           "100.00",
           "€100.00",
           "10  0.00",

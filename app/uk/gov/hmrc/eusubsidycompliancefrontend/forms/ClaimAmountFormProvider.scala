@@ -46,7 +46,7 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
     text
       .verifying(claimAmountIsBelowMaximumLength)
       .verifying(claimAmountFormatIsValid)
-      .verifying(claimAmountAboveMinimumAllowedValue)
+      .verifying(claimAmountAboveZero)
 
   private val allowedCurrencySymbols = CurrencyCode.values.map(_.symbol)
 
@@ -62,11 +62,11 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
     )
   }
 
-  private val claimAmountAboveMinimumAllowedValue = Constraint[String] { claimAmount: String =>
+  private val claimAmountAboveZero = Constraint[String] { claimAmount: String =>
     val amount = cleanAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid(IncorrectFormat),
-      amount => if (amount > 0.01) Valid else Invalid(TooSmall)
+      amount => if (amount > 0.00) Valid else Invalid(TooSmall)
     )
   }
 
