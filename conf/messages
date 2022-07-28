@@ -246,10 +246,9 @@ reportPayment.error.required=Select yes if you have a de minimis aid payment (le
 reportPayment.payment-dated = payment, dated
 
 # Add Claim Amount Form
-add-claim-amount.title = What currency was the payment in?
-add-claim-amount.hint = Select one option.
-add-claim-amount.eur = Euros
-add-claim-amount.gbp = Pounds sterling
+add-claim-amount.title = What currency was the payment received in?
+add-claim-amount.eur = Euros (EUR)
+add-claim-amount.gbp = Pounds sterling (GBP)
 add-claim-amount.input-label = Enter amount
 add-claim-amount.input-hint = Figure should include two decimal places, like 248.56
 
@@ -278,7 +277,8 @@ add-claim-amount.l4 = Change the ‘From’ dropdown to ‘GBP’ and use the fi
 add-claim-amount.l5 = Enter amount in the box below.
 
 confirm-converted-amount.title = Your amount in euros
-confirm-converted-amount.p1 = Your pounds sterling amount of {0}, converted to euros, is {1}
+confirm-converted-amount.p1 = Your pounds sterling amount of {0}, converted to euros, is <strong>{1}</strong>.
+confirm-converted-amount.p2 = We've converted your amount from pounds sterling as we measure this type of aid in euros.
 
 add-claim-date.title=What date were you awarded the payment?
 add-claim-date.hint=For example, 27 07 2020

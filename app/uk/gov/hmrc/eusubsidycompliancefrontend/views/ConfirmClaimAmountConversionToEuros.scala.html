@@ -18,9 +18,10 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.govukfrontend.views.html.components.Text
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @this(
-    layout: Layout,
+    layout: FullWidthLayout,
     formHelper: FormWithCSRF,
     button: components.Button
 )
@@ -33,10 +34,13 @@
     backLink = Some(previous)
 ) {
 
-    <h1 class="govuk-heading-xl">@messages("confirm-converted-amount.title")</h1>
-    <p class="govuk-body">@messages("confirm-converted-amount.p1", poundsAmount, eurosAmount)</p>
+    @H1(messages("confirm-converted-amount.title"))
+
+    @P(messages("confirm-converted-amount.p1", poundsAmount, eurosAmount))
+    @P(messages("confirm-converted-amount.p2"))
 
     @formHelper(action = controllers.routes.SubsidyController.postConfirmClaimAmount) {
         @button("common.continue")
     }
+
 }

@@ -21,7 +21,7 @@
 
 
 @this(
-  layout: Layout,
+  layout: FullWidthLayout,
   formHelper: FormWithCSRF,
   button: components.Button,
   govukErrorSummary: GovukErrorSummary,
@@ -102,7 +102,6 @@
                 isPageHeading = true
             ))
         )),
-        hint = Some(Hint(content = Text(messages("add-claim-amount.hint")))),
         errorMessage = if (form.hasErrors && form.errors.head.key == radioIdentifier) {
             Some(ErrorMessage(content = Text(s"${messages(s"$key.${form.errors.head.key}.${form.errors.head.message}")}")))
         } else None,
