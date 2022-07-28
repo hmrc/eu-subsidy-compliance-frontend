@@ -1124,7 +1124,7 @@ class SubsidyControllerSpec
               val inputText = doc.select(".govuk-input").attr("value")
 
               subsidyJourney.traderRef.value match {
-                case Some(OptionalTraderRef(input, traderRef)) =>
+                case Some(OptionalStringFormInput(input, traderRef)) =>
                   selectedOptions.attr("value") shouldBe input
                   inputText shouldBe traderRef.getOrElse("")
                 case _ => selectedOptions.isEmpty shouldBe true
@@ -1148,7 +1148,7 @@ class SubsidyControllerSpec
         "the user has already answered the question" in {
           List(
             subsidyJourney,
-            subsidyJourney.copy(traderRef = TraderRefFormPage(OptionalTraderRef("false", None).some))
+            subsidyJourney.copy(traderRef = TraderRefFormPage(OptionalStringFormInput("false", None).some))
           )
             .foreach { subsidyJourney =>
               withClue(s" for each subsidy journey $subsidyJourney") {

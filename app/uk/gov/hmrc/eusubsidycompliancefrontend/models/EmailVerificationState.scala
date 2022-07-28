@@ -16,13 +16,11 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-import play.api.libs.json.{Format, Json}
+import play.api.libs.json.{Json, OFormat}
 
-case class OptionalTraderRef(
-  setValue: String,
-  value: Option[String]
-)
+case class EmailVerificationState(email: String, pendingVerificationId: Option[String], verified: Option[Boolean])
 
-object OptionalTraderRef {
-  implicit val format: Format[OptionalTraderRef] = Json.format[OptionalTraderRef]
+
+object EmailVerificationState {
+  implicit val undertakingFormat: OFormat[EmailVerificationState] = Json.format[EmailVerificationState]
 }

@@ -26,7 +26,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, OptionalEORI, OptionalTraderRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, OptionalEORI, OptionalStringFormInput}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{claimAmountEuros, claimAmountPounds}
 
@@ -70,7 +70,7 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
     }
 
     "return an updated instance with the specified value when setTraderRef is called" in {
-      val value = OptionalTraderRef("true", "Some Trader Reference".some)
+      val value = OptionalStringFormInput("true", "Some Trader Reference".some)
       SubsidyJourney().setTraderRef(value) shouldBe SubsidyJourney(traderRef = TraderRefFormPage(value.some))
     }
 

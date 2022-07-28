@@ -49,7 +49,7 @@ object CommonTestData {
   val businessEntity4 = BusinessEntity(EORI(eori4), leadEORI = false)
   val businessEntity5 = BusinessEntity(EORI(eori1), leadEORI = true)
 
-  val optionalTraderRef = OptionalTraderRef("true", TraderRef("ABC123").some)
+  val optionalTraderRef = OptionalStringFormInput("true", TraderRef("ABC123").some)
   val optionalEORI = OptionalEORI("true", eori1.some)
 
   val undertakingRef = UndertakingRef("UR123456")

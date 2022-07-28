@@ -102,7 +102,7 @@ case class SubsidyJourney(
   def setClaimDate(d: DateFormValues): SubsidyJourney = this.copy(claimDate = claimDate.copy(value = d.some))
   def setClaimEori(oe: OptionalEORI): SubsidyJourney = this.copy(addClaimEori = addClaimEori.copy(oe.some))
   def setPublicAuthority(a: String): SubsidyJourney = this.copy(publicAuthority = publicAuthority.copy(a.some))
-  def setTraderRef(o: OptionalTraderRef): SubsidyJourney = this.copy(traderRef = traderRef.copy(o.some))
+  def setTraderRef(o: OptionalStringFormInput): SubsidyJourney = this.copy(traderRef = traderRef.copy(o.some))
   def setCya(v: Boolean): SubsidyJourney = this.copy(cya = cya.copy(v.some))
 
   def getClaimAmount: Option[BigDecimal] = claimAmountToBigDecimal(claimAmount)
@@ -132,7 +132,7 @@ object SubsidyJourney {
     eoriOpt.fold(OptionalEORI("false", eoriOpt))(e => OptionalEORI("true", e.some))
 
   private def getAddTraderRef(traderRefOpt: Option[TraderRef]) =
-    traderRefOpt.fold(OptionalTraderRef("false", None))(t => OptionalTraderRef("true", t.some))
+    traderRefOpt.fold(OptionalStringFormInput("false", None))(t => OptionalStringFormInput("true", t.some))
 
   object Forms {
 
@@ -156,7 +156,7 @@ object SubsidyJourney {
     case class PublicAuthorityFormPage(value: Form[String] = None) extends FormPage[String] {
       def uri = controller.getAddClaimPublicAuthority().url
     }
-    case class TraderRefFormPage(value: Form[OptionalTraderRef] = None) extends FormPage[OptionalTraderRef] {
+    case class TraderRefFormPage(value: Form[OptionalStringFormInput] = None) extends FormPage[OptionalStringFormInput] {
       def uri = controller.getAddClaimReference().url
     }
     case class CyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {

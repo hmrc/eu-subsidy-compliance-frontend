@@ -24,9 +24,11 @@ import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolment, Enr
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
@@ -38,7 +40,7 @@ class EscInitialRequestActionBuilder @Inject() (
   val config: Configuration,
   val env: Environment,
   val authConnector: AuthConnector,
-  mcc: ControllerComponents
+  mcc: ControllerComponents,
 )(implicit val executionContext: ExecutionContext, appConfig: AppConfig)
     extends ActionBuilder[AuthenticatedEscRequest, AnyContent]
     with FrontendHeaderCarrierProvider
@@ -70,7 +72,6 @@ class EscInitialRequestActionBuilder @Inject() (
                 .getIdentifier(eccEnrolment, cdsEnrolment, EnrolmentIdentifier)
                 .fold(throw new IllegalStateException("no eori provided"))(identity)
               block(AuthenticatedEscRequest(credentials.providerId, groupId, request, EORI(identifier)))
-
             case (Some(eccEnrolment), None) =>
               val identifier: String = eccEnrolment
                 .getIdentifier(EnrolmentIdentifier)
