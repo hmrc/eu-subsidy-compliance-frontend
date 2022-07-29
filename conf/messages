@@ -253,7 +253,7 @@ add-claim-amount.input-label = Enter amount
 add-claim-amount.input-hint = Figure should include two decimal places, like 248.56
 
 # Form validation errors
-add-claim-amount.currency-code.error.required = Select the currency that the payment was made in.
+add-claim-amount.currency-code.error.required = Select the currency the payment was made in
 
 # GBP field validation errors
 add-claim-amount.claim-amount-gbp.error.required = Enter number value of subsidy allocated, like 248.56
