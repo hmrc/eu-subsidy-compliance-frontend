@@ -6,7 +6,7 @@ import sbt._
 object AppDependencies {
 
   val bootStrapVersion = "5.23.0"
-  val hmrcMongoVersion = "0.63.0"
+  val hmrcMongoVersion = "0.68.0"
   val enumeratumVersion = "1.7.0"
 
   val compile = Seq(
