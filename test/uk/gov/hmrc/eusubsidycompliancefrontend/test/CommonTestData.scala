@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.test
 
 import cats.implicits.catsSyntaxOptionId
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
@@ -97,10 +98,15 @@ object CommonTestData {
     hmrcSubsidyUsage = List(hmrcSubsidy)
   )
 
+  val claimAmountPounds = ClaimAmount(GBP, subsidyAmount.toString())
+  val claimAmountEuros = ClaimAmount(EUR, subsidyAmount.toString())
+
+  val claimDate = LocalDate.of(2022, 1, 1)
+
   val subsidyJourney = SubsidyJourney(
     publicAuthority = PublicAuthorityFormPage("Local Authority".some),
     traderRef = TraderRefFormPage(optionalTraderRef.some),
-    claimAmount = ClaimAmountFormPage(subsidyAmount.some),
+    claimAmount = ClaimAmountFormPage(claimAmountEuros.some),
     addClaimEori = AddClaimEoriFormPage(optionalEORI.some),
     claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some),
     reportPayment = ReportPaymentFormPage(true.some)
@@ -268,5 +274,5 @@ object CommonTestData {
   val businessEntityAddedEvent = AuditEvent.BusinessEntityAdded(undertakingRef, "1123", eori1, eori2)
   val businessEntityUpdatedEvent = AuditEvent.BusinessEntityUpdated(undertakingRef, "1123", eori1, eori2)
 
-  val exchangeRate = ExchangeRate("EUR", "GBP", BigDecimal(0.891))
+  val exchangeRate = ExchangeRate(EUR, GBP, BigDecimal(0.891))
 }

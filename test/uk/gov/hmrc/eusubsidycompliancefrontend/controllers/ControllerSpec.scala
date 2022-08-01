@@ -19,6 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import com.google.inject.{Inject, Singleton}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.http.HttpConfiguration
 import play.api.i18n._
 import play.api.mvc.{Call, Result}
@@ -28,7 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.PlaySupport
 
 import scala.concurrent.Future
 
-trait ControllerSpec extends PlaySupport {
+trait ControllerSpec extends PlaySupport with ScalaFutures with IntegrationPatience {
 
   def checkIsRedirect(result: Future[Result], expectedRedirectLocation: String): Unit = {
     status(result) shouldBe SEE_OTHER
@@ -40,7 +41,7 @@ trait ControllerSpec extends PlaySupport {
 
   def messageFromMessageKey(messageKey: String, args: Any*)(implicit messagesApi: MessagesApi): String = {
     val m = messagesApi(messageKey, args: _*)
-    if (m === messageKey) sys.error(s"Could not find message for key `$messageKey`")
+    if (m === messageKey) sys.error(s"messageFromMessageKey: Could not find message for key `$messageKey`")
     else m
   }
 
@@ -77,11 +78,8 @@ trait ControllerSpec extends PlaySupport {
       result,
       expectedTitle,
       { doc =>
-        val errorSummary = doc.select(".govuk-error-summary")
-        errorSummary.select("a").text() shouldBe formError
-
-        val inputErrorMessage = doc.select(".govuk-error-message").text()
-        inputErrorMessage shouldBe s"Error: $formError"
+        doc.select(".govuk-error-summary").select("a").text() shouldBe formError
+        doc.select(".govuk-error-message").text() shouldBe s"Error: $formError"
       },
       expectedStatus
     )

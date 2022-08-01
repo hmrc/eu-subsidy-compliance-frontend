@@ -42,7 +42,7 @@ POST       /first-login-journey-what-sector                                     
 GET        /first-login-journey-check-your-answers                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getCheckAnswers
 POST       /first-login-journey-check-your-answers                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postCheckAnswers
 
-GET        /first-login-journey-registered-undertaking/:undertakingRef/name             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmation(undertakingRef,name)
+GET        /first-login-journey-registered-undertaking/:undertakingRef/name              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmation(undertakingRef,name)
 POST       /first-login-journey-registered-undertaking                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmation
 GET        /lead-undertaking-amend-undertaking                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAmendUndertakingDetails
 POST       /lead-undertaking-amend-undertaking                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAmendUndertaking
@@ -69,14 +69,17 @@ POST       /lead-undertaking-remove-business-entity/:eori                       
 GET        /business-enterprise-remove-yourself-from-undertaking                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getRemoveYourselfBusinessEntity
 POST       /business-enterprise-remove-yourself-from-undertaking                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveYourselfBusinessEntity
 
-GET        /lead-undertaking-report-de-minimis-aid-payment                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPayment
-POST       /lead-undertaking-report-de-minimis-aid-payment                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPayment
+GET        /lead-undertaking-report-de-minimis-aid-payment                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPayment
+POST       /lead-undertaking-report-de-minimis-aid-payment                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPayment
 
 GET        /lead-undertaking-add-eori-business-claimed-payment                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimEori
 POST       /lead-undertaking-add-eori-business-claimed-payment                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimEori
 
 GET        /lead-undertaking-add-payment-amount                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getClaimAmount
 POST       /lead-undertaking-add-payment-amount                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimAmount
+
+GET        /lead-undertaking-check-converted-amount                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getConfirmClaimAmount
+POST       /lead-undertaking-check-converted-amount                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postConfirmClaimAmount
 
 GET        /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getClaimDate
 POST       /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postClaimDate

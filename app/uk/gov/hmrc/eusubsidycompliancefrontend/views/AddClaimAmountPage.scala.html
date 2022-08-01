@@ -19,8 +19,9 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
+
 @this(
-  layout: Layout,
+  layout: FullWidthLayout,
   formHelper: FormWithCSRF,
   button: components.Button,
   govukErrorSummary: GovukErrorSummary,
@@ -29,9 +30,45 @@
   govukInsetText : GovukInsetText
 )
 
+
 @(form: Form[_], previous: Journey.Uri, currentYear: String, currentMonth: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"add-claim-amount"}
 @title = @{messages(s"$key.title")}
+
+@radioIdentifier = @{"currency-code"}
+@inputIdentifierEUR = @{"claim-amount-eur"}
+@inputIdentifierGBP = @{"claim-amount-gbp"}
+
+@eurInputHtml = {
+    @govukInput(Input(
+        id = inputIdentifierEUR,
+        name = inputIdentifierEUR,
+        prefix = Some(PrefixOrSuffix(content = Text("€"))),
+        errorMessage = if (form.data.get(radioIdentifier).contains("EUR") && form.hasErrors && form.errors.head.key == inputIdentifierEUR) {
+            Some(ErrorMessage(content = Text(s"${messages(s"$key.${form.errors.head.key}.${form.errors.head.message}")}")))
+        } else None,
+        value = if (form.data.get(radioIdentifier).contains("EUR")) form.data.get(inputIdentifierEUR) else None,
+        label = Label(content = Text(messages("add-claim-amount.input-label"))),
+        hint = Some(Hint(content = Text(messages("add-claim-amount.input-hint")))),
+        classes = "govuk-input govuk-input--width-20"
+    ))
+}
+
+@gbpInputHtml = {
+    @govukInput(Input(
+        id = inputIdentifierGBP,
+        name = inputIdentifierGBP,
+        prefix = Some(PrefixOrSuffix(content = Text("£"))),
+        errorMessage = if (form.data.get(radioIdentifier).contains("GBP") && form.hasErrors && form.errors.head.key == inputIdentifierGBP) {
+            Some(ErrorMessage(content = Text(s"${messages(s"$key.${form.errors.head.key}.${form.errors.head.message}")}")))
+        } else None,
+        value = if (form.data.get(radioIdentifier).contains("GBP")) form.data.get(inputIdentifierGBP) else None,
+        label = Label(content = Text(messages("add-claim-amount.input-label"))),
+        hint = Some(Hint(content = Text(messages("add-claim-amount.input-hint")))),
+        classes = "govuk-input govuk-input--width-20"
+    ))
+}
+
 @layout(
   pageTitle = Some(title),
   backLinkEnabled = true,
@@ -45,7 +82,7 @@
           errorList = Seq(
               ErrorLink(
                   href = Some(s"#${form.errors.head.key}"),
-                  content = Text(s"${messages(s"$key.${form.errors.head.message}")}"),
+                  content = Text(s"${messages(s"$key.${form.errors.head.key}.${form.errors.head.message}")}"),
                   attributes = Map("class" ->"govuk-link")
               )
           ),
@@ -54,40 +91,37 @@
     )
   }
 
+
   @formHelper(action = controllers.routes.SubsidyController.postAddClaimAmount()) {
 
-    @H1(messages("add-claim-amount.title"))
-      @P(messages("add-claim-amount.p1"))
-      @govukInsetText(InsetText(
-          content = Text(messages("add-claim-amount.inset"))))
-    @P(messages("add-claim-amount.p2"))
-      <ul class="govuk-list govuk-list--number">
-          <li>@Html(messages(s"$key.l1", appConfig.exchangeRateToolUrl))</li>
-          <li>@{messages(s"$key.l2",currentYear, currentMonth)}</li>
-          <li>@{messages(s"$key.l3")}</li>
-          <li>@{messages(s"$key.l4")}</li>
-          <li>@{messages(s"$key.l5")}</li>
-      </ul>
+    @govukRadios(Radios(
+        fieldset = Some(Fieldset(
+            legend = Some(Legend(
+                content = Text(title),
+                classes = "govuk-fieldset__legend--xl",
+                isPageHeading = true
+            ))
+        )),
+        errorMessage = if (form.hasErrors && form.errors.head.key == radioIdentifier) {
+            Some(ErrorMessage(content = Text(s"${messages(s"$key.${form.errors.head.key}.${form.errors.head.message}")}")))
+        } else None,
+        name = radioIdentifier,
+        items = Seq(
+            RadioItem(
+                content = Text(messages("add-claim-amount.eur")),
+                value = Some("EUR"),
+                checked = form.data.get(radioIdentifier).contains("EUR"),
+                conditionalHtml = Some(eurInputHtml)
+            ),
+            RadioItem(
+                content = Text(messages("add-claim-amount.gbp")),
+                checked = form.data.get(radioIdentifier).contains("GBP"),
+                value = Some("GBP"),
+                conditionalHtml = Some(gbpInputHtml)
+            ))
+        ))
 
-    @govukInput(Input(
-      id = "claim-amount",
-      name = "claim-amount",
-      prefix = Some(PrefixOrSuffix(content = Text("€"))),
-      value = form.data.get("claim-amount"),
-      errorMessage = if (form.hasErrors) {
-          Some(ErrorMessage(content = Text(messages(s"$key.${form.errors.head.message}" ))))
-      } else None,
-      hint = Some(Hint(
-        content = Text(messages("add-claim-amount.hint"))
-      )),
-      label = Label(
-        classes = "govuk-visually-hidden",
-        isPageHeading = false,
-        content = Text(title)
-      ),
-      classes = "govuk-input--width-5"
-    ))
+        @button("common.continue")
 
-    @button("common.continue")
-  }
+    }
 }

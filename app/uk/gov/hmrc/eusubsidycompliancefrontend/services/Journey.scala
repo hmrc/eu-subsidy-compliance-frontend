@@ -26,6 +26,8 @@ import scala.concurrent.Future
 trait FormPage[+T] {
   val value: Journey.Form[T]
   def uri: Uri
+
+  def isCurrentPage(implicit r: Request[_]): Boolean = r.uri == uri
 }
 
 trait Journey {
@@ -47,7 +49,11 @@ trait Journey {
       .find(_.value.isEmpty)
       .map(e => redirectWithSession(e.uri))
 
-  def isEligibleForStep(implicit r: Request[_]) =
+  def getStepWithPath(path: String): Option[FormPage[_]] =
+    steps
+      .find(_.uri == path)
+
+  def isEligibleForStep(implicit r: Request[_]): Boolean =
     if (previousIndex < 0) true
     else steps(previousIndex).value.nonEmpty
 
@@ -56,7 +62,7 @@ trait Journey {
   private def nextIndex(implicit r: Request[_]) = currentIndex + 1
   private def lastIndex = steps.length - 1
 
-  def redirectWithSession(u: String)(implicit r: Request[_]) = Redirect(u).withSession(r.session)
+  def redirectWithSession(u: String)(implicit r: Request[_]): Result = Redirect(u).withSession(r.session)
 }
 
 object Journey {

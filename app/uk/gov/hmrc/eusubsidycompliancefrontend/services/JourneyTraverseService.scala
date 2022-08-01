@@ -28,14 +28,14 @@ import scala.reflect.ClassTag
 @Singleton
 class JourneyTraverseService @Inject() (store: Store)(implicit ec: ExecutionContext) {
 
-  def getPrevious[A <: Journey : ClassTag](implicit
-    eori: EORI,
+  def getPrevious[A <: Journey : ClassTag](
+    implicit eori: EORI,
     request: Request[_],
-    reads: Reads[A]
+    reads: Reads[A],
   ): Future[Uri] = {
     val journeyType: Uri = implicitly[ClassTag[A]].runtimeClass.getSimpleName
     store.get[A].map { opt =>
-      opt.fold(throw new IllegalStateException(s"$journeyType should be there")) { value =>
+      opt.fold(throw new IllegalStateException(s"$journeyType is not present")) { value =>
         value.previous
       }
     }

@@ -22,6 +22,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 trait EscServiceSupport { this: ControllerSpec =>
@@ -70,7 +71,7 @@ trait EscServiceSupport { this: ControllerSpec =>
       .expects(undertakingRef, businessEntity, *)
       .returning(result.fold(e => Future.failed(e), _.toFuture))
 
-  def mockCreateSubsidy(reference: UndertakingRef, subsidyUpdate: SubsidyUpdate)(
+  def mockCreateSubsidy(subsidyUpdate: SubsidyUpdate)(
     result: Either[ConnectorError, UndertakingRef]
   ) =
     (mockEscService
@@ -97,5 +98,10 @@ trait EscServiceSupport { this: ControllerSpec =>
       .disableUndertaking(_: Undertaking)(_: HeaderCarrier))
       .expects(undertaking, *)
       .returning(result.fold(e => Future.failed(e), _.toFuture))
+
+  def mockRetrieveExchangeRate(date: LocalDate)(result: Future[ExchangeRate]) =
+    (mockEscService.retrieveExchangeRate(_: LocalDate)(_: HeaderCarrier))
+      .expects(date, *)
+      .returning(result)
 
 }

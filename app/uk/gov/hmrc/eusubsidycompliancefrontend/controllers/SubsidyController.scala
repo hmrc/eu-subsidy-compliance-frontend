@@ -19,31 +19,31 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.data.OptionT
 import cats.implicits._
 import play.api.data.Form
-import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.Forms.{mapping, nonEmptyText}
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.toSubsidyUpdate
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimDateFormProvider, ClaimEoriFormProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimAmountFormProvider, ClaimDateFormProvider, ClaimEoriFormProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{NonCustomsSubsidyAdded, NonCustomsSubsidyRemoved, NonCustomsSubsidyUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, TraderRef, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.getValidClaimAmount
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.BigDecimalOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 @Singleton
 class SubsidyController @Inject() (
@@ -61,6 +61,7 @@ class SubsidyController @Inject() (
   addTraderReferencePage: AddTraderReferencePage,
   cyaPage: ClaimCheckYourAnswerPage,
   confirmRemovePage: ConfirmRemoveClaim,
+  confirmConvertedAmountPage: ConfirmClaimAmountConversionToEuros,
   timeProvider: TimeProvider
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
@@ -84,37 +85,9 @@ class SubsidyController @Inject() (
       .verifying("error.claim-public-authority.tooManyChars", _.length < 151)
   )
 
-  private val isClaimAmountTooBig = Constraint[String] { claimAmount: String =>
-    val amount = getValidClaimAmount(claimAmount)
-    if (amount.length < 17) Valid else Invalid("error.amount.tooBig")
-  }
+  private val claimAmountForm: Form[ClaimAmount] = ClaimAmountFormProvider().form
 
-  private val isClaimAmountFormatCorrect = Constraint[String] { claimAmount: String =>
-    val amount = getValidClaimAmount(claimAmount)
-    Try(BigDecimal(amount)).fold(
-      _ => Invalid("error.amount.incorrectFormat"),
-      amount => if (amount.scale == 2 || amount.scale == 0) Valid else Invalid("error.amount.incorrectFormat")
-    )
-  }
-
-  private val isClaimAmountTooSmall = Constraint[String] { claimAmount: String =>
-    val amount = getValidClaimAmount(claimAmount)
-    Try(BigDecimal(amount)).fold(
-      _ => Invalid("error.amount.incorrectFormat"),
-      amount => if (amount > 0.01) Valid else Invalid("error.amount.tooSmall")
-    )
-  }
-
-  private val claimAmountForm: Form[BigDecimal] = Form(
-    mapping(
-      "claim-amount" -> nonEmptyText
-        .verifying(isClaimAmountTooBig)
-        .verifying(isClaimAmountFormatCorrect)
-        .verifying(isClaimAmountTooSmall)
-    )(amt => BigDecimal(getValidClaimAmount(amt)))(a => Some(a.toString))
-  )
-
-  private val claimDateForm = ClaimDateFormProvider(timeProvider).form
+  private val claimDateForm: Form[DateFormValues] = ClaimDateFormProvider(timeProvider).form
 
   private val removeSubsidyClaimForm: Form[FormValues] = Form(
     mapping("removeSubsidyClaim" -> mandatory("removeSubsidyClaim"))(FormValues.apply)(FormValues.unapply)
@@ -202,17 +175,16 @@ class SubsidyController @Inject() (
   def postAddClaimAmount: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    def handleFormSubmit(previous: Journey.Uri, addClaimDate: DateFormValues) =
+    def handleFormSubmit(previous: Journey.Uri, addClaimDate: DateFormValues): Future[Result] =
       claimAmountForm
         .bindFromRequest()
         .fold(
           formWithErrors =>
             BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture,
-          claimAmountEntered =>
-            for {
-              journey <- store.update[SubsidyJourney](_.setClaimAmount(claimAmountEntered))
-              redirect <- journey.next
-            } yield redirect
+          claimAmountEntered => for {
+            journey <- store.update[SubsidyJourney](_.setClaimAmount(claimAmountEntered))
+            redirect <- journey.next
+          } yield redirect
         )
 
     withLeadUndertaking { _ =>
@@ -225,6 +197,51 @@ class SubsidyController @Inject() (
       result.getOrElse(handleMissingSessionData("Subsidy journey"))
     }
   }
+
+  def getConfirmClaimAmount: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori = request.eoriNumber
+
+      val result = for {
+        subsidyJourney <- store.get[SubsidyJourney].toContext
+        claimAmount <- subsidyJourney.claimAmount.value.toContext
+        claimDate <- subsidyJourney.claimDate.value.toContext
+        euroAmount <- convertPoundsToEuros(claimDate.toLocalDate, claimAmount).toContext
+        previous = subsidyJourney.previous
+      } yield Ok(confirmConvertedAmountPage(previous, BigDecimal(claimAmount.amount).toPounds, euroAmount.toEuros))
+
+      result.getOrElse(handleMissingSessionData("Subsidy claim amount conversion"))
+    }
+  }
+
+  def postConfirmClaimAmount: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori = request.eoriNumber
+
+      val result = for {
+        subsidyJourney <- store.get[SubsidyJourney].toContext
+        claimAmount <- subsidyJourney.claimAmount.value.toContext
+        claimDate <- subsidyJourney.claimDate.value.toContext
+        euroAmount <- convertPoundsToEuros(claimDate.toLocalDate, claimAmount).toContext
+        updatedSubsidyJourney = subsidyJourney.setConvertedClaimAmount(ClaimAmount(EUR, euroAmount.toRoundedAmount.toString()))
+        _ <- store.put[SubsidyJourney](updatedSubsidyJourney).toContext
+        redirect <- updatedSubsidyJourney.next.toContext
+      } yield redirect
+
+      result.getOrElse(handleMissingSessionData("Subsidy claim amount conversion"))
+    }
+  }
+
+  private def convertPoundsToEuros(date: LocalDate, claimAmount: ClaimAmount)(implicit hc: HeaderCarrier) =
+    claimAmount.currencyCode match {
+      case GBP =>
+        for {
+          exchangeRate <- escService.retrieveExchangeRate(date)
+          rate = exchangeRate.rate
+          converted = BigDecimal(claimAmount.amount) / rate
+        } yield converted.some
+      case EUR => Future.successful(None)
+    }
 
   def getClaimDate: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
@@ -270,7 +287,7 @@ class SubsidyController @Inject() (
         case Some(journey) =>
           journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
             if (!journey.isEligibleForStep) {
-              Redirect(routes.SubsidyController.getClaimDate()).toFuture
+              Redirect(previous).toFuture
             } else {
               val form = journey.addClaimEori.value.fold(claimEoriForm) { optionalEORI =>
                 claimEoriForm.fill(OptionalEORI(optionalEORI.setValue, optionalEORI.value))
@@ -375,6 +392,11 @@ class SubsidyController @Inject() (
   }
 
   def getCheckAnswers: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+
+    def getEuroAmount(j: SubsidyJourney) =
+      if (j.claimAmountInEuros) j.getClaimAmount
+      else j.getConvertedClaimAmount
+
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -382,14 +404,14 @@ class SubsidyController @Inject() (
         journey <- store.get[SubsidyJourney].toContext
         _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
         claimDate <- journey.claimDate.value.toContext
-        amount <- journey.claimAmount.value.toContext
+        euroAmount <- getEuroAmount(journey).toContext
         optionalEori <- journey.addClaimEori.value.toContext
         authority <- journey.publicAuthority.value.toContext
         optionalTraderRef <- journey.traderRef.value.toContext
-        claimEori = optionalEori.value.map(EORI(_))
         traderRef = optionalTraderRef.value.map(TraderRef(_))
+        claimEori = optionalEori.value.map(EORI(_))
         previous = journey.previous
-      } yield Ok(cyaPage(claimDate, amount, claimEori, authority, traderRef, previous))
+      } yield Ok(cyaPage(claimDate, euroAmount, claimEori, authority, traderRef, previous))
 
       result.getOrElse(Redirect(routes.SubsidyController.getAddClaimReference()))
     }
@@ -559,8 +581,11 @@ object SubsidyController {
             publicAuthority = Some(journey.publicAuthority.value.get),
             traderReference = journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
             nonHMRCSubsidyAmtEUR =
-              SubsidyAmount(journey.claimAmount.value.getOrElse(sys.error("Claim amount Missing"))),
-            businessEntityIdentifier = journey.addClaimEori.value.fold(sys.error("eori value missing"))(oprionalEORI =>
+              if (journey.claimAmountInEuros)
+                SubsidyAmount(journey.getClaimAmount.getOrElse(sys.error("Claim amount Missing")))
+              else
+                SubsidyAmount(journey.getConvertedClaimAmount.getOrElse(sys.error("Converted claim amount Missing"))),
+              businessEntityIdentifier = journey.addClaimEori.value.fold(sys.error("eori value missing"))(oprionalEORI =>
               oprionalEORI.value.map(EORI(_))
             ),
             amendmentType = journey.existingTransactionId.fold(Some(EisSubsidyAmendmentType("1")))(_ =>

@@ -16,23 +16,35 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters
 
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
+
 import java.text.NumberFormat
 import java.util.{Currency, Locale}
+import scala.math.BigDecimal.RoundingMode
 
 object BigDecimalFormatter {
 
-  val currencyFormatter: NumberFormat = {
+  private val eurFormatter: NumberFormat = numberFormatForCurrency(EUR)
+  private val gbpFormatter: NumberFormat = numberFormatForCurrency(GBP)
+
+  private def numberFormatForCurrency(c: CurrencyCode) = {
     val cf = NumberFormat.getCurrencyInstance(new Locale("en", "GB"))
-    cf.setCurrency(Currency.getInstance(new Locale("en", "GB")))
-    cf.setCurrency(Currency.getInstance("EUR"))
+    cf.setCurrency(Currency.getInstance(c.entryName))
     cf
   }
 
-  def toEuros(amount: BigDecimal): String = currencyFormatter.format(amount.setScale(2))
+  private def roundingMode = RoundingMode.DOWN
+
+  def toRoundedAmount(amount: BigDecimal): BigDecimal = amount.setScale(2, roundingMode)
+  def toEuros(amount: BigDecimal): String = eurFormatter.format(toRoundedAmount(amount))
+  def toPounds(amount: BigDecimal): String = gbpFormatter.format(toRoundedAmount(amount))
 
   object Syntax {
     implicit class BigDecimalOps(val b: BigDecimal) extends AnyVal {
+      def toRoundedAmount: BigDecimal = BigDecimalFormatter.toRoundedAmount(b)
       def toEuros: String = BigDecimalFormatter.toEuros(b)
+      def toPounds: String = BigDecimalFormatter.toPounds(b)
     }
   }
 

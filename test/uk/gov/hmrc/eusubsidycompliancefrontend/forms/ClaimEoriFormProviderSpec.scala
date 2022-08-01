@@ -32,15 +32,15 @@ class ClaimEoriFormProviderSpec extends AnyWordSpecLike with Matchers {
   "claim eori form validation" must {
 
     "return no errors for a submission where no EORI was entered" in {
-      validateAndCheckSucess("false", None)
+      validateAndCheckSuccess("false", None)
     }
 
     "return no errors for a submission where an EORI was entered" in {
-      validateAndCheckSucess("true", Some(eori1.drop(2)))
+      validateAndCheckSuccess("true", Some(eori1.drop(2)))
     }
 
     "return no errors for a submission where an EORI was entered with prefix GB" in {
-      validateAndCheckSucess("true", Some(eori1))
+      validateAndCheckSuccess("true", Some(eori1))
     }
 
     "return an error if no fields are selected" in {
@@ -61,7 +61,7 @@ class ClaimEoriFormProviderSpec extends AnyWordSpecLike with Matchers {
 
   }
 
-  private def validateAndCheckSucess(radioButton: String, eoriNumber: Option[String]) = {
+  private def validateAndCheckSuccess(radioButton: String, eoriNumber: Option[String]) = {
     val result = processForm(radioButton, eoriNumber)
     result mustBe Right(OptionalEORI(radioButton, eoriNumber.map(getValidEori)))
   }

@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class ExchangeRate(from: String, to: String, rate: BigDecimal)
+case class ExchangeRate(from: CurrencyCode, to: CurrencyCode, rate: BigDecimal)
 
 object ExchangeRate {
   implicit val exchangeRateFormat: OFormat[ExchangeRate] = Json.format[ExchangeRate]

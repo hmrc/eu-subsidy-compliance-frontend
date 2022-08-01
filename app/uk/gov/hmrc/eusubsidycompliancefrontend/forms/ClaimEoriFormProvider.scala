@@ -30,7 +30,7 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
   override def form: Form[OptionalEORI] = Form(mapping)
 
   override protected def mapping: Mapping[OptionalEORI] = Forms.mapping(
-    YesNoRadioButton -> text.verifying(radioButtonSelected),
+    YesNoRadioButton -> text.verifying(radioButtonSelected(s"error.$YesNoRadioButton.required")),
     EoriNumber -> mandatoryIfEqual(YesNoRadioButton, "true", eoriNumberMapping)
   )(OptionalEORI.apply)(OptionalEORI.unapply)
 
@@ -46,7 +46,7 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
 
   private val eoriIsPartOfUndertaking = Constraint[String] { eori: String =>
     undertaking.undertakingBusinessEntity
-      .find(_.businessEntityIdentifier.toString == getValidEori(eori))
+      .find(_.businessEntityIdentifier == getValidEori(eori))
       .map(_ => Valid)
       .getOrElse(Invalid(s"error.not-in-undertaking"))
   }
@@ -57,11 +57,6 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
       .transform(e => getValidEori(e), (s: String) => s.drop(2))
       .verifying(enteredEoriIsValid)
       .verifying(eoriIsPartOfUndertaking)
-
-  private val radioButtonSelected = Constraint[String] { r: String =>
-    if (r.isEmpty) Invalid(s"error.$YesNoRadioButton.required")
-    else Valid
-  }
 
 }
 

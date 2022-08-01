@@ -16,9 +16,16 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
+import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.{Form, Mapping}
 
 trait FormProvider[T] {
   protected def mapping: Mapping[T]
   def form: Form[T]
+
+  def radioButtonSelected(errorMessage: String): Constraint[String] = Constraint[String] { r: String =>
+    if (r.isEmpty) Invalid(errorMessage)
+    else Valid
+  }
+
 }
