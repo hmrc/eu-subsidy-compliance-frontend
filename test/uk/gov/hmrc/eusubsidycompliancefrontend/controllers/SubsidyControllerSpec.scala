@@ -319,7 +319,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
+            mockGetPrevious[SubsidyJourney](eori1)(Right(routes.SubsidyController.getClaimDate().url))
             mockUpdate[SubsidyJourney](j => j.copy(claimDate = ClaimDateFormPage(updatedDate.some)), eori1)(
               Right(subsidyJourney.copy(claimDate = ClaimDateFormPage(updatedDate.some)))
             )
@@ -337,7 +337,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
+            mockGetPrevious[SubsidyJourney](eori1)(Right(routes.SubsidyController.getClaimDate().url))
           }
           status(
             performAction("day" -> updatedDate.day, "month" -> updatedDate.month, "year" -> updatedDate.year)
@@ -1044,7 +1044,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
+            mockGetPrevious[SubsidyJourney](eori1)(Right(routes.SubsidyController.getAddClaimPublicAuthority().url))
             mockUpdate[SubsidyJourney](
               j => j.copy(publicAuthority = PublicAuthorityFormPage(Some("My Authority"))),
               eori1
@@ -1065,7 +1065,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney.copy(traderRef = TraderRefFormPage()))))
+            mockGetPrevious[SubsidyJourney](eori1)(Right(routes.SubsidyController.getAddClaimPublicAuthority().url))
           }
           checkFormErrorIsDisplayed(
             performAction(data: _*),

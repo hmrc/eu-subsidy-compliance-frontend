@@ -264,7 +264,7 @@ class SubsidyController @Inject() (
   def postClaimDate: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
-      getPrevious[SubsidyJourney](store).flatMap { previous =>
+      journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
         claimDateForm
           .bindFromRequest()
           .fold(
@@ -340,7 +340,7 @@ class SubsidyController @Inject() (
   def postAddClaimPublicAuthority: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
-      getPrevious[SubsidyJourney](store).flatMap { previous =>
+      journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
         claimPublicAuthorityForm
           .bindFromRequest()
           .fold(
