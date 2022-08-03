@@ -49,7 +49,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class SubsidyController @Inject() (
   mcc: MessagesControllerComponents,
   escCDSActionBuilder: EscCDSActionBuilders,
-  store: Store,
+  override val store: Store,
   override val escService: EscService,
   auditService: AuditService,
   reportPaymentPage: ReportPaymentPage,
@@ -64,7 +64,8 @@ class SubsidyController @Inject() (
   timeProvider: TimeProvider
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
-    with LeadOnlyUndertakingSupport {
+    with LeadOnlyUndertakingSupport
+    with FormPageSupport {
 
   import escCDSActionBuilder._
 
@@ -515,23 +516,6 @@ class SubsidyController @Inject() (
         )
       )
     }
-
-  private def renderFormIfEligible(f: SubsidyJourney => Result)(implicit r: AuthenticatedEscRequest[AnyContent]) = {
-    implicit val eori: EORI = r.eoriNumber
-
-    store.get[SubsidyJourney].toContext
-      .map { journey =>
-        if (journey.isEligibleForStep) f(journey)
-        else Redirect(journey.previous)
-      }
-      .getOrElse(Redirect(routes.SubsidyController.getReportPayment().url))
-
-  }
-
-  private def processFormSubmission(f: SubsidyJourney => OptionT[Future, Result])(implicit e: EORI) =
-    store.get[SubsidyJourney].toContext
-      .flatMap(f)
-      .getOrElse(Redirect(routes.SubsidyController.getReportPayment().url))
 
 }
 
