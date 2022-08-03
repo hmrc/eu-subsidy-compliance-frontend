@@ -245,20 +245,25 @@ class SubsidyController @Inject() (
 
   def getClaimDate: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
-      implicit val eori: EORI = request.eoriNumber
-      store.get[SubsidyJourney].flatMap {
-        case Some(journey) =>
-          journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
-            val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
-            if (!journey.isEligibleForStep) {
-              Redirect(journey.previous).toFuture
-            } else {
-              Ok(addClaimDatePage(form, previous)).toFuture
-            }
-          }
-        case _ => Redirect(routes.SubsidyController.getReportPayment()).toFuture
+      renderFormIfEligible { journey =>
+        Ok(addClaimDatePage(
+          journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill),
+          journey.previous
+        ))
       }
     }
+  }
+
+  private def renderFormIfEligible(ifEligible: SubsidyJourney => Result)(implicit r: AuthenticatedEscRequest[AnyContent]) = {
+    implicit val eori: EORI = r.eoriNumber
+
+    store.get[SubsidyJourney].toContext
+      .map { journey =>
+        if (journey.isEligibleForStep) ifEligible(journey)
+        else Redirect(journey.previous)
+      }
+      .getOrElse(Redirect(routes.SubsidyController.getReportPayment().url))
+
   }
 
   def postClaimDate: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>

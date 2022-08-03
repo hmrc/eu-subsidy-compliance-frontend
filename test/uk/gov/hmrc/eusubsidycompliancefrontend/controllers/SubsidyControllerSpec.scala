@@ -246,7 +246,7 @@ class SubsidyControllerSpec
 
     "handling request to get claim date page" must {
 
-      def performAction() = controller.getClaimDate(FakeRequest())
+      def performAction() = controller.getClaimDate(FakeRequest(GET, routes.SubsidyController.getClaimDate().url))
 
       "throw technical error" when {
 
@@ -271,7 +271,6 @@ class SubsidyControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
-            mockGetPrevious[SubsidyJourney](eori1)(Right("previous"))
           }
           checkPageIsDisplayed(
             performAction(),
