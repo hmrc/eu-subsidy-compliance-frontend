@@ -17,20 +17,22 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.data.OptionT
+import play.api.libs.json.Reads
 import play.api.mvc.Result
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{Journey, Store, SubsidyJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.reflect.ClassTag
 
 trait FormHelpers {
 
   protected val store: Store
   protected implicit val executionContext: ExecutionContext
 
-  protected def processFormSubmission(f: Journey => OptionT[Future, Result])(implicit e: EORI): Future[Result] =
-    store.get[SubsidyJourney].toContext
+  protected def processFormSubmission[A : ClassTag](f: A => OptionT[Future, Result])(implicit e: EORI, r: Reads[A]): Future[Result] =
+    store.get[A].toContext
       .flatMap(f)
       .getOrElse(throw new IllegalStateException("Missing journey data - unable to process form submission"))
 

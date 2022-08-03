@@ -257,7 +257,7 @@ class SubsidyController @Inject() (
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
 
-      processFormSubmission { journey =>
+      processFormSubmission[SubsidyJourney] { journey =>
         claimDateForm
           .bindFromRequest()
           .fold(
@@ -288,7 +288,7 @@ class SubsidyController @Inject() (
       implicit val eori: EORI = request.eoriNumber
       val claimEoriForm = ClaimEoriFormProvider(undertaking).form
 
-      processFormSubmission { journey =>
+      processFormSubmission[SubsidyJourney] { journey =>
         claimEoriForm
           .bindFromRequest()
           .fold(
@@ -312,7 +312,7 @@ class SubsidyController @Inject() (
   def postAddClaimPublicAuthority: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
-      processFormSubmission { journey =>
+      processFormSubmission[SubsidyJourney] { journey =>
         claimPublicAuthorityForm
           .bindFromRequest()
           .fold(
@@ -337,7 +337,7 @@ class SubsidyController @Inject() (
   def postAddClaimReference: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
-      processFormSubmission { journey =>
+      processFormSubmission[SubsidyJourney] { journey =>
         claimTraderRefForm
           .bindFromRequest()
           .fold(

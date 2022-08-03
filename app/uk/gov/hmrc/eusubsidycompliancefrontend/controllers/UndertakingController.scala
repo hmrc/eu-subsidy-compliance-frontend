@@ -45,9 +45,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class UndertakingController @Inject() (
   mcc: MessagesControllerComponents,
   escCDSActionBuilder: EscCDSActionBuilders,
-  store: Store,
+  override val store: Store,
   override val escService: EscService,
-  journeyTraverseService: JourneyTraverseService,
   emailService: EmailService,
   timeProvider: TimeProvider,
   auditService: AuditService,
@@ -61,9 +60,10 @@ class UndertakingController @Inject() (
   undertakingDisabledPage: UndertakingDisabledPage
 )(implicit
   val appConfig: AppConfig,
-  val executionContext: ExecutionContext
+  override val executionContext: ExecutionContext
 ) extends BaseController(mcc)
-    with LeadOnlyUndertakingSupport {
+    with LeadOnlyUndertakingSupport
+    with FormHelpers {
 
   import escCDSActionBuilder._
   def firstEmptyPage: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
@@ -126,22 +126,22 @@ class UndertakingController @Inject() (
 
   def postSector: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    journeyTraverseService.getPrevious[UndertakingJourney].flatMap { previous =>
+    processFormSubmission[UndertakingJourney] { journey =>
       undertakingSectorForm
         .bindFromRequest()
         .fold(
           errors => {
-            val result: OptionT[Future, Result] = for {
-              undertakingJourney <- store.get[UndertakingJourney].toContext
-              undertakingName <- undertakingJourney.name.value.toContext
-            } yield BadRequest(undertakingSectorPage(errors, previous, undertakingName))
-            result.fold(handleMissingSessionData("Undertaking Journey"))(identity)
+            val result = for {
+              undertakingName <- journey.name.value.toContext
+            } yield BadRequest(undertakingSectorPage(errors, journey.previous, undertakingName))
+            result
+              .fold(handleMissingSessionData("Undertaking Journey"))(identity)
+              .toContext
           },
           form =>
-            for {
-              updatedUndertakingJourney <- store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-              redirect <- updatedUndertakingJourney.next
-            } yield redirect
+              store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+                .flatMap(_.next)
+                .toContext
         )
     }
   }

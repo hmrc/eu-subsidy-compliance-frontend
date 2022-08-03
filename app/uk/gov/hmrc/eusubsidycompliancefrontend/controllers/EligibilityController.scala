@@ -28,6 +28,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.{UnDeliver
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
@@ -37,7 +38,6 @@ import scala.concurrent.ExecutionContext
 class EligibilityController @Inject() (
   mcc: MessagesControllerComponents,
   auditService: AuditService,
-  journeyTraverseService: JourneyTraverseService,
   customsWaiversPage: CustomsWaiversPage,
   willYouClaimPage: WillYouClaimPage,
   notEligiblePage: NotEligiblePage,
@@ -50,11 +50,12 @@ class EligibilityController @Inject() (
   escNonEnrolmentActionBuilders: EscNoEnrolmentActionBuilders,
   escCDSActionBuilder: EscCDSActionBuilders,
   emailService: EmailService,
-  store: Store
+  override val store: Store
 )(implicit
   val appConfig: AppConfig,
-  executionContext: ExecutionContext
-) extends BaseController(mcc) {
+  override val executionContext: ExecutionContext
+) extends BaseController(mcc)
+    with FormHelpers {
 
   import escCDSActionBuilder._
   import escNonEnrolmentActionBuilders._
@@ -177,16 +178,16 @@ class EligibilityController @Inject() (
 
   def postMainBusinessCheck: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    journeyTraverseService
-      .getPrevious[EligibilityJourney]
-      .flatMap { previous =>
-        mainBusinessCheckForm
-          .bindFromRequest()
-          .fold(
-            errors => BadRequest(mainBusinessCheckPage(errors, eori, previous)).toFuture,
-            form => store.update[EligibilityJourney](_.setMainBusinessCheck(form.value.toBoolean)).flatMap(_.next)
-          )
-      }
+
+    processFormSubmission[EligibilityJourney] { journey =>
+      mainBusinessCheckForm
+        .bindFromRequest()
+        .fold(
+          errors => BadRequest(mainBusinessCheckPage(errors, eori, journey.previous)).toContext,
+          form => store.update[EligibilityJourney](_.setMainBusinessCheck(form.value.toBoolean)).flatMap(_.next).toContext
+        )
+
+    }
   }
 
   def getNotEligibleToLead: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
@@ -195,9 +196,11 @@ class EligibilityController @Inject() (
 
   def getTerms: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    journeyTraverseService.getPrevious[EligibilityJourney].map { previous =>
-      Ok(termsPage(previous, eori))
-    }
+
+    store.get[EligibilityJourney].toContext
+      .map(journey => Ok(termsPage(journey.previous, eori)))
+      .getOrElse(throw new IllegalStateException("No EligibilityJourney found for this session"))
+
   }
 
   def postTerms: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
@@ -220,9 +223,10 @@ class EligibilityController @Inject() (
 
   def getCreateUndertaking: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    journeyTraverseService.getPrevious[EligibilityJourney].map { previous =>
-      Ok(createUndertakingPage(previous, eori))
-    }
+
+    store.get[EligibilityJourney].toContext
+      .map(journey => Ok(createUndertakingPage(journey.previous, eori)))
+      .getOrElse(throw new IllegalStateException("No EligibilityJourney found for this session"))
   }
 
   def postCreateUndertaking: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>

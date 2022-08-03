@@ -136,7 +136,7 @@ class BusinessEntityController @Inject() (
       }
 
     withLeadUndertaking { _ =>
-      processFormSubmission { journey =>
+      processFormSubmission[BusinessEntityJourney] { journey =>
         eoriForm
           .bindFromRequest()
           .fold(
