@@ -27,6 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import scala.concurrent.Future
 import scala.reflect.ClassTag
 
+// TODO - delete this when unused
 trait JourneySupport { this: ControllerSpec =>
 
   val mockJourneyTraverseService = mock[JourneyTraverseService]
