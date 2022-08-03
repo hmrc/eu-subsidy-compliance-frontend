@@ -65,7 +65,7 @@ class SubsidyController @Inject() (
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport
-    with FormPageSupport {
+    with FormHelpers {
 
   import escCDSActionBuilder._
 
@@ -515,6 +515,19 @@ class SubsidyController @Inject() (
           previous
         )
       )
+
+    }
+
+    protected def renderFormIfEligible(f: SubsidyJourney => Result)(implicit r: AuthenticatedEscRequest[AnyContent]): Future[Result] = {
+      implicit val eori: EORI = r.eoriNumber
+
+      store.get[SubsidyJourney].toContext
+        .map { journey =>
+          if (journey.isEligibleForStep) f(journey)
+          else Redirect(journey.previous)
+        }
+        .getOrElse(Redirect(routes.SubsidyController.getReportPayment().url))
+
     }
 
 }

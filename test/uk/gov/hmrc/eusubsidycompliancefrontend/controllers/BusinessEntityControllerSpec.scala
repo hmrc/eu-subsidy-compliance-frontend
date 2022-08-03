@@ -49,7 +49,6 @@ class BusinessEntityControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
-    with JourneySupport
     with EmailSupport
     with AuditServiceSupport
     with LeadOnlyRedirectSupport
@@ -61,7 +60,6 @@ class BusinessEntityControllerSpec
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
-    bind[JourneyTraverseService].toInstance(mockJourneyTraverseService),
     bind[EmailService].toInstance(mockEmailService),
     bind[TimeProvider].toInstance(mockTimeProvider),
     bind[AuditService].toInstance(mockAuditService)
@@ -345,7 +343,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetPrevious[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
+            mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -364,7 +362,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockRetrieveUndertakingWithErrorResponse(eori4)(Right(None))
             mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(
               Left(ConnectorError(exception))
@@ -383,7 +381,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
           }
           checkFormErrorIsDisplayed(
             performAction(data: _*),
@@ -398,7 +396,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
+            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockRetrieveUndertakingWithErrorResponse(eori4)(retrieveResponse)
           }
           checkFormErrorIsDisplayed(
@@ -469,7 +467,7 @@ class BusinessEntityControllerSpec
               inSequence {
                 mockAuthWithNecessaryEnrolment()
                 mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-                mockGetPrevious[BusinessEntityJourney](eori1)(Right("add-member"))
+                mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
                 mockRetrieveUndertakingWithErrorResponse(validEori)(Right(None))
                 mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney, validEori), eori1)(
                   Right(updatedBusinessJourney(validEori))

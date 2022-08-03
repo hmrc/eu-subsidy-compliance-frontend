@@ -17,35 +17,21 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.data.OptionT
-import play.api.mvc.Results.Redirect
-import play.api.mvc.{AnyContent, Result}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import play.api.mvc.Result
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{Store, SubsidyJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{Journey, Store, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait FormPageSupport {
+trait FormHelpers {
 
   protected val store: Store
   protected implicit val executionContext: ExecutionContext
 
-  protected def renderFormIfEligible(f: SubsidyJourney => Result)(implicit r: AuthenticatedEscRequest[AnyContent]): Future[Result] = {
-    implicit val eori: EORI = r.eoriNumber
-
-    store.get[SubsidyJourney].toContext
-      .map { journey =>
-        if (journey.isEligibleForStep) f(journey)
-        else Redirect(journey.previous)
-      }
-      .getOrElse(Redirect(routes.SubsidyController.getReportPayment().url))
-
-  }
-
-  protected def processFormSubmission(f: SubsidyJourney => OptionT[Future, Result])(implicit e: EORI): Future[Result] =
+  protected def processFormSubmission(f: Journey => OptionT[Future, Result])(implicit e: EORI): Future[Result] =
     store.get[SubsidyJourney].toContext
       .flatMap(f)
-      .getOrElse(Redirect(routes.SubsidyController.getReportPayment().url))
+      .getOrElse(throw new IllegalStateException("Missing journey data - unable to process form submission"))
 
 }
