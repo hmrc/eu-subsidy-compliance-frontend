@@ -318,7 +318,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetPrevious[SubsidyJourney](eori1)(Right(routes.SubsidyController.getClaimDate().url))
+            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
             mockUpdate[SubsidyJourney](j => j.copy(claimDate = ClaimDateFormPage(updatedDate.some)), eori1)(
               Right(subsidyJourney.copy(claimDate = ClaimDateFormPage(updatedDate.some)))
             )
@@ -336,7 +336,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetPrevious[SubsidyJourney](eori1)(Right(routes.SubsidyController.getClaimDate().url))
+            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
           }
           status(
             performAction("day" -> updatedDate.day, "month" -> updatedDate.month, "year" -> updatedDate.year)

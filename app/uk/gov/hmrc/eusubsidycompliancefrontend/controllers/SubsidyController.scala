@@ -246,41 +246,30 @@ class SubsidyController @Inject() (
   def getClaimDate: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       renderFormIfEligible { journey =>
-        Ok(addClaimDatePage(
-          journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill),
-          journey.previous
-        ))
+        val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
+        Ok(addClaimDatePage(form, journey.previous))
       }
     }
   }
 
-  private def renderFormIfEligible(ifEligible: SubsidyJourney => Result)(implicit r: AuthenticatedEscRequest[AnyContent]) = {
-    implicit val eori: EORI = r.eoriNumber
-
-    store.get[SubsidyJourney].toContext
-      .map { journey =>
-        if (journey.isEligibleForStep) ifEligible(journey)
-        else Redirect(journey.previous)
-      }
-      .getOrElse(Redirect(routes.SubsidyController.getReportPayment().url))
-
-  }
 
   def postClaimDate: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
+      // TODO - is it worth factoring out this pattern?
       implicit val eori: EORI = request.eoriNumber
-      journeyTraverseService.getPrevious[SubsidyJourney].flatMap { previous =>
-        claimDateForm
-          .bindFromRequest()
-          .fold(
-            formWithErrors => BadRequest(addClaimDatePage(formWithErrors, previous)).toFuture,
-            form =>
-              for {
-                journey <- store.update[SubsidyJourney](_.setClaimDate(form))
-                redirect <- journey.next
-              } yield redirect
-          )
-      }
+      store.get[SubsidyJourney].toContext
+        .flatMap { journey =>
+          claimDateForm
+            .bindFromRequest()
+            .fold(
+              formWithErrors => BadRequest(addClaimDatePage(formWithErrors, journey.previous)).toContext,
+              form =>
+                store.update[SubsidyJourney](_.setClaimDate(form))
+                  .flatMap(_.next)
+                  .toContext
+            )
+        }
+        .getOrElse(Redirect(routes.SubsidyController.getReportPayment().url))
     }
   }
 
@@ -515,6 +504,7 @@ class SubsidyController @Inject() (
       .toContext
       .flatMap(_.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext)
 
+
   private def handleRemoveSubsidyFormError(
     formWithErrors: Form[FormValues],
     transactionId: String,
@@ -563,6 +553,18 @@ class SubsidyController @Inject() (
         )
       )
     }
+
+  private def renderFormIfEligible(f: SubsidyJourney => Result)(implicit r: AuthenticatedEscRequest[AnyContent]) = {
+    implicit val eori: EORI = r.eoriNumber
+
+    store.get[SubsidyJourney].toContext
+      .map { journey =>
+        if (journey.isEligibleForStep) f(journey)
+        else Redirect(journey.previous)
+      }
+      .getOrElse(Redirect(routes.SubsidyController.getReportPayment().url))
+
+  }
 
 }
 
