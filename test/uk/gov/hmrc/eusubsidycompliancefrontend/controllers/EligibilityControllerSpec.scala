@@ -33,14 +33,12 @@ class EligibilityControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
-    with JourneySupport
     with AuditServiceSupport
     with EmailSupport {
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
-    bind[JourneyTraverseService].toInstance(mockJourneyTraverseService),
     bind[AuditService].toInstance(mockAuditService),
     bind[EmailService].toInstance(mockEmailService)
   )
@@ -556,7 +554,6 @@ class EligibilityControllerSpec
             .withFormUrlEncodedBody(data: _*)
         )
 
-      val previousUrl = routes.EligibilityController.getWillYouClaim().url
       val eligibilityJourney = EligibilityJourney(
         customsWaivers = CustomsWaiversFormPage(true.some)
       )
@@ -571,7 +568,7 @@ class EligibilityControllerSpec
         "call to get previous fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
+            mockGet[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -580,7 +577,7 @@ class EligibilityControllerSpec
 
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious(eori1)(Right(previousUrl))
+            mockGet(eori1)(Right(eligibilityJourney.some))
             mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("mainbusinesscheck" -> "true")))
@@ -593,7 +590,7 @@ class EligibilityControllerSpec
         "nothing is submitted" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[EligibilityJourney](eori1)(Right(previousUrl))
+            mockGet(eori1)(Right(eligibilityJourney.some))
           }
 
           checkFormErrorIsDisplayed(
@@ -609,7 +606,7 @@ class EligibilityControllerSpec
         def testRedirection(input: Boolean, nextCall: String) = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious(eori1)(Right(previousUrl))
+            mockGet(eori1)(Right(eligibilityJourney.some))
             mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
               Right(updatedEligibilityJourney(input))
             )
@@ -631,18 +628,19 @@ class EligibilityControllerSpec
 
     "handling request to get terms" must {
 
+      val request =
+        FakeRequest("GET", routes.EligibilityController.getTerms().url)
+          .withFormUrlEncodedBody()
+
       def performAction() = controller
-        .getTerms(
-          FakeRequest("GET", routes.EligibilityController.getTerms().url)
-            .withFormUrlEncodedBody()
-        )
+        .getTerms(request)
 
       "throw technical error" when {
 
-        "call to get previous fails" in {
+        "call to get fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
+            mockGet(eori1)(Left(ConnectorError("Error")))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -650,10 +648,11 @@ class EligibilityControllerSpec
 
       "display the page" in {
 
-        val previousUrl = routes.EligibilityController.getNotEligible().url
+        val previousUrl = eligibilityJourney.previous(request)
+
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockGetPrevious[EligibilityJourney](eori1)(Right(previousUrl))
+          mockGet(eori1)(Right(eligibilityJourney.some))
         }
         checkPageIsDisplayed(
           performAction(),
@@ -743,7 +742,7 @@ class EligibilityControllerSpec
         "call to get previous fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
+            mockGet[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -755,7 +754,7 @@ class EligibilityControllerSpec
         val previousUrl = routes.EligibilityController.getTerms().url
         inSequence {
           mockAuthWithNecessaryEnrolment()
-          mockGetPrevious[EligibilityJourney](eori1)(Right(routes.EligibilityController.getTerms().url))
+          mockGet[EligibilityJourney](eori1)(Right(eligibilityJourney.some))
         }
         checkPageIsDisplayed(
           performAction(),

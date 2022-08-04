@@ -44,9 +44,8 @@ class BusinessEntityController @Inject() (
   mcc: MessagesControllerComponents,
   escInitialActionBuilders: EscInitialActionBuilder,
   escCDSActionBuilder: EscCDSActionBuilders,
-  store: Store,
+  override val store: Store,
   override val escService: EscService,
-  journeyTraverseService: JourneyTraverseService,
   timeProvider: TimeProvider,
   emailService: EmailService,
   auditService: AuditService,
@@ -59,7 +58,8 @@ class BusinessEntityController @Inject() (
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
 ) extends BaseController(mcc)
-    with LeadOnlyUndertakingSupport {
+    with LeadOnlyUndertakingSupport
+    with FormHelpers {
 
   import escInitialActionBuilders._
   import escCDSActionBuilder._
@@ -136,12 +136,12 @@ class BusinessEntityController @Inject() (
       }
 
     withLeadUndertaking { _ =>
-      journeyTraverseService.getPrevious[BusinessEntityJourney].flatMap { previous =>
+      processFormSubmission[BusinessEntityJourney] { journey =>
         eoriForm
           .bindFromRequest()
           .fold(
-            errors => BadRequest(eoriPage(errors, previous)).toFuture,
-            form => handleValidEori(form, previous)
+            errors => BadRequest(eoriPage(errors, journey.previous)).toContext,
+            form => handleValidEori(form, journey.previous).toContext
           )
       }
     }

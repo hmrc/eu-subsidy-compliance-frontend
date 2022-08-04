@@ -44,7 +44,6 @@ class UndertakingControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
-    with JourneySupport
     with EmailSupport
     with AuditServiceSupport
     with EscServiceSupport
@@ -54,7 +53,6 @@ class UndertakingControllerSpec
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
-    bind[JourneyTraverseService].toInstance(mockJourneyTraverseService),
     bind[EmailService].toInstance(mockEmailService),
     bind[AuditService].toInstance(mockAuditService),
     bind[TimeProvider].toInstance(mockTimeProvider)
@@ -449,7 +447,7 @@ class UndertakingControllerSpec
         "call to get previous url fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
+            mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("undertakingSector" -> "2")))
         }
@@ -457,7 +455,6 @@ class UndertakingControllerSpec
         "call to fetch undertaking journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[UndertakingJourney](eori1)(Right("undertaking-name"))
             mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -466,7 +463,6 @@ class UndertakingControllerSpec
         "call to fetch undertaking journey passes  buy fetches nothing" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[UndertakingJourney](eori1)(Right("undertaking-name"))
             mockGet[UndertakingJourney](eori1)(Right(None))
           }
           assertThrows[Exception](await(performAction()))
@@ -476,7 +472,7 @@ class UndertakingControllerSpec
           val currentUndertaking = UndertakingJourney(name = UndertakingNameFormPage("TestUndertaking".some))
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[UndertakingJourney](eori1)(Right("undertaking-name"))
+            mockGet[UndertakingJourney](eori1)(Right(currentUndertaking.some))
             mockUpdate[UndertakingJourney](_ => update(currentUndertaking), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("undertakingSector" -> "2")))
@@ -489,7 +485,6 @@ class UndertakingControllerSpec
         "nothing is submitted" in {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[UndertakingJourney](eori1)(Right("undertaking-name"))
             mockGet[UndertakingJourney](eori1)(
               Right(undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage()).some)
             )
@@ -515,7 +510,7 @@ class UndertakingControllerSpec
           val updatedUndertaking = undertakingJourney.copy(sector = newSector)
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGetPrevious[UndertakingJourney](eori1)(Right("undertaking-name"))
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
             mockUpdate[UndertakingJourney](_ => update(undertakingJourney), eori1)(Right(updatedUndertaking))
           }
           checkIsRedirect(performAction("undertakingSector" -> "3"), nextCall)

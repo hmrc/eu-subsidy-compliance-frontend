@@ -14,31 +14,26 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.services
+package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import com.google.inject.{Inject, Singleton}
+import cats.data.OptionT
 import play.api.libs.json.Reads
-import play.api.mvc.Request
+import play.api.mvc.Result
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
-@Singleton
-class JourneyTraverseService @Inject() (store: Store)(implicit ec: ExecutionContext) {
+trait FormHelpers {
 
-  def getPrevious[A <: Journey : ClassTag](
-    implicit eori: EORI,
-    request: Request[_],
-    reads: Reads[A],
-  ): Future[Uri] = {
-    val journeyType: Uri = implicitly[ClassTag[A]].runtimeClass.getSimpleName
-    store.get[A].map { opt =>
-      opt.fold(throw new IllegalStateException(s"$journeyType is not present")) { value =>
-        value.previous
-      }
-    }
-  }
+  protected val store: Store
+  protected implicit val executionContext: ExecutionContext
+
+  protected def processFormSubmission[A : ClassTag](f: A => OptionT[Future, Result])(implicit e: EORI, r: Reads[A]): Future[Result] =
+    store.get[A].toContext
+      .flatMap(f)
+      .getOrElse(throw new IllegalStateException("Missing journey data - unable to process form submission"))
 
 }
