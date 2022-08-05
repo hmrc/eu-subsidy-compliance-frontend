@@ -1,5 +1,8 @@
 # Add all the application routes to the app.routes file
-->         /report-or-check-de-minimis-aid-northern-ireland              app.Routes
-->         /                          health.Routes
+# TODO - remove this route when all references to it have been migrated to report-and-manage... SEE ESC-642.
+->         /report-or-check-de-minimis-aid-northern-ireland                 app.Routes
 
-GET        /admin/metrics             com.kenshoo.play.metrics.MetricsController.metrics
+->         /report-and-manage-your-allowance-for-customs-duty-waiver-claims app.Routes
+->         /                                                                health.Routes
+
+GET        /admin/metrics                                                   com.kenshoo.play.metrics.MetricsController.metrics
