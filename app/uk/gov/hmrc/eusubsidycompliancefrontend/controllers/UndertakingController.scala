@@ -154,14 +154,27 @@ class UndertakingController @Inject() (
   }
 
   def getConfirmEmail: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
-    eoriEmailDatastore.getEmailVerification[EmailVerificationState](request.eoriNumber).flatMap {
-      case Some(verifiedEmail) => {
-        Ok(confirmEmailPage(optionalEmailForm, EmailAddress(verifiedEmail.email), routes.UndertakingController.getSector().url)).toFuture
-      }
-      case None => emailService.retrieveEmailByEORI(request.eoriNumber) map { response =>
-        response.emailType match {
-          case EmailType.VerifiedEmail => Ok(confirmEmailPage(optionalEmailForm, response.emailAddress.get, routes.UndertakingController.getSector().url))
-          case _ => Ok(inputEmailPage(emailForm, routes.UndertakingController.getSector().url))
+    implicit val eori: EORI = request.eoriNumber
+    store.get[UndertakingJourney].flatMap {
+      ensureUndertakingJourneyPresent(_) { journey =>
+        if (!journey.isEligibleForStep) {
+          Redirect(journey.previous).toFuture
+        } else {
+          eoriEmailDatastore.getEmailVerification[EmailVerificationState](request.eoriNumber).flatMap {
+            case Some(verifiedEmail) => {
+              Ok(confirmEmailPage(optionalEmailForm, EmailAddress(verifiedEmail.email), routes.UndertakingController.getSector().url)).toFuture
+            }
+            case None => emailService.retrieveEmailByEORI(request.eoriNumber) map { response =>
+              response.emailType match {
+                case EmailType.VerifiedEmail => {
+                  Ok(confirmEmailPage(optionalEmailForm, response.emailAddress.get, routes.UndertakingController.getSector().url))
+                }
+                case _ => {
+                  Ok(inputEmailPage(emailForm, routes.UndertakingController.getSector().url))
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -176,7 +189,7 @@ class UndertakingController @Inject() (
         case Some(value) => value.value.some
         case None => Option.empty
       }
-    } yield (result)
+    } yield result
 
     email flatMap { e =>
       e match {

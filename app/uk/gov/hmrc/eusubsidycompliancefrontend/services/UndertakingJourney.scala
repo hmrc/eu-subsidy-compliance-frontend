@@ -25,18 +25,18 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.{Form, Uri}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage, ConfirmEmailFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage, UndertakingConfirmEmailFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.Future
 
 case class UndertakingJourney(
-     name: UndertakingNameFormPage = UndertakingNameFormPage(),
-     sector: UndertakingSectorFormPage = UndertakingSectorFormPage(),
-     verifiedEmail: ConfirmEmailFormPage = ConfirmEmailFormPage(),
-     cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
-     confirmation: UndertakingConfirmationFormPage = UndertakingConfirmationFormPage(),
-     isAmend: Boolean = false
+                               name: UndertakingNameFormPage = UndertakingNameFormPage(),
+                               sector: UndertakingSectorFormPage = UndertakingSectorFormPage(),
+                               verifiedEmail: UndertakingConfirmEmailFormPage = UndertakingConfirmEmailFormPage(),
+                               cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
+                               confirmation: UndertakingConfirmationFormPage = UndertakingConfirmationFormPage(),
+                               isAmend: Boolean = false
 ) extends Journey {
 
   override def steps = Array(
@@ -99,7 +99,7 @@ object UndertakingJourney {
     case class UndertakingSectorFormPage(value: Form[Sector] = None) extends FormPage[Sector] {
       def uri = controller.getSector().url
     }
-    case class ConfirmEmailFormPage(value: Form[String] = None) extends FormPage[String] {
+    case class UndertakingConfirmEmailFormPage(value: Form[String] = None) extends FormPage[String] {
       def uri = controller.getConfirmEmail().url
     }
     case class UndertakingCyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
@@ -115,7 +115,7 @@ object UndertakingJourney {
     object UndertakingSectorFormPage {
       implicit val undertakingSectorFormPage: OFormat[UndertakingSectorFormPage] = Json.format
     }
-    object ConfirmEmailFormPage { implicit val confirmEmailFormPageFormat: OFormat[ConfirmEmailFormPage] = Json.format }
+    object UndertakingConfirmEmailFormPage { implicit val confirmEmailFormPageFormat: OFormat[UndertakingConfirmEmailFormPage] = Json.format }
     object UndertakingCyaFormPage { implicit val undertakingCyaFormPage: OFormat[UndertakingCyaFormPage] = Json.format }
     object UndertakingConfirmationFormPage {
       implicit val undertakingConfirmationFormPage: OFormat[UndertakingConfirmationFormPage] = Json.format
