@@ -21,9 +21,11 @@ import play.api.Logging
 import play.api.http.Status.CREATED
 import play.api.mvc.RequestHeader
 import play.api.mvc.Results.Redirect
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{VerifyEmailResponse, _}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
@@ -33,7 +35,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EmailVerificationService @Inject() (
-   emailVerificationConnector: EmailVerificationConnector
+   emailVerificationConnector: EmailVerificationConnector,
+   eoriEmailDatastore: EoriEmailDatastore
 ) extends Logging {
 
   def verifyEmail(credId: String, email: String, pendingVerificationId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, h: RequestHeader): Future[Option[VerifyEmailResponse]] = {
@@ -67,5 +70,13 @@ class EmailVerificationService @Inject() (
     case Some(value) => Redirect(emailVerificationConnector.getVerificationJourney(value.redirectUri))
     case None => Redirect(routes.UndertakingController.getConfirmEmail())
   }
+
+  def getEmailVerification(eori: EORI) = eoriEmailDatastore.getEmailVerification(eori)
+
+  def verifyEori(eori: EORI) = eoriEmailDatastore.verifyEmail(eori)
+
+  def verifyVerificationRequest(key: EORI, pendingVerificationCode: String) = eoriEmailDatastore.verifyVerificationRequest(key, pendingVerificationCode)
+
+  def addVerificationRequest(key: EORI, email: String, pendingVerificationId: String) = eoriEmailDatastore.addVerificationRequest(key, email, pendingVerificationId)
 
 }

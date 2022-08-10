@@ -23,7 +23,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore.DefaultC
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.Helpers.dataKeyForType
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.EmailVerificationState
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.mongo.cache.MongoCacheRepository
+import uk.gov.hmrc.mongo.cache.{DataKey, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
 import java.time.Instant
@@ -50,7 +50,12 @@ class EoriEmailDatastore @Inject()(
   def get[A : ClassTag](key: EORI)(implicit reads: Reads[A]): Future[Option[A]] =
     super.get[A](key)(dataKeyForType[A])
 
-  def verifyEmail[A : ClassTag](key: EORI) = {
+  def put[A : ClassTag](key: EORI, in: A)(implicit writes: Writes[A]): Future[A] =
+    super
+      .put[A](key)(dataKeyForType[A], in)
+      .map(_ => in)
+
+  def verifyEmail(key: EORI) = {
     val timestamp = Instant.now()
     collection
       .findOneAndUpdate(
@@ -65,7 +70,7 @@ class EoriEmailDatastore @Inject()(
       .toFuture()
   }
 
-  def addVerificationRequest[A : ClassTag](key: EORI, email: String, pendingVerificationId: String) = {
+  def addVerificationRequest(key: EORI, email: String, pendingVerificationId: String) = {
     val timestamp = Instant.now()
     collection
       .findOneAndUpdate(
@@ -82,7 +87,7 @@ class EoriEmailDatastore @Inject()(
       .toFuture()
   }
 
-  def verifyVerificationRequest[A : ClassTag](key: EORI, pendingVerificationCode: String): Future[UpdateResult] = {
+  def verifyVerificationRequest(key: EORI, pendingVerificationCode: String): Future[UpdateResult] = {
     val timestamp = Instant.now()
     collection
       .updateOne(
@@ -97,7 +102,24 @@ class EoriEmailDatastore @Inject()(
       ).toFuture()
   }
 
-  def getEmailVerification[A : ClassTag](key: EORI) = {
+  def put(eori: EORI, state: EmailVerificationState) ={
+    val timestamp = Instant.now()
+    collection
+      .findOneAndUpdate(
+        filter = Filters.equal("_id", eori),
+        update = Updates.combine(
+          Updates.set("data.email", state.email),
+          Updates.set("data.pendingVerificationId", state.pendingVerificationId.getOrElse("")),
+          Updates.set("data.verified", state.verified.getOrElse(false)),
+          Updates.set("modifiedDetails.lastUpdated", timestamp),
+          Updates.set("modifiedDetails.createdAt", timestamp)
+        ),
+        options = FindOneAndUpdateOptions().upsert(true).returnDocument(ReturnDocument.AFTER)
+      )
+      .toFuture()
+  }
+
+  def getEmailVerification(key: EORI) = {
     collection
       .find(
         filter = Filters.and(

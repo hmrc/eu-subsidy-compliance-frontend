@@ -30,9 +30,9 @@ override protected val http: HttpClient,
   )(implicit ec: ExecutionContext)
   extends Connector {
 
-  private val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")
+  lazy private val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")
 
-  private val verifyEmailUrl = s"$emailVerificationBaseUrl/email-verification/verify-email"
+  lazy private val verifyEmailUrl = s"$emailVerificationBaseUrl/email-verification/verify-email"
 
   def useAbsoluteUrls: Boolean = emailVerificationBaseUrl.contains("localhost")
 

@@ -28,9 +28,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUndertaking, UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailTemplate, EmailType}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailTemplate, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -64,7 +65,6 @@ class UndertakingController @Inject() (
   disableUndertakingWarningPage: DisableUndertakingWarningPage,
   disableUndertakingConfirmPage: DisableUndertakingConfirmPage,
   undertakingDisabledPage: UndertakingDisabledPage,
-  eoriEmailDatastore: EoriEmailDatastore
 )(implicit
   val appConfig: AppConfig,
   override val executionContext: ExecutionContext
@@ -160,7 +160,7 @@ class UndertakingController @Inject() (
         if (!journey.isEligibleForStep) {
           Redirect(journey.previous).toFuture
         } else {
-          eoriEmailDatastore.getEmailVerification[EmailVerificationState](request.eoriNumber).flatMap {
+          emailVerificationService.getEmailVerification(request.eoriNumber).flatMap {
             case Some(verifiedEmail) => {
               Ok(confirmEmailPage(optionalEmailForm, EmailAddress(verifiedEmail.email), routes.UndertakingController.getSector().url)).toFuture
             }
@@ -182,50 +182,48 @@ class UndertakingController @Inject() (
 
   def postConfirmEmail: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    val email = for {
-      stored <- eoriEmailDatastore.getEmailVerification[EmailVerificationState](request.eoriNumber)
+    val verifiedEmail = for {
+      stored <- emailVerificationService.getEmailVerification(request.eoriNumber)
       cds <- emailService.retrieveEmailByEORI(request.eoriNumber)
-      result = if(stored.isDefined) stored.get.email.some else cds.emailAddress match {
-        case Some(value) => value.value.some
-        case None => Option.empty
+      result = if(stored.isDefined) stored.get.email.some else cds match {
+        case RetrieveEmailResponse(VerifiedEmail, Some(value)) => value.value.some
+        case _ => Option.empty
       }
     } yield result
 
-    email flatMap { e =>
-      e match {
-        case Some(email) =>
-              optionalEmailForm
-                .bindFromRequest()
-                .fold(
-                  errors => BadRequest(confirmEmailPage(errors, EmailAddress(email), routes.EligibilityController.getCustomsWaivers().url)).toFuture,
-                  {
-                    case OptionalStringFormInput("true", None) => {
-                      for {
-                        _ <- eoriEmailDatastore.verifyEmail(request.eoriNumber)
-                        _ <- store.update[UndertakingJourney](_.setVerifiedEmail(email))
-                      } yield (Redirect(routes.UndertakingController.getCheckAnswers()))
-                    }
-                    case OptionalStringFormInput("false", Some(email)) => {
-                      val pendingVerificationId = UUID.randomUUID().toString
-                      for {
-                        _ <- eoriEmailDatastore.addVerificationRequest(request.eoriNumber, email, pendingVerificationId)
-                        verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, email, pendingVerificationId)
-                      } yield emailVerificationService.emailVerificationRedirect(verificationResponse)
-                    }
-                    case _ => Redirect(routes.EligibilityController.getNotEligible()).toFuture
-                  }
-                )
-        case _ => emailForm.bindFromRequest().fold(
-          errors => BadRequest(inputEmailPage(errors, routes.EligibilityController.getCustomsWaivers().url)).toFuture,
-          form => {
-            val pendingVerificationId = UUID.randomUUID().toString
-            for {
-              _ <- eoriEmailDatastore.addVerificationRequest(request.eoriNumber, form.value, pendingVerificationId)
-              verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, form.value, pendingVerificationId)
-            } yield emailVerificationService.emailVerificationRedirect(verificationResponse)
-          }
-        )
-      }
+    verifiedEmail flatMap {
+      case Some(email) =>
+        optionalEmailForm
+          .bindFromRequest()
+          .fold(
+            errors => BadRequest(confirmEmailPage(errors, EmailAddress(email), routes.EligibilityController.getCustomsWaivers().url)).toFuture,
+            {
+              case OptionalStringFormInput("true", None) => {
+                for {
+                  _ <- emailVerificationService.verifyEori(request.eoriNumber)
+                  _ <- store.update[UndertakingJourney](_.setVerifiedEmail(email))
+                } yield (Redirect(routes.UndertakingController.getCheckAnswers()))
+              }
+              case OptionalStringFormInput("false", Some(email)) => {
+                val pendingVerificationId = UUID.randomUUID().toString
+                for {
+                  _ <- emailVerificationService.addVerificationRequest(request.eoriNumber, email, pendingVerificationId)
+                  verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, email, pendingVerificationId)
+                } yield emailVerificationService.emailVerificationRedirect(verificationResponse)
+              }
+              case _ => Redirect(routes.EligibilityController.getNotEligible()).toFuture
+            }
+          )
+      case _ => emailForm.bindFromRequest().fold(
+        errors => BadRequest(inputEmailPage(errors, routes.EligibilityController.getCustomsWaivers().url)).toFuture,
+        form => {
+          val pendingVerificationId = UUID.randomUUID().toString
+          for {
+            _ <- emailVerificationService.addVerificationRequest(request.eoriNumber, form.value, pendingVerificationId)
+            verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, form.value, pendingVerificationId)
+          } yield emailVerificationService.emailVerificationRedirect(verificationResponse)
+        }
+      )
     }
   }
 
@@ -234,11 +232,11 @@ class UndertakingController @Inject() (
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
         for {
-          e <- eoriEmailDatastore.verifyVerificationRequest(request.eoriNumber, pendingVerificationId)
+          e <- emailVerificationService.verifyVerificationRequest(request.eoriNumber, pendingVerificationId)
           wasSuccessful = e.getMatchedCount > 0
           redirect <- if(wasSuccessful) {
             for {
-              stored <- eoriEmailDatastore.getEmailVerification[EmailVerificationState](request.eoriNumber)
+              stored <- emailVerificationService.getEmailVerification(request.eoriNumber)
               _ <- store.update[UndertakingJourney](_.setVerifiedEmail(stored.get.email))
               redirect <- if(wasSuccessful) journey.next else Future(Redirect(routes.UndertakingController.getConfirmEmail().url))
               } yield redirect
