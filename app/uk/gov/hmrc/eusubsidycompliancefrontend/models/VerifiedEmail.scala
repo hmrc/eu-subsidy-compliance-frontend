@@ -18,9 +18,9 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class EmailVerificationState(email: String, pendingVerificationId: Option[String], verified: Option[Boolean])
+case class VerifiedEmail(email: String, verificationId: String, verified: Boolean)
 
 
-object EmailVerificationState {
-  implicit val undertakingFormat: OFormat[EmailVerificationState] = Json.format[EmailVerificationState]
+object VerifiedEmail {
+  implicit val undertakingFormat: OFormat[VerifiedEmail] = Json.format[VerifiedEmail]
 }

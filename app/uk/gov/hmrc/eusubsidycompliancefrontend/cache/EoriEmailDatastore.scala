@@ -21,7 +21,7 @@ import org.mongodb.scala.result.UpdateResult
 import play.api.libs.json._
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore.DefaultCacheTtl
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.Helpers.dataKeyForType
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.EmailVerificationState
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.mongo.cache.{DataKey, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
@@ -47,8 +47,8 @@ class EoriEmailDatastore @Inject()(
   ) {
 
 
-  def get(key: EORI)(implicit reads: Reads[EmailVerificationState]): Future[Option[EmailVerificationState]] =
-    super.get(key)(dataKeyForType[EmailVerificationState])
+  def get(key: EORI)(implicit reads: Reads[VerifiedEmail]): Future[Option[VerifiedEmail]] =
+    super.get(key)(dataKeyForType[VerifiedEmail])
 
   def verifyEmail(key: EORI) = {
     val timestamp = Instant.now()
@@ -65,7 +65,7 @@ class EoriEmailDatastore @Inject()(
       .toFuture()
   }
 
-  def addVerificationRequest(key: EORI, email: String, pendingVerificationId: String): Future[Option[EmailVerificationState]] = {
+  def addVerificationRequest(key: EORI, email: String, verificationId: String): Future[Option[VerifiedEmail]] = {
     val timestamp = Instant.now()
 
     collection
@@ -73,7 +73,7 @@ class EoriEmailDatastore @Inject()(
         filter = Filters.equal("_id", key),
         update = Updates.combine(
           Updates.set("data.email", email),
-          Updates.set("data.pendingVerificationId", pendingVerificationId),
+          Updates.set("data.verificationId", verificationId),
           Updates.set("data.verified", false),
           Updates.set("modifiedDetails.lastUpdated", timestamp),
           Updates.set("modifiedDetails.createdAt", timestamp)
@@ -82,17 +82,17 @@ class EoriEmailDatastore @Inject()(
       )
       .headOption()
       .map(e => {
-        e.flatMap(cache => cache.data.asOpt[EmailVerificationState])
+        e.flatMap(cache => cache.data.asOpt[VerifiedEmail])
       })
   }
 
-  def approveVerificationRequest(key: EORI, pendingVerificationCode: String): Future[UpdateResult] = {
+  def approveVerificationRequest(key: EORI, verificationId: String): Future[UpdateResult] = {
     val timestamp = Instant.now()
     collection
       .updateOne(
         filter = Filters.and(
           Filters.equal("_id", key),
-          Filters.equal("data.pendingVerificationId", pendingVerificationCode)
+          Filters.equal("data.verificationId", verificationId)
         ),
           update = Updates.combine(
             Updates.set("data.verified", true),
@@ -101,15 +101,15 @@ class EoriEmailDatastore @Inject()(
       ).toFuture()
   }
 
-  def put(eori: EORI, state: EmailVerificationState) ={
+  def put(eori: EORI, state: VerifiedEmail) ={
     val timestamp = Instant.now()
     collection
       .findOneAndUpdate(
         filter = Filters.equal("_id", eori),
         update = Updates.combine(
           Updates.set("data.email", state.email),
-          Updates.set("data.pendingVerificationId", state.pendingVerificationId.getOrElse("")),
-          Updates.set("data.verified", state.verified.getOrElse(false)),
+          Updates.set("data.verificationId", state.verificationId),
+          Updates.set("data.verified", state.verified),
           Updates.set("modifiedDetails.lastUpdated", timestamp),
           Updates.set("modifiedDetails.createdAt", timestamp)
         ),
@@ -128,7 +128,7 @@ class EoriEmailDatastore @Inject()(
       )
       .headOption()
       .map(e => {
-        e.flatMap(cache => cache.data.asOpt[EmailVerificationState])
+        e.flatMap(cache => cache.data.asOpt[VerifiedEmail])
       }
     )
   }

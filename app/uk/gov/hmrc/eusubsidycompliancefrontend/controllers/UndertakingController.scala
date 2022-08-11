@@ -202,10 +202,9 @@ class UndertakingController @Inject() (
                 } yield (Redirect(routes.UndertakingController.getCheckAnswers()))
               }
               case OptionalStringFormInput("false", Some(email)) => {
-                val pendingVerificationId = UUID.randomUUID().toString
                 for {
-                  pendingVerificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
-                  verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, email, pendingVerificationId)
+                  verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
+                  verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, email, verificationId)
                 } yield emailVerificationService.emailVerificationRedirect(verificationResponse)
               }
               case _ => Redirect(routes.EligibilityController.getNotEligible()).toFuture
@@ -215,20 +214,20 @@ class UndertakingController @Inject() (
         errors => BadRequest(inputEmailPage(errors, routes.EligibilityController.getCustomsWaivers().url)).toFuture,
         form => {
           for {
-            pendingVerificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, form.value)
-            verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, form.value, pendingVerificationId)
+            verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, form.value)
+            verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, form.value, verificationId)
           } yield emailVerificationService.emailVerificationRedirect(verificationResponse)
         }
       )
     }
   }
 
-  def getVerifyEmail(pendingVerificationId: String): Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def getVerifyEmail(verificationId: String): Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
         for {
-          e <- emailVerificationService.approveVerificationRequest(request.eoriNumber, pendingVerificationId)
+          e <- emailVerificationService.approveVerificationRequest(request.eoriNumber, verificationId)
           wasSuccessful = e.getMatchedCount > 0
           redirect <- if(wasSuccessful) {
             for {

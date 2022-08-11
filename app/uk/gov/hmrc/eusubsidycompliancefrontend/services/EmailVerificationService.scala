@@ -41,12 +41,12 @@ class EmailVerificationService @Inject() (
    eoriEmailDatastore: EoriEmailDatastore
 ) extends Logging {
 
-  def verifyEmail(credId: String, email: String, pendingVerificationId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, h: RequestHeader): Future[Option[VerifyEmailResponse]] = {
+  def verifyEmail(credId: String, email: String, verificationId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, h: RequestHeader): Future[Option[VerifyEmailResponse]] = {
     emailVerificationConnector
       .verifyEmail(
         VerifyEmailRequest(
           credId = credId,
-          continueUrl = routes.UndertakingController.getVerifyEmail(pendingVerificationId).absoluteURL(),
+          continueUrl = routes.UndertakingController.getVerifyEmail(verificationId).absoluteURL(),
           origin = "EU Subsidy Complience",
           deskproServiceName = None,
           accessibilityStatementUrl = "",
@@ -77,14 +77,14 @@ class EmailVerificationService @Inject() (
 
   def verifyEori(eori: EORI) = eoriEmailDatastore.verifyEmail(eori)
 
-  def approveVerificationRequest(key: EORI, pendingVerificationCode: String) = eoriEmailDatastore.approveVerificationRequest(key, pendingVerificationCode)
+  def approveVerificationRequest(key: EORI, verificationId: String) = eoriEmailDatastore.approveVerificationRequest(key, verificationId)
 
   def addVerificationRequest(key: EORI, email: String)(implicit ec: ExecutionContext): Future[String] = {
-    val pendingVerificationId = UUID.randomUUID().toString
+    val verificationId = UUID.randomUUID().toString
     eoriEmailDatastore
-      .addVerificationRequest(key, email, pendingVerificationId)
+      .addVerificationRequest(key, email, verificationId)
       .map {
-        _.fold(throw new IllegalArgumentException("Fallen over"))(_.pendingVerificationId.getOrElse(throw new IllegalArgumentException("")))
+        _.fold(throw new IllegalArgumentException("Fallen over"))(_.verificationId)
       }
   }
 

@@ -29,7 +29,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailVerificationState, VerifyEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{VerifiedEmail, VerifyEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -45,7 +45,7 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
 
   implicit val hc: HeaderCarrier = mock[HeaderCarrier]
   private val mockEmailVerificationConnector: EmailVerificationConnector = mock[EmailVerificationConnector]
-  implicit val writes: Writes[EmailVerificationState] = Json.writes[EmailVerificationState]
+  implicit val writes: Writes[VerifiedEmail] = Json.writes[VerifiedEmail]
 
     override protected def repository = new EoriEmailDatastore(mongoComponent)
 
@@ -57,8 +57,8 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
     repository.collection.deleteMany(filter = Filters.exists("_id"))
   }
 
-  val unverifiedVerificationRequest = EmailVerificationState("unverified@something.com", Some("someId"), false.some)
-  val verifiedVerificationRequest = EmailVerificationState("verified@something.com", Some("someId"), true.some)
+  val unverifiedVerificationRequest = VerifiedEmail("unverified@something.com", "someId", false)
+  val verifiedVerificationRequest = VerifiedEmail("verified@something.com", "someId", true)
 
   val mockVerifyEmailResponse = VerifyEmailResponse("testRedirectUrl")
 
@@ -93,7 +93,7 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
           Await.result(repository.put(eori3, unverifiedVerificationRequest), Duration(10, "seconds"))
           service.getEmailVerification(eori3).futureValue shouldBe None
           service.verifyEori(eori3)
-          service.getEmailVerification(eori3).futureValue shouldBe unverifiedVerificationRequest.copy(verified = true.some).some
+          service.getEmailVerification(eori3).futureValue shouldBe unverifiedVerificationRequest.copy(verified = true).some
         }
 
       }
@@ -103,9 +103,9 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
 
       "verify record" when {
         "success" in {
-          Await.result(repository.put(eori1, unverifiedVerificationRequest.copy(pendingVerificationId = "pending".some)), Duration(10, "seconds"))
+          Await.result(repository.put(eori1, unverifiedVerificationRequest.copy(verificationId = "pending")), Duration(10, "seconds"))
           service.approveVerificationRequest(eori1, "pending")
-          service.getEmailVerification(eori1).futureValue shouldBe unverifiedVerificationRequest.copy(verified = true.some, pendingVerificationId = "pending".some).some
+          service.getEmailVerification(eori1).futureValue shouldBe unverifiedVerificationRequest.copy(verified = true, verificationId = "pending").some
         }
       }
     }
@@ -143,7 +143,7 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
           val pendingId = Await.result(service.addVerificationRequest(eori4, "testemail@aol.com"), Duration(5, "seconds"))
           service.getEmailVerification(eori4).futureValue shouldBe None
           Await.result(service.verifyEori(eori4), Duration(5, "seconds"))
-          service.getEmailVerification(eori4).futureValue shouldBe EmailVerificationState("testemail@aol.com", pendingId.some, true.some).some
+          service.getEmailVerification(eori4).futureValue shouldBe VerifiedEmail("testemail@aol.com", pendingId, true).some
         }
       }
     }

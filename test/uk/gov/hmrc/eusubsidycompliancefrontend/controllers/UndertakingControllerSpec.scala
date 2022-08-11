@@ -18,35 +18,32 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import com.mongodb.client.result.UpdateResult
-import org.bson.{BsonBoolean, BsonValue}
+import org.bson.BsonBoolean
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.libs.json.JsObject
-import play.api.mvc.RequestHeader
 import play.api.mvc.Results.Redirect
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.ModifyUndertakingRow
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailVerificationState, VerifyEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{CreateUndertaking, DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingName}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail, VerifyEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.cache.CacheItem
 
 import java.time.{Instant, LocalDate}
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext
 
 class UndertakingControllerSpec
     extends ControllerSpec
@@ -588,7 +585,7 @@ class UndertakingControllerSpec
             mockAuthWithNecessaryEnrolment()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
             mockApproveVerification(eori1, "id")(Right(UpdateResult.acknowledged(1l, 1l, BsonBoolean.TRUE)))
-            mockGetEmailVerification(eori1)(Right(EmailVerificationState("joe.bloggs1@gmail.com", "id".some, true.some).some))
+            mockGetEmailVerification(eori1)(Right(VerifiedEmail("joe.bloggs1@gmail.com", "id", true).some))
             mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourney))
           }
 
@@ -627,7 +624,7 @@ class UndertakingControllerSpec
             inSequence {
               mockAuthWithNecessaryEnrolment()
               mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-              mockGetEmailVerification(eori1)(Right(EmailVerificationState("joe.bloggs1@gmail.com", "id".some, true.some).some))
+              mockGetEmailVerification(eori1)(Right(VerifiedEmail("joe.bloggs1@gmail.com", "id", true).some))
             }
             checkPageIsDisplayed(
               performAction(),
@@ -653,7 +650,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-            mockGetEmailVerification(eori1)(Right(EmailVerificationState("joe.bloggs1@gmail.com", "id".some, true.some).some))
+            mockGetEmailVerification(eori1)(Right(VerifiedEmail("joe.bloggs1@gmail.com", "id", true).some))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -721,7 +718,7 @@ class UndertakingControllerSpec
        "all api calls are successful" in {
          inSequence {
            mockAuthWithNecessaryEnrolment()
-           mockGetEmailVerification(eori1)(Right(EmailVerificationState("joe.bloggs1@gmail.com", "id".some, true.some).some))
+           mockGetEmailVerification(eori1)(Right(VerifiedEmail("joe.bloggs1@gmail.com", "id", true).some))
            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
            mockEmailVerification(eori1)(Right(CacheItem("id", JsObject.empty, Instant.now(), Instant.now())))
            mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourneyComplete))

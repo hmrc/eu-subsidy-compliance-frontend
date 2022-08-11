@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import org.mongodb.scala.result.UpdateResult
 import org.scalamock.scalatest.MockFactory
 import play.api.mvc.{RequestHeader, Result}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailVerificationState, VerifyEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail, VerifyEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
@@ -44,7 +44,7 @@ trait EmailVerificationSupport { this: MockFactory =>
       .expects(eori, verificationId)
       .returning(result.fold(Future.failed, _.toFuture))
 
-  def mockGetEmailVerification(eori: EORI)(result: Either[ConnectorError, Option[EmailVerificationState]]) =
+  def mockGetEmailVerification(eori: EORI)(result: Either[ConnectorError, Option[VerifiedEmail]]) =
     (mockEmailVerificationService
       .getEmailVerification(_: EORI))
       .expects(eori)
