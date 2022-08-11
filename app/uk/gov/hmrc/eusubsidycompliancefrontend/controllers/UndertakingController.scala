@@ -157,24 +157,21 @@ class UndertakingController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       ensureUndertakingJourneyPresent(_) { journey =>
-        if (!journey.isEligibleForStep) {
-          Redirect(journey.previous).toFuture
-        } else {
+        if (journey.isEligibleForStep) {
           emailVerificationService.getEmailVerification(request.eoriNumber).flatMap {
-            case Some(verifiedEmail) => {
+            case Some(verifiedEmail) =>
               Ok(confirmEmailPage(optionalEmailForm, EmailAddress(verifiedEmail.email), routes.UndertakingController.getSector().url)).toFuture
-            }
             case None => emailService.retrieveEmailByEORI(request.eoriNumber) map { response =>
               response.emailType match {
-                case EmailType.VerifiedEmail => {
+                case EmailType.VerifiedEmail =>
                   Ok(confirmEmailPage(optionalEmailForm, response.emailAddress.get, routes.UndertakingController.getSector().url))
-                }
-                case _ => {
+                case _ =>
                   Ok(inputEmailPage(emailForm, routes.UndertakingController.getSector().url))
-                }
               }
             }
           }
+        } else {
+          Redirect(journey.previous).toFuture
         }
       }
     }
@@ -207,7 +204,7 @@ class UndertakingController @Inject() (
               case OptionalStringFormInput("false", Some(email)) => {
                 val pendingVerificationId = UUID.randomUUID().toString
                 for {
-                  _ <- emailVerificationService.addVerificationRequest(request.eoriNumber, email, pendingVerificationId)
+                  pendingVerificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
                   verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, email, pendingVerificationId)
                 } yield emailVerificationService.emailVerificationRedirect(verificationResponse)
               }
@@ -217,9 +214,8 @@ class UndertakingController @Inject() (
       case _ => emailForm.bindFromRequest().fold(
         errors => BadRequest(inputEmailPage(errors, routes.EligibilityController.getCustomsWaivers().url)).toFuture,
         form => {
-          val pendingVerificationId = UUID.randomUUID().toString
           for {
-            _ <- emailVerificationService.addVerificationRequest(request.eoriNumber, form.value, pendingVerificationId)
+            pendingVerificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, form.value)
             verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, form.value, pendingVerificationId)
           } yield emailVerificationService.emailVerificationRedirect(verificationResponse)
         }
@@ -232,7 +228,7 @@ class UndertakingController @Inject() (
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
         for {
-          e <- emailVerificationService.verifyVerificationRequest(request.eoriNumber, pendingVerificationId)
+          e <- emailVerificationService.approveVerificationRequest(request.eoriNumber, pendingVerificationId)
           wasSuccessful = e.getMatchedCount > 0
           redirect <- if(wasSuccessful) {
             for {

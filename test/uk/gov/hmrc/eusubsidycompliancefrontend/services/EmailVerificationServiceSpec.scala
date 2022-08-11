@@ -17,37 +17,25 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.catsSyntaxOptionId
-import org.bson.BsonDocument
-import org.mockito.Mockito.verify
 import org.mongodb.scala.model.Filters
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.{Configuration, Play}
-import play.api.libs.json.{JsBoolean, JsObject, JsString, Json, Writes}
-import play.api.mvc.RequestHeader
+import play.api.libs.json.{Json, Writes}
 import play.api.test.DefaultAwaitTimeout
 import play.api.test.Helpers._
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.{EoriEmailDatastore, ExchangeRateCache}
-import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{EmailVerificationConnector, RetrieveEmailConnector, SendEmailConnector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Email, EmailVerificationState, VerifyEmailRequest, VerifyEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.{EmailNotSent, EmailSent}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.CreateUndertaking
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.VerifiedEmail
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendRequest, EmailTemplate, EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailVerificationState, VerifyEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
-import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.mongo.cache.{CacheItem, DataKey}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
-import java.time.Instant
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
@@ -111,12 +99,12 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
       }
     }
 
-    "verifyVerificationRequest is called" must {
+    "approveVerificationRequest is called" must {
 
       "verify record" when {
         "success" in {
           Await.result(repository.put(eori1, unverifiedVerificationRequest.copy(pendingVerificationId = "pending".some)), Duration(10, "seconds"))
-          service.verifyVerificationRequest(eori1, "pending")
+          service.approveVerificationRequest(eori1, "pending")
           service.getEmailVerification(eori1).futureValue shouldBe unverifiedVerificationRequest.copy(verified = true.some, pendingVerificationId = "pending".some).some
         }
       }
@@ -152,10 +140,10 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
       "return success" when {
 
         "add verification record successfully" in {
-          Await.result(service.addVerificationRequest(eori4, "testemail@aol.com", "pending"), Duration(5, "seconds"))
+          val pendingId = Await.result(service.addVerificationRequest(eori4, "testemail@aol.com"), Duration(5, "seconds"))
           service.getEmailVerification(eori4).futureValue shouldBe None
           Await.result(service.verifyEori(eori4), Duration(5, "seconds"))
-          service.getEmailVerification(eori4).futureValue shouldBe EmailVerificationState("testemail@aol.com", "pending".some, true.some).some
+          service.getEmailVerification(eori4).futureValue shouldBe EmailVerificationState("testemail@aol.com", pendingId.some, true.some).some
         }
       }
     }

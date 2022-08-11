@@ -28,7 +28,7 @@ import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
 import java.time.Instant
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.duration.{DurationInt, FiniteDuration}
+import scala.concurrent.duration.{Duration, DurationInt, FiniteDuration}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 import scala.reflect.ClassTag
@@ -47,13 +47,8 @@ class EoriEmailDatastore @Inject()(
   ) {
 
 
-  def get[A : ClassTag](key: EORI)(implicit reads: Reads[A]): Future[Option[A]] =
-    super.get[A](key)(dataKeyForType[A])
-
-  def put[A : ClassTag](key: EORI, in: A)(implicit writes: Writes[A]): Future[A] =
-    super
-      .put[A](key)(dataKeyForType[A], in)
-      .map(_ => in)
+  def get(key: EORI)(implicit reads: Reads[EmailVerificationState]): Future[Option[EmailVerificationState]] =
+    super.get(key)(dataKeyForType[EmailVerificationState])
 
   def verifyEmail(key: EORI) = {
     val timestamp = Instant.now()
@@ -70,8 +65,9 @@ class EoriEmailDatastore @Inject()(
       .toFuture()
   }
 
-  def addVerificationRequest(key: EORI, email: String, pendingVerificationId: String) = {
+  def addVerificationRequest(key: EORI, email: String, pendingVerificationId: String): Future[Option[EmailVerificationState]] = {
     val timestamp = Instant.now()
+
     collection
       .findOneAndUpdate(
         filter = Filters.equal("_id", key),
@@ -84,10 +80,13 @@ class EoriEmailDatastore @Inject()(
         ),
         options = FindOneAndUpdateOptions().upsert(true).returnDocument(ReturnDocument.AFTER)
       )
-      .toFuture()
+      .headOption()
+      .map(e => {
+        e.flatMap(cache => cache.data.asOpt[EmailVerificationState])
+      })
   }
 
-  def verifyVerificationRequest(key: EORI, pendingVerificationCode: String): Future[UpdateResult] = {
+  def approveVerificationRequest(key: EORI, pendingVerificationCode: String): Future[UpdateResult] = {
     val timestamp = Instant.now()
     collection
       .updateOne(

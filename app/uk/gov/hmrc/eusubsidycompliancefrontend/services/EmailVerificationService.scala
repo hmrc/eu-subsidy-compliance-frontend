@@ -30,8 +30,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.{VerifyEmailResponse, _}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
+import java.util.UUID
 import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.global
 
 @Singleton
 class EmailVerificationService @Inject() (
@@ -75,8 +77,15 @@ class EmailVerificationService @Inject() (
 
   def verifyEori(eori: EORI) = eoriEmailDatastore.verifyEmail(eori)
 
-  def verifyVerificationRequest(key: EORI, pendingVerificationCode: String) = eoriEmailDatastore.verifyVerificationRequest(key, pendingVerificationCode)
+  def approveVerificationRequest(key: EORI, pendingVerificationCode: String) = eoriEmailDatastore.approveVerificationRequest(key, pendingVerificationCode)
 
-  def addVerificationRequest(key: EORI, email: String, pendingVerificationId: String) = eoriEmailDatastore.addVerificationRequest(key, email, pendingVerificationId)
+  def addVerificationRequest(key: EORI, email: String)(implicit ec: ExecutionContext): Future[String] = {
+    val pendingVerificationId = UUID.randomUUID().toString
+    eoriEmailDatastore
+      .addVerificationRequest(key, email, pendingVerificationId)
+      .map {
+        _.fold(throw new IllegalArgumentException("Fallen over"))(_.pendingVerificationId.getOrElse(throw new IllegalArgumentException("")))
+      }
+  }
 
 }

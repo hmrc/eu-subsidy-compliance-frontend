@@ -31,6 +31,7 @@ override protected val http: HttpClient,
   extends Connector {
 
   lazy private val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")
+  lazy private val emailVerificationFrontendBaseUrl: String = servicesConfig.baseUrl("email-verification-frontend")
 
   lazy private val verifyEmailUrl = s"$emailVerificationBaseUrl/email-verification/verify-email"
 
@@ -48,5 +49,5 @@ override protected val http: HttpClient,
     )
   }
 
-  def getVerificationJourney(redirectUri: String): String = if(useAbsoluteUrls) "http://localhost:9890" + redirectUri else redirectUri
+  def getVerificationJourney(redirectUri: String): String = if(useAbsoluteUrls) s"${emailVerificationBaseUrl}${redirectUri}" else redirectUri
 }

@@ -38,9 +38,9 @@ trait EmailVerificationSupport { this: MockFactory =>
       .returning(result.fold(Future.failed, _.toFuture))
 
 
-  def mockVerificationRequestVerification(eori: EORI, verificationId: String)(result: Either[ConnectorError, UpdateResult]) =
+  def mockApproveVerification(eori: EORI, verificationId: String)(result: Either[ConnectorError, UpdateResult]) =
     (mockEmailVerificationService
-      .verifyVerificationRequest(_: EORI, _: String))
+      .approveVerificationRequest(_: EORI, _: String))
       .expects(eori, verificationId)
       .returning(result.fold(Future.failed, _.toFuture))
 
@@ -50,9 +50,9 @@ trait EmailVerificationSupport { this: MockFactory =>
       .expects(eori)
       .returning(result.fold(Future.failed, _.toFuture))
 
-  def mockAddEmailVerification(eori: EORI)(result: Either[ConnectorError, CacheItem]) =
+  def mockAddEmailVerification(eori: EORI)(result: Either[ConnectorError, String]) =
     (mockEmailVerificationService
-      .addVerificationRequest(_: EORI, _: String, _: String))
+      .addVerificationRequest(_: EORI, _: String)(_: ExecutionContext))
       .expects(eori, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
 

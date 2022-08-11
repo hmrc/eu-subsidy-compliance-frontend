@@ -587,7 +587,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolment()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-            mockVerificationRequestVerification(eori1, "id")(Right(UpdateResult.acknowledged(1l, 1l, BsonBoolean.TRUE)))
+            mockApproveVerification(eori1, "id")(Right(UpdateResult.acknowledged(1l, 1l, BsonBoolean.TRUE)))
             mockGetEmailVerification(eori1)(Right(EmailVerificationState("joe.bloggs1@gmail.com", "id".some, true.some).some))
             mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourney))
           }
@@ -751,7 +751,7 @@ class UndertakingControllerSpec
           mockAuthWithNecessaryEnrolment()
           mockGetEmailVerification(eori1)(Right(None))
           mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, validEmailAddress.some)))
-          mockAddEmailVerification(eori1)(Right(CacheItem("id", JsObject.empty, Instant.now(), Instant.now())))
+          mockAddEmailVerification(eori1)(Right("pendingVerificationId"))
           mockVerifyEmail("something@aol.com")(Right(Some(VerifyEmailResponse("redirectUri"))))
           mockEmailVerificationRedirect(Some(VerifyEmailResponse("redirectUri")))(Redirect("email-verification-redirect"))
         }
@@ -772,7 +772,7 @@ class UndertakingControllerSpec
            mockAuthWithNecessaryEnrolment()
            mockGetEmailVerification(eori1)(Right(None))
            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-           mockAddEmailVerification(eori1)(Right(CacheItem("id", JsObject.empty, Instant.now(), Instant.now())))
+           mockAddEmailVerification(eori1)(Right("pendingVerificationId"))
            mockVerifyEmail("something@aol.com")(Right(Some(VerifyEmailResponse("redirectUri"))))
            mockEmailVerificationRedirect(Some(VerifyEmailResponse("redirectUri")))(Redirect("email-verification-redirect"))
          }
