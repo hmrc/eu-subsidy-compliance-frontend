@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Format, Json, Reads, Writes}
 
-case class VerifyEmailRequest(
+case class EmailVerificationRequest(
                                credId: String,
                                continueUrl: String,
                                origin: String,
@@ -35,14 +35,14 @@ case class Email(address: String, enterUrl: String)
 object Email {
   implicit val format: Format[Email] = Json.format[Email]
 }
-object VerifyEmailRequest {
-  implicit val writes: Writes[VerifyEmailRequest] = Json.writes[VerifyEmailRequest]
+object EmailVerificationRequest {
+  implicit val writes: Writes[EmailVerificationRequest] = Json.writes[EmailVerificationRequest]
 }
 
-case class VerifyEmailResponse(redirectUri: String)
+case class EmailVerificationResponse(redirectUri: String)
 
-object VerifyEmailResponse {
-  implicit val formats: Format[VerifyEmailResponse] = Json.format[VerifyEmailResponse]
+object EmailVerificationResponse {
+  implicit val formats: Format[EmailVerificationResponse] = Json.format[EmailVerificationResponse]
 }
 
 case class CompletedEmail(
@@ -55,10 +55,10 @@ object CompletedEmail {
   implicit val reads: Reads[CompletedEmail] = Json.reads[CompletedEmail]
 }
 
-case class VerificationStatusResponse(emails: List[CompletedEmail])
+case class EmailVerificationStatusResponse(emails: List[CompletedEmail])
 
-object VerificationStatusResponse {
-  implicit val reads: Reads[VerificationStatusResponse] = Json.reads[VerificationStatusResponse]
+object EmailVerificationStatusResponse {
+  implicit val reads: Reads[EmailVerificationStatusResponse] = Json.reads[EmailVerificationStatusResponse]
 }
 
 sealed trait EmailVerificationStatus

@@ -33,7 +33,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.Emai
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{CreateUndertaking, DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingName}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail, VerifyEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail, EmailVerificationResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -749,8 +749,8 @@ class UndertakingControllerSpec
           mockGetEmailVerification(eori1)(Right(None))
           mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, validEmailAddress.some)))
           mockAddEmailVerification(eori1)(Right("pendingVerificationId"))
-          mockVerifyEmail("something@aol.com")(Right(Some(VerifyEmailResponse("redirectUri"))))
-          mockEmailVerificationRedirect(Some(VerifyEmailResponse("redirectUri")))(Redirect("email-verification-redirect"))
+          mockVerifyEmail("something@aol.com")(Right(Some(EmailVerificationResponse("redirectUri"))))
+          mockEmailVerificationRedirect(Some(EmailVerificationResponse("redirectUri")))(Redirect("email-verification-redirect"))
         }
         redirectLocation(performAction("using-stored-email" -> "false", "email" -> "something@aol.com")) shouldBe "email-verification-redirect".some
       }
@@ -770,8 +770,8 @@ class UndertakingControllerSpec
            mockGetEmailVerification(eori1)(Right(None))
            mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
            mockAddEmailVerification(eori1)(Right("pendingVerificationId"))
-           mockVerifyEmail("something@aol.com")(Right(Some(VerifyEmailResponse("redirectUri"))))
-           mockEmailVerificationRedirect(Some(VerifyEmailResponse("redirectUri")))(Redirect("email-verification-redirect"))
+           mockVerifyEmail("something@aol.com")(Right(Some(EmailVerificationResponse("redirectUri"))))
+           mockEmailVerificationRedirect(Some(EmailVerificationResponse("redirectUri")))(Redirect("email-verification-redirect"))
          }
          redirectLocation(performAction("using-stored-email" -> "false", "email" -> "something@aol.com")) shouldBe "email-verification-redirect".some
        }

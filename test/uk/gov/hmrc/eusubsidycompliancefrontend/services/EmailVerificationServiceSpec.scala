@@ -29,7 +29,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{VerifiedEmail, VerifyEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{VerifiedEmail, EmailVerificationResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -60,7 +60,7 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
   val unverifiedVerificationRequest = VerifiedEmail("unverified@something.com", "someId", false)
   val verifiedVerificationRequest = VerifiedEmail("verified@something.com", "someId", true)
 
-  val mockVerifyEmailResponse = VerifyEmailResponse("testRedirectUrl")
+  val mockVerifyEmailResponse = EmailVerificationResponse("testRedirectUrl")
 
 
   "EmailVerificationService" when {

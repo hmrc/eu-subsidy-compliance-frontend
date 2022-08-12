@@ -26,7 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{VerifyEmailResponse, _}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailVerificationResponse, _}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
@@ -41,13 +41,13 @@ class EmailVerificationService @Inject() (
    eoriEmailDatastore: EoriEmailDatastore
 ) extends Logging {
 
-  def verifyEmail(credId: String, email: String, verificationId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, h: RequestHeader): Future[Option[VerifyEmailResponse]] = {
+  def verifyEmail(credId: String, email: String, verificationId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, h: RequestHeader): Future[Option[EmailVerificationResponse]] = {
     emailVerificationConnector
       .verifyEmail(
-        VerifyEmailRequest(
+        EmailVerificationRequest(
           credId = credId,
           continueUrl = routes.UndertakingController.getVerifyEmail(verificationId).absoluteURL(),
-          origin = "EU Subsidy Complience",
+          origin = "EU Subsidy Compliance",
           deskproServiceName = None,
           accessibilityStatementUrl = "",
           email = Some(Email(
@@ -62,13 +62,13 @@ class EmailVerificationService @Inject() (
       case Left(error) => throw ConnectorError(s"Error sending email:Id", error)
       case Right(value) =>
         value.status match {
-          case CREATED => Some(value.json.as[VerifyEmailResponse])
+          case CREATED => Some(value.json.as[EmailVerificationResponse])
           case _ => None
         }
     }
   }
 
-  def emailVerificationRedirect(verifyEmailResponse: Option[VerifyEmailResponse]) = verifyEmailResponse match {
+  def emailVerificationRedirect(verifyEmailResponse: Option[EmailVerificationResponse]) = verifyEmailResponse match {
     case Some(value) => Redirect(emailVerificationConnector.getVerificationJourney(value.redirectUri))
     case None => Redirect(routes.UndertakingController.getConfirmEmail())
   }

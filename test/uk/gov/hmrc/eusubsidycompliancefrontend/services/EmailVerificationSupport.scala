@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import org.mongodb.scala.result.UpdateResult
 import org.scalamock.scalatest.MockFactory
 import play.api.mvc.{RequestHeader, Result}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail, VerifyEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail, EmailVerificationResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
@@ -56,15 +56,15 @@ trait EmailVerificationSupport { this: MockFactory =>
       .expects(eori, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
 
-  def mockVerifyEmail(email: String)(result: Either[ConnectorError, Option[VerifyEmailResponse]]) =
+  def mockVerifyEmail(email: String)(result: Either[ConnectorError, Option[EmailVerificationResponse]]) =
     (mockEmailVerificationService
       .verifyEmail(_: String, _: String, _: String)(_: HeaderCarrier, _: ExecutionContext, _: RequestHeader))
       .expects(*, email, *, *, *,*)
       .returning(result.fold(Future.failed, _.toFuture))
 
-  def mockEmailVerificationRedirect(verifyEmailResponse: Option[VerifyEmailResponse])(result: Result) =
+  def mockEmailVerificationRedirect(verifyEmailResponse: Option[EmailVerificationResponse])(result: Result) =
     (mockEmailVerificationService
-      .emailVerificationRedirect(_: Option[VerifyEmailResponse]))
+      .emailVerificationRedirect(_: Option[EmailVerificationResponse]))
       .expects(verifyEmailResponse)
       .returning(result)
 }

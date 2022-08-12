@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyUpdate, VerifyEmailRequest, VerifyEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyUpdate, EmailVerificationRequest, EmailVerificationResponse}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -38,16 +38,16 @@ override protected val http: HttpClient,
   def useAbsoluteUrls: Boolean = emailVerificationBaseUrl.contains("localhost")
 
 
-  def verifyEmail(request: VerifyEmailRequest)(
+  def verifyEmail(request: EmailVerificationRequest)(
     implicit hc: HeaderCarrier,
     ec: ExecutionContext): ConnectorResult = {
     makeRequest(
-      _.POST[VerifyEmailRequest, HttpResponse](
+      _.POST[EmailVerificationRequest, HttpResponse](
         verifyEmailUrl,
         request
       )
     )
   }
 
-  def getVerificationJourney(redirectUri: String): String = if(useAbsoluteUrls) s"${emailVerificationBaseUrl}${redirectUri}" else redirectUri
+  def getVerificationJourney(redirectUri: String): String = if(useAbsoluteUrls) s"${emailVerificationFrontendBaseUrl}${redirectUri}" else redirectUri
 }
