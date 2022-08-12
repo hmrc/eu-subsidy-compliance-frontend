@@ -195,13 +195,13 @@ class UndertakingController @Inject() (
           .fold(
             errors => BadRequest(confirmEmailPage(errors, EmailAddress(email), routes.EligibilityController.getCustomsWaivers().url)).toFuture,
             {
-              case OptionalStringFormInput("true", None) => {
+              case OptionalEmailFormInput("true", None) => {
                 for {
                   _ <- emailVerificationService.verifyEori(request.eoriNumber)
                   _ <- store.update[UndertakingJourney](_.setVerifiedEmail(email))
                 } yield (Redirect(routes.UndertakingController.getCheckAnswers()))
               }
-              case OptionalStringFormInput("false", Some(email)) => {
+              case OptionalEmailFormInput("false", Some(email)) => {
                 for {
                   verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
                   verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, email, verificationId)
@@ -470,11 +470,11 @@ class UndertakingController @Inject() (
     mapping("disableUndertakingConfirm" -> mandatory("disableUndertakingConfirm"))(FormValues.apply)(FormValues.unapply)
   )
 
-  private val optionalEmailForm: Form[OptionalStringFormInput] = Form(
+  private val optionalEmailForm: Form[OptionalEmailFormInput] = Form(
     mapping(
       "using-stored-email" -> mandatory("using-stored-email"),
       "email" -> mandatoryIfEqual("using-stored-email", "false", email)
-    )(OptionalStringFormInput.apply)(OptionalStringFormInput.unapply)
+    )(OptionalEmailFormInput.apply)(OptionalEmailFormInput.unapply)
   )
 
   private val emailForm: Form[FormValues] = Form(

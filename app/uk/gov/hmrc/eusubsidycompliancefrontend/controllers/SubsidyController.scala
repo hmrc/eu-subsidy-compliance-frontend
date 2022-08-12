@@ -73,11 +73,11 @@ class SubsidyController @Inject() (
     mapping("reportPayment" -> mandatory("reportPayment"))(FormValues.apply)(FormValues.unapply)
   )
 
-  private val claimTraderRefForm: Form[OptionalStringFormInput] = Form(
+  private val claimTraderRefForm: Form[OptionalTraderRef] = Form(
     mapping(
       "should-store-trader-ref" -> mandatory("should-store-trader-ref"),
       "claim-trader-ref" -> mandatoryIfEqual("should-store-trader-ref", "true", nonEmptyText)
-    )(OptionalStringFormInput.apply)(OptionalStringFormInput.unapply)
+    )(OptionalTraderRef.apply)(OptionalTraderRef.unapply)
   )
 
   private val claimPublicAuthorityForm: Form[String] = Form(
@@ -327,7 +327,7 @@ class SubsidyController @Inject() (
     withLeadUndertaking { _ =>
       renderFormIfEligible { journey =>
         val form = journey.traderRef.value.fold(claimTraderRefForm) { optionalTraderRef =>
-          claimTraderRefForm.fill(OptionalStringFormInput(optionalTraderRef.setValue, optionalTraderRef.value))
+          claimTraderRefForm.fill(OptionalTraderRef(optionalTraderRef.setValue, optionalTraderRef.value))
         }
         Ok(addTraderReferencePage(form, journey.previous))
       }
