@@ -67,27 +67,19 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
 
     "getEmailVerification is called" must {
 
-      "No verification found" when {
-
         "return none" in {
           Await.result(repository.put(eori1, unverifiedVerificationRequest), Duration(10, "seconds"))
           service.getEmailVerification(eori1).futureValue shouldBe None
         }
-      }
-
-      "Verification found" when {
 
         "return verified" in {
           Await.result(repository.put(eori2, verifiedVerificationRequest), Duration(10, "seconds"))
           service.getEmailVerification(eori2).futureValue shouldBe verifiedVerificationRequest.some
         }
-      }
 
     }
 
     "verifyEori is called" must {
-
-      "OK" when {
 
         "record is verified" in {
           Await.result(repository.put(eori3, unverifiedVerificationRequest), Duration(10, "seconds"))
@@ -95,24 +87,19 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
           service.verifyEori(eori3)
           service.getEmailVerification(eori3).futureValue shouldBe unverifiedVerificationRequest.copy(verified = true).some
         }
-
-      }
     }
 
     "approveVerificationRequest is called" must {
 
-      "verify record" when {
         "success" in {
           Await.result(repository.put(eori1, unverifiedVerificationRequest.copy(verificationId = "pending")), Duration(10, "seconds"))
           service.approveVerificationRequest(eori1, "pending")
           service.getEmailVerification(eori1).futureValue shouldBe unverifiedVerificationRequest.copy(verified = true, verificationId = "pending").some
         }
-      }
     }
 
     "emailVerificationRedirect is called" must {
 
-      "return success" when {
 
         "correct redirect is given" in {
           (mockEmailVerificationConnector
@@ -121,23 +108,18 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
             .returning("redirecturl")
           val a = service.emailVerificationRedirect(mockVerifyEmailResponse.some)
           redirectLocation(a.toFuture) shouldBe "redirecturl".some
-        }
 
       }
-      "return none" when {
 
         "no redirect is given" in {
           val a = service.emailVerificationRedirect(None)
           redirectLocation(a.toFuture) shouldBe routes.UndertakingController.getConfirmEmail().url.some
         }
 
-      }
 
     }
 
     "addVerificationRequest is called" must {
-
-      "return success" when {
 
         "add verification record successfully" in {
           val pendingId = Await.result(service.addVerificationRequest(eori4, "testemail@aol.com"), Duration(5, "seconds"))
@@ -145,7 +127,6 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
           Await.result(service.verifyEori(eori4), Duration(5, "seconds"))
           service.getEmailVerification(eori4).futureValue shouldBe VerifiedEmail("testemail@aol.com", pendingId, true).some
         }
-      }
     }
   }
 }
