@@ -23,7 +23,6 @@ import play.api.data.Forms.{email, mapping}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUndertaking, UndertakingDisabled, UndertakingUpdated}
@@ -41,7 +40,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
-import java.util.UUID
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -195,12 +193,11 @@ class UndertakingController @Inject() (
           .fold(
             errors => BadRequest(confirmEmailPage(errors, EmailAddress(email), routes.EligibilityController.getCustomsWaivers().url)).toFuture,
             {
-              case OptionalEmailFormInput("true", None) => {
+              case OptionalEmailFormInput("true", None) =>
                 for {
                   _ <- emailVerificationService.verifyEori(request.eoriNumber)
                   _ <- store.update[UndertakingJourney](_.setVerifiedEmail(email))
-                } yield (Redirect(routes.UndertakingController.getCheckAnswers()))
-              }
+                } yield Redirect(routes.UndertakingController.getCheckAnswers())
               case OptionalEmailFormInput("false", Some(email)) => {
                 for {
                   verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
@@ -237,6 +234,7 @@ class UndertakingController @Inject() (
               } yield redirect
           } else Future(Redirect(routes.UndertakingController.getUndertakingName().url))
         } yield redirect
+      case None => handleMissingSessionData("Undertaking Journey")
     }
   }
 

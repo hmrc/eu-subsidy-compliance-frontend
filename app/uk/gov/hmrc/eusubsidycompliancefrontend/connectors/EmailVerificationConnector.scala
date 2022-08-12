@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyUpdate, EmailVerificationRequest, EmailVerificationResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.EmailVerificationRequest
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -27,7 +28,7 @@ import scala.concurrent.ExecutionContext
 class EmailVerificationConnector @Inject()(
 override protected val http: HttpClient,
   servicesConfig: ServicesConfig
-  )(implicit ec: ExecutionContext)
+  )
   extends Connector {
 
   lazy private val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")

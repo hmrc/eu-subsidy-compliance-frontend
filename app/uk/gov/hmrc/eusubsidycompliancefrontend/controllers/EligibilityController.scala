@@ -22,7 +22,7 @@ import play.api.data.Forms.mapping
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscCDSActionBuilders, EscNoEnrolmentActionBuilders}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, OptionalEmailFormInput}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.{UnDeliverableEmail, UnVerifiedEmail, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI

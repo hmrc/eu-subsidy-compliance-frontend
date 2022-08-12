@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-import play.api.libs.json.{Format, Json, Reads, Writes}
+import play.api.libs.json.{Format, Json, OFormat, Reads}
 
 case class EmailVerificationRequest(
                                credId: String,
@@ -36,13 +36,13 @@ object Email {
   implicit val format: Format[Email] = Json.format[Email]
 }
 object EmailVerificationRequest {
-  implicit val writes: Writes[EmailVerificationRequest] = Json.writes[EmailVerificationRequest]
+  implicit val writes: OFormat[EmailVerificationRequest] = Json.format[EmailVerificationRequest]
 }
 
 case class EmailVerificationResponse(redirectUri: String)
 
 object EmailVerificationResponse {
-  implicit val formats: Format[EmailVerificationResponse] = Json.format[EmailVerificationResponse]
+  implicit val formats: OFormat[EmailVerificationResponse] = Json.format[EmailVerificationResponse]
 }
 
 case class CompletedEmail(

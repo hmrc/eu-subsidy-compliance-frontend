@@ -23,15 +23,14 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore.DefaultC
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.Helpers.dataKeyForType
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.mongo.cache.{DataKey, MongoCacheRepository}
+import uk.gov.hmrc.mongo.cache.MongoCacheRepository
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
 import java.time.Instant
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.duration.{Duration, DurationInt, FiniteDuration}
+import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
-import scala.reflect.ClassTag
 
 
 @Singleton

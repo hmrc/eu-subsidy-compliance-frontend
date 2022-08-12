@@ -22,18 +22,15 @@ import play.api.http.Status.CREATED
 import play.api.mvc.RequestHeader
 import play.api.mvc.Results.Redirect
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore
-import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailVerificationResponse, _}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import java.util.UUID
 import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
-import scala.concurrent.ExecutionContext.global
 
 @Singleton
 class EmailVerificationService @Inject() (
