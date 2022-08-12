@@ -25,22 +25,24 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.{Form, Uri}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage, UndertakingConfirmEmailFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.Future
 
 case class UndertakingJourney(
-  name: UndertakingNameFormPage = UndertakingNameFormPage(),
-  sector: UndertakingSectorFormPage = UndertakingSectorFormPage(),
-  cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
-  confirmation: UndertakingConfirmationFormPage = UndertakingConfirmationFormPage(),
-  isAmend: Boolean = false
+                               name: UndertakingNameFormPage = UndertakingNameFormPage(),
+                               sector: UndertakingSectorFormPage = UndertakingSectorFormPage(),
+                               verifiedEmail: UndertakingConfirmEmailFormPage = UndertakingConfirmEmailFormPage(),
+                               cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
+                               confirmation: UndertakingConfirmationFormPage = UndertakingConfirmationFormPage(),
+                               isAmend: Boolean = false
 ) extends Journey {
 
   override def steps = Array(
     name,
     sector,
+    verifiedEmail,
     cya,
     confirmation
   )
@@ -63,13 +65,15 @@ case class UndertakingJourney(
   def isCurrentPageCYA(implicit request: Request[_]): Boolean =
     request.uri == routes.UndertakingController.getCheckAnswers().url
 
-  private def requiredDetailsProvided = Seq(name, sector).map(_.value.isDefined) == Seq(true, true)
+  private def requiredDetailsProvided = Seq(name, sector, verifiedEmail).map(_.value.isDefined) == Seq(true, true, true)
 
   def setUndertakingName(n: String): UndertakingJourney = this.copy(name = name.copy(value = Some(n)))
 
   def setUndertakingSector(s: Int): UndertakingJourney = this.copy(sector = sector.copy(value = Some(Sector(s))))
 
   def setUndertakingCYA(b: Boolean): UndertakingJourney = this.copy(cya = cya.copy(value = Some(b)))
+
+  def setVerifiedEmail(e: String): UndertakingJourney = this.copy(verifiedEmail = verifiedEmail.copy(value = Some(e)))
 
   def setUndertakingConfirmation(b: Boolean): UndertakingJourney =
     this.copy(confirmation = confirmation.copy(value = Some(b)))
@@ -95,6 +99,9 @@ object UndertakingJourney {
     case class UndertakingSectorFormPage(value: Form[Sector] = None) extends FormPage[Sector] {
       def uri = controller.getSector().url
     }
+    case class UndertakingConfirmEmailFormPage(value: Form[String] = None) extends FormPage[String] {
+      def uri = controller.getConfirmEmail().url
+    }
     case class UndertakingCyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getCheckAnswers().url
     }
@@ -108,6 +115,7 @@ object UndertakingJourney {
     object UndertakingSectorFormPage {
       implicit val undertakingSectorFormPage: OFormat[UndertakingSectorFormPage] = Json.format
     }
+    object UndertakingConfirmEmailFormPage { implicit val confirmEmailFormPageFormat: OFormat[UndertakingConfirmEmailFormPage] = Json.format }
     object UndertakingCyaFormPage { implicit val undertakingCyaFormPage: OFormat[UndertakingCyaFormPage] = Json.format }
     object UndertakingConfirmationFormPage {
       implicit val undertakingConfirmationFormPage: OFormat[UndertakingConfirmationFormPage] = Json.format

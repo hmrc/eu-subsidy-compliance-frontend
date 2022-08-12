@@ -39,6 +39,11 @@ POST       /first-login-journey-name-single-undertaking                         
 GET        /first-login-journey-what-sector                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSector
 POST       /first-login-journey-what-sector                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postSector
 
+GET        /first-login-confirm-email                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmEmail
+POST       /first-login-confirm-email                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmEmail
+
+GET        /verify-email                                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getVerifyEmail(UndertakingControllerpendingVerificationId)
+
 GET        /first-login-journey-check-your-answers                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getCheckAnswers
 POST       /first-login-journey-check-your-answers                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postCheckAnswers
 

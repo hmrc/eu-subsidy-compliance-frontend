@@ -19,17 +19,18 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.data.OptionT
 import cats.implicits._
 import play.api.data.Form
-import play.api.data.Forms.mapping
+import play.api.data.Forms.{email, mapping}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUndertaking, UndertakingDisabled, UndertakingUpdated}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailTemplate, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking, UndertakingCreate}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -37,6 +38,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -48,16 +50,19 @@ class UndertakingController @Inject() (
   override val store: Store,
   override val escService: EscService,
   emailService: EmailService,
+  emailVerificationService: EmailVerificationService,
   timeProvider: TimeProvider,
   auditService: AuditService,
   undertakingNamePage: UndertakingNamePage,
   undertakingSectorPage: UndertakingSectorPage,
+  confirmEmailPage: ConfirmEmailPage,
+  inputEmailPage: InputEmailPage,
   cyaPage: UndertakingCheckYourAnswersPage,
   confirmationPage: ConfirmationPage,
   amendUndertakingPage: AmendUndertakingPage,
   disableUndertakingWarningPage: DisableUndertakingWarningPage,
   disableUndertakingConfirmPage: DisableUndertakingConfirmPage,
-  undertakingDisabledPage: UndertakingDisabledPage
+  undertakingDisabledPage: UndertakingDisabledPage,
 )(implicit
   val appConfig: AppConfig,
   override val executionContext: ExecutionContext
@@ -146,6 +151,93 @@ class UndertakingController @Inject() (
     }
   }
 
+  def getConfirmEmail: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.get[UndertakingJourney].flatMap {
+      ensureUndertakingJourneyPresent(_) { journey =>
+        if (journey.isEligibleForStep) {
+          emailVerificationService.getEmailVerification(request.eoriNumber).flatMap {
+            case Some(verifiedEmail) =>
+              Ok(confirmEmailPage(optionalEmailForm, EmailAddress(verifiedEmail.email), routes.UndertakingController.getSector().url)).toFuture
+            case None => emailService.retrieveEmailByEORI(request.eoriNumber) map { response =>
+              response.emailType match {
+                case EmailType.VerifiedEmail =>
+                  Ok(confirmEmailPage(optionalEmailForm, response.emailAddress.get, routes.UndertakingController.getSector().url))
+                case _ =>
+                  Ok(inputEmailPage(emailForm, routes.UndertakingController.getSector().url))
+              }
+            }
+          }
+        } else {
+          Redirect(journey.previous).toFuture
+        }
+      }
+    }
+  }
+
+  def postConfirmEmail: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    val verifiedEmail = for {
+      stored <- emailVerificationService.getEmailVerification(request.eoriNumber)
+      cds <- emailService.retrieveEmailByEORI(request.eoriNumber)
+      result = if(stored.isDefined) stored.get.email.some else cds match {
+        case RetrieveEmailResponse(VerifiedEmail, Some(value)) => value.value.some
+        case _ => Option.empty
+      }
+    } yield result
+
+    verifiedEmail flatMap {
+      case Some(email) =>
+        optionalEmailForm
+          .bindFromRequest()
+          .fold(
+            errors => BadRequest(confirmEmailPage(errors, EmailAddress(email), routes.EligibilityController.getCustomsWaivers().url)).toFuture,
+            {
+              case OptionalEmailFormInput("true", None) =>
+                for {
+                  _ <- emailVerificationService.verifyEori(request.eoriNumber)
+                  _ <- store.update[UndertakingJourney](_.setVerifiedEmail(email))
+                } yield Redirect(routes.UndertakingController.getCheckAnswers())
+              case OptionalEmailFormInput("false", Some(email)) => {
+                for {
+                  verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
+                  verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, email, verificationId)
+                } yield emailVerificationService.emailVerificationRedirect(verificationResponse)
+              }
+              case _ => Redirect(routes.EligibilityController.getNotEligible()).toFuture
+            }
+          )
+      case _ => emailForm.bindFromRequest().fold(
+        errors => BadRequest(inputEmailPage(errors, routes.EligibilityController.getCustomsWaivers().url)).toFuture,
+        form => {
+          for {
+            verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, form.value)
+            verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, form.value, verificationId)
+          } yield emailVerificationService.emailVerificationRedirect(verificationResponse)
+        }
+      )
+    }
+  }
+
+  def getVerifyEmail(verificationId: String): Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.get[UndertakingJourney].flatMap {
+      case Some(journey) =>
+        for {
+          e <- emailVerificationService.approveVerificationRequest(request.eoriNumber, verificationId)
+          wasSuccessful = e.getMatchedCount > 0
+          redirect <- if(wasSuccessful) {
+            for {
+              stored <- emailVerificationService.getEmailVerification(request.eoriNumber)
+              _ <- store.update[UndertakingJourney](_.setVerifiedEmail(stored.get.email))
+              redirect <- if(wasSuccessful) journey.next else Future(Redirect(routes.UndertakingController.getConfirmEmail().url))
+              } yield redirect
+          } else Future(Redirect(routes.UndertakingController.getUndertakingName().url))
+        } yield redirect
+      case None => handleMissingSessionData("Undertaking Journey")
+    }
+  }
+
   def getCheckAnswers: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
@@ -153,7 +245,8 @@ class UndertakingController @Inject() (
         val result: OptionT[Future, Result] = for {
           undertakingName <- journey.name.value.toContext
           undertakingSector <- journey.sector.value.toContext
-        } yield Ok(cyaPage(UndertakingName(undertakingName), eori, undertakingSector, journey.previous))
+          undertakingVerifiedEmail <- journey.verifiedEmail.value.toContext
+        } yield Ok(cyaPage(UndertakingName(undertakingName), eori, undertakingSector, undertakingVerifiedEmail, journey.previous))
         result.fold(Redirect(journey.previous))(identity)
       case _ => Redirect(routes.UndertakingController.getUndertakingName()).toFuture
     }
@@ -373,6 +466,19 @@ class UndertakingController @Inject() (
 
   private val disableUndertakingConfirmForm: Form[FormValues] = Form(
     mapping("disableUndertakingConfirm" -> mandatory("disableUndertakingConfirm"))(FormValues.apply)(FormValues.unapply)
+  )
+
+  private val optionalEmailForm: Form[OptionalEmailFormInput] = Form(
+    mapping(
+      "using-stored-email" -> mandatory("using-stored-email"),
+      "email" -> mandatoryIfEqual("using-stored-email", "false", email)
+    )(OptionalEmailFormInput.apply)(OptionalEmailFormInput.unapply)
+  )
+
+  private val emailForm: Form[FormValues] = Form(
+    mapping(
+      "email" -> email
+    )(FormValues.apply)(FormValues.unapply)
   )
 
 }

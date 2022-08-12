@@ -18,12 +18,11 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Format, Json}
 
-case class OptionalTraderRef(
+case class OptionalEmailFormInput(
   setValue: String,
   value: Option[String]
 )
 
-
-object OptionalTraderRef {
-  implicit val format: Format[OptionalTraderRef] = Json.format[OptionalTraderRef]
+object OptionalEmailFormInput {
+  implicit val format: Format[OptionalEmailFormInput] = Json.format[OptionalEmailFormInput]
 }

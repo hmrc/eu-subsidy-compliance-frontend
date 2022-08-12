@@ -70,7 +70,6 @@ class EscInitialRequestActionBuilder @Inject() (
                 .getIdentifier(eccEnrolment, cdsEnrolment, EnrolmentIdentifier)
                 .fold(throw new IllegalStateException("no eori provided"))(identity)
               block(AuthenticatedEscRequest(credentials.providerId, groupId, request, EORI(identifier)))
-
             case (Some(eccEnrolment), None) =>
               val identifier: String = eccEnrolment
                 .getIdentifier(EnrolmentIdentifier)
