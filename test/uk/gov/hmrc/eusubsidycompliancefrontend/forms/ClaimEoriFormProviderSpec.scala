@@ -43,10 +43,6 @@ class ClaimEoriFormProviderSpec extends AnyWordSpecLike with Matchers {
       validateAndCheckSuccess("true", Some(eori1))
     }
 
-    "return an error if no fields are selected" in {
-      validateAndCheckError("", None)(YesNoRadioButton, "error.should-claim-eori.required")
-    }
-
     "return an error if the yes radio button is selected and no eori number is entered" in {
       validateAndCheckError("true", None)(EoriNumber, "error.required")
     }

@@ -30,7 +30,7 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
   override def form: Form[OptionalEORI] = Form(mapping)
 
   override protected def mapping: Mapping[OptionalEORI] = Forms.mapping(
-    YesNoRadioButton -> text.verifying(radioButtonSelected(s"error.$YesNoRadioButton.required")),
+    YesNoRadioButton -> text,
     EoriNumber -> mandatoryIfEqual(YesNoRadioButton, "true", eoriNumberMapping)
   )(OptionalEORI.apply)(OptionalEORI.unapply)
 
