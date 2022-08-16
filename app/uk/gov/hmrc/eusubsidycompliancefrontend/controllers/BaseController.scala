@@ -34,6 +34,7 @@ class BaseController(mcc: MessagesControllerComponents) extends FrontendControll
   protected def handleMissingSessionData(dataLabel: String) =
     throw new IllegalStateException(s"$dataLabel data missing on session")
 
+  // TODO - review usages of this
   private def required(key: String): Constraint[String] = Constraint {
     case "" => Invalid(s"error.$key.required")
     case _ => Valid

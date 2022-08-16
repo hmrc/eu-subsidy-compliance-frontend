@@ -181,6 +181,7 @@ class BecomeLeadController @Inject() (
     }
   }
 
+  // TODO - check, is this used?
   def getPromotionCleanup: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store

@@ -22,6 +22,8 @@ import play.api.data.{Form, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider.Fields._
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider.Errors._
 
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, ZoneId}
@@ -36,9 +38,9 @@ case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvide
   private val dateFormatter = DateTimeFormatter.ofPattern("d M yyyy")
 
   private def formValueMapping = tuple(
-    "day" -> text,
-    "month" -> text,
-    "year" -> text
+    Day   -> text,
+    Month -> text,
+    Year  -> text
   )
 
   override protected def mapping: Mapping[DateFormValues] =
@@ -58,19 +60,19 @@ case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvide
       )
 
   private val dateIsValid: RawFormValues => ValidationResult = {
-    case (d, m, y) if Try(s"$d$m$y".toInt).isFailure => invalid("date.invalidentry")
-    case (d, m, y) if localDateFromValues(d, m, y).isFailure => invalid("date.invalid")
+    case (d, m, y) if Try(s"$d$m$y".toInt).isFailure => invalid(DateInvalidEntry)
+    case (d, m, y) if localDateFromValues(d, m, y).isFailure => invalid(DateInvalid)
     case _ => Valid
   }
 
   private val allDateValuesEntered: RawFormValues => ValidationResult = {
-    case ("", "", "") => invalid("date.emptyfields")
-    case ("", "", _) => invalid("day-and-month.missing")
-    case (_, "", "") => invalid("month-and-year.missing")
-    case ("", _, "") => invalid("day-and-year.missing")
-    case ("", _, _) => invalid("day.missing")
-    case (_, "", _) => invalid("month.missing")
-    case (_, _, "") => invalid("year.missing")
+    case ("", "", "") => invalid(EmptyFields)
+    case ("", "", _) => invalid(DayAndMonthMissing)
+    case (_, "", "") => invalid(MonthAndYearMissing)
+    case ("", _, "") => invalid(DayAndYearMissing)
+    case ("", _, _) => invalid(DayMissing)
+    case (_, "", _) => invalid(MonthMissing)
+    case (_, _, "") => invalid(YearMissing)
     case _ => Valid
   }
 
@@ -82,10 +84,10 @@ case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvide
           val earliestAllowedDate = today.toEarliestTaxYearStart
 
           if (parsedDate.isBefore(earliestAllowedDate))
-            invalid("date.outside-allowed-tax-year-range", earliestAllowedDate.format(dateFormatter))
+            invalid(DateOutsideAllowedTaxYearRange, earliestAllowedDate.format(dateFormatter))
           else if (parsedDate.isAfter(today))
             invalid(
-              "date.in-future",
+              DateInFuture,
               earliestAllowedDate.format(dateFormatter),
               today.toTaxYearEnd.minusYears(1).format(dateFormatter)
             )
@@ -105,8 +107,33 @@ case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvide
       )
     )
 
+  // TODO - have template provide the prefix like other forms?
   private def messageKeyForError(error: String) = s"add-claim-date.error.$error"
 
   private def localDateFromValues(d: String, m: String, y: String) = Try(LocalDate.of(y.toInt, m.toInt, d.toInt))
+
+}
+
+object ClaimDateFormProvider {
+
+  object Fields {
+    val Day = "day"
+    val Month = "month"
+    val Year = "year"
+  }
+
+  object Errors {
+    val DateInFuture = "date.in-future"
+    val DateOutsideAllowedTaxYearRange = "date.outside-allowed-tax-year-range"
+    val DateInvalid = "date.invalid"
+    val DateInvalidEntry = "date.invalidentry"
+    val EmptyFields = "date.emptyfields"
+    val DayAndMonthMissing = "day-and-month.missing"
+    val MonthAndYearMissing = "month-and-year.missing"
+    val DayAndYearMissing = "day-and-year.missing"
+    val DayMissing = "day.missing"
+    val MonthMissing = "month.missing"
+    val YearMissing = "year.missing"
+  }
 
 }

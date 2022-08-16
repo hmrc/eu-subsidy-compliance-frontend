@@ -101,7 +101,6 @@ object ClaimAmountFormProvider {
 
   object Errors {
     val IncorrectFormat = "error.incorrectFormat"
-    val Required = "error.required"
     val TooBig = "error.tooBig"
     val TooSmall = "error.tooSmall"
   }

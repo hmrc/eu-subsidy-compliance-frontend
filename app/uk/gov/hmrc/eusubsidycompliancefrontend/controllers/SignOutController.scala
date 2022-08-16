@@ -54,6 +54,7 @@ class SignOutController @Inject() (
 
   import escCDSActionBuilder._
 
+  // TODO - is this val used?
   val signOutFromTimeout: Action[AnyContent] = Action { implicit request =>
     Ok(timedOutPage()).withNewSession
   }

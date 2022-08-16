@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
+import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
@@ -130,7 +131,8 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
       case _ => false
     }
 
-    foundExpectedErrorMessage mustBe true
+    foundExpectedErrorMessage mustBe true withClue
+      s"could not locate error message ending '$errorMessage' in list of errors: ${result.leftSideValue}"
   }
 
 }
