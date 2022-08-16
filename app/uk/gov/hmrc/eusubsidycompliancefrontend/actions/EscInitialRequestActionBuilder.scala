@@ -48,7 +48,6 @@ class EscInitialRequestActionBuilder @Inject() (
     with I18nSupport {
 
   private val EccEnrolmentKey = "HMRC-ESC-ORG"
-  private val CdsEnrolmentKey = "HMRC-CUS-ORG"
   private val EnrolmentIdentifier = "EORINumber"
 
   val messagesApi: MessagesApi = mcc.messagesApi
@@ -64,13 +63,8 @@ class EscInitialRequestActionBuilder @Inject() (
         Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
       ) {
         case Some(credentials) ~ Some(groupId) ~ enrolments =>
-          (enrolments.getEnrolment(EccEnrolmentKey), enrolments.getEnrolment(CdsEnrolmentKey)) match {
-            case (Some(eccEnrolment), Some(cdsEnrolment)) =>
-              val identifier: String = EscInitialRequestActionBuilder
-                .getIdentifier(eccEnrolment, cdsEnrolment, EnrolmentIdentifier)
-                .fold(throw new IllegalStateException("no eori provided"))(identity)
-              block(AuthenticatedEscRequest(credentials.providerId, groupId, request, EORI(identifier)))
-            case (Some(eccEnrolment), None) =>
+          (enrolments.getEnrolment(EccEnrolmentKey)) match {
+            case (Some(eccEnrolment)) =>
               val identifier: String = eccEnrolment
                 .getIdentifier(EnrolmentIdentifier)
                 .fold(throw new IllegalStateException("no eori provided"))(_.value)
@@ -87,14 +81,4 @@ class EscInitialRequestActionBuilder @Inject() (
       Redirect(appConfig.ggSignInUrl, Map("continue" -> Seq(request.uri), "origin" -> Seq(origin)))
 
   }
-}
-
-object EscInitialRequestActionBuilder {
-  def getIdentifier(eccEnrolment: Enrolment, cdsEnrolment: Enrolment, enrolmentIdentifier: String) =
-    for {
-      eccEnrolmentId <- eccEnrolment.getIdentifier(enrolmentIdentifier)
-      cdsEnrolmentId <- cdsEnrolment.getIdentifier(enrolmentIdentifier)
-      bool = (eccEnrolmentId.value === cdsEnrolmentId.value)
-    } yield if (bool) eccEnrolmentId.value else throw new IllegalStateException("EOris are not identical")
-
 }
