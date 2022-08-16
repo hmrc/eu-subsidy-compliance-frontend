@@ -23,6 +23,7 @@ import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolment, Enr
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -33,12 +34,13 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvi
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EscRequestCDSActionBuilder @Inject() (
+class EscRequestVerifiedEmailActionBuilder @Inject()(
   val config: Configuration,
   val env: Environment,
   val authConnector: AuthConnector,
+  val eoriEmailDatastore: EoriEmailDatastore,
   mcc: ControllerComponents
-)(implicit val executionContext: ExecutionContext, appConfig: AppConfig)
+  )(implicit val executionContext: ExecutionContext, appConfig: AppConfig)
     extends ActionBuilder[AuthenticatedEscRequest, AnyContent]
     with FrontendHeaderCarrierProvider
     with Results
@@ -47,7 +49,6 @@ class EscRequestCDSActionBuilder @Inject() (
     with I18nSupport {
 
   private val EccEnrolmentKey = "HMRC-ESC-ORG"
-  private val CdsEnrolmentKey = "HMRC-CUS-ORG"
   private val EnrolmentIdentifier = "EORINumber"
 
   val messagesApi: MessagesApi = mcc.messagesApi
@@ -58,18 +59,24 @@ class EscRequestCDSActionBuilder @Inject() (
     request: Request[A],
     block: AuthenticatedEscRequest[A] => Future[Result]
   ): Future[Result] =
-    authorised(Enrolment(CdsEnrolmentKey))
+    authorised(Enrolment(EccEnrolmentKey))
       .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](
         Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
       ) {
         case Some(credentials) ~ Some(groupId) ~ enrolments =>
-          (enrolments.getEnrolment(EccEnrolmentKey), enrolments.getEnrolment(CdsEnrolmentKey)) match {
-            case (Some(eccEnrolment), Some(cdsEnrolment)) =>
-              val identifier = EscInitialRequestActionBuilder
-                .getIdentifier(eccEnrolment, cdsEnrolment, EnrolmentIdentifier)
-                .fold(throw new IllegalStateException("no eori provided"))(identity)
-              block(AuthenticatedEscRequest(credentials.providerId, groupId, request, EORI(identifier)))
-            case (None, Some(_)) => Redirect(appConfig.eccEscSubscribeUrl).toFuture
+          (enrolments.getEnrolment(EccEnrolmentKey)) match {
+            case (Some(eccEnrolment)) =>
+              val eori = eccEnrolment
+                .getIdentifier(EnrolmentIdentifier)
+                .fold(throw new IllegalStateException("No EORI against enrollment"))(e => EORI(e.value))
+              val isValidated = for {
+                email <- eoriEmailDatastore.getEmailVerification(eori)
+                isValidated = email.isDefined
+              } yield isValidated
+              isValidated.flatMap(
+                if(_) block(AuthenticatedEscRequest(credentials.providerId, groupId, request, eori))
+                else throw new IllegalStateException("Email not valid")
+              )
             case _ => Redirect(routes.EligibilityController.getCustomsWaivers()).toFuture
           }
         case _ ~ _ => Future.failed(throw InternalError())

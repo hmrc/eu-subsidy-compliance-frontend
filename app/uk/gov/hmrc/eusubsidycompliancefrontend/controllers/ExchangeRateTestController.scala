@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscVerifiedEmailActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 
 import java.time.LocalDate
@@ -27,14 +27,14 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class ExchangeRateTestController @Inject() (
-  mcc: MessagesControllerComponents,
-  escCDSActionBuilders: EscCDSActionBuilders,
-  escService: EscService
+                                             mcc: MessagesControllerComponents,
+                                             escCDSActionBuilders: EscVerifiedEmailActionBuilders,
+                                             escService: EscService
 )(implicit val ec: ExecutionContext) extends BaseController(mcc) {
 
   import escCDSActionBuilders._
 
-  def getExchangeRate(isoDate: String): Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def getExchangeRate(isoDate: String): Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     val parsedDate = LocalDate.parse(isoDate)
 
     escService.retrieveExchangeRate(parsedDate)

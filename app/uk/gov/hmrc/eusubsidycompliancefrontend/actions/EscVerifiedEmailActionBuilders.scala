@@ -22,9 +22,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEsc
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class EscCDSActionBuilders @Inject() (
-  escRequestCDSActionBuilder: EscRequestCDSActionBuilder
+class EscVerifiedEmailActionBuilders @Inject()(
+        escRequestVerifiedEmailActionBuilder: EscRequestVerifiedEmailActionBuilder
 ) {
 
-  val withCDSAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] = escRequestCDSActionBuilder
+  val withVerifiedEmailAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] = escRequestVerifiedEmailActionBuilder
 }

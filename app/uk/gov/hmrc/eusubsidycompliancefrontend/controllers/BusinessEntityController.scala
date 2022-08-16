@@ -21,7 +21,7 @@ import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscCDSActionBuilders, EscInitialActionBuilder}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscVerifiedEmailActionBuilders, EscInitialActionBuilder}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{AddMemberToBusinessEntity, AddMemberToLead, RemoveMemberToBusinessEntity, RemoveMemberToLead}
@@ -41,19 +41,19 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BusinessEntityController @Inject() (
-  mcc: MessagesControllerComponents,
-  escInitialActionBuilders: EscInitialActionBuilder,
-  escCDSActionBuilder: EscCDSActionBuilders,
-  override val store: Store,
-  override val escService: EscService,
-  timeProvider: TimeProvider,
-  emailService: EmailService,
-  auditService: AuditService,
-  addBusinessPage: AddBusinessPage,
-  eoriPage: BusinessEntityEoriPage,
-  removeYourselfBEPage: BusinessEntityRemoveYourselfPage,
-  businessEntityCyaPage: BusinessEntityCYAPage,
-  removeBusinessPage: RemoveBusinessPage
+                                           mcc: MessagesControllerComponents,
+                                           escInitialActionBuilders: EscInitialActionBuilder,
+                                           escCDSActionBuilder: EscVerifiedEmailActionBuilders,
+                                           override val store: Store,
+                                           override val escService: EscService,
+                                           timeProvider: TimeProvider,
+                                           emailService: EmailService,
+                                           auditService: AuditService,
+                                           addBusinessPage: AddBusinessPage,
+                                           eoriPage: BusinessEntityEoriPage,
+                                           removeYourselfBEPage: BusinessEntityRemoveYourselfPage,
+                                           businessEntityCyaPage: BusinessEntityCYAPage,
+                                           removeBusinessPage: RemoveBusinessPage
 )(implicit
   val appConfig: AppConfig,
   val executionContext: ExecutionContext
@@ -64,7 +64,7 @@ class BusinessEntityController @Inject() (
   import escInitialActionBuilders._
   import escCDSActionBuilder._
 
-  def getAddBusinessEntity: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def getAddBusinessEntity: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
       store
@@ -84,7 +84,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postAddBusinessEntity: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def postAddBusinessEntity: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def handleValidAnswer(form: FormValues) =
@@ -103,7 +103,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def getEori: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def getEori: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       store.get[BusinessEntityJourney].flatMap {
@@ -120,7 +120,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postEori: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def postEori: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     val businessEntityEori = "businessEntityEori"
@@ -147,7 +147,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def getCheckYourAnswers: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def getCheckYourAnswers: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     withLeadUndertaking { _ =>
@@ -163,7 +163,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postCheckYourAnswers: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def postCheckYourAnswers: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def handleValidAnswersC(undertaking: Undertaking) = for {
@@ -206,7 +206,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = withCDSAuthenticatedUser.async {
+  def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async {
     implicit request =>
       withLeadUndertaking { _ =>
         escService.retrieveUndertaking(EORI(eoriEntered)).map {
@@ -232,7 +232,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = withCDSAuthenticatedUser.async {
+  def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async {
     implicit request =>
       implicit val eori: EORI = request.eoriNumber
 
