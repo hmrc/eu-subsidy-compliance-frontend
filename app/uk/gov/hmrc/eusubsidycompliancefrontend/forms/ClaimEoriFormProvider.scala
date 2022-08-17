@@ -21,6 +21,7 @@ import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.{Form, Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Errors._
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Fields._
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{OptionalEORI, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
@@ -69,9 +70,7 @@ object ClaimEoriFormProvider {
   }
 
   object Errors {
-    val IncorrectFormat = "error.incorrect-format"
     val NotInUndertaking = "error.not-in-undertaking"
-    val Required = "error.required"
   }
 
 }

@@ -292,7 +292,7 @@ confirm-converted-amount.p2 = We’ve converted your amount from pounds sterling
 add-claim-date.title=What date were you awarded the payment?
 add-claim-date.hint=For example, 27 07 2020
 
-add-claim-date.error.emptyfields = Enter the date you were awarded the payment
+add-claim-date.error.required = Enter the date you were awarded the payment
 add-claim-date.error.day-missing = The date you were awarded the payment must include a day
 add-claim-date.error.day-and-month-missing = The date you were awarded the payment must include a day and month
 add-claim-date.error.day-and-year-missing = The date you were awarded the payment must include a day and year

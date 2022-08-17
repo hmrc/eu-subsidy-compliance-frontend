@@ -24,6 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.json.digital.dateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import ClaimDateFormProvider.Errors._
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
 
 import java.time.LocalDate
 
@@ -40,11 +41,11 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
   "claim date form validation" must {
 
     "return empty fields error if all date fields are empty" in {
-      validateAndCheckError("", "", "")(EmptyFields)
+      validateAndCheckError("", "", "")(Required)
     }
 
     "return empty fields error if all date fields just contain whitespace" in {
-      validateAndCheckError(" ", " ", " ")(EmptyFields)
+      validateAndCheckError(" ", " ", " ")(Required)
     }
 
     "return invalid entry error if non-numeric values are entered" in {

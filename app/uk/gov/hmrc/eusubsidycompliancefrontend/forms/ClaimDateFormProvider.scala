@@ -24,6 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTax
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider.Fields._
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider.Errors._
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
 
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, ZoneId}
@@ -65,7 +66,7 @@ case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvide
   }
 
   private val allDateValuesEntered: RawFormValues => ValidationResult = {
-    case ("", "", "") => invalid(EmptyFields)
+    case ("", "", "") => invalid(Required)
     case ("", "", _) => invalid(DayAndMonthMissing)
     case (_, "", "") => invalid(MonthAndYearMissing)
     case ("", _, "") => invalid(DayAndYearMissing)
@@ -121,15 +122,10 @@ object ClaimDateFormProvider {
   }
 
   object Errors {
-    // TODO - this could use a common definition
-    val IncorrectFormat             = "error.incorrect-format"
-
     val DayAndMonthMissing          = "error.day-and-month-missing"
     val DayAndYearMissing           = "error.day-and-year-missing"
     val DayMissing                  = "error-day-missing"
-    val EmptyFields                 = "error.emptyfields"
     val InFuture                    = "error.in-future"
-
     val MonthAndYearMissing         = "error.month-and-year-missing"
     val MonthMissing                = "error.month-missing"
     val OutsideAllowedTaxYearRange  = "error.outside-allowed-tax-year-range"
