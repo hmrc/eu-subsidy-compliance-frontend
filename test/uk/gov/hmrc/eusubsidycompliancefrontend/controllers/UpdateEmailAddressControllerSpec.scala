@@ -22,7 +22,7 @@ import play.api.Configuration
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailVerificationService, EscService, Store}
 
 class UpdateEmailAddressControllerSpec
     extends ControllerSpec
@@ -34,6 +34,7 @@ class UpdateEmailAddressControllerSpec
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
+    bind[EmailVerificationService].toInstance(mockEmailVerificationService),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService)
   )

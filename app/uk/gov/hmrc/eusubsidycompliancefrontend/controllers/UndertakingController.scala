@@ -21,7 +21,7 @@ import cats.implicits._
 import play.api.data.Form
 import play.api.data.Forms.{email, mapping}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscVerifiedEmailActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder, EscInitialRequestActionBuilder, EscVerifiedEmailActionBuilders}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
@@ -47,6 +47,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class UndertakingController @Inject() (
                                         mcc: MessagesControllerComponents,
                                         escCDSActionBuilder: EscVerifiedEmailActionBuilders,
+                                        initialActionBuilder: EscInitialActionBuilder,
                                         override val store: Store,
                                         override val escService: EscService,
                                         emailService: EmailService,
@@ -71,7 +72,9 @@ class UndertakingController @Inject() (
     with FormHelpers {
 
   import escCDSActionBuilder._
-  def firstEmptyPage: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
+  import initialActionBuilder._
+
+  def firstEmptyPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).map { journey =>
       journey.firstEmpty
@@ -79,7 +82,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getUndertakingName: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
+  def getUndertakingName: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       val form = journey.name.value.fold(undertakingNameForm)(name => undertakingNameForm.fill(FormValues(name)))
@@ -87,7 +90,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def postUndertakingName: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
+  def postUndertakingName: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
@@ -107,7 +110,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getSector: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
+  def getSector: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       ensureUndertakingJourneyPresent(_) { journey =>
@@ -129,7 +132,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def postSector: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
+  def postSector: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     processFormSubmission[UndertakingJourney] { journey =>
       undertakingSectorForm
@@ -151,7 +154,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getConfirmEmail: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
+  def getConfirmEmail: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       ensureUndertakingJourneyPresent(_) { journey =>
@@ -175,7 +178,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def postConfirmEmail: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
+  def postConfirmEmail: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     val verifiedEmail = for {
       stored <- emailVerificationService.getEmailVerification(request.eoriNumber)
@@ -219,7 +222,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getVerifyEmail(verificationId: String): Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
+  def getVerifyEmail(verificationId: String): Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>

@@ -20,13 +20,14 @@ import cats.implicits.catsSyntaxOptionId
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers
 import play.api.http.Status
+import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, route, running, status, writeableOf_AnyContentAsEmpty}
 import play.api.{Configuration, inject}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EscService, Store}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailVerificationService, EscService, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, subsidyRetrieveForDate, undertaking, undertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
@@ -51,6 +52,7 @@ class FinancialDashboardControllerSpec
   override def overrideBindings: List[GuiceableModule] = List(
     inject.bind[AuthConnector].toInstance(mockAuthConnector),
     inject.bind[Store].toInstance(mockJourneyStore),
+    inject.bind[EmailVerificationService].toInstance(mockEmailVerificationService),
     inject.bind[EscService].toInstance(mockEscService),
     inject.bind[TimeProvider].toInstance(fakeTimeProvider)
   )
@@ -67,7 +69,7 @@ class FinancialDashboardControllerSpec
     "getFinancialDashboard is called" must {
 
       "return the dashboard page for a logged in user with a valid EORI" in {
-        mockAuthWithEccEnrolmentOnly(eori1)
+        mockAuthWithNecessaryEnrolmentNoEmailVerification(eori1)
         mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
         mockRetrieveSubsidy(subsidyRetrieveForDate(fakeTimeProvider.today))(undertakingSubsidies.toFuture)
 

@@ -58,6 +58,7 @@ class BusinessEntityControllerSpec
 
   override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
+    bind[EmailVerificationService].toInstance(mockEmailVerificationService),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[EmailService].toInstance(mockEmailService),
@@ -737,7 +738,7 @@ class BusinessEntityControllerSpec
 
         "call to retrieve undertaking returns undertaking having no BE with that eori" in {
           inSequence {
-            mockAuthWithEORIEnrolment(eori4)
+            mockAuthWithNecessaryEnrolmentNoEmailVerification(eori4)
             mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
           }
           assertThrows[Exception](await(performAction()))
@@ -748,7 +749,7 @@ class BusinessEntityControllerSpec
       "display the page" when {
         def test(undertaking: Undertaking, inputDate: Option[String]): Unit = {
           inSequence {
-            mockAuthWithEORIEnrolment(eori4)
+            mockAuthWithNecessaryEnrolmentNoEmailVerification(eori4)
             mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
           }
           checkPageIsDisplayed(
@@ -788,7 +789,7 @@ class BusinessEntityControllerSpec
       "throw a technical error" when {
         "call to retrieve undertaking returns undertaking having no BE with that eori" in {
           inSequence {
-            mockAuthWithEORIEnrolment(eori4)
+            mockAuthWithNecessaryEnrolmentNoEmailVerification(eori4)
             mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
           }
           assertThrows[Exception](await(performAction()))
@@ -800,7 +801,7 @@ class BusinessEntityControllerSpec
 
         "nothing is selected" in {
           inSequence {
-            mockAuthWithEORIEnrolment(eori4)
+            mockAuthWithNecessaryEnrolmentNoEmailVerification(eori4)
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
           }
           checkFormErrorIsDisplayed(
@@ -815,9 +816,9 @@ class BusinessEntityControllerSpec
 
       "redirect to next page" when {
 
-        "user selected yes as input" when {
+        "user selected yes as input" in {
           inSequence {
-            mockAuthWithEORIEnrolment(eori4)
+            mockAuthWithNecessaryEnrolmentNoEmailVerification(eori4)
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
           }
           checkIsRedirect(
@@ -828,7 +829,7 @@ class BusinessEntityControllerSpec
 
         "user selected No as input" in {
           inSequence {
-            mockAuthWithEORIEnrolment(eori4)
+            mockAuthWithNecessaryEnrolmentNoEmailVerification(eori4)
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
           }
           checkIsRedirect(

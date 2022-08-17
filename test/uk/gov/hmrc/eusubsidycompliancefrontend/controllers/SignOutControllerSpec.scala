@@ -24,7 +24,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{MemberRemoveSelfToBusinessEntity, MemberRemoveSelfToLead}
@@ -51,8 +51,9 @@ class SignOutControllerSpec
   override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
-    bind[EscService].toInstance(mockEscService),
     bind[EmailService].toInstance(mockEmailService),
+    bind[EscService].toInstance(mockEscService),
+    bind[EmailVerificationService].toInstance(mockEmailVerificationService),
     bind[TimeProvider].toInstance(mockTimeProvider),
     bind[AuditService].toInstance(mockAuditService)
   )
@@ -109,7 +110,6 @@ class SignOutControllerSpec
         "call to retrieve email fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolment(eori4)
-            mockRetrieveEmail(eori4)(Left(ConnectorError(exception)))
           }
 
           assertThrows[Exception](await(performAction()))

@@ -27,6 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailVerificationService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
@@ -35,11 +36,11 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EscRequestVerifiedEmailActionBuilder @Inject()(
-  val config: Configuration,
-  val env: Environment,
-  val authConnector: AuthConnector,
-  val eoriEmailDatastore: EoriEmailDatastore,
-  mcc: ControllerComponents
+                                                      val config: Configuration,
+                                                      val env: Environment,
+                                                      val authConnector: AuthConnector,
+                                                      val emailVerificationService: EmailVerificationService,
+                                                      mcc: ControllerComponents
   )(implicit val executionContext: ExecutionContext, appConfig: AppConfig)
     extends ActionBuilder[AuthenticatedEscRequest, AnyContent]
     with FrontendHeaderCarrierProvider
@@ -59,7 +60,7 @@ class EscRequestVerifiedEmailActionBuilder @Inject()(
     request: Request[A],
     block: AuthenticatedEscRequest[A] => Future[Result]
   ): Future[Result] =
-    authorised(Enrolment(EccEnrolmentKey))
+    authorised()
       .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](
         Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
       ) {
@@ -70,7 +71,7 @@ class EscRequestVerifiedEmailActionBuilder @Inject()(
                 .getIdentifier(EnrolmentIdentifier)
                 .fold(throw new IllegalStateException("No EORI against enrollment"))(e => EORI(e.value))
               val isValidated = for {
-                email <- eoriEmailDatastore.getEmailVerification(eori)
+                email <- emailVerificationService.getEmailVerification(eori)
                 isValidated = email.isDefined
               } yield isValidated
               isValidated.flatMap(

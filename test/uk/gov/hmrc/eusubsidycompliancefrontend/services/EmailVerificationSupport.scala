@@ -19,7 +19,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import org.mongodb.scala.result.UpdateResult
 import org.scalamock.scalatest.MockFactory
 import play.api.mvc.{RequestHeader, Result}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail, EmailVerificationResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AuthSupport
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailVerificationResponse, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,9 +28,8 @@ import uk.gov.hmrc.mongo.cache.CacheItem
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait EmailVerificationSupport { this: MockFactory =>
+trait EmailVerificationSupport { this: MockFactory with AuthSupport =>
 
-  val mockEmailVerificationService = mock[EmailVerificationService]
 
   def mockEmailVerification(eori: EORI)(result: Either[ConnectorError, CacheItem]) =
     (mockEmailVerificationService

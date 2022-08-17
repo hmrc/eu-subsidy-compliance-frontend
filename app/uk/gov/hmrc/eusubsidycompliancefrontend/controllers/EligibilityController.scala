@@ -94,12 +94,12 @@ class EligibilityController @Inject() (
       }
   }
 
-  def getCustomsWaivers: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
+  def getCustomsWaivers: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
     val form = customsWaiversForm
     Ok(customsWaiversPage(form)).toFuture
   }
 
-  def postCustomsWaivers: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
+  def postCustomsWaivers: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
     customsWaiversForm
       .bindFromRequest()
       .fold(
@@ -112,12 +112,12 @@ class EligibilityController @Inject() (
     if (form.value == "true") routes.EligibilityController.getEoriCheck()
     else routes.EligibilityController.getWillYouClaim()
 
-  def getWillYouClaim: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
+  def getWillYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
     val form = willYouClaimForm
     Ok(willYouClaimPage(form, routes.EligibilityController.getCustomsWaivers().url)).toFuture
   }
 
-  def postWillYouClaim: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
+  def postWillYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
     willYouClaimForm
       .bindFromRequest()
       .fold(
@@ -129,7 +129,7 @@ class EligibilityController @Inject() (
 
   }
 
-  def getNotEligible: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
+  def getNotEligible: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
     Ok(notEligiblePage()).toFuture
   }
 

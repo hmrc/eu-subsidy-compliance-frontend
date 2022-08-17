@@ -48,6 +48,7 @@ class BecomeLeadControllerSpec
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
+    bind[EmailVerificationService].toInstance(mockEmailVerificationService),
     bind[EscService].toInstance(mockEscService),
     bind[EmailService].toInstance(mockEmailService),
     bind[AuditService].toInstance(mockAuditService)

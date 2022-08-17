@@ -23,7 +23,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -38,6 +38,7 @@ class EligibilityControllerSpec
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
+    bind[EmailVerificationService].toInstance(mockEmailVerificationService),
     bind[Store].toInstance(mockJourneyStore),
     bind[AuditService].toInstance(mockAuditService),
     bind[EmailService].toInstance(mockEmailService)
