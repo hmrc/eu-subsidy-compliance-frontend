@@ -42,7 +42,7 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
 
   private val enteredEoriIsValid = Constraint[String] { eori: String =>
     if (getValidEori(eori).matches(EORI.regex)) Valid
-    else Invalid(Format)
+    else Invalid(IncorrectFormat)
   }
 
   private val eoriIsPartOfUndertaking = Constraint[String] { eori: String =>
@@ -69,7 +69,7 @@ object ClaimEoriFormProvider {
   }
 
   object Errors {
-    val Format = "error.format" // See incorrectFormat in ClaimAmountFormProvider
+    val IncorrectFormat = "error.incorrect-format"
     val NotInUndertaking = "error.not-in-undertaking"
     val Required = "error.required"
   }

@@ -936,7 +936,7 @@ class SubsidyControllerSpec
         "yes is selected but eori entered is invalid" in {
           testFormError(
             Some(List("should-claim-eori" -> "true", "claim-eori" -> "GB1234567890")),
-            "claim-eori.error.format"
+            "claim-eori.error.incorrect-format"
           )
 
         }

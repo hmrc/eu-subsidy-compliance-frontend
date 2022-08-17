@@ -312,7 +312,7 @@ add-claim-eori.title=Would you like to add an EORI number for the business that 
 add-claim-eori.label=This must be a GB EORI number
 add-claim-eori.hint=The EORI number must be from a business already in your undertaking. This is for your own records. It is not a mandatory field.
 should-claim-eori.error.required=Select yes if you would like to add a valid EORI number
-claim-eori.error.format=GB EORI number must be 12 or 15 digits
+claim-eori.error.incorrect-format=GB EORI number must be 12 or 15 digits
 claim-eori.error.required=GB EORI number must be 12 or 15 digits
 claim-eori.error.not-in-undertaking=The EORI number you entered is not part of this undertaking. Enter a valid EORI number.
 
