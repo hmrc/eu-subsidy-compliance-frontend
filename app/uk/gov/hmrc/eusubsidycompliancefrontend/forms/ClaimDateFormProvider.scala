@@ -60,9 +60,8 @@ case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvide
       )
 
   private val dateIsValid: RawFormValues => ValidationResult = {
-    case (d, m, y) if Try(s"$d$m$y".toInt).isFailure => invalid(DateInvalidEntry)
-    case (d, m, y) if localDateFromValues(d, m, y).isFailure => invalid(DateInvalid)
-    case _ => Valid
+    case (d, m, y) if Try(s"$d$m$y").isSuccess && localDateFromValues(d, m, y).isSuccess => Valid
+    case _ => invalid(IncorrectFormat)
   }
 
   private val allDateValuesEntered: RawFormValues => ValidationResult = {
@@ -84,10 +83,10 @@ case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvide
           val earliestAllowedDate = today.toEarliestTaxYearStart
 
           if (parsedDate.isBefore(earliestAllowedDate))
-            invalid(DateOutsideAllowedTaxYearRange, earliestAllowedDate.format(dateFormatter))
+            invalid(OutsideAllowedTaxYearRange, earliestAllowedDate.format(dateFormatter))
           else if (parsedDate.isAfter(today))
             invalid(
-              DateInFuture,
+              InFuture,
               earliestAllowedDate.format(dateFormatter),
               today.toTaxYearEnd.minusYears(1).format(dateFormatter)
             )
@@ -107,8 +106,7 @@ case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvide
       )
     )
 
-  // TODO - have template provide the prefix like other forms?
-  private def messageKeyForError(error: String) = s"add-claim-date.error.$error"
+  private def messageKeyForError(error: String) = s"add-claim-date.$error"
 
   private def localDateFromValues(d: String, m: String, y: String) = Try(LocalDate.of(y.toInt, m.toInt, d.toInt))
 
@@ -117,23 +115,25 @@ case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvide
 object ClaimDateFormProvider {
 
   object Fields {
-    val Day = "day"
+    val Day   = "day"
     val Month = "month"
-    val Year = "year"
+    val Year  = "year"
   }
 
   object Errors {
-    val DateInFuture = "date.in-future"
-    val DateOutsideAllowedTaxYearRange = "date.outside-allowed-tax-year-range"
-    val DateInvalid = "date.invalid"
-    val DateInvalidEntry = "date.invalidentry"
-    val EmptyFields = "date.emptyfields"
-    val DayAndMonthMissing = "day-and-month.missing"
-    val MonthAndYearMissing = "month-and-year.missing"
-    val DayAndYearMissing = "day-and-year.missing"
-    val DayMissing = "day.missing"
-    val MonthMissing = "month.missing"
-    val YearMissing = "year.missing"
+    // TODO - this could use a common definition
+    val IncorrectFormat             = "error.incorrect-format"
+
+    val DayAndMonthMissing          = "error.day-and-month-missing"
+    val DayAndYearMissing           = "error.day-and-year-missing"
+    val DayMissing                  = "error-day-missing"
+    val EmptyFields                 = "error.emptyfields"
+    val InFuture                    = "error.in-future"
+
+    val MonthAndYearMissing         = "error.month-and-year-missing"
+    val MonthMissing                = "error.month-missing"
+    val OutsideAllowedTaxYearRange  = "error.outside-allowed-tax-year-range"
+    val YearMissing                 = "error.year-missing"
   }
 
 }

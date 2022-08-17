@@ -567,7 +567,7 @@ class SubsidyControllerSpec
             displayError(
               ClaimAmountFormProvider.Fields.CurrencyCode -> c.entryName,
               ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "123.4"
-            )(s"add-claim-amount.claim-amount-${c.entryName.toLowerCase}.error.incorrectFormat")
+            )(s"add-claim-amount.claim-amount-${c.entryName.toLowerCase}.error.incorrect-format")
           }
         }
 

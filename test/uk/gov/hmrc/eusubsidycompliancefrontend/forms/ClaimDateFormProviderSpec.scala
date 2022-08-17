@@ -23,6 +23,7 @@ import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.json.digital.dateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
+import ClaimDateFormProvider.Errors._
 
 import java.time.LocalDate
 
@@ -39,51 +40,51 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
   "claim date form validation" must {
 
     "return empty fields error if all date fields are empty" in {
-      validateAndCheckError("", "", "")("date.emptyfields")
+      validateAndCheckError("", "", "")(EmptyFields)
     }
 
     "return empty fields error if all date fields just contain whitespace" in {
-      validateAndCheckError(" ", " ", " ")("date.emptyfields")
+      validateAndCheckError(" ", " ", " ")(EmptyFields)
     }
 
     "return invalid entry error if non-numeric values are entered" in {
-      validateAndCheckError("foo", "bar", "baz")("date.invalidentry")
+      validateAndCheckError("foo", "bar", "baz")(IncorrectFormat)
     }
 
     "return day missing error if day value not present" in {
-      validateAndCheckError("", "1", "2")("day.missing")
+      validateAndCheckError("", "1", "2")(DayMissing)
     }
 
     "return month missing error if month value not present" in {
-      validateAndCheckError("1", "", "2")("month.missing")
+      validateAndCheckError("1", "", "2")(MonthMissing)
     }
 
     "return year missing error if year value not present" in {
-      validateAndCheckError("1", "2", "")("year.missing")
+      validateAndCheckError("1", "2", "")(YearMissing)
     }
 
     "return day and month missing error if only year value present" in {
-      validateAndCheckError("", "", "2")("day-and-month.missing")
+      validateAndCheckError("", "", "2")(DayAndMonthMissing)
     }
 
     "return month and year missing error if only day value present" in {
-      validateAndCheckError("1", "", "")("month-and-year.missing")
+      validateAndCheckError("1", "", "")(MonthAndYearMissing)
     }
 
     "return day and year missing error if only month value present" in {
-      validateAndCheckError("", "1", "")("day-and-year.missing")
+      validateAndCheckError("", "1", "")(DayAndYearMissing)
     }
 
     "return date invalid if values do not form a valid date" in {
-      validateAndCheckError("50", "20", "2000")("date.invalid")
+      validateAndCheckError("50", "20", "2000")(IncorrectFormat)
     }
 
     "return date in future error if date is in the future" in {
-      validateAndCheckError((day + 1).toString, "1", "9999")("date.in-future", "6 4 2019", "5 4 2021")
+      validateAndCheckError((day + 1).toString, "1", "9999")(InFuture, "6 4 2019", "5 4 2021")
     }
 
     "return date outside of tax year range error for date before the start of the tax year range" in {
-      validateAndCheckError("1", "1", "1900")("date.outside-allowed-tax-year-range", "6 4 2019")
+      validateAndCheckError("1", "1", "1900")(OutsideAllowedTaxYearRange, "6 4 2019")
     }
 
     "return no errors for todays date" in {
@@ -127,7 +128,7 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
     )
 
     val foundExpectedErrorMessage = result.leftSideValue match {
-      case Left(errors) => errors.contains(FormError("", s"add-claim-date.error.$errorMessage", args))
+      case Left(errors) => errors.contains(FormError("", s"add-claim-date.$errorMessage", args))
       case _ => false
     }
 

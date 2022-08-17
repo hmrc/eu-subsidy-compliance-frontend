@@ -266,13 +266,13 @@ add-claim-amount.currency-code.error.required = Select the currency the payment 
 
 # GBP field validation errors
 add-claim-amount.claim-amount-gbp.error.required = Enter number value of subsidy allocated, like 248.56
-add-claim-amount.claim-amount-gbp.error.incorrectFormat = Enter number value of subsidy allocated, like 248.56
+add-claim-amount.claim-amount-gbp.error.incorrect-format = Enter number value of subsidy allocated, like 248.56
 add-claim-amount.claim-amount-gbp.error.tooBig=Subsidy amount must be fewer than 17 characters
 add-claim-amount.claim-amount-gbp.error.tooSmall=Subsidy amount must be more than zero
 
 # EUR field validation errors
 add-claim-amount.claim-amount-eur.error.required = Enter number value of subsidy allocated, like 248.56
-add-claim-amount.claim-amount-eur.error.incorrectFormat = Enter number value of subsidy allocated, like 248.56
+add-claim-amount.claim-amount-eur.error.incorrect-format = Enter number value of subsidy allocated, like 248.56
 add-claim-amount.claim-amount-eur.error.tooBig=Subsidy amount must be fewer than 17 characters
 add-claim-amount.claim-amount-eur.error.tooSmall=Subsidy amount must be more than zero
 
@@ -291,17 +291,17 @@ confirm-converted-amount.p2 = We’ve converted your amount from pounds sterling
 
 add-claim-date.title=What date were you awarded the payment?
 add-claim-date.hint=For example, 27 07 2020
-add-claim-date.error.date.emptyfields=Enter the date you were awarded the payment
-add-claim-date.error.day.missing=The date you were awarded the payment must include a day
-add-claim-date.error.day-and-month.missing=The date you were awarded the payment must include a day and month
-add-claim-date.error.day-and-year.missing=The date you were awarded the payment must include a day and year
-add-claim-date.error.month.missing=The date you were awarded the payment must include a month
-add-claim-date.error.month-and-year.missing=The date you were awarded the payment must include a month and year
-add-claim-date.error.year.missing=The date you were awarded the payment must include a year
-add-claim-date.error.date.invalidentry=Enter a real date, like 23 11 2019
-add-claim-date.error.date.invalid=Enter a real date, like 23 11 2019
-add-claim-date.error.date.outside-allowed-tax-year-range = Enter the date you were awarded the payment. Date must be {0}, or later.
-add-claim-date.error.date.in-future = The date you were awarded the payment must be in the past
+
+add-claim-date.error.emptyfields = Enter the date you were awarded the payment
+add-claim-date.error.day-missing = The date you were awarded the payment must include a day
+add-claim-date.error.day-and-month-missing = The date you were awarded the payment must include a day and month
+add-claim-date.error.day-and-year-missing = The date you were awarded the payment must include a day and year
+add-claim-date.error.month-missing = The date you were awarded the payment must include a month
+add-claim-date.error.month-and-year-missing = The date you were awarded the payment must include a month and year
+add-claim-date.error.year-missing = The date you were awarded the payment must include a year
+add-claim-date.error.incorrect-format = Enter a real date, like 23 11 2019
+add-claim-date.error.outside-allowed-tax-year-range = Enter the date you were awarded the payment. Date must be {0}, or later.
+add-claim-date.error.in-future = The date you were awarded the payment must be in the past
 
 add-claim-public-authority.title=Which public authority granted the payment?
 add-claim-public-authority.hint=For example, Invest NI, NI Direct.
