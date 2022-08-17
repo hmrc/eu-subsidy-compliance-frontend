@@ -61,7 +61,7 @@ class NoClaimNotificationControllerSpec
       "display the page" in {
 
         inSequence {
-          mockAuthWithNecessaryEnrolment()
+          mockAuthWithNecessaryEnrolmentWithValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
         }
         checkPageIsDisplayed(
@@ -114,7 +114,7 @@ class NoClaimNotificationControllerSpec
 
         "call to update  Nil return journey fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
+            mockAuthWithNecessaryEnrolmentWithValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeToday(currentDay)
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Left(ConnectorError(exception)))
@@ -124,7 +124,7 @@ class NoClaimNotificationControllerSpec
 
         "call to create Subsidy fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
+            mockAuthWithNecessaryEnrolmentWithValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeToday(currentDay)
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
@@ -141,7 +141,7 @@ class NoClaimNotificationControllerSpec
 
         "check box is not checked" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
+            mockAuthWithNecessaryEnrolmentWithValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           }
 
@@ -156,7 +156,7 @@ class NoClaimNotificationControllerSpec
       "redirect to next page " in {
 
         inSequence {
-          mockAuthWithNecessaryEnrolment()
+          mockAuthWithNecessaryEnrolmentWithValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeToday(currentDay)
           mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))

@@ -69,6 +69,9 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
   def mockNoPredicateAuthWithNecessaryEnrolment(eori: EORI = eori1): Unit =
     mockAuthWithAuthRetrievalsNoPredicate(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
 
+  def mockAuthWithNecessaryEnrolmentWithValidEmail(eori: EORI = eori1): Unit =
+    mockAuthWithECCAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
+
   def mockAuthWithNecessaryEnrolment(eori: EORI = eori1): Unit =
     mockAuthWithECCAuthRetrievals(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
 

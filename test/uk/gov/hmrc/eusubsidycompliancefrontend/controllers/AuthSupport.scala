@@ -21,13 +21,11 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.{EmptyPredicate, Predicate}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, EmptyRetrieval, Retrieval, ~}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailVerificationService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.mongo.cache.CacheItem
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -72,11 +70,17 @@ trait AuthSupport { this: ControllerSpec =>
       (new ~(Credentials(providerId, "type").some, groupIdentifier)).toFuture
     )
 
-  def mockAuthWithECCAuthRetrievals(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) = {
+  def mockAuthWithECCAuthRetrievalsWithEmailCheck(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) = {
     mockAuth(EmptyPredicate, authRetrievals)(
       (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
     mockGetEmailVerification()
+  }
+
+  def mockAuthWithECCAuthRetrievals(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) = {
+    mockAuth(EmptyPredicate, authRetrievals)(
+      (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
+    )
   }
 
   def mockAuthWithECCAuthRetrievalsNoEmailVerification(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) =

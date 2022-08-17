@@ -61,7 +61,7 @@ class UpdateEmailAddressControllerSpec
 
       "display the page" in {
         inSequence {
-          mockAuthWithNecessaryEnrolment()
+          mockAuthWithNecessaryEnrolmentWithValidEmail()
         }
         checkPageIsDisplayed(
           performAction(),
@@ -82,7 +82,7 @@ class UpdateEmailAddressControllerSpec
 
       "display the page" in {
         inSequence {
-          mockAuthWithNecessaryEnrolment()
+          mockAuthWithNecessaryEnrolmentWithValidEmail()
         }
         checkPageIsDisplayed(
           performAction(),
@@ -103,7 +103,7 @@ class UpdateEmailAddressControllerSpec
 
       "redirect to next page" in {
         inSequence {
-          mockAuthWithNecessaryEnrolment()
+          mockAuthWithNecessaryEnrolmentWithValidEmail()
         }
         checkIsRedirect(performAction(), redirectUrl)
       }

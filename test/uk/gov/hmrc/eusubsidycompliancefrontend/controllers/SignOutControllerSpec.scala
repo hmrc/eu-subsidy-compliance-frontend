@@ -24,7 +24,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{MemberRemoveSelfToBusinessEntity, MemberRemoveSelfToLead}
@@ -109,7 +109,7 @@ class SignOutControllerSpec
 
         "call to retrieve email fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment(eori4)
+            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
           }
 
           assertThrows[Exception](await(performAction()))
@@ -117,7 +117,7 @@ class SignOutControllerSpec
 
         "call to retrieve Undertaking fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment(eori4)
+            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori4)(Future.failed(exception))
           }
@@ -126,7 +126,7 @@ class SignOutControllerSpec
 
         "call to remove member fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment(eori4)
+            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(currentDate)
@@ -141,7 +141,7 @@ class SignOutControllerSpec
 
         def testDisplay(effectiveDate: String): Unit = {
           inSequence {
-            mockAuthWithNecessaryEnrolment(eori4)
+            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(currentDate)
@@ -168,7 +168,7 @@ class SignOutControllerSpec
 
         "email address is unverified" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment(eori4)
+            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, validEmailAddress.some)))
           }
           checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateUnverifiedEmailAddress().url)
@@ -176,7 +176,7 @@ class SignOutControllerSpec
 
         "email address is Undeliverable" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment(eori4)
+            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.UnDeliverableEmail, validEmailAddress.some)))
           }
           checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateUndeliveredEmailAddress().url)

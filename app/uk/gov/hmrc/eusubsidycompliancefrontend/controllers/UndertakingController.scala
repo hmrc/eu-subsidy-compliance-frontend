@@ -21,16 +21,16 @@ import cats.implicits._
 import play.api.data.Form
 import play.api.data.Forms.{email, mapping}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder, EscInitialRequestActionBuilder, EscVerifiedEmailActionBuilders}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder, EscVerifiedEmailActionBuilders}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUndertaking, UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailTemplate, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -198,6 +198,7 @@ class UndertakingController @Inject() (
             {
               case OptionalEmailFormInput("true", None) =>
                 for {
+                  _ <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
                   _ <- emailVerificationService.verifyEori(request.eoriNumber)
                   _ <- store.update[UndertakingJourney](_.setVerifiedEmail(email))
                 } yield Redirect(routes.UndertakingController.getCheckAnswers())
