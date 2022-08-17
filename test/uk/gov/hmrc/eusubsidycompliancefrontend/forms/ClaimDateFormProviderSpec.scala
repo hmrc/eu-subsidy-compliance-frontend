@@ -24,6 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.json.digital.dateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import ClaimDateFormProvider.Errors._
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider.Fields.{Day, Month, Year}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
 
 import java.time.LocalDate
@@ -109,9 +110,9 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
   private def validateAndCheckSuccess(d: String, m: String, y: String) = {
     val result: Either[Seq[FormError], DateFormValues] = underTest.form.mapping.bind(
       Map(
-        "day" -> d,
-        "month" -> m,
-        "year" -> y
+        Day   -> d,
+        Month -> m,
+        Year  -> y
       )
     )
     val date = LocalDate.parse(LocalDate.of(y.toInt, m.toInt, d.toInt).format(dateFormatter), dateFormatter)
@@ -122,9 +123,9 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
   private def validateAndCheckError(d: String, m: String, y: String)(errorMessage: String, args: String*) = {
     val result = underTest.form.mapping.bind(
       Map(
-        "day" -> d,
-        "month" -> m,
-        "year" -> y
+        Day   -> d,
+        Month -> m,
+        Year  -> y
       )
     )
 
