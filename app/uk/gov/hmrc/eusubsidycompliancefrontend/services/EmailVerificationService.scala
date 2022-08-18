@@ -27,6 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailVerificationResponse, _}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.util.UUID
 import javax.inject.Singleton
@@ -35,15 +36,20 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class EmailVerificationService @Inject() (
    emailVerificationConnector: EmailVerificationConnector,
-   eoriEmailDatastore: EoriEmailDatastore
+   eoriEmailDatastore: EoriEmailDatastore,
+   servicesConfig: ServicesConfig
 ) extends Logging {
+
+  lazy private val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")
+
+  def useAbsoluteUrls: Boolean = emailVerificationBaseUrl.contains("localhost")
 
   def verifyEmail(credId: String, email: String, verificationId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, h: RequestHeader): Future[Option[EmailVerificationResponse]] = {
     emailVerificationConnector
       .verifyEmail(
         EmailVerificationRequest(
           credId = credId,
-          continueUrl = routes.UndertakingController.getVerifyEmail(verificationId).absoluteURL(),
+          continueUrl = if(useAbsoluteUrls) routes.UndertakingController.getVerifyEmail(verificationId).absoluteURL() else routes.UndertakingController.getVerifyEmail(verificationId).url,
           origin = "EU Subsidy Compliance",
           deskproServiceName = None,
           accessibilityStatementUrl = "",
@@ -52,7 +58,7 @@ class EmailVerificationService @Inject() (
             enterUrl = ""
           )),
           lang = None,
-          backUrl = Some(routes.UndertakingController.getConfirmEmail().absoluteURL()),
+          backUrl = if(useAbsoluteUrls) Some(routes.UndertakingController.getConfirmEmail().absoluteURL()) else Some(routes.UndertakingController.getConfirmEmail().url),
           pageTitle = None
         )
       ).map {
