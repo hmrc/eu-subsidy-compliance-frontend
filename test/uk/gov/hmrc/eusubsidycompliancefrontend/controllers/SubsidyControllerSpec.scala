@@ -24,6 +24,9 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyControllerSpec.RemoveSubsidyRow
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{TooBig, TooSmall}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Errors.NotInUndertaking
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.{IncorrectFormat, Required}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
@@ -558,7 +561,7 @@ class SubsidyControllerSpec
           CurrencyCode.values.foreach { c =>
             displayError(
               ClaimAmountFormProvider.Fields.CurrencyCode -> c.entryName,
-            )(s"add-claim-amount.claim-amount-${c.entryName.toLowerCase}.error.required")
+            )(s"add-claim-amount.claim-amount-${c.entryName.toLowerCase}.$Required")
           }
         }
 
@@ -567,7 +570,7 @@ class SubsidyControllerSpec
             displayError(
               ClaimAmountFormProvider.Fields.CurrencyCode -> c.entryName,
               ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "123.4"
-            )(s"add-claim-amount.claim-amount-${c.entryName.toLowerCase}.error.incorrectFormat")
+            )(s"add-claim-amount.claim-amount-${c.entryName.toLowerCase}.$IncorrectFormat")
           }
         }
 
@@ -575,28 +578,28 @@ class SubsidyControllerSpec
           displayError(
             ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
             ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "1234567890.12345678",
-          )(s"add-claim-amount.claim-amount-${GBP.entryName.toLowerCase}.error.tooBig")
+          )(s"add-claim-amount.claim-amount-${GBP.entryName.toLowerCase}.$TooBig")
         }
 
         "claim amount entered in EUR is more than 17 chars" in {
           displayError(
             ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName,
             ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "1234567890.12345678",
-          )(s"add-claim-amount.claim-amount-${EUR.entryName.toLowerCase}.error.tooBig")
+          )(s"add-claim-amount.claim-amount-${EUR.entryName.toLowerCase}.$TooBig")
         }
 
         "claim amount entered in GBP is too small" in {
           displayError(
             ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
             ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "0.00"
-          )(s"add-claim-amount.claim-amount-${GBP.entryName.toLowerCase}.error.tooSmall")
+          )(s"add-claim-amount.claim-amount-${GBP.entryName.toLowerCase}.$TooSmall")
         }
 
         "claim amount entered in EUR is too small" in {
           displayError(
             ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName,
             ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "0.00"
-          )(s"add-claim-amount.claim-amount-${EUR.entryName.toLowerCase}.error.tooSmall")
+          )(s"add-claim-amount.claim-amount-${EUR.entryName.toLowerCase}.$TooSmall")
         }
 
       }
@@ -929,14 +932,14 @@ class SubsidyControllerSpec
         }
 
         "yes is selected but no eori is entered" in {
-          testFormError(Some(List("should-claim-eori" -> "true")), "claim-eori.error.required")
+          testFormError(Some(List("should-claim-eori" -> "true")), s"claim-eori.$Required")
 
         }
 
         "yes is selected but eori entered is invalid" in {
           testFormError(
             Some(List("should-claim-eori" -> "true", "claim-eori" -> "GB1234567890")),
-            "claim-eori.error.format"
+            s"claim-eori.$IncorrectFormat"
           )
 
         }
@@ -944,7 +947,7 @@ class SubsidyControllerSpec
         "yes is selected but the eori entered is not part of the undertaking" in {
           testFormError(
             Some(List("should-claim-eori" -> "true", "claim-eori" -> "121212121212")),
-            "claim-eori.error.not-in-undertaking"
+            s"claim-eori.$NotInUndertaking"
           )
         }
 

@@ -19,7 +19,9 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 import play.api.data.Forms.text
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.{Form, Forms, Mapping}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Errors._
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Fields._
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{OptionalEORI, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
@@ -35,20 +37,20 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
   )(OptionalEORI.apply)(OptionalEORI.unapply)
 
   private val eoriEntered = Constraint[String] { eori: String =>
-    if (eori.isEmpty) Invalid("error.required")
+    if (eori.isEmpty) Invalid(Required)
     else Valid
   }
 
   private val enteredEoriIsValid = Constraint[String] { eori: String =>
     if (getValidEori(eori).matches(EORI.regex)) Valid
-    else Invalid("error.format")
+    else Invalid(IncorrectFormat)
   }
 
   private val eoriIsPartOfUndertaking = Constraint[String] { eori: String =>
     undertaking.undertakingBusinessEntity
       .find(_.businessEntityIdentifier == getValidEori(eori))
       .map(_ => Valid)
-      .getOrElse(Invalid(s"error.not-in-undertaking"))
+      .getOrElse(Invalid(NotInUndertaking))
   }
 
   private val eoriNumberMapping: Mapping[String] =
@@ -61,8 +63,14 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
 }
 
 object ClaimEoriFormProvider {
+
   object Fields {
     val YesNoRadioButton = "should-claim-eori"
     val EoriNumber = "claim-eori"
   }
+
+  object Errors {
+    val NotInUndertaking = "error.not-in-undertaking"
+  }
+
 }

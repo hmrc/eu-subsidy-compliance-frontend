@@ -19,8 +19,9 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 import play.api.data.Forms.text
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.{Form, Forms, Mapping}
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{IncorrectFormat, TooBig, TooSmall}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{TooBig, TooSmall}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.IncorrectFormat
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ClaimAmount, CurrencyCode}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
@@ -100,8 +101,6 @@ object ClaimAmountFormProvider {
   }
 
   object Errors {
-    val IncorrectFormat = "error.incorrectFormat"
-    val Required = "error.required"
     val TooBig = "error.tooBig"
     val TooSmall = "error.tooSmall"
   }
