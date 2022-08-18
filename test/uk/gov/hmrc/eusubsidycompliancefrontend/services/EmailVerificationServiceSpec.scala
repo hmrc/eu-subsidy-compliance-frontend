@@ -34,6 +34,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -48,7 +49,8 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
 
     private val service = new EmailVerificationService(
     mockEmailVerificationConnector,
-    repository
+    repository,
+    mock[ServicesConfig]
   )
   override def afterAll(): Unit = {
     repository.collection.deleteMany(filter = Filters.exists("_id"))
