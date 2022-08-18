@@ -124,7 +124,7 @@ object ClaimDateFormProvider {
   object Errors {
     val DayAndMonthMissing          = "error.day-and-month-missing"
     val DayAndYearMissing           = "error.day-and-year-missing"
-    val DayMissing                  = "error-day-missing"
+    val DayMissing                  = "error.day-missing"
     val InFuture                    = "error.in-future"
     val MonthAndYearMissing         = "error.month-and-year-missing"
     val MonthMissing                = "error.month-missing"
