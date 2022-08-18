@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import cats.implicits.catsSyntaxOptionId
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.{AcceptTermsFormPage, CreateUndertakingFormPage, EoriCheckFormPage, MainBusinessCheckFormPage, WillYouClaimFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.{EoriCheckFormPage, WillYouClaimFormPage}
 
 class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
 
@@ -32,38 +32,27 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
         underTest.steps shouldBe Array(
           underTest.eoriCheck,
           underTest.signOutBadEori,
-          underTest.mainBusinessCheck,
           underTest.signOut,
-          underTest.acceptTerms,
-          underTest.createUndertaking
         )
       }
 
       "remove sign out step if main business check has true value" in {
         val underTest = EligibilityJourney(
           willYouClaim = WillYouClaimFormPage(Some(true)),
-          mainBusinessCheck = MainBusinessCheckFormPage(Some(true))
         )
         underTest.steps shouldBe Array(
           underTest.eoriCheck,
           underTest.signOutBadEori,
-          underTest.mainBusinessCheck,
-          underTest.acceptTerms,
-          underTest.createUndertaking
         )
       }
 
       "remove sign out bad eori step if eori check has true value" in {
         val underTest = EligibilityJourney(
           willYouClaim = WillYouClaimFormPage(Some(true)),
-          mainBusinessCheck = MainBusinessCheckFormPage(Some(true)),
           eoriCheck = EoriCheckFormPage(Some(true))
         )
         underTest.steps shouldBe Array(
           underTest.eoriCheck,
-          underTest.mainBusinessCheck,
-          underTest.acceptTerms,
-          underTest.createUndertaking
         )
       }
 
@@ -71,24 +60,9 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
 
     "set methods are called" should {
 
-      "return an updated instance with the specified MainBusinessCheck boolean value" in {
-        EligibilityJourney().setMainBusinessCheck(true) shouldBe
-          EligibilityJourney(mainBusinessCheck = MainBusinessCheckFormPage(true.some))
-      }
-
-      "return an updated instance with the specified AcceptTerms boolean value" in {
-        EligibilityJourney().setAcceptTerms(true) shouldBe
-          EligibilityJourney(acceptTerms = AcceptTermsFormPage(true.some))
-      }
-
       "return an updated instance with the specified EoriCheck boolean value" in {
         EligibilityJourney().setEoriCheck(true) shouldBe
           EligibilityJourney(eoriCheck = EoriCheckFormPage(true.some))
-      }
-
-      "return an updated instance with the specified CreateUndertaking boolean value" in {
-        EligibilityJourney().setCreateUndertaking(true) shouldBe
-          EligibilityJourney(createUndertaking = CreateUndertakingFormPage(true.some))
       }
 
     }

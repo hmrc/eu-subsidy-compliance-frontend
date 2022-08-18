@@ -24,10 +24,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder,
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.{UnDeliverableEmail, UnVerifiedEmail, VerifiedEmail}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.{UnDeliverableEmail, UnVerifiedEmail, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
@@ -62,16 +64,8 @@ class EligibilityController @Inject() (
     mapping("customswaivers" -> mandatory("customswaivers"))(FormValues.apply)(FormValues.unapply)
   )
 
-  private val mainBusinessCheckForm: Form[FormValues] = Form(
-    mapping("mainbusinesscheck" -> mandatory("mainbusinesscheck"))(FormValues.apply)(FormValues.unapply)
-  )
-
   private val willYouClaimForm: Form[FormValues] = Form(
     mapping("willyouclaim" -> mandatory("willyouclaim"))(FormValues.apply)(FormValues.unapply)
-  )
-
-  private val termsForm: Form[FormValues] = Form(
-    mapping("terms" -> mandatory("terms"))(FormValues.apply)(FormValues.unapply)
   )
 
   private val eoriCheckForm: Form[FormValues] = Form(
@@ -153,60 +147,6 @@ class EligibilityController @Inject() (
 
   }
 
-  def getMainBusinessCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store
-      .get[EligibilityJourney]
-      .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
-      .map { journey =>
-        val form = journey.mainBusinessCheck.value.fold(mainBusinessCheckForm)(mainBC =>
-          mainBusinessCheckForm.fill(FormValues(mainBC.toString))
-        )
-        Ok(mainBusinessCheckPage(form, eori, journey.previous))
-      }
-  }
-
-  def postMainBusinessCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    processFormSubmission[EligibilityJourney] { journey =>
-      mainBusinessCheckForm
-        .bindFromRequest()
-        .fold(
-          errors => BadRequest(mainBusinessCheckPage(errors, eori, journey.previous)).toContext,
-          form => store.update[EligibilityJourney](_.setMainBusinessCheck(form.value.toBoolean)).flatMap(_.next).toContext
-        )
-
-    }
-  }
-
-  def getNotEligibleToLead: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    Ok(notEligibleToLeadPage()).toFuture
-  }
-
-  def getTerms: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    store.get[EligibilityJourney].toContext
-      .map(journey => Ok(termsPage(journey.previous, eori)))
-      .getOrElse(throw new IllegalStateException("No EligibilityJourney found for this session"))
-
-  }
-
-  def postTerms: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    termsForm
-      .bindFromRequest()
-      .fold(
-        _ => throw new IllegalStateException("value hard-coded, form hacking?"),
-        form =>
-          store.update[EligibilityJourney](_.setAcceptTerms(form.value.toBoolean)).flatMap { eligibilityJourney =>
-            auditService.sendEvent(TermsAndConditionsAccepted(eori))
-            eligibilityJourney.next
-          }
-      )
-  }
-
   def getIncorrectEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     Ok(incorrectEoriPage()).toFuture
   }
@@ -220,6 +160,27 @@ class EligibilityController @Inject() (
   }
 
   def postCreateUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    createUndertakingForm
+      .bindFromRequest()
+      .fold(
+        _ => throw new IllegalStateException("value hard-coded, form hacking?"),
+        form =>
+          store.update[EligibilityJourney](_.setCreateUndertaking(form.value.toBoolean)).map { _ =>
+            Redirect(routes.UndertakingController.getUndertakingName())
+          }
+      )
+  }
+
+  def getCreateUndertaking: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+
+    store.get[EligibilityJourney].toContext
+      .map(journey => Ok(createUndertakingPage(journey.previous, eori)))
+      .getOrElse(throw new IllegalStateException("No EligibilityJourney found for this session"))
+  }
+
+  def postCreateUndertaking: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     createUndertakingForm
       .bindFromRequest()

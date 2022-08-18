@@ -27,10 +27,7 @@ case class EligibilityJourney(
   notEligible: NotEligibleFormPage = NotEligibleFormPage(),
   eoriCheck: EoriCheckFormPage = EoriCheckFormPage(),
   signOutBadEori: SignOutBadEoriFormPage = SignOutBadEoriFormPage(),
-  mainBusinessCheck: MainBusinessCheckFormPage = MainBusinessCheckFormPage(),
   signOut: SignOutFormPage = SignOutFormPage(),
-  acceptTerms: AcceptTermsFormPage = AcceptTermsFormPage(),
-  createUndertaking: CreateUndertakingFormPage = CreateUndertakingFormPage()
 ) extends Journey {
 
   private val journeySteps = List(
@@ -39,10 +36,7 @@ case class EligibilityJourney(
     notEligible,
     eoriCheck,
     signOutBadEori,
-    mainBusinessCheck,
     signOut,
-    acceptTerms,
-    createUndertaking
   )
 
   override def steps: Array[FormPage[_]] =
@@ -52,22 +46,14 @@ case class EligibilityJourney(
         case CustomsWaiversFormPage(_) => true
         case WillYouClaimFormPage(_) => true
         case NotEligibleFormPage(_) => true
-        case SignOutFormPage(_) => mainBusinessCheck.value.contains(true)
+        case SignOutFormPage(_) => eoriCheck.value.contains(true)
         case SignOutBadEoriFormPage(_) => eoriCheck.value.contains(true)
         case _ => false
       }.toArray
 
-  def setMainBusinessCheck(newMainBusinessCheck: Boolean): EligibilityJourney =
-    this.copy(mainBusinessCheck = mainBusinessCheck.copy(value = Some(newMainBusinessCheck)))
-
-  def setAcceptTerms(newAcceptTerms: Boolean): EligibilityJourney =
-    this.copy(acceptTerms = acceptTerms.copy(value = Some(newAcceptTerms)))
-
   def setEoriCheck(newEoriCheck: Boolean): EligibilityJourney =
     this.copy(eoriCheck = eoriCheck.copy(value = Some(newEoriCheck)))
 
-  def setCreateUndertaking(newCreateUndertaking: Boolean): EligibilityJourney =
-    this.copy(createUndertaking = createUndertaking.copy(value = Some(newCreateUndertaking)))
 }
 
 object EligibilityJourney {
@@ -87,14 +73,8 @@ object EligibilityJourney {
     case class NotEligibleFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getNotEligible().url
     }
-    case class MainBusinessCheckFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getMainBusinessCheck().url
-    }
     case class SignOutFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getNotEligibleToLead().url
-    }
-    case class AcceptTermsFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getTerms().url
     }
     case class EoriCheckFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getEoriCheck().url
@@ -102,25 +82,13 @@ object EligibilityJourney {
     case class SignOutBadEoriFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getIncorrectEori().url
     }
-    case class CreateUndertakingFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getCreateUndertaking().url
-    }
 
-    object CustomsWaiversFormPage {
-      implicit val customsWaiversFormPageFormat: OFormat[CustomsWaiversFormPage] = Json.format
-    }
+    object CustomsWaiversFormPage {implicit val customsWaiversFormPageFormat: OFormat[CustomsWaiversFormPage] = Json.format}
     object WillYouClaimFormPage { implicit val willYouClaimFormPageFormat: OFormat[WillYouClaimFormPage] = Json.format }
     object NotEligibleFormPage { implicit val notEligibleFormPageFormat: OFormat[NotEligibleFormPage] = Json.format }
-    object MainBusinessCheckFormPage {
-      implicit val mainBusinessCheckFormPageFormat: OFormat[MainBusinessCheckFormPage] = Json.format
-    }
     object SignOutBadEoriFormPage { implicit val signOutFormPageFormat: OFormat[SignOutBadEoriFormPage] = Json.format }
-    object AcceptTermsFormPage { implicit val acceptTermsFormPageFormat: OFormat[AcceptTermsFormPage] = Json.format }
     object EoriCheckFormPage { implicit val eoriCheckFormPageFormat: OFormat[EoriCheckFormPage] = Json.format }
     object SignOutFormPage { implicit val signOutFormPageFormat: OFormat[SignOutFormPage] = Json.format }
-    object CreateUndertakingFormPage {
-      implicit val createUndertakingFormPageFormat: OFormat[CreateUndertakingFormPage] = Json.format
-    }
 
   }
 

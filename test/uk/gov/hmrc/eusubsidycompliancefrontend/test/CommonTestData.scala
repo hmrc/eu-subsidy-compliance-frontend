@@ -176,15 +176,12 @@ object CommonTestData {
     willYouClaim = WillYouClaimFormPage(true.some),
     eoriCheck = EoriCheckFormPage(true.some),
     notEligible = NotEligibleFormPage(false.some),
-    mainBusinessCheck = MainBusinessCheckFormPage(true.some),
     signOut = SignOutFormPage(false.some),
-    acceptTerms = AcceptTermsFormPage(true.some)
   )
 
   val eligibilityJourneyComplete = eligibilityJourneyNotComplete.copy(
     eoriCheck = EoriCheckFormPage(true.some),
     signOutBadEori = SignOutBadEoriFormPage(false.some),
-    createUndertaking = CreateUndertakingFormPage(true.some)
   )
 
   val undertakingJourneyComplete = UndertakingJourney(
@@ -251,12 +248,9 @@ object CommonTestData {
     customsWaivers = CustomsWaiversFormPage(true.some),
     willYouClaim = WillYouClaimFormPage(true.some),
     notEligible = NotEligibleFormPage(true.some),
-    mainBusinessCheck = MainBusinessCheckFormPage(true.some),
     signOut = SignOutFormPage(true.some),
-    acceptTerms = AcceptTermsFormPage(true.some),
     eoriCheck = EoriCheckFormPage(true.some),
     signOutBadEori = SignOutBadEoriFormPage(true.some),
-    createUndertaking = CreateUndertakingFormPage(true.some)
   )
 
   val timeNow = LocalDateTime.of(2021, 10, 9, 10, 9, 0, 0)

@@ -47,7 +47,7 @@ case class UndertakingJourney(
     confirmation
   )
   private lazy val previousMap: Map[String, Uri] = Map(
-    routes.UndertakingController.getUndertakingName().url -> routes.EligibilityController.getCreateUndertaking().url,
+    routes.UndertakingController.getUndertakingName().url -> routes.EligibilityController.getEoriCheck().url,
     routes.UndertakingController.getSector().url -> routes.UndertakingController.getUndertakingName().url
   )
 
@@ -62,6 +62,7 @@ case class UndertakingJourney(
 
   def isEmpty: Boolean = steps.flatMap(_.value).isEmpty
 
+  // TODO - is this used?
   def isCurrentPageCYA(implicit request: Request[_]): Boolean =
     request.uri == routes.UndertakingController.getCheckAnswers().url
 
