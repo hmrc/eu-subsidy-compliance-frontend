@@ -36,6 +36,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
         )
       }
 
+      // TODO - add two cases for this
       "remove sign out step if main business check has true value" in {
         val underTest = EligibilityJourney(
           willYouClaim = WillYouClaimFormPage(Some(true)),

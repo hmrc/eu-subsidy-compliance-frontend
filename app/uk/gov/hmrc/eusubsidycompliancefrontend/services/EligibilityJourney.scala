@@ -43,10 +43,12 @@ case class EligibilityJourney(
     journeySteps
       // Remove steps based on user responses during the eligibility journey.
       .filterNot {
+        // TODO - why are these three steps always filtered?!
         case CustomsWaiversFormPage(_) => true
         case WillYouClaimFormPage(_) => true
         case NotEligibleFormPage(_) => true
-        case SignOutFormPage(_) => eoriCheck.value.contains(true)
+        // TODO - any value in moving this into a method isEligible?
+        case SignOutFormPage(_) => Seq(customsWaivers.value, willYouClaim.value).flatten.contains(true)
         case SignOutBadEoriFormPage(_) => eoriCheck.value.contains(true)
         case _ => false
       }.toArray
