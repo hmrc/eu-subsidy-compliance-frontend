@@ -126,9 +126,7 @@ class EoriEmailDatastore @Inject()(
         )
       )
       .headOption()
-      .map(e => {
-        e.flatMap(cache => cache.data.asOpt[VerifiedEmail])
-      }
+      .map(e => e.flatMap(cache => cache.data.asOpt[VerifiedEmail])
     )
   }
 }

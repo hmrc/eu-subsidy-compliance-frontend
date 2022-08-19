@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscVerifiedEmailActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromoted
@@ -37,15 +37,15 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class SelectNewLeadController @Inject() (
-  mcc: MessagesControllerComponents,
-  escCDSActionBuilder: EscCDSActionBuilders,
-  override val escService: EscService,
-  store: Store,
-  emailService: EmailService,
-  auditService: AuditService,
-  selectNewLeadPage: SelectNewLeadPage,
-  leadEORIChangedPage: LeadEORIChangedPage,
-  emailNotVerifiedForLeadPromotionPage: EmailNotVerifiedForLeadPromotionPage
+                                          mcc: MessagesControllerComponents,
+                                          escCDSActionBuilder: EscVerifiedEmailActionBuilders,
+                                          override val escService: EscService,
+                                          store: Store,
+                                          emailService: EmailService,
+                                          auditService: AuditService,
+                                          selectNewLeadPage: SelectNewLeadPage,
+                                          leadEORIChangedPage: LeadEORIChangedPage,
+                                          emailNotVerifiedForLeadPromotionPage: EmailNotVerifiedForLeadPromotionPage
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
@@ -56,7 +56,7 @@ class SelectNewLeadController @Inject() (
     mapping("selectNewLead" -> mandatory("selectNewLead"))(FormValues.apply)(FormValues.unapply)
   )
 
-  def getSelectNewLead: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def getSelectNewLead: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       val previous = routes.AccountController.getAccountPage().url
       implicit val eori = request.eoriNumber
@@ -70,7 +70,7 @@ class SelectNewLeadController @Inject() (
     }
   }
 
-  def postSelectNewLead: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def postSelectNewLead: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -115,7 +115,7 @@ class SelectNewLeadController @Inject() (
     case _ => handleMissingSessionData("Email result Response")
   }
 
-  def getLeadEORIChanged = withCDSAuthenticatedUser.async { implicit request =>
+  def getLeadEORIChanged = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -133,7 +133,7 @@ class SelectNewLeadController @Inject() (
     }
   }
 
-  def emailNotVerified = withCDSAuthenticatedUser.async { implicit request =>
+  def emailNotVerified = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[NewLeadJourney].flatMap {
       case Some(newLeadJourney) =>

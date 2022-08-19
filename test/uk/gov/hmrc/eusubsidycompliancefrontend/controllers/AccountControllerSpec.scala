@@ -42,8 +42,10 @@ class AccountControllerSpec
     with TimeProviderSupport
     with EscServiceSupport {
 
+
   override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
+    bind[EmailVerificationService].toInstance(mockEmailVerificationService),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[TimeProvider].toInstance(mockTimeProvider),
@@ -67,7 +69,7 @@ class AccountControllerSpec
 
       def performAction() = controller.getAccountPage(FakeRequest())
 
-      behave like authBehaviour(() => performAction())
+      behave like authBehaviourWithPredicate(() => performAction())
 
       "display the lead account home page" when {
 
@@ -75,7 +77,7 @@ class AccountControllerSpec
 
           val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
           inSequence {
-            mockNoPredicateAuthWithNecessaryEnrolment()
+            mockAuthWithNecessaryEnrolmentNoEmailVerification()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
@@ -141,7 +143,7 @@ class AccountControllerSpec
         ): Unit = {
           val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
           inSequence {
-            mockNoPredicateAuthWithNecessaryEnrolment()
+            mockAuthWithNecessaryEnrolmentNoEmailVerification()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
@@ -176,7 +178,7 @@ class AccountControllerSpec
           val updatedNJ = nilReturnJourney.copy(displayNotification = false)
 
           inSequence {
-            mockNoPredicateAuthWithNecessaryEnrolment()
+            mockAuthWithNecessaryEnrolmentNoEmailVerification()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
@@ -272,38 +274,9 @@ class AccountControllerSpec
 
         "valid request for non-lead user is made" when {
 
-          "Both CDS and ECC enrolmnents are present" in {
-            inSequence {
-              mockAuthWithEORIEnrolment(eori4)
-              mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-              mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
-              mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
-              mockRetrieveSubsidy(subsidyRetrieve.copy(inDateRange = None))(undertakingSubsidies.toFuture)
-              mockTimeToday(fixedDate)
-            }
-
-            checkPageIsDisplayed(
-              performAction(),
-              messageFromMessageKey("non-lead-account-homepage.title", undertaking1.name),
-              { doc =>
-                val testBody = doc.select(".govuk-list").text
-                testBody should include regex messageFromMessageKey(
-                  "non-lead-account-homepage.link1",
-                  undertaking1.name
-                )
-
-                val htmlBody = doc.select(".govuk-list").html
-                htmlBody should include regex routes.BecomeLeadController.getBecomeLeadEori().url
-                htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard().url
-                htmlBody should include regex routes.BusinessEntityController.getRemoveYourselfBusinessEntity().url
-
-              }
-            )
-          }
-
           "Only ECC enrolment is present" in {
             inSequence {
-              mockAuthWithEccEnrolmentOnly(eori4)
+              mockAuthWithNecessaryEnrolmentNoEmailVerification(eori4)
               mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
               mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
               mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
@@ -338,7 +311,7 @@ class AccountControllerSpec
 
         "there is error in retrieving the undertaking" in {
           inSequence {
-            mockNoPredicateAuthWithNecessaryEnrolment()
+            mockAuthWithNecessaryEnrolmentNoEmailVerification()
             mockRetrieveUndertaking(eori1)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction()))
@@ -347,7 +320,7 @@ class AccountControllerSpec
 
         "there is an error in fetching eligibility journey data" in {
           inSequence {
-            mockNoPredicateAuthWithNecessaryEnrolment()
+            mockAuthWithNecessaryEnrolmentNoEmailVerification()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
@@ -357,7 +330,7 @@ class AccountControllerSpec
 
         "there is an error in retrieving undertaking journey data" in {
           inSequence {
-            mockNoPredicateAuthWithNecessaryEnrolment()
+            mockAuthWithNecessaryEnrolmentNoEmailVerification()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
@@ -368,7 +341,7 @@ class AccountControllerSpec
 
         "there is an error in fetching Business entity journey data" in {
           inSequence {
-            mockNoPredicateAuthWithNecessaryEnrolment()
+            mockAuthWithNecessaryEnrolmentNoEmailVerification()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
@@ -381,18 +354,11 @@ class AccountControllerSpec
 
       "redirect to next page" when {
 
-        "No enrolment is present" in {
-          inSequence {
-            mockAuthWithNoEnrolmentNoCheck()
-          }
-          checkIsRedirect(performAction(), routes.EligibilityController.getCustomsWaivers().url)
-        }
-
         "Only ECC enrolment" when {
 
           "retrieve undertaking journey is not there" in {
             inSequence {
-              mockAuthWithEccEnrolmentOnly(eori1)
+              mockAuthWithNecessaryEnrolmentNoEmailVerification(eori1)
               mockRetrieveUndertaking(eori1)(None.toFuture)
               mockGetOrCreate[EligibilityJourney](eori1)(Right(EligibilityJourney()))
               mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
@@ -402,18 +368,11 @@ class AccountControllerSpec
 
         }
 
-        "Only CDS enrolment is present" in {
-          inSequence {
-            mockAuthWithCDSEnrolmentOnly()
-          }
-          checkIsRedirect(performAction(), routes.EligibilityController.getCustomsWaivers().url)
-        }
-
         "Both CDS nd ECC enrolment present and there is no existing retrieve undertaking" when {
 
           "eligibility Journey is not complete and undertaking Journey is blank" in {
             inSequence {
-              mockNoPredicateAuthWithNecessaryEnrolment()
+              mockAuthWithNecessaryEnrolmentNoEmailVerification()
               mockRetrieveUndertaking(eori1)(None.toFuture)
               mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
               mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
@@ -423,7 +382,7 @@ class AccountControllerSpec
 
           "eligibility Journey  is complete and undertaking Journey is not complete" in {
             inSequence {
-              mockNoPredicateAuthWithNecessaryEnrolment()
+              mockAuthWithNecessaryEnrolmentNoEmailVerification()
               mockRetrieveUndertaking(eori1)(None.toFuture)
               mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
               mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
@@ -433,7 +392,7 @@ class AccountControllerSpec
 
           "eligibility Journey  and undertaking Journey are  complete" in {
             inSequence {
-              mockNoPredicateAuthWithNecessaryEnrolment()
+              mockAuthWithNecessaryEnrolmentNoEmailVerification()
               mockRetrieveUndertaking(eori1)(None.toFuture)
               mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
               mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1))

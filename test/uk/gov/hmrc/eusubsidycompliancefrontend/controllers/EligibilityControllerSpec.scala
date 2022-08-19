@@ -38,6 +38,7 @@ class EligibilityControllerSpec
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
+    bind[EmailVerificationService].toInstance(mockEmailVerificationService),
     bind[Store].toInstance(mockJourneyStore),
     bind[AuditService].toInstance(mockAuditService),
     bind[EmailService].toInstance(mockEmailService)

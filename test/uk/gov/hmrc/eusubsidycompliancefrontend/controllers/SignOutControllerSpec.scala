@@ -51,8 +51,9 @@ class SignOutControllerSpec
   override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
-    bind[EscService].toInstance(mockEscService),
     bind[EmailService].toInstance(mockEmailService),
+    bind[EscService].toInstance(mockEscService),
+    bind[EmailVerificationService].toInstance(mockEmailVerificationService),
     bind[TimeProvider].toInstance(mockTimeProvider),
     bind[AuditService].toInstance(mockAuditService)
   )
@@ -108,8 +109,7 @@ class SignOutControllerSpec
 
         "call to retrieve email fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment(eori4)
-            mockRetrieveEmail(eori4)(Left(ConnectorError(exception)))
+            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
           }
 
           assertThrows[Exception](await(performAction()))
@@ -117,7 +117,7 @@ class SignOutControllerSpec
 
         "call to retrieve Undertaking fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment(eori4)
+            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori4)(Future.failed(exception))
           }
@@ -126,7 +126,7 @@ class SignOutControllerSpec
 
         "call to remove member fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment(eori4)
+            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(currentDate)
@@ -141,7 +141,7 @@ class SignOutControllerSpec
 
         def testDisplay(effectiveDate: String): Unit = {
           inSequence {
-            mockAuthWithNecessaryEnrolment(eori4)
+            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(currentDate)
@@ -168,7 +168,7 @@ class SignOutControllerSpec
 
         "email address is unverified" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment(eori4)
+            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, validEmailAddress.some)))
           }
           checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateUnverifiedEmailAddress().url)
@@ -176,7 +176,7 @@ class SignOutControllerSpec
 
         "email address is Undeliverable" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment(eori4)
+            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
             mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.UnDeliverableEmail, validEmailAddress.some)))
           }
           checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateUndeliveredEmailAddress().url)
@@ -184,20 +184,5 @@ class SignOutControllerSpec
       }
     }
 
-    "handling request to no cds enrolment page " must {
-
-      def performAction() = controller.noCdsEnrolment(FakeRequest())
-
-      "display the page" in {
-
-        checkPageIsDisplayed(
-          performAction(),
-          messageFromMessageKey("cdsEnrolmentMissing.title"),
-          doc => doc.select(".govuk-body").html() should include regex messageFromMessageKey("cdsEnrolmentMissing.p1")
-        )
-
-      }
-
-    }
   }
 }

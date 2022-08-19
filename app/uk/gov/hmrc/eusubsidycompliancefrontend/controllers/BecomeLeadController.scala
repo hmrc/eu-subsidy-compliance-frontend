@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscCDSActionBuilders, EscInitialActionBuilder}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscVerifiedEmailActionBuilders, EscInitialActionBuilder}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
@@ -37,16 +37,16 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BecomeLeadController @Inject() (
-  mcc: MessagesControllerComponents,
-  escCDSActionBuilder: EscCDSActionBuilders,
-  escInitialActionBuilders: EscInitialActionBuilder,
-  store: Store,
-  escService: EscService,
-  emailService: EmailService,
-  auditService: AuditService,
-  becomeAdminPage: BecomeAdminPage,
-  becomeAdminTermsAndConditionsPage: BecomeAdminTermsAndConditionsPage,
-  becomeAdminConfirmationPage: BecomeAdminConfirmationPage
+                                       mcc: MessagesControllerComponents,
+                                       escCDSActionBuilder: EscVerifiedEmailActionBuilders,
+                                       escInitialActionBuilders: EscInitialActionBuilder,
+                                       store: Store,
+                                       escService: EscService,
+                                       emailService: EmailService,
+                                       auditService: AuditService,
+                                       becomeAdminPage: BecomeAdminPage,
+                                       becomeAdminTermsAndConditionsPage: BecomeAdminTermsAndConditionsPage,
+                                       becomeAdminConfirmationPage: BecomeAdminConfirmationPage
 )(implicit
   val appConfig: AppConfig,
   executionContext: ExecutionContext
@@ -112,7 +112,7 @@ class BecomeLeadController @Inject() (
     * @return
     */
 
-  def getAcceptPromotionTerms: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def getAcceptPromotionTerms: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     emailService.retrieveEmailByEORI(eori) flatMap { response =>
       response.emailType match {
@@ -135,14 +135,14 @@ class BecomeLeadController @Inject() (
 
   }
 
-  def postAcceptPromotionTerms: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def postAcceptPromotionTerms: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .update[BecomeLeadJourney](j => j.copy(acceptTerms = j.acceptTerms.copy(value = Some(true))))
       .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getPromotionConfirmation())))
   }
 
-  def getPromotionConfirmation: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def getPromotionConfirmation: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[BecomeLeadJourney].flatMap {
       case Some(journey) =>
@@ -181,7 +181,7 @@ class BecomeLeadController @Inject() (
     }
   }
 
-  def getPromotionCleanup: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def getPromotionCleanup: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .update[BecomeLeadJourney](_ => BecomeLeadJourney())

@@ -20,7 +20,7 @@ import com.google.inject.{Inject, Singleton}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscVerifiedEmailActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.BusinessEntity
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
@@ -38,15 +38,14 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class SignOutController @Inject() (
-  mcc: MessagesControllerComponents,
-  escCDSActionBuilder: EscCDSActionBuilders,
-  escService: EscService,
-  emailService: EmailService,
-  auditService: AuditService,
-  timedOutPage: TimedOut,
-  signOutPage: SignOutPage,
-  cdsEnrolmentMissingPage: CdsEnrolmentMissingPage,
-  timeProvider: TimeProvider
+                                    mcc: MessagesControllerComponents,
+                                    escCDSActionBuilder: EscVerifiedEmailActionBuilders,
+                                    escService: EscService,
+                                    emailService: EmailService,
+                                    auditService: AuditService,
+                                    timedOutPage: TimedOut,
+                                    signOutPage: SignOutPage,
+                                    timeProvider: TimeProvider
 )(implicit val appConfig: AppConfig, executionContext: ExecutionContext)
     extends BaseController(mcc)
     with I18nSupport
@@ -58,7 +57,7 @@ class SignOutController @Inject() (
     Ok(timedOutPage()).withNewSession
   }
 
-  val signOut: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  val signOut: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     emailService.retrieveEmailByEORI(eori) flatMap { response =>
       response.emailType match {
@@ -90,11 +89,6 @@ class SignOutController @Inject() (
           Redirect(routes.UpdateEmailAddressController.updateUndeliveredEmailAddress()).toFuture
       }
     }
-
-  }
-
-  val noCdsEnrolment: Action[AnyContent] = Action { implicit request =>
-    Ok(cdsEnrolmentMissingPage()).withNewSession
 
   }
 

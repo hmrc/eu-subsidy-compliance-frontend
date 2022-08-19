@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,21 +12,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.P
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.H1
+package uk.gov.hmrc.eusubsidycompliancefrontend.actions
 
-@this(layout: Layout)
+import play.api.mvc.{ActionBuilder, AnyContent}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 
+import javax.inject.{Inject, Singleton}
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@key = @{"cdsEnrolmentMissing"}
-@title = @{messages(s"$key.title")}
+@Singleton
+class EscVerifiedEmailActionBuilders @Inject()(
+        escRequestVerifiedEmailActionBuilder: EscRequestVerifiedEmailActionBuilder
+) {
 
-@layout(pageTitle = Some(title)) {
-    @H1(title)
-    @P(messages(s"$key.p1"))
-    @P(messages(s"$key.p2"))
+  val withVerifiedEmailAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] = escRequestVerifiedEmailActionBuilder
 }

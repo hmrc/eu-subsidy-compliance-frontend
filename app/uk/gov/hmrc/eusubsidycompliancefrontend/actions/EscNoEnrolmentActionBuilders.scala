@@ -25,6 +25,6 @@ class EscNoEnrolmentActionBuilders @Inject() (
   escRequestNonEnrolmentActionBuilder: EscNoEnrolmentRequestActionBuilder
 ) {
 
-  val withNonAuthenticatedUser: ActionBuilder[AuthenticatedNoEnrolmentEscRequest, AnyContent] =
+  val withNonVerfiedEmail: ActionBuilder[AuthenticatedNoEnrolmentEscRequest, AnyContent] =
     escRequestNonEnrolmentActionBuilder
 }

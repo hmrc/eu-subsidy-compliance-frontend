@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscCDSActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscVerifiedEmailActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -30,20 +30,20 @@ class UpdateEmailAddressController @Inject() (
   mcc: MessagesControllerComponents,
   updateUnverifiedEmailAddressPage: UpdateUnverifiedEmailPage,
   updateUndeliveredEmailAddressPage: UpdateUndeliveredEmailAddressPage,
-  escCDSActionBuilder: EscCDSActionBuilders
+  escCDSActionBuilder: EscVerifiedEmailActionBuilders
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc) {
   import escCDSActionBuilder._
 
-  def updateUnverifiedEmailAddress: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def updateUnverifiedEmailAddress: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     Ok(updateUnverifiedEmailAddressPage()).toFuture
   }
 
-  def postUpdateEmailAddress: Action[AnyContent] = withCDSAuthenticatedUser.async {
+  def postUpdateEmailAddress: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async {
     Redirect(appConfig.emailFrontendUrl).toFuture
   }
 
-  def updateUndeliveredEmailAddress: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def updateUndeliveredEmailAddress: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     Ok(updateUndeliveredEmailAddressPage()).toFuture
   }
 

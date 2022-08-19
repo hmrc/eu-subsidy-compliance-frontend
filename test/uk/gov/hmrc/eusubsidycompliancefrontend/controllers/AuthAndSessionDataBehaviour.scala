@@ -31,18 +31,15 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
 
   val appName = "eu-subsidy-test"
   val eccEnrolmentKey = "HMRC-ESC-ORG"
-  val cdsEnrolmentKey = "HMRC-CUS-ORG"
   val eccPredicate = Enrolment(eccEnrolmentKey)
-  val cdsPredicate = Enrolment(cdsEnrolmentKey)
   val ggSignInUrl = "http://ggSignInUrl:123"
   val ggSignOutUrl = "http://ggSignOutUrl:123"
 
   def identifiers(eori: EORI) = Seq(EnrolmentIdentifier("EORINumber", eori))
 
   def eccEnrolments(eori: EORI) = Enrolment(key = eccEnrolmentKey, identifiers = identifiers(eori), state = "")
-  def cdsEnrolments(eori: EORI) = Enrolment(key = cdsEnrolmentKey, identifiers = identifiers(eori), state = "")
 
-  def enrolmentSets(eori: EORI) = Set(eccEnrolments(eori), cdsEnrolments(eori))
+  def enrolmentSets(eori: EORI) = Set(eccEnrolments(eori))
 
   override def additionalConfig = Configuration(
     ConfigFactory.parseString(
@@ -65,22 +62,26 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
   def mockAuthWithNoEnrolmentNoCheck() =
     mockAuthWithAuthRetrievalsNoPredicate(Enrolments(Set.empty), "1123", Some("groupIdentifier"))
 
-  def mockAuthWithEccEnrolmentOnly(eori: EORI) =
+  def mockAuthWithEccEnrolmentOnly(eori: EORI) = {
     mockAuthWithAuthRetrievalsNoPredicate(Enrolments(Set(eccEnrolments(eori))), "1123", Some("groupIdentifier"))
-
-  def mockAuthWithCDSEnrolmentOnly(eori: EORI = eori1) =
-    mockAuthWithAuthRetrievalsNoPredicate(Enrolments(Set(cdsEnrolments(eori))), "1123", Some("groupIdentifier"))
+  }
 
   def mockNoPredicateAuthWithNecessaryEnrolment(eori: EORI = eori1): Unit =
     mockAuthWithAuthRetrievalsNoPredicate(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
 
+  def mockAuthWithNecessaryEnrolmentWithValidEmail(eori: EORI = eori1): Unit =
+    mockAuthWithECCAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
+
   def mockAuthWithNecessaryEnrolment(eori: EORI = eori1): Unit =
-    mockAuthWithCDsAuthRetrievals(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
+    mockAuthWithECCAuthRetrievals(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
+
+  def mockAuthWithNecessaryEnrolmentNoEmailVerification(eori: EORI = eori1): Unit =
+    mockAuthWithECCAuthRetrievalsNoEmailVerification(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
 
   def mockAuthWithEORIEnrolment(eori: EORI): Unit =
     mockAuthWithAuthRetrievalsNoPredicate(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
 
-  def authBehaviour(performAction: () => Future[Result]): Unit =
+  def authBehaviourWithPredicate(performAction: () => Future[Result]): Unit =
     "redirect to the login page when the user is not logged in" in {
       List[NoActiveSession](
         BearerTokenExpired(),
@@ -97,20 +98,4 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
 
     }
 
-  def authBehaviourWithPredicate(performAction: () => Future[Result]): Unit =
-    "redirect to the login page when the user is not logged in" in {
-      List[NoActiveSession](
-        BearerTokenExpired(),
-        MissingBearerToken(),
-        InvalidBearerToken(),
-        SessionRecordNotFound()
-      ).foreach { e =>
-        withClue(s"For AuthorisationException $e: ") {
-          mockAuth(cdsPredicate, authRetrievals)(Future.failed(e))
-
-          checkIsRedirect(performAction(), expectedSignInUrl)
-        }
-      }
-
-    }
 }

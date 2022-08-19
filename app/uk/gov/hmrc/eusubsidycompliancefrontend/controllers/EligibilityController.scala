@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxEq
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscCDSActionBuilders, EscNoEnrolmentActionBuilders}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder, EscNoEnrolmentActionBuilders, EscVerifiedEmailActionBuilders}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
@@ -36,28 +36,29 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class EligibilityController @Inject() (
-  mcc: MessagesControllerComponents,
-  auditService: AuditService,
-  customsWaiversPage: CustomsWaiversPage,
-  willYouClaimPage: WillYouClaimPage,
-  notEligiblePage: NotEligiblePage,
-  mainBusinessCheckPage: MainBusinessCheckPage,
-  notEligibleToLeadPage: NotEligibleToLeadPage,
-  termsPage: EligibilityTermsAndConditionsPage,
-  checkEoriPage: CheckEoriPage,
-  incorrectEoriPage: IncorrectEoriPage,
-  createUndertakingPage: CreateUndertakingPage,
-  escNonEnrolmentActionBuilders: EscNoEnrolmentActionBuilders,
-  escCDSActionBuilder: EscCDSActionBuilders,
-  emailService: EmailService,
-  override val store: Store
+                                        mcc: MessagesControllerComponents,
+                                        auditService: AuditService,
+                                        customsWaiversPage: CustomsWaiversPage,
+                                        willYouClaimPage: WillYouClaimPage,
+                                        notEligiblePage: NotEligiblePage,
+                                        mainBusinessCheckPage: MainBusinessCheckPage,
+                                        notEligibleToLeadPage: NotEligibleToLeadPage,
+                                        termsPage: EligibilityTermsAndConditionsPage,
+                                        checkEoriPage: CheckEoriPage,
+                                        incorrectEoriPage: IncorrectEoriPage,
+                                        escInitialActionBuilders: EscInitialActionBuilder,
+                                        createUndertakingPage: CreateUndertakingPage,
+                                        escNonEnrolmentActionBuilders: EscNoEnrolmentActionBuilders,
+                                        escCDSActionBuilder: EscVerifiedEmailActionBuilders,
+                                        emailService: EmailService,
+                                        override val store: Store
 )(implicit
   val appConfig: AppConfig,
   override val executionContext: ExecutionContext
 ) extends BaseController(mcc)
     with FormHelpers {
 
-  import escCDSActionBuilder._
+  import escInitialActionBuilders._
   import escNonEnrolmentActionBuilders._
 
   private val customsWaiversForm: Form[FormValues] = Form(
@@ -84,7 +85,7 @@ class EligibilityController @Inject() (
     mapping("createUndertaking" -> mandatory("createUndertaking"))(FormValues.apply)(FormValues.unapply)
   )
 
-  def firstEmptyPage: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def firstEmptyPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .get[EligibilityJourney]
@@ -94,12 +95,12 @@ class EligibilityController @Inject() (
       }
   }
 
-  def getCustomsWaivers: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
+  def getCustomsWaivers: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
     val form = customsWaiversForm
     Ok(customsWaiversPage(form)).toFuture
   }
 
-  def postCustomsWaivers: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
+  def postCustomsWaivers: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
     customsWaiversForm
       .bindFromRequest()
       .fold(
@@ -112,12 +113,12 @@ class EligibilityController @Inject() (
     if (form.value == "true") routes.EligibilityController.getEoriCheck()
     else routes.EligibilityController.getWillYouClaim()
 
-  def getWillYouClaim: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
+  def getWillYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
     val form = willYouClaimForm
     Ok(willYouClaimPage(form, routes.EligibilityController.getCustomsWaivers().url)).toFuture
   }
 
-  def postWillYouClaim: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
+  def postWillYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
     willYouClaimForm
       .bindFromRequest()
       .fold(
@@ -129,11 +130,11 @@ class EligibilityController @Inject() (
 
   }
 
-  def getNotEligible: Action[AnyContent] = withNonAuthenticatedUser.async { implicit request =>
+  def getNotEligible: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
     Ok(notEligiblePage()).toFuture
   }
 
-  def getEoriCheck: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def getEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     emailService.retrieveEmailByEORI(eori) flatMap {
       _.emailType match {
@@ -151,7 +152,7 @@ class EligibilityController @Inject() (
     }
   }
 
-  def postEoriCheck: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def postEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     eoriCheckForm
       .bindFromRequest()
@@ -163,7 +164,7 @@ class EligibilityController @Inject() (
 
   }
 
-  def getMainBusinessCheck: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def getMainBusinessCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .get[EligibilityJourney]
@@ -176,7 +177,7 @@ class EligibilityController @Inject() (
       }
   }
 
-  def postMainBusinessCheck: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def postMainBusinessCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     processFormSubmission[EligibilityJourney] { journey =>
@@ -190,11 +191,11 @@ class EligibilityController @Inject() (
     }
   }
 
-  def getNotEligibleToLead: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def getNotEligibleToLead: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     Ok(notEligibleToLeadPage()).toFuture
   }
 
-  def getTerms: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def getTerms: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     store.get[EligibilityJourney].toContext
@@ -203,7 +204,7 @@ class EligibilityController @Inject() (
 
   }
 
-  def postTerms: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def postTerms: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     termsForm
       .bindFromRequest()
@@ -217,11 +218,11 @@ class EligibilityController @Inject() (
       )
   }
 
-  def getIncorrectEori: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def getIncorrectEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     Ok(incorrectEoriPage()).toFuture
   }
 
-  def getCreateUndertaking: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def getCreateUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     store.get[EligibilityJourney].toContext
@@ -229,7 +230,7 @@ class EligibilityController @Inject() (
       .getOrElse(throw new IllegalStateException("No EligibilityJourney found for this session"))
   }
 
-  def postCreateUndertaking: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
+  def postCreateUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     createUndertakingForm
       .bindFromRequest()
