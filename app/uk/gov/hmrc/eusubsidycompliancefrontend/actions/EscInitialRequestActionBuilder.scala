@@ -68,8 +68,7 @@ class EscInitialRequestActionBuilder @Inject() (
                 .getIdentifier(EnrolmentIdentifier)
                 .fold(throw new IllegalStateException("no eori provided"))(_.value)
               block(AuthenticatedEscRequest(credentials.providerId, groupId, request, EORI(identifier)))
-
-            case _ => Redirect(routes.EligibilityController.getCustomsWaivers()).toFuture
+            case _ => Redirect(routes.SignOutController.noCdsEnrolment()).toFuture
           }
         case _ ~ _ => Future.failed(throw InternalError())
       }(hc(request), executionContext)
