@@ -363,7 +363,7 @@ class AccountControllerSpec
               mockGetOrCreate[EligibilityJourney](eori1)(Right(EligibilityJourney()))
               mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             }
-            checkIsRedirect(performAction(), routes.EligibilityController.getCustomsWaivers().url)
+            checkIsRedirect(performAction(), routes.EligibilityController.firstEmptyPage().url)
           }
 
         }

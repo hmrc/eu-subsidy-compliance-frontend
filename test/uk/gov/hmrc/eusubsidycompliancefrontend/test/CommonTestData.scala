@@ -174,14 +174,11 @@ object CommonTestData {
   val eligibilityJourneyNotComplete = EligibilityJourney(
     customsWaivers = CustomsWaiversFormPage(true.some),
     willYouClaim = WillYouClaimFormPage(true.some),
-    eoriCheck = EoriCheckFormPage(true.some),
-    notEligible = NotEligibleFormPage(false.some),
-    signOut = SignOutFormPage(false.some),
   )
 
   val eligibilityJourneyComplete = eligibilityJourneyNotComplete.copy(
+    customsWaivers = CustomsWaiversFormPage(true.some),
     eoriCheck = EoriCheckFormPage(true.some),
-    signOutBadEori = SignOutBadEoriFormPage(false.some),
   )
 
   val undertakingJourneyComplete = UndertakingJourney(

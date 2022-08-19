@@ -42,7 +42,10 @@ trait Journey {
     if (currentIndex < lastIndex) redirectWithSession(steps(nextIndex).uri).toFuture
     else throw new IllegalStateException("no next page")
 
-  def isComplete: Boolean = steps(lastIndex).value.isDefined
+  def isComplete: Boolean = {
+    println(s"isComplete: lastIndex: $lastIndex has step: ${steps(lastIndex)}")
+    steps(lastIndex).value.isDefined
+  }
 
   def firstEmpty(implicit request: Request[_]): Option[Result] =
     steps

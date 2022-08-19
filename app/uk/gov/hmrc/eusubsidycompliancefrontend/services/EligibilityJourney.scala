@@ -39,16 +39,23 @@ case class EligibilityJourney(
     signOut,
   )
 
+  private def isEligible = {
+    println(s"Checking eligibility of: $this")
+    val responses = Seq(customsWaivers.value, willYouClaim.value).flatten
+    println(s"Checking eq responses: $responses")
+    val result = responses.contains(true)
+    println(s"Eligible to continue with service: $result")
+    result
+  }
+
   override def steps: Array[FormPage[_]] =
     journeySteps
-      // Remove steps based on user responses during the eligibility journey.
+      // Remove steps based on user responses during the eligibility journey. -.filterNot {
       .filterNot {
-        // TODO - why are these three steps always filtered?!
-        case CustomsWaiversFormPage(_) => true
-        case WillYouClaimFormPage(_) => true
-        case NotEligibleFormPage(_) => true
-        // TODO - any value in moving this into a method isEligible?
-        case SignOutFormPage(_) => Seq(customsWaivers.value, willYouClaim.value).flatten.contains(true)
+        case CustomsWaiversFormPage(_) => customsWaivers.value.isDefined
+        case WillYouClaimFormPage(_) => customsWaivers.value.contains(true)
+        case NotEligibleFormPage(_) => isEligible
+        case SignOutFormPage(_) => isEligible
         case SignOutBadEoriFormPage(_) => eoriCheck.value.contains(true)
         case _ => false
       }.toArray

@@ -23,10 +23,6 @@ import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder, EscNoEnrolmentActionBuilders}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.{UnDeliverableEmail, UnVerifiedEmail, VerifiedEmail}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.{UnDeliverableEmail, UnVerifiedEmail, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -35,6 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
+// TODO - this controller needs a refactor - delegate journey choice to EligibilityJourney instead of the controller
 @Singleton
 class EligibilityController @Inject() (
                                         mcc: MessagesControllerComponents,
@@ -42,14 +39,13 @@ class EligibilityController @Inject() (
                                         customsWaiversPage: CustomsWaiversPage,
                                         willYouClaimPage: WillYouClaimPage,
                                         notEligiblePage: NotEligiblePage,
-                                        mainBusinessCheckPage: MainBusinessCheckPage,
                                         notEligibleToLeadPage: NotEligibleToLeadPage,
-                                        termsPage: EligibilityTermsAndConditionsPage,
                                         checkEoriPage: CheckEoriPage,
                                         incorrectEoriPage: IncorrectEoriPage,
                                         escInitialActionBuilders: EscInitialActionBuilder,
-                                        createUndertakingPage: CreateUndertakingPage,
                                         escNonEnrolmentActionBuilders: EscNoEnrolmentActionBuilders,
+                                        escCDSActionBuilder: EscVerifiedEmailActionBuilders,
+                                        emailService: EmailService,
                                         override val store: Store
 )(implicit
   val appConfig: AppConfig,
@@ -72,12 +68,9 @@ class EligibilityController @Inject() (
     mapping("eoricheck" -> mandatory("eoricheck"))(FormValues.apply)(FormValues.unapply)
   )
 
-  private val createUndertakingForm: Form[FormValues] = Form(
-    mapping("createUndertaking" -> mandatory("createUndertaking"))(FormValues.apply)(FormValues.unapply)
-  )
-
   def firstEmptyPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+    println(s"Eligibility Controller - first empty page")
     store
       .get[EligibilityJourney]
       .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
@@ -142,55 +135,22 @@ class EligibilityController @Inject() (
       .fold(
         errors =>
           BadRequest(checkEoriPage(errors, eori, routes.EligibilityController.getCustomsWaivers().url)).toFuture,
-        form => store.update[EligibilityJourney](_.setEoriCheck(form.value.toBoolean)).flatMap(_.next)
+        form =>
+          store
+            .update[EligibilityJourney](_.setEoriCheck(form.value.toBoolean))
+            .flatMap { journey =>
+              if (journey.isComplete) Redirect(routes.UndertakingController.getUndertakingName()).toFuture
+              else journey.next
+            }
       )
+  }
 
+  def getNotEligibleToLead: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+    Ok(notEligibleToLeadPage()).toFuture
   }
 
   def getIncorrectEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     Ok(incorrectEoriPage()).toFuture
-  }
-
-  def getCreateUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    store.get[EligibilityJourney].toContext
-      .map(journey => Ok(createUndertakingPage(journey.previous, eori)))
-      .getOrElse(throw new IllegalStateException("No EligibilityJourney found for this session"))
-  }
-
-  def postCreateUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    createUndertakingForm
-      .bindFromRequest()
-      .fold(
-        _ => throw new IllegalStateException("value hard-coded, form hacking?"),
-        form =>
-          store.update[EligibilityJourney](_.setCreateUndertaking(form.value.toBoolean)).map { _ =>
-            Redirect(routes.UndertakingController.getUndertakingName())
-          }
-      )
-  }
-
-  def getCreateUndertaking: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    store.get[EligibilityJourney].toContext
-      .map(journey => Ok(createUndertakingPage(journey.previous, eori)))
-      .getOrElse(throw new IllegalStateException("No EligibilityJourney found for this session"))
-  }
-
-  def postCreateUndertaking: Action[AnyContent] = withCDSAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    createUndertakingForm
-      .bindFromRequest()
-      .fold(
-        _ => throw new IllegalStateException("value hard-coded, form hacking?"),
-        form =>
-          store.update[EligibilityJourney](_.setCreateUndertaking(form.value.toBoolean)).map { _ =>
-            Redirect(routes.UndertakingController.getUndertakingName())
-          }
-      )
   }
 
 }

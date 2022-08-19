@@ -21,13 +21,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -81,7 +75,7 @@ class EligibilityControllerSpec
 
       }
 
-      "redirect to next page" when {
+      "redirect to correct page" when {
 
         def redirect(eligibilityJourney: EligibilityJourney, nextCall: String) = {
           inSequence {
@@ -91,8 +85,8 @@ class EligibilityControllerSpec
           checkIsRedirect(performAction(), nextCall)
         }
 
-        "first empty value comes out to be empty" in {
-          redirect(EligibilityJourney(), routes.EligibilityController.getEoriCheck().url)
+        "no values are set in the eligibility journey" in {
+          redirect(EligibilityJourney(), routes.EligibilityController.getCustomsWaivers().url)
         }
 
         "Eligibility journey is complete" in {
@@ -369,11 +363,15 @@ class EligibilityControllerSpec
 
       "redirect to next page" when {
 
+        val journey = EligibilityJourney(
+          customsWaivers = CustomsWaiversFormPage(Some(true))
+        )
+
         def testRedirection(input: Boolean, nextCall: String) =
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
-              Right(EligibilityJourney(eoriCheck = EoriCheckFormPage(input.some)))
+            mockUpdate[EligibilityJourney](_ => update(journey), eori1)(
+              Right(journey.copy(eoriCheck = EoriCheckFormPage(input.some)))
             )
 
             checkIsRedirect(performAction("eoricheck" -> input.toString), nextCall)
@@ -383,7 +381,7 @@ class EligibilityControllerSpec
           testRedirection(true, routes.UndertakingController.getUndertakingName().url)
         }
 
-        "No is selected" in {
+        "no is selected" in {
           testRedirection(false, routes.EligibilityController.getIncorrectEori().url)
         }
       }
