@@ -98,20 +98,4 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
 
     }
 
-  def authBehaviour(performAction: () => Future[Result]): Unit =
-    "redirect to the login page when the user is not logged in" in {
-      List[NoActiveSession](
-        BearerTokenExpired(),
-        MissingBearerToken(),
-        InvalidBearerToken(),
-        SessionRecordNotFound()
-      ).foreach { e =>
-        withClue(s"For AuthorisationException $e: ") {
-          mockAuth(EmptyPredicate, authRetrievals)(Future.failed(e))
-
-          checkIsRedirect(performAction(), expectedSignInUrl)
-        }
-      }
-
-    }
 }

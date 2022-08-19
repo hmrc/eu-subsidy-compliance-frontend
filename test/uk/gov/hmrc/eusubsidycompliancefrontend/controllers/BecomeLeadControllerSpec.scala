@@ -76,7 +76,7 @@ class BecomeLeadControllerSpec
     "handling request to get Become Lead Eori" must {
 
       def performAction() = controller.getBecomeLeadEori(FakeRequest())
-      behave like authBehaviour(() => performAction())
+      behave like authBehaviourWithPredicate(() => performAction())
 
       "throw technical error" when {
         val exception = new Exception("oh no!")

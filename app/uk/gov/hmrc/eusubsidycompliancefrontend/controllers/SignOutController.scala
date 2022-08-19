@@ -45,7 +45,6 @@ class SignOutController @Inject() (
                                     auditService: AuditService,
                                     timedOutPage: TimedOut,
                                     signOutPage: SignOutPage,
-                                    cdsEnrolmentMissingPage: CdsEnrolmentMissingPage,
                                     timeProvider: TimeProvider
 )(implicit val appConfig: AppConfig, executionContext: ExecutionContext)
     extends BaseController(mcc)
@@ -90,11 +89,6 @@ class SignOutController @Inject() (
           Redirect(routes.UpdateEmailAddressController.updateUndeliveredEmailAddress()).toFuture
       }
     }
-
-  }
-
-  val noCdsEnrolment: Action[AnyContent] = Action { implicit request =>
-    Ok(cdsEnrolmentMissingPage()).withNewSession
 
   }
 

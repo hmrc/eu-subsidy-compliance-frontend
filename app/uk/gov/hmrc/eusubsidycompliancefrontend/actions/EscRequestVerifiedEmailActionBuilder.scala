@@ -87,7 +87,6 @@ class EscRequestVerifiedEmailActionBuilder @Inject()(
   private def handleFailure(implicit request: Request[_]): PartialFunction[Throwable, Result] = {
     case _: NoActiveSession =>
       Redirect(appConfig.ggSignInUrl, Map("continue" -> Seq(request.uri), "origin" -> Seq(origin)))
-    case _: InsufficientEnrolments =>
-      Redirect(routes.SignOutController.noCdsEnrolment())
+    case _: InsufficientEnrolments => Redirect(appConfig.eccEscSubscribeUrl)
   }
 }

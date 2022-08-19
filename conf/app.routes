@@ -128,7 +128,6 @@ GET        /sign-out                                                            
 
 GET        /timed-out                                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.signOutFromTimeout()
 
-GET        /cds-enrolment-missing                                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.noCdsEnrolment()
 GET        /lead-undertaking-no-business-present                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.getNoBusinessPresent
 POST       /lead-undertaking-no-business-present                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.postNoBusinessPresent
 

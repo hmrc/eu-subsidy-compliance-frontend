@@ -184,20 +184,5 @@ class SignOutControllerSpec
       }
     }
 
-    "handling request to no cds enrolment page " must {
-
-      def performAction() = controller.noCdsEnrolment(FakeRequest())
-
-      "display the page" in {
-
-        checkPageIsDisplayed(
-          performAction(),
-          messageFromMessageKey("cdsEnrolmentMissing.title"),
-          doc => doc.select(".govuk-body").html() should include regex messageFromMessageKey("cdsEnrolmentMissing.p1")
-        )
-
-      }
-
-    }
   }
 }

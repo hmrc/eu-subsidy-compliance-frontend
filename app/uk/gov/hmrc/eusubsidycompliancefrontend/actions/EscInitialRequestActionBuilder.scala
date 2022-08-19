@@ -24,7 +24,6 @@ import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
@@ -68,7 +67,7 @@ class EscInitialRequestActionBuilder @Inject() (
                 .getIdentifier(EnrolmentIdentifier)
                 .fold(throw new IllegalStateException("no eori provided"))(_.value)
               block(AuthenticatedEscRequest(credentials.providerId, groupId, request, EORI(identifier)))
-            case _ => Redirect(routes.SignOutController.noCdsEnrolment()).toFuture
+            case _ => Redirect(appConfig.eccEscSubscribeUrl).toFuture
           }
         case _ ~ _ => Future.failed(throw InternalError())
       }(hc(request), executionContext)
