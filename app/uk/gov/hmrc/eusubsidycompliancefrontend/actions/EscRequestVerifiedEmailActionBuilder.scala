@@ -69,15 +69,10 @@ class EscRequestVerifiedEmailActionBuilder @Inject()(
               val eori = eccEnrolment
                 .getIdentifier(EnrolmentIdentifier)
                 .fold(throw new IllegalStateException("No EORI against enrollment"))(e => EORI(e.value))
-              val isValidated = for {
-                email <- emailVerificationService.getEmailVerification(eori)
-                isValidated = email.isDefined
-              } yield isValidated
-              isValidated.flatMap{ validated =>
-
-                if(validated) block(AuthenticatedEscRequest(credentials.providerId, groupId, request, eori))
-                else throw new IllegalStateException("Email not valid")
-              }
+                emailVerificationService.getEmailVerification(eori).flatMap {
+                  case Some(_) => block(AuthenticatedEscRequest(credentials.providerId, groupId, request, eori))
+                  case None => throw new IllegalStateException("Email not valid")
+                }
             case _ => Redirect(routes.EligibilityController.getCustomsWaivers()).toFuture
           }
         case _ ~ _ => Future.failed(throw InternalError())
