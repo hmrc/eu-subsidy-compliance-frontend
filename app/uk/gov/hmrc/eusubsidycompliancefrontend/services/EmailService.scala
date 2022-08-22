@@ -35,7 +35,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class EmailService @Inject() (
   appConfig: AppConfig,
   sendEmailConnector: SendEmailConnector,
-  retrieveEmailConnector: RetrieveEmailConnector
+  retrieveEmailConnector: RetrieveEmailConnector,
+  emailVerificationService: EmailVerificationService
 ) extends Logging {
 
   def sendEmail(
@@ -79,18 +80,27 @@ class EmailService @Inject() (
   )(implicit
     hc: HeaderCarrier,
     executionContext: ExecutionContext
-  ): Future[EmailSendResult] =
-    retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
-      retrieveEmailResponse.emailType match {
-        case EmailType.VerifiedEmail =>
-          val parameters = EmailParameters(eori1, eori2, undertaking.name, removeEffectiveDate)
-          val templateId = appConfig.getTemplateId(template).getOrElse(s"No template ID for email template: $template")
-          retrieveEmailResponse.emailAddress.map { emailAddress =>
-            sendEmail(emailAddress, parameters, templateId)
-          } getOrElse sys.error("Email address not found")
-        case _ => Future.successful(EmailSendResult.EmailNotSent)
+  ): Future[EmailSendResult] = {
+    emailVerificationService.getEmailVerification(eori1).flatMap {
+      case Some(value) => {
+        val parameters = EmailParameters(eori1, eori2, undertaking.name, removeEffectiveDate)
+        val templateId = appConfig.getTemplateId(template).getOrElse(s"No template ID for email template: $template")
+        sendEmail(EmailAddress(value.email), parameters, templateId)
       }
+      case None =>
+        retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
+          retrieveEmailResponse.emailType match {
+            case EmailType.VerifiedEmail =>
+              val parameters = EmailParameters(eori1, eori2, undertaking.name, removeEffectiveDate)
+              val templateId = appConfig.getTemplateId(template).getOrElse(s"No template ID for email template: $template")
+              retrieveEmailResponse.emailAddress.map { emailAddress =>
+                sendEmail(emailAddress, parameters, templateId)
+              } getOrElse sys.error("Email address not found")
+            case _ => Future.successful(EmailSendResult.EmailNotSent)
+          }
+        }
     }
+  }
 
   def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RetrieveEmailResponse] =
     retrieveEmailConnector.retrieveEmailByEORI(eori).map {

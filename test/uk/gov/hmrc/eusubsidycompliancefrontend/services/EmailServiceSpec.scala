@@ -59,6 +59,8 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
 
   private val emptyHeaders = Map.empty[String, Seq[String]]
 
+  val mockEmailVerificationService = mock[EmailVerificationService]
+
   private val validEmailResponseJson = Json.toJson(validEmailResponse)
   private val inValidEmailResponseJson = Json.toJson(inValidEmailResponse)
   private val undeliverableResponseJson = Json.toJson(undeliverableEmailResponse)
@@ -79,10 +81,17 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
       .expects(eori, *)
       .returning(result.toFuture)
 
+  private def mockVerifiedEmail() =
+    (mockEmailVerificationService
+      .getEmailVerification(_: EORI))
+      .expects(*)
+      .returning(None.toFuture)
+
   private val service = new EmailService(
     fakeAppConfig,
     mockSendEmailConnector,
-    mockRetrieveEmailConnector
+    mockRetrieveEmailConnector,
+    mockEmailVerificationService
   )
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -94,30 +103,35 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
       "return an error" when {
 
         "the email retrieval fails" in {
+          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Left(ConnectorError(new RuntimeException())))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
           result.failed.futureValue shouldBe a[ConnectorError]
         }
 
         "no email address is found" in {
+          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, unverifiedEmailResponseJson, emptyHeaders)))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
           result.futureValue shouldBe EmailNotSent
         }
 
         "the email address is undeliverable" in {
+          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, undeliverableResponseJson, emptyHeaders)))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
           result.futureValue shouldBe EmailNotSent
         }
 
         "the email address response is invalid" in {
+          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, inValidEmailResponseJson, emptyHeaders)))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
           result.failed.futureValue shouldBe a[RuntimeException]
         }
 
         "there is an error sending the email" in {
+          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockSendEmail(emailSendRequest)(Left(ConnectorError("Error")))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
@@ -129,6 +143,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
       "return success" when {
 
         "the email is sent successfully" in {
+          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockSendEmail(emailSendRequest)(Right(HttpResponse(ACCEPTED, "")))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
@@ -136,6 +151,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
         }
 
         "the email is sent successfully with a removeEffectiveDate value" in {
+          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockSendEmail(emailSendRequest.copy(parameters = singleEoriWithDateEmailParameters))(Right(HttpResponse(ACCEPTED, "")))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking, dateTime.toString)
@@ -143,6 +159,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
         }
 
         "the email is sent successfully with a second eori" in {
+          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockSendEmail(emailSendRequest.copy(parameters = doubleEoriEmailParameters))(Right(HttpResponse(ACCEPTED, "")))
           val result = service.sendEmail(eori1, eori2, CreateUndertaking, undertaking)
@@ -150,6 +167,7 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
         }
 
         "the email is sent successfully with a second eori and a removeEffectiveDate value" in {
+          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockSendEmail(emailSendRequest.copy(parameters = doubleEoriWithDateEmailParameters))(Right(HttpResponse(ACCEPTED, "")))
           val result = service.sendEmail(eori1, eori2, CreateUndertaking, undertaking, dateTime.toString)
