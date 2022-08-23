@@ -30,8 +30,26 @@
   govukNotificationBanner : GovukNotificationBanner
 )
 
-@(undertaking: Undertaking, eori: EORI, isNonLeadEORIPresent: Boolean, isTimeToReport: Boolean, lastDayToReport: Option[String], isOverdue: Boolean, isNilReturnDoneRecently: Boolean, dueDate: String, neverSubmitted: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@linkURL = @{if(isNonLeadEORIPresent) routes.SelectNewLeadController.getSelectNewLead() else routes.NoBusinessPresentController.getNoBusinessPresent() }
+@(
+    undertaking: Undertaking,
+    eori: EORI,
+    isNonLeadEORIPresent: Boolean,
+    isTimeToReport: Boolean,
+    dueDate: String,
+    isOverdue: Boolean,
+    isNilReturnDoneRecently: Boolean,
+    lastSubmitted: Option[String],
+    neverSubmitted: Boolean,
+    allowance: String,
+    totalSubsidies: String,
+    remainingAmount: String,
+    currentPeriodStart: String
+)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@linkURL = @{
+    if(isNonLeadEORIPresent) routes.SelectNewLeadController.getSelectNewLead()
+    else routes.NoBusinessPresentController.getNoBusinessPresent()
+}
 
 @html = {
     <p class="govuk-notification-banner__heading">
@@ -60,13 +78,13 @@
 
     @if(isTimeToReport) {
         @govukInsetText(InsetText(
-            content = Text(messages("lead-account-homepage.inset", lastDayToReport.getOrElse(sys.error("due date missing"))))
+            content = Text(messages("lead-account-homepage.inset", dueDate)))
         ))
     }
 
     @if(!neverSubmitted && isOverdue) {
         @govukInsetText(InsetText(
-            content = Text(messages("lead-account-homepage-overdue.inset", lastDayToReport.getOrElse(sys.error("due date missing"))))
+            content = Text(messages("lead-account-homepage-overdue.inset", dueDate)))
         ))
     }
 
@@ -78,25 +96,27 @@
   
     @H2(messages("lead-account-homepage.h2"))
     @P(messages("lead-account-homepage.p1"))
-    @P(messages("lead-account-homepage.p2", lastDayToReport.getOrElse("")))
-    @P(messages("lead-account-homepage.p3", "<strong>[todo]</strong> 3 June 2022"))
+    @P(messages("lead-account-homepage.p2", dueDate)) <!-- TODO - best way to handle missing value? -->
+    @P(messages("lead-account-homepage.p3", lastSubmitted.getOrElse(""))) <!-- TODO - best way to handle missing value? -->
     @P(messages("lead-account-homepage.p4"))
 
     <ul class="govuk-list govuk-list--spaced">
       <li><a class="govuk-link" href="@routes.BusinessEntityController.getAddBusinessEntity()">@messages("lead-account-homepage.ul1-li1")</a></li>
       <li><a class="govuk-link" href="@routes.NoClaimNotificationController.getNoClaimNotification()">@messages("lead-account-homepage.ul1-li2")</a></li>
+      <!-- TODO
       <li><a class="govuk-link" href="#">@messages("lead-account-homepage.ul1-li3")</a> [todo]</li>
+      -->
       <li><a class="govuk-link" href="@routes.FinancialDashboardController.getFinancialDashboard()">@messages("lead-account-homepage.ul1-li4")</a></li>
     </ul>
     
     @H2(messages("lead-account-homepage.h2-2"), Some("govuk-heading-m govuk-!-margin-top-8"))
     @P(messages(
-      "lead-account-homepage.p5", 
-      "<strong>[todo]</strong> £200.000", 
-      "<strong>[todo]</strong> 3 June 2019",
-      "<strong>[todo]</strong> £138,500"
+      "lead-account-homepage.p5",
+      allowance,
+      currentPeriodStart,
+      totalSubsidies
     ))
-    @P(messages("lead-account-homepage.p6", "<strong>[todo]</strong> <strong>£61,500</strong>"))
+    @P(messages("lead-account-homepage.p6", remainingAmount))
     
     @H2(messages("lead-account-homepage.h2-3"), Some("govuk-heading-m govuk-!-margin-top-8"))
     <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-8">
