@@ -22,8 +22,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -286,37 +285,11 @@ class EligibilityControllerSpec
             .withFormUrlEncodedBody()
         )
 
-      "throw technical error" when {
-
-        "call to retrieve email  fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to get eligibility fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(
-              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("some@test.com").some))
-            )
-            mockGetOrCreate[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-      }
-
       "display the page" when {
 
         def testDisplay(eligibilityJourney: EligibilityJourney) = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(
-              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("some@test.com").some))
-            )
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourney))
           }
           checkPageIsDisplayed(
@@ -356,29 +329,6 @@ class EligibilityControllerSpec
 
       }
 
-      "redirect to next page" when {
-
-        "retrieved email is Unverified" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(
-              Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, EmailAddress("some@test.com").some))
-            )
-          }
-          checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateUnverifiedEmailAddress().url)
-        }
-
-        "retrieved email is UnDeliverable" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockRetrieveEmail(eori1)(
-              Right(RetrieveEmailResponse(EmailType.UnDeliverableEmail, EmailAddress("some@test.com").some))
-            )
-          }
-          checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateUndeliveredEmailAddress().url)
-        }
-
-      }
     }
 
     "handling request to post EORI check" must {

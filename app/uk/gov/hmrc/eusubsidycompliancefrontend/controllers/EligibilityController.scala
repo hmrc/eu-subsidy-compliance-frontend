@@ -136,19 +136,11 @@ class EligibilityController @Inject() (
 
   def getEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    emailService.retrieveEmailByEORI(eori) flatMap {
-      _.emailType match {
-        case VerifiedEmail =>
-          // User may have been redirected here from ECC so ensure the EligibilityJourney is present if not already.
-          store.getOrCreate[EligibilityJourney](EligibilityJourney()).map { journey =>
-            val form = journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck =>
-              eoriCheckForm.fill(FormValues(eoriCheck.toString))
-            )
-            Ok(checkEoriPage(form, eori, routes.EligibilityController.getCustomsWaivers().url))
-        }
-        case UnVerifiedEmail => Redirect(routes.UpdateEmailAddressController.updateUnverifiedEmailAddress()).toFuture
-        case UnDeliverableEmail => Redirect(routes.UpdateEmailAddressController.updateUndeliveredEmailAddress()).toFuture
-      }
+    store.getOrCreate[EligibilityJourney](EligibilityJourney()).map { journey =>
+      val form = journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck =>
+        eoriCheckForm.fill(FormValues(eoriCheck.toString))
+      )
+      Ok(checkEoriPage(form, eori, routes.EligibilityController.getCustomsWaivers().url))
     }
   }
 
