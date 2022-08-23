@@ -115,6 +115,7 @@ class AccountController @Inject() (
       } yield Ok(
         leadAccountPage(
           undertaking,
+          eori,
           undertaking.getAllNonLeadEORIs().nonEmpty,
           isTimeToReport,
           dueDate,
