@@ -22,7 +22,7 @@
 @import play.twirl.api.Html
 
 @this(
-  layout: FullWidthLayout,
+  layout: Layout,
   button: components.Button,
   govukRadios : GovukRadios,
   govukWarningText : GovukWarningText,
@@ -77,9 +77,10 @@
     }
   
     @H2(messages("lead-account-homepage.h2"))
-    @P(messages("lead-account-homepage.p1", "<strong>[todo]</strong> 3 September 2022"))
-    @P(messages("lead-account-homepage.p2", "<strong>[todo]</strong> 3 June 2022"))
-    @P(messages("lead-account-homepage.p3"))
+    @P(messages("lead-account-homepage.p1"))
+    @P(messages("lead-account-homepage.p2", lastDayToReport.getOrElse("")))
+    @P(messages("lead-account-homepage.p3", "<strong>[todo]</strong> 3 June 2022"))
+    @P(messages("lead-account-homepage.p4"))
 
     <ul class="govuk-list govuk-list--spaced">
       <li><a class="govuk-link" href="@routes.BusinessEntityController.getAddBusinessEntity()">@messages("lead-account-homepage.ul1-li1")</a></li>
@@ -90,12 +91,12 @@
     
     @H2(messages("lead-account-homepage.h2-2"), Some("govuk-heading-m govuk-!-margin-top-8"))
     @P(messages(
-      "lead-account-homepage.p4", 
+      "lead-account-homepage.p5", 
       "<strong>[todo]</strong> £200.000", 
       "<strong>[todo]</strong> 3 June 2019",
       "<strong>[todo]</strong> £138,500"
     ))
-    @P(messages("lead-account-homepage.p5", "<strong>[todo]</strong> <strong>£61,500</strong>"))
+    @P(messages("lead-account-homepage.p6", "<strong>[todo]</strong> <strong>£61,500</strong>"))
     
     @H2(messages("lead-account-homepage.h2-3"), Some("govuk-heading-m govuk-!-margin-top-8"))
     <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-8">

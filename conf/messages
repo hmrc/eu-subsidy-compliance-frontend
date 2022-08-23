@@ -221,24 +221,25 @@ undertaking.confirmation.p4=If you have any other businesses, you must add them 
 
 lead-account-homepage.title = {0}
 lead-account-homepage.h2 = Your next report date
-lead-account-homepage.p1 = You must send your next report on or before <strong>{0}</strong>.
-lead-account-homepage.p2 = This date is 90 days after the last report you sent, on {0}. You must either report payments you have received since then, or report if you have not received any payments.
-lead-account-homepage.p3 = If you don’t do this, your undertaking will no longer be able to claim Customs Duty waivers.
+lead-account-homepage.p1 = You no longer need to report Customs subsidies (customs duty waivers). This is now done automatically. You must use this service to report any non-customs subsidies you have received in the last 3 years.
+lead-account-homepage.p2 = You must send your next report on or before <strong>{0}</strong>.
+lead-account-homepage.p3 = This date is 90 days after the last report you sent, on {0}. You must either report payments you have received since then, or report if you have not received any payments.
+lead-account-homepage.p4 = If you don’t do this, your undertaking will no longer be able to claim Customs Duty waivers.
 
 lead-account-homepage.ul1-li1 = Report or amend payments
 lead-account-homepage.ul1-li2 = Tell us you have not received any payments
-lead-account-homepage.ul1-li3 = View reported payment history
-lead-account-homepage.ul1-li4 = View summary of reported payments
+lead-account-homepage.ul1-li3 = View reported payments for non-customs subsidies
+lead-account-homepage.ul1-li4 = View summary of your allowance (customs subsidies and non-customs subsidies)
 
 lead-account-homepage.h2-2 = Your remaining allowance
-lead-account-homepage.p4 = Your allowance is {0} over a period of 3 tax ears. Since {1}, our payments for customs and non-customs subsidies total {2}.
-lead-account-homepage.p5 = You currently have a remaining balance of {0}.
+lead-account-homepage.p5 = Your allowance is {0} over a period of 3 tax years. Since {1}, your payments for customs and non-customs subsidies total {2}.
+lead-account-homepage.p6 = You currently have a remaining balance of {0}.
 
 lead-account-homepage.h2-3 = Undertaking administration
 lead-account-homepage.ul2-li1 = Update details
 lead-account-homepage.ul2-li2 = Add or remove businesses
 lead-account-homepage.ul2-li3 = Make another business responsible
-lead-account-homepage.ul2-li4 = Close undertaking
+lead-account-homepage.ul2-li4 = Disable undertaking
 
 lead-account-homepage.inset=Your next entry is due by {0}. You can report de minimis aid payment, or let HMRC know that you have not received any, by following the links in the Payments received section below.
 lead-account-homepage-overdue.inset=Your due date of {0} has passed. You have not submitted your return within the 90-day period.
