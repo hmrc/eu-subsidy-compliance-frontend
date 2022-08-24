@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @this(
   layout: Layout,
@@ -48,14 +49,18 @@
       ))
     }
 
+    @H1(messages("undertakingName.title"))
+    @P(messages("undertakingName.p1"))
+    @P(messages("undertakingName.p2"))
+
     @govukInput(Input(
       value = form.data.get("undertakingName"),
       id = "undertakingName",
       name = "undertakingName",
       label = Label(
         isPageHeading = true,
-        classes = "govuk-label--xl",
-        content = Text(messages("undertakingName.title"))
+        classes = "govuk-label--m",
+        content = Text(messages("undertakingName.label"))
       ),
       hint = Some(Hint(content = Text(messages("undertakingName.hint")))),
       errorMessage = if (form.hasErrors) {
@@ -63,6 +68,6 @@
       } else None
     ))
 
-    @button("continue.button")
+    @button("common.continue.only")
   }
 }
