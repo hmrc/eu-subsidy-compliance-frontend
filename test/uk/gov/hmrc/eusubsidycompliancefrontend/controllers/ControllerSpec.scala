@@ -57,7 +57,9 @@ trait ControllerSpec extends PlaySupport with ScalaFutures with IntegrationPatie
     val doc = Jsoup.parse(contentAsString(result))
 
     if (!isLeadJourney)
-      doc.select("h1").text shouldBe expectedTitle
+      withClue(s"Title '$expectedTitle' not found in page content '${doc.text()}'") {
+        doc.text().contains(expectedTitle) shouldBe true
+      }
 
     val bodyText = doc.select("body").text
     val regex = """not_found_message\((.*?)\)""".r

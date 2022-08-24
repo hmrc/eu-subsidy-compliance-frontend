@@ -24,7 +24,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder,
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.{UnDeliverableEmail, UnVerifiedEmail, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
