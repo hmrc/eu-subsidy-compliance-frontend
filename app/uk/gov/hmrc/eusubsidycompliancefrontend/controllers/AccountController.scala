@@ -126,7 +126,6 @@ class AccountController @Inject() (
           today.toTaxYearEnd
         )
       } yield Ok(
-        // TODO - review and clean up these parameters
         leadAccountPage(
           undertaking,
           eori,
@@ -140,7 +139,8 @@ class AccountController @Inject() (
           BigDecimal(summary.overall.sectorCap.toString()).toEuros,
           summary.overall.total.toEuros,
           summary.overall.allowanceRemaining.toEuros,
-          startDate.toDisplayFormat
+          startDate.toDisplayFormat,
+          summary.overall.allowanceExceeded
         )
       )
 

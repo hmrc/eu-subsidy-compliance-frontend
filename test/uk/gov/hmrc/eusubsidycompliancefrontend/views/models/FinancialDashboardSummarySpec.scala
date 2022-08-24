@@ -136,7 +136,7 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
       TaxYearSummary(2000, SubsidyAmount(1.00), SubsidyAmount(2.00)).total shouldBe SubsidyAmount(3.00)
     }
 
-    "overall tax summary should compute total and allowance remaining correctly" in {
+    "overall tax summary should compute total, allowance remaining and allowance exceeded correctly" in {
       val underTest = OverallSummary(
         startYear = 2000,
         endYear = 2001,
@@ -148,6 +148,7 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
 
       underTest.total shouldBe SubsidyAmount(3.00)
       underTest.allowanceRemaining shouldBe SubsidyAmount(199997.00)
+      underTest.allowanceExceeded shouldBe false
     }
   }
 

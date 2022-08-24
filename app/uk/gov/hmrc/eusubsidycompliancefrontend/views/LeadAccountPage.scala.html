@@ -43,7 +43,8 @@
     allowance: String,
     totalSubsidies: String,
     remainingAmount: String,
-    currentPeriodStart: String
+    currentPeriodStart: String,
+    isOverAllowance: Boolean
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @linkURL = @{
