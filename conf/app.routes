@@ -120,5 +120,3 @@ POST       /lead-undertaking-no-business-present                                
 
 GET        /financial-dashboard                                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinancialDashboardController.getFinancialDashboard
 GET        /lead-undertaking-promote-business-entity-email-unverified                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.emailNotVerified
-
-GET        /test/exchangeRate/:isoDate                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ExchangeRateTestController.getExchangeRate(isoDate)
