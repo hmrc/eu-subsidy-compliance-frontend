@@ -172,12 +172,12 @@ object CommonTestData {
   val undertakingSubsidies1 = undertakingSubsidies.copy(nonHMRCSubsidyUsage = nonHmrcSubsidyList1)
 
   val eligibilityJourneyNotComplete = EligibilityJourney(
-    customsWaivers = CustomsWaiversFormPage(true.some),
+    doYouClaim = DoYouClaimFormPage(true.some),
     willYouClaim = WillYouClaimFormPage(true.some),
   )
 
   val eligibilityJourneyComplete = eligibilityJourneyNotComplete.copy(
-    customsWaivers = CustomsWaiversFormPage(true.some),
+    doYouClaim = DoYouClaimFormPage(true.some),
     eoriCheck = EoriCheckFormPage(true.some),
   )
 
@@ -242,7 +242,7 @@ object CommonTestData {
   val emailSendRequest = EmailSendRequest(List(EmailAddress("user@test.com")), "templateId1", singleEoriEmailParameters)
 
   val eligibilityJourney = EligibilityJourney(
-    customsWaivers = CustomsWaiversFormPage(true.some),
+    doYouClaim = DoYouClaimFormPage(true.some),
     willYouClaim = WillYouClaimFormPage(true.some),
     notEligible = NotEligibleFormPage(true.some),
     signOut = SignOutFormPage(true.some),

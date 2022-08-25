@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import cats.implicits.catsSyntaxOptionId
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.{CustomsWaiversFormPage, EoriCheckFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.{DoYouClaimFormPage, EoriCheckFormPage}
 
 class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
 
@@ -30,7 +30,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
       "return all forms at the start of the journey" in {
         val underTest = EligibilityJourney()
         underTest.steps shouldBe Array(
-          underTest.customsWaivers,
+          underTest.doYouClaim,
           underTest.willYouClaim,
           underTest.notEligible,
           underTest.eoriCheck,
@@ -42,7 +42,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
       // TODO - add two cases for this
       "remove sign out step if main claim customs waiver has true value" in {
         val underTest = EligibilityJourney(
-          customsWaivers = CustomsWaiversFormPage(Some(true))
+          doYouClaim = DoYouClaimFormPage(Some(true))
         )
         underTest.steps shouldBe Array(
           underTest.eoriCheck,
@@ -52,7 +52,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
 
       "remove sign out bad eori step if eori check has true value" in {
         val underTest = EligibilityJourney(
-          customsWaivers = CustomsWaiversFormPage(Some(true)),
+          doYouClaim = DoYouClaimFormPage(Some(true)),
           eoriCheck = EoriCheckFormPage(Some(true))
         )
         underTest.steps shouldBe Array(

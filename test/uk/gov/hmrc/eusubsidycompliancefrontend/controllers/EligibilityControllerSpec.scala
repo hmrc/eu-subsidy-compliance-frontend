@@ -86,7 +86,7 @@ class EligibilityControllerSpec
         }
 
         "no values are set in the eligibility journey" in {
-          redirect(EligibilityJourney(), routes.EligibilityController.getCustomsWaivers().url)
+          redirect(EligibilityJourney(), routes.EligibilityController.getDoYouClaim().url)
         }
 
         "Eligibility journey is complete" in {
@@ -99,7 +99,7 @@ class EligibilityControllerSpec
     "handling request to get custom waivers" must {
 
       def performAction() = controller
-        .getCustomsWaivers(
+        .getDoYouClaim(
           FakeRequest()
         )
 
@@ -117,12 +117,12 @@ class EligibilityControllerSpec
             { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
 
-              eligibilityJourney.customsWaivers.value match {
+              eligibilityJourney.doYouClaim.value match {
                 case Some(value) => selectedOptions.attr("value") shouldBe value.toString
                 case None => selectedOptions.isEmpty shouldBe true
               }
               val button = doc.select("form")
-              button.attr("action") shouldBe routes.EligibilityController.postCustomsWaivers().url
+              button.attr("action") shouldBe routes.EligibilityController.getDoYouClaim().url
 
             }
           )
@@ -134,8 +134,8 @@ class EligibilityControllerSpec
 
     "handling request to post custom waivers" must {
       def performAction(data: (String, String)*) = controller
-        .postCustomsWaivers(
-          FakeRequest("GET", routes.EligibilityController.getCustomsWaivers().url)
+        .postDoYouClaim(
+          FakeRequest("GET", routes.EligibilityController.getDoYouClaim().url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -187,7 +187,7 @@ class EligibilityControllerSpec
 
       "display the page" in {
 
-        val previousUrl = routes.EligibilityController.getCustomsWaivers().url
+        val previousUrl = routes.EligibilityController.getDoYouClaim().url
 
         inSequence {
           mockAuthWithNoEnrolment()
@@ -333,7 +333,7 @@ class EligibilityControllerSpec
             .withFormUrlEncodedBody(data: _*)
         )
 
-      def update(ej: EligibilityJourney) = ej.copy(customsWaivers = CustomsWaiversFormPage(true.some))
+      def update(ej: EligibilityJourney) = ej.copy(doYouClaim = DoYouClaimFormPage(true.some))
 
       "throw technical error" when {
 
@@ -364,7 +364,7 @@ class EligibilityControllerSpec
       "redirect to next page" when {
 
         val journey = EligibilityJourney(
-          customsWaivers = CustomsWaiversFormPage(Some(true))
+          doYouClaim = DoYouClaimFormPage(Some(true))
         )
 
         def testRedirection(input: Boolean, nextCall: String) =
