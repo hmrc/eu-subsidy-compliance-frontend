@@ -63,11 +63,8 @@ class AccountController @Inject() (
   private def handleUndertakingNotCreated(implicit e: EORI): Future[Result] = {
     val result = getOrCreateJourneys().map {
       case (ej, uj) if !ej.isComplete && uj.isEmpty =>
-        println(s"got $ej and $uj - redirecting to first page of eligibility journey")
-        println(s"Eligiblity Journey is reporting the following steps: ${ej.steps.map(_.uri).mkString("Array(", ", ", ")")}")
         Redirect(routes.EligibilityController.firstEmptyPage())
       case (_, uj) if !uj.isComplete =>
-        println(s"Redirecting to first page of undertaking journey")
         Redirect(routes.UndertakingController.firstEmptyPage())
       case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity())
     }

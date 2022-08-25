@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
+import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc._
@@ -24,7 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder,
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.{DoYouClaimFormPage, EoriCheckFormPage, WillYouClaimFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.{DoYouClaimFormPage, WillYouClaimFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -70,7 +70,6 @@ class EligibilityController @Inject() (
 
   def firstEmptyPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    println(s"Eligibility Controller - first empty page")
     store
       .get[EligibilityJourney]
       .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
@@ -128,17 +127,12 @@ class EligibilityController @Inject() (
   def getEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     val ref = request.headers.get("Referer")
-    println(s"got referer: $ref")
-    println(s"getEoriCheck: Got request $request")
-    val thing = ref.getOrElse("/").endsWith(routes.EligibilityController.getDoYouClaim().url)
-    println(s"referer ${routes.EligibilityController.getDoYouClaim().url} is doYouClaim: $thing")
     val eligibilityJourney = EligibilityJourney(
       // Reconstruct do you / will you claim answers from referring page
       doYouClaim = DoYouClaimFormPage(ref.map(_.endsWith(routes.EligibilityController.getDoYouClaim().url))),
       willYouClaim = WillYouClaimFormPage(ref.map(_.endsWith(routes.EligibilityController.getWillYouClaim().url))),
     )
     store.getOrCreate[EligibilityJourney](eligibilityJourney).map { journey =>
-      println(s"getEoriCheck: using updated journey state: $eligibilityJourney")
       val form = journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck =>
         eoriCheckForm.fill(FormValues(eoriCheck.toString))
       )
@@ -157,7 +151,6 @@ class EligibilityController @Inject() (
           store
             .update[EligibilityJourney](_.setEoriCheck(form.value.toBoolean))
             .flatMap { journey =>
-              println(s"postEoriCheck - got journey state $journey")
               // TODO - here we can check if the undertaking exists and direct the user to the account home page
               if (journey.isComplete) Redirect(routes.UndertakingController.getUndertakingName()).toFuture
               else journey.next

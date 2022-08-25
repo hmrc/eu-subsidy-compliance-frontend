@@ -39,14 +39,8 @@ case class EligibilityJourney(
     signOut,
   )
 
-  private def isEligible = {
-    println(s"Checking eligibility of: $this")
-    val responses = Seq(doYouClaim.value, willYouClaim.value).flatten
-    println(s"Checking eq responses: $responses")
-    val result = responses.contains(true)
-    println(s"Eligible to continue with service: $result")
-    result
-  }
+  private def isEligible =
+    Seq(doYouClaim.value, willYouClaim.value).flatten.contains(true)
 
   override def steps: Array[FormPage[_]] =
     journeySteps
