@@ -20,6 +20,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.H1
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.P
 
 @this(
   layout: Layout,
@@ -59,7 +60,10 @@
       }
 
 
-      @H1(messages("confirmEmail.title"))
+      @H1(messages("inputEmail.title"))
+
+      @P(messages("inputEmail.p"))
+
       @govukInput(Input(
        id = inputIdentifier,
        name = inputIdentifier,
@@ -68,7 +72,7 @@
        } else None,
        value = form.data.get(inputIdentifier),
        label = Label(
-           content = Text(messages("confirmEmail.no.label"))
+           content = Text(messages("inputEmail.label"))
        ),
        classes = "govuk-input govuk-input--width-20"
    ))
