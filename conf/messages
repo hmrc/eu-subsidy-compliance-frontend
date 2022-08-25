@@ -407,25 +407,6 @@ dashboard.sector.name.2 = Agriculture
 dashboard.sector.name.3 = Aquaculture
 dashboard.allowance.remaining.heading = Allowance remaining
 
-#update Unverified email address
-updateUnverifiedEmail.title = Your email has not been verified for the Customs Declaration Service (CDS)
-updateUnverifiedEmail.p1 = This email address has been registered for the Customs Declaration Service (CDS) by your organisation.
-updateUnverifiedEmail.p2 = You need to verify it, or change it.
-updateUnverifiedEmail.p3 = If you have access to the email account, you can verify the address.
-updateUnverifiedEmail.p4 = Once you have verified the email address, it will be the only one we use for:
-updateUnverifiedEmail.p3.list1 = updates on changes to the Customs Declaration Service
-updateUnverifiedEmail.p3.list2 = urgent updates about goods in customs
-updateUnverifiedEmail.p3.list3 = some financial notifications, including Direct Debit notices and VAT
-
-#update Undelivered email address
-updateUndeliveredEmail.title = There''s a problem with the CDS registered email address
-updateUndeliveredEmail.p1 = We tried to send you an email but it could not be delivered. This could be because the inbox is full, or due to a technical problem with your email provider.
-updateUndeliveredEmail.p2 =This is the email address your organisation has registered for the Customs Declaration Service (CDS). You need to verify this email address or change it. You can verify the email instantly provided you have access to the email account.
-updateUndeliveredEmail.p3 = This will be the only email address we use for:
-updateUndeliveredEmail.p3.list1 = updates on changes to the Customs Declaration Service
-updateUndeliveredEmail.p3.list2 = urgent updates about goods in customs
-updateUndeliveredEmail.p3.list3 = some financial notifications, including Direct Debit notices and VAT
-
 become-admin.title=Do you want to become the administrator for {0}
 become-admin.hint=As undertaking administrator, the business EORI number {0} will be responsible for reporting de minimis aid (less Customs Duty waivers) payments received by all businesses which are part of this single undertaking.
 becomeAdmin.error.required = Select yes if you want to become administrator for this undertaking 

@@ -25,10 +25,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.BusinessEntity
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{MemberRemoveSelfToBusinessEntity, MemberRemoveSelfToLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EmailService, EscService}
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
@@ -59,37 +57,25 @@ class SignOutController @Inject() (
 
   val signOut: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    emailService.retrieveEmailByEORI(eori) flatMap { response =>
-      response.emailType match {
-        case EmailType.VerifiedEmail =>
-          escService.retrieveUndertaking(eori).flatMap {
-            case Some(undertaking) =>
-              val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
-              val result = for {
-                undertakingRef <- undertaking.reference.toContext
-                removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(eori)
-                leadEORI = undertaking.getLeadEORI
-                _ <- escService.removeMember(undertakingRef, removeBE).toContext
-                _ <- emailService.sendEmail(eori, MemberRemoveSelfToBusinessEntity, undertaking, removalEffectiveDateString).toContext
-                _ <- emailService.sendEmail(leadEORI, eori, MemberRemoveSelfToLead, undertaking, removalEffectiveDateString).toContext
-                _ = auditService
-                  .sendEvent(
-                    AuditEvent
-                      .BusinessEntityRemovedSelf(undertakingRef, request.authorityId, leadEORI, eori)
-                  )
-              } yield ()
-              result.fold(handleMissingSessionData("Undertaking Ref"))(_ => Ok(signOutPage()).withNewSession)
+      escService.retrieveUndertaking(eori).flatMap {
+        case Some(undertaking) =>
+          val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
+          val result = for {
+            undertakingRef <- undertaking.reference.toContext
+            removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(eori)
+            leadEORI = undertaking.getLeadEORI
+            _ <- escService.removeMember(undertakingRef, removeBE).toContext
+            _ <- emailService.sendEmail(eori, MemberRemoveSelfToBusinessEntity, undertaking, removalEffectiveDateString).toContext
+            _ <- emailService.sendEmail(leadEORI, eori, MemberRemoveSelfToLead, undertaking, removalEffectiveDateString).toContext
+            _ = auditService
+              .sendEvent(
+                AuditEvent
+                  .BusinessEntityRemovedSelf(undertakingRef, request.authorityId, leadEORI, eori)
+              )
+          } yield ()
+          result.fold(handleMissingSessionData("Undertaking Ref"))(_ => Ok(signOutPage()).withNewSession)
 
-            case None => handleMissingSessionData("Undertaking journey")
-          }
-
-        case EmailType.UnVerifiedEmail =>
-          Redirect(routes.UpdateEmailAddressController.updateUnverifiedEmailAddress()).toFuture
-        case EmailType.UnDeliverableEmail =>
-          Redirect(routes.UpdateEmailAddressController.updateUndeliveredEmailAddress()).toFuture
+        case None => handleMissingSessionData("Undertaking journey")
       }
     }
-
-  }
-
 }

@@ -28,7 +28,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedSelfToNewLead, RemovedAsLeadToFormerLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages.{BecomeLeadEoriFormPage, TermsAndConditionsFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -225,18 +224,9 @@ class BecomeLeadControllerSpec
       "throw technical error" when {
         val exception = new Exception("oh no!")
 
-        "call to retrieve email address fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-            mockRetrieveEmail(eori4)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
         "call to fetch new become lead journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockGet[BecomeLeadJourney](eori4)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -249,7 +239,6 @@ class BecomeLeadControllerSpec
 
         inSequence {
           mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-          mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
           mockGet[BecomeLeadJourney](eori4)(
             Right(
               newBecomeLeadJourney
@@ -263,60 +252,6 @@ class BecomeLeadControllerSpec
           messageFromMessageKey("become-admin-tandc.title")
         )
 
-      }
-
-      "redirect to next page" when {
-        def testRedirectNotVerifiedEmail(emailType: EmailType, nextCall: String) = {
-          inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(emailType, validEmailAddress.some)))
-          }
-
-          checkIsRedirect(performAction(), nextCall)
-        }
-
-        "retrieve email address is not verified" in {
-          testRedirectNotVerifiedEmail(
-            EmailType.UnVerifiedEmail,
-            routes.UpdateEmailAddressController.updateUnverifiedEmailAddress().url
-          )
-        }
-
-        "retrieve email address is Undeliverable" in {
-          testRedirectNotVerifiedEmail(
-            EmailType.UnDeliverableEmail,
-            routes.UpdateEmailAddressController.updateUndeliveredEmailAddress().url
-          )
-        }
-
-        def testRedirectVerifiedEmail(nextCall: String) = {
-          inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockGet[BecomeLeadJourney](eori4)(
-              Right(
-                newBecomeLeadJourney
-                  .copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = None))
-                  .some
-              )
-            )
-          }
-          checkIsRedirect(performAction(), nextCall)
-        }
-
-        "retrieve email address is verified and becomeLeadEori is None" in {
-          testRedirectVerifiedEmail(routes.BecomeLeadController.getBecomeLeadEori().url)
-        }
-
-        "when no journey found" in {
-
-          inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-            mockGet[BecomeLeadJourney](eori4)(Right(None))
-          }
-          checkIsRedirect(performAction(), routes.BecomeLeadController.getBecomeLeadEori().url)
-        }
       }
 
     }
