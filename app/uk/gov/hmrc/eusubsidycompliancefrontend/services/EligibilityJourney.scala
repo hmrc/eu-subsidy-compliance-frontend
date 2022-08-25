@@ -22,7 +22,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 
 case class EligibilityJourney(
-  customsWaivers: CustomsWaiversFormPage = CustomsWaiversFormPage(),
+  doYouClaim: DoYouClaimFormPage = DoYouClaimFormPage(),
   willYouClaim: WillYouClaimFormPage = WillYouClaimFormPage(),
   notEligible: NotEligibleFormPage = NotEligibleFormPage(),
   eoriCheck: EoriCheckFormPage = EoriCheckFormPage(),
@@ -31,7 +31,7 @@ case class EligibilityJourney(
 ) extends Journey {
 
   private val journeySteps = List(
-    customsWaivers,
+    doYouClaim,
     willYouClaim,
     notEligible,
     eoriCheck,
@@ -41,7 +41,7 @@ case class EligibilityJourney(
 
   private def isEligible = {
     println(s"Checking eligibility of: $this")
-    val responses = Seq(customsWaivers.value, willYouClaim.value).flatten
+    val responses = Seq(doYouClaim.value, willYouClaim.value).flatten
     println(s"Checking eq responses: $responses")
     val result = responses.contains(true)
     println(s"Eligible to continue with service: $result")
@@ -52,8 +52,8 @@ case class EligibilityJourney(
     journeySteps
       // Remove steps based on user responses during the eligibility journey. -.filterNot {
       .filterNot {
-        case CustomsWaiversFormPage(_) => customsWaivers.value.isDefined
-        case WillYouClaimFormPage(_) => customsWaivers.value.contains(true)
+        case DoYouClaimFormPage(_) => doYouClaim.value.isDefined
+        case WillYouClaimFormPage(_) => doYouClaim.value.contains(true)
         case NotEligibleFormPage(_) => isEligible
         case SignOutFormPage(_) => isEligible
         case SignOutBadEoriFormPage(_) => eoriCheck.value.contains(true)
@@ -73,8 +73,8 @@ object EligibilityJourney {
 
     private val controller = routes.EligibilityController
 
-    case class CustomsWaiversFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getCustomsWaivers().url
+    case class DoYouClaimFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
+      def uri = controller.getDoYouClaim().url
     }
     case class WillYouClaimFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getWillYouClaim().url
@@ -92,7 +92,7 @@ object EligibilityJourney {
       def uri = controller.getIncorrectEori().url
     }
 
-    object CustomsWaiversFormPage {implicit val customsWaiversFormPageFormat: OFormat[CustomsWaiversFormPage] = Json.format}
+    object DoYouClaimFormPage {implicit val customsWaiversFormPageFormat: OFormat[DoYouClaimFormPage] = Json.format}
     object WillYouClaimFormPage { implicit val willYouClaimFormPageFormat: OFormat[WillYouClaimFormPage] = Json.format }
     object NotEligibleFormPage { implicit val notEligibleFormPageFormat: OFormat[NotEligibleFormPage] = Json.format }
     object SignOutBadEoriFormPage { implicit val signOutFormPageFormat: OFormat[SignOutBadEoriFormPage] = Json.format }

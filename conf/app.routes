@@ -10,8 +10,8 @@ GET        /assets/*file                              controllers.Assets.version
 GET        /first-login-journey-eligibility-first-empty                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.firstEmptyPage
 GET        /first-login-journey-undertaking-first-empty                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.firstEmptyPage
 
-GET        /first-login-journey-do-you-claim-customs-duty-waivers                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getCustomsWaivers
-POST       /first-login-journey-do-you-claim-customs-duty-waivers                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postCustomsWaivers
+GET        /first-login-journey-do-you-claim-customs-duty-waivers                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getDoYouClaim
+POST       /first-login-journey-do-you-claim-customs-duty-waivers                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postDoYouClaim
 
 GET        /first-login-journey-will-you-claim-customs-duty-waivers                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getWillYouClaim
 POST       /first-login-journey-will-you-claim-customs-duty-waivers                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postWillYouClaim

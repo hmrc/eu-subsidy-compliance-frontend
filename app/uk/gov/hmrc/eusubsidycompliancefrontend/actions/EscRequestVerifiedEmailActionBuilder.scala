@@ -73,7 +73,8 @@ class EscRequestVerifiedEmailActionBuilder @Inject()(
                   case Some(_) => block(AuthenticatedEscRequest(credentials.providerId, groupId, request, eori))
                   case None => throw new IllegalStateException("Email not valid")
                 }
-            case _ => Redirect(routes.EligibilityController.getCustomsWaivers()).toFuture
+            // TODO - is this location right? We should only go here on the initial journey....
+            case _ => Redirect(routes.EligibilityController.getDoYouClaim()).toFuture
           }
         case _ ~ _ => Future.failed(throw InternalError())
       }(hc(request), executionContext)

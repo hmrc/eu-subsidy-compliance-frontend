@@ -194,7 +194,8 @@ class UndertakingController @Inject() (
         optionalEmailForm
           .bindFromRequest()
           .fold(
-            errors => BadRequest(confirmEmailPage(errors, EmailAddress(email), routes.EligibilityController.getCustomsWaivers().url)).toFuture,
+            // TODO - check this - should we redirect here?
+            errors => BadRequest(confirmEmailPage(errors, EmailAddress(email), routes.EligibilityController.getDoYouClaim().url)).toFuture,
             {
               case OptionalEmailFormInput("true", None) =>
                 for {
@@ -212,7 +213,8 @@ class UndertakingController @Inject() (
             }
           )
       case _ => emailForm.bindFromRequest().fold(
-        errors => BadRequest(inputEmailPage(errors, routes.EligibilityController.getCustomsWaivers().url)).toFuture,
+        // TODO - check this - should we redirect here?
+        errors => BadRequest(inputEmailPage(errors, routes.EligibilityController.getDoYouClaim().url)).toFuture,
         form => {
           for {
             verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, form.value)

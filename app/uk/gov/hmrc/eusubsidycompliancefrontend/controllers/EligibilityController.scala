@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.catsSyntaxEq
+import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc._
@@ -24,6 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder,
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.{DoYouClaimFormPage, WillYouClaimFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -31,12 +32,11 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
-// TODO - this controller needs a refactor - delegate journey choice to EligibilityJourney instead of the controller
 @Singleton
 class EligibilityController @Inject() (
                                         mcc: MessagesControllerComponents,
                                         auditService: AuditService,
-                                        customsWaiversPage: CustomsWaiversPage,
+                                        doYouClaimPage: DoYouClaimPage,
                                         willYouClaimPage: WillYouClaimPage,
                                         notEligiblePage: NotEligiblePage,
                                         notEligibleToLeadPage: NotEligibleToLeadPage,
@@ -79,37 +79,43 @@ class EligibilityController @Inject() (
       }
   }
 
-  def getCustomsWaivers: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
+  def getDoYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
     val form = customsWaiversForm
-    Ok(customsWaiversPage(form)).toFuture
+    Ok(doYouClaimPage(form)).toFuture
   }
 
-  def postCustomsWaivers: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
+  def postDoYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
     customsWaiversForm
       .bindFromRequest()
       .fold(
-        errors => BadRequest(customsWaiversPage(errors)).toFuture,
-        form => Redirect(getNext(form)).toFuture
+        errors => BadRequest(doYouClaimPage(errors)).toFuture,
+        form => {
+          EligibilityJourney(
+            doYouClaim = DoYouClaimFormPage(form.value.toBoolean.some)
+          ).next
+        }
       )
   }
 
-  private def getNext(form: FormValues) =
-    if (form.value == "true") routes.EligibilityController.getEoriCheck()
-    else routes.EligibilityController.getWillYouClaim()
-
   def getWillYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
-    val form = willYouClaimForm
-    Ok(willYouClaimPage(form, routes.EligibilityController.getCustomsWaivers().url)).toFuture
+    Ok(willYouClaimPage(willYouClaimForm, routes.EligibilityController.getDoYouClaim().url)).toFuture
   }
 
   def postWillYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
     willYouClaimForm
       .bindFromRequest()
       .fold(
-        errors => BadRequest(willYouClaimPage(errors, routes.EligibilityController.getCustomsWaivers().url)).toFuture,
-        form =>
-          if (form.value === "true") Redirect(routes.EligibilityController.getEoriCheck()).toFuture
-          else Redirect(routes.EligibilityController.getNotEligible()).toFuture
+        errors => BadRequest(willYouClaimPage(errors, routes.EligibilityController.getDoYouClaim().url)).toFuture,
+        form => {
+          // Set up representative state in EligiblityJourney before we call next.
+          val journey = EligibilityJourney(
+            // We are on the will you claim page so the user must have entered false on the do you claim form
+            doYouClaim = DoYouClaimFormPage(false.some),
+            willYouClaim = WillYouClaimFormPage(form.value.toBoolean.some)
+          )
+
+          journey.next
+        }
       )
 
   }
@@ -124,7 +130,7 @@ class EligibilityController @Inject() (
       val form = journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck =>
         eoriCheckForm.fill(FormValues(eoriCheck.toString))
       )
-      Ok(checkEoriPage(form, eori, routes.EligibilityController.getCustomsWaivers().url))
+      Ok(checkEoriPage(form, eori, routes.EligibilityController.getDoYouClaim().url))
     }
   }
 
@@ -134,11 +140,12 @@ class EligibilityController @Inject() (
       .bindFromRequest()
       .fold(
         errors =>
-          BadRequest(checkEoriPage(errors, eori, routes.EligibilityController.getCustomsWaivers().url)).toFuture,
+          BadRequest(checkEoriPage(errors, eori, routes.EligibilityController.getDoYouClaim().url)).toFuture,
         form =>
           store
             .update[EligibilityJourney](_.setEoriCheck(form.value.toBoolean))
             .flatMap { journey =>
+              // TODO - here we can check if the undertaking exists and direct the user to the account home page
               if (journey.isComplete) Redirect(routes.UndertakingController.getUndertakingName()).toFuture
               else journey.next
             }
