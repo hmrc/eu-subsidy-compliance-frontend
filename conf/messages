@@ -151,7 +151,9 @@ sector.hint.3=An ‘agricultural product’ can be products such as: live animal
 confirmEmail.no.label=Enter new email address
 confirmEmail.title=Is this the email address you want to use for your undertaking?
 
-inputEmail.title=What email address do you want to use for your undertaking?
+inputEmail.title=What is your email address?
+inputEmail.label=Enter an email
+inputEmail.p=This email address will be used to send you notifications from this service.
 
 email.error.email=Enter an email address in the correct format, like name@example.com
 
