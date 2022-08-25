@@ -22,14 +22,11 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{EmailVerificationConnector, EscConnector}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.SubsidyUpdate
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EmailVerificationConnectorSpec

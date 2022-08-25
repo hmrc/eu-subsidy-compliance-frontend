@@ -44,7 +44,6 @@ class EligibilityController @Inject() (
                                         incorrectEoriPage: IncorrectEoriPage,
                                         escInitialActionBuilders: EscInitialActionBuilder,
                                         escNonEnrolmentActionBuilders: EscNoEnrolmentActionBuilders,
-                                        escCDSActionBuilder: EscVerifiedEmailActionBuilders,
                                         emailService: EmailService,
                                         override val store: Store
 )(implicit
