@@ -117,10 +117,6 @@ POST       /business-enterprise-terms-conditions                                
 GET        /business-enterprise-admin-request                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getPromotionConfirmation()
 GET        /lead-promotion-confirmation-cleanup                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getPromotionCleanup()
 
-GET        /update-unverified-email-address                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.updateUnverifiedEmailAddress
-POST       /update-email-address                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.postUpdateEmailAddress
-GET        /update-undelivered-email-address                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UpdateEmailAddressController.updateUndeliveredEmailAddress
-
 GET        /lead-undertaking-non-customs-subsidy-nil-return                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimNotification
 POST       /lead-undertaking-non-customs-subsidy-nil-return                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.postNoClaimNotification
 

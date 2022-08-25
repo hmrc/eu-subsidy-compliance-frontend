@@ -26,7 +26,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedSelfToNewLead, RemovedAsLeadToFormerLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -114,25 +113,15 @@ class BecomeLeadController @Inject() (
 
   def getAcceptPromotionTerms: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    emailService.retrieveEmailByEORI(eori) flatMap { response =>
-      response.emailType match {
-        case EmailType.VerifiedEmail =>
-          store.get[BecomeLeadJourney].flatMap {
-            case Some(journey) =>
-              if (journey.becomeLeadEori.value.getOrElse(false)) {
-                Future(Ok(becomeAdminTermsAndConditionsPage(eori)))
-              } else {
-                Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori()))
-              }
-            case None => Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori()))
-          }
-        case EmailType.UnVerifiedEmail =>
-          Redirect(routes.UpdateEmailAddressController.updateUnverifiedEmailAddress()).toFuture
-        case EmailType.UnDeliverableEmail =>
-          Redirect(routes.UpdateEmailAddressController.updateUndeliveredEmailAddress()).toFuture
-      }
+    store.get[BecomeLeadJourney].flatMap {
+      case Some(journey) =>
+        if (journey.becomeLeadEori.value.getOrElse(false)) {
+          Future(Ok(becomeAdminTermsAndConditionsPage(eori)))
+        } else {
+          Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori()))
+        }
+      case None => Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori()))
     }
-
   }
 
   def postAcceptPromotionTerms: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>

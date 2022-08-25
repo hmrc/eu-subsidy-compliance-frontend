@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxEq
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder, EscNoEnrolmentActionBuilders, EscVerifiedEmailActionBuilders}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder, EscNoEnrolmentActionBuilders}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
@@ -48,8 +48,6 @@ class EligibilityController @Inject() (
                                         escInitialActionBuilders: EscInitialActionBuilder,
                                         createUndertakingPage: CreateUndertakingPage,
                                         escNonEnrolmentActionBuilders: EscNoEnrolmentActionBuilders,
-                                        escCDSActionBuilder: EscVerifiedEmailActionBuilders,
-                                        emailService: EmailService,
                                         override val store: Store
 )(implicit
   val appConfig: AppConfig,

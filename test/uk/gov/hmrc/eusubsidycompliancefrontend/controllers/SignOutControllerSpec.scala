@@ -28,7 +28,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{MemberRemoveSelfToBusinessEntity, MemberRemoveSelfToLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -118,7 +117,6 @@ class SignOutControllerSpec
         "call to retrieve Undertaking fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori4)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction()))
@@ -127,7 +125,6 @@ class SignOutControllerSpec
         "call to remove member fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(currentDate)
             mockRemoveMember(CommonTestData.undertakingRef, businessEntity4)(Left(ConnectorError(exception)))
@@ -142,7 +139,6 @@ class SignOutControllerSpec
         def testDisplay(effectiveDate: String): Unit = {
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
             mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(currentDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
@@ -164,24 +160,6 @@ class SignOutControllerSpec
 
       }
 
-      "redirect to next page" when {
-
-        "email address is unverified" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, validEmailAddress.some)))
-          }
-          checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateUnverifiedEmailAddress().url)
-        }
-
-        "email address is Undeliverable" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-            mockRetrieveEmail(eori4)(Right(RetrieveEmailResponse(EmailType.UnDeliverableEmail, validEmailAddress.some)))
-          }
-          checkIsRedirect(performAction(), routes.UpdateEmailAddressController.updateUndeliveredEmailAddress().url)
-        }
-      }
     }
 
   }
