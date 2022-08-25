@@ -22,7 +22,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H2}
 
 @this(
-  layout: Layout,
+  layout: FullWidthLayout,
   govukTable: GovukTable,
   govukSummaryList: GovukSummaryList
 )
@@ -36,53 +36,54 @@
     backLink = Some(routes.AccountController.getAccountPage().url)
 ) {
 
-    <h1 class="govuk-heading-l">@title</h1>
 
-    @govukSummaryList(SummaryList(
-        rows = Seq(
-            SummaryListRow(
-                key = Key(
-                    content = Text(messages(s"$key.customs.duty.heading"))
+    <div class="card govuk-!-margin-bottom-8">
+        <h1 class="govuk-heading-l">@Html(title)</h1>
+        @govukSummaryList(SummaryList(
+            rows = Seq(
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages(s"$key.customs.duty.heading"))
+                    ),
+                    value = Value(
+                        content = Text(summary.overall.hmrcSubsidyTotal.toEuros)
+                    )
                 ),
-                value = Value(
-                    content = Text(summary.overall.hmrcSubsidyTotal.toEuros)
-                )
-            ),
-            SummaryListRow(
-                key = Key(
-                    content = Text(messages(s"$key.de.minimis.aid.heading"))
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages(s"$key.de.minimis.aid.heading"))
+                    ),
+                    value = Value(
+                        content = Text(summary.overall.nonHmrcSubsidyTotal.toEuros)
+                    )
                 ),
-                value = Value(
-                    content = Text(summary.overall.nonHmrcSubsidyTotal.toEuros)
-                )
-            ),
-            SummaryListRow(
-                key = Key(
-                    content = Text(messages(s"$key.total.claimed.heading"))
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages(s"$key.total.claimed.heading"))
+                    ),
+                    value = Value(
+                        content = Text(summary.overall.total.toEuros)
+                    )
                 ),
-                value = Value(
-                    content = Text(summary.overall.total.toEuros)
-                )
-            ),
-            SummaryListRow(
-                key = Key(
-                    content = Text(messages(s"$key.sector.cap.heading", messages("dashboard.sector.name." + summary.overall.sector)))
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages(s"$key.sector.cap.heading", messages("dashboard.sector.name." + summary.overall.sector)))
+                    ),
+                    value = Value(
+                        content = Text(summary.overall.sectorCap.toEuros)
+                    )
                 ),
-                value = Value(
-                    content = Text(summary.overall.sectorCap.toEuros)
-                )
-            ),
-            SummaryListRow(
-                key = Key(
-                    content = Text(messages(s"$key.allowance.remaining.heading"))
-                ),
-                value = Value(
-                    content = Text(summary.overall.allowanceRemaining.toEuros)
+                SummaryListRow(
+                    key = Key(
+                        content = Text(messages(s"$key.allowance.remaining.heading"))
+                    ),
+                    value = Value(
+                        content = Text(summary.overall.allowanceRemaining.toEuros)
+                    )
                 )
             )
-        )
-    ))
-  <br>
+        ))
+    </div>
 
     @for(taxYear <- summary.taxYears) {
         @H2(messages("dashboard.year.summary.heading", taxYear.startYear.toString, taxYear.endYear.toString))
