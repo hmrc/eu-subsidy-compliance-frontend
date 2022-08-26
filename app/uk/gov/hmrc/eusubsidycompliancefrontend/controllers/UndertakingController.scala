@@ -194,7 +194,6 @@ class UndertakingController @Inject() (
         optionalEmailForm
           .bindFromRequest()
           .fold(
-            // TODO - check this - should we redirect here?
             errors => BadRequest(confirmEmailPage(errors, EmailAddress(email), routes.EligibilityController.getDoYouClaim().url)).toFuture,
             {
               case OptionalEmailFormInput("true", None) =>
@@ -213,7 +212,6 @@ class UndertakingController @Inject() (
             }
           )
       case _ => emailForm.bindFromRequest().fold(
-        // TODO - check this - should we redirect here?
         errors => BadRequest(inputEmailPage(errors, routes.EligibilityController.getDoYouClaim().url)).toFuture,
         form => {
           for {
@@ -263,7 +261,7 @@ class UndertakingController @Inject() (
     cyaForm
       .bindFromRequest()
       .fold(
-        _ => throw new IllegalStateException("value hard-coded, form hacking?"),
+        _ => throw new IllegalStateException("Invalid form submission"),
         form => {
           val result = for {
             updatedJourney <- store.update[UndertakingJourney](_.setUndertakingCYA(form.value.toBoolean)).toContext
