@@ -24,6 +24,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 class EligibilityControllerSpec
@@ -32,6 +33,7 @@ class EligibilityControllerSpec
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with AuditServiceSupport
+    with EscServiceSupport
     with EmailSupport {
 
   override def overrideBindings = List(
@@ -39,6 +41,7 @@ class EligibilityControllerSpec
     bind[EmailVerificationService].toInstance(mockEmailVerificationService),
     bind[Store].toInstance(mockJourneyStore),
     bind[AuditService].toInstance(mockAuditService),
+    bind[EscService].toInstance(mockEscService),
     bind[EmailService].toInstance(mockEmailService)
   )
 
@@ -256,7 +259,7 @@ class EligibilityControllerSpec
 
     }
 
-    "handling request to get Not eligible" must {
+    "handling request to get not eligible" must {
 
       def performAction() = controller
         .getNotEligible(
@@ -289,6 +292,7 @@ class EligibilityControllerSpec
         def testDisplay(eligibilityJourney: EligibilityJourney) = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(Option.empty.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourney))
           }
           checkPageIsDisplayed(
@@ -321,6 +325,19 @@ class EligibilityControllerSpec
           }
         }
 
+      }
+
+      "redirect to account home" when {
+        "undertaking has already been created" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolment()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          }
+
+          val result = performAction()
+
+          redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
+        }
       }
 
     }

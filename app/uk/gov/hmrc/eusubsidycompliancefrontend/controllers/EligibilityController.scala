@@ -25,6 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.RequestSyntax.RequestOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -45,6 +46,7 @@ class EligibilityController @Inject() (
                                         escInitialActionBuilders: EscInitialActionBuilder,
                                         escNonEnrolmentActionBuilders: EscNoEnrolmentActionBuilders,
                                         emailService: EmailService,
+                                        escService: EscService,
                                         override val store: Store
 )(implicit
   val appConfig: AppConfig,
@@ -122,17 +124,37 @@ class EligibilityController @Inject() (
 
   def getEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    // Reconstruct do you / will you claim answers from referring page
-    val eligibilityJourney = EligibilityJourney()
-      .withDoYouClaim(request.isFrom(routes.EligibilityController.getDoYouClaim().url))
-      .withWillYouClaim(request.isFrom(routes.EligibilityController.getWillYouClaim().url))
 
-    store.getOrCreate[EligibilityJourney](eligibilityJourney).map { journey =>
-      val form = journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck =>
-        eoriCheckForm.fill(FormValues(eoriCheck.toString))
-      )
-      Ok(checkEoriPage(form, eori, routes.EligibilityController.getDoYouClaim().url))
+    def renderPage = {
+      val doYouClaimUrl = routes.EligibilityController.getDoYouClaim().url
+      val willYouClaimUrl = routes.EligibilityController.getWillYouClaim().url
+
+      // Reconstruct do you / will you claim answers from referring page
+      val eligibilityJourney = EligibilityJourney()
+        .withDoYouClaim(request.isFrom(doYouClaimUrl))
+        .withWillYouClaim(request.isFrom(willYouClaimUrl))
+
+      store.getOrCreate[EligibilityJourney](eligibilityJourney).map { journey =>
+
+        val form = journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck =>
+          eoriCheckForm.fill(FormValues(eoriCheck.toString))
+        )
+
+        val backLink =
+          if (request.isFrom(doYouClaimUrl)) doYouClaimUrl
+          else willYouClaimUrl
+
+        Ok(checkEoriPage(form, eori, backLink))
+      }
     }
+
+    // Check if the undertaking has been created already or not. If it has jump straight to the account home to prevent
+    // the user attempting to complete the create undertaking journey again.
+    escService
+      .retrieveUndertaking(eori)
+      .toContext
+      .foldF(renderPage)(_ => Redirect(routes.AccountController.getAccountPage().url).toFuture)
+
   }
 
   def postEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
@@ -146,7 +168,6 @@ class EligibilityController @Inject() (
           store
             .update[EligibilityJourney](_.setEoriCheck(form.value.toBoolean))
             .flatMap { journey =>
-              // Redirect to account home which will figure out where to take the user next.
               if (journey.isComplete) Redirect(routes.AccountController.getAccountPage()).toFuture
               else journey.next
             }
