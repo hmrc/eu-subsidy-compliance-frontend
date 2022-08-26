@@ -28,7 +28,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Fo
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmEmailFormPage, UndertakingConfirmationFormPage, UndertakingCyaFormPage, AboutUndertakingFormPage, UndertakingSectorFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{AboutUndertakingFormPage, UndertakingAddBusinessFormPage, UndertakingConfirmEmailFormPage, UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 
@@ -184,6 +184,7 @@ object CommonTestData {
     about = AboutUndertakingFormPage("TestUndertaking".some),
     sector = UndertakingSectorFormPage(Sector(1).some),
     verifiedEmail =  UndertakingConfirmEmailFormPage("joebloggs@something.com".some),
+    addBusiness = UndertakingAddBusinessFormPage(List().some),
     cya = UndertakingCyaFormPage(true.some),
     confirmation = UndertakingConfirmationFormPage(true.some)
   )

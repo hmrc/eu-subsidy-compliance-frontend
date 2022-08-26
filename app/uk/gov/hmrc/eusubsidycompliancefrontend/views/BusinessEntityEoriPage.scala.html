@@ -26,7 +26,7 @@
   govukInput : GovukInput
 )
 
-@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], previous: Journey.Uri, submit: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
   pageTitle = Some(messages("businessEntityEori.title")),
@@ -35,7 +35,7 @@
   hasErrors = form.hasErrors
   ) {
 
-  @formHelper(action = controllers.routes.BusinessEntityController.postEori) {
+  @formHelper(action = submit) {
 
     @if(form.hasErrors) {
       @govukErrorSummary(

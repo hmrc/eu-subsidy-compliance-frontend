@@ -22,10 +22,10 @@ import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.{Form, Uri}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, AboutUndertakingFormPage, UndertakingSectorFormPage, UndertakingConfirmEmailFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{AboutUndertakingFormPage, UndertakingAddBusinessFormPage, UndertakingConfirmEmailFormPage, UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.Future
@@ -34,6 +34,7 @@ case class UndertakingJourney(
                                about: AboutUndertakingFormPage = AboutUndertakingFormPage(),
                                sector: UndertakingSectorFormPage = UndertakingSectorFormPage(),
                                verifiedEmail: UndertakingConfirmEmailFormPage = UndertakingConfirmEmailFormPage(),
+                               addBusiness: UndertakingAddBusinessFormPage = UndertakingAddBusinessFormPage(),
                                cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
                                confirmation: UndertakingConfirmationFormPage = UndertakingConfirmationFormPage(),
                                isAmend: Boolean = false
@@ -43,6 +44,7 @@ case class UndertakingJourney(
     about,
     sector,
     verifiedEmail,
+    addBusiness,
     cya,
     confirmation
   )
@@ -72,6 +74,16 @@ case class UndertakingJourney(
 
   def setVerifiedEmail(e: String): UndertakingJourney = this.copy(verifiedEmail = verifiedEmail.copy(value = Some(e)))
 
+  def addBusinessEntity(eori: EORI): UndertakingJourney = {
+    val updatedList = addBusiness.value.getOrElse(List()) ++ List(eori)
+    this.copy(addBusiness = addBusiness.copy(value = Some(updatedList.distinct)))
+  }
+
+  def removeBusinessEntity(eori: EORI): UndertakingJourney = {
+    this.copy(addBusiness =
+      addBusiness.copy(value = Some(addBusiness.value.getOrElse(List()).filterNot(e => e == eori))))
+  }
+
   def setUndertakingConfirmation(b: Boolean): UndertakingJourney =
     this.copy(confirmation = confirmation.copy(value = Some(b)))
 
@@ -99,6 +111,9 @@ object UndertakingJourney {
     case class UndertakingConfirmEmailFormPage(value: Form[String] = None) extends FormPage[String] {
       def uri = controller.getConfirmEmail().url
     }
+    case class UndertakingAddBusinessFormPage(value: Form[List[EORI]] = None) extends FormPage[List[EORI]] {
+      def uri = controller.getAddBusinessEntity().url
+    }
     case class UndertakingCyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getCheckAnswers().url
     }
@@ -113,6 +128,7 @@ object UndertakingJourney {
       implicit val undertakingSectorFormPage: OFormat[UndertakingSectorFormPage] = Json.format
     }
     object UndertakingConfirmEmailFormPage { implicit val confirmEmailFormPageFormat: OFormat[UndertakingConfirmEmailFormPage] = Json.format }
+    object UndertakingAddBusinessFormPage { implicit val undertakingAddBusinessPageFormat: OFormat[UndertakingAddBusinessFormPage] = Json.format }
     object UndertakingCyaFormPage { implicit val undertakingCyaFormPage: OFormat[UndertakingCyaFormPage] = Json.format }
     object UndertakingConfirmationFormPage {
       implicit val undertakingConfirmationFormPage: OFormat[UndertakingConfirmationFormPage] = Json.format

@@ -37,6 +37,23 @@ GET        /verify-email                                                        
 GET        /first-login-journey-check-your-answers                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getCheckAnswers
 POST       /first-login-journey-check-your-answers                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postCheckAnswers
 
+GET        /first-login-confirm-email                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmEmail
+POST       /first-login-confirm-email                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmEmail
+
+GET        /first-login-add-business-entity                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAddBusinessEntity
+POST        /first-login-add-business-entity                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAddBusinessEntity
+
+GET        /first-login-add-business-entity-eori                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAddBusinessEntityEori
+POST       /first-login-add-business-entity-eori                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAddBusinessEntityEori
+
+GET        /first-login-remove-business-entity-eori/:eori                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getRemoveBusinessEntity(eori)
+POST       /first-login-remove-business-entity-eori/:eori                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postRemoveBusinessEntity(eori)
+
+GET        /verify-email                                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getVerifyEmail(UndertakingControllerpendingVerificationId)
+
+GET        /first-login-journey-check-your-answers                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getCheckAnswers
+POST       /first-login-journey-check-your-answers                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postCheckAnswers
+
 GET        /first-login-journey-registered-undertaking/:undertakingRef/name             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmation(undertakingRef)
 POST       /first-login-journey-registered-undertaking                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmation
 

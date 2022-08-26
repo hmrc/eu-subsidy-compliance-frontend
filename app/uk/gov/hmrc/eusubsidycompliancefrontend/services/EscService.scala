@@ -99,7 +99,9 @@ class EscService @Inject() (
         .getOrElse(sys.error("Error parsing Undertaking in ESC response"))
 
     EitherT(escConnector.retrieveUndertaking(eori))
-      .flatMapF(r => parseResponse(r).toFuture)
+      .flatMapF(r => {
+        parseResponse(r).toFuture
+      })
       .recover { case ConnectorError(_, WithStatusCode(NOT_FOUND)) =>
         None
       }

@@ -76,7 +76,11 @@ class BusinessEntityController @Inject() (
             addBusinessPage(
               form,
               undertaking.name,
-              undertaking.undertakingBusinessEntity
+              undertaking.undertakingBusinessEntity.map(_.businessEntityIdentifier),
+              undertaking.getLeadEORI,
+              routes.BusinessEntityController.getAddBusinessEntity().url,
+              routes.BusinessEntityController.postAddBusinessEntity(),
+              eori => routes.BusinessEntityController.getRemoveBusinessEntity(eori)
             )
           )
         }
@@ -96,7 +100,16 @@ class BusinessEntityController @Inject() (
         .bindFromRequest()
         .fold(
           errors =>
-            BadRequest(addBusinessPage(errors, undertaking.name, undertaking.undertakingBusinessEntity)).toFuture,
+            BadRequest(
+              addBusinessPage(
+                errors,
+                undertaking.name,
+                undertaking.undertakingBusinessEntity.map(_.businessEntityIdentifier),
+                undertaking.getLeadEORI,
+                routes.BusinessEntityController.getAddBusinessEntity().url,
+                routes.UndertakingController.postAddBusinessEntity(),
+                eori => routes.BusinessEntityController.getRemoveBusinessEntity(eori)
+              )).toFuture,
           handleValidAnswer
         )
     }
@@ -111,7 +124,7 @@ class BusinessEntityController @Inject() (
             Redirect(journey.previous).toFuture
           } else {
             val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori)))
-            Ok(eoriPage(form, journey.previous)).toFuture
+            Ok(eoriPage(form, journey.previous, routes.BusinessEntityController.postEori())).toFuture
           }
         case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture
       }
@@ -125,7 +138,7 @@ class BusinessEntityController @Inject() (
     val businessEntityEori = "businessEntityEori"
 
     def getErrorResponse(errorMessageKey: String, previous: String, form: FormValues): Future[Result] =
-      BadRequest(eoriPage(eoriForm.withError(businessEntityEori, errorMessageKey).fill(form), previous)).toFuture
+      BadRequest(eoriPage(eoriForm.withError(businessEntityEori, errorMessageKey).fill(form), previous, routes.BusinessEntityController.postEori())).toFuture
 
     def handleValidEori(form: FormValues, previous: Uri): Future[Result] =
       escService.retrieveUndertakingAndHandleErrors(EORI(form.value)).flatMap {
@@ -139,7 +152,7 @@ class BusinessEntityController @Inject() (
         eoriForm
           .bindFromRequest()
           .fold(
-            errors => BadRequest(eoriPage(errors, journey.previous)).toContext,
+            errors => BadRequest(eoriPage(errors, journey.previous, routes.BusinessEntityController.postEori())).toContext,
             form => handleValidEori(form, journey.previous).toContext
           )
       }
@@ -211,7 +224,7 @@ class BusinessEntityController @Inject() (
         escService.retrieveUndertaking(EORI(eoriEntered)).map {
           case Some(undertaking) =>
             val removeBE = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
-            Ok(removeBusinessPage(removeBusinessForm, removeBE))
+            Ok(removeBusinessPage(removeBusinessForm, removeBE.businessEntityIdentifier, routes.BusinessEntityController.postRemoveBusinessEntity(eoriEntered)))
           case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity())
         }
       }
@@ -277,7 +290,7 @@ class BusinessEntityController @Inject() (
             removeBusinessForm
               .bindFromRequest()
               .fold(
-                errors => BadRequest(removeBusinessPage(errors, removeBE)).toFuture,
+                errors => BadRequest(removeBusinessPage(errors, removeBE.businessEntityIdentifier, routes.BusinessEntityController.postRemoveBusinessEntity(removeBE.businessEntityIdentifier))).toFuture,
                 success = form => handleValidBE(form, undertakingRef, removeBE, undertaking)
               )
           case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture

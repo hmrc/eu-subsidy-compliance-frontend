@@ -20,6 +20,7 @@ import cats.data.OptionT
 import cats.implicits._
 import play.api.data.Form
 import play.api.data.Forms.{email, mapping}
+import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
@@ -31,6 +32,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{Disab
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailTemplate, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -41,8 +43,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
+import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 @Singleton
 class UndertakingController @Inject() (
@@ -57,17 +61,17 @@ class UndertakingController @Inject() (
                                         aboutUndertakingPage: AboutUndertakingPage,
                                         undertakingSectorPage: UndertakingSectorPage,
                                         confirmEmailPage: ConfirmEmailPage,
+                                        addBusinessEntityEoriPage: BusinessEntityEoriPage,
                                         inputEmailPage: InputEmailPage,
+                                        addBusinessPage: AddBusinessPage,
                                         cyaPage: UndertakingCheckYourAnswersPage,
                                         confirmationPage: ConfirmationPage,
                                         amendUndertakingPage: AmendUndertakingPage,
                                         disableUndertakingWarningPage: DisableUndertakingWarningPage,
                                         disableUndertakingConfirmPage: DisableUndertakingConfirmPage,
                                         undertakingDisabledPage: UndertakingDisabledPage,
-)(implicit
-  val appConfig: AppConfig,
-  override val executionContext: ExecutionContext
-) extends BaseController(mcc)
+                                        removeBusinessPage: RemoveBusinessPage,
+  )(implicit val appConfig: AppConfig, override val executionContext: ExecutionContext) extends BaseController(mcc)
     with LeadOnlyUndertakingSupport
     with FormHelpers {
 
@@ -201,7 +205,7 @@ class UndertakingController @Inject() (
                   _ <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
                   _ <- emailVerificationService.verifyEori(request.eoriNumber)
                   _ <- store.update[UndertakingJourney](_.setVerifiedEmail(email))
-                } yield Redirect(routes.UndertakingController.getCheckAnswers())
+                } yield Redirect(routes.UndertakingController.getAddBusinessEntity())
               case OptionalEmailFormInput("false", Some(email)) => {
                 for {
                   verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
@@ -242,6 +246,119 @@ class UndertakingController @Inject() (
     }
   }
 
+  def getAddBusinessEntity: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.get[UndertakingJourney].flatMap {
+      ensureUndertakingJourneyPresent(_) { journey =>
+        if (journey.isEligibleForStep) {
+          val form = journey.addBusiness.value
+            .fold(addBusinessForm)(bool => addBusinessForm.fill(FormValues(bool.toString)))
+          Ok(
+            addBusinessPage(
+              form,
+              UndertakingName(eori),
+              journey.addBusiness.value.getOrElse(List.empty[EORI]),
+              eori,
+              journey.previous,
+              routes.UndertakingController.postAddBusinessEntity(),
+              eori => routes.UndertakingController.getRemoveBusinessEntity(eori)
+            )
+          ).toFuture
+        } else {
+          Redirect(journey.previous).toFuture
+        }
+      }
+    }
+  }
+
+  def postAddBusinessEntity: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+
+    def handleValidAnswer(form: FormValues) = {
+      if (form.value.isTrue)
+        Redirect(routes.UndertakingController.getAddBusinessEntityEori()).toFuture
+      else Redirect(routes.AccountController.getAccountPage()).toFuture//check
+    }
+
+    store.get[UndertakingJourney].flatMap {
+      ensureUndertakingJourneyPresent(_) { journey =>
+        addBusinessForm
+          .bindFromRequest()
+          .fold(
+            errors => {
+              BadRequest(
+                addBusinessPage(
+                  errors,
+                  UndertakingName(eori),
+                  journey.addBusiness.value.getOrElse(List.empty[EORI]),
+                  eori,
+                  journey.previous,
+                  routes.UndertakingController.postAddBusinessEntity(),
+                  eori => routes.UndertakingController.getRemoveBusinessEntity(eori)
+                )).toFuture
+            },
+            handleValidAnswer
+          )
+      }
+    }
+  }
+
+  def getAddBusinessEntityEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.get[UndertakingJourney].flatMap {
+      case Some(_) =>
+          Ok(addBusinessEntityEoriPage(eoriForm, routes.UndertakingController.getAddBusinessEntity().url, routes.UndertakingController.postAddBusinessEntityEori())).toFuture
+      case _ => Redirect(routes.UndertakingController.getAddBusinessEntity()).toFuture
+    }
+  }
+
+  def postAddBusinessEntityEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+
+    val businessEntityEori = "businessEntityEori"
+
+    def getErrorResponse(errorMessageKey: String, previous: String, form: FormValues): Future[Result] =
+      BadRequest(addBusinessEntityEoriPage(eoriForm.withError(businessEntityEori, errorMessageKey).fill(form), previous, routes.UndertakingController.postAddBusinessEntityEori())).toFuture
+
+    def handleValidEori(form: FormValues, previous: Uri): Future[Result] = {
+      if(form.value == eori) {
+        getErrorResponse(s"businessEntityEori.eoriInUse", previous, form)
+      } else {
+        escService.retrieveUndertakingAndHandleErrors(EORI(form.value)).flatMap {
+          case Right(Some(_)) =>
+            getErrorResponse("businessEntityEori.eoriInUse", previous, form)
+          case Left(_) =>
+            getErrorResponse(s"error.$businessEntityEori.required", previous, form)
+          case Right(None) =>
+            store.update[UndertakingJourney](_.addBusinessEntity(EORI(form.value))).flatMap(_ => Redirect(routes.UndertakingController.getAddBusinessEntity()).toFuture)
+        }
+      }
+    }
+
+    processFormSubmission[UndertakingJourney] { _ =>
+      eoriForm
+        .bindFromRequest()
+        .fold(
+          errors => BadRequest(addBusinessEntityEoriPage(errors, routes.UndertakingController.getAddBusinessEntity().url, routes.UndertakingController.postAddBusinessEntityEori())).toContext,
+          form => {
+            handleValidEori(form, routes.UndertakingController.getAddBusinessEntity().url).toContext
+          }
+        )
+    }
+  }
+
+  def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = verifiedEmail.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.update[UndertakingJourney](_.removeBusinessEntity(EORI(eoriEntered))).map { _ =>
+      Redirect(routes.UndertakingController.getAddBusinessEntity())
+    }
+  }
+
+  def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = verifiedEmail.async { implicit  request =>
+    Ok(removeBusinessPage(removeBusinessForm, EORI(eoriEntered), routes.UndertakingController.postRemoveBusinessEntity(eoriEntered))).toFuture
+  }
+
+
   def getCheckAnswers: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
@@ -249,7 +366,8 @@ class UndertakingController @Inject() (
         val result: OptionT[Future, Result] = for {
           undertakingSector <- journey.sector.value.toContext
           undertakingVerifiedEmail <- journey.verifiedEmail.value.toContext
-        } yield Ok(cyaPage(eori, undertakingSector, undertakingVerifiedEmail, journey.previous))
+          businessEntities <- journey.addBusiness.value.toContext
+        } yield Ok(cyaPage(eori, undertakingSector, undertakingVerifiedEmail, businessEntities, journey.previous))
         result.fold(Redirect(journey.previous))(identity)
       case _ => Redirect(routes.UndertakingController.getAboutUndertaking()).toFuture
     }
@@ -271,7 +389,7 @@ class UndertakingController @Inject() (
               industrySector = undertakingSector,
               List(BusinessEntity(eori, leadEORI = true))
             )
-            undertakingCreated <- createUndertakingAndSendEmail(undertaking).toContext
+            undertakingCreated <- createUndertakingAndSendEmail(undertaking, updatedJourney).toContext
           } yield undertakingCreated
           result.fold(handleMissingSessionData("Undertaking create journey"))(identity)
         }
@@ -280,6 +398,7 @@ class UndertakingController @Inject() (
 
   private def createUndertakingAndSendEmail(
     undertaking: UndertakingCreate,
+    undertakingJourney: UndertakingJourney
   )(implicit request: AuthenticatedEnrolledRequest[_], eori: EORI): Future[Result] =
     for {
       ref <- escService.createUndertaking(undertaking)
@@ -290,6 +409,12 @@ class UndertakingController @Inject() (
         undertaking,
         timeProvider.now
       )
+      _ = {
+        undertakingJourney.addBusiness.value.getOrElse(List()).map { beEori =>
+          // ETMP has race condition where concurrent adds will overwrite eachother :shrug:
+          Await.result(escService.addMember(ref, BusinessEntity(beEori, false)), Duration(15, TimeUnit.SECONDS))
+        }
+      }
       _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
     } yield Redirect(routes.UndertakingController.getConfirmation(ref))
 
@@ -309,7 +434,7 @@ class UndertakingController @Inject() (
           store
             .update[UndertakingJourney](_.setUndertakingConfirmation(form.value.toBoolean))
             .map { _ =>
-              Redirect(routes.BusinessEntityController.getAddBusinessEntity())
+              Redirect(routes.AccountController.getAccountPage())
             }
       )
   }
@@ -463,4 +588,35 @@ class UndertakingController @Inject() (
     )(FormValues.apply)(FormValues.unapply)
   )
 
+  private val addBusinessForm: Form[FormValues] = Form(
+    mapping("addBusiness" -> mandatory("addBusiness"))(FormValues.apply)(FormValues.unapply)
+  )
+
+  def isEoriPrefixGB(eoriEntered: String) = eoriEntered.startsWith(eoriPrefix)
+
+  def getValidEori(eoriEntered: String) =
+    if (isEoriPrefixGB(eoriEntered)) eoriEntered else s"$eoriPrefix$eoriEntered"
+
+
+  private val isEoriLengthValid = Constraint[String] { eori: String =>
+    if (getValidEori(eori).length === 14 || getValidEori(eori).length === 17) Valid
+    else Invalid("businessEntityEori.error.incorrect-length")
+  }
+
+  private val isEoriValid = Constraint[String] { eori: String =>
+    if (getValidEori(eori).matches(EORI.regex)) Valid
+    else Invalid("businessEntityEori.regex.error")
+  }
+
+  private val eoriForm: Form[FormValues] = Form(
+    mapping(
+      "businessEntityEori" -> mandatory("businessEntityEori")
+        .verifying(isEoriLengthValid)
+        .verifying(isEoriValid)
+    )(eoriEntered => FormValues(getValidEori(eoriEntered)))(eori => eori.value.drop(2).some)
+  )
+  val eoriPrefix = "GB"
+
+  private val removeBusinessForm = formWithSingleMandatoryField("removeBusiness")
 }
+

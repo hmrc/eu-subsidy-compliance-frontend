@@ -15,11 +15,12 @@
  *@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingName
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.BusinessEntity
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
 @this(
   layout: Layout,
@@ -30,7 +31,7 @@
   govukSummaryList: GovukSummaryList
 )
 
-@(form: Form[_], name: UndertakingName, businessEntity: List[BusinessEntity])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], name: UndertakingName, businessEntity: List[EORI], leadEORI: EORI, backLink: Journey.Uri, onSubmit: Call, removeBE: String => Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{if(businessEntity.length > 1) "addBusiness.businesses-added" else "addBusiness.empty"}
 @titleKey = @{messages(s"$key.title", name)}
 @html = {
@@ -40,11 +41,11 @@
 @layout(
   pageTitle = Some(titleKey),
   backLinkEnabled = true,
-  backLink = Some(controllers.routes.AccountController.getAccountPage().url),
+  backLink = Some(backLink),
   hasErrors = form.hasErrors
 ) {
 
-  @formHelper(action = controllers.routes.BusinessEntityController.postAddBusinessEntity) {
+  @formHelper(action = onSubmit) {
     @form.errors.map { err =>
       @govukErrorSummary(ErrorSummary(
         errorList = Seq(
@@ -66,17 +67,17 @@
       @{P(messages("addBusiness.p4"))}
     }
 
-      @if(businessEntity.length > 1){
+      @if(businessEntity.length > 1 || businessEntity.length == 1 && !businessEntity.contains(leadEORI)){
           @{govukSummaryList(SummaryList(
               classes = "summary-list-no-value",
-              rows = businessEntity.filter(a => !a.leadEORI).map(b => SummaryListRow(
-                  key = Key(content = Text(b.businessEntityIdentifier)),
+              rows = businessEntity.filter(a => a != leadEORI).map(b => SummaryListRow(
+                  key = Key(content = Text(b)),
                   actions = Some(Actions(
                       items = Seq(
                           ActionItem(
-                              href = routes.BusinessEntityController.getRemoveBusinessEntity(b.businessEntityIdentifier).toString,
+                              href = removeBE(b).toString,
                               content = HtmlContent(s"<span aria-hidden='true'>${messages("common.remove")}</span>"),
-                              visuallyHiddenText = Some(messages("common.remove") + " " + messages("addBusiness.change-remove.snippet") + " " + b.businessEntityIdentifier)
+                              visuallyHiddenText = Some(messages("common.remove") + " " + messages("addBusiness.change-remove.snippet") + " " + b)
                           )
                       )
                   ))

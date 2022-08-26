@@ -14,6 +14,7 @@ common.continue.only=Continue
 common.accept=Accept and send
 common.go-account-home = Go to account home
 common.cya.change = Change
+common.none = None
 
 continue.button=Save and continue
 button.addBusiness = Add a business to this undertaking
@@ -160,6 +161,7 @@ undertaking.cya.summary-list.eori.key=EORI number
 undertaking.cya.summary-list.sector.key=Industry sector
 undertaking.cya.summary-list.phone.key=Telephone number
 undertaking.cya.summary-list.verified-email=Verified email
+undertaking.cya.summary-list.businesses-in-undertaking=Businesses in the undertaking
 undertaking.cya.p=By sending these details you are confirming that, to the best of your knowledge, they are correct.
 
 addBusiness.empty.title=Add businesses within your organisation to {0}
@@ -384,6 +386,7 @@ undertaking.amendUndertaking.summary-list.change.undertaking-name = name of unde
 undertaking.amendUndertaking.summary-list.change.industry-sector = industry sector
 undertaking.amendUndertaking.p = By sending these details you are confirming that, to the best of your knowledge, they are correct
 undertaking.amendUndertaking.summary-list.verified-email=Verified email
+undertaking.amendUndertaking.summary-list.businesses-in-undertaking=Businesses in the undertaking
 
 #SignOut
 signOut.title =You have been removed from this single undertaking
@@ -484,3 +487,5 @@ disableUndertakingConfirm.error.required = Select Yes if you want to disable the
 undertakingDisabled.title = Your undertaking has been deregistered
 undertakingDisabled.p1 = We have sent you a confirmation email.
 undertakingDisabled.p2 = You have been signed out.
+
+email.error.required=Enter an email address in the correct format, like name@example.com
