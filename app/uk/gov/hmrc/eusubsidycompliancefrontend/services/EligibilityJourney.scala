@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
+import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json._
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
@@ -57,6 +58,14 @@ case class EligibilityJourney(
   def setEoriCheck(newEoriCheck: Boolean): EligibilityJourney =
     this.copy(eoriCheck = eoriCheck.copy(value = Some(newEoriCheck)))
 
+  def withDoYouClaim(response: Boolean) = this.copy(
+    doYouClaim = DoYouClaimFormPage(response.some)
+  )
+
+  def withWillYouClaim(response: Boolean) = this.copy(
+    willYouClaim = WillYouClaimFormPage(response.some)
+  )
+
 }
 
 object EligibilityJourney {
@@ -86,13 +95,12 @@ object EligibilityJourney {
       def uri = controller.getIncorrectEori().url
     }
 
-    object DoYouClaimFormPage {implicit val customsWaiversFormPageFormat: OFormat[DoYouClaimFormPage] = Json.format}
+    object DoYouClaimFormPage { implicit val customsWaiversFormPageFormat: OFormat[DoYouClaimFormPage] = Json.format }
     object WillYouClaimFormPage { implicit val willYouClaimFormPageFormat: OFormat[WillYouClaimFormPage] = Json.format }
     object NotEligibleFormPage { implicit val notEligibleFormPageFormat: OFormat[NotEligibleFormPage] = Json.format }
     object SignOutBadEoriFormPage { implicit val signOutFormPageFormat: OFormat[SignOutBadEoriFormPage] = Json.format }
     object EoriCheckFormPage { implicit val eoriCheckFormPageFormat: OFormat[EoriCheckFormPage] = Json.format }
     object SignOutFormPage { implicit val signOutFormPageFormat: OFormat[SignOutFormPage] = Json.format }
-
   }
 
 }

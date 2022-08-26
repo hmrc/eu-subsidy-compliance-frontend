@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscVerifiedEmailActionBuilders, EscInitialActionBuilder}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder, EscVerifiedEmailActionBuilders}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
@@ -29,6 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{Promo
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
@@ -96,10 +97,10 @@ class BecomeLeadController @Inject() (
         form =>
           store
             .update[BecomeLeadJourney](j =>
-              j.copy(becomeLeadEori = j.becomeLeadEori.copy(value = Some(form.value == "true")))
+              j.copy(becomeLeadEori = j.becomeLeadEori.copy(value = Some(form.value.isTrue)))
             )
             .flatMap { _ =>
-              if (form.value == "true") {
+              if (form.value.isTrue) {
                 Redirect(routes.BecomeLeadController.getAcceptPromotionTerms()).toFuture
               } else Future(Redirect(routes.AccountController.getAccountPage()))
             }

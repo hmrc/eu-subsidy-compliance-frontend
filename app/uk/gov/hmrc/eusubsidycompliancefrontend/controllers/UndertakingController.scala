@@ -34,6 +34,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingNa
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -414,7 +415,7 @@ class UndertakingController @Inject() (
     hc: HeaderCarrier,
     request: AuthenticatedEscRequest[_]
   ): Future[Result] =
-    if (form.value == "true") {
+    if (form.value.isTrue) {
       for {
         _ <- escService.disableUndertaking(undertaking)
         _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))

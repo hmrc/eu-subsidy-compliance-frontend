@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc._
@@ -24,9 +23,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder,
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.{DoYouClaimFormPage, WillYouClaimFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.RequestSyntax.RequestOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
@@ -73,7 +73,7 @@ class EligibilityController @Inject() (
       .get[EligibilityJourney]
       .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
       .map { eligibilityJourney =>
-        eligibilityJourney.firstEmpty.fold(Redirect(routes.UndertakingController.getUndertakingName()))(identity)
+        eligibilityJourney.firstEmpty.fold(Redirect(routes.UndertakingController.firstEmptyPage()))(identity)
       }
   }
 
@@ -88,9 +88,9 @@ class EligibilityController @Inject() (
       .fold(
         errors => BadRequest(doYouClaimPage(errors)).toFuture,
         form => {
-          EligibilityJourney(
-            doYouClaim = DoYouClaimFormPage(form.value.toBoolean.some)
-          ).next
+          EligibilityJourney()
+            .withDoYouClaim(form.value.isTrue)
+            .next
         }
       )
   }
@@ -105,14 +105,12 @@ class EligibilityController @Inject() (
       .fold(
         errors => BadRequest(willYouClaimPage(errors, routes.EligibilityController.getDoYouClaim().url)).toFuture,
         form => {
-          // Set up representative state in EligiblityJourney before we call next.
-          val journey = EligibilityJourney(
+          // Set up representative state in EligibilityJourney before we call next.
+          EligibilityJourney()
             // We are on the will you claim page so the user must have entered false on the do you claim form
-            doYouClaim = DoYouClaimFormPage(false.some),
-            willYouClaim = WillYouClaimFormPage(form.value.toBoolean.some)
-          )
-
-          journey.next
+            .withDoYouClaim(false)
+            .withWillYouClaim(form.value.isTrue)
+            .next
         }
       )
 
@@ -122,15 +120,13 @@ class EligibilityController @Inject() (
     Ok(notEligiblePage()).toFuture
   }
 
-  // TODO - consider factoring out state determination?
   def getEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    val ref = request.headers.get("Referer")
-    val eligibilityJourney = EligibilityJourney(
-      // Reconstruct do you / will you claim answers from referring page
-      doYouClaim = DoYouClaimFormPage(ref.map(_.endsWith(routes.EligibilityController.getDoYouClaim().url))),
-      willYouClaim = WillYouClaimFormPage(ref.map(_.endsWith(routes.EligibilityController.getWillYouClaim().url))),
-    )
+    // Reconstruct do you / will you claim answers from referring page
+    val eligibilityJourney = EligibilityJourney()
+      .withDoYouClaim(request.isFrom(routes.EligibilityController.getDoYouClaim().url))
+      .withWillYouClaim(request.isFrom(routes.EligibilityController.getWillYouClaim().url))
+
     store.getOrCreate[EligibilityJourney](eligibilityJourney).map { journey =>
       val form = journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck =>
         eoriCheckForm.fill(FormValues(eoriCheck.toString))
@@ -150,8 +146,8 @@ class EligibilityController @Inject() (
           store
             .update[EligibilityJourney](_.setEoriCheck(form.value.toBoolean))
             .flatMap { journey =>
-              // TODO - here we can check if the undertaking exists and direct the user to the account home page
-              if (journey.isComplete) Redirect(routes.UndertakingController.getUndertakingName()).toFuture
+              // Redirect to account home which will figure out where to take the user next.
+              if (journey.isComplete) Redirect(routes.AccountController.getAccountPage()).toFuture
               else journey.next
             }
       )
