@@ -39,7 +39,7 @@ case class UndertakingJourney(
                                isAmend: Boolean = false
 ) extends Journey {
 
-  override def steps = Array(
+  override def steps: Array[FormPage[_]] = Array(
     name,
     sector,
     verifiedEmail,
@@ -61,10 +61,6 @@ case class UndertakingJourney(
     else super.next
 
   def isEmpty: Boolean = steps.flatMap(_.value).isEmpty
-
-  // TODO - is this used?
-  def isCurrentPageCYA(implicit request: Request[_]): Boolean =
-    request.uri == routes.UndertakingController.getCheckAnswers().url
 
   private def requiredDetailsProvided = Seq(name, sector, verifiedEmail).map(_.value.isDefined) == Seq(true, true, true)
 
