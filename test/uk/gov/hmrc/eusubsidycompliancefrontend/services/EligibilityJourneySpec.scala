@@ -35,11 +35,9 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
           underTest.notEligible,
           underTest.eoriCheck,
           underTest.signOutBadEori,
-          underTest.signOut,
         )
       }
 
-      // TODO - add two cases for this
       "remove sign out step if main claim customs waiver has true value" in {
         val underTest = EligibilityJourney(
           doYouClaim = DoYouClaimFormPage(Some(true))

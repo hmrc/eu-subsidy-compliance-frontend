@@ -245,7 +245,6 @@ object CommonTestData {
     doYouClaim = DoYouClaimFormPage(true.some),
     willYouClaim = WillYouClaimFormPage(true.some),
     notEligible = NotEligibleFormPage(true.some),
-    signOut = SignOutFormPage(true.some),
     eoriCheck = EoriCheckFormPage(true.some),
     signOutBadEori = SignOutBadEoriFormPage(true.some),
   )

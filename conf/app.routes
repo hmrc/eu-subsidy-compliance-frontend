@@ -17,7 +17,6 @@ GET        /first-login-journey-will-you-claim-customs-duty-waivers             
 POST       /first-login-journey-will-you-claim-customs-duty-waivers                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postWillYouClaim
 
 GET        /first-login-journey-not-eligible                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getNotEligible
-GET        /first-login-journey-not-eligible-to-lead                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getNotEligibleToLead
 
 GET        /first-login-journey-register-eori                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getEoriCheck
 POST       /first-login-journey-register-eori                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postEoriCheck

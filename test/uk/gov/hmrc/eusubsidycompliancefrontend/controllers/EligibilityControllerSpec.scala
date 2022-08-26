@@ -405,40 +405,6 @@ class EligibilityControllerSpec
 
     }
 
-    "handling request to get not eligible to lead" must {
-
-      def performAction() = controller
-        .getNotEligibleToLead(
-          FakeRequest("GET", routes.EligibilityController.getNotEligibleToLead().url)
-            .withFormUrlEncodedBody()
-        )
-
-      "display the page" in {
-        inSequence {
-          mockAuthWithNecessaryEnrolment()
-        }
-        checkPageIsDisplayed(
-          performAction(),
-          messageFromMessageKey("notEligibleToLead.title")
-        )
-
-      }
-    }
-
-    "handling request to getIncorrectEori" must {
-      def performAction() = controller
-        .getIncorrectEori(
-          FakeRequest("GET", routes.EligibilityController.getIncorrectEori().url)
-        )
-
-      "display the page" in {
-        inSequence {
-          mockAuthWithNecessaryEnrolment()
-        }
-        checkPageIsDisplayed(performAction(), messageFromMessageKey("incorrectEori.title"))
-      }
-    }
-
   }
 
 }

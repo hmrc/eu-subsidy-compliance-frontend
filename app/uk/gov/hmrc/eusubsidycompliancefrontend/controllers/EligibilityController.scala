@@ -174,10 +174,6 @@ class EligibilityController @Inject() (
       )
   }
 
-  def getNotEligibleToLead: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    Ok(notEligibleToLeadPage()).toFuture
-  }
-
   def getIncorrectEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     Ok(incorrectEoriPage()).toFuture
   }

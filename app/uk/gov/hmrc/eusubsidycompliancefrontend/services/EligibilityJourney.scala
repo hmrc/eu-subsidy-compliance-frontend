@@ -28,7 +28,6 @@ case class EligibilityJourney(
   notEligible: NotEligibleFormPage = NotEligibleFormPage(),
   eoriCheck: EoriCheckFormPage = EoriCheckFormPage(),
   signOutBadEori: SignOutBadEoriFormPage = SignOutBadEoriFormPage(),
-  signOut: SignOutFormPage = SignOutFormPage(),
 ) extends Journey {
 
   private val journeySteps = List(
@@ -37,7 +36,6 @@ case class EligibilityJourney(
     notEligible,
     eoriCheck,
     signOutBadEori,
-    signOut,
   )
 
   private def isEligible =
@@ -50,7 +48,6 @@ case class EligibilityJourney(
         case DoYouClaimFormPage(_) => doYouClaim.value.isDefined
         case WillYouClaimFormPage(_) => doYouClaim.value.contains(true)
         case NotEligibleFormPage(_) => isEligible
-        case SignOutFormPage(_) => isEligible
         case SignOutBadEoriFormPage(_) => eoriCheck.value.contains(true)
         case _ => false
       }.toArray
@@ -85,9 +82,6 @@ object EligibilityJourney {
     case class NotEligibleFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getNotEligible().url
     }
-    case class SignOutFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getNotEligibleToLead().url
-    }
     case class EoriCheckFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getEoriCheck().url
     }
@@ -100,7 +94,6 @@ object EligibilityJourney {
     object NotEligibleFormPage { implicit val notEligibleFormPageFormat: OFormat[NotEligibleFormPage] = Json.format }
     object SignOutBadEoriFormPage { implicit val signOutFormPageFormat: OFormat[SignOutBadEoriFormPage] = Json.format }
     object EoriCheckFormPage { implicit val eoriCheckFormPageFormat: OFormat[EoriCheckFormPage] = Json.format }
-    object SignOutFormPage { implicit val signOutFormPageFormat: OFormat[SignOutFormPage] = Json.format }
   }
 
 }
