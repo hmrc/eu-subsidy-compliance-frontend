@@ -51,37 +51,36 @@ class EscRequestVerifiedEmailActionBuilder @Inject()(
   private val EccEnrolmentKey = "HMRC-ESC-ORG"
   private val EnrolmentIdentifier = "EORINumber"
 
-  val messagesApi: MessagesApi = mcc.messagesApi
+  override val messagesApi: MessagesApi = mcc.messagesApi
 
-  val parser: BodyParser[AnyContent] = mcc.parsers.anyContent
+  override val parser: BodyParser[AnyContent] = mcc.parsers.anyContent
+
+  private val RequiredCredentials = Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
 
   override def invokeBlock[A](
     request: Request[A],
     block: AuthenticatedEscRequest[A] => Future[Result]
   ): Future[Result] =
     authorised()
-      .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](
-        Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
-      ) {
+      .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](RequiredCredentials) {
         case Some(credentials) ~ Some(groupId) ~ enrolments =>
-          (enrolments.getEnrolment(EccEnrolmentKey)) match {
-            case (Some(eccEnrolment)) =>
+          enrolments.getEnrolment(EccEnrolmentKey)
+            // Redirect to / if no ECC Enrolment. The user will be directed to the appropriate page from there.
+            .fold(Redirect(routes.AccountController.getAccountPage()).toFuture) { eccEnrolment =>
               val eori = eccEnrolment
                 .getIdentifier(EnrolmentIdentifier)
-                .fold(throw new IllegalStateException("No EORI against enrollment"))(e => EORI(e.value))
-                emailVerificationService.getEmailVerification(eori).flatMap {
-                  case Some(_) => block(AuthenticatedEscRequest(credentials.providerId, groupId, request, eori))
-                  case None => throw new IllegalStateException("Email not valid")
-                }
-            case _ => Redirect(routes.EligibilityController.getCustomsWaivers()).toFuture
-          }
-        case _ ~ _ => Future.failed(throw InternalError())
-      }(hc(request), executionContext)
-      .recover(handleFailure(request))
+                .fold(throw new IllegalStateException("No EORI against enrolment"))(e => EORI(e.value))
+
+              emailVerificationService.getEmailVerification(eori).flatMap {
+                case Some(_) => block(AuthenticatedEscRequest(credentials.providerId, groupId, request, eori))
+                case None => throw new IllegalStateException("Email not valid")
+              }
+            }
+        case _ => Future.failed(throw InternalError("Error establishing authentication status for user"))
+      }(hc(request), executionContext).recover(handleFailure(request))
 
   private def handleFailure(implicit request: Request[_]): PartialFunction[Throwable, Result] = {
-    case _: NoActiveSession =>
-      Redirect(appConfig.ggSignInUrl, Map("continue" -> Seq(request.uri), "origin" -> Seq(origin)))
+    case _: NoActiveSession => Redirect(appConfig.ggSignInUrl, Map("continue" -> Seq(request.uri), "origin" -> Seq(origin)))
     case _: InsufficientEnrolments => Redirect(appConfig.eccEscSubscribeUrl)
   }
 }

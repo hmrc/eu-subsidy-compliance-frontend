@@ -21,7 +21,7 @@ import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscVerifiedEmailActionBuilders, EscInitialActionBuilder}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder, EscVerifiedEmailActionBuilders}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{AddMemberToBusinessEntity, AddMemberToLead, RemoveMemberToBusinessEntity, RemoveMemberToLead}
@@ -32,6 +32,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -88,7 +89,7 @@ class BusinessEntityController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     def handleValidAnswer(form: FormValues) =
-      if (form.value === "true")
+      if (form.value.isTrue)
         store.update[BusinessEntityJourney](_.setAddBusiness(form.value.toBoolean)).flatMap(_.next)
       else Redirect(routes.AccountController.getAccountPage()).toFuture
 
@@ -242,8 +243,7 @@ class BusinessEntityController @Inject() (
         removeBE: BusinessEntity,
         undertaking: Undertaking
       ) =
-        form.value match {
-          case "true" =>
+        if (form.value.isTrue) {
             val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
             for {
               _ <- escService.removeMember(undertakingRef, removeBE)
@@ -267,8 +267,8 @@ class BusinessEntityController @Inject() (
                   AuditEvent.BusinessEntityRemoved(undertakingRef, request.authorityId, eori, EORI(eoriEntered))
                 )
             } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
-          case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture
         }
+        else Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture
 
       withLeadUndertaking { _ =>
         escService.retrieveUndertaking(EORI(eoriEntered)).flatMap {
@@ -291,19 +291,18 @@ class BusinessEntityController @Inject() (
     val loggedInEORI = request.eoriNumber
     val previous = routes.AccountController.getAccountPage().url
     escService.retrieveUndertaking(loggedInEORI).flatMap {
-      case Some(undertaking) =>
+      case Some(undertaking) => {
         val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(loggedInEORI)
-        def handleValidBE(form: FormValues) = form.value match {
-          case "true" => Redirect(routes.SignOutController.signOut()).toFuture
-          case _ => Redirect(routes.AccountController.getAccountPage()).toFuture
-        }
+        def handleValidBE(form: FormValues) =
+          if (form.value.isTrue) Redirect(routes.SignOutController.signOut()).toFuture
+          else Redirect(routes.AccountController.getAccountPage()).toFuture
         removeYourselfBusinessForm
           .bindFromRequest()
           .fold(
             errors => BadRequest(removeYourselfBEPage(errors, removeBE, previous, undertaking.name)).toFuture,
             form => handleValidBE(form)
           )
-
+      }
       case None => handleMissingSessionData("Undertaking journey")
     }
   }

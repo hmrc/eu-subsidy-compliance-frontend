@@ -32,7 +32,7 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   lazy val ggSignInUrl: String = config.get[String](s"urls.ggSignInUrl")
   lazy val ggSignOutUrl: String = config.get[String](s"urls.ggSignOutUrl")
   lazy val eccEscSubscribeUrl: String = config.get[String](s"urls.eccEscSubscribeUrl")
-  lazy val exchangeRateToolUrl: String = config.get[String](s"urls.exchangeRateToolUrl")
+  lazy val emailFrontendUrl: String = config.get[String]("microservice.services.customs-email-frontend.url")
   lazy val exitSurveyUrl: String = config.get[String]("urls.feedback-survey")
   lazy val contactFrontendUrl: String =
     contactFrontendConfig.baseUrl.getOrElse(sys.error("Could not find config for contact frontend url"))

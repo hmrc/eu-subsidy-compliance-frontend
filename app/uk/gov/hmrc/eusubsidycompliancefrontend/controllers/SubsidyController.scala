@@ -34,6 +34,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAme
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.BigDecimalOps
@@ -150,7 +151,7 @@ class SubsidyController @Inject() (
             for {
               journey <- store.update[SubsidyJourney](_.setReportPayment(form.value.toBoolean))
               redirect <-
-                if (form.value === "true") journey.next
+                if (form.value.isTrue) journey.next
                 else Redirect(routes.AccountController.getAccountPage()).toFuture
             } yield redirect
         )
@@ -438,7 +439,7 @@ class SubsidyController @Inject() (
           .fold(
             formWithErrors => handleRemoveSubsidyFormError(formWithErrors, transactionId, undertaking),
             formValue =>
-              if (formValue.value == "true") handleRemoveSubsidyValidAnswer(transactionId, undertaking)
+              if (formValue.value.isTrue) handleRemoveSubsidyValidAnswer(transactionId, undertaking)
               else Redirect(routes.SubsidyController.getReportPayment()).toFuture
           )
       }

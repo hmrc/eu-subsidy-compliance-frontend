@@ -35,7 +35,7 @@
   hasErrors = form.hasErrors
 ) {
 
-  @formHelper(action = controllers.routes.EligibilityController.postCustomsWaivers) {
+  @formHelper(action = controllers.routes.EligibilityController.postDoYouClaim) {
     @form.errors.map { err =>
       @govukErrorSummary(ErrorSummary(
         errorList = Seq(

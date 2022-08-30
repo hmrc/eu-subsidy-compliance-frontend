@@ -39,7 +39,7 @@ case class UndertakingJourney(
                                isAmend: Boolean = false
 ) extends Journey {
 
-  override def steps = Array(
+  override def steps: Array[FormPage[_]] = Array(
     name,
     sector,
     verifiedEmail,
@@ -47,7 +47,7 @@ case class UndertakingJourney(
     confirmation
   )
   private lazy val previousMap: Map[String, Uri] = Map(
-    routes.UndertakingController.getUndertakingName().url -> routes.EligibilityController.getCreateUndertaking().url,
+    routes.UndertakingController.getUndertakingName().url -> routes.EligibilityController.getEoriCheck().url,
     routes.UndertakingController.getSector().url -> routes.UndertakingController.getUndertakingName().url
   )
 
@@ -61,9 +61,6 @@ case class UndertakingJourney(
     else super.next
 
   def isEmpty: Boolean = steps.flatMap(_.value).isEmpty
-
-  def isCurrentPageCYA(implicit request: Request[_]): Boolean =
-    request.uri == routes.UndertakingController.getCheckAnswers().url
 
   private def requiredDetailsProvided = Seq(name, sector, verifiedEmail).map(_.value.isDefined) == Seq(true, true, true)
 

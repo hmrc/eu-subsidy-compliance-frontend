@@ -7,47 +7,37 @@ GET        /home                                      uk.gov.hmrc.eusubsidycompl
 
 GET        /assets/*file                              controllers.Assets.versioned(path = "/public", file: Asset)
 
-GET        /first-login-journey-eligibility-first-empty                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.firstEmptyPage
-GET        /first-login-journey-undertaking-first-empty                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.firstEmptyPage
+GET        /first-login-journey-eligibility-first-empty                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.firstEmptyPage
+GET        /first-login-journey-undertaking-first-empty                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.firstEmptyPage
 
-GET        /first-login-journey-do-you-claim-customs-duty-waivers                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getCustomsWaivers
-POST       /first-login-journey-do-you-claim-customs-duty-waivers                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postCustomsWaivers
+GET        /first-login-journey-do-you-claim-customs-duty-waivers                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getDoYouClaim
+POST       /first-login-journey-do-you-claim-customs-duty-waivers                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postDoYouClaim
 
-GET        /first-login-journey-report-de-minimis-aid-payments-as-single-undertaking     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getMainBusinessCheck
-POST       /first-login-journey-report-de-minimis-aid-payments-as-single-undertaking     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postMainBusinessCheck
+GET        /first-login-journey-will-you-claim-customs-duty-waivers                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getWillYouClaim
+POST       /first-login-journey-will-you-claim-customs-duty-waivers                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postWillYouClaim
 
-GET        /first-login-journey-will-you-claim-customs-duty-waivers                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getWillYouClaim
-POST       /first-login-journey-will-you-claim-customs-duty-waivers                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postWillYouClaim
+GET        /first-login-journey-not-eligible                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getNotEligible
 
-GET        /first-login-journey-not-eligible                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getNotEligible
-GET        /first-login-journey-not-eligible-to-lead                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getNotEligibleToLead
+GET        /first-login-journey-register-eori                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getEoriCheck
+POST       /first-login-journey-register-eori                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postEoriCheck
 
-GET        /first-login-journey-accept-and-continue-to-register-single-undertaking       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getTerms
-POST       /first-login-journey-accept-and-continue-to-register-single-undertaking       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postTerms
+GET        /first-login-journey-incorrect-eori                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getIncorrectEori
 
-GET        /first-login-journey-register-eori                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getEoriCheck
-POST       /first-login-journey-register-eori                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postEoriCheck
+GET        /first-login-journey-name-single-undertaking                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getUndertakingName
+POST       /first-login-journey-name-single-undertaking                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postUndertakingName
 
-GET        /first-login-journey-incorrect-eori                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getIncorrectEori
+GET        /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSector
+POST       /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postSector
 
-GET        /first-login-journey-create-undertaking                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getCreateUndertaking
-POST       /first-login-journey-create-undertaking                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postCreateUndertaking
+GET        /first-login-confirm-email                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmEmail
+POST       /first-login-confirm-email                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmEmail
 
-GET        /first-login-journey-name-single-undertaking                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getUndertakingName
-POST       /first-login-journey-name-single-undertaking                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postUndertakingName
+GET        /verify-email                                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getVerifyEmail(UndertakingControllerpendingVerificationId)
 
-GET        /first-login-journey-what-sector                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSector
-POST       /first-login-journey-what-sector                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postSector
+GET        /first-login-journey-check-your-answers                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getCheckAnswers
+POST       /first-login-journey-check-your-answers                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postCheckAnswers
 
-GET        /first-login-confirm-email                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmEmail
-POST       /first-login-confirm-email                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmEmail
-
-GET        /verify-email                                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getVerifyEmail(UndertakingControllerpendingVerificationId)
-
-GET        /first-login-journey-check-your-answers                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getCheckAnswers
-POST       /first-login-journey-check-your-answers                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postCheckAnswers
-
-GET        /first-login-journey-registered-undertaking/:undertakingRef/name              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmation(undertakingRef,name)
+GET        /first-login-journey-registered-undertaking/:undertakingRef/name             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmation(undertakingRef,name)
 POST       /first-login-journey-registered-undertaking                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmation
 GET        /lead-undertaking-amend-undertaking                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAmendUndertakingDetails
 POST       /lead-undertaking-amend-undertaking                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAmendUndertaking
@@ -129,5 +119,3 @@ POST       /lead-undertaking-no-business-present                                
 
 GET        /financial-dashboard                                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinancialDashboardController.getFinancialDashboard
 GET        /lead-undertaking-promote-business-entity-email-unverified                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.emailNotVerified
-
-GET        /test/exchangeRate/:isoDate                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ExchangeRateTestController.getExchangeRate(isoDate)

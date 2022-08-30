@@ -16,18 +16,18 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.catsSyntaxEq
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder, EscNoEnrolmentActionBuilders}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.RequestSyntax.RequestOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
@@ -37,17 +37,16 @@ import scala.concurrent.ExecutionContext
 class EligibilityController @Inject() (
                                         mcc: MessagesControllerComponents,
                                         auditService: AuditService,
-                                        customsWaiversPage: CustomsWaiversPage,
+                                        doYouClaimPage: DoYouClaimPage,
                                         willYouClaimPage: WillYouClaimPage,
                                         notEligiblePage: NotEligiblePage,
-                                        mainBusinessCheckPage: MainBusinessCheckPage,
                                         notEligibleToLeadPage: NotEligibleToLeadPage,
-                                        termsPage: EligibilityTermsAndConditionsPage,
                                         checkEoriPage: CheckEoriPage,
                                         incorrectEoriPage: IncorrectEoriPage,
                                         escInitialActionBuilders: EscInitialActionBuilder,
-                                        createUndertakingPage: CreateUndertakingPage,
                                         escNonEnrolmentActionBuilders: EscNoEnrolmentActionBuilders,
+                                        emailService: EmailService,
+                                        escService: EscService,
                                         override val store: Store
 )(implicit
   val appConfig: AppConfig,
@@ -62,24 +61,12 @@ class EligibilityController @Inject() (
     mapping("customswaivers" -> mandatory("customswaivers"))(FormValues.apply)(FormValues.unapply)
   )
 
-  private val mainBusinessCheckForm: Form[FormValues] = Form(
-    mapping("mainbusinesscheck" -> mandatory("mainbusinesscheck"))(FormValues.apply)(FormValues.unapply)
-  )
-
   private val willYouClaimForm: Form[FormValues] = Form(
     mapping("willyouclaim" -> mandatory("willyouclaim"))(FormValues.apply)(FormValues.unapply)
   )
 
-  private val termsForm: Form[FormValues] = Form(
-    mapping("terms" -> mandatory("terms"))(FormValues.apply)(FormValues.unapply)
-  )
-
   private val eoriCheckForm: Form[FormValues] = Form(
     mapping("eoricheck" -> mandatory("eoricheck"))(FormValues.apply)(FormValues.unapply)
-  )
-
-  private val createUndertakingForm: Form[FormValues] = Form(
-    mapping("createUndertaking" -> mandatory("createUndertaking"))(FormValues.apply)(FormValues.unapply)
   )
 
   def firstEmptyPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
@@ -88,41 +75,45 @@ class EligibilityController @Inject() (
       .get[EligibilityJourney]
       .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
       .map { eligibilityJourney =>
-        eligibilityJourney.firstEmpty.fold(Redirect(routes.UndertakingController.getUndertakingName()))(identity)
+        eligibilityJourney.firstEmpty.fold(Redirect(routes.UndertakingController.firstEmptyPage()))(identity)
       }
   }
 
-  def getCustomsWaivers: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
+  def getDoYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
     val form = customsWaiversForm
-    Ok(customsWaiversPage(form)).toFuture
+    Ok(doYouClaimPage(form)).toFuture
   }
 
-  def postCustomsWaivers: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
+  def postDoYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
     customsWaiversForm
       .bindFromRequest()
       .fold(
-        errors => BadRequest(customsWaiversPage(errors)).toFuture,
-        form => Redirect(getNext(form)).toFuture
+        errors => BadRequest(doYouClaimPage(errors)).toFuture,
+        form => {
+          EligibilityJourney()
+            .withDoYouClaim(form.value.isTrue)
+            .next
+        }
       )
   }
 
-  private def getNext(form: FormValues) =
-    if (form.value == "true") routes.EligibilityController.getEoriCheck()
-    else routes.EligibilityController.getWillYouClaim()
-
   def getWillYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
-    val form = willYouClaimForm
-    Ok(willYouClaimPage(form, routes.EligibilityController.getCustomsWaivers().url)).toFuture
+    Ok(willYouClaimPage(willYouClaimForm, routes.EligibilityController.getDoYouClaim().url)).toFuture
   }
 
   def postWillYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
     willYouClaimForm
       .bindFromRequest()
       .fold(
-        errors => BadRequest(willYouClaimPage(errors, routes.EligibilityController.getCustomsWaivers().url)).toFuture,
-        form =>
-          if (form.value === "true") Redirect(routes.EligibilityController.getEoriCheck()).toFuture
-          else Redirect(routes.EligibilityController.getNotEligible()).toFuture
+        errors => BadRequest(willYouClaimPage(errors, routes.EligibilityController.getDoYouClaim().url)).toFuture,
+        form => {
+          // Set up representative state in EligibilityJourney before we call next.
+          EligibilityJourney()
+            // We are on the will you claim page so the user must have entered false on the do you claim form
+            .withDoYouClaim(false)
+            .withWillYouClaim(form.value.isTrue)
+            .next
+        }
       )
 
   }
@@ -133,12 +124,37 @@ class EligibilityController @Inject() (
 
   def getEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.getOrCreate[EligibilityJourney](EligibilityJourney()).map { journey =>
-      val form = journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck =>
-        eoriCheckForm.fill(FormValues(eoriCheck.toString))
-      )
-      Ok(checkEoriPage(form, eori, routes.EligibilityController.getCustomsWaivers().url))
+
+    def renderPage = {
+      val doYouClaimUrl = routes.EligibilityController.getDoYouClaim().url
+      val willYouClaimUrl = routes.EligibilityController.getWillYouClaim().url
+
+      // Reconstruct do you / will you claim answers from referring page
+      val eligibilityJourney = EligibilityJourney()
+        .withDoYouClaim(request.isFrom(doYouClaimUrl))
+        .withWillYouClaim(request.isFrom(willYouClaimUrl))
+
+      store.getOrCreate[EligibilityJourney](eligibilityJourney).map { journey =>
+
+        val form = journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck =>
+          eoriCheckForm.fill(FormValues(eoriCheck.toString))
+        )
+
+        val backLink =
+          if (request.isFrom(doYouClaimUrl)) doYouClaimUrl
+          else willYouClaimUrl
+
+        Ok(checkEoriPage(form, eori, backLink))
+      }
     }
+
+    // Check if the undertaking has been created already or not. If it has jump straight to the account home to prevent
+    // the user attempting to complete the create undertaking journey again.
+    escService
+      .retrieveUndertaking(eori)
+      .toContext
+      .foldF(renderPage)(_ => Redirect(routes.AccountController.getAccountPage().url).toFuture)
+
   }
 
   def postEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
@@ -147,89 +163,19 @@ class EligibilityController @Inject() (
       .bindFromRequest()
       .fold(
         errors =>
-          BadRequest(checkEoriPage(errors, eori, routes.EligibilityController.getCustomsWaivers().url)).toFuture,
-        form => store.update[EligibilityJourney](_.setEoriCheck(form.value.toBoolean)).flatMap(_.next)
-      )
-
-  }
-
-  def getMainBusinessCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store
-      .get[EligibilityJourney]
-      .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
-      .map { journey =>
-        val form = journey.mainBusinessCheck.value.fold(mainBusinessCheckForm)(mainBC =>
-          mainBusinessCheckForm.fill(FormValues(mainBC.toString))
-        )
-        Ok(mainBusinessCheckPage(form, eori, journey.previous))
-      }
-  }
-
-  def postMainBusinessCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    processFormSubmission[EligibilityJourney] { journey =>
-      mainBusinessCheckForm
-        .bindFromRequest()
-        .fold(
-          errors => BadRequest(mainBusinessCheckPage(errors, eori, journey.previous)).toContext,
-          form => store.update[EligibilityJourney](_.setMainBusinessCheck(form.value.toBoolean)).flatMap(_.next).toContext
-        )
-
-    }
-  }
-
-  def getNotEligibleToLead: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    Ok(notEligibleToLeadPage()).toFuture
-  }
-
-  def getTerms: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    store.get[EligibilityJourney].toContext
-      .map(journey => Ok(termsPage(journey.previous, eori)))
-      .getOrElse(throw new IllegalStateException("No EligibilityJourney found for this session"))
-
-  }
-
-  def postTerms: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    termsForm
-      .bindFromRequest()
-      .fold(
-        _ => throw new IllegalStateException("value hard-coded, form hacking?"),
+          BadRequest(checkEoriPage(errors, eori, routes.EligibilityController.getDoYouClaim().url)).toFuture,
         form =>
-          store.update[EligibilityJourney](_.setAcceptTerms(form.value.toBoolean)).flatMap { eligibilityJourney =>
-            auditService.sendEvent(TermsAndConditionsAccepted(eori))
-            eligibilityJourney.next
-          }
+          store
+            .update[EligibilityJourney](_.setEoriCheck(form.value.toBoolean))
+            .flatMap { journey =>
+              if (journey.isComplete) Redirect(routes.AccountController.getAccountPage()).toFuture
+              else journey.next
+            }
       )
   }
 
   def getIncorrectEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     Ok(incorrectEoriPage()).toFuture
-  }
-
-  def getCreateUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    store.get[EligibilityJourney].toContext
-      .map(journey => Ok(createUndertakingPage(journey.previous, eori)))
-      .getOrElse(throw new IllegalStateException("No EligibilityJourney found for this session"))
-  }
-
-  def postCreateUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    createUndertakingForm
-      .bindFromRequest()
-      .fold(
-        _ => throw new IllegalStateException("value hard-coded, form hacking?"),
-        form =>
-          store.update[EligibilityJourney](_.setCreateUndertaking(form.value.toBoolean)).map { _ =>
-            Redirect(routes.UndertakingController.getUndertakingName())
-          }
-      )
   }
 
 }
