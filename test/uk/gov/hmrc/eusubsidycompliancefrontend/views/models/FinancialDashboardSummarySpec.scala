@@ -152,4 +152,18 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
     }
   }
 
+  "remaining allowance should be zero if allowance has been exceeded" in {
+    val underTest = OverallSummary(
+      startYear = 2000,
+      endYear = 2001,
+      hmrcSubsidyTotal = SubsidyAmount(200000.00),
+      nonHmrcSubsidyTotal = SubsidyAmount(200000.00),
+      sector = Sector.other,
+      sectorCap = IndustrySectorLimit(200000.00)
+    )
+
+    underTest.allowanceExceeded shouldBe true
+    underTest.allowanceRemaining shouldBe SubsidyAmount(0)
+  }
+
 }
