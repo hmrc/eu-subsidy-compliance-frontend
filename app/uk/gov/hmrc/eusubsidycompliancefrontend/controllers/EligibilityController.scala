@@ -70,17 +70,14 @@ class EligibilityController @Inject() (
 
   def firstEmptyPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store
-      .get[EligibilityJourney]
-      .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
-      .map { eligibilityJourney =>
-        eligibilityJourney.firstEmpty.fold(Redirect(routes.UndertakingController.firstEmptyPage()))(identity)
-      }
+
+    store.get[EligibilityJourney].toContext
+      .map(_.firstEmpty.getOrElse(Redirect(routes.UndertakingController.firstEmptyPage())))
+      .getOrElse(handleMissingSessionData("Eligibility Journey"))
   }
 
   def getDoYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
-    val form = customsWaiversForm
-    Ok(doYouClaimPage(form)).toFuture
+    Ok(doYouClaimPage(customsWaiversForm)).toFuture
   }
 
   def postDoYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>

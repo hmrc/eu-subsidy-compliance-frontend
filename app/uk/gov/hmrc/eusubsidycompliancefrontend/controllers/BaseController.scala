@@ -31,12 +31,13 @@ class BaseController(mcc: MessagesControllerComponents) extends FrontendControll
   protected def mandatory(key: String): Mapping[String] =
     text.transform[String](_.trim, s => s).verifying(required(key))
 
-  protected def handleMissingSessionData(dataLabel: String) =
-    throw new IllegalStateException(s"$dataLabel data missing on session")
-
   private def required(key: String): Constraint[String] = Constraint {
     case "" => Invalid(s"error.$key.required")
     case _ => Valid
   }
+
+  // TODO - review this
+  protected def handleMissingSessionData(dataLabel: String) =
+    throw new IllegalStateException(s"$dataLabel data missing on session")
 
 }
