@@ -40,7 +40,6 @@ class EligibilityController @Inject() (
                                         doYouClaimPage: DoYouClaimPage,
                                         willYouClaimPage: WillYouClaimPage,
                                         notEligiblePage: NotEligiblePage,
-                                        notEligibleToLeadPage: NotEligibleToLeadPage,
                                         checkEoriPage: CheckEoriPage,
                                         incorrectEoriPage: IncorrectEoriPage,
                                         escInitialActionBuilders: EscInitialActionBuilder,
