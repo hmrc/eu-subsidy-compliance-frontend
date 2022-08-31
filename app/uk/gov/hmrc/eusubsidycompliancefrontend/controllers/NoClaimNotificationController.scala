@@ -17,11 +17,11 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.data.Form
-import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscVerifiedEmailActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyNilReturn
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyUpdate}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EscService, NilReturnJourney, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -55,7 +55,7 @@ class NoClaimNotificationController @Inject() (
 
   def postNoClaimNotification: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
-      implicit val eori = request.eoriNumber
+      implicit val eori: EORI = request.eoriNumber
       val previous = routes.AccountController.getAccountPage().url
 
       def handleValidNoClaim(form: FormValues): Future[Result] = {
@@ -82,8 +82,6 @@ class NoClaimNotificationController @Inject() (
     }
   }
 
-  private val noClaimForm: Form[FormValues] = Form(
-    mapping("noClaimNotification" -> mandatory("noClaimNotification"))(FormValues.apply)(FormValues.unapply)
-  )
+  private val noClaimForm: Form[FormValues] = formWithSingleMandatoryField("noClaimNotification")
 
 }

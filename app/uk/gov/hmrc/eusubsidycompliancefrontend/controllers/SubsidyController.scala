@@ -70,9 +70,9 @@ class SubsidyController @Inject() (
 
   import escCDSActionBuilder._
 
-  private val reportPaymentForm: Form[FormValues] = Form(
-    mapping("reportPayment" -> mandatory("reportPayment"))(FormValues.apply)(FormValues.unapply)
-  )
+  private val reportPaymentForm: Form[FormValues] = formWithSingleMandatoryField("reportPayment")
+  private val removeSubsidyClaimForm: Form[FormValues] = formWithSingleMandatoryField("removeSubsidyClaim")
+  private val cyaForm: Form[FormValues] = formWithSingleMandatoryField("cya")
 
   private val claimTraderRefForm: Form[OptionalTraderRef] = Form(
     mapping(
@@ -89,12 +89,6 @@ class SubsidyController @Inject() (
   private val claimAmountForm: Form[ClaimAmount] = ClaimAmountFormProvider().form
 
   private val claimDateForm: Form[DateFormValues] = ClaimDateFormProvider(timeProvider).form
-
-  private val removeSubsidyClaimForm: Form[FormValues] = Form(
-    mapping("removeSubsidyClaim" -> mandatory("removeSubsidyClaim"))(FormValues.apply)(FormValues.unapply)
-  )
-
-  private val cyaForm: Form[FormValues] = Form(mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
 
   def getReportPayment: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>

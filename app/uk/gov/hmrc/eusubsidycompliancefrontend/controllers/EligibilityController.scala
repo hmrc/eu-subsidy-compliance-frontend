@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import play.api.data.Form
-import play.api.data.Forms.mapping
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder, EscNoEnrolmentActionBuilders}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
@@ -56,17 +54,10 @@ class EligibilityController @Inject() (
   import escInitialActionBuilders._
   import escNonEnrolmentActionBuilders._
 
-  private val customsWaiversForm: Form[FormValues] = Form(
-    mapping("customswaivers" -> mandatory("customswaivers"))(FormValues.apply)(FormValues.unapply)
-  )
-
-  private val willYouClaimForm: Form[FormValues] = Form(
-    mapping("willyouclaim" -> mandatory("willyouclaim"))(FormValues.apply)(FormValues.unapply)
-  )
-
-  private val eoriCheckForm: Form[FormValues] = Form(
-    mapping("eoricheck" -> mandatory("eoricheck"))(FormValues.apply)(FormValues.unapply)
-  )
+  // TODO - rename this to doYouClaimForm
+  private val customsWaiversForm = formWithSingleMandatoryField("customswaivers")
+  private val willYouClaimForm = formWithSingleMandatoryField("willyouclaim")
+  private val eoriCheckForm = formWithSingleMandatoryField("eoricheck")
 
   def firstEmptyPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber

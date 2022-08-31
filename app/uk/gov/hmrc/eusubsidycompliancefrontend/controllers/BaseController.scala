@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import play.api.data.Forms.text
-import play.api.data.Mapping
+import play.api.data.Forms.{mapping, text}
+import play.api.data.{Form, Mapping}
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Singleton
@@ -35,6 +36,10 @@ class BaseController(mcc: MessagesControllerComponents) extends FrontendControll
     case "" => Invalid(s"error.$key.required")
     case _ => Valid
   }
+
+  protected def formWithSingleMandatoryField(fieldName: String): Form[FormValues] = Form(
+    mapping(fieldName -> mandatory(fieldName))(FormValues.apply)(FormValues.unapply)
+  )
 
   // TODO - review this
   protected def handleMissingSessionData(dataLabel: String) =

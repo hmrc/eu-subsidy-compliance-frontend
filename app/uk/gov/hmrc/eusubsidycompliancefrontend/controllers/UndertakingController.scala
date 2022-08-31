@@ -449,23 +449,11 @@ class UndertakingController @Inject() (
     mapping("continue" -> mandatory("continue"))(FormValues.apply)(FormValues.unapply)
   )
 
-  private val undertakingSectorForm: Form[FormValues] = Form(
-    mapping("undertakingSector" -> mandatory("undertakingSector"))(FormValues.apply)(FormValues.unapply)
-  )
-
-  private val cyaForm: Form[FormValues] = Form(mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
-
-  private val confirmationForm: Form[FormValues] = Form(
-    mapping("confirm" -> mandatory("confirm"))(FormValues.apply)(FormValues.unapply)
-  )
-
-  private val amendUndertakingForm: Form[FormValues] = Form(
-    mapping("amendUndertaking" -> mandatory("amendUndertaking"))(FormValues.apply)(FormValues.unapply)
-  )
-
-  private val disableUndertakingConfirmForm: Form[FormValues] = Form(
-    mapping("disableUndertakingConfirm" -> mandatory("disableUndertakingConfirm"))(FormValues.apply)(FormValues.unapply)
-  )
+  private val undertakingSectorForm: Form[FormValues] = formWithSingleMandatoryField("undertakingSector")
+  private val cyaForm: Form[FormValues] = formWithSingleMandatoryField("cya")
+  private val confirmationForm: Form[FormValues] = formWithSingleMandatoryField("confirm")
+  private val amendUndertakingForm: Form[FormValues] = formWithSingleMandatoryField("amendUndertaking")
+  private val disableUndertakingConfirmForm: Form[FormValues] = formWithSingleMandatoryField("disableUndertakingConfirm")
 
   private val optionalEmailForm: Form[OptionalEmailFormInput] = Form(
     mapping(

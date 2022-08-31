@@ -62,8 +62,8 @@ class BusinessEntityController @Inject() (
     with LeadOnlyUndertakingSupport
     with FormHelpers {
 
-  import escInitialActionBuilders._
   import escCDSActionBuilder._
+  import escInitialActionBuilders._
 
   def getAddBusinessEntity: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>
@@ -319,19 +319,9 @@ class BusinessEntityController @Inject() (
           .map(_ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
     }
 
-  private val addBusinessForm: Form[FormValues] = Form(
-    mapping("addBusiness" -> mandatory("addBusiness"))(FormValues.apply)(FormValues.unapply)
-  )
-
-  private val removeBusinessForm: Form[FormValues] = Form(
-    mapping("removeBusiness" -> mandatory("removeBusiness"))(FormValues.apply)(FormValues.unapply)
-  )
-
-  private val removeYourselfBusinessForm: Form[FormValues] = Form(
-    mapping("removeYourselfBusinessEntity" -> mandatory("removeYourselfBusinessEntity"))(FormValues.apply)(
-      FormValues.unapply
-    )
-  )
+  private val addBusinessForm = formWithSingleMandatoryField("addBusiness")
+  private val removeBusinessForm = formWithSingleMandatoryField("removeBusiness")
+  private val removeYourselfBusinessForm = formWithSingleMandatoryField("removeYourselfBusinessEntity")
 
   private val isEoriLengthValid = Constraint[String] { eori: String =>
     if (getValidEori(eori).length === 14 || getValidEori(eori).length === 17) Valid
