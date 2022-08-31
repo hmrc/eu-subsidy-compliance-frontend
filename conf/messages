@@ -255,7 +255,9 @@ non-lead-account-homepage.p2 = They must use this service to report all non-cust
 
 non-lead-account-homepage.h2-1 = Your next report date
 non-lead-account-homepage.p3 = The undertaking administrator must submit a report on or before <strong>{0}</strong>.
+non-lead-account-homepage.p3.is-overdue = Your undertaking’s report was due by {0}.
 non-lead-account-homepage.p4 = This date is 90 days after the last report submitted, on <strong>{0}</strong>. If they don’t submit a report, you may no longer be able to claim Customs Duty waivers.
+non-lead-account-homepage.p4.never-submitted = This date is 90 days after you registered your undertaking. If they don’t submit a report, you may no longer be able to claim Customs Duty waivers.
 
 non-lead-account-homepage.h2-2 = Your undertaking’s allowance
 non-lead-account-homepage.p5 = Your undertaking’s allowance is {0} for the period including the current tax year and the previous 2 tax years. Since {1}, your undertaking’s reported payments for customs and non-customs subsidies total {2}.

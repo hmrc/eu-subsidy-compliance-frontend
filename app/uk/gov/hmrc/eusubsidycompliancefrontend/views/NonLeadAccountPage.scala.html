@@ -36,6 +36,7 @@
     lastSubmitted: Option[String],
     neverSubmitted: Boolean,
     allowance: String,
+    currentPeriodStart: String,
     totalSubsidies: String,
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"non-lead-account-homepage"}
@@ -51,12 +52,23 @@
   @P(messages(s"$key.p2"))
   
   @H2(messages(s"$key.h2-1"))
-  @P(messages(s"$key.p3", "[todo: report due date]"))
-  @P(messages(s"$key.p4", "[todo: report last submitted]"))
+  @if(!isOverdue) {
+    @P(messages(s"$key.p3", dueDate))
+  } else {
+    @govukWarningText(WarningText(
+      content = Text(messages(s"$key.p3.is-overdue", dueDate))
+    ))
+  }
+
+  @if(!neverSubmitted) {
+    @P(messages(s"$key.p4", lastSubmitted.getOrElse("")))
+  } else {
+    @P(messages(s"$key.p4.never-submitted"))
+  }
 
   @H2(messages(s"$key.h2-2"))
-  @P(messages(s"$key.p5", "[todo: allowance]", "[todo: report date]", "[todo: total]"))
-  @P(messages(s"$key.p6", "[todo: remaining]"))
+  @P(messages(s"$key.p5", allowance, currentPeriodStart, totalSubsidies))
+  @P(messages(s"$key.p6", remainingAmount))
   
   @H2(messages(s"$key.h2-3"))
   <ul class="govuk-list govuk-list--spaced">
