@@ -111,6 +111,8 @@ class AccountController @Inject() (
 
     val today = timeProvider.today
 
+    val startDate = today.toEarliestTaxYearStart
+
     val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
       undertaking,
       undertakingSubsidies,
@@ -126,7 +128,6 @@ class AccountController @Inject() (
       val result = for {
         nilReturnJourney <- store.getOrCreate[NilReturnJourney](NilReturnJourney()).toContext
         _ <- updateNilReturnJourney(nilReturnJourney).toContext
-        startDate = today.toEarliestTaxYearStart
       } yield Ok(
         leadAccountPage(
           undertaking,
@@ -156,6 +157,7 @@ class AccountController @Inject() (
       lastSubmitted.map(_.toDisplayFormat),
       undertakingSubsidies.hasNeverSubmitted,
       BigDecimal(summary.overall.sectorCap.toString()).toEuros,
+      startDate.toDisplayFormat,
       summary.overall.total.toEuros
     )).toFuture
   }
