@@ -73,15 +73,15 @@
     @P(messages(s"$key.p1", currentPeriodStart))
 
     @if(isOverdue) {
-      @P(messages(s"$key.p2.not-overdue", dueDate)) <!-- TODO - best way to handle missing value? -->
+        @govukWarningText(WarningText(
+            content = Text(messages(s"$key.p2.is-overdue", dueDate))
+        ))
     } else {
-      @govukWarningText(WarningText(
-        content = Text(messages(s"$key.p2.is-overdue", dueDate))
-      ))
+        @P(messages(s"$key.p2.not-overdue", dueDate))
     }
     
     @if(!neverSubmitted){
-      @P(messages(s"$key.p3.has-submitted", lastSubmitted.getOrElse(""))) <!-- TODO - best way to handle missing value? -->
+      @P(messages(s"$key.p3.has-submitted", lastSubmitted.getOrElse("")))
     } else {
       @P(messages(s"$key.p3.never-submitted"))
     }

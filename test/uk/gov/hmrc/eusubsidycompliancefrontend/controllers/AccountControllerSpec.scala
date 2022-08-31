@@ -83,52 +83,32 @@ class AccountControllerSpec
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockRetrieveSubsidy(subsidyRetrieve.copy(inDateRange = None))(undertakingSubsidies.toFuture)
             mockTimeToday(fixedDate)
+            mockTimeToday(fixedDate)
             mockGetOrCreate(eori1)(Right(nilJourneyCreate))
           }
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("lead-account-homepage.title", undertaking.name),
             { doc =>
-              val htmlBody = doc.select(".govuk-grid-column-one-third").html()
+              val htmlBody = doc.toString
 
-              htmlBody should include regex messageFromMessageKey(
-                "lead-account-homepage.cards.card1.link1",
-                routes.SubsidyController.getReportPayment().url
+              val elementIds = List(
+                (1, 1),
+                (1, 2),
+                (2, 1),
+                (2, 2),
+                (3, 1),
+                (3, 2),
+                (3, 3),
               )
 
-              htmlBody should include regex messageFromMessageKey(
-                "lead-account-homepage.cards.card2.link1",
-                routes.UndertakingController.getAmendUndertakingDetails().url
-              )
-
-              htmlBody should include regex messageFromMessageKey(
-                "lead-account-homepage.cards.card2.link2",
-                routes.FinancialDashboardController.getFinancialDashboard().url
-              )
-
-              if (undertaking.undertakingBusinessEntity.length > 1)
-                htmlBody should include regex messageFromMessageKey(
-                  "lead-account-homepage.cards.card3.link1View",
-                  routes.BusinessEntityController.getAddBusinessEntity().url
-                )
-              else
-                htmlBody should include regex messageFromMessageKey(
-                  "lead-account-homepage.cards.card3.link1Add",
-                  routes.BusinessEntityController.getAddBusinessEntity().url
-                )
-
-              val isNonLeadEORIPresent = !undertaking.undertakingBusinessEntity.forall(_.leadEORI)
-
-              if (isNonLeadEORIPresent)
-                htmlBody should include regex messageFromMessageKey(
-                  "lead-account-homepage.cards.card3.link2",
-                  routes.SelectNewLeadController.getSelectNewLead().url
-                )
-              else
-                htmlBody should include regex messageFromMessageKey(
-                  "lead-account-homepage.cards.card3.link2",
-                  routes.NoBusinessPresentController.getNoBusinessPresent().url
-                )
+              elementIds foreach { elementId =>
+                val messageKey = s"lead-account-homepage.ul${elementId._1}-li${elementId._2}"
+                // TODO - can this just use doc should include regex style?
+                withClue(s"Could not locate content for messageKey: '$messageKey' in raw page content") {
+                  htmlBody.contains(messageFromMessageKey(messageKey)) shouldBe true
+                }
+              }
 
             }
           )
@@ -149,21 +129,23 @@ class AccountControllerSpec
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockRetrieveSubsidy(subsidyRetrieve.copy(inDateRange = None))(undertakingSubsidies.copy(nonHMRCSubsidyUsage = List(nonHmrcSubsidy.copy(submissionDate = undertaking.lastSubsidyUsageUpdt.get))).toFuture)
             mockTimeToday(currentDate)
+            mockTimeToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilJourneyCreate))
           }
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("lead-account-homepage.title", undertaking.name),
-            doc =>
+            doc => {
               if (isTimeToReport) {
-                val htmlBody = doc.select(".govuk-inset-text").text
-                htmlBody should include regex
-                  messageFromMessageKey("lead-account-homepage.inset", dueDate)
+                val content = doc.select(".govuk-grid-column-two-thirds").toString
+                content should include regex
+                  messageFromMessageKey("lead-account-homepage.p2.not-overdue", dueDate)
               } else if (isOverdue) {
-                val htmlBody = doc.select(".govuk-inset-text").text
-                htmlBody should include regex
-                  messageFromMessageKey("lead-account-homepage-overdue.inset", dueDate)
+                val content = doc.select(".govuk-warning-text").text
+                content should include regex
+                  messageFromMessageKey("lead-account-homepage.p2.is-overdue", dueDate)
               }
+            }
           )
         }
 
@@ -183,6 +165,7 @@ class AccountControllerSpec
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockRetrieveSubsidy(subsidyRetrieve.copy(inDateRange = None))(undertakingSubsidies.toFuture)
+            mockTimeToday(currentDate)
             mockTimeToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilReturnJourney))
             if (hasFiledNilReturnRecently) {
@@ -207,11 +190,12 @@ class AccountControllerSpec
           )
         }
 
+        // TODO - validate amounts are shown correctly on the page
         "there is a view link on the page and undertaking has lead only business entity" in {
           test(undertaking)
         }
 
-        "there is a add link on the page" in {
+        "there is an add link on the page" in {
           test(undertaking.copy(undertakingBusinessEntity = List(businessEntity1)))
         }
 
@@ -219,7 +203,7 @@ class AccountControllerSpec
           test(undertaking1)
         }
 
-        "today's date falls between the 76th and the 90th day from the last day of subsidy report " in {
+        "today's date falls before the next deadline" in {
           testTimeToReport(
             undertaking.copy(lastSubsidyUsageUpdt = LocalDate.of(2021, 12, 1).some),
             currentDate = LocalDate.of(2022, 2, 16),
@@ -229,17 +213,7 @@ class AccountControllerSpec
           )
         }
 
-        "today's date is exactly 76 days from the last day of subsidy report " in {
-          testTimeToReport(
-            undertaking.copy(lastSubsidyUsageUpdt = LocalDate.of(2021, 12, 1).some),
-            currentDate = LocalDate.of(2022, 2, 15),
-            isTimeToReport = true,
-            dueDate = "1 March 2022",
-            isOverdue = false
-          )
-        }
-
-        "today's over 90 days from the last day of subsidy report " in {
+        "today's date is after the deadling" in {
           val lastUpdatedDate = LocalDate.of(2021, 12, 1)
           testTimeToReport(
             undertaking.copy(lastSubsidyUsageUpdt = lastUpdatedDate.some),
