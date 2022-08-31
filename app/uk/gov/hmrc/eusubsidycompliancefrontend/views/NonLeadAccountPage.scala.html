@@ -31,17 +31,12 @@
 @(
     undertaking: Undertaking,
     eori: EORI,
-    isNonLeadEORIPresent: Boolean,
-    isTimeToReport: Boolean,
     dueDate: String,
     isOverdue: Boolean,
     lastSubmitted: Option[String],
     neverSubmitted: Boolean,
     allowance: String,
     totalSubsidies: String,
-    remainingAmount: String,
-    currentPeriodStart: String,
-    isOverAllowance: Boolean
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"non-lead-account-homepage"}
 

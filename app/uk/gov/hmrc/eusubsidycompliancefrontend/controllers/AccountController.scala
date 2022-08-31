@@ -109,6 +109,15 @@ class AccountController @Inject() (
       .toDisplayFormat
     val isOverdue = ReportReminderHelpers.isOverdue(lastSubmitted, currentDay)
 
+    val today = timeProvider.today
+
+    val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
+      undertaking,
+      undertakingSubsidies,
+      today.toEarliestTaxYearStart,
+      today.toTaxYearEnd
+    )
+
     def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] =
       if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
       else n.toFuture
@@ -117,14 +126,7 @@ class AccountController @Inject() (
       val result = for {
         nilReturnJourney <- store.getOrCreate[NilReturnJourney](NilReturnJourney()).toContext
         _ <- updateNilReturnJourney(nilReturnJourney).toContext
-        today = timeProvider.today
         startDate = today.toEarliestTaxYearStart
-        summary = FinancialDashboardSummary.fromUndertakingSubsidies(
-          undertaking,
-          undertakingSubsidies,
-          today.toEarliestTaxYearStart,
-          today.toTaxYearEnd
-        )
       } yield Ok(
         leadAccountPage(
           undertaking,
@@ -149,18 +151,12 @@ class AccountController @Inject() (
     } else Ok(nonLeadAccountPage(
       undertaking,
       eori,
-      undertaking.getAllNonLeadEORIs().nonEmpty,
-      isTimeToReport,
       dueDate,
       isOverdue,
-      nilReturnJourney.displayNotification,
       lastSubmitted.map(_.toDisplayFormat),
       undertakingSubsidies.hasNeverSubmitted,
       BigDecimal(summary.overall.sectorCap.toString()).toEuros,
-      summary.overall.total.toEuros,
-      summary.overall.allowanceRemaining.toEuros,
-      startDate.toDisplayFormat,
-      summary.overall.allowanceExceeded
+      summary.overall.total.toEuros
     )).toFuture
   }
 
