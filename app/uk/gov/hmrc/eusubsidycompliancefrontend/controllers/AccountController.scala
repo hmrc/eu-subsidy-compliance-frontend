@@ -157,8 +157,9 @@ class AccountController @Inject() (
       lastSubmitted.map(_.toDisplayFormat),
       undertakingSubsidies.hasNeverSubmitted,
       BigDecimal(summary.overall.sectorCap.toString()).toEuros,
+      summary.overall.total.toEuros,
+      summary.overall.allowanceRemaining.toEuros,
       startDate.toDisplayFormat,
-      summary.overall.total.toEuros
     )).toFuture
   }
 
