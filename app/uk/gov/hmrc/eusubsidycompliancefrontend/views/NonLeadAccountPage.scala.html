@@ -16,30 +16,62 @@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
 
 @this(
-  layout: FullWidthLayout,
+  layout: Layout,
   button: components.Button,
   govukRadios : GovukRadios,
   govukWarningText : GovukWarningText,
   govukInsetText : GovukInsetText
 )
 
-@(undertaking: Undertaking)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(
+    undertaking: Undertaking,
+    eori: EORI,
+    isNonLeadEORIPresent: Boolean,
+    isTimeToReport: Boolean,
+    dueDate: String,
+    isOverdue: Boolean,
+    lastSubmitted: Option[String],
+    neverSubmitted: Boolean,
+    allowance: String,
+    totalSubsidies: String,
+    remainingAmount: String,
+    currentPeriodStart: String,
+    isOverAllowance: Boolean
+)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@key = @{"non-lead-account-homepage"}
 
 @layout(
-  pageTitle = Some(messages("non-lead-account-homepage.title", undertaking.name)),
+  pageTitle = Some(messages(s"$key.title", undertaking.name)),
   backLinkEnabled = false,
   backLink = None
 ) {
 
-  <h1 class="govuk-heading-l">@messages("non-lead-account-homepage.title", undertaking.name)</h1>
+  @H1(messages(s"$key.title", undertaking.name))
+  @P(messages(s"$key.p1", eori))
+  @P(messages(s"$key.p2"))
+  
+  @H2(messages(s"$key.h2-1"))
+  @P(messages(s"$key.p3", "[todo: report due date]"))
+  @P(messages(s"$key.p4", "[todo: report last submitted]"))
 
+  @H2(messages(s"$key.h2-2"))
+  @P(messages(s"$key.p5", "[todo: allowance]", "[todo: report date]", "[todo: total]"))
+  @P(messages(s"$key.p6", "[todo: remaining]"))
+  
+  @H2(messages(s"$key.h2-3"))
   <ul class="govuk-list govuk-list--spaced">
-    <li><a href="@routes.BecomeLeadController.getBecomeLeadEori()" class="govuk-link">@messages("non-lead-account-homepage.link1", undertaking.name)</a></li>
-    <li><a href="@routes.FinancialDashboardController.getFinancialDashboard()" class="govuk-link">@messages("non-lead-account-homepage.link2", undertaking.name)</a></li>
-    <li><a href="@routes.BusinessEntityController.getRemoveYourselfBusinessEntity()" class="govuk-link">@messages("non-lead-account-homepage.link3")</a></li>
+    <li><a href="@routes.FinancialDashboardController.getFinancialDashboard()" class="govuk-link">@messages(s"$key.ul1-li1")</a></li>
+  </ul>
+
+  @H2(messages(s"$key.h2-4"))
+  <ul class="govuk-list govuk-list--spaced">
+    <li><a href="@routes.BecomeLeadController.getBecomeLeadEori()" class="govuk-link">@messages(s"$key.ul2-li1")</a></li>
+    <li><a href="@routes.BusinessEntityController.getRemoveYourselfBusinessEntity()" class="govuk-link">@messages(s"$key.ul2-li2")</a></li>
   </ul>
 
 }
