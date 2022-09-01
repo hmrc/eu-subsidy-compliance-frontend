@@ -41,14 +41,14 @@ class NoBusinessPresentController @Inject() (
 
   import actionBuilders._
 
-  def getNoBusinessPresent: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
+  def getNoBusinessPresent: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       val previous = routes.AccountController.getAccountPage().url
       Ok(noBusinessPresentPage(undertaking.name, previous)).toFuture
     }
   }
 
-  def postNoBusinessPresent: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
+  def postNoBusinessPresent: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       for {

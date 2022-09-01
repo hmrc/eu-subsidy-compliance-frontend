@@ -45,7 +45,7 @@ class FinancialDashboardController @Inject() (
 
   import actionBuilders._
 
-  def getFinancialDashboard: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getFinancialDashboard: Action[AnyContent] = authenticatedWithEnrolment.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     val today = timeProvider.today

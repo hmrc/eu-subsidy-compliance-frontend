@@ -17,20 +17,27 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.actions
 
 import play.api.mvc.{ActionBuilder, AnyContent}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.{EscInitialRequestActionBuilder, EscNoEnrolmentRequestActionBuilder, EscRequestVerifiedEmailActionBuilder}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.{AuthenticatedRequestWithEnrolmentActionBuilder, AuthenticatedRequestActionBuilder, AuthenticatedRequestWithEnrolmentAndVerifiedEmailActionBuilder}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.{AuthenticatedEscRequest, AuthenticatedNoEnrolmentEscRequest}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class ActionBuilders @Inject() (
-  escNewRequestActionBuilder: EscInitialRequestActionBuilder,
-  escRequestNonEnrolmentActionBuilder: EscNoEnrolmentRequestActionBuilder,
-  escRequestVerifiedEmailActionBuilder: EscRequestVerifiedEmailActionBuilder
+  authenticatedActionBuilder: AuthenticatedRequestActionBuilder,
+  authenticatedRequestWithEnrolmentActionBuilder: AuthenticatedRequestWithEnrolmentActionBuilder,
+  authenticatedRequestWithEnrolmentAndVerifiedEmailActionBuilder: AuthenticatedRequestWithEnrolmentAndVerifiedEmailActionBuilder,
 ) {
-  val withAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] = escNewRequestActionBuilder
-  val withVerifiedEmailAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] = escRequestVerifiedEmailActionBuilder
-  val withNonVerfiedEmail: ActionBuilder[AuthenticatedNoEnrolmentEscRequest, AnyContent] = escRequestNonEnrolmentActionBuilder
+
+  // GG Auth only
+  val authenticated: ActionBuilder[AuthenticatedNoEnrolmentEscRequest, AnyContent] = authenticatedActionBuilder
+
+  // GG Auth with ECC Enrolment
+  val authenticatedWithEnrolment: ActionBuilder[AuthenticatedEscRequest, AnyContent] = authenticatedRequestWithEnrolmentActionBuilder
+
+  // GG Auth with ECC Enrolment and Verified Email Address
+  val authenticatedWithEnrolmentAndVerifiedEmail: ActionBuilder[AuthenticatedEscRequest, AnyContent] = authenticatedRequestWithEnrolmentAndVerifiedEmailActionBuilder
+
 }
 
 object ActionBuilders {

@@ -31,7 +31,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvi
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EscNoEnrolmentRequestActionBuilder @Inject() (
+class AuthenticatedRequestActionBuilder @Inject() (
   val config: Configuration,
   val env: Environment,
   val store: Store,

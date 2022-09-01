@@ -35,7 +35,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvi
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EscRequestVerifiedEmailActionBuilder @Inject()(
+class AuthenticatedRequestWithEnrolmentAndVerifiedEmailActionBuilder @Inject()(
                                                       val config: Configuration,
                                                       val env: Environment,
                                                       val authConnector: AuthConnector,

@@ -57,7 +57,7 @@ class EligibilityController @Inject() (
   private val willYouClaimForm = formWithSingleMandatoryField("willyouclaim")
   private val eoriCheckForm = formWithSingleMandatoryField("eoricheck")
 
-  def firstEmptyPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def firstEmptyPage: Action[AnyContent] = authenticatedWithEnrolment.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     store.get[EligibilityJourney].toContext
@@ -65,11 +65,11 @@ class EligibilityController @Inject() (
       .getOrElse(handleMissingSessionData("Eligibility Journey"))
   }
 
-  def getDoYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
+  def getDoYouClaim: Action[AnyContent] = authenticated.async { implicit request =>
     Ok(doYouClaimPage(customsWaiversForm)).toFuture
   }
 
-  def postDoYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
+  def postDoYouClaim: Action[AnyContent] = authenticated.async { implicit request =>
     customsWaiversForm
       .bindFromRequest()
       .fold(
@@ -82,11 +82,11 @@ class EligibilityController @Inject() (
       )
   }
 
-  def getWillYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
+  def getWillYouClaim: Action[AnyContent] = authenticated.async { implicit request =>
     Ok(willYouClaimPage(willYouClaimForm, routes.EligibilityController.getDoYouClaim().url)).toFuture
   }
 
-  def postWillYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
+  def postWillYouClaim: Action[AnyContent] = authenticated.async { implicit request =>
     willYouClaimForm
       .bindFromRequest()
       .fold(
@@ -103,11 +103,11 @@ class EligibilityController @Inject() (
 
   }
 
-  def getNotEligible: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
+  def getNotEligible: Action[AnyContent] = authenticated.async { implicit request =>
     Ok(notEligiblePage()).toFuture
   }
 
-  def getEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getEoriCheck: Action[AnyContent] = authenticatedWithEnrolment.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def renderPage = {
@@ -142,7 +142,7 @@ class EligibilityController @Inject() (
 
   }
 
-  def postEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postEoriCheck: Action[AnyContent] = authenticatedWithEnrolment.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     eoriCheckForm
       .bindFromRequest()
@@ -159,7 +159,7 @@ class EligibilityController @Inject() (
       )
   }
 
-  def getIncorrectEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getIncorrectEori: Action[AnyContent] = authenticatedWithEnrolment.async { implicit request =>
     Ok(incorrectEoriPage()).toFuture
   }
 

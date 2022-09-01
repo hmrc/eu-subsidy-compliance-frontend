@@ -55,7 +55,7 @@ class AccountController @Inject() (
   private val dueDays = 90
 
   def getAccountPage: Action[AnyContent] =
-    withAuthenticatedUser.async { implicit request =>
+    authenticatedWithEnrolment.async { implicit request =>
       implicit val eori: EORI = request.eoriNumber
       escService.retrieveUndertaking(eori) flatMap {
         case Some(u) => handleExistingUndertaking(u)
