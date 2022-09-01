@@ -17,8 +17,8 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.mvc._
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder, EscVerifiedEmailActionBuilders}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
@@ -36,8 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class BecomeLeadController @Inject() (
                                        mcc: MessagesControllerComponents,
-                                       escCDSActionBuilder: EscVerifiedEmailActionBuilders,
-                                       escInitialActionBuilders: EscInitialActionBuilder,
+                                       actionBuilders: ActionBuilders,
                                        store: Store,
                                        escService: EscService,
                                        emailService: EmailService,
@@ -50,8 +49,7 @@ class BecomeLeadController @Inject() (
   executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import escCDSActionBuilder._
-  import escInitialActionBuilders._
+  import actionBuilders._
 
   def getBecomeLeadEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber

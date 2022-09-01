@@ -17,11 +17,12 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.actions
 
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.{ActionBuilder, AnyContent, BodyParser, ControllerComponents, Request, Result, Results}
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolments, InternalError, NoActiveSession}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
-import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -44,9 +45,6 @@ class EscInitialRequestActionBuilder @Inject() (
     with AuthRedirects
     with AuthorisedFunctions
     with I18nSupport {
-
-  private val EccEnrolmentKey = "HMRC-ESC-ORG"
-  private val EnrolmentIdentifier = "EORINumber"
 
   val messagesApi: MessagesApi = mcc.messagesApi
 

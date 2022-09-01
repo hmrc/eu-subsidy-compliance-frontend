@@ -16,15 +16,23 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.actions
 
-import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import play.api.mvc.{ActionBuilder, AnyContent}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.{AuthenticatedEscRequest, AuthenticatedNoEnrolmentEscRequest}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class EscInitialActionBuilder @Inject() (
-  escNewRequestActionBuilder: EscInitialRequestActionBuilder
+class ActionBuilders @Inject() (
+  escNewRequestActionBuilder: EscInitialRequestActionBuilder,
+  escRequestNonEnrolmentActionBuilder: EscNoEnrolmentRequestActionBuilder,
+  escRequestVerifiedEmailActionBuilder: EscRequestVerifiedEmailActionBuilder
 ) {
-
   val withAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] = escNewRequestActionBuilder
+  val withVerifiedEmailAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] = escRequestVerifiedEmailActionBuilder
+  val withNonVerfiedEmail: ActionBuilder[AuthenticatedNoEnrolmentEscRequest, AnyContent] = escRequestNonEnrolmentActionBuilder
+}
+
+object ActionBuilders {
+  val EccEnrolmentKey = "HMRC-ESC-ORG"
+  val EnrolmentIdentifier = "EORINumber"
 }

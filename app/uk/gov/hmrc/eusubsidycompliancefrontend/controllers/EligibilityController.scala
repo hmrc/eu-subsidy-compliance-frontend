@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder, EscNoEnrolmentActionBuilders}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -40,8 +40,7 @@ class EligibilityController @Inject() (
                                         notEligiblePage: NotEligiblePage,
                                         checkEoriPage: CheckEoriPage,
                                         incorrectEoriPage: IncorrectEoriPage,
-                                        escInitialActionBuilders: EscInitialActionBuilder,
-                                        escNonEnrolmentActionBuilders: EscNoEnrolmentActionBuilders,
+                                        actionBuilders: ActionBuilders,
                                         emailService: EmailService,
                                         escService: EscService,
                                         override val store: Store
@@ -51,8 +50,7 @@ class EligibilityController @Inject() (
 ) extends BaseController(mcc)
     with FormHelpers {
 
-  import escInitialActionBuilders._
-  import escNonEnrolmentActionBuilders._
+  import actionBuilders._
 
   // TODO - rename this to doYouClaimForm
   private val customsWaiversForm = formWithSingleMandatoryField("customswaivers")

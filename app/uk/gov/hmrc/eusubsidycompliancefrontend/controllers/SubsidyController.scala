@@ -21,7 +21,7 @@ import cats.implicits._
 import play.api.data.Form
 import play.api.data.Forms.{mapping, nonEmptyText}
 import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscVerifiedEmailActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.toSubsidyUpdate
@@ -49,7 +49,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SubsidyController @Inject() (
                                     mcc: MessagesControllerComponents,
-                                    escCDSActionBuilder: EscVerifiedEmailActionBuilders,
+                                    actionBuilders: ActionBuilders,
                                     override val store: Store,
                                     override val escService: EscService,
                                     auditService: AuditService,
@@ -68,7 +68,7 @@ class SubsidyController @Inject() (
     with LeadOnlyUndertakingSupport
     with FormHelpers {
 
-  import escCDSActionBuilder._
+  import actionBuilders._
 
   private val reportPaymentForm: Form[FormValues] = formWithSingleMandatoryField("reportPayment")
   private val removeSubsidyClaimForm: Form[FormValues] = formWithSingleMandatoryField("removeSubsidyClaim")

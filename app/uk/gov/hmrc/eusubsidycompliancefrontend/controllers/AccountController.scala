@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscInitialActionBuilder
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -39,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AccountController @Inject() (
   mcc: MessagesControllerComponents,
-  escInitialActionBuilders: EscInitialActionBuilder,
+  actionBuilders: ActionBuilders,
   store: Store,
   escService: EscService,
   leadAccountPage: LeadAccountPage,
@@ -50,7 +50,7 @@ class AccountController @Inject() (
   executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import escInitialActionBuilders._
+  import actionBuilders._
 
   private val dueDays = 90
 

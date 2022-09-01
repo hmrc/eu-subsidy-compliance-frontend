@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscVerifiedEmailActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromoted
@@ -37,7 +37,7 @@ import scala.concurrent.ExecutionContext
 
 class SelectNewLeadController @Inject() (
                                           mcc: MessagesControllerComponents,
-                                          escCDSActionBuilder: EscVerifiedEmailActionBuilders,
+                                          actionBuilders: ActionBuilders,
                                           override val escService: EscService,
                                           store: Store,
                                           emailService: EmailService,
@@ -49,7 +49,7 @@ class SelectNewLeadController @Inject() (
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
 
-  import escCDSActionBuilder._
+  import actionBuilders._
 
   private val selectNewLeadForm: Form[FormValues] = formWithSingleMandatoryField("selectNewLead")
 

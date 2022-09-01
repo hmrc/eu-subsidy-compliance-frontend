@@ -21,7 +21,7 @@ import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder, EscVerifiedEmailActionBuilders}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{AddMemberToBusinessEntity, AddMemberToLead, RemoveMemberToBusinessEntity, RemoveMemberToLead}
@@ -43,8 +43,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class BusinessEntityController @Inject() (
                                            mcc: MessagesControllerComponents,
-                                           escInitialActionBuilders: EscInitialActionBuilder,
-                                           escCDSActionBuilder: EscVerifiedEmailActionBuilders,
+                                           actionBuilders: ActionBuilders,
                                            override val store: Store,
                                            override val escService: EscService,
                                            timeProvider: TimeProvider,
@@ -62,8 +61,7 @@ class BusinessEntityController @Inject() (
     with LeadOnlyUndertakingSupport
     with FormHelpers {
 
-  import escCDSActionBuilder._
-  import escInitialActionBuilders._
+  import actionBuilders._
 
   def getAddBusinessEntity: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     withLeadUndertaking { undertaking =>

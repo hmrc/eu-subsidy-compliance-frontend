@@ -21,8 +21,8 @@ import cats.implicits._
 import play.api.data.Form
 import play.api.data.Forms.{email, mapping}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder, EscVerifiedEmailActionBuilders}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
@@ -47,8 +47,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class UndertakingController @Inject() (
                                         mcc: MessagesControllerComponents,
-                                        escCDSActionBuilder: EscVerifiedEmailActionBuilders,
-                                        initialActionBuilder: EscInitialActionBuilder,
+                                        actionBuilders: ActionBuilders,
                                         override val store: Store,
                                         override val escService: EscService,
                                         emailService: EmailService,
@@ -72,8 +71,7 @@ class UndertakingController @Inject() (
     with LeadOnlyUndertakingSupport
     with FormHelpers {
 
-  import escCDSActionBuilder._
-  import initialActionBuilder._
+  import actionBuilders._
 
   def firstEmptyPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
