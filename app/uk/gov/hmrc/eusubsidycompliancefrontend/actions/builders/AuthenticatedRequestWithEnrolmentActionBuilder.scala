@@ -59,8 +59,8 @@ class AuthenticatedRequestWithEnrolmentActionBuilder @Inject() (
         Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
       ) {
         case Some(credentials) ~ Some(groupId) ~ enrolments =>
-          (enrolments.getEnrolment(EccEnrolmentKey)) match {
-            case (Some(eccEnrolment)) =>
+          enrolments.getEnrolment(EccEnrolmentKey) match {
+            case Some(eccEnrolment) =>
               val identifier: String = eccEnrolment
                 .getIdentifier(EnrolmentIdentifier)
                 .fold(throw new IllegalStateException("no eori provided"))(_.value)

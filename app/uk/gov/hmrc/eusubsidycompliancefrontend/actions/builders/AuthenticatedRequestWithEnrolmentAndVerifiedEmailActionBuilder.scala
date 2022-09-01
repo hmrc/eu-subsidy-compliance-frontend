@@ -71,7 +71,7 @@ class AuthenticatedRequestWithEnrolmentAndVerifiedEmailActionBuilder @Inject()(
 
               emailVerificationService.getEmailVerification(eori).flatMap {
                 case Some(_) => block(AuthenticatedEnrolledRequest(credentials.providerId, groupId, request, eori))
-                case None => throw new IllegalStateException("Email not valid")
+                case None => throw new IllegalStateException("Email not verified")
               }
             }
         case _ => Future.failed(throw InternalError("Error establishing authentication status for user"))
