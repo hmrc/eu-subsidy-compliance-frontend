@@ -17,15 +17,15 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.actions
 
 import play.api.mvc.{ActionBuilder, AnyContent}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.{EnrolledRequestActionBuilder, AuthenticatedRequestActionBuilder, VerifiedEmailActionBuilder}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.{EnrolledActionBuilder, AuthenticatedActionBuilder, VerifiedEmailActionBuilder}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.{AuthenticatedEnrolledRequest, AuthenticatedRequest}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class ActionBuilders @Inject() (
-  authenticatedActionBuilder: AuthenticatedRequestActionBuilder,
-  enrolledActionBuilder: EnrolledRequestActionBuilder,
+  authenticatedActionBuilder: AuthenticatedActionBuilder,
+  enrolledActionBuilder: EnrolledActionBuilder,
   verifiedEmailActionBuilder: VerifiedEmailActionBuilder,
 ) {
 
