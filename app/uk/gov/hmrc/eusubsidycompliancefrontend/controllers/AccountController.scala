@@ -25,9 +25,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertak
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.BigDecimalOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
@@ -95,14 +98,27 @@ class AccountController @Inject() (
 
     val currentDay = timeProvider.today
     implicit val localDateOrdering: Ordering[LocalDate] = Ordering.by(_.toEpochDay)
-    val lastSubmitted: Option[LocalDate] = undertakingSubsidies.nonHMRCSubsidyUsage.map(e => e.submissionDate) match {
+    val lastSubmitted: Option[LocalDate] = undertakingSubsidies.nonHMRCSubsidyUsage.map(_.submissionDate) match {
       case Nil => undertaking.lastSubsidyUsageUpdt
       case  a  => Some(a.max)
     }
 
     val isTimeToReport = ReportReminderHelpers.isTimeToReport(lastSubmitted, currentDay)
-    val dueDate = ReportReminderHelpers.dueDateToReport(lastSubmitted).map(_.toDisplayFormat)
+    val dueDate = ReportReminderHelpers.dueDateToReport(lastSubmitted)
+      .getOrElse(currentDay.plusDays(dueDays))
+      .toDisplayFormat
     val isOverdue = ReportReminderHelpers.isOverdue(lastSubmitted, currentDay)
+
+    val today = timeProvider.today
+
+    val startDate = today.toEarliestTaxYearStart
+
+    val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
+      undertaking,
+      undertakingSubsidies,
+      today.toEarliestTaxYearStart,
+      today.toTaxYearEnd
+    )
 
     def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] =
       if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
@@ -115,19 +131,36 @@ class AccountController @Inject() (
       } yield Ok(
         leadAccountPage(
           undertaking,
+          eori,
           undertaking.getAllNonLeadEORIs().nonEmpty,
           isTimeToReport,
           dueDate,
           isOverdue,
           nilReturnJourney.displayNotification,
-          currentDay.plusDays(dueDays).toDisplayFormat,
-          undertakingSubsidies.hasNeverSubmitted
+          lastSubmitted.map(_.toDisplayFormat),
+          undertakingSubsidies.hasNeverSubmitted,
+          BigDecimal(summary.overall.sectorCap.toString()).toEuros,
+          summary.overall.total.toEuros,
+          summary.overall.allowanceRemaining.toEuros,
+          startDate.toDisplayFormat,
+          summary.overall.allowanceExceeded
         )
       )
 
       result.getOrElse(handleMissingSessionData("Nil Return Journey"))
 
-    } else Ok(nonLeadAccountPage(undertaking)).toFuture
+    } else Ok(nonLeadAccountPage(
+      undertaking,
+      eori,
+      dueDate,
+      isOverdue,
+      lastSubmitted.map(_.toDisplayFormat),
+      undertakingSubsidies.hasNeverSubmitted,
+      BigDecimal(summary.overall.sectorCap.toString()).toEuros,
+      summary.overall.total.toEuros,
+      summary.overall.allowanceRemaining.toEuros,
+      startDate.toDisplayFormat,
+    )).toFuture
   }
 
 }

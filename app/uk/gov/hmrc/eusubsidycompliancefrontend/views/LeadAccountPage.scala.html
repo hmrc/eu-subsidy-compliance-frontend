@@ -16,12 +16,13 @@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.H1
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
 @import play.twirl.api.Html
 
 @this(
-  layout: FullWidthLayout,
+  layout: Layout,
   button: components.Button,
   govukRadios : GovukRadios,
   govukWarningText : GovukWarningText,
@@ -29,8 +30,27 @@
   govukNotificationBanner : GovukNotificationBanner
 )
 
-@(undertaking: Undertaking, isNonLeadEORIPresent: Boolean, isTimeToReport: Boolean, lastDayToReport: Option[String], isOverdue: Boolean, isNilReturnDoneRecently: Boolean, dueDate: String, neverSubmitted: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@linkURL = @{if(isNonLeadEORIPresent) routes.SelectNewLeadController.getSelectNewLead() else routes.NoBusinessPresentController.getNoBusinessPresent() }
+@(
+    undertaking: Undertaking,
+    eori: EORI,
+    isNonLeadEORIPresent: Boolean,
+    isTimeToReport: Boolean,
+    dueDate: String,
+    isOverdue: Boolean,
+    isNilReturnDoneRecently: Boolean,
+    lastSubmitted: Option[String],
+    neverSubmitted: Boolean,
+    allowance: String,
+    totalSubsidies: String,
+    remainingAmount: String,
+    currentPeriodStart: String,
+    isOverAllowance: Boolean
+)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@key = @{"lead-account-homepage"}
+@linkURL = @{
+    if(isNonLeadEORIPresent) routes.SelectNewLeadController.getSelectNewLead()
+    else routes.NoBusinessPresentController.getNoBusinessPresent()
+}
 
 @html = {
     <p class="govuk-notification-banner__heading">
@@ -41,79 +61,64 @@
     </p>
 }
 @layout(
-  pageTitle = Some(messages("lead-account-homepage.title", undertaking.name)),
+  pageTitle = Some(messages(s"$key.title", undertaking.name)),
   backLinkEnabled = false,
   backLink = None
 ) {
-    @H1(messages("lead-account-homepage.title", undertaking.name))
+    
+    @H1(messages("lead-account-homepage.title"), Some("govuk-heading-xl govuk-!-margin-bottom-0"))
+    <p class="govuk-hint govuk-!-font-size-24 govuk-!-margin-top-1 govuk-!-margin-bottom-8">@eori</p>
 
-    @if(isNilReturnDoneRecently) {
-        @govukNotificationBanner(NotificationBanner(
-            content = HtmlContent(html),
-            bannerType = Some("success"),
-            disableAutoFocus = Some(true)
+    @H2(messages(s"$key.h2"))
+    @P(messages(s"$key.p1", currentPeriodStart))
+
+    @if(isOverdue) {
+        @govukWarningText(WarningText(
+            content = Text(messages(s"$key.p2.is-overdue", dueDate))
         ))
     } else {
-        @govukWarningText(WarningText(
-            iconFallbackText = messages("common.warning"),
-            content = Text(messages("lead-account-homepage.warning"))
-        ))
+        @P(messages(s"$key.p2.not-overdue", dueDate))
+    }
+    
+    @if(!neverSubmitted){
+      @P(messages(s"$key.p3.has-submitted", lastSubmitted.getOrElse("")))
+    } else {
+      @P(messages(s"$key.p3.never-submitted"))
     }
 
-    @if(isTimeToReport) {
-        @govukInsetText(InsetText(
-            content = Text(messages("lead-account-homepage.inset", lastDayToReport.getOrElse(sys.error("due date missing"))))
-        ))
-    }
 
-    @if(!neverSubmitted && isOverdue) {
-        @govukInsetText(InsetText(
-            content = Text(messages("lead-account-homepage-overdue.inset", lastDayToReport.getOrElse(sys.error("due date missing"))))
-        ))
-    }
+    @P(messages(s"$key.p4"))
+    @govukInsetText(InsetText(
+      content = Text(messages(s"$key.p5-inset"))
+    ))
 
-    @if(neverSubmitted && isOverdue) {
-        @govukInsetText(InsetText(
-            content = Text(messages("lead-account-homepage-never-submitted-overdue"))
-        ))
-    }
+    <ul class="govuk-list govuk-list--spaced">
+      <li><a class="govuk-link" href="@routes.BusinessEntityController.getAddBusinessEntity()">@messages("lead-account-homepage.ul1-li1")</a></li>
+      <li><a class="govuk-link" href="@routes.NoClaimNotificationController.getNoClaimNotification()">@messages("lead-account-homepage.ul1-li2")</a></li>
+    </ul>
+    
+    @H2(messages("lead-account-homepage.h2-2"), Some("govuk-heading-m govuk-!-margin-top-8"))
+    @P(messages(
+      "lead-account-homepage.p5",
+      allowance,
+      currentPeriodStart,
+      totalSubsidies
+    ))
+    @P(messages("lead-account-homepage.p6", remainingAmount))
 
-  <div class="govuk-grid-column-one-third">
-    <div class="govuk-card govuk-card--contained govuk-card fixed-min-height-card">
-      <h2 class="govuk-heading-s">@messages("lead-account-homepage.cards.card1.heading")</h2>
-      <ul class="govuk-list govuk-list--spaced">
-        <li><a href="@routes.SubsidyController.getReportPayment()" class="govuk-link">@messages("lead-account-homepage.cards.card1.link1")</a></li>
-        <li><a href="@routes.NoClaimNotificationController.getNoClaimNotification()" class="govuk-link">@messages("lead-account-homepage.cards.card1.link2", undertaking.name)</a></li>
-      </ul>
-    </div>
-  </div>
+    @H2(messages("lead-account-homepage.h2-3"), Some("govuk-heading-m govuk-!-margin-top-8"))
+    <ul class="govuk-list govuk-list--spaced">
+      <!-- TODO
+      <li><a class="govuk-link" href="#">@messages("lead-account-homepage.ul2-li1")</a> [todo: View non-customs subsidy payments reported]</li>
+      -->
+      <li><a class="govuk-link" href="@routes.FinancialDashboardController.getFinancialDashboard()">@messages("lead-account-homepage.ul2-li2")</a></li>
+    </ul>
 
-  <div class="govuk-grid-column-one-third">
-    <div class="govuk-card govuk-card--contained govuk-card fixed-min-height-card">
-      <h2 class="govuk-heading-s">@messages("lead-account-homepage.cards.card2.heading")</h2>
-      <ul class="govuk-list govuk-list--spaced">
-        <li><a href="@routes.UndertakingController.getAmendUndertakingDetails()" class="govuk-link">@messages("lead-account-homepage.cards.card2.link1")</a></li>
-        <li><a href="@routes.FinancialDashboardController.getFinancialDashboard()" class="govuk-link">@messages("lead-account-homepage.cards.card2.link2")</a></li>
-          <li><a href="@routes.UndertakingController.getDisableUndertakingWarning()" class="govuk-link">@messages("lead-account-homepage.cards.card2.link3")</a></li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="govuk-grid-column-one-third">
-    <div class="govuk-card govuk-card--contained govuk-card fixed-min-height-card">
-      <h2 class="govuk-heading-s">@messages("lead-account-homepage.cards.card3.heading", undertaking.name)</h2>
-      <ul class="govuk-list govuk-list--spaced">
-
-        <li>
-            <a href="@routes.BusinessEntityController.getAddBusinessEntity()" class="govuk-link">
-                @messages(if(undertaking.undertakingBusinessEntity.length > 1){
-                    "lead-account-homepage.cards.card3.link1View"
-                }else {
-                    "lead-account-homepage.cards.card3.link1Add"
-                })</a>
-        </li>
-        <li><a href="@linkURL" class="govuk-link">@messages("lead-account-homepage.cards.card3.link2")</a></li>
-      </ul>
-    </div>
-  </div>
+    
+    @H2(messages("lead-account-homepage.h2-4"), Some("govuk-heading-m govuk-!-margin-top-8"))
+    <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-8">
+      <li><a class="govuk-link" href="@routes.UndertakingController.getAmendUndertakingDetails()">@messages("lead-account-homepage.ul3-li1")</a></li>
+      <li><a class="govuk-link" href="@routes.BusinessEntityController.getAddBusinessEntity()">@messages("lead-account-homepage.ul3-li2")</a></li>
+      <li><a class="govuk-link" href="@routes.UndertakingController.getDisableUndertakingWarning()">@messages("lead-account-homepage.ul3-li3")</a></li>
+    </ul>
 }

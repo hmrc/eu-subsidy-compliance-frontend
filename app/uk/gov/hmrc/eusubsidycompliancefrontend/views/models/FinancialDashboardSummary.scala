@@ -37,7 +37,11 @@ case class OverallSummary(
   sectorCap: IndustrySectorLimit
 ) {
   def total: SubsidyAmount = SubsidyAmount(hmrcSubsidyTotal + nonHmrcSubsidyTotal)
-  def allowanceRemaining: SubsidyAmount = SubsidyAmount(sectorCap - total)
+  def allowanceExceeded: Boolean = total > sectorCap
+  // If the allowance has been exceeded we must show the remaining amount as zero rather than a negative number.
+  def allowanceRemaining: SubsidyAmount =
+    if (allowanceExceeded) SubsidyAmount(0)
+    else SubsidyAmount(sectorCap - total)
 }
 
 case class TaxYearSummary(
