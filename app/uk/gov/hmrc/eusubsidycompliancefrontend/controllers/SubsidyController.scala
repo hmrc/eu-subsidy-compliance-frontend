@@ -90,7 +90,7 @@ class SubsidyController @Inject() (
 
   private val claimDateForm: Form[DateFormValues] = ClaimDateFormProvider(timeProvider).form
 
-  def getReportPayment: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def getReportPayment: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -133,7 +133,7 @@ class SubsidyController @Inject() (
       .fallbackTo(Option.empty.toFuture)
   }
 
-  def postReportPayment: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def postReportPayment: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
       val previous = routes.AccountController.getAccountPage().url
@@ -152,7 +152,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getClaimAmount: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def getClaimAmount: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       val result: OptionT[Future, Result] = for {
@@ -167,7 +167,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postAddClaimAmount: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def postAddClaimAmount: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def handleFormSubmit(previous: Journey.Uri, addClaimDate: DateFormValues): Future[Result] =
@@ -193,7 +193,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getConfirmClaimAmount: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def getConfirmClaimAmount: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori = request.eoriNumber
 
@@ -209,7 +209,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postConfirmClaimAmount: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def postConfirmClaimAmount: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori = request.eoriNumber
 
@@ -238,7 +238,7 @@ class SubsidyController @Inject() (
       case EUR => Future.successful(None)
     }
 
-  def getClaimDate: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def getClaimDate: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       renderFormIfEligible { journey =>
         val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
@@ -248,7 +248,7 @@ class SubsidyController @Inject() (
   }
 
 
-  def postClaimDate: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def postClaimDate: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -266,7 +266,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getAddClaimEori: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def getAddClaimEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       renderFormIfEligible { journey =>
         val claimEoriForm = ClaimEoriFormProvider(undertaking).form
@@ -278,7 +278,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postAddClaimEori: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def postAddClaimEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
       val claimEoriForm = ClaimEoriFormProvider(undertaking).form
@@ -295,7 +295,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getAddClaimPublicAuthority: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def getAddClaimPublicAuthority: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       renderFormIfEligible { journey =>
         val form = journey.publicAuthority.value.fold(claimPublicAuthorityForm)(claimPublicAuthorityForm.fill)
@@ -304,7 +304,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postAddClaimPublicAuthority: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def postAddClaimPublicAuthority: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       processFormSubmission[SubsidyJourney] { journey =>
@@ -318,7 +318,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getAddClaimReference: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def getAddClaimReference: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       renderFormIfEligible { journey =>
         val form = journey.traderRef.value.fold(claimTraderRefForm) { optionalTraderRef =>
@@ -329,7 +329,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postAddClaimReference: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def postAddClaimReference: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       processFormSubmission[SubsidyJourney] { journey =>
@@ -343,7 +343,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getCheckAnswers: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def getCheckAnswers: Action[AnyContent] = verifiedEmail.async { implicit request =>
 
     def getEuroAmount(j: SubsidyJourney) =
       if (j.claimAmountInEuros) j.getClaimAmount
@@ -369,7 +369,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postCheckAnswers: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def postCheckAnswers: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -413,7 +413,7 @@ class SubsidyController @Inject() (
       _ <- journey.traderRef.value.orElse(handleMissingSessionData("trader ref"))
     } yield ()
 
-  def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async {
+  def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = verifiedEmail.async {
     implicit request =>
       withLeadUndertaking { undertaking =>
         val result = for {
@@ -425,7 +425,7 @@ class SubsidyController @Inject() (
       }
   }
 
-  def postRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async {
+  def postRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = verifiedEmail.async {
     implicit request =>
       withLeadUndertaking { undertaking =>
         removeSubsidyClaimForm
@@ -439,7 +439,7 @@ class SubsidyController @Inject() (
       }
   }
 
-  def getChangeSubsidyClaim(transactionId: String): Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async {
+  def getChangeSubsidyClaim(transactionId: String): Action[AnyContent] = verifiedEmail.async {
     implicit request =>
       withLeadUndertaking { undertaking =>
         implicit val eori: EORI = request.eoriNumber

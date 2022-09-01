@@ -57,7 +57,7 @@ class EligibilityController @Inject() (
   private val willYouClaimForm = formWithSingleMandatoryField("willyouclaim")
   private val eoriCheckForm = formWithSingleMandatoryField("eoricheck")
 
-  def firstEmptyPage: Action[AnyContent] = authenticatedWithEnrolment.async { implicit request =>
+  def firstEmptyPage: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     store.get[EligibilityJourney].toContext
@@ -107,7 +107,7 @@ class EligibilityController @Inject() (
     Ok(notEligiblePage()).toFuture
   }
 
-  def getEoriCheck: Action[AnyContent] = authenticatedWithEnrolment.async { implicit request =>
+  def getEoriCheck: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def renderPage = {
@@ -142,7 +142,7 @@ class EligibilityController @Inject() (
 
   }
 
-  def postEoriCheck: Action[AnyContent] = authenticatedWithEnrolment.async { implicit request =>
+  def postEoriCheck: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     eoriCheckForm
       .bindFromRequest()
@@ -159,7 +159,7 @@ class EligibilityController @Inject() (
       )
   }
 
-  def getIncorrectEori: Action[AnyContent] = authenticatedWithEnrolment.async { implicit request =>
+  def getIncorrectEori: Action[AnyContent] = enrolled.async { implicit request =>
     Ok(incorrectEoriPage()).toFuture
   }
 

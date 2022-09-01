@@ -63,7 +63,7 @@ class BusinessEntityController @Inject() (
 
   import actionBuilders._
 
-  def getAddBusinessEntity: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def getAddBusinessEntity: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
       store
@@ -83,7 +83,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postAddBusinessEntity: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def postAddBusinessEntity: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def handleValidAnswer(form: FormValues) =
@@ -102,7 +102,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def getEori: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def getEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       store.get[BusinessEntityJourney].flatMap {
@@ -119,7 +119,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postEori: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def postEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     val businessEntityEori = "businessEntityEori"
@@ -146,7 +146,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def getCheckYourAnswers: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def getCheckYourAnswers: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     withLeadUndertaking { _ =>
@@ -162,7 +162,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postCheckYourAnswers: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def postCheckYourAnswers: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def handleValidAnswersC(undertaking: Undertaking) = for {
@@ -205,7 +205,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async {
+  def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = verifiedEmail.async {
     implicit request =>
       withLeadUndertaking { _ =>
         escService.retrieveUndertaking(EORI(eoriEntered)).map {
@@ -217,7 +217,7 @@ class BusinessEntityController @Inject() (
       }
   }
 
-  def getRemoveYourselfBusinessEntity: Action[AnyContent] = authenticatedWithEnrolment.async { implicit request =>
+  def getRemoveYourselfBusinessEntity: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     val previous = routes.AccountController.getAccountPage().url
     for {
@@ -231,7 +231,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async {
+  def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = verifiedEmail.async {
     implicit request =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -285,7 +285,7 @@ class BusinessEntityController @Inject() (
       }
   }
 
-  def postRemoveYourselfBusinessEntity: Action[AnyContent] = authenticatedWithEnrolment.async { implicit request =>
+  def postRemoveYourselfBusinessEntity: Action[AnyContent] = enrolled.async { implicit request =>
     val loggedInEORI = request.eoriNumber
     val previous = routes.AccountController.getAccountPage().url
     escService.retrieveUndertaking(loggedInEORI).flatMap {

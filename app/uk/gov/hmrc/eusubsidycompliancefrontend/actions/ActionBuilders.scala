@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.actions
 
 import play.api.mvc.{ActionBuilder, AnyContent}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.{AuthenticatedRequestWithEnrolmentActionBuilder, AuthenticatedRequestActionBuilder, AuthenticatedRequestWithEnrolmentAndVerifiedEmailActionBuilder}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.{EnrolledRequestActionBuilder, AuthenticatedRequestActionBuilder, VerifiedEmailActionBuilder}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.{AuthenticatedEnrolledRequest, AuthenticatedRequest}
 
 import javax.inject.{Inject, Singleton}
@@ -25,18 +25,18 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class ActionBuilders @Inject() (
   authenticatedActionBuilder: AuthenticatedRequestActionBuilder,
-  authenticatedRequestWithEnrolmentActionBuilder: AuthenticatedRequestWithEnrolmentActionBuilder,
-  authenticatedRequestWithEnrolmentAndVerifiedEmailActionBuilder: AuthenticatedRequestWithEnrolmentAndVerifiedEmailActionBuilder,
+  enrolledActionBuilder: EnrolledRequestActionBuilder,
+  verifiedEmailActionBuilder: VerifiedEmailActionBuilder,
 ) {
 
   // GG Auth only
   val authenticated: ActionBuilder[AuthenticatedRequest, AnyContent] = authenticatedActionBuilder
 
   // GG Auth with ECC Enrolment
-  val authenticatedWithEnrolment: ActionBuilder[AuthenticatedEnrolledRequest, AnyContent] = authenticatedRequestWithEnrolmentActionBuilder
+  val enrolled: ActionBuilder[AuthenticatedEnrolledRequest, AnyContent] = enrolledActionBuilder
 
   // GG Auth with ECC Enrolment and Verified Email Address
-  val authenticatedWithEnrolmentAndVerifiedEmail: ActionBuilder[AuthenticatedEnrolledRequest, AnyContent] = authenticatedRequestWithEnrolmentAndVerifiedEmailActionBuilder
+  val verifiedEmail: ActionBuilder[AuthenticatedEnrolledRequest, AnyContent] = verifiedEmailActionBuilder
 
 }
 

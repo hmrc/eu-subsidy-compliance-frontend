@@ -53,7 +53,7 @@ class SelectNewLeadController @Inject() (
 
   private val selectNewLeadForm: Form[FormValues] = formWithSingleMandatoryField("selectNewLead")
 
-  def getSelectNewLead: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def getSelectNewLead: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       val previous = routes.AccountController.getAccountPage().url
       implicit val eori: EORI = request.eoriNumber
@@ -67,7 +67,7 @@ class SelectNewLeadController @Inject() (
     }
   }
 
-  def postSelectNewLead: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def postSelectNewLead: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -112,7 +112,7 @@ class SelectNewLeadController @Inject() (
     case _ => handleMissingSessionData("Email result Response")
   }
 
-  def getLeadEORIChanged = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def getLeadEORIChanged = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -130,7 +130,7 @@ class SelectNewLeadController @Inject() (
     }
   }
 
-  def emailNotVerified = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def emailNotVerified = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[NewLeadJourney].flatMap {
       case Some(newLeadJourney) =>

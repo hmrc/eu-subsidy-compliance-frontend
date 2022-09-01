@@ -46,14 +46,14 @@ class NoClaimNotificationController @Inject() (
     with LeadOnlyUndertakingSupport {
   import actionBuilders._
 
-  def getNoClaimNotification: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def getNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       val previous = routes.AccountController.getAccountPage().url
       Ok(noClaimNotificationPage(noClaimForm, previous, undertaking.name)).toFuture
     }
   }
 
-  def postNoClaimNotification: Action[AnyContent] = authenticatedWithEnrolmentAndVerifiedEmail.async { implicit request =>
+  def postNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
       val previous = routes.AccountController.getAccountPage().url
