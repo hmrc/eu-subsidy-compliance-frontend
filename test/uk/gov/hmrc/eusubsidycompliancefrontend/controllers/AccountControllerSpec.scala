@@ -104,7 +104,7 @@ class AccountControllerSpec
 
               elementIds foreach { elementId =>
                 val messageKey = s"lead-account-homepage.ul${elementId._1}-li${elementId._2}"
-                // TODO - can this just use doc should include regex style?
+
                 withClue(s"Could not locate content for messageKey: '$messageKey' in raw page content") {
                   htmlBody.contains(messageFromMessageKey(messageKey)) shouldBe true
                 }
@@ -149,48 +149,6 @@ class AccountControllerSpec
           )
         }
 
-        def testNilReturnSuccessMessage(
-          undertaking: Undertaking,
-          nilReturnJourney: NilReturnJourney,
-          hasFiledNilReturnRecently: Boolean,
-          currentDate: LocalDate
-        ): Unit = {
-
-          def update(nj: NilReturnJourney) = nj.copy(displayNotification = false)
-          val updatedNJ = nilReturnJourney.copy(displayNotification = false)
-
-          inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
-            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-            mockRetrieveSubsidy(subsidyRetrieve.copy(inDateRange = None))(undertakingSubsidies.toFuture)
-            mockTimeToday(currentDate)
-            mockTimeToday(currentDate)
-            mockGetOrCreate[NilReturnJourney](eori1)(Right(nilReturnJourney))
-            if (hasFiledNilReturnRecently) {
-              mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNJ))
-            }
-          }
-          checkPageIsDisplayed(
-            performAction(),
-            messageFromMessageKey("lead-account-homepage.title", undertaking.name),
-            doc =>
-              if (hasFiledNilReturnRecently) {
-                val htmlBody1 = doc.select(".govuk-notification-banner").text
-                htmlBody1 should include regex
-                  List(
-                    messageFromMessageKey("noClaimConfirmation.title"),
-                    messageFromMessageKey("noClaimConfirmation.ref.p1", "16 June 2022")
-                  ).mkString(" ")
-              } else {
-                val body = doc.select(".govuk-notification-banner").text
-                body should include regex ""
-              }
-          )
-        }
-
-        // TODO - validate amounts are shown correctly on the page
         "there is a view link on the page and undertaking has lead only business entity" in {
           test(undertaking)
         }
@@ -224,24 +182,6 @@ class AccountControllerSpec
           )
         }
 
-        "user has recently filed the Nil Return " in {
-          testNilReturnSuccessMessage(
-            undertaking1,
-            NilReturnJourney(NilReturnFormPage(value = true.some), true),
-            hasFiledNilReturnRecently = true,
-            LocalDate.of(2022, 3, 18)
-          )
-        }
-
-        "user has recently filed the Nil Return but user refreshed the home account " in {
-          testNilReturnSuccessMessage(
-            undertaking1,
-            NilReturnJourney(NilReturnFormPage(value = true.some)),
-            hasFiledNilReturnRecently = false,
-            LocalDate.of(2022, 3, 18)
-          )
-        }
-
       }
 
       "display the non-lead account home page" when {
@@ -256,23 +196,17 @@ class AccountControllerSpec
               mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
               mockRetrieveSubsidy(subsidyRetrieve.copy(inDateRange = None))(undertakingSubsidies.toFuture)
               mockTimeToday(fixedDate)
+              mockTimeToday(fixedDate)
             }
 
             checkPageIsDisplayed(
               performAction(),
-              messageFromMessageKey("non-lead-account-homepage.title", undertaking1.name),
+              messageFromMessageKey("non-lead-account-homepage.title"),
               { doc =>
-                val testBody = doc.select(".govuk-list").text
-                testBody should include regex messageFromMessageKey(
-                  "non-lead-account-homepage.link1",
-                  undertaking1.name
-                )
-
                 val htmlBody = doc.select(".govuk-list").html
                 htmlBody should include regex routes.BecomeLeadController.getBecomeLeadEori().url
                 htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard().url
                 htmlBody should include regex routes.BusinessEntityController.getRemoveYourselfBusinessEntity().url
-
               }
             )
           }
