@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.actions
+package uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders
 
-import play.api.{Configuration, Environment}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{ActionBuilder, AnyContent, BodyParser, ControllerComponents, Request, Result, Results}
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, InternalError, NoActiveSession}
+import play.api.mvc._
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, InternalError, NoActiveSession}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedNoEnrolmentEscRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
