@@ -22,7 +22,7 @@ import play.api.data.Form
 import play.api.data.Forms.{mapping, nonEmptyText}
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.toSubsidyUpdate
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimAmountFormProvider, ClaimDateFormProvider, ClaimEoriFormProvider}
@@ -122,7 +122,7 @@ class SubsidyController @Inject() (
     }
   }
 
-  private def retrieveSubsidies(r: UndertakingRef)(implicit request: AuthenticatedEscRequest[AnyContent]) = {
+  private def retrieveSubsidies(r: UndertakingRef)(implicit request: AuthenticatedEnrolledRequest[AnyContent]) = {
     implicit val eori: EORI = request.eoriNumber
 
     val searchRange = timeProvider.today.toSearchRange.some
@@ -456,7 +456,7 @@ class SubsidyController @Inject() (
   private def getNonHmrcSubsidy(
     transactionId: String,
     reference: UndertakingRef
-  )(implicit r: AuthenticatedEscRequest[AnyContent]): OptionT[Future, NonHmrcSubsidy] =
+  )(implicit r: AuthenticatedEnrolledRequest[AnyContent]): OptionT[Future, NonHmrcSubsidy] =
     retrieveSubsidies(reference)
       .recoverWith({ case _ => Option.empty[UndertakingSubsidies].toFuture })
       .toContext
@@ -467,7 +467,7 @@ class SubsidyController @Inject() (
     formWithErrors: Form[FormValues],
     transactionId: String,
     undertaking: Undertaking
-  )(implicit request: AuthenticatedEscRequest[AnyContent]): Future[Result] = {
+  )(implicit request: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
     val result = for {
       reference <- undertaking.reference.toContext
       nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
@@ -479,7 +479,7 @@ class SubsidyController @Inject() (
   private def handleRemoveSubsidyValidAnswer(
     transactionId: String,
     undertaking: Undertaking
-  )(implicit request: AuthenticatedEscRequest[AnyContent]): Future[Result] = {
+  )(implicit request: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
     val result = for {
       reference <- undertaking.reference.toContext
       nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
@@ -496,7 +496,7 @@ class SubsidyController @Inject() (
     previous: String,
     undertaking: Undertaking,
     formWithErrors: Form[FormValues]
-  )(implicit request: AuthenticatedEscRequest[AnyContent]): Future[Result] =
+  )(implicit request: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] =
     retrieveSubsidies(undertaking.reference).map { subsidies =>
       val currentDate = timeProvider.today
       BadRequest(
@@ -513,7 +513,7 @@ class SubsidyController @Inject() (
 
     }
 
-    protected def renderFormIfEligible(f: SubsidyJourney => Result)(implicit r: AuthenticatedEscRequest[AnyContent]): Future[Result] = {
+    protected def renderFormIfEligible(f: SubsidyJourney => Result)(implicit r: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
       implicit val eori: EORI = r.eoriNumber
 
       store.get[SubsidyJourney].toContext

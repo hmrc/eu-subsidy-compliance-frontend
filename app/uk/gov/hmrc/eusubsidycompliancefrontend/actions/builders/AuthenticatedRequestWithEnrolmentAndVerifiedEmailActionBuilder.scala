@@ -23,7 +23,7 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolments, InsufficientEnrolments, InternalError, NoActiveSession}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -42,7 +42,7 @@ class AuthenticatedRequestWithEnrolmentAndVerifiedEmailActionBuilder @Inject()(
                                                       val emailVerificationService: EmailVerificationService,
                                                       mcc: ControllerComponents
   )(implicit val executionContext: ExecutionContext, appConfig: AppConfig)
-    extends ActionBuilder[AuthenticatedEscRequest, AnyContent]
+    extends ActionBuilder[AuthenticatedEnrolledRequest, AnyContent]
     with FrontendHeaderCarrierProvider
     with Results
     with AuthRedirects
@@ -57,7 +57,7 @@ class AuthenticatedRequestWithEnrolmentAndVerifiedEmailActionBuilder @Inject()(
 
   override def invokeBlock[A](
     request: Request[A],
-    block: AuthenticatedEscRequest[A] => Future[Result]
+    block: AuthenticatedEnrolledRequest[A] => Future[Result]
   ): Future[Result] =
     authorised()
       .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](RequiredCredentials) {
@@ -70,7 +70,7 @@ class AuthenticatedRequestWithEnrolmentAndVerifiedEmailActionBuilder @Inject()(
                 .fold(throw new IllegalStateException("No EORI against enrolment"))(e => EORI(e.value))
 
               emailVerificationService.getEmailVerification(eori).flatMap {
-                case Some(_) => block(AuthenticatedEscRequest(credentials.providerId, groupId, request, eori))
+                case Some(_) => block(AuthenticatedEnrolledRequest(credentials.providerId, groupId, request, eori))
                 case None => throw new IllegalStateException("Email not valid")
               }
             }

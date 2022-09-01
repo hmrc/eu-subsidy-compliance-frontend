@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
@@ -63,7 +63,7 @@ class BecomeLeadController @Inject() (
   private def becomeLeadResult(
     becomeLeadJourneyOpt: Option[BecomeLeadJourney],
     undertakingOpt: Option[Undertaking]
-  )(implicit request: AuthenticatedEscRequest[_], eori: EORI): Future[Result] =
+  )(implicit request: AuthenticatedEnrolledRequest[_], eori: EORI): Future[Result] =
     (becomeLeadJourneyOpt, undertakingOpt) match {
       case (Some(journey), Some(undertaking)) =>
         val form = journey.becomeLeadEori.value.fold(becomeAdminForm)(e => becomeAdminForm.fill(FormValues(e.toString)))

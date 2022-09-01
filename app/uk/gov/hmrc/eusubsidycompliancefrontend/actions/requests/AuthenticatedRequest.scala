@@ -18,7 +18,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests
 
 import play.api.mvc.{Request, WrappedRequest}
 
-case class AuthenticatedNoEnrolmentEscRequest[A](
+// User has GG auth
+case class AuthenticatedRequest[A](
   authorityId: String,
   groupId: String,
   request: Request[A]

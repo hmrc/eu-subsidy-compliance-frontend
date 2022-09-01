@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.actions
 
 import play.api.mvc.{ActionBuilder, AnyContent}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.{AuthenticatedRequestWithEnrolmentActionBuilder, AuthenticatedRequestActionBuilder, AuthenticatedRequestWithEnrolmentAndVerifiedEmailActionBuilder}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.{AuthenticatedEscRequest, AuthenticatedNoEnrolmentEscRequest}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.{AuthenticatedEnrolledRequest, AuthenticatedRequest}
 
 import javax.inject.{Inject, Singleton}
 
@@ -30,13 +30,13 @@ class ActionBuilders @Inject() (
 ) {
 
   // GG Auth only
-  val authenticated: ActionBuilder[AuthenticatedNoEnrolmentEscRequest, AnyContent] = authenticatedActionBuilder
+  val authenticated: ActionBuilder[AuthenticatedRequest, AnyContent] = authenticatedActionBuilder
 
   // GG Auth with ECC Enrolment
-  val authenticatedWithEnrolment: ActionBuilder[AuthenticatedEscRequest, AnyContent] = authenticatedRequestWithEnrolmentActionBuilder
+  val authenticatedWithEnrolment: ActionBuilder[AuthenticatedEnrolledRequest, AnyContent] = authenticatedRequestWithEnrolmentActionBuilder
 
   // GG Auth with ECC Enrolment and Verified Email Address
-  val authenticatedWithEnrolmentAndVerifiedEmail: ActionBuilder[AuthenticatedEscRequest, AnyContent] = authenticatedRequestWithEnrolmentAndVerifiedEmailActionBuilder
+  val authenticatedWithEnrolmentAndVerifiedEmail: ActionBuilder[AuthenticatedEnrolledRequest, AnyContent] = authenticatedRequestWithEnrolmentAndVerifiedEmailActionBuilder
 
 }
 

@@ -23,7 +23,7 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolments, InternalError, NoActiveSession}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -39,7 +39,7 @@ class AuthenticatedRequestWithEnrolmentActionBuilder @Inject() (
   val authConnector: AuthConnector,
   mcc: ControllerComponents
 )(implicit val executionContext: ExecutionContext, appConfig: AppConfig)
-    extends ActionBuilder[AuthenticatedEscRequest, AnyContent]
+    extends ActionBuilder[AuthenticatedEnrolledRequest, AnyContent]
     with FrontendHeaderCarrierProvider
     with Results
     with AuthRedirects
@@ -52,7 +52,7 @@ class AuthenticatedRequestWithEnrolmentActionBuilder @Inject() (
 
   override def invokeBlock[A](
     request: Request[A],
-    block: AuthenticatedEscRequest[A] => Future[Result]
+    block: AuthenticatedEnrolledRequest[A] => Future[Result]
   ): Future[Result] =
     authorised()
       .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](
@@ -64,7 +64,7 @@ class AuthenticatedRequestWithEnrolmentActionBuilder @Inject() (
               val identifier: String = eccEnrolment
                 .getIdentifier(EnrolmentIdentifier)
                 .fold(throw new IllegalStateException("no eori provided"))(_.value)
-              block(AuthenticatedEscRequest(credentials.providerId, groupId, request, EORI(identifier)))
+              block(AuthenticatedEnrolledRequest(credentials.providerId, groupId, request, EORI(identifier)))
             case _ => Redirect(appConfig.eccEscSubscribeUrl).toFuture
           }
         case _ ~ _ => Future.failed(throw InternalError())

@@ -22,7 +22,7 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, InternalError, NoActiveSession}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedNoEnrolmentEscRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
@@ -38,7 +38,7 @@ class AuthenticatedRequestActionBuilder @Inject() (
   val authConnector: AuthConnector,
   mcc: ControllerComponents
 )(implicit val executionContext: ExecutionContext, appConfig: AppConfig)
-    extends ActionBuilder[AuthenticatedNoEnrolmentEscRequest, AnyContent]
+    extends ActionBuilder[AuthenticatedRequest, AnyContent]
     with FrontendHeaderCarrierProvider
     with Results
     with AuthRedirects
@@ -51,14 +51,14 @@ class AuthenticatedRequestActionBuilder @Inject() (
 
   override def invokeBlock[A](
     request: Request[A],
-    block: AuthenticatedNoEnrolmentEscRequest[A] => Future[Result]
+    block: AuthenticatedRequest[A] => Future[Result]
   ): Future[Result] =
     authorised()
       .retrieve[Option[Credentials] ~ Option[String]](
         Retrievals.credentials and Retrievals.groupIdentifier
       ) {
         case Some(credentials) ~ Some(groupId) =>
-          block(AuthenticatedNoEnrolmentEscRequest(credentials.providerId, groupId, request))
+          block(AuthenticatedRequest(credentials.providerId, groupId, request))
 
         case _ ~ _ => Future.failed(throw InternalError())
       }(hc(request), executionContext)

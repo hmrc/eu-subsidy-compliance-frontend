@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking, UndertakingSubsidies}
@@ -76,7 +76,7 @@ class AccountController @Inject() (
 
   private def handleExistingUndertaking(
     u: Undertaking
-  )(implicit r: AuthenticatedEscRequest[AnyContent], e: EORI): Future[Result] = {
+  )(implicit r: AuthenticatedEnrolledRequest[AnyContent], e: EORI): Future[Result] = {
     val result = for {
       _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(u))
       retrieveRequest = SubsidyRetrieve(u.reference, None)
@@ -93,7 +93,7 @@ class AccountController @Inject() (
       uj <- store.getOrCreate[UndertakingJourney](u).toContext
     } yield (ej, uj)
 
-  private def renderAccountPage(undertaking: Undertaking, undertakingSubsidies: UndertakingSubsidies)(implicit r: AuthenticatedEscRequest[AnyContent]) = {
+  private def renderAccountPage(undertaking: Undertaking, undertakingSubsidies: UndertakingSubsidies)(implicit r: AuthenticatedEnrolledRequest[AnyContent]) = {
     implicit val eori: EORI = r.eoriNumber
 
     val currentDay = timeProvider.today

@@ -22,7 +22,7 @@ import play.api.data.Form
 import play.api.data.Forms.{email, mapping}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
@@ -282,7 +282,7 @@ class UndertakingController @Inject() (
   private def createUndertakingAndSendEmail(
     undertaking: UndertakingCreate,
     undertakingJourney: UndertakingJourney
-  )(implicit request: AuthenticatedEscRequest[_], eori: EORI): Future[Result] =
+  )(implicit request: AuthenticatedEnrolledRequest[_], eori: EORI): Future[Result] =
     for {
       ref <- escService.createUndertaking(undertaking)
       _ <- emailService.sendEmail(eori, EmailTemplate.CreateUndertaking, undertaking.toUndertakingWithRef(ref))
@@ -412,7 +412,7 @@ class UndertakingController @Inject() (
 
   private def handleDisableUndertakingFormSubmission(form: FormValues, undertaking: Undertaking)(implicit
     hc: HeaderCarrier,
-    request: AuthenticatedEscRequest[_]
+    request: AuthenticatedEnrolledRequest[_]
   ): Future[Result] =
     if (form.value.isTrue) {
       for {
