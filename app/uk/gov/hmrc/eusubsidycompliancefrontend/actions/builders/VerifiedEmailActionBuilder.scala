@@ -19,16 +19,10 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolments, InsufficientEnrolments, InternalError, NoActiveSession}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders._
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailVerificationService
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
@@ -36,49 +30,27 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class VerifiedEmailActionBuilder @Inject()(
-                                                      val config: Configuration,
-                                                      val env: Environment,
-                                                      val authConnector: AuthConnector,
-                                                      val emailVerificationService: EmailVerificationService,
-                                                      mcc: ControllerComponents
-  )(implicit val executionContext: ExecutionContext, appConfig: AppConfig)
+  override val config: Configuration,
+  override val env: Environment,
+  override val authConnector: AuthConnector,
+  emailVerificationService: EmailVerificationService,
+  enrolledActionBuilder: EnrolledActionBuilder,
+  mcc: ControllerComponents)(implicit val executionContext: ExecutionContext)
     extends ActionBuilder[AuthenticatedEnrolledRequest, AnyContent]
-    with FrontendHeaderCarrierProvider
-    with Results
-    with AuthRedirects
-    with AuthorisedFunctions
-    with I18nSupport {
+      with FrontendHeaderCarrierProvider
+      with Results
+      with AuthRedirects
+      with AuthorisedFunctions
+      with I18nSupport {
 
   override val messagesApi: MessagesApi = mcc.messagesApi
 
   override val parser: BodyParser[AnyContent] = mcc.parsers.anyContent
 
-  private val RequiredCredentials = Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
-
-  override def invokeBlock[A](
-    request: Request[A],
-    block: AuthenticatedEnrolledRequest[A] => Future[Result]
-  ): Future[Result] =
-    authorised()
-      .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](RequiredCredentials) {
-        case Some(credentials) ~ Some(groupId) ~ enrolments =>
-          enrolments.getEnrolment(EccEnrolmentKey)
-            // Redirect to / if no ECC Enrolment. The user will be directed to the appropriate page from there.
-            .fold(Redirect(routes.AccountController.getAccountPage()).toFuture) { eccEnrolment =>
-              val eori = eccEnrolment
-                .getIdentifier(EnrolmentIdentifier)
-                .fold(throw new IllegalStateException("No EORI against enrolment"))(e => EORI(e.value))
-
-              emailVerificationService.getEmailVerification(eori).flatMap {
-                case Some(_) => block(AuthenticatedEnrolledRequest(credentials.providerId, groupId, request, eori))
-                case None => throw new IllegalStateException("Email not verified")
-              }
-            }
-        case _ => Future.failed(throw InternalError("Error establishing authentication status for user"))
-      }(hc(request), executionContext).recover(handleFailure(request))
-
-  private def handleFailure(implicit request: Request[_]): PartialFunction[Throwable, Result] = {
-    case _: NoActiveSession => Redirect(appConfig.ggSignInUrl, Map("continue" -> Seq(request.uri), "origin" -> Seq(origin)))
-    case _: InsufficientEnrolments => Redirect(appConfig.eccEscSubscribeUrl)
-  }
+  // Delegates to EnrolledActionBuilder to handle ECC Enrolment check.
+  override def invokeBlock[A](r: Request[A], f: AuthenticatedEnrolledRequest[A] => Future[Result]): Future[Result] =
+    enrolledActionBuilder.invokeBlock(r, { enrolledRequest: AuthenticatedEnrolledRequest[A] =>
+      emailVerificationService.getEmailVerification(enrolledRequest.eoriNumber).toContext
+        .foldF(throw new IllegalStateException("No verified email address found"))(_ => f(enrolledRequest))
+    })
 }

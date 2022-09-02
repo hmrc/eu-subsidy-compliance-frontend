@@ -34,9 +34,9 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EnrolledActionBuilder @Inject() (
-  val config: Configuration,
-  val env: Environment,
-  val authConnector: AuthConnector,
+  override val config: Configuration,
+  override val env: Environment,
+  override val authConnector: AuthConnector,
   mcc: ControllerComponents
 )(implicit val executionContext: ExecutionContext, appConfig: AppConfig)
     extends ActionBuilder[AuthenticatedEnrolledRequest, AnyContent]
@@ -74,6 +74,6 @@ class EnrolledActionBuilder @Inject() (
   private def handleFailure(implicit request: Request[_]): PartialFunction[Throwable, Result] = {
     case _: NoActiveSession =>
       Redirect(appConfig.ggSignInUrl, Map("continue" -> Seq(request.uri), "origin" -> Seq(origin)))
-
   }
+
 }
