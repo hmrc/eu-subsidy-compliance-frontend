@@ -376,12 +376,12 @@ class UndertakingController @Inject() (
   }
 
   def getDisableUndertakingWarning: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
-    withLeadUndertaking(undertaking => Ok(disableUndertakingWarningPage(undertaking.name)).toFuture)
+    withLeadUndertaking(undertaking => Ok(disableUndertakingWarningPage()).toFuture)
   }
 
   def getDisableUndertakingConfirm: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
     withLeadUndertaking(undertaking =>
-      Ok(disableUndertakingConfirmPage(disableUndertakingConfirmForm, undertaking.name)).toFuture
+      Ok(disableUndertakingConfirmPage(disableUndertakingConfirmForm)).toFuture
     )
   }
 
@@ -390,7 +390,7 @@ class UndertakingController @Inject() (
       disableUndertakingConfirmForm
         .bindFromRequest()
         .fold(
-          errors => BadRequest(disableUndertakingConfirmPage(errors, undertaking.name)).toFuture,
+          errors => BadRequest(disableUndertakingConfirmPage(errors)).toFuture,
           form => handleDisableUndertakingFormSubmission(form, undertaking)
         )
     }

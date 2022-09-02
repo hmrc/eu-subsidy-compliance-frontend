@@ -12,7 +12,6 @@ common.continue=Save and continue
 common.accept-continue=Accept and continue
 common.continue.only=Continue
 common.accept=Accept and send
-common.disable= Disable undertaking
 common.go-account-home = Go to account home
 common.cya.change = Change
 
@@ -471,23 +470,16 @@ emailUnverifiedForLeadPromotion.p2 = The business/EORI number you have added wil
 emailUnverifiedForLeadPromotion.p3 = They will then need to login to the service and accept the terms and conditions before they can become the undertaking administrator.
 
 #disableUndertakingWarning
-disableUndertakingWarning.title = Disable the single undertaking {0}
-disableUndertakingWarning.warning =You cannot undo this process
-disableUndertakingWarning.p1 =If you choose to disable this undertaking:
-disableUndertakingWarning.li1=This undertaking will be permanently disabled and will not be able to claim Customs Duty waivers
-disableUndertakingWarning.li2=You will no longer be able to access this undertaking
-disableUndertakingWarning.li3=You can create a new undertaking or join another existing undertaking
-disableUndertakingWarning.li4=All transactions related to this undertaking will remain with it, in its disabled state, until you create a new undertaking, or join another existing undertaking
+disableUndertakingWarning.title = Deregister your undertaking
+disableUndertakingWarning.p1 = You will no longer have access to the payments you have previously reported.
+
 
 #disableUndertakingConfirm
-disableUndertakingConfirm.title = Are you sure you want to disable the single undertaking {0} ?
+disableUndertakingConfirm.title = Are you sure you want to deregister this undertaking?
+disableUndertakingConfirm.hint = This cannot be reversed
 disableUndertakingConfirm.error.required = Select Yes if you want to disable the single undertaking.
 
 #undertakingDisabled
-undertakingDisabled.title = You have disabled this single undertaking
-undertakingDisabled.p1 = We have sent all businesses that were part of this single undertaking a confirmation email.
-undertakingDisabled.inset.p1= The change does not take effect immediately and may take up to 24 hours to go through.
-undertakingDisabled.inset.p2=During this 24-hour period, you will still be in the undertaking, until the update happens, but will not be able make any changes to the undertaking.
-undertakingDisabled.p2 = You have been logged out of the account.
-undertakingDisabled.p4 = <a href="{0}" class="govuk-link">What did you think of this service?</a>(takes 30 seconds)
-
+undertakingDisabled.title = Your undertaking has been deregistered
+undertakingDisabled.p1 = We have sent you a confirmation email.
+undertakingDisabled.p2 = You have been signed out.
