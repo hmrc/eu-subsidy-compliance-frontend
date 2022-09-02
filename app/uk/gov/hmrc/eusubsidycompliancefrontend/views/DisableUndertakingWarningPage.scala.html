@@ -21,26 +21,15 @@
 
 @this(layout: Layout, govukWarningText : GovukWarningText, formHelper: FormWithCSRF, button: components.Button)
 
-@(undertakingName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"disableUndertakingWarning"}
-@title = @{messages(s"$key.title", undertakingName)}
+@title = @{messages(s"$key.title")}
 
 @layout(pageTitle = Some(title),
     backLinkEnabled = true,
     backLink = Some(controllers.routes.AccountController.getAccountPage().url)) {
             @H1(title)
-            @govukWarningText(WarningText(
-                content = Text(messages(s"$key.warning"))
-            ))
             @P(messages(s"$key.p1"))
-            <ul class="govuk-list govuk-list--bullet">
-                <li>@messages(s"$key.li1")</li>
-                <li>@messages(s"$key.li2")</li>
-                <li>@messages(s"$key.li3")</li>
-                <li>@messages(s"$key.li4")</li>
-            </ul>
 
-            <a href="@controllers.routes.UndertakingController.getDisableUndertakingConfirm().url" class="govuk-button govuk-button--warning">@messages("common.disable")</a>
-
-
+            <a href="@controllers.routes.UndertakingController.getDisableUndertakingConfirm().url" class="govuk-button">@messages("common.continue")</a>
 }

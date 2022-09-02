@@ -29,9 +29,9 @@
         govukButton: GovukButton
 )
 
-@(form: Form[_], undertakingName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"disableUndertakingConfirm"}
-@title = @{messages(s"$key.title", undertakingName)}
+@title = @{messages(s"$key.title")}
 
 @layout(pageTitle = Some(title),
     backLinkEnabled = true,
@@ -44,25 +44,27 @@
                 errorList = Seq(
                     ErrorLink(
                         href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(err.key++"." ++err.message, undertakingName.toString)}")
+                        content = Text(s"${messages(err.key++"." ++err.message)}")
                     )
                 ),
                 title = Text(messages("common.error.summary.title"))
             ))
         }
 
-        @{H1(title)}
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
                 content = Text(messages(s"$key.error.required"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
+                    content = Text(title),
                     classes = "govuk-fieldset__legend--xl",
                     isPageHeading = true
                 ))
             )),
-            hint = None,
+            hint = Some(Hint(
+            content = Text(messages(s"$key.hint"))
+            )),
             idPrefix = Some(key),
             name = key,
             items = Seq(
@@ -76,11 +78,10 @@
                     value = Some("false"),
                     checked = form.data.exists(_._2 == "false")
                 )
-            ),
-            classes = "govuk-radios--inline"
+            )
         ))
 
-        @button("common.disable", None, true, None, Some("govuk-button--warning"))
+        @button("common.continue", None, true, None)
 
     }
 
