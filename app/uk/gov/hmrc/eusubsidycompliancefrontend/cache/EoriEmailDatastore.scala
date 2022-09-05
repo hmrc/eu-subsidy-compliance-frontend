@@ -18,12 +18,10 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.cache
 
 import org.mongodb.scala.model.{Filters, FindOneAndUpdateOptions, ReturnDocument, Updates}
 import org.mongodb.scala.result.UpdateResult
-import play.api.libs.json._
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore.DefaultCacheTtl
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.Helpers.dataKeyForType
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.mongo.cache.MongoCacheRepository
+import uk.gov.hmrc.mongo.cache.{CacheItem, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
 import java.time.Instant
@@ -46,10 +44,7 @@ class EoriEmailDatastore @Inject()(
   ) {
 
 
-  def get(key: EORI)(implicit reads: Reads[VerifiedEmail]): Future[Option[VerifiedEmail]] =
-    super.get(key)(dataKeyForType[VerifiedEmail])
-
-  def verifyEmail(key: EORI) = {
+  def verifyEmail(key: EORI): Future[CacheItem] = {
     val timestamp = Instant.now()
     collection
       .findOneAndUpdate(
