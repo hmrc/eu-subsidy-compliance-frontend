@@ -25,13 +25,13 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.{Form, Uri}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage, UndertakingConfirmEmailFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmationFormPage, UndertakingCyaFormPage, AboutUndertakingFormPage, UndertakingSectorFormPage, UndertakingConfirmEmailFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.Future
 
 case class UndertakingJourney(
-                               name: UndertakingNameFormPage = UndertakingNameFormPage(),
+                               about: AboutUndertakingFormPage = AboutUndertakingFormPage(),
                                sector: UndertakingSectorFormPage = UndertakingSectorFormPage(),
                                verifiedEmail: UndertakingConfirmEmailFormPage = UndertakingConfirmEmailFormPage(),
                                cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
@@ -40,15 +40,15 @@ case class UndertakingJourney(
 ) extends Journey {
 
   override def steps: Array[FormPage[_]] = Array(
-    name,
+    about,
     sector,
     verifiedEmail,
     cya,
     confirmation
   )
   private lazy val previousMap: Map[String, Uri] = Map(
-    routes.UndertakingController.getUndertakingName().url -> routes.EligibilityController.getEoriCheck().url,
-    routes.UndertakingController.getSector().url -> routes.UndertakingController.getUndertakingName().url
+    routes.UndertakingController.getAboutUndertaking().url -> routes.EligibilityController.getEoriCheck().url,
+    routes.UndertakingController.getSector().url -> routes.UndertakingController.getAboutUndertaking().url
   )
 
   override def previous(implicit r: Request[_]): Uri =
@@ -62,9 +62,9 @@ case class UndertakingJourney(
 
   def isEmpty: Boolean = steps.flatMap(_.value).isEmpty
 
-  private def requiredDetailsProvided = Seq(name, sector, verifiedEmail).map(_.value.isDefined) == Seq(true, true, true)
+  private def requiredDetailsProvided = Seq(about, sector, verifiedEmail).map(_.value.isDefined) == Seq(true, true, true)
 
-  def setUndertakingName(n: String): UndertakingJourney = this.copy(name = name.copy(value = Some(n)))
+  def setUndertakingName(n: String): UndertakingJourney = this.copy(about = about.copy(value = Some(n)))
 
   def setUndertakingSector(s: Int): UndertakingJourney = this.copy(sector = sector.copy(value = Some(Sector(s))))
 
@@ -82,7 +82,7 @@ object UndertakingJourney {
   implicit val format: Format[UndertakingJourney] = Json.format[UndertakingJourney]
 
   def fromUndertaking(undertaking: Undertaking): UndertakingJourney = UndertakingJourney(
-    name = UndertakingNameFormPage(undertaking.name.some),
+    about = AboutUndertakingFormPage(undertaking.name.some),
     sector = UndertakingSectorFormPage(undertaking.industrySector.some)
   )
 
@@ -90,8 +90,8 @@ object UndertakingJourney {
 
     private val controller = routes.UndertakingController
 
-    case class UndertakingNameFormPage(value: Form[String] = None) extends FormPage[String] {
-      def uri = controller.getUndertakingName().url
+    case class AboutUndertakingFormPage(value: Form[String] = None) extends FormPage[String] {
+      def uri = controller.getAboutUndertaking().url
     }
     case class UndertakingSectorFormPage(value: Form[Sector] = None) extends FormPage[Sector] {
       def uri = controller.getSector().url
@@ -106,8 +106,8 @@ object UndertakingJourney {
       def uri = controller.postConfirmation().url
     }
 
-    object UndertakingNameFormPage {
-      implicit val undertakingNameFormPage: OFormat[UndertakingNameFormPage] = Json.format
+    object AboutUndertakingFormPage {
+      implicit val undertakingNameFormPage: OFormat[AboutUndertakingFormPage] = Json.format
     }
     object UndertakingSectorFormPage {
       implicit val undertakingSectorFormPage: OFormat[UndertakingSectorFormPage] = Json.format
