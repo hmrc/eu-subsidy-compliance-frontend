@@ -28,7 +28,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Fo
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmEmailFormPage, UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingNameFormPage, UndertakingSectorFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{UndertakingConfirmEmailFormPage, UndertakingConfirmationFormPage, UndertakingCyaFormPage, AboutUndertakingFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 
@@ -182,7 +182,7 @@ object CommonTestData {
   )
 
   val undertakingJourneyComplete = UndertakingJourney(
-    name = UndertakingNameFormPage("TestUndertaking".some),
+    about = AboutUndertakingFormPage("TestUndertaking".some),
     sector = UndertakingSectorFormPage(Sector(1).some),
     verifiedEmail =  UndertakingConfirmEmailFormPage("joebloggs@something.com".some),
     cya = UndertakingCyaFormPage(true.some),
@@ -190,7 +190,7 @@ object CommonTestData {
   )
 
   val undertakingJourneyComplete1 = UndertakingJourney(
-    name = UndertakingNameFormPage("TestUndertaking1".some),
+    about = AboutUndertakingFormPage("TestUndertaking1".some),
     sector = UndertakingSectorFormPage(Sector(2).some),
     cya = UndertakingCyaFormPage(true.some),
     confirmation = UndertakingConfirmationFormPage(true.some),

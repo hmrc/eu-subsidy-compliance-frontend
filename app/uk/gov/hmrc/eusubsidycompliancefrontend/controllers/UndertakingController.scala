@@ -86,7 +86,7 @@ class UndertakingController @Inject() (
   def getAboutUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-      val form = journey.about.value.fold(undertakingNameForm)(name => undertakingNameForm.fill(FormValues(name)))
+      val form = journey.about.value.fold(aboutUndertakingForm)(name => aboutUndertakingForm.fill(FormValues(name)))
       Ok(aboutUndertakingPage(form, journey.previous)).toFuture
     }
   }
@@ -95,13 +95,14 @@ class UndertakingController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
-        undertakingNameForm
+        aboutUndertakingForm
           .bindFromRequest()
           .fold(
-            errors => BadRequest(aboutUndertakingPage(errors, journey.previous)).toFuture,
-            success = form => {
+            _ => throw new IllegalStateException("Unexpected form submission"),
+            _ => {
               for {
-                updatedUndertakingJourney <- store.update[UndertakingJourney](_.setUndertakingName(form.value))
+                // We store the EORI in the undertaking name field.
+                updatedUndertakingJourney <- store.update[UndertakingJourney](_.setUndertakingName(eori))
                 redirect <- updatedUndertakingJourney.next
               } yield redirect
             }
@@ -307,7 +308,7 @@ class UndertakingController @Inject() (
     confirmationForm
       .bindFromRequest()
       .fold(
-        _ => throw new IllegalStateException("value hard-coded, form hacking?"),
+        _ => throw new IllegalStateException("Unexpected form submission"),
         form =>
           store
             .update[UndertakingJourney](_.setUndertakingConfirmation(form.value.toBoolean))
@@ -348,7 +349,7 @@ class UndertakingController @Inject() (
       amendUndertakingForm
         .bindFromRequest()
         .fold(
-          _ => throw new IllegalStateException("value hard-coded, form hacking?"),
+          _ => throw new IllegalStateException("Unexpected form submission"),
           _ => {
             val result = for {
               updatedJourney <- updateIsAmendState(value = false).toContext
@@ -444,15 +445,8 @@ class UndertakingController @Inject() (
   private def ensureUndertakingJourneyPresent(j: Option[UndertakingJourney])(f: UndertakingJourney => Future[Result]) =
     j.fold(Redirect(routes.UndertakingController.getAboutUndertaking()).toFuture)(f)
 
-  private val undertakingNameForm: Form[FormValues] = Form(
-    mapping("undertakingName" -> mandatory("undertakingName"))(FormValues.apply)(FormValues.unapply).verifying(
-      "undertakingName.regex.error",
-      fields =>
-        fields match {
-          case a if a.value.matches(UndertakingName.regex) => true
-          case _ => false
-        }
-    )
+  private val aboutUndertakingForm: Form[FormValues] = Form(
+    mapping("continue" -> mandatory("continue"))(FormValues.apply)(FormValues.unapply)
   )
 
   private val undertakingSectorForm: Form[FormValues] = Form(

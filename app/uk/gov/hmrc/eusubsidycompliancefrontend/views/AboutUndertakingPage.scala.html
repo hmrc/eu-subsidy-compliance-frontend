@@ -37,6 +37,7 @@
 ) {
 
   @formHelper(action = controllers.routes.UndertakingController.postAboutUndertaking()) {
+    <input type=hidden name=continue value=true>
     @form.errors.map { err =>
       @govukErrorSummary(ErrorSummary(
         errorList = Seq(
