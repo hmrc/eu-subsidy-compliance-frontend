@@ -53,21 +53,6 @@
     @P(messages("undertakingName.p1"))
     @P(messages("undertakingName.p2"))
 
-    @govukInput(Input(
-      value = form.data.get("undertakingName"),
-      id = "undertakingName",
-      name = "undertakingName",
-      label = Label(
-        isPageHeading = true,
-        classes = "govuk-label--m",
-        content = Text(messages("undertakingName.label"))
-      ),
-      hint = Some(Hint(content = Text(messages("undertakingName.hint")))),
-      errorMessage = if (form.hasErrors) {
-        Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
-      } else None
-    ))
-
     @button("common.continue.only")
   }
 }

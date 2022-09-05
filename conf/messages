@@ -117,11 +117,7 @@ createUndertaking.p1=If you are not the undertaking administrator, you should <a
 
 undertakingName.title = About your undertaking
 undertakingName.p1 = An undertaking is any company, sole trader, or partnership that is involved in offering goods and services.
-undertakingName.p2 = An undertaking also includes any sole traders, companies or partnerships are related to it, like a parent or subsidiary company. They must not report payments they receive separately. You are responsible for reporting received payments on their behalf.
-undertakingName.label = What do you want to call your undertaking?
-undertakingName.hint = This name will be used to reference your business throughout the service and does not need to be an official name.
-error.undertakingName.required=Enter a name for this single undertaking
-undertakingName.regex.error = Undertaking name must be fewer than 106 characters
+undertakingName.p2 = An undertaking also includes any sole traders, companies or partnerships related to it, like a parent or subsidiary company. They must not report payments they receive separately. You are responsible for reporting received payments on their behalf.
 
 undertakingSector.error.required=Select an industry sector
 undertakingSector.title=What is the industry sector of {0}?
