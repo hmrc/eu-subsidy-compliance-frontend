@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.actions
 
 import play.api.mvc.{ActionBuilder, AnyContent}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.{EnrolledActionBuilder, AuthenticatedActionBuilder, VerifiedEmailActionBuilder}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.{AuthenticatedActionBuilder, EnrolledActionBuilder, EnrolledActionBuilderToFirstEligibilityPage, VerifiedEmailActionBuilder}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.{AuthenticatedEnrolledRequest, AuthenticatedRequest}
 
 import javax.inject.{Inject, Singleton}
@@ -26,21 +26,23 @@ import javax.inject.{Inject, Singleton}
 class ActionBuilders @Inject() (
   authenticatedActionBuilder: AuthenticatedActionBuilder,
   enrolledActionBuilder: EnrolledActionBuilder,
+  enrolledActionBuilderToFirstEligibilityPage: EnrolledActionBuilderToFirstEligibilityPage,
   verifiedEmailActionBuilder: VerifiedEmailActionBuilder,
 ) {
 
-  // GG Auth only
+  // GG Auth only (enrolment not checked)
   val authenticated: ActionBuilder[AuthenticatedRequest, AnyContent] = authenticatedActionBuilder
 
-  // GG Auth with ECC Enrolment
+  // GG Auth with ECC Enrolment - redir to ECC if not enrolled
   val enrolled: ActionBuilder[AuthenticatedEnrolledRequest, AnyContent] = enrolledActionBuilder
+
+  // GG Auth without ECC enrolment - run bock if not enrolled otherwise redirect to /
+  // TODO - better name for this
+  val enrolledToFirstLogin: ActionBuilder[AuthenticatedRequest, AnyContent] = enrolledActionBuilderToFirstEligibilityPage
+
+  // TODO - do we need a not enrolled handler?
 
   // GG Auth with ECC Enrolment and Verified Email Address
   val verifiedEmail: ActionBuilder[AuthenticatedEnrolledRequest, AnyContent] = verifiedEmailActionBuilder
 
-}
-
-object ActionBuilders {
-  val EccEnrolmentKey = "HMRC-ESC-ORG"
-  val EnrolmentIdentifier = "EORINumber"
 }

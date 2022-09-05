@@ -60,16 +60,22 @@ class EligibilityController @Inject() (
   def firstEmptyPage: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
+    println(s"Routing user to first page of eligibility journey")
+
     store.get[EligibilityJourney].toContext
       .map(_.firstEmpty.getOrElse(Redirect(routes.UndertakingController.firstEmptyPage())))
-      .getOrElse(handleMissingSessionData("Eligibility Journey"))
+      .getOrElse {
+        // If we get here it must be the first time we've hit the service with an enrolment since there is nothing
+        // in the journey store. In this case we route the user to the eoriCheck page.
+        Redirect(routes.EligibilityController.getEoriCheck())
+      }
   }
 
-  def getDoYouClaim: Action[AnyContent] = authenticated.async { implicit request =>
+  def getDoYouClaim: Action[AnyContent] = enrolledToFirstLogin.async { implicit request =>
     Ok(doYouClaimPage(customsWaiversForm)).toFuture
   }
 
-  def postDoYouClaim: Action[AnyContent] = authenticated.async { implicit request =>
+  def postDoYouClaim: Action[AnyContent] = enrolledToFirstLogin.async { implicit request =>
     customsWaiversForm
       .bindFromRequest()
       .fold(
@@ -82,11 +88,11 @@ class EligibilityController @Inject() (
       )
   }
 
-  def getWillYouClaim: Action[AnyContent] = authenticated.async { implicit request =>
+  def getWillYouClaim: Action[AnyContent] = enrolledToFirstLogin.async { implicit request =>
     Ok(willYouClaimPage(willYouClaimForm, routes.EligibilityController.getDoYouClaim().url)).toFuture
   }
 
-  def postWillYouClaim: Action[AnyContent] = authenticated.async { implicit request =>
+  def postWillYouClaim: Action[AnyContent] = enrolledToFirstLogin.async { implicit request =>
     willYouClaimForm
       .bindFromRequest()
       .fold(
@@ -103,7 +109,7 @@ class EligibilityController @Inject() (
 
   }
 
-  def getNotEligible: Action[AnyContent] = authenticated.async { implicit request =>
+  def getNotEligible: Action[AnyContent] = enrolledToFirstLogin.async { implicit request =>
     Ok(notEligiblePage()).toFuture
   }
 

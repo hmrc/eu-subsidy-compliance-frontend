@@ -44,7 +44,6 @@ class VerifiedEmailActionBuilder @Inject()(
       with I18nSupport {
 
   override val messagesApi: MessagesApi = mcc.messagesApi
-
   override val parser: BodyParser[AnyContent] = mcc.parsers.anyContent
 
   // Delegates to EnrolledActionBuilder to handle ECC Enrolment check.

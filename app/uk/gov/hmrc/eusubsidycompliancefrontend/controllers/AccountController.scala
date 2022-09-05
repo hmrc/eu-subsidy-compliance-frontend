@@ -57,6 +57,7 @@ class AccountController @Inject() (
   def getAccountPage: Action[AnyContent] =
     enrolled.async { implicit request =>
       implicit val eori: EORI = request.eoriNumber
+      println(s"AccountController: getAccountPage")
       escService.retrieveUndertaking(eori) flatMap {
         case Some(u) => handleExistingUndertaking(u)
         case None => handleUndertakingNotCreated
@@ -64,12 +65,17 @@ class AccountController @Inject() (
     }
 
   private def handleUndertakingNotCreated(implicit e: EORI): Future[Result] = {
+    println(s"No undertaking created")
     val result = getOrCreateJourneys().map {
       case (ej, uj) if !ej.isComplete && uj.isEmpty =>
+        println(s"Routing user to first empty page of EligibilityController flow")
         Redirect(routes.EligibilityController.firstEmptyPage())
       case (_, uj) if !uj.isComplete =>
+        println(s"Eligibility flow complete - routing user to undertaking flow")
         Redirect(routes.UndertakingController.firstEmptyPage())
-      case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity())
+      case _ =>
+        println(s"Default case - routing user to add business entity flow")
+        Redirect(routes.BusinessEntityController.getAddBusinessEntity())
     }
     result.getOrElse(handleMissingSessionData("Account Home - Undertaking not created -"))
   }
@@ -77,6 +83,7 @@ class AccountController @Inject() (
   private def handleExistingUndertaking(
     u: Undertaking
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent], e: EORI): Future[Result] = {
+    println(s"There is an existing undertaking - attempting to render home page")
     val result = for {
       _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(u))
       retrieveRequest = SubsidyRetrieve(u.reference, None)

@@ -22,9 +22,11 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolments, InternalError, NoActiveSession}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.{AuthenticatedEnrolledRequest, AuthenticatedRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
@@ -32,13 +34,13 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvi
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EnrolledActionBuilder @Inject() (
+class EnrolledActionBuilderToFirstEligibilityPage @Inject() (
   override val config: Configuration,
   override val env: Environment,
   override val authConnector: AuthConnector,
   mcc: ControllerComponents
 )(implicit val executionContext: ExecutionContext, appConfig: AppConfig)
-    extends ActionBuilder[AuthenticatedEnrolledRequest, AnyContent]
+    extends ActionBuilder[AuthenticatedRequest, AnyContent]
     with FrontendHeaderCarrierProvider
     with Results
     with AuthRedirects
@@ -53,7 +55,7 @@ class EnrolledActionBuilder @Inject() (
 
   override def invokeBlock[A](
     request: Request[A],
-    block: AuthenticatedEnrolledRequest[A] => Future[Result]
+    block: AuthenticatedRequest[A] => Future[Result]
   ): Future[Result] =
     authorised()
       .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](
@@ -61,15 +63,10 @@ class EnrolledActionBuilder @Inject() (
       ) {
         case Some(credentials) ~ Some(groupId) ~ enrolments =>
           enrolments.getEnrolment(EccEnrolmentKey) match {
-            case Some(eccEnrolment) =>
-              val identifier: String = eccEnrolment
-                .getIdentifier(EnrolmentIdentifier)
-                .fold(throw new IllegalStateException("no eori provided"))(_.value)
-              println(s"User has ECC enrolment - running block")
-              block(AuthenticatedEnrolledRequest(credentials.providerId, groupId, request, EORI(identifier)))
-            case _ =>
-              println(s"We need an ECC enrollment but there is none - redirecting to ECC")
-              Redirect(appConfig.eccEscSubscribeUrl).toFuture
+            case Some(_) =>
+              println(s"User has ECC enrolment - redirecting to /")
+              Redirect(routes.AccountController.getAccountPage()).toFuture
+            case None => block(AuthenticatedRequest(credentials.providerId, groupId, request))
           }
         case _ ~ _ => Future.failed(throw InternalError())
       }(hc(request), executionContext)
