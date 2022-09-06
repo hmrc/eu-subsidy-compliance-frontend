@@ -53,12 +53,16 @@ class JourneyStore @Inject() (
   override def get[A : ClassTag](implicit eori: EORI, reads: Reads[A]): Future[Option[A]] =
     get[A](eori)(dataKeyForType[A])
 
-  override def put[A](in: A)(implicit eori: EORI, writes: Writes[A]): Future[A] =
+  override def put[A](in: A)(implicit eori: EORI, writes: Writes[A]): Future[A] = {
+    println(s"Store.put called with $in")
     put[A](eori)(DataKey(in.getClass.getSimpleName), in).map(_ => in)
+  }
 
-  override def getOrCreate[A : ClassTag](default: A)(implicit eori: EORI, format: Format[A]): Future[A] =
+  override def getOrCreate[A : ClassTag](default: A)(implicit eori: EORI, format: Format[A]): Future[A] = {
+    println(s"Store.getOrCreate called with default: $default")
     get[A].toContext
       .getOrElseF(put(default))
+  }
 
   override def delete[A : ClassTag](implicit eori: EORI): Future[Unit] =
     delete[A](eori)(dataKeyForType[A])

@@ -16,12 +16,14 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.implicits.catsSyntaxOptionId
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.{DoYouClaimFormPage, WillYouClaimFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -66,6 +68,7 @@ class AccountController @Inject() (
 
   private def handleUndertakingNotCreated(implicit e: EORI): Future[Result] = {
     println(s"No undertaking created")
+
     val result = getOrCreateJourneys().map {
       case (ej, uj) if !ej.isComplete && uj.isEmpty =>
         println(s"Routing user to first empty page of EligibilityController flow")
@@ -96,7 +99,9 @@ class AccountController @Inject() (
 
   private def getOrCreateJourneys(u: UndertakingJourney = UndertakingJourney())(implicit e: EORI) =
     for {
-      ej <- store.getOrCreate[EligibilityJourney](EligibilityJourney()).toContext
+      // At this point the user has an ECC enrolment so they must be eligible to use the service.
+      // TODO - consider providing something on the companion object e.g. EligiblityJourney.doesClaim | willClaim
+      ej <- store.getOrCreate[EligibilityJourney](EligibilityJourney(doYouClaim = DoYouClaimFormPage(true.some))).toContext
       uj <- store.getOrCreate[UndertakingJourney](u).toContext
     } yield (ej, uj)
 

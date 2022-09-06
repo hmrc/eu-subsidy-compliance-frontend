@@ -24,6 +24,7 @@ import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolments, InternalError, NoActiveSession}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
@@ -65,11 +66,11 @@ class EnrolledActionBuilder @Inject() (
               val identifier: String = eccEnrolment
                 .getIdentifier(EnrolmentIdentifier)
                 .fold(throw new IllegalStateException("no eori provided"))(_.value)
-              println(s"User has ECC enrolment - running block")
+              println(s"EnrolledActionBuilder - User has ECC enrolment - running block")
               block(AuthenticatedEnrolledRequest(credentials.providerId, groupId, request, EORI(identifier)))
             case _ =>
-              println(s"We need an ECC enrollment but there is none - redirecting to ECC")
-              Redirect(appConfig.eccEscSubscribeUrl).toFuture
+              println(s"EnrolledActionBuilder - No enrolment - redirecting to first login flow")
+              Redirect(routes.EligibilityController.getDoYouClaim().url).toFuture
           }
         case _ ~ _ => Future.failed(throw InternalError())
       }(hc(request), executionContext)

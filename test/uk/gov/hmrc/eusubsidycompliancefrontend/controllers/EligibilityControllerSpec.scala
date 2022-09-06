@@ -68,43 +68,36 @@ class EligibilityControllerSpec
           assertThrows[Exception](await(performAction()))
         }
 
-        "call to get eligibility journey passes but come back empty" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolment()
-            mockGet[EligibilityJourney](eori1)(Right(None))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
       }
 
       "redirect to correct page" when {
 
-        def redirect(eligibilityJourney: EligibilityJourney, nextCall: String) = {
+        def redirect(eligibilityJourney: Option[EligibilityJourney], expectedRedirectLocation: String) = {
           inSequence {
             mockAuthWithNecessaryEnrolment()
-            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourney.some))
+            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourney))
           }
-          checkIsRedirect(performAction(), nextCall)
+          checkIsRedirect(performAction(), expectedRedirectLocation)
+        }
+
+        "no eligibility journey present in store" in {
+          redirect(None, routes.EligibilityController.getEoriCheck().url)
         }
 
         "no values are set in the eligibility journey" in {
-          redirect(EligibilityJourney(), routes.EligibilityController.getDoYouClaim().url)
+          redirect(EligibilityJourney().some, routes.EligibilityController.getDoYouClaim().url)
         }
 
-        "Eligibility journey is complete" in {
-          redirect(eligibilityJourney, routes.UndertakingController.firstEmptyPage().url)
+        "eligibility journey is complete" in {
+          redirect(eligibilityJourney.some, routes.UndertakingController.firstEmptyPage().url)
         }
 
       }
     }
 
-    "handling request to get custom waivers" must {
+    "handling request to get do you claim" must {
 
-      def performAction() = controller
-        .getDoYouClaim(
-          FakeRequest()
-        )
+      def performAction() = controller.getDoYouClaim(FakeRequest())
 
       "display the page" in {
 
@@ -112,7 +105,7 @@ class EligibilityControllerSpec
 
         def testDisplay(eligibilityJourney: EligibilityJourney) = {
           inSequence {
-            mockAuthWithNoEnrolment()
+            mockAuthWithNoEnrolmentNoCheck()
           }
           checkPageIsDisplayed(
             performAction(),
@@ -135,7 +128,7 @@ class EligibilityControllerSpec
       }
     }
 
-    "handling request to post custom waivers" must {
+    "handling request to post do you claim" must {
       def performAction(data: (String, String)*) = controller
         .postDoYouClaim(
           FakeRequest("GET", routes.EligibilityController.getDoYouClaim().url)
@@ -146,7 +139,7 @@ class EligibilityControllerSpec
 
         "nothing is submitted" in {
           inSequence {
-            mockAuthWithNoEnrolment()
+            mockAuthWithNoEnrolmentNoCheck()
           }
 
           checkFormErrorIsDisplayed(
@@ -161,7 +154,7 @@ class EligibilityControllerSpec
 
         def testRedirection(inputValue: Boolean, nextCall: String) = {
           inSequence {
-            mockAuthWithNoEnrolment()
+            mockAuthWithNoEnrolmentNoCheck()
           }
           checkIsRedirect(
             performAction("customswaivers" -> inputValue.toString),
@@ -193,7 +186,7 @@ class EligibilityControllerSpec
         val previousUrl = routes.EligibilityController.getDoYouClaim().url
 
         inSequence {
-          mockAuthWithNoEnrolment()
+          mockAuthWithNoEnrolmentNoCheck()
         }
         checkPageIsDisplayed(
           performAction(),
@@ -224,7 +217,7 @@ class EligibilityControllerSpec
 
         "nothing is submitted" in {
           inSequence {
-            mockAuthWithNoEnrolment()
+            mockAuthWithNoEnrolmentNoCheck()
           }
 
           checkFormErrorIsDisplayed(
@@ -239,7 +232,7 @@ class EligibilityControllerSpec
 
         def testRedirection(input: Boolean, nextCall: String) = {
           inSequence {
-            mockAuthWithNoEnrolment()
+            mockAuthWithNoEnrolmentNoCheck()
           }
           checkIsRedirect(
             performAction("willyouclaim" -> input.toString),
@@ -269,7 +262,7 @@ class EligibilityControllerSpec
 
       "display the page" in {
         inSequence {
-          mockAuthWithNoEnrolment()
+          mockAuthWithNoEnrolmentNoCheck()
         }
         checkPageIsDisplayed(
           performAction(),

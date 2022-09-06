@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -60,13 +61,22 @@ class EligibilityController @Inject() (
   def firstEmptyPage: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    println(s"Routing user to first page of eligibility journey")
+    println(s"EligibilityJourney - firstEmptyPage")
 
     store.get[EligibilityJourney].toContext
+      .map { j =>
+        println(s"Got journey state: $j")
+        j
+      }
       .map(_.firstEmpty.getOrElse(Redirect(routes.UndertakingController.firstEmptyPage())))
+      .map { r =>
+        println(s"Redirecting to $r")
+        r
+      }
       .getOrElse {
         // If we get here it must be the first time we've hit the service with an enrolment since there is nothing
         // in the journey store. In this case we route the user to the eoriCheck page.
+        println(s"First time request - no state - redirecting to getEoriCheck()")
         Redirect(routes.EligibilityController.getEoriCheck())
       }
   }
@@ -81,8 +91,9 @@ class EligibilityController @Inject() (
       .fold(
         errors => BadRequest(doYouClaimPage(errors)).toFuture,
         form => {
-          EligibilityJourney()
-            .withDoYouClaim(form.value.isTrue)
+          if (form.value.isTrue) checkEnrolment
+          else EligibilityJourney()
+            .withDoYouClaim(false)
             .next
         }
       )
@@ -98,12 +109,14 @@ class EligibilityController @Inject() (
       .fold(
         errors => BadRequest(willYouClaimPage(errors, routes.EligibilityController.getDoYouClaim().url)).toFuture,
         form => {
-          // Set up representative state in EligibilityJourney before we call next.
-          EligibilityJourney()
-            // We are on the will you claim page so the user must have entered false on the do you claim form
-            .withDoYouClaim(false)
-            .withWillYouClaim(form.value.isTrue)
-            .next
+          if (form.value.isTrue) checkEnrolment
+          else
+            // Set up representative state in EligibilityJourney before we call next.
+            EligibilityJourney()
+              // We are on the will you claim page so the user must have entered false on the do you claim form
+              .withDoYouClaim(false)
+              .withWillYouClaim(false)
+              .next
         }
       )
 
@@ -113,10 +126,22 @@ class EligibilityController @Inject() (
     Ok(notEligiblePage()).toFuture
   }
 
+  private def checkEnrolment(implicit request: AuthenticatedRequest[AnyContent]) =
+    if (request.isFrom(routes.EligibilityController.getDoYouClaim().url) || request.isFrom(routes.EligibilityController.getWillYouClaim().url)) {
+      println(s"checkEnrolment - request originated from do you / will you page")
+      Redirect(appConfig.eccEscSubscribeUrl).toFuture
+    }
+    else {
+      // TODO - this was originally directing to AccountController.
+      println(s"checkEnrolment - redirecting to EligibilityController.getEoriCheck")
+      Redirect(routes.EligibilityController.getEoriCheck().url).toFuture
+    }
+
   def getEoriCheck: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def renderPage = {
+      // TODO - reuse these URls if needed above
       val doYouClaimUrl = routes.EligibilityController.getDoYouClaim().url
       val willYouClaimUrl = routes.EligibilityController.getWillYouClaim().url
 

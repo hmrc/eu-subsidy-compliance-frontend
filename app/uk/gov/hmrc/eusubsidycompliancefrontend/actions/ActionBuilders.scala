@@ -36,11 +36,9 @@ class ActionBuilders @Inject() (
   // GG Auth with ECC Enrolment - redir to ECC if not enrolled
   val enrolled: ActionBuilder[AuthenticatedEnrolledRequest, AnyContent] = enrolledActionBuilder
 
-  // GG Auth without ECC enrolment - run bock if not enrolled otherwise redirect to /
-  // TODO - better name for this
+  // GG Auth without ECC enrolment - run block if not enrolled otherwise redirect to /
+  // TODO - better name for this - notEnrolled seems like the way to go
   val enrolledToFirstLogin: ActionBuilder[AuthenticatedRequest, AnyContent] = enrolledActionBuilderToFirstEligibilityPage
-
-  // TODO - do we need a not enrolled handler?
 
   // GG Auth with ECC Enrolment and Verified Email Address
   val verifiedEmail: ActionBuilder[AuthenticatedEnrolledRequest, AnyContent] = verifiedEmailActionBuilder
