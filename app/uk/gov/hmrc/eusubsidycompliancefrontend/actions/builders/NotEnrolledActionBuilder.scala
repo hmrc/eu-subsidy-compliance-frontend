@@ -60,9 +60,7 @@ class NotEnrolledActionBuilder @Inject() (
       ) {
         case Some(credentials) ~ Some(groupId) ~ enrolments =>
           enrolments.getEnrolment(EccEnrolmentKey) match {
-            case Some(_) =>
-              println(s"User has ECC enrolment - redirecting to /")
-              Redirect(routes.AccountController.getAccountPage()).toFuture
+            case Some(_) => Redirect(routes.AccountController.getAccountPage()).toFuture
             case None => block(AuthenticatedRequest(credentials.providerId, groupId, request))
           }
         case _ ~ _ => Future.failed(throw InternalError())

@@ -66,11 +66,8 @@ class EnrolledActionBuilder @Inject() (
               val identifier: String = eccEnrolment
                 .getIdentifier(EnrolmentIdentifier)
                 .fold(throw new IllegalStateException("no eori provided"))(_.value)
-              println(s"EnrolledActionBuilder - User has ECC enrolment - running block")
               block(AuthenticatedEnrolledRequest(credentials.providerId, groupId, request, EORI(identifier)))
-            case _ =>
-              println(s"EnrolledActionBuilder - No enrolment - redirecting to first login flow")
-              Redirect(routes.EligibilityController.getDoYouClaim().url).toFuture
+            case _ => Redirect(routes.EligibilityController.getDoYouClaim().url).toFuture
           }
         case _ ~ _ => Future.failed(throw InternalError())
       }(hc(request), executionContext)

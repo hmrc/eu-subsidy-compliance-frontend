@@ -61,22 +61,11 @@ class EligibilityController @Inject() (
   def firstEmptyPage: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    println(s"EligibilityJourney - firstEmptyPage")
-
     store.get[EligibilityJourney].toContext
-      .map { j =>
-        println(s"Got journey state: $j")
-        j
-      }
       .map(_.firstEmpty.getOrElse(Redirect(routes.UndertakingController.firstEmptyPage())))
-      .map { r =>
-        println(s"Redirecting to $r")
-        r
-      }
       .getOrElse {
         // If we get here it must be the first time we've hit the service with an enrolment since there is nothing
         // in the journey store. In this case we route the user to the eoriCheck page.
-        println(s"First time request - no state - redirecting to getEoriCheck()")
         Redirect(routes.EligibilityController.getEoriCheck())
       }
   }
@@ -126,14 +115,12 @@ class EligibilityController @Inject() (
     Ok(notEligiblePage()).toFuture
   }
 
+  // TODO - do we need this intermediate check anymore?
   private def checkEnrolment(implicit request: AuthenticatedRequest[AnyContent]) =
     if (request.isFrom(routes.EligibilityController.getDoYouClaim().url) || request.isFrom(routes.EligibilityController.getWillYouClaim().url)) {
-      println(s"checkEnrolment - request originated from do you / will you page")
       Redirect(appConfig.eccEscSubscribeUrl).toFuture
     }
     else {
-      // TODO - this was originally directing to AccountController.
-      println(s"checkEnrolment - redirecting to EligibilityController.getEoriCheck")
       Redirect(routes.EligibilityController.getEoriCheck().url).toFuture
     }
 
