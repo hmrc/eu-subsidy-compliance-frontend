@@ -81,11 +81,11 @@ class EligibilityController @Inject() (
       }
   }
 
-  def getDoYouClaim: Action[AnyContent] = enrolledToFirstLogin.async { implicit request =>
+  def getDoYouClaim: Action[AnyContent] = notEnrolled.async { implicit request =>
     Ok(doYouClaimPage(customsWaiversForm)).toFuture
   }
 
-  def postDoYouClaim: Action[AnyContent] = enrolledToFirstLogin.async { implicit request =>
+  def postDoYouClaim: Action[AnyContent] = notEnrolled.async { implicit request =>
     customsWaiversForm
       .bindFromRequest()
       .fold(
@@ -99,11 +99,11 @@ class EligibilityController @Inject() (
       )
   }
 
-  def getWillYouClaim: Action[AnyContent] = enrolledToFirstLogin.async { implicit request =>
+  def getWillYouClaim: Action[AnyContent] = notEnrolled.async { implicit request =>
     Ok(willYouClaimPage(willYouClaimForm, routes.EligibilityController.getDoYouClaim().url)).toFuture
   }
 
-  def postWillYouClaim: Action[AnyContent] = enrolledToFirstLogin.async { implicit request =>
+  def postWillYouClaim: Action[AnyContent] = notEnrolled.async { implicit request =>
     willYouClaimForm
       .bindFromRequest()
       .fold(
@@ -122,7 +122,7 @@ class EligibilityController @Inject() (
 
   }
 
-  def getNotEligible: Action[AnyContent] = enrolledToFirstLogin.async { implicit request =>
+  def getNotEligible: Action[AnyContent] = notEnrolled.async { implicit request =>
     Ok(notEligiblePage()).toFuture
   }
 

@@ -21,19 +21,21 @@ import play.api.mvc._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, InternalError, NoActiveSession}
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolments, InternalError, NoActiveSession}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuthenticatedActionBuilder @Inject() (
-  val config: Configuration,
-  val env: Environment,
-  val authConnector: AuthConnector,
+class NotEnrolledActionBuilder @Inject() (
+  override val config: Configuration,
+  override val env: Environment,
+  override val authConnector: AuthConnector,
   mcc: ControllerComponents
 )(implicit val executionContext: ExecutionContext, appConfig: AppConfig)
     extends ActionBuilder[AuthenticatedRequest, AnyContent]
@@ -43,21 +45,26 @@ class AuthenticatedActionBuilder @Inject() (
     with AuthorisedFunctions
     with I18nSupport {
 
-  val messagesApi: MessagesApi = mcc.messagesApi
+  private val EccEnrolmentKey = "HMRC-ESC-ORG"
 
-  val parser: BodyParser[AnyContent] = mcc.parsers.anyContent
+  override val messagesApi: MessagesApi = mcc.messagesApi
+  override val parser: BodyParser[AnyContent] = mcc.parsers.anyContent
 
   override def invokeBlock[A](
     request: Request[A],
     block: AuthenticatedRequest[A] => Future[Result]
   ): Future[Result] =
     authorised()
-      .retrieve[Option[Credentials] ~ Option[String]](
-        Retrievals.credentials and Retrievals.groupIdentifier
+      .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](
+        Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
       ) {
-        case Some(credentials) ~ Some(groupId) =>
-          block(AuthenticatedRequest(credentials.providerId, groupId, request))
-
+        case Some(credentials) ~ Some(groupId) ~ enrolments =>
+          enrolments.getEnrolment(EccEnrolmentKey) match {
+            case Some(_) =>
+              println(s"User has ECC enrolment - redirecting to /")
+              Redirect(routes.AccountController.getAccountPage()).toFuture
+            case None => block(AuthenticatedRequest(credentials.providerId, groupId, request))
+          }
         case _ ~ _ => Future.failed(throw InternalError())
       }(hc(request), executionContext)
       .recover(handleFailure(request))
@@ -66,4 +73,5 @@ class AuthenticatedActionBuilder @Inject() (
     case _: NoActiveSession =>
       Redirect(appConfig.ggSignInUrl, Map("continue" -> Seq(request.uri), "origin" -> Seq(origin)))
   }
+
 }
