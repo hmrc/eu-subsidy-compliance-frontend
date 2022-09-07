@@ -32,10 +32,15 @@ import scala.concurrent.{ExecutionContext, Future}
 trait AuthSupport { this: ControllerSpec =>
 
   import AuthSupport._
-  val mockAuthConnector: AuthConnector = mock[AuthConnector]
+
+  protected val mockAuthConnector: AuthConnector = mock[AuthConnector]
+
+  protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
+
+  // TODO - review these and perhaps use common values
   val EccEnrolmentKey = "HMRC-ESC-ORG"
   val CdsEnrolmentKey = "HMRC-CUS-ORG"
-  val mockEmailVerificationService = mock[EmailVerificationService]
+
 
   def mockAuth[R](predicate: Predicate, retrieval: Retrieval[R])(
     result: Future[R]
@@ -98,7 +103,7 @@ trait AuthSupport { this: ControllerSpec =>
     (mockEmailVerificationService
       .getEmailVerification(_: EORI))
       .expects(*)
-      .returning(VerifiedEmail("", "", true).some.toFuture)
+      .returning(VerifiedEmail("", "", verified = true).some.toFuture)
 }
 
 object AuthSupport {
