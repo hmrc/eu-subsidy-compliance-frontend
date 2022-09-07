@@ -29,32 +29,35 @@ import play.api.test.Helpers._
 import play.api.test.{DefaultAwaitTimeout, FakeRequest}
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core.{AuthConnector, InvalidBearerToken}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.{AuthenticatedEnrolledRequest, AuthenticatedRequest}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 
 import scala.concurrent.Future
 
-class EnrolledActionBuilderSpec extends AnyWordSpec
-  with ControllerSpec
-  with AuthSupport
-  with JourneyStoreSupport
-  with AuthAndSessionDataBehaviour
-  with Matchers
-  with MockFactory
-  with ScalaFutures
-  with DefaultAwaitTimeout {
+class EnrolledActionBuilderSpec
+    extends AnyWordSpec
+    with ControllerSpec
+    with AuthSupport
+    with JourneyStoreSupport
+    with AuthAndSessionDataBehaviour
+    with Matchers
+    with MockFactory
+    with ScalaFutures
+    with DefaultAwaitTimeout {
 
   override def overrideBindings: List[GuiceableModule] = List(
-    bind[AuthConnector].toInstance(mockAuthConnector),
+    bind[AuthConnector].toInstance(mockAuthConnector)
   )
 
   private def FakeSignInUrl = "/fake/gg/signin"
 
-  override def additionalConfig: Configuration = Configuration.from(Map(
-    "urls.ggSignInUrl" -> FakeSignInUrl
-  ))
+  override def additionalConfig: Configuration = Configuration.from(
+    Map(
+      "urls.ggSignInUrl" -> FakeSignInUrl
+    )
+  )
 
   private val underTest = instanceOf[EnrolledActionBuilder]
 
