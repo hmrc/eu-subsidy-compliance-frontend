@@ -21,7 +21,7 @@
 
 
 @this(
-  layout: FullWidthLayout,
+  layout: Layout,
   formHelper: FormWithCSRF,
   button: components.Button,
   govukErrorSummary: GovukErrorSummary,
@@ -50,7 +50,7 @@
         value = if (form.data.get(radioIdentifier).contains("EUR")) form.data.get(inputIdentifierEUR) else None,
         label = Label(content = Text(messages("add-claim-amount.input-label"))),
         hint = Some(Hint(content = Text(messages("add-claim-amount.input-hint")))),
-        classes = "govuk-input govuk-input--width-20"
+        classes = "govuk-input govuk-input--width-5"
     ))
 }
 
@@ -65,7 +65,7 @@
         value = if (form.data.get(radioIdentifier).contains("GBP")) form.data.get(inputIdentifierGBP) else None,
         label = Label(content = Text(messages("add-claim-amount.input-label"))),
         hint = Some(Hint(content = Text(messages("add-claim-amount.input-hint")))),
-        classes = "govuk-input govuk-input--width-20"
+        classes = "govuk-input govuk-input--width-5"
     ))
 }
 

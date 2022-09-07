@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @this(
   layout: Layout,
@@ -72,6 +73,8 @@
 }
 
   @formHelper(action = controllers.routes.SubsidyController.postClaimDate()) {
+    @H1(title, Some("govuk-heading-xl govuk-!-margin-bottom-3"))
+    @P(messages("add-claim-date.p1", "<strong>[date-start-of-tax-year t-2 eg. 6 April 2020]</strong>"))
     @defining(form.errors.headOption) { maybeError =>
       @govukDateInput(DateInput(
         id = "claim-date",
@@ -99,7 +102,7 @@
         fieldset = Some(Fieldset(
           legend = Some(Legend(
             content = Text(title),
-            classes = "govuk-fieldset__legend--xl",
+            classes = "govuk-fieldset__legend--xl govuk-visually-hidden",
             isPageHeading = true
           ))
         ))

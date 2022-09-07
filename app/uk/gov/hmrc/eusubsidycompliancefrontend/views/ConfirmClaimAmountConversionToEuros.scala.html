@@ -38,6 +38,7 @@
 
     @P(messages("confirm-converted-amount.p1", poundsAmount, eurosAmount))
     @P(messages("confirm-converted-amount.p2"))
+    @P(messages("confirm-converted-amount.p3"))
 
     @formHelper(action = controllers.routes.SubsidyController.postConfirmClaimAmount) {
         @button("common.continue")
