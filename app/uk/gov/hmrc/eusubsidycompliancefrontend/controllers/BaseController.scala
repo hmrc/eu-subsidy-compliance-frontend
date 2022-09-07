@@ -41,7 +41,6 @@ class BaseController(mcc: MessagesControllerComponents) extends FrontendControll
     mapping(fieldName -> mandatory(fieldName))(FormValues.apply)(FormValues.unapply)
   )
 
-  // TODO - review this
   protected def handleMissingSessionData(dataLabel: String) =
     throw new IllegalStateException(s"$dataLabel data missing on session")
 

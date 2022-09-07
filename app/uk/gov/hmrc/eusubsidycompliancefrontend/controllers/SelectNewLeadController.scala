@@ -104,8 +104,6 @@ class SelectNewLeadController @Inject() (
         )
     }
   }
-  // TODO - implement the same check while removing and adding BE member once the guidance pages for them are designed.
-  //        May be combined them into one function.
   private def redirectTo(emailResult: EmailSendResult) = emailResult match {
     case EmailNotSent => Redirect(routes.SelectNewLeadController.emailNotVerified())
     case EmailSent => Redirect(routes.SelectNewLeadController.getLeadEORIChanged())

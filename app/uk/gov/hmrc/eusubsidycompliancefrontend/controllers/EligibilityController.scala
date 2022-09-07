@@ -56,8 +56,7 @@ class EligibilityController @Inject() (
   private val doYouClaimUrl = routes.EligibilityController.getDoYouClaim().url
   private val willYouClaimUrl = routes.EligibilityController.getWillYouClaim().url
 
-  // TODO - rename this to doYouClaimForm
-  private val customsWaiversForm = formWithSingleMandatoryField("customswaivers")
+  private val doYouClaimForm = formWithSingleMandatoryField("customswaivers")
   private val willYouClaimForm = formWithSingleMandatoryField("willyouclaim")
   private val eoriCheckForm = formWithSingleMandatoryField("eoricheck")
 
@@ -74,11 +73,11 @@ class EligibilityController @Inject() (
   }
 
   def getDoYouClaim: Action[AnyContent] = notEnrolled.async { implicit request =>
-    Ok(doYouClaimPage(customsWaiversForm)).toFuture
+    Ok(doYouClaimPage(doYouClaimForm)).toFuture
   }
 
   def postDoYouClaim: Action[AnyContent] = notEnrolled.async { implicit request =>
-    customsWaiversForm
+    doYouClaimForm
       .bindFromRequest()
       .fold(
         errors => BadRequest(doYouClaimPage(errors)).toFuture,
@@ -129,7 +128,6 @@ class EligibilityController @Inject() (
 
     def renderPage = {
       // At this stage we have an enrolment so the user must be eligible to use the service.
-      // TODO - this should already be handled by the account controller (which may be the wrong place to do this)
       val eligibilityJourney = EligibilityJourney()
         .withWillYouClaim(true)
 

@@ -93,7 +93,6 @@ class AccountController @Inject() (
   private def getOrCreateJourneys(u: UndertakingJourney = UndertakingJourney())(implicit e: EORI) =
     for {
       // At this point the user has an ECC enrolment so they must be eligible to use the service.
-      // TODO - consider providing something on the companion object e.g. EligiblityJourney.doesClaim | willClaim
       ej <- store.getOrCreate[EligibilityJourney](EligibilityJourney(doYouClaim = DoYouClaimFormPage(true.some))).toContext
       uj <- store.getOrCreate[UndertakingJourney](u).toContext
     } yield (ej, uj)
