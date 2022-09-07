@@ -33,6 +33,20 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvi
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
+/**
+ * Action builder that runs the supplied block only if the user is authenticated with GG and already enrolled for this
+ * service in ECC.
+ *
+ * If there is no enrolment we redirect the user to the first page of the new user journey since we can only assume
+ * that they are a new user to the service.
+ *
+ * @param config
+ * @param env
+ * @param authConnector
+ * @param mcc
+ * @param executionContext
+ * @param appConfig
+ */
 class EnrolledActionBuilder @Inject() (
   override val config: Configuration,
   override val env: Environment,

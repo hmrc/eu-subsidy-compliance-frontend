@@ -32,6 +32,22 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvi
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
+/**
+ * Action builder that runs the supplied block only if the user is authenticated with GG and is not enrolled for this
+ * service in ECC.
+ *
+ * If they are enrolled we redirect to / where the AccountController will figure out where to send the user according
+ * to their current state.
+ *
+ * See AccountController.getAccountPage
+ *
+ * @param config
+ * @param env
+ * @param authConnector
+ * @param mcc
+ * @param executionContext
+ * @param appConfig
+ */
 class NotEnrolledActionBuilder @Inject() (
   override val config: Configuration,
   override val env: Environment,
@@ -50,22 +66,23 @@ class NotEnrolledActionBuilder @Inject() (
   override val messagesApi: MessagesApi = mcc.messagesApi
   override val parser: BodyParser[AnyContent] = mcc.parsers.anyContent
 
+  private val retrievals = Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
+
   override def invokeBlock[A](
     request: Request[A],
     block: AuthenticatedRequest[A] => Future[Result]
   ): Future[Result] =
-    authorised()
-      .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](
-        Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
-      ) {
+    authorised().retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](retrievals) {
         case Some(credentials) ~ Some(groupId) ~ enrolments =>
-          enrolments.getEnrolment(EccEnrolmentKey) match {
-            case Some(_) => Redirect(routes.AccountController.getAccountPage()).toFuture
-            case None => block(AuthenticatedRequest(credentials.providerId, groupId, request))
-          }
+          enrolments
+            .getEnrolment(EccEnrolmentKey)
+            // Execute the block if the user is not enrolled...
+            .fold(block(AuthenticatedRequest(credentials.providerId, groupId, request))) { _ =>
+              // ...otherwise redirect to account home which will figure out where to send the user.
+              Redirect(routes.AccountController.getAccountPage()).toFuture
+            }
         case _ ~ _ => Future.failed(throw InternalError())
-      }(hc(request), executionContext)
-      .recover(handleFailure(request))
+      }(hc(request), executionContext).recover(handleFailure(request))
 
   private def handleFailure(implicit request: Request[_]): PartialFunction[Throwable, Result] = {
     case _: NoActiveSession =>

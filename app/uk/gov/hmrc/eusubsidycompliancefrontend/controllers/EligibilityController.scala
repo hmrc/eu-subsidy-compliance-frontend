@@ -53,6 +53,9 @@ class EligibilityController @Inject() (
 
   import actionBuilders._
 
+  private val doYouClaimUrl = routes.EligibilityController.getDoYouClaim().url
+  private val willYouClaimUrl = routes.EligibilityController.getWillYouClaim().url
+
   // TODO - rename this to doYouClaimForm
   private val customsWaiversForm = formWithSingleMandatoryField("customswaivers")
   private val willYouClaimForm = formWithSingleMandatoryField("willyouclaim")
@@ -115,27 +118,20 @@ class EligibilityController @Inject() (
     Ok(notEligiblePage()).toFuture
   }
 
-  // TODO - do we need this intermediate check anymore?
   private def checkEnrolment(implicit request: AuthenticatedRequest[AnyContent]) =
-    if (request.isFrom(routes.EligibilityController.getDoYouClaim().url) || request.isFrom(routes.EligibilityController.getWillYouClaim().url)) {
+    if (request.isFrom(doYouClaimUrl) || request.isFrom(willYouClaimUrl))
       Redirect(appConfig.eccEscSubscribeUrl).toFuture
-    }
-    else {
+    else
       Redirect(routes.EligibilityController.getEoriCheck().url).toFuture
-    }
 
   def getEoriCheck: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def renderPage = {
-      // TODO - reuse these URls if needed above
-      val doYouClaimUrl = routes.EligibilityController.getDoYouClaim().url
-      val willYouClaimUrl = routes.EligibilityController.getWillYouClaim().url
-
-      // Reconstruct do you / will you claim answers from referring page
+      // At this stage we have an enrolment so the user must be eligible to use the service.
+      // TODO - this should already be handled by the account controller (which may be the wrong place to do this)
       val eligibilityJourney = EligibilityJourney()
-        .withDoYouClaim(request.isFrom(doYouClaimUrl))
-        .withWillYouClaim(request.isFrom(willYouClaimUrl))
+        .withWillYouClaim(true)
 
       store.getOrCreate[EligibilityJourney](eligibilityJourney).map { journey =>
 

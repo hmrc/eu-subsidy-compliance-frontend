@@ -29,6 +29,24 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvi
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
+/**
+ * Action builder that runs the supplied block only if the user
+ *   o is authenticated with GG
+ *   o is enrolled for this service in ECC
+ *   o has a verified email address
+ *
+ * The first two conditions are checked by delegating to the EnrolledAction builder.
+ *
+ * If we are enrolled we then look for a verified email address which then determines if we run the block or not.
+ *
+ * @param config
+ * @param env
+ * @param authConnector
+ * @param emailVerificationService
+ * @param enrolledActionBuilder
+ * @param mcc
+ * @param executionContext
+ */
 class VerifiedEmailActionBuilder @Inject()(
   override val config: Configuration,
   override val env: Environment,
