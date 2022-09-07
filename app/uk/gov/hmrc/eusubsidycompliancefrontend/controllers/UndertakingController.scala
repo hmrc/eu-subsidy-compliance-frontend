@@ -55,7 +55,7 @@ class UndertakingController @Inject() (
                                         emailVerificationService: EmailVerificationService,
                                         timeProvider: TimeProvider,
                                         auditService: AuditService,
-                                        undertakingNamePage: UndertakingNamePage,
+                                        aboutUndertakingPage: AboutUndertakingPage,
                                         undertakingSectorPage: UndertakingSectorPage,
                                         confirmEmailPage: ConfirmEmailPage,
                                         inputEmailPage: InputEmailPage,
@@ -83,25 +83,26 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getUndertakingName: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getAboutUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
-      val form = journey.name.value.fold(undertakingNameForm)(name => undertakingNameForm.fill(FormValues(name)))
-      Ok(undertakingNamePage(form, journey.previous)).toFuture
+      val form = journey.about.value.fold(aboutUndertakingForm)(name => aboutUndertakingForm.fill(FormValues(name)))
+      Ok(aboutUndertakingPage(form, journey.previous)).toFuture
     }
   }
 
-  def postUndertakingName: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postAboutUndertaking: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
-        undertakingNameForm
+        aboutUndertakingForm
           .bindFromRequest()
           .fold(
-            errors => BadRequest(undertakingNamePage(errors, journey.previous)).toFuture,
-            success = form => {
+            _ => throw new IllegalStateException("Unexpected form submission"),
+            _ => {
               for {
-                updatedUndertakingJourney <- store.update[UndertakingJourney](_.setUndertakingName(form.value))
+                // We store the EORI in the undertaking name field.
+                updatedUndertakingJourney <- store.update[UndertakingJourney](_.setUndertakingName(eori))
                 redirect <- updatedUndertakingJourney.next
               } yield redirect
             }
@@ -125,7 +126,7 @@ class UndertakingController @Inject() (
             undertakingSectorPage(
               form,
               journey.previous,
-              journey.name.value.getOrElse("")
+              journey.about.value.getOrElse("")
             )
           ).toFuture
         }
@@ -141,7 +142,7 @@ class UndertakingController @Inject() (
         .fold(
           errors => {
             val result = for {
-              undertakingName <- journey.name.value.toContext
+              undertakingName <- journey.about.value.toContext
             } yield BadRequest(undertakingSectorPage(errors, journey.previous, undertakingName))
             result
               .fold(handleMissingSessionData("Undertaking Journey"))(identity)
@@ -237,7 +238,7 @@ class UndertakingController @Inject() (
               _ <- store.update[UndertakingJourney](_.setVerifiedEmail(stored.get.email))
               redirect <- if(wasSuccessful) journey.next else Future(Redirect(routes.UndertakingController.getConfirmEmail().url))
               } yield redirect
-          } else Future(Redirect(routes.UndertakingController.getUndertakingName().url))
+          } else Future(Redirect(routes.UndertakingController.getAboutUndertaking().url))
         } yield redirect
       case None => handleMissingSessionData("Undertaking Journey")
     }
@@ -248,12 +249,12 @@ class UndertakingController @Inject() (
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
         val result: OptionT[Future, Result] = for {
-          undertakingName <- journey.name.value.toContext
+          undertakingName <- journey.about.value.toContext
           undertakingSector <- journey.sector.value.toContext
           undertakingVerifiedEmail <- journey.verifiedEmail.value.toContext
         } yield Ok(cyaPage(UndertakingName(undertakingName), eori, undertakingSector, undertakingVerifiedEmail, journey.previous))
         result.fold(Redirect(journey.previous))(identity)
-      case _ => Redirect(routes.UndertakingController.getUndertakingName()).toFuture
+      case _ => Redirect(routes.UndertakingController.getAboutUndertaking()).toFuture
     }
   }
 
@@ -266,7 +267,7 @@ class UndertakingController @Inject() (
         form => {
           val result = for {
             updatedJourney <- store.update[UndertakingJourney](_.setUndertakingCYA(form.value.toBoolean)).toContext
-            undertakingName <- updatedJourney.name.value.toContext
+            undertakingName <- updatedJourney.about.value.toContext
             undertakingSector <- updatedJourney.sector.value.toContext
             undertaking = UndertakingCreate(
               name = UndertakingName(undertakingName),
@@ -294,7 +295,7 @@ class UndertakingController @Inject() (
         timeProvider.now
       )
       _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
-    } yield Redirect(routes.UndertakingController.getConfirmation(ref, undertakingJourney.name.value.getOrElse("")))
+    } yield Redirect(routes.UndertakingController.getConfirmation(ref, undertakingJourney.about.value.getOrElse("")))
 
   def getConfirmation(ref: String, name: String): Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async {
     implicit request =>
@@ -307,7 +308,7 @@ class UndertakingController @Inject() (
     confirmationForm
       .bindFromRequest()
       .fold(
-        _ => throw new IllegalStateException("value hard-coded, form hacking?"),
+        _ => throw new IllegalStateException("Unexpected form submission"),
         form =>
           store
             .update[UndertakingJourney](_.setUndertakingConfirmation(form.value.toBoolean))
@@ -327,7 +328,7 @@ class UndertakingController @Inject() (
             updatedJourney <- if (journey.isAmend) journey.toFuture else updateIsAmendState(value = true)
           } yield Ok(
             amendUndertakingPage(
-              updatedJourney.name.value.fold(handleMissingSessionData("Undertaking Name"))(UndertakingName(_)),
+              updatedJourney.about.value.fold(handleMissingSessionData("Undertaking Name"))(UndertakingName(_)),
               updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking sector")),
               routes.AccountController.getAccountPage().url
             )
@@ -348,11 +349,11 @@ class UndertakingController @Inject() (
       amendUndertakingForm
         .bindFromRequest()
         .fold(
-          _ => throw new IllegalStateException("value hard-coded, form hacking?"),
+          _ => throw new IllegalStateException("Unexpected form submission"),
           _ => {
             val result = for {
               updatedJourney <- updateIsAmendState(value = false).toContext
-              undertakingName <- updatedJourney.name.value.toContext
+              undertakingName <- updatedJourney.about.value.toContext
               undertakingSector <- updatedJourney.sector.value.toContext
               retrievedUndertaking <- escService.retrieveUndertaking(eori).toContext
               undertakingRef <- retrievedUndertaking.reference.toContext
@@ -442,17 +443,10 @@ class UndertakingController @Inject() (
     else Redirect(routes.AccountController.getAccountPage()).toFuture
 
   private def ensureUndertakingJourneyPresent(j: Option[UndertakingJourney])(f: UndertakingJourney => Future[Result]) =
-    j.fold(Redirect(routes.UndertakingController.getUndertakingName()).toFuture)(f)
+    j.fold(Redirect(routes.UndertakingController.getAboutUndertaking()).toFuture)(f)
 
-  private val undertakingNameForm: Form[FormValues] = Form(
-    mapping("undertakingName" -> mandatory("undertakingName"))(FormValues.apply)(FormValues.unapply).verifying(
-      "undertakingName.regex.error",
-      fields =>
-        fields match {
-          case a if a.value.matches(UndertakingName.regex) => true
-          case _ => false
-        }
-    )
+  private val aboutUndertakingForm: Form[FormValues] = Form(
+    mapping("continue" -> mandatory("continue"))(FormValues.apply)(FormValues.unapply)
   )
 
   private val undertakingSectorForm: Form[FormValues] = Form(

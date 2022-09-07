@@ -23,8 +23,8 @@ POST       /first-login-journey-register-eori                                   
 
 GET        /first-login-journey-incorrect-eori                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getIncorrectEori
 
-GET        /first-login-journey-name-single-undertaking                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getUndertakingName
-POST       /first-login-journey-name-single-undertaking                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postUndertakingName
+GET        /first-login-journey-about-undertaking                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAboutUndertaking
+POST       /first-login-journey-about-undertaking                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAboutUndertaking
 
 GET        /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSector
 POST       /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postSector
