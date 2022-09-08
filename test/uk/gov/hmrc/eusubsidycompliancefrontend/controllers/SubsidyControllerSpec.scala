@@ -73,10 +73,10 @@ class SubsidyControllerSpec
 
   "SubsidyControllerSpec" when {
 
-    "handling request to get report payment page" must {
+    "handling request to get reported payments page" must {
 
       def performAction() =
-        controller.getReportedPayments(FakeRequest("GET", routes.SubsidyController.getReportPayment().url))
+        controller.getReportedPayments(FakeRequest("GET", routes.SubsidyController.getReportedPayments().url))
 
       "throw technical error" when {
         val exception = new Exception("oh no")
@@ -127,7 +127,7 @@ class SubsidyControllerSpec
               val button = doc.select("form")
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               selectedOptions.isEmpty shouldBe true
-              button.attr("action") shouldBe routes.SubsidyController.postReportPayment().url
+              button.attr("action") shouldBe routes.SubsidyController.getReportedPayments().url
               doc.select("#subsidy-list").size() shouldBe 0
             }
           )
@@ -136,7 +136,7 @@ class SubsidyControllerSpec
         "user has already answered the question" in {
           test(
             nonHmrcSubsidyList.map(_.copy(subsidyUsageTransactionId = SubsidyRef("Z12345").some)),
-            SubsidyJourney(reportPayment = ReportPaymentFormPage(true.some))
+            SubsidyJourney()
           )
           checkPageIsDisplayed(
             performAction(),
@@ -161,15 +161,9 @@ class SubsidyControllerSpec
               subsidyList.select("tbody > tr > td:nth-child(6)").text() shouldBe "Change payment, dated 1 Jan 2022"
               subsidyList.select("tbody > tr > td:nth-child(7)").text() shouldBe "Remove payment, dated 1 Jan 2022"
 
-              subsidyList.select("tbody > tr > td:nth-child(6) > a").attr("href") shouldBe routes.SubsidyController
-                .getChangeSubsidyClaim("Z12345")
-                .url
               subsidyList.select("tbody > tr > td:nth-child(7) > a").attr("href") shouldBe routes.SubsidyController
                 .getRemoveSubsidyClaim("Z12345")
                 .url
-
-              val button = doc.select("form")
-              button.attr("action") shouldBe routes.SubsidyController.postReportPayment().url
             }
           )
         }
@@ -181,69 +175,6 @@ class SubsidyControllerSpec
         }
       }
 
-    }
-
-    "handling request to post report payment" must {
-
-      def performAction(data: (String, String)*) = controller.postReportPayment(
-        FakeRequest("POST", routes.SubsidyController.postReportPayment().url).withFormUrlEncodedBody(data: _*)
-      )
-
-      "throw technical error" when {
-
-        "call to update subsidy journey fails" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[SubsidyJourney](identity, eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction("reportPayment" -> "true")))
-
-        }
-      }
-
-      "display the form error" when {
-
-        "nothing is submitted" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockTimeToday(currentDate)
-            mockRetrieveSubsidy(subsidyRetrieveWithDates)(undertakingSubsidies.toFuture)
-            mockTimeToday(currentDate)
-          }
-          checkFormErrorIsDisplayed(
-            performAction(),
-            messageFromMessageKey("reportPayment.title"),
-            messageFromMessageKey("reportPayment.error.required")
-          )
-        }
-      }
-
-      "redirect to the next page" when {
-        def testRedirection(input: String, nextCall: String): Unit = {
-          inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[SubsidyJourney](identity, eori1)(Right(subsidyJourney))
-          }
-          checkIsRedirect(performAction(("reportPayment", input)), nextCall)
-        }
-
-        "user selected Yes" in {
-          testRedirection("true", routes.SubsidyController.getClaimDate().url)
-        }
-
-        "user selects No" in {
-          testRedirection("false", routes.AccountController.getAccountPage().url)
-        }
-      }
-
-      "redirect to the account home page" when {
-        "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(() => performAction())
-        }
-      }
     }
 
     "handling request to get claim date page" must {
@@ -301,7 +232,7 @@ class SubsidyControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(None))
           }
-          checkIsRedirect(performAction(), routes.SubsidyController.getReportPayment().url)
+          checkIsRedirect(performAction(), routes.SubsidyController.getReportedPayments().url)
 
         }
       }
@@ -410,7 +341,6 @@ class SubsidyControllerSpec
         "user hasn't already answered the question - EUR input field should be empty" in {
           test(
             SubsidyJourney(
-              reportPayment = ReportPaymentFormPage(true.some),
               claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
             ),
             claimAmountEurosId
@@ -420,7 +350,6 @@ class SubsidyControllerSpec
         "user hasn't already answered the question - GBP input field should be empty" in {
           test(
             SubsidyJourney(
-              reportPayment = ReportPaymentFormPage(true.some),
               claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
             ),
             claimAmountPoundsId
@@ -430,7 +359,6 @@ class SubsidyControllerSpec
         "user has already entered a EUR amount" in {
           test(
             SubsidyJourney(
-              reportPayment = ReportPaymentFormPage(true.some),
               claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
               claimAmount = ClaimAmountFormPage(value = claimAmountEuros.some)
             ),
@@ -441,7 +369,6 @@ class SubsidyControllerSpec
         "user has already entered a GBP amount" in {
           test(
             SubsidyJourney(
-              reportPayment = ReportPaymentFormPage(true.some),
               claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some),
               claimAmount = ClaimAmountFormPage(value = claimAmountPounds.some)
             ),
@@ -510,7 +437,6 @@ class SubsidyControllerSpec
         "call to update the subsidy journey fails" in {
 
           val subsidyJourney = SubsidyJourney(
-            reportPayment = ReportPaymentFormPage(true.some),
             claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
           )
 
@@ -535,7 +461,6 @@ class SubsidyControllerSpec
         def displayError(data: (String, String)*)(errorMessageKey: String): Unit = {
 
           val subsidyJourneyOpt = SubsidyJourney(
-            reportPayment = ReportPaymentFormPage(true.some),
             claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
           ).some
           inSequence {
@@ -607,7 +532,6 @@ class SubsidyControllerSpec
 
       "redirect to the add claim eori page if an EUR amount is entered" in {
         val subsidyJourney = SubsidyJourney(
-          reportPayment = ReportPaymentFormPage(true.some),
           claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
         )
 
@@ -635,7 +559,6 @@ class SubsidyControllerSpec
 
     "redirect to the confirm converted amount page if a GBP amount is entered" in {
       val subsidyJourney = SubsidyJourney(
-        reportPayment = ReportPaymentFormPage(true.some),
         claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
       )
 
@@ -864,7 +787,7 @@ class SubsidyControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(None))
           }
-          checkIsRedirect(performAction(), routes.SubsidyController.getReportPayment().url)
+          checkIsRedirect(performAction(), routes.SubsidyController.getReportedPayments().url)
         }
       }
     }
@@ -1177,7 +1100,7 @@ class SubsidyControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(None))
           }
-          checkIsRedirect(performAction(), routes.SubsidyController.getReportPayment().url)
+          checkIsRedirect(performAction(), routes.SubsidyController.getReportedPayments().url)
         }
       }
 
@@ -1400,7 +1323,7 @@ class SubsidyControllerSpec
           }
           checkIsRedirect(
             performAction("removeSubsidyClaim" -> "true")("TID1234"),
-            routes.SubsidyController.getReportPayment().url
+            routes.SubsidyController.getReportedPayments().url
           )
 
         }
@@ -1412,7 +1335,7 @@ class SubsidyControllerSpec
           }
           checkIsRedirect(
             performAction("removeSubsidyClaim" -> "false")("TID1234"),
-            routes.SubsidyController.getReportPayment().url
+            routes.SubsidyController.getReportedPayments().url
           )
 
         }
@@ -1561,7 +1484,7 @@ class SubsidyControllerSpec
 
           checkIsRedirect(
             performAction("cya" -> "true"),
-            routes.SubsidyController.getReportPayment().url
+            routes.SubsidyController.getReportedPayments().url
           )
         }
 
@@ -1593,7 +1516,7 @@ class SubsidyControllerSpec
 
           checkIsRedirect(
             performAction("cya" -> "true"),
-            routes.SubsidyController.getReportPayment().url
+            routes.SubsidyController.getReportedPayments().url
           )
         }
       }
@@ -1603,70 +1526,6 @@ class SubsidyControllerSpec
           testLeadOnlyRedirect(() => performAction())
         }
       }
-    }
-
-    "handling request to get change subsidy" should {
-
-      val transactionID = "TID1234"
-
-      def performAction() = controller.getChangeSubsidyClaim(transactionID)(
-        FakeRequest("GET", routes.SubsidyController.getChangeSubsidyClaim(transactionID).url)
-      )
-
-      val subsidyJourneyWithReportPaymentForm =
-        subsidyJourney.copy(
-          reportPayment = ReportPaymentFormPage(Some(true)),
-          claimAmount = ClaimAmountFormPage(ClaimAmount(EUR, nonHmrcSubsidyAmount.toString).some),
-          existingTransactionId = Some(SubsidyRef(transactionID))
-        )
-
-      "throw technical error" when {
-
-        "esc service returns an error retrieving subsidies" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockTimeToday(currentDate)
-            mockRetrieveSubsidy(subsidyRetrieveWithDates)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "store returns an error when attempting to store subsidy journey" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockTimeToday(currentDate)
-            mockRetrieveSubsidy(subsidyRetrieveWithDates)(undertakingSubsidies1.toFuture)
-            mockPut[SubsidyJourney](subsidyJourneyWithReportPaymentForm, eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-      }
-
-      "redirect to check answers page" in {
-        inSequence {
-          mockAuthWithNecessaryEnrolmentWithValidEmail()
-          mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-          mockTimeToday(currentDate)
-          mockRetrieveSubsidy(subsidyRetrieveWithDates)(undertakingSubsidies1.toFuture)
-          mockPut[SubsidyJourney](subsidyJourneyWithReportPaymentForm, eori1)(
-            Right(subsidyJourneyWithReportPaymentForm)
-          )
-        }
-
-        val result = performAction()
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers().url)
-      }
-
-      "redirect to the account home page" when {
-        "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(() => performAction())
-        }
-      }
-
     }
 
   }

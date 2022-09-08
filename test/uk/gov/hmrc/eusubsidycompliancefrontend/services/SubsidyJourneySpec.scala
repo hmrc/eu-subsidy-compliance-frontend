@@ -34,13 +34,6 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
 
   "SubsidyJourney" should {
 
-    "return an updated instance with the specified value when setReportPayment is called" in {
-      val value = true
-      SubsidyJourney().setReportPayment(value) shouldBe SubsidyJourney(reportPayment =
-        ReportPaymentFormPage(value.some)
-      )
-    }
-
     "return an updated instance with the specified value when setClaimAmount is called" in {
       val value = claimAmountPounds
       SubsidyJourney().setClaimAmount(value) shouldBe SubsidyJourney(claimAmount = ClaimAmountFormPage(value.some))
@@ -85,7 +78,7 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
         implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, "/")
         val result = SubsidyJourney().next
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(routes.SubsidyController.getReportPayment().url)
+        redirectLocation(result) should contain(routes.SubsidyController.getClaimDate().url)
       }
 
       "skip the confirm converted amount page if an amount in Euros is entered" in {
@@ -135,9 +128,9 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
 
     "when previous is called" should {
 
-      "return URI to the account home page if current page is report payment" in {
+      "return URI to the account home page if current page is claim date" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
-          FakeRequest(GET, routes.SubsidyController.getReportPayment().url)
+          FakeRequest(GET, routes.SubsidyController.getClaimDate().url)
         SubsidyJourney().previous shouldBe routes.AccountController.getAccountPage().url
       }
 
@@ -182,22 +175,22 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
         result shouldBe routes.SubsidyController.getClaimDate().url
       }
 
-      "return URI to report payment page if referer URL not in SubsidyJourney on the amend journey" in {
+      "return URI to claim date page if referer URL not in SubsidyJourney on the amend journey" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getCheckAnswers().url)
             .withHeaders("Referer" -> routes.AccountController.getAccountPage().url)
 
         val result = SubsidyJourney(existingTransactionId = SubsidyRef("foo").some).previous
-        result shouldBe routes.SubsidyController.getReportPayment().url
+        result shouldBe routes.SubsidyController.getClaimDate().url
       }
 
-      "return URI to report payment page if referer URL could not be parsed on the amend journey" in {
+      "return URI to claim date page if referer URL could not be parsed on the amend journey" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getCheckAnswers().url)
             .withHeaders("Referer" -> "this is not a valid url")
 
         val result = SubsidyJourney(existingTransactionId = SubsidyRef("foo").some).previous
-        result shouldBe routes.SubsidyController.getReportPayment().url
+        result shouldBe routes.SubsidyController.getClaimDate().url
       }
 
       "return to the previous page otherwise" in {

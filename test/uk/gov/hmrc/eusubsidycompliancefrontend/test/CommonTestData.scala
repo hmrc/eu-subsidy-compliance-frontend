@@ -109,7 +109,6 @@ object CommonTestData {
     claimAmount = ClaimAmountFormPage(claimAmountEuros.some),
     addClaimEori = AddClaimEoriFormPage(optionalEORI.some),
     claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some),
-    reportPayment = ReportPaymentFormPage(true.some)
   )
 
   val subsidyUpdate = SubsidyUpdate(
