@@ -29,15 +29,14 @@
 
 @(form: Form[_], previous: Journey.Uri, neverSubmitted: Boolean, neverSubmittedTaxYearDate: String, lastSubmitted: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"noClaimNotification"}
-
 @hasSubmittedTitle = @{messages(s"$key.never-submitted,title", lastSubmitted)}
 @neverSubmittedTitle = @{messages(s"$key.has-submitted.title", neverSubmittedTaxYearDate)}
 @hasSubmittedHtml = {
     @P(messages("noClaimNotification.has-submitted.p1", lastSubmitted))
+    @P(messages("noClaimNotification.has-submitted.p2"))
 }
 @neverSubmittedHtml = {
-    @P(messages("noClaimNotification.never-submitted.p1", neverSubmittedTaxYearDate))
-    @P(messages("noClaimNotification.never-submitted.p2"))
+    @P(messages("noClaimNotification.never-submitted.p1"))
 }
 
 @layout(
@@ -94,7 +93,7 @@
             )
         ))
 
-        @button("common.submit")
+        @button("common.accept")
         <div><a href="@controllers.routes.AccountController.getAccountPage().url" class="govuk-link">@messages("common.go-account-home")</a></div>
     }
 
