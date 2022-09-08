@@ -17,7 +17,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @this(
     layout: Layout,
@@ -27,16 +27,33 @@
     govukCheckboxes : GovukCheckboxes
 )
 
-@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], previous: Journey.Uri, neverSubmitted: Boolean, neverSubmittedTaxYearDate: String, lastSubmitted: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"noClaimNotification"}
-@title = @{messages(s"$key.title")}
+
+@hasSubmittedTitle = @{messages(s"$key.never-submitted,title", lastSubmitted)}
+@neverSubmittedTitle = @{messages(s"$key.has-submitted.title", neverSubmittedTaxYearDate)}
+@hasSubmittedHtml = {
+    @P(messages("noClaimNotification.has-submitted.p1", lastSubmitted))
+}
+@neverSubmittedHtml = {
+    @P(messages("noClaimNotification.never-submitted.p1", neverSubmittedTaxYearDate))
+    @P(messages("noClaimNotification.never-submitted.p2"))
+}
 
 @layout(
-    pageTitle = Some(title),
+    pageTitle = if(neverSubmitted){Some(neverSubmittedTitle)} else {Some(hasSubmittedTitle)},
     backLinkEnabled = true,
     backLink = Some(previous),
     hasErrors = form.hasErrors
 ) {
+    
+    <!-- 
+        TODO
+        # Remove undertaking name passed to view - no longer required
+        # Pass in the boolean neverSubmitted
+        # Pass neverReportedPaymentDate
+        # Pass lastSubmitted date
+    -->
 
     @formHelper(action = controllers.routes.NoClaimNotificationController.postNoClaimNotification()) {
         @form.errors.map { err =>
@@ -51,7 +68,13 @@
             ))
         }
 
-        @H1(title)
+        @if(neverSubmitted) {
+            @H1(neverSubmittedTitle)
+            @neverSubmittedHtml
+        } else {
+            @H1(hasSubmittedTitle)
+            @hasSubmittedHtml
+        }
 
         @govukCheckboxes(Checkboxes(
             name = "value",
@@ -62,7 +85,7 @@
             ))} else None,
             items = Seq(
                 CheckboxItem(
-                    content = Text(messages(s"$key.value")),
+                    content = if(neverSubmitted) { Text(messages(s"$key.never-submitted.label", neverSubmittedTaxYearDate)) } else { Text(messages(s"$key.has-submitted.label")) },
                     value = "true",
                     name = Some(key),
                     checked = form.data.exists(_._2 == "true"),

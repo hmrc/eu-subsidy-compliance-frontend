@@ -397,8 +397,15 @@ removeYourselfBusinessEntity.title = Do you want to remove yourself from this si
 removeYourselfBusinessEntity.hint = Select yes to remove yourself from the single undertaking. All receipts will remain with the undertaking administrator until you join another undertaking, or create a new undertaking.
 removeYourselfBusinessEntity.error.required = Select yes if you wish to remove yourself from this single undertaking.
 
-noClaimNotification.title = Notify HMRC that your undertaking has not received de minimis aid payments (less Customs Duty waivers) in the past 90 days
-noClaimNotification.value = I declare that this single undertaking has not received de minimis aid payments (less Customs Duty waivers) for this period
+noClaimNotification.never-submitted.title = Tell us your undertaking has not received any non-customs subsidy payments since {0}
+noClaimNotification.never-submitted.p1 = You last reported a non-customs subsidy payment on {0}.
+noClaimNotification.never-submitted.p2 = If you don’t have any payments to report since then, you must tell us every 90 days.
+noClaimNotification.never-submitted.label = This undertaking has not received any non-customs subsidy payments since {0}.
+
+noClaimNotification.has-submitted.title = Tell us your undertaking doesn’t have any payments to report
+noClaimNotification.has-submitted.p1 = You last reported a non-customs subsidy payment on {0}.
+noClaimNotification.has-submitted.label = This undertaking has not received any non-customs subsidy payments since {0}.
+
 noClaimNotification.error.required = Select if you want to declare you have not received de minimis aid in the past 90 days
 
 #noClaimConfirmation

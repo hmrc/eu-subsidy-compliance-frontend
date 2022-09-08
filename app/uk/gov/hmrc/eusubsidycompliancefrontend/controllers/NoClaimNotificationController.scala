@@ -49,7 +49,7 @@ class NoClaimNotificationController @Inject() (
   def getNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       val previous = routes.AccountController.getAccountPage().url
-      Ok(noClaimNotificationPage(noClaimForm, previous)).toFuture
+      Ok(noClaimNotificationPage(noClaimForm, previous, true, "[todo: neverReportedPayment date string]", "[todo: lastSubmitted date string]")).toFuture
     }
   }
 
@@ -76,8 +76,9 @@ class NoClaimNotificationController @Inject() (
       noClaimForm
         .bindFromRequest()
         .fold(
-          errors => BadRequest(noClaimNotificationPage(errors, previous)).toFuture,
-          _ => handleValidNoClaim()
+          // todo: hasSubmitted boolean, neverSubmittedTaxYearDate string & lastSubmitted string hardcoded here
+          errors => BadRequest(noClaimNotificationPage(errors, previous, true, "[todo: neverReportedPayment date string]", "[todo: lastSubmitted date string]")).toFuture,
+          handleValidNoClaim
         )
     }
   }
