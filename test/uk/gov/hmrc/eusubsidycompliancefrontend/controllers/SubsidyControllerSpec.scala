@@ -1019,7 +1019,7 @@ class SubsidyControllerSpec
             performAction(),
             messageFromMessageKey("add-claim-public-authority.title"),
             { doc =>
-              doc.select("#claim-public-authority-hint").text() shouldBe "For example, Invest NI, NI Direct."
+              doc.select("#claim-public-authority-hint").text() shouldBe "For example, Invest NI, NI Direct"
               val button = doc.select("form")
               button.attr("action") shouldBe routes.SubsidyController.postAddClaimPublicAuthority().url
             }
