@@ -92,27 +92,20 @@ class SubsidyController @Inject() (
 
   def getReportedPayments: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
-      // TODO - simplify this
-      val result: OptionT[Future, Future[Result]] = for {
-        reference <- undertaking.reference.toContext
-      } yield {
-        val currentDate = timeProvider.today
+      val currentDate = timeProvider.today
 
-        retrieveSubsidies(reference).map { subsidies =>
-          Ok(
-            reportedPaymentsPage(
-              subsidies,
-              undertaking,
-              currentDate.toEarliestTaxYearStart,
-              currentDate.toTaxYearEnd.minusYears(1),
-              currentDate.toTaxYearStart,
-              routes.AccountController.getAccountPage().url
-            )
+      retrieveSubsidies(undertaking.reference).map { subsidies =>
+        Ok(
+          reportedPaymentsPage(
+            subsidies,
+            undertaking,
+            currentDate.toEarliestTaxYearStart,
+            currentDate.toTaxYearEnd.minusYears(1),
+            currentDate.toTaxYearStart,
+            routes.AccountController.getAccountPage().url
           )
-        }
+        )
       }
-
-      result.foldF(handleMissingSessionData("Subsidy Journey"))(identity)
     }
   }
 
