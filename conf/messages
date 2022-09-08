@@ -269,23 +269,19 @@ non-lead-account-homepage.ul2-li2 = Leave the undertaking
 non-lead-account-homepage.link2 = View financial dashboard for {0}
 non-lead-account-homepage.link3 = Remove yourself from this single undertaking
 
-reportPayment.title=Report a de minimis aid payment (less Customs Duty waivers)
-reportPayment.p1=You have not yet reported any payments.
-reportPayment.p2=You will need to add the details of any payments of de minimis aid (less Customs Duty waivers) you received for:
-reportPayment.ul1-li1=the previous 2 tax years (from {0} to {1})
-reportPayment.ul1-li2=the current tax year (from {0} to date)
-reportPayment.p3=<strong>All</strong> payments need to be reported, even if you have already posted a form for the current tax year, and the previous two.
-reportPayment.p4=You will not need details of the Customs Duty waiver as HMRC will already have this information.
-reportPayment.table.caption=Payments received
-reportPayment.table.head.date=Date
-reportPayment.table.head.amount=Amount
-reportPayment.table.head.eori=EORI number
-reportPayment.table.head.public-authority=Public authority
-reportPayment.table.head.ref=Your reference
-reportPayment.legend=Do you have a de minimis aid payment (less Customs Duty waiver) to report?
-reportPayment.button = Report a payment
-reportPayment.error.required=Select yes if you have a de minimis aid payment (less Customs Duty waiver) to report?
-reportPayment.payment-dated = payment, dated
+reportedPayments.title=Payments report history
+reportedPayments.p1=You have not yet reported any payments.
+reportedPayments.p2=You will need to add the details of any payments of de minimis aid (less Customs Duty waivers) you received for:
+reportedPayments.ul1-li1=the previous 2 tax years (from {0} to {1})
+reportedPayments.ul1-li2=the current tax year (from {0} to date)
+reportedPayments.p3=<strong>All</strong> payments need to be reported, even if you have already posted a form for the current tax year, and the previous two.
+reportedPayments.p4=You will not need details of the Customs Duty waiver as HMRC will already have this information.
+reportedPayments.table.head.date=Date
+reportedPayments.table.head.amount=Amount
+reportedPayments.table.head.eori=EORI number
+reportedPayments.table.head.public-authority=Public authority
+reportedPayments.table.head.ref=Your reference
+reportedPayments.payment-dated = payment, dated
 
 # Add Claim Amount Form
 add-claim-amount.title = What currency was the payment received in?

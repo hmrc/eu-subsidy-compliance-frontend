@@ -37,7 +37,7 @@
 @layout(
     pageTitle = Some(messages("subsidy.remove.title")),
     backLinkEnabled = true,
-    backLink = Some(controllers.routes.SubsidyController.getReportPayment().url),
+    backLink = Some(controllers.routes.SubsidyController.getReportedPayments().url),
     hasErrors = form.hasErrors
 ) {
     @H1(messages("subsidy.remove.title"))

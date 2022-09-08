@@ -76,7 +76,7 @@ class SubsidyControllerSpec
     "handling request to get report payment page" must {
 
       def performAction() =
-        controller.getReportPayment(FakeRequest("GET", routes.SubsidyController.getReportPayment().url))
+        controller.getReportedPayments(FakeRequest("GET", routes.SubsidyController.getReportPayment().url))
 
       "throw technical error" when {
         val exception = new Exception("oh no")

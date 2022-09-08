@@ -70,7 +70,7 @@ case class SubsidyJourney(
     else if (isAmend)
       if (convertedClaimAmountConfirmation.isCurrentPage) claimAmount.uri
       else if (!cya.isCurrentPage) cya.uri
-      else extractAndParseRefererUrl.getOrElse(routes.SubsidyController.getReportPayment().url)
+      else extractAndParseRefererUrl.getOrElse(routes.SubsidyController.getReportedPayments().url)
     else
       if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.uri
       else super.previous
@@ -134,9 +134,6 @@ object SubsidyJourney {
 
     private val controller = routes.SubsidyController
 
-    case class ReportPaymentFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getReportPayment().url
-    }
     case class ClaimDateFormPage(value: Form[DateFormValues] = None) extends FormPage[DateFormValues] {
       def uri = controller.getClaimDate().url
     }
@@ -159,7 +156,6 @@ object SubsidyJourney {
       def uri = controller.getCheckAnswers().url
     }
 
-    object ReportPaymentFormPage { implicit val reportPaymentFormPageFormat: OFormat[ReportPaymentFormPage] = Json.format }
     object ClaimDateFormPage { implicit val claimDateFormPageFormat: OFormat[ClaimDateFormPage] = Json.format }
     object ClaimAmountFormPage { implicit val claimAmountFormPageFormat: OFormat[ClaimAmountFormPage] = Json.format }
     object ConvertedClaimAmountConfirmationPage { implicit val convertedClaimAmountConfirmationPageFormat: OFormat[ConvertedClaimAmountConfirmationPage] = Json.format }

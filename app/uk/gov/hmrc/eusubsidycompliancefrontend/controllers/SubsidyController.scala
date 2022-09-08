@@ -53,7 +53,7 @@ class SubsidyController @Inject() (
                                     override val store: Store,
                                     override val escService: EscService,
                                     auditService: AuditService,
-                                    reportPaymentPage: ReportPaymentPage,
+                                    reportedPaymentsPage: ReportedPaymentsPage,
                                     addClaimEoriPage: AddClaimEoriPage,
                                     addClaimAmountPage: AddClaimAmountPage,
                                     addClaimDatePage: AddClaimDatePage,
@@ -90,10 +90,8 @@ class SubsidyController @Inject() (
 
   private val claimDateForm: Form[DateFormValues] = ClaimDateFormProvider(timeProvider).form
 
-  def getReportPayment: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def getReportedPayments: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
-      implicit val eori: EORI = request.eoriNumber
-
       // TODO - simplify this
       val result: OptionT[Future, Future[Result]] = for {
         reference <- undertaking.reference.toContext
@@ -102,7 +100,7 @@ class SubsidyController @Inject() (
 
         retrieveSubsidies(reference).map { subsidies =>
           Ok(
-            reportPaymentPage(
+            reportedPaymentsPage(
               subsidies,
               undertaking,
               currentDate.toEarliestTaxYearStart,
@@ -367,7 +365,7 @@ class SubsidyController @Inject() (
               auditService.sendEvent[NonCustomsSubsidyAdded](
                 AuditEvent.NonCustomsSubsidyAdded(request.authorityId, eori, ref, journey, currentDate)
               )
-        } yield Redirect(routes.SubsidyController.getReportPayment())
+        } yield Redirect(routes.SubsidyController.getReportedPayments())
 
         result.getOrElse(sys.error("Error processing subsidy cya form submission"))
       }
@@ -411,7 +409,7 @@ class SubsidyController @Inject() (
             formWithErrors => handleRemoveSubsidyFormError(formWithErrors, transactionId, undertaking),
             formValue =>
               if (formValue.value.isTrue) handleRemoveSubsidyValidAnswer(transactionId, undertaking)
-              else Redirect(routes.SubsidyController.getReportPayment()).toFuture
+              else Redirect(routes.SubsidyController.getReportedPayments()).toFuture
           )
       }
   }
@@ -464,7 +462,7 @@ class SubsidyController @Inject() (
       _ = auditService.sendEvent[NonCustomsSubsidyRemoved](
         AuditEvent.NonCustomsSubsidyRemoved(request.authorityId, reference)
       )
-    } yield Redirect(routes.SubsidyController.getReportPayment())
+    } yield Redirect(routes.SubsidyController.getReportedPayments())
 
     result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
   }
@@ -477,7 +475,7 @@ class SubsidyController @Inject() (
           if (journey.isEligibleForStep) f(journey)
           else Redirect(journey.previous)
         }
-        .getOrElse(Redirect(routes.SubsidyController.getReportPayment().url))
+        .getOrElse(Redirect(routes.SubsidyController.getReportedPayments().url))
 
     }
 

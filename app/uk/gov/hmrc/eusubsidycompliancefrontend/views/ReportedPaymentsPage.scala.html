@@ -43,7 +43,7 @@
     currentTaxYearStart: LocalDate,
    previous: Journey.Uri
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@key = @{"reportPayment"}
+@key = @{"reportedPayments"}
 @title = @{messages(s"$key.title")}
 
 @responsiveTableClass = @{s"report-payment-table"}
@@ -87,14 +87,6 @@
                             TableRow(content = sub.traderReference.fold[Content](HtmlContent("&nbsp;"))(Text)),
                             TableRow(
                                 content = HtmlContent(
-                                    s"""<a class='govuk-link' href=${controllers.routes.SubsidyController.getChangeSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>
-                                    ${messages("common.change")}<span class="govuk-visually-hidden"> ${messages("reportPayment.payment-dated")} ${sub.allocationDate.toShortDisplayFormat}</span>
-                                    </a>""".stripMargin
-                                ),
-                                classes="responsive-nopad"
-                            ),
-                            TableRow(
-                                content = HtmlContent(
                                     s"""<a class='govuk-link' href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>
                                     ${messages("common.remove")}<span class="govuk-visually-hidden"> ${messages("reportPayment.payment-dated")} ${sub.allocationDate.toShortDisplayFormat}</span>
                                     </a>""".stripMargin
@@ -109,11 +101,8 @@
                         HeadCell(content = Text(messages(eori))),
                         HeadCell(content = Text(messages(publicAuthority))),
                         HeadCell(content = Text(messages(ref))),
-                        HeadCell(content = HtmlContent(s"""<span class='govuk-visually-hidden'>${messages("common.change")}</span>""")),
                         HeadCell(content = HtmlContent(s"""<span  class='govuk-visually-hidden'>${messages("common.remove")}</span>""")),
-                    )),
-                    caption = Some(messages(s"$key.table.caption")),
-                    captionClasses = "govuk-table__caption--m"
+                    ))
                 )
             )
         } else {
