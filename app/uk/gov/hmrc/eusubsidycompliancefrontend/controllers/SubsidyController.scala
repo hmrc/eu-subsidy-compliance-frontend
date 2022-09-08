@@ -407,20 +407,6 @@ class SubsidyController @Inject() (
       }
   }
 
-  def getChangeSubsidyClaim(transactionId: String): Action[AnyContent] = verifiedEmail.async {
-    implicit request =>
-      withLeadUndertaking { undertaking =>
-        implicit val eori: EORI = request.eoriNumber
-        val result = for {
-          reference <- undertaking.reference.toContext
-          nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
-          subsidyJourney = SubsidyJourney.fromNonHmrcSubsidy(nonHmrcSubsidy)
-          _ <- store.put(subsidyJourney).toContext
-        } yield Redirect(routes.SubsidyController.getCheckAnswers())
-        result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
-      }
-  }
-
   private def getNonHmrcSubsidy(
     transactionId: String,
     reference: UndertakingRef

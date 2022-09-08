@@ -53,7 +53,7 @@ case class SubsidyJourney(
     cya
   )
 
-  val isAmend: Boolean = existingTransactionId.nonEmpty
+  val isAmend: Boolean = traderRef.value.nonEmpty
 
   override def next(implicit r: Request[_]): Future[Result] =
     if (isAmend)

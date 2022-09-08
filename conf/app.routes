@@ -90,8 +90,6 @@ POST       /lead-undertaking-check-your-answers-subsidy                         
 GET        /lead-undertaking-remove-non-customs-subsidy/:transactionId                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getRemoveSubsidyClaim(transactionId)
 POST       /lead-undertaking-remove-non-customs-subsidy/:transactionId                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postRemoveSubsidyClaim(transactionId)
 
-GET        /lead-undertaking-update-non-customs-subsidy/:transactionId                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getChangeSubsidyClaim(transactionId)
-
 GET        /lead-undertaking-promote-business-entity-as-lead                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.getSelectNewLead
 POST       /lead-undertaking-promote-business-entity-as-lead                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.postSelectNewLead
 
