@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.actions
+package uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests
 
-import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import play.api.mvc.{Request, WrappedRequest}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
-import javax.inject.{Inject, Singleton}
-
-@Singleton
-class EscInitialActionBuilder @Inject() (
-  escNewRequestActionBuilder: EscInitialRequestActionBuilder
-) {
-
-  val withAuthenticatedUser: ActionBuilder[AuthenticatedEscRequest, AnyContent] = escNewRequestActionBuilder
-}
+// User has GG Auth and ESC Enrolment
+case class AuthenticatedEnrolledRequest[A](
+  authorityId: String,
+  groupId: String,
+  request: Request[A],
+  eoriNumber: EORI
+) extends WrappedRequest[A](request)

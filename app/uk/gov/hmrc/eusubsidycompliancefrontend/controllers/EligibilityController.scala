@@ -16,10 +16,9 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import play.api.data.Form
-import play.api.data.Forms.mapping
 import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder, EscNoEnrolmentActionBuilders}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -40,11 +39,9 @@ class EligibilityController @Inject() (
                                         doYouClaimPage: DoYouClaimPage,
                                         willYouClaimPage: WillYouClaimPage,
                                         notEligiblePage: NotEligiblePage,
-                                        notEligibleToLeadPage: NotEligibleToLeadPage,
                                         checkEoriPage: CheckEoriPage,
                                         incorrectEoriPage: IncorrectEoriPage,
-                                        escInitialActionBuilders: EscInitialActionBuilder,
-                                        escNonEnrolmentActionBuilders: EscNoEnrolmentActionBuilders,
+                                        actionBuilders: ActionBuilders,
                                         emailService: EmailService,
                                         escService: EscService,
                                         override val store: Store
@@ -54,85 +51,85 @@ class EligibilityController @Inject() (
 ) extends BaseController(mcc)
     with FormHelpers {
 
-  import escInitialActionBuilders._
-  import escNonEnrolmentActionBuilders._
+  import actionBuilders._
 
-  private val customsWaiversForm: Form[FormValues] = Form(
-    mapping("customswaivers" -> mandatory("customswaivers"))(FormValues.apply)(FormValues.unapply)
-  )
+  private val doYouClaimUrl = routes.EligibilityController.getDoYouClaim().url
+  private val willYouClaimUrl = routes.EligibilityController.getWillYouClaim().url
 
-  private val willYouClaimForm: Form[FormValues] = Form(
-    mapping("willyouclaim" -> mandatory("willyouclaim"))(FormValues.apply)(FormValues.unapply)
-  )
+  private val doYouClaimForm = formWithSingleMandatoryField("customswaivers")
+  private val willYouClaimForm = formWithSingleMandatoryField("willyouclaim")
+  private val eoriCheckForm = formWithSingleMandatoryField("eoricheck")
 
-  private val eoriCheckForm: Form[FormValues] = Form(
-    mapping("eoricheck" -> mandatory("eoricheck"))(FormValues.apply)(FormValues.unapply)
-  )
-
-  def firstEmptyPage: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def firstEmptyPage: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store
-      .get[EligibilityJourney]
-      .map(_.getOrElse(handleMissingSessionData("Eligibility Journey")))
-      .map { eligibilityJourney =>
-        eligibilityJourney.firstEmpty.fold(Redirect(routes.UndertakingController.firstEmptyPage()))(identity)
+
+    store.get[EligibilityJourney].toContext
+      .map(_.firstEmpty.getOrElse(Redirect(routes.UndertakingController.firstEmptyPage())))
+      .getOrElse {
+        // If we get here it must be the first time we've hit the service with an enrolment since there is nothing
+        // in the journey store. In this case we route the user to the eoriCheck page.
+        Redirect(routes.EligibilityController.getEoriCheck())
       }
   }
 
-  def getDoYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
-    val form = customsWaiversForm
-    Ok(doYouClaimPage(form)).toFuture
+  def getDoYouClaim: Action[AnyContent] = notEnrolled.async { implicit request =>
+    Ok(doYouClaimPage(doYouClaimForm)).toFuture
   }
 
-  def postDoYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
-    customsWaiversForm
+  def postDoYouClaim: Action[AnyContent] = notEnrolled.async { implicit request =>
+    doYouClaimForm
       .bindFromRequest()
       .fold(
         errors => BadRequest(doYouClaimPage(errors)).toFuture,
         form => {
-          EligibilityJourney()
-            .withDoYouClaim(form.value.isTrue)
+          if (form.value.isTrue) checkEnrolment
+          else EligibilityJourney()
+            .withDoYouClaim(false)
             .next
         }
       )
   }
 
-  def getWillYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
+  def getWillYouClaim: Action[AnyContent] = notEnrolled.async { implicit request =>
     Ok(willYouClaimPage(willYouClaimForm, routes.EligibilityController.getDoYouClaim().url)).toFuture
   }
 
-  def postWillYouClaim: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
+  def postWillYouClaim: Action[AnyContent] = notEnrolled.async { implicit request =>
     willYouClaimForm
       .bindFromRequest()
       .fold(
         errors => BadRequest(willYouClaimPage(errors, routes.EligibilityController.getDoYouClaim().url)).toFuture,
         form => {
-          // Set up representative state in EligibilityJourney before we call next.
-          EligibilityJourney()
-            // We are on the will you claim page so the user must have entered false on the do you claim form
-            .withDoYouClaim(false)
-            .withWillYouClaim(form.value.isTrue)
-            .next
+          if (form.value.isTrue) checkEnrolment
+          else
+            // Set up representative state in EligibilityJourney before we call next.
+            EligibilityJourney()
+              // We are on the will you claim page so the user must have entered false on the do you claim form
+              .withDoYouClaim(false)
+              .withWillYouClaim(false)
+              .next
         }
       )
 
   }
 
-  def getNotEligible: Action[AnyContent] = withNonVerfiedEmail.async { implicit request =>
+  def getNotEligible: Action[AnyContent] = notEnrolled.async { implicit request =>
     Ok(notEligiblePage()).toFuture
   }
 
-  def getEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  private def checkEnrolment(implicit request: AuthenticatedRequest[AnyContent]) =
+    if (request.isFrom(doYouClaimUrl) || request.isFrom(willYouClaimUrl))
+      Redirect(appConfig.eccEscSubscribeUrl).toFuture
+    else
+      Redirect(routes.EligibilityController.getEoriCheck().url).toFuture
+
+  def getEoriCheck: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def renderPage = {
-      val doYouClaimUrl = routes.EligibilityController.getDoYouClaim().url
-      val willYouClaimUrl = routes.EligibilityController.getWillYouClaim().url
-
-      // Reconstruct do you / will you claim answers from referring page
+      // At this stage we have an enrolment so the user must be eligible to use the service.
       val eligibilityJourney = EligibilityJourney()
-        .withDoYouClaim(request.isFrom(doYouClaimUrl))
-        .withWillYouClaim(request.isFrom(willYouClaimUrl))
+        .withWillYouClaim(true)
 
       store.getOrCreate[EligibilityJourney](eligibilityJourney).map { journey =>
 
@@ -157,7 +154,7 @@ class EligibilityController @Inject() (
 
   }
 
-  def postEoriCheck: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postEoriCheck: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     eoriCheckForm
       .bindFromRequest()
@@ -174,7 +171,7 @@ class EligibilityController @Inject() (
       )
   }
 
-  def getIncorrectEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getIncorrectEori: Action[AnyContent] = enrolled.async { implicit request =>
     Ok(incorrectEoriPage()).toFuture
   }
 

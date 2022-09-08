@@ -26,7 +26,7 @@ import play.api.mvc.MessagesControllerComponents
 import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, redirectLocation, status}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
@@ -127,7 +127,7 @@ class LeadOnlyUndertakingSupportSpec
       .expects(eori, *)
       .returning(result)
 
-  private def authorisedRequestForEori(e: EORI) = AuthenticatedEscRequest(
+  private def authorisedRequestForEori(e: EORI) = AuthenticatedEnrolledRequest(
     "Foo",
     "Bar",
     FakeRequest(),

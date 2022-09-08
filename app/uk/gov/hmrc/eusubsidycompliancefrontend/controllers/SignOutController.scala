@@ -20,7 +20,7 @@ import com.google.inject.{Inject, Singleton}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscVerifiedEmailActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.BusinessEntity
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
@@ -37,7 +37,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class SignOutController @Inject() (
                                     mcc: MessagesControllerComponents,
-                                    escCDSActionBuilder: EscVerifiedEmailActionBuilders,
+                                    actionBuilders: ActionBuilders,
                                     escService: EscService,
                                     emailService: EmailService,
                                     auditService: AuditService,
@@ -49,13 +49,13 @@ class SignOutController @Inject() (
     with I18nSupport
     with Logging {
 
-  import escCDSActionBuilder._
+  import actionBuilders._
 
   val signOutFromTimeout: Action[AnyContent] = Action { implicit request =>
     Ok(timedOutPage()).withNewSession
   }
 
-  val signOut: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
+  val signOut: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
       escService.retrieveUndertaking(eori).flatMap {
         case Some(undertaking) =>

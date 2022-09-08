@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.mvc.Result
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
@@ -36,7 +36,7 @@ trait LeadOnlyUndertakingSupport { this: FrontendController =>
   // If there is no undertaking, or the user is not the lead we redirect to the account home page.
   def withLeadUndertaking[A](
     f: Undertaking => Future[Result]
-  )(implicit r: AuthenticatedEscRequest[A]): Future[Result] = {
+  )(implicit r: AuthenticatedEnrolledRequest[A]): Future[Result] = {
     implicit val eori: EORI = r.eoriNumber
 
     escService.retrieveUndertaking(eori).toContext

@@ -16,11 +16,9 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import play.api.data.Form
-import play.api.data.Forms.mapping
 import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.{EscInitialActionBuilder, EscVerifiedEmailActionBuilders}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
@@ -38,8 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class BecomeLeadController @Inject() (
                                        mcc: MessagesControllerComponents,
-                                       escCDSActionBuilder: EscVerifiedEmailActionBuilders,
-                                       escInitialActionBuilders: EscInitialActionBuilder,
+                                       actionBuilders: ActionBuilders,
                                        store: Store,
                                        escService: EscService,
                                        emailService: EmailService,
@@ -52,10 +49,9 @@ class BecomeLeadController @Inject() (
   executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import escCDSActionBuilder._
-  import escInitialActionBuilders._
+  import actionBuilders._
 
-  def getBecomeLeadEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def getBecomeLeadEori: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     for {
       journey <- store.get[BecomeLeadJourney]
@@ -67,7 +63,7 @@ class BecomeLeadController @Inject() (
   private def becomeLeadResult(
     becomeLeadJourneyOpt: Option[BecomeLeadJourney],
     undertakingOpt: Option[Undertaking]
-  )(implicit request: AuthenticatedEscRequest[_], eori: EORI): Future[Result] =
+  )(implicit request: AuthenticatedEnrolledRequest[_], eori: EORI): Future[Result] =
     (becomeLeadJourneyOpt, undertakingOpt) match {
       case (Some(journey), Some(undertaking)) =>
         val form = journey.becomeLeadEori.value.fold(becomeAdminForm)(e => becomeAdminForm.fill(FormValues(e.toString)))
@@ -80,7 +76,7 @@ class BecomeLeadController @Inject() (
         throw new IllegalStateException("missing undertaking name")
     }
 
-  def postBecomeLeadEori: Action[AnyContent] = withAuthenticatedUser.async { implicit request =>
+  def postBecomeLeadEori: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     becomeAdminForm
       .bindFromRequest()
@@ -112,7 +108,7 @@ class BecomeLeadController @Inject() (
     * @return
     */
 
-  def getAcceptPromotionTerms: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
+  def getAcceptPromotionTerms: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[BecomeLeadJourney].flatMap {
       case Some(journey) =>
@@ -125,14 +121,14 @@ class BecomeLeadController @Inject() (
     }
   }
 
-  def postAcceptPromotionTerms: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
+  def postAcceptPromotionTerms: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .update[BecomeLeadJourney](j => j.copy(acceptTerms = j.acceptTerms.copy(value = Some(true))))
       .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getPromotionConfirmation())))
   }
 
-  def getPromotionConfirmation: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
+  def getPromotionConfirmation: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[BecomeLeadJourney].flatMap {
       case Some(journey) =>
@@ -171,14 +167,13 @@ class BecomeLeadController @Inject() (
     }
   }
 
-  def getPromotionCleanup: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
+  def getPromotionCleanup: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .update[BecomeLeadJourney](_ => BecomeLeadJourney())
       .flatMap(_ => Future(Redirect(routes.AccountController.getAccountPage())))
   }
 
-  private val becomeAdminForm: Form[FormValues] = Form(
-    mapping("becomeAdmin" -> mandatory("becomeAdmin"))(FormValues.apply)(FormValues.unapply)
-  )
+  private val becomeAdminForm = formWithSingleMandatoryField("becomeAdmin")
+
 }

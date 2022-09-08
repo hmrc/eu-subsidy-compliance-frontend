@@ -16,12 +16,14 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.implicits.catsSyntaxOptionId
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.EscInitialActionBuilder
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEscRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.DoYouClaimFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -39,7 +41,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AccountController @Inject() (
   mcc: MessagesControllerComponents,
-  escInitialActionBuilders: EscInitialActionBuilder,
+  actionBuilders: ActionBuilders,
   store: Store,
   escService: EscService,
   leadAccountPage: LeadAccountPage,
@@ -50,12 +52,12 @@ class AccountController @Inject() (
   executionContext: ExecutionContext
 ) extends BaseController(mcc) {
 
-  import escInitialActionBuilders._
+  import actionBuilders._
 
   private val dueDays = 90
 
   def getAccountPage: Action[AnyContent] =
-    withAuthenticatedUser.async { implicit request =>
+    enrolled.async { implicit request =>
       implicit val eori: EORI = request.eoriNumber
       escService.retrieveUndertaking(eori) flatMap {
         case Some(u) => handleExistingUndertaking(u)
@@ -69,14 +71,15 @@ class AccountController @Inject() (
         Redirect(routes.EligibilityController.firstEmptyPage())
       case (_, uj) if !uj.isComplete =>
         Redirect(routes.UndertakingController.firstEmptyPage())
-      case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity())
+      case _ =>
+        Redirect(routes.BusinessEntityController.getAddBusinessEntity())
     }
     result.getOrElse(handleMissingSessionData("Account Home - Undertaking not created -"))
   }
 
   private def handleExistingUndertaking(
     u: Undertaking
-  )(implicit r: AuthenticatedEscRequest[AnyContent], e: EORI): Future[Result] = {
+  )(implicit r: AuthenticatedEnrolledRequest[AnyContent], e: EORI): Future[Result] = {
     val result = for {
       _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(u))
       retrieveRequest = SubsidyRetrieve(u.reference, None)
@@ -89,11 +92,12 @@ class AccountController @Inject() (
 
   private def getOrCreateJourneys(u: UndertakingJourney = UndertakingJourney())(implicit e: EORI) =
     for {
-      ej <- store.getOrCreate[EligibilityJourney](EligibilityJourney()).toContext
+      // At this point the user has an ECC enrolment so they must be eligible to use the service.
+      ej <- store.getOrCreate[EligibilityJourney](EligibilityJourney(doYouClaim = DoYouClaimFormPage(true.some))).toContext
       uj <- store.getOrCreate[UndertakingJourney](u).toContext
     } yield (ej, uj)
 
-  private def renderAccountPage(undertaking: Undertaking, undertakingSubsidies: UndertakingSubsidies)(implicit r: AuthenticatedEscRequest[AnyContent]) = {
+  private def renderAccountPage(undertaking: Undertaking, undertakingSubsidies: UndertakingSubsidies)(implicit r: AuthenticatedEnrolledRequest[AnyContent]) = {
     implicit val eori: EORI = r.eoriNumber
 
     val currentDay = timeProvider.today
