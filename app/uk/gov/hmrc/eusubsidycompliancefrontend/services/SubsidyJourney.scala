@@ -33,7 +33,6 @@ import scala.concurrent.Future
 import scala.util.Try
 
 case class SubsidyJourney(
-  reportPayment: ReportPaymentFormPage = ReportPaymentFormPage(),
   claimDate: ClaimDateFormPage = ClaimDateFormPage(),
   claimAmount: ClaimAmountFormPage = ClaimAmountFormPage(),
   convertedClaimAmountConfirmation: ConvertedClaimAmountConfirmationPage = ConvertedClaimAmountConfirmationPage(),
@@ -45,7 +44,6 @@ case class SubsidyJourney(
 ) extends Journey {
 
   override def steps: Array[FormPage[_]] = Array(
-    reportPayment,
     claimDate,
     claimAmount,
     convertedClaimAmountConfirmation,
@@ -68,7 +66,7 @@ case class SubsidyJourney(
       else super.next
 
   override def previous(implicit request: Request[_]): Journey.Uri =
-    if (reportPayment.isCurrentPage) routes.AccountController.getAccountPage().url
+    if (claimDate.isCurrentPage) routes.AccountController.getAccountPage().url
     else if (isAmend)
       if (convertedClaimAmountConfirmation.isCurrentPage) claimAmount.uri
       else if (!cya.isCurrentPage) cya.uri
@@ -95,7 +93,6 @@ case class SubsidyJourney(
   // claim amount in Euros.
   private def shouldSkipCurrencyConversion: Boolean = claimAmountInEuros
 
-  def setReportPayment(v: Boolean): SubsidyJourney = this.copy(reportPayment = reportPayment.copy(value = v.some))
   def setClaimAmount(c: ClaimAmount): SubsidyJourney = this.copy(claimAmount = claimAmount.copy(value = c.some))
   def setConvertedClaimAmount(c: ClaimAmount): SubsidyJourney =
     this.copy(convertedClaimAmountConfirmation = convertedClaimAmountConfirmation.copy(value = c.some))
@@ -119,7 +116,6 @@ object SubsidyJourney {
 
   def fromNonHmrcSubsidy(nonHmrcSubsidy: NonHmrcSubsidy): SubsidyJourney =
     SubsidyJourney(
-      reportPayment = ReportPaymentFormPage(true.some),
       claimDate = ClaimDateFormPage(DateFormValues.fromDate(nonHmrcSubsidy.allocationDate).some),
       claimAmount = ClaimAmountFormPage(ClaimAmount(EUR, nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.toString()).some),
       addClaimEori = AddClaimEoriFormPage(getAddClaimEORI(nonHmrcSubsidy.businessEntityIdentifier).some),

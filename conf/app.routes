@@ -65,7 +65,6 @@ GET        /business-enterprise-remove-yourself-from-undertaking                
 POST       /business-enterprise-remove-yourself-from-undertaking                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postRemoveYourselfBusinessEntity
 
 GET        /lead-undertaking-report-de-minimis-aid-payment                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPayment
-POST       /lead-undertaking-report-de-minimis-aid-payment                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPayment
 
 GET        /lead-undertaking-add-eori-business-claimed-payment                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimEori
 POST       /lead-undertaking-add-eori-business-claimed-payment                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimEori

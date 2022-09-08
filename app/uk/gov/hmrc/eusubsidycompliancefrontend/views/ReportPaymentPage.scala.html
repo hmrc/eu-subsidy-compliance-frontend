@@ -35,7 +35,7 @@
   govukTable: GovukTable
 )
 
-@(form: Form[_],
+@(
     subsidies: Option[UndertakingSubsidies] = None,
     undertaking: Undertaking,
     earliestAllowedDate: LocalDate,
@@ -57,21 +57,7 @@
   pageTitle = Some(title),
   backLinkEnabled = true,
   backLink = Some(previous),
-  hasErrors = form.hasErrors
 ) {
-    @formHelper(action = controllers.routes.SubsidyController.postReportPayment) {
-        @form.errors.map { err =>
-            @govukErrorSummary(ErrorSummary(
-                errorList = Seq(
-                    ErrorLink(
-                        href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(s"${err.key}.${err.message}")}")
-                    )
-                ),
-                title = Text(messages("common.error.summary.title"))
-            ))
-        }
-
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 @H1(title)
@@ -150,36 +136,6 @@
                     @P(messages(s"$key.p3"))
                     @P(messages(s"$key.p4"))
 
-                    @govukRadios(Radios(
-                        classes = "govuk-radios--inline",
-                        errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                            content = Text(messages(s"$key.error.required"))
-                        ))} else None,
-                        fieldset = Some(Fieldset(
-                            legend = Some(Legend(
-                                content = Text(messages(s"$key.legend")),
-                                classes = "govuk-fieldset__legend--m",
-                                isPageHeading = false
-                            ))
-                        )),
-                        idPrefix = Some(key),
-                        name = key,
-                        items = Seq(
-                            RadioItem(
-                                content = Text(messages("common.yes")),
-                                value = Some("true"),
-                                checked = form.data.exists(_._2 == "true")
-                            ),
-                            RadioItem(
-                                content = Text(messages("common.no")),
-                                value = Some("false"),
-                                checked = form.data.exists(_._2 == "false")
-                            )
-                        )
-                    ))
-
-                    @button("common.continue.only")
                 </div>
             </div>
-        }
-    }
+}

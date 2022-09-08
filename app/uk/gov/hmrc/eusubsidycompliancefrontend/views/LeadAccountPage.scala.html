@@ -93,7 +93,7 @@
     ))
 
     <ul class="govuk-list govuk-list--spaced">
-      <li><a class="govuk-link" href="@routes.SubsidyController.getReportPayment()">@messages("lead-account-homepage.ul1-li1")</a></li>
+      <li><a class="govuk-link" href="@routes.SubsidyController.getClaimDate()">@messages("lead-account-homepage.ul1-li1")</a></li>
       <li><a class="govuk-link" href="@routes.NoClaimNotificationController.getNoClaimNotification()">@messages("lead-account-homepage.ul1-li2")</a></li>
     </ul>
     
@@ -108,9 +108,7 @@
 
     @H2(messages("lead-account-homepage.h2-3"), Some("govuk-heading-m govuk-!-margin-top-8"))
     <ul class="govuk-list govuk-list--spaced">
-      <!-- TODO
-      <li><a class="govuk-link" href="#">@messages("lead-account-homepage.ul2-li1")</a> [todo: View non-customs subsidy payments reported]</li>
-      -->
+      <li><a class="govuk-link" href="@routes.SubsidyController.getReportPayment()">@messages("lead-account-homepage.ul2-li1")</a></li>
       <li><a class="govuk-link" href="@routes.FinancialDashboardController.getFinancialDashboard()">@messages("lead-account-homepage.ul2-li2")</a></li>
     </ul>
 

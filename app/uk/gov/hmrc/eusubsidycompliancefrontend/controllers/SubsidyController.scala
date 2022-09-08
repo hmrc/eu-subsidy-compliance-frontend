@@ -94,25 +94,21 @@ class SubsidyController @Inject() (
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
+      // TODO - simplify this
       val result: OptionT[Future, Future[Result]] = for {
-        journey <- store.getOrCreate[SubsidyJourney](SubsidyJourney()).toContext
         reference <- undertaking.reference.toContext
       } yield {
-        val form = journey.reportPayment.value
-          .fold(reportPaymentForm)(bool => reportPaymentForm.fill(FormValues(bool.toString)))
-
         val currentDate = timeProvider.today
 
         retrieveSubsidies(reference).map { subsidies =>
           Ok(
             reportPaymentPage(
-              form,
               subsidies,
               undertaking,
               currentDate.toEarliestTaxYearStart,
               currentDate.toTaxYearEnd.minusYears(1),
               currentDate.toTaxYearStart,
-              journey.previous
+              routes.AccountController.getAccountPage().url
             )
           )
         }
@@ -131,25 +127,6 @@ class SubsidyController @Inject() (
       .retrieveSubsidy(SubsidyRetrieve(r, searchRange))
       .map(Option(_))
       .fallbackTo(Option.empty.toFuture)
-  }
-
-  def postReportPayment: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    withLeadUndertaking { undertaking =>
-      implicit val eori: EORI = request.eoriNumber
-      val previous = routes.AccountController.getAccountPage().url
-      reportPaymentForm
-        .bindFromRequest()
-        .fold(
-          formWithErrors => handleReportPaymentFormError(previous, undertaking, formWithErrors),
-          form =>
-            for {
-              journey <- store.update[SubsidyJourney](_.setReportPayment(form.value.toBoolean))
-              redirect <-
-                if (form.value.isTrue) journey.next
-                else Redirect(routes.AccountController.getAccountPage()).toFuture
-            } yield redirect
-        )
-    }
   }
 
   def getClaimAmount: Action[AnyContent] = verifiedEmail.async { implicit request =>
@@ -492,28 +469,7 @@ class SubsidyController @Inject() (
     result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
   }
 
-  private def handleReportPaymentFormError(
-    previous: String,
-    undertaking: Undertaking,
-    formWithErrors: Form[FormValues]
-  )(implicit request: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] =
-    retrieveSubsidies(undertaking.reference).map { subsidies =>
-      val currentDate = timeProvider.today
-      BadRequest(
-        reportPaymentPage(
-          formWithErrors,
-          subsidies,
-          undertaking,
-          currentDate.toEarliestTaxYearStart,
-          currentDate.toTaxYearEnd.minusYears(1),
-          currentDate.toTaxYearStart,
-          previous
-        )
-      )
-
-    }
-
-    protected def renderFormIfEligible(f: SubsidyJourney => Result)(implicit r: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
+    protected def renderFormIfEligible(f: SubsidyJourney => Result)(implicit r: AuthenticatedEscRequest[AnyContent]): Future[Result] = {
       implicit val eori: EORI = r.eoriNumber
 
       store.get[SubsidyJourney].toContext
