@@ -29,7 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimAmountFormProvider, C
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{NonCustomsSubsidyAdded, NonCustomsSubsidyRemoved, NonCustomsSubsidyUpdated}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{NonCustomsSubsidyAdded, NonCustomsSubsidyRemoved}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, TraderRef, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -70,7 +70,6 @@ class SubsidyController @Inject() (
 
   import actionBuilders._
 
-  private val reportPaymentForm: Form[FormValues] = formWithSingleMandatoryField("reportPayment")
   private val removeSubsidyClaimForm: Form[FormValues] = formWithSingleMandatoryField("removeSubsidyClaim")
   private val cyaForm: Form[FormValues] = formWithSingleMandatoryField("cya")
 
@@ -233,65 +232,6 @@ class SubsidyController @Inject() (
         } yield converted.some
       case EUR => Future.successful(None)
     }
-
-<<<<<<< HEAD
-  def getClaimDate: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    withLeadUndertaking { _ =>
-      renderFormIfEligible { journey =>
-        val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
-        Ok(addClaimDatePage(form, journey.previous))
-      }
-    }
-  }
-
-
-  def postClaimDate: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    withLeadUndertaking { _ =>
-      implicit val eori: EORI = request.eoriNumber
-
-      processFormSubmission[SubsidyJourney] { journey =>
-        claimDateForm
-          .bindFromRequest()
-          .fold(
-            formWithErrors => BadRequest(addClaimDatePage(formWithErrors, journey.previous)).toContext,
-            form =>
-              store.update[SubsidyJourney](_.setClaimDate(form))
-                .flatMap(_.next)
-                .toContext
-          )
-      }
-    }
-  }
-||||||| parent of 1d9a847f (ESC-700 SubsidyJourney tests now pass following journey changes)
-  def getClaimDate: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
-    withLeadUndertaking { _ =>
-      renderFormIfEligible { journey =>
-        val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
-        Ok(addClaimDatePage(form, journey.previous))
-      }
-    }
-  }
-
-
-  def postClaimDate: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
-    withLeadUndertaking { _ =>
-      implicit val eori: EORI = request.eoriNumber
-
-      processFormSubmission[SubsidyJourney] { journey =>
-        claimDateForm
-          .bindFromRequest()
-          .fold(
-            formWithErrors => BadRequest(addClaimDatePage(formWithErrors, journey.previous)).toContext,
-            form =>
-              store.update[SubsidyJourney](_.setClaimDate(form))
-                .flatMap(_.next)
-                .toContext
-          )
-      }
-    }
-  }
-=======
->>>>>>> 1d9a847f (ESC-700 SubsidyJourney tests now pass following journey changes)
 
   def getAddClaimEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
@@ -499,10 +439,10 @@ class SubsidyController @Inject() (
     result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
   }
 
-    protected def renderFormIfEligible(f: SubsidyJourney => Result)(implicit r: AuthenticatedEscRequest[AnyContent]): Future[Result] = {
+    protected def renderFormIfEligible(f: SubsidyJourney => Result)(implicit r: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
       implicit val eori: EORI = r.eoriNumber
 
-      store.get[SubsidyJourney].toContext
+      store.getOrCreate[SubsidyJourney](SubsidyJourney()).toContext
         .map { journey =>
           if (journey.isEligibleForStep) f(journey)
           else Redirect(journey.previous)

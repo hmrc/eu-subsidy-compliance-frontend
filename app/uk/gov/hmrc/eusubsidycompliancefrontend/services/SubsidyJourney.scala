@@ -53,26 +53,35 @@ case class SubsidyJourney(
     cya
   )
 
-  val isAmend: Boolean = traderRef.value.nonEmpty
+  // TODO - revert to val
+  def isAmend: Boolean =
+    traderRef.value.nonEmpty
 
   override def next(implicit r: Request[_]): Future[Result] =
     if (isAmend)
-      if (shouldSkipCurrencyConversion) Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
-      else if (claimAmount.isCurrentPage && !shouldSkipCurrencyConversion) Redirect(routes.SubsidyController.getConfirmClaimAmount()).toFuture
-      else if (convertedClaimAmountConfirmation.isCurrentPage) Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
-      else super.next
-    else
-      if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion) Redirect(routes.SubsidyController.getAddClaimEori()).toFuture
-      else super.next
+      if (shouldSkipCurrencyConversion)
+        Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
+      else if (claimAmount.isCurrentPage && !shouldSkipCurrencyConversion)
+        Redirect(routes.SubsidyController.getConfirmClaimAmount()).toFuture
+      else if (convertedClaimAmountConfirmation.isCurrentPage)
+        Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
+      else {
+        // TODO - this can supersede the else condition above
+        Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
+      } else
+      if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion)
+        Redirect(routes.SubsidyController.getAddClaimEori()).toFuture
+      else
+        super.next
 
   override def previous(implicit request: Request[_]): Journey.Uri =
-    if (claimDate.isCurrentPage) routes.AccountController.getAccountPage().url
-    else if (isAmend)
+    if (isAmend)
       if (convertedClaimAmountConfirmation.isCurrentPage) claimAmount.uri
       else if (!cya.isCurrentPage) cya.uri
       else extractAndParseRefererUrl.getOrElse(routes.AccountController.getAccountPage().url)
     else
-      if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.uri
+      if (claimDate.isCurrentPage) routes.AccountController.getAccountPage().url
+      else if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.uri
       else super.previous
 
   private def extractAndParseRefererUrl(implicit request: Request[_]): Option[String] =
