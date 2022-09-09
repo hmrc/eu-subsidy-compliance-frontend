@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyNilReturn
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyUpdate}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyUpdate}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyUpdate, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyRetrieve, SubsidyUpdate}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EscService, NilReturnJourney, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -33,7 +33,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 
-import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,7 +45,6 @@ class NoClaimNotificationController @Inject() (
                                                 auditService: AuditService,
                                                 timeProvider: TimeProvider,
                                                 noClaimNotificationPage: NoClaimNotificationPage,
-                                                undertakingSubsidies: UndertakingSubsidies
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
@@ -54,20 +52,33 @@ class NoClaimNotificationController @Inject() (
 
   def getNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
+      retrieveSubsidies(undertaking.reference).toContext
+        .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
+          val previous = routes.AccountController.getAccountPage().url
+          val today = timeProvider.today
+          val startDate = today.toEarliestTaxYearStart
+          val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
+            undertaking,
+            undertakingSubsidies,
+            today.toEarliestTaxYearStart,
+            today.toTaxYearEnd
+          )
 
-      val previous = routes.AccountController.getAccountPage().url
-      val today = timeProvider.today
-      val startDate = today.toEarliestTaxYearStart
-      val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
-        undertaking,
-        undertakingSubsidies,
-        today.toEarliestTaxYearStart,
-        today.toTaxYearEnd
-      )
-
-      // todo: neverSubmitted boolean, neverSubmittedTaxYearDate string & lastSubmitted string hardcoded here
-      Ok(noClaimNotificationPage(noClaimForm, previous, false, "[todo: neverReportedPayment date string]", "[todo: lastSubmitted date string]")).toFuture
+          // todo: neverSubmitted boolean, neverSubmittedTaxYearDate string & lastSubmitted string hardcoded here
+          Ok(noClaimNotificationPage(noClaimForm, previous, false, "[todo: neverReportedPayment date string]", "[todo: lastSubmitted date string]")).toFuture
+        }
     }
+  }
+
+  private def retrieveSubsidies(r: UndertakingRef)(implicit request: AuthenticatedEnrolledRequest[AnyContent]) = {
+    implicit val eori: EORI = request.eoriNumber
+
+    val searchRange = timeProvider.today.toSearchRange.some
+
+    escService
+      .retrieveSubsidy(SubsidyRetrieve(r, searchRange))
+      .map(Option(_))
+      .fallbackTo(Option.empty.toFuture)
   }
 
   def postNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
