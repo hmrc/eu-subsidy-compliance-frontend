@@ -23,12 +23,17 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyNilReturn
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyUpdate}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyUpdate}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyUpdate, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EscService, NilReturnJourney, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 
+import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,7 +45,8 @@ class NoClaimNotificationController @Inject() (
                                                 override val escService: EscService,
                                                 auditService: AuditService,
                                                 timeProvider: TimeProvider,
-                                                noClaimNotificationPage: NoClaimNotificationPage
+                                                noClaimNotificationPage: NoClaimNotificationPage,
+                                                undertakingSubsidies: UndertakingSubsidies
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
@@ -48,7 +54,17 @@ class NoClaimNotificationController @Inject() (
 
   def getNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
+
       val previous = routes.AccountController.getAccountPage().url
+      val today = timeProvider.today
+      val startDate = today.toEarliestTaxYearStart
+      val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
+        undertaking,
+        undertakingSubsidies,
+        today.toEarliestTaxYearStart,
+        today.toTaxYearEnd
+      )
+
       // todo: neverSubmitted boolean, neverSubmittedTaxYearDate string & lastSubmitted string hardcoded here
       Ok(noClaimNotificationPage(noClaimForm, previous, false, "[todo: neverReportedPayment date string]", "[todo: lastSubmitted date string]")).toFuture
     }
