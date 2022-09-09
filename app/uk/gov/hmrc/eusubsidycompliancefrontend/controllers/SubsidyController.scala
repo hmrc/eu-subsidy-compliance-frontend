@@ -408,15 +408,9 @@ class SubsidyController @Inject() (
           currentDate = timeProvider.today
           _ <- escService.createSubsidy(toSubsidyUpdate(journey, ref, currentDate)).toContext
           _ <- store.put(SubsidyJourney()).toContext
-          _ =
-            if (journey.isAmend)
-              auditService.sendEvent[NonCustomsSubsidyUpdated](
-                AuditEvent.NonCustomsSubsidyUpdated(request.authorityId, ref, journey, currentDate)
-              )
-            else
-              auditService.sendEvent[NonCustomsSubsidyAdded](
-                AuditEvent.NonCustomsSubsidyAdded(request.authorityId, eori, ref, journey, currentDate)
-              )
+          _ = auditService.sendEvent[NonCustomsSubsidyAdded](
+            AuditEvent.NonCustomsSubsidyAdded(request.authorityId, eori, ref, journey, currentDate)
+          )
         } yield Redirect(routes.SubsidyController.getReportedPayments())
 
         result.getOrElse(sys.error("Error processing subsidy cya form submission"))

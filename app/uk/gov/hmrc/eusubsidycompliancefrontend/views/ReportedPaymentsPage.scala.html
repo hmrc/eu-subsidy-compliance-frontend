@@ -88,7 +88,7 @@
                             TableRow(
                                 content = HtmlContent(
                                     s"""<a class='govuk-link' href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>
-                                    ${messages("common.remove")}<span class="govuk-visually-hidden"> ${messages("reportPayment.payment-dated")} ${sub.allocationDate.toShortDisplayFormat}</span>
+                                    ${messages("common.remove")}<span class="govuk-visually-hidden"> ${messages("reportedPayments.payment-dated")} ${sub.allocationDate.toShortDisplayFormat}</span>
                                     </a>""".stripMargin
                                 ),
                                 classes="responsive-nopad"

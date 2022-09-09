@@ -248,6 +248,7 @@ object AuditEvent {
     implicit val writes: Writes[NonCustomsSubsidyRemoved] = Json.writes
   }
 
+  // TODO - remove this - we don't support updating claims anymore
   final case class NonCustomsSubsidyUpdated(
     ggDetails: String,
     undertakingReference: UndertakingRef,
