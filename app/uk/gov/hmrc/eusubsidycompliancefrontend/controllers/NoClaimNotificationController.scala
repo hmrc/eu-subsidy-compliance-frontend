@@ -71,7 +71,6 @@ class NoClaimNotificationController @Inject() (
             today.toTaxYearEnd
           )
 
-          // todo: neverSubmitted boolean, neverSubmittedTaxYearDate string & lastSubmitted string hardcoded here
           Ok(
             noClaimNotificationPage(
               noClaimForm,
@@ -98,31 +97,48 @@ class NoClaimNotificationController @Inject() (
 
   def postNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
-      implicit val eori: EORI = request.eoriNumber
-      val previous = routes.AccountController.getAccountPage().url
+      retrieveSubsidies(undertaking.reference).toContext
+        .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
+          implicit val eori = request.eoriNumber
 
-      def handleValidNoClaim(): Future[Result] = {
-        val nilSubmissionDate = timeProvider.today.plusDays(1)
-        val result = for {
-          reference <- undertaking.reference.toContext
-          _ <- store.update[NilReturnJourney](e => e.copy(displayNotification = true)).toContext
-          _ <- escService.createSubsidy(SubsidyUpdate(reference, NilSubmissionDate(nilSubmissionDate))).toContext
-          _ = auditService
-            .sendEvent(
-              NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate)
+          val previous = routes.AccountController.getAccountPage().url
+
+          implicit val localDateOrdering: Ordering[LocalDate] = Ordering.by(_.toEpochDay)
+          val lastSubmitted: Option[LocalDate] = undertakingSubsidies.nonHMRCSubsidyUsage.map(_.submissionDate) match {
+            case Nil => undertaking.lastSubsidyUsageUpdt
+            case  a  => Some(a.max)
+          }
+          val today = timeProvider.today
+          val startDate = today.toEarliestTaxYearStart
+          val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
+            undertaking,
+            undertakingSubsidies,
+            today.toEarliestTaxYearStart,
+            today.toTaxYearEnd
+          )
+
+          def handleValidNoClaim(form: FormValues): Future[Result] = {
+            val nilSubmissionDate = timeProvider.today.plusDays(1)
+            val result = for {
+              reference <- undertaking.reference.toContext
+              _ <- store.update[NilReturnJourney](e => e.copy(displayNotification = true)).toContext
+              _ <- escService.createSubsidy(SubsidyUpdate(reference, NilSubmissionDate(nilSubmissionDate))).toContext
+              _ = auditService
+                .sendEvent(
+                  NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate)
+                )
+            } yield Redirect(routes.AccountController.getAccountPage())
+
+            result.getOrElse(handleMissingSessionData("Undertaking ref"))
+          }
+
+          noClaimForm
+            .bindFromRequest()
+            .fold(
+              errors => BadRequest(noClaimNotificationPage(errors, previous, undertakingSubsidies.hasNeverSubmitted, startDate.toDisplayFormat, lastSubmitted.map(_.toDisplayFormat))).toFuture,
+              handleValidNoClaim
             )
-        } yield Redirect(routes.AccountController.getAccountPage())
-
-        result.getOrElse(handleMissingSessionData("Undertaking ref"))
       }
-
-      noClaimForm
-        .bindFromRequest()
-        .fold(
-          // todo: hasSubmitted boolean, neverSubmittedTaxYearDate string & lastSubmitted string hardcoded here
-          errors => BadRequest(noClaimNotificationPage(errors, previous, true, "[todo: neverReportedPayment date string]", "[todo: lastSubmitted date string]")).toFuture,
-          handleValidNoClaim
-        )
     }
   }
 
