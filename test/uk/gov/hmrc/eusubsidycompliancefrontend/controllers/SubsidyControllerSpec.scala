@@ -79,8 +79,6 @@ class SubsidyControllerSpec
         controller.getReportedPayments(FakeRequest("GET", routes.SubsidyController.getReportedPayments().url))
 
       "throw technical error" when {
-        val exception = new Exception("oh no")
-
         "call to get undertaking from EIS fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail()
@@ -177,7 +175,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
+            mockGetOrCreate[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -191,7 +189,7 @@ class SubsidyControllerSpec
           inAnyOrder {
             mockAuthWithNecessaryEnrolmentWithValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
+            mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -214,15 +212,6 @@ class SubsidyControllerSpec
           testLeadOnlyRedirect(performAction)
         }
 
-        "call to get sessions returns none, to subsidy start journey" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(None))
-          }
-          checkIsRedirect(performAction(), routes.SubsidyController.getReportedPayments().url)
-
-        }
       }
     }
 
@@ -715,7 +704,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
+            mockGetOrCreate[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -728,7 +717,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+            mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -771,15 +760,6 @@ class SubsidyControllerSpec
       "redirect" when {
         "user is not an undertaking lead, to the account home page" in {
           testLeadOnlyRedirect(performAction)
-        }
-
-        "the call to get subsidy journey comes back empty, to subsidy start journey page" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(None))
-          }
-          checkIsRedirect(performAction(), routes.SubsidyController.getReportedPayments().url)
         }
       }
     }
@@ -928,11 +908,11 @@ class SubsidyControllerSpec
       ))
 
       "display the page" when {
-        "happy path" in {
+        "a valid request is made" in {
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(Some(subsidyJourney)))
+            mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -1026,7 +1006,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
+            mockGetOrCreate[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -1039,7 +1019,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+            mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -1092,14 +1072,6 @@ class SubsidyControllerSpec
           testLeadOnlyRedirect(performAction)
         }
 
-        "the call to get subsidy journey comes back empty, to Start of the journey" in {
-          inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(None))
-          }
-          checkIsRedirect(performAction(), routes.SubsidyController.getReportedPayments().url)
-        }
       }
 
     }
