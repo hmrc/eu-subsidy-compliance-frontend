@@ -32,7 +32,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 
+import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -55,6 +57,11 @@ class NoClaimNotificationController @Inject() (
       retrieveSubsidies(undertaking.reference).toContext
         .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
           val previous = routes.AccountController.getAccountPage().url
+          implicit val localDateOrdering: Ordering[LocalDate] = Ordering.by(_.toEpochDay)
+          val lastSubmitted: Option[LocalDate] = undertakingSubsidies.nonHMRCSubsidyUsage.map(_.submissionDate) match {
+            case Nil => undertaking.lastSubsidyUsageUpdt
+            case  a  => Some(a.max)
+          }
           val today = timeProvider.today
           val startDate = today.toEarliestTaxYearStart
           val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
@@ -65,7 +72,15 @@ class NoClaimNotificationController @Inject() (
           )
 
           // todo: neverSubmitted boolean, neverSubmittedTaxYearDate string & lastSubmitted string hardcoded here
-          Ok(noClaimNotificationPage(noClaimForm, previous, false, "[todo: neverReportedPayment date string]", "[todo: lastSubmitted date string]")).toFuture
+          Ok(
+            noClaimNotificationPage(
+              noClaimForm,
+              previous,
+              undertakingSubsidies.hasNeverSubmitted, 
+              startDate.toDisplayFormat,
+              lastSubmitted.map(_.toDisplayFormat),
+            )
+          ).toFuture
         }
     }
   }
