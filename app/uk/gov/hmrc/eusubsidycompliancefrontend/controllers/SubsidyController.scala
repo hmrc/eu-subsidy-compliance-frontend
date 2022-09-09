@@ -120,6 +120,34 @@ class SubsidyController @Inject() (
       .fallbackTo(Option.empty.toFuture)
   }
 
+  def getClaimDate: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
+      renderFormIfEligible { journey =>
+        val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
+        Ok(addClaimDatePage(form, journey.previous))
+      }
+    }
+  }
+
+
+  def postClaimDate: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+
+      processFormSubmission[SubsidyJourney] { journey =>
+        claimDateForm
+          .bindFromRequest()
+          .fold(
+            formWithErrors => BadRequest(addClaimDatePage(formWithErrors, journey.previous)).toContext,
+            form =>
+              store.update[SubsidyJourney](_.setClaimDate(form))
+                .flatMap(_.next)
+                .toContext
+          )
+      }
+    }
+  }
+
   def getClaimAmount: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
@@ -206,6 +234,7 @@ class SubsidyController @Inject() (
       case EUR => Future.successful(None)
     }
 
+<<<<<<< HEAD
   def getClaimDate: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       renderFormIfEligible { journey =>
@@ -233,6 +262,36 @@ class SubsidyController @Inject() (
       }
     }
   }
+||||||| parent of 1d9a847f (ESC-700 SubsidyJourney tests now pass following journey changes)
+  def getClaimDate: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      renderFormIfEligible { journey =>
+        val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
+        Ok(addClaimDatePage(form, journey.previous))
+      }
+    }
+  }
+
+
+  def postClaimDate: Action[AnyContent] = withVerifiedEmailAuthenticatedUser.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+
+      processFormSubmission[SubsidyJourney] { journey =>
+        claimDateForm
+          .bindFromRequest()
+          .fold(
+            formWithErrors => BadRequest(addClaimDatePage(formWithErrors, journey.previous)).toContext,
+            form =>
+              store.update[SubsidyJourney](_.setClaimDate(form))
+                .flatMap(_.next)
+                .toContext
+          )
+      }
+    }
+  }
+=======
+>>>>>>> 1d9a847f (ESC-700 SubsidyJourney tests now pass following journey changes)
 
   def getAddClaimEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>

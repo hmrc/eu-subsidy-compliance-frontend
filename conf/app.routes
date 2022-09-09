@@ -66,8 +66,8 @@ POST       /business-enterprise-remove-yourself-from-undertaking                
 
 GET        /lead-undertaking-view-non-customs-subsidy-payments                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportedPayments
 
-GET        /lead-undertaking-add-eori-business-claimed-payment                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimEori
-POST       /lead-undertaking-add-eori-business-claimed-payment                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimEori
+GET        /lead-undertaking-add-claim-eori                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimEori
+POST       /lead-undertaking-add-claim-eori                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimEori
 
 GET        /lead-undertaking-add-payment-amount                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getClaimAmount
 POST       /lead-undertaking-add-payment-amount                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimAmount

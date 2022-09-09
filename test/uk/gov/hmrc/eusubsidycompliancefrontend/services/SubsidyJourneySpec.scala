@@ -30,6 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, OptionalE
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{claimAmountEuros, claimAmountPounds}
 
+// TODO - review this and factor out repetition of fixtures
 class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures {
 
   "SubsidyJourney" should {
@@ -109,7 +110,7 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
 
       "return a redirect to the check your answers page if a GBP to EUR conversion has been confirmed" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routes.SubsidyController.getConfirmClaimAmount().url)
-        val result = SubsidyJourney(existingTransactionId = SubsidyRef("SomeRef").some).next
+        val result = SubsidyJourney().setTraderRef(OptionalTraderRef("true", None)).next
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers().url)
       }
@@ -119,6 +120,7 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
         val result = SubsidyJourney(
           existingTransactionId = SubsidyRef("SomeRef").some,
           claimAmount = ClaimAmountFormPage(claimAmountEuros.some),
+          traderRef = TraderRefFormPage(OptionalTraderRef("true", None).some)
         ).next
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers().url)
@@ -160,9 +162,12 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
 
       "return URI to check your answers page if request for any page that is not the CYA page" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
-          FakeRequest(GET, routes.SubsidyController.getClaimDate().url)
+          FakeRequest(GET, routes.SubsidyController.getClaimAmount().url)
 
-        val result = SubsidyJourney(existingTransactionId = SubsidyRef("foo").some).previous
+        val result = SubsidyJourney()
+          .setTraderRef(OptionalTraderRef("true", None))
+          .previous
+
         result shouldBe routes.SubsidyController.getCheckAnswers().url
       }
 
@@ -171,26 +176,35 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
           FakeRequest(GET, routes.SubsidyController.getCheckAnswers().url)
             .withHeaders("Referer" -> routes.SubsidyController.getClaimDate().url)
 
-        val result = SubsidyJourney(existingTransactionId = SubsidyRef("foo").some).previous
+        val result = SubsidyJourney()
+          .setTraderRef(OptionalTraderRef("true", None))
+          .previous
+
         result shouldBe routes.SubsidyController.getClaimDate().url
       }
 
-      "return URI to claim date page if referer URL not in SubsidyJourney on the amend journey" in {
+      "return URI to account home page if referer URL not in SubsidyJourney on the amend journey" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getCheckAnswers().url)
             .withHeaders("Referer" -> routes.AccountController.getAccountPage().url)
 
-        val result = SubsidyJourney(existingTransactionId = SubsidyRef("foo").some).previous
-        result shouldBe routes.SubsidyController.getClaimDate().url
+        val result = SubsidyJourney()
+          .setTraderRef(OptionalTraderRef("true", None))
+          .previous
+
+        result shouldBe routes.AccountController.getAccountPage().url
       }
 
-      "return URI to claim date page if referer URL could not be parsed on the amend journey" in {
+      "return URI to account home page if referer URL could not be parsed on the amend journey" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getCheckAnswers().url)
             .withHeaders("Referer" -> "this is not a valid url")
 
-        val result = SubsidyJourney(existingTransactionId = SubsidyRef("foo").some).previous
-        result shouldBe routes.SubsidyController.getClaimDate().url
+        val result = SubsidyJourney()
+          .setTraderRef(OptionalTraderRef("true", None))
+          .previous
+
+        result shouldBe routes.AccountController.getAccountPage().url
       }
 
       "return to the previous page otherwise" in {

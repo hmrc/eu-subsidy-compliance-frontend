@@ -40,7 +40,7 @@ case class SubsidyJourney(
   publicAuthority: PublicAuthorityFormPage = PublicAuthorityFormPage(),
   traderRef: TraderRefFormPage = TraderRefFormPage(),
   cya: CyaFormPage = CyaFormPage(),
-  existingTransactionId: Option[SubsidyRef] = None
+  existingTransactionId: Option[SubsidyRef] = None // TODO - this property can be removed
 ) extends Journey {
 
   override def steps: Array[FormPage[_]] = Array(
@@ -70,7 +70,7 @@ case class SubsidyJourney(
     else if (isAmend)
       if (convertedClaimAmountConfirmation.isCurrentPage) claimAmount.uri
       else if (!cya.isCurrentPage) cya.uri
-      else extractAndParseRefererUrl.getOrElse(routes.SubsidyController.getReportedPayments().url)
+      else extractAndParseRefererUrl.getOrElse(routes.AccountController.getAccountPage().url)
     else
       if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.uri
       else super.previous
