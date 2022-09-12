@@ -247,10 +247,9 @@ class UndertakingController @Inject() (
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
         val result: OptionT[Future, Result] = for {
-          undertakingName <- journey.about.value.toContext
           undertakingSector <- journey.sector.value.toContext
           undertakingVerifiedEmail <- journey.verifiedEmail.value.toContext
-        } yield Ok(cyaPage(UndertakingName(undertakingName), eori, undertakingSector, undertakingVerifiedEmail, journey.previous))
+        } yield Ok(cyaPage(eori, undertakingSector, undertakingVerifiedEmail, journey.previous))
         result.fold(Redirect(journey.previous))(identity)
       case _ => Redirect(routes.UndertakingController.getAboutUndertaking()).toFuture
     }
@@ -293,12 +292,12 @@ class UndertakingController @Inject() (
         timeProvider.now
       )
       _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
-    } yield Redirect(routes.UndertakingController.getConfirmation(ref, undertakingJourney.about.value.getOrElse("")))
+    } yield Redirect(routes.UndertakingController.getConfirmation(ref))
 
-  def getConfirmation(ref: String, name: String): Action[AnyContent] = verifiedEmail.async {
+  def getConfirmation(ref: String): Action[AnyContent] = verifiedEmail.async {
     implicit request =>
       implicit val eori: EORI = request.eoriNumber
-      Ok(confirmationPage(UndertakingRef(ref), UndertakingName(name), eori)).toFuture
+      Ok(confirmationPage(UndertakingRef(ref), eori)).toFuture
   }
 
   def postConfirmation: Action[AnyContent] = verifiedEmail.async { implicit request =>
