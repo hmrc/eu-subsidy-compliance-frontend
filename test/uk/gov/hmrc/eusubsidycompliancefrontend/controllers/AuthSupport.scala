@@ -75,20 +75,20 @@ trait AuthSupport { this: ControllerSpec =>
       (new ~(Credentials(providerId, "type").some, groupIdentifier)).toFuture
     )
 
-  def mockAuthWithECCAuthRetrievalsWithEmailCheck(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) = {
+  def mockAuthWithEccAuthRetrievalsWithEmailCheck(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) = {
     mockAuth(EmptyPredicate, authRetrievals)(
       (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
     mockGetEmailVerification()
   }
 
-  def mockAuthWithECCAuthRetrievals(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) = {
+  def mockAuthWithEccAuthRetrievals(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) = {
     mockAuth(EmptyPredicate, authRetrievals)(
       (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
   }
 
-  def mockAuthWithECCAuthRetrievalsNoEmailVerification(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) =
+  def mockAuthWithEccAuthRetrievalsNoEmailVerification(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) =
     mockAuth(EmptyPredicate, authRetrievals)(
       (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
