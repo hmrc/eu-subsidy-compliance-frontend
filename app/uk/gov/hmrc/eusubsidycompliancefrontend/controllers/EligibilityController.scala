@@ -137,9 +137,9 @@ class EligibilityController @Inject() (
           eoriCheckForm.fill(FormValues(eoriCheck.toString))
         )
 
-        val backLink =
-          if (request.isFrom(doYouClaimUrl)) doYouClaimUrl
-          else willYouClaimUrl
+        val backLink = request.headers
+          .get("Referer")
+          .getOrElse(doYouClaimUrl)
 
         Ok(checkEoriPage(form, eori, backLink))
       }
