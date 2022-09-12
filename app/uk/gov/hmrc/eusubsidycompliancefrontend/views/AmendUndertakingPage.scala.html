@@ -32,7 +32,7 @@
 )
 
 
-@(name: UndertakingName, sector: Sector, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(sector: Sector, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
     pageTitle = Some(messages("undertaking.amendUndertaking.title")),
@@ -46,23 +46,6 @@
 
             @govukSummaryList(SummaryList(
                 rows = Seq(
-                    SummaryListRow(
-                        key = Key(
-                            content = Text(messages("undertaking.amendUndertaking.summary-list.name.key"))
-                        ),
-                        value = Value(
-                            content = Text(name)
-                        ),
-                        actions = Some(Actions(
-                            items = Seq(
-                                ActionItem(
-                                    href = controllers.routes.UndertakingController.getAboutUndertaking().toString,
-                                    content = Text(messages("common.change")),
-                                    visuallyHiddenText = Some(messages("undertaking.amendUndertaking.summary-list.change.undertaking-name"))
-                                )
-                            )
-                        ))
-                    ),
                     SummaryListRow(
                         key = Key(
                             content = Text(messages("undertaking.amendUndertaking.summary-list.sector.key"))

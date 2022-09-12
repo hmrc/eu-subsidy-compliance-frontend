@@ -39,6 +39,7 @@ POST       /first-login-journey-check-your-answers                              
 
 GET        /first-login-journey-registered-undertaking/:undertakingRef/name             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmation(undertakingRef)
 POST       /first-login-journey-registered-undertaking                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmation
+
 GET        /lead-undertaking-amend-undertaking                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAmendUndertakingDetails
 POST       /lead-undertaking-amend-undertaking                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAmendUndertaking
 

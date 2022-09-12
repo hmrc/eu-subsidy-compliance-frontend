@@ -325,7 +325,6 @@ class UndertakingController @Inject() (
             updatedJourney <- if (journey.isAmend) journey.toFuture else updateIsAmendState(value = true)
           } yield Ok(
             amendUndertakingPage(
-              updatedJourney.about.value.fold(handleMissingSessionData("Undertaking Name"))(UndertakingName(_)),
               updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking sector")),
               routes.AccountController.getAccountPage().url
             )
