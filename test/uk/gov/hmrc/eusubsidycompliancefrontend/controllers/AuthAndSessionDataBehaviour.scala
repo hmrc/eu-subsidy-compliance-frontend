@@ -30,9 +30,10 @@ import scala.concurrent.Future
 trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with JourneyStoreSupport =>
 
   val appName = "eu-subsidy-test"
-  // TODO - this could use a common definition
+
   val eccEnrolmentKey = "HMRC-ESC-ORG"
   val eccPredicate = Enrolment(eccEnrolmentKey)
+
   val ggSignInUrl = "http://ggSignInUrl:123"
   val ggSignOutUrl = "http://ggSignOutUrl:123"
 

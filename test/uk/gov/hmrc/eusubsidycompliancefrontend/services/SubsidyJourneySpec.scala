@@ -30,7 +30,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, OptionalE
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{claimAmountEuros, claimAmountPounds}
 
-// TODO - review this and factor out repetition of fixtures
 class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures {
 
   "SubsidyJourney" should {
