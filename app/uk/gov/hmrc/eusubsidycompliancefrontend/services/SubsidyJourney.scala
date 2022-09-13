@@ -40,7 +40,7 @@ case class SubsidyJourney(
   publicAuthority: PublicAuthorityFormPage = PublicAuthorityFormPage(),
   traderRef: TraderRefFormPage = TraderRefFormPage(),
   cya: CyaFormPage = CyaFormPage(),
-  existingTransactionId: Option[SubsidyRef] = None // TODO - this property can be removed
+  existingTransactionId: Option[SubsidyRef] = None
 ) extends Journey {
 
   override def steps: Array[FormPage[_]] = Array(
