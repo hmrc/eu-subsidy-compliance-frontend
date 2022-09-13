@@ -19,6 +19,8 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax._
+@import java.time.LocalDate
 
 @this(
   layout: Layout,
@@ -30,7 +32,12 @@
   govukDateInput: GovukDateInput
 )
 
-@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(
+    form: Form[_],
+    previous: Journey.Uri,
+    earliestAllowedClaimDate: LocalDate
+)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
 @key = @{"add-claim-date"}
 @title = @{messages(s"$key.title")}
 @deriveErrorKey(message: String) = @{message match {
@@ -74,7 +81,7 @@
 
   @formHelper(action = controllers.routes.SubsidyController.postClaimDate()) {
     @H1(title, Some("govuk-heading-xl govuk-!-margin-bottom-3"))
-    @P(messages("add-claim-date.p1", "<strong>[date-start-of-tax-year t-2 eg. 6 April 2020]</strong>"))
+    @P(messages("add-claim-date.p1", earliestAllowedClaimDate.toDisplayFormat))
     @defining(form.errors.headOption) { maybeError =>
       @govukDateInput(DateInput(
         id = "claim-date",

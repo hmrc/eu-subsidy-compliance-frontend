@@ -123,7 +123,8 @@ class SubsidyController @Inject() (
     withLeadUndertaking { _ =>
       renderFormIfEligible { journey =>
         val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
-        Ok(addClaimDatePage(form, journey.previous))
+        val earliestAllowedClaimDate = timeProvider.today.toEarliestTaxYearStart
+        Ok(addClaimDatePage(form, journey.previous, earliestAllowedClaimDate))
       }
     }
   }
@@ -137,7 +138,10 @@ class SubsidyController @Inject() (
         claimDateForm
           .bindFromRequest()
           .fold(
-            formWithErrors => BadRequest(addClaimDatePage(formWithErrors, journey.previous)).toContext,
+            formWithErrors => {
+              val earliestAllowedClaimDate = timeProvider.today.toEarliestTaxYearStart
+              BadRequest(addClaimDatePage(formWithErrors, journey.previous, earliestAllowedClaimDate)).toContext
+            },
             form =>
               store.update[SubsidyJourney](_.setClaimDate(form))
                 .flatMap(_.next)
