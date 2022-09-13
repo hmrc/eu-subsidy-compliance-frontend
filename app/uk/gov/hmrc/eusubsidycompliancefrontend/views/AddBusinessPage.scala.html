@@ -21,13 +21,18 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
+@import uk.gov.hmrc.hmrcfrontend.views.html.components._
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ListItem
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.addtoalist.ItemType
+
 @this(
   layout: Layout,
   formHelper: FormWithCSRF,
   button: components.Button,
   govukErrorSummary: GovukErrorSummary,
   govukRadios : GovukRadios,
-  govukSummaryList: GovukSummaryList
+  govukSummaryList: GovukSummaryList,
+  hmrcAddToAList : HmrcAddToAList
 )
 
 @(form: Form[_], businessEntity: List[BusinessEntity])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -77,6 +82,32 @@
         }
       </dl>
     }
+
+      @if(businessEntity.length > 1){
+        @hmrcAddToAList(AddToAList(
+          itemList = Seq(
+              ListItem(
+                  name = " GB324345353222",
+                  changeUrl = "#",
+                  removeUrl = "#"
+              ),
+              ListItem(
+                  name = " GB324345353222",
+                  changeUrl = "#",
+                  removeUrl = "#"
+              ),
+              ListItem(
+                  name = " GB324345353222",
+                  changeUrl = "#",
+                  removeUrl = "#"
+              )
+          ),
+          itemType = Some(ItemType(
+              singular = "business",
+              plural = "businesses"
+          ))
+      ))
+      }
 
 
     @defining(
