@@ -76,7 +76,7 @@ class SubsidyControllerSpec
     "handling request to get reported payments page" must {
 
       def performAction() =
-        controller.getReportedPayments(FakeRequest("GET", routes.SubsidyController.getReportedPayments().url))
+        controller.getReportedPayments(FakeRequest(GET, routes.SubsidyController.getReportedPayments().url))
 
       "throw technical error" when {
         "call to get undertaking from EIS fails" in {
@@ -186,10 +186,11 @@ class SubsidyControllerSpec
       "display the page" when {
 
         "a valid request is made" in {
-          inAnyOrder {
+          inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
+            mockTimeToday(fixedDate)
           }
           checkPageIsDisplayed(
             performAction(),
@@ -218,12 +219,11 @@ class SubsidyControllerSpec
     "handling request to post claim date" must {
 
       def performAction(data: (String, String)*) = controller.postClaimDate(
-        FakeRequest("POST", routes.SubsidyController.postClaimDate().url).withFormUrlEncodedBody(data: _*)
+        FakeRequest(POST, routes.SubsidyController.postClaimDate().url).withFormUrlEncodedBody(data: _*)
       )
 
       "redirect to the next page" when {
-
-        "valid input" in {
+        "entered date is valid" in {
           val updatedDate = DateFormValues("1", "2", LocalDate.now().getYear.toString)
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail()
@@ -240,13 +240,14 @@ class SubsidyControllerSpec
         }
       }
 
-      "invalid input" should {
-        "invalid date" in {
+      "return to claim date page" when {
+        "entered date is not valid" in {
           val updatedDate = DateFormValues("20", "20", LocalDate.now().getYear.toString)
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+            mockTimeToday(fixedDate)
           }
           status(
             performAction("day" -> updatedDate.day, "month" -> updatedDate.month, "year" -> updatedDate.year)
@@ -264,7 +265,7 @@ class SubsidyControllerSpec
     "handling request to get claim amount" must {
 
       def performAction() = controller
-        .getClaimAmount(FakeRequest("GET", routes.SubsidyController.getClaimAmount().url))
+        .getClaimAmount(FakeRequest(GET, routes.SubsidyController.getClaimAmount().url))
 
       "throw technical error" when {
 
@@ -367,7 +368,7 @@ class SubsidyControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postAddClaimAmount(
-          FakeRequest("POST", routes.SubsidyController.getClaimAmount().url)
+          FakeRequest(POST, routes.SubsidyController.getClaimAmount().url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -694,7 +695,7 @@ class SubsidyControllerSpec
     "handling request to get Add Claim Eori" must {
 
       def performAction() = controller
-        .getAddClaimEori(FakeRequest("GET", routes.SubsidyController.getAddClaimEori().url))
+        .getAddClaimEori(FakeRequest(GET, routes.SubsidyController.getAddClaimEori().url))
 
       "throw technical error" when {
 
@@ -768,7 +769,7 @@ class SubsidyControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postAddClaimEori(
-          FakeRequest("POST", routes.SubsidyController.getAddClaimEori().url)
+          FakeRequest(POST, routes.SubsidyController.getAddClaimEori().url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -936,7 +937,7 @@ class SubsidyControllerSpec
     "handling request to post add claim public authority" must {
 
       def performAction(data: (String, String)*) = controller.postAddClaimPublicAuthority(
-        FakeRequest("POST", routes.SubsidyController.postAddClaimPublicAuthority().url).withFormUrlEncodedBody(data: _*)
+        FakeRequest(POST, routes.SubsidyController.postAddClaimPublicAuthority().url).withFormUrlEncodedBody(data: _*)
       )
 
       "redirect to the next page" when {
@@ -996,7 +997,7 @@ class SubsidyControllerSpec
 
     "handling request to get Add Claim Reference" must {
       def performAction() = controller
-        .getAddClaimReference(FakeRequest("GET", routes.SubsidyController.getAddClaimReference().url))
+        .getAddClaimReference(FakeRequest(GET, routes.SubsidyController.getAddClaimReference().url))
 
       "throw technical error" when {
 
@@ -1079,7 +1080,7 @@ class SubsidyControllerSpec
     "handling request to post Add Claim Reference" must {
       def performAction(data: (String, String)*) = controller
         .postAddClaimReference(
-          FakeRequest("POST", routes.SubsidyController.getAddClaimReference().url)
+          FakeRequest(POST, routes.SubsidyController.getAddClaimReference().url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -1137,7 +1138,7 @@ class SubsidyControllerSpec
 
       def performAction(transactionId: String) = controller
         .getRemoveSubsidyClaim(transactionId)(
-          FakeRequest("GET", routes.SubsidyController.getRemoveSubsidyClaim(transactionId).url)
+          FakeRequest(GET, routes.SubsidyController.getRemoveSubsidyClaim(transactionId).url)
         )
 
       "throw technical error" when {
@@ -1234,7 +1235,7 @@ class SubsidyControllerSpec
 
       def performAction(data: (String, String)*)(transactionId: String) = controller
         .postRemoveSubsidyClaim(transactionId)(
-          FakeRequest("POST", routes.SubsidyController.getRemoveSubsidyClaim(transactionId).url)
+          FakeRequest(POST, routes.SubsidyController.getRemoveSubsidyClaim(transactionId).url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -1322,7 +1323,7 @@ class SubsidyControllerSpec
     "handling get of check your answers" must {
 
       def performAction() = controller.getCheckAnswers(
-        FakeRequest("GET", routes.SubsidyController.getCheckAnswers().url)
+        FakeRequest(GET, routes.SubsidyController.getCheckAnswers().url)
       )
 
       "throw technical error" when {
@@ -1375,7 +1376,7 @@ class SubsidyControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postCheckAnswers(
-          FakeRequest("POST", routes.SubsidyController.getCheckAnswers().url)
+          FakeRequest(POST, routes.SubsidyController.getCheckAnswers().url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -1454,7 +1455,7 @@ class SubsidyControllerSpec
 
           checkIsRedirect(
             performAction("cya" -> "true"),
-            routes.SubsidyController.getReportedPayments().url
+            routes.SubsidyController.getClaimConfirmationPage().url
           )
         }
       }
@@ -1464,6 +1465,27 @@ class SubsidyControllerSpec
           testLeadOnlyRedirect(() => performAction())
         }
       }
+    }
+
+    "handling get of claim confirmation" must {
+      def performAction() = controller.getClaimConfirmationPage(
+        FakeRequest(GET, routes.SubsidyController.getClaimConfirmationPage().url)
+      )
+
+      "display the page" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolmentWithValidEmail()
+          mockTimeToday(fixedDate)
+        }
+
+        val result = performAction()
+
+        status(result) shouldBe OK
+
+        val expectedDeadlineDate = "20 April 2021"
+        contentAsString(result) should include(expectedDeadlineDate)
+      }
+
     }
 
   }

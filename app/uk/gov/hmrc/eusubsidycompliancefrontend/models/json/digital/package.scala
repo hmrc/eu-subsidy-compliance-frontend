@@ -19,13 +19,12 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.json
 import cats.implicits._
 import play.api.libs.json._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.json.eis.{Params, RequestCommon}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EisAmendmentType.EisAmendmentType
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisAmendmentType, IndustrySectorLimit, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, IndustrySectorLimit, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking, UndertakingBusinessEntityUpdate}
+
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, ZonedDateTime}
-
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 
 package object digital {
 
