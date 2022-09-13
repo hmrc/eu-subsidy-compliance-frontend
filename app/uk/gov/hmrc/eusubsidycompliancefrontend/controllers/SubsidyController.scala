@@ -36,7 +36,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.BigDecimalOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -60,6 +60,7 @@ class SubsidyController @Inject() (
                                     addPublicAuthorityPage: AddPublicAuthorityPage,
                                     addTraderReferencePage: AddTraderReferencePage,
                                     cyaPage: ClaimCheckYourAnswerPage,
+                                    confirmCreatedPage: ClaimConfirmationPage,
                                     confirmRemovePage: ConfirmRemoveClaim,
                                     confirmConvertedAmountPage: ConfirmClaimAmountConversionToEuros,
                                     timeProvider: TimeProvider
@@ -355,7 +356,7 @@ class SubsidyController @Inject() (
           _ = auditService.sendEvent[NonCustomsSubsidyAdded](
             AuditEvent.NonCustomsSubsidyAdded(request.authorityId, eori, ref, journey, currentDate)
           )
-        } yield Redirect(routes.SubsidyController.getReportedPayments())
+        } yield Redirect(routes.SubsidyController.getClaimConfirmationPage())
 
         result.getOrElse(sys.error("Error processing subsidy cya form submission"))
       }
@@ -377,6 +378,12 @@ class SubsidyController @Inject() (
       _ <- journey.publicAuthority.value.orElse(handleMissingSessionData("public authority"))
       _ <- journey.traderRef.value.orElse(handleMissingSessionData("trader ref"))
     } yield ()
+
+  // TODO - test coverage
+  def getClaimConfirmationPage(): Action[AnyContent] = verifiedEmail.async { implicit request =>
+    val nextClaimDueDate = ReportReminderHelpers.dueDateToReport(timeProvider.today)
+    Ok(confirmCreatedPage(nextClaimDueDate)).toFuture
+  }
 
   def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = verifiedEmail.async {
     implicit request =>
