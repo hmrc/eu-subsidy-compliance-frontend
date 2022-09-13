@@ -135,7 +135,7 @@ class AccountController @Inject() (
         leadAccountPage(
           undertaking,
           eori,
-          undertaking.getAllNonLeadEORIs().nonEmpty,
+          undertaking.getAllNonLeadEORIs.nonEmpty,
           isTimeToReport,
           dueDate,
           isOverdue,

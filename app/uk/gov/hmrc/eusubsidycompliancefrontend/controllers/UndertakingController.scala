@@ -92,7 +92,7 @@ class UndertakingController @Inject() (
   def postAboutUndertaking: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
-      case Some(journey) =>
+      case Some(_) =>
         aboutUndertakingForm
           .bindFromRequest()
           .fold(
@@ -271,7 +271,7 @@ class UndertakingController @Inject() (
               industrySector = undertakingSector,
               List(BusinessEntity(eori, leadEORI = true))
             )
-            undertakingCreated <- createUndertakingAndSendEmail(undertaking, updatedJourney).toContext
+            undertakingCreated <- createUndertakingAndSendEmail(undertaking).toContext
           } yield undertakingCreated
           result.fold(handleMissingSessionData("Undertaking create journey"))(identity)
         }
@@ -280,7 +280,6 @@ class UndertakingController @Inject() (
 
   private def createUndertakingAndSendEmail(
     undertaking: UndertakingCreate,
-    undertakingJourney: UndertakingJourney
   )(implicit request: AuthenticatedEnrolledRequest[_], eori: EORI): Future[Result] =
     for {
       ref <- escService.createUndertaking(undertaking)
@@ -373,11 +372,11 @@ class UndertakingController @Inject() (
   }
 
   def getDisableUndertakingWarning: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    withLeadUndertaking(undertaking => Ok(disableUndertakingWarningPage()).toFuture)
+    withLeadUndertaking(_ => Ok(disableUndertakingWarningPage()).toFuture)
   }
 
   def getDisableUndertakingConfirm: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    withLeadUndertaking(undertaking =>
+    withLeadUndertaking(_ =>
       Ok(disableUndertakingConfirmPage(disableUndertakingConfirmForm)).toFuture
     )
   }

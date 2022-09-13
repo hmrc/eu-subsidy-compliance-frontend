@@ -35,9 +35,6 @@ case class SubsidyUpdate(
   def nilSubmissionDate: Option[NilSubmissionDate] =
     as[NilSubmissionDate]
 
-  def undertakingSubsidyAmendment: Option[UndertakingSubsidyAmendment] =
-    as[UndertakingSubsidyAmendment]
-
   private def as[T : ClassTag]: Option[T] = update match {
     case x: T => x.some
     case _ => none[T]

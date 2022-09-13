@@ -156,23 +156,6 @@ package object eis {
       )
     }
 
-  // convenience reads so we can store a created undertaking
-  val undertakingRequestReads: Reads[UndertakingCreate] = new Reads[UndertakingCreate] {
-    override def reads(json: JsValue): JsResult[UndertakingCreate] = {
-      val businessEntity: BusinessEntity = BusinessEntity(
-        (json \ "createUndertakingRequest" \ "requestDetail" \ "businessEntity" \ "idValue").as[EORI],
-        leadEORI = true
-      )
-      JsSuccess(
-        UndertakingCreate(
-          (json \ "createUndertakingRequest" \ "requestDetail" \ "undertakingName").as[UndertakingName],
-          (json \ "createUndertakingRequest" \ "requestDetail" \ "industrySector").as[Sector],
-          List(businessEntity)
-        )
-      )
-    }
-  }
-
   // convenience reads so we can store business entity updates
   val businessEntityReads: Reads[BusinessEntity] = new Reads[BusinessEntity] {
     override def reads(json: JsValue): JsResult[BusinessEntity] = JsSuccess(

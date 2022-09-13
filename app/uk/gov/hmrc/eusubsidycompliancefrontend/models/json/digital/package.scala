@@ -131,31 +131,6 @@ package object digital {
       )
     }
 
-  // provides json for EIS updateUndertaking call
-  def updateUndertakingWrites(
-    amendmentType: EisAmendmentType = EisAmendmentType.A
-  ): Writes[Undertaking] = {
-    val amendUndertakingWrites: Writes[Undertaking] = new Writes[Undertaking] {
-      val requestCommon = RequestCommon(
-        "UpdateUndertaking"
-      )
-      override def writes(o: Undertaking): JsValue =
-        Json.obj(
-          "updateUndertakingRequest" -> Json.obj(
-            "requestCommon" -> requestCommon,
-            "requestDetail" -> Json.obj(
-              "amendmentType" -> amendmentType,
-              "undertakingId" -> o.reference,
-              "undertakingName" -> o.name,
-              "industrySector" -> o.industrySector,
-              "disablementStartDate" -> dateFormatter.format(LocalDate.now)
-            )
-          )
-        )
-    }
-    amendUndertakingWrites
-  }
-
   // provides reads for eis response for undertaking create call
   implicit val undertakingCreateResponseReads: Reads[UndertakingRef] = new Reads[UndertakingRef] {
     override def reads(json: JsValue): JsResult[UndertakingRef] = {

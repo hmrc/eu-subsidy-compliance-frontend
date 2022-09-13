@@ -91,29 +91,6 @@ package object types extends SimpleJson {
     implicit val format: Format[Sector] = Json.formatEnum(Sector)
   }
 
-  type Postcode = String @@ Postcode.Tag
-  object Postcode
-      extends RegexValidatedString(
-        """^[A-Z]{1,2}[0-9][0-9A-Z]?\s?[0-9][A-Z]{2}$""",
-        _.trim.replaceAll("[ \\t]+", " ").toUpperCase
-      )
-
-  type AddressLine = String @@ AddressLine.Tag
-  object AddressLine
-      extends RegexValidatedString(
-        regex = """^[a-zA-Z0-9 '&.-]{1,40}$"""
-      )
-
-  type CountryCode = String @@ CountryCode.Tag
-  object CountryCode
-      extends RegexValidatedString(
-        """^[A-Z][A-Z]$""",
-        _.toUpperCase match {
-          case "UK" => "GB"
-          case other => other
-        }
-      )
-
   type SubsidyRef = String @@ SubsidyRef.Tag
   object SubsidyRef
       extends RegexValidatedString(
@@ -181,27 +158,10 @@ package object types extends SimpleJson {
         """.{1,255}"""
       )
 
-  type Source = String @@ Source.Tag
-  object Source
-      extends RegexValidatedString(
-        """.{1,40}"""
-      )
-
-  type CorrelationID = String @@ CorrelationID.Tag
-  object CorrelationID
-      extends RegexValidatedString(
-        """.{1,36}"""
-      )
-
   type AcknowledgementRef = String @@ AcknowledgementRef.Tag
   object AcknowledgementRef
       extends RegexValidatedString(
         """.{32}"""
       )
 
-  type NonEmptyString = String @@ NonEmptyString.Tag
-  object NonEmptyString extends ValidatedType[String] {
-    def validateAndTransform(in: String): Option[String] =
-      Some(in).filter(_.nonEmpty)
-  }
 }
