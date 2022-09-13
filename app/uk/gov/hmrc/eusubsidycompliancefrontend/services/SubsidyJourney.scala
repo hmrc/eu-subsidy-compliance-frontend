@@ -22,8 +22,8 @@ import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.EUR
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -53,9 +53,7 @@ case class SubsidyJourney(
     cya
   )
 
-  // TODO - revert to val
-  def isAmend: Boolean =
-    traderRef.value.nonEmpty
+  val isAmend: Boolean = traderRef.value.nonEmpty
 
   override def next(implicit r: Request[_]): Future[Result] =
     if (isAmend)
@@ -63,16 +61,12 @@ case class SubsidyJourney(
         Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
       else if (claimAmount.isCurrentPage && !shouldSkipCurrencyConversion)
         Redirect(routes.SubsidyController.getConfirmClaimAmount()).toFuture
-      else if (convertedClaimAmountConfirmation.isCurrentPage)
-        Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
-      else {
-        // TODO - this can supersede the else condition above
-        Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
-      } else
-      if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion)
-        Redirect(routes.SubsidyController.getAddClaimEori()).toFuture
       else
-        super.next
+        Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
+    else if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion)
+      Redirect(routes.SubsidyController.getAddClaimEori()).toFuture
+    else
+      super.next
 
   override def previous(implicit request: Request[_]): Journey.Uri =
     if (isAmend)
@@ -122,22 +116,6 @@ case class SubsidyJourney(
 object SubsidyJourney {
 
   implicit val format: Format[SubsidyJourney] = Json.format[SubsidyJourney]
-
-  def fromNonHmrcSubsidy(nonHmrcSubsidy: NonHmrcSubsidy): SubsidyJourney =
-    SubsidyJourney(
-      claimDate = ClaimDateFormPage(DateFormValues.fromDate(nonHmrcSubsidy.allocationDate).some),
-      claimAmount = ClaimAmountFormPage(ClaimAmount(EUR, nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.toString()).some),
-      addClaimEori = AddClaimEoriFormPage(getAddClaimEORI(nonHmrcSubsidy.businessEntityIdentifier).some),
-      publicAuthority = PublicAuthorityFormPage(nonHmrcSubsidy.publicAuthority.orElse("".some)),
-      traderRef = TraderRefFormPage(getAddTraderRef(nonHmrcSubsidy.traderReference).some),
-      existingTransactionId = nonHmrcSubsidy.subsidyUsageTransactionId
-    )
-
-  private def getAddClaimEORI(eoriOpt: Option[EORI]): OptionalEORI =
-    eoriOpt.fold(OptionalEORI("false", eoriOpt))(e => OptionalEORI("true", e.some))
-
-  private def getAddTraderRef(traderRefOpt: Option[TraderRef]) =
-    traderRefOpt.fold(OptionalTraderRef("false", None))(t => OptionalTraderRef("true", t.some))
 
   object Forms {
 
