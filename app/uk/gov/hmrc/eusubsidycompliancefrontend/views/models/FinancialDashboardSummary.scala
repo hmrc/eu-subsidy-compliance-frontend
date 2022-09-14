@@ -21,7 +21,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{IndustrySectorLimit
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 
-import java.time.LocalDate
+import java.time.{LocalDate, Month}
 
 case class FinancialDashboardSummary(
   overall: OverallSummary,
@@ -47,7 +47,8 @@ case class OverallSummary(
 case class TaxYearSummary(
   startYear: Int,
   hmrcSubsidyTotal: SubsidyAmount,
-  nonHmrcSubsidyTotal: SubsidyAmount
+  nonHmrcSubsidyTotal: SubsidyAmount,
+  isCurrentTaxYear: Boolean,
 ) {
   def total: SubsidyAmount = SubsidyAmount(hmrcSubsidyTotal + nonHmrcSubsidyTotal)
   def endYear: Int = startYear + 1
@@ -68,9 +69,11 @@ object FinancialDashboardSummary {
   def fromUndertakingSubsidies(
     undertaking: Undertaking,
     subsidies: UndertakingSubsidies,
-    startDate: LocalDate,
-    endDate: LocalDate
+    today: LocalDate,
   ): FinancialDashboardSummary = {
+
+    val startDate = today.toEarliestTaxYearStart
+    val endDate = today.toTaxYearEnd
 
     val sectorCapOrDefault: IndustrySectorLimit = undertaking.industrySectorLimit
       .getOrElse(DefaultSectorLimits(undertaking.industrySector))
@@ -104,6 +107,15 @@ object FinancialDashboardSummary {
         .map(i => i.allocationDate.toTaxYearStart -> i.nonHMRCSubsidyAmtEUR)
     )
 
+    def isCurrentTaxYear(startYear: Int) = {
+      val startDate = LocalDate.of(startYear, Month.APRIL, 6)
+      val endDate = LocalDate.of(startYear + 1, Month.APRIL, 5)
+
+      today.isEqual(startDate) ||
+        today.isEqual(endDate) ||
+        (today.isAfter(startDate) && today.isBefore(endDate))
+    }
+
     // Generate summaries for each starting tax year value in descending year order.
     val taxYearSummaries = (endDate.toTaxYearStart.getYear to startDate.getYear by -1)
       .map(_ - startDate.getYear)
@@ -112,7 +124,8 @@ object FinancialDashboardSummary {
         TaxYearSummary(
           startYear = d.getYear,
           hmrcSubsidyTotal = hmrcSubsidiesByTaxYearStart.getOrElse(d, SubsidyAmount.Zero),
-          nonHmrcSubsidyTotal = nonHmrcSubsidiesByTaxYearStart.getOrElse(d, SubsidyAmount.Zero)
+          nonHmrcSubsidyTotal = nonHmrcSubsidiesByTaxYearStart.getOrElse(d, SubsidyAmount.Zero),
+          isCurrentTaxYear = isCurrentTaxYear(d.getYear)
         )
       )
 

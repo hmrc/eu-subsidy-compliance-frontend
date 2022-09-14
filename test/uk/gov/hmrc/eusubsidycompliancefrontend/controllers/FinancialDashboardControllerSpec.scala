@@ -34,8 +34,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 
-import java.time.LocalDate
-
 class FinancialDashboardControllerSpec
     extends ControllerSpec
     with AuthSupport
@@ -83,8 +81,7 @@ class FinancialDashboardControllerSpec
             .fromUndertakingSubsidies(
               undertaking = undertaking,
               subsidies = undertakingSubsidies,
-              startDate = LocalDate.parse("2019-04-06"),
-              endDate = fakeTimeProvider.today
+              today = fakeTimeProvider.today,
             )
 
           status(result) shouldBe Status.OK
