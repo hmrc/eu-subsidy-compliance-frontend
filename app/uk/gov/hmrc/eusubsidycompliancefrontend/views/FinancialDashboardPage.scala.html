@@ -19,7 +19,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H2}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
 
 @this(
   layout: FullWidthLayout,
@@ -29,7 +29,7 @@
 
 @(summary: FinancialDashboardSummary)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"dashboard"}
-@title = @{messages(s"$key.title",summary.overall.startYear.toString, summary.overall.endYear.toString)}
+@title = @{messages(s"$key.title")}
 @layout(
     pageTitle = Some(title),
     backLinkEnabled = true,
@@ -37,56 +37,61 @@
 ) {
 
 
-    <div class="card govuk-!-margin-bottom-8">
-        <h1 class="govuk-heading-l">@Html(title)</h1>
-        @govukSummaryList(SummaryList(
-            rows = Seq(
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages(s"$key.customs.duty.heading"))
-                    ),
-                    value = Value(
-                        content = Text(summary.overall.hmrcSubsidyTotal.toEuros)
-                    )
+    @H1(title)
+    @P(messages(s"$key.p1"))
+    @P(messages(s"$key.p2"))
+
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages(s"$key.customs.duty.heading"))
                 ),
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages(s"$key.de.minimis.aid.heading"))
-                    ),
-                    value = Value(
-                        content = Text(summary.overall.nonHmrcSubsidyTotal.toEuros)
-                    )
+                value = Value(
+                    content = Text(summary.overall.hmrcSubsidyTotal.toEuros)
+                )
+            ),
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages(s"$key.de.minimis.aid.heading"))
                 ),
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages(s"$key.total.claimed.heading"))
-                    ),
-                    value = Value(
-                        content = Text(summary.overall.total.toEuros)
-                    )
+                value = Value(
+                    content = Text(summary.overall.nonHmrcSubsidyTotal.toEuros)
+                )
+            ),
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages(s"$key.total.claimed.heading"))
                 ),
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages(s"$key.sector.cap.heading", messages("dashboard.sector.name." + summary.overall.sector)))
-                    ),
-                    value = Value(
-                        content = Text(summary.overall.sectorCap.toEuros)
-                    )
+                value = Value(
+                    content = Text(summary.overall.total.toEuros)
+                )
+            ),
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages(s"$key.sector.cap.heading", messages("dashboard.sector.name." + summary.overall.sector)))
                 ),
-                SummaryListRow(
-                    key = Key(
-                        content = Text(messages(s"$key.allowance.remaining.heading"))
-                    ),
-                    value = Value(
-                        content = Text(summary.overall.allowanceRemaining.toEuros)
-                    )
+                value = Value(
+                    content = Text(summary.overall.sectorCap.toEuros)
+                )
+            ),
+            SummaryListRow(
+                key = Key(
+                    content = Text(messages(s"$key.allowance.remaining.heading"))
+                ),
+                value = Value(
+                    content = Text(summary.overall.allowanceRemaining.toEuros)
                 )
             )
-        ))
-    </div>
+        )
+    ))
 
     @for(taxYear <- summary.taxYears) {
-        @H2(messages("dashboard.year.summary.heading", taxYear.startYear.toString, taxYear.endYear.toString))
+        @if(taxYear.isCurrentTaxYear) {
+            @H2(messages("dashboard.current-tax-year.heading"), Some("govuk-heading-m govuk-!-margin-top-9"))
+        } else {
+            @H2(messages("dashboard.year.summary.heading", taxYear.startYear.toString, taxYear.endYear.toString), Some("govuk-heading-m govuk-!-margin-top-8"))
+        }
         @govukSummaryList(SummaryList(
             rows = Seq(
                 SummaryListRow(
@@ -114,7 +119,7 @@
                     )
                 )
             )
-        ))<br>
+        ))
     }
 
     <div><a href="@controllers.routes.AccountController.getAccountPage().url" class="govuk-link">@messages("common.go-account-home")</a></div>

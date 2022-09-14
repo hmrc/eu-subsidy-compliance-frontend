@@ -120,8 +120,7 @@ class AccountController @Inject() (
     val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
       undertaking,
       undertakingSubsidies,
-      today.toEarliestTaxYearStart,
-      today.toTaxYearEnd
+      today,
     )
 
     def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] =

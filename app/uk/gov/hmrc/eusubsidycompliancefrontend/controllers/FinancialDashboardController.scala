@@ -65,8 +65,7 @@ class FinancialDashboardController @Inject() (
         val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
           undertaking,
           subsidies,
-          today.toEarliestTaxYearStart,
-          today.toTaxYearEnd
+          today,
         )
 
         Ok(financialDashboardPage(summary))

@@ -30,7 +30,8 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
   "FinancialDashboardSummary" should {
 
     "convert and return an instance with zero summaries where no subsidy data is present" in {
-      val end   = LocalDate.parse("2022-03-01").toTaxYearEnd
+      val today = LocalDate.parse("2022-03-01").toTaxYearEnd
+      val end   = today.toTaxYearEnd
       val start = end.minusYears(2).toTaxYearStart
 
       val emptyUndertakingSubsidies = undertakingSubsidies.copy(
@@ -41,7 +42,7 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
       )
 
       val result =
-        FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, emptyUndertakingSubsidies, start, end)
+        FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, emptyUndertakingSubsidies, today)
 
       val expected = FinancialDashboardSummary(
         overall = OverallSummary(
@@ -56,7 +57,8 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
           TaxYearSummary(
             startYear = year,
             hmrcSubsidyTotal = SubsidyAmount.Zero,
-            nonHmrcSubsidyTotal = SubsidyAmount.Zero
+            nonHmrcSubsidyTotal = SubsidyAmount.Zero,
+            isCurrentTaxYear = year == 2021,
           )
         }
       )
@@ -65,7 +67,8 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
     }
 
     "convert and return a valid FinancialDashboardSummary instance" in {
-      val end         = LocalDate.parse("2022-03-01").toTaxYearEnd
+      val today       = LocalDate.of(2022, 3, 1)
+      val end         = today.toTaxYearEnd
       val start       = end.minusYears(2).toTaxYearStart
       val yearOffsets = List(2, 1, 0)
 
@@ -75,8 +78,7 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
           hmrcSubsidyUsage = yearOffsets.map(y => hmrcSubsidy.copy(acceptanceDate = start.plusYears(y))),
           nonHMRCSubsidyUsage = yearOffsets.map(y => nonHmrcSubsidy.copy(allocationDate = start.plusYears(y)))
         ),
-        start,
-        end
+        today
       )
 
       val expected = FinancialDashboardSummary(
@@ -89,9 +91,9 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
           sectorCap = IndustrySectorLimit(BigDecimal(12.34))
         ),
         taxYears = Seq(
-          TaxYearSummary(2021, SubsidyAmount(123.45), SubsidyAmount(543.21)),
-          TaxYearSummary(2020, SubsidyAmount(123.45), SubsidyAmount(543.21)),
-          TaxYearSummary(2019, SubsidyAmount(123.45), SubsidyAmount(543.21))
+          TaxYearSummary(2021, SubsidyAmount(123.45), SubsidyAmount(543.21), isCurrentTaxYear = true),
+          TaxYearSummary(2020, SubsidyAmount(123.45), SubsidyAmount(543.21), isCurrentTaxYear = false),
+          TaxYearSummary(2019, SubsidyAmount(123.45), SubsidyAmount(543.21), isCurrentTaxYear = false)
         )
       )
 
@@ -99,8 +101,7 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
     }
 
     "apply default sector limits where none defined on the undertaking" in {
-      val end   = LocalDate.parse("2022-03-01").toTaxYearEnd
-      val start = end.minusYears(2).toTaxYearStart
+      val today = LocalDate.of(2022, 3, 1)
 
       val emptyUndertakingSubsidies = undertakingSubsidies.copy(
         nonHMRCSubsidyTotalEUR = SubsidyAmount.Zero,
@@ -124,8 +125,7 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
         val result = FinancialDashboardSummary.fromUndertakingSubsidies(
           undertakingForSector,
           emptyUndertakingSubsidies,
-          start,
-          end
+          today,
         )
         result.overall.sectorCap shouldBe sectorLimits(sector)
       }
@@ -133,7 +133,12 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
     }
 
     "tax year summary should compute total correctly" in {
-      TaxYearSummary(2000, SubsidyAmount(1.00), SubsidyAmount(2.00)).total shouldBe SubsidyAmount(3.00)
+      TaxYearSummary(
+        startYear = 2000,
+         SubsidyAmount(1.00),
+        SubsidyAmount(2.00),
+        isCurrentTaxYear = false
+      ).total shouldBe SubsidyAmount(3.00)
     }
 
     "overall tax summary should compute total, allowance remaining and allowance exceeded correctly" in {
