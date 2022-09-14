@@ -30,8 +30,9 @@ object ReportReminderHelpers {
       lastUpdated.plusDays(OneDayAfterDueDay).isAfter(currentDate)
     }
 
-  def dueDateToReport(od: Option[LocalDate]): Option[LocalDate] =
-    od.map(_.plusDays(ReportDeminimisDueDay))
+  def dueDateToReport(od: Option[LocalDate]): Option[LocalDate] = od.map(dueDateToReport)
+
+  def dueDateToReport(d: LocalDate): LocalDate = d.plusDays(ReportDeminimisDueDay)
 
   def isOverdue(od: Option[LocalDate], currentDate: LocalDate): Boolean =
     od.fold(false) { date =>

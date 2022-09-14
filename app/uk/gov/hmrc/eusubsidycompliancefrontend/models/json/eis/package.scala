@@ -16,14 +16,13 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.json
 
-import java.time.format.DateTimeFormatter
-import java.time._
-
-import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import play.api.libs.json._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
+
+import java.time._
+import java.time.format.DateTimeFormatter
 
 package object eis {
 
@@ -155,23 +154,6 @@ package object eis {
         )
       )
     }
-
-  // convenience reads so we can store a created undertaking
-  val undertakingRequestReads: Reads[UndertakingCreate] = new Reads[UndertakingCreate] {
-    override def reads(json: JsValue): JsResult[UndertakingCreate] = {
-      val businessEntity: BusinessEntity = BusinessEntity(
-        (json \ "createUndertakingRequest" \ "requestDetail" \ "businessEntity" \ "idValue").as[EORI],
-        leadEORI = true
-      )
-      JsSuccess(
-        UndertakingCreate(
-          (json \ "createUndertakingRequest" \ "requestDetail" \ "undertakingName").as[UndertakingName],
-          (json \ "createUndertakingRequest" \ "requestDetail" \ "industrySector").as[Sector],
-          List(businessEntity)
-        )
-      )
-    }
-  }
 
   // convenience reads so we can store business entity updates
   val businessEntityReads: Reads[BusinessEntity] = new Reads[BusinessEntity] {

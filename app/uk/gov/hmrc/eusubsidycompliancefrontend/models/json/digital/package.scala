@@ -19,13 +19,12 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.json
 import cats.implicits._
 import play.api.libs.json._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.json.eis.{Params, RequestCommon}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EisAmendmentType.EisAmendmentType
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisAmendmentType, IndustrySectorLimit, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, IndustrySectorLimit, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking, UndertakingBusinessEntityUpdate}
+
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, ZonedDateTime}
-
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 
 package object digital {
 
@@ -130,31 +129,6 @@ package object digital {
         "memberAmendments" -> o.businessEntityUpdates
       )
     }
-
-  // provides json for EIS updateUndertaking call
-  def updateUndertakingWrites(
-    amendmentType: EisAmendmentType = EisAmendmentType.A
-  ): Writes[Undertaking] = {
-    val amendUndertakingWrites: Writes[Undertaking] = new Writes[Undertaking] {
-      val requestCommon = RequestCommon(
-        "UpdateUndertaking"
-      )
-      override def writes(o: Undertaking): JsValue =
-        Json.obj(
-          "updateUndertakingRequest" -> Json.obj(
-            "requestCommon" -> requestCommon,
-            "requestDetail" -> Json.obj(
-              "amendmentType" -> amendmentType,
-              "undertakingId" -> o.reference,
-              "undertakingName" -> o.name,
-              "industrySector" -> o.industrySector,
-              "disablementStartDate" -> dateFormatter.format(LocalDate.now)
-            )
-          )
-        )
-    }
-    amendUndertakingWrites
-  }
 
   // provides reads for eis response for undertaking create call
   implicit val undertakingCreateResponseReads: Reads[UndertakingRef] = new Reads[UndertakingRef] {

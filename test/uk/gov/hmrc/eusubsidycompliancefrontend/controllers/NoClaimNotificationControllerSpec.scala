@@ -106,7 +106,7 @@ class NoClaimNotificationControllerSpec
       "throw technical error" when {
 
         val nilReturnJourney = NilReturnJourney()
-        val updatedNilReturnJourney = NilReturnJourney(NilReturnFormPage(true.some), false)
+        val updatedNilReturnJourney = NilReturnJourney(NilReturnFormPage(true.some))
 
         def update(j: NilReturnJourney) = j.copy(nilReturn = j.nilReturn.copy(value = Some(true)), false)
 

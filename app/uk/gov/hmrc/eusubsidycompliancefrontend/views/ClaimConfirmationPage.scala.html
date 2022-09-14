@@ -1,0 +1,53 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax._
+@import java.time.LocalDate
+
+@this(
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: components.Button,
+    govukNotificationBanner : GovukNotificationBanner,
+    govukPanel : GovukPanel
+)
+
+@(nextClaimDueDate: LocalDate)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(
+    pageTitle = Some(messages("subsidy.created.title")),
+    backLinkEnabled = false,
+    backLink = None
+) {
+
+    @govukPanel(Panel(
+        title = Text(messages("subsidy.created.title")),
+        classes = "govuk-!-margin-bottom-7"
+    ))
+
+    @H2(messages("subsidy.created.sub-heading"))
+
+    @P(messages("subsidy.created.p1", s"<strong>${nextClaimDueDate.toDisplayFormat}</strong>"))
+
+    <ul class="govuk-list govuk-list--spaced">
+        <li><a class="govuk-link" href="@routes.SubsidyController.getClaimDate().url">@messages("subsidy.created.l1")</a></li>
+        <li><a class="govuk-link" href="@routes.AccountController.getAccountPage().url">@messages("subsidy.created.l2")</a></li>
+    </ul>
+}

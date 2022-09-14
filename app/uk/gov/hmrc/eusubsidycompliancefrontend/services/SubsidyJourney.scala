@@ -22,8 +22,8 @@ import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.EUR
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef, TraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -33,7 +33,6 @@ import scala.concurrent.Future
 import scala.util.Try
 
 case class SubsidyJourney(
-  reportPayment: ReportPaymentFormPage = ReportPaymentFormPage(),
   claimDate: ClaimDateFormPage = ClaimDateFormPage(),
   claimAmount: ClaimAmountFormPage = ClaimAmountFormPage(),
   convertedClaimAmountConfirmation: ConvertedClaimAmountConfirmationPage = ConvertedClaimAmountConfirmationPage(),
@@ -45,7 +44,6 @@ case class SubsidyJourney(
 ) extends Journey {
 
   override def steps: Array[FormPage[_]] = Array(
-    reportPayment,
     claimDate,
     claimAmount,
     convertedClaimAmountConfirmation,
@@ -55,26 +53,29 @@ case class SubsidyJourney(
     cya
   )
 
-  val isAmend: Boolean = existingTransactionId.nonEmpty
+  val isAmend: Boolean = traderRef.value.nonEmpty
 
   override def next(implicit r: Request[_]): Future[Result] =
     if (isAmend)
-      if (shouldSkipCurrencyConversion) Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
-      else if (claimAmount.isCurrentPage && !shouldSkipCurrencyConversion) Redirect(routes.SubsidyController.getConfirmClaimAmount()).toFuture
-      else if (convertedClaimAmountConfirmation.isCurrentPage) Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
-      else super.next
+      if (shouldSkipCurrencyConversion)
+        Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
+      else if (claimAmount.isCurrentPage && !shouldSkipCurrencyConversion)
+        Redirect(routes.SubsidyController.getConfirmClaimAmount()).toFuture
+      else
+        Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
+    else if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion)
+      Redirect(routes.SubsidyController.getAddClaimEori()).toFuture
     else
-      if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion) Redirect(routes.SubsidyController.getAddClaimEori()).toFuture
-      else super.next
+      super.next
 
   override def previous(implicit request: Request[_]): Journey.Uri =
-    if (reportPayment.isCurrentPage) routes.AccountController.getAccountPage().url
-    else if (isAmend)
+    if (isAmend)
       if (convertedClaimAmountConfirmation.isCurrentPage) claimAmount.uri
       else if (!cya.isCurrentPage) cya.uri
-      else extractAndParseRefererUrl.getOrElse(routes.SubsidyController.getReportPayment().url)
+      else extractAndParseRefererUrl.getOrElse(routes.AccountController.getAccountPage().url)
     else
-      if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.uri
+      if (claimDate.isCurrentPage) routes.AccountController.getAccountPage().url
+      else if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.uri
       else super.previous
 
   private def extractAndParseRefererUrl(implicit request: Request[_]): Option[String] =
@@ -95,7 +96,6 @@ case class SubsidyJourney(
   // claim amount in Euros.
   private def shouldSkipCurrencyConversion: Boolean = claimAmountInEuros
 
-  def setReportPayment(v: Boolean): SubsidyJourney = this.copy(reportPayment = reportPayment.copy(value = v.some))
   def setClaimAmount(c: ClaimAmount): SubsidyJourney = this.copy(claimAmount = claimAmount.copy(value = c.some))
   def setConvertedClaimAmount(c: ClaimAmount): SubsidyJourney =
     this.copy(convertedClaimAmountConfirmation = convertedClaimAmountConfirmation.copy(value = c.some))
@@ -117,30 +117,10 @@ object SubsidyJourney {
 
   implicit val format: Format[SubsidyJourney] = Json.format[SubsidyJourney]
 
-  def fromNonHmrcSubsidy(nonHmrcSubsidy: NonHmrcSubsidy): SubsidyJourney =
-    SubsidyJourney(
-      reportPayment = ReportPaymentFormPage(true.some),
-      claimDate = ClaimDateFormPage(DateFormValues.fromDate(nonHmrcSubsidy.allocationDate).some),
-      claimAmount = ClaimAmountFormPage(ClaimAmount(EUR, nonHmrcSubsidy.nonHMRCSubsidyAmtEUR.toString()).some),
-      addClaimEori = AddClaimEoriFormPage(getAddClaimEORI(nonHmrcSubsidy.businessEntityIdentifier).some),
-      publicAuthority = PublicAuthorityFormPage(nonHmrcSubsidy.publicAuthority.orElse("".some)),
-      traderRef = TraderRefFormPage(getAddTraderRef(nonHmrcSubsidy.traderReference).some),
-      existingTransactionId = nonHmrcSubsidy.subsidyUsageTransactionId
-    )
-
-  private def getAddClaimEORI(eoriOpt: Option[EORI]): OptionalEORI =
-    eoriOpt.fold(OptionalEORI("false", eoriOpt))(e => OptionalEORI("true", e.some))
-
-  private def getAddTraderRef(traderRefOpt: Option[TraderRef]) =
-    traderRefOpt.fold(OptionalTraderRef("false", None))(t => OptionalTraderRef("true", t.some))
-
   object Forms {
 
     private val controller = routes.SubsidyController
 
-    case class ReportPaymentFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getReportPayment().url
-    }
     case class ClaimDateFormPage(value: Form[DateFormValues] = None) extends FormPage[DateFormValues] {
       def uri = controller.getClaimDate().url
     }
@@ -163,7 +143,6 @@ object SubsidyJourney {
       def uri = controller.getCheckAnswers().url
     }
 
-    object ReportPaymentFormPage { implicit val reportPaymentFormPageFormat: OFormat[ReportPaymentFormPage] = Json.format }
     object ClaimDateFormPage { implicit val claimDateFormPageFormat: OFormat[ClaimDateFormPage] = Json.format }
     object ClaimAmountFormPage { implicit val claimAmountFormPageFormat: OFormat[ClaimAmountFormPage] = Json.format }
     object ConvertedClaimAmountConfirmationPage { implicit val convertedClaimAmountConfirmationPageFormat: OFormat[ConvertedClaimAmountConfirmationPage] = Json.format }

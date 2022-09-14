@@ -762,11 +762,6 @@ class UndertakingControllerSpec
 
         val expectedRows = List(
           ModifyUndertakingRow(
-            messageFromMessageKey("undertaking.cya.summary-list.name.key"),
-            undertaking.name,
-            routes.UndertakingController.getAboutUndertaking().url
-          ),
-          ModifyUndertakingRow(
             messageFromMessageKey("undertaking.cya.summary-list.eori.key"),
             eori1,
             "" // User cannot change the EORI on the undertaking
@@ -937,7 +932,7 @@ class UndertakingControllerSpec
           }
           checkIsRedirect(
             performAction("cya" -> "true"),
-            routes.UndertakingController.getConfirmation(undertakingRef, undertakingCreated.name).url
+            routes.UndertakingController.getConfirmation(undertakingRef).url
           )
         }
 
@@ -951,8 +946,8 @@ class UndertakingControllerSpec
 
     "handling request to get confirmation" must {
 
-      def performAction() = controller.getConfirmation(undertakingRef, undertaking1.name)(
-        FakeRequest(GET, routes.UndertakingController.getConfirmation(undertakingRef, undertaking1.name).url)
+      def performAction() = controller.getConfirmation(undertakingRef)(
+        FakeRequest(GET, routes.UndertakingController.getConfirmation(undertakingRef).url)
       )
 
       "display the page" in {
@@ -965,8 +960,7 @@ class UndertakingControllerSpec
           messageFromMessageKey("undertaking.confirmation.title"),
           { doc =>
             val heading2 = doc.select(".govuk-body").text()
-            heading2 should include regex messageFromMessageKey("undertaking.confirmation.name", undertaking1.name)
-            heading2 should include regex messageFromMessageKey("undertaking.confirmation.p4", undertaking1.name)
+            heading2 should include regex messageFromMessageKey("undertaking.confirmation.p2")
           }
         )
 
@@ -1019,11 +1013,6 @@ class UndertakingControllerSpec
       def update(u: UndertakingJourney) = u.copy(isAmend = true)
 
       val expectedRows = List(
-        ModifyUndertakingRow(
-          messageFromMessageKey("undertaking.amendUndertaking.summary-list.name.key"),
-          undertaking.name,
-          routes.UndertakingController.getAboutUndertaking().url
-        ),
         ModifyUndertakingRow(
           messageFromMessageKey("undertaking.amendUndertaking.summary-list.sector.key"),
           messageFromMessageKey(s"sector.label.${undertaking.industrySector.id.toString}"),

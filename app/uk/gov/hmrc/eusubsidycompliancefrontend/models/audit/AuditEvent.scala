@@ -248,50 +248,6 @@ object AuditEvent {
     implicit val writes: Writes[NonCustomsSubsidyRemoved] = Json.writes
   }
 
-  final case class NonCustomsSubsidyUpdated(
-    ggDetails: String,
-    undertakingReference: UndertakingRef,
-    allocationDate: LocalDate,
-    submissionDate: LocalDate,
-    publicAuthority: Option[String],
-    traderReference: Option[TraderRef],
-    nonHMRCSubsidyAmtEUR: SubsidyAmount,
-    businessEntityIdentifier: Option[EORI],
-    subsidyUsageTransactionId: Option[SubsidyRef]
-  ) extends AuditEvent {
-    override val auditType: String = "NonCustomsSubsidyUpdated"
-    override val transactionName: String = "NonCustomsSubsidyUpdated"
-  }
-
-  object NonCustomsSubsidyUpdated {
-    def apply(
-      ggDetails: String,
-      undertakingRef: UndertakingRef,
-      subsidyJourney: SubsidyJourney,
-      currentDate: LocalDate
-    ): NonCustomsSubsidyUpdated =
-      AuditEvent.NonCustomsSubsidyUpdated(
-        ggDetails = ggDetails,
-        undertakingReference = undertakingRef,
-        allocationDate = subsidyJourney.claimDate.value
-          .map(_.toLocalDate)
-          .getOrElse(sys.error("No claimdate on SubsidyJourney")),
-        submissionDate = currentDate,
-        publicAuthority = subsidyJourney.publicAuthority.value.fold(sys.error("public Authority missing"))(Some(_)),
-        traderReference =
-          subsidyJourney.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
-        nonHMRCSubsidyAmtEUR =
-          SubsidyAmount(subsidyJourney.getClaimAmount.getOrElse(sys.error("claimAmount is missing"))),
-        businessEntityIdentifier =
-          subsidyJourney.addClaimEori.value.fold(sys.error("eori value missing"))(optionalEORI =>
-            optionalEORI.value.map(EORI(_))
-          ),
-        subsidyUsageTransactionId = subsidyJourney.existingTransactionId
-      )
-
-    implicit val writes: Writes[NonCustomsSubsidyUpdated] = Json.writes
-  }
-
   final case class NonCustomsSubsidyNilReturn(
     ggDetails: String,
     leadEori: EORI,

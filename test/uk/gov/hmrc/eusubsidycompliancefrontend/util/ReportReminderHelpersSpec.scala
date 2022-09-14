@@ -61,6 +61,12 @@ class ReportReminderHelpersSpec extends AnyWordSpecLike with Matchers {
       }
 
     }
+
+    "isOverdue" must {
+      "return false when an empty date option is passed" in {
+        ReportReminderHelpers.isOverdue(None, LocalDate.now()) mustBe false
+      }
+    }
   }
 
 }

@@ -35,7 +35,7 @@
   govukTable: GovukTable
 )
 
-@(form: Form[_],
+@(
     subsidies: Option[UndertakingSubsidies] = None,
     undertaking: Undertaking,
     earliestAllowedDate: LocalDate,
@@ -43,7 +43,7 @@
     currentTaxYearStart: LocalDate,
    previous: Journey.Uri
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@key = @{"reportPayment"}
+@key = @{"reportedPayments"}
 @title = @{messages(s"$key.title")}
 
 @responsiveTableClass = @{s"report-payment-table"}
@@ -57,21 +57,7 @@
   pageTitle = Some(title),
   backLinkEnabled = true,
   backLink = Some(previous),
-  hasErrors = form.hasErrors
 ) {
-    @formHelper(action = controllers.routes.SubsidyController.postReportPayment) {
-        @form.errors.map { err =>
-            @govukErrorSummary(ErrorSummary(
-                errorList = Seq(
-                    ErrorLink(
-                        href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(s"${err.key}.${err.message}")}")
-                    )
-                ),
-                title = Text(messages("common.error.summary.title"))
-            ))
-        }
-
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 @H1(title)
@@ -101,16 +87,8 @@
                             TableRow(content = sub.traderReference.fold[Content](HtmlContent("&nbsp;"))(Text)),
                             TableRow(
                                 content = HtmlContent(
-                                    s"""<a class='govuk-link' href=${controllers.routes.SubsidyController.getChangeSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>
-                                    ${messages("common.change")}<span class="govuk-visually-hidden"> ${messages("reportPayment.payment-dated")} ${sub.allocationDate.toShortDisplayFormat}</span>
-                                    </a>""".stripMargin
-                                ),
-                                classes="responsive-nopad"
-                            ),
-                            TableRow(
-                                content = HtmlContent(
                                     s"""<a class='govuk-link' href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>
-                                    ${messages("common.remove")}<span class="govuk-visually-hidden"> ${messages("reportPayment.payment-dated")} ${sub.allocationDate.toShortDisplayFormat}</span>
+                                    ${messages("common.remove")}<span class="govuk-visually-hidden"> ${messages("reportedPayments.payment-dated")} ${sub.allocationDate.toShortDisplayFormat}</span>
                                     </a>""".stripMargin
                                 ),
                                 classes="responsive-nopad"
@@ -123,11 +101,8 @@
                         HeadCell(content = Text(messages(eori))),
                         HeadCell(content = Text(messages(publicAuthority))),
                         HeadCell(content = Text(messages(ref))),
-                        HeadCell(content = HtmlContent(s"""<span class='govuk-visually-hidden'>${messages("common.change")}</span>""")),
                         HeadCell(content = HtmlContent(s"""<span  class='govuk-visually-hidden'>${messages("common.remove")}</span>""")),
-                    )),
-                    caption = Some(messages(s"$key.table.caption")),
-                    captionClasses = "govuk-table__caption--m"
+                    ))
                 )
             )
         } else {
@@ -136,7 +111,6 @@
                     @P(messages(s"$key.p1"))
                 </div>
             </div>
-        }
 
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-two-thirds">
@@ -150,36 +124,7 @@
                     @P(messages(s"$key.p3"))
                     @P(messages(s"$key.p4"))
 
-                    @govukRadios(Radios(
-                        classes = "govuk-radios--inline",
-                        errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                            content = Text(messages(s"$key.error.required"))
-                        ))} else None,
-                        fieldset = Some(Fieldset(
-                            legend = Some(Legend(
-                                content = Text(messages(s"$key.legend")),
-                                classes = "govuk-fieldset__legend--m",
-                                isPageHeading = false
-                            ))
-                        )),
-                        idPrefix = Some(key),
-                        name = key,
-                        items = Seq(
-                            RadioItem(
-                                content = Text(messages("common.yes")),
-                                value = Some("true"),
-                                checked = form.data.exists(_._2 == "true")
-                            ),
-                            RadioItem(
-                                content = Text(messages("common.no")),
-                                value = Some("false"),
-                                checked = form.data.exists(_._2 == "false")
-                            )
-                        )
-                    ))
-
-                    @button("common.continue.only")
                 </div>
             </div>
         }
-    }
+}

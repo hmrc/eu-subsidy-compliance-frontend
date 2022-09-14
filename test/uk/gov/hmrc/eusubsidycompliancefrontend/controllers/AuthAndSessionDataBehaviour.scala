@@ -30,8 +30,10 @@ import scala.concurrent.Future
 trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with JourneyStoreSupport =>
 
   val appName = "eu-subsidy-test"
+
   val eccEnrolmentKey = "HMRC-ESC-ORG"
   val eccPredicate = Enrolment(eccEnrolmentKey)
+
   val ggSignInUrl = "http://ggSignInUrl:123"
   val ggSignOutUrl = "http://ggSignOutUrl:123"
 
@@ -66,17 +68,21 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
     mockAuthWithAuthRetrievalsNoPredicate(Enrolments(Set(eccEnrolments(eori))), "1123", Some("groupIdentifier"))
   }
 
+  def mockAuthWithEccEnrolmentWithoutEori() = mockAuthWithAuthRetrievalsNoPredicate(
+    Enrolments(Set(Enrolment(eccEnrolmentKey, Seq.empty, state = ""))), "1123", Some("groupIdentifier")
+  )
+
   def mockNoPredicateAuthWithNecessaryEnrolment(eori: EORI = eori1): Unit =
     mockAuthWithAuthRetrievalsNoPredicate(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
 
   def mockAuthWithNecessaryEnrolmentWithValidEmail(eori: EORI = eori1): Unit =
-    mockAuthWithECCAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
+    mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
 
   def mockAuthWithNecessaryEnrolment(eori: EORI = eori1): Unit =
-    mockAuthWithECCAuthRetrievals(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
+    mockAuthWithEccAuthRetrievals(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
 
   def mockAuthWithNecessaryEnrolmentNoEmailVerification(eori: EORI = eori1): Unit =
-    mockAuthWithECCAuthRetrievalsNoEmailVerification(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
+    mockAuthWithEccAuthRetrievalsNoEmailVerification(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
 
   def mockAuthWithEORIEnrolment(eori: EORI): Unit =
     mockAuthWithAuthRetrievalsNoPredicate(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))

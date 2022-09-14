@@ -28,16 +28,12 @@
 )
 
 
-@(ref: UndertakingRef, name: UndertakingName, eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(ref: UndertakingRef, eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @html = {
     <h2 class="govuk-notification-banner__heading">@messages("undertaking.confirmation.h2")</h2>
     @govukSummaryList(SummaryList(
         rows = Seq(
-            SummaryListRow(
-                key = Key(content = Text(messages("undertaking.confirmation.undertaking-name"))),
-                value = Value(content = Text(messages("undertaking.confirmation.name", name)))
-            ),
             SummaryListRow(
                 key = Key(content = Text(messages("undertaking.confirmation.ref.p1"))),
                 value = Value(content = Text(messages("undertaking.confirmation.ref.eori", eori)))
@@ -66,8 +62,6 @@
 
         @H2(messages("undertaking.confirmation.h2-2"))
         @P(messages("undertaking.confirmation.p2"))
-        @P(messages("undertaking.confirmation.p3", name))
-        @P(messages("undertaking.confirmation.p4", name))
 
         @button("common.continue.only")
     }

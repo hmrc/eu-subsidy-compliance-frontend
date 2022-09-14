@@ -101,6 +101,7 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
           "€1,000,000.00.00",
           "this is definitely not a number",
           "$100.00",
+          "A100.00",
         )
 
         amounts.foreach { amount =>

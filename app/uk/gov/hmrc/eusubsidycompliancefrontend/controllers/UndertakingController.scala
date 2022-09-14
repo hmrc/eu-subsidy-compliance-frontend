@@ -92,7 +92,7 @@ class UndertakingController @Inject() (
   def postAboutUndertaking: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
-      case Some(journey) =>
+      case Some(_) =>
         aboutUndertakingForm
           .bindFromRequest()
           .fold(
@@ -247,10 +247,9 @@ class UndertakingController @Inject() (
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
         val result: OptionT[Future, Result] = for {
-          undertakingName <- journey.about.value.toContext
           undertakingSector <- journey.sector.value.toContext
           undertakingVerifiedEmail <- journey.verifiedEmail.value.toContext
-        } yield Ok(cyaPage(UndertakingName(undertakingName), eori, undertakingSector, undertakingVerifiedEmail, journey.previous))
+        } yield Ok(cyaPage(eori, undertakingSector, undertakingVerifiedEmail, journey.previous))
         result.fold(Redirect(journey.previous))(identity)
       case _ => Redirect(routes.UndertakingController.getAboutUndertaking()).toFuture
     }
@@ -272,7 +271,7 @@ class UndertakingController @Inject() (
               industrySector = undertakingSector,
               List(BusinessEntity(eori, leadEORI = true))
             )
-            undertakingCreated <- createUndertakingAndSendEmail(undertaking, updatedJourney).toContext
+            undertakingCreated <- createUndertakingAndSendEmail(undertaking).toContext
           } yield undertakingCreated
           result.fold(handleMissingSessionData("Undertaking create journey"))(identity)
         }
@@ -281,7 +280,6 @@ class UndertakingController @Inject() (
 
   private def createUndertakingAndSendEmail(
     undertaking: UndertakingCreate,
-    undertakingJourney: UndertakingJourney
   )(implicit request: AuthenticatedEnrolledRequest[_], eori: EORI): Future[Result] =
     for {
       ref <- escService.createUndertaking(undertaking)
@@ -293,12 +291,12 @@ class UndertakingController @Inject() (
         timeProvider.now
       )
       _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
-    } yield Redirect(routes.UndertakingController.getConfirmation(ref, undertakingJourney.about.value.getOrElse("")))
+    } yield Redirect(routes.UndertakingController.getConfirmation(ref))
 
-  def getConfirmation(ref: String, name: String): Action[AnyContent] = verifiedEmail.async {
+  def getConfirmation(ref: String): Action[AnyContent] = verifiedEmail.async {
     implicit request =>
       implicit val eori: EORI = request.eoriNumber
-      Ok(confirmationPage(UndertakingRef(ref), UndertakingName(name), eori)).toFuture
+      Ok(confirmationPage(UndertakingRef(ref), eori)).toFuture
   }
 
   def postConfirmation: Action[AnyContent] = verifiedEmail.async { implicit request =>
@@ -326,7 +324,6 @@ class UndertakingController @Inject() (
             updatedJourney <- if (journey.isAmend) journey.toFuture else updateIsAmendState(value = true)
           } yield Ok(
             amendUndertakingPage(
-              updatedJourney.about.value.fold(handleMissingSessionData("Undertaking Name"))(UndertakingName(_)),
               updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking sector")),
               routes.AccountController.getAccountPage().url
             )
@@ -375,11 +372,11 @@ class UndertakingController @Inject() (
   }
 
   def getDisableUndertakingWarning: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    withLeadUndertaking(undertaking => Ok(disableUndertakingWarningPage()).toFuture)
+    withLeadUndertaking(_ => Ok(disableUndertakingWarningPage()).toFuture)
   }
 
   def getDisableUndertakingConfirm: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    withLeadUndertaking(undertaking =>
+    withLeadUndertaking(_ =>
       Ok(disableUndertakingConfirmPage(disableUndertakingConfirmForm)).toFuture
     )
   }

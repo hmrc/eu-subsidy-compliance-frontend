@@ -101,7 +101,9 @@ class AccountController @Inject() (
     implicit val eori: EORI = r.eoriNumber
 
     val currentDay = timeProvider.today
+
     implicit val localDateOrdering: Ordering[LocalDate] = Ordering.by(_.toEpochDay)
+
     val lastSubmitted: Option[LocalDate] = undertakingSubsidies.nonHMRCSubsidyUsage.map(_.submissionDate) match {
       case Nil => undertaking.lastSubsidyUsageUpdt
       case  a  => Some(a.max)
@@ -135,7 +137,7 @@ class AccountController @Inject() (
         leadAccountPage(
           undertaking,
           eori,
-          undertaking.getAllNonLeadEORIs().nonEmpty,
+          undertaking.getAllNonLeadEORIs.nonEmpty,
           isTimeToReport,
           dueDate,
           isOverdue,

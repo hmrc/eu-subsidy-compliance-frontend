@@ -77,7 +77,6 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
       case GBP.symbol if claimAmount.currencyCode != GBP => Invalid(IncorrectFormat)
       case EUR.symbol if claimAmount.currencyCode != EUR => Invalid(IncorrectFormat)
       case c if allowedCurrencySymbols.contains(c) => Valid
-      case c if !c.isDigit => Invalid(IncorrectFormat)
       case _ => Valid
     }
   }

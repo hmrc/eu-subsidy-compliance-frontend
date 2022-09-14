@@ -58,7 +58,7 @@ class NoClaimNotificationController @Inject() (
       implicit val eori: EORI = request.eoriNumber
       val previous = routes.AccountController.getAccountPage().url
 
-      def handleValidNoClaim(form: FormValues): Future[Result] = {
+      def handleValidNoClaim(): Future[Result] = {
         val nilSubmissionDate = timeProvider.today.plusDays(1)
         val result = for {
           reference <- undertaking.reference.toContext
@@ -77,7 +77,7 @@ class NoClaimNotificationController @Inject() (
         .bindFromRequest()
         .fold(
           errors => BadRequest(noClaimNotificationPage(errors, previous, undertaking.name)).toFuture,
-          handleValidNoClaim
+          _ => handleValidNoClaim()
         )
     }
   }

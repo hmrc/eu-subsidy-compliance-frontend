@@ -89,6 +89,17 @@ class EnrolledActionBuilderSpec
       }
     }
 
+    "throw an illegal state exception" when {
+      "handling a request that has an enrolment but no eori" in {
+        mockAuthWithEccEnrolmentWithoutEori()
+
+        val request = FakeRequest()
+        val result = underTest.invokeBlock(request, block)
+
+        result.failed.futureValue shouldBe an[IllegalStateException]
+      }
+    }
+
     "invoke the supplied block" when {
       "handling a request that is authenticated and enrolled" in {
         mockAuthWithNecessaryEnrolment(eori1)

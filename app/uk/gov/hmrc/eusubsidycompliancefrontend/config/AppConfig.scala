@@ -32,7 +32,6 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   lazy val ggSignInUrl: String = config.get[String](s"urls.ggSignInUrl")
   lazy val ggSignOutUrl: String = config.get[String](s"urls.ggSignOutUrl")
   lazy val eccEscSubscribeUrl: String = config.get[String](s"urls.eccEscSubscribeUrl")
-  lazy val emailFrontendUrl: String = config.get[String]("microservice.services.customs-email-frontend.url")
   lazy val exitSurveyUrl: String = config.get[String]("urls.feedback-survey")
   lazy val contactFrontendUrl: String =
     contactFrontendConfig.baseUrl.getOrElse(sys.error("Could not find config for contact frontend url"))
@@ -42,8 +41,6 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
 
   lazy val betaFeedbackUrlNoAuth: String =
     s"$contactFrontendUrl/contact/beta-feedback?service=$contactFormServiceIdentifier"
-
-  lazy val sessionTimeout: String = config.get[String]("application.session.maxAge")
 
   private lazy val signOutUrlBase: String = config.get[String]("auth.sign-out.url")
 

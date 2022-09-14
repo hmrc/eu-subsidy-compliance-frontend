@@ -140,7 +140,7 @@ sector.label.3=Primary production of agricultural products
 sector.hint.0=The cap for all other sectors is €200,000.
 sector.hint.1=This sector includes couriers and hauliers who get paid by someone to transport their goods by road. The cap for this sector is €100,000.
 sector.hint.2=If any part of your business is involved in the production, processing or marketing of fishery and aquaculture products. A ‘fishery product’ means aquatic organisms resulting from any fishing activity or products derived from them. The cap for this sector is €30,000.
-sector.hint.3=An ‘agricultural product’ can be products such as: live animals, meat and edible meat offal, dairy produce, birds' eggs, natural honey. The cap for this sector is €20,000.
+sector.hint.3=An ‘agricultural product’ can be products such as: live animals, meat and edible meat offal, dairy produce, birds’ eggs, natural honey. The cap for this sector is €20,000.
 
 
 confirmEmail.no.label=Enter new email address
@@ -210,9 +210,7 @@ undertaking.confirmation.ref.p1=Account administrator
 undertaking.confirmation.ref.eori=EORI {0}
 undertaking.confirmation.p1=You are now the lead for this account.
 undertaking.confirmation.h2-2=What happens next
-undertaking.confirmation.p2=We have sent you a confirmation email, which includes the above account reference number.
-undertaking.confirmation.p3=You must tell HMRC about all de minimis aid payments (less Customs Duty waivers), and those of any businesses in {0}, received during the current tax year and previous 2 tax years, from all UK public authorities, including central and local government.
-undertaking.confirmation.p4=If you have any other businesses, you must add them to {0}.
+undertaking.confirmation.p2=We have sent you a confirmation email.
 
 lead-account-homepage.title = Manage your undertaking
 lead-account-homepage.h2 = Your next report date
@@ -269,23 +267,19 @@ non-lead-account-homepage.ul2-li2 = Leave the undertaking
 non-lead-account-homepage.link2 = View financial dashboard for {0}
 non-lead-account-homepage.link3 = Remove yourself from this single undertaking
 
-reportPayment.title=Report a de minimis aid payment (less Customs Duty waivers)
-reportPayment.p1=You have not yet reported any payments.
-reportPayment.p2=You will need to add the details of any payments of de minimis aid (less Customs Duty waivers) you received for:
-reportPayment.ul1-li1=the previous 2 tax years (from {0} to {1})
-reportPayment.ul1-li2=the current tax year (from {0} to date)
-reportPayment.p3=<strong>All</strong> payments need to be reported, even if you have already posted a form for the current tax year, and the previous two.
-reportPayment.p4=You will not need details of the Customs Duty waiver as HMRC will already have this information.
-reportPayment.table.caption=Payments received
-reportPayment.table.head.date=Date
-reportPayment.table.head.amount=Amount
-reportPayment.table.head.eori=EORI number
-reportPayment.table.head.public-authority=Public authority
-reportPayment.table.head.ref=Your reference
-reportPayment.legend=Do you have a de minimis aid payment (less Customs Duty waiver) to report?
-reportPayment.button = Report a payment
-reportPayment.error.required=Select yes if you have a de minimis aid payment (less Customs Duty waiver) to report?
-reportPayment.payment-dated = payment, dated
+reportedPayments.title=Payments report history
+reportedPayments.p1=You have not yet reported any payments.
+reportedPayments.p2=You will need to add the details of any payments of de minimis aid (less Customs Duty waivers) you received for:
+reportedPayments.ul1-li1=the previous 2 tax years (from {0} to {1})
+reportedPayments.ul1-li2=the current tax year (from {0} to date)
+reportedPayments.p3=<strong>All</strong> payments need to be reported, even if you have already posted a form for the current tax year, and the previous two.
+reportedPayments.p4=You will not need details of the Customs Duty waiver as HMRC will already have this information.
+reportedPayments.table.head.date=Date
+reportedPayments.table.head.amount=Amount
+reportedPayments.table.head.eori=EORI number
+reportedPayments.table.head.public-authority=Public authority
+reportedPayments.table.head.ref=Your reference
+reportedPayments.payment-dated = payment, dated
 
 # Add Claim Amount Form
 add-claim-amount.title = What currency was the payment received in?
@@ -320,10 +314,12 @@ add-claim-amount.l5 = Enter amount in the box below.
 
 confirm-converted-amount.title = Your amount in euros
 confirm-converted-amount.p1 = Your pounds sterling amount of {0}, converted to euros, is <strong>{1}</strong>.
-confirm-converted-amount.p2 = We’ve converted your amount from pounds sterling as we measure this type of aid in euros.
+confirm-converted-amount.p2 = We’ve converted your amount from pounds sterling as this type of aid is measured in euros.
+confirm-converted-amount.p3 = We calculate your euro amounts using the currency exchange rates published by the European Central Bank.
 
-add-claim-date.title=What date were you awarded the payment?
-add-claim-date.hint=For example, 27 07 2020
+add-claim-date.title = What date were you awarded the payment?
+add-claim-date.p1 = You must report all non-customs subsidy payments you have received since {0}.
+add-claim-date.hint = For example, 27 07 2020
 
 add-claim-date.error.required = Enter the date you were awarded the payment
 add-claim-date.error.day-missing = The date you were awarded the payment must include a day
@@ -336,21 +332,21 @@ add-claim-date.error.incorrect-format = Enter a real date, like 23 11 2019
 add-claim-date.error.outside-allowed-tax-year-range = Enter the date you were awarded the payment. Date must be {0}, or later.
 add-claim-date.error.in-future = The date you were awarded the payment must be in the past
 
-add-claim-public-authority.title=Which public authority granted the payment?
-add-claim-public-authority.hint=For example, Invest NI, NI Direct.
-error.claim-public-authority.required=Enter the public authority name in 150 characters or fewer. This field cannot be blank
+add-claim-public-authority.title = Which public authority granted the payment?
+add-claim-public-authority.hint = For example, Invest NI, NI Direct
+error.claim-public-authority.required = Enter the public authority name in 150 characters or fewer. This field cannot be blank
 error.claim-public-authority.tooManyChars = Public authority name must be 150 characters or fewer
 
-add-claim-eori.title=Would you like to add an EORI number for the business that claimed the payment?
-add-claim-eori.label=This must be a GB EORI number
-add-claim-eori.hint=The EORI number must be from a business already in your undertaking. This is for your own records. It is not a mandatory field.
+add-claim-eori.title = Would you like to add an EORI number for the business that claimed the payment?
+add-claim-eori.label = This must be a GB EORI number
+add-claim-eori.hint = The EORI number must be from a business already in your undertaking. This is for your own records and is not a mandatory field
 should-claim-eori.error.required=Select yes if you would like to add a valid EORI number
 claim-eori.error.incorrect-format=GB EORI number must be 12 or 15 digits
 claim-eori.error.required=GB EORI number must be 12 or 15 digits
 claim-eori.error.not-in-undertaking=The EORI number you entered is not part of this undertaking. Enter a valid EORI number.
 
 add-claim-trader-reference.title=Would you like to add a reference?
-add-claim-trader-reference.hint=This is for your own records. It is not a mandatory field.
+add-claim-trader-reference.hint = This is for your own records and is not a mandatory field
 add-claim-trader-reference.label=Enter the reference you would like to add
 should-store-trader-ref.error.required=Select yes if you would like to add a reference
 claim-trader-ref.error.required=Enter the trader reference you would like to add
@@ -367,6 +363,12 @@ subsidy.cya.change.hidden.payment-amount=payment amount
 subsidy.cya.change.hidden.eori-number=eori number
 subsidy.cya.change.hidden.public-authority=public authority
 subsidy.cya.change.hidden.your-reference=your reference
+
+subsidy.created.title = Payment reported
+subsidy.created.sub-heading = What happens next
+subsidy.created.p1 = Your next report must be made by {0}
+subsidy.created.l1 = Report another payment
+subsidy.created.l2 = Go to home page
 
 subsidy.remove.title = Remove a de minimis aid payment
 subsidy.remove.p1 = If you remove this payment then your Customs Duty waiver balance will change.

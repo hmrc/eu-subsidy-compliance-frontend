@@ -133,6 +133,7 @@ class EligibilityControllerSpec
         .postDoYouClaim(
           FakeRequest("GET", routes.EligibilityController.getDoYouClaim().url)
             .withFormUrlEncodedBody(data: _*)
+            .withHeaders("Referer" -> routes.EligibilityController.getDoYouClaim().url)
         )
 
       "display form error" when {
@@ -163,7 +164,7 @@ class EligibilityControllerSpec
         }
 
         "Yes is selected" in {
-          testRedirection(true, routes.EligibilityController.getEoriCheck().url)
+          testRedirection(true, appConfig.eccEscSubscribeUrl)
         }
 
         "No is selected" in {
@@ -396,6 +397,26 @@ class EligibilityControllerSpec
         }
       }
 
+    }
+
+    "handling request to get incorrect eori" must {
+
+      def performAction() = controller
+        .getIncorrectEori(
+          FakeRequest("GET", routes.EligibilityController.getIncorrectEori().url)
+            .withFormUrlEncodedBody()
+        )
+
+      "display the page" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolment()
+        }
+        checkPageIsDisplayed(
+          performAction(),
+          messageFromMessageKey("incorrectEori.title")
+        )
+
+      }
     }
 
   }
