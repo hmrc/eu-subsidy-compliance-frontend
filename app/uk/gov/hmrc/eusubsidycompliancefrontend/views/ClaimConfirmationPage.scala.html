@@ -26,7 +26,7 @@
     formHelper: FormWithCSRF,
     button: components.Button,
     govukNotificationBanner : GovukNotificationBanner,
-    govukSummaryList: GovukSummaryList
+    govukPanel : GovukPanel
 )
 
 @(nextClaimDueDate: LocalDate)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -37,10 +37,9 @@
     backLink = None
 ) {
 
-    @govukNotificationBanner(NotificationBanner(
-        content = HtmlContent(messages("subsidy.created.title")),
-        bannerType = Some("success"),
-        disableAutoFocus = Some(true)
+    @govukPanel(Panel(
+        title = Text(messages("subsidy.created.title")),
+        classes = "govuk-!-margin-bottom-7"
     ))
 
     @H2(messages("subsidy.created.sub-heading"))
