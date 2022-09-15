@@ -62,9 +62,9 @@
     @{H1(titleKey)}
       
     @if(businessEntity.length == 1){
-      @{P(messages(s"$key.empty.p1"), Some("govuk-body govuk-!-margin-bottom-8"))}
+      @{P(messages("addBusiness.p1"), Some("govuk-body govuk-!-margin-bottom-8"))}
     }
-
+    
     @if(businessEntity.length > 1){
       <dl class="govuk-summary-list">
         @businessEntity.filter(a => !a.leadEORI).map { b => 
@@ -72,42 +72,28 @@
                 <dt class="govuk-summary-list__key">
                   @b.businessEntityIdentifier
                 </dt>
-                <dd class="govuk-summary-list__actions">  
-                  <a class="govuk-link" href="@routes.BusinessEntityController.getRemoveBusinessEntity(b.businessEntityIdentifier).toString">
-                    <span aria-hidden="true">@messages("common.remove")</span>
-                    <span class="govuk-visually-hidden">@messages("common.remove") @b.businessEntityIdentifier</span>
-                  </a>
+                <dd class="govuk-summary-list__actions">
+                  <ul class="govuk-summary-list__actions-list">
+                    <li class="govuk-summary-list__actions-list-item">
+                      <a class="govuk-link" href="#">
+                        <span aria-hidden="true">@messages("common.change") [TODO]</span>
+                        <span class="govuk-visually-hidden">@messages("common.change") @b.businessEntityIdentifier</span>
+                      </a>
+                    </li>
+                    <li class="govuk-summary-list__actions-list-item">
+                      <a class="govuk-link" href="@routes.BusinessEntityController.getRemoveBusinessEntity(b.businessEntityIdentifier).toString">
+                        <span aria-hidden="true">@messages("common.remove")</span>
+                        <span class="govuk-visually-hidden">@messages("common.remove") @b.businessEntityIdentifier</span>
+                      </a>
+                    </li>
+                  </ul>
                 </dd>
             </div>
         }
       </dl>
     }
 
-      @if(businessEntity.length > 1){
-        @hmrcAddToAList(AddToAList(
-          itemList = Seq(
-              ListItem(
-                  name = " GB324345353222",
-                  changeUrl = "#",
-                  removeUrl = "#"
-              ),
-              ListItem(
-                  name = " GB324345353222",
-                  changeUrl = "#",
-                  removeUrl = "#"
-              ),
-              ListItem(
-                  name = " GB324345353222",
-                  changeUrl = "#",
-                  removeUrl = "#"
-              )
-          ),
-          itemType = Some(ItemType(
-              singular = "business",
-              plural = "businesses"
-          ))
-      ))
-      }
+      
 
 
     @defining(
