@@ -337,7 +337,8 @@ class SubsidyController @Inject() (
         previous = journey.previous
       } yield Ok(cyaPage(claimDate, euroAmount, claimEori, authority, traderRef, previous))
 
-      result.getOrElse(Redirect(routes.SubsidyController.getAddClaimReference()))
+      result
+        .getOrElse(Redirect(routes.AccountController.getAccountPage()))
     }
   }
 
@@ -352,7 +353,7 @@ class SubsidyController @Inject() (
           ref <- undertaking.reference.toContext
           currentDate = timeProvider.today
           _ <- escService.createSubsidy(toSubsidyUpdate(journey, ref, currentDate)).toContext
-          _ <- store.put(SubsidyJourney()).toContext
+          _ <- store.delete[SubsidyJourney].toContext
           _ = auditService.sendEvent[NonCustomsSubsidyAdded](
             AuditEvent.NonCustomsSubsidyAdded(request.authorityId, eori, ref, journey, currentDate)
           )

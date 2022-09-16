@@ -1360,6 +1360,19 @@ class SubsidyControllerSpec
 
       }
 
+      "redirect to account home if no subsidy journey data found" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolmentWithValidEmail()
+          mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
+          mockGet[SubsidyJourney](eori1)(Right(Option.empty))
+        }
+
+        val result = performAction()
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
+      }
+
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolmentWithValidEmail()
@@ -1410,7 +1423,7 @@ class SubsidyControllerSpec
           assertThrows[Exception](await(performAction("cya" -> "true")))
         }
 
-        "call to reset subsidy journey fails" in {
+        "call to delete subsidy journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
@@ -1419,7 +1432,7 @@ class SubsidyControllerSpec
             mockCreateSubsidy(
               SubsidyController.toSubsidyUpdate(subsidyJourney, undertakingRef, currentDate)
             )(Right(undertakingRef))
-            mockPut[SubsidyJourney](SubsidyJourney(), eori1)(Left(ConnectorError(exception)))
+            mockDelete[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")))
         }
@@ -1441,7 +1454,7 @@ class SubsidyControllerSpec
             mockCreateSubsidy(
               SubsidyController.toSubsidyUpdate(updatedSJ, undertakingRef, currentDate)
             )(Right(undertakingRef))
-            mockPut[SubsidyJourney](SubsidyJourney(), eori1)(Right(SubsidyJourney()))
+            mockDelete[SubsidyJourney](eori1)(Right(SubsidyJourney()))
             mockSendAuditEvent[AuditEvent.NonCustomsSubsidyAdded](
               AuditEvent.NonCustomsSubsidyAdded(
                 ggDetails = "1123",
