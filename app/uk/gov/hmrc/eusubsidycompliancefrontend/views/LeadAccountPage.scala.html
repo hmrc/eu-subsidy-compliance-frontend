@@ -52,14 +52,6 @@
     else routes.NoBusinessPresentController.getNoBusinessPresent()
 }
 
-@html = {
-    <p class="govuk-notification-banner__heading">
-    @messages("noClaimConfirmation.title")
-    </p>
-    <p class="govuk-body">
-    @messages("noClaimConfirmation.ref.p1", dueDate)
-    </p>
-}
 @layout(
   pageTitle = Some(messages(s"$key.title")),
   backLinkEnabled = false,

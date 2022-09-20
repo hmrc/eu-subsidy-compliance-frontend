@@ -29,7 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EscServic
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
@@ -45,6 +45,7 @@ class NoClaimNotificationController @Inject() (
                                                 auditService: AuditService,
                                                 timeProvider: TimeProvider,
                                                 noClaimNotificationPage: NoClaimNotificationPage,
+                                                noClaimConfirmationPage: NoClaimConfirmationPage,
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
@@ -106,7 +107,7 @@ class NoClaimNotificationController @Inject() (
                 .sendEvent(
                   NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate)
                 )
-            } yield Redirect(routes.AccountController.getAccountPage())
+            } yield Redirect(routes.NoClaimNotificationController.getNotificationConfirmation())
 
             result.getOrElse(handleMissingSessionData("Undertaking ref"))
           }
@@ -126,6 +127,14 @@ class NoClaimNotificationController @Inject() (
               handleValidNoClaim
             )
       }
+    }
+  }
+
+  // We need to show a confirmation along with the next submission date
+  def getNotificationConfirmation: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
+      val nextClaimDueDate = ReportReminderHelpers.dueDateToReport(timeProvider.today)
+      Ok(noClaimConfirmationPage(nextClaimDueDate)).toFuture
     }
   }
 

@@ -109,7 +109,6 @@ class SubsidyController @Inject() (
     }
   }
 
-  // TODO - this is duplicated in the NoClaimNotificationController - can it be shared somewhere?
   private def retrieveSubsidies(r: UndertakingRef)(implicit request: AuthenticatedEnrolledRequest[AnyContent]) = {
     implicit val eori: EORI = request.eoriNumber
 
