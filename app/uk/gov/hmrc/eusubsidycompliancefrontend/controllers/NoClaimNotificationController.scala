@@ -30,11 +30,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
-import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -57,19 +55,10 @@ class NoClaimNotificationController @Inject() (
       retrieveSubsidies(undertaking.reference).toContext
         .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
           val previous = routes.AccountController.getAccountPage().url
-          implicit val localDateOrdering: Ordering[LocalDate] = Ordering.by(_.toEpochDay)
-          val lastSubmitted: Option[LocalDate] = undertakingSubsidies.nonHMRCSubsidyUsage.map(_.submissionDate) match {
-            case Nil => undertaking.lastSubsidyUsageUpdt
-            case  a  => Some(a.max)
-          }
           val today = timeProvider.today
           val startDate = today.toEarliestTaxYearStart
-          val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
-            undertaking,
-            undertakingSubsidies,
-            today.toEarliestTaxYearStart,
-            today.toTaxYearEnd
-          )
+
+          val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
 
           Ok(
             noClaimNotificationPage(
@@ -102,20 +91,10 @@ class NoClaimNotificationController @Inject() (
           implicit val eori = request.eoriNumber
 
           val previous = routes.AccountController.getAccountPage().url
-
-          implicit val localDateOrdering: Ordering[LocalDate] = Ordering.by(_.toEpochDay)
-          val lastSubmitted: Option[LocalDate] = undertakingSubsidies.nonHMRCSubsidyUsage.map(_.submissionDate) match {
-            case Nil => undertaking.lastSubsidyUsageUpdt
-            case  a  => Some(a.max)
-          }
           val today = timeProvider.today
           val startDate = today.toEarliestTaxYearStart
-          val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
-            undertaking,
-            undertakingSubsidies,
-            today.toEarliestTaxYearStart,
-            today.toTaxYearEnd
-          )
+
+          val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
 
           def handleValidNoClaim(form: FormValues): Future[Result] = {
             val nilSubmissionDate = timeProvider.today.plusDays(1)
@@ -135,7 +114,15 @@ class NoClaimNotificationController @Inject() (
           noClaimForm
             .bindFromRequest()
             .fold(
-              errors => BadRequest(noClaimNotificationPage(errors, previous, undertakingSubsidies.hasNeverSubmitted, startDate.toDisplayFormat, lastSubmitted.map(_.toDisplayFormat))).toFuture,
+              errors => BadRequest(
+                noClaimNotificationPage(
+                  errors,
+                  previous,
+                  undertakingSubsidies.hasNeverSubmitted,
+                  startDate.toDisplayFormat,
+                  lastSubmitted.map(_.toDisplayFormat)
+                )
+              ).toFuture,
               handleValidNoClaim
             )
       }

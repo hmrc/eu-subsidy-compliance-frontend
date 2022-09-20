@@ -16,8 +16,11 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
+import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{SubsidyAmount, UndertakingRef}
+
+import java.time.LocalDate
 
 case class UndertakingSubsidies(
   undertakingIdentifier: UndertakingRef,
@@ -28,7 +31,17 @@ case class UndertakingSubsidies(
   nonHMRCSubsidyUsage: List[NonHmrcSubsidy],
   hmrcSubsidyUsage: List[HmrcSubsidy]
 ) {
+
   def hasNeverSubmitted: Boolean = nonHMRCSubsidyUsage.isEmpty
+
+  private implicit val localDateOrdering: Ordering[LocalDate] = Ordering.by(_.toEpochDay)
+
+  def lastSubmitted: Option[LocalDate] =
+    if (nonHMRCSubsidyUsage.isEmpty) None
+    else nonHMRCSubsidyUsage
+      .map(_.submissionDate)
+      .max
+      .some
 }
 
 object UndertakingSubsidies {

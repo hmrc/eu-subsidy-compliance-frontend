@@ -27,46 +27,35 @@
     govukCheckboxes : GovukCheckboxes
 )
 
-<<<<<<< HEAD
-@(form: Form[_], previous: Journey.Uri, neverSubmitted: Boolean, neverSubmittedTaxYearDate: String, lastSubmitted: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-||||||| parent of 62d3b1d7 (ESC-703 WIP - passing neverSubmitted to view)
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, neverSubmitted: Boolean, neverSubmittedTaxYearDate: String, lastSubmitted: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-=======
 @(
     form: Form[_], 
     previous: Journey.Uri,
-    undertakingName: String,
     neverSubmitted: Boolean,
     neverSubmittedTaxYearDate: String,
     lastSubmitted: Option[String]
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
->>>>>>> 62d3b1d7 (ESC-703 WIP - passing neverSubmitted to view)
+
 @key = @{"noClaimNotification"}
-@hasSubmittedTitle = @{messages(s"$key.never-submitted,title", lastSubmitted)}
+
+@hasSubmittedTitle = @{messages(s"$key.never-submitted.title", lastSubmitted)}
 @neverSubmittedTitle = @{messages(s"$key.has-submitted.title", neverSubmittedTaxYearDate)}
+
 @hasSubmittedHtml = {
     @P(messages("noClaimNotification.has-submitted.p1", lastSubmitted.getOrElse("")))
     @P(messages("noClaimNotification.has-submitted.p2"))
 }
+
 @neverSubmittedHtml = {
     @P(messages("noClaimNotification.never-submitted.p1"))
 }
 
 @layout(
-    pageTitle = if(neverSubmitted){Some(neverSubmittedTitle)} else {Some(hasSubmittedTitle)},
+    pageTitle = if(neverSubmitted) Some(neverSubmittedTitle) else Some(hasSubmittedTitle),
     backLinkEnabled = true,
     backLink = Some(previous),
     hasErrors = form.hasErrors
 ) {
     
-    <!-- 
-        TODO
-        # Remove undertaking name passed to view - no longer required
-        # Pass in the boolean neverSubmitted
-        # Pass neverReportedPaymentDate
-        # Pass lastSubmitted date
-    -->
-
     @formHelper(action = controllers.routes.NoClaimNotificationController.postNoClaimNotification()) {
         @form.errors.map { err =>
             @govukErrorSummary(ErrorSummary(

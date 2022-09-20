@@ -34,7 +34,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Sy
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 
-import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -102,12 +101,7 @@ class AccountController @Inject() (
 
     val currentDay = timeProvider.today
 
-    implicit val localDateOrdering: Ordering[LocalDate] = Ordering.by(_.toEpochDay)
-
-    val lastSubmitted: Option[LocalDate] = undertakingSubsidies.nonHMRCSubsidyUsage.map(_.submissionDate) match {
-      case Nil => undertaking.lastSubsidyUsageUpdt
-      case  a  => Some(a.max)
-    }
+    val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
 
     val isTimeToReport = ReportReminderHelpers.isTimeToReport(lastSubmitted, currentDay)
     val dueDate = ReportReminderHelpers.dueDateToReport(lastSubmitted)
