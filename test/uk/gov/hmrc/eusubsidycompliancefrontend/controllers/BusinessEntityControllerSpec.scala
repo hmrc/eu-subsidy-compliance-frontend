@@ -129,8 +129,8 @@ class BusinessEntityControllerSpec
           checkPageIsDisplayed(
             performAction(),
             if (undertaking.undertakingBusinessEntity.size > 1)
-              messageFromMessageKey("addBusiness.businesses-added.title", undertaking.name)
-            else messageFromMessageKey("addBusiness.empty.title", undertaking.name),
+              messageFromMessageKey("addBusiness.businesses-added.title")
+            else messageFromMessageKey("addBusiness.empty.title"),
             { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
 
@@ -204,8 +204,8 @@ class BusinessEntityControllerSpec
 
           checkFormErrorIsDisplayed(
             performAction(data: _*),
-            messageFromMessageKey("addBusiness.businesses-added.title", undertaking.name),
-            messageFromMessageKey(errorMessage, undertaking.name)
+            messageFromMessageKey("addBusiness.businesses-added.title"),
+            messageFromMessageKey(errorMessage)
           )
         }
 
@@ -754,7 +754,7 @@ class BusinessEntityControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("removeYourselfBusinessEntity.title", undertaking.name),
+            messageFromMessageKey("removeYourselfBusinessEntity.title"),
             { doc =>
               doc
                 .select(".govuk-back-link")
@@ -806,8 +806,8 @@ class BusinessEntityControllerSpec
           }
           checkFormErrorIsDisplayed(
             performAction(),
-            messageFromMessageKey("removeYourselfBusinessEntity.title", undertaking1.name),
-            messageFromMessageKey("removeYourselfBusinessEntity.error.required", undertaking1.name)
+            messageFromMessageKey("removeYourselfBusinessEntity.title"),
+            messageFromMessageKey("removeYourselfBusinessEntity.error.required")
           )
 
         }

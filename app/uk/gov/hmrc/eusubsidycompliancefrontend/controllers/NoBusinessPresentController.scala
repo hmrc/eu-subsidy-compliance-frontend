@@ -42,9 +42,9 @@ class NoBusinessPresentController @Inject() (
   import actionBuilders._
 
   def getNoBusinessPresent: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    withLeadUndertaking { undertaking =>
+    withLeadUndertaking { _ =>
       val previous = routes.AccountController.getAccountPage().url
-      Ok(noBusinessPresentPage(undertaking.name, previous)).toFuture
+      Ok(noBusinessPresentPage(previous)).toFuture
     }
   }
 

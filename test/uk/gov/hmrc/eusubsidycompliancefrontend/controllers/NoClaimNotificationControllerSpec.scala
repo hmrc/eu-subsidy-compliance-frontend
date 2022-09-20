@@ -66,7 +66,7 @@ class NoClaimNotificationControllerSpec
         }
         checkPageIsDisplayed(
           performAction(),
-          messageFromMessageKey("noClaimNotification.title", undertaking.name),
+          messageFromMessageKey("noClaimNotification.title"),
           { doc =>
             doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
             val selectedOptions = doc.select(".govuk-checkboxes__input[checked]")
@@ -147,7 +147,7 @@ class NoClaimNotificationControllerSpec
 
           checkFormErrorIsDisplayed(
             performAction(),
-            messageFromMessageKey("noClaimNotification.title", undertaking.name),
+            messageFromMessageKey("noClaimNotification.title"),
             messageFromMessageKey("noClaimNotification.error.required")
           )
         }

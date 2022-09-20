@@ -31,7 +31,7 @@
 
 @fieldName = @{"undertakingSector"}
 @layout(
-  pageTitle = Some(messages("undertakingSector.title", undertakingName)),
+  pageTitle = Some(messages("undertakingSector.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -56,7 +56,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("undertakingSector.title", undertakingName)),
+          content = Text(messages("undertakingSector.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))

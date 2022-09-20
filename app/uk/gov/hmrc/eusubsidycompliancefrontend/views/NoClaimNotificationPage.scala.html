@@ -27,9 +27,9 @@
     govukCheckboxes : GovukCheckboxes
 )
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"noClaimNotification"}
-@title = @{messages(s"$key.title", undertakingName)}
+@title = @{messages(s"$key.title")}
 
 @layout(
     pageTitle = Some(title),

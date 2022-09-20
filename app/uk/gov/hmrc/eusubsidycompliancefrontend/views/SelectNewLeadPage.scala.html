@@ -27,9 +27,9 @@
         govukRadios : GovukRadios
 )
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, eoriList: List[EORI])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], previous: Journey.Uri, eoriList: List[EORI])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"selectNewLead"}
-@title = @{messages(s"$key.title", undertakingName)}
+@title = @{messages(s"$key.title")}
 
 @layout(
     pageTitle = Some(title),
@@ -46,7 +46,7 @@
                         content = Text(s"${messages(err.key++"." ++err.message)}")
                     )
                 ),
-                title = Text(messages("common.error.summary.title", undertakingName))
+                title = Text(messages("common.error.summary.title"))
             ))
         }
 

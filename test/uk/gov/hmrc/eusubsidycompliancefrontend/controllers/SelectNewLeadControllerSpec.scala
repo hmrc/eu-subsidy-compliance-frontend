@@ -84,7 +84,7 @@ class SelectNewLeadControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("selectNewLead.title", undertaking.name),
+            messageFromMessageKey("selectNewLead.title"),
             { doc =>
               doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
@@ -104,7 +104,7 @@ class SelectNewLeadControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("selectNewLead.title", undertaking1.name),
+            messageFromMessageKey("selectNewLead.title"),
             { doc =>
               doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
@@ -176,7 +176,7 @@ class SelectNewLeadControllerSpec
           }
           checkFormErrorIsDisplayed(
             performAction(),
-            messageFromMessageKey("selectNewLead.title", undertaking.name),
+            messageFromMessageKey("selectNewLead.title"),
             messageFromMessageKey("selectNewLead.error.required")
           )
         }
@@ -320,7 +320,7 @@ class SelectNewLeadControllerSpec
           messageFromMessageKey("leadEORIChanged.title"),
           { doc =>
             val htmlText = doc.select(".govuk-body").html()
-            htmlText should include regex messageFromMessageKey("leadEORIChanged.p2", eori4, undertaking1.name)
+            htmlText should include regex messageFromMessageKey("leadEORIChanged.p2", eori4)
 
             htmlText should include regex messageFromMessageKey(
               "leadEORIChanged.link",
@@ -328,7 +328,7 @@ class SelectNewLeadControllerSpec
             )
 
             val htmlText1 = doc.select(".govuk-panel").html()
-            htmlText1 should include regex messageFromMessageKey("leadEORIChanged.subtitle", eori4, undertaking1.name)
+            htmlText1 should include regex messageFromMessageKey("leadEORIChanged.subtitle", eori4)
 
           },
           isLeadJourney = true

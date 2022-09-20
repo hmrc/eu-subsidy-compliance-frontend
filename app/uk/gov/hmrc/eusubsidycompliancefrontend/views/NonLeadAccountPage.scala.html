@@ -43,12 +43,12 @@
 @key = @{"non-lead-account-homepage"}
 
 @layout(
-  pageTitle = Some(messages(s"$key.title", undertaking.name)),
+  pageTitle = Some(messages(s"$key.title")),
   backLinkEnabled = false,
   backLink = None
 ) {
 
-  @H1(messages(s"$key.title", undertaking.name))
+  @H1(messages(s"$key.title"))
   @P(messages(s"$key.p1", eori))
   @P(messages(s"$key.p2"))
   

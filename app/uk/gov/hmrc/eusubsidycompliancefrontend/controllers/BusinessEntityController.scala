@@ -75,7 +75,6 @@ class BusinessEntityController @Inject() (
           Ok(
             addBusinessPage(
               form,
-              undertaking.name,
               undertaking.undertakingBusinessEntity
             )
           )
@@ -96,7 +95,7 @@ class BusinessEntityController @Inject() (
         .bindFromRequest()
         .fold(
           errors =>
-            BadRequest(addBusinessPage(errors, undertaking.name, undertaking.undertakingBusinessEntity)).toFuture,
+            BadRequest(addBusinessPage(errors, undertaking.undertakingBusinessEntity)).toFuture,
           handleValidAnswer
         )
     }
@@ -225,7 +224,7 @@ class BusinessEntityController @Inject() (
     } yield undertakingOpt match {
       case Some(undertaking) =>
         val removeBE = undertaking.getBusinessEntityByEORI(eori)
-        Ok(removeYourselfBEPage(removeYourselfBusinessForm, removeBE, previous, undertaking.name))
+        Ok(removeYourselfBEPage(removeYourselfBusinessForm, removeBE, previous))
 
       case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity())
     }
@@ -297,7 +296,7 @@ class BusinessEntityController @Inject() (
         removeYourselfBusinessForm
           .bindFromRequest()
           .fold(
-            errors => BadRequest(removeYourselfBEPage(errors, removeBE, previous, undertaking.name)).toFuture,
+            errors => BadRequest(removeYourselfBEPage(errors, removeBE, previous)).toFuture,
             form => handleValidBE(form)
           )
       }

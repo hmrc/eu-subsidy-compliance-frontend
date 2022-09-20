@@ -30,9 +30,9 @@
   govukSummaryList: GovukSummaryList
 )
 
-@(form: Form[_], name: UndertakingName, businessEntity: List[BusinessEntity])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], businessEntity: List[BusinessEntity])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{if(businessEntity.length > 1) "addBusiness.businesses-added" else "addBusiness.empty"}
-@titleKey = @{messages(s"$key.title", name)}
+@titleKey = @{messages(s"$key.title")}
 @html = {
     <p class="govuk-body"><strong>@messages(s"$key.p1")</strong></p>
 }
@@ -50,7 +50,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message, name.toString)}")
+            content = Text(s"${messages(err.key++"." ++err.message)}")
           )
         ),
         title = Text(messages("common.error.summary.title"))
@@ -88,13 +88,13 @@
     @defining(
       businessEntity.length match {
         case x if x > 1 => messages("addBusiness.businesses-added.legend")
-        case _ => messages("addBusiness.legend", name.toString)
+        case _ => messages("addBusiness.legend")
       }
     ) { case (addLegend) =>
       @govukRadios(Radios(
           classes = "govuk-radios--inline",
           errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-              content = Text(messages("addBusiness.error.required", name.toString))
+              content = Text(messages("addBusiness.error.required"))
           ))} else None,
           fieldset = Some(Fieldset(
               legend = Some(Legend(
