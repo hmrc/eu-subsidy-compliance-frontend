@@ -49,7 +49,7 @@ class NoClaimNotificationController @Inject() (
   def getNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       val previous = routes.AccountController.getAccountPage().url
-      Ok(noClaimNotificationPage(noClaimForm, previous, undertaking.name)).toFuture
+      Ok(noClaimNotificationPage(noClaimForm, previous)).toFuture
     }
   }
 
@@ -76,7 +76,7 @@ class NoClaimNotificationController @Inject() (
       noClaimForm
         .bindFromRequest()
         .fold(
-          errors => BadRequest(noClaimNotificationPage(errors, previous, undertaking.name)).toFuture,
+          errors => BadRequest(noClaimNotificationPage(errors, previous)).toFuture,
           _ => handleValidNoClaim()
         )
     }

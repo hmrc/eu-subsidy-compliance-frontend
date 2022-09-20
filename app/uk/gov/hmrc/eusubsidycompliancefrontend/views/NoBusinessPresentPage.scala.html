@@ -20,9 +20,9 @@
 
 @this(layout: Layout, formHelper: FormWithCSRF, govukButton: GovukButton, formWithCSRF: FormWithCSRF)
 
-@(undertakingName: String, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"noBusinessPresent"}
-@title = @{messages(s"$key.title", undertakingName)}
+@title = @{messages(s"$key.title")}
 @layout(pageTitle = Some(title), backLinkEnabled = true, backLink = Some(previous)) {
  @formHelper(action = controllers.routes.NoBusinessPresentController.postNoBusinessPresent()) {
   <h1 class="govuk-heading-xl">@title</h1>

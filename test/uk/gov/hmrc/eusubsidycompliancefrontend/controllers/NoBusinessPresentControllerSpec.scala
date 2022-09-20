@@ -57,7 +57,7 @@ class NoBusinessPresentControllerSpec
         }
         checkPageIsDisplayed(
           performAction(),
-          messageFromMessageKey("noBusinessPresent.title", undertaking1.name),
+          messageFromMessageKey("noBusinessPresent.title"),
           { doc =>
             doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
             val button = doc.select("form")

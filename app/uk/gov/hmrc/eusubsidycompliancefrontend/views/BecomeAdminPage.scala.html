@@ -30,10 +30,10 @@
   govukSummaryList: GovukSummaryList
 )
 
-@(form: Form[_], name: UndertakingName, eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-  pageTitle = Some(messages("become-admin.title", name)),
+  pageTitle = Some(messages("become-admin.title")),
   backLinkEnabled = true,
   backLink = Some(controllers.routes.AccountController.getAccountPage().url),
   hasErrors = form.hasErrors
@@ -48,7 +48,7 @@
             content = Text(s"${messages(err.key++"." ++err.message)}")
           )
         ),
-        title = Text(messages("common.error.summary.title", name))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 
@@ -59,7 +59,7 @@
           ))} else None,
           fieldset = Some(Fieldset(
               legend = Some(Legend(
-                  content = Text(messages("become-admin.title", name)),
+                  content = Text(messages("become-admin.title")),
                   classes = "govuk-fieldset__legend--xl",
                   isPageHeading = true
               ))

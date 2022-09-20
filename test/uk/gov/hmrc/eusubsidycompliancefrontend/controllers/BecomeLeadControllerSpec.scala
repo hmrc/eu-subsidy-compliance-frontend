@@ -108,7 +108,7 @@ class BecomeLeadControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("become-admin.title", undertaking1.name),
+            messageFromMessageKey("become-admin.title"),
             { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               selectedOptions.isEmpty shouldBe true
@@ -134,7 +134,7 @@ class BecomeLeadControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("become-admin.title", undertaking1.name),
+            messageFromMessageKey("become-admin.title"),
             { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               selectedOptions.attr("value") shouldBe "true"
@@ -188,7 +188,7 @@ class BecomeLeadControllerSpec
           }
           checkFormErrorIsDisplayed(
             performAction(),
-            messageFromMessageKey("become-admin.title", undertaking1.name),
+            messageFromMessageKey("become-admin.title"),
             messageFromMessageKey("becomeAdmin.error.required")
           )
         }

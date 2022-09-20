@@ -61,7 +61,7 @@ class SelectNewLeadController @Inject() (
       val result = for {
         journey <- store.getOrCreate[NewLeadJourney](NewLeadJourney()).toContext
         form = journey.selectNewLead.value.fold(selectNewLeadForm)(e => selectNewLeadForm.fill(FormValues(e)))
-      } yield Ok(selectNewLeadPage(form, previous, undertaking.name, undertaking.getAllNonLeadEORIs))
+      } yield Ok(selectNewLeadPage(form, previous, undertaking.getAllNonLeadEORIs))
 
       result.getOrElse(handleMissingSessionData("NewLeadJourney"))
     }
@@ -76,7 +76,6 @@ class SelectNewLeadController @Inject() (
           selectNewLeadPage(
             errors,
             routes.AccountController.getAccountPage().url,
-            undertaking.name,
             undertaking.getAllNonLeadEORIs
           )
         ).toFuture
@@ -121,7 +120,7 @@ class SelectNewLeadController @Inject() (
             _ <- store.put[NewLeadJourney](NewLeadJourney())
             selectedEORI = newLeadJourney.selectNewLead.value
           } yield selectedEORI.fold(Redirect(newLeadJourney.previous))(eori =>
-            Ok(leadEORIChangedPage(eori, undertaking.name))
+            Ok(leadEORIChangedPage(eori))
           )
         case None => Redirect(routes.SelectNewLeadController.getSelectNewLead()).toFuture
       }

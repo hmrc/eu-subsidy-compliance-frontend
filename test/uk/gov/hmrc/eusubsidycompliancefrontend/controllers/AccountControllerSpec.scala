@@ -88,7 +88,7 @@ class AccountControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("lead-account-homepage.title", undertaking.name),
+            messageFromMessageKey("lead-account-homepage.title"),
             { doc =>
               val htmlBody = doc.toString
 
@@ -134,7 +134,7 @@ class AccountControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("lead-account-homepage.title", undertaking.name),
+            messageFromMessageKey("lead-account-homepage.title"),
             doc => {
               if (isTimeToReport) {
                 val content = doc.select(".govuk-grid-column-two-thirds").toString

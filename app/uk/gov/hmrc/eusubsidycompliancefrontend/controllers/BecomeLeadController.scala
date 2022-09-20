@@ -67,10 +67,10 @@ class BecomeLeadController @Inject() (
     (becomeLeadJourneyOpt, undertakingOpt) match {
       case (Some(journey), Some(undertaking)) =>
         val form = journey.becomeLeadEori.value.fold(becomeAdminForm)(e => becomeAdminForm.fill(FormValues(e.toString)))
-        Ok(becomeAdminPage(form, undertaking.name, eori)).toFuture
+        Ok(becomeAdminPage(form, eori)).toFuture
       case (None, Some(undertaking)) => // initialise the empty Journey model
         store.put(BecomeLeadJourney()).map { _ =>
-          Ok(becomeAdminPage(becomeAdminForm, undertaking.name, eori))
+          Ok(becomeAdminPage(becomeAdminForm, eori))
         }
       case _ =>
         throw new IllegalStateException("missing undertaking name")
@@ -86,7 +86,7 @@ class BecomeLeadController @Inject() (
             undertakingOpt <- escService.retrieveUndertaking(eori)
           } yield undertakingOpt match {
             case Some(undertaking) =>
-              BadRequest(becomeAdminPage(formWithErrors, undertaking.name, eori))
+              BadRequest(becomeAdminPage(formWithErrors, eori))
             case _ =>
               throw new IllegalStateException("missing undertaking name")
           },

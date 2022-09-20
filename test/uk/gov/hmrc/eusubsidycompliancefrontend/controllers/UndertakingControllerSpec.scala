@@ -367,7 +367,7 @@ class UndertakingControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("undertakingSector.title", undertakingJourney.about.value.getOrElse("")),
+            messageFromMessageKey("undertakingSector.title"),
             { doc =>
               doc.select(".govuk-back-link").attr("href") shouldBe previousCall
 
@@ -488,7 +488,7 @@ class UndertakingControllerSpec
           }
           checkFormErrorIsDisplayed(
             performAction(),
-            messageFromMessageKey("undertakingSector.title", undertakingJourneyComplete.about.value.getOrElse("")),
+            messageFromMessageKey("undertakingSector.title"),
             messageFromMessageKey("undertakingSector.error.required")
           )
 
@@ -1238,7 +1238,7 @@ class UndertakingControllerSpec
         }
         checkPageIsDisplayed(
           performAction(),
-          messageFromMessageKey("disableUndertakingWarning.title", undertaking.name),
+          messageFromMessageKey("disableUndertakingWarning.title"),
           doc => doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
         )
       }
@@ -1255,7 +1255,7 @@ class UndertakingControllerSpec
         }
         checkPageIsDisplayed(
           performAction(),
-          messageFromMessageKey("disableUndertakingConfirm.title", undertaking.name),
+          messageFromMessageKey("disableUndertakingConfirm.title"),
           { doc =>
             doc.select(".govuk-back-link").attr("href") shouldBe routes.UndertakingController
               .getDisableUndertakingWarning()
@@ -1299,7 +1299,7 @@ class UndertakingControllerSpec
           }
           checkFormErrorIsDisplayed(
             performAction(),
-            messageFromMessageKey("disableUndertakingConfirm.title", undertaking1.name),
+            messageFromMessageKey("disableUndertakingConfirm.title"),
             messageFromMessageKey("disableUndertakingConfirm.error.required")
           )
 

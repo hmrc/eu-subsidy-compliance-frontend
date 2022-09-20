@@ -21,20 +21,20 @@
 
 @this(layout: Layout, govukPanel : GovukPanel)
 
-@(eori: String, undertakingName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(eori: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"leadEORIChanged"}
 @title = @{messages(s"$key.title")}
 
 @layout(pageTitle = Some(title)) {
 
     @govukPanel(Panel(
-        title = Text(messages(s"$key.subtitle", eori, undertakingName)),
+        title = Text(messages(s"$key.subtitle", eori)),
         classes = "govuk-!-margin-bottom-7"
     ))
 
     <p class="govuk-body">@messages(s"$key.p1")</p>
     <h2 class="govuk-heading-l">@{messages(s"$key.h2")}</h2>
-    <p class="govuk-body">@messages(s"$key.p2", eori, undertakingName)</p>
+    <p class="govuk-body">@messages(s"$key.p2", eori)</p>
     <p class="govuk-body">@messages(s"$key.p3")</p>
     <p class="govuk-body">@messages(s"$key.p4")</p>
     <p class="govuk-body">@Html(messages(s"$key.link", controllers.routes.AccountController.getAccountPage().url))</p>
