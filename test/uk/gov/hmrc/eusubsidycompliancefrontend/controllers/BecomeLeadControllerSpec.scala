@@ -28,7 +28,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedSelfToNewLead, RemovedAsLeadToFormerLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages.{BecomeLeadEoriFormPage, TermsAndConditionsFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages.{BecomeLeadEoriFormPage, AcceptResponsibilitiesFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -218,7 +218,7 @@ class BecomeLeadControllerSpec
 
     "handling request to get accept Promotion Terms" must {
 
-      def performAction() = controller.getAcceptPromotionTerms(FakeRequest())
+      def performAction() = controller.getAcceptResponsibilities(FakeRequest())
       behave like authBehaviourWithPredicate(() => performAction())
 
       "throw technical error" when {
@@ -258,7 +258,7 @@ class BecomeLeadControllerSpec
 
     "handling request to post accept Promotion Terms" must {
 
-      def performAction() = controller.postAcceptPromotionTerms(FakeRequest())
+      def performAction() = controller.postAcceptResponsibilities(FakeRequest())
 
       "redirect" when {
 
@@ -375,7 +375,7 @@ class BecomeLeadControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
             mockGet[BecomeLeadJourney](eori4)(
-              Right(newBecomeLeadJourney.copy(acceptTerms = TermsAndConditionsFormPage(true.some)).some)
+              Right(newBecomeLeadJourney.copy(acceptResponsibilities = AcceptResponsibilitiesFormPage(true.some)).some)
             )
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))

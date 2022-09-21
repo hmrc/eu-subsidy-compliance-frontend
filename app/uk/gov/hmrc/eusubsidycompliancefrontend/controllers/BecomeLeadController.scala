@@ -42,7 +42,7 @@ class BecomeLeadController @Inject() (
                                        emailService: EmailService,
                                        auditService: AuditService,
                                        becomeAdminPage: BecomeAdminPage,
-                                       becomeAdminTermsAndConditionsPage: BecomeAdminTermsAndConditionsPage,
+                                       becomeAdminAcceptResponsibilitiesPage: BecomeAdminAcceptResponsibilitiesPage,
                                        becomeAdminConfirmationPage: BecomeAdminConfirmationPage
 )(implicit
   val appConfig: AppConfig,
@@ -51,31 +51,77 @@ class BecomeLeadController @Inject() (
 
   import actionBuilders._
 
-  def getBecomeLeadEori: Action[AnyContent] = enrolled.async { implicit request =>
+  private val becomeAdminForm = formWithSingleMandatoryField("becomeAdmin")
+
+  def getAcceptResponsibilities: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
+    // TODO - simplify
+    def handleRequest(
+      becomeLeadJourneyOpt: Option[BecomeLeadJourney],
+      undertakingOpt: Option[Undertaking]
+    )(implicit request: AuthenticatedEnrolledRequest[_], eori: EORI): Future[Result] = {
+      (becomeLeadJourneyOpt, undertakingOpt) match {
+        case (Some(journey), Some(_)) =>
+          Ok(becomeAdminAcceptResponsibilitiesPage(eori)).toFuture
+        case (None, Some(_)) => // initialise the empty Journey model
+          store.put(BecomeLeadJourney()).map { _ =>
+            Ok(becomeAdminAcceptResponsibilitiesPage(eori))
+          }
+        case _ =>
+          // TODO - we should never be able to get there since there should always be an undertaking. :/
+          throw new IllegalStateException("missing undertaking")
+      }
+    }
+
+    // TODO - review the logic here
     for {
       journey <- store.get[BecomeLeadJourney]
       undertakingOpt <- escService.retrieveUndertaking(eori)
-      result <- becomeLeadResult(journey, undertakingOpt)
+      result <- handleRequest(journey, undertakingOpt)
+    } yield result
+
+  }
+
+  def postAcceptResponsibilities: Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store
+      .update[BecomeLeadJourney](j => j.copy(acceptResponsibilities = j.acceptResponsibilities.copy(value = Some(true))))
+      .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori())))
+  }
+
+  def getBecomeLeadEori: Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+
+    def handleRequest(
+      becomeLeadJourneyOpt: Option[BecomeLeadJourney],
+      undertakingOpt: Option[Undertaking]
+    )(implicit request: AuthenticatedEnrolledRequest[_], eori: EORI): Future[Result] = {
+      (becomeLeadJourneyOpt, undertakingOpt) match {
+        case (Some(journey), Some(undertaking)) =>
+
+          val form = journey.becomeLeadEori.value.fold(becomeAdminForm)(e => becomeAdminForm.fill(FormValues(e.toString)))
+          Ok(becomeAdminPage(form, eori)).toFuture
+
+        case (None, Some(undertaking)) => // initialise the empty Journey model
+          store.put(BecomeLeadJourney()).map { _ =>
+            Ok(becomeAdminPage(becomeAdminForm, eori))
+
+          }
+
+        case _ => throw new IllegalStateException("missing undertaking name")
+      }
+    }
+
+    for {
+      journey <- store.get[BecomeLeadJourney]
+      undertakingOpt <- escService.retrieveUndertaking(eori)
+      result <- handleRequest(journey, undertakingOpt)
     } yield result
   }
 
-  private def becomeLeadResult(
-    becomeLeadJourneyOpt: Option[BecomeLeadJourney],
-    undertakingOpt: Option[Undertaking]
-  )(implicit request: AuthenticatedEnrolledRequest[_], eori: EORI): Future[Result] =
-    (becomeLeadJourneyOpt, undertakingOpt) match {
-      case (Some(journey), Some(undertaking)) =>
-        val form = journey.becomeLeadEori.value.fold(becomeAdminForm)(e => becomeAdminForm.fill(FormValues(e.toString)))
-        Ok(becomeAdminPage(form, eori)).toFuture
-      case (None, Some(undertaking)) => // initialise the empty Journey model
-        store.put(BecomeLeadJourney()).map { _ =>
-          Ok(becomeAdminPage(becomeAdminForm, eori))
-        }
-      case _ =>
-        throw new IllegalStateException("missing undertaking name")
-    }
 
+  // TODO - review this code
   def postBecomeLeadEori: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     becomeAdminForm
@@ -88,7 +134,7 @@ class BecomeLeadController @Inject() (
             case Some(undertaking) =>
               BadRequest(becomeAdminPage(formWithErrors, eori))
             case _ =>
-              throw new IllegalStateException("missing undertaking name")
+              throw new IllegalStateException("missing undertaking")
           },
         form =>
           store
@@ -97,38 +143,15 @@ class BecomeLeadController @Inject() (
             )
             .flatMap { _ =>
               if (form.value.isTrue) {
-                Redirect(routes.BecomeLeadController.getAcceptPromotionTerms()).toFuture
+                Redirect(routes.BecomeLeadController.getAcceptResponsibilities()).toFuture
               } else Future(Redirect(routes.AccountController.getAccountPage()))
             }
       )
   }
 
-  /**
-    * This route should check for the CDS enrolment to allow email if BE request to be a Lead.
-    * @return
-    */
 
-  def getAcceptPromotionTerms: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store.get[BecomeLeadJourney].flatMap {
-      case Some(journey) =>
-        if (journey.becomeLeadEori.value.getOrElse(false)) {
-          Future(Ok(becomeAdminTermsAndConditionsPage(eori)))
-        } else {
-          Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori()))
-        }
-      case None => Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori()))
-    }
-  }
-
-  def postAcceptPromotionTerms: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store
-      .update[BecomeLeadJourney](j => j.copy(acceptTerms = j.acceptTerms.copy(value = Some(true))))
-      .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getPromotionConfirmation())))
-  }
-
-  def getPromotionConfirmation: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  // TODO - review access on this route - needs a verified email
+  def getPromotionConfirmation: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[BecomeLeadJourney].flatMap {
       case Some(journey) =>
@@ -158,7 +181,7 @@ class BecomeLeadController @Inject() (
             )
           )
         } yield
-          if (journey.acceptTerms.value.getOrElse(false)) {
+          if (journey.acceptResponsibilities.value.getOrElse(false)) {
             Ok(becomeAdminConfirmationPage(oldLead.businessEntityIdentifier))
           } else {
             Redirect(routes.BecomeLeadController.getBecomeLeadEori())
@@ -167,13 +190,12 @@ class BecomeLeadController @Inject() (
     }
   }
 
-  def getPromotionCleanup: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  // TODO - review access on this route - needs a verified email
+  def getPromotionCleanup: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .update[BecomeLeadJourney](_ => BecomeLeadJourney())
       .flatMap(_ => Future(Redirect(routes.AccountController.getAccountPage())))
   }
-
-  private val becomeAdminForm = formWithSingleMandatoryField("becomeAdmin")
 
 }

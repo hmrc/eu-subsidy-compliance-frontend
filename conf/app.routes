@@ -104,8 +104,8 @@ GET        /lead-undertaking-lead-eori-changed                                  
 GET        /business-enterprise-become-lead-eori                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getBecomeLeadEori()
 POST       /business-enterprise-become-lead-eori                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.postBecomeLeadEori()
 
-GET        /business-enterprise-terms-conditions                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getAcceptPromotionTerms()
-POST       /business-enterprise-terms-conditions                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.postAcceptPromotionTerms()
+GET        /business-enterprise-accept-responsibilities                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getAcceptResponsibilities()
+POST       /business-enterprise-accept-responsibilities                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.postAcceptResponsibilities()
 
 GET        /business-enterprise-admin-request                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getPromotionConfirmation()
 GET        /lead-promotion-confirmation-cleanup                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getPromotionCleanup()
