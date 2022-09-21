@@ -67,7 +67,7 @@ class NoClaimNotificationController @Inject() (
               previous,
               undertakingSubsidies.hasNeverSubmitted, 
               startDate.toDisplayFormat,
-              lastSubmitted.map(_.toDisplayFormat),
+              lastSubmitted.map(_.toDisplayFormat).getOrElse(""), // TODO - can we display something sensible if the value is missing?
             )
           ).toFuture
         }
@@ -121,7 +121,7 @@ class NoClaimNotificationController @Inject() (
                   previous,
                   undertakingSubsidies.hasNeverSubmitted,
                   startDate.toDisplayFormat,
-                  lastSubmitted.map(_.toDisplayFormat)
+                  lastSubmitted.map(_.toDisplayFormat).getOrElse("") // TODO - can we display something sensible if the date is missing?
                 )
               ).toFuture,
               handleValidNoClaim

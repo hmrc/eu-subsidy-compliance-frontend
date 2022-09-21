@@ -32,16 +32,16 @@
     previous: Journey.Uri,
     neverSubmitted: Boolean,
     neverSubmittedTaxYearDate: String,
-    lastSubmitted: Option[String]
+    lastSubmitted: String
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @key = @{"noClaimNotification"}
 
-@hasSubmittedTitle = @{messages(s"$key.never-submitted.title", lastSubmitted)}
-@neverSubmittedTitle = @{messages(s"$key.has-submitted.title", neverSubmittedTaxYearDate)}
+@hasSubmittedTitle = @{messages(s"$key.has-submitted.title", lastSubmitted)}
+@neverSubmittedTitle = @{messages(s"$key.never-submitted.title", neverSubmittedTaxYearDate)}
 
 @hasSubmittedHtml = {
-    @P(messages("noClaimNotification.has-submitted.p1", lastSubmitted.getOrElse("")))
+    @P(messages("noClaimNotification.has-submitted.p1", lastSubmitted))
     @P(messages("noClaimNotification.has-submitted.p2"))
 }
 

@@ -32,13 +32,16 @@ case class UndertakingSubsidies(
   hmrcSubsidyUsage: List[HmrcSubsidy]
 ) {
 
-  def hasNeverSubmitted: Boolean = nonHMRCSubsidyUsage.isEmpty
+  def hasNeverSubmitted: Boolean =
+    nonHMRCSubsidyUsage.isEmpty
 
   private implicit val localDateOrdering: Ordering[LocalDate] = Ordering.by(_.toEpochDay)
 
   def lastSubmitted: Option[LocalDate] =
-    if (nonHMRCSubsidyUsage.isEmpty) None
-    else nonHMRCSubsidyUsage
+    if (nonHMRCSubsidyUsage.isEmpty)
+      None
+    else
+      nonHMRCSubsidyUsage
       .map(_.submissionDate)
       .max
       .some

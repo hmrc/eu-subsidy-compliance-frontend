@@ -98,6 +98,15 @@ object CommonTestData {
     hmrcSubsidyUsage = List(hmrcSubsidy)
   )
 
+  val emptyUndertakingSubsidies = undertakingSubsidies.copy(
+    nonHMRCSubsidyTotalEUR = SubsidyAmount(0),
+    nonHMRCSubsidyTotalGBP = SubsidyAmount(0),
+    hmrcSubsidyTotalEUR = SubsidyAmount(0),
+    hmrcSubsidyTotalGBP = SubsidyAmount(0),
+    nonHMRCSubsidyUsage = List.empty,
+    hmrcSubsidyUsage = List.empty,
+  )
+
   val claimAmountPounds = ClaimAmount(GBP, subsidyAmount.toString())
   val claimAmountEuros = ClaimAmount(EUR, subsidyAmount.toString())
 
