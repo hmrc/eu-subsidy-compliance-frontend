@@ -25,16 +25,12 @@
     layout: Layout,
     formHelper: FormWithCSRF,
     button: components.Button,
-    govukNotificationBanner : GovukNotificationBanner,
+    govukPanel : GovukPanel,
     govukSummaryList: GovukSummaryList
 )
 
 
 @(nextReportDueDate: LocalDate)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
-@html = {
-    <h2 class="govuk-notification-banner__heading">@messages("noClaimConfirmation.title")</h2>
-}
 
 @layout(
     pageTitle = Some(messages("noClaimConfirmation.title")),
@@ -43,10 +39,10 @@
 ) {
 
     @formHelper(action = controllers.routes.UndertakingController.postConfirmation) {
-        @govukNotificationBanner(NotificationBanner(
-            content = HtmlContent(html),
-            bannerType = Some("success"),
-            disableAutoFocus = Some(true)
+
+        @govukPanel(Panel(
+            title = Text(messages("noClaimConfirmation.title")),
+            classes = "govuk-!-margin-bottom-7"
         ))
 
         @H2(messages("noClaimConfirmation.h2"))
