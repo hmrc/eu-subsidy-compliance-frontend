@@ -72,7 +72,7 @@ class NoClaimNotificationControllerSpec
 
         checkPageIsDisplayed(
           performAction(),
-          messageFromMessageKey("noClaimNotification.never-submitted.title"),
+          messageFromMessageKey("noClaimNotification.never-submitted.title", startDate.toDisplayFormat),
           { doc =>
             doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
             val selectedOptions = doc.select(".govuk-checkboxes__input[checked]")
