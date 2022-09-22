@@ -54,10 +54,10 @@ class BecomeLeadController @Inject() (
 
   private val becomeAdminForm = formWithSingleMandatoryField("becomeAdmin")
 
+  // TODO - refactor the code here and consider using getUndertaking to remove some of the boilerplate
   def getAcceptResponsibilities: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    // TODO - simplify
     def handleRequest(
       becomeLeadJourneyOpt: Option[BecomeLeadJourney],
       undertakingOpt: Option[Undertaking]
@@ -91,7 +91,8 @@ class BecomeLeadController @Inject() (
       .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori())))
   }
 
-  def getBecomeLeadEori: Action[AnyContent] = enrolled.async { implicit request =>
+  // TODO - determine the best point to check for a verified email address
+  def getBecomeLeadEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     def handleRequest(
@@ -99,12 +100,12 @@ class BecomeLeadController @Inject() (
       undertakingOpt: Option[Undertaking]
     )(implicit request: AuthenticatedEnrolledRequest[_], eori: EORI): Future[Result] = {
       (becomeLeadJourneyOpt, undertakingOpt) match {
-        case (Some(journey), Some(undertaking)) =>
+        case (Some(journey), Some(_)) =>
 
           val form = journey.becomeLeadEori.value.fold(becomeAdminForm)(e => becomeAdminForm.fill(FormValues(e.toString)))
           Ok(becomeAdminPage(form)).toFuture
 
-        case (None, Some(undertaking)) => // initialise the empty Journey model
+        case (None, Some(_)) => // initialise the empty Journey model
           store.put(BecomeLeadJourney()).map { _ =>
             Ok(becomeAdminPage(becomeAdminForm))
 
@@ -122,7 +123,6 @@ class BecomeLeadController @Inject() (
   }
 
 
-  // TODO - review this code
   def postBecomeLeadEori: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
@@ -170,20 +170,9 @@ class BecomeLeadController @Inject() (
   }
 
 
-  // TODO - review access on this route - needs a verified email
-  // TODO - this is a get so should not modify state - ideally this happens on the post with the get just acting as
-  //        a confirmation step
-  def getPromotionConfirmation: Action[AnyContent] = enrolled.async { implicit request =>
+  def getPromotionConfirmation: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     Ok(becomeAdminConfirmationPage()).toFuture
-  }
-
-  // TODO - review access on this route - needs a verified email
-  def getPromotionCleanup: Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store
-      .update[BecomeLeadJourney](_ => BecomeLeadJourney())
-      .flatMap(_ => Future(Redirect(routes.AccountController.getAccountPage())))
   }
 
 }
