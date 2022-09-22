@@ -162,11 +162,11 @@ class UndertakingController @Inject() (
         if (journey.isEligibleForStep) {
           emailVerificationService.getEmailVerification(request.eoriNumber).flatMap {
             case Some(verifiedEmail) =>
-              Ok(confirmEmailPage(optionalEmailForm, EmailAddress(verifiedEmail.email), routes.UndertakingController.getSector().url)).toFuture
+              Ok(confirmEmailPage(optionalEmailForm, routes.UndertakingController.postConfirmEmail(), EmailAddress(verifiedEmail.email), routes.UndertakingController.getSector().url)).toFuture
             case None => emailService.retrieveEmailByEORI(request.eoriNumber) map { response =>
               response.emailType match {
                 case EmailType.VerifiedEmail =>
-                  Ok(confirmEmailPage(optionalEmailForm, response.emailAddress.get, routes.UndertakingController.getSector().url))
+                  Ok(confirmEmailPage(optionalEmailForm, routes.UndertakingController.postConfirmEmail(), response.emailAddress.get, routes.UndertakingController.getSector().url))
                 case _ =>
                   Ok(inputEmailPage(emailForm, routes.UndertakingController.getSector().url))
               }
@@ -195,7 +195,7 @@ class UndertakingController @Inject() (
         optionalEmailForm
           .bindFromRequest()
           .fold(
-            errors => BadRequest(confirmEmailPage(errors, EmailAddress(email), routes.EligibilityController.getDoYouClaim().url)).toFuture,
+            errors => BadRequest(confirmEmailPage(errors, routes.UndertakingController.postConfirmEmail(), EmailAddress(email), routes.EligibilityController.getDoYouClaim().url)).toFuture,
             {
               case OptionalEmailFormInput("true", None) =>
                 for {

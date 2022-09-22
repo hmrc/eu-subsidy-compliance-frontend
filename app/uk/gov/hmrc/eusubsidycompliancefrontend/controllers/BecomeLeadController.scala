@@ -16,6 +16,9 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.implicits.catsSyntaxOptionId
+import play.api.data.Form
+import play.api.data.Forms.{email, mapping}
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
@@ -24,27 +27,33 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedSelfToNewLead, RemovedAsLeadToFormerLead}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BecomeLeadController @Inject() (
-                                       mcc: MessagesControllerComponents,
-                                       actionBuilders: ActionBuilders,
-                                       store: Store,
-                                       escService: EscService,
-                                       emailService: EmailService,
-                                       auditService: AuditService,
-                                       becomeAdminPage: BecomeAdminPage,
-                                       becomeAdminAcceptResponsibilitiesPage: BecomeAdminAcceptResponsibilitiesPage,
-                                       becomeAdminConfirmationPage: BecomeAdminConfirmationPage
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  store: Store,
+  escService: EscService,
+  emailService: EmailService,
+  emailVerificationService: EmailVerificationService,
+  auditService: AuditService,
+  becomeAdminPage: BecomeAdminPage,
+  becomeAdminAcceptResponsibilitiesPage: BecomeAdminAcceptResponsibilitiesPage,
+  becomeAdminConfirmationPage: BecomeAdminConfirmationPage,
+  confirmEmailPage: ConfirmEmailPage,
+  inputEmailPage: InputEmailPage,
+
 )(implicit
   val appConfig: AppConfig,
   executionContext: ExecutionContext
@@ -53,6 +62,19 @@ class BecomeLeadController @Inject() (
   import actionBuilders._
 
   private val becomeAdminForm = formWithSingleMandatoryField("becomeAdmin")
+
+  private val optionalEmailForm = Form(
+    mapping(
+      "using-stored-email" -> mandatory("using-stored-email"),
+      "email" -> mandatoryIfEqual("using-stored-email", "false", email)
+    )(OptionalEmailFormInput.apply)(OptionalEmailFormInput.unapply)
+  )
+
+  private val emailForm = Form(
+    mapping(
+      "email" -> email
+    )(FormValues.apply)(FormValues.unapply)
+  )
 
   // TODO - refactor the code here and consider using getUndertaking to remove some of the boilerplate
   def getAcceptResponsibilities: Action[AnyContent] = enrolled.async { implicit request =>
@@ -88,10 +110,100 @@ class BecomeLeadController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     store
       .update[BecomeLeadJourney](j => j.copy(acceptResponsibilities = j.acceptResponsibilities.copy(value = Some(true))))
-      .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori())))
+      .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getConfirmEmail())))
   }
 
-  // TODO - determine the best point to check for a verified email address
+  def getConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+
+    val previous = routes.BecomeLeadController.getAcceptResponsibilities().url
+
+    store.get[BecomeLeadJourney].flatMap { _ =>
+      emailVerificationService.getEmailVerification(request.eoriNumber).flatMap {
+        case Some(verifiedEmail) =>
+          Ok(confirmEmailPage(optionalEmailForm, routes.BecomeLeadController.postConfirmEmail(), EmailAddress(verifiedEmail.email), previous)).toFuture
+        case None => emailService.retrieveEmailByEORI(request.eoriNumber) map { response =>
+          response.emailType match {
+            // TODO - is the get on emailAddress safe?
+            case EmailType.VerifiedEmail => Ok(confirmEmailPage(optionalEmailForm, routes.BecomeLeadController.postConfirmEmail(), response.emailAddress.get, previous))
+            case _ => Ok(inputEmailPage(emailForm, previous))
+          }
+        }
+      }
+    }
+  }
+
+  // TODO - look at EmailVerificationService hard coded redirects and revise to take parameters
+  def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    val verifiedEmail = for {
+      stored <- emailVerificationService.getEmailVerification(request.eoriNumber)
+      cds <- emailService.retrieveEmailByEORI(request.eoriNumber)
+      result = if (stored.isDefined) stored.get.email.some else cds match {
+        case RetrieveEmailResponse(EmailType.VerifiedEmail, Some(value)) => value.value.some
+        case _ => Option.empty
+      }
+    } yield result
+
+    val previous = routes.BecomeLeadController.getConfirmEmail().url
+    val next = routes.BecomeLeadController.getBecomeLeadEori().url
+
+    verifiedEmail flatMap {
+      case Some(email) =>
+        optionalEmailForm
+          .bindFromRequest()
+          .fold(
+            errors => BadRequest(confirmEmailPage(errors, routes.BecomeLeadController.postConfirmEmail(), EmailAddress(email), previous)).toFuture,
+            {
+              case OptionalEmailFormInput("true", None) =>
+                for {
+                  _ <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
+                  _ <- emailVerificationService.verifyEori(request.eoriNumber)
+                  _ <- store.update[UndertakingJourney](_.setVerifiedEmail(email))
+                } yield Redirect(next)
+              case OptionalEmailFormInput("false", Some(email)) => {
+                for {
+                  verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
+                  verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, email, verificationId)
+                } yield emailVerificationService.emailVerificationRedirect(verificationResponse)
+              }
+              // TODO - does this default case make any sense
+              case _ => Redirect(routes.EligibilityController.getNotEligible()).toFuture
+            }
+          )
+      case _ => emailForm.bindFromRequest().fold(
+        errors => BadRequest(inputEmailPage(errors, routes.EligibilityController.getDoYouClaim().url)).toFuture,
+        form => {
+          for {
+            verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, form.value)
+            verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, form.value, verificationId)
+          } yield emailVerificationService.emailVerificationRedirect(verificationResponse)
+        }
+      )
+    }
+  }
+
+  def getVerifyEmail(verificationId: String): Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.get[BecomeLeadJourney].flatMap {
+      case Some(journey) =>
+        for {
+          e <- emailVerificationService.approveVerificationRequest(request.eoriNumber, verificationId)
+          wasSuccessful = e.getMatchedCount > 0
+          redirect <- if (wasSuccessful) {
+            for {
+              stored <- emailVerificationService.getEmailVerification(request.eoriNumber)
+              _ <- store.update[UndertakingJourney](_.setVerifiedEmail(stored.get.email))
+              redirect <-
+                if (wasSuccessful) journey.next
+                else Future(Redirect(routes.BecomeLeadController.getConfirmEmail().url))
+            } yield redirect
+          } else Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori().url))
+        } yield redirect
+      case None => handleMissingSessionData("Become Lead Journey")
+    }
+  }
+
   def getBecomeLeadEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 

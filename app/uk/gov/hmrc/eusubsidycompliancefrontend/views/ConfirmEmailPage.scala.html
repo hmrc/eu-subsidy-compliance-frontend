@@ -30,7 +30,12 @@
   govukInput : GovukInput,
   govukInsetText: GovukInsetText
 )
-@(form: Form[_], email: EmailAddress, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(
+    form: Form[_],
+    action: Call,
+    email: EmailAddress,
+    previous: Journey.Uri
+)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @radioIdentifier = @{"using-stored-email"}
 @inputIdentifier = @{"email"}
@@ -60,8 +65,7 @@
     hasErrors = form.hasErrors
 ) {
 
-
-    @formHelper(action = controllers.routes.UndertakingController.postConfirmEmail()) {
+    @formHelper(action) {
       @if(form.hasErrors) {
           @govukErrorSummary(
               ErrorSummary(

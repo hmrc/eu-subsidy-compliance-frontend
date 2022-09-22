@@ -33,6 +33,7 @@ import java.util.UUID
 import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
 
+// TODO - this needs to support both BusinessEntity promote and Undertaking create flows
 @Singleton
 class EmailVerificationService @Inject() (
    emailVerificationConnector: EmailVerificationConnector,
@@ -49,7 +50,10 @@ class EmailVerificationService @Inject() (
       .verifyEmail(
         EmailVerificationRequest(
           credId = credId,
-          continueUrl = if(useAbsoluteUrls) routes.UndertakingController.getVerifyEmail(verificationId).absoluteURL() else routes.UndertakingController.getVerifyEmail(verificationId).url,
+          // TODO - this needs to take a parameter - also provide syntax to get the URL?
+          continueUrl =
+            if(useAbsoluteUrls) routes.UndertakingController.getVerifyEmail(verificationId).absoluteURL()
+            else routes.UndertakingController.getVerifyEmail(verificationId).url,
           origin = "EU Subsidy Compliance",
           deskproServiceName = None,
           accessibilityStatementUrl = "",
@@ -58,7 +62,10 @@ class EmailVerificationService @Inject() (
             enterUrl = ""
           )),
           lang = None,
-          backUrl = if(useAbsoluteUrls) Some(routes.UndertakingController.getConfirmEmail().absoluteURL()) else Some(routes.UndertakingController.getConfirmEmail().url),
+          // TODO - this needs to take a parameter - also provide syntax to get the URL?
+          backUrl =
+            if(useAbsoluteUrls) Some(routes.UndertakingController.getConfirmEmail().absoluteURL())
+            else Some(routes.UndertakingController.getConfirmEmail().url),
           pageTitle = None
         )
       ).map {
