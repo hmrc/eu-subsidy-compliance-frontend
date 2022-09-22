@@ -454,8 +454,8 @@ dashboard.sector.name.2 = Agriculture
 dashboard.sector.name.3 = Aquaculture
 dashboard.allowance.remaining.heading = Allowance remaining
 
-become-admin.title=Do you want to become the administrator for the undertaking
-become-admin.hint=As undertaking administrator, the business EORI number {0} will be responsible for reporting de minimis aid (less Customs Duty waivers) payments received by all businesses which are part of this single undertaking.
+become-admin.title=Do you want to become the administrator for this undertaking?
+become-admin.hint=As undertaking administrator, you will be responsible for reporting de minimis aid (less Customs Duty waivers) payments received by all businesses which are part of this single undertaking.
 becomeAdmin.error.required = Select yes if you want to become administrator for this undertaking 
 
 become-admin-responsibilities.title = Become the administrator for this undertaking

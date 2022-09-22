@@ -27,6 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{Promo
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
@@ -101,11 +102,11 @@ class BecomeLeadController @Inject() (
         case (Some(journey), Some(undertaking)) =>
 
           val form = journey.becomeLeadEori.value.fold(becomeAdminForm)(e => becomeAdminForm.fill(FormValues(e.toString)))
-          Ok(becomeAdminPage(form, eori)).toFuture
+          Ok(becomeAdminPage(form)).toFuture
 
         case (None, Some(undertaking)) => // initialise the empty Journey model
           store.put(BecomeLeadJourney()).map { _ =>
-            Ok(becomeAdminPage(becomeAdminForm, eori))
+            Ok(becomeAdminPage(becomeAdminForm))
 
           }
 
@@ -124,70 +125,57 @@ class BecomeLeadController @Inject() (
   // TODO - review this code
   def postBecomeLeadEori: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
+    def handleFormSubmission(form: FormValues) =
+      if (form.value.isTrue) promoteBusinessEntity()
+      else Redirect(routes.AccountController.getAccountPage()).toFuture
+
+    def promoteBusinessEntity() =
+      store.get[BecomeLeadJourney].toContext
+        .foldF(Redirect(routes.BecomeLeadController.getBecomeLeadEori()).toFuture) { journey =>
+          val result = for {
+            undertaking <- escService.getUndertaking(eori).toContext
+            ref = undertaking.reference
+            newLead = undertaking.getBusinessEntityByEORI(eori).copy(leadEORI = true)
+            formerLead = undertaking.getLeadBusinessEntity.copy(leadEORI = false)
+            // Promote new lead
+            _ <- escService.addMember(ref, newLead).toContext
+            _ <- emailService.sendEmail(eori, PromotedSelfToNewLead, undertaking).toContext
+            // Demote former lead
+            _ <- escService.addMember(ref, formerLead).toContext
+            _ <- emailService.sendEmail(formerLead.businessEntityIdentifier, RemovedAsLeadToFormerLead, undertaking).toContext
+            // Flush any state state
+            _ <- store.delete[UndertakingJourney].toContext
+            _ <- store.delete[BusinessEntityJourney].toContext
+            // Send audit event
+            _ = auditService.sendEvent[BusinessEntityPromotedSelf](
+              AuditEvent.BusinessEntityPromotedSelf(
+                ref,
+                request.authorityId,
+                formerLead.businessEntityIdentifier,
+                newLead.businessEntityIdentifier
+              )
+            )
+          } yield Redirect(routes.BecomeLeadController.getPromotionConfirmation())
+
+          result.getOrElse(throw new IllegalStateException("Unexpected error promoting business entity to lead"))
+        }
+
     becomeAdminForm
       .bindFromRequest()
       .fold(
-        formWithErrors =>
-          for {
-            undertakingOpt <- escService.retrieveUndertaking(eori)
-          } yield undertakingOpt match {
-            case Some(undertaking) =>
-              BadRequest(becomeAdminPage(formWithErrors, eori))
-            case _ =>
-              throw new IllegalStateException("missing undertaking")
-          },
-        form =>
-          store
-            .update[BecomeLeadJourney](j =>
-              j.copy(becomeLeadEori = j.becomeLeadEori.copy(value = Some(form.value.isTrue)))
-            )
-            .flatMap { _ =>
-              if (form.value.isTrue) {
-                Redirect(routes.BecomeLeadController.getAcceptResponsibilities()).toFuture
-              } else Future(Redirect(routes.AccountController.getAccountPage()))
-            }
+        formWithErrors => BadRequest(becomeAdminPage(formWithErrors)).toFuture,
+        handleFormSubmission
       )
   }
 
 
   // TODO - review access on this route - needs a verified email
+  // TODO - this is a get so should not modify state - ideally this happens on the post with the get just acting as
+  //        a confirmation step
   def getPromotionConfirmation: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[BecomeLeadJourney].flatMap {
-      case Some(journey) =>
-        for {
-          retrievedUndertaking <- escService
-            .retrieveUndertaking(eori)
-            .map(_.getOrElse(handleMissingSessionData("Undertaking")))
-          undertakingRef = retrievedUndertaking.reference
-          newLead = retrievedUndertaking.undertakingBusinessEntity
-            .find(_.businessEntityIdentifier == eori)
-            .fold(handleMissingSessionData("lead Business Entity"))(_.copy(leadEORI = true))
-          oldLead = retrievedUndertaking.undertakingBusinessEntity
-            .find(_.leadEORI)
-            .fold(handleMissingSessionData("lead Business Entity"))(_.copy(leadEORI = false))
-          _ <- escService.addMember(undertakingRef, newLead)
-          _ <- escService.addMember(undertakingRef, oldLead)
-          _ <- emailService.sendEmail(eori, PromotedSelfToNewLead, retrievedUndertaking)
-          _ <- emailService.sendEmail(oldLead.businessEntityIdentifier, RemovedAsLeadToFormerLead, retrievedUndertaking)
-          // Flush any stale undertaking journey data
-           _ <- store.delete[UndertakingJourney]
-          _ = auditService.sendEvent[BusinessEntityPromotedSelf](
-            AuditEvent.BusinessEntityPromotedSelf(
-              undertakingRef,
-              request.authorityId,
-              oldLead.businessEntityIdentifier,
-              newLead.businessEntityIdentifier
-            )
-          )
-        } yield
-          if (journey.acceptResponsibilities.value.getOrElse(false)) {
-            Ok(becomeAdminConfirmationPage(oldLead.businessEntityIdentifier))
-          } else {
-            Redirect(routes.BecomeLeadController.getBecomeLeadEori())
-          }
-      case None => Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori()))
-    }
+    Ok(becomeAdminConfirmationPage()).toFuture
   }
 
   // TODO - review access on this route - needs a verified email

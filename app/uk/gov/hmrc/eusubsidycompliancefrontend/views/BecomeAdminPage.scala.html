@@ -30,7 +30,7 @@
   govukSummaryList: GovukSummaryList
 )
 
-@(form: Form[_], eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
   pageTitle = Some(messages("become-admin.title")),
@@ -65,7 +65,7 @@
               ))
           )),
           hint = Some(Hint(
-            content = Text(messages("become-admin.hint", eori))
+            content = Text(messages("become-admin.hint"))
           )),
           idPrefix = Some("becomeAdmin"),
           name = "becomeAdmin",
