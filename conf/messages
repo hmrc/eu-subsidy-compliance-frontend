@@ -458,15 +458,14 @@ become-admin.title=Do you want to become the administrator for the undertaking
 become-admin.hint=As undertaking administrator, the business EORI number {0} will be responsible for reporting de minimis aid (less Customs Duty waivers) payments received by all businesses which are part of this single undertaking.
 becomeAdmin.error.required = Select yes if you want to become administrator for this undertaking 
 
-become-admin-tandc.title=You must accept the terms and conditions
-become-admin-tandc.h2=Reporting de minimis aid payments (less Customs Duty waivers) as a single undertaking
-become-admin-tandc.p1=De minimis aid payments (less Customs Duty waivers) could include subsidised contracts, loans or grants, from organisations like Invest NI and NI Direct. If you are unsure if an aid you claim is counted as de minimis aid payments (less Customs Duty waivers) you should contact the provider.
-become-admin-tandc.h2-2=What is a single undertaking?
-become-admin-tandc.p2=HMRC needs to group together related businesses within a company or organisation into a ‘single undertaking’. Businesses within an undertaking are identified by their EORI number.
-become-admin-tandc.p3=Every company may be structured differently. You may be a sole trader, a limited company or partnership. You may be a larger business, with subsidiary companies within the organisation. However a business is structured, we need to group all subsidiary or parent companies together. This is referred to as a single undertaking.
-become-admin-tandc.p4=EORI number {0} will be the administrator for this single undertaking. The administrator is a business, not a person.
-become-admin-tandc.h2-3=Declaration
-become-admin-tandc.p5=I agree to the terms and conditions.
+become-admin-responsibilities.title = Become the administrator for this undertaking
+become-admin-responsibilities.p1 = By taking on the role of undertaking administrator it is your role to:
+become-admin-responsibilities.li1 = report all non-customs subsidy payments received by any member of the undertaking. You must do this every 90 days
+become-admin-responsibilities.li2 = report if the undertaking has not received any non-customs subsidy payments. You must do this every 90 days
+become-admin-responsibilities.li3 = check you do not go over the combined customs and non-customs subsidy allowance for your sector
+become-admin-responsibilities.li4 = inform us about any changes to the businesses in your undertaking
+become-admin-responsibilities.li5 = keep your undertaking details up-to-date
+become-admin-responsibilities.p2 = By accepting, you will take on the above responsibilities with immediate effect.
 
 become-admin-confirmation.title=You have asked to become the administrator for this single undertaking
 become-admin-confirmation.h2=What happens next
