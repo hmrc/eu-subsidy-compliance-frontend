@@ -19,13 +19,12 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import com.google.inject.Inject
 import play.api.Logging
 import play.api.http.Status.CREATED
-import play.api.mvc.RequestHeader
 import play.api.mvc.Results.Redirect
+import play.api.mvc.{Call, RequestHeader}
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailVerificationResponse, _}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -45,15 +44,16 @@ class EmailVerificationService @Inject() (
 
   def useAbsoluteUrls: Boolean = emailVerificationBaseUrl.contains("localhost")
 
-  def verifyEmail(credId: String, email: String, verificationId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, h: RequestHeader): Future[Option[EmailVerificationResponse]] = {
+  def verifyEmail(verifyEmailUrl: String, confirmEmailUrl: String)(credId: String, email: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, h: RequestHeader): Future[Option[EmailVerificationResponse]] = {
     emailVerificationConnector
       .verifyEmail(
         EmailVerificationRequest(
           credId = credId,
           // TODO - this needs to take a parameter - also provide syntax to get the URL?
+          // TODO - fix handling of abs vs relative urls
           continueUrl =
-            if(useAbsoluteUrls) routes.UndertakingController.getVerifyEmail(verificationId).absoluteURL()
-            else routes.UndertakingController.getVerifyEmail(verificationId).url,
+            if(useAbsoluteUrls) verifyEmailUrl
+            else verifyEmailUrl,
           origin = "EU Subsidy Compliance",
           deskproServiceName = None,
           accessibilityStatementUrl = "",
@@ -64,8 +64,9 @@ class EmailVerificationService @Inject() (
           lang = None,
           // TODO - this needs to take a parameter - also provide syntax to get the URL?
           backUrl =
-            if(useAbsoluteUrls) Some(routes.UndertakingController.getConfirmEmail().absoluteURL())
-            else Some(routes.UndertakingController.getConfirmEmail().url),
+            // TODO - fix handling of abs vs rel urls
+            if(useAbsoluteUrls) Some(confirmEmailUrl)
+            else Some(confirmEmailUrl),
           pageTitle = None
         )
       ).map {
@@ -78,9 +79,9 @@ class EmailVerificationService @Inject() (
     }
   }
 
-  def emailVerificationRedirect(verifyEmailResponse: Option[EmailVerificationResponse]) = verifyEmailResponse match {
+  def emailVerificationRedirect(confirmEmailCall: Call)(verifyEmailResponse: Option[EmailVerificationResponse]) = verifyEmailResponse match {
     case Some(value) => Redirect(emailVerificationConnector.getVerificationJourney(value.redirectUri))
-    case None => Redirect(routes.UndertakingController.getConfirmEmail())
+    case None => Redirect(confirmEmailCall)
   }
 
   def getEmailVerification(eori: EORI) = eoriEmailDatastore.getEmailVerification(eori)
@@ -94,6 +95,7 @@ class EmailVerificationService @Inject() (
     eoriEmailDatastore
       .addVerificationRequest(key, email, verificationId)
       .map {
+        // TODO - review this error string
         _.fold(throw new IllegalArgumentException("Fallen over"))(_.verificationId)
       }
   }

@@ -190,6 +190,8 @@ class UndertakingController @Inject() (
       }
     } yield result
 
+    val previous = routes.UndertakingController.getConfirmEmail().url
+
     verifiedEmail flatMap {
       case Some(email) =>
         optionalEmailForm
@@ -206,8 +208,9 @@ class UndertakingController @Inject() (
               case OptionalEmailFormInput("false", Some(email)) => {
                 for {
                   verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
-                  verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, email, verificationId)
-                } yield emailVerificationService.emailVerificationRedirect(verificationResponse)
+                  verifyEmailUrl = routes.UndertakingController.getVerifyEmail(verificationId).url
+                  verificationResponse <- emailVerificationService.verifyEmail(verifyEmailUrl, previous)(request.authorityId, email)
+                } yield emailVerificationService.emailVerificationRedirect(routes.UndertakingController.getConfirmEmail())(verificationResponse)
               }
               case _ => Redirect(routes.EligibilityController.getNotEligible()).toFuture
             }
@@ -215,16 +218,19 @@ class UndertakingController @Inject() (
       case _ => emailForm.bindFromRequest().fold(
         errors => BadRequest(inputEmailPage(errors, routes.EligibilityController.getDoYouClaim().url)).toFuture,
         form => {
+          // TODO - seems to be a duplication of some of the code above - refactor
           for {
             verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, form.value)
-            verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, form.value, verificationId)
-          } yield emailVerificationService.emailVerificationRedirect(verificationResponse)
+            verifyEmailUrl = routes.UndertakingController.getVerifyEmail(verificationId).url
+            verificationResponse <- emailVerificationService.verifyEmail(verifyEmailUrl, previous)(request.authorityId, form.value)
+          } yield emailVerificationService.emailVerificationRedirect(routes.UndertakingController.getConfirmEmail())(verificationResponse)
         }
       )
     }
   }
 
   def getVerifyEmail(verificationId: String): Action[AnyContent] = enrolled.async { implicit request =>
+    println(s"UndertakingController - getVerifyEmail called")
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
@@ -234,10 +240,21 @@ class UndertakingController @Inject() (
           redirect <- if(wasSuccessful) {
             for {
               stored <- emailVerificationService.getEmailVerification(request.eoriNumber)
-              _ <- store.update[UndertakingJourney](_.setVerifiedEmail(stored.get.email))
-              redirect <- if(wasSuccessful) journey.next else Future(Redirect(routes.UndertakingController.getConfirmEmail().url))
-              } yield redirect
-          } else Future(Redirect(routes.UndertakingController.getAboutUndertaking().url))
+              updatedJourney <- store.update[UndertakingJourney](_.setVerifiedEmail(stored.get.email))
+              redirect <-
+                if(wasSuccessful) {
+                  println(s"verification success - moving on to next page")
+                  updatedJourney.next
+                } else {
+                  println(s"Verification unsuccessful - redirecting back to confirm email page")
+                  Future(Redirect(routes.UndertakingController.getConfirmEmail().url))
+                }
+            } yield redirect
+            // TODO - this redirect on the else doesn't look quite right
+          } else {
+            println(s"wasSuccessful: $wasSuccessful - redirecting to about undertaking page")
+            Future(Redirect(routes.UndertakingController.getAboutUndertaking().url))
+          }
         } yield redirect
       case None => handleMissingSessionData("Undertaking Journey")
     }

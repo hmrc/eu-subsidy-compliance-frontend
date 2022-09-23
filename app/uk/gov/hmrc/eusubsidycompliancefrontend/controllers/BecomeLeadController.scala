@@ -80,6 +80,8 @@ class BecomeLeadController @Inject() (
   def getAcceptResponsibilities: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
+    println(s"getAcceptResponsibilities: called for eori $eori")
+
     def handleRequest(
       becomeLeadJourneyOpt: Option[BecomeLeadJourney],
       undertakingOpt: Option[Undertaking]
@@ -155,6 +157,7 @@ class BecomeLeadController @Inject() (
           .fold(
             errors => BadRequest(confirmEmailPage(errors, routes.BecomeLeadController.postConfirmEmail(), EmailAddress(email), previous)).toFuture,
             {
+              // TODO - clarify the meaning of these cases
               case OptionalEmailFormInput("true", None) =>
                 for {
                   _ <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
@@ -164,8 +167,9 @@ class BecomeLeadController @Inject() (
               case OptionalEmailFormInput("false", Some(email)) => {
                 for {
                   verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
-                  verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, email, verificationId)
-                } yield emailVerificationService.emailVerificationRedirect(verificationResponse)
+                  verifyEmailUrl = routes.BecomeLeadController.getVerifyEmail(verificationId).url
+                  verificationResponse <- emailVerificationService.verifyEmail(verifyEmailUrl, previous)(request.authorityId, email)
+                } yield emailVerificationService.emailVerificationRedirect(routes.BecomeLeadController.getConfirmEmail())(verificationResponse)
               }
               // TODO - does this default case make any sense
               case _ => Redirect(routes.EligibilityController.getNotEligible()).toFuture
@@ -174,16 +178,20 @@ class BecomeLeadController @Inject() (
       case _ => emailForm.bindFromRequest().fold(
         errors => BadRequest(inputEmailPage(errors, routes.EligibilityController.getDoYouClaim().url)).toFuture,
         form => {
+          // TODO - seems to be a duplication of some of the code above - refactor
           for {
             verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, form.value)
-            verificationResponse <- emailVerificationService.verifyEmail(request.authorityId, form.value, verificationId)
-          } yield emailVerificationService.emailVerificationRedirect(verificationResponse)
+            verifyEmailUrl = routes.BecomeLeadController.getVerifyEmail(verificationId).url
+            verificationResponse <- emailVerificationService.verifyEmail(verifyEmailUrl, previous)(request.authorityId, form.value)
+          } yield emailVerificationService.emailVerificationRedirect(routes.BecomeLeadController.getConfirmEmail())(verificationResponse)
         }
       )
     }
   }
 
+  // TODO - review this code
   def getVerifyEmail(verificationId: String): Action[AnyContent] = enrolled.async { implicit request =>
+    println(s"BecomeLeadController - getVerifyEmail called")
     implicit val eori: EORI = request.eoriNumber
     store.get[BecomeLeadJourney].flatMap {
       case Some(journey) =>
@@ -195,10 +203,14 @@ class BecomeLeadController @Inject() (
               stored <- emailVerificationService.getEmailVerification(request.eoriNumber)
               _ <- store.update[UndertakingJourney](_.setVerifiedEmail(stored.get.email))
               redirect <-
-                if (wasSuccessful) journey.next
-                else Future(Redirect(routes.BecomeLeadController.getConfirmEmail().url))
+                if (wasSuccessful) {
+                  println(s"Verification was successful - moving on to next step in journey")
+                  journey.next
+                  Redirect(routes.BecomeLeadController.getBecomeLeadEori().url).toFuture
+                }
+                else Redirect(routes.BecomeLeadController.getConfirmEmail().url).toFuture
             } yield redirect
-          } else Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori().url))
+          } else Redirect(routes.BecomeLeadController.getBecomeLeadEori().url).toFuture
         } yield redirect
       case None => handleMissingSessionData("Become Lead Journey")
     }

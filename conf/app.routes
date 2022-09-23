@@ -110,6 +110,8 @@ POST       /business-enterprise-accept-responsibilities                         
 GET        /business-enterprise-confirm-email                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getConfirmEmail
 POST       /business-enterprise-confirm-email                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.postConfirmEmail
 
+GET        /business-enterprise-verify-email                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getVerifyEmail(UndertakingControllerpendingVerificationId)
+
 GET        /business-enterprise-admin-request                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getPromotionConfirmation()
 
 GET        /lead-undertaking-non-customs-subsidy-nil-return                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimNotification

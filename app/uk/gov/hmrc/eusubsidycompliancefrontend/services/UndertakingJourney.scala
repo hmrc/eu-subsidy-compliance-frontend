@@ -59,8 +59,13 @@ case class UndertakingJourney(
 
   override def next(implicit request: Request[_]): Future[Result] =
     if (isAmend) Redirect(routes.UndertakingController.getAmendUndertakingDetails()).toFuture
-    else if (requiredDetailsProvided) Redirect(routes.UndertakingController.getCheckAnswers()).toFuture
-    else super.next
+    else if (requiredDetailsProvided) {
+      println(s"all data provided - redirecting to check your answers")
+      Redirect(routes.UndertakingController.getCheckAnswers()).toFuture
+    } else {
+      println(s"Not on amend journey and not all data has been provided - delegating to super.next")
+      super.next
+    }
 
   def isEmpty: Boolean = steps.flatMap(_.value).isEmpty
 
