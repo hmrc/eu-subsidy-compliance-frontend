@@ -19,12 +19,12 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import com.google.inject.Inject
 import play.api.Logging
 import play.api.http.Status.CREATED
+import play.api.mvc.Call
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{Call, RequestHeader}
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -44,7 +44,7 @@ class EmailVerificationService @Inject() (
 
   def useAbsoluteUrls: Boolean = emailVerificationBaseUrl.contains("localhost")
 
-  def verifyEmail(verifyEmailUrl: String, confirmEmailUrl: String)(credId: String, email: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, h: RequestHeader): Future[Option[EmailVerificationResponse]] = {
+  def verifyEmail(verifyEmailUrl: String, confirmEmailUrl: String)(credId: String, email: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[EmailVerificationResponse]] = {
     emailVerificationConnector
       .verifyEmail(
         EmailVerificationRequest(

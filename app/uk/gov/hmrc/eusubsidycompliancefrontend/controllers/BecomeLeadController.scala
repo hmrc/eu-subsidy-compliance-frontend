@@ -295,7 +295,6 @@ class BecomeLeadController @Inject() (
 
 
   def getPromotionConfirmation: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
     Ok(becomeAdminConfirmationPage()).toFuture
   }
 
