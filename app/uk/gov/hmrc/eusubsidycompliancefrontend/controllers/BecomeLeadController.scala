@@ -268,7 +268,7 @@ class BecomeLeadController @Inject() (
             // Demote former lead
             _ <- escService.addMember(ref, formerLead).toContext
             _ <- emailService.sendEmail(formerLead.businessEntityIdentifier, RemovedAsLeadToFormerLead, undertaking).toContext
-            // Flush any state state
+            // Flush any stale journey state
             _ <- store.delete[UndertakingJourney].toContext
             _ <- store.delete[BusinessEntityJourney].toContext
             // Send audit event

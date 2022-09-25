@@ -38,6 +38,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
+// TODO - expand coverage to ensure API changes are properly covered
 class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with MockFactory
   with ScalaFutures with DefaultAwaitTimeout with DefaultPlayMongoRepositorySupport[CacheItem] {
 
@@ -108,13 +109,15 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
             .getVerificationJourney(_: String))
             .expects(*)
             .returning("redirecturl")
-          val a = service.emailVerificationRedirect(mockVerifyEmailResponse.some)
+          // TODO - review call param here and revise to ensure we cover the redirect URL correctly
+          val a = service.emailVerificationRedirect(routes.UndertakingController.getConfirmEmail())(mockVerifyEmailResponse.some)
+          // TODO - review what this is covering
           redirectLocation(a.toFuture) should contain("redirecturl")
 
       }
 
         "no redirect is given" in {
-          val a = service.emailVerificationRedirect(None)
+          val a = service.emailVerificationRedirect(routes.UndertakingController.getConfirmEmail())(None)
           redirectLocation(a.toFuture) should contain(routes.UndertakingController.getConfirmEmail().url)
         }
 

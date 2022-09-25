@@ -18,10 +18,10 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import org.mongodb.scala.result.UpdateResult
 import org.scalamock.scalatest.MockFactory
-import play.api.mvc.{RequestHeader, Result}
+import play.api.mvc.{Call, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AuthSupport
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailVerificationResponse, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailVerificationResponse, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.cache.CacheItem
@@ -56,15 +56,17 @@ trait EmailVerificationSupport { this: MockFactory with AuthSupport =>
       .expects(eori, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
 
+  // TODO - do we care about redirect locations here?
   def mockVerifyEmail(email: String)(result: Either[ConnectorError, Option[EmailVerificationResponse]]) =
     (mockEmailVerificationService
-      .verifyEmail(_: String, _: String, _: String)(_: HeaderCarrier, _: ExecutionContext, _: RequestHeader))
+      .verifyEmail(_: String, _: String)( _: String, _: String)(_: HeaderCarrier, _: ExecutionContext))
       .expects(*, email, *, *, *,*)
       .returning(result.fold(Future.failed, _.toFuture))
 
+  // TODO - do we need to check the call here?
   def mockEmailVerificationRedirect(verifyEmailResponse: Option[EmailVerificationResponse])(result: Result) =
     (mockEmailVerificationService
-      .emailVerificationRedirect(_: Option[EmailVerificationResponse]))
-      .expects(verifyEmailResponse)
+      .emailVerificationRedirect(_: Call)(_: Option[EmailVerificationResponse]))
+      .expects(*, verifyEmailResponse)
       .returning(result)
 }

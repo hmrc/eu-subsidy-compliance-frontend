@@ -207,13 +207,10 @@ class BecomeLeadControllerSpec
         }
 
         "user submits Yes, redirect to accept terms" in {
-          testRedirection("true", routes.BecomeLeadController.getAcceptPromotionTerms().url)
-        }
-
-        "user submits No, redirect to account homepage" in {
-          testRedirection("false", routes.AccountController.getAccountPage().url)
+          testRedirection("true", routes.BecomeLeadController.getPromotionConfirmation().url)
         }
       }
+
     }
 
     "handling request to get accept Promotion Terms" must {
@@ -418,28 +415,10 @@ class BecomeLeadControllerSpec
           }
 
           checkIsRedirect(performAction(), routes.BecomeLeadController.getBecomeLeadEori())
-
         }
       }
 
     }
 
-    "handling request to getPromotionCleanup" must {
-
-      def performAction() = controller.getPromotionCleanup(FakeRequest())
-
-      "redirect" when {
-
-        "redirect to promotion confirmation on success" in {
-          def update(j: BecomeLeadJourney) = j.copy(becomeLeadEori = BecomeLeadEoriFormPage())
-
-          inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori4)(Right(newBecomeLeadJourney))
-          }
-          redirectLocation(performAction()) shouldBe routes.AccountController.getAccountPage().url.some
-        }
-      }
-    }
   }
 }

@@ -20,6 +20,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 
+// TODO - review the tests - can we easily delegate the journey logic to the BecomeLeadJourney class?
 class BecomeLeadJourneySpec extends AnyWordSpecLike with Matchers {
 
   "BecomeLeadJourney" when {
@@ -44,9 +45,9 @@ class BecomeLeadJourneySpec extends AnyWordSpecLike with Matchers {
           .url
       }
 
-      "Accept terms" in {
+      "Accept responsibilities" in {
         BecomeLeadJourney.FormPages.AcceptResponsibilitiesFormPage().uri shouldBe routes.BecomeLeadController
-          .getAcceptPromotionTerms()
+          .getAcceptResponsibilities()
           .url
       }
 
