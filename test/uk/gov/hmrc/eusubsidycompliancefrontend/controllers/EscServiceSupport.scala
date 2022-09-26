@@ -41,6 +41,12 @@ trait EscServiceSupport { this: ControllerSpec =>
       .expects(eori, *)
       .returning(result)
 
+  def mockGetUndertaking(eori: EORI)(result: Future[Undertaking]) =
+    (mockEscService
+      .getUndertaking(_: EORI)(_: HeaderCarrier))
+      .expects(eori, *)
+      .returning(result)
+
   def mockRetrieveUndertakingWithErrorResponse(
     eori: EORI
   )(result: Either[ConnectorError, Option[Undertaking]]) =

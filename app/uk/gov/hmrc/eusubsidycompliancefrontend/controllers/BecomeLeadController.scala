@@ -102,8 +102,8 @@ class BecomeLeadController @Inject() (
     // TODO - review the logic here
     for {
       journey <- store.get[BecomeLeadJourney]
-      undertakingOpt <- escService.retrieveUndertaking(eori)
-      result <- handleRequest(journey, undertakingOpt)
+      undertaking <- escService.retrieveUndertaking(eori)
+      result <- handleRequest(journey, undertaking)
     } yield result
 
   }
@@ -247,12 +247,14 @@ class BecomeLeadController @Inject() (
   }
 
 
-  def postBecomeLeadEori: Action[AnyContent] = enrolled.async { implicit request =>
+  def postBecomeLeadEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    def handleFormSubmission(form: FormValues) =
+    def handleFormSubmission(form: FormValues) = {
+      println(s"handling form: $form")
       if (form.value.isTrue) promoteBusinessEntity()
       else Redirect(routes.AccountController.getAccountPage()).toFuture
+    }
 
     def promoteBusinessEntity() =
       store.get[BecomeLeadJourney].toContext

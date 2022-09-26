@@ -75,9 +75,11 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
   def mockNoPredicateAuthWithNecessaryEnrolment(eori: EORI = eori1): Unit =
     mockAuthWithAuthRetrievalsNoPredicate(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
 
+  // TODO - review naming here
   def mockAuthWithNecessaryEnrolmentWithValidEmail(eori: EORI = eori1): Unit =
     mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
 
+  // TODO - do we need these necessary enrolment methods?
   def mockAuthWithNecessaryEnrolment(eori: EORI = eori1): Unit =
     mockAuthWithEccAuthRetrievals(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
 
