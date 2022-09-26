@@ -448,7 +448,8 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori1)
           mockGetEmailVerification(None)
-          mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, Some(EmailAddress("foo@example.com")))))
+          // TODO - this mocks the retrieval from CDS
+          mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
           // TODO - fixtures for these responses
           mockAddEmailVerification(eori1)(Right("foo"))
           mockVerifyEmail("foo@example.com")(Right(Some(EmailVerificationResponse("/foo"))))
