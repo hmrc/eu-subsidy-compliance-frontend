@@ -204,7 +204,7 @@ class AccountControllerSpec
               messageFromMessageKey("non-lead-account-homepage.title"),
               { doc =>
                 val htmlBody = doc.select(".govuk-list").html
-                htmlBody should include regex routes.BecomeLeadController.getBecomeLeadEori().url
+                htmlBody should include regex routes.BecomeLeadController.getAcceptResponsibilities().url
                 htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard().url
                 htmlBody should include regex routes.BusinessEntityController.getRemoveYourselfBusinessEntity().url
               }

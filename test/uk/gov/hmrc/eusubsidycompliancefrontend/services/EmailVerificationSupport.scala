@@ -60,7 +60,7 @@ trait EmailVerificationSupport { this: MockFactory with AuthSupport =>
   def mockVerifyEmail(email: String)(result: Either[ConnectorError, Option[EmailVerificationResponse]]) =
     (mockEmailVerificationService
       .verifyEmail(_: String, _: String)( _: String, _: String)(_: HeaderCarrier, _: ExecutionContext))
-      .expects(*, email, *, *, *,*)
+      .expects(*, *, *, email, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
 
   // TODO - do we need to check the call here?

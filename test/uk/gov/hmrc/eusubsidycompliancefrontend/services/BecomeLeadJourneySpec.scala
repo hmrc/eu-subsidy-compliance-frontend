@@ -30,8 +30,8 @@ class BecomeLeadJourneySpec extends AnyWordSpecLike with Matchers {
       "return all forms at the start of the journey" in {
         val underTest = BecomeLeadJourney()
         underTest.steps shouldBe Array(
-          underTest.becomeLeadEori,
           underTest.acceptResponsibilities,
+          underTest.becomeLeadEori,
           underTest.confirmation
         )
       }
