@@ -23,17 +23,16 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedSelfToNewLead, RemovedAsLeadToFormerLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages.{BecomeLeadEoriFormPage, AcceptResponsibilitiesFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages.{AcceptResponsibilitiesFormPage, BecomeLeadEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
-
-import scala.concurrent.Future
 
 class BecomeLeadControllerSpec
     extends ControllerSpec
@@ -330,5 +329,81 @@ class BecomeLeadControllerSpec
       }
 
     }
+
+  "handling request to get Confirm Email page" must {
+
+    def performAction() = controller.getConfirmEmail(FakeRequest())
+
+    "display the correct page" when {
+
+      "user has a verified email address in our store" in {
+        inSequence {
+          mockAuthWithEccEnrolmentOnly(eori1)
+          mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
+          mockGetEmailVerification()
+        }
+
+        val result = performAction()
+
+        status(result) shouldBe OK
+        contentAsString(result) should include(messages("confirmEmail.title"))
+      }
+
+      "user has no verified email address but they do have an email address in CDS" in {
+        inSequence {
+          mockAuthWithEccEnrolmentOnly(eori1)
+          mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
+          mockGetEmailVerification(Option.empty)
+          mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("foo@example.com").some)))
+        }
+
+        val result = performAction()
+
+        status(result) shouldBe OK
+        contentAsString(result) should include(messages("confirmEmail.title"))
+        contentAsString(result) should include("foo@example.com")
+      }
+
+      "user has no verified email nor do they have an email address in CDS" in {
+        inSequence {
+          mockAuthWithEccEnrolmentOnly(eori1)
+          mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
+          mockGetEmailVerification(Option.empty)
+          mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
+        }
+
+        val result = performAction()
+
+        status(result) shouldBe OK
+        contentAsString(result) should include(messages("inputEmail.title"))
+
+      }
+    }
+
+  }
+
+  "handling request to post Confirm Email page" must {
+
+    def performAction() = controller.postConfirmEmail(FakeRequest())
+
+    "display the page" when {
+      "request is successful" in {
+
+      }
+    }
+
+  }
+
+  "handling request to get Verify Email page" must {
+
+    def performAction(verificationId: String) = controller.getVerifyEmail(verificationId)(FakeRequest())
+
+    "display the page" when {
+      "request is successful" in {
+
+      }
+    }
+
+  }
 
 }

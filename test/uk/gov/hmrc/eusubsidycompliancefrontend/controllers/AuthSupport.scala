@@ -99,11 +99,20 @@ trait AuthSupport { this: ControllerSpec =>
   val authRetrievalsNoEnrolment: Retrieval[Option[Credentials] ~ Option[String]] =
     Retrievals.credentials and Retrievals.groupIdentifier
 
+  // TODO - review this
+  //  - should EmailServiceSpec be using this?
+  //  - add params for false, other values?
   def mockGetEmailVerification() =
     (mockEmailVerificationService
       .getEmailVerification(_: EORI))
       .expects(*)
       .returning(VerifiedEmail("", "", verified = true).some.toFuture)
+
+  def mockGetEmailVerification(result: Option[VerifiedEmail]) =
+    (mockEmailVerificationService
+      .getEmailVerification(_: EORI))
+      .expects(*)
+      .returning(result.toFuture)
 }
 
 object AuthSupport {
