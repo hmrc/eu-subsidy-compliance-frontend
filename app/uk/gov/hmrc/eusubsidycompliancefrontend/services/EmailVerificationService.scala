@@ -26,6 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConne
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.util.UUID
@@ -84,9 +85,9 @@ class EmailVerificationService @Inject() (
     case None => Redirect(confirmEmailCall)
   }
 
-  def getEmailVerification(eori: EORI) = eoriEmailDatastore.getEmailVerification(eori)
+  def getEmailVerification(eori: EORI): Future[Option[VerifiedEmail]] = eoriEmailDatastore.getEmailVerification(eori)
 
-  def verifyEori(eori: EORI) = eoriEmailDatastore.verifyEmail(eori)
+  def verifyEori(eori: EORI): Future[CacheItem] = eoriEmailDatastore.verifyEmail(eori)
 
   def approveVerificationRequest(key: EORI, verificationId: String) = eoriEmailDatastore.approveVerificationRequest(key, verificationId)
 

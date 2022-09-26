@@ -136,12 +136,13 @@ class BecomeLeadController @Inject() (
   }
 
   // TODO - look at EmailVerificationService hard coded redirects and revise to take parameters
+  // TODO - since we have two pages for the different scenarios, perhaps we should have two post handlers too?
   def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    val verifiedEmail = for {
+    val verifiedEmail: Future[Option[String]] = for {
       stored <- emailVerificationService.getEmailVerification(request.eoriNumber)
       cds <- emailService.retrieveEmailByEORI(request.eoriNumber)
-      result = if (stored.isDefined) stored.get.email.some else cds match {
+      result = if (stored.isDefined) stored.map(_.email) else cds match {
         case RetrieveEmailResponse(EmailType.VerifiedEmail, Some(value)) => value.value.some
         case _ => Option.empty
       }
@@ -150,6 +151,7 @@ class BecomeLeadController @Inject() (
     val previous = routes.BecomeLeadController.getConfirmEmail().url
     val next = routes.BecomeLeadController.getBecomeLeadEori().url
 
+    // TODO - review this
     verifiedEmail flatMap {
       case Some(email) =>
         optionalEmailForm
@@ -157,9 +159,10 @@ class BecomeLeadController @Inject() (
           .fold(
             errors => BadRequest(confirmEmailPage(errors, routes.BecomeLeadController.postConfirmEmail(), EmailAddress(email), previous)).toFuture,
             {
-              // TODO - clarify the meaning of these cases
+              // User has elected to use the verified email that we already have
               case OptionalEmailFormInput("true", None) =>
                 for {
+                  // TODO - ideally we could do this in a single service method - review this
                   _ <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
                   _ <- emailVerificationService.verifyEori(request.eoriNumber)
                   _ <- store.update[UndertakingJourney](_.setVerifiedEmail(email))
@@ -176,7 +179,8 @@ class BecomeLeadController @Inject() (
             }
           )
       case _ => emailForm.bindFromRequest().fold(
-        errors => BadRequest(inputEmailPage(errors, routes.EligibilityController.getDoYouClaim().url)).toFuture,
+        // TODO -
+        errors => BadRequest(inputEmailPage(errors, previous)).toFuture,
         form => {
           // TODO - seems to be a duplication of some of the code above - refactor
           for {

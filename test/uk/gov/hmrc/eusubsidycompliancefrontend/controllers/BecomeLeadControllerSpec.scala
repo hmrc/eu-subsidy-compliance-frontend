@@ -20,10 +20,12 @@ import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.inject.bind
+import play.api.libs.json.Json
+import play.api.mvc.Results.Redirect
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress, VerifiedEmail}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress, EmailVerificationResponse, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
@@ -33,6 +35,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPa
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
+import uk.gov.hmrc.mongo.cache.CacheItem
+
+import java.time.Instant
 
 class BecomeLeadControllerSpec
     extends ControllerSpec
@@ -40,6 +45,7 @@ class BecomeLeadControllerSpec
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with EmailSupport
+    with EmailVerificationSupport
     with AuditServiceSupport
     with EscServiceSupport {
 
@@ -382,12 +388,80 @@ class BecomeLeadControllerSpec
 
   }
 
+  // TODO - check error handling here - looks like we have a missing message key
   "handling request to post Confirm Email page" must {
 
-    def performAction() = controller.postConfirmEmail(FakeRequest())
+    def performAction(data: (String, String)*) =
+      controller.postConfirmEmail(FakeRequest().withFormUrlEncodedBody(data: _*))
 
-    "display the page" when {
-      "request is successful" in {
+    // TODO - fixtures
+    // TODO - review store so we don't expose cache items in our public API
+    val cacheItem = CacheItem(
+      id = eori1,
+      data = Json.toJsObject(VerifiedEmail("foo@example.com", "SomeVerificationId", verified = true)),
+      createdAt = Instant.now(),
+      modifiedAt = Instant.now()
+    )
+
+    "redirect to the correct page" when {
+
+      "user selects existing verified email address" in {
+        inSequence {
+          mockAuthWithEccEnrolmentOnly(eori1)
+          mockGetEmailVerification()
+          // TODO - add common fixtures for response and email address
+          mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, Some(EmailAddress("foo@example.com")))))
+          mockAddEmailVerification(eori1)(Right("foo"))
+          mockEmailVerification(eori1)(Right(cacheItem))
+          mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourneyComplete))
+        }
+
+        val result = performAction("using-stored-email" -> "true")
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.BecomeLeadController.getBecomeLeadEori().url)
+      }
+
+      // TODO - clean this up
+      "user has existing verified email address but elects to enter a new one" in {
+        inSequence {
+          mockAuthWithEccEnrolmentOnly(eori1)
+          mockGetEmailVerification()
+          mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, Some(EmailAddress("foo@example.com")))))
+          // TODO - fixtures for these responses
+          mockAddEmailVerification(eori1)(Right("foo"))
+          mockVerifyEmail("foo@example.com")(Right(Some(EmailVerificationResponse("/foo"))))
+          mockEmailVerificationRedirect(Some(EmailVerificationResponse("/foo")))(Redirect(routes.BecomeLeadController.getBecomeLeadEori().url))
+        }
+
+        val result = performAction(
+          "using-stored-email" -> "false",
+          "email" -> "foo@example.com"
+        )
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.BecomeLeadController.getBecomeLeadEori().url)
+
+      }
+
+      "user has no existing email address and enters a new one" in {
+        inSequence {
+          mockAuthWithEccEnrolmentOnly(eori1)
+          mockGetEmailVerification(None)
+          mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, Some(EmailAddress("foo@example.com")))))
+          // TODO - fixtures for these responses
+          mockAddEmailVerification(eori1)(Right("foo"))
+          mockVerifyEmail("foo@example.com")(Right(Some(EmailVerificationResponse("/foo"))))
+          mockEmailVerificationRedirect(Some(EmailVerificationResponse("/foo")))(Redirect(routes.BecomeLeadController.getBecomeLeadEori().url))
+        }
+
+        val result = performAction(
+          "using-stored-email" -> "false",
+          "email" -> "foo@example.com"
+        )
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.BecomeLeadController.getBecomeLeadEori().url)
 
       }
     }
