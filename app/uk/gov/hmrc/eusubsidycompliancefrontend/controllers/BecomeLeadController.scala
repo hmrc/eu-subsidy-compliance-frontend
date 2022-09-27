@@ -193,26 +193,29 @@ class BecomeLeadController @Inject() (
     }
   }
 
-  // TODO - review this code
+  // TODO - review this again - we modify state here so GET isn't quite right
   def getVerifyEmail(verificationId: String): Action[AnyContent] = enrolled.async { implicit request =>
-    println(s"BecomeLeadController - getVerifyEmail called")
     implicit val eori: EORI = request.eoriNumber
-    store.get[BecomeLeadJourney].flatMap {
-      case Some(journey) =>
-        for {
-          e <- emailVerificationService.approveVerificationRequest(request.eoriNumber, verificationId)
-          wasSuccessful = e.getMatchedCount > 0
-          redirect <- if (wasSuccessful) {
-            for {
-              stored <- emailVerificationService.getEmailVerification(request.eoriNumber)
-              _ <- store.update[UndertakingJourney](_.setVerifiedEmail(stored.get.email))
-              redirect <- Redirect(routes.BecomeLeadController.getBecomeLeadEori().url).toFuture
-            } yield redirect
-          } else Redirect(routes.BecomeLeadController.getConfirmEmail().url).toFuture
-        } yield redirect
-      // TODO - we could just throw the user back to home or the first page of the journey?
-      case None => handleMissingSessionData("Become Lead Journey")
-    }
+
+    val redirectToAccountHome = Redirect(routes.AccountController.getAccountPage())
+
+    store
+      .get[BecomeLeadJourney]
+      .toContext
+      .foldF(redirectToAccountHome.toFuture) { _ =>
+        emailVerificationService.approveVerificationRequest(eori, verificationId).flatMap { result =>
+          val approveSuccessful = result.getMatchedCount > 0
+          if (approveSuccessful) {
+            val result = for {
+              stored <- emailVerificationService.getEmailVerification(eori).toContext
+              _ <- store.update[UndertakingJourney](_.setVerifiedEmail(stored.email)).toContext
+            } yield Redirect(routes.BecomeLeadController.getBecomeLeadEori().url)
+
+            result.getOrElse(redirectToAccountHome)
+          }
+          else Redirect(routes.BecomeLeadController.getConfirmEmail().url).toFuture
+        }
+      }
   }
 
   def getBecomeLeadEori: Action[AnyContent] = verifiedEmail.async { implicit request =>

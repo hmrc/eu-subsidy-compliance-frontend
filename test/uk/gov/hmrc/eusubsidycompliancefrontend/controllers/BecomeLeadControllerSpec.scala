@@ -485,7 +485,8 @@ class BecomeLeadControllerSpec
 
     def performAction(verificationId: String) = controller.getVerifyEmail(verificationId)(FakeRequest())
 
-    "throw technical error" when {
+    "redirect to the correct page" when {
+
       "the become lead journey is not found" in {
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori1)
@@ -494,11 +495,24 @@ class BecomeLeadControllerSpec
 
         val result = performAction(verificationId)
 
-        result.failed.futureValue shouldBe an[IllegalStateException]
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
       }
-    }
 
-    "redirect to the correct page" when {
+      "the email verification record is not found" in {
+        inSequence {
+          mockAuthWithEccEnrolmentOnly(eori1)
+          mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
+          mockApproveVerification(eori1, verificationId)(Right(UpdateResult.acknowledged(1, 1, BsonBoolean.TRUE)))
+          mockGetEmailVerification(Option.empty)
+        }
+
+        val result = performAction(verificationId)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
+      }
+
       "the verification request is successful" in {
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori1)
