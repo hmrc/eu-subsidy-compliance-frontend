@@ -209,11 +209,12 @@ class BecomeLeadController @Inject() (
               redirect <-
                 if (wasSuccessful) {
                   println(s"Verification was successful - moving on to next step in journey")
-                  journey.next
+//                  journey.next
                   Redirect(routes.BecomeLeadController.getBecomeLeadEori().url).toFuture
                 }
                 else Redirect(routes.BecomeLeadController.getConfirmEmail().url).toFuture
             } yield redirect
+          // TODO - check location here- where should we redirect if the request was not successful?
           } else Redirect(routes.BecomeLeadController.getBecomeLeadEori().url).toFuture
         } yield redirect
       case None => handleMissingSessionData("Become Lead Journey")

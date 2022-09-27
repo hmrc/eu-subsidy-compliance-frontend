@@ -17,7 +17,9 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import com.mongodb.client.result.UpdateResult
 import com.typesafe.config.ConfigFactory
+import org.bson.BsonBoolean
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.libs.json.Json
@@ -473,9 +475,25 @@ class BecomeLeadControllerSpec
 
     def performAction(verificationId: String) = controller.getVerifyEmail(verificationId)(FakeRequest())
 
-    "display the page" when {
-      "request is successful" in {
+    // TODO - ensure all possible redirects are covered
+    // Tech error on no journey
+    "redirect to the correct page" when {
+      val verificationId = "SomeVerificationId"
 
+      "the verification request is successful" in {
+        inSequence {
+          mockAuthWithEccEnrolmentOnly(eori1)
+          mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
+          // TODO - get this into a fixture - also review API - this is leaking interal implementation
+          mockApproveVerification(eori1, verificationId)(Right(UpdateResult.acknowledged(1, 1, BsonBoolean.TRUE)))
+          mockGetEmailVerification()
+          mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourneyComplete))
+        }
+
+        val result = performAction(verificationId)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.BecomeLeadController.getBecomeLeadEori().url)
       }
     }
 
