@@ -94,28 +94,38 @@ class BecomeLeadController @Inject() (
       .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getConfirmEmail())))
   }
 
+  private def withJourney(f: BecomeLeadJourney => Future[Result])(implicit eori: EORI) =
+    store
+      .get[BecomeLeadJourney]
+      .toContext
+      .foldF(Redirect(routes.AccountController.getAccountPage()).toFuture)(f)
+
   def getConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    val previous = routes.BecomeLeadController.getAcceptResponsibilities().url
-    val formAction = routes.BecomeLeadController.postConfirmEmail()
+    withJourney { _ =>
+      val previous = routes.BecomeLeadController.getAcceptResponsibilities().url
+      val formAction = routes.BecomeLeadController.postConfirmEmail()
 
-    store.get[BecomeLeadJourney].flatMap { _ =>
-      emailVerificationService.getEmailVerification(request.eoriNumber).flatMap {
-        case Some(verifiedEmail) =>
-          Ok(confirmEmailPage(optionalEmailForm, formAction, EmailAddress(verifiedEmail.email), previous)).toFuture
-        case None => emailService.retrieveEmailByEORI(request.eoriNumber) map { response =>
-          response.emailType match {
-            // TODO - is the get on emailAddress safe?
-            case EmailType.VerifiedEmail => Ok(confirmEmailPage(optionalEmailForm, formAction, response.emailAddress.get, previous))
+      def renderConfirmEmailPage(email: EmailAddress) =
+        Ok(confirmEmailPage(optionalEmailForm, formAction, email, previous))
+
+      emailVerificationService
+        .getEmailVerification(eori)
+        .toContext
+        .map(verifiedEmail => renderConfirmEmailPage(EmailAddress(verifiedEmail.email)))
+        .getOrElseF {
+          emailService
+          .retrieveEmailByEORI(eori)
+          .map {
+            case RetrieveEmailResponse(EmailType.VerifiedEmail, Some(email)) => renderConfirmEmailPage(email)
             case _ => Ok(inputEmailPage(emailForm, previous))
           }
-        }
       }
     }
+
   }
 
-  // TODO - look at EmailVerificationService hard coded redirects and revise to take parameters
   // TODO - since we have two pages for the different scenarios, perhaps we should have two post handlers too?
   def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
