@@ -206,17 +206,11 @@ class BecomeLeadController @Inject() (
             for {
               stored <- emailVerificationService.getEmailVerification(request.eoriNumber)
               _ <- store.update[UndertakingJourney](_.setVerifiedEmail(stored.get.email))
-              redirect <-
-                if (wasSuccessful) {
-                  println(s"Verification was successful - moving on to next step in journey")
-//                  journey.next
-                  Redirect(routes.BecomeLeadController.getBecomeLeadEori().url).toFuture
-                }
-                else Redirect(routes.BecomeLeadController.getConfirmEmail().url).toFuture
+              redirect <- Redirect(routes.BecomeLeadController.getBecomeLeadEori().url).toFuture
             } yield redirect
-          // TODO - check location here- where should we redirect if the request was not successful?
-          } else Redirect(routes.BecomeLeadController.getBecomeLeadEori().url).toFuture
+          } else Redirect(routes.BecomeLeadController.getConfirmEmail().url).toFuture
         } yield redirect
+      // TODO - we could just throw the user back to home or the first page of the journey?
       case None => handleMissingSessionData("Become Lead Journey")
     }
   }

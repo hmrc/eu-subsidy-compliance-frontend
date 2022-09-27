@@ -266,7 +266,7 @@ class BecomeLeadControllerSpec
 
       }
 
-      "display the page" in {
+      "display the page where the become lead journey exists" in {
 
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori4)
@@ -278,6 +278,21 @@ class BecomeLeadControllerSpec
             )
           )
           mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
+        }
+        checkPageIsDisplayed(
+          performAction(),
+          messageFromMessageKey("become-admin-responsibilities.title")
+        )
+
+      }
+
+      "display the page where the become lead journey does not exist" in {
+
+        inSequence {
+          mockAuthWithEccEnrolmentOnly(eori4)
+          mockGet[BecomeLeadJourney](eori4)(Right(Option.empty))
+          mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
+          mockPut[BecomeLeadJourney](newBecomeLeadJourney, eori4)(Right(newBecomeLeadJourney))
         }
         checkPageIsDisplayed(
           performAction(),
@@ -466,13 +481,24 @@ class BecomeLeadControllerSpec
 
   "handling request to get Verify Email page" must {
 
+    val verificationId = "SomeVerificationId"
+
     def performAction(verificationId: String) = controller.getVerifyEmail(verificationId)(FakeRequest())
 
-    // TODO - ensure all possible redirects are covered
-    // Tech error on no journey
-    "redirect to the correct page" when {
-      val verificationId = "SomeVerificationId"
+    "throw technical error" when {
+      "the become lead journey is not found" in {
+        inSequence {
+          mockAuthWithEccEnrolmentOnly(eori1)
+          mockGet[BecomeLeadJourney](eori1)(Right(None))
+        }
 
+        val result = performAction(verificationId)
+
+        result.failed.futureValue shouldBe an[IllegalStateException]
+      }
+    }
+
+    "redirect to the correct page" when {
       "the verification request is successful" in {
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori1)
@@ -487,6 +513,20 @@ class BecomeLeadControllerSpec
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) should contain(routes.BecomeLeadController.getBecomeLeadEori().url)
+      }
+
+      "the verification request is not successful" in {
+        inSequence {
+          mockAuthWithEccEnrolmentOnly(eori1)
+          mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
+          // TODO - get this into a fixture - also review API - this is leaking interal implementation
+          mockApproveVerification(eori1, verificationId)(Right(UpdateResult.acknowledged(0, 1, BsonBoolean.TRUE)))
+        }
+
+        val result = performAction(verificationId)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.BecomeLeadController.getConfirmEmail().url)
       }
     }
 

@@ -89,6 +89,7 @@ class EmailVerificationService @Inject() (
 
   def verifyEori(eori: EORI): Future[CacheItem] = eoriEmailDatastore.verifyEmail(eori)
 
+  // TODO - this exposes mongo internals - return a boolean instead?
   def approveVerificationRequest(key: EORI, verificationId: String) = eoriEmailDatastore.approveVerificationRequest(key, verificationId)
 
   def addVerificationRequest(key: EORI, email: String)(implicit ec: ExecutionContext): Future[String] = {
