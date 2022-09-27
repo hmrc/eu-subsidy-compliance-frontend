@@ -163,9 +163,6 @@ class BecomeLeadControllerSpec
       "throw technical error" when {
 
         "call to get become lead journey fails" in {
-
-          def update(j: BecomeLeadJourney) = j.copy(becomeLeadEori = BecomeLeadEoriFormPage())
-
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
             mockGet[BecomeLeadJourney](eori4)(Left(ConnectorError("Error")))
@@ -209,8 +206,6 @@ class BecomeLeadControllerSpec
         "user submits Yes" in {
 
           def testRedirection(input: String, nextCall: String) = {
-            def update(j: BecomeLeadJourney) = j.copy(becomeLeadEori = BecomeLeadEoriFormPage())
-
             inSequence {
               mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
               mockGet[BecomeLeadJourney](eori4)(
@@ -236,8 +231,6 @@ class BecomeLeadControllerSpec
 
         "user submits No" in {
           def testRedirection(input: String, nextCall: String) = {
-            def update(j: BecomeLeadJourney) = j.copy(becomeLeadEori = BecomeLeadEoriFormPage())
-
             inSequence {
               mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
             }
