@@ -76,36 +76,15 @@ class BecomeLeadController @Inject() (
     )(FormValues.apply)(FormValues.unapply)
   )
 
-  // TODO - refactor the code here and consider using getUndertaking to remove some of the boilerplate
   def getAcceptResponsibilities: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    println(s"getAcceptResponsibilities: called for eori $eori")
+    val result = for {
+      _ <- escService.getUndertaking(eori).toContext
+      _ <- store.getOrCreate[BecomeLeadJourney](BecomeLeadJourney()).toContext
+    } yield Ok(becomeAdminAcceptResponsibilitiesPage(eori))
 
-    def handleRequest(
-      becomeLeadJourneyOpt: Option[BecomeLeadJourney],
-      undertakingOpt: Option[Undertaking]
-    )(implicit request: AuthenticatedEnrolledRequest[_], eori: EORI): Future[Result] = {
-      (becomeLeadJourneyOpt, undertakingOpt) match {
-        case (Some(journey), Some(_)) =>
-          Ok(becomeAdminAcceptResponsibilitiesPage(eori)).toFuture
-        case (None, Some(_)) => // initialise the empty Journey model
-          store.put(BecomeLeadJourney()).map { _ =>
-            Ok(becomeAdminAcceptResponsibilitiesPage(eori))
-          }
-        case _ =>
-          // TODO - we should never be able to get there since there should always be an undertaking. :/
-          throw new IllegalStateException("missing undertaking")
-      }
-    }
-
-    // TODO - review the logic here
-    for {
-      journey <- store.get[BecomeLeadJourney]
-      undertaking <- escService.retrieveUndertaking(eori)
-      result <- handleRequest(journey, undertaking)
-    } yield result
-
+    result.getOrElse(Redirect(routes.AccountController.getAccountPage()))
   }
 
   def postAcceptResponsibilities: Action[AnyContent] = enrolled.async { implicit request =>

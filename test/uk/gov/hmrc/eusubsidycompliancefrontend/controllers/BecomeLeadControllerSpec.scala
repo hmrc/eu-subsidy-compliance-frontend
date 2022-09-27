@@ -40,6 +40,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.mongo.cache.CacheItem
 
 import java.time.Instant
+import scala.concurrent.Future
 
 class BecomeLeadControllerSpec
     extends ControllerSpec
@@ -255,13 +256,21 @@ class BecomeLeadControllerSpec
       "throw technical error" when {
         val exception = new Exception("oh no!")
 
+        "call to get undertaking fails" in {
+          inSequence {
+            mockAuthWithEccEnrolmentOnly(eori4)
+            mockGetUndertaking(eori4)(Future.failed(new IllegalStateException()))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
         "call to fetch new become lead journey fails" in {
           inSequence {
             mockAuthWithEccEnrolmentOnly(eori4)
-            mockGet[BecomeLeadJourney](eori4)(Left(ConnectorError(exception)))
+            mockGetUndertaking(eori4)(undertaking.toFuture)
+            mockGetOrCreate(eori4)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
-
         }
 
       }
@@ -270,14 +279,13 @@ class BecomeLeadControllerSpec
 
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori4)
-          mockGet[BecomeLeadJourney](eori4)(
+          mockGetUndertaking(eori4)(undertaking.toFuture)
+          mockGetOrCreate(eori4)(
             Right(
               newBecomeLeadJourney
                 .copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = Some(true)))
-                .some
             )
           )
-          mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
         }
         checkPageIsDisplayed(
           performAction(),
@@ -290,9 +298,8 @@ class BecomeLeadControllerSpec
 
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori4)
-          mockGet[BecomeLeadJourney](eori4)(Right(Option.empty))
-          mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
-          mockPut[BecomeLeadJourney](newBecomeLeadJourney, eori4)(Right(newBecomeLeadJourney))
+          mockGetUndertaking(eori4)(undertaking.toFuture)
+          mockGetOrCreate[BecomeLeadJourney](eori4)(Right(BecomeLeadJourney()))
         }
         checkPageIsDisplayed(
           performAction(),
@@ -517,7 +524,7 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          // TODO - get this into a fixture - also review API - this is leaking interal implementation
+          // TODO - get this into a fixture - also review API - this is leaking internal implementation
           mockApproveVerification(eori1, verificationId)(Right(UpdateResult.acknowledged(1, 1, BsonBoolean.TRUE)))
           mockGetEmailVerification()
           mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourneyComplete))
@@ -533,7 +540,7 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          // TODO - get this into a fixture - also review API - this is leaking interal implementation
+          // TODO - get this into a fixture - also review API - this is leaking internal implementation
           mockApproveVerification(eori1, verificationId)(Right(UpdateResult.acknowledged(0, 1, BsonBoolean.TRUE)))
         }
 
