@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
+import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages._
@@ -33,6 +34,10 @@ case class BecomeLeadJourney(
       becomeLeadEori,
       confirmation
     )
+
+  def setAcceptResponsibilities(value: Boolean): BecomeLeadJourney = this.copy(
+    acceptResponsibilities = acceptResponsibilities.copy(value = value.some)
+  )
 
 }
 

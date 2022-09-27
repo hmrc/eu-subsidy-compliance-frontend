@@ -90,7 +90,7 @@ class BecomeLeadController @Inject() (
   def postAcceptResponsibilities: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
-      .update[BecomeLeadJourney](j => j.copy(acceptResponsibilities = j.acceptResponsibilities.copy(value = Some(true))))
+      .update[BecomeLeadJourney](_.setAcceptResponsibilities(true))
       .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getConfirmEmail())))
   }
 
@@ -98,15 +98,16 @@ class BecomeLeadController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     val previous = routes.BecomeLeadController.getAcceptResponsibilities().url
+    val formAction = routes.BecomeLeadController.postConfirmEmail()
 
     store.get[BecomeLeadJourney].flatMap { _ =>
       emailVerificationService.getEmailVerification(request.eoriNumber).flatMap {
         case Some(verifiedEmail) =>
-          Ok(confirmEmailPage(optionalEmailForm, routes.BecomeLeadController.postConfirmEmail(), EmailAddress(verifiedEmail.email), previous)).toFuture
+          Ok(confirmEmailPage(optionalEmailForm, formAction, EmailAddress(verifiedEmail.email), previous)).toFuture
         case None => emailService.retrieveEmailByEORI(request.eoriNumber) map { response =>
           response.emailType match {
             // TODO - is the get on emailAddress safe?
-            case EmailType.VerifiedEmail => Ok(confirmEmailPage(optionalEmailForm, routes.BecomeLeadController.postConfirmEmail(), response.emailAddress.get, previous))
+            case EmailType.VerifiedEmail => Ok(confirmEmailPage(optionalEmailForm, formAction, response.emailAddress.get, previous))
             case _ => Ok(inputEmailPage(emailForm, previous))
           }
         }
