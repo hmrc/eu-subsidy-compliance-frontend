@@ -22,24 +22,21 @@ import com.typesafe.config.ConfigFactory
 import org.bson.BsonBoolean
 import play.api.Configuration
 import play.api.inject.bind
-import play.api.libs.json.Json
-import play.api.mvc.Results.{BadRequest, Ok, Redirect}
+import play.api.mvc.Results.Redirect
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress, EmailVerificationResponse, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedSelfToNewLead, RemovedAsLeadToFormerLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages.{AcceptResponsibilitiesFormPage, BecomeLeadEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
-import uk.gov.hmrc.mongo.cache.CacheItem
 
-import java.time.Instant
 import scala.concurrent.Future
 
 class BecomeLeadControllerSpec
@@ -90,7 +87,7 @@ class BecomeLeadControllerSpec
         "call to fetch new lead journey fails" in {
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-            mockGet[BecomeLeadJourney](eori4)(Left(ConnectorError(exception)))
+            mockGetOrCreate[BecomeLeadJourney](eori4)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -98,7 +95,7 @@ class BecomeLeadControllerSpec
         "call to fetch undertaking returns None" in {
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-            mockGet[BecomeLeadJourney](eori4)(Right(None))
+            mockGetOrCreate[BecomeLeadJourney](eori4)(Right(BecomeLeadJourney()))
             mockRetrieveUndertaking(eori4)(None.toFuture)
           }
           assertThrows[Exception](await(performAction()))
@@ -110,9 +107,8 @@ class BecomeLeadControllerSpec
         "Become lead journey is blank " in {
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-            mockGet[BecomeLeadJourney](eori4)(Right(None))
+            mockGetOrCreate[BecomeLeadJourney](eori4)(Right(BecomeLeadJourney()))
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-            mockPut[BecomeLeadJourney](newBecomeLeadJourney, eori4)(Right(newBecomeLeadJourney))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -131,13 +127,9 @@ class BecomeLeadControllerSpec
         "new lead journey already exists" in {
           inSequence {
             mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-            mockGet[BecomeLeadJourney](eori4)(
-              Right(
-                newBecomeLeadJourney
-                  .copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = Some(true)))
-                  .some
-              )
-            )
+            mockGetOrCreate[BecomeLeadJourney](eori4)(Right(
+              newBecomeLeadJourney.copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = Some(true)))
+            ))
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
           }
           checkPageIsDisplayed(

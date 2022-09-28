@@ -17,11 +17,10 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
-import play.api.data.{Form, Forms}
+import play.api.data.Form
 import play.api.data.Forms.{email, mapping}
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
@@ -195,35 +194,16 @@ class BecomeLeadController @Inject() (
       }
   }
 
-  // TODO - review this
   def getBecomeLeadEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    def handleRequest(
-      becomeLeadJourneyOpt: Option[BecomeLeadJourney],
-      undertakingOpt: Option[Undertaking]
-    )(implicit request: AuthenticatedEnrolledRequest[_], eori: EORI): Future[Result] = {
-      (becomeLeadJourneyOpt, undertakingOpt) match {
-        case (Some(journey), Some(_)) =>
+    val result = for {
+      journey <- store.getOrCreate[BecomeLeadJourney](BecomeLeadJourney()).toContext
+      _ <- escService.retrieveUndertaking(eori).toContext
+      form = journey.becomeLeadEori.value.fold(becomeAdminForm)(e => becomeAdminForm.fill(FormValues(e.toString)))
+    } yield Ok(becomeAdminPage(form))
 
-          val form = journey.becomeLeadEori.value.fold(becomeAdminForm)(e => becomeAdminForm.fill(FormValues(e.toString)))
-          Ok(becomeAdminPage(form)).toFuture
-
-        case (None, Some(_)) => // initialise the empty Journey model
-          store.put(BecomeLeadJourney()).map { _ =>
-            Ok(becomeAdminPage(becomeAdminForm))
-
-          }
-
-        case _ => throw new IllegalStateException("missing undertaking name")
-      }
-    }
-
-    for {
-      journey <- store.get[BecomeLeadJourney]
-      undertakingOpt <- escService.retrieveUndertaking(eori)
-      result <- handleRequest(journey, undertakingOpt)
-    } yield result
+    result.getOrElse(handleMissingSessionData("No undertaking Found"))
   }
 
 
@@ -231,7 +211,6 @@ class BecomeLeadController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     def handleFormSubmission(form: FormValues) = {
-      println(s"handling form: $form")
       if (form.value.isTrue) promoteBusinessEntity()
       else Redirect(routes.AccountController.getAccountPage()).toFuture
     }
