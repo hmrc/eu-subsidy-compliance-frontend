@@ -35,7 +35,8 @@ import java.util.UUID
 import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
 
-// TODO - this needs to support both BusinessEntity promote and Undertaking create flows
+// TODO - review public apis here
+// TODO - fix relative/abs url handling
 @Singleton
 class EmailVerificationService @Inject() (
    emailVerificationConnector: EmailVerificationConnector,
@@ -52,8 +53,6 @@ class EmailVerificationService @Inject() (
       .verifyEmail(
         EmailVerificationRequest(
           credId = credId,
-          // TODO - this needs to take a parameter - also provide syntax to get the URL?
-          // TODO - fix handling of abs vs relative urls
           continueUrl =
             if(useAbsoluteUrls) verifyEmailUrl
             else verifyEmailUrl,
@@ -65,9 +64,7 @@ class EmailVerificationService @Inject() (
             enterUrl = ""
           )),
           lang = None,
-          // TODO - this needs to take a parameter - also provide syntax to get the URL?
           backUrl =
-            // TODO - fix handling of abs vs rel urls
             if(useAbsoluteUrls) Some(confirmEmailUrl)
             else Some(confirmEmailUrl),
           pageTitle = None

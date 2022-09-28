@@ -16,9 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.catsSyntaxOptionId
-import play.api.data.Form
-import play.api.data.Forms.{email, mapping}
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
@@ -26,15 +23,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedSelfToNewLead, RemovedAsLeadToFormerLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,10 +37,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class BecomeLeadController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  store: Store,
+  override protected val store: Store,
   escService: EscService,
-  emailService: EmailService,
-  emailVerificationService: EmailVerificationService,
+  override protected val emailService: EmailService,
+  override protected val emailVerificationService: EmailVerificationService,
   auditService: AuditService,
   becomeAdminPage: BecomeAdminPage,
   becomeAdminAcceptResponsibilitiesPage: BecomeAdminAcceptResponsibilitiesPage,
@@ -56,25 +50,12 @@ class BecomeLeadController @Inject() (
 
 )(implicit
   val appConfig: AppConfig,
-  executionContext: ExecutionContext
-) extends BaseController(mcc) {
+  override protected val executionContext: ExecutionContext
+) extends BaseController(mcc) with EmailVerificationSupport {
 
   import actionBuilders._
 
   private val becomeAdminForm = formWithSingleMandatoryField("becomeAdmin")
-
-  private val optionalEmailForm = Form(
-    mapping(
-      "using-stored-email" -> mandatory("using-stored-email"),
-      "email" -> mandatoryIfEqual("using-stored-email", "false", email)
-    )(OptionalEmailFormInput.apply)(OptionalEmailFormInput.unapply)
-  )
-
-  private val emailForm = Form(
-    mapping(
-      "email" -> email
-    )(FormValues.apply)(FormValues.unapply)
-  )
 
   def getAcceptResponsibilities: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -114,22 +95,6 @@ class BecomeLeadController @Inject() (
         .toContext
         .fold(Ok(inputEmailPage(emailForm, previous)))(e => renderConfirmEmailPage(EmailAddress(e)))
     }
-  }
-
-  private def findVerifiedEmail(implicit eori: EORI, hc: HeaderCarrier) = {
-
-    def findVerifiedEmailOnCds: Future[Option[String]] =
-      emailService
-        .retrieveEmailByEORI(eori)
-        .map {
-          case RetrieveEmailResponse(EmailType.VerifiedEmail, email) => email.map(_.value)
-          case _ => Option.empty
-        }
-
-      emailVerificationService
-        .getEmailVerification(eori)
-        .toContext
-        .foldF(findVerifiedEmailOnCds)(_.email.some.toFuture)
   }
 
   def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
@@ -215,36 +180,34 @@ class BecomeLeadController @Inject() (
       else Redirect(routes.AccountController.getAccountPage()).toFuture
     }
 
-    def promoteBusinessEntity() =
-      store.get[BecomeLeadJourney].toContext
-        .foldF(Redirect(routes.BecomeLeadController.getBecomeLeadEori()).toFuture) { journey =>
-          val result = for {
-            undertaking <- escService.getUndertaking(eori).toContext
-            ref = undertaking.reference
-            newLead = undertaking.getBusinessEntityByEORI(eori).copy(leadEORI = true)
-            formerLead = undertaking.getLeadBusinessEntity.copy(leadEORI = false)
-            // Promote new lead
-            _ <- escService.addMember(ref, newLead).toContext
-            _ <- emailService.sendEmail(eori, PromotedSelfToNewLead, undertaking).toContext
-            // Demote former lead
-            _ <- escService.addMember(ref, formerLead).toContext
-            _ <- emailService.sendEmail(formerLead.businessEntityIdentifier, RemovedAsLeadToFormerLead, undertaking).toContext
-            // Flush any stale journey state
-            _ <- store.delete[UndertakingJourney].toContext
-            _ <- store.delete[BusinessEntityJourney].toContext
-            // Send audit event
-            _ = auditService.sendEvent[BusinessEntityPromotedSelf](
-              AuditEvent.BusinessEntityPromotedSelf(
-                ref,
-                request.authorityId,
-                formerLead.businessEntityIdentifier,
-                newLead.businessEntityIdentifier
-              )
-            )
-          } yield Redirect(routes.BecomeLeadController.getPromotionConfirmation())
+    def promoteBusinessEntity() = withJourney { _ =>
+      val result = for {
+        undertaking <- escService.getUndertaking(eori).toContext
+        ref = undertaking.reference
+        newLead = undertaking.getBusinessEntityByEORI(eori).copy(leadEORI = true)
+        formerLead = undertaking.getLeadBusinessEntity.copy(leadEORI = false)
+        // Promote new lead
+        _ <- escService.addMember(ref, newLead).toContext
+        _ <- emailService.sendEmail(eori, PromotedSelfToNewLead, undertaking).toContext
+        // Demote former lead
+        _ <- escService.addMember(ref, formerLead).toContext
+        _ <- emailService.sendEmail(formerLead.businessEntityIdentifier, RemovedAsLeadToFormerLead, undertaking).toContext
+        // Flush any stale journey state
+        _ <- store.delete[UndertakingJourney].toContext
+        _ <- store.delete[BusinessEntityJourney].toContext
+        // Send audit event
+        _ = auditService.sendEvent[BusinessEntityPromotedSelf](
+          AuditEvent.BusinessEntityPromotedSelf(
+            ref,
+            request.authorityId,
+            formerLead.businessEntityIdentifier,
+            newLead.businessEntityIdentifier
+          )
+        )
+      } yield Redirect(routes.BecomeLeadController.getPromotionConfirmation())
 
-          result.getOrElse(throw new IllegalStateException("Unexpected error promoting business entity to lead"))
-        }
+      result.getOrElse(throw new IllegalStateException("Unexpected error promoting business entity to lead"))
+    }
 
     becomeAdminForm
       .bindFromRequest()

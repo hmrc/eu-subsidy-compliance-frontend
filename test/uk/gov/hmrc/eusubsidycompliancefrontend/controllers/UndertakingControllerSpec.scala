@@ -53,7 +53,7 @@ class UndertakingControllerSpec
     with EmailSupport
     with AuditServiceSupport
     with EscServiceSupport
-    with EmailVerificationSupport
+    with EmailVerificationServiceSupport
     with TimeProviderSupport {
 
 

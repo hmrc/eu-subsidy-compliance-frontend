@@ -45,7 +45,7 @@ class BecomeLeadControllerSpec
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with EmailSupport
-    with EmailVerificationSupport
+    with EmailVerificationServiceSupport
     with AuditServiceSupport
     with EscServiceSupport {
 
@@ -412,7 +412,7 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori1)
           mockGetEmailVerification()
-          mockAddVerifiedEmail(eori1, "foo@example.com")(Future.successful())
+          mockAddVerifiedEmail(eori1, "foo@example.com")(Future.successful(()))
           mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourneyComplete))
         }
 

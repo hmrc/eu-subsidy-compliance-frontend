@@ -40,7 +40,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class NoClaimNotificationController @Inject() (
                                                 mcc: MessagesControllerComponents,
                                                 actionBuilders: ActionBuilders,
-                                                store: Store,
+                                                override val store: Store,
                                                 override val escService: EscService,
                                                 auditService: AuditService,
                                                 timeProvider: TimeProvider,
@@ -48,6 +48,7 @@ class NoClaimNotificationController @Inject() (
                                                 noClaimConfirmationPage: NoClaimConfirmationPage,
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
+    with FormHelpers
     with LeadOnlyUndertakingSupport {
   import actionBuilders._
 

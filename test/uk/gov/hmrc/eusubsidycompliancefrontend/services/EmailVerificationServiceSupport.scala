@@ -29,7 +29,7 @@ import uk.gov.hmrc.mongo.cache.CacheItem
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait EmailVerificationSupport { this: MockFactory with AuthSupport =>
+trait EmailVerificationServiceSupport { this: MockFactory with AuthSupport =>
 
 
   def mockEmailVerification(eori: EORI)(result: Either[ConnectorError, CacheItem]) =

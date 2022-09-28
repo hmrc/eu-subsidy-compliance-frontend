@@ -39,7 +39,7 @@ class SelectNewLeadController @Inject() (
                                           mcc: MessagesControllerComponents,
                                           actionBuilders: ActionBuilders,
                                           override val escService: EscService,
-                                          store: Store,
+                                          override val store: Store,
                                           emailService: EmailService,
                                           auditService: AuditService,
                                           selectNewLeadPage: SelectNewLeadPage,
@@ -47,6 +47,7 @@ class SelectNewLeadController @Inject() (
                                           emailNotVerifiedForLeadPromotionPage: EmailNotVerifiedForLeadPromotionPage
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
+    with FormHelpers
     with LeadOnlyUndertakingSupport {
 
   import actionBuilders._
