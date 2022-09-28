@@ -31,7 +31,7 @@
 @(ref: UndertakingRef, eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @html = {
-    <h2 class="govuk-notification-banner__heading">@messages("undertaking.confirmation.h2")</h2>
+    <h3 class="govuk-notification-banner__heading">@messages("undertaking.confirmation.h2")</h3>
     @govukSummaryList(SummaryList(
         rows = Seq(
             SummaryListRow(
