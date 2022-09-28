@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
-import play.api.data.Form
+import play.api.data.{Form, Forms}
 import play.api.data.Forms.{email, mapping}
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
@@ -34,6 +34,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 import javax.inject.{Inject, Singleton}
@@ -110,25 +111,13 @@ class BecomeLeadController @Inject() (
       def renderConfirmEmailPage(email: EmailAddress) =
         Ok(confirmEmailPage(optionalEmailForm, formAction, email, previous))
 
-      emailVerificationService
-        .getEmailVerification(eori)
+      findVerifiedEmail
         .toContext
-        .map(verifiedEmail => renderConfirmEmailPage(EmailAddress(verifiedEmail.email)))
-        .getOrElseF {
-          emailService
-          .retrieveEmailByEORI(eori)
-          .map {
-            case RetrieveEmailResponse(EmailType.VerifiedEmail, Some(email)) => renderConfirmEmailPage(email)
-            case _ => Ok(inputEmailPage(emailForm, previous))
-          }
-      }
+        .fold(Ok(inputEmailPage(emailForm, previous)))(e => renderConfirmEmailPage(EmailAddress(e)))
     }
-
   }
 
-  // TODO - since we have two pages for the different scenarios, perhaps we should have two post handlers too?
-  def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
+  private def findVerifiedEmail(implicit eori: EORI, hc: HeaderCarrier) = {
 
     def findVerifiedEmailOnCds: Future[Option[String]] =
       emailService
@@ -138,58 +127,50 @@ class BecomeLeadController @Inject() (
           case _ => Option.empty
         }
 
-    val verifiedEmail =
       emailVerificationService
         .getEmailVerification(eori)
         .toContext
         .foldF(findVerifiedEmailOnCds)(_.email.some.toFuture)
-
-    val previous = routes.BecomeLeadController.getConfirmEmail().url
-    val next = routes.BecomeLeadController.getBecomeLeadEori().url
-
-    // TODO - review this
-    verifiedEmail flatMap {
-      case Some(email) =>
-        optionalEmailForm
-          .bindFromRequest()
-          .fold(
-            errors => BadRequest(confirmEmailPage(errors, routes.BecomeLeadController.postConfirmEmail(), EmailAddress(email), previous)).toFuture,
-            {
-              // User has elected to use the verified email that we already have
-              case OptionalEmailFormInput("true", None) =>
-                for {
-                  // TODO - ideally we could do this in a single service method - review this
-                  _ <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
-                  _ <- emailVerificationService.verifyEori(request.eoriNumber)
-                  _ <- store.update[UndertakingJourney](_.setVerifiedEmail(email))
-                } yield Redirect(next)
-              case OptionalEmailFormInput("false", Some(email)) => {
-                for {
-                  verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
-                  verifyEmailUrl = routes.BecomeLeadController.getVerifyEmail(verificationId).url
-                  verificationResponse <- emailVerificationService.verifyEmail(verifyEmailUrl, previous)(request.authorityId, email)
-                } yield emailVerificationService.emailVerificationRedirect(routes.BecomeLeadController.getConfirmEmail())(verificationResponse)
-              }
-              // TODO - does this default case make any sense
-              case _ => Redirect(routes.EligibilityController.getNotEligible()).toFuture
-            }
-          )
-      case _ => emailForm.bindFromRequest().fold(
-        // TODO -
-        errors => BadRequest(inputEmailPage(errors, previous)).toFuture,
-        form => {
-          // TODO - seems to be a duplication of some of the code above - refactor
-          for {
-            verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, form.value)
-            verifyEmailUrl = routes.BecomeLeadController.getVerifyEmail(verificationId).url
-            verificationResponse <- emailVerificationService.verifyEmail(verifyEmailUrl, previous)(request.authorityId, form.value)
-          } yield emailVerificationService.emailVerificationRedirect(routes.BecomeLeadController.getConfirmEmail())(verificationResponse)
-        }
-      )
-    }
   }
 
-  // TODO - review this again - we modify state here so GET isn't quite right
+  def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+
+    val previous = routes.BecomeLeadController.getConfirmEmail()
+    val next = routes.BecomeLeadController.getBecomeLeadEori().url
+    val formAction = routes.BecomeLeadController.postConfirmEmail()
+
+    def verifyEmailUrl(id: String) = routes.BecomeLeadController.getVerifyEmail(id).url
+
+    val verifiedEmail = findVerifiedEmail
+
+    def handleConfirmEmailPageSubmission(email: String) =
+      optionalEmailForm
+        .bindFromRequest()
+        .fold(
+          errors => BadRequest(confirmEmailPage(errors, formAction, EmailAddress(email), previous.url)).toFuture,
+          form =>
+            if (form.usingStoredEmail.isTrue)
+              for {
+                _ <- emailVerificationService.addVerifiedEmail(eori, email)
+                _ <- store.update[UndertakingJourney](_.setVerifiedEmail(email))
+              } yield Redirect(next)
+            else emailVerificationService.makeVerificationRequestAndRedirect(email, previous, verifyEmailUrl)
+        )
+
+    def handleInputEmailPageSubmission() =
+      emailForm
+        .bindFromRequest()
+        .fold(
+          errors => BadRequest(inputEmailPage(errors, previous.url)).toFuture,
+          form => emailVerificationService.makeVerificationRequestAndRedirect(form.value, previous, verifyEmailUrl)
+        )
+
+    verifiedEmail
+      .toContext
+      .foldF(handleInputEmailPageSubmission())(email => handleConfirmEmailPageSubmission(email))
+  }
+
   def getVerifyEmail(verificationId: String): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 

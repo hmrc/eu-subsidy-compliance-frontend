@@ -19,12 +19,14 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import com.google.inject.Inject
 import play.api.Logging
 import play.api.http.Status.CREATED
-import play.api.mvc.Call
+import play.api.mvc.{AnyContent, Call}
 import play.api.mvc.Results.Redirect
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -43,7 +45,7 @@ class EmailVerificationService @Inject() (
 
   lazy private val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")
 
-  def useAbsoluteUrls: Boolean = emailVerificationBaseUrl.contains("localhost")
+  lazy val useAbsoluteUrls: Boolean = emailVerificationBaseUrl.contains("localhost")
 
   def verifyEmail(verifyEmailUrl: String, confirmEmailUrl: String)(credId: String, email: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[EmailVerificationResponse]] = {
     emailVerificationConnector
@@ -98,8 +100,23 @@ class EmailVerificationService @Inject() (
       .addVerificationRequest(key, email, verificationId)
       .map {
         // TODO - review this error string
-        _.fold(throw new IllegalArgumentException("Fallen over"))(_.verificationId)
+        _.fold(throw new IllegalArgumentException("Error storing email verification request"))(_.verificationId)
       }
   }
+
+  // Add an email address that's already approved
+  def addVerifiedEmail(eori: EORI, emailAddress: String)(implicit ec: ExecutionContext): Future[Unit] =
+    for {
+      _ <- addVerificationRequest(eori, emailAddress)
+      _ <- verifyEori(eori)
+    } yield ()
+
+
+  def makeVerificationRequestAndRedirect(email: String, previousPage: Call, nextPageUrl: String => String,
+  )(implicit request: AuthenticatedEnrolledRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier) = for {
+    _ <- println(s"About to call add verification request").toFuture
+    verificationId <- addVerificationRequest(request.eoriNumber, email)
+    verificationResponse <- verifyEmail(nextPageUrl(verificationId), previousPage.url)(request.authorityId, email)
+  } yield emailVerificationRedirect(previousPage)(verificationResponse)
 
 }

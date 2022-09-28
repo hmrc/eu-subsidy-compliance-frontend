@@ -18,7 +18,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import org.mongodb.scala.result.UpdateResult
 import org.scalamock.scalatest.MockFactory
-import play.api.mvc.{Call, Result}
+import play.api.mvc.{AnyContent, Call, Result}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AuthSupport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailVerificationResponse, VerifiedEmail}
@@ -68,5 +69,21 @@ trait EmailVerificationSupport { this: MockFactory with AuthSupport =>
     (mockEmailVerificationService
       .emailVerificationRedirect(_: Call)(_: Option[EmailVerificationResponse]))
       .expects(*, verifyEmailResponse)
+      .returning(result)
+
+  def mockAddVerifiedEmail(eori: EORI, emailAddress: String)(result: Future[Unit] = ().toFuture) =
+    (mockEmailVerificationService
+      .addVerifiedEmail(_: EORI, _: String)(_: ExecutionContext))
+      .expects(eori, emailAddress, *)
+      .returning(result)
+
+  def mockMakeVerificationRequestAndRedirect(result: Future[Result]) =
+    (mockEmailVerificationService
+      .makeVerificationRequestAndRedirect(
+        _: String,
+        _: Call,
+        _: String => String
+      )(_: AuthenticatedEnrolledRequest[AnyContent], _: ExecutionContext, _: HeaderCarrier))
+      .expects(*, *, *, *, *, *)
       .returning(result)
 }

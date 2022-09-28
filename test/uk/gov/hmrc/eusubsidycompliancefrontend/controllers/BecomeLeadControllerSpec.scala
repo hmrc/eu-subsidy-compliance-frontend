@@ -23,7 +23,7 @@ import org.bson.BsonBoolean
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.libs.json.Json
-import play.api.mvc.Results.Redirect
+import play.api.mvc.Results.{BadRequest, Ok, Redirect}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -409,17 +409,10 @@ class BecomeLeadControllerSpec
   // TODO - check error handling here - looks like we have a missing message key
   "handling request to post Confirm Email page" must {
 
+    val verificationUrl = routes.BecomeLeadController.getVerifyEmail("SomeId").url
+
     def performAction(data: (String, String)*) =
       controller.postConfirmEmail(FakeRequest().withFormUrlEncodedBody(data: _*))
-
-    // TODO - fixtures
-    // TODO - review store so we don't expose cache items in our public API
-    val cacheItem = CacheItem(
-      id = eori1,
-      data = Json.toJsObject(VerifiedEmail("foo@example.com", "SomeVerificationId", verified = true)),
-      createdAt = Instant.now(),
-      modifiedAt = Instant.now()
-    )
 
     "redirect to the correct page" when {
 
@@ -427,8 +420,7 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori1)
           mockGetEmailVerification()
-          mockAddEmailVerification(eori1)(Right("foo"))
-          mockEmailVerification(eori1)(Right(cacheItem))
+          mockAddVerifiedEmail(eori1, "foo@example.com")(Future.successful())
           mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourneyComplete))
         }
 
@@ -438,14 +430,11 @@ class BecomeLeadControllerSpec
         redirectLocation(result) should contain(routes.BecomeLeadController.getBecomeLeadEori().url)
       }
 
-      // TODO - clean this up
       "user has existing verified email address but elects to enter a new one" in {
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori1)
           mockGetEmailVerification()
-          mockAddEmailVerification(eori1)(Right("foo"))
-          mockVerifyEmail("foo@example.com")(Right(Some(EmailVerificationResponse("/foo"))))
-          mockEmailVerificationRedirect(Some(EmailVerificationResponse("/foo")))(Redirect(routes.BecomeLeadController.getBecomeLeadEori().url))
+          mockMakeVerificationRequestAndRedirect(Redirect(verificationUrl).toFuture)
         }
 
         val result = performAction(
@@ -454,7 +443,7 @@ class BecomeLeadControllerSpec
         )
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(routes.BecomeLeadController.getBecomeLeadEori().url)
+        redirectLocation(result) should contain(verificationUrl)
 
       }
 
@@ -462,12 +451,8 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori1)
           mockGetEmailVerification(None)
-          // TODO - this mocks the retrieval from CDS
           mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
-          // TODO - fixtures for these responses
-          mockAddEmailVerification(eori1)(Right("foo"))
-          mockVerifyEmail("foo@example.com")(Right(Some(EmailVerificationResponse("/foo"))))
-          mockEmailVerificationRedirect(Some(EmailVerificationResponse("/foo")))(Redirect(routes.BecomeLeadController.getBecomeLeadEori().url))
+          mockMakeVerificationRequestAndRedirect(Redirect(verificationUrl).toFuture)
         }
 
         val result = performAction(
@@ -476,8 +461,7 @@ class BecomeLeadControllerSpec
         )
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(routes.BecomeLeadController.getBecomeLeadEori().url)
-
+        redirectLocation(result) should contain(verificationUrl)
       }
     }
 

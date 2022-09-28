@@ -102,11 +102,11 @@ trait AuthSupport { this: ControllerSpec =>
   // TODO - review this
   //  - should EmailServiceSpec be using this?
   //  - add params for false, other values?
-  def mockGetEmailVerification() =
+  def mockGetEmailVerification(email: String = "foo@example.com") =
     (mockEmailVerificationService
       .getEmailVerification(_: EORI))
       .expects(*)
-      .returning(VerifiedEmail("", "", verified = true).some.toFuture)
+      .returning(VerifiedEmail(email, "", verified = true).some.toFuture)
 
   def mockGetEmailVerification(result: Option[VerifiedEmail]) =
     (mockEmailVerificationService
