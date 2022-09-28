@@ -301,6 +301,7 @@ class BecomeLeadControllerSpec
           mockGetUndertaking(eori4)(undertaking.toFuture)
           mockGetOrCreate[BecomeLeadJourney](eori4)(Right(BecomeLeadJourney()))
         }
+
         checkPageIsDisplayed(
           performAction(),
           messageFromMessageKey("become-admin-responsibilities.title")
@@ -426,8 +427,6 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori1)
           mockGetEmailVerification()
-          // TODO - add common fixtures for response and email address
-          mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, Some(EmailAddress("foo@example.com")))))
           mockAddEmailVerification(eori1)(Right("foo"))
           mockEmailVerification(eori1)(Right(cacheItem))
           mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourneyComplete))
@@ -444,8 +443,6 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori1)
           mockGetEmailVerification()
-          mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, Some(EmailAddress("foo@example.com")))))
-          // TODO - fixtures for these responses
           mockAddEmailVerification(eori1)(Right("foo"))
           mockVerifyEmail("foo@example.com")(Right(Some(EmailVerificationResponse("/foo"))))
           mockEmailVerificationRedirect(Some(EmailVerificationResponse("/foo")))(Redirect(routes.BecomeLeadController.getBecomeLeadEori().url))

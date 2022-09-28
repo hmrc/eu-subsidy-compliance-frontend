@@ -129,14 +129,20 @@ class BecomeLeadController @Inject() (
   // TODO - since we have two pages for the different scenarios, perhaps we should have two post handlers too?
   def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    val verifiedEmail: Future[Option[String]] = for {
-      stored <- emailVerificationService.getEmailVerification(request.eoriNumber)
-      cds <- emailService.retrieveEmailByEORI(request.eoriNumber)
-      result = if (stored.isDefined) stored.map(_.email) else cds match {
-        case RetrieveEmailResponse(EmailType.VerifiedEmail, Some(value)) => value.value.some
-        case _ => Option.empty
-      }
-    } yield result
+
+    def findVerifiedEmailOnCds: Future[Option[String]] =
+      emailService
+        .retrieveEmailByEORI(eori)
+        .map {
+          case RetrieveEmailResponse(EmailType.VerifiedEmail, email) => email.map(_.value)
+          case _ => Option.empty
+        }
+
+    val verifiedEmail =
+      emailVerificationService
+        .getEmailVerification(eori)
+        .toContext
+        .foldF(findVerifiedEmailOnCds)(_.email.some.toFuture)
 
     val previous = routes.BecomeLeadController.getConfirmEmail().url
     val next = routes.BecomeLeadController.getBecomeLeadEori().url
@@ -208,6 +214,7 @@ class BecomeLeadController @Inject() (
       }
   }
 
+  // TODO - review this
   def getBecomeLeadEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
