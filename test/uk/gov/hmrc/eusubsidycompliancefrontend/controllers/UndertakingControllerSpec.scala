@@ -569,7 +569,7 @@ class UndertakingControllerSpec
 
       }
 
-      "200 OK" when {
+      "display the page" when {
 
         "User has verified email in CDS" in {
           val undertakingJourney = UndertakingJourney(

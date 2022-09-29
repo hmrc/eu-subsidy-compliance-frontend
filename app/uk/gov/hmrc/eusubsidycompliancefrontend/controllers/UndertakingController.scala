@@ -27,9 +27,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUndertaking, UndertakingDisabled, UndertakingUpdated}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.VerifiedEmail
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailTemplate, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -42,7 +41,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.reflect.ClassTag
 
 @Singleton
 class UndertakingController @Inject() (
@@ -177,34 +175,11 @@ class UndertakingController @Inject() (
   }
 
   def getVerifyEmail(verificationId: String): Action[AnyContent] = enrolled.async { implicit request =>
-    println(s"UndertakingController - getVerifyEmail called")
-    implicit val eori: EORI = request.eoriNumber
-    store.get[UndertakingJourney].flatMap {
-      case Some(journey) =>
-        for {
-          e <- emailVerificationService.approveVerificationRequest(request.eoriNumber, verificationId)
-          wasSuccessful = e.getMatchedCount > 0
-          redirect <- if(wasSuccessful) {
-            for {
-              stored <- emailVerificationService.getEmailVerification(request.eoriNumber)
-              updatedJourney <- store.update[UndertakingJourney](_.setVerifiedEmail(stored.get.email))
-              redirect <-
-                if(wasSuccessful) {
-                  println(s"verification success - moving on to next page")
-                  updatedJourney.next
-                } else {
-                  println(s"Verification unsuccessful - redirecting back to confirm email page")
-                  Future(Redirect(routes.UndertakingController.getConfirmEmail().url))
-                }
-            } yield redirect
-            // TODO - this redirect on the else doesn't look quite right
-          } else {
-            println(s"wasSuccessful: $wasSuccessful - redirecting to about undertaking page")
-            Future(Redirect(routes.UndertakingController.getAboutUndertaking().url))
-          }
-        } yield redirect
-      case None => handleMissingSessionData("Undertaking Journey")
-    }
+    handleVerifyEmailGet[UndertakingJourney](
+      verificationId = verificationId,
+      previous = routes.UndertakingController.getConfirmEmail(),
+      next = routes.UndertakingController.getCheckAnswers(),
+    )
   }
 
   def getAddBusiness: Action[AnyContent] = enrolled.async { implicit request =>
