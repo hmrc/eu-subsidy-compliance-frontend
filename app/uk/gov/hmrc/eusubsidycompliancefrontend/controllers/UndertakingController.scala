@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.data.OptionT
 import cats.implicits._
 import play.api.data.Form
-import play.api.data.Forms.{email, mapping}
+import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
@@ -29,7 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUndertaking, UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.VerifiedEmail
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailTemplate, EmailType, RetrieveEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailTemplate, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -39,7 +39,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -50,15 +49,15 @@ class UndertakingController @Inject() (
                                         actionBuilders: ActionBuilders,
                                         override val store: Store,
                                         override val escService: EscService,
-                                        emailService: EmailService,
-                                        emailVerificationService: EmailVerificationService,
+                                        override val emailService: EmailService,
+                                        override val emailVerificationService: EmailVerificationService,
                                         timeProvider: TimeProvider,
                                         auditService: AuditService,
                                         aboutUndertakingPage: AboutUndertakingPage,
                                         undertakingSectorPage: UndertakingSectorPage,
                                         undertakingAddBusinessPage: UndertakingAddBusinessPage,
-                                        confirmEmailPage: ConfirmEmailPage,
-                                        inputEmailPage: InputEmailPage,
+                                        override val confirmEmailPage: ConfirmEmailPage,
+                                        override val inputEmailPage: InputEmailPage,
                                         cyaPage: UndertakingCheckYourAnswersPage,
                                         confirmationPage: ConfirmationPage,
                                         amendUndertakingPage: AmendUndertakingPage,
@@ -70,6 +69,7 @@ class UndertakingController @Inject() (
   override val executionContext: ExecutionContext
 ) extends BaseController(mcc)
     with LeadOnlyUndertakingSupport
+    with EmailVerificationSupport
     with FormHelpers {
 
   import actionBuilders._
@@ -156,27 +156,10 @@ class UndertakingController @Inject() (
   }
 
   def getConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store.get[UndertakingJourney].flatMap {
-      ensureUndertakingJourneyPresent(_) { journey =>
-        if (journey.isEligibleForStep) {
-          emailVerificationService.getEmailVerification(request.eoriNumber).flatMap {
-            case Some(verifiedEmail) =>
-              Ok(confirmEmailPage(optionalEmailForm, routes.UndertakingController.postConfirmEmail(), EmailAddress(verifiedEmail.email), routes.UndertakingController.getSector().url)).toFuture
-            case None => emailService.retrieveEmailByEORI(request.eoriNumber) map { response =>
-              response.emailType match {
-                case EmailType.VerifiedEmail =>
-                  Ok(confirmEmailPage(optionalEmailForm, routes.UndertakingController.postConfirmEmail(), response.emailAddress.get, routes.UndertakingController.getSector().url))
-                case _ =>
-                  Ok(inputEmailPage(emailForm, routes.UndertakingController.getSector().url))
-              }
-            }
-          }
-        } else {
-          Redirect(journey.previous).toFuture
-        }
-      }
-    }
+    handleConfirmEmailGet[UndertakingJourney](
+      previous = routes.UndertakingController.getSector(),
+      formAction = routes.UndertakingController.postConfirmEmail()
+    )
   }
 
   def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
@@ -500,6 +483,7 @@ class UndertakingController @Inject() (
     }
     else Redirect(routes.AccountController.getAccountPage()).toFuture
 
+  // TODO - review usages of this method and replace with withJourneyOrRedirect
   private def ensureUndertakingJourneyPresent(j: Option[UndertakingJourney])(f: UndertakingJourney => Future[Result]) =
     j.fold(Redirect(routes.UndertakingController.getAboutUndertaking()).toFuture)(f)
 
@@ -513,18 +497,5 @@ class UndertakingController @Inject() (
   private val confirmationForm: Form[FormValues] = formWithSingleMandatoryField("confirm")
   private val amendUndertakingForm: Form[FormValues] = formWithSingleMandatoryField("amendUndertaking")
   private val disableUndertakingConfirmForm: Form[FormValues] = formWithSingleMandatoryField("disableUndertakingConfirm")
-
-  private val optionalEmailForm: Form[OptionalEmailFormInput] = Form(
-    mapping(
-      "using-stored-email" -> mandatory("using-stored-email"),
-      "email" -> mandatoryIfEqual("using-stored-email", "false", email)
-    )(OptionalEmailFormInput.apply)(OptionalEmailFormInput.unapply)
-  )
-
-  private val emailForm: Form[FormValues] = Form(
-    mapping(
-      "email" -> email
-    )(FormValues.apply)(FormValues.unapply)
-  )
 
 }

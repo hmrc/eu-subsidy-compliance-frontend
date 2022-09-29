@@ -667,14 +667,14 @@ class UndertakingControllerSpec
         }
       }
 
-      "redirect to journey start page" when {
+      "redirect to previous page" when {
 
-        "call to fetch undertaking journey passes  but return no undertaking journey" in {
+        "call to fetch undertaking journey returns no undertaking journey" in {
           inSequence {
             mockAuthWithNecessaryEnrolmentNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(None))
           }
-          checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking().url)
+          checkIsRedirect(performAction(), routes.UndertakingController.getSector().url)
         }
       }
 
