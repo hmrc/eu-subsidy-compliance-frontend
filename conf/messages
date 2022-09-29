@@ -155,6 +155,7 @@ email.error.email=Enter an email address in the correct format, like name@exampl
 undertaking.cya.title=Check your account details
 undertaking.cya.change.hidden.name = name of undertaking
 undertaking.cya.change.hidden.industry-sector = industry sector
+undertaking.cya.change.hidden.verified-email = verified email
 undertaking.cya.summary-list.name.key=Name of undertaking
 undertaking.cya.summary-list.eori.key=EORI number
 undertaking.cya.summary-list.sector.key=Industry sector
