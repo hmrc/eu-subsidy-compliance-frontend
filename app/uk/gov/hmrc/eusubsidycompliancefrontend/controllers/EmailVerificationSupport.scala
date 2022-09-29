@@ -19,22 +19,31 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.data.Forms.{email, mapping}
+import play.api.i18n.Messages
+import play.api.libs.json.Reads
+import play.api.mvc.{Action, AnyContent, Call, Result}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, OptionalEmailFormInput}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailService, EmailVerificationService}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, FormValues, OptionalEmailFormInput}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BecomeLeadJourney, EmailService, EmailVerificationService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.{ConfirmEmailPage, InputEmailPage}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.reflect.ClassTag
 
 trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
 
   protected val emailService: EmailService
   protected val emailVerificationService: EmailVerificationService
+  protected val confirmEmailPage: ConfirmEmailPage
+  protected val inputEmailPage: InputEmailPage
 
   protected implicit val executionContext: ExecutionContext
 
@@ -66,4 +75,26 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
         case _ => Option.empty
       }
 
+  protected def withJourney[A: ClassTag](f: A => Future[Result])(implicit eori: EORI, reads: Reads[A]) =
+    store
+      .get[A]
+      .toContext
+      .foldF(Redirect(routes.AccountController.getAccountPage()).toFuture)(f)
+
+  def handleConfirmEmailGet[A: ClassTag](
+    previousPage: Call,
+    formAction: Call
+  )(implicit request: AuthenticatedEnrolledRequest[AnyContent], messages: Messages, appConfig: AppConfig, reads: Reads[A]) = {
+
+    implicit val eori: EORI = request.eoriNumber
+
+    withJourney[A] { _ =>
+
+      findVerifiedEmail
+        .toContext
+        .fold(Ok(inputEmailPage(emailForm, previousPage.url))) { e =>
+          Ok(confirmEmailPage(optionalEmailForm, formAction, EmailAddress(e), previousPage.url))
+        }
+    }
+  }
 }

@@ -45,8 +45,8 @@ class BecomeLeadController @Inject() (
   becomeAdminPage: BecomeAdminPage,
   becomeAdminAcceptResponsibilitiesPage: BecomeAdminAcceptResponsibilitiesPage,
   becomeAdminConfirmationPage: BecomeAdminConfirmationPage,
-  confirmEmailPage: ConfirmEmailPage,
-  inputEmailPage: InputEmailPage,
+  override protected val confirmEmailPage: ConfirmEmailPage,
+  override protected val inputEmailPage: InputEmailPage,
 
 )(implicit
   val appConfig: AppConfig,
@@ -75,26 +75,11 @@ class BecomeLeadController @Inject() (
       .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getConfirmEmail())))
   }
 
-  private def withJourney(f: BecomeLeadJourney => Future[Result])(implicit eori: EORI) =
-    store
-      .get[BecomeLeadJourney]
-      .toContext
-      .foldF(Redirect(routes.AccountController.getAccountPage()).toFuture)(f)
-
   def getConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    withJourney { _ =>
-      val previous = routes.BecomeLeadController.getAcceptResponsibilities().url
-      val formAction = routes.BecomeLeadController.postConfirmEmail()
-
-      def renderConfirmEmailPage(email: EmailAddress) =
-        Ok(confirmEmailPage(optionalEmailForm, formAction, email, previous))
-
-      findVerifiedEmail
-        .toContext
-        .fold(Ok(inputEmailPage(emailForm, previous)))(e => renderConfirmEmailPage(EmailAddress(e)))
-    }
+    handleConfirmEmailGet[BecomeLeadJourney](
+    previousPage = routes.BecomeLeadController.getAcceptResponsibilities(),
+    formAction = routes.BecomeLeadController.postConfirmEmail()
+    )
   }
 
   def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
@@ -180,7 +165,7 @@ class BecomeLeadController @Inject() (
       else Redirect(routes.AccountController.getAccountPage()).toFuture
     }
 
-    def promoteBusinessEntity() = withJourney { _ =>
+    def promoteBusinessEntity() = withJourney[BecomeLeadJourney] { _ =>
       val result = for {
         undertaking <- escService.getUndertaking(eori).toContext
         ref = undertaking.reference
