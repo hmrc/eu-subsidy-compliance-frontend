@@ -77,47 +77,17 @@ class BecomeLeadController @Inject() (
 
   def getConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
     handleConfirmEmailGet[BecomeLeadJourney](
-    previousPage = routes.BecomeLeadController.getAcceptResponsibilities(),
-    formAction = routes.BecomeLeadController.postConfirmEmail()
+      previous = routes.BecomeLeadController.getAcceptResponsibilities(),
+      formAction = routes.BecomeLeadController.postConfirmEmail()
     )
   }
 
   def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    val previous = routes.BecomeLeadController.getConfirmEmail()
-    val next = routes.BecomeLeadController.getBecomeLeadEori().url
-    val formAction = routes.BecomeLeadController.postConfirmEmail()
-
-    def verifyEmailUrl(id: String) = routes.BecomeLeadController.getVerifyEmail(id).url
-
-    val verifiedEmail = findVerifiedEmail
-
-    def handleConfirmEmailPageSubmission(email: String) =
-      optionalEmailForm
-        .bindFromRequest()
-        .fold(
-          errors => BadRequest(confirmEmailPage(errors, formAction, EmailAddress(email), previous.url)).toFuture,
-          form =>
-            if (form.usingStoredEmail.isTrue)
-              for {
-                _ <- emailVerificationService.addVerifiedEmail(eori, email)
-                _ <- store.update[UndertakingJourney](_.setVerifiedEmail(email))
-              } yield Redirect(next)
-            else emailVerificationService.makeVerificationRequestAndRedirect(email, previous, verifyEmailUrl)
-        )
-
-    def handleInputEmailPageSubmission() =
-      emailForm
-        .bindFromRequest()
-        .fold(
-          errors => BadRequest(inputEmailPage(errors, previous.url)).toFuture,
-          form => emailVerificationService.makeVerificationRequestAndRedirect(form.value, previous, verifyEmailUrl)
-        )
-
-    verifiedEmail
-      .toContext
-      .foldF(handleInputEmailPageSubmission())(email => handleConfirmEmailPageSubmission(email))
+    handleConfirmEmailPost(
+      previous = routes.BecomeLeadController.getConfirmEmail(),
+      next = routes.BecomeLeadController.getBecomeLeadEori(),
+      formAction = routes.BecomeLeadController.postConfirmEmail()
+    )
   }
 
   def getVerifyEmail(verificationId: String): Action[AnyContent] = enrolled.async { implicit request =>

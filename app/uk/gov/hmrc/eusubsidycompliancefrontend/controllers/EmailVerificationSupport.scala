@@ -21,15 +21,16 @@ import play.api.data.Form
 import play.api.data.Forms.{email, mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
-import play.api.mvc.{Action, AnyContent, Call, Result}
+import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, FormValues, OptionalEmailFormInput}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{BecomeLeadJourney, EmailService, EmailVerificationService}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailService, EmailVerificationService, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.{ConfirmEmailPage, InputEmailPage}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -82,9 +83,13 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
       .foldF(Redirect(routes.AccountController.getAccountPage()).toFuture)(f)
 
   def handleConfirmEmailGet[A: ClassTag](
-    previousPage: Call,
-    formAction: Call
-  )(implicit request: AuthenticatedEnrolledRequest[AnyContent], messages: Messages, appConfig: AppConfig, reads: Reads[A]) = {
+    previous: Call,
+    formAction: Call,
+  )(implicit request: AuthenticatedEnrolledRequest[AnyContent],
+    messages: Messages,
+    appConfig: AppConfig,
+    reads: Reads[A],
+  ): Future[Result] = {
 
     implicit val eori: EORI = request.eoriNumber
 
@@ -92,9 +97,53 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
 
       findVerifiedEmail
         .toContext
-        .fold(Ok(inputEmailPage(emailForm, previousPage.url))) { e =>
-          Ok(confirmEmailPage(optionalEmailForm, formAction, EmailAddress(e), previousPage.url))
+        .fold(Ok(inputEmailPage(emailForm, previous.url))) { e =>
+          Ok(confirmEmailPage(optionalEmailForm, formAction, EmailAddress(e), previous.url))
         }
     }
+  }
+
+  def handleConfirmEmailPost(
+    previous: Call,
+    next: Call,
+    formAction: Call
+  )(implicit request: AuthenticatedEnrolledRequest[AnyContent],
+    messages: Messages,
+    appConfig: AppConfig,
+  ): Future[Result] = {
+
+    implicit val eori: EORI = request.eoriNumber
+
+    def verifyEmailUrl(id: String) = routes.BecomeLeadController.getVerifyEmail(id).url
+
+    val verifiedEmail = findVerifiedEmail
+
+    def handleConfirmEmailPageSubmission(email: String) =
+      optionalEmailForm
+        .bindFromRequest()
+        .fold(
+          errors => BadRequest(confirmEmailPage(errors, formAction, EmailAddress(email), previous.url)).toFuture,
+          form =>
+            if (form.usingStoredEmail.isTrue)
+              for {
+                _ <- emailVerificationService.addVerifiedEmail(eori, email)
+                // TODO - should we also be updating the become lead journey?
+                _ <- store.update[UndertakingJourney](_.setVerifiedEmail(email))
+              } yield Redirect(next)
+            else emailVerificationService.makeVerificationRequestAndRedirect(email, previous, verifyEmailUrl)
+        )
+
+    def handleInputEmailPageSubmission() =
+      emailForm
+        .bindFromRequest()
+        .fold(
+          errors => BadRequest(inputEmailPage(errors, previous.url)).toFuture,
+          form => emailVerificationService.makeVerificationRequestAndRedirect(form.value, previous, verifyEmailUrl)
+        )
+
+    verifiedEmail
+      .toContext
+      .foldF(handleInputEmailPageSubmission())(email => handleConfirmEmailPageSubmission(email))
+
   }
 }
