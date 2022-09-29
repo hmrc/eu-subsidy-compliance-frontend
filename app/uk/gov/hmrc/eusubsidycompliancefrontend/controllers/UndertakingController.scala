@@ -42,6 +42,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.reflect.ClassTag
 
 @Singleton
 class UndertakingController @Inject() (
@@ -162,54 +163,17 @@ class UndertakingController @Inject() (
     )
   }
 
+  override def addVerifiedEmailToJourney(email: String)(implicit eori: EORI): Future[Unit] =
+    store
+      .update[UndertakingJourney](_.setVerifiedEmail(email))
+      .map(_ => ())
+
   def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    val verifiedEmail = for {
-      stored <- emailVerificationService.getEmailVerification(request.eoriNumber)
-      cds <- emailService.retrieveEmailByEORI(request.eoriNumber)
-      result = if(stored.isDefined) stored.get.email.some else cds match {
-        case RetrieveEmailResponse(VerifiedEmail, Some(value)) => value.value.some
-        case _ => Option.empty
-      }
-    } yield result
-
-    val previous = routes.UndertakingController.getConfirmEmail().url
-
-    verifiedEmail flatMap {
-      case Some(email) =>
-        optionalEmailForm
-          .bindFromRequest()
-          .fold(
-            errors => BadRequest(confirmEmailPage(errors, routes.UndertakingController.postConfirmEmail(), EmailAddress(email), routes.EligibilityController.getDoYouClaim().url)).toFuture,
-            {
-              case OptionalEmailFormInput("true", None) =>
-                for {
-                  _ <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
-                  _ <- emailVerificationService.verifyEori(request.eoriNumber)
-                  _ <- store.update[UndertakingJourney](_.setVerifiedEmail(email))
-                } yield Redirect(routes.UndertakingController.getAddBusiness())
-              case OptionalEmailFormInput("false", Some(email)) => {
-                for {
-                  verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
-                  verifyEmailUrl = routes.UndertakingController.getVerifyEmail(verificationId).url
-                  verificationResponse <- emailVerificationService.verifyEmail(verifyEmailUrl, previous)(request.authorityId, email)
-                } yield emailVerificationService.emailVerificationRedirect(routes.UndertakingController.getConfirmEmail())(verificationResponse)
-              }
-              case _ => Redirect(routes.EligibilityController.getNotEligible()).toFuture
-            }
-          )
-      case _ => emailForm.bindFromRequest().fold(
-        errors => BadRequest(inputEmailPage(errors, routes.EligibilityController.getDoYouClaim().url)).toFuture,
-        form => {
-          // TODO - seems to be a duplication of some of the code above - refactor
-          for {
-            verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, form.value)
-            verifyEmailUrl = routes.UndertakingController.getVerifyEmail(verificationId).url
-            verificationResponse <- emailVerificationService.verifyEmail(verifyEmailUrl, previous)(request.authorityId, form.value)
-          } yield emailVerificationService.emailVerificationRedirect(routes.UndertakingController.getConfirmEmail())(verificationResponse)
-        }
-      )
-    }
+    handleConfirmEmailPost[UndertakingJourney](
+      previous = routes.UndertakingController.getConfirmEmail(),
+      next = routes.UndertakingController.getCheckAnswers(),
+      formAction = routes.UndertakingController.postConfirmEmail(),
+    )
   }
 
   def getVerifyEmail(verificationId: String): Action[AnyContent] = enrolled.async { implicit request =>

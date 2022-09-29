@@ -22,7 +22,6 @@ import org.bson.BsonBoolean
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
-import play.api.libs.json.JsObject
 import play.api.mvc.Results.Redirect
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -31,17 +30,15 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{CreateUndertaking, DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingName}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail, EmailVerificationResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-import uk.gov.hmrc.mongo.cache.CacheItem
 
-import java.time.{Instant, LocalDate}
+import java.time.LocalDate
 import scala.collection.JavaConverters._
 import scala.concurrent.Future
 
@@ -718,23 +715,7 @@ class UndertakingControllerSpec
        "all api calls are successful" in {
          inSequence {
            mockAuthWithNecessaryEnrolmentWithValidEmail()
-           mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-           mockAddEmailVerification(eori1)(Right(""))
-           mockEmailVerification(eori1)(Right(CacheItem("id", JsObject.empty, Instant.now(), Instant.now())))
-           mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourneyComplete))
-         }
-         checkIsRedirect(
-           performAction("using-stored-email" -> "true"),
-           routes.UndertakingController.getAddBusiness().url
-         )
-       }
-
-       "No verification found, but cds" in {
-         inSequence {
-           mockAuthWithNecessaryEnrolmentWithValidEmail()
-           mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-           mockAddEmailVerification(eori1)(Right(""))
-           mockEmailVerification(eori1)(Right(CacheItem("id", JsObject.empty, Instant.now(), Instant.now())))
+           mockAddVerifiedEmail(eori1, "foo@example.com")()
            mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourneyComplete))
          }
          checkIsRedirect(
@@ -746,10 +727,7 @@ class UndertakingControllerSpec
       "No verification found or cds with valid form should redirect" in {
         inSequence {
           mockAuthWithNecessaryEnrolmentWithValidEmail()
-          mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, validEmailAddress.some)))
-          mockAddEmailVerification(eori1)(Right("pendingVerificationId"))
-          mockVerifyEmail("something@aol.com")(Right(Some(EmailVerificationResponse("redirectUri"))))
-          mockEmailVerificationRedirect(Some(EmailVerificationResponse("redirectUri")))(Redirect("email-verification-redirect"))
+          mockMakeVerificationRequestAndRedirect(Redirect("email-verification-redirect").toFuture)
         }
         redirectLocation(performAction("using-stored-email" -> "false", "email" -> "something@aol.com")) shouldBe "email-verification-redirect".some
       }
@@ -757,20 +735,8 @@ class UndertakingControllerSpec
        "No verification found or cds with invalid form should be bad request" in {
          inSequence {
            mockAuthWithNecessaryEnrolmentWithValidEmail()
-           mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, validEmailAddress.some)))
          }
          status(performAction("using-stored-email" -> "false", "email" -> "somethingl.com")) shouldBe BAD_REQUEST
-       }
-
-       "Add verification if has cds email but submits different" in {
-         inSequence {
-           mockAuthWithNecessaryEnrolmentWithValidEmail()
-           mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, validEmailAddress.some)))
-           mockAddEmailVerification(eori1)(Right("pendingVerificationId"))
-           mockVerifyEmail("something@aol.com")(Right(Some(EmailVerificationResponse("redirectUri"))))
-           mockEmailVerificationRedirect(Some(EmailVerificationResponse("redirectUri")))(Redirect("email-verification-redirect"))
-         }
-         redirectLocation(performAction("using-stored-email" -> "false", "email" -> "something@aol.com")) shouldBe "email-verification-redirect".some
        }
 
      }

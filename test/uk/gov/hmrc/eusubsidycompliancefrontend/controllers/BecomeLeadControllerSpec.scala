@@ -413,7 +413,6 @@ class BecomeLeadControllerSpec
           mockAuthWithEccEnrolmentOnly(eori1)
           mockGetEmailVerification()
           mockAddVerifiedEmail(eori1, "foo@example.com")(Future.successful(()))
-          mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourneyComplete))
         }
 
         val result = performAction("using-stored-email" -> "true")
@@ -500,7 +499,6 @@ class BecomeLeadControllerSpec
           // TODO - get this into a fixture - also review API - this is leaking internal implementation
           mockApproveVerification(eori1, verificationId)(Right(UpdateResult.acknowledged(1, 1, BsonBoolean.TRUE)))
           mockGetEmailVerification()
-          mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourneyComplete))
         }
 
         val result = performAction(verificationId)

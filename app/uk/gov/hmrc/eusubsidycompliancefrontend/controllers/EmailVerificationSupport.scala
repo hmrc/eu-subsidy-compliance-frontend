@@ -27,7 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, FormValues, OptionalEmailFormInput}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailService, EmailVerificationService}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailService, EmailVerificationService, Journey}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
@@ -84,7 +84,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
       .toContext
       .foldF(Redirect(noJourneyFound).toFuture)(f)
 
-  def handleConfirmEmailGet[A: ClassTag](
+  protected def handleConfirmEmailGet[A: ClassTag](
     previous: Call,
     formAction: Call,
   )(implicit request: AuthenticatedEnrolledRequest[AnyContent],
@@ -105,9 +105,9 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
   }
 
   // Default implementation is a no-op. Override as required if you need to store the email on the journey.
-  def addVerifiedEmailToJourney[A: ClassTag](email: String)(journey: A): A = journey
+  protected def addVerifiedEmailToJourney(email: String)(implicit eori: EORI): Future[Unit] = ().toFuture
 
-  def handleConfirmEmailPost[A: ClassTag](
+  protected def handleConfirmEmailPost[A: ClassTag](
     previous: Call,
     next: Call,
     formAction: Call
@@ -132,7 +132,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
             if (form.usingStoredEmail.isTrue)
               for {
                 _ <- emailVerificationService.addVerifiedEmail(eori, email)
-                _ <- store.update[A](addVerifiedEmailToJourney(email))
+                _ <- addVerifiedEmailToJourney(email)
               } yield Redirect(next)
             else emailVerificationService.makeVerificationRequestAndRedirect(email, previous, verifyEmailUrl)
         )
@@ -150,7 +150,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
       .foldF(handleInputEmailPageSubmission())(email => handleConfirmEmailPageSubmission(email))
   }
 
-  def handleVerifyEmailGet[A: ClassTag](
+  protected def handleVerifyEmailGet[A: ClassTag](
     verificationId: String,
     previous: Call,
     next: Call,
@@ -166,7 +166,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
         if (approveSuccessful) {
           val result = for {
             stored <- emailVerificationService.getEmailVerification(eori).toContext
-            _ <- store.update[A](addVerifiedEmailToJourney(stored.email)).toContext
+            _ <- addVerifiedEmailToJourney(stored.email).toContext
           } yield Redirect(next.url)
 
           result.getOrElse(Redirect(previous))
