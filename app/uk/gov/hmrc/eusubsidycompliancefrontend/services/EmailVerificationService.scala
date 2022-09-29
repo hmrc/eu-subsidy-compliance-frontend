@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import com.google.inject.Inject
+import org.mongodb.scala.result.UpdateResult
 import play.api.Logging
 import play.api.http.Status.CREATED
 import play.api.mvc.{AnyContent, Call}
@@ -48,7 +49,7 @@ class EmailVerificationService @Inject() (
 
   lazy val useAbsoluteUrls: Boolean = emailVerificationBaseUrl.contains("localhost")
 
-  def verifyEmail(verifyEmailUrl: String, confirmEmailUrl: String)(credId: String, email: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[EmailVerificationResponse]] = {
+  private def verifyEmail(verifyEmailUrl: String, confirmEmailUrl: String)(credId: String, email: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[EmailVerificationResponse]] = {
     emailVerificationConnector
       .verifyEmail(
         EmailVerificationRequest(
@@ -79,19 +80,21 @@ class EmailVerificationService @Inject() (
     }
   }
 
-  def emailVerificationRedirect(confirmEmailCall: Call)(verifyEmailResponse: Option[EmailVerificationResponse]) = verifyEmailResponse match {
+  // TODO - fold?
+  private def emailVerificationRedirect(confirmEmailCall: Call)(verifyEmailResponse: Option[EmailVerificationResponse]) = verifyEmailResponse match {
     case Some(value) => Redirect(emailVerificationConnector.getVerificationJourney(value.redirectUri))
     case None => Redirect(confirmEmailCall)
   }
 
   def getEmailVerification(eori: EORI): Future[Option[VerifiedEmail]] = eoriEmailDatastore.getEmailVerification(eori)
 
-  def verifyEori(eori: EORI): Future[CacheItem] = eoriEmailDatastore.verifyEmail(eori)
+  private def verifyEori(eori: EORI): Future[CacheItem] = eoriEmailDatastore.verifyEmail(eori)
 
   // TODO - this exposes mongo internals - return a boolean instead?
-  def approveVerificationRequest(key: EORI, verificationId: String) = eoriEmailDatastore.approveVerificationRequest(key, verificationId)
+  def approveVerificationRequest(key: EORI, verificationId: String): Future[UpdateResult] =
+    eoriEmailDatastore.approveVerificationRequest(key, verificationId)
 
-  def addVerificationRequest(key: EORI, email: String)(implicit ec: ExecutionContext): Future[String] = {
+  private def addVerificationRequest(key: EORI, email: String)(implicit ec: ExecutionContext): Future[String] = {
     val verificationId = UUID.randomUUID().toString
     eoriEmailDatastore
       .addVerificationRequest(key, email, verificationId)
@@ -111,7 +114,6 @@ class EmailVerificationService @Inject() (
 
   def makeVerificationRequestAndRedirect(email: String, previousPage: Call, nextPageUrl: String => String,
   )(implicit request: AuthenticatedEnrolledRequest[AnyContent], ec: ExecutionContext, hc: HeaderCarrier) = for {
-    _ <- println(s"About to call add verification request").toFuture
     verificationId <- addVerificationRequest(request.eoriNumber, email)
     verificationResponse <- verifyEmail(nextPageUrl(verificationId), previousPage.url)(request.authorityId, email)
   } yield emailVerificationRedirect(previousPage)(verificationResponse)

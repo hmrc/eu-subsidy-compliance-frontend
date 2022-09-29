@@ -22,21 +22,13 @@ import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AuthSupport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailVerificationResponse, VerifiedEmail}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.mongo.cache.CacheItem
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait EmailVerificationServiceSupport { this: MockFactory with AuthSupport =>
-
-
-  def mockEmailVerification(eori: EORI)(result: Either[ConnectorError, CacheItem]) =
-    (mockEmailVerificationService
-      .verifyEori(_: EORI))
-      .expects(eori)
-      .returning(result.fold(Future.failed, _.toFuture))
 
 
   def mockApproveVerification(eori: EORI, verificationId: String)(result: Either[ConnectorError, UpdateResult]) =
@@ -50,26 +42,6 @@ trait EmailVerificationServiceSupport { this: MockFactory with AuthSupport =>
       .getEmailVerification(_: EORI))
       .expects(eori)
       .returning(result.fold(Future.failed, _.toFuture))
-
-  def mockAddEmailVerification(eori: EORI)(result: Either[ConnectorError, String]) =
-    (mockEmailVerificationService
-      .addVerificationRequest(_: EORI, _: String)(_: ExecutionContext))
-      .expects(eori, *, *)
-      .returning(result.fold(Future.failed, _.toFuture))
-
-  // TODO - do we care about redirect locations here?
-  def mockVerifyEmail(email: String)(result: Either[ConnectorError, Option[EmailVerificationResponse]]) =
-    (mockEmailVerificationService
-      .verifyEmail(_: String, _: String)( _: String, _: String)(_: HeaderCarrier, _: ExecutionContext))
-      .expects(*, *, *, email, *, *)
-      .returning(result.fold(Future.failed, _.toFuture))
-
-  // TODO - do we need to check the call here?
-  def mockEmailVerificationRedirect(verifyEmailResponse: Option[EmailVerificationResponse])(result: Result) =
-    (mockEmailVerificationService
-      .emailVerificationRedirect(_: Call)(_: Option[EmailVerificationResponse]))
-      .expects(*, verifyEmailResponse)
-      .returning(result)
 
   def mockAddVerifiedEmail(eori: EORI, emailAddress: String)(result: Future[Unit] = ().toFuture) =
     (mockEmailVerificationService
