@@ -76,6 +76,8 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
         case _ => Option.empty
       }
 
+  // TODO - this may need to be changed for the undertaking controller
+  // Runs the supplied function if a journey is found in the store. Otherwise redirects back to account home.
   protected def withJourney[A: ClassTag](f: A => Future[Result])(implicit eori: EORI, reads: Reads[A]) =
     store
       .get[A]
@@ -103,7 +105,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
     }
   }
 
-  def handleConfirmEmailPost(
+  def handleConfirmEmailPost[A: ClassTag](
     previous: Call,
     next: Call,
     formAction: Call
@@ -127,7 +129,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
             if (form.usingStoredEmail.isTrue)
               for {
                 _ <- emailVerificationService.addVerifiedEmail(eori, email)
-                // TODO - should we also be updating the become lead journey?
+                // TODO - this needs to be generalised
                 _ <- store.update[UndertakingJourney](_.setVerifiedEmail(email))
               } yield Redirect(next)
             else emailVerificationService.makeVerificationRequestAndRedirect(email, previous, verifyEmailUrl)
@@ -144,6 +146,33 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
     verifiedEmail
       .toContext
       .foldF(handleInputEmailPageSubmission())(email => handleConfirmEmailPageSubmission(email))
+  }
+
+  def handleVerifyEmailGet[A: ClassTag](
+    verificationId: String,
+    previous: Call,
+    next: Call,
+  )(implicit request: AuthenticatedEnrolledRequest[AnyContent],
+    reads: Reads[A],
+  ): Future[Result] = {
+
+    implicit val eori: EORI = request.eoriNumber
+
+    withJourney[A] { _ =>
+      emailVerificationService.approveVerificationRequest(eori, verificationId).flatMap { result =>
+        val approveSuccessful = result.getMatchedCount > 0
+        if (approveSuccessful) {
+          val result = for {
+            stored <- emailVerificationService.getEmailVerification(eori).toContext
+            // TODO - this needs to be generalised
+            _ <- store.update[UndertakingJourney](_.setVerifiedEmail(stored.email)).toContext
+          } yield Redirect(next.url)
+
+          result.getOrElse(Redirect(routes.AccountController.getAccountPage()))
+        }
+        else Redirect(previous.url).toFuture
+      }
+    }
 
   }
 }

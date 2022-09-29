@@ -91,27 +91,11 @@ class BecomeLeadController @Inject() (
   }
 
   def getVerifyEmail(verificationId: String): Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    val redirectToAccountHome = Redirect(routes.AccountController.getAccountPage())
-
-    store
-      .get[BecomeLeadJourney]
-      .toContext
-      .foldF(redirectToAccountHome.toFuture) { _ =>
-        emailVerificationService.approveVerificationRequest(eori, verificationId).flatMap { result =>
-          val approveSuccessful = result.getMatchedCount > 0
-          if (approveSuccessful) {
-            val result = for {
-              stored <- emailVerificationService.getEmailVerification(eori).toContext
-              _ <- store.update[UndertakingJourney](_.setVerifiedEmail(stored.email)).toContext
-            } yield Redirect(routes.BecomeLeadController.getBecomeLeadEori().url)
-
-            result.getOrElse(redirectToAccountHome)
-          }
-          else Redirect(routes.BecomeLeadController.getConfirmEmail().url).toFuture
-        }
-      }
+    handleVerifyEmailGet[BecomeLeadJourney](
+      verificationId = verificationId,
+      previous = routes.BecomeLeadController.getConfirmEmail(),
+      next = routes.BecomeLeadController.getBecomeLeadEori()
+    )
   }
 
   def getBecomeLeadEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
