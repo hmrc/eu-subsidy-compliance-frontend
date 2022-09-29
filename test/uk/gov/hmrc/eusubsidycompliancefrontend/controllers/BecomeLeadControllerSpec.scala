@@ -476,7 +476,7 @@ class BecomeLeadControllerSpec
         val result = performAction(verificationId)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
+        redirectLocation(result) should contain(routes.BecomeLeadController.getConfirmEmail().url)
       }
 
       "the email verification record is not found" in {
@@ -490,7 +490,7 @@ class BecomeLeadControllerSpec
         val result = performAction(verificationId)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
+        redirectLocation(result) should contain(routes.BecomeLeadController.getConfirmEmail().url)
       }
 
       "the verification request is successful" in {

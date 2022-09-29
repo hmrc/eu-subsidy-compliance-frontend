@@ -78,11 +78,11 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
 
   // TODO - this may need to be changed for the undertaking controller
   // Runs the supplied function if a journey is found in the store. Otherwise redirects back to account home.
-  protected def withJourney[A: ClassTag](f: A => Future[Result])(implicit eori: EORI, reads: Reads[A]): Future[Result] =
+  protected def withJourneyOrRedirect[A: ClassTag](noJourneyFound: Call)(f: A => Future[Result])(implicit eori: EORI, reads: Reads[A]): Future[Result] =
     store
       .get[A]
       .toContext
-      .foldF(Redirect(routes.AccountController.getAccountPage()).toFuture)(f)
+      .foldF(Redirect(noJourneyFound).toFuture)(f)
 
   def handleConfirmEmailGet[A: ClassTag](
     previous: Call,
@@ -95,8 +95,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
 
     implicit val eori: EORI = request.eoriNumber
 
-    withJourney[A] { _ =>
-
+    withJourneyOrRedirect[A](previous) { _ =>
       findVerifiedEmail
         .toContext
         .fold(Ok(inputEmailPage(emailForm, previous.url))) { e =>
@@ -161,7 +160,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
 
     implicit val eori: EORI = request.eoriNumber
 
-    withJourney[A] { _ =>
+    withJourneyOrRedirect[A](previous) { _ =>
       emailVerificationService.approveVerificationRequest(eori, verificationId).flatMap { result =>
         val approveSuccessful = result.getMatchedCount > 0
         if (approveSuccessful) {
@@ -170,7 +169,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
             _ <- store.update[A](addVerifiedEmailToJourney(stored.email)).toContext
           } yield Redirect(next.url)
 
-          result.getOrElse(Redirect(routes.AccountController.getAccountPage()))
+          result.getOrElse(Redirect(previous))
         }
         else Redirect(previous.url).toFuture
       }

@@ -119,7 +119,7 @@ class BecomeLeadController @Inject() (
       else Redirect(routes.AccountController.getAccountPage()).toFuture
     }
 
-    def promoteBusinessEntity() = withJourney[BecomeLeadJourney] { _ =>
+    def promoteBusinessEntity() = withJourneyOrRedirect[BecomeLeadJourney](routes.AccountController.getAccountPage()) { _ =>
       val result = for {
         undertaking <- escService.getUndertaking(eori).toContext
         ref = undertaking.reference
