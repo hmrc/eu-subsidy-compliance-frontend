@@ -20,14 +20,14 @@ import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.data.Forms.{email, mapping}
 import play.api.i18n.Messages
-import play.api.libs.json.Reads
+import play.api.libs.json.{Format, Reads}
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, FormValues, OptionalEmailFormInput}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailService, EmailVerificationService, UndertakingJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailService, EmailVerificationService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
@@ -78,7 +78,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
 
   // TODO - this may need to be changed for the undertaking controller
   // Runs the supplied function if a journey is found in the store. Otherwise redirects back to account home.
-  protected def withJourney[A: ClassTag](f: A => Future[Result])(implicit eori: EORI, reads: Reads[A]) =
+  protected def withJourney[A: ClassTag](f: A => Future[Result])(implicit eori: EORI, reads: Reads[A]): Future[Result] =
     store
       .get[A]
       .toContext
@@ -90,7 +90,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
   )(implicit request: AuthenticatedEnrolledRequest[AnyContent],
     messages: Messages,
     appConfig: AppConfig,
-    reads: Reads[A],
+    format: Format[A],
   ): Future[Result] = {
 
     implicit val eori: EORI = request.eoriNumber
@@ -105,6 +105,9 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
     }
   }
 
+  // Default implementation is a no-op. Override as required if you need to store the email on the journey.
+  def addVerifiedEmailToJourney[A: ClassTag](email: String)(journey: A): A = journey
+
   def handleConfirmEmailPost[A: ClassTag](
     previous: Call,
     next: Call,
@@ -112,6 +115,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
   )(implicit request: AuthenticatedEnrolledRequest[AnyContent],
     messages: Messages,
     appConfig: AppConfig,
+    format: Format[A],
   ): Future[Result] = {
 
     implicit val eori: EORI = request.eoriNumber
@@ -129,8 +133,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
             if (form.usingStoredEmail.isTrue)
               for {
                 _ <- emailVerificationService.addVerifiedEmail(eori, email)
-                // TODO - this needs to be generalised
-                _ <- store.update[UndertakingJourney](_.setVerifiedEmail(email))
+                _ <- store.update[A](addVerifiedEmailToJourney(email))
               } yield Redirect(next)
             else emailVerificationService.makeVerificationRequestAndRedirect(email, previous, verifyEmailUrl)
         )
@@ -153,7 +156,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
     previous: Call,
     next: Call,
   )(implicit request: AuthenticatedEnrolledRequest[AnyContent],
-    reads: Reads[A],
+    format: Format[A],
   ): Future[Result] = {
 
     implicit val eori: EORI = request.eoriNumber
@@ -164,8 +167,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
         if (approveSuccessful) {
           val result = for {
             stored <- emailVerificationService.getEmailVerification(eori).toContext
-            // TODO - this needs to be generalised
-            _ <- store.update[UndertakingJourney](_.setVerifiedEmail(stored.email)).toContext
+            _ <- store.update[A](addVerifiedEmailToJourney(stored.email)).toContext
           } yield Redirect(next.url)
 
           result.getOrElse(Redirect(routes.AccountController.getAccountPage()))

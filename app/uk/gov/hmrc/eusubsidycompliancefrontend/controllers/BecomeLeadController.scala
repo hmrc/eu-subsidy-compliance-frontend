@@ -83,7 +83,7 @@ class BecomeLeadController @Inject() (
   }
 
   def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
-    handleConfirmEmailPost(
+    handleConfirmEmailPost[BecomeLeadJourney](
       previous = routes.BecomeLeadController.getConfirmEmail(),
       next = routes.BecomeLeadController.getBecomeLeadEori(),
       formAction = routes.BecomeLeadController.postConfirmEmail()
