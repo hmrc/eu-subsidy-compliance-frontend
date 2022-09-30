@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import com.google.inject.Inject
-import org.mongodb.scala.result.UpdateResult
 import play.api.Logging
 import play.api.http.Status.CREATED
 import play.api.mvc.Results.Redirect
@@ -27,6 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -76,7 +76,6 @@ class EmailVerificationService @Inject() (
   )(credId: String,
     email: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[EmailVerificationResponse]] = {
-    // TODO - TECH DEBT TICKET - the connector can construct the request so we just pass in the params we care about here.
     emailVerificationConnector
       .verifyEmail(
         EmailVerificationRequest(
@@ -106,14 +105,11 @@ class EmailVerificationService @Inject() (
 
   private def verifyEmailForEori(eori: EORI): Future[CacheItem] = eoriEmailDatastore.verifyEmail(eori)
 
-  private def addVerificationRequest(key: EORI, email: String)(implicit ec: ExecutionContext): Future[String] = {
-    val verificationId = UUID.randomUUID().toString
+  private def addVerificationRequest(key: EORI, email: String)(implicit ec: ExecutionContext): Future[String] =
     eoriEmailDatastore
-      .addVerificationRequest(key, email, verificationId)
-      .map {
-        // TODO - review this error string
-        _.fold(throw new IllegalArgumentException("Error storing email verification request"))(_.verificationId)
-      }
-  }
+      .addVerificationRequest(key, email, UUID.randomUUID().toString)
+      .toContext
+      .map(_.verificationId)
+      .getOrElse(throw new IllegalStateException("Error storing email verification request"))
 
 }
