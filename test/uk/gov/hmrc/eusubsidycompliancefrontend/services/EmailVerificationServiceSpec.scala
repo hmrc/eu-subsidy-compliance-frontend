@@ -108,7 +108,7 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
       "store a new email verification request and mark it as verified" in {
         val email = "foo@example.com"
 
-        service.addVerifiedEmail(eori4, email).futureValue shouldBe ()
+        service.addVerifiedEmail(eori4, email).futureValue shouldBe (())
 
         // Query mongo to confirm that we have a verified record
         val result = service.getEmailVerification(eori4)

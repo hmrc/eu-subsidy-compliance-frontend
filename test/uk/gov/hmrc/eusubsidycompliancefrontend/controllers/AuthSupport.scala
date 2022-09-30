@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import org.scalamock.handlers.CallHandler1
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.{EmptyPredicate, Predicate}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
@@ -36,11 +37,6 @@ trait AuthSupport { this: ControllerSpec =>
   protected val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
   protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
-
-  // TODO - review these and perhaps use common values
-  val EccEnrolmentKey = "HMRC-ESC-ORG"
-  val CdsEnrolmentKey = "HMRC-CUS-ORG"
-
 
   def mockAuth[R](predicate: Predicate, retrieval: Retrieval[R])(
     result: Future[R]
@@ -99,20 +95,15 @@ trait AuthSupport { this: ControllerSpec =>
   val authRetrievalsNoEnrolment: Retrieval[Option[Credentials] ~ Option[String]] =
     Retrievals.credentials and Retrievals.groupIdentifier
 
-  // TODO - review this
-  //  - should EmailServiceSpec be using this?
-  //  - add params for false, other values?
-  def mockGetEmailVerification(email: String = "foo@example.com") =
-    (mockEmailVerificationService
-      .getEmailVerification(_: EORI))
-      .expects(*)
-      .returning(VerifiedEmail(email, "", verified = true).some.toFuture)
-
-  def mockGetEmailVerification(result: Option[VerifiedEmail]) =
+  def mockGetEmailVerification(result: Option[VerifiedEmail]): CallHandler1[EORI, Future[Option[VerifiedEmail]]] =
     (mockEmailVerificationService
       .getEmailVerification(_: EORI))
       .expects(*)
       .returning(result.toFuture)
+
+  def mockGetEmailVerification(email: String = "foo@example.com"): CallHandler1[EORI, Future[Option[VerifiedEmail]]] =
+    mockGetEmailVerification(VerifiedEmail(email, "", verified = true).some)
+
 }
 
 object AuthSupport {
