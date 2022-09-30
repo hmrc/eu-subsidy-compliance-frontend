@@ -110,7 +110,8 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
   protected def handleConfirmEmailPost[A: ClassTag](
     previous: Call,
     next: Call,
-    formAction: Call
+    formAction: Call,
+    generateEmailVerificationUrl: String => String
   )(implicit request: AuthenticatedEnrolledRequest[AnyContent],
     messages: Messages,
     appConfig: AppConfig,
@@ -119,7 +120,9 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
 
     implicit val eori: EORI = request.eoriNumber
 
-    def verifyEmailUrl(id: String) = routes.BecomeLeadController.getVerifyEmail(id).url
+    // TODO - inline this?
+    // TODO - test coverage?
+    def verifyEmailUrl(id: String) = generateEmailVerificationUrl(id)
 
     val verifiedEmail = findVerifiedEmail
 
@@ -128,13 +131,17 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
         .bindFromRequest()
         .fold(
           errors => BadRequest(confirmEmailPage(errors, formAction, EmailAddress(email), previous.url)).toFuture,
-          form =>
-            if (form.usingStoredEmail.isTrue)
+          form => {
+            println(s"Processing form submission: $form")
+            if (form.usingStoredEmail.isTrue) {
+              println(s"UsingStoredEmail isTrue")
               for {
                 _ <- emailVerificationService.addVerifiedEmail(eori, email)
                 _ <- addVerifiedEmailToJourney(email)
               } yield Redirect(next)
-            else emailVerificationService.makeVerificationRequestAndRedirect(email, previous, verifyEmailUrl)
+            // TODO - review this, we should never hit the empty condition here
+            } else emailVerificationService.makeVerificationRequestAndRedirect(form.value.getOrElse(""), previous, verifyEmailUrl)
+          }
         )
 
     def handleInputEmailPageSubmission() =

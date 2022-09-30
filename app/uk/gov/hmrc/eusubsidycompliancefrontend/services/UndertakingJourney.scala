@@ -77,7 +77,12 @@ case class UndertakingJourney(
 
   def setUndertakingCYA(b: Boolean): UndertakingJourney = this.copy(cya = cya.copy(value = Some(b)))
 
-  def setVerifiedEmail(e: String): UndertakingJourney = this.copy(verifiedEmail = verifiedEmail.copy(value = Some(e)))
+  def setVerifiedEmail(e: String): UndertakingJourney = {
+    println(s"setVerifiedEmail: setting email $e on UndertakingJourney")
+    val result = this.copy(verifiedEmail = verifiedEmail.copy(value = Some(e)))
+    println(s"setVerifiedEmail: returning updated journey: $result")
+    result
+  }
 
   def setAddBusiness(b: Boolean): UndertakingJourney = this.copy(addBusiness = addBusiness.copy(value = b.some))
 

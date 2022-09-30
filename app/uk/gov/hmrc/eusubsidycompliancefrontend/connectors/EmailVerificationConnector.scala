@@ -26,29 +26,20 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class EmailVerificationConnector @Inject()(
-override protected val http: HttpClient,
-  servicesConfig: ServicesConfig
-  )
-  extends Connector {
+    override protected val http: HttpClient,
+    servicesConfig: ServicesConfig
+  ) extends Connector {
 
   lazy private val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")
-  lazy private val emailVerificationFrontendBaseUrl: String = servicesConfig.baseUrl("email-verification-frontend")
 
   lazy private val verifyEmailUrl = s"$emailVerificationBaseUrl/email-verification/verify-email"
 
-  def useAbsoluteUrls: Boolean = emailVerificationBaseUrl.contains("localhost")
-
-
-  def verifyEmail(request: EmailVerificationRequest)(
-    implicit hc: HeaderCarrier,
-    ec: ExecutionContext): ConnectorResult = {
+  def verifyEmail(request: EmailVerificationRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): ConnectorResult =
     makeRequest(
       _.POST[EmailVerificationRequest, HttpResponse](
         verifyEmailUrl,
         request
       )
     )
-  }
 
-  def getVerificationJourney(redirectUri: String): String = if(useAbsoluteUrls) s"${emailVerificationFrontendBaseUrl}${redirectUri}" else redirectUri
 }

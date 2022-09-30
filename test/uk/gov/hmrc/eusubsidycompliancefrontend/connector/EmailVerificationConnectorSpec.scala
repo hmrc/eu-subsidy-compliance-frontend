@@ -56,64 +56,6 @@ class EmailVerificationConnectorSpec
 
   "EmailVerificationConnector" when {
 
-    "Get verification redirect" in {
-      connector.getVerificationJourney("/redirect") shouldBe "/redirect"
-    }
-
-    "Use absolute urls" in {
-      connector.useAbsoluteUrls shouldBe false
-    }
-
-    "verify email" when {
-      behave like connectorBehaviour(
-        mockPost(s"$baseUrl/verify-email", Seq.empty, emailVerificationRequest)(_),
-        () => connector.verifyEmail(emailVerificationRequest)
-      )
-    }
-  }
-}
-
-class LocallyConfiguredEmailVerificationConnectorSpec
-  extends AnyWordSpec
-    with Matchers
-    with MockFactory
-    with HttpSupport
-    with ConnectorSpec
-    with ScalaFutures {
-
-  private val (protocol, host, port) = ("http", "localhost", "123")
-  private val baseUrl = s"$protocol://$host:$port/email-verification"
-
-  private val config = Configuration(
-    ConfigFactory.parseString(s"""
-                                 | microservice.services.email-verification {
-                                 |    protocol = "$protocol"
-                                 |    host     = "$host"
-                                 |    port     = $port
-                                 |  }
-                                 | microservice.services.email-verification-frontend {
-                                 |    protocol = "$protocol"
-                                 |    host     = "$host"
-                                 |    port     = $port
-                                 |  }
-                                 |
-                                 |""".stripMargin)
-  )
-
-  private val connector = new EmailVerificationConnector(mockHttp, new ServicesConfig(config))
-
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
-
-  "Locally configured EmailVerificationConnector" when {
-
-    "Get verification redirect" in {
-      connector.getVerificationJourney("/redirect") shouldBe "http://localhost:123/redirect"
-    }
-
-    "Use absolute urls" in {
-      connector.useAbsoluteUrls shouldBe true
-    }
-
     "verify email" when {
       behave like connectorBehaviour(
         mockPost(s"$baseUrl/verify-email", Seq.empty, emailVerificationRequest)(_),

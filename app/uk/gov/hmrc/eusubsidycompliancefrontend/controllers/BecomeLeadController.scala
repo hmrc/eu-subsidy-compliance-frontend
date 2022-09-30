@@ -86,7 +86,8 @@ class BecomeLeadController @Inject() (
     handleConfirmEmailPost[BecomeLeadJourney](
       previous = routes.BecomeLeadController.getConfirmEmail(),
       next = routes.BecomeLeadController.getBecomeLeadEori(),
-      formAction = routes.BecomeLeadController.postConfirmEmail()
+      formAction = routes.BecomeLeadController.postConfirmEmail(),
+      generateEmailVerificationUrl = (id: String) => routes.BecomeLeadController.getVerifyEmail(id).url
     )
   }
 
