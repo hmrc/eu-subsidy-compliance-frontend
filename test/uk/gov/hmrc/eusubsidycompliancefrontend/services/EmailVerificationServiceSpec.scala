@@ -101,9 +101,9 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
 
     "approveVerificationRequest is called" must {
 
-      "success" in {
+      "report success for a successful update" in {
         repository.put(eori1, unverifiedVerificationRequest.copy(verificationId = "pending")).futureValue.id shouldBe eori1
-        service.approveVerificationRequest(eori1, "pending").futureValue.wasAcknowledged() shouldBe true
+        service.approveVerificationRequest(eori1, "pending").futureValue shouldBe true
 
         service.getEmailVerification(eori1).futureValue should
           contain(unverifiedVerificationRequest.copy(verified = true, verificationId = "pending"))

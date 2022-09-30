@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import org.mongodb.scala.result.UpdateResult
 import org.scalamock.scalatest.MockFactory
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
@@ -30,11 +29,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait EmailVerificationServiceSupport { this: MockFactory with AuthSupport =>
 
-
-  def mockApproveVerification(eori: EORI, verificationId: String)(result: Either[ConnectorError, UpdateResult]) =
+  def mockApproveVerification(eori: EORI, verificationId: String)(result: Either[ConnectorError, Boolean]) =
     (mockEmailVerificationService
-      .approveVerificationRequest(_: EORI, _: String))
-      .expects(eori, verificationId)
+      .approveVerificationRequest(_: EORI, _: String)(_: ExecutionContext))
+      .expects(eori, verificationId, *)
       .returning(result.fold(Future.failed, _.toFuture))
 
   def mockGetEmailVerification(eori: EORI)(result: Either[ConnectorError, Option[VerifiedEmail]]) =

@@ -27,7 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, FormValues, OptionalEmailFormInput}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailService, EmailVerificationService, Journey}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailService, EmailVerificationService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
@@ -76,8 +76,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
         case _ => Option.empty
       }
 
-  // TODO - this may need to be changed for the undertaking controller
-  // Runs the supplied function if a journey is found in the store. Otherwise redirects back to account home.
+  // Runs the supplied function if a journey is found in the store. Otherwise redirects back to noJourneyFound.
   protected def withJourneyOrRedirect[A: ClassTag](noJourneyFound: Call)(f: A => Future[Result])(implicit eori: EORI, reads: Reads[A]): Future[Result] =
     store
       .get[A]
@@ -105,24 +104,24 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
   }
 
   // Default implementation is a no-op. Override as required if you need to store the email on the journey.
-  protected def addVerifiedEmailToJourney(email: String)(implicit eori: EORI): Future[Unit] = ().toFuture
+  protected def addVerifiedEmailToJourney(email: String)(implicit eori: EORI): Future[Unit] = {
+    eori.length // TODO - cludge to silence warning on unused implicit here - review
+    ().toFuture
+  }
 
   protected def handleConfirmEmailPost[A: ClassTag](
     previous: Call,
     next: Call,
     formAction: Call,
-    generateEmailVerificationUrl: String => String
+    generateVerifyEmailUrl: String => String
   )(implicit request: AuthenticatedEnrolledRequest[AnyContent],
     messages: Messages,
     appConfig: AppConfig,
-    format: Format[A],
   ): Future[Result] = {
 
     implicit val eori: EORI = request.eoriNumber
 
-    // TODO - inline this?
-    // TODO - test coverage?
-    def verifyEmailUrl(id: String) = generateEmailVerificationUrl(id)
+    def verifyEmailUrl(id: String) = generateVerifyEmailUrl(id)
 
     val verifiedEmail = findVerifiedEmail
 
@@ -132,15 +131,16 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
         .fold(
           errors => BadRequest(confirmEmailPage(errors, formAction, EmailAddress(email), previous.url)).toFuture,
           form => {
-            println(s"Processing form submission: $form")
             if (form.usingStoredEmail.isTrue) {
-              println(s"UsingStoredEmail isTrue")
               for {
                 _ <- emailVerificationService.addVerifiedEmail(eori, email)
                 _ <- addVerifiedEmailToJourney(email)
               } yield Redirect(next)
-            // TODO - review this, we should never hit the empty condition here
-            } else emailVerificationService.makeVerificationRequestAndRedirect(form.value.getOrElse(""), previous, verifyEmailUrl)
+            }
+            else {
+              // TODO - review this, we should never hit the empty condition here
+              emailVerificationService.makeVerificationRequestAndRedirect(form.value.getOrElse(""), previous, verifyEmailUrl)
+            }
           }
         )
 
@@ -168,8 +168,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
     implicit val eori: EORI = request.eoriNumber
 
     withJourneyOrRedirect[A](previous) { _ =>
-      emailVerificationService.approveVerificationRequest(eori, verificationId).flatMap { result =>
-        val approveSuccessful = result.getMatchedCount > 0
+      emailVerificationService.approveVerificationRequest(eori, verificationId).flatMap { approveSuccessful =>
         if (approveSuccessful) {
           val result = for {
             stored <- emailVerificationService.getEmailVerification(eori).toContext

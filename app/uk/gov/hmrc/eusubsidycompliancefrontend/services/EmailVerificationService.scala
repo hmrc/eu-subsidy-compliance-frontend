@@ -35,7 +35,6 @@ import java.util.UUID
 import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
 
-// TODO - fix relative/abs url handling
 @Singleton
 class EmailVerificationService @Inject() (
    emailVerificationConnector: EmailVerificationConnector,
@@ -45,9 +44,10 @@ class EmailVerificationService @Inject() (
 
   def getEmailVerification(eori: EORI): Future[Option[VerifiedEmail]] = eoriEmailDatastore.getEmailVerification(eori)
 
-  // TODO - this exposes mongo internals - return a boolean instead?
-  def approveVerificationRequest(key: EORI, verificationId: String): Future[UpdateResult] =
-    eoriEmailDatastore.approveVerificationRequest(key, verificationId)
+  def approveVerificationRequest(key: EORI, verificationId: String)(implicit ec: ExecutionContext): Future[Boolean] =
+    eoriEmailDatastore
+      .approveVerificationRequest(key, verificationId)
+      .map(_.getMatchedCount > 0)
 
   // Add an email address that's already approved
   def addVerifiedEmail(eori: EORI, emailAddress: String)(implicit ec: ExecutionContext): Future[Unit] =

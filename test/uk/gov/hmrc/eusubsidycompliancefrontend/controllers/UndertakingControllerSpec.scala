@@ -17,8 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
-import com.mongodb.client.result.UpdateResult
-import org.bson.BsonBoolean
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -581,7 +579,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolmentNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-            mockApproveVerification(eori1, "id")(Right(UpdateResult.acknowledged(1, 1, BsonBoolean.TRUE)))
+            mockApproveVerification(eori1, "id")(Right(true))
             mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
             mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourney))
           }

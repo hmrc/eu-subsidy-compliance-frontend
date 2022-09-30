@@ -162,13 +162,8 @@ class UndertakingController @Inject() (
   }
 
   override def addVerifiedEmailToJourney(email: String)(implicit eori: EORI): Future[Unit] = {
-    println(s"Storing verified email: $email in UndertakingJourney")
     store
       .update[UndertakingJourney](_.setVerifiedEmail(email))
-      .map { j =>
-        println(s"Updated undertaking journey: $j")
-        j
-      }
       .map(_ => ())
   }
 
@@ -177,7 +172,7 @@ class UndertakingController @Inject() (
       previous = routes.UndertakingController.getConfirmEmail(),
       next = routes.UndertakingController.getCheckAnswers(),
       formAction = routes.UndertakingController.postConfirmEmail(),
-      generateEmailVerificationUrl = (id: String) => routes.UndertakingController.getVerifyEmail(id).url
+      generateVerifyEmailUrl = (id: String) => routes.UndertakingController.getVerifyEmail(id).url
     )
   }
 

@@ -17,9 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
-import com.mongodb.client.result.UpdateResult
 import com.typesafe.config.ConfigFactory
-import org.bson.BsonBoolean
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.mvc.Results.Redirect
@@ -482,7 +480,7 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          mockApproveVerification(eori1, verificationId)(Right(UpdateResult.acknowledged(1, 1, BsonBoolean.TRUE)))
+          mockApproveVerification(eori1, verificationId)(Right(true))
           mockGetEmailVerification(Option.empty)
         }
 
@@ -496,8 +494,7 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          // TODO - get this into a fixture - also review API - this is leaking internal implementation
-          mockApproveVerification(eori1, verificationId)(Right(UpdateResult.acknowledged(1, 1, BsonBoolean.TRUE)))
+          mockApproveVerification(eori1, verificationId)(Right(true))
           mockGetEmailVerification()
         }
 
@@ -511,8 +508,7 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEccEnrolmentOnly(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          // TODO - get this into a fixture - also review API - this is leaking internal implementation
-          mockApproveVerification(eori1, verificationId)(Right(UpdateResult.acknowledged(0, 1, BsonBoolean.TRUE)))
+          mockApproveVerification(eori1, verificationId)(Right(false))
         }
 
         val result = performAction(verificationId)
