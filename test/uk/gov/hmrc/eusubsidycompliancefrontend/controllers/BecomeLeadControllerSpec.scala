@@ -78,6 +78,7 @@ class BecomeLeadControllerSpec
     "handling request to get Become Lead Eori" must {
 
       def performAction() = controller.getBecomeLeadEori(FakeRequest())
+
       behave like authBehaviourWithPredicate(() => performAction())
 
       "throw technical error" when {
@@ -191,56 +192,45 @@ class BecomeLeadControllerSpec
 
       }
 
-      // TODO - remove testRedirection function
       "Redirect to next page" when {
 
         "user submits Yes" in {
-
-          def testRedirection(input: String, nextCall: String) = {
-            inSequence {
-              mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-              mockGet[BecomeLeadJourney](eori4)(
-                Right(newBecomeLeadJourney.copy(acceptResponsibilities = AcceptResponsibilitiesFormPage(true.some)).some)
-              )
-              mockGetUndertaking(eori4)(undertaking1.toFuture)
-              mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
-              mockSendEmail(eori4, PromotedSelfToNewLead, undertaking1)(Right(EmailSent))
-              mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
-              mockSendEmail(eori1, RemovedAsLeadToFormerLead, undertaking1)(Right(EmailSent))
-              mockDelete[UndertakingJourney](eori4)(Right(()))
-              mockDelete[BecomeLeadJourney](eori4)(Right(()))
-              mockSendAuditEvent[BusinessEntityPromotedSelf](
-                AuditEvent.BusinessEntityPromotedSelf(undertakingRef, "1123", eori1, eori4)
-              )
-            }
-
-            checkIsRedirect(performAction("becomeAdmin" -> input), nextCall)
+          inSequence {
+            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
+            mockGet[BecomeLeadJourney](eori4)(
+              Right(newBecomeLeadJourney.copy(acceptResponsibilities = AcceptResponsibilitiesFormPage(true.some)).some)
+            )
+            mockGetUndertaking(eori4)(undertaking1.toFuture)
+            mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
+            mockSendEmail(eori4, PromotedSelfToNewLead, undertaking1)(Right(EmailSent))
+            mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
+            mockSendEmail(eori1, RemovedAsLeadToFormerLead, undertaking1)(Right(EmailSent))
+            mockDelete[UndertakingJourney](eori4)(Right(()))
+            mockDelete[BecomeLeadJourney](eori4)(Right(()))
+            mockSendAuditEvent[BusinessEntityPromotedSelf](
+              AuditEvent.BusinessEntityPromotedSelf(undertakingRef, "1123", eori1, eori4)
+            )
           }
 
-          testRedirection("true", routes.BecomeLeadController.getPromotionConfirmation().url)
+          checkIsRedirect(performAction("becomeAdmin" -> "true"), routes.BecomeLeadController.getPromotionConfirmation().url)
         }
 
         "user submits No" in {
-          def testRedirection(input: String, nextCall: String) = {
-            inSequence {
-              mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
-            }
-
-            checkIsRedirect(performAction("becomeAdmin" -> input), nextCall)
+          inSequence {
+            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
           }
 
-          testRedirection("false", routes.AccountController.getAccountPage().url)
+          checkIsRedirect(performAction("becomeAdmin" -> "false"), routes.AccountController.getAccountPage().url)
         }
 
-        }
       }
 
     }
 
-    // TODO - reorder the test, this is the first page in the journey
     "handling request to get Accept Responsibilities" must {
 
       def performAction() = controller.getAcceptResponsibilities(FakeRequest())
+
       behave like authBehaviourWithPredicate(() => performAction())
 
       "throw technical error" when {
@@ -343,6 +333,8 @@ class BecomeLeadControllerSpec
       }
 
     }
+    
+  }
 
   "handling request to get Confirm Email page" must {
 
