@@ -112,23 +112,21 @@ class UndertakingController @Inject() (
 
   def getSector: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[UndertakingJourney].flatMap {
-      ensureUndertakingJourneyPresent(_) { journey =>
-        if (!journey.isEligibleForStep) {
-          Redirect(journey.previous).toFuture
-        } else {
-          val form = journey.sector.value.fold(undertakingSectorForm)(sector =>
-            undertakingSectorForm.fill(FormValues(sector.id.toString))
-          )
-          Ok(
-            undertakingSectorPage(
-              form,
-              journey.previous,
-              journey.about.value.getOrElse("")
-            )
-          ).toFuture
+    withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking()) { journey =>
+      if (journey.isEligibleForStep) {
+        val form = journey.sector.value.fold(undertakingSectorForm) { sector =>
+          undertakingSectorForm.fill(FormValues(sector.id.toString))
         }
+
+        Ok(
+          undertakingSectorPage(
+            form,
+            journey.previous,
+            journey.about.value.getOrElse("")
+          )
+        ).toFuture
       }
+      else Redirect(journey.previous).toFuture
     }
   }
 
@@ -305,18 +303,16 @@ class UndertakingController @Inject() (
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
 
-      store.get[UndertakingJourney].flatMap {
-        ensureUndertakingJourneyPresent(_) { journey =>
-          for {
-            updatedJourney <- if (journey.isAmend) journey.toFuture else updateIsAmendState(value = true)
-          } yield Ok(
-            amendUndertakingPage(
-              updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking sector")),
-              routes.AccountController.getAccountPage().url
-            )
+      withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking()) { journey =>
+        for {
+          updatedJourney <- if (journey.isAmend) journey.toFuture else updateIsAmendState(value = true)
+        } yield Ok(
+          amendUndertakingPage(
+            updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking sector")),
+            routes.AccountController.getAccountPage().url
           )
+        )
 
-        }
       }
     }
   }
@@ -423,10 +419,6 @@ class UndertakingController @Inject() (
       } yield Redirect(routes.UndertakingController.getUndertakingDisabled())
     }
     else Redirect(routes.AccountController.getAccountPage()).toFuture
-
-  // TODO - review usages of this method and replace with withJourneyOrRedirect
-  private def ensureUndertakingJourneyPresent(j: Option[UndertakingJourney])(f: UndertakingJourney => Future[Result]) =
-    j.fold(Redirect(routes.UndertakingController.getAboutUndertaking()).toFuture)(f)
 
   private val aboutUndertakingForm: Form[FormValues] = Form(
     mapping("continue" -> mandatory("continue"))(FormValues.apply)(FormValues.unapply)
