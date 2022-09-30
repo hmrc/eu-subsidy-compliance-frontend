@@ -46,7 +46,10 @@
     label = Label(
       content = Text(messages("confirmEmail.no.label"))
     ),
-    classes = "govuk-input govuk-input--width-20"
+    classes = "govuk-input govuk-input--width-20",
+    autocomplete = Some("email"),
+    spellcheck = Some(false),
+    inputType = "email"
   ))
 }
 
