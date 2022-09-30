@@ -39,7 +39,6 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
-// TODO - this needs a running mongo - move to it:test?
 class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with MockFactory
   with ScalaFutures with DefaultAwaitTimeout with DefaultPlayMongoRepositorySupport[CacheItem] {
 
@@ -58,12 +57,6 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
   )
 
   override def afterAll(): Unit = repository.collection.deleteMany(filter = Filters.exists("_id"))
-
-  private def mockBaseUrlConfig(url: String) =
-    (mockServicesConfig
-      .baseUrl(_: String))
-      .expects(*)
-      .returning(url)
 
   val nextPageUrl = "/next-page-url"
   val previousPage = Call(GET, "/previous-page-url")
