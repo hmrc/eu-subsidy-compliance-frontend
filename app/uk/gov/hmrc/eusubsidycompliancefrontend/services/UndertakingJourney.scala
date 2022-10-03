@@ -59,13 +59,8 @@ case class UndertakingJourney(
 
   override def next(implicit request: Request[_]): Future[Result] =
     if (isAmend) Redirect(routes.UndertakingController.getAmendUndertakingDetails()).toFuture
-    else if (requiredDetailsProvided) {
-      println(s"all data provided - redirecting to check your answers")
-      Redirect(routes.UndertakingController.getCheckAnswers()).toFuture
-    } else {
-      println(s"Not on amend journey and not all data has been provided - delegating to super.next")
-      super.next
-    }
+    else if (requiredDetailsProvided) Redirect(routes.UndertakingController.getCheckAnswers()).toFuture
+    else super.next
 
   def isEmpty: Boolean = steps.flatMap(_.value).isEmpty
 
@@ -77,12 +72,7 @@ case class UndertakingJourney(
 
   def setUndertakingCYA(b: Boolean): UndertakingJourney = this.copy(cya = cya.copy(value = Some(b)))
 
-  def setVerifiedEmail(e: String): UndertakingJourney = {
-    println(s"setVerifiedEmail: setting email $e on UndertakingJourney")
-    val result = this.copy(verifiedEmail = verifiedEmail.copy(value = Some(e)))
-    println(s"setVerifiedEmail: returning updated journey: $result")
-    result
-  }
+  def setVerifiedEmail(e: String): UndertakingJourney = this.copy(verifiedEmail = verifiedEmail.copy(value = Some(e)))
 
   def setAddBusiness(b: Boolean): UndertakingJourney = this.copy(addBusiness = addBusiness.copy(value = b.some))
 

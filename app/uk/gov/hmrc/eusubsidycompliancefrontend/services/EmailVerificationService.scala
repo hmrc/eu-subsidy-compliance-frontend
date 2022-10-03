@@ -66,7 +66,6 @@ class EmailVerificationService @Inject() (
     hc: HeaderCarrier
   ): Future[Result] = for {
     verificationId <- addVerificationRequest(request.eoriNumber, email)
-    _ = println(s"Added verification request for email: $email")
     verificationResponse <- verifyEmail(nextPageUrl(verificationId), previousPage.url)(request.authorityId, email)
   } yield verificationResponse.fold(Redirect(previousPage))(value => Redirect(value.redirectUri))
 
