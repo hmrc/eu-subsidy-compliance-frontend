@@ -243,7 +243,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getAddBusiness(): Action[AnyContent] = enrolled.async { implicit request =>
+  def getAddBusiness: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       ensureUndertakingJourneyPresent(_) { journey =>
@@ -270,14 +270,7 @@ class UndertakingController @Inject() (
       addBusinessForm
         .bindFromRequest()
         .fold(
-          errors => {
-            val result = for {
-              _ <- journey.addBusiness.value.toContext
-            } yield BadRequest(undertakingAddBusinessPage(errors, journey.previous))
-            result
-              .fold(handleMissingSessionData("Undertaking Journey"))(identity)
-              .toContext
-          },
+          errors => BadRequest(undertakingAddBusinessPage(errors, journey.previous)).toContext,
           form =>
             store.update[UndertakingJourney](_.setAddBusiness(form.value.isTrue))
               .flatMap(_.next)

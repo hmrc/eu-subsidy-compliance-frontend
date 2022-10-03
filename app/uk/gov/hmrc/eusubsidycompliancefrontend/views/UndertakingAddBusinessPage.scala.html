@@ -52,13 +52,13 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("placeholder-for-add-business"))
+        content = Text(messages("addBusinessIntent.error.required"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
           content = Text(messages("addBusinessIntent.title")),
           classes = "govuk-fieldset__legend--xl",
-          isPageHeading = true
+          isPageHeading = false
         ))
       )),
       hint = Some(Hint(
