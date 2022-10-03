@@ -12,7 +12,7 @@ common.continue=Save and continue
 common.accept-continue=Accept and continue
 common.continue.only=Continue
 common.accept=Accept and send
-common.go-account-home = Go to account home
+common.go-account-home = Go to homepage
 common.cya.change = Change
 
 continue.button=Save and continue
@@ -270,7 +270,6 @@ non-lead-account-homepage.h2-4 = Undertaking administration
 non-lead-account-homepage.ul2-li1 = Become the undertaking administrator
 non-lead-account-homepage.ul2-li2 = Leave the undertaking
 
-
 non-lead-account-homepage.link2 = View financial dashboard for {0}
 non-lead-account-homepage.link3 = Remove yourself from this single undertaking
 
@@ -375,7 +374,7 @@ subsidy.created.title = Payment reported
 subsidy.created.sub-heading = What happens next
 subsidy.created.p1 = Your next report must be made by {0}
 subsidy.created.l1 = Report another payment
-subsidy.created.l2 = Go to home page
+subsidy.created.l2 = Go to homepage
 
 subsidy.remove.title = Remove a de minimis aid payment
 subsidy.remove.p1 = If you remove this payment then your Customs Duty waiver balance will change.
@@ -404,14 +403,22 @@ removeYourselfBusinessEntity.title = Do you want to remove yourself from this si
 removeYourselfBusinessEntity.hint = Select yes to remove yourself from the single undertaking. All receipts will remain with the undertaking administrator until you join another undertaking, or create a new undertaking.
 removeYourselfBusinessEntity.error.required = Select yes if you wish to remove yourself from this single undertaking.
 
-noClaimNotification.title = Notify HMRC that your undertaking has not received de minimis aid payments (less Customs Duty waivers) in the past 90 days
-noClaimNotification.value = I declare that this single undertaking has not received de minimis aid payments (less Customs Duty waivers) for this period
+noClaimNotification.never-submitted.title = Tell us your undertaking has not received any non-customs subsidy payments since {0}
+noClaimNotification.never-submitted.p1 = If you have not received any payments in this tax year or the two tax years before, you must report this at least once every 90 days.
+noClaimNotification.never-submitted.label = This undertaking has not received any non-customs subsidy payments since {0}.
+
+noClaimNotification.has-submitted.title = Tell us your undertaking doesn’t have any payments to report
+noClaimNotification.has-submitted.p1 = You last reported a non-customs subsidy payment on {0}.
+noClaimNotification.has-submitted.p2 = If you don’t have any payments to report since then, you must tell us every 90 days.
+noClaimNotification.has-submitted.label = This undertaking doesn’t currently have any non-customs subsidy payments to report
+
 noClaimNotification.error.required = Select if you want to declare you have not received de minimis aid in the past 90 days
 
 #noClaimConfirmation
-noClaimConfirmation.title = You have notified HMRC that you have received no de minimis aid payments for this 90-day period
-noClaimConfirmation.ref.p1 = You can still report any de minimis aid payments for this period by entering them in the Reporting payments section below. Your next entry date is due by {0}
-
+noClaimConfirmation.title = Report sent
+noClaimConfirmation.h2 = What happens next
+noClaimConfirmation.p1 = Your next report must be made by {0}
+noClaimConfirmation.l1 = Go to homepage
 
 #Select New lead
 selectNewLead.title = Please choose the new administrator for your undertaking

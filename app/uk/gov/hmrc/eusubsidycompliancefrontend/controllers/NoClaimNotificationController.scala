@@ -16,17 +16,21 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyNilReturn
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyUpdate}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyRetrieve, SubsidyUpdate}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EscService, NilReturnJourney, Store}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 import javax.inject.{Inject, Singleton}
@@ -40,7 +44,8 @@ class NoClaimNotificationController @Inject() (
                                                 override val escService: EscService,
                                                 auditService: AuditService,
                                                 timeProvider: TimeProvider,
-                                                noClaimNotificationPage: NoClaimNotificationPage
+                                                noClaimNotificationPage: NoClaimNotificationPage,
+                                                noClaimConfirmationPage: NoClaimConfirmationPage,
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {
@@ -48,37 +53,88 @@ class NoClaimNotificationController @Inject() (
 
   def getNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
-      val previous = routes.AccountController.getAccountPage().url
-      Ok(noClaimNotificationPage(noClaimForm, previous)).toFuture
+      retrieveSubsidies(undertaking.reference).toContext
+        .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
+          val previous = routes.AccountController.getAccountPage().url
+          val today = timeProvider.today
+          val startDate = today.toEarliestTaxYearStart
+
+          val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
+
+          Ok(
+            noClaimNotificationPage(
+              noClaimForm,
+              previous,
+              undertakingSubsidies.hasNeverSubmitted, 
+              startDate.toDisplayFormat,
+              lastSubmitted.map(_.toDisplayFormat).getOrElse(""), // TODO - can we display something sensible if the value is missing?
+            )
+          ).toFuture
+        }
     }
+  }
+
+  private def retrieveSubsidies(r: UndertakingRef)(implicit request: AuthenticatedEnrolledRequest[AnyContent]) = {
+    implicit val eori: EORI = request.eoriNumber
+
+    val searchRange = timeProvider.today.toSearchRange.some
+
+    escService
+      .retrieveSubsidy(SubsidyRetrieve(r, searchRange))
+      .map(Option(_))
+      .fallbackTo(Option.empty.toFuture)
   }
 
   def postNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
-      implicit val eori: EORI = request.eoriNumber
-      val previous = routes.AccountController.getAccountPage().url
+      retrieveSubsidies(undertaking.reference).toContext
+        .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
+          implicit val eori = request.eoriNumber
 
-      def handleValidNoClaim(): Future[Result] = {
-        val nilSubmissionDate = timeProvider.today.plusDays(1)
-        val result = for {
-          reference <- undertaking.reference.toContext
-          _ <- store.update[NilReturnJourney](e => e.copy(displayNotification = true)).toContext
-          _ <- escService.createSubsidy(SubsidyUpdate(reference, NilSubmissionDate(nilSubmissionDate))).toContext
-          _ = auditService
-            .sendEvent(
-              NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate)
+          val previous = routes.AccountController.getAccountPage().url
+          val today = timeProvider.today
+          val startDate = today.toEarliestTaxYearStart
+
+          val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
+
+          def handleValidNoClaim(form: FormValues): Future[Result] = {
+            val nilSubmissionDate = timeProvider.today.plusDays(1)
+            val result = for {
+              reference <- undertaking.reference.toContext
+              _ <- store.update[NilReturnJourney](e => e.copy(displayNotification = true)).toContext
+              _ <- escService.createSubsidy(SubsidyUpdate(reference, NilSubmissionDate(nilSubmissionDate))).toContext
+              _ = auditService
+                .sendEvent(
+                  NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate)
+                )
+            } yield Redirect(routes.NoClaimNotificationController.getNotificationConfirmation())
+
+            result.getOrElse(handleMissingSessionData("Undertaking ref"))
+          }
+
+          noClaimForm
+            .bindFromRequest()
+            .fold(
+              errors => BadRequest(
+                noClaimNotificationPage(
+                  errors,
+                  previous,
+                  undertakingSubsidies.hasNeverSubmitted,
+                  startDate.toDisplayFormat,
+                  lastSubmitted.map(_.toDisplayFormat).getOrElse("") // TODO - can we display something sensible if the date is missing?
+                )
+              ).toFuture,
+              handleValidNoClaim
             )
-        } yield Redirect(routes.AccountController.getAccountPage())
-
-        result.getOrElse(handleMissingSessionData("Undertaking ref"))
       }
+    }
+  }
 
-      noClaimForm
-        .bindFromRequest()
-        .fold(
-          errors => BadRequest(noClaimNotificationPage(errors, previous)).toFuture,
-          _ => handleValidNoClaim()
-        )
+  // We need to show a confirmation along with the next submission date
+  def getNotificationConfirmation: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
+      val nextClaimDueDate = ReportReminderHelpers.dueDateToReport(timeProvider.today)
+      Ok(noClaimConfirmationPage(nextClaimDueDate)).toFuture
     }
   }
 

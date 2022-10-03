@@ -113,6 +113,8 @@ GET        /lead-promotion-confirmation-cleanup                                 
 GET        /lead-undertaking-non-customs-subsidy-nil-return                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimNotification
 POST       /lead-undertaking-non-customs-subsidy-nil-return                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.postNoClaimNotification
 
+GET        /lead-undertaking-non-customs-subsidy-nil-return-confirmation                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNotificationConfirmation
+
 GET        /sign-out                                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.signOut()
 
 GET        /timed-out                                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SignOutController.signOutFromTimeout()
