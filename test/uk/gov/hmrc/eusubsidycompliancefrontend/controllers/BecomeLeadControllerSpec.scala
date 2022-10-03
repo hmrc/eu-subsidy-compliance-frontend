@@ -388,7 +388,6 @@ class BecomeLeadControllerSpec
 
   }
 
-  // TODO - check error handling here - looks like we have a missing message key
   "handling request to post Confirm Email page" must {
 
     val verificationUrl = routes.BecomeLeadController.getVerifyEmail("SomeId").url
