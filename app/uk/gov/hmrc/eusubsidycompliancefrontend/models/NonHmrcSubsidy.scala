@@ -34,4 +34,9 @@ case class NonHmrcSubsidy(
 
 object NonHmrcSubsidy {
   implicit val format: OFormat[NonHmrcSubsidy] = Json.format[NonHmrcSubsidy]
+
+  object SortOrder {
+    implicit val bySubmissionDate: Ordering[NonHmrcSubsidy] = Ordering.by(_.submissionDate.toEpochDay)
+    implicit val byAllocationDate: Ordering[NonHmrcSubsidy] = Ordering.by(_.allocationDate.toEpochDay)
+  }
 }
