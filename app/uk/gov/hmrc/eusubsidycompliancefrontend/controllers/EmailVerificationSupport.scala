@@ -127,15 +127,17 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
         .fold(
           errors => BadRequest(confirmEmailPage(errors, formAction, EmailAddress(email), previous.url)).toFuture,
           form => {
-            if (form.usingStoredEmail.isTrue) {
+            if (form.usingStoredEmail.isTrue)
               for {
                 _ <- emailVerificationService.addVerifiedEmail(eori, email)
                 _ <- addVerifiedEmailToJourney(email)
               } yield Redirect(next)
-            }
             else {
-              // TODO - review this, we should never hit the empty condition here
-              emailVerificationService.makeVerificationRequestAndRedirect(form.value.getOrElse(""), previous, verifyEmailUrl)
+              // Redirect back to the previous page if no email address appears to be entered. This should never happen
+              // with a legitimate form submission.
+              form.value.fold(Redirect(previous).toFuture) { email =>
+                emailVerificationService.makeVerificationRequestAndRedirect(email, previous, verifyEmailUrl)
+              }
             }
           }
         )
