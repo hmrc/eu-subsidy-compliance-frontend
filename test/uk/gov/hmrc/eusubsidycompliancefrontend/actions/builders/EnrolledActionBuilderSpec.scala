@@ -79,7 +79,7 @@ class EnrolledActionBuilderSpec
 
     "redirect to the first page of the first login journey" when {
       "handling a request that is authenticated but not enrolled" in {
-        mockAuthWithNoEnrolmentNoCheck()
+        mockAuthWithoutEnrolment()
 
         val request = FakeRequest()
         val result = underTest.invokeBlock(request, block)
@@ -91,7 +91,7 @@ class EnrolledActionBuilderSpec
 
     "throw an illegal state exception" when {
       "handling a request that has an enrolment but no eori" in {
-        mockAuthWithEccEnrolmentWithoutEori()
+        mockAuthWithEnrolmentWithoutEori()
 
         val request = FakeRequest()
         val result = underTest.invokeBlock(request, block)
@@ -102,7 +102,7 @@ class EnrolledActionBuilderSpec
 
     "invoke the supplied block" when {
       "handling a request that is authenticated and enrolled" in {
-        mockAuthWithNecessaryEnrolment(eori1)
+        mockAuthWithEnrolment(eori1)
 
         val request = FakeRequest()
         val result = underTest.invokeBlock(request, block)

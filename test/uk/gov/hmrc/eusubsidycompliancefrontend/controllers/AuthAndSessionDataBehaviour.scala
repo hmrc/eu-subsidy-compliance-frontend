@@ -19,8 +19,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.mvc.Result
-import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 
@@ -29,21 +29,21 @@ import scala.concurrent.Future
 
 trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with JourneyStoreSupport =>
 
-  val appName = "eu-subsidy-test"
+  private val appName = "eu-subsidy-test"
+  private val eccEnrolmentKey = "HMRC-ESC-ORG"
+  private val ggSignInUrl = "http://ggSignInUrl:123"
+  private val ggSignOutUrl = "http://ggSignOutUrl:123"
+  private val providerId = "1123"
+  private val groupId = Some("groupIdentifier")
 
-  val eccEnrolmentKey = "HMRC-ESC-ORG"
-  val eccPredicate = Enrolment(eccEnrolmentKey)
+  private lazy val expectedSignInUrl: String =
+    s"$ggSignInUrl?" + s"continue=${URLEncoder.encode("/", "UTF-8")}&origin=$appName"
 
-  val ggSignInUrl = "http://ggSignInUrl:123"
-  val ggSignOutUrl = "http://ggSignOutUrl:123"
+  private def identifiers(eori: EORI) = Seq(EnrolmentIdentifier("EORINumber", eori))
+  private def eccEnrolments(eori: EORI) = Enrolment(key = eccEnrolmentKey, identifiers = identifiers(eori), state = "")
+  private def enrolmentSets(eori: EORI) = Set(eccEnrolments(eori))
 
-  def identifiers(eori: EORI) = Seq(EnrolmentIdentifier("EORINumber", eori))
-
-  def eccEnrolments(eori: EORI) = Enrolment(key = eccEnrolmentKey, identifiers = identifiers(eori), state = "")
-
-  def enrolmentSets(eori: EORI) = Set(eccEnrolments(eori))
-
-  override def additionalConfig = Configuration(
+  override def additionalConfig: Configuration = Configuration(
     ConfigFactory.parseString(
       s"""
          | appName = "$appName"
@@ -53,43 +53,23 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
     )
   )
 
-  lazy val expectedSignInUrl = {
-    s"$ggSignInUrl?" + s"continue=${URLEncoder.encode("/", "UTF-8")}&" +
-      s"origin=$appName"
-  }
+  def mockAuthWithoutEnrolment(): Unit =
+    mockAuthWithEccRetrievals(Enrolments(Set.empty), providerId, groupId)
 
-  def mockAuthWithNoEnrolment() =
-    mockAuthNoEnrolmentsRetrievals("1123", Some("groupIdentifier"))
+  def mockAuthWithEnrolment(eori: EORI = eori1): Unit =
+    mockAuthWithEccRetrievals(Enrolments(Set(eccEnrolments(eori))), providerId, groupId)
 
-  def mockAuthWithNoEnrolmentNoCheck() =
-    mockAuthWithAuthRetrievalsNoPredicate(Enrolments(Set.empty), "1123", Some("groupIdentifier"))
-
-  def mockAuthWithEccEnrolmentOnly(eori: EORI) = {
-    mockAuthWithAuthRetrievalsNoPredicate(Enrolments(Set(eccEnrolments(eori))), "1123", Some("groupIdentifier"))
-  }
-
-  def mockAuthWithEccEnrolmentWithoutEori() = mockAuthWithAuthRetrievalsNoPredicate(
-    Enrolments(Set(Enrolment(eccEnrolmentKey, Seq.empty, state = ""))), "1123", Some("groupIdentifier")
+  def mockAuthWithEnrolmentWithoutEori(): Unit = mockAuthWithEccRetrievals(
+    Enrolments(Set(Enrolment(eccEnrolmentKey, Seq.empty, state = ""))), providerId, groupId
   )
 
-  def mockNoPredicateAuthWithNecessaryEnrolment(eori: EORI = eori1): Unit =
-    mockAuthWithAuthRetrievalsNoPredicate(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
+  def mockAuthWithEnrolmentAndValidEmail(eori: EORI = eori1): Unit =
+    mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), providerId, groupId)
 
-  // TODO - review naming here
-  def mockAuthWithNecessaryEnrolmentWithValidEmail(eori: EORI = eori1): Unit =
-    mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
+  def mockAuthWithEnrolmentAndNoEmailVerification(eori: EORI = eori1): Unit =
+    mockAuthWithEccAuthRetrievalsNoEmailVerification(Enrolments(enrolmentSets(eori)), providerId, groupId)
 
-  // TODO - do we need these necessary enrolment methods?
-  def mockAuthWithNecessaryEnrolment(eori: EORI = eori1): Unit =
-    mockAuthWithEccAuthRetrievals(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
-
-  def mockAuthWithNecessaryEnrolmentNoEmailVerification(eori: EORI = eori1): Unit =
-    mockAuthWithEccAuthRetrievalsNoEmailVerification(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
-
-  def mockAuthWithEORIEnrolment(eori: EORI): Unit =
-    mockAuthWithAuthRetrievalsNoPredicate(Enrolments(enrolmentSets(eori)), "1123", Some("groupIdentifier"))
-
-  def authBehaviourWithPredicate(performAction: () => Future[Result]): Unit =
+  def authBehaviour(performAction: () => Future[Result]): Unit =
     "redirect to the login page when the user is not logged in" in {
       List[NoActiveSession](
         BearerTokenExpired(),
@@ -99,11 +79,9 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
       ).foreach { e =>
         withClue(s"For AuthorisationException $e: ") {
           mockAuth(EmptyPredicate, authRetrievals)(Future.failed(e))
-
           checkIsRedirect(performAction(), expectedSignInUrl)
         }
       }
-
     }
 
 }

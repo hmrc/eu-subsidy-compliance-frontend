@@ -86,7 +86,7 @@ class UndertakingControllerSpec
 
         "call to Get Or Create undertaking journey fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGetOrCreate[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -97,7 +97,7 @@ class UndertakingControllerSpec
 
         "undertaking journey is present and  is not None and is complete" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete))
           }
           checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity().url)
@@ -107,7 +107,7 @@ class UndertakingControllerSpec
 
           def testRedirect(undertakingJourney: UndertakingJourney, redirectTo: String): Unit = {
             inSequence {
-              mockAuthWithNecessaryEnrolmentNoEmailVerification()
+              mockAuthWithEnrolmentAndNoEmailVerification()
               mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourney))
             }
             checkIsRedirect(performAction(), redirectTo)
@@ -198,7 +198,7 @@ class UndertakingControllerSpec
         def testDisplay(undertakingJourney: UndertakingJourney, backUrl: String): Unit = {
 
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourney))
           }
           checkPageIsDisplayed(
@@ -214,7 +214,7 @@ class UndertakingControllerSpec
 
         "no undertaking journey is there in store" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
           }
           checkPageIsDisplayed(
@@ -270,7 +270,7 @@ class UndertakingControllerSpec
 
         "call to  get undertaking journey fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("undertakingName" -> "TestUndertaking123")))
@@ -278,7 +278,7 @@ class UndertakingControllerSpec
 
         "call to  get undertaking journey passes but com back with empty response" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(None))
           }
           assertThrows[Exception](await(performAction("undertakingName" -> "TestUndertaking123")))
@@ -288,7 +288,7 @@ class UndertakingControllerSpec
           def update(u: UndertakingJourney) = u.copy(about = AboutUndertakingFormPage("TestUndertaking123".some))
 
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Left(ConnectorError(exception))
@@ -299,7 +299,7 @@ class UndertakingControllerSpec
 
         "submitted form does not contain expected data" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
           }
 
@@ -312,7 +312,7 @@ class UndertakingControllerSpec
         def test(undertakingJourney: UndertakingJourney, nextCall: String): Unit = {
           val updatedUndertaking = undertakingJourney.copy(about = AboutUndertakingFormPage("TestUndertaking123".some))
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
             mockUpdate[UndertakingJourney](identity, eori1)(
               Right(updatedUndertaking)
@@ -347,7 +347,7 @@ class UndertakingControllerSpec
         val exception = new Exception("oh no")
         "call to fetch undertaking journey fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -371,7 +371,7 @@ class UndertakingControllerSpec
         def test(undertakingJourney: UndertakingJourney, previousCall: String, inputValue: Option[String]): Unit = {
 
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
           }
           checkPageIsDisplayed(
@@ -429,7 +429,7 @@ class UndertakingControllerSpec
 
         "call to fetch undertaking journey passes  but return no undertaking journey" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(None))
           }
           checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking().url)
@@ -463,7 +463,7 @@ class UndertakingControllerSpec
 
         "call to get previous url fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("undertakingSector" -> "2")))
@@ -471,7 +471,7 @@ class UndertakingControllerSpec
 
         "call to fetch undertaking journey fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -479,7 +479,7 @@ class UndertakingControllerSpec
 
         "call to fetch undertaking journey passes  buy fetches nothing" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(None))
           }
           assertThrows[Exception](await(performAction()))
@@ -488,7 +488,7 @@ class UndertakingControllerSpec
         "call to update undertaking journey fails" in {
           val currentUndertaking = UndertakingJourney(about = AboutUndertakingFormPage("TestUndertaking".some))
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(currentUndertaking.some))
             mockUpdate[UndertakingJourney](_ => update(currentUndertaking), eori1)(Left(ConnectorError(exception)))
           }
@@ -501,7 +501,7 @@ class UndertakingControllerSpec
 
         "nothing is submitted" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(
               Right(undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage()).some)
             )
@@ -526,7 +526,7 @@ class UndertakingControllerSpec
 
           val updatedUndertaking = undertakingJourney.copy(sector = newSector)
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
             mockUpdate[UndertakingJourney](_ => update(undertakingJourney), eori1)(Right(updatedUndertaking))
           }
@@ -559,7 +559,7 @@ class UndertakingControllerSpec
         val exception = new Exception("oh no")
         "call to fetch undertaking journey fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("abcdefh")))
@@ -577,7 +577,7 @@ class UndertakingControllerSpec
           )
 
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
             mockApproveVerification(eori1, "id")(Right(true))
             mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
@@ -599,7 +599,7 @@ class UndertakingControllerSpec
         val exception = new Exception("oh no")
         "call to fetch undertaking journey fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -617,7 +617,7 @@ class UndertakingControllerSpec
             val previousCall = routes.UndertakingController.getSector().url
 
             inSequence {
-              mockAuthWithNecessaryEnrolmentNoEmailVerification()
+              mockAuthWithEnrolmentAndNoEmailVerification()
               mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
               mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
             }
@@ -643,7 +643,7 @@ class UndertakingControllerSpec
           val previousCall = routes.UndertakingController.getSector().url
 
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
             mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
           }
@@ -666,7 +666,7 @@ class UndertakingControllerSpec
 
         "call to fetch undertaking journey returns no undertaking journey" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(None))
           }
           checkIsRedirect(performAction(), routes.UndertakingController.getSector().url)
@@ -688,7 +688,7 @@ class UndertakingControllerSpec
         "email submitted is empty" in {
 
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
           }
           assertThrows[Exception](await(performAction(
             "using-stored-email" -> "false"
@@ -698,7 +698,7 @@ class UndertakingControllerSpec
         "email submitted is invalid" in {
 
           inSequence {
-            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockAuthWithEnrolmentAndNoEmailVerification()
           }
           assertThrows[Exception](await(performAction(
             "using-stored-email" -> "false",
@@ -712,7 +712,7 @@ class UndertakingControllerSpec
 
        "all api calls are successful" in {
          inSequence {
-           mockAuthWithNecessaryEnrolmentWithValidEmail()
+           mockAuthWithEnrolmentAndValidEmail()
            mockAddVerifiedEmail(eori1, "foo@example.com")()
            mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourneyComplete))
          }
@@ -724,7 +724,7 @@ class UndertakingControllerSpec
 
       "No verification found or cds with valid form should redirect" in {
         inSequence {
-          mockAuthWithNecessaryEnrolmentWithValidEmail()
+          mockAuthWithEnrolmentAndValidEmail()
           mockMakeVerificationRequestAndRedirect(Redirect("email-verification-redirect").toFuture)
         }
         redirectLocation(performAction("using-stored-email" -> "false", "email" -> "something@aol.com")) shouldBe "email-verification-redirect".some
@@ -732,7 +732,7 @@ class UndertakingControllerSpec
 
        "No verification found or cds with invalid form should be bad request" in {
          inSequence {
-           mockAuthWithNecessaryEnrolmentWithValidEmail()
+           mockAuthWithEnrolmentAndValidEmail()
          }
          status(performAction("using-stored-email" -> "false", "email" -> "somethingl.com")) shouldBe BAD_REQUEST
        }
@@ -949,7 +949,7 @@ class UndertakingControllerSpec
           ),
         )
         inSequence {
-          mockAuthWithNecessaryEnrolmentWithValidEmail()
+          mockAuthWithEnrolmentAndValidEmail()
           mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
         }
 
@@ -977,7 +977,7 @@ class UndertakingControllerSpec
 
         "call to get undertaking journey fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -988,7 +988,7 @@ class UndertakingControllerSpec
       "redirect" when {
         "call to get undertaking journey fetches the journey without verified email" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockGet[UndertakingJourney](eori1)(
               Right(undertakingJourneyComplete.copy(verifiedEmail = UndertakingConfirmEmailFormPage()).some)
             )
@@ -998,7 +998,7 @@ class UndertakingControllerSpec
 
         "to journey start when call to get undertaking journey fetches nothing" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockGet[UndertakingJourney](eori1)(Right(None))
           }
           checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking().url)
@@ -1022,7 +1022,7 @@ class UndertakingControllerSpec
         "cya form is empty, nothing is submitted" in {
 
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -1030,7 +1030,7 @@ class UndertakingControllerSpec
         "call to update undertaking journey fails" in {
 
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockUpdate[UndertakingJourney](identity, eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")))
@@ -1039,7 +1039,7 @@ class UndertakingControllerSpec
         "updated undertaking journey don't have undertaking name" in {
 
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockUpdate[UndertakingJourney](identity, eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")))
@@ -1048,7 +1048,7 @@ class UndertakingControllerSpec
         "updated undertaking journey don't have undertaking sector" in {
 
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockUpdate[UndertakingJourney](identity, eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")))
@@ -1059,7 +1059,7 @@ class UndertakingControllerSpec
           val updatedUndertakingJourney = undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage(false.some))
 
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Left(ConnectorError(exception)))
           }
@@ -1073,7 +1073,7 @@ class UndertakingControllerSpec
             undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage(false.some))
 
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
             mockSendEmail(eori1, CreateUndertaking, undertakingCreated.toUndertakingWithRef(undertakingRef))(
@@ -1092,7 +1092,7 @@ class UndertakingControllerSpec
           val updatedUndertakingJourney = undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage(false.some))
 
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockUpdate[UndertakingJourney](identity, eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
             mockSendEmail(eori1, CreateUndertaking, undertakingCreated.toUndertakingWithRef(undertakingRef))(
@@ -1123,8 +1123,7 @@ class UndertakingControllerSpec
 
       "display the page" in {
         inSequence {
-          mockAuthWithNecessaryEnrolmentWithValidEmail()
-          mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+          mockAuthWithEnrolmentAndValidEmail()
         }
 
         checkPageIsDisplayed(
@@ -1172,14 +1171,14 @@ class UndertakingControllerSpec
 
         "confirmation form is empty" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
           }
           assertThrows[Exception](await(performAction()))
         }
 
         "call to update undertaking confirmation fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockUpdate[UndertakingJourney](_ => update(undertakingJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("confirm" -> "true")))
@@ -1188,7 +1187,7 @@ class UndertakingControllerSpec
 
       "redirect to next page" in {
         inSequence {
-          mockAuthWithNecessaryEnrolmentWithValidEmail()
+          mockAuthWithEnrolmentAndValidEmail()
           mockUpdate[UndertakingJourney](_ => update(undertakingJourney), eori1)(Right(undertakingJourneyComplete))
         }
 
@@ -1216,7 +1215,7 @@ class UndertakingControllerSpec
         val exception = new Exception("oh no")
         "call to get undertaking journey fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
@@ -1226,7 +1225,7 @@ class UndertakingControllerSpec
         "call to update the undertaking journey fails" in {
 
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
@@ -1241,7 +1240,7 @@ class UndertakingControllerSpec
 
         "is Amend is true" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.copy(isAmend = true).some))
           }
@@ -1266,7 +1265,7 @@ class UndertakingControllerSpec
 
         "is Amend flag is false" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
@@ -1298,7 +1297,7 @@ class UndertakingControllerSpec
 
         "call to get undertaking journey fetches nothing" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[UndertakingJourney](eori1)(Right(None))
           }
@@ -1324,7 +1323,7 @@ class UndertakingControllerSpec
 
         "call to update undertaking journey fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Left(ConnectorError(exception))
@@ -1336,7 +1335,7 @@ class UndertakingControllerSpec
 
         "call to update undertaking journey passes but return undertaking with no name" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(about = AboutUndertakingFormPage()))
@@ -1348,7 +1347,7 @@ class UndertakingControllerSpec
 
         "call to update undertaking journey passes but return undertaking with no secctor" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(about = AboutUndertakingFormPage()))
@@ -1360,7 +1359,7 @@ class UndertakingControllerSpec
 
         "call to retrieve undertaking fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(about = AboutUndertakingFormPage("true".some)))
@@ -1372,7 +1371,7 @@ class UndertakingControllerSpec
 
         "call to retrieve undertaking passes but no undertaking was fetched" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(about = AboutUndertakingFormPage("true".some)))
@@ -1386,7 +1385,7 @@ class UndertakingControllerSpec
           val updatedUndertaking =
             undertaking1.copy(name = UndertakingName("TestUndertaking"), industrySector = Sector(1))
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(isAmend = true))
@@ -1403,7 +1402,7 @@ class UndertakingControllerSpec
         val updatedUndertaking =
           undertaking1.copy(name = UndertakingName("TestUndertaking"), industrySector = Sector(1))
         inSequence {
-          mockAuthWithNecessaryEnrolmentWithValidEmail()
+          mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
             Right(undertakingJourneyComplete.copy(isAmend = true))
@@ -1424,7 +1423,7 @@ class UndertakingControllerSpec
 
       "display the page" in {
         inSequence {
-          mockAuthWithNecessaryEnrolmentWithValidEmail()
+          mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
         }
         checkPageIsDisplayed(
@@ -1441,7 +1440,7 @@ class UndertakingControllerSpec
 
       "display the page" in {
         inSequence {
-          mockAuthWithNecessaryEnrolmentWithValidEmail()
+          mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
         }
         checkPageIsDisplayed(
@@ -1473,7 +1472,7 @@ class UndertakingControllerSpec
       "throw technical error" when {
         "call to remove disable fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             mockDisableUndertaking(undertaking1)(Left(ConnectorError(exception)))
           }
@@ -1485,7 +1484,7 @@ class UndertakingControllerSpec
 
         "Nothing is submitted" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           }
           checkFormErrorIsDisplayed(
@@ -1501,7 +1500,7 @@ class UndertakingControllerSpec
 
         "user select Yes" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             mockDisableUndertaking(undertaking1)(Right(undertakingRef))
             mockDelete[EligibilityJourney](eori1)(Right(()))
@@ -1532,7 +1531,7 @@ class UndertakingControllerSpec
 
         "user selected No" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           }
           checkIsRedirect(
@@ -1549,7 +1548,7 @@ class UndertakingControllerSpec
 
       "display the page" in {
         inSequence {
-          mockAuthWithNecessaryEnrolmentWithValidEmail()
+          mockAuthWithEnrolmentAndValidEmail()
         }
         checkPageIsDisplayed(
           performAction(),

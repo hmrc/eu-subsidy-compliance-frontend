@@ -21,7 +21,8 @@ import org.scalamock.handlers.CallHandler1
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.{EmptyPredicate, Predicate}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, EmptyRetrieval, Retrieval, ~}
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval, ~}
+import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailVerificationService
@@ -32,11 +33,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait AuthSupport { this: ControllerSpec =>
 
-  import AuthSupport._
-
   protected val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
   protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
+
+  protected val authRetrievals: Retrieval[Option[Credentials] ~ Option[String] ~ Enrolments] =
+    Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
 
   def mockAuth[R](predicate: Predicate, retrieval: Retrieval[R])(
     result: Future[R]
@@ -49,51 +51,25 @@ trait AuthSupport { this: ControllerSpec =>
       .expects(predicate, retrieval, *, *)
       .returning(result)
 
-  def mockAuthWithNoRetrievals(): Unit =
-    mockAuth(EmptyPredicate, EmptyRetrieval)(().toFuture)
-
-  def mockAuthWithAuthRetrievalsNoPredicate(
-    enrolments: Enrolments,
-    providerId: String,
-    groupIdentifier: Option[String]
-  ) = {
+  def mockAuthWithEccRetrievals(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]): Unit = {
     mockAuth(EmptyPredicate, authRetrievals)(
       (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
   }
 
-
-  def mockAuthNoEnrolmentsRetrievals(
-    providerId: String,
-    groupIdentifier: Option[String]
-  ) =
-    mockAuth(EmptyPredicate, authRetrievalsNoEnrolment)(
-      (new ~(Credentials(providerId, "type").some, groupIdentifier)).toFuture
-    )
-
-  def mockAuthWithEccAuthRetrievalsWithEmailCheck(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) = {
+  def mockAuthWithEccAuthRetrievalsWithEmailCheck(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]): CallHandler1[EORI, Future[Option[VerifiedEmail]]] = {
     mockAuth(EmptyPredicate, authRetrievals)(
       (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
     mockGetEmailVerification()
   }
 
-  def mockAuthWithEccAuthRetrievals(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) = {
-    mockAuth(EmptyPredicate, authRetrievals)(
-      (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
-    )
-  }
 
-  def mockAuthWithEccAuthRetrievalsNoEmailVerification(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]) =
+  def mockAuthWithEccAuthRetrievalsNoEmailVerification(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]): Unit =
     mockAuth(EmptyPredicate, authRetrievals)(
       (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
 
-  val authRetrievals: Retrieval[Option[Credentials] ~ Option[String] ~ Enrolments] =
-    Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
-
-  val authRetrievalsNoEnrolment: Retrieval[Option[Credentials] ~ Option[String]] =
-    Retrievals.credentials and Retrievals.groupIdentifier
 
   def mockGetEmailVerification(result: Option[VerifiedEmail]): CallHandler1[EORI, Future[Option[VerifiedEmail]]] =
     (mockEmailVerificationService
@@ -103,13 +79,5 @@ trait AuthSupport { this: ControllerSpec =>
 
   def mockGetEmailVerification(email: String = "foo@example.com"): CallHandler1[EORI, Future[Option[VerifiedEmail]]] =
     mockGetEmailVerification(VerifiedEmail(email, "", verified = true).some)
-
-}
-
-object AuthSupport {
-
-  implicit class RetrievalOps[A, B](val r: ~[A, B]) {
-    def and[C](c: C): ~[~[A, B], C] = new ~(r, c)
-  }
 
 }

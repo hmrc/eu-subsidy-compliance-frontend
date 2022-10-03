@@ -62,7 +62,7 @@ class EligibilityControllerSpec
 
         "call to get eligibility journey fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
+            mockAuthWithEnrolment()
             mockGet[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -74,7 +74,7 @@ class EligibilityControllerSpec
 
         def redirect(eligibilityJourney: Option[EligibilityJourney], expectedRedirectLocation: String) = {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
+            mockAuthWithEnrolment()
             mockGet[EligibilityJourney](eori1)(Right(eligibilityJourney))
           }
           checkIsRedirect(performAction(), expectedRedirectLocation)
@@ -105,7 +105,7 @@ class EligibilityControllerSpec
 
         def testDisplay(eligibilityJourney: EligibilityJourney) = {
           inSequence {
-            mockAuthWithNoEnrolmentNoCheck()
+            mockAuthWithoutEnrolment()
           }
           checkPageIsDisplayed(
             performAction(),
@@ -140,7 +140,7 @@ class EligibilityControllerSpec
 
         "nothing is submitted" in {
           inSequence {
-            mockAuthWithNoEnrolmentNoCheck()
+            mockAuthWithoutEnrolment()
           }
 
           checkFormErrorIsDisplayed(
@@ -155,7 +155,7 @@ class EligibilityControllerSpec
 
         def testRedirection(inputValue: Boolean, nextCall: String) = {
           inSequence {
-            mockAuthWithNoEnrolmentNoCheck()
+            mockAuthWithoutEnrolment()
           }
           checkIsRedirect(
             performAction("customswaivers" -> inputValue.toString),
@@ -187,7 +187,7 @@ class EligibilityControllerSpec
         val previousUrl = routes.EligibilityController.getDoYouClaim().url
 
         inSequence {
-          mockAuthWithNoEnrolmentNoCheck()
+          mockAuthWithoutEnrolment()
         }
         checkPageIsDisplayed(
           performAction(),
@@ -218,7 +218,7 @@ class EligibilityControllerSpec
 
         "nothing is submitted" in {
           inSequence {
-            mockAuthWithNoEnrolmentNoCheck()
+            mockAuthWithoutEnrolment()
           }
 
           checkFormErrorIsDisplayed(
@@ -233,7 +233,7 @@ class EligibilityControllerSpec
 
         def testRedirection(input: Boolean, nextCall: String) = {
           inSequence {
-            mockAuthWithNoEnrolmentNoCheck()
+            mockAuthWithoutEnrolment()
           }
           checkIsRedirect(
             performAction("willyouclaim" -> input.toString),
@@ -263,7 +263,7 @@ class EligibilityControllerSpec
 
       "display the page" in {
         inSequence {
-          mockAuthWithNoEnrolmentNoCheck()
+          mockAuthWithoutEnrolment()
         }
         checkPageIsDisplayed(
           performAction(),
@@ -285,7 +285,7 @@ class EligibilityControllerSpec
 
         def testDisplay(eligibilityJourney: EligibilityJourney) = {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
+            mockAuthWithEnrolment()
             mockRetrieveUndertaking(eori1)(Option.empty.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourney))
           }
@@ -324,7 +324,7 @@ class EligibilityControllerSpec
       "redirect to account home" when {
         "undertaking has already been created" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
+            mockAuthWithEnrolment()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           }
 
@@ -350,7 +350,7 @@ class EligibilityControllerSpec
 
         "eligibility journey fail to update" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
+            mockAuthWithEnrolment()
             mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
               Left(ConnectorError(exception))
             )
@@ -362,7 +362,7 @@ class EligibilityControllerSpec
       "display form error" when {
         "nothing is submitted" in {
           inSequence {
-            mockAuthWithNecessaryEnrolment()
+            mockAuthWithEnrolment()
           }
           checkFormErrorIsDisplayed(
             performAction(),
@@ -380,7 +380,7 @@ class EligibilityControllerSpec
 
         def testRedirection(input: Boolean, nextCall: String) =
           inSequence {
-            mockAuthWithNecessaryEnrolment()
+            mockAuthWithEnrolment()
             mockUpdate[EligibilityJourney](_ => update(journey), eori1)(
               Right(journey.copy(eoriCheck = EoriCheckFormPage(input.some)))
             )
@@ -409,7 +409,7 @@ class EligibilityControllerSpec
 
       "display the page" in {
         inSequence {
-          mockAuthWithNecessaryEnrolment()
+          mockAuthWithEnrolment()
         }
         checkPageIsDisplayed(
           performAction(),
