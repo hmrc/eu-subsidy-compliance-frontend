@@ -61,5 +61,22 @@ class UndertakingSubsidiesSpec extends AnyWordSpec with Matchers {
       }
 
     }
+
+    "forReportedPaymentsPage" must {
+
+      "return non HMRC subsidy usage in reverse order of submission date" in {
+        val subsidy1 = nonHmrcSubsidy.copy(submissionDate = fixedDate.plusDays(1))
+        val subsidy2 = nonHmrcSubsidy.copy(submissionDate = fixedDate.plusDays(2))
+        val subsidy3 = nonHmrcSubsidy.copy(submissionDate = fixedDate.plusDays(3))
+
+        val underTest = undertakingSubsidies.copy(nonHMRCSubsidyUsage = List(
+          subsidy1,
+          subsidy2,
+          subsidy3
+        ))
+
+        underTest.forReportedPaymentsPage.nonHMRCSubsidyUsage shouldBe List(subsidy3, subsidy2, subsidy1)
+      }
+    }
   }
 }

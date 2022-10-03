@@ -97,7 +97,7 @@ class SubsidyController @Inject() (
       retrieveSubsidies(undertaking.reference).map { subsidies =>
         Ok(
           reportedPaymentsPage(
-            subsidies,
+            subsidies.map(_.forReportedPaymentsPage),
             undertaking,
             currentDate.toEarliestTaxYearStart,
             currentDate.toTaxYearEnd.minusYears(1),

@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{SubsidyAmount, UndertakingRef}
 
@@ -32,19 +31,23 @@ case class UndertakingSubsidies(
   hmrcSubsidyUsage: List[HmrcSubsidy]
 ) {
 
-  def hasNeverSubmitted: Boolean =
-    nonHMRCSubsidyUsage.isEmpty
-
-  private implicit val localDateOrdering: Ordering[LocalDate] = Ordering.by(_.toEpochDay)
+  def hasNeverSubmitted: Boolean = nonHMRCSubsidyUsage.isEmpty
 
   def lastSubmitted: Option[LocalDate] =
-    if (nonHMRCSubsidyUsage.isEmpty)
-      None
-    else
       nonHMRCSubsidyUsage
-      .map(_.submissionDate)
-      .max
-      .some
+        .sorted(NonHmrcSubsidy.SortOrder.bySubmissionDate)
+        .lastOption
+        .map(_.submissionDate)
+
+  // For display use cases that require the payments to be ordered by reverse allocation date
+  def forReportedPaymentsPage =
+    this.copy(
+      nonHMRCSubsidyUsage =
+        nonHMRCSubsidyUsage
+          .sorted(NonHmrcSubsidy.SortOrder.byAllocationDate)
+          .reverse
+    )
+
 }
 
 object UndertakingSubsidies {
