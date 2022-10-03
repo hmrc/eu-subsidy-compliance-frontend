@@ -148,7 +148,7 @@ addBusinessIntent.hint=Are there other businesses in your undertaking
 addBusinessIntent.error.required=Select yes if you need to add a business to your undertaking?
 
 confirmEmail.no.label=Enter new email address
-confirmEmail.title=Is this the email address you want to use for your undertaking?
+confirmEmail.title=Is this the email address you want to use to receive notifications?
 
 inputEmail.title=What is your email address?
 inputEmail.label=Enter an email
