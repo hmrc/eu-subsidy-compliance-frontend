@@ -56,6 +56,7 @@ class UndertakingController @Inject() (
                                         auditService: AuditService,
                                         aboutUndertakingPage: AboutUndertakingPage,
                                         undertakingSectorPage: UndertakingSectorPage,
+                                        undertakingAddBusinessPage: UndertakingAddBusinessPage,
                                         confirmEmailPage: ConfirmEmailPage,
                                         inputEmailPage: InputEmailPage,
                                         cyaPage: UndertakingCheckYourAnswersPage,
@@ -201,7 +202,7 @@ class UndertakingController @Inject() (
                   _ <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
                   _ <- emailVerificationService.verifyEori(request.eoriNumber)
                   _ <- store.update[UndertakingJourney](_.setVerifiedEmail(email))
-                } yield Redirect(routes.UndertakingController.getCheckAnswers())
+                } yield Redirect(routes.UndertakingController.getAddBusiness())
               case OptionalEmailFormInput("false", Some(email)) => {
                 for {
                   verificationId <- emailVerificationService.addVerificationRequest(request.eoriNumber, email)
@@ -241,6 +242,50 @@ class UndertakingController @Inject() (
       case None => handleMissingSessionData("Undertaking Journey")
     }
   }
+
+  def getAddBusiness(): Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store.get[UndertakingJourney].flatMap {
+      ensureUndertakingJourneyPresent(_) { journey =>
+        if (!journey.isEligibleForStep) {
+          Redirect(journey.previous).toFuture
+        } else {
+          val form = journey.addBusiness.value.fold(undertakingSectorForm)(addBusiness =>
+            addBusinessForm.fill(FormValues(addBusiness.toString))
+          )
+          Ok(
+            undertakingAddBusinessPage(
+              form,
+              journey.previous
+            )
+          ).toFuture
+        }
+      }
+    }
+  }
+
+  def postAddBusiness: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    processFormSubmission[UndertakingJourney] { journey =>
+      addBusinessForm
+        .bindFromRequest()
+        .fold(
+          errors => {
+            val result = for {
+              _ <- journey.addBusiness.value.toContext
+            } yield BadRequest(undertakingAddBusinessPage(errors, journey.previous))
+            result
+              .fold(handleMissingSessionData("Undertaking Journey"))(identity)
+              .toContext
+          },
+          form =>
+            store.update[UndertakingJourney](_.setAddBusiness(form.value.isTrue))
+              .flatMap(_.next)
+              .toContext
+        )
+    }
+  }
+
 
   def getCheckAnswers: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -296,7 +341,15 @@ class UndertakingController @Inject() (
   def getConfirmation(ref: String): Action[AnyContent] = verifiedEmail.async {
     implicit request =>
       implicit val eori: EORI = request.eoriNumber
-      Ok(confirmationPage(UndertakingRef(ref), eori)).toFuture
+
+      store.get[UndertakingJourney].flatMap {
+        case Some(journey) =>
+          val result: OptionT[Future, Result] = for {
+            addBusiness <- journey.addBusiness.value.toContext
+          } yield Ok(confirmationPage(UndertakingRef(ref), eori, addBusiness))
+          result.fold(Redirect(journey.previous))(identity)
+        case _ => Redirect(routes.UndertakingController.getAboutUndertaking()).toFuture
+      }
   }
 
   def postConfirmation: Action[AnyContent] = verifiedEmail.async { implicit request =>
@@ -309,7 +362,7 @@ class UndertakingController @Inject() (
           store
             .update[UndertakingJourney](_.setUndertakingConfirmation(form.value.toBoolean))
             .map { _ =>
-              Redirect(routes.BusinessEntityController.getAddBusinessEntity())
+              Redirect(routes.AccountController.getAccountPage())
             }
       )
   }
@@ -445,6 +498,7 @@ class UndertakingController @Inject() (
   )
 
   private val undertakingSectorForm: Form[FormValues] = formWithSingleMandatoryField("undertakingSector")
+  private val addBusinessForm: Form[FormValues] = formWithSingleMandatoryField("addBusiness")
   private val cyaForm: Form[FormValues] = formWithSingleMandatoryField("cya")
   private val confirmationForm: Form[FormValues] = formWithSingleMandatoryField("confirm")
   private val amendUndertakingForm: Form[FormValues] = formWithSingleMandatoryField("amendUndertaking")

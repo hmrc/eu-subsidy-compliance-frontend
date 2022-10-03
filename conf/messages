@@ -142,6 +142,9 @@ sector.hint.1=This sector includes couriers and hauliers who get paid by someone
 sector.hint.2=If any part of your business is involved in the production, processing or marketing of fishery and aquaculture products. A ‘fishery product’ means aquatic organisms resulting from any fishing activity or products derived from them. The cap for this sector is €30,000.
 sector.hint.3=An ‘agricultural product’ can be products such as: live animals, meat and edible meat offal, dairy produce, birds’ eggs, natural honey. The cap for this sector is €20,000.
 
+addBusinessIntent.title=Are there any other businesses in your undertaking?
+addBusinessIntent.p1=You need to tell us about any businesses in your undertaking that receive payments for customs subsidies (Custom Duty waivers) or non-customs subsidies. These payments are referred to as 'de minimis aid'.
+addBusinessIntent.hint=Are there other businesses in your undertaking
 
 confirmEmail.no.label=Enter new email address
 confirmEmail.title=Is this the email address you want to use for your undertaking?
@@ -212,6 +215,8 @@ undertaking.confirmation.ref.eori=EORI {0}
 undertaking.confirmation.p1=You are now the lead for this account.
 undertaking.confirmation.h2-2=What happens next
 undertaking.confirmation.p2=We have sent you a confirmation email.
+undertaking.confirmation.p3= You can now add businesses to your undertaking using the <a href="{0}">Add and remove businesses</a> link in the 'Undertaking administration' section of the homepage.
+
 
 lead-account-homepage.title = Manage your undertaking
 lead-account-homepage.h2 = Your next report date
