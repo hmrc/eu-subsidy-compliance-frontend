@@ -103,11 +103,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
     }
   }
 
-  // Default implementation is a no-op. Override as required if you need to store the email on the journey.
-  protected def addVerifiedEmailToJourney(email: String)(implicit eori: EORI): Future[Unit] = {
-    eori.length // TODO - cludge to silence warning on unused implicit here - review
-    ().toFuture
-  }
+  protected def addVerifiedEmailToJourney(email: String)(implicit eori: EORI): Future[Unit]
 
   protected def handleConfirmEmailPost[A: ClassTag](
     previous: Call,

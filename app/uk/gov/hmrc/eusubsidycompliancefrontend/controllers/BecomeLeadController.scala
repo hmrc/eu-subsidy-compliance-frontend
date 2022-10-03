@@ -162,4 +162,7 @@ class BecomeLeadController @Inject() (
     Ok(becomeAdminConfirmationPage()).toFuture
   }
 
+  override protected def addVerifiedEmailToJourney(email: String)(implicit eori: EORI): Future[Unit] =
+    ().toFuture
+
 }

@@ -333,7 +333,7 @@ class BecomeLeadControllerSpec
       }
 
     }
-    
+
   }
 
   "handling request to get Confirm Email page" must {
