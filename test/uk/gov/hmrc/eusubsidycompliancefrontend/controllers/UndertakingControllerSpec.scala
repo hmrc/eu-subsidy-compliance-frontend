@@ -144,6 +144,18 @@ class UndertakingControllerSpec
                 sector = UndertakingSectorFormPage(Sector(1).some),
                 verifiedEmail = UndertakingConfirmEmailFormPage("joe.bloggs@something.com".some)
               ),
+              routes.UndertakingController.getAddBusiness().url
+            )
+          }
+
+          "undertaking journey contains undertaking name, sector, verified email and add business" in {
+            testRedirect(
+              UndertakingJourney(
+                about = AboutUndertakingFormPage("TestUndertaking".some),
+                sector = UndertakingSectorFormPage(Sector(1).some),
+                verifiedEmail = UndertakingConfirmEmailFormPage("joe.bloggs@something.com".some),
+                  addBusiness = UndertakingAddBusinessFormPage(false.some)
+              ),
               routes.UndertakingController.getCheckAnswers().url
             )
           }
@@ -154,6 +166,7 @@ class UndertakingControllerSpec
                 about = AboutUndertakingFormPage("TestUndertaking".some),
                 sector = UndertakingSectorFormPage(Sector(1).some),
                 verifiedEmail = UndertakingConfirmEmailFormPage("joe.bloggs@something.com".some),
+                addBusiness = UndertakingAddBusinessFormPage(false.some),
                 cya = UndertakingCyaFormPage(true.some)
               ),
               routes.UndertakingController.postConfirmation().url
@@ -167,6 +180,7 @@ class UndertakingControllerSpec
                 sector = UndertakingSectorFormPage(Sector(1).some),
                 cya = UndertakingCyaFormPage(true.some),
                 verifiedEmail = UndertakingConfirmEmailFormPage("joe.bloggs@something.com".some),
+                addBusiness = UndertakingAddBusinessFormPage(false.some),
                 confirmation = UndertakingConfirmationFormPage(true.some)
               ),
               routes.BusinessEntityController.getAddBusinessEntity().url
@@ -422,6 +436,17 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithNecessaryEnrolmentNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(None))
+          }
+          checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking().url)
+        }
+      }
+
+      "redirect to previous question" when {
+
+        "about has not been answered" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
           }
           checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking().url)
         }
@@ -688,7 +713,7 @@ class UndertakingControllerSpec
 
       }
 
-     "redirect to CYA Page" when {
+     "redirect to add business page" when {
 
        "all api calls are successful" in {
          inSequence {
@@ -700,7 +725,7 @@ class UndertakingControllerSpec
          }
          checkIsRedirect(
            performAction("using-stored-email" -> "true"),
-           routes.UndertakingController.getCheckAnswers().url
+           routes.UndertakingController.getAddBusiness().url
          )
        }
 
@@ -714,7 +739,7 @@ class UndertakingControllerSpec
          }
          checkIsRedirect(
            performAction("using-stored-email" -> "true"),
-           routes.UndertakingController.getCheckAnswers().url
+           routes.UndertakingController.getAddBusiness().url
          )
        }
 
@@ -752,6 +777,188 @@ class UndertakingControllerSpec
 
     }
 
+    "handling request to get intention to add business" must {
+
+      def performAction() = controller.getAddBusiness(
+        FakeRequest(GET, routes.UndertakingController.getAddBusiness().url)
+      )
+
+      "throw technical error" when {
+
+        val exception = new Exception("oh no")
+        "call to fetch undertaking journey fails" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockGet[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
+          }
+          assertThrows[Exception](await(performAction()))
+        }
+
+      }
+
+      "display the page" when {
+
+        "when question has not been answered" in {
+          val undertakingJourney = UndertakingJourney(
+            about = AboutUndertakingFormPage("TestUndertaking1".some),
+            sector = UndertakingSectorFormPage(Sector(2).some),
+            verifiedEmail = UndertakingConfirmEmailFormPage("some@email.com".some),
+          )
+          val previousCall = routes.UndertakingController.getConfirmEmail().url
+
+          inSequence {
+            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
+          }
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("addBusinessIntent.title", undertakingJourney.about.value.getOrElse("")),
+            { doc =>
+              doc.select(".govuk-back-link").attr("href") shouldBe previousCall
+
+              val form = doc.select("form")
+              form
+                .attr("action") shouldBe routes.UndertakingController.postAddBusiness().url
+            }
+          )
+
+        }
+
+        "when question has been answered" in {
+          val undertakingJourney = UndertakingJourney(
+            about = AboutUndertakingFormPage("TestUndertaking1".some),
+            sector = UndertakingSectorFormPage(Sector(2).some),
+            verifiedEmail = UndertakingConfirmEmailFormPage("some@email.com".some),
+            addBusiness = UndertakingAddBusinessFormPage(true.some)
+          )
+          val previousCall = routes.UndertakingController.getConfirmEmail().url
+
+          inSequence {
+            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
+          }
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("addBusinessIntent.title", undertakingJourney.about.value.getOrElse("")),
+            { doc =>
+              doc.select(".govuk-back-link").attr("href") shouldBe previousCall
+
+              val form = doc.select("form")
+              form
+                .attr("action") shouldBe routes.UndertakingController.postAddBusiness().url
+            }
+          )
+
+        }
+      }
+
+      "redirect to journey start page" when {
+
+        "call to fetch undertaking journey passes  but return no undertaking journey" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockGet[UndertakingJourney](eori1)(Right(None))
+          }
+          checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking().url)
+        }
+      }
+
+      "redirect to previous step" when {
+
+        "email question has not been answered" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolmentNoEmailVerification()
+            mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney(
+              about = AboutUndertakingFormPage("TestUndertaking".some),
+              sector = UndertakingSectorFormPage(Sector(1).some)
+            ).some))
+          }
+          checkIsRedirect(performAction(), routes.UndertakingController.getConfirmEmail().url)
+        }
+      }
+
+    }
+
+    "handling request to post intention to add business" must {
+
+      def performAction(data: (String, String)*) = controller.postAddBusiness(
+        FakeRequest("POST", routes.UndertakingController.postAddBusiness().url).withFormUrlEncodedBody(data: _*)
+      )
+
+      "throw technical error" when {
+        val exception = new Exception("oh no")
+
+        "call to update journey fails" in {
+
+          def update(j: UndertakingJourney) = j.copy(addBusiness = j.addBusiness.copy(value = Some(true)))
+
+
+          inSequence {
+            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+            mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
+              Left(ConnectorError(exception))
+            )
+          }
+
+          assertThrows[Exception](await(performAction("addBusiness" -> "true")))
+        }
+
+      }
+
+      "show a form error" when {
+
+        def displayErrorTest(data: (String, String)*)(errorMessage: String): Unit = {
+
+          inSequence {
+            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+          }
+
+          checkFormErrorIsDisplayed(
+            performAction(data: _*),
+            messageFromMessageKey("addBusinessIntent.title"),
+            messageFromMessageKey(errorMessage)
+          )
+        }
+
+        "nothing has been submitted" in {
+          displayErrorTest()("addBusinessIntent.error.required")
+        }
+
+      }
+
+      "redirect to the next page" when {
+        def update(j: UndertakingJourney) = j.copy(addBusiness = j.addBusiness.copy(value = Some(true)))
+
+        "user selected No" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+            mockUpdate[UndertakingJourney](_ => update(UndertakingJourney()), eori1)(
+              Right(UndertakingJourney(addBusiness = UndertakingAddBusinessFormPage(false.some)))
+            )
+          }
+          checkIsRedirect(performAction("addBusiness" -> "false"), routes.UndertakingController.getCheckAnswers().url)
+        }
+
+        "user selected Yes" in {
+          inSequence {
+            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+            mockUpdate[UndertakingJourney](_ => update(UndertakingJourney()), eori1)(
+              Right(UndertakingJourney(addBusiness = UndertakingAddBusinessFormPage(true.some)))
+            )
+          }
+          checkIsRedirect(performAction("addBusiness" -> "true"), routes.UndertakingController.getCheckAnswers().url)
+        }
+
+      }
+
+    }
+
+
+
     "handling request to get check your answers page" must {
 
       def performAction() = controller.getCheckAnswers(
@@ -786,7 +993,7 @@ class UndertakingControllerSpec
           performAction(),
           messageFromMessageKey("undertaking.cya.title"),
           { doc =>
-            doc.select(".govuk-back-link").attr("href") shouldBe routes.UndertakingController.getConfirmEmail().url
+            doc.select(".govuk-back-link").attr("href") shouldBe routes.UndertakingController.getAddBusiness().url
             val rows =
               doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
                 val question = element.select(".govuk-summary-list__key").text()
@@ -822,7 +1029,7 @@ class UndertakingControllerSpec
               Right(undertakingJourneyComplete.copy(verifiedEmail = UndertakingConfirmEmailFormPage()).some)
             )
           }
-          redirectLocation(performAction()) shouldBe Some(routes.UndertakingController.getConfirmEmail().url)
+          redirectLocation(performAction()) shouldBe Some(routes.UndertakingController.getAddBusiness().url)
         }
 
         "to journey start when call to get undertaking journey fetches nothing" in {
@@ -953,6 +1160,7 @@ class UndertakingControllerSpec
       "display the page" in {
         inSequence {
           mockAuthWithNecessaryEnrolmentWithValidEmail()
+          mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
         }
 
         checkPageIsDisplayed(
@@ -961,6 +1169,25 @@ class UndertakingControllerSpec
           { doc =>
             val heading2 = doc.select(".govuk-body").text()
             heading2 should include regex messageFromMessageKey("undertaking.confirmation.p2")
+            doc.text() should not include messageFromMessageKey("undertaking.confirmation.p3", routes.BusinessEntityController.getAddBusinessEntity())
+          }
+        )
+
+      }
+
+      "display the page with intent to add business" in {
+        inSequence {
+          mockAuthWithNecessaryEnrolmentWithValidEmail()
+          mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.copy(addBusiness = UndertakingAddBusinessFormPage(true.some)).some))
+        }
+
+        checkPageIsDisplayed(
+          performAction(),
+          messageFromMessageKey("undertaking.confirmation.title"),
+          { doc =>
+            val heading2 = doc.select(".govuk-body").text()
+            heading2 should include regex messageFromMessageKey("undertaking.confirmation.p2")
+            doc.html() should include regex messageFromMessageKey("undertaking.confirmation.p3", routes.BusinessEntityController.getAddBusinessEntity().url)
           }
         )
 
@@ -1001,7 +1228,7 @@ class UndertakingControllerSpec
           mockUpdate[UndertakingJourney](_ => update(undertakingJourney), eori1)(Right(undertakingJourneyComplete))
         }
 
-        checkIsRedirect(performAction("confirm" -> "true"), routes.BusinessEntityController.getAddBusinessEntity().url)
+        checkIsRedirect(performAction("confirm" -> "true"), routes.AccountController.getAccountPage().url)
       }
 
     }

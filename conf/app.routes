@@ -32,6 +32,9 @@ POST       /first-login-journey-what-sector                                     
 GET        /first-login-confirm-email                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmEmail
 POST       /first-login-confirm-email                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmEmail
 
+GET        /first-login-add-business                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAddBusiness
+POST       /first-login-add-business                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAddBusiness
+
 GET        /verify-email                                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getVerifyEmail(UndertakingControllerpendingVerificationId)
 
 GET        /first-login-journey-check-your-answers                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getCheckAnswers
