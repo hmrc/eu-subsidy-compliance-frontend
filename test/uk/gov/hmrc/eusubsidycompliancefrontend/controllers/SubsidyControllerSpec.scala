@@ -478,17 +478,17 @@ class SubsidyControllerSpec
           }
         }
 
-        "claim amount entered in GBP is more than 17 chars" in {
+        "claim amount entered in GBP is too big" in {
           displayError(
             ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
-            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "1234567890.12345678",
+            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "£123456789012.12",
           )(s"add-claim-amount.claim-amount-${GBP.entryName.toLowerCase}.$TooBig")
         }
 
-        "claim amount entered in EUR is more than 17 chars" in {
+        "claim amount entered in EUR is too big" in {
           displayError(
             ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName,
-            ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "1234567890.12345678",
+            ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "€123456789012.12",
           )(s"add-claim-amount.claim-amount-${EUR.entryName.toLowerCase}.$TooBig")
         }
 
