@@ -35,7 +35,7 @@
 @layout(
   pageTitle = Some(messages("become-admin.title")),
   backLinkEnabled = true,
-  backLink = Some(controllers.routes.AccountController.getAccountPage().url),
+  backLink = Some(controllers.routes.BecomeLeadController.getConfirmEmail().url),
   hasErrors = form.hasErrors
 ) {
 
@@ -52,37 +52,40 @@
       ))
     }
 
-      @govukRadios(Radios(
-          classes = "govuk-radios--inline",
-          errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-              content = Text(messages("becomeAdmin.error.required"))
-          ))} else None,
-          fieldset = Some(Fieldset(
-              legend = Some(Legend(
-                  content = Text(messages("become-admin.title")),
-                  classes = "govuk-fieldset__legend--xl",
-                  isPageHeading = true
-              ))
-          )),
-          hint = Some(Hint(
-            content = Text(messages("become-admin.hint"))
-          )),
-          idPrefix = Some("becomeAdmin"),
-          name = "becomeAdmin",
-          items = Seq(
-              RadioItem(
-                  content = Text(messages("common.yes")),
-                  value = Some("true"),
-                  checked = form.data.exists(_._2 == "true")
-              ),
-              RadioItem(
-                  content = Text(messages("common.no")),
-                  value = Some("false"),
-                  checked = form.data.exists(_._2 == "false")
-              )
-          )
-      ))
-      @button("common.continue")
-    }
+    @H1(messages("become-admin.title"), Some("govuk-heading-xl govuk-!-margin-bottom-5"))
+    @P(messages("become-admin.p1"), None, Some("become-admin-desc-1"))
+    @P(messages("become-admin.p2"), None, Some("become-admin-desc-2"))
+
+    @govukRadios(Radios(
+        classes = "govuk-radios--inline",
+        errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+            content = Text(messages("becomeAdmin.error.required"))
+        ))} else None,
+        fieldset = Some(Fieldset(
+          describedBy = Some("become-admin-desc-1 become-admin-desc-2"),
+            legend = Some(Legend(
+                content = Text(messages("become-admin.title")),
+                classes = "govuk-visually-hidden",
+                isPageHeading = false
+            ))
+        )),
+        idPrefix = Some("becomeAdmin"),
+        name = "becomeAdmin",
+        items = Seq(
+            RadioItem(
+                content = Text(messages("common.yes")),
+                value = Some("true"),
+                checked = form.data.exists(_._2 == "true")
+            ),
+            RadioItem(
+                content = Text(messages("common.no")),
+                value = Some("false"),
+                checked = form.data.exists(_._2 == "false")
+            )
+        )
+    ))
+
+    @button("common.accept-continue")
+  }
 
 }

@@ -37,11 +37,11 @@
   <div class="govuk-panel govuk-panel--confirmation">
     <h1 class="govuk-panel__title">@messages("become-admin-confirmation.title")</h1>
   </div>
-  @H2(messages("become-admin-confirmation.h2"))
+
   @P(messages("become-admin-confirmation.p1"))
-  @P(messages("become-admin-confirmation.p2"))
+
   <div>
-    <a class="govuk-link" href=@routes.AccountController.getAccountPage()>@messages("common.go-account-home")</a>
+    <a class="govuk-link" href=@routes.AccountController.getAccountPage()>@messages("common.go-to-homepage")</a>
   </div>
 
 }
