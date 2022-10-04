@@ -19,14 +19,16 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import com.google.inject.Inject
 import play.api.Logging
 import play.api.http.Status.CREATED
-import play.api.mvc.RequestHeader
 import play.api.mvc.Results.Redirect
+import play.api.mvc.{AnyContent, Call, Result}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailVerificationResponse, _}
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.util.UUID
@@ -40,16 +42,44 @@ class EmailVerificationService @Inject() (
    servicesConfig: ServicesConfig
 ) extends Logging {
 
-  lazy private val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")
+  def getEmailVerification(eori: EORI): Future[Option[VerifiedEmail]] = eoriEmailDatastore.getEmailVerification(eori)
 
-  def useAbsoluteUrls: Boolean = emailVerificationBaseUrl.contains("localhost")
+  def approveVerificationRequest(key: EORI, verificationId: String)(implicit ec: ExecutionContext): Future[Boolean] =
+    eoriEmailDatastore
+      .approveVerificationRequest(key, verificationId)
+      .map(_.getMatchedCount > 0)
 
-  def verifyEmail(credId: String, email: String, verificationId: String)(implicit hc: HeaderCarrier, ec: ExecutionContext, h: RequestHeader): Future[Option[EmailVerificationResponse]] = {
+  // Add an email address that's already approved
+  def addVerifiedEmail(eori: EORI, emailAddress: String)(implicit ec: ExecutionContext): Future[Unit] =
+    for {
+      _ <- addVerificationRequest(eori, emailAddress)
+      _ <- verifyEmailForEori(eori)
+    } yield ()
+
+
+  def makeVerificationRequestAndRedirect(
+    email: String,
+    previousPage: Call,
+    nextPageUrl: String => String,
+  )(implicit request: AuthenticatedEnrolledRequest[AnyContent],
+    ec: ExecutionContext,
+    hc: HeaderCarrier
+  ): Future[Result] = for {
+    verificationId <- addVerificationRequest(request.eoriNumber, email)
+    verificationResponse <- verifyEmail(nextPageUrl(verificationId), previousPage.url)(request.authorityId, email)
+  } yield verificationResponse.fold(Redirect(previousPage))(value => Redirect(value.redirectUri))
+
+  private def verifyEmail(
+    verifyEmailUrl: String,
+    confirmEmailUrl: String
+  )(credId: String,
+    email: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[EmailVerificationResponse]] = {
     emailVerificationConnector
       .verifyEmail(
         EmailVerificationRequest(
           credId = credId,
-          continueUrl = if(useAbsoluteUrls) routes.UndertakingController.getVerifyEmail(verificationId).absoluteURL() else routes.UndertakingController.getVerifyEmail(verificationId).url,
+          continueUrl = verifyEmailUrl,
           origin = "EU Subsidy Compliance",
           deskproServiceName = None,
           accessibilityStatementUrl = "",
@@ -58,11 +88,12 @@ class EmailVerificationService @Inject() (
             enterUrl = ""
           )),
           lang = None,
-          backUrl = if(useAbsoluteUrls) Some(routes.UndertakingController.getConfirmEmail().absoluteURL()) else Some(routes.UndertakingController.getConfirmEmail().url),
+          backUrl = Some(confirmEmailUrl),
           pageTitle = None
         )
       ).map {
-      case Left(error) => throw ConnectorError(s"Error sending email:Id", error)
+      case Left(error) =>
+        throw ConnectorError(s"Error sending email:Id", error)
       case Right(value) =>
         value.status match {
           case CREATED => Some(value.json.as[EmailVerificationResponse])
@@ -71,24 +102,13 @@ class EmailVerificationService @Inject() (
     }
   }
 
-  def emailVerificationRedirect(verifyEmailResponse: Option[EmailVerificationResponse]) = verifyEmailResponse match {
-    case Some(value) => Redirect(emailVerificationConnector.getVerificationJourney(value.redirectUri))
-    case None => Redirect(routes.UndertakingController.getConfirmEmail())
-  }
+  private def verifyEmailForEori(eori: EORI): Future[CacheItem] = eoriEmailDatastore.verifyEmail(eori)
 
-  def getEmailVerification(eori: EORI) = eoriEmailDatastore.getEmailVerification(eori)
-
-  def verifyEori(eori: EORI) = eoriEmailDatastore.verifyEmail(eori)
-
-  def approveVerificationRequest(key: EORI, verificationId: String) = eoriEmailDatastore.approveVerificationRequest(key, verificationId)
-
-  def addVerificationRequest(key: EORI, email: String)(implicit ec: ExecutionContext): Future[String] = {
-    val verificationId = UUID.randomUUID().toString
+  private def addVerificationRequest(key: EORI, email: String)(implicit ec: ExecutionContext): Future[String] =
     eoriEmailDatastore
-      .addVerificationRequest(key, email, verificationId)
-      .map {
-        _.fold(throw new IllegalArgumentException("Fallen over"))(_.verificationId)
-      }
-  }
+      .addVerificationRequest(key, email, UUID.randomUUID().toString)
+      .toContext
+      .map(_.verificationId)
+      .getOrElse(throw new IllegalStateException("Error storing email verification request"))
 
 }

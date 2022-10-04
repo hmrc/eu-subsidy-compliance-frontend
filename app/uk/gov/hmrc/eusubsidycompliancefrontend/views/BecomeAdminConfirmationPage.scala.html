@@ -28,7 +28,7 @@
   govukSummaryList: GovukSummaryList
 )
 
-@(eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
   pageTitle = Some(messages("become-admin-confirmation.title"))
@@ -39,9 +39,9 @@
   </div>
   @H2(messages("become-admin-confirmation.h2"))
   @P(messages("become-admin-confirmation.p1"))
-  @P(messages("become-admin-confirmation.p2", eori))
+  @P(messages("become-admin-confirmation.p2"))
   <div>
-    <a class="govuk-link" href=@routes.BecomeLeadController.getPromotionCleanup()>@messages("common.go-account-home")</a>
+    <a class="govuk-link" href=@routes.AccountController.getAccountPage()>@messages("common.go-account-home")</a>
   </div>
 
 }

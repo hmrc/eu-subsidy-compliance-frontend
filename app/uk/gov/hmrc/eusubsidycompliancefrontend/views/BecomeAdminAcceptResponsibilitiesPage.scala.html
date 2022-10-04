@@ -32,22 +32,28 @@
 
 @(eori: EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@key = @{"become-admin-responsibilities"}
+
 @layout(
-  pageTitle = Some(messages("become-admin-tandc.title"))
+  pageTitle = Some(messages(s"$key.title"))
 ) {
 
-  @H1(messages("become-admin-tandc.title"))
-  @H2(messages("become-admin-tandc.h2"))
-  @P(messages("become-admin-tandc.p1"))
-  @H2(messages("become-admin-tandc.h2-2"))
-  @P(messages("become-admin-tandc.p2"))
-  @P(messages("become-admin-tandc.p3"))
-  @P(messages("become-admin-tandc.p4", eori))
-  @H2(messages("become-admin-tandc.h2-3"))
-  @P(messages("become-admin-tandc.p5"))
+  @H1(messages(s"$key.title"))
 
-  @formHelper(action = controllers.routes.BecomeLeadController.postAcceptPromotionTerms()) {
-    @button("common.accept")
+  @P(messages(s"$key.p1"))
+
+  <ul class="govuk-list govuk-list--bullet">
+    <li>@messages(s"$key.li1")</li>
+    <li>@messages(s"$key.li2")</li>
+    <li>@messages(s"$key.li3")</li>
+    <li>@messages(s"$key.li4")</li>
+    <li>@messages(s"$key.li5")</li>
+  </ul>
+
+  @P(messages(s"$key.p2"))
+
+  @formHelper(action = controllers.routes.BecomeLeadController.postAcceptResponsibilities()) {
+    @button("common.continue.only")
   }
 
 

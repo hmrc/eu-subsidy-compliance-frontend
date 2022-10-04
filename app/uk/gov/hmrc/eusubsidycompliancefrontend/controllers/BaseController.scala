@@ -16,30 +16,14 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import play.api.data.Forms.{mapping, text}
-import play.api.data.validation.{Constraint, Invalid, Valid}
-import play.api.data.{Form, Mapping}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Singleton
 
 @Singleton
 class BaseController(mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
-
-  protected def mandatory(key: String): Mapping[String] =
-    text.transform[String](_.trim, s => s).verifying(required(key))
-
-  private def required(key: String): Constraint[String] = Constraint {
-    case "" => Invalid(s"error.$key.required")
-    case _ => Valid
-  }
-
-  protected def formWithSingleMandatoryField(fieldName: String): Form[FormValues] = Form(
-    mapping(fieldName -> mandatory(fieldName))(FormValues.apply)(FormValues.unapply)
-  )
 
   protected def handleMissingSessionData(dataLabel: String) =
     throw new IllegalStateException(s"$dataLabel data missing on session")

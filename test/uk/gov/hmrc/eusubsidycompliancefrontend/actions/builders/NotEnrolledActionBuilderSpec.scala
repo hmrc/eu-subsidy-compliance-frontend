@@ -76,7 +76,7 @@ class NotEnrolledActionBuilderSpec extends AnyWordSpec
 
     "redirect to the account page" when {
       "handling a request that is authenticated and enrolled" in {
-        mockAuthWithNecessaryEnrolment(eori1)
+        mockAuthWithEnrolment(eori1)
 
         val request = FakeRequest()
         val result = underTest.invokeBlock(request, block)
@@ -88,7 +88,7 @@ class NotEnrolledActionBuilderSpec extends AnyWordSpec
 
     "invoke the supplied block" when {
       "handling a request that is authenticated but not enrolled" in {
-        mockAuthWithNoEnrolmentNoCheck()
+        mockAuthWithoutEnrolment()
 
         val request = FakeRequest()
         val result = underTest.invokeBlock(request, block)

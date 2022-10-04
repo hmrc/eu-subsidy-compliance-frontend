@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 import play.api.libs.json.{Format, Json}
 
 case class OptionalEmailFormInput(
-  setValue: String,
+  usingStoredEmail: String,
   value: Option[String]
 )
 

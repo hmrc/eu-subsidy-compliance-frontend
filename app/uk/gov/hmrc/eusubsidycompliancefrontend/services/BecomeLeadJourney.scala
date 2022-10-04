@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
+import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages._
@@ -23,16 +24,20 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 
 case class BecomeLeadJourney(
   becomeLeadEori: BecomeLeadEoriFormPage = BecomeLeadEoriFormPage(),
-  acceptTerms: TermsAndConditionsFormPage = TermsAndConditionsFormPage(),
+  acceptResponsibilities: AcceptResponsibilitiesFormPage = AcceptResponsibilitiesFormPage(),
   confirmation: ConfirmationFormPage = ConfirmationFormPage()
 ) extends Journey {
 
   override def steps: Array[FormPage[_]] =
     Array(
+      acceptResponsibilities,
       becomeLeadEori,
-      acceptTerms,
       confirmation
     )
+
+  def setAcceptResponsibilities(value: Boolean): BecomeLeadJourney = this.copy(
+    acceptResponsibilities = acceptResponsibilities.copy(value = value.some)
+  )
 
 }
 
@@ -47,8 +52,8 @@ object BecomeLeadJourney {
     case class BecomeLeadEoriFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getBecomeLeadEori().url
     }
-    case class TermsAndConditionsFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getAcceptPromotionTerms().url
+    case class AcceptResponsibilitiesFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
+      def uri = controller.getAcceptResponsibilities().url
     }
     case class ConfirmationFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getPromotionConfirmation().url
@@ -57,8 +62,8 @@ object BecomeLeadJourney {
     object BecomeLeadEoriFormPage {
       implicit val becomeLeadEoriFormPageFormat: OFormat[BecomeLeadEoriFormPage] = Json.format
     }
-    object TermsAndConditionsFormPage {
-      implicit val termsAndConditionsFormPageFormat: OFormat[TermsAndConditionsFormPage] = Json.format
+    object AcceptResponsibilitiesFormPage {
+      implicit val acceptResponsibilitiesFormPageFormat: OFormat[AcceptResponsibilitiesFormPage] = Json.format
     }
     object ConfirmationFormPage { implicit val confirmationFormPageFormat: OFormat[ConfirmationFormPage] = Json.format }
 

@@ -16,50 +16,65 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import cats.implicits.catsSyntaxOptionId
 import org.mongodb.scala.model.Filters
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.test.DefaultAwaitTimeout
+import play.api.mvc.{AnyContent, Call}
 import play.api.test.Helpers._
+import play.api.test.{DefaultAwaitTimeout, FakeRequest}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailVerificationResponse, VerifiedEmail}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailVerificationRequest, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with MockFactory
   with ScalaFutures with DefaultAwaitTimeout with DefaultPlayMongoRepositorySupport[CacheItem] {
 
-  implicit val hc: HeaderCarrier = mock[HeaderCarrier]
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private val mockEmailVerificationConnector: EmailVerificationConnector = mock[EmailVerificationConnector]
 
-    override protected def repository = new EoriEmailDatastore(mongoComponent)
+  override protected def repository = new EoriEmailDatastore(mongoComponent)
 
-    private val service = new EmailVerificationService(
+  private val mockServicesConfig = mock[ServicesConfig]
+
+  private val service = new EmailVerificationService(
     mockEmailVerificationConnector,
     repository,
-    mock[ServicesConfig]
+    mockServicesConfig,
   )
-  override def afterAll(): Unit = {
-    repository.collection.deleteMany(filter = Filters.exists("_id"))
-  }
+
+  override def afterAll(): Unit = repository.collection.deleteMany(filter = Filters.exists("_id"))
+
+  val nextPageUrl = "/next-page-url"
+  val previousPage = Call(GET, "/previous-page-url")
+
+  val responseBody =
+    s"""
+       |{
+       |  "redirectUri": "$nextPageUrl"
+       |}""".stripMargin
+
+
+  def mockVerifyEmail(status: Int = CREATED) = (mockEmailVerificationConnector
+    .verifyEmail(_: EmailVerificationRequest)(_: HeaderCarrier, _: ExecutionContext))
+    .expects(*, *, *)
+    .returning(Right(HttpResponse(status, responseBody)).toFuture)
 
   private val unverifiedVerificationRequest = VerifiedEmail("unverified@something.com", "someId", verified = false)
   private val verifiedVerificationRequest = VerifiedEmail("verified@something.com", "someId", verified = true)
-
-  private val mockVerifyEmailResponse = EmailVerificationResponse("testRedirectUrl")
 
   "EmailVerificationService" when {
 
@@ -77,60 +92,74 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
 
     }
 
-    "verifyEori is called" must {
-
-        "record is verified" in {
-          repository.put(eori3, unverifiedVerificationRequest).futureValue.id shouldBe eori3
-
-          service.getEmailVerification(eori3).futureValue shouldBe None
-          service.verifyEori(eori3).futureValue.id shouldBe eori3
-
-          service.getEmailVerification(eori3).futureValue should contain(unverifiedVerificationRequest.copy(verified = true))
-        }
-    }
-
     "approveVerificationRequest is called" must {
 
-        "success" in {
-          repository.put(eori1, unverifiedVerificationRequest.copy(verificationId = "pending")).futureValue.id shouldBe eori1
-          service.approveVerificationRequest(eori1, "pending").futureValue.wasAcknowledged() shouldBe true
+      "report success for a successful update" in {
+        repository.put(eori1, unverifiedVerificationRequest.copy(verificationId = "pending")).futureValue.id shouldBe eori1
+        service.approveVerificationRequest(eori1, "pending").futureValue shouldBe true
 
-          service.getEmailVerification(eori1).futureValue should
-            contain(unverifiedVerificationRequest.copy(verified = true, verificationId = "pending"))
-        }
+        service.getEmailVerification(eori1).futureValue should
+          contain(unverifiedVerificationRequest.copy(verified = true, verificationId = "pending"))
+      }
     }
 
-    "emailVerificationRedirect is called" must {
+    "addVerifiedEmail is called" must {
 
+      "store a new email verification request and mark it as verified" in {
+        val email = "foo@example.com"
 
-        "correct redirect is given" in {
-          (mockEmailVerificationConnector
-            .getVerificationJourney(_: String))
-            .expects(*)
-            .returning("redirecturl")
-          val a = service.emailVerificationRedirect(mockVerifyEmailResponse.some)
-          redirectLocation(a.toFuture) should contain("redirecturl")
+        service.addVerifiedEmail(eori4, email).futureValue shouldBe (())
 
+        // Query mongo to confirm that we have a verified record
+        val result = service.getEmailVerification(eori4)
+
+        result.futureValue.map(_.email) should contain(email)
+        result.futureValue.map(_.verified) should contain(true)
+        result.futureValue.map(_.verificationId.length) should contain(36) // Crude UUID is set check
       }
 
-        "no redirect is given" in {
-          val a = service.emailVerificationRedirect(None)
-          redirectLocation(a.toFuture) should contain(routes.UndertakingController.getConfirmEmail().url)
+    }
+
+    "makeVerificationRequest is called" must {
+
+      implicit val request: AuthenticatedEnrolledRequest[AnyContent] = AuthenticatedEnrolledRequest(
+        authorityId = "SomeAuthorityId",
+        groupId = "SomeGroupId",
+        request = FakeRequest(GET, "/"),
+        eoriNumber = eori1
+      )
+
+      "redirect to the next page if the email verification succeeded" in {
+        inSequence {
+          mockVerifyEmail()
         }
 
+        val result = service.makeVerificationRequestAndRedirect(
+          "foo@example.com",
+          previousPage,
+          _ => nextPageUrl,
+        )
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(nextPageUrl)
+      }
+
+      "redirect to the previous page if the email verification failed" in {
+        inSequence {
+          mockVerifyEmail(status = BAD_REQUEST)
+        }
+
+        val result = service.makeVerificationRequestAndRedirect(
+          "foo@example.com",
+          previousPage,
+          _ => nextPageUrl,
+        )
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(previousPage.url)
+      }
 
     }
 
-    "addVerificationRequest is called" must {
-
-        "add verification record successfully" in {
-          val pendingId = service.addVerificationRequest(eori4, "testemail@aol.com").futureValue
-          service.getEmailVerification(eori4).futureValue shouldBe None
-          service.verifyEori(eori4).futureValue.id shouldBe eori4
-
-          service.getEmailVerification(eori4).futureValue should contain(VerifiedEmail("testemail@aol.com", pendingId, verified = true))
-        }
-
-    }
   }
 }

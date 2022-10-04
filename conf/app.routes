@@ -35,7 +35,7 @@ POST       /first-login-confirm-email                                           
 GET        /first-login-add-business                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAddBusiness
 POST       /first-login-add-business                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAddBusiness
 
-GET        /verify-email                                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getVerifyEmail(UndertakingControllerpendingVerificationId)
+GET        /verify-email/:pendingVerificationId                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getVerifyEmail(pendingVerificationId)
 
 GET        /first-login-journey-check-your-answers                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getCheckAnswers
 POST       /first-login-journey-check-your-answers                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postCheckAnswers
@@ -104,11 +104,15 @@ GET        /lead-undertaking-lead-eori-changed                                  
 GET        /business-enterprise-become-lead-eori                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getBecomeLeadEori()
 POST       /business-enterprise-become-lead-eori                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.postBecomeLeadEori()
 
-GET        /business-enterprise-terms-conditions                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getAcceptPromotionTerms()
-POST       /business-enterprise-terms-conditions                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.postAcceptPromotionTerms()
+GET        /business-enterprise-accept-responsibilities                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getAcceptResponsibilities()
+POST       /business-enterprise-accept-responsibilities                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.postAcceptResponsibilities()
+
+GET        /business-enterprise-confirm-email                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getConfirmEmail
+POST       /business-enterprise-confirm-email                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.postConfirmEmail
+
+GET        /business-enterprise-verify-email/:pendingVerificationId                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getVerifyEmail(pendingVerificationId)
 
 GET        /business-enterprise-admin-request                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getPromotionConfirmation()
-GET        /lead-promotion-confirmation-cleanup                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getPromotionCleanup()
 
 GET        /lead-undertaking-non-customs-subsidy-nil-return                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.getNoClaimNotification
 POST       /lead-undertaking-non-customs-subsidy-nil-return                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoClaimNotificationController.postNoClaimNotification

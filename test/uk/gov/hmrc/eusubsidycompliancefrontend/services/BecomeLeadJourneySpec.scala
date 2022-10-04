@@ -29,8 +29,8 @@ class BecomeLeadJourneySpec extends AnyWordSpecLike with Matchers {
       "return all forms at the start of the journey" in {
         val underTest = BecomeLeadJourney()
         underTest.steps shouldBe Array(
+          underTest.acceptResponsibilities,
           underTest.becomeLeadEori,
-          underTest.acceptTerms,
           underTest.confirmation
         )
       }
@@ -44,9 +44,9 @@ class BecomeLeadJourneySpec extends AnyWordSpecLike with Matchers {
           .url
       }
 
-      "Accept terms" in {
-        BecomeLeadJourney.FormPages.TermsAndConditionsFormPage().uri shouldBe routes.BecomeLeadController
-          .getAcceptPromotionTerms()
+      "Accept responsibilities" in {
+        BecomeLeadJourney.FormPages.AcceptResponsibilitiesFormPage().uri shouldBe routes.BecomeLeadController
+          .getAcceptResponsibilities()
           .url
       }
 

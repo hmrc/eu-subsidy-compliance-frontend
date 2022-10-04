@@ -42,16 +42,18 @@ case class Undertaking(
   def getBusinessEntityByEORI(eori: EORI): BusinessEntity =
     undertakingBusinessEntity
       .find(be => be.businessEntityIdentifier == eori)
-      .getOrElse(throw new IllegalStateException(s"BE with eori $eori is missing"))
+      .getOrElse(throw new IllegalStateException(s"No business entity found for given eori"))
 
   def getAllNonLeadEORIs: List[EORI] =
     undertakingBusinessEntity.filter(!_.leadEORI).map(_.businessEntityIdentifier)
 
-  def getLeadEORI = undertakingBusinessEntity
+  def getLeadEORI: EORI = undertakingBusinessEntity
     .filter(_.leadEORI)
     .map(_.businessEntityIdentifier)
     .headOption
     .getOrElse(throw new IllegalStateException(s"Lead EORI is missing"))
+
+  def getLeadBusinessEntity: BusinessEntity = getBusinessEntityByEORI(getLeadEORI)
 }
 
 object Undertaking {

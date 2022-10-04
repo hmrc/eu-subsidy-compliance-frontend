@@ -48,11 +48,11 @@ class NoBusinessPresentControllerSpec
     "handling request to get No Business Present" must {
       def performAction() = controller.getNoBusinessPresent(FakeRequest())
 
-      behave like authBehaviourWithPredicate(() => performAction())
+      behave like authBehaviour(() => performAction())
 
       "display the page" in {
         inSequence {
-          mockAuthWithNecessaryEnrolmentWithValidEmail()
+          mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
         }
         checkPageIsDisplayed(
@@ -82,7 +82,7 @@ class NoBusinessPresentControllerSpec
         val exception = new Exception("oh no!")
         "call to update business entity journey fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1), eori1)(
               Left(ConnectorError(exception))
@@ -95,7 +95,7 @@ class NoBusinessPresentControllerSpec
 
       "redirect to next page" in {
         inSequence {
-          mockAuthWithNecessaryEnrolmentWithValidEmail()
+          mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
           mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1), eori1)(
             Right(businessEntityJourney1)

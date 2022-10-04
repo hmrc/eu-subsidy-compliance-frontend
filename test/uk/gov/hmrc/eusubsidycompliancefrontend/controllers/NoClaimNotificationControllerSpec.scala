@@ -57,13 +57,13 @@ class NoClaimNotificationControllerSpec
     "handling request to get No claim notification" must {
 
       def performAction() = controller.getNoClaimNotification(FakeRequest())
-      behave like authBehaviourWithPredicate(() => performAction())
+      behave like authBehaviour(() => performAction())
 
       val startDate = LocalDate.of(2018, 4, 6)
 
       "display the page correctly if no previous claims have been submitted" in {
         inSequence {
-          mockAuthWithNecessaryEnrolmentWithValidEmail()
+          mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeToday(fixedDate)
           mockRetrieveSubsidy(SubsidyRetrieve(undertaking.reference, (startDate, fixedDate).some))(emptyUndertakingSubsidies.toFuture)
@@ -87,7 +87,7 @@ class NoClaimNotificationControllerSpec
 
       "display the page correctly if at least one previous claim has been submitted" in {
         inSequence {
-          mockAuthWithNecessaryEnrolmentWithValidEmail()
+          mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeToday(fixedDate)
           mockRetrieveSubsidy(SubsidyRetrieve(undertaking.reference, (startDate, fixedDate).some))(undertakingSubsidies.toFuture)
@@ -149,7 +149,7 @@ class NoClaimNotificationControllerSpec
 
         "call to update  Nil return journey fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeToday(currentDay)
             mockRetrieveSubsidy(subsidyRetrieve)(undertakingSubsidies.toFuture)
@@ -162,7 +162,7 @@ class NoClaimNotificationControllerSpec
 
         "call to create Subsidy fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeToday(currentDay)
             mockRetrieveSubsidy(subsidyRetrieve)(undertakingSubsidies.toFuture)
@@ -182,7 +182,7 @@ class NoClaimNotificationControllerSpec
 
         "check box is not checked" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail()
+            mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeToday(currentDay)
             mockRetrieveSubsidy(subsidyRetrieve)(undertakingSubsidies.toFuture)
@@ -200,7 +200,7 @@ class NoClaimNotificationControllerSpec
       "redirect to next page " in {
 
         inSequence {
-          mockAuthWithNecessaryEnrolmentWithValidEmail()
+          mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeToday(currentDay)
           mockRetrieveSubsidy(subsidyRetrieve)(undertakingSubsidies.toFuture)

@@ -30,7 +30,7 @@ trait LeadOnlyRedirectSupport extends MockFactory with Matchers {
 
   protected def testLeadOnlyRedirect(f: () => Future[Result]) = {
     inSequence {
-      mockAuthWithNecessaryEnrolmentWithValidEmail(eori3)
+      mockAuthWithEnrolmentAndValidEmail(eori3)
       mockRetrieveUndertaking(eori3)(undertaking.some.toFuture)
     }
 

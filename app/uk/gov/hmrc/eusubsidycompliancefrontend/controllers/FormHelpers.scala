@@ -17,11 +17,15 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.data.OptionT
+import play.api.data.{Form, Mapping}
 import play.api.libs.json.Reads
 import play.api.mvc.Result
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
+import play.api.data.Forms.{mapping, text}
+import play.api.data.validation.{Constraint, Invalid, Valid}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
@@ -35,5 +39,17 @@ trait FormHelpers {
     store.get[A].toContext
       .flatMap(f)
       .getOrElse(throw new IllegalStateException("Missing journey data - unable to process form submission"))
+
+  protected def mandatory(key: String): Mapping[String] =
+    text.transform[String](_.trim, s => s).verifying(required(key))
+
+  private def required(key: String): Constraint[String] = Constraint {
+    case "" => Invalid(s"error.$key.required")
+    case _ => Valid
+  }
+
+  protected def formWithSingleMandatoryField(fieldName: String): Form[FormValues] = Form(
+    mapping(fieldName -> mandatory(fieldName))(FormValues.apply)(FormValues.unapply)
+  )
 
 }

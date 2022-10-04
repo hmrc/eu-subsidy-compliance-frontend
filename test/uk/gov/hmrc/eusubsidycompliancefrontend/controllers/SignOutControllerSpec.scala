@@ -108,7 +108,7 @@ class SignOutControllerSpec
 
         "call to retrieve email fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
+            mockAuthWithEnrolmentAndValidEmail(eori4)
           }
 
           assertThrows[Exception](await(performAction()))
@@ -116,7 +116,7 @@ class SignOutControllerSpec
 
         "call to retrieve Undertaking fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
+            mockAuthWithEnrolmentAndValidEmail(eori4)
             mockRetrieveUndertaking(eori4)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction()))
@@ -124,7 +124,7 @@ class SignOutControllerSpec
 
         "call to remove member fails" in {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
+            mockAuthWithEnrolmentAndValidEmail(eori4)
             mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(currentDate)
             mockRemoveMember(CommonTestData.undertakingRef, businessEntity4)(Left(ConnectorError(exception)))
@@ -138,7 +138,7 @@ class SignOutControllerSpec
 
         def testDisplay(effectiveDate: String): Unit = {
           inSequence {
-            mockAuthWithNecessaryEnrolmentWithValidEmail(eori4)
+            mockAuthWithEnrolmentAndValidEmail(eori4)
             mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
             mockTimeToday(currentDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))

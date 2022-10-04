@@ -106,6 +106,10 @@ class EscService @Inject() (
       .value
   }
 
+  def getUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Undertaking] =
+    retrieveUndertaking(eori).toContext
+      .getOrElse(throw new IllegalStateException("Expected undertaking not found"))
+
   def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
     hc: HeaderCarrier
   ): Future[UndertakingRef] =

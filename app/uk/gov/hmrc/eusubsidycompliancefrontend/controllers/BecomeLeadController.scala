@@ -18,7 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
@@ -27,6 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{Promo
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
@@ -35,145 +35,134 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class BecomeLeadController @Inject() (
-                                       mcc: MessagesControllerComponents,
-                                       actionBuilders: ActionBuilders,
-                                       store: Store,
-                                       escService: EscService,
-                                       emailService: EmailService,
-                                       auditService: AuditService,
-                                       becomeAdminPage: BecomeAdminPage,
-                                       becomeAdminTermsAndConditionsPage: BecomeAdminTermsAndConditionsPage,
-                                       becomeAdminConfirmationPage: BecomeAdminConfirmationPage
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  override protected val store: Store,
+  escService: EscService,
+  override protected val emailService: EmailService,
+  override protected val emailVerificationService: EmailVerificationService,
+  auditService: AuditService,
+  becomeAdminPage: BecomeAdminPage,
+  becomeAdminAcceptResponsibilitiesPage: BecomeAdminAcceptResponsibilitiesPage,
+  becomeAdminConfirmationPage: BecomeAdminConfirmationPage,
+  override protected val confirmEmailPage: ConfirmEmailPage,
+  override protected val inputEmailPage: InputEmailPage,
+
 )(implicit
   val appConfig: AppConfig,
-  executionContext: ExecutionContext
-) extends BaseController(mcc) {
+  override protected val executionContext: ExecutionContext
+) extends BaseController(mcc) with EmailVerificationSupport {
 
   import actionBuilders._
 
-  def getBecomeLeadEori: Action[AnyContent] = enrolled.async { implicit request =>
+  private val becomeAdminForm = formWithSingleMandatoryField("becomeAdmin")
+
+  def getAcceptResponsibilities: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    for {
-      journey <- store.get[BecomeLeadJourney]
-      undertakingOpt <- escService.retrieveUndertaking(eori)
-      result <- becomeLeadResult(journey, undertakingOpt)
-    } yield result
+
+    val result = for {
+      _ <- escService.getUndertaking(eori).toContext
+      _ <- store.getOrCreate[BecomeLeadJourney](BecomeLeadJourney()).toContext
+    } yield Ok(becomeAdminAcceptResponsibilitiesPage(eori))
+
+    result.getOrElse(Redirect(routes.AccountController.getAccountPage()))
   }
 
-  private def becomeLeadResult(
-    becomeLeadJourneyOpt: Option[BecomeLeadJourney],
-    undertakingOpt: Option[Undertaking]
-  )(implicit request: AuthenticatedEnrolledRequest[_], eori: EORI): Future[Result] =
-    (becomeLeadJourneyOpt, undertakingOpt) match {
-      case (Some(journey), Some(undertaking)) =>
-        val form = journey.becomeLeadEori.value.fold(becomeAdminForm)(e => becomeAdminForm.fill(FormValues(e.toString)))
-        Ok(becomeAdminPage(form, eori)).toFuture
-      case (None, Some(undertaking)) => // initialise the empty Journey model
-        store.put(BecomeLeadJourney()).map { _ =>
-          Ok(becomeAdminPage(becomeAdminForm, eori))
-        }
-      case _ =>
-        throw new IllegalStateException("missing undertaking name")
+  def postAcceptResponsibilities: Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store
+      .update[BecomeLeadJourney](_.setAcceptResponsibilities(true))
+      .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getConfirmEmail())))
+  }
+
+  def getConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
+    handleConfirmEmailGet[BecomeLeadJourney](
+      previous = routes.BecomeLeadController.getAcceptResponsibilities(),
+      formAction = routes.BecomeLeadController.postConfirmEmail()
+    )
+  }
+
+  def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
+    handleConfirmEmailPost[BecomeLeadJourney](
+      previous = routes.BecomeLeadController.getConfirmEmail(),
+      next = routes.BecomeLeadController.getBecomeLeadEori(),
+      formAction = routes.BecomeLeadController.postConfirmEmail(),
+      generateVerifyEmailUrl = (id: String) => routes.BecomeLeadController.getVerifyEmail(id).url
+    )
+  }
+
+  def getVerifyEmail(verificationId: String): Action[AnyContent] = enrolled.async { implicit request =>
+    handleVerifyEmailGet[BecomeLeadJourney](
+      verificationId = verificationId,
+      previous = routes.BecomeLeadController.getConfirmEmail(),
+      next = routes.BecomeLeadController.getBecomeLeadEori()
+    )
+  }
+
+  def getBecomeLeadEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+
+    val result = for {
+      journey <- store.getOrCreate[BecomeLeadJourney](BecomeLeadJourney()).toContext
+      _ <- escService.retrieveUndertaking(eori).toContext
+      form = journey.becomeLeadEori.value.fold(becomeAdminForm)(e => becomeAdminForm.fill(FormValues(e.toString)))
+    } yield Ok(becomeAdminPage(form))
+
+    result.getOrElse(handleMissingSessionData("No undertaking Found"))
+  }
+
+
+  def postBecomeLeadEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+
+    def handleFormSubmission(form: FormValues) = {
+      if (form.value.isTrue) promoteBusinessEntity()
+      else Redirect(routes.AccountController.getAccountPage()).toFuture
     }
 
-  def postBecomeLeadEori: Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
+    def promoteBusinessEntity() = withJourneyOrRedirect[BecomeLeadJourney](routes.AccountController.getAccountPage()) { _ =>
+      val result = for {
+        undertaking <- escService.getUndertaking(eori).toContext
+        ref = undertaking.reference
+        newLead = undertaking.getBusinessEntityByEORI(eori).copy(leadEORI = true)
+        formerLead = undertaking.getLeadBusinessEntity.copy(leadEORI = false)
+        // Promote new lead
+        _ <- escService.addMember(ref, newLead).toContext
+        _ <- emailService.sendEmail(eori, PromotedSelfToNewLead, undertaking).toContext
+        // Demote former lead
+        _ <- escService.addMember(ref, formerLead).toContext
+        _ <- emailService.sendEmail(formerLead.businessEntityIdentifier, RemovedAsLeadToFormerLead, undertaking).toContext
+        // Flush any stale journey state
+        _ <- store.delete[UndertakingJourney].toContext
+        _ <- store.delete[BusinessEntityJourney].toContext
+        // Send audit event
+        _ = auditService.sendEvent[BusinessEntityPromotedSelf](
+          AuditEvent.BusinessEntityPromotedSelf(
+            ref,
+            request.authorityId,
+            formerLead.businessEntityIdentifier,
+            newLead.businessEntityIdentifier
+          )
+        )
+      } yield Redirect(routes.BecomeLeadController.getPromotionConfirmation())
+
+      result.getOrElse(throw new IllegalStateException("Unexpected error promoting business entity to lead"))
+    }
+
     becomeAdminForm
       .bindFromRequest()
       .fold(
-        formWithErrors =>
-          for {
-            undertakingOpt <- escService.retrieveUndertaking(eori)
-          } yield undertakingOpt match {
-            case Some(undertaking) =>
-              BadRequest(becomeAdminPage(formWithErrors, eori))
-            case _ =>
-              throw new IllegalStateException("missing undertaking name")
-          },
-        form =>
-          store
-            .update[BecomeLeadJourney](j =>
-              j.copy(becomeLeadEori = j.becomeLeadEori.copy(value = Some(form.value.isTrue)))
-            )
-            .flatMap { _ =>
-              if (form.value.isTrue) {
-                Redirect(routes.BecomeLeadController.getAcceptPromotionTerms()).toFuture
-              } else Future(Redirect(routes.AccountController.getAccountPage()))
-            }
+        formWithErrors => BadRequest(becomeAdminPage(formWithErrors)).toFuture,
+        handleFormSubmission
       )
   }
 
-  /**
-    * This route should check for the CDS enrolment to allow email if BE request to be a Lead.
-    * @return
-    */
-
-  def getAcceptPromotionTerms: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store.get[BecomeLeadJourney].flatMap {
-      case Some(journey) =>
-        if (journey.becomeLeadEori.value.getOrElse(false)) {
-          Future(Ok(becomeAdminTermsAndConditionsPage(eori)))
-        } else {
-          Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori()))
-        }
-      case None => Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori()))
-    }
-  }
-
-  def postAcceptPromotionTerms: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store
-      .update[BecomeLeadJourney](j => j.copy(acceptTerms = j.acceptTerms.copy(value = Some(true))))
-      .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getPromotionConfirmation())))
-  }
 
   def getPromotionConfirmation: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store.get[BecomeLeadJourney].flatMap {
-      case Some(journey) =>
-        for {
-          retrievedUndertaking <- escService
-            .retrieveUndertaking(eori)
-            .map(_.getOrElse(handleMissingSessionData("Undertaking")))
-          undertakingRef = retrievedUndertaking.reference
-          newLead = retrievedUndertaking.undertakingBusinessEntity
-            .find(_.businessEntityIdentifier == eori)
-            .fold(handleMissingSessionData("lead Business Entity"))(_.copy(leadEORI = true))
-          oldLead = retrievedUndertaking.undertakingBusinessEntity
-            .find(_.leadEORI)
-            .fold(handleMissingSessionData("lead Business Entity"))(_.copy(leadEORI = false))
-          _ <- escService.addMember(undertakingRef, newLead)
-          _ <- escService.addMember(undertakingRef, oldLead)
-          _ <- emailService.sendEmail(eori, PromotedSelfToNewLead, retrievedUndertaking)
-          _ <- emailService.sendEmail(oldLead.businessEntityIdentifier, RemovedAsLeadToFormerLead, retrievedUndertaking)
-          // Flush any stale undertaking journey data
-           _ <- store.delete[UndertakingJourney]
-          _ = auditService.sendEvent[BusinessEntityPromotedSelf](
-            AuditEvent.BusinessEntityPromotedSelf(
-              undertakingRef,
-              request.authorityId,
-              oldLead.businessEntityIdentifier,
-              newLead.businessEntityIdentifier
-            )
-          )
-        } yield
-          if (journey.acceptTerms.value.getOrElse(false)) {
-            Ok(becomeAdminConfirmationPage(oldLead.businessEntityIdentifier))
-          } else {
-            Redirect(routes.BecomeLeadController.getBecomeLeadEori())
-          }
-      case None => Future(Redirect(routes.BecomeLeadController.getBecomeLeadEori()))
-    }
+    Ok(becomeAdminConfirmationPage()).toFuture
   }
 
-  def getPromotionCleanup: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    store
-      .update[BecomeLeadJourney](_ => BecomeLeadJourney())
-      .flatMap(_ => Future(Redirect(routes.AccountController.getAccountPage())))
-  }
-
-  private val becomeAdminForm = formWithSingleMandatoryField("becomeAdmin")
+  override protected def addVerifiedEmailToJourney(email: String)(implicit eori: EORI): Future[Unit] =
+    ().toFuture
 
 }
