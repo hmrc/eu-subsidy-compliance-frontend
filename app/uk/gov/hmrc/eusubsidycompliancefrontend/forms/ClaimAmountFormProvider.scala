@@ -17,12 +17,13 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
 import play.api.data.Forms.text
-import play.api.data.validation.{Constraint, Invalid, Valid}
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
 import play.api.data.{Form, Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{TooBig, TooSmall}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.IncorrectFormat
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.PositiveSubsidyAmount
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ClaimAmount, CurrencyCode}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
@@ -45,14 +46,18 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
 
   private def claimAmountMapping: Mapping[String] =
     text
-      .verifying(claimAmountIsBelowMaximumLength)
       .verifying(claimAmountFormatIsValid)
       .verifying(claimAmountAboveZero)
+      .verifying(claimAmountIsBelowMaximumAllowedValue)
 
   private val allowedCurrencySymbols = CurrencyCode.values.map(_.symbol)
 
-  private val claimAmountIsBelowMaximumLength = Constraint[String] { claimAmount: String =>
-    if (cleanAmount(claimAmount).length < 17) Valid else Invalid(TooBig)
+  private val claimAmountIsBelowMaximumAllowedValue = Constraint[String] { claimAmount: String =>
+    val amount = cleanAmount(claimAmount)
+    Try(BigDecimal(amount)).fold(
+      _ => Invalid(IncorrectFormat),
+      amount => PositiveSubsidyAmount.validateAndTransform(amount).fold[ValidationResult](Invalid(TooBig))(_ => Valid)
+    )
   }
 
   private val claimAmountFormatIsValid = Constraint[String] { claimAmount: String =>
