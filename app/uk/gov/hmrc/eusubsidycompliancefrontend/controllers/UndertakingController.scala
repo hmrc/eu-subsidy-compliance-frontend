@@ -168,7 +168,7 @@ class UndertakingController @Inject() (
   def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
     handleConfirmEmailPost[UndertakingJourney](
       previous = routes.UndertakingController.getConfirmEmail(),
-      next = routes.UndertakingController.getCheckAnswers(),
+      next = routes.UndertakingController.getAddBusiness(),
       formAction = routes.UndertakingController.postConfirmEmail(),
       generateVerifyEmailUrl = (id: String) => routes.UndertakingController.getVerifyEmail(id).url
     )
@@ -178,27 +178,25 @@ class UndertakingController @Inject() (
     handleVerifyEmailGet[UndertakingJourney](
       verificationId = verificationId,
       previous = routes.UndertakingController.getConfirmEmail(),
-      next = routes.UndertakingController.getCheckAnswers(),
+      next = routes.UndertakingController.getAddBusiness(),
     )
   }
 
   def getAddBusiness: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[UndertakingJourney].flatMap {
-      ensureUndertakingJourneyPresent(_) { journey =>
-        if (!journey.isEligibleForStep) {
-          Redirect(journey.previous).toFuture
-        } else {
-          val form = journey.addBusiness.value.fold(undertakingSectorForm)(addBusiness =>
-            addBusinessForm.fill(FormValues(addBusiness.toString))
+    withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking()) { journey =>
+      if (!journey.isEligibleForStep) {
+        Redirect(journey.previous).toFuture
+      } else {
+        val form = journey.addBusiness.value.fold(undertakingSectorForm)(addBusiness =>
+          addBusinessForm.fill(FormValues(addBusiness.toString))
+        )
+        Ok(
+          undertakingAddBusinessPage(
+            form,
+            journey.previous
           )
-          Ok(
-            undertakingAddBusinessPage(
-              form,
-              journey.previous
-            )
-          ).toFuture
-        }
+        ).toFuture
       }
     }
   }

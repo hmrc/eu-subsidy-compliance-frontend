@@ -87,7 +87,7 @@ class NoClaimNotificationControllerSpec
 
       "display the page correctly if at least one previous claim has been submitted" in {
         inSequence {
-          mockAuthWithNecessaryEnrolmentWithValidEmail()
+          mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeToday(fixedDate)
           mockRetrieveSubsidy(SubsidyRetrieve(undertaking.reference, (startDate, fixedDate).some))(undertakingSubsidies.toFuture)
