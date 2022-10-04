@@ -75,7 +75,7 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
 
     "return an amount too big error" when {
 
-      "the amount contains too many digits" in {
+      "the amount is larger than the maximum allowed value" in {
 
         val amounts = Seq(
           "12121212121212121",
@@ -83,6 +83,8 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
           "12121212121212121",
           "1,212,121,212,121,212.10",
           "£1,212,121,212,121,212.10",
+          "9999999999999",
+          "9999999999999.00",
         )
 
         amounts.foreach { amount =>
