@@ -260,12 +260,34 @@ class SubsidyController @Inject() (
       implicit val eori: EORI = request.eoriNumber
       val claimEoriForm = ClaimEoriFormProvider(undertaking).form
 
+      // TODO - here we need to check for an existing Undertaking
+      // TODO - can we simplify this so the eori isn't an option?
+      def handleValidFormSubmission(o: OptionalEORI) =
+        // TODO - we should probably redirect back to the form instead
+        o.value.fold(throw new IllegalStateException("No EORI value when one expected")) { rawEori =>
+          val enteredEori = EORI(rawEori)
+
+          if (undertaking.hasEORI(enteredEori)) ???
+          else ???
+
+          // Is eori in this undertaking already?
+          escService
+            .retrieveUndertaking(EORI(eori))
+            .toContext
+            // TODO - In this instance we need to redirect to a new page.
+            .fold(store.update[SubsidyJourney](_.setClaimEori(o)).flatMap(_.next)) { _ =>
+              // The EORI already belongs to an undertaking.
+              // TODO - redirect back to form with appropriate error message.
+              BadRequest(addClaimEoriPage(claimEoriForm, routes.SubsidyController.getAddClaimEori().url)).toFuture
+            }
+        }
+
       processFormSubmission[SubsidyJourney] { journey =>
         claimEoriForm
           .bindFromRequest()
           .fold(
             formWithErrors => BadRequest(addClaimEoriPage(formWithErrors, journey.previous)).toContext,
-            form => store.update[SubsidyJourney](_.setClaimEori(form)).flatMap(_.next).toContext
+            handleValidFormSubmission
           )
       }
 

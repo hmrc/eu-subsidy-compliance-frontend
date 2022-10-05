@@ -39,6 +39,10 @@ case class Undertaking(
     leadEORI.businessEntityIdentifier == eori
   }
 
+  def hasEORI(eori: EORI): Boolean =
+    undertakingBusinessEntity
+      .exists(_.businessEntityIdentifier == eori)
+
   def getBusinessEntityByEORI(eori: EORI): BusinessEntity =
     undertakingBusinessEntity
       .find(be => be.businessEntityIdentifier == eori)
