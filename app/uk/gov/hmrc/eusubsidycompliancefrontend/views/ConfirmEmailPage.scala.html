@@ -19,7 +19,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.H1
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @this(
   layout: Layout,
@@ -82,13 +82,26 @@
       }
 
 
-      @H1(messages("confirmEmail.title"))
-      @govukInsetText(InsetText(content = Text(email.value)))
+      @H1(messages("confirmEmail.title"), Some("govuk-heading-xl govuk-!-margin-bottom-5"))
+      @P(messages("confirmEmail.p1"))
+
+      @govukInsetText(InsetText(
+        content = Text(email.value),
+        id = Some("email-address-confirmation")
+      ))
 
       @govukRadios(Radios(
         errorMessage = if (form.hasErrors && form.errors.head.key == radioIdentifier) {
             Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}")))
         } else None,
+        fieldset = Some(Fieldset(
+          describedBy = Some("email-address-confirmation"),
+          legend = Some(Legend(
+            content = Text(messages("confirmEmail.title")),
+            classes = "govuk-fieldset__legend--xl govuk-visually-hidden",
+            isPageHeading = false
+          ))
+        )),
         name = radioIdentifier,
         items = Seq(
           RadioItem(
