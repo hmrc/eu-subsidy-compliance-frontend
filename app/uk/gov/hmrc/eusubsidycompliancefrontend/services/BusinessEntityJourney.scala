@@ -20,13 +20,12 @@ import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessCyaFormPage, AddBusinessFormPage, AddEoriFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 
 case class BusinessEntityJourney(
   addBusiness: AddBusinessFormPage = AddBusinessFormPage(),
   eori: AddEoriFormPage = AddEoriFormPage(),
-  cya: AddBusinessCyaFormPage = AddBusinessCyaFormPage(),
   isLeadSelectJourney: Option[Boolean] = None,
   oldEORI: Option[EORI] = None
 ) extends Journey {
@@ -35,7 +34,6 @@ case class BusinessEntityJourney(
     Array(
       addBusiness,
       eori,
-      cya
     )
 
   def isAmend: Boolean = oldEORI.nonEmpty
@@ -72,13 +70,9 @@ object BusinessEntityJourney {
     case class AddEoriFormPage(value: Form[EORI] = None) extends FormPage[EORI] {
       def uri = controller.getEori().url
     }
-    case class AddBusinessCyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getCheckYourAnswers().url
-    }
 
     object AddBusinessFormPage { implicit val addBusinessFormPageFormat: OFormat[AddBusinessFormPage] = Json.format }
     object AddEoriFormPage { implicit val addEoriFormPageFormat: OFormat[AddEoriFormPage] = Json.format }
-    object AddBusinessCyaFormPage { implicit val cyaFormPageFormat: OFormat[AddBusinessCyaFormPage] = Json.format }
 
   }
 

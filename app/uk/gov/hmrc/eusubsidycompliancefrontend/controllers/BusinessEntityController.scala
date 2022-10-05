@@ -52,7 +52,6 @@ class BusinessEntityController @Inject() (
                                            addBusinessPage: AddBusinessPage,
                                            eoriPage: BusinessEntityEoriPage,
                                            removeYourselfBEPage: BusinessEntityRemoveYourselfPage,
-                                           businessEntityCyaPage: BusinessEntityCYAPage,
                                            removeBusinessPage: RemoveBusinessPage
 )(implicit
   val appConfig: AppConfig,
@@ -126,81 +125,59 @@ class BusinessEntityController @Inject() (
     def getErrorResponse(errorMessageKey: String, previous: String, form: FormValues): Future[Result] =
       BadRequest(eoriPage(eoriForm.withError(businessEntityEori, errorMessageKey).fill(form), previous)).toFuture
 
-    def handleValidEori(form: FormValues, previous: Uri): Future[Result] =
+    def handleValidEori(form: FormValues, previous: Uri, undertaking: Undertaking): Future[Result] =
       escService.retrieveUndertakingAndHandleErrors(EORI(form.value)).flatMap {
         case Right(Some(_)) => getErrorResponse("businessEntityEori.eoriInUse", previous, form)
         case Left(_) => getErrorResponse(s"error.$businessEntityEori.required", previous, form)
-        case Right(None) => store.update[BusinessEntityJourney](_.setEori(EORI(form.value))).flatMap(_.next)
+        case Right(None) => {
+          val result = for {
+            businessEntityJourney <- store.get[BusinessEntityJourney].toContext
+            undertakingRef <- undertaking.reference.toContext
+            eoriBE = EORI(form.value)
+            businessEntity = BusinessEntity(eoriBE, leadEORI = false) // resetting the journey as it's final CYA page
+            _ <- {
+              if (businessEntityJourney.isAmend) {
+                escService
+                  .removeMember(
+                    undertakingRef,
+                    businessEntity.copy(businessEntityIdentifier = businessEntityJourney.oldEORI.get)
+                  )
+                  .toContext
+              }
+              escService.addMember(undertakingRef, businessEntity).toContext
+            }
+            _ <- emailService.sendEmail(eoriBE, AddMemberToBusinessEntity, undertaking).toContext
+            _ <- emailService.sendEmail(eori, eoriBE, AddMemberToLead, undertaking).toContext
+            // Clear the cached undertaking so it's retrieved on the next access
+            _ <- store.delete[Undertaking].toContext
+            _ =
+              if (businessEntityJourney.isAmend)
+                auditService.sendEvent(
+                  AuditEvent.BusinessEntityUpdated(undertakingRef, request.authorityId, eori, eoriBE)
+                )
+              else
+                auditService.sendEvent(AuditEvent.BusinessEntityAdded(undertakingRef, request.authorityId, eori, eoriBE))
+            redirect <- getNext(businessEntityJourney)(eori).toContext
+          } yield redirect
+          result .fold(handleMissingSessionData("BusinessEntity Data"))(identity)
+        }
       }
 
-    withLeadUndertaking { _ =>
-      processFormSubmission[BusinessEntityJourney] { journey =>
-        eoriForm
-          .bindFromRequest()
-          .fold(
-            errors => BadRequest(eoriPage(errors, journey.previous)).toContext,
-            form => handleValidEori(form, journey.previous).toContext
-          )
-      }
-    }
-  }
-
-  def getCheckYourAnswers: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    withLeadUndertaking { _ =>
+    withLeadUndertaking { undertaking =>
       store.get[BusinessEntityJourney].flatMap {
         case Some(journey) =>
           if (!journey.isEligibleForStep) {
             Redirect(journey.previous).toFuture
           } else {
-            Ok(businessEntityCyaPage(journey.eori.value.get, journey.previous)).toFuture
+            eoriForm
+              .bindFromRequest()
+              .fold(
+                errors => BadRequest(eoriPage(errors, journey.previous)).toFuture,
+                form => handleValidEori(form, journey.previous, undertaking)
+              )
           }
         case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture
       }
-    }
-  }
-
-  def postCheckYourAnswers: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    def handleValidAnswersC(undertaking: Undertaking) = for {
-      businessEntityJourney <- store.get[BusinessEntityJourney].toContext
-      undertakingRef <- undertaking.reference.toContext
-      eoriBE <- businessEntityJourney.eori.value.toContext
-      businessEntity = BusinessEntity(eoriBE, leadEORI = false) // resetting the journey as it's final CYA page
-      _ <- {
-        if (businessEntityJourney.isAmend) {
-          escService
-            .removeMember(
-              undertakingRef,
-              businessEntity.copy(businessEntityIdentifier = businessEntityJourney.oldEORI.get)
-            )
-            .toContext
-        }
-        escService.addMember(undertakingRef, businessEntity).toContext
-      }
-      _ <- emailService.sendEmail(eoriBE, AddMemberToBusinessEntity, undertaking).toContext
-      _ <- emailService.sendEmail(eori, eoriBE, AddMemberToLead, undertaking).toContext
-      // Clear the cached undertaking so it's retrieved on the next access
-      _ <- store.delete[Undertaking].toContext
-      _ =
-        if (businessEntityJourney.isAmend)
-          auditService.sendEvent(
-            AuditEvent.BusinessEntityUpdated(undertakingRef, request.authorityId, eori, eoriBE)
-          )
-        else
-          auditService.sendEvent(AuditEvent.BusinessEntityAdded(undertakingRef, request.authorityId, eori, eoriBE))
-      redirect <- getNext(businessEntityJourney)(eori).toContext
-    } yield redirect
-
-    withLeadUndertaking { undertaking =>
-      cyaForm
-        .bindFromRequest()
-        .fold(
-          errors => throw new IllegalStateException(s"Error processing BusinessEntity CYA form: $errors"),
-          _ => handleValidAnswersC(undertaking).fold(handleMissingSessionData("BusinessEntity Data"))(identity)
-        )
     }
   }
 
@@ -337,7 +314,5 @@ class BusinessEntityController @Inject() (
         .verifying(isEoriValid)
     )(eoriEntered => FormValues(getValidEori(eoriEntered)))(eori => eori.value.drop(2).some)
   )
-
-  private val cyaForm: Form[FormValues] = Form(mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
 
 }
