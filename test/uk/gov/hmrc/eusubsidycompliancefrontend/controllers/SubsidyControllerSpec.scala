@@ -25,7 +25,6 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyControllerSpec.RemoveSubsidyRow
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{TooBig, TooSmall}
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Errors.NotInUndertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.{IncorrectFormat, Required}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
@@ -839,13 +838,6 @@ class SubsidyControllerSpec
             s"claim-eori.$IncorrectFormat"
           )
 
-        }
-
-        "yes is selected but the eori entered is not part of the undertaking" in {
-          testFormError(
-            Some(List("should-claim-eori" -> "true", "claim-eori" -> "121212121212")),
-            s"claim-eori.$NotInUndertaking"
-          )
         }
 
       }

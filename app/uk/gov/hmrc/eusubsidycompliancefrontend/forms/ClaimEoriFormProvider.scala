@@ -19,11 +19,10 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 import play.api.data.Forms.text
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.{Form, Forms, Mapping}
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Errors._
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Fields._
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{OptionalEORI, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{OptionalEORI, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
@@ -46,19 +45,11 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
     else Invalid(IncorrectFormat)
   }
 
-  private val eoriIsPartOfUndertaking = Constraint[String] { eori: String =>
-    undertaking.undertakingBusinessEntity
-      .find(_.businessEntityIdentifier == getValidEori(eori))
-      .map(_ => Valid)
-      .getOrElse(Invalid(NotInUndertaking))
-  }
-
   private val eoriNumberMapping: Mapping[String] =
     text
       .verifying(eoriEntered)
       .transform(e => getValidEori(e), (s: String) => s.drop(2))
       .verifying(enteredEoriIsValid)
-      .verifying(eoriIsPartOfUndertaking)
 
 }
 
@@ -70,7 +61,7 @@ object ClaimEoriFormProvider {
   }
 
   object Errors {
-    val NotInUndertaking = "error.not-in-undertaking"
+    val InAnotherUndertaking = "error.in-another-undertaking"
   }
 
 }

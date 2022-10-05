@@ -250,6 +250,11 @@ class SubsidyController @Inject() (
     }
   }
 
+  // TODO - changes needed are as follows
+  //  o allow eori that isn't in the undertaking
+  //  o if eori not in undertaking then fetch undertaking for that eori
+  //    + if none found redirect to 'do you want to add'
+  //    + else return to form with eori already taken error'
   def postAddClaimEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber

@@ -57,6 +57,7 @@ object BusinessEntityJourney {
 
   implicit val format: Format[BusinessEntityJourney] = Json.format[BusinessEntityJourney]
 
+  // TODO - these should be moved to util since they're referenced in a different context
   def isEoriPrefixGB(eoriEntered: String) = eoriEntered.startsWith(eoriPrefix)
 
   def getValidEori(eoriEntered: String) =
