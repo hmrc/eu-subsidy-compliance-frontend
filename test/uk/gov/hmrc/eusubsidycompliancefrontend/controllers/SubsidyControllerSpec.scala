@@ -879,17 +879,38 @@ class SubsidyControllerSpec
           checkIsRedirect(performAction(inputAnswer: _*), routes.SubsidyController.getAddClaimPublicAuthority().url)
         }
 
-        "user selected yes and entered a valid eori number part of the existing undertaking" in {
+        "user selected yes and entered a valid eori part of the existing undertaking" in {
           testRedirect(
             OptionalEORI("true", "123456789013".some),
             List("should-claim-eori" -> "true", "claim-eori" -> "123456789013")
           )
         }
 
-        "user selected yes and entered a valid eori number with GB" in {
+        "user selected yes and entered a valid eori with GB prefix part of the existing undertaking" in {
           testRedirect(
             OptionalEORI("true", "GB123456789013".some),
             List("should-claim-eori" -> "true", "claim-eori" -> "GB123456789013")
+          )
+        }
+
+        "user selected yes and entered a valid EORI that is not part of the existing or any other undertaking" in {
+          val optionalEORI = OptionalEORI("true", eori3.some)
+
+          val updatedSubsidyJourney = update(journey, optionalEORI.some)
+
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(journey.some))
+            mockRetrieveUndertaking(eori3)(Option.empty.toFuture)
+            mockUpdate[SubsidyJourney](_ => update(journey, optionalEORI.some), eori1)(
+              Right(updatedSubsidyJourney)
+            )
+          }
+
+          checkIsRedirect(
+            performAction("should-claim-eori" -> optionalEORI.setValue, "claim-eori" -> eori3),
+            routes.SubsidyController.getAddClaimBusiness().url
           )
         }
 
