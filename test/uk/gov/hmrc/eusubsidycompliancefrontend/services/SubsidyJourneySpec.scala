@@ -26,9 +26,9 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, OptionalEORI, OptionalTraderRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, OptionalClaimEori, OptionalTraderRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{claimAmountEuros, claimAmountPounds}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{claimAmountEuros, claimAmountPounds, eori1}
 
 class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures {
 
@@ -51,7 +51,7 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
     }
 
     "return an updated instance with the specified value when setClaimEori is called" in {
-      val value = OptionalEORI("true", "121212121212".some)
+      val value = OptionalClaimEori("true", "121212121212".some)
       SubsidyJourney().setClaimEori(value) shouldBe SubsidyJourney(addClaimEori = AddClaimEoriFormPage(value.some))
     }
 
@@ -125,6 +125,27 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
         redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers().url)
       }
 
+      "return a redirect to the add claim business page if an eori has been entered that is not part of any undertaking" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routes.SubsidyController.getAddClaimEori().url)
+        val result = SubsidyJourney(
+          existingTransactionId = SubsidyRef("SomeRef").some,
+          claimAmount = ClaimAmountFormPage(claimAmountEuros.some),
+          addClaimEori = AddClaimEoriFormPage(OptionalClaimEori("true", eori1.some, addToUndertaking = true).some)
+        ).next
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.SubsidyController.getAddClaimBusiness().url)
+      }
+
+      "return a redirect to the add public authority page if an eori has been entered that is part of the current undertaking" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routes.SubsidyController.getAddClaimEori().url)
+        val result = SubsidyJourney(
+          existingTransactionId = SubsidyRef("SomeRef").some,
+          claimAmount = ClaimAmountFormPage(claimAmountEuros.some),
+          addClaimEori = AddClaimEoriFormPage(OptionalClaimEori("false", Option.empty).some)
+        ).next
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.SubsidyController.getAddClaimPublicAuthority().url)
+      }
     }
 
     "when previous is called" should {

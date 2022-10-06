@@ -22,7 +22,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Fields._
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.OptionalEORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.OptionalClaimEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking}
 
@@ -56,7 +56,7 @@ class ClaimEoriFormProviderSpec extends AnyWordSpecLike with Matchers {
 
   private def validateAndCheckSuccess(radioButton: String, eoriNumber: Option[String]) = {
     val result = processForm(radioButton, eoriNumber)
-    result mustBe Right(OptionalEORI(radioButton, eoriNumber.map(getValidEori)))
+    result mustBe Right(OptionalClaimEori(radioButton, eoriNumber.map(getValidEori)))
   }
 
   private def validateAndCheckError(

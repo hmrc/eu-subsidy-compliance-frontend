@@ -37,6 +37,7 @@ case class SubsidyJourney(
   claimAmount: ClaimAmountFormPage = ClaimAmountFormPage(),
   convertedClaimAmountConfirmation: ConvertedClaimAmountConfirmationPage = ConvertedClaimAmountConfirmationPage(),
   addClaimEori: AddClaimEoriFormPage = AddClaimEoriFormPage(),
+  addClaimBusiness: AddClaimBusinessFormPage = AddClaimBusinessFormPage(),
   publicAuthority: PublicAuthorityFormPage = PublicAuthorityFormPage(),
   traderRef: TraderRefFormPage = TraderRefFormPage(),
   cya: CyaFormPage = CyaFormPage(),
@@ -48,6 +49,7 @@ case class SubsidyJourney(
     claimAmount,
     convertedClaimAmountConfirmation,
     addClaimEori,
+    addClaimBusiness,
     publicAuthority,
     traderRef,
     cya
@@ -65,8 +67,12 @@ case class SubsidyJourney(
         Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
     else if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion)
       Redirect(routes.SubsidyController.getAddClaimEori()).toFuture
-    else
-      super.next
+    else if (addClaimEori.isCurrentPage)
+      if (hasBusinessEoriToAdd)
+        Redirect(routes.SubsidyController.getAddClaimBusiness()).toFuture
+      else
+        Redirect(routes.SubsidyController.getAddClaimPublicAuthority()).toFuture
+    else super.next
 
   override def previous(implicit request: Request[_]): Journey.Uri =
     if (isAmend)
@@ -94,13 +100,13 @@ case class SubsidyJourney(
 
   // When navigating back or forward we should skip the currency conversion step if the user has already entered a
   // claim amount in Euros.
-  private def shouldSkipCurrencyConversion: Boolean = claimAmountInEuros
+  private def shouldSkipCurrencyConversion: Boolean = claimAmountIsInEuros
 
   def setClaimAmount(c: ClaimAmount): SubsidyJourney = this.copy(claimAmount = claimAmount.copy(value = c.some))
   def setConvertedClaimAmount(c: ClaimAmount): SubsidyJourney =
     this.copy(convertedClaimAmountConfirmation = convertedClaimAmountConfirmation.copy(value = c.some))
   def setClaimDate(d: DateFormValues): SubsidyJourney = this.copy(claimDate = claimDate.copy(value = d.some))
-  def setClaimEori(oe: OptionalEORI): SubsidyJourney = this.copy(addClaimEori = addClaimEori.copy(oe.some))
+  def setClaimEori(oe: OptionalClaimEori): SubsidyJourney = this.copy(addClaimEori = addClaimEori.copy(oe.some))
   def setPublicAuthority(a: String): SubsidyJourney = this.copy(publicAuthority = publicAuthority.copy(a.some))
   def setTraderRef(o: OptionalTraderRef): SubsidyJourney = this.copy(traderRef = traderRef.copy(o.some))
   def setCya(v: Boolean): SubsidyJourney = this.copy(cya = cya.copy(v.some))
@@ -108,9 +114,11 @@ case class SubsidyJourney(
   def getClaimAmount: Option[BigDecimal] = claimAmountToBigDecimal(claimAmount)
   def getConvertedClaimAmount: Option[BigDecimal] = claimAmountToBigDecimal(convertedClaimAmountConfirmation)
 
-  def claimAmountInEuros: Boolean = claimAmount.value.map(_.currencyCode).contains(EUR)
+  def claimAmountIsInEuros: Boolean = claimAmount.value.map(_.currencyCode).contains(EUR)
 
   private def claimAmountToBigDecimal(f: FormPage[ClaimAmount]) = f.value.map(a => BigDecimal(a.amount))
+
+  private def hasBusinessEoriToAdd = addClaimEori.value.exists(_.value.isDefined)
 }
 
 object SubsidyJourney {
@@ -130,8 +138,11 @@ object SubsidyJourney {
     case class ConvertedClaimAmountConfirmationPage(value: Form[ClaimAmount] = None) extends FormPage[ClaimAmount] {
       def uri = controller.getConfirmClaimAmount().url
     }
-    case class AddClaimEoriFormPage(value: Form[OptionalEORI] = None) extends FormPage[OptionalEORI] {
+    case class AddClaimEoriFormPage(value: Form[OptionalClaimEori] = None) extends FormPage[OptionalClaimEori] {
       def uri = controller.getAddClaimEori().url
+    }
+    case class AddClaimBusinessFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
+      def uri = controller.getAddClaimBusiness().url
     }
     case class PublicAuthorityFormPage(value: Form[String] = None) extends FormPage[String] {
       def uri = controller.getAddClaimPublicAuthority().url
@@ -147,6 +158,7 @@ object SubsidyJourney {
     object ClaimAmountFormPage { implicit val claimAmountFormPageFormat: OFormat[ClaimAmountFormPage] = Json.format }
     object ConvertedClaimAmountConfirmationPage { implicit val convertedClaimAmountConfirmationPageFormat: OFormat[ConvertedClaimAmountConfirmationPage] = Json.format }
     object AddClaimEoriFormPage { implicit val claimAmountFormPageFormat: OFormat[AddClaimEoriFormPage] = Json.format }
+    object AddClaimBusinessFormPage { implicit val claimBusinessFormPageFormat: OFormat[AddClaimBusinessFormPage] = Json.format }
     object PublicAuthorityFormPage { implicit val claimAmountFormPageFormat: OFormat[PublicAuthorityFormPage] = Json.format }
     object TraderRefFormPage { implicit val claimAmountFormPageFormat: OFormat[TraderRefFormPage] = Json.format }
     object CyaFormPage { implicit val claimAmountFormPageFormat: OFormat[CyaFormPage] = Json.format }

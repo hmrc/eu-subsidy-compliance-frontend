@@ -727,7 +727,7 @@ class SubsidyControllerSpec
               val inputText = doc.select(".govuk-input").attr("value")
 
               subsidyJourney.addClaimEori.value match {
-                case Some(OptionalEORI(input, eori)) =>
+                case Some(OptionalClaimEori(input, eori, _)) =>
                   selectedOptions.attr("value") shouldBe input
                   inputText shouldBe eori.map(_.drop(2)).getOrElse("")
                 case _ => selectedOptions.isEmpty shouldBe true
@@ -746,7 +746,7 @@ class SubsidyControllerSpec
         "the user has already answered the question" in {
           List(
             subsidyJourney,
-            subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage(OptionalEORI("false", None).some))
+            subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage(OptionalClaimEori("false", None).some))
           )
             .foreach { subsidyJourney =>
               withClue(s" for each subsidy journey $subsidyJourney") {
@@ -788,7 +788,7 @@ class SubsidyControllerSpec
         "call to update subsidy journey fails" in {
 
           def update(subsidyJourney: SubsidyJourney) =
-            subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage(OptionalEORI("false", None).some))
+            subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage(OptionalClaimEori("false", None).some))
 
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
@@ -862,10 +862,10 @@ class SubsidyControllerSpec
           traderRef = TraderRefFormPage()
         )
 
-        def update(subsidyJourney: SubsidyJourney, formValues: Option[OptionalEORI]) =
+        def update(subsidyJourney: SubsidyJourney, formValues: Option[OptionalClaimEori]) =
           subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage(formValues))
 
-        def testRedirect(optionalEORI: OptionalEORI, inputAnswer: List[(String, String)]): Unit = {
+        def testRedirect(optionalEORI: OptionalClaimEori, inputAnswer: List[(String, String)]): Unit = {
           val updatedSubsidyJourney = update(journey, optionalEORI.some)
 
           inSequence {
@@ -881,20 +881,20 @@ class SubsidyControllerSpec
 
         "user selected yes and entered a valid eori part of the existing undertaking" in {
           testRedirect(
-            OptionalEORI("true", "123456789013".some),
+            OptionalClaimEori("true", "123456789013".some),
             List("should-claim-eori" -> "true", "claim-eori" -> "123456789013")
           )
         }
 
         "user selected yes and entered a valid eori with GB prefix part of the existing undertaking" in {
           testRedirect(
-            OptionalEORI("true", "GB123456789013".some),
+            OptionalClaimEori("true", "GB123456789013".some),
             List("should-claim-eori" -> "true", "claim-eori" -> "GB123456789013")
           )
         }
 
         "user selected yes and entered a valid EORI that is not part of the existing or any other undertaking" in {
-          val optionalEORI = OptionalEORI("true", eori3.some)
+          val optionalEORI = OptionalClaimEori("true", eori3.some)
 
           val updatedSubsidyJourney = update(journey, optionalEORI.some)
 
@@ -915,7 +915,7 @@ class SubsidyControllerSpec
         }
 
         "user selected no " in {
-          testRedirect(OptionalEORI("false", None), List("should-claim-eori" -> "false"))
+          testRedirect(OptionalClaimEori("false", None), List("should-claim-eori" -> "false"))
         }
 
       }

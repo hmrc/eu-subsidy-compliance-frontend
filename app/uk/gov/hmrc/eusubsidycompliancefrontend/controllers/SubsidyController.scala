@@ -243,7 +243,7 @@ class SubsidyController @Inject() (
       renderFormIfEligible { journey =>
         val claimEoriForm = ClaimEoriFormProvider(undertaking).form
         val updatedForm = journey.addClaimEori.value.fold(claimEoriForm) { optionalEORI =>
-          claimEoriForm.fill(OptionalEORI(optionalEORI.setValue, optionalEORI.value))
+          claimEoriForm.fill(OptionalClaimEori(optionalEORI.setValue, optionalEORI.value))
         }
         Ok(addClaimEoriPage(updatedForm, journey.previous))
       }
@@ -261,7 +261,7 @@ class SubsidyController @Inject() (
       val claimEoriForm = ClaimEoriFormProvider(undertaking).form
 
       // TODO - will need some sort of flag to indicate that this can be added (add to OptionalEORI?)
-      def storeOptionalEoriAndRedirect(o: OptionalEORI) = {
+      def storeOptionalEoriAndRedirect(o: OptionalClaimEori) = {
         println(s"Storing optional eori: $o")
         store
           .update[SubsidyJourney](_.setClaimEori(o))
@@ -269,10 +269,10 @@ class SubsidyController @Inject() (
           .flatMap(_.next)
       }
 
-      def handleValidFormSubmission(j: SubsidyJourney, o: OptionalEORI): Future[Result] =
+      def handleValidFormSubmission(j: SubsidyJourney, o: OptionalClaimEori): Future[Result] =
         o match {
-          case OptionalEORI("false", None) => storeOptionalEoriAndRedirect(o)
-          case OptionalEORI("true", Some(e)) =>
+          case OptionalClaimEori("false", None, _) => storeOptionalEoriAndRedirect(o)
+          case OptionalClaimEori("true", Some(e), _) =>
             val enteredEori = EORI(e)
 
             if (undertaking.hasEORI(enteredEori))
@@ -364,7 +364,7 @@ class SubsidyController @Inject() (
   def getCheckAnswers: Action[AnyContent] = verifiedEmail.async { implicit request =>
 
     def getEuroAmount(j: SubsidyJourney) =
-      if (j.claimAmountInEuros) j.getClaimAmount
+      if (j.claimAmountIsInEuros) j.getClaimAmount
       else j.getConvertedClaimAmount
 
     withLeadUndertaking { _ =>
@@ -530,7 +530,7 @@ object SubsidyController {
             publicAuthority = Some(journey.publicAuthority.value.get),
             traderReference = journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
             nonHMRCSubsidyAmtEUR =
-              if (journey.claimAmountInEuros)
+              if (journey.claimAmountIsInEuros)
                 SubsidyAmount(journey.getClaimAmount.getOrElse(sys.error("Claim amount Missing")))
               else
                 SubsidyAmount(journey.getConvertedClaimAmount.getOrElse(sys.error("Converted claim amount Missing"))),
