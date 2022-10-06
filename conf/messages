@@ -13,7 +13,6 @@ common.accept-continue=Accept and continue
 common.continue.only=Continue
 common.accept=Accept and send
 common.go-account-home = Go to homepage
-common.go-to-homepage = Go to homepage
 common.cya.change = Change
 
 continue.button=Save and continue
@@ -143,18 +142,14 @@ sector.hint.1=This sector includes couriers and hauliers who get paid by someone
 sector.hint.2=If any part of your business is involved in the production, processing or marketing of fishery and aquaculture products. A ‘fishery product’ means aquatic organisms resulting from any fishing activity or products derived from them. The cap for this sector is €30,000
 sector.hint.3=An ‘agricultural product’ can be products such as: live animals, meat and edible meat offal, dairy produce, birds’ eggs, natural honey. The cap for this sector is €20,000
 
-addBusinessIntent.title=Are there any other businesses in your undertaking?
-addBusinessIntent.p1=You need to tell us about any businesses in your undertaking that receive payments for customs subsidies (Custom Duty waivers) or non-customs subsidies. These payments are referred to as 'de minimis aid'.
+addBusinessIntent.title = Are there any other businesses in your undertaking?
+addBusinessIntent.p1 = You need tell us about any businesses in your undertaking that receive payments for customs subsidies or non-customs subsidies. These payments are referred to as ‘de minimis aid’.
 addBusinessIntent.hint=Are there other businesses in your undertaking
 addBusinessIntent.error.required=Select yes if you need to add a business to your undertaking?
 
 confirmEmail.no.label=Enter an email address
 confirmEmail.title=Is this the email address you want to use to receive notifications?
-<<<<<<< HEAD
 confirmEmail.p1 = This email address will be used to send you notifications from this service.
-=======
-confirmEmail.p1=This email address will be used to send you notifications from this service.
->>>>>>> create undertaking content changes
 
 inputEmail.title=What is your email address?
 inputEmail.label=Enter an email
@@ -162,15 +157,13 @@ inputEmail.p=This email address will be used to send you notifications from this
 
 email.error.email=Enter an email address in the correct format, like name@example.com
 
-undertaking.cya.title=Check your account details
-undertaking.cya.change.hidden.name = name of undertaking
+undertaking.cya.title=Check your answers
 undertaking.cya.change.hidden.industry-sector = industry sector
-undertaking.cya.change.hidden.verified-email = verified email
-undertaking.cya.summary-list.name.key=Name of undertaking
+undertaking.cya.change.hidden.verified-email = email address
 undertaking.cya.summary-list.eori.key=EORI number
 undertaking.cya.summary-list.sector.key=Industry sector
 undertaking.cya.summary-list.phone.key=Telephone number
-undertaking.cya.summary-list.verified-email=Verified email
+undertaking.cya.summary-list.verified-email=Email address
 undertaking.cya.p=By sending these details you are confirming that, to the best of your knowledge, they are correct.
 
 addBusiness.empty.title=Are there other businesses in your undertaking?
@@ -213,16 +206,9 @@ removeBusinessEntity.hint = Removing a business from a single undertaking does n
 removeBusinessEntity.error.required = Select yes if you want to remove business entity.
 removeBusiness.error.required = Select yes if you want to remove business entity.
 
-undertaking.confirmation.title=You have successfully created your single undertaking account
-undertaking.confirmation.h2=Account details
-undertaking.confirmation.undertaking-name=Undertaking name
-undertaking.confirmation.name={0}
-undertaking.confirmation.ref.p1=Account administrator
-undertaking.confirmation.ref.eori=EORI {0}
-undertaking.confirmation.p1=You are now the lead for this account.
-undertaking.confirmation.h2-2=What happens next
-undertaking.confirmation.p2=We have sent you a confirmation email.
-undertaking.confirmation.p3= You can now add businesses to your undertaking using the <a href="{0}">Add and remove businesses</a> link in the 'Undertaking administration' section of the homepage.
+undertaking.confirmation.title = Undertaking registered
+undertaking.confirmation.p1 = We have sent you a confirmation email.
+undertaking.confirmation.p2 = You can now add businesses to your undertaking using the <a href="{0}">Add and remove businesses</a> link in the ‘Undertaking administration’ section of the homepage.
 
 
 lead-account-homepage.title = Manage your undertaking

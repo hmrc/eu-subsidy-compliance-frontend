@@ -17,31 +17,18 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H2, P}
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
     button: components.Button,
-    govukNotificationBanner : GovukNotificationBanner,
-    govukSummaryList: GovukSummaryList
+    govukSummaryList: GovukSummaryList,
+    govukPanel : GovukPanel
 )
 
 
 @(ref: UndertakingRef, eori: EORI, intentToAddBusiness: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
-@html = {
-    <h3 class="govuk-notification-banner__heading">@messages("undertaking.confirmation.h2")</h3>
-    @govukSummaryList(SummaryList(
-        rows = Seq(
-            SummaryListRow(
-                key = Key(content = Text(messages("undertaking.confirmation.ref.p1"))),
-                value = Value(content = Text(messages("undertaking.confirmation.ref.eori", eori)))
-            )
-        ),
-        classes = "govuk-summary-list--no-border"
-    ))
-}
 
 @layout(
     pageTitle = Some(messages("undertaking.confirmation.title")),
@@ -52,21 +39,17 @@
     @formHelper(action = controllers.routes.UndertakingController.postConfirmation) {
         <input type=hidden name=confirm value=true>
 
-        @H1(messages("undertaking.confirmation.title"), Some("govuk-heading-l"))
-
-        @govukNotificationBanner(NotificationBanner(
-            content = HtmlContent(html),
-            bannerType = Some("success"),
-            disableAutoFocus = Some(true)
+        @govukPanel(Panel(
+            title = Text(messages("undertaking.confirmation.title")),
+            classes = "govuk-!-margin-bottom-7"
         ))
 
-        @H2(messages("undertaking.confirmation.h2-2"))
-        @P(messages("undertaking.confirmation.p2"))
+        @P(messages("undertaking.confirmation.p1"))
 
         @if(intentToAddBusiness) {
-            <p class="govuk-body">@Html(messages("undertaking.confirmation.p3", controllers.routes.BusinessEntityController.getAddBusinessEntity().url))</p>
+            <p class="govuk-body">@Html(messages("undertaking.confirmation.p2", controllers.routes.BusinessEntityController.getAddBusinessEntity().url))</p>
         }
 
-        @button("common.continue.only")
+        @button("common.go-account-home")
     }
 }
