@@ -260,26 +260,37 @@ class SubsidyController @Inject() (
       implicit val eori: EORI = request.eoriNumber
       val claimEoriForm = ClaimEoriFormProvider(undertaking).form
 
-      // TODO - here we need to check for an existing Undertaking
-      // TODO - can we simplify this so the eori isn't an option?
-      def handleValidFormSubmission(o: OptionalEORI) =
-        // TODO - we should probably redirect back to the form instead
-        o.value.fold(throw new IllegalStateException("No EORI value when one expected")) { rawEori =>
-          val enteredEori = EORI(rawEori)
+      // TODO - will need some sort of flag to indicate that this can be added (add to OptionalEORI?)
+      def storeOptionalEoriAndRedirect(o: OptionalEORI) = {
+        println(s"Storing optional eori: $o")
+        store
+          .update[SubsidyJourney](_.setClaimEori(o))
+          // TODO - this will need to handle the new add business page
+          .flatMap(_.next)
+      }
 
-          if (undertaking.hasEORI(enteredEori)) ???
-          else ???
+      def handleValidFormSubmission(j: SubsidyJourney, o: OptionalEORI): Future[Result] =
+        o match {
+          case OptionalEORI("false", None) => storeOptionalEoriAndRedirect(o)
+          case OptionalEORI("true", Some(e)) =>
+            val enteredEori = EORI(e)
 
-          // Is eori in this undertaking already?
-          escService
-            .retrieveUndertaking(EORI(eori))
-            .toContext
-            // TODO - In this instance we need to redirect to a new page.
-            .fold(store.update[SubsidyJourney](_.setClaimEori(o)).flatMap(_.next)) { _ =>
-              // The EORI already belongs to an undertaking.
-              // TODO - redirect back to form with appropriate error message.
-              BadRequest(addClaimEoriPage(claimEoriForm, routes.SubsidyController.getAddClaimEori().url)).toFuture
-            }
+            if (undertaking.hasEORI(enteredEori))
+              storeOptionalEoriAndRedirect(o)
+            else
+              escService
+                .retrieveUndertaking(enteredEori)
+                .toContext
+                .foldF(storeOptionalEoriAndRedirect(o)) { _ =>
+                  BadRequest(
+                    addClaimEoriPage(
+                      claimEoriForm.withError("claim-eori", ClaimEoriFormProvider.Errors.InAnotherUndertaking),
+                      j.previous
+                    )
+                  ).toFuture
+                }
+          // Default case. Should never happen if form submitted via our frontend.
+          case _ => Redirect(routes.SubsidyController.getAddClaimEori()).toFuture
         }
 
       processFormSubmission[SubsidyJourney] { journey =>
@@ -287,11 +298,19 @@ class SubsidyController @Inject() (
           .bindFromRequest()
           .fold(
             formWithErrors => BadRequest(addClaimEoriPage(formWithErrors, journey.previous)).toContext,
-            handleValidFormSubmission
+            // TODO - review this,
+            o => handleValidFormSubmission(journey, o).toContext
           )
       }
-
     }
+  }
+
+  def getAddClaimBusiness() = verifiedEmail.async { implicit request =>
+    Ok("").toFuture
+  }
+
+  def postAddClaimBusiness() = verifiedEmail.async { implicit request =>
+    Ok("").toFuture
   }
 
   def getAddClaimPublicAuthority: Action[AnyContent] = verifiedEmail.async { implicit request =>

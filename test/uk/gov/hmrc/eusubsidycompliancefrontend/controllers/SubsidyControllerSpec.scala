@@ -23,7 +23,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyControllerSpec.RemoveSubsidyRow
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimAmountFormProvider, ClaimEoriFormProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{TooBig, TooSmall}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.{IncorrectFormat, Required}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
@@ -840,6 +840,20 @@ class SubsidyControllerSpec
 
         }
 
+        "yes is selected but eori entered is part of another undertaking" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+            mockRetrieveUndertaking(eori3)(undertaking.some.toFuture)
+          }
+          checkFormErrorIsDisplayed(
+            performAction("should-claim-eori" -> "true", "claim-eori" -> eori3),
+            messageFromMessageKey("add-claim-eori.title"),
+            messageFromMessageKey("claim-eori." + ClaimEoriFormProvider.Errors.InAnotherUndertaking)
+          )
+        }
+
       }
 
       "redirect to next page" when {
@@ -865,21 +879,21 @@ class SubsidyControllerSpec
           checkIsRedirect(performAction(inputAnswer: _*), routes.SubsidyController.getAddClaimPublicAuthority().url)
         }
 
-        "user selected yes and enter a valid  eori number" in {
+        "user selected yes and entered a valid eori number part of the existing undertaking" in {
           testRedirect(
             OptionalEORI("true", "123456789013".some),
             List("should-claim-eori" -> "true", "claim-eori" -> "123456789013")
           )
         }
 
-        "user selected yes and enter a valid eori number with GB" in {
+        "user selected yes and entered a valid eori number with GB" in {
           testRedirect(
             OptionalEORI("true", "GB123456789013".some),
             List("should-claim-eori" -> "true", "claim-eori" -> "GB123456789013")
           )
         }
 
-        "user selected No " in {
+        "user selected no " in {
           testRedirect(OptionalEORI("false", None), List("should-claim-eori" -> "false"))
         }
 
