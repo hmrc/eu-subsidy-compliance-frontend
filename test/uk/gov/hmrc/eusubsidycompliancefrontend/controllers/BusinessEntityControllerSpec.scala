@@ -37,7 +37,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.ge
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{businessEntityJourney, _}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.UpstreamErrorResponse
 
@@ -350,30 +350,6 @@ class BusinessEntityControllerSpec
 
         }
 
-        "call to update business entity journey fails" in {
-
-          def update(j: BusinessEntityJourney) = j.copy(eori = j.eori.copy(value = Some(EORI("123456789010"))))
-
-          val businessEntityJourney = BusinessEntityJourney()
-            .copy(
-              addBusiness = AddBusinessFormPage(true.some),
-              eori = AddEoriFormPage(eori1.some)
-            )
-
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-            mockRetrieveUndertakingWithErrorResponse(eori4)(Right(None))
-            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(
-              Left(ConnectorError(exception))
-            )
-          }
-
-          assertThrows[Exception](await(performAction("businessEntityEori" -> "123456789010")))
-
-        }
-
       }
 
       "show a form error" when {
@@ -447,7 +423,7 @@ class BusinessEntityControllerSpec
 
       "redirect to the account home page" when {
 
-        "user is not an undertaking lead" in {
+        "user is not an add business entity page" in {
           testLeadOnlyRedirect(() => performAction())
         }
 
@@ -455,13 +431,13 @@ class BusinessEntityControllerSpec
           val businessEntityJourney = BusinessEntityJourney()
             .copy(
               addBusiness = AddBusinessFormPage(true.some),
-              eori = AddEoriFormPage(eori1.some)
+              eori = AddEoriFormPage(None)
             )
 
+          def updatedBusinessJourney() =
+              businessEntityJourney.copy(eori = businessEntityJourney.eori.copy(value = None))
           def update(j: BusinessEntityJourney, eoriEntered: EORI) =
             j.copy(eori = j.eori.copy(value = Some(eoriEntered)))
-          def updatedBusinessJourney(eoriEntered: EORI) =
-            businessEntityJourney.copy(eori = businessEntityJourney.eori.copy(value = Some(eoriEntered)))
           List("123456789010", "GB123456789013").foreach { eoriEntered =>
             withClue(s" For eori entered :: $eoriEntered") {
               val validEori = EORI(getValidEori(eoriEntered))
@@ -469,266 +445,24 @@ class BusinessEntityControllerSpec
                 mockAuthWithEnrolmentAndValidEmail()
                 mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
                 mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+
                 mockRetrieveUndertakingWithErrorResponse(validEori)(Right(None))
-                mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney, validEori), eori1)(
-                  Right(updatedBusinessJourney(validEori))
-                )
+                mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+                mockAddMember(undertakingRef, BusinessEntity(validEori, false))(Right(undertakingRef))
+                mockSendEmail(validEori, AddMemberToBusinessEntity, undertaking)(Right(EmailSent))
+                mockSendEmail(eori1, validEori, AddMemberToLead, undertaking)(Right(EmailSent))
+                mockDelete[Undertaking](eori1)(Right(()))
+                mockSendAuditEvent(AuditEvent.BusinessEntityAdded(undertakingRef, "1123", eori1, validEori))
+                mockPut[BusinessEntityJourney](updatedBusinessJourney().copy(addBusiness = AddBusinessFormPage(None)), eori1)(Right(BusinessEntityJourney()))
               }
               checkIsRedirect(
                 performAction("businessEntityEori" -> eoriEntered),
-                routes.BusinessEntityController.getCheckYourAnswers().url
+                routes.BusinessEntityController.getAddBusinessEntity().url
               )
             }
-
           }
-
         }
       }
-
-    }
-
-    "handling request to get check your answers page" must {
-
-      def performAction() =
-        controller.getCheckYourAnswers(FakeRequest("GET", routes.BusinessEntityController.getCheckYourAnswers().url))
-
-      "throw technical error" when {
-
-        val exception = new Exception("oh no!")
-        "Call to fetch Business Entity journey fails" in {
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
-      }
-
-      "redirect" when {
-
-        "call to fetch Business Entity journey returns journey without eori" in {
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.copy(eori = AddEoriFormPage()).some))
-          }
-          redirectLocation(performAction()) shouldBe Some(routes.BusinessEntityController.getEori().url)
-        }
-
-        "call to fetch Business Entity journey returns Nothing" in {
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(None))
-          }
-          checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity().url)
-        }
-      }
-
-      "display the page" in {
-
-        val previousUrl = routes.BusinessEntityController.getEori().url
-        inSequence {
-          mockAuthWithEnrolmentAndValidEmail()
-          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-          mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-        }
-
-        checkPageIsDisplayed(
-          performAction(),
-          messageFromMessageKey("businessEntity.cya.title"),
-          { doc =>
-            doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
-            val rows =
-              doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
-                val question = element.select(".govuk-summary-list__key").text()
-                val answer = element.select(".govuk-summary-list__value").text()
-                val changeUrl = element.select(".govuk-link").attr("href")
-                CheckYourAnswersRowBE(question, answer, changeUrl)
-              }
-            rows shouldBe expectedRows(eori1)
-          }
-        )
-      }
-
-      "redirect to the account home page" when {
-        "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(performAction)
-        }
-      }
-
-    }
-
-    "handling request to post check yor answers" must {
-      def performAction(data: (String, String)*) = controller
-        .postCheckYourAnswers(
-          FakeRequest("POST", routes.BusinessEntityController.getCheckYourAnswers().url)
-            .withFormUrlEncodedBody(data: _*)
-        )
-
-      "throw technical error" when {
-        val exception = new Exception("oh no")
-
-        "call to get business entity fails" in {
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction("cya" -> "true")))
-        }
-
-        "call to get business entity returns nothing" in {
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(None))
-          }
-          assertThrows[Exception](await(performAction("cya" -> "true")))
-        }
-
-        "call to get business entity  return  without EORI" in {
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.copy(eori = AddEoriFormPage(None)).some))
-          }
-          assertThrows[Exception](await(performAction("cya" -> "true")))
-        }
-
-        "call to add member to BE undertaking fails" in {
-
-          val businessEntity = BusinessEntity(eori2, leadEORI = false)
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
-            mockAddMember(undertakingRef, businessEntity)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction("cya" -> "true")))
-        }
-
-        "call to send email fails" in {
-          val businessEntity = BusinessEntity(businessEntityIdentifier = eori2, leadEORI = false)
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney1.some))
-            mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
-            mockSendEmail(eori2, AddMemberToBusinessEntity, undertaking)(Left(ConnectorError(exception)))
-          }
-
-          assertThrows[Exception](await(performAction("cya" -> "true")))
-        }
-
-      }
-
-      "post successful for creation" when {
-
-        def testRedirection(
-          businessEntityJourney: BusinessEntityJourney,
-          nextCall: String,
-          resetBusinessJourney: BusinessEntityJourney,
-          emailSendResultBE: EmailSendResult = EmailSent,
-          emailSendResultLead: EmailSendResult = EmailSent
-        ): Unit = {
-          val businessEntity = BusinessEntity(eori2, leadEORI = false)
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-            mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
-            mockSendEmail(eori2, AddMemberToBusinessEntity, undertaking)(Right(emailSendResultBE))
-            mockSendEmail(eori1, eori2, AddMemberToLead, undertaking)(Right(emailSendResultLead))
-            mockDelete[Undertaking](eori1)(Right(()))
-            mockSendAuditEvent(businessEntityAddedEvent)
-            mockPut[BusinessEntityJourney](resetBusinessJourney, eori1)(Right(BusinessEntityJourney()))
-          }
-          checkIsRedirect(performAction("cya" -> "true"), nextCall)
-        }
-
-        "all api calls are successful and user on Select lead journey" in {
-          testRedirection(
-            businessEntityJourneyLead,
-            routes.SelectNewLeadController.getSelectNewLead().url,
-            BusinessEntityJourney(isLeadSelectJourney = true.some)
-          )
-        }
-
-        "all api calls are successful and user on normal add business entity journey" when {
-          "Business entity to be added has no email address and return 404" in {
-            testRedirection(
-              businessEntityJourney1,
-              routes.BusinessEntityController.getAddBusinessEntity().url,
-              BusinessEntityJourney(),
-              EmailSendResult.EmailNotSent
-            )
-          }
-          "Business entity to be added has unverified email address" in {
-            testRedirection(
-              businessEntityJourney1,
-              routes.BusinessEntityController.getAddBusinessEntity().url,
-              BusinessEntityJourney(),
-              EmailSendResult.EmailNotSent
-            )
-          }
-          "Business entity to be added has undeliverable email address" in {
-            testRedirection(
-              businessEntityJourney1,
-              routes.BusinessEntityController.getAddBusinessEntity().url,
-              BusinessEntityJourney(),
-              EmailSendResult.EmailNotSent
-            )
-          }
-
-        }
-      }
-
-      "edit post successful for edit" when {
-
-        def testRedirection(
-          businessEntityJourney: BusinessEntityJourney,
-          nextCall: String,
-          updatedBusinessJourney: BusinessEntityJourney
-        ): Unit = {
-          val businessEntity = BusinessEntity(eori2, leadEORI = false)
-
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-            mockRemoveMember(
-              undertakingRef,
-              businessEntity.copy(businessEntityIdentifier = businessEntityJourney.oldEORI.get)
-            )(Right(undertakingRef))
-            mockAddMember(undertakingRef, businessEntity)(Right(undertakingRef))
-            mockSendEmail(eori2, AddMemberToBusinessEntity, undertaking)(Right(EmailSent))
-            mockSendEmail(eori1, eori2, AddMemberToLead, undertaking)(Right(EmailSent))
-            mockDelete[Undertaking](eori1)(Right(()))
-            mockSendAuditEvent(businessEntityUpdatedEvent)
-            mockPut[BusinessEntityJourney](updatedBusinessJourney, eori1)(Right(BusinessEntityJourney()))
-          }
-          checkIsRedirect(performAction("cya" -> "true"), nextCall)
-        }
-
-        "all api calls are successful and is normal edit business entity journey " in {
-          testRedirection(
-            businessEntityJourney1.copy(oldEORI = Some(eori4)),
-            routes.BusinessEntityController.getAddBusinessEntity().url,
-            BusinessEntityJourney()
-          )
-        }
-      }
-
-      "redirect to the account home page" when {
-        "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(() => performAction())
-        }
-      }
-
     }
 
     "handling request to get remove yourself Business entity" must {
