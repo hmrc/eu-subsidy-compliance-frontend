@@ -168,20 +168,14 @@ undertaking.cya.summary-list.phone.key = Telephone number
 undertaking.cya.summary-list.verified-email = Email address
 undertaking.cya.p = By sending these details you are confirming that, to the best of your knowledge, they are correct.
 
-addBusiness.empty.title=Are there other businesses in your undertaking?
-addBusiness.p1=This service is for businesses importing into Northern Ireland who are claiming Customs Duty waivers.
-addBusiness.p2=For this service, HMRC needs to group together related businesses within a company or organisation into a ‘single undertaking’. Businesses within an undertaking are identified by their EORI number.
-addBusiness.p3=You must add any business to this single undertaking that has claimed a Customs Duty waiver in this tax year, or the two previous tax years.
-addBusiness.p4=You do not need to add international businesses which do not qualify for the Customs Duty waiver, or de minimis aid payments from the UK government.
-addBusiness.legend=Do you have any businesses to add to your undertaking
+addBusiness.title = Businesses in your undertaking
+addBusiness.empty.p1 = Other than the undertaking administrator, there are currently no other businesses in your undertaking.
+addBusiness.p2 = Each business will be notified by email that they have been added to this undertaking, if the business provided an email address.
+addBusiness.legend = Do you want to add another business?
+addBusiness.businesses-added.legend = Do you need to add another business?
+addBusiness.hint = You only need to add businesses that have received customs subsidies (Customs Duty waivers) or non-customs subsidies
 addBusiness.error.required=Select yes if you need to add a business to your undertaking?
 addBusiness.change-remove.snippet = business with EORI
-
-
-addBusiness.businesses-added.title=Businesses in your undertaking
-addBusiness.businesses-added.legend=Do you need to add another business?
-addBusiness.businesses-added.hint = You must add all businesses that have received any de minimis aid (less Customs Duty waivers) payments.
-addBusiness.businesses-added.p1 = A confirmation email will be sent from HMRC to each member of the undertaking.
 
 businessEntityEori.title=What is the EORI number of the business you want to add?
 businessEntityEori.hint=This can only be a GB EORI number.
