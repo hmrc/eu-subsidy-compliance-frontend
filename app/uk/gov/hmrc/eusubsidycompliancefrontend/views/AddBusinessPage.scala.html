@@ -57,25 +57,25 @@
     @{H1(titleKey)}
       
     @if(businessEntity.length == 1){
-      @{P(messages(s"$key.empty.p1"))}
+      @{P(messages(s"$key.empty.p1"), Some("govuk-body govuk-!-margin-bottom-8"))}
     }
 
     @if(businessEntity.length > 1){
-        @{govukSummaryList(SummaryList(
-            classes = "summary-list-no-value",
-            rows = businessEntity.filter(a => !a.leadEORI).map(b => SummaryListRow(
-                key = Key(content = Text(b.businessEntityIdentifier)),
-                actions = Some(Actions(
-                    items = Seq(
-                        ActionItem(
-                            href = routes.BusinessEntityController.getRemoveBusinessEntity(b.businessEntityIdentifier).toString,
-                            content = HtmlContent(s"<span aria-hidden='true'>${messages("common.remove")}</span>"),
-                            visuallyHiddenText = Some(messages("common.remove") + " " + messages("addBusiness.change-remove.snippet") + " " + b.businessEntityIdentifier)
-                        )
-                    )
-                ))
-            ))
-        ))}
+      <dl class="govuk-summary-list">
+        @businessEntity.filter(a => !a.leadEORI).map { b => 
+            <div class="govuk-summary-list__row govuk-summary-list__row-nobold">
+                <dt class="govuk-summary-list__key">
+                  @b.businessEntityIdentifier
+                </dt>
+                <dd class="govuk-summary-list__actions">  
+                  <a class="govuk-link" href="@routes.BusinessEntityController.getRemoveBusinessEntity(b.businessEntityIdentifier).toString">
+                    <span aria-hidden="true">@messages("common.remove")</span>
+                    <span class="govuk-visually-hidden">@messages("common.remove") @b.businessEntityIdentifier</span>
+                  </a>
+                </dd>
+            </div>
+        }
+      </dl>
     }
 
 
