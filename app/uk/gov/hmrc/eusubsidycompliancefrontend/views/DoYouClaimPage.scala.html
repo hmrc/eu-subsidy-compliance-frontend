@@ -59,7 +59,9 @@
           isPageHeading = true
         ))
       )),
-      hint = None,
+      hint = Some(Hint(
+        content = Text(messages("customswaivers.hint"))
+      )),
       idPrefix = Some("customswaivers"),
       name = "customswaivers",
       items = Seq(
