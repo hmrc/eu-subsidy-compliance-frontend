@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @this(
         layout: Layout,
@@ -50,19 +51,21 @@
             ))
         }
 
+        @H1(title, Some("govuk-heading-xl govuk-!-margin-bottom-5"))
+        @P(messages(s"$key.p1"), None, Some("eoricheck-desc-1"))
+        @P(messages(s"$key.p2"), None, Some("eoricheck-desc-2"))
+
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
                 content = Text(messages(s"$key.error.required"))
             ))} else None,
             fieldset = Some(Fieldset(
+                describedBy = Some("eoricheck-desc-1 eoricheck-desc-2"),
                 legend = Some(Legend(
                     content = Text(title),
-                    classes = "govuk-fieldset__legend--xl",
-                    isPageHeading = true
+                    classes = "govuk-visually-hidden",
+                    isPageHeading = false
                 ))
-            )),
-            hint = Some(Hint(
-                content = Text(messages(s"$key.hint"))
             )),
             idPrefix = Some(key),
             name = key,

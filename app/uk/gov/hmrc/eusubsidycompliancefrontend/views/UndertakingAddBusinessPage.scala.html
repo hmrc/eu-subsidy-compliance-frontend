@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @this(
   layout: Layout,
@@ -50,6 +51,9 @@
       ))
     }
 
+    @H1(messages("addBusinessIntent.title"), Some("govuk-heading-xl govuk-!-margin-bottom-3"))
+    @P(messages("addBusinessIntent.p1"))
+
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("addBusinessIntent.error.required"))
@@ -57,12 +61,9 @@
       fieldset = Some(Fieldset(
         legend = Some(Legend(
           content = Text(messages("addBusinessIntent.title")),
-          classes = "govuk-fieldset__legend--xl",
+          classes = "govuk-visually-hidden",
           isPageHeading = false
         ))
-      )),
-      hint = Some(Hint(
-        content = Text(messages("addBusinessIntent.p1"))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,
@@ -76,8 +77,10 @@
               content = Text(messages("common.no")),
               value = Some("false"),
               checked = form.data.get(fieldName).fold(false)(e => e)
-          ),
-    )))
+          )
+        ),
+        classes = "govuk-radios--inline"
+    ))
 
     @button("continue.button")
   }
