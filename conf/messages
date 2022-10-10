@@ -105,7 +105,7 @@ eligibilityTerms.p4=If you do not agree to these terms and conditions, you shoul
 
 eoricheck.title = Is the EORI number you want to register {0}?
 eoricheck.p1 = This is the EORI number registered to your Government Gateway ID.
-eoricheck.p2 = This number is usually the same as your XI EORI number, XI234513513536.
+eoricheck.p2 = This number is usually the same as your XI EORI number.
 eoricheck.error.required = Select yes if this is the EORI number you want to register
 
 incorrectEori.title = Sign out
@@ -122,7 +122,7 @@ undertakingName.p3 = These businesses must not report payments they receive sepa
 
 undertakingSector.error.required=Select an industry sector
 undertakingSector.title=What is the industry sector of your undertaking?
-undertakingSector.hint=Your undertaking may have businesses working in different sectors. For your whole undertaking the lowest subsidy allowance will apply
+undertakingSector.p1=Your undertaking may have businesses working in different sectors. For your whole undertaking the lowest subsidy allowance will apply.
 
 undertakingContact.title=What are the contact details for
 undertakingContact.title.end=?
@@ -143,8 +143,8 @@ sector.hint.1=This sector includes couriers and hauliers who get paid by someone
 sector.hint.2=If any part of your business is involved in the production, processing or marketing of fishery and aquaculture products. A ‘fishery product’ means aquatic organisms resulting from any fishing activity or products derived from them. The cap for this sector is €30,000
 sector.hint.3=An ‘agricultural product’ can be products such as: live animals, meat and edible meat offal, dairy produce, birds’ eggs, natural honey. The cap for this sector is €20,000
 
-addBusinessIntent.title = Are there any other businesses in your undertaking?
-addBusinessIntent.p1 = You need tell us about any businesses in your undertaking that receive payments for customs subsidies or non-customs subsidies. These payments are referred to as ‘de minimis aid’.
+addBusinessIntent.title = Are there other businesses in your undertaking?
+addBusinessIntent.p1 = You need tell us about other businesses in your undertaking that receive payments for customs subsidies or non-customs subsidies. These payments are referred to as ‘de minimis aid’.
 addBusinessIntent.hint=Are there other businesses in your undertaking
 addBusinessIntent.error.required=Select yes if you need to add a business to your undertaking?
 
