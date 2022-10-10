@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @this(
   layout: Layout,
@@ -50,19 +51,20 @@
       ))
     }
 
+    @H1(messages("undertakingSector.title"), Some("govuk-heading-xl govuk-!-margin-bottom-5"))
+    @P(messages("undertakingSector.p1"), None, Some("sector-desc"))
+
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("undertakingSector.error.required"))
       ))} else None,
       fieldset = Some(Fieldset(
+        describedBy = Some("sector-desc"),
         legend = Some(Legend(
           content = Text(messages("undertakingSector.title")),
-          classes = "govuk-fieldset__legend--xl",
-          isPageHeading = true
+          classes = "govuk-visually-hidden",
+          isPageHeading = false
         ))
-      )),
-      hint = Some(Hint(
-        content = Text(messages("undertakingSector.hint"))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,
