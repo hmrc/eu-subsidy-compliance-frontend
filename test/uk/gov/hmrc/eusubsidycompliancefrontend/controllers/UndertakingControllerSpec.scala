@@ -1132,8 +1132,8 @@ class UndertakingControllerSpec
           messageFromMessageKey("undertaking.confirmation.title"),
           { doc =>
             val heading2 = doc.select(".govuk-body").text()
-            heading2 should include regex messageFromMessageKey("undertaking.confirmation.p2")
-            doc.text() should not include messageFromMessageKey("undertaking.confirmation.p3", routes.BusinessEntityController.getAddBusinessEntity())
+            heading2 should include regex messageFromMessageKey("undertaking.confirmation.p1")
+            doc.text() should not include messageFromMessageKey("undertaking.confirmation.p2", routes.BusinessEntityController.getAddBusinessEntity())
           }
         )
 
