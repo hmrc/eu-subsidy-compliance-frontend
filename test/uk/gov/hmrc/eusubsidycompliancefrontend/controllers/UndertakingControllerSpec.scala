@@ -938,12 +938,12 @@ class UndertakingControllerSpec
             "" // User cannot change the EORI on the undertaking
           ),
           ModifyUndertakingRow(
-            messageFromMessageKey("undertaking.amendUndertaking.summary-list.sector.key"),
+            messageFromMessageKey("undertaking.cya.summary-list.sector.key"),
             messageFromMessageKey(s"sector.label.${undertaking.industrySector.id.toString}"),
             routes.UndertakingController.getSector().url
           ),
           ModifyUndertakingRow(
-            messageFromMessageKey("undertaking.amendUndertaking.summary-list.verified-email"),
+            messageFromMessageKey("undertaking.cya.summary-list.verified-email"),
             "joebloggs@something.com",
             routes.UndertakingController.getConfirmEmail().url
           ),
@@ -1150,8 +1150,8 @@ class UndertakingControllerSpec
           messageFromMessageKey("undertaking.confirmation.title"),
           { doc =>
             val heading2 = doc.select(".govuk-body").text()
-            heading2 should include regex messageFromMessageKey("undertaking.confirmation.p2")
-            doc.html() should include regex messageFromMessageKey("undertaking.confirmation.p3", routes.BusinessEntityController.getAddBusinessEntity().url)
+            heading2 should include regex messageFromMessageKey("undertaking.confirmation.p1")
+            doc.html() should include regex messageFromMessageKey("undertaking.confirmation.p2", routes.BusinessEntityController.getAddBusinessEntity().url)
           }
         )
 
