@@ -153,7 +153,7 @@ confirmEmail.title=Is this the email address you want to use to receive notifica
 confirmEmail.p1 = This email address will be used to send you notifications from this service.
 
 inputEmail.title=What is your email address?
-inputEmail.label=Enter an email
+inputEmail.label=Enter an email address
 inputEmail.p=This email address will be used to send you notifications from this service.
 
 email.error.email = Enter your email address
