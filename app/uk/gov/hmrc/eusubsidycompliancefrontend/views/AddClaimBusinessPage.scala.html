@@ -47,7 +47,7 @@
     hasErrors = form.hasErrors
 ) {
 
-    @formHelper(action = controllers.routes.BusinessEntityController.postAddBusinessEntity) {
+    @formHelper(action = controllers.routes.SubsidyController.postAddClaimBusiness) {
         @form.errors.map { err =>
             @govukErrorSummary(ErrorSummary(
                 errorList = Seq(

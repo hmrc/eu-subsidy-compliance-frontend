@@ -74,7 +74,7 @@ class SubsidyController @Inject() (
 
   private val removeSubsidyClaimForm: Form[FormValues] = formWithSingleMandatoryField("removeSubsidyClaim")
   private val cyaForm: Form[FormValues] = formWithSingleMandatoryField("cya")
-  private val addClaimBusinessForm: Form[FormValues] = formWithSingleMandatoryField("addClaimBusiness")
+  private val addClaimBusinessForm: Form[FormValues] = formWithSingleMandatoryField("add-claim-business")
 
   private val claimTraderRefForm: Form[OptionalTraderRef] = Form(
     mapping(
@@ -319,7 +319,28 @@ class SubsidyController @Inject() (
   }
 
   def postAddClaimBusiness() = verifiedEmail.async { implicit request =>
-    Ok("").toFuture
+    withLeadUndertaking { undertaking =>
+      implicit val eori: EORI = request.eoriNumber
+
+      def handleValidFormSubmission(j: SubsidyJourney)(f: FormValues): OptionT[Future, Result] = {
+        for {
+          updatedJourney <- store.update[SubsidyJourney](_.setAddBusiness(f.value.isTrue)).toContext
+          businessEori <- j.getClaimEori.toContext
+          businessEntity = BusinessEntity(businessEori, leadEORI = false)
+          _ <- escService.addMember(undertaking.reference, businessEntity).toContext
+          next <- updatedJourney.next.toContext
+        } yield next
+      }
+
+      processFormSubmission[SubsidyJourney] { journey =>
+        addClaimBusinessForm
+          .bindFromRequest()
+          .fold(
+            errors => BadRequest(addClaimBusinessPage(errors, journey.previous)).toContext,
+            handleValidFormSubmission(journey)
+          )
+      }
+    }
   }
 
   def getAddClaimPublicAuthority: Action[AnyContent] = verifiedEmail.async { implicit request =>

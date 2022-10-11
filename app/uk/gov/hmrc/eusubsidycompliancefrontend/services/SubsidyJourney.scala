@@ -23,7 +23,7 @@ import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.EUR
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -57,6 +57,7 @@ case class SubsidyJourney(
 
   val isAmend: Boolean = traderRef.value.nonEmpty
 
+  // TODO - consider renaming this to nextF
   override def next(implicit r: Request[_]): Future[Result] =
     if (isAmend)
       if (shouldSkipCurrencyConversion)
@@ -115,14 +116,15 @@ case class SubsidyJourney(
   def setConvertedClaimAmount(c: ClaimAmount): SubsidyJourney =
     this.copy(convertedClaimAmountConfirmation = convertedClaimAmountConfirmation.copy(value = c.some))
   def setClaimDate(d: DateFormValues): SubsidyJourney = this.copy(claimDate = claimDate.copy(value = d.some))
-  def setClaimEori(oe: OptionalClaimEori): SubsidyJourney =
-    this.copy(addClaimEori = addClaimEori.copy(oe.some))
+  def setClaimEori(oe: OptionalClaimEori): SubsidyJourney = this.copy(addClaimEori = addClaimEori.copy(oe.some))
+  def setAddBusiness(v: Boolean): SubsidyJourney = this.copy(addClaimBusiness = addClaimBusiness.copy(v.some))
   def setPublicAuthority(a: String): SubsidyJourney = this.copy(publicAuthority = publicAuthority.copy(a.some))
   def setTraderRef(o: OptionalTraderRef): SubsidyJourney = this.copy(traderRef = traderRef.copy(o.some))
   def setCya(v: Boolean): SubsidyJourney = this.copy(cya = cya.copy(v.some))
 
   def getClaimAmount: Option[BigDecimal] = claimAmountToBigDecimal(claimAmount)
   def getConvertedClaimAmount: Option[BigDecimal] = claimAmountToBigDecimal(convertedClaimAmountConfirmation)
+  def getClaimEori: Option[EORI] = addClaimEori.value.flatMap(_.value).map(EORI(_))
 
   def claimAmountIsInEuros: Boolean = claimAmount.value.map(_.currencyCode).contains(EUR)
 
