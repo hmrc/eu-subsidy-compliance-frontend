@@ -382,8 +382,10 @@ undertaking.amendUndertaking.summary-list.sector.key = Industry sector
 undertaking.amendUndertaking.summary-list.telephone.key = Telephone number
 undertaking.amendUndertaking.summary-list.change.undertaking-name = name of undertaking
 undertaking.amendUndertaking.summary-list.change.industry-sector = industry sector
+undertaking.amendUndertaking.summary-list.change.email = undertaking emial
 undertaking.amendUndertaking.p = By sending these details you are confirming that, to the best of your knowledge, they are correct
 undertaking.amendUndertaking.summary-list.verified-email=Verified email
+undertaking.amendUndertaking.summary-list.undertaking-admin-email.key = Undertaking administrator email
 
 #SignOut
 signOut.title =You have been removed from this single undertaking
