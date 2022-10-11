@@ -260,13 +260,14 @@ class SubsidyController @Inject() (
       implicit val eori: EORI = request.eoriNumber
       val claimEoriForm = ClaimEoriFormProvider(undertaking).form
 
-      // TODO - will need some sort of flag to indicate that this can be added (add to OptionalEORI?)
       def storeOptionalEoriAndRedirect(o: OptionalClaimEori) = {
-        println(s"Storing optional eori: $o")
+        println(s"Setting claim eori on journey: $o")
         store
           .update[SubsidyJourney](_.setClaimEori(o))
-          // TODO - this will need to handle the new add business page
-          .flatMap(_.next)
+          .flatMap { journey =>
+            println(s"calling next on journey: $journey")
+            journey.next
+          }
       }
 
       def handleValidFormSubmission(j: SubsidyJourney, o: OptionalClaimEori): Future[Result] =
@@ -281,7 +282,7 @@ class SubsidyController @Inject() (
               escService
                 .retrieveUndertaking(enteredEori)
                 .toContext
-                .foldF(storeOptionalEoriAndRedirect(o)) { _ =>
+                .foldF(storeOptionalEoriAndRedirect(o.copy(addToUndertaking = true))) { _ =>
                   BadRequest(
                     addClaimEoriPage(
                       claimEoriForm.withError("claim-eori", ClaimEoriFormProvider.Errors.InAnotherUndertaking),
@@ -501,8 +502,13 @@ class SubsidyController @Inject() (
 
       store.getOrCreate[SubsidyJourney](SubsidyJourney()).toContext
         .map { journey =>
-          if (journey.isEligibleForStep) f(journey)
-          else Redirect(journey.previous)
+          if (journey.isEligibleForStep) {
+            println(s"Eligible for step")
+            f(journey)
+          } else {
+            println(s"Not eligible for step")
+            Redirect(journey.previous)
+          }
         }
         .getOrElse(Redirect(routes.SubsidyController.getReportedPayments().url))
 

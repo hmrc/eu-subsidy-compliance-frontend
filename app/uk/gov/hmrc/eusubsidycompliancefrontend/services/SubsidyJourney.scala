@@ -94,9 +94,15 @@ case class SubsidyJourney(
       .flatMap(getStepWithPath)
       .map(_.uri)
 
-  override def isEligibleForStep(implicit r: Request[_]): Boolean =
-    if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.value.isDefined
-    else super.isEligibleForStep
+  // TODO - could be helpful to provide predicate functions with sensible names if possible?
+  override def isEligibleForStep(implicit r: Request[_]): Boolean = {
+    val result =
+      if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.value.isDefined
+      else if (publicAuthority.isCurrentPage && addClaimEori.value.exists(_.addToUndertaking == false)) true
+      else super.isEligibleForStep
+    println(s"isEligibleForStep: returning $result")
+    result
+  }
 
   // When navigating back or forward we should skip the currency conversion step if the user has already entered a
   // claim amount in Euros.
@@ -106,7 +112,8 @@ case class SubsidyJourney(
   def setConvertedClaimAmount(c: ClaimAmount): SubsidyJourney =
     this.copy(convertedClaimAmountConfirmation = convertedClaimAmountConfirmation.copy(value = c.some))
   def setClaimDate(d: DateFormValues): SubsidyJourney = this.copy(claimDate = claimDate.copy(value = d.some))
-  def setClaimEori(oe: OptionalClaimEori): SubsidyJourney = this.copy(addClaimEori = addClaimEori.copy(oe.some))
+  def setClaimEori(oe: OptionalClaimEori): SubsidyJourney =
+    this.copy(addClaimEori = addClaimEori.copy(oe.some))
   def setPublicAuthority(a: String): SubsidyJourney = this.copy(publicAuthority = publicAuthority.copy(a.some))
   def setTraderRef(o: OptionalTraderRef): SubsidyJourney = this.copy(traderRef = traderRef.copy(o.some))
   def setCya(v: Boolean): SubsidyJourney = this.copy(cya = cya.copy(v.some))
@@ -118,7 +125,7 @@ case class SubsidyJourney(
 
   private def claimAmountToBigDecimal(f: FormPage[ClaimAmount]) = f.value.map(a => BigDecimal(a.amount))
 
-  private def hasBusinessEoriToAdd = addClaimEori.value.exists(_.value.isDefined)
+  private def hasBusinessEoriToAdd = addClaimEori.value.exists(_.addToUndertaking)
 }
 
 object SubsidyJourney {

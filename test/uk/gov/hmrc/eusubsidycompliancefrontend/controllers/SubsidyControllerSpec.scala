@@ -896,7 +896,7 @@ class SubsidyControllerSpec
         "user selected yes and entered a valid EORI that is not part of the existing or any other undertaking" in {
           val optionalEORI = OptionalClaimEori("true", eori3.some)
 
-          val updatedSubsidyJourney = update(journey, optionalEORI.some)
+          val updatedSubsidyJourney = update(journey, optionalEORI.copy(addToUndertaking = true).some)
 
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
@@ -937,10 +937,14 @@ class SubsidyControllerSpec
 
       "display the page" when {
         "a valid request is made" in {
+          val incompleteJourney = subsidyJourney.copy(traderRef = TraderRefFormPage())
+
+          println(s"subsidy journey state: $incompleteJourney")
+
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
+            mockGetOrCreate[SubsidyJourney](eori1)(Right(incompleteJourney))
           }
           checkPageIsDisplayed(
             performAction(),
