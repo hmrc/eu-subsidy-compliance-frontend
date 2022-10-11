@@ -74,6 +74,7 @@ case class SubsidyJourney(
         Redirect(routes.SubsidyController.getAddClaimPublicAuthority()).toFuture
     else super.next
 
+  // TODO - review the isamend flow
   override def previous(implicit request: Request[_]): Journey.Uri =
     if (isAmend)
       if (convertedClaimAmountConfirmation.isCurrentPage) claimAmount.uri
@@ -82,6 +83,8 @@ case class SubsidyJourney(
     else
       if (claimDate.isCurrentPage) routes.AccountController.getAccountPage().url
       else if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.uri
+      // TODO - double check this
+      else if (publicAuthority.isCurrentPage && addClaimEori.value.exists(_.addToUndertaking == false)) addClaimEori.uri
       else super.previous
 
   private def extractAndParseRefererUrl(implicit request: Request[_]): Option[String] =

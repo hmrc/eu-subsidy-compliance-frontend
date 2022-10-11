@@ -48,22 +48,23 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SubsidyController @Inject() (
-                                    mcc: MessagesControllerComponents,
-                                    actionBuilders: ActionBuilders,
-                                    override val store: Store,
-                                    override val escService: EscService,
-                                    auditService: AuditService,
-                                    reportedPaymentsPage: ReportedPaymentsPage,
-                                    addClaimEoriPage: AddClaimEoriPage,
-                                    addClaimAmountPage: AddClaimAmountPage,
-                                    addClaimDatePage: AddClaimDatePage,
-                                    addPublicAuthorityPage: AddPublicAuthorityPage,
-                                    addTraderReferencePage: AddTraderReferencePage,
-                                    cyaPage: ClaimCheckYourAnswerPage,
-                                    confirmCreatedPage: ClaimConfirmationPage,
-                                    confirmRemovePage: ConfirmRemoveClaim,
-                                    confirmConvertedAmountPage: ConfirmClaimAmountConversionToEuros,
-                                    timeProvider: TimeProvider
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  override val store: Store,
+  override val escService: EscService,
+  auditService: AuditService,
+  reportedPaymentsPage: ReportedPaymentsPage,
+  addClaimEoriPage: AddClaimEoriPage,
+  addClaimBusinessPage: AddClaimBusinessPage,
+  addClaimAmountPage: AddClaimAmountPage,
+  addClaimDatePage: AddClaimDatePage,
+  addPublicAuthorityPage: AddPublicAuthorityPage,
+  addTraderReferencePage: AddTraderReferencePage,
+  cyaPage: ClaimCheckYourAnswerPage,
+  confirmCreatedPage: ClaimConfirmationPage,
+  confirmRemovePage: ConfirmRemoveClaim,
+  confirmConvertedAmountPage: ConfirmClaimAmountConversionToEuros,
+  timeProvider: TimeProvider
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport
@@ -73,6 +74,7 @@ class SubsidyController @Inject() (
 
   private val removeSubsidyClaimForm: Form[FormValues] = formWithSingleMandatoryField("removeSubsidyClaim")
   private val cyaForm: Form[FormValues] = formWithSingleMandatoryField("cya")
+  private val addClaimBusinessForm: Form[FormValues] = formWithSingleMandatoryField("addClaimBusiness")
 
   private val claimTraderRefForm: Form[OptionalTraderRef] = Form(
     mapping(
@@ -307,7 +309,9 @@ class SubsidyController @Inject() (
   }
 
   def getAddClaimBusiness() = verifiedEmail.async { implicit request =>
-    Ok("").toFuture
+    // TODO - this needs to fetch the journey in order to display a saved value if present
+    // TODO - pass in the back link location
+    Ok(addClaimBusinessPage(addClaimBusinessForm)).toFuture
   }
 
   def postAddClaimBusiness() = verifiedEmail.async { implicit request =>
