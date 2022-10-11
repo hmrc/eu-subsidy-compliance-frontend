@@ -309,9 +309,13 @@ class SubsidyController @Inject() (
   }
 
   def getAddClaimBusiness() = verifiedEmail.async { implicit request =>
-    // TODO - this needs to fetch the journey in order to display a saved value if present
     // TODO - pass in the back link location
-    Ok(addClaimBusinessPage(addClaimBusinessForm)).toFuture
+    withLeadUndertaking { _ =>
+      renderFormIfEligible { journey =>
+        val updatedForm = journey.addClaimBusiness.value.fold(addClaimBusinessForm)(v => addClaimBusinessForm.fill(FormValues(v)))
+        Ok(addClaimBusinessPage(updatedForm, journey.previous))
+      }
+    }
   }
 
   def postAddClaimBusiness() = verifiedEmail.async { implicit request =>
@@ -501,20 +505,20 @@ class SubsidyController @Inject() (
     result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
   }
 
-    protected def renderFormIfEligible(f: SubsidyJourney => Result)(implicit r: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
-      implicit val eori: EORI = r.eoriNumber
+  protected def renderFormIfEligible(f: SubsidyJourney => Result)(implicit r: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
+    implicit val eori: EORI = r.eoriNumber
 
-      store.getOrCreate[SubsidyJourney](SubsidyJourney()).toContext
-        .map { journey =>
-          if (journey.isEligibleForStep) {
-            println(s"Eligible for step")
-            f(journey)
-          } else {
-            println(s"Not eligible for step")
-            Redirect(journey.previous)
-          }
+    store.getOrCreate[SubsidyJourney](SubsidyJourney()).toContext
+      .map { journey =>
+        if (journey.isEligibleForStep) {
+          println(s"Eligible for step")
+          f(journey)
+        } else {
+          println(s"Not eligible for step")
+          Redirect(journey.previous)
         }
-        .getOrElse(Redirect(routes.SubsidyController.getReportedPayments().url))
+      }
+      .getOrElse(Redirect(routes.SubsidyController.getReportedPayments().url))
 
     }
 

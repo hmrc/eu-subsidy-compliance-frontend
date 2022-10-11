@@ -30,7 +30,7 @@
     govukSummaryList: GovukSummaryList
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], previous: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @key = @{"add-claim-business"}
 
@@ -43,7 +43,7 @@
 @layout(
     pageTitle = Some(titleKey),
     backLinkEnabled = true,
-    backLink = Some(controllers.routes.SubsidyController.getAddClaimEori().url),
+    backLink = Some(previous),
     hasErrors = form.hasErrors
 ) {
 
