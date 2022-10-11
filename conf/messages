@@ -262,13 +262,9 @@ non-lead-account-homepage.ul2-li2 = Leave the undertaking
 non-lead-account-homepage.link2 = View financial dashboard for {0}
 non-lead-account-homepage.link3 = Remove yourself from this single undertaking
 
-reportedPayments.title=Payments report history
+reportedPayments.title = Reported payment history
 reportedPayments.p1=You have not yet reported any payments.
-reportedPayments.p2=You will need to add the details of any payments of de minimis aid (less Customs Duty waivers) you received for:
-reportedPayments.ul1-li1=the previous 2 tax years (from {0} to {1})
-reportedPayments.ul1-li2=the current tax year (from {0} to date)
-reportedPayments.p3=<strong>All</strong> payments need to be reported, even if you have already posted a form for the current tax year, and the previous two.
-reportedPayments.p4=You will not need details of the Customs Duty waiver as HMRC will already have this information.
+
 reportedPayments.table.head.date=Date
 reportedPayments.table.head.amount=Amount
 reportedPayments.table.head.eori=EORI number
@@ -372,7 +368,7 @@ subsidy.created.l1 = Report another payment
 subsidy.created.l2 = Go to homepage
 
 subsidy.remove.title = Are you sure you want to remove this reported payment?
-subsidy.remove.p1 = If you remove this payment then your Customs Duty waiver balance will change.
+subsidy.remove.p1 = If you remove this payment then your remaining allowance will change.
 subsidy.remove.yesno.legend = Do you want to remove the above payment?
 subsidy.remove.error.required = Select yes if you want to remove the above de minimis payment
 

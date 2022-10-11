@@ -128,20 +128,5 @@
                     @P(messages(s"$key.p1"))
                 </div>
             </div>
-
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-two-thirds">
-                    @P(messages(s"$key.p2"))
-
-                    <ul class="govuk-list govuk-list--bullet">
-                        <li>@messages(s"$key.ul1-li1", earliestAllowedDate.toDisplayFormat, previousTaxYearEnd.toDisplayFormat)</li>
-                        <li>@messages(s"$key.ul1-li2", currentTaxYearStart.toDisplayFormat)</li>
-                    </ul>
-
-                    @P(messages(s"$key.p3"))
-                    @P(messages(s"$key.p4"))
-
-                </div>
-            </div>
         }
 }
