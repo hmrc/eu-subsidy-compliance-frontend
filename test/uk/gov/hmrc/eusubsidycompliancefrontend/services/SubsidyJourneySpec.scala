@@ -164,10 +164,10 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
         redirectLocation(result) should contain(routes.SubsidyController.getAddClaimPublicAuthority().url)
       }
 
-      "return a redirect to the all claim business page if an eori has been entered that is not part of any undertaking on the amend journey" in {
+      "return a redirect to the add claim business page if an eori has been entered that is not part of any undertaking on the amend journey" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routes.SubsidyController.getAddClaimEori().url)
         val result = SubsidyJourney(
-          existingTransactionId = SubsidyRef("SomeRef").some,
+          traderRef = TraderRefFormPage(OptionalTraderRef("true", None).some),
           claimAmount = ClaimAmountFormPage(claimAmountEuros.some),
           addClaimEori = AddClaimEoriFormPage(OptionalClaimEori("true", eori1.some, addToUndertaking = true).some)
         ).next
