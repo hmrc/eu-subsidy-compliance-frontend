@@ -309,17 +309,19 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getAddClaimBusiness() = verifiedEmail.async { implicit request =>
-    // TODO - pass in the back link location
+  def getAddClaimBusiness: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       renderFormIfEligible { journey =>
-        val updatedForm = journey.addClaimBusiness.value.fold(addClaimBusinessForm)(v => addClaimBusinessForm.fill(FormValues(v)))
+        val updatedForm =
+          journey.addClaimBusiness.value
+            .fold(addClaimBusinessForm)(v => addClaimBusinessForm.fill(FormValues(v)))
+
         Ok(addClaimBusinessPage(updatedForm, journey.previous))
       }
     }
   }
 
-  def postAddClaimBusiness() = verifiedEmail.async { implicit request =>
+  def postAddClaimBusiness: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 

@@ -1532,6 +1532,27 @@ class SubsidyControllerSpec
 
     }
 
+    "handling get of add claim business page" must {
+      def performAction() = controller.getAddClaimBusiness(
+        FakeRequest(GET, routes.SubsidyController.getClaimConfirmationPage().url)
+      )
+
+      "display the page" in {
+        inSequence {
+          mockAuthWithEnrolmentAndValidEmail()
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
+        }
+
+        val result = performAction()
+
+        status(result) shouldBe OK
+
+        contentAsString(result) should include("Do you want to add this business to your undertaking?")
+      }
+
+    }
+
   }
 }
 
