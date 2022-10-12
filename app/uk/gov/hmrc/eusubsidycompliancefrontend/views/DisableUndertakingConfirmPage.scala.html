@@ -62,9 +62,6 @@
                     isPageHeading = true
                 ))
             )),
-            hint = Some(Hint(
-            content = Text(messages(s"$key.hint"))
-            )),
             idPrefix = Some(key),
             name = key,
             items = Seq(
@@ -78,7 +75,8 @@
                     value = Some("false"),
                     checked = form.data.exists(_._2 == "false")
                 )
-            )
+            ),
+            classes = "govuk-radios--inline"
         ))
 
         @button("common.continue", None, true, None)

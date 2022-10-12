@@ -480,10 +480,9 @@ disableUndertakingWarning.p1 = You will no longer have access to the payments yo
 
 #disableUndertakingConfirm
 disableUndertakingConfirm.title = Are you sure you want to deregister this undertaking?
-disableUndertakingConfirm.hint = This cannot be reversed
 disableUndertakingConfirm.error.required = Select Yes if you want to disable the single undertaking.
 
 #undertakingDisabled
-undertakingDisabled.title = Your undertaking has been deregistered
+undertakingDisabled.title = You have deregistered your undertaking
 undertakingDisabled.p1 = We have sent you a confirmation email.
 undertakingDisabled.p2 = You have been signed out.
