@@ -129,8 +129,8 @@ class BusinessEntityControllerSpec
           checkPageIsDisplayed(
             performAction(),
             if (undertaking.undertakingBusinessEntity.size > 1)
-              messageFromMessageKey("addBusiness.businesses-added.title")
-            else messageFromMessageKey("addBusiness.empty.title"),
+              messageFromMessageKey("addBusiness.businesses-added.legend")
+            else messageFromMessageKey("addBusiness.legend"),
             { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
 
@@ -204,7 +204,7 @@ class BusinessEntityControllerSpec
 
           checkFormErrorIsDisplayed(
             performAction(data: _*),
-            messageFromMessageKey("addBusiness.businesses-added.title"),
+            messageFromMessageKey("addBusiness.title"),
             messageFromMessageKey(errorMessage)
           )
         }
@@ -609,7 +609,7 @@ class BusinessEntityControllerSpec
               val button = doc.select("form")
               button.attr("action") shouldBe routes.BusinessEntityController.postRemoveBusinessEntity(eori4).url
 
-              doc.select(".govuk-hint").text() should include(CommonTestData.eori4)
+              doc.select(".govuk-body").text() should include(CommonTestData.eori4)
 
             }
           )

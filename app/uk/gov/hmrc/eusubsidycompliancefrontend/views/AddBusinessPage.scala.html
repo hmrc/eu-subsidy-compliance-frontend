@@ -92,7 +92,7 @@
           ))} else None,
           fieldset = Some(Fieldset(
               legend = Some(Legend(
-                  content = Text(messages("addBusiness.legend")),
+                  content = if(businessEntity.length > 1){Text(messages("addBusiness.businesses-added.legend"))}else{Text(messages("addBusiness.legend"))},
                   classes = "govuk-fieldset__legend--m",
                   isPageHeading = false
               ))
