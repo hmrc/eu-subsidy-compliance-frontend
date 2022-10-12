@@ -577,8 +577,9 @@ class UndertakingControllerSpec
           )
 
           inSequence {
-            mockAuthWithEnrolmentAndNoEmailVerification()
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
+            mockAuthWithEnrolment(eori1)
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
             mockApproveVerification(eori1, "id")(Right(true))
             mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
             mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourney))

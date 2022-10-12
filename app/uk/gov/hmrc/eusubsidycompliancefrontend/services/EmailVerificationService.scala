@@ -31,6 +31,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import java.net.URI
 import java.util.UUID
 import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
@@ -112,7 +113,7 @@ class EmailVerificationService @Inject() (
 
   private def generateRedirectToSelfUrl(redirectUrl: String)(implicit req: AuthenticatedEnrolledRequest[AnyContent]): String = {
     if(req.isLocal()) {
-      "http://" + req.host + redirectUrl
+      new URI("http://" + req.host + redirectUrl).toString
     } else {
       redirectUrl
     }

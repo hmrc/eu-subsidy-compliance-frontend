@@ -167,23 +167,25 @@ class UndertakingController @Inject() (
 
   def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[UndertakingJourney].flatMap {
-      case Some(journey) =>
-        handleConfirmEmailPost[UndertakingJourney](
-          previous = if(journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails() else routes.UndertakingController.getConfirmEmail(),
-          next = if(journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails() else routes.UndertakingController.getAddBusiness(),
-          formAction = routes.UndertakingController.postConfirmEmail(),
-          generateVerifyEmailUrl = (id: String) => routes.UndertakingController.getVerifyEmail(id).url
-        )
+    withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking()) { journey =>
+      handleConfirmEmailPost[UndertakingJourney](
+        previous = if(journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails() else routes.UndertakingController.getConfirmEmail(),
+        next = if(journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails() else routes.UndertakingController.getAddBusiness(),
+        formAction = routes.UndertakingController.postConfirmEmail(),
+        generateVerifyEmailUrl = (id: String) => routes.UndertakingController.getVerifyEmail(id).url
+      )
     }
   }
 
   def getVerifyEmail(verificationId: String): Action[AnyContent] = enrolled.async { implicit request =>
-    handleVerifyEmailGet[UndertakingJourney](
-      verificationId = verificationId,
-      previous = routes.UndertakingController.getConfirmEmail(),
-      next = routes.UndertakingController.getAddBusiness(),
-    )
+    implicit val eori: EORI = request.eoriNumber
+    withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking()) { journey =>
+      handleVerifyEmailGet[UndertakingJourney](
+        verificationId = verificationId,
+        previous = if(journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails() else routes.UndertakingController.getConfirmEmail(),
+        next = if(journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails() else routes.UndertakingController.getAddBusiness(),
+      )
+    }
   }
 
   def getAddBusiness: Action[AnyContent] = enrolled.async { implicit request =>
