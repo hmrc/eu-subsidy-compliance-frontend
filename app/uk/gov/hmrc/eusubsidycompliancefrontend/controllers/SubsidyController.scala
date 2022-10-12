@@ -537,7 +537,7 @@ class SubsidyController @Inject() (
           println(s"Eligible for step")
           f(journey)
         } else {
-          println(s"Not eligible for step")
+          println(s"Not eligible for step redirecting to ${journey.previous}")
           Redirect(journey.previous)
         }
       }

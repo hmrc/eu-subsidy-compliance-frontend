@@ -100,7 +100,7 @@ case class SubsidyJourney(
 
   override def isEligibleForStep(implicit r: Request[_]): Boolean =
     if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.value.isDefined
-    else if (publicAuthority.isCurrentPage && shouldAddNewBusiness) true
+    else if (publicAuthority.isCurrentPage && !shouldAddNewBusiness) true
     else super.isEligibleForStep
 
   // When navigating back or forward we should skip the currency conversion step if the user has already entered a
