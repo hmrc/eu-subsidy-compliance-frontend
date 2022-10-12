@@ -57,13 +57,14 @@ case class SubsidyJourney(
 
   val isAmend: Boolean = traderRef.value.nonEmpty
 
-  // TODO - consider renaming this to nextF
   override def next(implicit r: Request[_]): Future[Result] =
     if (isAmend)
-      if (shouldSkipCurrencyConversion)
+      if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion)
         Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
       else if (claimAmount.isCurrentPage && !shouldSkipCurrencyConversion)
         Redirect(routes.SubsidyController.getConfirmClaimAmount()).toFuture
+      else if (addClaimEori.isCurrentPage && shouldAddNewBusiness)
+        Redirect(addClaimBusiness.uri).toFuture
       else
         Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
     else if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion)
@@ -75,7 +76,7 @@ case class SubsidyJourney(
         Redirect(routes.SubsidyController.getAddClaimPublicAuthority()).toFuture
     else super.next
 
-  // TODO - review the isamend flow
+  // TODO - review the isAmend flow
   override def previous(implicit request: Request[_]): Journey.Uri =
     if (isAmend)
       if (convertedClaimAmountConfirmation.isCurrentPage) claimAmount.uri
@@ -84,8 +85,7 @@ case class SubsidyJourney(
     else
       if (claimDate.isCurrentPage) routes.AccountController.getAccountPage().url
       else if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.uri
-      // TODO - double check this
-      else if (publicAuthority.isCurrentPage && addClaimEori.value.exists(_.addToUndertaking == false)) addClaimEori.uri
+      else if (publicAuthority.isCurrentPage && !shouldAddNewBusiness) addClaimEori.uri
       else super.previous
 
   private def extractAndParseRefererUrl(implicit request: Request[_]): Option[String] =
@@ -98,19 +98,16 @@ case class SubsidyJourney(
       .flatMap(getStepWithPath)
       .map(_.uri)
 
-  // TODO - could be helpful to provide predicate functions with sensible names if possible?
-  override def isEligibleForStep(implicit r: Request[_]): Boolean = {
-    val result =
-      if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.value.isDefined
-      else if (publicAuthority.isCurrentPage && addClaimEori.value.exists(_.addToUndertaking == false)) true
-      else super.isEligibleForStep
-    println(s"isEligibleForStep: returning $result")
-    result
-  }
+  override def isEligibleForStep(implicit r: Request[_]): Boolean =
+    if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.value.isDefined
+    else if (publicAuthority.isCurrentPage && shouldAddNewBusiness) true
+    else super.isEligibleForStep
 
   // When navigating back or forward we should skip the currency conversion step if the user has already entered a
   // claim amount in Euros.
   private def shouldSkipCurrencyConversion: Boolean = claimAmountIsInEuros
+
+  private def shouldAddNewBusiness = addClaimEori.value.exists(_.addToUndertaking == true)
 
   def setClaimAmount(c: ClaimAmount): SubsidyJourney = this.copy(claimAmount = claimAmount.copy(value = c.some))
   def setConvertedClaimAmount(c: ClaimAmount): SubsidyJourney =

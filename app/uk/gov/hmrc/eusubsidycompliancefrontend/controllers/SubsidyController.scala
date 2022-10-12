@@ -278,9 +278,10 @@ class SubsidyController @Inject() (
           case OptionalClaimEori("true", Some(e), _) =>
             val enteredEori = EORI(e)
 
-            if (undertaking.hasEORI(enteredEori))
+            if (undertaking.hasEORI(enteredEori)) {
+              println(s"Undertaking has EORI: $enteredEori")
               storeOptionalEoriAndRedirect(o)
-            else
+            } else
               escService
                 .retrieveUndertaking(enteredEori)
                 .toContext
@@ -322,6 +323,7 @@ class SubsidyController @Inject() (
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
+      // TODO - this doesn't handle the No case which should redirect back to the add claim eori page
       def handleValidFormSubmission(j: SubsidyJourney)(f: FormValues): OptionT[Future, Result] = {
         for {
           updatedJourney <- store.update[SubsidyJourney](_.setAddBusiness(f.value.isTrue)).toContext

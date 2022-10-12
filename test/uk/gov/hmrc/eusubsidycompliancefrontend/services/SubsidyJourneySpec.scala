@@ -72,6 +72,12 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
       SubsidyJourney().setCya(value) shouldBe SubsidyJourney(cya = CyaFormPage(value.some))
     }
 
+    "return an updated instance with the specified value when setAddBusiness is called" in {
+      val value = true
+      SubsidyJourney().setAddBusiness(value) shouldBe
+        SubsidyJourney(addClaimBusiness = AddClaimBusinessFormPage(value.some))
+    }
+
     "when next is called" should {
 
       "return a redirect to the next page in the journey if not on amend journey" in {
@@ -125,6 +131,17 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
         redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers().url)
       }
 
+      "return a redirect to the confirm converted amount page if a GBP amount is entered on the amend journey" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routes.SubsidyController.getClaimAmount().url)
+        val result = SubsidyJourney(
+          existingTransactionId = SubsidyRef("SomeRef").some,
+          claimAmount = ClaimAmountFormPage(claimAmountPounds.some),
+          traderRef = TraderRefFormPage(OptionalTraderRef("true", None).some)
+        ).next
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.SubsidyController.getConfirmClaimAmount().url)
+      }
+
       "return a redirect to the add claim business page if an eori has been entered that is not part of any undertaking" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routes.SubsidyController.getAddClaimEori().url)
         val result = SubsidyJourney(
@@ -145,6 +162,17 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
         ).next
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) should contain(routes.SubsidyController.getAddClaimPublicAuthority().url)
+      }
+
+      "return a redirect to the all claim business page if an eori has been entered that is not part of any undertaking on the amend journey" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routes.SubsidyController.getAddClaimEori().url)
+        val result = SubsidyJourney(
+          existingTransactionId = SubsidyRef("SomeRef").some,
+          claimAmount = ClaimAmountFormPage(claimAmountEuros.some),
+          addClaimEori = AddClaimEoriFormPage(OptionalClaimEori("true", eori1.some, addToUndertaking = true).some)
+        ).next
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.SubsidyController.getAddClaimBusiness().url)
       }
     }
 
