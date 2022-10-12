@@ -31,11 +31,8 @@
 )
 
 @(form: Form[_], businessEntity: List[BusinessEntity])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@key = @{if(businessEntity.length > 1) "addBusiness.businesses-added" else "addBusiness.empty"}
+@key = @{"addBusiness"}
 @titleKey = @{messages(s"$key.title")}
-@html = {
-    <p class="govuk-body"><strong>@messages(s"$key.p1")</strong></p>
-}
 
 @layout(
   pageTitle = Some(titleKey),
@@ -60,29 +57,26 @@
     @{H1(titleKey)}
       
     @if(businessEntity.length == 1){
-      @{P(messages("addBusiness.p1"))}
-      @{P(messages("addBusiness.p2"))}
-      @{P(messages("addBusiness.p3"))}
-      @{P(messages("addBusiness.p4"))}
+      @{P(messages(s"$key.empty.p1"), Some("govuk-body govuk-!-margin-bottom-8"))}
     }
 
-      @if(businessEntity.length > 1){
-          @{govukSummaryList(SummaryList(
-              classes = "summary-list-no-value",
-              rows = businessEntity.filter(a => !a.leadEORI).map(b => SummaryListRow(
-                  key = Key(content = Text(b.businessEntityIdentifier)),
-                  actions = Some(Actions(
-                      items = Seq(
-                          ActionItem(
-                              href = routes.BusinessEntityController.getRemoveBusinessEntity(b.businessEntityIdentifier).toString,
-                              content = HtmlContent(s"<span aria-hidden='true'>${messages("common.remove")}</span>"),
-                              visuallyHiddenText = Some(messages("common.remove") + " " + messages("addBusiness.change-remove.snippet") + " " + b.businessEntityIdentifier)
-                          )
-                      )
-                  ))
-              ))
-          ))}
-      }
+    @if(businessEntity.length > 1){
+      <dl class="govuk-summary-list">
+        @businessEntity.filter(a => !a.leadEORI).map { b => 
+            <div class="govuk-summary-list__row govuk-summary-list__row-nobold">
+                <dt class="govuk-summary-list__key">
+                  @b.businessEntityIdentifier
+                </dt>
+                <dd class="govuk-summary-list__actions">  
+                  <a class="govuk-link" href="@routes.BusinessEntityController.getRemoveBusinessEntity(b.businessEntityIdentifier).toString">
+                    <span aria-hidden="true">@messages("common.remove")</span>
+                    <span class="govuk-visually-hidden">@messages("common.remove") @b.businessEntityIdentifier</span>
+                  </a>
+                </dd>
+            </div>
+        }
+      </dl>
+    }
 
 
     @defining(
@@ -98,14 +92,14 @@
           ))} else None,
           fieldset = Some(Fieldset(
               legend = Some(Legend(
-                  content = Text(addLegend),
+                  content = if(businessEntity.length > 1){Text(messages("addBusiness.businesses-added.legend"))}else{Text(messages("addBusiness.legend"))},
                   classes = "govuk-fieldset__legend--m",
                   isPageHeading = false
               ))
           )),
-          hint = if(businessEntity.length > 1) Some(Hint(
+          hint = Some(Hint(
             content = Text(messages(s"$key.hint"))
-          )) else None,
+          )),
           idPrefix = Some("addBusiness"),
           name = "addBusiness",
           items = Seq(
@@ -123,7 +117,7 @@
       ))
     }
 
-      @{if(businessEntity.length > 1) html}
+    @P(messages(s"$key.p2"))
 
     @button("common.continue")
   }

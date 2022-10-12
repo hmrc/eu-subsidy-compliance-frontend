@@ -17,7 +17,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.BusinessEntity
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @this(
   layout: Layout,
@@ -50,21 +50,8 @@
     }
 
     @H1(title)
-
-
-      @govukSummaryList(SummaryList(
-        rows = Seq(
-          SummaryListRow(
-            key = Key(
-              content = Text(messages("businessEntity.cya.eori.label"))
-            ),
-            value = Value(
-              content = Text(bs.businessEntityIdentifier)
-            )
-          )
-        )
-      ))
-
+    @P(messages("removeBusinessEntity.p1", bs.businessEntityIdentifier))
+    @P(messages("removeBusinessEntity.p2"))
 
     @govukRadios(Radios(
       classes = "govuk-radios--inline",
@@ -77,9 +64,6 @@
           classes = "govuk-fieldset__legend--m",
           isPageHeading = false
         ))
-      )),
-      hint = Some(Hint(
-        content = Text(messages(s"$key.hint", bs.businessEntityIdentifier))
       )),
       idPrefix = Some("removeBusiness"),
       name = "removeBusiness",
@@ -97,6 +81,6 @@
       )
     ))
 
-    @button("common.continue.only")
+    @button("common.continue")
   }
 }

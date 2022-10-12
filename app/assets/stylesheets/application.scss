@@ -7,6 +7,10 @@ $govuk-border-colour: #b1b4b6;
   padding: 20px;
 }
 
+.govuk-summary-list__row-nobold .govuk-summary-list__key {
+  font-weight: 400;
+}
+
 .summary-list-no-value {
   .govuk-summary-list__value {
     width: 20%;

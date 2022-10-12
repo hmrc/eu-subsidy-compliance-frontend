@@ -62,8 +62,7 @@
         content = Text(messages("businessEntityEori.title"))
       ),
       hint = Some(Hint(content = Text(messages("businessEntityEori.hint")))),
-      classes = "govuk-input--width-10",
-      prefix = Some(PrefixOrSuffix(content = Text("GB"))),
+      classes = "govuk-input--width-20",
       errorMessage = if (form.hasErrors) {
         Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
       } else None
