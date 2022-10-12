@@ -1553,6 +1553,56 @@ class SubsidyControllerSpec
 
     }
 
+    "handling post to add claim business page" must {
+      def performAction(form: (String, String)*) = controller.postAddClaimBusiness(
+        FakeRequest(POST, routes.SubsidyController.postAddClaimBusiness().url)
+          .withFormUrlEncodedBody(form: _*)
+      )
+
+      "redirect to next page" when {
+
+        val journeyWithEoriToAdd = subsidyJourney
+          .setClaimEori(OptionalClaimEori("true", eori3.some, addToUndertaking = true))
+          .setAddBusiness(true)
+          .copy(traderRef = TraderRefFormPage())
+
+        "the user answers yes to adding the business" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(journeyWithEoriToAdd.some))
+            mockUpdate[SubsidyJourney](_.setAddBusiness(true), eori1)(Right(journeyWithEoriToAdd))
+            mockAddMember(undertakingRef, BusinessEntity(eori3, leadEORI = false))(Right(undertakingRef))
+          }
+
+          val result = performAction(
+            "add-claim-business" -> "true"
+          )
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) should contain(routes.SubsidyController.getAddClaimPublicAuthority().url)
+
+        }
+
+        "the user answers no to adding the business" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(journeyWithEoriToAdd.some))
+            mockUpdate[SubsidyJourney](_.setAddBusiness(true), eori1)(Right(journeyWithEoriToAdd))
+          }
+
+          val result = performAction(
+            "add-claim-business" -> "false"
+          )
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) should contain(routes.SubsidyController.getAddClaimEori().url)
+
+        }
+      }
+    }
+
   }
 }
 

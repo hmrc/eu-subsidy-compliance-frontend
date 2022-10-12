@@ -74,7 +74,10 @@ case class SubsidyJourney(
         Redirect(routes.SubsidyController.getAddClaimBusiness()).toFuture
       else
         Redirect(routes.SubsidyController.getAddClaimPublicAuthority()).toFuture
-    else super.next
+    else {
+      println(s"delegating to super.next")
+      super.next
+    }
 
   // TODO - review the isAmend flow
   override def previous(implicit request: Request[_]): Journey.Uri =

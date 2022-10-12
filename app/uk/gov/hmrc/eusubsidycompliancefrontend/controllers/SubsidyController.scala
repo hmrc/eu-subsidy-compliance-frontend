@@ -252,11 +252,6 @@ class SubsidyController @Inject() (
     }
   }
 
-  // TODO - changes needed are as follows
-  //  o allow eori that isn't in the undertaking
-  //  o if eori not in undertaking then fetch undertaking for that eori
-  //    + if none found redirect to 'do you want to add'
-  //    + else return to form with eori already taken error'
   def postAddClaimEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
@@ -302,8 +297,7 @@ class SubsidyController @Inject() (
           .bindFromRequest()
           .fold(
             formWithErrors => BadRequest(addClaimEoriPage(formWithErrors, journey.previous)).toContext,
-            // TODO - review this,
-            o => handleValidFormSubmission(journey, o).toContext
+            optionalEori => handleValidFormSubmission(journey, optionalEori).toContext
           )
       }
     }
@@ -325,14 +319,19 @@ class SubsidyController @Inject() (
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
-      // TODO - this doesn't handle the No case which should redirect back to the add claim eori page
       def handleValidFormSubmission(j: SubsidyJourney)(f: FormValues): OptionT[Future, Result] = {
         for {
           updatedJourney <- store.update[SubsidyJourney](_.setAddBusiness(f.value.isTrue)).toContext
           businessEori <- j.getClaimEori.toContext
           businessEntity = BusinessEntity(businessEori, leadEORI = false)
-          _ <- escService.addMember(undertaking.reference, businessEntity).toContext
-          next <- updatedJourney.next.toContext
+          // TODO - tidy this up
+          next <- if (f.value.isTrue) {
+            escService
+              .addMember(undertaking.reference, businessEntity)
+              .toContext
+              .flatMap(_ => updatedJourney.next.toContext)
+          } else Redirect(routes.SubsidyController.getAddClaimEori()).toContext
+          _ = println(s"handleValidFormSubmission: journey $updatedJourney next $next")
         } yield next
       }
 
