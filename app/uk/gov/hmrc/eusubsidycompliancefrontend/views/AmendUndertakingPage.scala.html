@@ -32,7 +32,7 @@
 )
 
 
-@(sector: Sector, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(sector: Sector, email: String, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
     pageTitle = Some(messages("undertaking.amendUndertaking.title")),
@@ -59,6 +59,23 @@
                                     href = controllers.routes.UndertakingController.getSector().toString,
                                     content = Text(messages("common.change")),
                                     visuallyHiddenText = Some(messages("undertaking.amendUndertaking.summary-list.change.industry-sector"))
+                                )
+                            )
+                        ))
+                    ),
+                    SummaryListRow(
+                        key = Key(
+                            content = Text(messages("undertaking.amendUndertaking.summary-list.undertaking-admin-email.key"))
+                        ),
+                        value = Value(
+                            content = Text(email)
+                        ),
+                        actions = Some(Actions(
+                            items = Seq(
+                                ActionItem(
+                                    href = controllers.routes.UndertakingController.getConfirmEmail().toString,
+                                    content = Text(messages("common.change")),
+                                    visuallyHiddenText = Some(messages("undertaking.amendUndertaking.summary-list.change.email"))
                                 )
                             )
                         ))

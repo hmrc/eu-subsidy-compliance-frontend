@@ -73,6 +73,11 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
     .expects(*, *, *)
     .returning(Right(HttpResponse(status, responseBody)).toFuture)
 
+  def mockServiceConfig() = (mockServicesConfig
+    .baseUrl(_: String))
+    .expects(*)
+    .returning("")
+
   private val unverifiedVerificationRequest = VerifiedEmail("unverified@something.com", "someId", verified = false)
   private val verifiedVerificationRequest = VerifiedEmail("verified@something.com", "someId", verified = true)
 
@@ -132,6 +137,7 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
       "redirect to the next page if the email verification succeeded" in {
         inSequence {
           mockVerifyEmail()
+          mockServiceConfig()
         }
 
         val result = service.makeVerificationRequestAndRedirect(

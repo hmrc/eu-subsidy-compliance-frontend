@@ -577,8 +577,9 @@ class UndertakingControllerSpec
           )
 
           inSequence {
-            mockAuthWithEnrolmentAndNoEmailVerification()
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
+            mockAuthWithEnrolment(eori1)
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
             mockApproveVerification(eori1, "id")(Right(true))
             mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
             mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourney))
@@ -712,9 +713,12 @@ class UndertakingControllerSpec
 
        "all api calls are successful" in {
          inSequence {
-           mockAuthWithEnrolmentAndValidEmail()
+           mockAuthWithEnrolment(eori1)
+           mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+           mockGetEmailVerification()
            mockAddVerifiedEmail(eori1, "foo@example.com")()
            mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourneyComplete))
+
          }
          checkIsRedirect(
            performAction("using-stored-email" -> "true"),
@@ -724,7 +728,9 @@ class UndertakingControllerSpec
 
       "No verification found or cds with valid form should redirect" in {
         inSequence {
-          mockAuthWithEnrolmentAndValidEmail()
+          mockAuthWithEnrolment(eori1)
+          mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+          mockGetEmailVerification()
           mockMakeVerificationRequestAndRedirect(Redirect("email-verification-redirect").toFuture)
         }
         redirectLocation(performAction("using-stored-email" -> "false", "email" -> "something@aol.com")) shouldBe "email-verification-redirect".some
@@ -732,7 +738,9 @@ class UndertakingControllerSpec
 
        "No verification found or cds with invalid form should be bad request" in {
          inSequence {
-           mockAuthWithEnrolmentAndValidEmail()
+           mockAuthWithEnrolment(eori1)
+           mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+           mockGetEmailVerification()
          }
          status(performAction("using-stored-email" -> "false", "email" -> "somethingl.com")) shouldBe BAD_REQUEST
        }
@@ -1208,6 +1216,11 @@ class UndertakingControllerSpec
           messageFromMessageKey("undertaking.amendUndertaking.summary-list.sector.key"),
           messageFromMessageKey(s"sector.label.${undertaking.industrySector.id.toString}"),
           routes.UndertakingController.getSector().url
+        ),
+          ModifyUndertakingRow(
+          messageFromMessageKey("undertaking.amendUndertaking.summary-list.undertaking-admin-email.key"),
+          "foo@example.com",
+          routes.UndertakingController.getConfirmEmail().url
         )
       )
 
@@ -1244,6 +1257,7 @@ class UndertakingControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.copy(isAmend = true).some))
+            mockGetEmailVerification()
           }
 
           checkPageIsDisplayed(
@@ -1272,6 +1286,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](_ => update(undertakingJourneyComplete), eori1)(
               Right(undertakingJourneyComplete.copy(isAmend = true))
             )
+            mockGetEmailVerification()
           }
 
           checkPageIsDisplayed(

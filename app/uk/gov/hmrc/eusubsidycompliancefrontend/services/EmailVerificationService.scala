@@ -31,6 +31,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import java.net.URI
 import java.util.UUID
 import javax.inject.Singleton
 import scala.concurrent.{ExecutionContext, Future}
@@ -67,19 +68,19 @@ class EmailVerificationService @Inject() (
   ): Future[Result] = for {
     verificationId <- addVerificationRequest(request.eoriNumber, email)
     verificationResponse <- verifyEmail(nextPageUrl(verificationId), previousPage.url)(request.authorityId, email)
-  } yield verificationResponse.fold(Redirect(previousPage))(value => Redirect(value.redirectUri))
+  } yield verificationResponse.fold(Redirect(previousPage))(value => Redirect(generateEmailServiceUrl(value.redirectUri)))
 
   private def verifyEmail(
     verifyEmailUrl: String,
     confirmEmailUrl: String
   )(credId: String,
     email: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[EmailVerificationResponse]] = {
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedEnrolledRequest[AnyContent]): Future[Option[EmailVerificationResponse]] = {
     emailVerificationConnector
       .verifyEmail(
         EmailVerificationRequest(
           credId = credId,
-          continueUrl = verifyEmailUrl,
+          continueUrl = generateRedirectToSelfUrl(verifyEmailUrl),
           origin = "EU Subsidy Compliance",
           deskproServiceName = None,
           accessibilityStatementUrl = "",
@@ -88,7 +89,7 @@ class EmailVerificationService @Inject() (
             enterUrl = ""
           )),
           lang = None,
-          backUrl = Some(confirmEmailUrl),
+          backUrl = Some(generateRedirectToSelfUrl(confirmEmailUrl)),
           pageTitle = None
         )
       ).map {
@@ -101,6 +102,23 @@ class EmailVerificationService @Inject() (
         }
     }
   }
+
+  private def generateEmailServiceUrl(redirectUrl: String)(implicit req: AuthenticatedEnrolledRequest[AnyContent]): String = {
+    if(req.isLocal()) {
+      servicesConfig.baseUrl("email-verification-frontend") + redirectUrl
+    } else {
+      redirectUrl
+    }
+  }
+
+  private def generateRedirectToSelfUrl(redirectUrl: String)(implicit req: AuthenticatedEnrolledRequest[AnyContent]): String = {
+    if(req.isLocal()) {
+      new URI("http://" + req.host + redirectUrl).toString
+    } else {
+      redirectUrl
+    }
+  }
+
 
   private def verifyEmailForEori(eori: EORI): Future[CacheItem] = eoriEmailDatastore.verifyEmail(eori)
 
