@@ -43,8 +43,8 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
           "£100.00",
           "10  0.00",
           "£10  0.00",
-          "1,000,000.00",
-          "£1,000,000.00",
+          "100,000.00",
+          "£100,000.00",
         )
 
         amounts.foreach { amount =>
@@ -62,8 +62,8 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
           "€100.00",
           "10  0.00",
           "€10  0.00",
-          "1,000,000.00",
-          "€1,000,000.00",
+          "100,000.00",
+          "€100,000.00",
         )
 
         amounts.foreach { amount =>

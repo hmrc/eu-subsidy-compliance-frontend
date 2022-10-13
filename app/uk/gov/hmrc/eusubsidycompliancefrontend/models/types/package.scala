@@ -21,11 +21,13 @@ import shapeless.tag.@@
 
 package object types extends SimpleJson {
 
+  val MAX_INPUT_VALUE = 999999.99
+
   type IndustrySectorLimit = BigDecimal @@ IndustrySectorLimit.Tag
   object IndustrySectorLimit extends ValidatedType[BigDecimal] {
     override def validateAndTransform(in: BigDecimal): Option[BigDecimal] =
       Some(in).filter { x =>
-        (x <= 99999999999.99) && (x.scale <= 2)
+        (x <= MAX_INPUT_VALUE) && (x.scale <= 2)
       }
   }
 
@@ -33,7 +35,7 @@ package object types extends SimpleJson {
   object PositiveSubsidyAmount extends ValidatedType[BigDecimal] {
     override def validateAndTransform(in: BigDecimal): Option[BigDecimal] =
       Some(in).filter { x =>
-        (x >= 0) && (x <= 99999999999.99) && (x.scale <= 2)
+        (x >= 0) && (x <= MAX_INPUT_VALUE) && (x.scale <= 2)
       }
   }
 
@@ -41,7 +43,7 @@ package object types extends SimpleJson {
   object SubsidyAmount extends ValidatedType[BigDecimal] {
     override def validateAndTransform(in: BigDecimal): Option[BigDecimal] =
       Some(in).filter { x =>
-        (x >= -99999999999.99) && (x <= 99999999999.99) && (x.scale <= 2)
+        (x >= -MAX_INPUT_VALUE) && (x <= MAX_INPUT_VALUE) && (x.scale <= 2)
       }
     val Zero: SubsidyAmount = SubsidyAmount(BigDecimal(0))
   }
