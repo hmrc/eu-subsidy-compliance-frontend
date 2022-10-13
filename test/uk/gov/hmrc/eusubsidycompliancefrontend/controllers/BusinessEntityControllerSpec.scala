@@ -25,9 +25,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityControllerSpec.CheckYourAnswersRowBE
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{AddMemberToBusinessEntity, AddMemberToLead, RemoveMemberToBusinessEntity, RemoveMemberToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -42,7 +40,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.UpstreamErrorResponse
 
 import java.time.LocalDate
-import scala.collection.JavaConverters._
 
 class BusinessEntityControllerSpec
     extends ControllerSpec
@@ -436,8 +433,6 @@ class BusinessEntityControllerSpec
 
           def updatedBusinessJourney() =
               businessEntityJourney.copy(eori = businessEntityJourney.eori.copy(value = None))
-          def update(j: BusinessEntityJourney, eoriEntered: EORI) =
-            j.copy(eori = j.eori.copy(value = Some(eoriEntered)))
           List("123456789010", "GB123456789013").foreach { eoriEntered =>
             withClue(s" For eori entered :: $eoriEntered") {
               val validEori = EORI(getValidEori(eoriEntered))
@@ -741,14 +736,6 @@ class BusinessEntityControllerSpec
 
     }
   }
-
-  private def expectedRows(eori: EORI) = List(
-    CheckYourAnswersRowBE(
-      messageFromMessageKey("businessEntity.cya.eori.label"),
-      eori,
-      routes.BusinessEntityController.getEori().url
-    )
-  )
 
 }
 
