@@ -21,7 +21,6 @@ import play.api.libs.json.{Format, Json}
 final case class OptionalClaimEori(
   setValue: String,
   value: Option[String],
-  // TODO - better name for this
   addToUndertaking: Boolean = false
 )
 
