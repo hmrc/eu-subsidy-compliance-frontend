@@ -289,13 +289,13 @@ add-claim-amount.currency-code.error.required = Select the currency the payment 
 # GBP field validation errors
 add-claim-amount.claim-amount-gbp.error.required = Enter number value of subsidy allocated, like 248.56
 add-claim-amount.claim-amount-gbp.error.incorrect-format = Enter number value of subsidy allocated, like 248.56
-add-claim-amount.claim-amount-gbp.error.tooBig=Subsidy amount must be fewer than 17 characters
+add-claim-amount.claim-amount-gbp.error.tooBig=Subsidy amount must be a maximum of 10 characters (including a comma or full stop), or fewer, like £134,253.71
 add-claim-amount.claim-amount-gbp.error.tooSmall=Subsidy amount must be more than zero
 
 # EUR field validation errors
 add-claim-amount.claim-amount-eur.error.required = Enter number value of subsidy allocated, like 248.56
 add-claim-amount.claim-amount-eur.error.incorrect-format = Enter number value of subsidy allocated, like 248.56
-add-claim-amount.claim-amount-eur.error.tooBig=Subsidy amount must be fewer than 17 characters
+add-claim-amount.claim-amount-eur.error.tooBig=Subsidy amount must be a maximum of 10 characters (including a comma or full stop), or fewer, like €134,253.71
 add-claim-amount.claim-amount-eur.error.tooSmall=Subsidy amount must be more than zero
 
 add-claim-amount.p1=This type of aid is measured in euros.
