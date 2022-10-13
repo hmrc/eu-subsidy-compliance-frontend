@@ -26,7 +26,7 @@ import scala.concurrent.Future
 trait FormPage[+T] {
   val value: Journey.Form[T]
   def uri: Uri
-
+  def redirect: Future[Result] = Redirect(uri).toFuture
   def isCurrentPage(implicit r: Request[_]): Boolean = r.uri == uri
 }
 
@@ -38,11 +38,9 @@ trait Journey {
     if (currentIndex > 0) steps(previousIndex).uri
     else throw new IllegalStateException("no previous page")
 
-  def next(implicit r: Request[_]): Future[Result] = {
-    println(s"currentIndex is $currentIndex - lastIndex is $lastIndex")
+  def next(implicit r: Request[_]): Future[Result] =
     if (currentIndex < lastIndex) redirectWithSession(steps(nextIndex).uri).toFuture
     else throw new IllegalStateException("no next page")
-  }
 
   def isComplete: Boolean = steps(lastIndex).value.isDefined
 

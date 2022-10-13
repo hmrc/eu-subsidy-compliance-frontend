@@ -939,8 +939,6 @@ class SubsidyControllerSpec
         "a valid request is made" in {
           val incompleteJourney = subsidyJourney.copy(traderRef = TraderRefFormPage())
 
-          println(s"subsidy journey state: $incompleteJourney")
-
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)

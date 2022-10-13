@@ -257,15 +257,10 @@ class SubsidyController @Inject() (
       implicit val eori: EORI = request.eoriNumber
       val claimEoriForm = ClaimEoriFormProvider(undertaking).form
 
-      def storeOptionalEoriAndRedirect(o: OptionalClaimEori) = {
-        println(s"Setting claim eori on journey: $o")
+      def storeOptionalEoriAndRedirect(o: OptionalClaimEori) =
         store
           .update[SubsidyJourney](_.setClaimEori(o))
-          .flatMap { journey =>
-            println(s"calling next on journey: $journey")
-            journey.next
-          }
-      }
+          .flatMap(_.next)
 
       def handleValidFormSubmission(j: SubsidyJourney, o: OptionalClaimEori): Future[Result] =
         o match {
@@ -273,10 +268,9 @@ class SubsidyController @Inject() (
           case OptionalClaimEori("true", Some(e), _) =>
             val enteredEori = EORI(e)
 
-            if (undertaking.hasEORI(enteredEori)) {
-              println(s"Undertaking has EORI: $enteredEori")
+            if (undertaking.hasEORI(enteredEori))
               storeOptionalEoriAndRedirect(o)
-            } else
+            else
               escService
                 .retrieveUndertaking(enteredEori)
                 .toContext
@@ -331,7 +325,6 @@ class SubsidyController @Inject() (
               .toContext
               .flatMap(_ => updatedJourney.next.toContext)
           } else Redirect(routes.SubsidyController.getAddClaimEori()).toContext
-          _ = println(s"handleValidFormSubmission: journey $updatedJourney next $next")
         } yield next
       }
 
@@ -534,13 +527,8 @@ class SubsidyController @Inject() (
 
     store.getOrCreate[SubsidyJourney](SubsidyJourney()).toContext
       .map { journey =>
-        if (journey.isEligibleForStep) {
-          println(s"Eligible for step")
-          f(journey)
-        } else {
-          println(s"Not eligible for step redirecting to ${journey.previous}")
-          Redirect(journey.previous)
-        }
+        if (journey.isEligibleForStep) f(journey)
+        else Redirect(journey.previous)
       }
       .getOrElse(Redirect(routes.SubsidyController.getReportedPayments().url))
 

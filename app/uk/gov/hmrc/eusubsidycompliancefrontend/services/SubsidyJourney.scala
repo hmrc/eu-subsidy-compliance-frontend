@@ -18,7 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json._
-import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.EUR
@@ -26,7 +25,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import java.net.URI
 import scala.concurrent.Future
@@ -55,34 +53,22 @@ case class SubsidyJourney(
     cya
   )
 
-  val isAmend: Boolean = traderRef.value.nonEmpty
+  lazy val isAmend: Boolean = traderRef.value.nonEmpty
 
   override def next(implicit r: Request[_]): Future[Result] =
     if (isAmend)
-      if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion)
-        Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
-      else if (claimAmount.isCurrentPage && !shouldSkipCurrencyConversion)
-        Redirect(routes.SubsidyController.getConfirmClaimAmount()).toFuture
-      else if (addClaimEori.isCurrentPage && shouldAddNewBusiness)
-        Redirect(addClaimBusiness.uri).toFuture
-      else
-        Redirect(routes.SubsidyController.getCheckAnswers()).toFuture
-    else if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion)
-      Redirect(routes.SubsidyController.getAddClaimEori()).toFuture
-    else if (addClaimEori.isCurrentPage)
-      if (hasBusinessEoriToAdd)
-        Redirect(routes.SubsidyController.getAddClaimBusiness()).toFuture
-      else
-        Redirect(routes.SubsidyController.getAddClaimPublicAuthority()).toFuture
-    else {
-      println(s"delegating to super.next")
-      super.next
-    }
+      if (claimAmount.isCurrentPage && !shouldSkipCurrencyConversion) convertedClaimAmountConfirmation.redirect
+      else if (addClaimEori.isCurrentPage && shouldAddNewBusiness) addClaimBusiness.redirect
+      else cya.redirect
+    else
+      if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion) addClaimEori.redirect
+      else if (addClaimEori.isCurrentPage && !hasBusinessEoriToAdd) publicAuthority.redirect
+      else super.next
 
-  // TODO - review the isAmend flow
   override def previous(implicit request: Request[_]): Journey.Uri =
     if (isAmend)
       if (convertedClaimAmountConfirmation.isCurrentPage) claimAmount.uri
+      else if (addClaimBusiness.isCurrentPage) addClaimEori.uri
       else if (!cya.isCurrentPage) cya.uri
       else extractAndParseRefererUrl.getOrElse(routes.AccountController.getAccountPage().url)
     else
