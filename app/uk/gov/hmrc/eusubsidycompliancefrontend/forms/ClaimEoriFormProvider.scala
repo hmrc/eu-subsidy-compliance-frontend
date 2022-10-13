@@ -22,8 +22,8 @@ import play.api.data.{Form, Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Fields._
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.withPrefix
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{OptionalClaimEori, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[OptionalClaimEori] {
@@ -42,14 +42,14 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
   }
 
   private val enteredEoriIsValid = Constraint[String] { eori: String =>
-    if (getValidEori(eori).matches(EORI.regex)) Valid
+    if (withPrefix(eori).matches(EORI.regex)) Valid
     else Invalid(IncorrectFormat)
   }
 
   private val eoriNumberMapping: Mapping[String] =
     text
       .verifying(eoriEntered)
-      .transform(e => getValidEori(e), (s: String) => s.drop(2))
+      .transform(e => withPrefix(e), (s: String) => s.drop(2))
       .verifying(enteredEoriIsValid)
 
 }

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
+import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Invalid, Valid}
@@ -25,9 +25,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{AddMemberToBusinessEntity, AddMemberToLead, RemoveMemberToBusinessEntity, RemoveMemberToLead}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.withPrefix
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -320,13 +320,15 @@ class BusinessEntityController @Inject() (
   private val removeBusinessForm = formWithSingleMandatoryField("removeBusiness")
   private val removeYourselfBusinessForm = formWithSingleMandatoryField("removeYourselfBusinessEntity")
 
+  private val validEoriLengths = Set(14, 17) // Valid lengths with 2 letter prefix
+
   private val isEoriLengthValid = Constraint[String] { eori: String =>
-    if (getValidEori(eori).length === 14 || getValidEori(eori).length === 17) Valid
+    if (validEoriLengths.contains(withPrefix(eori).length)) Valid
     else Invalid("businessEntityEori.error.incorrect-length")
   }
 
   private val isEoriValid = Constraint[String] { eori: String =>
-    if (getValidEori(eori).matches(EORI.regex)) Valid
+    if (withPrefix(eori).matches(EORI.regex)) Valid
     else Invalid("businessEntityEori.regex.error")
   }
 
@@ -335,7 +337,7 @@ class BusinessEntityController @Inject() (
       "businessEntityEori" -> mandatory("businessEntityEori")
         .verifying(isEoriLengthValid)
         .verifying(isEoriValid)
-    )(eoriEntered => FormValues(getValidEori(eoriEntered)))(eori => eori.value.drop(2).some)
+    )(eoriEntered => FormValues(withPrefix(eoriEntered)))(eori => eori.value.drop(2).some)
   )
 
   private val cyaForm: Form[FormValues] = Form(mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
