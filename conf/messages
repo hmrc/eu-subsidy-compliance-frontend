@@ -441,8 +441,8 @@ dashboard.total.claimed.heading = Total claimed
 dashboard.sector.cap.heading = Sector cap ({0})
 dashboard.sector.name.0 = Other
 dashboard.sector.name.1 = Transport
-dashboard.sector.name.2 = Agriculture
-dashboard.sector.name.3 = Aquaculture
+dashboard.sector.name.2 = Aquaculture
+dashboard.sector.name.3 = Agriculture
 dashboard.allowance.remaining.heading = Allowance remaining
 
 become-admin.title = Do you want to become the administrator for this undertaking?
