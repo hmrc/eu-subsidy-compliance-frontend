@@ -150,7 +150,7 @@ class AccountController @Inject() (
 
     } else Ok(nonLeadAccountPage(
       undertaking,
-      eori,
+      undertaking.getLeadEORI,
       dueDate,
       isOverdue,
       lastSubmitted.map(_.toDisplayFormat),
