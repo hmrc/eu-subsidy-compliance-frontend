@@ -1587,7 +1587,7 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail(eori1)
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(journeyWithEoriToAdd.some))
-            mockUpdate[SubsidyJourney](_.setAddBusiness(true), eori1)(Right(journeyWithEoriToAdd))
+            mockUpdate[SubsidyJourney](_.setAddBusiness(false), eori1)(Right(journeyWithEoriToAdd.setAddBusiness(false)))
           }
 
           val result = performAction(

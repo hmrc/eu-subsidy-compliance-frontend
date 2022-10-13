@@ -313,18 +313,19 @@ class SubsidyController @Inject() (
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
+      def handleAddBusinessRequest(addBusiness: Boolean, businessEori: EORI, next: Future[Result]) =
+        if (addBusiness)
+          escService
+            .addMember(undertaking.reference, BusinessEntity(businessEori, leadEORI = false))
+            .toContext
+            .flatMap(_ => next.toContext)
+        else Redirect(routes.SubsidyController.getAddClaimEori()).toContext
+
       def handleValidFormSubmission(j: SubsidyJourney)(f: FormValues): OptionT[Future, Result] = {
         for {
           updatedJourney <- store.update[SubsidyJourney](_.setAddBusiness(f.value.isTrue)).toContext
           businessEori <- j.getClaimEori.toContext
-          businessEntity = BusinessEntity(businessEori, leadEORI = false)
-          // TODO - tidy this up
-          next <- if (f.value.isTrue) {
-            escService
-              .addMember(undertaking.reference, businessEntity)
-              .toContext
-              .flatMap(_ => updatedJourney.next.toContext)
-          } else Redirect(routes.SubsidyController.getAddClaimEori()).toContext
+          next <- handleAddBusinessRequest(updatedJourney.getAddBusiness, businessEori, updatedJourney.next)
         } yield next
       }
 

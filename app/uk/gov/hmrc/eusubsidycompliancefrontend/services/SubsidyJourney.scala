@@ -111,6 +111,7 @@ case class SubsidyJourney(
   def getClaimAmount: Option[BigDecimal] = claimAmountToBigDecimal(claimAmount)
   def getConvertedClaimAmount: Option[BigDecimal] = claimAmountToBigDecimal(convertedClaimAmountConfirmation)
   def getClaimEori: Option[EORI] = addClaimEori.value.flatMap(_.value).map(EORI(_))
+  def getAddBusiness: Boolean = addClaimBusiness.value.getOrElse(false)
 
   def claimAmountIsInEuros: Boolean = claimAmount.value.map(_.currencyCode).contains(EUR)
 
