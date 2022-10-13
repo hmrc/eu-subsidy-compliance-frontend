@@ -20,6 +20,7 @@ import play.api.data.Forms.text
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import play.api.data.{Form, Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Fields._
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.{fromOptionalClaimEori, toOptionalClaimEori}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.withPrefix
@@ -33,8 +34,7 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
   override protected def mapping: Mapping[OptionalClaimEori] = Forms.mapping(
     YesNoRadioButton -> text,
     EoriNumber -> mandatoryIfEqual(YesNoRadioButton, "true", eoriNumberMapping),
-    // TODO - this apply extract code needs another pass - provide overloads?
-  )((p,q) => OptionalClaimEori.apply(p, q))(u => OptionalClaimEori.unapply(u).map(r => (r._1, r._2)))
+  )(toOptionalClaimEori)(fromOptionalClaimEori)
 
   private val eoriEntered = Constraint[String] { eori: String =>
     if (eori.isEmpty) Invalid(Required)
@@ -64,5 +64,10 @@ object ClaimEoriFormProvider {
   object Errors {
     val InAnotherUndertaking = "error.in-another-undertaking"
   }
+
+  def toOptionalClaimEori(s: String, v: Option[String]) = OptionalClaimEori(s, v)
+
+  def fromOptionalClaimEori(oe: OptionalClaimEori): Option[(String, Option[String])] =
+    OptionalClaimEori.unapply(oe).map(result => (result._1, result._2))
 
 }
