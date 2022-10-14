@@ -26,7 +26,7 @@ import scala.concurrent.Future
 trait FormPage[+T] {
   val value: Journey.Form[T]
   def uri: Uri
-
+  def redirect: Future[Result] = Redirect(uri).toFuture
   def isCurrentPage(implicit r: Request[_]): Boolean = r.uri == uri
 }
 

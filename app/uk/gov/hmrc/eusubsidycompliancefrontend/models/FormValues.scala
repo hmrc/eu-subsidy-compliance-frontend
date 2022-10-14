@@ -17,3 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 case class FormValues(value: String)
+
+object FormValues {
+  def apply(b: Boolean): FormValues = FormValues(b.toString)
+}

@@ -339,6 +339,10 @@ should-claim-eori.error.required=Select yes if you would like to add a valid EOR
 claim-eori.error.incorrect-format=GB EORI number must be 12 or 15 digits
 claim-eori.error.required=GB EORI number must be 12 or 15 digits
 claim-eori.error.not-in-undertaking=The EORI number you entered is not part of this undertaking. Enter a valid EORI number.
+claim-eori.error.in-another-undertaking=The EORI number you entered is part of another undertaking. Enter a valid EORI number.
+
+add-claim-business.title = Do you want to add this business to your undertaking?
+add-claim-business.hint = This business is not currently in your undertaking. Are you sure you want to add this business to your undertaking?
 
 add-claim-trader-reference.title=Would you like to add a reference?
 add-claim-trader-reference.hint = This is for your own records and is not a mandatory field

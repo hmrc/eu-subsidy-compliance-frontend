@@ -76,7 +76,12 @@ package object types extends SimpleJson {
   object EORI
       extends RegexValidatedString(
         """^(GB|XI)[0-9]{12,15}$"""
-      )
+      ) {
+
+    def withGbPrefix(eori: String): String =
+      if (eori.startsWith("GB")) eori
+      else s"GB$eori"
+  }
 
   type UndertakingRef = String @@ UndertakingRef.Tag
   object UndertakingRef

@@ -23,9 +23,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyControllerSpec.RemoveSubsidyRow
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimAmountFormProvider, ClaimEoriFormProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{TooBig, TooSmall}
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Errors.NotInUndertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.{IncorrectFormat, Required}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
@@ -728,7 +727,7 @@ class SubsidyControllerSpec
               val inputText = doc.select(".govuk-input").attr("value")
 
               subsidyJourney.addClaimEori.value match {
-                case Some(OptionalEORI(input, eori)) =>
+                case Some(OptionalClaimEori(input, eori, _)) =>
                   selectedOptions.attr("value") shouldBe input
                   inputText shouldBe eori.map(_.drop(2)).getOrElse("")
                 case _ => selectedOptions.isEmpty shouldBe true
@@ -747,7 +746,7 @@ class SubsidyControllerSpec
         "the user has already answered the question" in {
           List(
             subsidyJourney,
-            subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage(OptionalEORI("false", None).some))
+            subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage(OptionalClaimEori("false", None).some))
           )
             .foreach { subsidyJourney =>
               withClue(s" for each subsidy journey $subsidyJourney") {
@@ -789,7 +788,7 @@ class SubsidyControllerSpec
         "call to update subsidy journey fails" in {
 
           def update(subsidyJourney: SubsidyJourney) =
-            subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage(OptionalEORI("false", None).some))
+            subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage(OptionalClaimEori("false", None).some))
 
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
@@ -841,10 +840,17 @@ class SubsidyControllerSpec
 
         }
 
-        "yes is selected but the eori entered is not part of the undertaking" in {
-          testFormError(
-            Some(List("should-claim-eori" -> "true", "claim-eori" -> "121212121212")),
-            s"claim-eori.$NotInUndertaking"
+        "yes is selected but eori entered is part of another undertaking" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+            mockRetrieveUndertaking(eori3)(undertaking.some.toFuture)
+          }
+          checkFormErrorIsDisplayed(
+            performAction("should-claim-eori" -> "true", "claim-eori" -> eori3),
+            messageFromMessageKey("add-claim-eori.title"),
+            messageFromMessageKey("claim-eori." + ClaimEoriFormProvider.Errors.InAnotherUndertaking)
           )
         }
 
@@ -856,10 +862,10 @@ class SubsidyControllerSpec
           traderRef = TraderRefFormPage()
         )
 
-        def update(subsidyJourney: SubsidyJourney, formValues: Option[OptionalEORI]) =
+        def update(subsidyJourney: SubsidyJourney, formValues: Option[OptionalClaimEori]) =
           subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage(formValues))
 
-        def testRedirect(optionalEORI: OptionalEORI, inputAnswer: List[(String, String)]): Unit = {
+        def testRedirect(optionalEORI: OptionalClaimEori, inputAnswer: List[(String, String)]): Unit = {
           val updatedSubsidyJourney = update(journey, optionalEORI.some)
 
           inSequence {
@@ -873,22 +879,43 @@ class SubsidyControllerSpec
           checkIsRedirect(performAction(inputAnswer: _*), routes.SubsidyController.getAddClaimPublicAuthority().url)
         }
 
-        "user selected yes and enter a valid  eori number" in {
+        "user selected yes and entered a valid eori part of the existing undertaking" in {
           testRedirect(
-            OptionalEORI("true", "123456789013".some),
+            OptionalClaimEori("true", "123456789013".some),
             List("should-claim-eori" -> "true", "claim-eori" -> "123456789013")
           )
         }
 
-        "user selected yes and enter a valid eori number with GB" in {
+        "user selected yes and entered a valid eori with GB prefix part of the existing undertaking" in {
           testRedirect(
-            OptionalEORI("true", "GB123456789013".some),
+            OptionalClaimEori("true", "GB123456789013".some),
             List("should-claim-eori" -> "true", "claim-eori" -> "GB123456789013")
           )
         }
 
-        "user selected No " in {
-          testRedirect(OptionalEORI("false", None), List("should-claim-eori" -> "false"))
+        "user selected yes and entered a valid EORI that is not part of the existing or any other undertaking" in {
+          val optionalEORI = OptionalClaimEori("true", eori3.some)
+
+          val updatedSubsidyJourney = update(journey, optionalEORI.copy(addToUndertaking = true).some)
+
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(journey.some))
+            mockRetrieveUndertaking(eori3)(Option.empty.toFuture)
+            mockUpdate[SubsidyJourney](_ => update(journey, optionalEORI.some), eori1)(
+              Right(updatedSubsidyJourney)
+            )
+          }
+
+          checkIsRedirect(
+            performAction("should-claim-eori" -> optionalEORI.setValue, "claim-eori" -> eori3),
+            routes.SubsidyController.getAddClaimBusiness().url
+          )
+        }
+
+        "user selected no " in {
+          testRedirect(OptionalClaimEori("false", None), List("should-claim-eori" -> "false"))
         }
 
       }
@@ -910,10 +937,12 @@ class SubsidyControllerSpec
 
       "display the page" when {
         "a valid request is made" in {
+          val incompleteJourney = subsidyJourney.copy(traderRef = TraderRefFormPage())
+
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
+            mockGetOrCreate[SubsidyJourney](eori1)(Right(incompleteJourney))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -1499,6 +1528,77 @@ class SubsidyControllerSpec
         contentAsString(result) should include(expectedDeadlineDate)
       }
 
+    }
+
+    "handling get of add claim business page" must {
+      def performAction() = controller.getAddClaimBusiness(
+        FakeRequest(GET, routes.SubsidyController.getClaimConfirmationPage().url)
+      )
+
+      "display the page" in {
+        inSequence {
+          mockAuthWithEnrolmentAndValidEmail()
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
+        }
+
+        val result = performAction()
+
+        status(result) shouldBe OK
+
+        contentAsString(result) should include("Do you want to add this business to your undertaking?")
+      }
+
+    }
+
+    "handling post to add claim business page" must {
+      def performAction(form: (String, String)*) = controller.postAddClaimBusiness(
+        FakeRequest(POST, routes.SubsidyController.postAddClaimBusiness().url)
+          .withFormUrlEncodedBody(form: _*)
+      )
+
+      "redirect to next page" when {
+
+        val journeyWithEoriToAdd = subsidyJourney
+          .setClaimEori(OptionalClaimEori("true", eori3.some, addToUndertaking = true))
+          .setAddBusiness(true)
+          .copy(traderRef = TraderRefFormPage())
+
+        "the user answers yes to adding the business" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(journeyWithEoriToAdd.some))
+            mockUpdate[SubsidyJourney](_.setAddBusiness(true), eori1)(Right(journeyWithEoriToAdd))
+            mockAddMember(undertakingRef, BusinessEntity(eori3, leadEORI = false))(Right(undertakingRef))
+          }
+
+          val result = performAction(
+            "add-claim-business" -> "true"
+          )
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) should contain(routes.SubsidyController.getAddClaimPublicAuthority().url)
+
+        }
+
+        "the user answers no to adding the business" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(journeyWithEoriToAdd.some))
+            mockUpdate[SubsidyJourney](_.setAddBusiness(false), eori1)(Right(journeyWithEoriToAdd.setAddBusiness(false)))
+          }
+
+          val result = performAction(
+            "add-claim-business" -> "false"
+          )
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) should contain(routes.SubsidyController.getAddClaimEori().url)
+
+        }
+      }
     }
 
   }

@@ -29,9 +29,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{AddMemberToBusinessEntity, AddMemberToLead, RemoveMemberToBusinessEntity, RemoveMemberToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.withGbPrefix
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData
@@ -435,7 +435,7 @@ class BusinessEntityControllerSpec
               businessEntityJourney.copy(eori = businessEntityJourney.eori.copy(value = None))
           List("123456789010", "GB123456789013").foreach { eoriEntered =>
             withClue(s" For eori entered :: $eoriEntered") {
-              val validEori = EORI(getValidEori(eoriEntered))
+              val validEori = EORI(withGbPrefix(eoriEntered))
               inSequence {
                 mockAuthWithEnrolmentAndValidEmail()
                 mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)

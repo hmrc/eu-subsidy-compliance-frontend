@@ -48,22 +48,23 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SubsidyController @Inject() (
-                                    mcc: MessagesControllerComponents,
-                                    actionBuilders: ActionBuilders,
-                                    override val store: Store,
-                                    override val escService: EscService,
-                                    auditService: AuditService,
-                                    reportedPaymentsPage: ReportedPaymentsPage,
-                                    addClaimEoriPage: AddClaimEoriPage,
-                                    addClaimAmountPage: AddClaimAmountPage,
-                                    addClaimDatePage: AddClaimDatePage,
-                                    addPublicAuthorityPage: AddPublicAuthorityPage,
-                                    addTraderReferencePage: AddTraderReferencePage,
-                                    cyaPage: ClaimCheckYourAnswerPage,
-                                    confirmCreatedPage: ClaimConfirmationPage,
-                                    confirmRemovePage: ConfirmRemoveClaim,
-                                    confirmConvertedAmountPage: ConfirmClaimAmountConversionToEuros,
-                                    timeProvider: TimeProvider
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  override val store: Store,
+  override val escService: EscService,
+  auditService: AuditService,
+  reportedPaymentsPage: ReportedPaymentsPage,
+  addClaimEoriPage: AddClaimEoriPage,
+  addClaimBusinessPage: AddClaimBusinessPage,
+  addClaimAmountPage: AddClaimAmountPage,
+  addClaimDatePage: AddClaimDatePage,
+  addPublicAuthorityPage: AddPublicAuthorityPage,
+  addTraderReferencePage: AddTraderReferencePage,
+  cyaPage: ClaimCheckYourAnswerPage,
+  confirmCreatedPage: ClaimConfirmationPage,
+  confirmRemovePage: ConfirmRemoveClaim,
+  confirmConvertedAmountPage: ConfirmClaimAmountConversionToEuros,
+  timeProvider: TimeProvider
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport
@@ -73,6 +74,7 @@ class SubsidyController @Inject() (
 
   private val removeSubsidyClaimForm: Form[FormValues] = formWithSingleMandatoryField("removeSubsidyClaim")
   private val cyaForm: Form[FormValues] = formWithSingleMandatoryField("cya")
+  private val addClaimBusinessForm: Form[FormValues] = formWithSingleMandatoryField("add-claim-business")
 
   private val claimTraderRefForm: Form[OptionalTraderRef] = Form(
     mapping(
@@ -243,7 +245,7 @@ class SubsidyController @Inject() (
       renderFormIfEligible { journey =>
         val claimEoriForm = ClaimEoriFormProvider(undertaking).form
         val updatedForm = journey.addClaimEori.value.fold(claimEoriForm) { optionalEORI =>
-          claimEoriForm.fill(OptionalEORI(optionalEORI.setValue, optionalEORI.value))
+          claimEoriForm.fill(OptionalClaimEori(optionalEORI.setValue, optionalEORI.value))
         }
         Ok(addClaimEoriPage(updatedForm, journey.previous))
       }
@@ -255,15 +257,88 @@ class SubsidyController @Inject() (
       implicit val eori: EORI = request.eoriNumber
       val claimEoriForm = ClaimEoriFormProvider(undertaking).form
 
+      def storeOptionalEoriAndRedirect(o: OptionalClaimEori) =
+        store
+          .update[SubsidyJourney](_.setClaimEori(o))
+          .flatMap(_.next)
+
+      def handleValidFormSubmission(j: SubsidyJourney, o: OptionalClaimEori): Future[Result] =
+        o match {
+          case OptionalClaimEori("false", None, _) => storeOptionalEoriAndRedirect(o)
+          case OptionalClaimEori("true", Some(e), _) =>
+            val enteredEori = EORI(e)
+
+            if (undertaking.hasEORI(enteredEori)) storeOptionalEoriAndRedirect(o)
+            else
+              escService
+                .retrieveUndertaking(enteredEori)
+                .toContext
+                .foldF(storeOptionalEoriAndRedirect(o.copy(addToUndertaking = true))) { _ =>
+                  println(s"Processing form: $claimEoriForm")
+                  BadRequest(
+                    addClaimEoriPage(
+                      claimEoriForm
+                        .bindFromRequest()
+                        .withError("claim-eori", ClaimEoriFormProvider.Errors.InAnotherUndertaking),
+                      j.previous
+                    )
+                  ).toFuture
+                }
+          // Default case. Should never happen if form submitted via our frontend.
+          case _ => Redirect(routes.SubsidyController.getAddClaimEori()).toFuture
+        }
+
       processFormSubmission[SubsidyJourney] { journey =>
         claimEoriForm
           .bindFromRequest()
           .fold(
             formWithErrors => BadRequest(addClaimEoriPage(formWithErrors, journey.previous)).toContext,
-            form => store.update[SubsidyJourney](_.setClaimEori(form)).flatMap(_.next).toContext
+            optionalEori => handleValidFormSubmission(journey, optionalEori).toContext
           )
       }
+    }
+  }
 
+  def getAddClaimBusiness: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
+      renderFormIfEligible { journey =>
+        val updatedForm =
+          journey.addClaimBusiness.value
+            .fold(addClaimBusinessForm)(v => addClaimBusinessForm.fill(FormValues(v)))
+
+        Ok(addClaimBusinessPage(updatedForm, journey.previous))
+      }
+    }
+  }
+
+  def postAddClaimBusiness: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { undertaking =>
+      implicit val eori: EORI = request.eoriNumber
+
+      def handleAddBusinessRequest(addBusiness: Boolean, businessEori: EORI, next: Future[Result]) =
+        if (addBusiness)
+          escService
+            .addMember(undertaking.reference, BusinessEntity(businessEori, leadEORI = false))
+            .toContext
+            .flatMap(_ => next.toContext)
+        else Redirect(routes.SubsidyController.getAddClaimEori()).toContext
+
+      def handleValidFormSubmission(j: SubsidyJourney)(f: FormValues): OptionT[Future, Result] = {
+        for {
+          updatedJourney <- store.update[SubsidyJourney](_.setAddBusiness(f.value.isTrue)).toContext
+          businessEori <- j.getClaimEori.toContext
+          next <- handleAddBusinessRequest(updatedJourney.getAddBusiness, businessEori, updatedJourney.next)
+        } yield next
+      }
+
+      processFormSubmission[SubsidyJourney] { journey =>
+        addClaimBusinessForm
+          .bindFromRequest()
+          .fold(
+            errors => BadRequest(addClaimBusinessPage(errors, journey.previous)).toContext,
+            handleValidFormSubmission(journey)
+          )
+      }
     }
   }
 
@@ -318,7 +393,7 @@ class SubsidyController @Inject() (
   def getCheckAnswers: Action[AnyContent] = verifiedEmail.async { implicit request =>
 
     def getEuroAmount(j: SubsidyJourney) =
-      if (j.claimAmountInEuros) j.getClaimAmount
+      if (j.claimAmountIsInEuros) j.getClaimAmount
       else j.getConvertedClaimAmount
 
     withLeadUndertaking { _ =>
@@ -450,15 +525,15 @@ class SubsidyController @Inject() (
     result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
   }
 
-    protected def renderFormIfEligible(f: SubsidyJourney => Result)(implicit r: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
-      implicit val eori: EORI = r.eoriNumber
+  protected def renderFormIfEligible(f: SubsidyJourney => Result)(implicit r: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
+    implicit val eori: EORI = r.eoriNumber
 
-      store.getOrCreate[SubsidyJourney](SubsidyJourney()).toContext
-        .map { journey =>
-          if (journey.isEligibleForStep) f(journey)
-          else Redirect(journey.previous)
-        }
-        .getOrElse(Redirect(routes.SubsidyController.getReportedPayments().url))
+    store.getOrCreate[SubsidyJourney](SubsidyJourney()).toContext
+      .map { journey =>
+        if (journey.isEligibleForStep) f(journey)
+        else Redirect(journey.previous)
+      }
+      .getOrElse(Redirect(routes.SubsidyController.getReportedPayments().url))
 
     }
 
@@ -484,7 +559,7 @@ object SubsidyController {
             publicAuthority = Some(journey.publicAuthority.value.get),
             traderReference = journey.traderRef.value.fold(sys.error("Trader ref missing"))(_.value.map(TraderRef(_))),
             nonHMRCSubsidyAmtEUR =
-              if (journey.claimAmountInEuros)
+              if (journey.claimAmountIsInEuros)
                 SubsidyAmount(journey.getClaimAmount.getOrElse(sys.error("Claim amount Missing")))
               else
                 SubsidyAmount(journey.getConvertedClaimAmount.getOrElse(sys.error("Converted claim amount Missing"))),

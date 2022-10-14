@@ -18,11 +18,12 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Format, Json}
 
-final case class OptionalEORI(
+final case class OptionalClaimEori(
   setValue: String,
-  value: Option[String]
+  value: Option[String],
+  addToUndertaking: Boolean = false
 )
 
-object OptionalEORI {
-  implicit val format: Format[OptionalEORI] = Json.format[OptionalEORI]
+object OptionalClaimEori {
+  implicit val format: Format[OptionalClaimEori] = Json.format[OptionalClaimEori]
 }

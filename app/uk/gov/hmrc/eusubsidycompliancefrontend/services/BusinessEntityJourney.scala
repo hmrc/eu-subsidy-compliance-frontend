@@ -51,14 +51,7 @@ case class BusinessEntityJourney(
 
 object BusinessEntityJourney {
 
-  val eoriPrefix = "GB"
-
   implicit val format: Format[BusinessEntityJourney] = Json.format[BusinessEntityJourney]
-
-  def isEoriPrefixGB(eoriEntered: String) = eoriEntered.startsWith(eoriPrefix)
-
-  def getValidEori(eoriEntered: String) =
-    if (isEoriPrefixGB(eoriEntered)) eoriEntered else s"$eoriPrefix$eoriEntered"
 
   object FormPages {
 

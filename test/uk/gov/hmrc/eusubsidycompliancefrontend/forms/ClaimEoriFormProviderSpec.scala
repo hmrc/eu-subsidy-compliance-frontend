@@ -20,11 +20,10 @@ import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.OptionalEORI
-import ClaimEoriFormProvider.Fields._
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Errors._
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Fields._
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.getValidEori
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.OptionalClaimEori
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.withGbPrefix
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking}
 
 class ClaimEoriFormProviderSpec extends AnyWordSpecLike with Matchers {
@@ -53,15 +52,11 @@ class ClaimEoriFormProviderSpec extends AnyWordSpecLike with Matchers {
       validateAndCheckError("true", Some("sausages"))("claim-eori", IncorrectFormat)
     }
 
-    "return an error if the entered eori is not part of the undertaking" in {
-      validateAndCheckError("true", Some("171717171717"))(EoriNumber, NotInUndertaking)
-    }
-
   }
 
   private def validateAndCheckSuccess(radioButton: String, eoriNumber: Option[String]) = {
     val result = processForm(radioButton, eoriNumber)
-    result mustBe Right(OptionalEORI(radioButton, eoriNumber.map(getValidEori)))
+    result mustBe Right(OptionalClaimEori(radioButton, eoriNumber.map(withGbPrefix)))
   }
 
   private def validateAndCheckError(

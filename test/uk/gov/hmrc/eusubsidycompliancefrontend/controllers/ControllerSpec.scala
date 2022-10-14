@@ -52,7 +52,7 @@ trait ControllerSpec extends PlaySupport with ScalaFutures with IntegrationPatie
     expectedStatus: Int = OK,
     isLeadJourney: Boolean = false
   ): Unit = {
-    (status(result), redirectLocation(result)) shouldBe (expectedStatus -> None)
+    (status(result) -> redirectLocation(result)) shouldBe (expectedStatus -> None)
 
     val doc = Jsoup.parse(contentAsString(result))
 
