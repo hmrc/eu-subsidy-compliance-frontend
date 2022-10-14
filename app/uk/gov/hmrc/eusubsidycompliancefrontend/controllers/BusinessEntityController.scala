@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{AddMemberToBusinessEntity, AddMemberToLead, RemoveMemberToBusinessEntity, RemoveMemberToLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.withPrefix
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.withGbPrefix
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
@@ -323,12 +323,12 @@ class BusinessEntityController @Inject() (
   private val validEoriLengths = Set(14, 17) // Valid lengths with 2 letter prefix
 
   private val isEoriLengthValid = Constraint[String] { eori: String =>
-    if (validEoriLengths.contains(withPrefix(eori).length)) Valid
+    if (validEoriLengths.contains(withGbPrefix(eori).length)) Valid
     else Invalid("businessEntityEori.error.incorrect-length")
   }
 
   private val isEoriValid = Constraint[String] { eori: String =>
-    if (withPrefix(eori).matches(EORI.regex)) Valid
+    if (withGbPrefix(eori).matches(EORI.regex)) Valid
     else Invalid("businessEntityEori.regex.error")
   }
 
@@ -337,7 +337,7 @@ class BusinessEntityController @Inject() (
       "businessEntityEori" -> mandatory("businessEntityEori")
         .verifying(isEoriLengthValid)
         .verifying(isEoriValid)
-    )(eoriEntered => FormValues(withPrefix(eoriEntered)))(eori => eori.value.drop(2).some)
+    )(eoriEntered => FormValues(withGbPrefix(eoriEntered)))(eori => eori.value.drop(2).some)
   )
 
   private val cyaForm: Form[FormValues] = Form(mapping("cya" -> mandatory("cya"))(FormValues.apply)(FormValues.unapply))
