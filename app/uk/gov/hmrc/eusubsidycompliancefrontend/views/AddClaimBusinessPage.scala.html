@@ -62,7 +62,7 @@
 
     @govukRadios(Radios(
         errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-            content = Text(messages("willyouclaim.error.required"))
+            content = Text(messages("add-claim-business.error.required"))
         ))} else None,
         fieldset = Some(Fieldset(
             legend = Some(Legend(
