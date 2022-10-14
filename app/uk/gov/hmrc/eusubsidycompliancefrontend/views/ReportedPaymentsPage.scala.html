@@ -41,7 +41,8 @@
     earliestAllowedDate: LocalDate,
     previousTaxYearEnd: LocalDate,
     currentTaxYearStart: LocalDate,
-   previous: Journey.Uri
+    previous: Journey.Uri,
+    showSuccessBanner: Boolean = false
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"reportedPayments"}
 @title = @{messages(s"$key.title")}
@@ -53,11 +54,17 @@
 @publicAuthority = @{s"$key.table.head.public-authority"}
 @ref = @{s"$key.table.head.ref"}
 
+@successBanner = {
+    <p>success!</p>
+}
+
 @layout(
   pageTitle = Some(title),
   backLinkEnabled = true,
   backLink = Some(previous),
 ) {
+        @if(showSuccessBanner) { @successBanner }
+
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 @H1(title)

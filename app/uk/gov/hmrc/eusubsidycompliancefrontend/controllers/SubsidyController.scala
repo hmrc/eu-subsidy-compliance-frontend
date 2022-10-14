@@ -513,16 +513,32 @@ class SubsidyController @Inject() (
     transactionId: String,
     undertaking: Undertaking
   )(implicit request: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
-    val result = for {
+
+    val result: OptionT[Future, Unit] = for {
       reference <- undertaking.reference.toContext
       nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
       _ <- escService.removeSubsidy(reference, nonHmrcSubsidy).toContext
-      _ = auditService.sendEvent[NonCustomsSubsidyRemoved](
-        AuditEvent.NonCustomsSubsidyRemoved(request.authorityId, reference)
-      )
-    } yield Redirect(routes.SubsidyController.getReportedPayments())
+      _ = auditService.sendEvent[NonCustomsSubsidyRemoved](AuditEvent.NonCustomsSubsidyRemoved(request.authorityId, reference))
+    } yield ()
 
-    result.fold(handleMissingSessionData("nonHMRC subsidy"))(identity)
+    val currentDate = timeProvider.today
+
+    result.foldF(handleMissingSessionData("nonHMRC subsidy")) { _ =>
+      // TODO - this duplicates code in the getReportedpayments method - factor out
+      retrieveSubsidies(undertaking.reference).map { subsidies =>
+        Ok(
+          reportedPaymentsPage(
+            subsidies.map(_.forReportedPaymentsPage),
+            undertaking,
+            currentDate.toEarliestTaxYearStart,
+            currentDate.toTaxYearEnd.minusYears(1),
+            currentDate.toTaxYearStart,
+            routes.AccountController.getAccountPage().url,
+            showSuccessBanner = true
+          )
+        )
+      }
+    }
   }
 
   protected def renderFormIfEligible(f: SubsidyJourney => Result)(implicit r: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
