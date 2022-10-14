@@ -343,6 +343,7 @@ claim-eori.error.in-another-undertaking=The EORI number you entered is part of a
 
 add-claim-business.title = Do you want to add this business to your undertaking?
 add-claim-business.hint = This business is not currently in your undertaking. Are you sure you want to add this business to your undertaking?
+add-claim-business.error.required = Select yes if you want to add this business to your undertaking
 
 add-claim-trader-reference.title=Would you like to add a reference?
 add-claim-trader-reference.hint = This is for your own records and is not a mandatory field
