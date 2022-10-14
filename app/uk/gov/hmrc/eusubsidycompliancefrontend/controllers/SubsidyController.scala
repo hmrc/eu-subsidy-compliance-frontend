@@ -268,16 +268,18 @@ class SubsidyController @Inject() (
           case OptionalClaimEori("true", Some(e), _) =>
             val enteredEori = EORI(e)
 
-            if (undertaking.hasEORI(enteredEori))
-              storeOptionalEoriAndRedirect(o)
+            if (undertaking.hasEORI(enteredEori)) storeOptionalEoriAndRedirect(o)
             else
               escService
                 .retrieveUndertaking(enteredEori)
                 .toContext
                 .foldF(storeOptionalEoriAndRedirect(o.copy(addToUndertaking = true))) { _ =>
+                  println(s"Processing form: $claimEoriForm")
                   BadRequest(
                     addClaimEoriPage(
-                      claimEoriForm.withError("claim-eori", ClaimEoriFormProvider.Errors.InAnotherUndertaking),
+                      claimEoriForm
+                        .bindFromRequest()
+                        .withError("claim-eori", ClaimEoriFormProvider.Errors.InAnotherUndertaking),
                       j.previous
                     )
                   ).toFuture
