@@ -32,7 +32,8 @@
   button: components.Button,
   govukErrorSummary: GovukErrorSummary,
   govukRadios: GovukRadios,
-  govukTable: GovukTable
+  govukTable: GovukTable,
+  govukNotificationBanner : GovukNotificationBanner
 )
 
 @(
@@ -54,8 +55,11 @@
 @publicAuthority = @{s"$key.table.head.public-authority"}
 @ref = @{s"$key.table.head.ref"}
 
-@successBanner = {
-    <p>success!</p>
+@bannerContent = {
+    <p class="govuk-notification-banner__heading">@messages(s"$key.removed")</p>
+    <p>
+        <a href="@controllers.routes.AccountController.getAccountPage().url" class="govuk-link">@messages("common.go-account-home")</a>
+    </p>
 }
 
 @layout(
@@ -63,7 +67,13 @@
   backLinkEnabled = true,
   backLink = Some(previous),
 ) {
-        @if(showSuccessBanner) { @successBanner }
+        @if(showSuccessBanner) {
+            @govukNotificationBanner(NotificationBanner(
+                bannerType = Option("success"),
+                content = HtmlContent(bannerContent),
+                disableAutoFocus = Some(true)
+            ))
+        }
 
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">

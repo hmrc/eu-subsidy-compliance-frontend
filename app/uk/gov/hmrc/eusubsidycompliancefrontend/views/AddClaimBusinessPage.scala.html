@@ -27,7 +27,8 @@
     button: components.Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios,
-    govukSummaryList: GovukSummaryList
+    govukSummaryList: GovukSummaryList,
+    govukPanel : GovukPanel
 )
 
 @(form: Form[_], previous: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -38,6 +39,10 @@
 
 @html = {
     <p class="govuk-body"><strong>@messages(s"$key.p1")</strong></p>
+    @govukPanel(Panel(
+        title = Text("Success!"),
+        classes = "govuk-!-margin-bottom-7"
+    ))
 }
 
 @layout(
