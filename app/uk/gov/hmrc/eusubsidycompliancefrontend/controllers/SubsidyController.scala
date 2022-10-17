@@ -322,7 +322,8 @@ class SubsidyController @Inject() (
         for {
           updatedJourney <- store.update[SubsidyJourney](_.setAddBusiness(f.value.isTrue)).toContext
           next <- updatedJourney.next.toContext
-        } yield next
+          updateBusiness = updatedJourney.getAddBusiness
+        } yield if (updateBusiness) next else Redirect(routes.SubsidyController.getAddClaimEori())
       }
 
       processFormSubmission[SubsidyJourney] { journey =>
