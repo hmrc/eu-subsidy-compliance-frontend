@@ -93,22 +93,7 @@ class SubsidyController @Inject() (
   private val claimDateForm: Form[DateFormValues] = ClaimDateFormProvider(timeProvider).form
 
   def getReportedPayments: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    withLeadUndertaking { undertaking =>
-      val currentDate = timeProvider.today
-
-      retrieveSubsidies(undertaking.reference).map { subsidies =>
-        Ok(
-          reportedPaymentsPage(
-            subsidies.map(_.forReportedPaymentsPage),
-            undertaking,
-            currentDate.toEarliestTaxYearStart,
-            currentDate.toTaxYearEnd.minusYears(1),
-            currentDate.toTaxYearStart,
-            routes.AccountController.getAccountPage().url
-          )
-        )
-      }
-    }
+    withLeadUndertaking(renderReportedPaymentsPage(_))
   }
 
   private def retrieveSubsidies(r: UndertakingRef)(implicit request: AuthenticatedEnrolledRequest[AnyContent]) = {
@@ -120,6 +105,28 @@ class SubsidyController @Inject() (
       .retrieveSubsidy(SubsidyRetrieve(r, searchRange))
       .map(Option(_))
       .fallbackTo(Option.empty.toFuture)
+  }
+
+  private def renderReportedPaymentsPage(
+    undertaking: Undertaking,
+    showSuccess: Boolean = false
+  )(implicit request: AuthenticatedEnrolledRequest[AnyContent]) = {
+
+    val currentDate = timeProvider.today
+
+    retrieveSubsidies(undertaking.reference).map { subsidies =>
+      Ok(
+        reportedPaymentsPage(
+          subsidies.map(_.forReportedPaymentsPage),
+          undertaking,
+          currentDate.toEarliestTaxYearStart,
+          currentDate.toTaxYearEnd.minusYears(1),
+          currentDate.toTaxYearStart,
+          routes.AccountController.getAccountPage().url,
+          showSuccessBanner = showSuccess
+        )
+      )
+    }
   }
 
   def getClaimDate: Action[AnyContent] = verifiedEmail.async { implicit request =>
@@ -521,23 +528,8 @@ class SubsidyController @Inject() (
       _ = auditService.sendEvent[NonCustomsSubsidyRemoved](AuditEvent.NonCustomsSubsidyRemoved(request.authorityId, reference))
     } yield ()
 
-    val currentDate = timeProvider.today
-
     result.foldF(handleMissingSessionData("nonHMRC subsidy")) { _ =>
-      // TODO - this duplicates code in the getReportedpayments method - factor out
-      retrieveSubsidies(undertaking.reference).map { subsidies =>
-        Ok(
-          reportedPaymentsPage(
-            subsidies.map(_.forReportedPaymentsPage),
-            undertaking,
-            currentDate.toEarliestTaxYearStart,
-            currentDate.toTaxYearEnd.minusYears(1),
-            currentDate.toTaxYearStart,
-            routes.AccountController.getAccountPage().url,
-            showSuccessBanner = true
-          )
-        )
-      }
+      renderReportedPaymentsPage(undertaking, showSuccess = true)
     }
   }
 
