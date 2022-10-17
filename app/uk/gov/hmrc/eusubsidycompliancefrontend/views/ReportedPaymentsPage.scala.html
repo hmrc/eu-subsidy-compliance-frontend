@@ -32,7 +32,8 @@
   button: components.Button,
   govukErrorSummary: GovukErrorSummary,
   govukRadios: GovukRadios,
-  govukTable: GovukTable
+  govukTable: GovukTable,
+  govukNotificationBanner : GovukNotificationBanner
 )
 
 @(
@@ -41,7 +42,8 @@
     earliestAllowedDate: LocalDate,
     previousTaxYearEnd: LocalDate,
     currentTaxYearStart: LocalDate,
-   previous: Journey.Uri
+    previous: Journey.Uri,
+    showSuccessBanner: Boolean = false
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"reportedPayments"}
 @title = @{messages(s"$key.title")}
@@ -53,11 +55,26 @@
 @publicAuthority = @{s"$key.table.head.public-authority"}
 @ref = @{s"$key.table.head.ref"}
 
+@bannerContent = {
+    <p class="govuk-notification-banner__heading">@messages(s"$key.removed")</p>
+    <p>
+        <a href="@controllers.routes.AccountController.getAccountPage().url" class="govuk-link">@messages("common.go-account-home")</a>
+    </p>
+}
+
 @layout(
   pageTitle = Some(title),
   backLinkEnabled = true,
   backLink = Some(previous),
 ) {
+        @if(showSuccessBanner) {
+            @govukNotificationBanner(NotificationBanner(
+                bannerType = Option("success"),
+                content = HtmlContent(bannerContent),
+                disableAutoFocus = Some(true)
+            ))
+        }
+
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
                 @H1(title)

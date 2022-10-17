@@ -107,7 +107,6 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeToday(currentDate)
-            mockTimeToday(currentDate)
             mockRetrieveSubsidy(subsidyRetrieveWithDates)(subsidies.toFuture)
           }
         }
@@ -1310,7 +1309,7 @@ class SubsidyControllerSpec
         }
       }
 
-      "redirect to next page" when {
+      "display reported payments page with successful removal banner" when {
 
         "If user select yes" in {
           inSequence {
@@ -1320,13 +1319,19 @@ class SubsidyControllerSpec
             mockRetrieveSubsidy(subsidyRetrieveWithDates)(undertakingSubsidies1.toFuture)
             mockRemoveSubsidy(undertakingRef, nonHmrcSubsidyList1.head)(Right(undertakingRef))
             mockSendAuditEvent[NonCustomsSubsidyRemoved](AuditEvent.NonCustomsSubsidyRemoved("1123", undertakingRef))
+            mockTimeToday(currentDate)
+            mockRetrieveSubsidy(subsidyRetrieveWithDates)(undertakingSubsidies1.toFuture)
           }
-          checkIsRedirect(
-            performAction("removeSubsidyClaim" -> "true")("TID1234"),
-            routes.SubsidyController.getReportedPayments().url
-          )
 
+          val result = performAction("removeSubsidyClaim" -> "true")("TID1234")
+
+          status(result) shouldBe OK
+          contentAsString(result) should include(messages("reportedPayments.removed"))
         }
+
+      }
+
+      "redirect to next page" when {
 
         "if user selects no" in {
           inSequence {

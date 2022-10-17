@@ -275,6 +275,7 @@ reportedPayments.table.head.eori=EORI number
 reportedPayments.table.head.public-authority=Public authority
 reportedPayments.table.head.ref=Your reference
 reportedPayments.payment-dated = payment, dated
+reportedPayments.removed = Reported payment removed
 
 # Add Claim Amount Form
 add-claim-amount.title = What currency was the payment received in?
