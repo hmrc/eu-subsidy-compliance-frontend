@@ -96,13 +96,11 @@ class SubsidyController @Inject() (
     withLeadUndertaking(renderReportedPaymentsPage(_))
   }
 
-  private def retrieveSubsidies(r: UndertakingRef)(implicit request: AuthenticatedEnrolledRequest[AnyContent]) = {
+  private def retrieveSubsidies(r: UndertakingRef, d: LocalDate)(implicit request: AuthenticatedEnrolledRequest[AnyContent]) = {
     implicit val eori: EORI = request.eoriNumber
 
-    val searchRange = timeProvider.today.toSearchRange.some
-
     escService
-      .retrieveSubsidy(SubsidyRetrieve(r, searchRange))
+      .retrieveSubsidy(SubsidyRetrieve(r, d.toSearchRange.some))
       .map(Option(_))
       .fallbackTo(Option.empty.toFuture)
   }
@@ -114,7 +112,7 @@ class SubsidyController @Inject() (
 
     val currentDate = timeProvider.today
 
-    retrieveSubsidies(undertaking.reference).map { subsidies =>
+    retrieveSubsidies(undertaking.reference, currentDate).map { subsidies =>
       Ok(
         reportedPaymentsPage(
           subsidies.map(_.forReportedPaymentsPage),
@@ -204,7 +202,7 @@ class SubsidyController @Inject() (
 
   def getConfirmClaimAmount: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
-      implicit val eori = request.eoriNumber
+      implicit val eori: EORI = request.eoriNumber
 
       val result = for {
         subsidyJourney <- store.get[SubsidyJourney].toContext
@@ -220,7 +218,7 @@ class SubsidyController @Inject() (
 
   def postConfirmClaimAmount: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
-      implicit val eori = request.eoriNumber
+      implicit val eori: EORI = request.eoriNumber
 
       val result = for {
         subsidyJourney <- store.get[SubsidyJourney].toContext
@@ -281,7 +279,6 @@ class SubsidyController @Inject() (
                 .retrieveUndertaking(enteredEori)
                 .toContext
                 .foldF(storeOptionalEoriAndRedirect(o.copy(addToUndertaking = true))) { _ =>
-                  println(s"Processing form: $claimEoriForm")
                   BadRequest(
                     addClaimEoriPage(
                       claimEoriForm
@@ -472,7 +469,7 @@ class SubsidyController @Inject() (
       withLeadUndertaking { undertaking =>
         val result = for {
           reference <- undertaking.reference.toContext
-          subsidies <- retrieveSubsidies(reference).toContext
+          subsidies <- retrieveSubsidies(reference, timeProvider.today).toContext
           sub <- subsidies.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext
         } yield Ok(confirmRemovePage(removeSubsidyClaimForm, sub))
         result.fold(handleMissingSessionData("Subsidy Journey"))(identity)
@@ -497,7 +494,7 @@ class SubsidyController @Inject() (
     transactionId: String,
     reference: UndertakingRef
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent]): OptionT[Future, NonHmrcSubsidy] =
-    retrieveSubsidies(reference)
+    retrieveSubsidies(reference, timeProvider.today)
       .recoverWith({ case _ => Option.empty[UndertakingSubsidies].toFuture })
       .toContext
       .flatMap(_.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext)
