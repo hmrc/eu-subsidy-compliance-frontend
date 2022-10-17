@@ -1575,7 +1575,6 @@ class SubsidyControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(journeyWithEoriToAdd.some))
             mockUpdate[SubsidyJourney](_.setAddBusiness(true), eori1)(Right(journeyWithEoriToAdd))
-            mockAddMember(undertakingRef, BusinessEntity(eori3, leadEORI = false))(Right(undertakingRef))
           }
 
           val result = performAction(

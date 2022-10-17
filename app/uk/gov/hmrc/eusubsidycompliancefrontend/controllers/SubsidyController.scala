@@ -137,7 +137,6 @@ class SubsidyController @Inject() (
     }
   }
 
-
   def postClaimDate: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
@@ -316,23 +315,15 @@ class SubsidyController @Inject() (
   }
 
   def postAddClaimBusiness: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    withLeadUndertaking { undertaking =>
+    withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
-
-      def handleAddBusinessRequest(addBusiness: Boolean, businessEori: EORI, next: Future[Result]) =
-        if (addBusiness)
-          escService
-            .addMember(undertaking.reference, BusinessEntity(businessEori, leadEORI = false))
-            .toContext
-            .flatMap(_ => next.toContext)
-        else Redirect(routes.SubsidyController.getAddClaimEori()).toContext
 
       def handleValidFormSubmission(j: SubsidyJourney)(f: FormValues): OptionT[Future, Result] = {
         for {
           updatedJourney <- store.update[SubsidyJourney](_.setAddBusiness(f.value.isTrue)).toContext
-          businessEori <- j.getClaimEori.toContext
-          next <- handleAddBusinessRequest(updatedJourney.getAddBusiness, businessEori, updatedJourney.next)
-        } yield next
+          next <- updatedJourney.next.toContext
+          updateBusiness = updatedJourney.getAddBusiness
+        } yield if (updateBusiness) next else Redirect(routes.SubsidyController.getAddClaimEori())
       }
 
       processFormSubmission[SubsidyJourney] { journey =>
@@ -425,6 +416,16 @@ class SubsidyController @Inject() (
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
+      def handleAddBusinessRequest(addBusiness: Boolean, businessEori: Option[EORI]) =
+        if (addBusiness)
+          businessEori
+            .fold(throw new IllegalStateException("No EORI found when add business to undertaking requested")) { be =>
+              escService
+                .addMember(undertaking.reference, BusinessEntity(be, leadEORI = false))
+                .toContext
+            }
+        else ().toContext
+
       def handleValidSubmission(form: FormValues) = {
         val result = for {
           journey <- store.update[SubsidyJourney](_.setCya(form.value.toBoolean)).toContext
@@ -432,6 +433,7 @@ class SubsidyController @Inject() (
           ref <- undertaking.reference.toContext
           currentDate = timeProvider.today
           _ <- escService.createSubsidy(toSubsidyUpdate(journey, ref, currentDate)).toContext
+          _ <- handleAddBusinessRequest(journey.getAddBusiness, journey.getClaimEori)
           _ <- store.delete[SubsidyJourney].toContext
           _ = auditService.sendEvent[NonCustomsSubsidyAdded](
             AuditEvent.NonCustomsSubsidyAdded(request.authorityId, eori, ref, journey, currentDate)
