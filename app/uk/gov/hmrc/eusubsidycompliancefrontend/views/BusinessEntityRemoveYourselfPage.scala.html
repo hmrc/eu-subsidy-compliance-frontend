@@ -61,8 +61,8 @@
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(title),
-                    classes = "govuk-visually-hidden",
+                    content = Text(messages(s"$key.legend")),
+                    classes = "govuk-fieldset__legend--m",
                     isPageHeading = false
                 ))
             )),

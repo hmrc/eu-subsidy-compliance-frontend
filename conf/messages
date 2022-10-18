@@ -392,9 +392,10 @@ signOut.p3 = You can check on your status next time you login.
 signOut.p4 = You have been signed out of this session.
 
 #removeYourselfBusinessEntity
-removeYourselfBusinessEntity.title = Are you sure you want to leave this undertaking?
+removeYourselfBusinessEntity.title = You are about to leave this undertaking
 removeYourselfBusinessEntity.p1 = Payments reported on your behalf will remain in the payments report for your undertaking administrator.
 removeYourselfBusinessEntity.p2 = If you join or create a new undertaking at any point, these payments will be moved to your new undertaking.
+removeYourselfBusinessEntity.legend = Are you sure you want to leave this undertaking?
 removeYourselfBusinessEntity.error.required = Select yes if you wish to remove yourself from this single undertaking.
 
 noClaimNotification.never-submitted.title = Tell us your undertaking has not received any non-customs subsidy payments since {0}
