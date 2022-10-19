@@ -23,6 +23,7 @@ import play.api.data.Forms.{mapping, nonEmptyText}
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.RemovedSubsidyRepository
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.toSubsidyUpdate
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimAmountFormProvider, ClaimDateFormProvider, ClaimEoriFormProvider}
@@ -100,7 +101,7 @@ class SubsidyController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     escService
-      .retrieveSubsidy(SubsidyRetrieve(r, d.toSearchRange.some))
+      .retrieveSubsidies(SubsidyRetrieve(r, d.toSearchRange.some))
       .map(Option(_))
       .fallbackTo(Option.empty.toFuture)
   }
@@ -519,6 +520,7 @@ class SubsidyController @Inject() (
     transactionId: String,
     undertaking: Undertaking
   )(implicit request: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
+    implicit val eori: EORI = request.eoriNumber
 
     val result: OptionT[Future, Unit] = for {
       reference <- undertaking.reference.toContext

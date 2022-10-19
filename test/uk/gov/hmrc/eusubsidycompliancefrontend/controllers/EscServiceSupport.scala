@@ -87,7 +87,7 @@ trait EscServiceSupport { this: ControllerSpec =>
 
   def mockRetrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(result: Future[UndertakingSubsidies]) =
     (mockEscService
-      .retrieveSubsidy(_: SubsidyRetrieve)(_: HeaderCarrier, _: EORI))
+      .retrieveSubsidies(_: SubsidyRetrieve)(_: HeaderCarrier, _: EORI))
       .expects(subsidyRetrieve, *, *)
       .returning(result)
 

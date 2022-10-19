@@ -26,7 +26,7 @@ import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
 import java.time.Instant
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.duration.{DurationLong, FiniteDuration}
+import scala.concurrent.duration.{DurationDouble, DurationLong, FiniteDuration}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 
@@ -127,7 +127,9 @@ class EoriEmailDatastore @Inject()(
 }
 
 object EoriEmailDatastore {
-  // We need to store this data for the lifetime of the service so set the TTL to the maximum allowed value for
-  // finite durations, which is approximately 292 years.
-  val DefaultTtl: FiniteDuration = Long.MaxValue nanoseconds
+  // We need to store this data indefinitely. Since we're using a cache with a TTL we need to set the TTL to an
+  // appropriately high value. Unfortunately the maximum allowed FiniteDuration value of Long.MaxValue seconds is too
+  // large for mongodb. So instead we assume that 50 years is long enough for the purposes of this service.
+  // In the unlikely event that you are reading this message 50 years from now, do please accept my apologies.
+  val DefaultTtl: FiniteDuration = (50 * 365.25) days
 }

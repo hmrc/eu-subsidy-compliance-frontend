@@ -82,7 +82,7 @@ class AccountController @Inject() (
     val result = for {
       _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(u))
       retrieveRequest = SubsidyRetrieve(u.reference, None)
-      subsidies <- escService.retrieveSubsidy(retrieveRequest).toContext
+      subsidies <- escService.retrieveSubsidies(retrieveRequest).toContext
       result <- renderAccountPage(u, subsidies).toContext
     } yield result
 

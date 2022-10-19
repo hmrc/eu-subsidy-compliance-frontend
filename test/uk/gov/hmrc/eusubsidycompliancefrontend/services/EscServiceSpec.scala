@@ -406,7 +406,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
       "return an error" when {
 
         def isError: Assertion = {
-          service.retrieveSubsidy(subsidyRetrieve).failed.futureValue shouldBe a[RuntimeException]
+          service.retrieveSubsidies(subsidyRetrieve).failed.futureValue shouldBe a[RuntimeException]
         }
 
         "the http call fails" in {
@@ -437,14 +437,14 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
         "the undertaking subsidies are present in the cache" in {
           mockCacheGet[UndertakingSubsidies](eori1)(Right(undertakingSubsidies.some))
           mockCachePut(eori1, undertakingSubsidies)(Right(undertakingSubsidies))
-          service.retrieveSubsidy(subsidyRetrieve).futureValue shouldBe undertakingSubsidies
+          service.retrieveSubsidies(subsidyRetrieve).futureValue shouldBe undertakingSubsidies
         }
 
         "the http call succeeds and the body of the response can be parsed" in {
           mockCacheGet[UndertakingSubsidies](eori1)(Right(Option.empty))
           mockRetrieveSubsidy(subsidyRetrieve)(Right(HttpResponse(OK, undertakingSubsidiesJson, emptyHeaders)))
           mockCachePut(eori1, undertakingSubsidies)(Right(undertakingSubsidies))
-          service.retrieveSubsidy(subsidyRetrieve).futureValue shouldBe undertakingSubsidies
+          service.retrieveSubsidies(subsidyRetrieve).futureValue shouldBe undertakingSubsidies
         }
       }
     }
