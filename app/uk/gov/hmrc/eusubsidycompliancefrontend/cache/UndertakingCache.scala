@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.cache
 import org.mongodb.scala.MongoCollection
 import org.mongodb.scala.model.{Filters, IndexOptions, Indexes, Updates}
 import play.api.libs.json.{Reads, Writes}
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.Helpers.dataKeyForType
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.RepositoryHelpers.dataKeyForType
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.UndertakingCache.DefaultCacheTtl
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.mongo.cache.{CacheIdType, CacheItem, DataKey, MongoCacheRepository}
@@ -31,6 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 import scala.reflect.ClassTag
 
+// TODO - extract this into a separate file since this is used by other repositories/caches
 object EoriIdType extends CacheIdType[EORI] {
   override def run: EORI => EORI = identity
 }

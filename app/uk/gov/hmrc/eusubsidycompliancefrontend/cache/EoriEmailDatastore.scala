@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.cache
 
 import org.mongodb.scala.model.{Filters, FindOneAndUpdateOptions, ReturnDocument, Updates}
 import org.mongodb.scala.result.UpdateResult
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore.DefaultCacheTtl
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore.DefaultTtl
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.mongo.cache.{CacheItem, MongoCacheRepository}
@@ -26,11 +26,11 @@ import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
 import java.time.Instant
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.duration.{DurationInt, FiniteDuration}
+import scala.concurrent.duration.{DurationLong, FiniteDuration}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 
-
+// TODO - call this a repository in line with payment
 @Singleton
 class EoriEmailDatastore @Inject()(
   mongoComponent: MongoComponent
@@ -38,7 +38,7 @@ class EoriEmailDatastore @Inject()(
   extends MongoCacheRepository[EORI](
     mongoComponent = mongoComponent,
     collectionName = "eoriEmailStore",
-    ttl = DefaultCacheTtl,
+    ttl = DefaultTtl,
     timestampSupport = new CurrentTimestampSupport,
     cacheIdType = EoriIdType
   ) {
@@ -95,7 +95,7 @@ class EoriEmailDatastore @Inject()(
       ).toFuture()
   }
 
-  def put(eori: EORI, state: VerifiedEmail) ={
+  def put(eori: EORI, state: VerifiedEmail): Future[CacheItem] = {
     val timestamp = Instant.now()
     collection
       .findOneAndUpdate(
@@ -127,5 +127,7 @@ class EoriEmailDatastore @Inject()(
 }
 
 object EoriEmailDatastore {
-  val DefaultCacheTtl: FiniteDuration = 365 days
+  // We need to store this data for the lifetime of the service so set the TTL to the maximum allowed value for
+  // finite durations, which is approximately 292 years.
+  val DefaultTtl: FiniteDuration = Long.MaxValue nanoseconds
 }

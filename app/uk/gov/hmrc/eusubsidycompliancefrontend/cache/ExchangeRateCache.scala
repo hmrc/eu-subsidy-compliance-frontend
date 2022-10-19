@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.cache
 
 import play.api.libs.json._
 import uk.gov.hmrc.eusubsidycompliancefrontend.cache.ExchangeRateCache.DefaultCacheTtl
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.Helpers.dataKeyForType
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.RepositoryHelpers.dataKeyForType
 import uk.gov.hmrc.mongo.cache.{CacheIdType, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 

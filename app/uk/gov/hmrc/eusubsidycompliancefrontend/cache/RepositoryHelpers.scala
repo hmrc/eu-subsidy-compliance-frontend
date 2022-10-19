@@ -20,7 +20,7 @@ import uk.gov.hmrc.mongo.cache.DataKey
 
 import scala.reflect.ClassTag
 
-object Helpers {
+object RepositoryHelpers {
 
   def dataKeyForType[A](implicit ct: ClassTag[A]): DataKey[A] = DataKey[A](ct.runtimeClass.getSimpleName)
 
