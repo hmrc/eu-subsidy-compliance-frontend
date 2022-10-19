@@ -62,7 +62,7 @@
     @{H1(titleKey)}
       
     @if(businessEntity.length == 1){
-      @{P(messages("addBusiness.empty.p1"), Some("govuk-body govuk-!-margin-bottom-8"))}
+      @{P(messages(s"$key.empty.p1"), Some("govuk-body govuk-!-margin-bottom-8"))}
     }
     
     @if(businessEntity.length > 1){
