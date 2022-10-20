@@ -29,8 +29,11 @@ case class NonHmrcSubsidy(
   traderReference: Option[TraderRef],
   nonHMRCSubsidyAmtEUR: SubsidyAmount,
   businessEntityIdentifier: Option[EORI],
-  amendmentType: Option[EisSubsidyAmendmentType] = Option.empty // this only used for create
-)
+  amendmentType: Option[EisSubsidyAmendmentType] = Option.empty, // this only used for create
+  removed: Option[Boolean] = Some(false)
+) {
+  val isRemoved: Boolean = removed.contains(true)
+}
 
 object NonHmrcSubsidy {
   implicit val format: OFormat[NonHmrcSubsidy] = Json.format[NonHmrcSubsidy]

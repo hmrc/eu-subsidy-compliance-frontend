@@ -160,8 +160,6 @@ class EscService @Inject() (
             removedSubsidyRepository
               .getAll(eori)
               .flatMap { subsidies =>
-                println(s"Fetched subsidies from removed subsidy repo: $subsidies")
-                // TODO - is there a risk that these removed subsidies could be written back to ETMP?
                 val updatedResult = result.copy(nonHMRCSubsidyUsage = result.nonHMRCSubsidyUsage ++ subsidies.toList)
                 undertakingCache.put[UndertakingSubsidies](eori, updatedResult)
               }
@@ -177,7 +175,7 @@ class EscService @Inject() (
       .flatMap { response =>
         for {
           ref <- handleResponse[UndertakingRef](response, "remove subsidy").toFuture
-          _ <- removedSubsidyRepository.add(eori, nonHmrcSubsidy)
+          _ <- removedSubsidyRepository.add(eori, nonHmrcSubsidy.copy(removed = Some(true)))
           _ <- undertakingCache.deleteUndertakingSubsidies(ref)
         } yield ref
       }

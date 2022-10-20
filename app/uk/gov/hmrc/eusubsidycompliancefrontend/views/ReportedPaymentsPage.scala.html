@@ -103,11 +103,17 @@
                             TableRow(content = sub.publicAuthority.fold[Content](HtmlContent("&nbsp;"))(Text)),
                             TableRow(content = sub.traderReference.fold[Content](HtmlContent("&nbsp;"))(Text)),
                             TableRow(
-                                content = HtmlContent(
-                                    s"""<a class='govuk-link' href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>
-                                    ${messages("common.remove")}<span class="govuk-visually-hidden"> ${messages("reportedPayments.payment-dated")} ${sub.allocationDate.toShortDisplayFormat}</span>
-                                    </a>""".stripMargin
-                                ),
+                                content =
+                                    if (sub.isRemoved) {
+                                        HtmlContent(messages(s"$key.removed.label"))
+                                    }
+                                    else {
+                                        HtmlContent(
+                                            s"""<a class='govuk-link' href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>
+                                            ${messages("common.remove")}<span class="govuk-visually-hidden"> ${messages("reportedPayments.payment-dated")} ${sub.allocationDate.toShortDisplayFormat}</span>
+                                            </a>""".stripMargin
+                                        )
+                                    },
                                 classes="responsive-nopad"
                             )
                         )
