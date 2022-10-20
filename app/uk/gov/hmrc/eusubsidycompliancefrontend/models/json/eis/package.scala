@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.json
 
-import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
@@ -118,42 +117,6 @@ package object eis {
         )
       )
   }
-
-  // provides response from EIS retrieve subsidies call
-  implicit val eisRetrieveUndertakingSubsidiesResponse: Writes[UndertakingSubsidies] =
-    new Writes[UndertakingSubsidies] {
-      implicit val nonHmrcSubsidyWrites: Writes[NonHmrcSubsidy] = (
-        (JsPath \ "subsidyUsageTransactionId").writeNullable[SubsidyRef] and
-          (JsPath \ "allocationDate").write[LocalDate] and
-          (JsPath \ "submissionDate").write[LocalDate] and
-          (JsPath \ "publicAuthority").writeNullable[String] and
-          (JsPath \ "traderReference").writeNullable[TraderRef] and
-          (JsPath \ "nonHMRCSubsidyAmtEUR").write[SubsidyAmount] and
-          (JsPath \ "businessEntityIdentifier").writeNullable[EORI] and
-          (JsPath \ "amendmentType").writeNullable[EisSubsidyAmendmentType]
-      )(unlift(NonHmrcSubsidy.unapply))
-
-      override def writes(o: UndertakingSubsidies): JsValue = Json.obj(
-        "getUndertakingTransactionResponse" -> Json.obj(
-          "responseCommon" ->
-            ResponseCommon(
-              EisStatus.OK,
-              EisStatusString("String"),
-              LocalDateTime.now,
-              None
-            ),
-          "responseDetail" -> Json.obj(
-            "undertakingIdentifier" -> o.undertakingIdentifier,
-            "nonHMRCSubsidyTotalEUR" -> o.nonHMRCSubsidyTotalEUR,
-            "nonHMRCSubsidyTotalGBP" -> o.nonHMRCSubsidyTotalGBP,
-            "hmrcSubsidyTotalEUR" -> o.hmrcSubsidyTotalEUR,
-            "hmrcSubsidyTotalGBP" -> o.hmrcSubsidyTotalGBP,
-            "nonHMRCSubsidyUsage" -> o.nonHMRCSubsidyUsage,
-            "hmrcSubsidyUsage" -> o.hmrcSubsidyUsage
-          )
-        )
-      )
-    }
 
   // convenience reads so we can store business entity updates
   val businessEntityReads: Reads[BusinessEntity] = new Reads[BusinessEntity] {

@@ -26,7 +26,7 @@ import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
 import java.time.Instant
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.duration.{DurationDouble, DurationLong, FiniteDuration}
+import scala.concurrent.duration.{DurationDouble, FiniteDuration}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 

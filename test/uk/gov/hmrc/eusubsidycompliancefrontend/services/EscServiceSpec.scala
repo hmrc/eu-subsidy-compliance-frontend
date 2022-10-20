@@ -26,7 +26,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.{ExchangeRateCache, UndertakingCache, YearAndMonth}
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.{ExchangeRateCache, RemovedSubsidyRepository, UndertakingCache, YearAndMonth}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
@@ -43,16 +43,16 @@ import scala.reflect.ClassTag
 
 class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with ScalaFutures with IntegrationPatience {
 
-  private val mockEscConnector: EscConnector = mock[EscConnector]
-
-  private val mockUndertakingCache: UndertakingCache = mock[UndertakingCache]
-
-  private val mockExchangeRateCache: ExchangeRateCache = mock[ExchangeRateCache]
+  private val mockEscConnector = mock[EscConnector]
+  private val mockUndertakingCache = mock[UndertakingCache]
+  private val mockExchangeRateCache = mock[ExchangeRateCache]
+  private val mockRemovedSubsidyRepository = mock[RemovedSubsidyRepository]
 
   private val service: EscService = new EscService(
     mockEscConnector,
     mockUndertakingCache,
-    mockExchangeRateCache
+    mockExchangeRateCache,
+    mockRemovedSubsidyRepository,
   )
 
   private def mockCreateUndertaking(undertaking: UndertakingCreate)(
