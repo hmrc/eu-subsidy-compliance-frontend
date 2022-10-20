@@ -108,12 +108,6 @@ trait SimpleJson {
   implicit val subsidyAmountFormat: Format[@@[BigDecimal, types.SubsidyAmount.Tag]] =
     validatedBigDecimalFormat(SubsidyAmount, "SubsidyAmount")
 
-  implicit val eisParamValueFormat: Format[@@[String, types.EisParamValue.Tag]] =
-    validatedStringFormat(EisParamValue, "paramValue")
-
-  implicit val eisStatusStringFormat: Format[@@[String, types.EisStatusString.Tag]] =
-    validatedStringFormat(EisStatusString, "eisStatusString")
-
   implicit val undertakingRefFormat: Format[@@[String, types.UndertakingRef.Tag]] =
     validatedStringFormat(UndertakingRef, "undertakingReference")
 

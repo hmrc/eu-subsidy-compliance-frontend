@@ -104,31 +104,11 @@ package object types extends SimpleJson {
         "^[A-Za-z0-9]{1,10}$" // n.b. no longer exact match for spec which accepts n of any char
       )
 
-  object EisStatus extends Enumeration {
-    type EisStatus = Value
-    val OK, NOT_OK = Value
-
-    implicit val format: Format[types.EisStatus.Value] = Json.formatEnum(EisStatus)
-  }
-
-  object EisAmendmentType extends Enumeration {
-    type EisAmendmentType = Value
-    val A, D = Value
-    implicit val format = Json.formatEnum(EisAmendmentType)
-  }
-
   type EisSubsidyAmendmentType = String @@ EisSubsidyAmendmentType.Tag
   object EisSubsidyAmendmentType
       extends RegexValidatedString(
         regex = "1|2|3"
       )
-
-  object EisParamName extends Enumeration {
-    type EisParamName = Value
-    val ERRORCODE, ERRORTEXT = Value
-
-    implicit val format: Format[types.EisParamName.Value] = Json.formatEnum(EisParamName)
-  }
 
   object AmendmentType extends Enumeration {
     type AmendmentType = Value
@@ -141,34 +121,10 @@ package object types extends SimpleJson {
 
   }
 
-  type EisParamValue = String @@ EisParamValue.Tag
-  object EisParamValue
-      extends RegexValidatedString(
-        """.{1,255}"""
-      )
-
-  type EisStatusString = String @@ EisStatusString.Tag
-  object EisStatusString
-      extends RegexValidatedString(
-        """.{0,100}"""
-      )
-
-  type ErrorCode = String @@ ErrorCode.Tag
-  object ErrorCode
-      extends RegexValidatedString(
-        """.{1,35}"""
-      )
-
   type ErrorMessage = String @@ ErrorMessage.Tag
   object ErrorMessage
       extends RegexValidatedString(
         """.{1,255}"""
-      )
-
-  type AcknowledgementRef = String @@ AcknowledgementRef.Tag
-  object AcknowledgementRef
-      extends RegexValidatedString(
-        """.{32}"""
       )
 
 }
