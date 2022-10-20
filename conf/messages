@@ -363,7 +363,7 @@ subsidy.cya.change.hidden.your-reference=your reference
 
 subsidy.created.title = Payment reported
 subsidy.created.sub-heading = What happens next
-subsidy.created.p1 = Your next report must be made by {0}
+subsidy.created.p1 = Your next report must be made by {0}.
 subsidy.created.l1 = Report another payment
 subsidy.created.l2 = Go to homepage
 
