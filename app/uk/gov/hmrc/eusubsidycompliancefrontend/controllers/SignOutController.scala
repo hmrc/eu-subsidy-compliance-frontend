@@ -55,7 +55,7 @@ class SignOutController @Inject() (
     Ok(timedOutPage()).withNewSession
   }
 
-  val signOut: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  val signOut: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
       escService.retrieveUndertaking(eori).flatMap {
         case Some(undertaking) =>
