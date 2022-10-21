@@ -22,7 +22,7 @@ import play.api.http.Status.CREATED
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailRepository
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -39,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class EmailVerificationService @Inject() (
    emailVerificationConnector: EmailVerificationConnector,
-   eoriEmailDatastore: EoriEmailDatastore,
+   eoriEmailDatastore: EoriEmailRepository,
    servicesConfig: ServicesConfig
 ) extends Logging {
 

@@ -20,14 +20,14 @@ import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.json.digital.dateFormatter
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
-import ClaimDateFormProvider.Errors._
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider.Errors._
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider.Fields.{Day, Month, Year}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
 
@@ -115,8 +115,11 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
         Year  -> y
       )
     )
-    val date = LocalDate.parse(LocalDate.of(y.toInt, m.toInt, d.toInt).format(dateFormatter), dateFormatter)
+
+    val date = LocalDate.of(y.toInt, m.toInt, d.toInt)
+
     val dateFormValues = DateFormValues(date.getDayOfMonth.toString, date.getMonthValue.toString, y)
+
     result mustBe Right(dateFormValues)
   }
 

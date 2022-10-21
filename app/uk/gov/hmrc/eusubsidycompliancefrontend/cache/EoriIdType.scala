@@ -16,12 +16,9 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.cache
 
-import uk.gov.hmrc.mongo.cache.DataKey
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.mongo.cache.CacheIdType
 
-import scala.reflect.ClassTag
-
-object Helpers {
-
-  def dataKeyForType[A](implicit ct: ClassTag[A]): DataKey[A] = DataKey[A](ct.runtimeClass.getSimpleName)
-
+object EoriIdType extends CacheIdType[EORI] {
+  override def run: EORI => EORI = identity
 }

@@ -81,7 +81,7 @@ class NoClaimNotificationController @Inject() (
     val searchRange = timeProvider.today.toSearchRange.some
 
     escService
-      .retrieveSubsidy(SubsidyRetrieve(r, searchRange))
+      .retrieveSubsidies(SubsidyRetrieve(r, searchRange))
       .map(Option(_))
       .fallbackTo(Option.empty.toFuture)
   }

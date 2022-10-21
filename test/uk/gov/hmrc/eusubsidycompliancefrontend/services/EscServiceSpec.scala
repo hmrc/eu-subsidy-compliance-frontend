@@ -26,7 +26,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.{ExchangeRateCache, UndertakingCache, YearAndMonth}
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.{ExchangeRateCache, RemovedSubsidyRepository, UndertakingCache, YearAndMonth}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
@@ -43,16 +43,16 @@ import scala.reflect.ClassTag
 
 class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with ScalaFutures with IntegrationPatience {
 
-  private val mockEscConnector: EscConnector = mock[EscConnector]
-
-  private val mockUndertakingCache: UndertakingCache = mock[UndertakingCache]
-
-  private val mockExchangeRateCache: ExchangeRateCache = mock[ExchangeRateCache]
+  private val mockEscConnector = mock[EscConnector]
+  private val mockUndertakingCache = mock[UndertakingCache]
+  private val mockExchangeRateCache = mock[ExchangeRateCache]
+  private val mockRemovedSubsidyRepository = mock[RemovedSubsidyRepository]
 
   private val service: EscService = new EscService(
     mockEscConnector,
     mockUndertakingCache,
-    mockExchangeRateCache
+    mockExchangeRateCache,
+    mockRemovedSubsidyRepository,
   )
 
   private def mockCreateUndertaking(undertaking: UndertakingCreate)(
@@ -127,6 +127,14 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
   private def mockExchangeRateCachePut[A](key: YearAndMonth, in: A)(result: Either[Exception, A]) =
     when(mockExchangeRateCache.put[A](argEq(key), argEq(in))(any(), any()))
       .thenReturn(result.fold(Future.failed, _.toFuture))
+
+  private def mockAddRemovedSubsidy(eori: EORI, subsidy: NonHmrcSubsidy) =
+    when(mockRemovedSubsidyRepository.add(argEq(eori), argEq(subsidy)))
+      .thenReturn(().toFuture)
+
+  private def mockGetAllRemovedSubsidies(eori: EORI)(subsidies: Seq[NonHmrcSubsidy]) =
+    when(mockRemovedSubsidyRepository.getAll(argEq(eori)))
+      .thenReturn(subsidies.toFuture)
 
   private val undertakingRefJson = Json.toJson(undertakingRef)
   private val undertakingJson: JsValue = Json.toJson(undertaking)
@@ -406,7 +414,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
       "return an error" when {
 
         def isError: Assertion = {
-          service.retrieveSubsidy(subsidyRetrieve).failed.futureValue shouldBe a[RuntimeException]
+          service.retrieveSubsidies(subsidyRetrieve).failed.futureValue shouldBe a[RuntimeException]
         }
 
         "the http call fails" in {
@@ -437,16 +445,18 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
         "the undertaking subsidies are present in the cache" in {
           mockCacheGet[UndertakingSubsidies](eori1)(Right(undertakingSubsidies.some))
           mockCachePut(eori1, undertakingSubsidies)(Right(undertakingSubsidies))
-          service.retrieveSubsidy(subsidyRetrieve).futureValue shouldBe undertakingSubsidies
+          service.retrieveSubsidies(subsidyRetrieve).futureValue shouldBe undertakingSubsidies
         }
 
         "the http call succeeds and the body of the response can be parsed" in {
           mockCacheGet[UndertakingSubsidies](eori1)(Right(Option.empty))
           mockRetrieveSubsidy(subsidyRetrieve)(Right(HttpResponse(OK, undertakingSubsidiesJson, emptyHeaders)))
+          mockGetAllRemovedSubsidies(eori1)(Seq.empty)
           mockCachePut(eori1, undertakingSubsidies)(Right(undertakingSubsidies))
-          service.retrieveSubsidy(subsidyRetrieve).futureValue shouldBe undertakingSubsidies
+          service.retrieveSubsidies(subsidyRetrieve).futureValue shouldBe undertakingSubsidies
         }
       }
+
     }
 
     "handling request to remove subsidy" must {
@@ -487,6 +497,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
         "the http call succeeds and the body of the response can be parsed" in {
           mockCacheGet[UndertakingSubsidies](eori1)(Right(Option.empty))
           mockRemoveSubsidy(undertakingRef, nonHmrcSubsidy)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
+          mockAddRemovedSubsidy(eori1, nonHmrcSubsidy.copy(removed = Some(true)))
           mockCacheDeleteUndertakingSubsidies(undertakingRef)(Right(()))
           val result = service.removeSubsidy(undertakingRef, nonHmrcSubsidy)
           result.futureValue shouldBe undertakingRef

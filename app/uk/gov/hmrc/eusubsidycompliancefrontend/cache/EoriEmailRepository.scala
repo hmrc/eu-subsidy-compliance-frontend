@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.cache
 
 import org.mongodb.scala.model.{Filters, FindOneAndUpdateOptions, ReturnDocument, Updates}
 import org.mongodb.scala.result.UpdateResult
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore.DefaultCacheTtl
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailRepository.DefaultTtl
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.mongo.cache.{CacheItem, MongoCacheRepository}
@@ -26,19 +26,18 @@ import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
 import java.time.Instant
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.duration.{DurationInt, FiniteDuration}
+import scala.concurrent.duration.{DurationDouble, FiniteDuration}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 
-
 @Singleton
-class EoriEmailDatastore @Inject()(
+class EoriEmailRepository @Inject()(
   mongoComponent: MongoComponent
 )(implicit ec: ExecutionContext)
   extends MongoCacheRepository[EORI](
     mongoComponent = mongoComponent,
     collectionName = "eoriEmailStore",
-    ttl = DefaultCacheTtl,
+    ttl = DefaultTtl,
     timestampSupport = new CurrentTimestampSupport,
     cacheIdType = EoriIdType
   ) {
@@ -95,7 +94,7 @@ class EoriEmailDatastore @Inject()(
       ).toFuture()
   }
 
-  def put(eori: EORI, state: VerifiedEmail) ={
+  def put(eori: EORI, state: VerifiedEmail): Future[CacheItem] = {
     val timestamp = Instant.now()
     collection
       .findOneAndUpdate(
@@ -126,6 +125,10 @@ class EoriEmailDatastore @Inject()(
   }
 }
 
-object EoriEmailDatastore {
-  val DefaultCacheTtl: FiniteDuration = 365 days
+object EoriEmailRepository {
+  // We need to store this data indefinitely. Since we're using a cache with a TTL we need to set the TTL to an
+  // appropriately high value. Unfortunately the maximum allowed FiniteDuration value of Long.MaxValue seconds is too
+  // large for mongodb. So instead we assume that 50 years is long enough for the purposes of this service.
+  // In the unlikely event that you are reading this message 50 years from now, do please accept my apologies.
+  val DefaultTtl: FiniteDuration = (50 * 365.25) days
 }

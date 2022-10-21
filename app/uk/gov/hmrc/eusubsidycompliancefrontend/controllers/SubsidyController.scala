@@ -100,7 +100,7 @@ class SubsidyController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     escService
-      .retrieveSubsidy(SubsidyRetrieve(r, d.toSearchRange.some))
+      .retrieveSubsidies(SubsidyRetrieve(r, d.toSearchRange.some))
       .map(Option(_))
       .fallbackTo(Option.empty.toFuture)
   }
@@ -519,6 +519,7 @@ class SubsidyController @Inject() (
     transactionId: String,
     undertaking: Undertaking
   )(implicit request: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
+    implicit val eori: EORI = request.eoriNumber
 
     val result: OptionT[Future, Unit] = for {
       reference <- undertaking.reference.toContext

@@ -26,7 +26,7 @@ import play.api.mvc.{AnyContent, Call}
 import play.api.test.Helpers._
 import play.api.test.{DefaultAwaitTimeout, FakeRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailRepository
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailVerificationRequest, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -46,7 +46,7 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
 
   private val mockEmailVerificationConnector: EmailVerificationConnector = mock[EmailVerificationConnector]
 
-  override protected def repository = new EoriEmailDatastore(mongoComponent)
+  override protected def repository = new EoriEmailRepository(mongoComponent)
 
   private val mockServicesConfig = mock[ServicesConfig]
 
