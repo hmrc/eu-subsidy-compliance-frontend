@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.cache
 
 import org.mongodb.scala.model.{Filters, FindOneAndUpdateOptions, ReturnDocument, Updates}
 import org.mongodb.scala.result.UpdateResult
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailDatastore.DefaultTtl
+import uk.gov.hmrc.eusubsidycompliancefrontend.cache.EoriEmailRepository.DefaultTtl
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.mongo.cache.{CacheItem, MongoCacheRepository}
@@ -30,9 +30,8 @@ import scala.concurrent.duration.{DurationDouble, FiniteDuration}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 
-// TODO - call this a repository in line with payment
 @Singleton
-class EoriEmailDatastore @Inject()(
+class EoriEmailRepository @Inject()(
   mongoComponent: MongoComponent
 )(implicit ec: ExecutionContext)
   extends MongoCacheRepository[EORI](
@@ -126,7 +125,7 @@ class EoriEmailDatastore @Inject()(
   }
 }
 
-object EoriEmailDatastore {
+object EoriEmailRepository {
   // We need to store this data indefinitely. Since we're using a cache with a TTL we need to set the TTL to an
   // appropriately high value. Unfortunately the maximum allowed FiniteDuration value of Long.MaxValue seconds is too
   // large for mongodb. So instead we assume that 50 years is long enough for the purposes of this service.
