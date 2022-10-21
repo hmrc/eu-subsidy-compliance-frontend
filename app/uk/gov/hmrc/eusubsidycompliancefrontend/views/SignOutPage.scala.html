@@ -18,7 +18,10 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.P
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.H1
 
-@this(layout: Layout)
+@this(
+  layout: Layout,
+  govukPanel : GovukPanel
+)
 
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -27,11 +30,13 @@
 
 @layout(pageTitle = Some(title)) {
 
-  @H1(title)
+  @govukPanel(Panel(
+    title = Text(title),
+    classes = "govuk-!-margin-bottom-7"
+  ))
+
   @P(messages(s"$key.p1"))
   @P(messages(s"$key.p2"))
-  @P(messages(s"$key.p3"))
-  @P(messages(s"$key.p4"))
 
 
 }

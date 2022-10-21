@@ -385,11 +385,9 @@ undertaking.amendUndertaking.summary-list.verified-email=Verified email
 undertaking.amendUndertaking.summary-list.undertaking-admin-email.key = Undertaking administrator email
 
 #SignOut
-signOut.title =You have been removed from this single undertaking
-signOut.p1 =Being removed from an undertaking does not take effect immediately.
-signOut.p2 = It could take up to 24 hours for the change to go through. This means you will still be in the single undertaking until the change happens.
-signOut.p3 = You can check on your status next time you login.
-signOut.p4 = You have been signed out of this session.
+signOut.title = You have left this undertaking
+signOut.p1 = A confirmation email has been sent to you, and to the administrator of the undertaking you have left.
+signOut.p2 = You have been signed out.
 
 #removeYourselfBusinessEntity
 removeYourselfBusinessEntity.title = You are about to leave this undertaking
