@@ -128,6 +128,14 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
     when(mockExchangeRateCache.put[A](argEq(key), argEq(in))(any(), any()))
       .thenReturn(result.fold(Future.failed, _.toFuture))
 
+  private def mockAddRemovedSubsidy(eori: EORI, subsidy: NonHmrcSubsidy) =
+    when(mockRemovedSubsidyRepository.add(argEq(eori), argEq(subsidy)))
+      .thenReturn(().toFuture)
+
+  private def mockGetAllRemovedSubsidies(eori: EORI)(subsidies: Seq[NonHmrcSubsidy]) =
+    when(mockRemovedSubsidyRepository.getAll(argEq(eori)))
+      .thenReturn(subsidies.toFuture)
+
   private val undertakingRefJson = Json.toJson(undertakingRef)
   private val undertakingJson: JsValue = Json.toJson(undertaking)
   private val undertakingSubsidiesJson = Json.toJson(undertakingSubsidies)
@@ -443,6 +451,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
         "the http call succeeds and the body of the response can be parsed" in {
           mockCacheGet[UndertakingSubsidies](eori1)(Right(Option.empty))
           mockRetrieveSubsidy(subsidyRetrieve)(Right(HttpResponse(OK, undertakingSubsidiesJson, emptyHeaders)))
+          mockGetAllRemovedSubsidies(eori1)(Seq.empty) // TODO - add cases with deleted subsidies
           mockCachePut(eori1, undertakingSubsidies)(Right(undertakingSubsidies))
           service.retrieveSubsidies(subsidyRetrieve).futureValue shouldBe undertakingSubsidies
         }
@@ -487,6 +496,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
         "the http call succeeds and the body of the response can be parsed" in {
           mockCacheGet[UndertakingSubsidies](eori1)(Right(Option.empty))
           mockRemoveSubsidy(undertakingRef, nonHmrcSubsidy)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
+          mockAddRemovedSubsidy(eori1, nonHmrcSubsidy.copy(removed = Some(true)))
           mockCacheDeleteUndertakingSubsidies(undertakingRef)(Right(()))
           val result = service.removeSubsidy(undertakingRef, nonHmrcSubsidy)
           result.futureValue shouldBe undertakingRef
