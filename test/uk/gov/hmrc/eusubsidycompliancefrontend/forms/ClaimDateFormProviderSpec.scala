@@ -37,8 +37,6 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
 
   private val fakeTimeProvider = FakeTimeProvider.withFixedDate(day, month, year)
 
-  private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE
-
   private val underTest = ClaimDateFormProvider(fakeTimeProvider)
 
   "claim date form validation" must {
@@ -117,9 +115,11 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
         Year  -> y
       )
     )
-    // TODO - review this usage of the date formatter. Is it needed?
-    val date = LocalDate.parse(LocalDate.of(y.toInt, m.toInt, d.toInt).format(dateFormatter), dateFormatter)
+
+    val date = LocalDate.of(y.toInt, m.toInt, d.toInt)
+
     val dateFormValues = DateFormValues(date.getDayOfMonth.toString, date.getMonthValue.toString, y)
+
     result mustBe Right(dateFormValues)
   }
 
