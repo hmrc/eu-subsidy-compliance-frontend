@@ -385,15 +385,15 @@ undertaking.amendUndertaking.summary-list.verified-email=Verified email
 undertaking.amendUndertaking.summary-list.undertaking-admin-email.key = Undertaking administrator email
 
 #SignOut
-signOut.title =You have been removed from this single undertaking
-signOut.p1 =Being removed from an undertaking does not take effect immediately.
-signOut.p2 = It could take up to 24 hours for the change to go through. This means you will still be in the single undertaking until the change happens.
-signOut.p3 = You can check on your status next time you login.
-signOut.p4 = You have been signed out of this session.
+signOut.title = You have left this undertaking
+signOut.p1 = A confirmation email has been sent to you, and to the administrator of the undertaking you have left.
+signOut.p2 = You have been signed out.
 
 #removeYourselfBusinessEntity
-removeYourselfBusinessEntity.title = Do you want to remove yourself from this single undertaking?
-removeYourselfBusinessEntity.hint = Select yes to remove yourself from the single undertaking. All receipts will remain with the undertaking administrator until you join another undertaking, or create a new undertaking.
+removeYourselfBusinessEntity.title = You are about to leave this undertaking
+removeYourselfBusinessEntity.p1 = Payments reported on your behalf will remain in the payments report for your undertaking administrator.
+removeYourselfBusinessEntity.p2 = If you join or create a new undertaking at any point, these payments will be moved to your new undertaking.
+removeYourselfBusinessEntity.legend = Are you sure you want to leave this undertaking?
 removeYourselfBusinessEntity.error.required = Select yes if you wish to remove yourself from this single undertaking.
 
 noClaimNotification.never-submitted.title = Tell us your undertaking has not received any non-customs subsidy payments since {0}
