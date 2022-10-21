@@ -451,11 +451,12 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
         "the http call succeeds and the body of the response can be parsed" in {
           mockCacheGet[UndertakingSubsidies](eori1)(Right(Option.empty))
           mockRetrieveSubsidy(subsidyRetrieve)(Right(HttpResponse(OK, undertakingSubsidiesJson, emptyHeaders)))
-          mockGetAllRemovedSubsidies(eori1)(Seq.empty) // TODO - add cases with deleted subsidies
+          mockGetAllRemovedSubsidies(eori1)(Seq.empty)
           mockCachePut(eori1, undertakingSubsidies)(Right(undertakingSubsidies))
           service.retrieveSubsidies(subsidyRetrieve).futureValue shouldBe undertakingSubsidies
         }
       }
+
     }
 
     "handling request to remove subsidy" must {
