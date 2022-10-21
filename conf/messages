@@ -410,7 +410,7 @@ noClaimNotification.error.required = Select if you want to declare you have not 
 #noClaimConfirmation
 noClaimConfirmation.title = Report sent
 noClaimConfirmation.h2 = What happens next
-noClaimConfirmation.p1 = Your next report must be made by {0}
+noClaimConfirmation.p1 = Your next report must be made by {0}.
 noClaimConfirmation.l1 = Go to homepage
 
 #Select New lead
