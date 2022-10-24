@@ -100,6 +100,47 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
       result shouldBe expected
     }
 
+    "ignore removed non HMRC subsidy payments" in {
+      val today       = LocalDate.of(2022, 3, 1)
+      val end         = today.toTaxYearEnd
+      val start       = end.minusYears(2).toTaxYearStart
+      val yearOffsets = List(2, 1, 0)
+
+      val result = FinancialDashboardSummary.fromUndertakingSubsidies(
+        undertaking,
+        undertakingSubsidies.copy(
+          hmrcSubsidyUsage = yearOffsets.map(y => hmrcSubsidy.copy(acceptanceDate = start.plusYears(y))),
+          nonHMRCSubsidyUsage = yearOffsets.map { y =>
+            nonHmrcSubsidy.copy(
+              allocationDate = start.plusYears(y),
+              removed = Some(true),
+            )
+          },
+          nonHMRCSubsidyTotalEUR = SubsidyAmount.Zero,
+        ),
+        today
+      )
+
+      val expected = FinancialDashboardSummary(
+        overall = OverallSummary(
+          startYear = start.getYear,
+          endYear = end.getYear,
+          hmrcSubsidyTotal = undertakingSubsidies.hmrcSubsidyTotalEUR,
+          nonHmrcSubsidyTotal = SubsidyAmount.Zero,
+          sector = Sector.transport,
+          sectorCap = IndustrySectorLimit(BigDecimal(12.34))
+        ),
+        taxYears = Seq(
+          TaxYearSummary(2021, SubsidyAmount(123.45), SubsidyAmount(0), isCurrentTaxYear = true),
+          TaxYearSummary(2020, SubsidyAmount(123.45), SubsidyAmount(0), isCurrentTaxYear = false),
+          TaxYearSummary(2019, SubsidyAmount(123.45), SubsidyAmount(0), isCurrentTaxYear = false)
+        )
+      )
+
+      result shouldBe expected
+
+    }
+
     "apply default sector limits where none defined on the undertaking" in {
       val today = LocalDate.of(2022, 3, 1)
 

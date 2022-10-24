@@ -27,7 +27,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 
 class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
 
