@@ -103,7 +103,9 @@ object FinancialDashboardSummary {
     )
 
     val nonHmrcSubsidiesByTaxYearStart: Map[LocalDate, SubsidyAmount] = sumByTaxYear(
-      subsidies.nonHMRCSubsidyUsage
+      subsidies
+        .nonHMRCSubsidyUsage
+        .filterNot(_.isRemoved)
         .map(i => i.allocationDate.toTaxYearStart -> i.nonHMRCSubsidyAmtEUR)
     )
 
