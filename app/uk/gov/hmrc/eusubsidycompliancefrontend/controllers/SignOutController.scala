@@ -26,7 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.BusinessEntity
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{MemberRemoveSelfToBusinessEntity, MemberRemoveSelfToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EmailService, EscService}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EligibilityJourney, EmailService, EscService, Store, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
@@ -36,14 +36,15 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class SignOutController @Inject() (
-                                    mcc: MessagesControllerComponents,
-                                    actionBuilders: ActionBuilders,
-                                    escService: EscService,
-                                    emailService: EmailService,
-                                    auditService: AuditService,
-                                    timedOutPage: TimedOut,
-                                    signOutPage: SignOutPage,
-                                    timeProvider: TimeProvider
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  escService: EscService,
+  store: Store,
+  emailService: EmailService,
+  auditService: AuditService,
+  timedOutPage: TimedOut,
+  signOutPage: SignOutPage,
+  timeProvider: TimeProvider
 )(implicit val appConfig: AppConfig, executionContext: ExecutionContext)
     extends BaseController(mcc)
     with I18nSupport
@@ -65,6 +66,8 @@ class SignOutController @Inject() (
             removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(eori)
             leadEORI = undertaking.getLeadEORI
             _ <- escService.removeMember(undertakingRef, removeBE).toContext
+            _ <- store.delete[EligibilityJourney].toContext
+            _ <- store.delete[UndertakingJourney].toContext
             _ <- emailService.sendEmail(eori, MemberRemoveSelfToBusinessEntity, undertaking, removalEffectiveDateString).toContext
             _ <- emailService.sendEmail(leadEORI, eori, MemberRemoveSelfToLead, undertaking, removalEffectiveDateString).toContext
             _ = auditService
@@ -74,7 +77,6 @@ class SignOutController @Inject() (
               )
           } yield ()
           result.fold(handleMissingSessionData("Undertaking Ref"))(_ => Ok(signOutPage()).withNewSession)
-
         case None => handleMissingSessionData("Undertaking journey")
       }
     }
