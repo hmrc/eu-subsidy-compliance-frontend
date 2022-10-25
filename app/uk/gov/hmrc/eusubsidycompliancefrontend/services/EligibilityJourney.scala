@@ -55,11 +55,11 @@ case class EligibilityJourney(
   def setEoriCheck(newEoriCheck: Boolean): EligibilityJourney =
     this.copy(eoriCheck = eoriCheck.copy(value = Some(newEoriCheck)))
 
-  def withDoYouClaim(response: Boolean) = this.copy(
+  def withDoYouClaim(response: Boolean): EligibilityJourney = this.copy(
     doYouClaim = DoYouClaimFormPage(response.some)
   )
 
-  def withWillYouClaim(response: Boolean) = this.copy(
+  def withWillYouClaim(response: Boolean): EligibilityJourney = this.copy(
     willYouClaim = WillYouClaimFormPage(response.some)
   )
 
