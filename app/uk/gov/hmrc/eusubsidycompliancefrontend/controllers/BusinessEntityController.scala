@@ -24,7 +24,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{AddMemberToBusinessEntity, AddMemberToLead, RemoveMemberToBusinessEntity, RemoveMemberToLead}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{AddMemberToBusinessEntity, AddMemberToLead, MemberRemoveSelfToBusinessEntity, MemberRemoveSelfToLead, RemoveMemberToBusinessEntity, RemoveMemberToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.withGbPrefix
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
@@ -262,14 +262,31 @@ class BusinessEntityController @Inject() (
   }
 
   def postRemoveYourselfBusinessEntity: Action[AnyContent] = enrolled.async { implicit request =>
-    val loggedInEORI = request.eoriNumber
+    implicit val eori: EORI = request.eoriNumber
     val previous = routes.AccountController.getAccountPage().url
-    escService.retrieveUndertaking(loggedInEORI).flatMap {
+    escService.retrieveUndertaking(eori).flatMap {
       case Some(undertaking) => {
-        val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(loggedInEORI)
-        def handleValidBE(form: FormValues) =
-          if (form.value.isTrue) Redirect(routes.SignOutController.signOut()).toFuture
-          else Redirect(routes.AccountController.getAccountPage()).toFuture
+        val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(eori)
+        def handleValidBE(form: FormValues): Future[Result] =
+          if (form.value.isTrue) {
+            val removalEffectiveDateString = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
+            val result = for {
+              undertakingRef <- undertaking.reference.toContext
+              leadEORI = undertaking.getLeadEORI
+              _ <- escService.removeMember(undertakingRef, removeBE).toContext
+              _ <- store.delete[EligibilityJourney].toContext
+              _ <- store.delete[UndertakingJourney].toContext
+              _ <- emailService.sendEmail(eori, MemberRemoveSelfToBusinessEntity, undertaking, removalEffectiveDateString).toContext
+              _ <- emailService.sendEmail(leadEORI, eori, MemberRemoveSelfToLead, undertaking, removalEffectiveDateString).toContext
+              _ = auditService
+                .sendEvent(
+                  AuditEvent
+                    .BusinessEntityRemovedSelf(undertakingRef, request.authorityId, leadEORI, eori)
+                )
+            } yield Redirect(routes.SignOutController.signOut())
+            result.getOrElse(handleMissingSessionData("Undertaking journey"))
+          } else Redirect(routes.AccountController.getAccountPage()).toFuture
+
         removeYourselfBusinessForm
           .bindFromRequest()
           .fold(
