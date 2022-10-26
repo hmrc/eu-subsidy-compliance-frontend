@@ -26,8 +26,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
-import java.time.LocalDate
-
 class SignOutControllerSpec
     extends ControllerSpec
     with AuthSupport
@@ -50,13 +48,12 @@ class SignOutControllerSpec
   )
 
   private val controller = instanceOf[SignOutController]
-  private val currentDate = LocalDate.of(2022, 10, 9)
 
   override def additionalConfig: Configuration = super.additionalConfig.withFallback(
     Configuration(
-      ConfigFactory.parseString(s"""
-                                   |"urls.timeOutContinue" = "http://host:123/continue"
-                                   |""".stripMargin)
+      ConfigFactory.parseString("""
+      |"urls.timeOutContinue" = "http://host:123/continue"
+      |""".stripMargin)
     )
   )
 
