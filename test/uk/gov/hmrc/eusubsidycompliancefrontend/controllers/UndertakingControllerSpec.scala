@@ -1523,9 +1523,9 @@ class UndertakingControllerSpec
             mockDisableUndertaking(undertaking1)(Right(undertakingRef))
             mockDeleteAll(eori1)(Right(()))
             mockDeleteAll(eori4)(Right(()))
-            mockTimeToday(currentDate)
+            mockTimeProviderToday(currentDate)
             mockSendAuditEvent[UndertakingDisabled](UndertakingDisabled("1123", undertakingRef, currentDate))
-            mockTimeToday(currentDate)
+            mockTimeProviderToday(currentDate)
             mockSendEmail(eori1, DisableUndertakingToLead, undertaking1, formattedDate)(Right(EmailSent))
             mockSendEmail(eori1, DisableUndertakingToBusinessEntity, undertaking1, formattedDate)(Right(EmailSent))
           }

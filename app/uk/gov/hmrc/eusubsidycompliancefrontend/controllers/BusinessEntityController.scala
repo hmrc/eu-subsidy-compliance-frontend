@@ -290,11 +290,8 @@ class BusinessEntityController @Inject() (
   private val removeBusinessForm = formWithSingleMandatoryField("removeBusiness")
   private val removeYourselfBusinessForm = formWithSingleMandatoryField("removeYourselfBusinessEntity")
 
-  // TODO - move to shared location if there are other references to these lengths
-  private val validEoriLengths = Set(14, 17) // Valid lengths with 2 letter prefix
-
   private val isEoriLengthValid = Constraint[String] { eori: String =>
-    if (validEoriLengths.contains(withGbPrefix(eori).length)) Valid
+    if (EORI.ValidLengthsWithPrefix.contains(withGbPrefix(eori).length)) Valid
     else Invalid("businessEntityEori.error.incorrect-length")
   }
 

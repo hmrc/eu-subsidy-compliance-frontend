@@ -43,7 +43,6 @@ case class Undertaking(
     undertakingBusinessEntity
       .exists(_.businessEntityIdentifier == eori)
 
-  // TODO - review usage of this method
   def getBusinessEntityByEORI(eori: EORI): BusinessEntity =
     findBusinessEntity(eori)
       .getOrElse(throw new NoSuchElementException("No business entity found for given eori"))

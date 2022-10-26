@@ -84,8 +84,8 @@ class AccountControllerSpec
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockRetrieveSubsidy(subsidyRetrieve.copy(inDateRange = None))(undertakingSubsidies.toFuture)
-            mockTimeToday(fixedDate)
-            mockTimeToday(fixedDate)
+            mockTimeProviderToday(fixedDate)
+            mockTimeProviderToday(fixedDate)
             mockGetOrCreate(eori1)(Right(nilJourneyCreate))
           }
           checkPageIsDisplayed(
@@ -130,8 +130,8 @@ class AccountControllerSpec
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockRetrieveSubsidy(subsidyRetrieve.copy(inDateRange = None))(undertakingSubsidies.copy(nonHMRCSubsidyUsage = List(nonHmrcSubsidy.copy(submissionDate = undertaking.lastSubsidyUsageUpdt.get))).toFuture)
-            mockTimeToday(currentDate)
-            mockTimeToday(currentDate)
+            mockTimeProviderToday(currentDate)
+            mockTimeProviderToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilJourneyCreate))
           }
           checkPageIsDisplayed(
@@ -197,8 +197,8 @@ class AccountControllerSpec
               mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
               mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
               mockRetrieveSubsidy(subsidyRetrieve.copy(inDateRange = None))(undertakingSubsidies.toFuture)
-              mockTimeToday(fixedDate)
-              mockTimeToday(fixedDate)
+              mockTimeProviderToday(fixedDate)
+              mockTimeProviderToday(fixedDate)
             }
 
             checkPageIsDisplayed(
