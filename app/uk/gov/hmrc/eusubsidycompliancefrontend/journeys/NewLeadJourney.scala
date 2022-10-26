@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.services
+package uk.gov.hmrc.eusubsidycompliancefrontend.journeys
 
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Form
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NewLeadJourney.Forms.SelectNewLeadFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
 
 case class NewLeadJourney(selectNewLead: SelectNewLeadFormPage = SelectNewLeadFormPage()) extends Journey {
   override def steps: Array[FormPage[_]] = Array(selectNewLead)

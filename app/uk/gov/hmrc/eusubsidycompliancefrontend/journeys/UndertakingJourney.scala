@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.services
+package uk.gov.hmrc.eusubsidycompliancefrontend.journeys
 
 import cats.implicits._
 import play.api.libs.json.{Format, Json, OFormat}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.{Form, Uri}
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.{Form, Uri}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{AboutUndertakingFormPage, UndertakingAddBusinessFormPage, UndertakingConfirmEmailFormPage, UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingSectorFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.Future

@@ -19,7 +19,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import cats.implicits.catsSyntaxOptionId
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms.{DoYouClaimFormPage, EoriCheckFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney.Forms.{DoYouClaimFormPage, EoriCheckFormPage}
 
 class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
 

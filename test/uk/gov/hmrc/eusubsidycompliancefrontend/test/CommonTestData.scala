@@ -17,6 +17,12 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.test
 
 import cats.implicits.catsSyntaxOptionId
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney.Forms._
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NewLeadJourney.Forms.SelectNewLeadFormPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms._
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms._
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
@@ -24,12 +30,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{C
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{DeclarationID, EORI, EisSubsidyAmendmentType, IndustrySectorLimit, Sector, SubsidyAmount, SubsidyRef, TaxType, TraderRef, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EligibilityJourney.Forms._
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.NewLeadJourney.Forms.SelectNewLeadFormPage
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms.{AboutUndertakingFormPage, UndertakingAddBusinessFormPage, UndertakingConfirmEmailFormPage, UndertakingConfirmationFormPage, UndertakingCyaFormPage, UndertakingSectorFormPage}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 
 import java.time.{LocalDate, LocalDateTime}

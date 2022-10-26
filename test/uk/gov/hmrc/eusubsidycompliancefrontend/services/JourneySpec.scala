@@ -25,7 +25,8 @@ import play.api.mvc.AnyContent
 import play.api.mvc.Results.Redirect
 import play.api.test.Helpers.{GET, redirectLocation, status}
 import play.api.test.{DefaultAwaitTimeout, FakeRequest}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.{Form, Uri}
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{FormPage, Journey}
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.{Form, Uri}
 
 class JourneySpec extends AnyWordSpecLike with Matchers with MockFactory with ScalaFutures with DefaultAwaitTimeout {
 

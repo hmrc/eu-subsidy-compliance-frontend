@@ -19,6 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BecomeLeadJourney
 
 class BecomeLeadJourneySpec extends AnyWordSpecLike with Matchers {
 
