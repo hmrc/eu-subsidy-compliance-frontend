@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.cache
+package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import cats.implicits.catsSyntaxOptionId
 import org.scalatest.concurrent.ScalaFutures
