@@ -24,6 +24,7 @@ trait TimeProviderSupport { this: ControllerSpec =>
 
   val mockTimeProvider = mock[TimeProvider]
 
+  // TODO - review naming of these methods - they should follow a consistent pattern
   def mockTimeProviderNow(now: LocalDateTime) =
     (mockTimeProvider.now _).expects().returning(now)
 

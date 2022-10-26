@@ -1514,25 +1514,13 @@ class UndertakingControllerSpec
 
       "redirect to next page" when {
 
-        "user select Yes" in {
+        "user selected Yes" in {
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             mockDisableUndertaking(undertaking1)(Right(undertakingRef))
-            mockDelete[EligibilityJourney](eori1)(Right(()))
-            mockDelete[UndertakingJourney](eori1)(Right(()))
-            mockDelete[NewLeadJourney](eori1)(Right(()))
-            mockDelete[NilReturnJourney](eori1)(Right(()))
-            mockDelete[BusinessEntityJourney](eori1)(Right(()))
-            mockDelete[BecomeLeadJourney](eori1)(Right(()))
-            mockDelete[SubsidyJourney](eori1)(Right(()))
-            mockDelete[EligibilityJourney](eori4)(Right(()))
-            mockDelete[UndertakingJourney](eori4)(Right(()))
-            mockDelete[NewLeadJourney](eori4)(Right(()))
-            mockDelete[NilReturnJourney](eori4)(Right(()))
-            mockDelete[BusinessEntityJourney](eori4)(Right(()))
-            mockDelete[BecomeLeadJourney](eori4)(Right(()))
-            mockDelete[SubsidyJourney](eori4)(Right(()))
+            mockDeleteAll(eori1)(Right(()))
+            mockDeleteAll(eori4)(Right(()))
             mockTimeToday(currentDate)
             mockSendAuditEvent[UndertakingDisabled](UndertakingDisabled("1123", undertakingRef, currentDate))
             mockTimeToday(currentDate)

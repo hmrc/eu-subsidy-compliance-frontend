@@ -27,7 +27,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{AddMemberToBusinessEntity, AddMemberToLead, RemoveMemberToBusinessEntity, RemoveMemberToLead}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.withGbPrefix
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, Undertaking}
@@ -35,7 +35,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.services.BusinessEntityJourney.Fo
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{businessEntityJourney, _}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.UpstreamErrorResponse
 
@@ -88,8 +88,8 @@ class BusinessEntityControllerSpec
 
   private val controller = instanceOf[BusinessEntityController]
 
-  private val invalidEOris = List("GA1234567890", "AB1234567890")
-  private val invalidLengthEOris = List("1234567890", "12345678901234", "GB1234567890")
+  private val invalidPrefixEoris = List("GA1234567890", "AB1234567890")
+  private val invalidLengthEoris = List("1234567890", "12345678901234", "GB1234567890")
 
   "BusinessEntityControllerSpec" when {
 
@@ -385,7 +385,7 @@ class BusinessEntityControllerSpec
         }
 
         "invalid eori is submitted" in {
-          invalidEOris.foreach { eori =>
+          invalidPrefixEoris.foreach { eori =>
             withClue(s" For eori :: $eori") {
               test("businessEntityEori" -> eori)("businessEntityEori.regex.error")
             }
@@ -394,7 +394,7 @@ class BusinessEntityControllerSpec
         }
 
         "eori is submitted has invalid length" in {
-          invalidLengthEOris.foreach { eori =>
+          invalidLengthEoris.foreach { eori =>
             withClue(s" For eori :: $eori") {
               test("businessEntityEori" -> eori)("businessEntityEori.error.incorrect-length")
             }
@@ -443,10 +443,9 @@ class BusinessEntityControllerSpec
 
                 mockRetrieveUndertakingWithErrorResponse(validEori)(Right(None))
                 mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-                mockAddMember(undertakingRef, BusinessEntity(validEori, false))(Right(undertakingRef))
+                mockAddMember(undertakingRef, BusinessEntity(validEori, leadEORI = false))(Right(undertakingRef))
                 mockSendEmail(validEori, AddMemberToBusinessEntity, undertaking)(Right(EmailSent))
                 mockSendEmail(eori1, validEori, AddMemberToLead, undertaking)(Right(EmailSent))
-                mockDelete[Undertaking](eori1)(Right(()))
                 mockSendAuditEvent(AuditEvent.BusinessEntityAdded(undertakingRef, "1123", eori1, validEori))
                 mockPut[BusinessEntityJourney](updatedBusinessJourney().copy(addBusiness = AddBusinessFormPage(None)), eori1)(Right(BusinessEntityJourney()))
               }
@@ -545,10 +544,22 @@ class BusinessEntityControllerSpec
 
       "redirect to next page" when {
 
-        "user selected yes as input" in {
+        val effectiveDate = Seq(
+          fixedDate.plusDays(1).getDayOfMonth,
+          fixedDate.plusDays(1).getMonth.name().toLowerCase().capitalize,
+          fixedDate.plusDays(1).getYear
+        ).mkString(" ")
+
+        "user selected yes" in {
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification(eori4)
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+            mockTimeToday(fixedDate)
+            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
+            mockDeleteAll(eori4)(Right(()))
+            mockSendEmail(eori4, MemberRemoveSelfToBusinessEntity, undertaking1, effectiveDate)(Right(EmailSent))
+            mockSendEmail(eori1, eori4, MemberRemoveSelfToLead, undertaking1, effectiveDate)(Right(EmailSent))
+            mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf(undertakingRef, "1123", eori1, eori4))
           }
           checkIsRedirect(
             performAction("removeYourselfBusinessEntity" -> "true"),
@@ -556,7 +567,7 @@ class BusinessEntityControllerSpec
           )
         }
 
-        "user selected No as input" in {
+        "user selected no" in {
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification(eori4)
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
@@ -702,7 +713,6 @@ class BusinessEntityControllerSpec
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
             mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, date)(Right(EmailSent))
             mockSendEmail(eori1, eori4, RemoveMemberToLead, undertaking1, date)(Right(EmailSent))
-            mockDelete[Undertaking](eori1)(Right(()))
             mockSendAuditEvent(AuditEvent.BusinessEntityRemoved(undertakingRef, "1123", eori1, eori4))
           }
           checkIsRedirect(

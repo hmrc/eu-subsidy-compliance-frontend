@@ -36,4 +36,6 @@ trait Store {
 
   def delete[A : ClassTag](implicit eori: EORI): Future[Unit]
 
+  def deleteAll(implicit eori: EORI): Future[Unit]
+
 }

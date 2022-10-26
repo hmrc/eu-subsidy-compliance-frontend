@@ -384,17 +384,6 @@ class UndertakingController @Inject() (
     Ok(undertakingDisabledPage()).withNewSession.toFuture
   }
 
-  private def resetAllJourneys(implicit eori: EORI) =
-    for {
-      _ <- store.delete[EligibilityJourney]
-      _ <- store.delete[UndertakingJourney]
-      _ <- store.delete[NewLeadJourney]
-      _ <- store.delete[NilReturnJourney]
-      _ <- store.delete[BusinessEntityJourney]
-      _ <- store.delete[BecomeLeadJourney]
-      _ <- store.delete[SubsidyJourney]
-    } yield ()
-
   private def handleDisableUndertakingFormSubmission(form: FormValues, undertaking: Undertaking)(implicit
     hc: HeaderCarrier,
     request: AuthenticatedEnrolledRequest[_]
@@ -402,7 +391,7 @@ class UndertakingController @Inject() (
     if (form.value.isTrue) {
       for {
         _ <- escService.disableUndertaking(undertaking)
-        _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
+        _ <- undertaking.undertakingBusinessEntity.traverse(be => store.deleteAll(be.businessEntityIdentifier))
         _ = auditService.sendEvent[UndertakingDisabled](
           UndertakingDisabled(request.authorityId, undertaking.reference, timeProvider.today)
         )

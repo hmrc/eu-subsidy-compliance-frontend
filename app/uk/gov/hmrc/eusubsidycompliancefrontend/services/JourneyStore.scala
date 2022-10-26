@@ -65,7 +65,7 @@ class JourneyStore @Inject() (
   override def delete[A : ClassTag](implicit eori: EORI): Future[Unit] =
     delete[A](eori)(dataKeyForType[A])
 
-  def deleteAll(implicit eori: EORI): Future[Unit] =
+  override def deleteAll(implicit eori: EORI): Future[Unit] =
     collection
       .findOneAndDelete(Filters.equal("_id", EoriIdType.run(eori)))
       .toFuture()

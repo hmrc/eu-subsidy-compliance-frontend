@@ -205,8 +205,7 @@ class BecomeLeadControllerSpec
             mockSendEmail(eori4, PromotedSelfToNewLead, undertaking1)(Right(EmailSent))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
             mockSendEmail(eori1, RemovedAsLeadToFormerLead, undertaking1)(Right(EmailSent))
-            mockDelete[UndertakingJourney](eori4)(Right(()))
-            mockDelete[BecomeLeadJourney](eori4)(Right(()))
+            mockDeleteAll(eori4)(Right(()))
             mockSendAuditEvent[BusinessEntityPromotedSelf](
               AuditEvent.BusinessEntityPromotedSelf(undertakingRef, "1123", eori1, eori4)
             )

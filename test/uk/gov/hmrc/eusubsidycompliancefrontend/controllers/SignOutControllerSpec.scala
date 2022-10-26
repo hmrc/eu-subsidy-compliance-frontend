@@ -16,25 +16,17 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{MemberRemoveSelfToBusinessEntity, MemberRemoveSelfToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
 import java.time.LocalDate
-import scala.concurrent.Future
 
 class SignOutControllerSpec
     extends ControllerSpec
@@ -64,13 +56,6 @@ class SignOutControllerSpec
     Configuration(
       ConfigFactory.parseString(s"""
                                    |"urls.timeOutContinue" = "http://host:123/continue"
-                                   |play.i18n.langs = ["en", "cy", "fr"]
-                                   | email-send {
-                                   |     member-remove-themself-email-to-be-template-en = "template_remove_yourself_be_EN"
-                                   |     member-remove-themself-email-to-be-template-cy = "template_remove_yourself_be_CY"
-                                   |     member-remove-themself-email-to-lead-template-en = "template_remove_yourself_lead_EN"
-                                   |     member-remove-themself-email-to-lead-template-cy = "template_remove_yourself_lead_CY"
-                                   |  }
                                    |""".stripMargin)
     )
   )
@@ -102,51 +87,11 @@ class SignOutControllerSpec
         FakeRequest("GET", routes.SignOutController.signOut().url)
       )
 
-      "throw technical error" when {
-
-        val exception = new Exception("oh no !")
-
-        "call to retrieve email fails" in {
-          inSequence {
-            mockAuthWithEnrolment(eori4)
-          }
-
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to retrieve Undertaking fails" in {
-          inSequence {
-            mockAuthWithEnrolment(eori4)
-            mockRetrieveUndertaking(eori4)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-        "call to remove member fails" in {
-          inSequence {
-            mockAuthWithEnrolment(eori4)
-            mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
-            mockTimeToday(currentDate)
-            mockRemoveMember(CommonTestData.undertakingRef, businessEntity4)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-        }
-
-      }
-
       "display the page" when {
 
-        def testDisplay(effectiveDate: String): Unit = {
+        def testDisplay(): Unit = {
           inSequence {
             mockAuthWithEnrolment(eori4)
-            mockRetrieveUndertaking(eori4)(Future.successful(undertaking1.some))
-            mockTimeToday(currentDate)
-            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockDelete[EligibilityJourney](eori4)(Right(()))
-            mockDelete[UndertakingJourney](eori4)(Right(()))
-            mockSendEmail(eori4, MemberRemoveSelfToBusinessEntity, undertaking1, effectiveDate)(Right(EmailSent))
-            mockSendEmail(eori1, eori4, MemberRemoveSelfToLead, undertaking1, effectiveDate)(Right(EmailSent))
-            mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf(undertakingRef, "1123", eori1, eori4))
           }
 
           checkPageIsDisplayed(
@@ -157,7 +102,7 @@ class SignOutControllerSpec
         }
 
         "for a valid request" in {
-          testDisplay("10 October 2022")
+          testDisplay()
         }
 
       }

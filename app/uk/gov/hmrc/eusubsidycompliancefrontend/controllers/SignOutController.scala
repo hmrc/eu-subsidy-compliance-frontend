@@ -27,8 +27,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
-import scala.concurrent.ExecutionContext
-
 @Singleton
 class SignOutController @Inject() (
   mcc: MessagesControllerComponents,
@@ -40,7 +38,7 @@ class SignOutController @Inject() (
   timedOutPage: TimedOut,
   signOutPage: SignOutPage,
   timeProvider: TimeProvider
-)(implicit val appConfig: AppConfig, executionContext: ExecutionContext)
+)(implicit val appConfig: AppConfig)
     extends BaseController(mcc)
     with I18nSupport
     with Logging {

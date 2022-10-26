@@ -60,4 +60,10 @@ trait JourneyStoreSupport { this: MockFactory =>
       .expects(*, eori)
       .returning(result.fold(Future.failed, _.toFuture))
 
+  def mockDeleteAll(eori: EORI)(result: Either[ConnectorError, Unit]) =
+    (mockJourneyStore
+      .deleteAll(_: EORI))
+      .expects(eori)
+      .returning(result.fold(Future.failed, _.toFuture))
+
 }
