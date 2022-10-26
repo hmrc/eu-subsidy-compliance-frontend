@@ -25,6 +25,7 @@ import play.api.test.DefaultAwaitTimeout
 import shapeless.tag.@@
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.JourneyStore
 import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 

@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 import org.mongodb.scala.MongoCollection
 import org.mongodb.scala.model.{Filters, IndexOptions, Indexes, Updates}
 import play.api.libs.json.{Reads, Writes}
-import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.RepositoryHelpers.dataKeyForType
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.PersistenceHelpers.dataKeyForType
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.UndertakingCache.DefaultCacheTtl
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.mongo.cache.{CacheItem, DataKey, MongoCacheRepository}

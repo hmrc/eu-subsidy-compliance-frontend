@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.services
+package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import org.mongodb.scala.model.Filters
 import play.api.Configuration
 import play.api.libs.json.{Format, Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.JourneyStore.DefaultCacheTtl
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.JourneyStore.DefaultCacheTtl
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.PersistenceHelpers.dataKeyForType
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
-import uk.gov.hmrc.mongo.cache.{CacheIdType, DataKey, MongoCacheRepository}
+import uk.gov.hmrc.mongo.cache.{DataKey, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
 import javax.inject.{Inject, Singleton}
@@ -31,11 +32,6 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 import scala.reflect.ClassTag
 
-object EoriIdType extends CacheIdType[EORI] {
-  def run: EORI => EORI = identity
-}
-
-// TODO - this store is in the wrong package
 @Singleton
 class JourneyStore @Inject() (
   mongoComponent: MongoComponent,
@@ -76,8 +72,6 @@ class JourneyStore @Inject() (
       .map(f)
       .foldF(throw new IllegalStateException("trying to update non-existent model"))(put(_))
 
-  // TODO - is this defined somewhere else?
-  private def dataKeyForType[A](implicit ct: ClassTag[A]) = DataKey[A](ct.runtimeClass.getSimpleName)
 }
 
 object JourneyStore {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.services
+package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import com.google.inject.ImplementedBy
 import play.api.libs.json.{Format, Reads, Writes}
