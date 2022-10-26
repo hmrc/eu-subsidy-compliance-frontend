@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
+import org.mongodb.scala.model.Filters
 import play.api.Configuration
 import play.api.libs.json.{Format, Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -34,6 +35,7 @@ object EoriIdType extends CacheIdType[EORI] {
   def run: EORI => EORI = identity
 }
 
+// TODO - this store is in the wrong package
 @Singleton
 class JourneyStore @Inject() (
   mongoComponent: MongoComponent,
@@ -63,11 +65,18 @@ class JourneyStore @Inject() (
   override def delete[A : ClassTag](implicit eori: EORI): Future[Unit] =
     delete[A](eori)(dataKeyForType[A])
 
+  def deleteAll(implicit eori: EORI): Future[Unit] =
+    collection
+      .findOneAndDelete(Filters.equal("_id", EoriIdType.run(eori)))
+      .toFuture()
+      .map(_ => ())
+
   override def update[A: ClassTag](f: A => A)(implicit eori: EORI, format: Format[A]): Future[A] =
     get.toContext
       .map(f)
       .foldF(throw new IllegalStateException("trying to update non-existent model"))(put(_))
 
+  // TODO - is this defined somewhere else?
   private def dataKeyForType[A](implicit ct: ClassTag[A]) = DataKey[A](ct.runtimeClass.getSimpleName)
 }
 

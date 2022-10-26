@@ -137,6 +137,23 @@ class JourneyStoreSpec
 
     }
 
+    "deleteAll is called" must {
+
+      "return success if there are no cached items for the specified EORI" in {
+        repository.deleteAll.futureValue shouldBe (())
+      }
+
+      "remove all data for the specified EORI" in {
+        repository.put[Thing](thing).futureValue shouldBe thing
+        repository.put[AnotherThing](anotherThing).futureValue shouldBe anotherThing
+
+        repository.deleteAll.futureValue shouldBe (())
+
+        repository.get[Thing].futureValue shouldBe None
+        repository.get[AnotherThing].futureValue shouldBe None
+      }
+    }
+
   }
 
 }
