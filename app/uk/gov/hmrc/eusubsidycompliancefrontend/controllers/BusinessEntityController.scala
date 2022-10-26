@@ -105,17 +105,16 @@ class BusinessEntityController @Inject() (
   def getEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
-      store.get[BusinessEntityJourney].flatMap {
-        case Some(journey) =>
-          if (!journey.isEligibleForStep) {
-            Redirect(journey.previous).toFuture
-          } else {
+      store
+        .get[BusinessEntityJourney]
+        .toContext
+        .fold(Redirect(routes.BusinessEntityController.getAddBusinessEntity())) { journey =>
+          if (!journey.isEligibleForStep) Redirect(journey.previous)
+          else {
             val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori)))
-            Ok(eoriPage(form, journey.previous)).toFuture
+            Ok(eoriPage(form, journey.previous))
           }
-        case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture
-      }
-
+        }
     }
   }
 
@@ -159,16 +158,17 @@ class BusinessEntityController @Inject() (
                 auditService.sendEvent(AuditEvent.BusinessEntityAdded(undertakingRef, request.authorityId, eori, eoriBE))
             redirect <- getNext(businessEntityJourney)(eori).toContext
           } yield redirect
-          result .fold(handleMissingSessionData("BusinessEntity Data"))(identity)
+          result.fold(handleMissingSessionData("BusinessEntity Data"))(identity)
         }
       }
 
     withLeadUndertaking { undertaking =>
-      store.get[BusinessEntityJourney].flatMap {
-        case Some(journey) =>
-          if (!journey.isEligibleForStep) {
-            Redirect(journey.previous).toFuture
-          } else {
+      store
+        .get[BusinessEntityJourney]
+        .toContext
+        .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture) { journey =>
+          if (!journey.isEligibleForStep) Redirect(journey.previous).toFuture
+          else {
             eoriForm
               .bindFromRequest()
               .fold(
@@ -176,8 +176,7 @@ class BusinessEntityController @Inject() (
                 form => handleValidEori(form, journey.previous, undertaking)
               )
           }
-        case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture
-      }
+        }
     }
   }
 
@@ -195,17 +194,15 @@ class BusinessEntityController @Inject() (
 
   def getRemoveYourselfBusinessEntity: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    val previous = routes.AccountController.getAccountPage().url
-    // TODO - review this
-    for {
-      undertakingOpt <- escService.retrieveUndertaking(eori)
-    } yield undertakingOpt match {
-      case Some(undertaking) =>
-        val removeBE = undertaking.getBusinessEntityByEORI(eori)
-        Ok(removeYourselfBEPage(removeYourselfBusinessForm, removeBE, previous))
 
-      case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity())
-    }
+    val previous = routes.AccountController.getAccountPage().url
+
+    escService
+      .retrieveUndertaking(eori)
+      .toContext
+      .fold(Redirect(routes.BusinessEntityController.getAddBusinessEntity())) { undertaking =>
+        Ok(removeYourselfBEPage(removeYourselfBusinessForm, undertaking.getBusinessEntityByEORI(eori), previous))
+      }
   }
 
   def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = verifiedEmail.async {
