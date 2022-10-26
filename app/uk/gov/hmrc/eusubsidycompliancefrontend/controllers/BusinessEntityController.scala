@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityRemovedSelf
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{AddMemberToBusinessEntity, AddMemberToLead, MemberRemoveSelfToBusinessEntity, MemberRemoveSelfToLead, RemoveMemberToBusinessEntity, RemoveMemberToLead}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.withGbPrefix
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
@@ -247,36 +247,33 @@ class BusinessEntityController @Inject() (
   def postRemoveYourselfBusinessEntity: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    def handleValidBE(form: FormValues, undertaking: Undertaking, removeBE: BusinessEntity): Future[Result] =
+    def handleFormSubmission(u: Undertaking, b: BusinessEntity) =
+      removeYourselfBusinessForm
+        .bindFromRequest()
+        .fold(
+          errors => BadRequest(removeYourselfBEPage(errors, b, routes.AccountController.getAccountPage().url)).toContext,
+          handleValidFormSubmission(u, b)
+        )
+
+    def handleValidFormSubmission(u: Undertaking, b: BusinessEntity)(form: FormValues) =
       if (form.value.isTrue) {
-        val effectiveDate = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
-        val result = for {
-          undertakingRef <- undertaking.reference.toContext
-          _ <- escService.removeMember(undertakingRef, removeBE).toContext
+        for {
+          _ <- escService.removeMember(u.reference, b).toContext
           _ <- store.deleteAll.toContext
-          leadEORI = undertaking.getLeadEORI
-          _ <- emailService.sendEmail(eori, MemberRemoveSelfToBusinessEntity, undertaking, effectiveDate).toContext
-          _ <- emailService.sendEmail(leadEORI, eori, MemberRemoveSelfToLead, undertaking, effectiveDate).toContext
-          _ = auditService.sendEvent(BusinessEntityRemovedSelf(undertakingRef, request.authorityId, leadEORI, eori))
+          effectiveDate = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
+          _ <- emailService.sendEmail(eori, MemberRemoveSelfToBusinessEntity, u, effectiveDate).toContext
+          _ <- emailService.sendEmail(u.getLeadEORI, eori, MemberRemoveSelfToLead, u, effectiveDate).toContext
+          _ = auditService.sendEvent(BusinessEntityRemovedSelf(u.reference, request.authorityId, u.getLeadEORI, eori))
         } yield Redirect(routes.SignOutController.signOut())
-        result.getOrElse(handleMissingSessionData("Undertaking journey"))
-      } else Redirect(routes.AccountController.getAccountPage()).toFuture
+      } else Redirect(routes.AccountController.getAccountPage()).toContext
 
-    val previous = routes.AccountController.getAccountPage().url
+    val result = for {
+      undertaking <- escService.retrieveUndertaking(eori).toContext
+      businessEntityToRemove <- undertaking.findBusinessEntity(eori).toContext
+      r <- handleFormSubmission(undertaking, businessEntityToRemove)
+    } yield r
 
-    escService.retrieveUndertaking(eori).flatMap {
-      case Some(undertaking) => {
-        val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(eori)
-
-        removeYourselfBusinessForm
-          .bindFromRequest()
-          .fold(
-            errors => BadRequest(removeYourselfBEPage(errors, removeBE, previous)).toFuture,
-            form => handleValidBE(form, undertaking, removeBE)
-          )
-      }
-      case None => handleMissingSessionData("Undertaking journey")
-    }
+    result.getOrElse(handleMissingSessionData("Undertaking"))
   }
 
   // TODO - review this - journey should have this logic, not the controller

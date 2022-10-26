@@ -554,9 +554,9 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification(eori4)
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-            mockTimeToday(fixedDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
             mockDeleteAll(eori4)(Right(()))
+            mockTimeToday(fixedDate)
             mockSendEmail(eori4, MemberRemoveSelfToBusinessEntity, undertaking1, effectiveDate)(Right(EmailSent))
             mockSendEmail(eori1, eori4, MemberRemoveSelfToLead, undertaking1, effectiveDate)(Right(EmailSent))
             mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf(undertakingRef, "1123", eori1, eori4))
