@@ -41,7 +41,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-// TODO - review use of for comps and tidy where necessary
 @Singleton
 class BusinessEntityController @Inject() (
                                            mcc: MessagesControllerComponents,
@@ -273,8 +272,6 @@ class BusinessEntityController @Inject() (
     result.getOrElse(handleMissingSessionData("Undertaking"))
   }
 
-  // TODO - review this - journey should have this logic, not the controller
-  // TODO - what is the optional boolean field isLeadSelectJourney?
   private def getNext(businessEntityJourney: BusinessEntityJourney)(implicit EORI: EORI): Future[Result] =
     businessEntityJourney.isLeadSelectJourney match {
       case Some(true) =>
