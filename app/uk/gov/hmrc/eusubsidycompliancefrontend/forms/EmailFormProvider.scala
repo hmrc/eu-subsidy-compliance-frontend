@@ -47,7 +47,7 @@ case class OptionalEmailFormProvider() extends FormProvider[OptionalEmailFormInp
 
 object EmailFormProvider {
 
-  private val MaximumEmailLength = 254
+  val MaximumEmailLength = 254
 
   val EmailAddressFieldMapping: Mapping[String] =
     nonEmptyText(maxLength = MaximumEmailLength)
@@ -59,8 +59,8 @@ object EmailFormProvider {
   }
 
   object Errors {
-    val TooLong = "error.tooLong"
-    val InvalidFormat = "error.invalidFormat"
+    val MaxLength = "error.maxLength"
+    val InvalidFormat = "error.email"
   }
 
 }
