@@ -17,13 +17,15 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
-import play.api.data.Form
-import play.api.data.Forms.{email, mapping}
+import play.api.data.Forms.{mapping, nonEmptyText}
+import play.api.data.validation.Constraints
+import play.api.data.{Form, Mapping}
 import play.api.i18n.Messages
 import play.api.libs.json.{Format, Reads}
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.mandatory
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, FormValues, OptionalEmailFormInput}
@@ -39,7 +41,7 @@ import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
-trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
+trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendController =>
 
   protected val emailService: EmailService
   protected val emailVerificationService: EmailVerificationService
@@ -48,16 +50,24 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
 
   protected implicit val executionContext: ExecutionContext
 
+  // Per RFC 3696 - Restrictions on Email addresses
+  // see https://www.rfc-editor.org/errata/eid1690
+  private val MaximumEmailLength = 254
+
+  private val emailConstraints: Mapping[String] =
+    nonEmptyText(maxLength = MaximumEmailLength)
+      .verifying(Constraints.emailAddress)
+
   protected val optionalEmailForm: Form[OptionalEmailFormInput] = Form(
     mapping(
       "using-stored-email" -> mandatory("using-stored-email"),
-      "email" -> mandatoryIfEqual("using-stored-email", "false", email)
+      "email" -> mandatoryIfEqual("using-stored-email", "false", emailConstraints)
     )(OptionalEmailFormInput.apply)(OptionalEmailFormInput.unapply)
   )
 
   protected val emailForm: Form[FormValues] = Form(
     mapping(
-      "email" -> email
+      "email" -> emailConstraints
     )(FormValues.apply)(FormValues.unapply)
   )
 
@@ -119,8 +129,6 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
 
     def verifyEmailUrl(id: String) = generateVerifyEmailUrl(id)
 
-    val verifiedEmail = findVerifiedEmail
-
     def handleConfirmEmailPageSubmission(email: String) =
       optionalEmailForm
         .bindFromRequest()
@@ -150,7 +158,7 @@ trait EmailVerificationSupport extends FormHelpers { this: FrontendController =>
           form => emailVerificationService.makeVerificationRequestAndRedirect(form.value, previous, verifyEmailUrl)
         )
 
-    verifiedEmail
+    findVerifiedEmail
       .toContext
       .foldF(handleInputEmailPageSubmission())(email => handleConfirmEmailPageSubmission(email))
   }
