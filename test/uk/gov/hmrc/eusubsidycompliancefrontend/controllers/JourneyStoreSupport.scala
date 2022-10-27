@@ -20,7 +20,7 @@ import org.scalamock.scalatest.MockFactory
 import play.api.libs.json.{Format, Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.Future
@@ -58,6 +58,12 @@ trait JourneyStoreSupport { this: MockFactory =>
     (mockJourneyStore
       .delete(_: ClassTag[A], _: EORI))
       .expects(*, eori)
+      .returning(result.fold(Future.failed, _.toFuture))
+
+  def mockDeleteAll(eori: EORI)(result: Either[ConnectorError, Unit]) =
+    (mockJourneyStore
+      .deleteAll(_: EORI))
+      .expects(eori)
       .returning(result.fold(Future.failed, _.toFuture))
 
 }

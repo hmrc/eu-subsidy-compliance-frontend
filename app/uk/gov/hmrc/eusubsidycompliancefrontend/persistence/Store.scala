@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.services
+package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import com.google.inject.ImplementedBy
 import play.api.libs.json.{Format, Reads, Writes}
@@ -35,5 +35,7 @@ trait Store {
   def update[A : ClassTag](f: A => A)(implicit eori: EORI, format: Format[A]): Future[A]
 
   def delete[A : ClassTag](implicit eori: EORI): Future[Unit]
+
+  def deleteAll(implicit eori: EORI): Future[Unit]
 
 }

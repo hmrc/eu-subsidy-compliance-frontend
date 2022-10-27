@@ -25,12 +25,14 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.ModifyUndertakingRow
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{CreateUndertaking, DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.UndertakingJourney.Forms._
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -1514,28 +1516,16 @@ class UndertakingControllerSpec
 
       "redirect to next page" when {
 
-        "user select Yes" in {
+        "user selected Yes" in {
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             mockDisableUndertaking(undertaking1)(Right(undertakingRef))
-            mockDelete[EligibilityJourney](eori1)(Right(()))
-            mockDelete[UndertakingJourney](eori1)(Right(()))
-            mockDelete[NewLeadJourney](eori1)(Right(()))
-            mockDelete[NilReturnJourney](eori1)(Right(()))
-            mockDelete[BusinessEntityJourney](eori1)(Right(()))
-            mockDelete[BecomeLeadJourney](eori1)(Right(()))
-            mockDelete[SubsidyJourney](eori1)(Right(()))
-            mockDelete[EligibilityJourney](eori4)(Right(()))
-            mockDelete[UndertakingJourney](eori4)(Right(()))
-            mockDelete[NewLeadJourney](eori4)(Right(()))
-            mockDelete[NilReturnJourney](eori4)(Right(()))
-            mockDelete[BusinessEntityJourney](eori4)(Right(()))
-            mockDelete[BecomeLeadJourney](eori4)(Right(()))
-            mockDelete[SubsidyJourney](eori4)(Right(()))
-            mockTimeToday(currentDate)
+            mockDeleteAll(eori1)(Right(()))
+            mockDeleteAll(eori4)(Right(()))
+            mockTimeProviderToday(currentDate)
             mockSendAuditEvent[UndertakingDisabled](UndertakingDisabled("1123", undertakingRef, currentDate))
-            mockTimeToday(currentDate)
+            mockTimeProviderToday(currentDate)
             mockSendEmail(eori1, DisableUndertakingToLead, undertaking1, formattedDate)(Right(EmailSent))
             mockSendEmail(eori1, DisableUndertakingToBusinessEntity, undertaking1, formattedDate)(Right(EmailSent))
           }

@@ -27,7 +27,7 @@ trait TimeProviderSupport { this: ControllerSpec =>
   def mockTimeProviderNow(now: LocalDateTime) =
     (mockTimeProvider.now _).expects().returning(now)
 
-  def mockTimeToday(now: LocalDate) =
+  def mockTimeProviderToday(now: LocalDate) =
     (mockTimeProvider.today _).expects().returning(now)
 
 }

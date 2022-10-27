@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.services
+package uk.gov.hmrc.eusubsidycompliancefrontend.journeys
 
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Request, Result}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Uri
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 
 import scala.concurrent.Future

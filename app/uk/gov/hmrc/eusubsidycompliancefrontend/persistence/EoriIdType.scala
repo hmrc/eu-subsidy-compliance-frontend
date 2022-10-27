@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.cache
+package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
-import uk.gov.hmrc.mongo.cache.DataKey
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.mongo.cache.CacheIdType
 
-import scala.reflect.ClassTag
-
-object RepositoryHelpers {
-
-  def dataKeyForType[A](implicit ct: ClassTag[A]): DataKey[A] = DataKey[A](ct.runtimeClass.getSimpleName)
-
+object EoriIdType extends CacheIdType[EORI] {
+  override def run: EORI => EORI = identity
 }

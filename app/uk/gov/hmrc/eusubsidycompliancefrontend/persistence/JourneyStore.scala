@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.services
+package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
+import org.mongodb.scala.model.Filters
 import play.api.Configuration
 import play.api.libs.json.{Format, Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.JourneyStore.DefaultCacheTtl
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.JourneyStore.DefaultCacheTtl
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.PersistenceHelpers.dataKeyForType
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
-import uk.gov.hmrc.mongo.cache.{CacheIdType, DataKey, MongoCacheRepository}
+import uk.gov.hmrc.mongo.cache.{DataKey, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
 import javax.inject.{Inject, Singleton}
@@ -29,10 +31,6 @@ import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 import scala.reflect.ClassTag
-
-object EoriIdType extends CacheIdType[EORI] {
-  def run: EORI => EORI = identity
-}
 
 @Singleton
 class JourneyStore @Inject() (
@@ -63,12 +61,17 @@ class JourneyStore @Inject() (
   override def delete[A : ClassTag](implicit eori: EORI): Future[Unit] =
     delete[A](eori)(dataKeyForType[A])
 
+  override def deleteAll(implicit eori: EORI): Future[Unit] =
+    collection
+      .findOneAndDelete(Filters.equal("_id", EoriIdType.run(eori)))
+      .toFuture()
+      .map(_ => ())
+
   override def update[A: ClassTag](f: A => A)(implicit eori: EORI, format: Format[A]): Future[A] =
     get.toContext
       .map(f)
       .foldF(throw new IllegalStateException("trying to update non-existent model"))(put(_))
 
-  private def dataKeyForType[A](implicit ct: ClassTag[A]) = DataKey[A](ct.runtimeClass.getSimpleName)
 }
 
 object JourneyStore {

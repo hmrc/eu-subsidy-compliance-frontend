@@ -21,11 +21,11 @@ import play.api.data.{Form, Mapping}
 import play.api.libs.json.Reads
 import play.api.mvc.Result
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import play.api.data.Forms.{mapping, text}
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag

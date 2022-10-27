@@ -19,11 +19,13 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BecomeLeadJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedSelfToNewLead, RemovedAsLeadToFormerLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -133,8 +135,7 @@ class BecomeLeadController @Inject() (
         _ <- escService.addMember(ref, formerLead).toContext
         _ <- emailService.sendEmail(formerLead.businessEntityIdentifier, RemovedAsLeadToFormerLead, undertaking).toContext
         // Flush any stale journey state
-        _ <- store.delete[UndertakingJourney].toContext
-        _ <- store.delete[BusinessEntityJourney].toContext
+        _ <- store.deleteAll.toContext
         // Send audit event
         _ = auditService.sendEvent[BusinessEntityPromotedSelf](
           AuditEvent.BusinessEntityPromotedSelf(

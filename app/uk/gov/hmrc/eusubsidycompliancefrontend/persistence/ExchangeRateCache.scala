@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.cache
+package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import play.api.libs.json._
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.ExchangeRateCache.DefaultCacheTtl
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.RepositoryHelpers.dataKeyForType
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.ExchangeRateCache.DefaultCacheTtl
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.PersistenceHelpers.dataKeyForType
 import uk.gov.hmrc.mongo.cache.{CacheIdType, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 

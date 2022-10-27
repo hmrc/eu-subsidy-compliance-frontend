@@ -21,9 +21,11 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NilReturnJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NilSubmissionDate, SubsidyRetrieve, SubsidyUpdate}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.NilReturnJourney.Forms.NilReturnFormPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NilReturnJourney.Forms.NilReturnFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{emptyUndertakingSubsidies, eori1, fixedDate, undertaking, undertakingRef, undertakingSubsidies}
@@ -65,9 +67,9 @@ class NoClaimNotificationControllerSpec
         inSequence {
           mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-          mockTimeToday(fixedDate)
+          mockTimeProviderToday(fixedDate)
           mockRetrieveSubsidy(SubsidyRetrieve(undertaking.reference, (startDate, fixedDate).some))(emptyUndertakingSubsidies.toFuture)
-          mockTimeToday(fixedDate)
+          mockTimeProviderToday(fixedDate)
         }
 
         checkPageIsDisplayed(
@@ -89,9 +91,9 @@ class NoClaimNotificationControllerSpec
         inSequence {
           mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-          mockTimeToday(fixedDate)
+          mockTimeProviderToday(fixedDate)
           mockRetrieveSubsidy(SubsidyRetrieve(undertaking.reference, (startDate, fixedDate).some))(undertakingSubsidies.toFuture)
-          mockTimeToday(fixedDate)
+          mockTimeProviderToday(fixedDate)
         }
 
         checkPageIsDisplayed(
@@ -151,10 +153,10 @@ class NoClaimNotificationControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockTimeToday(currentDay)
+            mockTimeProviderToday(currentDay)
             mockRetrieveSubsidy(subsidyRetrieve)(undertakingSubsidies.toFuture)
-            mockTimeToday(currentDay)
-            mockTimeToday(currentDay)
+            mockTimeProviderToday(currentDay)
+            mockTimeProviderToday(currentDay)
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
@@ -164,10 +166,10 @@ class NoClaimNotificationControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockTimeToday(currentDay)
+            mockTimeProviderToday(currentDay)
             mockRetrieveSubsidy(subsidyRetrieve)(undertakingSubsidies.toFuture)
-            mockTimeToday(currentDay)
-            mockTimeToday(currentDay)
+            mockTimeProviderToday(currentDay)
+            mockTimeProviderToday(currentDay)
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
             mockCreateSubsidy(SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay.plusDays(1))))(
               Left(ConnectorError(exception))
@@ -184,9 +186,9 @@ class NoClaimNotificationControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockTimeToday(currentDay)
+            mockTimeProviderToday(currentDay)
             mockRetrieveSubsidy(subsidyRetrieve)(undertakingSubsidies.toFuture)
-            mockTimeToday(currentDay)
+            mockTimeProviderToday(currentDay)
           }
 
           checkFormErrorIsDisplayed(
@@ -202,10 +204,10 @@ class NoClaimNotificationControllerSpec
         inSequence {
           mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-          mockTimeToday(currentDay)
+          mockTimeProviderToday(currentDay)
           mockRetrieveSubsidy(subsidyRetrieve)(undertakingSubsidies.toFuture)
-          mockTimeToday(currentDay)
-          mockTimeToday(currentDay)
+          mockTimeProviderToday(currentDay)
+          mockTimeProviderToday(currentDay)
           mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
           mockCreateSubsidy(SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay.plusDays(1))))(
             Right(undertakingRef)

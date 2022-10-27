@@ -21,7 +21,7 @@ import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.Reads
-import uk.gov.hmrc.eusubsidycompliancefrontend.cache.{ExchangeRateCache, RemovedSubsidyRepository, UndertakingCache, YearAndMonth}
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{ExchangeRateCache, RemovedSubsidyRepository, UndertakingCache, YearAndMonth}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}

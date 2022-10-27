@@ -24,12 +24,14 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUndertaking, UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -384,17 +386,6 @@ class UndertakingController @Inject() (
     Ok(undertakingDisabledPage()).withNewSession.toFuture
   }
 
-  private def resetAllJourneys(implicit eori: EORI) =
-    for {
-      _ <- store.delete[EligibilityJourney]
-      _ <- store.delete[UndertakingJourney]
-      _ <- store.delete[NewLeadJourney]
-      _ <- store.delete[NilReturnJourney]
-      _ <- store.delete[BusinessEntityJourney]
-      _ <- store.delete[BecomeLeadJourney]
-      _ <- store.delete[SubsidyJourney]
-    } yield ()
-
   private def handleDisableUndertakingFormSubmission(form: FormValues, undertaking: Undertaking)(implicit
     hc: HeaderCarrier,
     request: AuthenticatedEnrolledRequest[_]
@@ -402,7 +393,7 @@ class UndertakingController @Inject() (
     if (form.value.isTrue) {
       for {
         _ <- escService.disableUndertaking(undertaking)
-        _ <- undertaking.undertakingBusinessEntity.traverse(be => resetAllJourneys(be.businessEntityIdentifier))
+        _ <- undertaking.undertakingBusinessEntity.traverse(be => store.deleteAll(be.businessEntityIdentifier))
         _ = auditService.sendEvent[UndertakingDisabled](
           UndertakingDisabled(request.authorityId, undertaking.reference, timeProvider.today)
         )

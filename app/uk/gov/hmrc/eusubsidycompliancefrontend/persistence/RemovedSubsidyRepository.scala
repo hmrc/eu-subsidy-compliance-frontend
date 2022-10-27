@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.cache
+package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import org.mongodb.scala.model.{Filters, FindOneAndUpdateOptions, Updates}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.NonHmrcSubsidy
@@ -35,7 +35,7 @@ class RemovedSubsidyRepository @Inject() (mongoComponent: MongoComponent)(implic
 
   private val timestampSupport = new CurrentTimestampSupport
 
-  protected[cache] val repository = new MongoCacheRepository[EORI](
+  protected[persistence] val repository = new MongoCacheRepository[EORI](
     mongoComponent = mongoComponent,
     collectionName = "removedSubsidies",
     ttl = 365 * 3 days,

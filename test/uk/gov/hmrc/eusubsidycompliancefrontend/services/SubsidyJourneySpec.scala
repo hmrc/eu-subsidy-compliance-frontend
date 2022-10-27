@@ -25,9 +25,10 @@ import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, OptionalClaimEori, OptionalTraderRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{claimAmountEuros, claimAmountPounds, eori1, optionalEORI, optionalTraderRef}
 
 class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures {

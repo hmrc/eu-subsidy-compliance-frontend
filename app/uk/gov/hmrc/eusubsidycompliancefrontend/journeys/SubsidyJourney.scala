@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.services
+package uk.gov.hmrc.eusubsidycompliancefrontend.journeys
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json._
 import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Form
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.EUR
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.SubsidyJourney.Forms._
 
 import java.net.URI
 import scala.concurrent.Future

@@ -25,6 +25,7 @@ import play.api.test.DefaultAwaitTimeout
 import shapeless.tag.@@
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.JourneyStore
 import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
@@ -135,6 +136,23 @@ class JourneyStoreSpec
         repository.update[Thing](_ => thing).failed.futureValue shouldBe an[IllegalStateException]
       }
 
+    }
+
+    "deleteAll is called" must {
+
+      "return success if there are no cached items for the specified EORI" in {
+        repository.deleteAll.futureValue shouldBe (())
+      }
+
+      "remove all data for the specified EORI" in {
+        repository.put[Thing](thing).futureValue shouldBe thing
+        repository.put[AnotherThing](anotherThing).futureValue shouldBe anotherThing
+
+        repository.deleteAll.futureValue shouldBe (())
+
+        repository.get[Thing].futureValue shouldBe None
+        repository.get[AnotherThing].futureValue shouldBe None
+      }
     }
 
   }

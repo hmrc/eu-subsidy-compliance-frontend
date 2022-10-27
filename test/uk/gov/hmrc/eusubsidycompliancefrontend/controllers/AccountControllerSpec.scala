@@ -24,7 +24,9 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.NilReturnJourney.Forms.NilReturnFormPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NilReturnJourney.Forms.NilReturnFormPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -82,8 +84,8 @@ class AccountControllerSpec
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockRetrieveSubsidy(subsidyRetrieve.copy(inDateRange = None))(undertakingSubsidies.toFuture)
-            mockTimeToday(fixedDate)
-            mockTimeToday(fixedDate)
+            mockTimeProviderToday(fixedDate)
+            mockTimeProviderToday(fixedDate)
             mockGetOrCreate(eori1)(Right(nilJourneyCreate))
           }
           checkPageIsDisplayed(
@@ -128,8 +130,8 @@ class AccountControllerSpec
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockRetrieveSubsidy(subsidyRetrieve.copy(inDateRange = None))(undertakingSubsidies.copy(nonHMRCSubsidyUsage = List(nonHmrcSubsidy.copy(submissionDate = undertaking.lastSubsidyUsageUpdt.get))).toFuture)
-            mockTimeToday(currentDate)
-            mockTimeToday(currentDate)
+            mockTimeProviderToday(currentDate)
+            mockTimeProviderToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilJourneyCreate))
           }
           checkPageIsDisplayed(
@@ -195,8 +197,8 @@ class AccountControllerSpec
               mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
               mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
               mockRetrieveSubsidy(subsidyRetrieve.copy(inDateRange = None))(undertakingSubsidies.toFuture)
-              mockTimeToday(fixedDate)
-              mockTimeToday(fixedDate)
+              mockTimeProviderToday(fixedDate)
+              mockTimeProviderToday(fixedDate)
             }
 
             checkPageIsDisplayed(

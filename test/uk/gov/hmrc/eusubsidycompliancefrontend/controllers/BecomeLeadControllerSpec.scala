@@ -24,13 +24,15 @@ import play.api.mvc.Results.Redirect
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BecomeLeadJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedSelfToNewLead, RemovedAsLeadToFormerLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress}
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.BecomeLeadJourney.FormPages.{AcceptResponsibilitiesFormPage, BecomeLeadEoriFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BecomeLeadJourney.FormPages.{AcceptResponsibilitiesFormPage, BecomeLeadEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -205,8 +207,7 @@ class BecomeLeadControllerSpec
             mockSendEmail(eori4, PromotedSelfToNewLead, undertaking1)(Right(EmailSent))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
             mockSendEmail(eori1, RemovedAsLeadToFormerLead, undertaking1)(Right(EmailSent))
-            mockDelete[UndertakingJourney](eori4)(Right(()))
-            mockDelete[BecomeLeadJourney](eori4)(Right(()))
+            mockDeleteAll(eori4)(Right(()))
             mockSendAuditEvent[BusinessEntityPromotedSelf](
               AuditEvent.BusinessEntityPromotedSelf(undertakingRef, "1123", eori1, eori4)
             )

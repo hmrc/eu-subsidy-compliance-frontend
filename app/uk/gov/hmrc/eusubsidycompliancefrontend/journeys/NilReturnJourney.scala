@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.services
+package uk.gov.hmrc.eusubsidycompliancefrontend.journeys
 
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.Journey.Form
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.NilReturnJourney.Forms.NilReturnFormPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Form
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NilReturnJourney.Forms.NilReturnFormPage
 
 case class NilReturnJourney(nilReturn: NilReturnFormPage = NilReturnFormPage(), displayNotification: Boolean = false)
     extends Journey {
