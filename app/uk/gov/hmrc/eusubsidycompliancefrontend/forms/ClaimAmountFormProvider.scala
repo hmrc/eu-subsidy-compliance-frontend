@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
 import play.api.data.Forms.text
 import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
-import play.api.data.{Form, Forms, Mapping}
+import play.api.data.{Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{TooBig, TooSmall}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.IncorrectFormat
@@ -41,8 +41,6 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
   )(ClaimAmount.fromForm)(ClaimAmount.toForm)
     .verifying(claimAmountCurrencyMatchesSelection)
     .transform(c => c.copy(amount = cleanAmount(c.amount)), identity[ClaimAmount])
-
-  override def form: Form[ClaimAmount] = Form(mapping)
 
   private def claimAmountMapping: Mapping[String] =
     text

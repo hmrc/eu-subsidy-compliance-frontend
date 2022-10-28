@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 import play.api.data.Forms.nonEmptyText
 import play.api.data.validation.Constraints
-import play.api.data.{Form, Forms, Mapping}
+import play.api.data.{Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.EmailFormProvider.{EmailAddressFieldMapping, Fields}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.mandatory
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, OptionalEmailFormInput}
@@ -29,9 +29,6 @@ case class EmailFormProvider() extends FormProvider[FormValues] {
       Fields.Email -> EmailAddressFieldMapping
     )(FormValues.apply)(FormValues.unapply)
 
-  // TODO - can we generalise this using the type param so it only needs to be implemented once?
-  override def form: Form[FormValues] = Form(mapping)
-
 }
 
 case class OptionalEmailFormProvider() extends FormProvider[OptionalEmailFormInput] {
@@ -40,8 +37,6 @@ case class OptionalEmailFormProvider() extends FormProvider[OptionalEmailFormInp
     Fields.UsingStoredEmail -> mandatory(Fields.UsingStoredEmail),
     Fields.Email -> mandatoryIfEqual(Fields.UsingStoredEmail, "false", EmailAddressFieldMapping)
   )(OptionalEmailFormInput.apply)(OptionalEmailFormInput.unapply)
-
-  override def form: Form[OptionalEmailFormInput] = Form(mapping)
 
 }
 

@@ -20,7 +20,7 @@ import play.api.data.{Form, Mapping}
 
 trait FormProvider[T] {
   protected def mapping: Mapping[T]
-  def form: Form[T]
+  def form: Form[T] = Form(mapping)
 }
 
 object FormProvider {

@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
 import play.api.data.Forms.text
 import play.api.data.validation.{Constraint, Invalid, Valid}
-import play.api.data.{Form, Forms, Mapping}
+import play.api.data.{Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Fields._
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.{fromOptionalClaimEori, toOptionalClaimEori}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
@@ -28,8 +28,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.{OptionalClaimEori, Undert
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[OptionalClaimEori] {
-
-  override def form: Form[OptionalClaimEori] = Form(mapping)
 
   override protected def mapping: Mapping[OptionalClaimEori] = Forms.mapping(
     YesNoRadioButton -> text,
