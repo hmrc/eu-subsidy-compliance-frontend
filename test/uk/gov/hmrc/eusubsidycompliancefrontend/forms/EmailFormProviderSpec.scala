@@ -27,7 +27,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.EmailFormProvider.MaximumEm
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.Required
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, OptionalEmailFormInput}
 
-// TODO - review this - may be scope for a refactor here
 class EmailFormProviderSpec extends AnyWordSpecLike with Matchers {
 
   "EmailFormProvider" when {
