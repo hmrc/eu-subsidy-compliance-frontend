@@ -47,6 +47,8 @@ case class OptionalEmailFormProvider() extends FormProvider[OptionalEmailFormInp
 
 object EmailFormProvider {
 
+  // Per RFC 3696 - Restrictions on Email addresses
+  // see https://www.rfc-editor.org/errata/eid1690
   val MaximumEmailLength = 254
 
   val EmailAddressFieldMapping: Mapping[String] =

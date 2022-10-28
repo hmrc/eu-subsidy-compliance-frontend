@@ -17,15 +17,13 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
-import play.api.data.Forms.{mapping, nonEmptyText}
-import play.api.data.validation.Constraints
-import play.api.data.{Form, Mapping}
+import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.{Format, Reads}
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.mandatory
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{EmailFormProvider, OptionalEmailFormProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, FormValues, OptionalEmailFormInput}
@@ -36,7 +34,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.{ConfirmEmailPage, InputEmailPage}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
@@ -50,26 +47,9 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
 
   protected implicit val executionContext: ExecutionContext
 
-  // Per RFC 3696 - Restrictions on Email addresses
-  // see https://www.rfc-editor.org/errata/eid1690
-  private val MaximumEmailLength = 254
+  protected val optionalEmailForm: Form[OptionalEmailFormInput] = OptionalEmailFormProvider().form
 
-  private val emailConstraints: Mapping[String] =
-    nonEmptyText(maxLength = MaximumEmailLength)
-      .verifying(Constraints.emailAddress)
-
-  protected val optionalEmailForm: Form[OptionalEmailFormInput] = Form(
-    mapping(
-      "using-stored-email" -> mandatory("using-stored-email"),
-      "email" -> mandatoryIfEqual("using-stored-email", "false", emailConstraints)
-    )(OptionalEmailFormInput.apply)(OptionalEmailFormInput.unapply)
-  )
-
-  protected val emailForm: Form[FormValues] = Form(
-    mapping(
-      "email" -> emailConstraints
-    )(FormValues.apply)(FormValues.unapply)
-  )
+  protected val emailForm: Form[FormValues] = EmailFormProvider().form
 
   protected def findVerifiedEmail(implicit eori: EORI, hc: HeaderCarrier): Future[Option[String]] = {
     emailVerificationService
