@@ -1,44 +1,64 @@
+/*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
+import cats.implicits.catsSyntaxOptionId
 import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.EmailFormProvider.Errors.{InvalidFormat, MaxLength}
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.EmailFormProvider.Fields.Email
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.EmailFormProvider.Fields.{Email, UsingStoredEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.EmailFormProvider.MaximumEmailLength
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.Required
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, OptionalEmailFormInput}
 
+// TODO - review this - may be scope for a refactor here
 class EmailFormProviderSpec extends AnyWordSpecLike with Matchers {
-
-  private val emailFormProvider = EmailFormProvider()
-  private val optionalEmailFormProvider = OptionalEmailFormProvider()
 
   "EmailFormProvider" when {
 
     "validating an EmailForm" must {
 
-      val testSuccess = validateAndCheckSuccess(emailFormProvider) _
-      val testError = validateAndCheckError(emailFormProvider) _
+      val underTest = EmailFormProvider()
+
+      def testSuccess(form: (String, String)*)(expected: FormValues) =
+        validateAndCheckSuccess(underTest)(form: _*)(expected)
+
+      def testError(form: (String, String)*)(field: String, errorMessage: String) =
+        validateAndCheckError(underTest)(form: _*)(field, errorMessage)
 
       "return no errors for a valid email address" in {
-        testSuccess("someone@example.com")
+        testSuccess(Email -> "someone@example.com")(FormValues("someone@example.com"))
       }
 
       "return no errors for a valid email address that meets the maximum allowed length" in {
         val domain = "@example.com"
         val user = (1 to (MaximumEmailLength - domain.length)).map(_ => "l").mkString("")
 
-        testError(s"$user$domain")
+        testSuccess(Email -> s"$user$domain")(FormValues(s"$user$domain"))
       }
 
       "return an error if no email is entered" in {
-        testError("")(Email, Required)
+        testError(Email -> "")(Email, Required)
       }
 
       "return an error for an invalid email address" in {
-        testError("this is not a valid email address")(Email, InvalidFormat)
+        testError(Email -> "this is not a valid email address")(Email, InvalidFormat)
       }
 
       "return an error if the email address is too long" in {
@@ -46,33 +66,54 @@ class EmailFormProviderSpec extends AnyWordSpecLike with Matchers {
         val user = (1 to 500).map(_ => "l").mkString("")
         val email = s"$user$domain"
 
-        testError(email)(Email, MaxLength)
+        testError(Email -> email)(Email, MaxLength)
       }
 
     }
 
     "validating an OptionalEmailForm" must {
 
-      val testSuccess = validateAndCheckSuccess(optionalEmailFormProvider) _
-      val testError = validateAndCheckError(optionalEmailFormProvider) _
+      val underTest = OptionalEmailFormProvider()
 
-      "return no errors for a valid email address" in {
-        testSuccess("someone@example.com")
+      def testSuccess(form: (String, String)*)(expected: OptionalEmailFormInput) =
+        validateAndCheckSuccess(underTest)(form: _*)(expected)
+
+      def testError(form: (String, String)*)(field: String, errorMessage: String) =
+        validateAndCheckError(underTest)(form: _*)(field, errorMessage)
+
+      "return no errors if user opts to use existing stored email" in {
+        testSuccess(UsingStoredEmail -> "true")(OptionalEmailFormInput("true", Option.empty))
+      }
+
+      "return no errors if user opts to enter their own valid email" in {
+        testSuccess(
+          UsingStoredEmail -> "false",
+          Email -> "foo@example.com"
+        )(OptionalEmailFormInput("false", "foo@example.com".some))
       }
 
       "return no errors for a valid email address that meets the maximum allowed length" in {
         val domain = "@example.com"
         val user = (1 to (MaximumEmailLength - domain.length)).map(_ => "l").mkString("")
 
-        testError(s"$user$domain")
+        testSuccess(
+          UsingStoredEmail -> "false",
+          Email -> s"$user$domain"
+        )(OptionalEmailFormInput("false", s"$user$domain".some))
       }
 
       "return an error if no email is entered" in {
-        testError("")(Email, Required)
+        testError(
+          UsingStoredEmail -> "false",
+          Email -> ""
+        )(Email, Required)
       }
 
       "return an error for an invalid email address" in {
-        testError("this is not a valid email address")(Email, InvalidFormat)
+        testError(
+          UsingStoredEmail -> "false",
+          Email -> "this is not a valid email address"
+        )(Email, InvalidFormat)
       }
 
       "return an error if the email address is too long" in {
@@ -80,20 +121,23 @@ class EmailFormProviderSpec extends AnyWordSpecLike with Matchers {
         val user = (1 to 500).map(_ => "l").mkString("")
         val email = s"$user$domain"
 
-        testError(email)(Email, MaxLength)
+        testError(
+          UsingStoredEmail -> "false",
+          Email -> email
+        )(Email, MaxLength)
       }
 
     }
 
   }
 
-  private def validateAndCheckSuccess[A](provider: FormProvider[A])(emailAddress: String) = {
-    val result = processForm[A](provider)(Map(Email -> emailAddress))
-    result mustBe Right(FormValues(emailAddress))
+  private def validateAndCheckSuccess[A](provider: FormProvider[A])(form: (String, String)*)(expected: A) = {
+    val result = processForm[A](provider)(form: _*)
+    result mustBe Right(expected)
   }
 
-  private def validateAndCheckError[A](provider: FormProvider[A])(emailAddress: String)(errorField: String, errorMessage: String) = {
-    val result = processForm[A](provider)(Map(Email -> emailAddress))
+  private def validateAndCheckError[A](provider: FormProvider[A])(form: (String, String)*)(errorField: String, errorMessage: String) = {
+    val result = processForm[A](provider)(form: _*)
 
     val foundExpectedErrorMessage = result.leftSideValue match {
       case Left(errors) => errors.map(_.message).contains(errorMessage)
@@ -104,7 +148,7 @@ class EmailFormProviderSpec extends AnyWordSpecLike with Matchers {
       s"got result $result which did not contain expected error $errorMessage for field $errorField"
   }
 
-  private def processForm[A](provider: FormProvider[A])(data: Map[String, String]): Either[Seq[FormError], A] =
-    provider.form.mapping.bind(data)
+  private def processForm[A](provider: FormProvider[A])(form: (String, String)*): Either[Seq[FormError], A] =
+    provider.form.mapping.bind(form.toMap)
 
 }
