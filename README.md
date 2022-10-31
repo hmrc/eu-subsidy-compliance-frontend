@@ -23,7 +23,7 @@ The service also depends on `mongodb`
 
 ## Running the service
 
-All dependant services can run via
+All dependant services can be run via
 ```
 sm --start ESC_ALL
 ```
@@ -33,9 +33,9 @@ sbt run
 ```
 
 ### Starting a journey
-A journey can be started via the start endpoint
+A journey can be started by hitting the service root e.g.
 ```
-GET /report-or-check-de-minimis-aid-northern-ireland/
+GET /report-and-manage-your-allowance-for-customs-duty-waiver-claims
 ```
 This will prompt the user to log in if there isn't an active session yet.
 
