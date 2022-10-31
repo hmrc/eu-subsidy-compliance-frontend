@@ -16,18 +16,23 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
+import play.api.data.Forms.{mapping, text}
 import play.api.data.{Form, Mapping}
+import play.api.data.validation.{Constraint, Invalid, Valid}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 
-trait FormProvider[T] {
-  protected def mapping: Mapping[T]
-  def form: Form[T] = Form(mapping)
-}
+object FormHelpers {
 
-object FormProvider {
+  def mandatory(key: String): Mapping[String] =
+    text.transform[String](_.trim, s => s).verifying(required(key))
 
-  object CommonErrors {
-    val IncorrectFormat = "error.incorrect-format"
-    val Required        = "error.required"
+  private def required(key: String): Constraint[String] = Constraint {
+    case "" => Invalid(s"error.$key.required")
+    case _ => Valid
   }
+
+  def formWithSingleMandatoryField(fieldName: String): Form[FormValues] = Form(
+    mapping(fieldName -> mandatory(fieldName))(FormValues.apply)(FormValues.unapply)
+  )
 
 }

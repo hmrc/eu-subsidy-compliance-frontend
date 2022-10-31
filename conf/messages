@@ -156,7 +156,9 @@ inputEmail.title=What is your email address?
 inputEmail.label=Enter an email address
 inputEmail.p=This email address will be used to send you notifications from this service.
 
-email.error.email = Enter your email address
+email.error.required = Enter your email address
+email.error.email = Enter a valid email address
+email.error.maxLength = The email address for your undertaking must be 254 characters or less
 using-stored-email.error.required = Select yes if this is the email address you want to use for your undertaking
 
 undertaking.cya.title=Check your answers

@@ -69,10 +69,10 @@
       @if(form.hasErrors) {
           @govukErrorSummary(
               ErrorSummary(
-                  errorList = form.errors.map { err =>
+                  errorList = form.errors.take(1).map { err =>
                       ErrorLink(
                           href = Some(s"#${err.key}"),
-                          content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}"),
+                          content = Text(s"${messages(s"${err.key}.${err.message}")}"),
                           attributes = Map("class" ->"govuk-link")
                       )
                   },

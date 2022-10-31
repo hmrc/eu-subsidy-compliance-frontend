@@ -20,6 +20,7 @@ import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -51,7 +52,7 @@ class EligibilityController @Inject() (
   val appConfig: AppConfig,
   override val executionContext: ExecutionContext
 ) extends BaseController(mcc)
-    with FormHelpers {
+    with ControllerFormHelpers {
 
   import actionBuilders._
 

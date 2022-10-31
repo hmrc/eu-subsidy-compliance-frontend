@@ -17,14 +17,14 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
 import play.api.data.Forms.{text, tuple}
+import play.api.data.Mapping
 import play.api.data.validation._
-import play.api.data.{Form, Mapping}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider.Errors._
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider.Fields._
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider.Fields._
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider.Errors._
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
 
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, ZoneId}
@@ -33,8 +33,6 @@ import scala.util.Try
 case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvider[DateFormValues] {
 
   private type RawFormValues = (String, String, String)
-
-  override val form: Form[DateFormValues] = Form(mapping)
 
   private val dateFormatter = DateTimeFormatter.ofPattern("d M yyyy")
 
