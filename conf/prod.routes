@@ -1,6 +1,4 @@
 # Add all the application routes to the app.routes file
-# TODO - remove this route when all references to it have been migrated to report-and-manage... SEE ESC-642.
-->         /report-or-check-de-minimis-aid-northern-ireland                 app.Routes
 
 ->         /report-and-manage-your-allowance-for-customs-duty-waiver-claims app.Routes
 ->         /                                                                health.Routes
