@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests
+package uk.gov.hmrc.eusubsidycompliancefrontend.syntax
 
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import play.api.mvc.WrappedRequest
 
-// User has GG Auth and ESC Enrolment
-case class AuthenticatedEnrolledRequest[A](
-  authorityId: String,
-  groupId: String,
-  request: Request[A],
-  eoriNumber: EORI
-) extends WrappedRequest[A](request)
+object WrappedRequestSyntax {
+
+  implicit class WrappedRequestOps[A](val request: WrappedRequest[A]) extends AnyVal {
+    def isLocal: Boolean = request.domain == "localhost"
+  }
+
+}

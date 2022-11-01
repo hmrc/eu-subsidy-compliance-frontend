@@ -20,13 +20,14 @@ import com.google.inject.Inject
 import play.api.Logging
 import play.api.http.Status.CREATED
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{AnyContent, Call, Result}
+import play.api.mvc.{AnyContent, Call, Result, WrappedRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.EoriEmailRepository
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.WrappedRequestSyntax.WrappedRequestOps
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -103,20 +104,13 @@ class EmailVerificationService @Inject() (
     }
   }
 
-  private def generateEmailServiceUrl(redirectUrl: String)(implicit req: AuthenticatedEnrolledRequest[AnyContent]): String = {
-    if(req.isLocal()) {
-      servicesConfig.baseUrl("email-verification-frontend") + redirectUrl
-    } else {
-      redirectUrl
-    }
-  }
+  private def generateEmailServiceUrl[A](redirectUrl: String)(implicit req: WrappedRequest[A]): String =
+    if(req.isLocal) servicesConfig.baseUrl("email-verification-frontend") + redirectUrl
+    else redirectUrl
 
-  private def generateRedirectToSelfUrl(redirectUrl: String)(implicit req: AuthenticatedEnrolledRequest[AnyContent]): String = {
-    if(req.isLocal()) {
-      new URI("http://" + req.host + redirectUrl).toString
-    } else {
-      redirectUrl
-    }
+  private def generateRedirectToSelfUrl[A](redirectUrl: String)(implicit req: WrappedRequest[A]): String = {
+    if(req.isLocal) new URI("http://" + req.host + redirectUrl).toString
+    else redirectUrl
   }
 
 
