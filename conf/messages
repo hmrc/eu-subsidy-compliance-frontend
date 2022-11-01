@@ -329,7 +329,7 @@ add-claim-date.error.in-future = The date you were awarded the payment must be i
 
 add-claim-public-authority.title = Which public authority granted the payment?
 add-claim-public-authority.hint = For example, Invest NI, NI Direct
-error.claim-public-authority.required = Enter the public authority name in 150 characters or fewer. This field cannot be blank
+error.claim-public-authority.required = Enter the name of the public authority that granted the payment
 error.claim-public-authority.tooManyChars = Public authority name must be 150 characters or fewer
 
 add-claim-eori.title = Would you like to add an EORI number for the business that claimed the payment?
