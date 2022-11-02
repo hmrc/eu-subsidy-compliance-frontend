@@ -21,12 +21,12 @@ import play.api.mvc._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolments, InternalError, NoActiveSession}
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolments, InternalError}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.EscActionBuilder.EccEnrolmentKey
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.RequestSyntax.RequestOps
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
@@ -60,9 +60,8 @@ class NotEnrolledActionBuilder @Inject() (
     with Results
     with AuthRedirects
     with AuthorisedFunctions
-    with I18nSupport {
-
-  private val EccEnrolmentKey = "HMRC-ESC-ORG"
+    with I18nSupport
+    with EscActionBuilder {
 
   override val messagesApi: MessagesApi = mcc.messagesApi
   override val parser: BodyParser[AnyContent] = mcc.parsers.anyContent
@@ -83,11 +82,6 @@ class NotEnrolledActionBuilder @Inject() (
               Redirect(routes.AccountController.getAccountPage()).toFuture
             }
         case _ ~ _ => Future.failed(throw InternalError())
-      }(hc(request), executionContext).recover(handleFailure(request))
-
-  private def handleFailure(implicit request: Request[_]): PartialFunction[Throwable, Result] = {
-    case _: NoActiveSession =>
-      Redirect(appConfig.ggSignInUrl, Map("continue" -> Seq(request.toRedirectTarget), "origin" -> Seq(origin)))
-  }
+      }(hc(request), executionContext).recover(handleFailure(request, appConfig))
 
 }
