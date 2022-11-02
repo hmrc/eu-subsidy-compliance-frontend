@@ -22,6 +22,7 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.Json
 import play.api.mvc.{Headers, Request}
 import play.api.test.FakeRequest
+import play.api.test.Helpers.GET
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
@@ -59,7 +60,7 @@ class AuditServiceSpec extends Matchers with AnyWordSpecLike with MockFactory {
 
         val requestUri = "/uri"
 
-        implicit val request: Request[_] = FakeRequest("GET", requestUri, Headers(), "")
+        implicit val request: Request[_] = FakeRequest(GET, requestUri, Headers(), "")
 
         implicit val hc: HeaderCarrier = HeaderCarrier()
 

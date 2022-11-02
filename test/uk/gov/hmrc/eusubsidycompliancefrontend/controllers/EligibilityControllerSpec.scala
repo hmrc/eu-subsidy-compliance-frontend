@@ -56,7 +56,7 @@ class EligibilityControllerSpec
 
       def performAction() = controller
         .firstEmptyPage(
-          FakeRequest("GET", routes.EligibilityController.firstEmptyPage().url)
+          FakeRequest(GET, routes.EligibilityController.firstEmptyPage().url)
             .withFormUrlEncodedBody()
         )
 
@@ -133,7 +133,7 @@ class EligibilityControllerSpec
     "handling request to post do you claim" must {
       def performAction(data: (String, String)*) = controller
         .postDoYouClaim(
-          FakeRequest("GET", routes.EligibilityController.getDoYouClaim().url)
+          FakeRequest(GET, routes.EligibilityController.getDoYouClaim().url)
             .withFormUrlEncodedBody(data: _*)
             .withHeaders("Referer" -> routes.EligibilityController.getDoYouClaim().url)
         )
@@ -180,7 +180,7 @@ class EligibilityControllerSpec
     "handling request to get will you claim" must {
       def performAction() = controller
         .getWillYouClaim(
-          FakeRequest("GET", routes.EligibilityController.getWillYouClaim().url)
+          FakeRequest(GET, routes.EligibilityController.getWillYouClaim().url)
             .withFormUrlEncodedBody()
         )
 
@@ -212,7 +212,7 @@ class EligibilityControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postWillYouClaim(
-          FakeRequest("GET", routes.EligibilityController.getWillYouClaim().url)
+          FakeRequest(GET, routes.EligibilityController.getWillYouClaim().url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -259,7 +259,7 @@ class EligibilityControllerSpec
 
       def performAction() = controller
         .getNotEligible(
-          FakeRequest("GET", routes.EligibilityController.getNotEligible().url)
+          FakeRequest(GET, routes.EligibilityController.getNotEligible().url)
             .withFormUrlEncodedBody()
         )
 
@@ -279,7 +279,7 @@ class EligibilityControllerSpec
 
       def performAction() = controller
         .getEoriCheck(
-          FakeRequest("GET", routes.EligibilityController.getEoriCheck().url)
+          FakeRequest(GET, routes.EligibilityController.getEoriCheck().url)
             .withFormUrlEncodedBody()
         )
 
@@ -342,7 +342,7 @@ class EligibilityControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postEoriCheck(
-          FakeRequest("POST", routes.EligibilityController.postEoriCheck().url)
+          FakeRequest(POST, routes.EligibilityController.postEoriCheck().url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -405,7 +405,7 @@ class EligibilityControllerSpec
 
       def performAction() = controller
         .getIncorrectEori(
-          FakeRequest("GET", routes.EligibilityController.getIncorrectEori().url)
+          FakeRequest(GET, routes.EligibilityController.getIncorrectEori().url)
             .withFormUrlEncodedBody()
         )
 

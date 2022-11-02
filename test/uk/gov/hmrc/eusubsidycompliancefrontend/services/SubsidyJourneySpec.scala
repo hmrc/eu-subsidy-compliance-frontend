@@ -21,6 +21,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.http.Status.SEE_OTHER
+import play.api.http.HeaderNames.REFERER
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, defaultAwaitTimeout, redirectLocation, status}
@@ -236,7 +237,7 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
       "return URI to the referring page if it is valid and matches a SubsidyJourney page" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getCheckAnswers().url)
-            .withHeaders("Referer" -> routes.SubsidyController.getClaimDate().url)
+            .withHeaders(REFERER -> routes.SubsidyController.getClaimDate().url)
 
         amendJourney.previous shouldBe routes.SubsidyController.getClaimDate().url
       }
@@ -244,7 +245,7 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
       "return URI to account home page if referer URL not in SubsidyJourney" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getCheckAnswers().url)
-            .withHeaders("Referer" -> routes.AccountController.getAccountPage().url)
+            .withHeaders(REFERER -> routes.AccountController.getAccountPage().url)
 
         amendJourney.previous shouldBe routes.AccountController.getAccountPage().url
       }
@@ -252,7 +253,7 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
       "return URI to account home page if referer URL could not be parsed" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getCheckAnswers().url)
-            .withHeaders("Referer" -> "this is not a valid url")
+            .withHeaders(REFERER -> "this is not a valid url")
 
         amendJourney.previous shouldBe routes.AccountController.getAccountPage().url
       }

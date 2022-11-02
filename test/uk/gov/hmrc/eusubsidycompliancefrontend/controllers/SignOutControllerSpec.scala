@@ -21,6 +21,7 @@ import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
+import play.api.test.Helpers.GET
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -82,7 +83,7 @@ class SignOutControllerSpec
     "handling request to get sign out" must {
 
       def performAction() = controller.signOut(
-        FakeRequest("GET", routes.SignOutController.signOut().url)
+        FakeRequest(GET, routes.SignOutController.signOut().url)
       )
 
       "display the page" when {
