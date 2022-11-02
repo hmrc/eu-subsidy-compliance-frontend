@@ -22,7 +22,7 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolments, InternalError}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.EscActionBuilder.{EccEnrolmentKey, EnrolmentIdentifier}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.EscActionBuilder.{EccEnrolmentKey, EccEnrolmentIdentifier}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
@@ -77,7 +77,7 @@ class EnrolledActionBuilder @Inject() (
           enrolments.getEnrolment(EccEnrolmentKey) match {
             case Some(eccEnrolment) =>
               val identifier: String = eccEnrolment
-                .getIdentifier(EnrolmentIdentifier)
+                .getIdentifier(EccEnrolmentIdentifier)
                 .fold(throw new IllegalStateException("no eori provided"))(_.value)
               block(AuthenticatedEnrolledRequest(credentials.providerId, groupId, request, EORI(identifier)))
             case _ => Redirect(routes.EligibilityController.getDoYouClaim().url).toFuture

@@ -34,5 +34,5 @@ trait EscActionBuilder extends AuthRedirects {
 
 object EscActionBuilder {
   val EccEnrolmentKey = "HMRC-ESC-ORG"
-  val EnrolmentIdentifier = "EORINumber"
+  val EccEnrolmentIdentifier = "EORINumber"
 }
