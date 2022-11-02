@@ -17,32 +17,25 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.syntax
 
 import play.api.mvc.Request
+import play.api.http.HeaderNames.REFERER
 
 import java.net.URI
 
 object RequestSyntax {
 
-  private val Referer = "Referer"
+  private val LocalHost = "localhost"
 
   implicit class RequestOps[A](val request: Request[A]) extends AnyVal {
 
-    def isFrom(url: String): Boolean = request.headers.get(Referer).exists(_.endsWith(url))
+    def isFrom(url: String): Boolean = request.headers.get(REFERER).exists(_.endsWith(url))
 
-    def isLocal: Boolean = request.domain == "localhost"
+    def isLocal: Boolean = request.domain == LocalHost
 
-    def toRedirectTarget: String = {
-      val res = if (isLocal) new URI(s"http://${request.host}${request.uri}").toString
-      else request.uri
-      println(s"toRedirectTarget - built path: $res")
-      res
-    }
-
-    def toRedirectTarget(path: String): String = {
-      val res = if (isLocal) new URI(s"http://${request.host}$path").toString
+    def toRedirectTarget(path: String): String =
+      if (isLocal) new URI(s"http://${request.host}$path").toString
       else path
-      println(s"toRedirectTarget(path) - built path: $res")
-      res
-    }
+
+    def toRedirectTarget: String = toRedirectTarget(request.uri)
 
   }
 
