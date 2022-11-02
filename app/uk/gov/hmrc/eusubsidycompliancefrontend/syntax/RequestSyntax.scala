@@ -17,13 +17,26 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.syntax
 
 import play.api.mvc.Request
+import play.api.http.HeaderNames.REFERER
+
+import java.net.URI
 
 object RequestSyntax {
 
-  private val Referer = "Referer"
+  private val LocalHost = "localhost"
 
   implicit class RequestOps[A](val request: Request[A]) extends AnyVal {
-    def isFrom(url: String) = request.headers.get(Referer).exists(_.endsWith(url))
+
+    def isFrom(url: String): Boolean = request.headers.get(REFERER).exists(_.endsWith(url))
+
+    def isLocal: Boolean = request.domain == LocalHost
+
+    def toRedirectTarget(path: String): String =
+      if (isLocal) new URI(s"http://${request.host}$path").toString
+      else path
+
+    def toRedirectTarget: String = toRedirectTarget(request.uri)
+
   }
 
 }

@@ -856,7 +856,7 @@ class UndertakingControllerSpec
     "handling request to post intention to add business" must {
 
       def performAction(data: (String, String)*) = controller.postAddBusiness(
-        FakeRequest("POST", routes.UndertakingController.postAddBusiness().url).withFormUrlEncodedBody(data: _*)
+        FakeRequest(POST, routes.UndertakingController.postAddBusiness().url).withFormUrlEncodedBody(data: _*)
       )
 
       "throw technical error" when {

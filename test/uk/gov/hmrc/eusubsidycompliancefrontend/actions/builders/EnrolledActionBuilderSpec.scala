@@ -63,13 +63,13 @@ class EnrolledActionBuilderSpec
 
   private val block = (_: AuthenticatedEnrolledRequest[AnyContent]) => Ok.toFuture
 
-  "NotEnrolledActionBuilder" should {
+  "EnrolledActionBuilder" should {
 
     "redirect to the government gateway login page" when {
       "handling a request that is not authenticated" in {
         mockAuth(EmptyPredicate, authRetrievals)(Future.failed(InvalidBearerToken()))
 
-        val request = FakeRequest()
+        val request = FakeRequest().withHeaders(HOST -> "www.example.com")
         val result = underTest.invokeBlock(request, block)
 
         status(result) shouldBe SEE_OTHER

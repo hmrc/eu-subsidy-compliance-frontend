@@ -169,7 +169,7 @@ class BusinessEntityControllerSpec
     "handling request to post add Business Page" must {
 
       def performAction(data: (String, String)*) = controller.postAddBusinessEntity(
-        FakeRequest("POST", routes.BusinessEntityController.getAddBusinessEntity().url).withFormUrlEncodedBody(data: _*)
+        FakeRequest(POST, routes.BusinessEntityController.getAddBusinessEntity().url).withFormUrlEncodedBody(data: _*)
       )
 
       "throw technical error" when {
@@ -248,7 +248,7 @@ class BusinessEntityControllerSpec
     }
 
     "handling request to get EORI Page" must {
-      def performAction() = controller.getEori(FakeRequest("GET", routes.BusinessEntityController.getEori().url))
+      def performAction() = controller.getEori(FakeRequest(GET, routes.BusinessEntityController.getEori().url))
 
       "throw technical error" when {
         val exception = new Exception("oh no")
@@ -331,7 +331,7 @@ class BusinessEntityControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postEori(
-          FakeRequest("POST", routes.BusinessEntityController.getEori().url)
+          FakeRequest(POST, routes.BusinessEntityController.getEori().url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -512,7 +512,7 @@ class BusinessEntityControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postRemoveYourselfBusinessEntity(
-          FakeRequest("POST", routes.BusinessEntityController.getRemoveYourselfBusinessEntity().url)
+          FakeRequest(POST, routes.BusinessEntityController.getRemoveYourselfBusinessEntity().url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -642,7 +642,7 @@ class BusinessEntityControllerSpec
 
       def performAction(data: (String, String)*)(eori: EORI) = controller
         .postRemoveBusinessEntity(eori)(
-          FakeRequest("POST", routes.BusinessEntityController.postRemoveBusinessEntity(eori4).url)
+          FakeRequest(POST, routes.BusinessEntityController.postRemoveBusinessEntity(eori4).url)
             .withFormUrlEncodedBody(data: _*)
         )
 

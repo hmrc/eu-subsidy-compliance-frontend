@@ -21,7 +21,8 @@ import play.api.mvc._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolments, InternalError, NoActiveSession}
+import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolments, InternalError}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.EscActionBuilder.{EccEnrolmentKey, EccEnrolmentIdentifier}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
@@ -58,10 +59,8 @@ class EnrolledActionBuilder @Inject() (
     with Results
     with AuthRedirects
     with AuthorisedFunctions
-    with I18nSupport {
-
-  private val EccEnrolmentKey = "HMRC-ESC-ORG"
-  private val EnrolmentIdentifier = "EORINumber"
+    with I18nSupport
+    with EscActionBuilder {
 
   override val messagesApi: MessagesApi = mcc.messagesApi
   override val parser: BodyParser[AnyContent] = mcc.parsers.anyContent
@@ -78,18 +77,12 @@ class EnrolledActionBuilder @Inject() (
           enrolments.getEnrolment(EccEnrolmentKey) match {
             case Some(eccEnrolment) =>
               val identifier: String = eccEnrolment
-                .getIdentifier(EnrolmentIdentifier)
+                .getIdentifier(EccEnrolmentIdentifier)
                 .fold(throw new IllegalStateException("no eori provided"))(_.value)
               block(AuthenticatedEnrolledRequest(credentials.providerId, groupId, request, EORI(identifier)))
             case _ => Redirect(routes.EligibilityController.getDoYouClaim().url).toFuture
           }
         case _ ~ _ => Future.failed(throw InternalError())
-      }(hc(request), executionContext)
-      .recover(handleFailure(request))
-
-  private def handleFailure(implicit request: Request[_]): PartialFunction[Throwable, Result] = {
-    case _: NoActiveSession =>
-      Redirect(appConfig.ggSignInUrl, Map("continue" -> Seq(request.uri), "origin" -> Seq(origin)))
-  }
+      }(hc(request), executionContext).recover(handleFailure(request, appConfig))
 
 }

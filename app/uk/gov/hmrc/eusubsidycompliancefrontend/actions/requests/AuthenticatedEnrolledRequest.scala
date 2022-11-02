@@ -25,8 +25,4 @@ case class AuthenticatedEnrolledRequest[A](
   groupId: String,
   request: Request[A],
   eoriNumber: EORI
-) extends WrappedRequest[A](request) {
-
-  def isLocal() = host.contains("localhost")
-
-}
+) extends WrappedRequest[A](request)

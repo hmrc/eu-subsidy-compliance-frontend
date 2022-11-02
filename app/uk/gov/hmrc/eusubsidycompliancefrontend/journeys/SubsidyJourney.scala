@@ -19,6 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.journeys
 import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json._
 import play.api.mvc.{Request, Result}
+import play.api.http.HeaderNames.REFERER
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Form
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms._
@@ -79,7 +80,7 @@ case class SubsidyJourney(
 
   private def extractAndParseRefererUrl(implicit request: Request[_]): Option[String] =
     request
-      .headers.get("Referer")
+      .headers.get(REFERER)
       .flatMap { u =>
         Try(URI.create(u))
           .fold(_ => None, uri => Some(uri.getPath))
