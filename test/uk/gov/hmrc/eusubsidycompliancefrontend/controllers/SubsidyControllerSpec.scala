@@ -1012,10 +1012,6 @@ class SubsidyControllerSpec
           displayError("claim-public-authority" -> "")("error.claim-public-authority.required")
 
         }
-
-        "public authority entered is more than 150 chars" in {
-          displayError("claim-public-authority" -> "x" * 151)("error.claim-public-authority.tooManyChars")
-        }
       }
 
       "redirect to the account home page" when {
