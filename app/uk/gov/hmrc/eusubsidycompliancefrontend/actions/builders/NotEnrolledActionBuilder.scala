@@ -26,6 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedReq
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.RequestSyntax.RequestOps
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
@@ -86,7 +87,7 @@ class NotEnrolledActionBuilder @Inject() (
 
   private def handleFailure(implicit request: Request[_]): PartialFunction[Throwable, Result] = {
     case _: NoActiveSession =>
-      Redirect(appConfig.ggSignInUrl, Map("continue" -> Seq(request.uri), "origin" -> Seq(origin)))
+      Redirect(appConfig.ggSignInUrl, Map("continue" -> Seq(request.toRedirectTarget), "origin" -> Seq(origin)))
   }
 
 }

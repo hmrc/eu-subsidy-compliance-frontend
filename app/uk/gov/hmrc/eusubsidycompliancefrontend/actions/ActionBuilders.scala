@@ -39,3 +39,6 @@ class ActionBuilders @Inject() (
   val verifiedEmail: ActionBuilder[AuthenticatedEnrolledRequest, AnyContent] = verifiedEmailActionBuilder
 
 }
+
+object ActionBuilders {
+}
