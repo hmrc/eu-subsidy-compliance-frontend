@@ -130,8 +130,10 @@ class EligibilityController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     def renderPage = {
-      // At this stage we have an enrolment so the user must be eligible to use the service.
+      // At this stage, we have an enrolment, so the user must be eligible to use the service. Thus we can provide
+      // defaults for the first two eligibility questions to reflect this.
       val eligibilityJourney = EligibilityJourney()
+        .withDoYouClaim(false)
         .withWillYouClaim(true)
 
       store.getOrCreate[EligibilityJourney](eligibilityJourney).map { journey =>
