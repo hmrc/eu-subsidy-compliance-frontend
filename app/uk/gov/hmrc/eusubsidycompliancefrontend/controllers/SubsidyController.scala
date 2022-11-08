@@ -501,8 +501,7 @@ class SubsidyController @Inject() (
     retrieveSubsidies(reference, timeProvider.today)
       .recoverWith({ case _ => Option.empty[UndertakingSubsidies].toFuture })
       .toContext
-      .flatMap(_.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext)
-
+      .flatMap(_.findNonHmrcSubsidy(transactionId).toContext)
 
   private def handleRemoveSubsidyFormError(
     formWithErrors: Form[FormValues],
