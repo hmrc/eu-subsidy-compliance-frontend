@@ -146,6 +146,7 @@ class EscService @Inject() (
         } yield ref
       }
 
+  // TODO - consider making this private since the detail of creating a SubsidyRetrieve object should be hidden
   def retrieveSubsidies(
     subsidyRetrieve: SubsidyRetrieve
   )(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingSubsidies] =
@@ -165,6 +166,17 @@ class EscService @Inject() (
               }
           }
       }
+
+  def retrieveSubsidies(
+    undertakingRef: UndertakingRef
+  )(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingSubsidies] =
+    retrieveSubsidies(SubsidyRetrieve(undertakingRef, Option.empty))
+
+  def retrieveSubsidies(
+    undertakingRef: UndertakingRef,
+    dateRange: (LocalDate, LocalDate)
+  )(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingSubsidies] =
+    retrieveSubsidies(SubsidyRetrieve(undertakingRef, dateRange.some))
 
   def removeSubsidy(
     undertakingRef: UndertakingRef,
