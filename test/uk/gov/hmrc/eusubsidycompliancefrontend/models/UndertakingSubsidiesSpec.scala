@@ -16,8 +16,10 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
+import cats.implicits.catsSyntaxOptionId
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{fixedDate, nonHmrcSubsidy, undertakingSubsidies}
 
 class UndertakingSubsidiesSpec extends AnyWordSpec with Matchers {
@@ -77,6 +79,33 @@ class UndertakingSubsidiesSpec extends AnyWordSpec with Matchers {
 
         underTest.forReportedPaymentsPage.nonHMRCSubsidyUsage shouldBe List(subsidy3, subsidy2, subsidy1)
       }
+    }
+
+    "findNonHmrcSubsidy" must {
+
+      val subsidy1 = nonHmrcSubsidy.copy(subsidyUsageTransactionId = SubsidyRef("12").some)
+      val subsidy2 = nonHmrcSubsidy.copy(subsidyUsageTransactionId = SubsidyRef("34").some)
+      val subsidy3 = nonHmrcSubsidy.copy(subsidyUsageTransactionId = SubsidyRef("56").some, removed = true.some)
+
+      val underTest = undertakingSubsidies.copy(nonHMRCSubsidyUsage = List(
+        subsidy1,
+        subsidy2,
+        subsidy3
+      ))
+
+
+      "return None if no subsidy matching given transaction ID is found" in {
+        underTest.findNonHmrcSubsidy("This ID does not exist") shouldBe None
+      }
+
+      "return the subsidy matching the given transaction ID where one exists" in {
+        underTest.findNonHmrcSubsidy("12") should contain(subsidy1)
+      }
+
+      "ignore subsidies that are marked as removed" in {
+          underTest.findNonHmrcSubsidy("56") shouldBe None
+      }
+
     }
   }
 }
