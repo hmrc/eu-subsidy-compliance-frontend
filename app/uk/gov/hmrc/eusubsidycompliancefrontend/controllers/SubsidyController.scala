@@ -184,10 +184,15 @@ class SubsidyController @Inject() (
         .fold(
           formWithErrors =>
             BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture,
-          claimAmountEntered => for {
-            journey <- store.update[SubsidyJourney](_.setClaimAmount(claimAmountEntered))
-            redirect <- journey.next
-          } yield redirect
+          claimAmountEntered => {
+            val result = for {
+              // At this point we validate and yield either a redirect or a bad request
+              validatedClaimAmount <- validateClaimAmount(addClaimDate.toLocalDate, claimAmountEntered).toContext
+              journey <- store.update[SubsidyJourney](_.setClaimAmount(claimAmountEntered)).toContext
+              redirect <- journey.next.toContext
+            } yield redirect
+              result.getOrElse(BadRequest(addClaimAmountPage(claimAmountForm, previous, addClaimDate.year, addClaimDate.month)))
+          }
         )
 
     withLeadUndertaking { _ =>
@@ -195,8 +200,8 @@ class SubsidyController @Inject() (
         subsidyJourney <- store.get[SubsidyJourney].toContext
         addClaimDate <- subsidyJourney.claimDate.value.toContext
         previous = subsidyJourney.previous
-        resultFormSubmit <- handleFormSubmit(previous, addClaimDate).toContext
-      } yield resultFormSubmit
+        submissionResult <- handleFormSubmit(previous, addClaimDate).toContext
+      } yield submissionResult
       result.getOrElse(handleMissingSessionData("Subsidy journey"))
     }
   }
@@ -244,6 +249,18 @@ class SubsidyController @Inject() (
           converted = BigDecimal(claimAmount.amount) / rate
         } yield converted.some
       case EUR => Future.successful(None)
+    }
+
+  // TODO - give this a better name
+  private def validateClaimAmount(date: LocalDate, claimAmount: ClaimAmount)(implicit hc: HeaderCarrier): Future[Option[ClaimAmount]] =
+    claimAmount.currencyCode match {
+      case GBP =>
+        for {
+          exchangeRate <- escService.retrieveExchangeRate(date)
+          rate = exchangeRate.rate
+          converted = BigDecimal(claimAmount.amount) / rate
+        } yield SubsidyAmount.validateAndTransform(converted.toRoundedAmount).map(_ => claimAmount)
+      case EUR => claimAmount.some.toFuture
     }
 
   def getAddClaimEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
