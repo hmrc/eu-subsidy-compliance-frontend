@@ -18,13 +18,14 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.data.OptionT
 import cats.implicits._
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.data.Forms.{mapping, nonEmptyText}
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.toSubsidyUpdate
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.{Errors, Fields}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.{formWithSingleMandatoryField, mandatory}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimAmountFormProvider, ClaimDateFormProvider, ClaimEoriFormProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{Journey, SubsidyJourney}
@@ -187,11 +188,23 @@ class SubsidyController @Inject() (
           claimAmountEntered => {
             val result = for {
               // At this point we validate and yield either a redirect or a bad request
-              validatedClaimAmount <- validateClaimAmount(addClaimDate.toLocalDate, claimAmountEntered).toContext
+              _ <- validateClaimAmount(addClaimDate.toLocalDate, claimAmountEntered).toContext
               journey <- store.update[SubsidyJourney](_.setClaimAmount(claimAmountEntered)).toContext
               redirect <- journey.next.toContext
             } yield redirect
-              result.getOrElse(BadRequest(addClaimAmountPage(claimAmountForm, previous, addClaimDate.year, addClaimDate.month)))
+
+            result.getOrElse(BadRequest(
+              addClaimAmountPage(
+                // The error case here will be due to failure to convert the converted amount into a SubsidyAmount.
+                // In this instance we report this as a 'tooBig' error in the form for the user to action.
+                claimAmountForm
+                  .bindFromRequest()
+                  .withError(FormError(Fields.ClaimAmountGBP, List(Errors.TooBig))),
+                previous,
+                addClaimDate.year,
+                addClaimDate.month
+              ))
+            )
           }
         )
 
