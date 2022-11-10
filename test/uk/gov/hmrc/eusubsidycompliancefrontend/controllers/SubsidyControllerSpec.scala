@@ -415,7 +415,7 @@ class SubsidyControllerSpec
         "call to update the subsidy journey fails" in {
 
           val subsidyJourney = SubsidyJourney(
-            claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
+            claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some)
           )
 
           def update(subsidyJourney: SubsidyJourney) =
@@ -425,6 +425,7 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+            mockRetrieveExchangeRate(claimDate)(exchangeRate.toFuture)
             mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction(
@@ -436,7 +437,7 @@ class SubsidyControllerSpec
 
       "display form error" when {
 
-        def displayError(data: (String, String)*)(errorMessageKey: String): Unit = {
+        def testFormValidation(data: (String, String)*)(errorMessageKey: String): Unit = {
 
           val subsidyJourneyOpt = SubsidyJourney(
             claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
@@ -457,13 +458,35 @@ class SubsidyControllerSpec
           )
         }
 
+        def testConvertedAmountValidation(data: (String, String)*)(errorMessageKey: String): Unit = {
+
+          val subsidyJourneyOpt = SubsidyJourney(
+            claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some)
+          ).some
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
+            mockRetrieveExchangeRate(claimDate)(exchangeRate.toFuture)
+          }
+
+          val titleMessage = messageFromMessageKey("add-claim-amount.title")
+          val errorMessage = messageFromMessageKey(errorMessageKey)
+
+          checkFormErrorIsDisplayed(
+            performAction(data: _*),
+            titleMessage,
+            errorMessage
+          )
+        }
+
         "no currency code has been selected" in {
-          displayError()("add-claim-amount.currency-code.error.required")
+          testFormValidation()("add-claim-amount.currency-code.error.required")
         }
 
         "nothing is entered" in {
           CurrencyCode.values.foreach { c =>
-            displayError(
+            testFormValidation(
               ClaimAmountFormProvider.Fields.CurrencyCode -> c.entryName,
             )(s"add-claim-amount.claim-amount-${c.entryName.toLowerCase}.$Required")
           }
@@ -471,7 +494,7 @@ class SubsidyControllerSpec
 
         "claim amount entered in wrong format" in {
           CurrencyCode.values.foreach { c =>
-            displayError(
+            testFormValidation(
               ClaimAmountFormProvider.Fields.CurrencyCode -> c.entryName,
               ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "123.4"
             )(s"add-claim-amount.claim-amount-${c.entryName.toLowerCase}.$IncorrectFormat")
@@ -479,31 +502,39 @@ class SubsidyControllerSpec
         }
 
         "claim amount entered in GBP is too big" in {
-          displayError(
+          testFormValidation(
             ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
             ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "£123456789012.12",
           )(s"add-claim-amount.claim-amount-${GBP.entryName.toLowerCase}.$TooBig")
         }
 
+
         "claim amount entered in EUR is too big" in {
-          displayError(
+          testFormValidation(
             ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName,
             ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "€123456789012.12",
           )(s"add-claim-amount.claim-amount-${EUR.entryName.toLowerCase}.$TooBig")
         }
 
         "claim amount entered in GBP is too small" in {
-          displayError(
+          testFormValidation(
             ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
             ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "0.00"
           )(s"add-claim-amount.claim-amount-${GBP.entryName.toLowerCase}.$TooSmall")
         }
 
         "claim amount entered in EUR is too small" in {
-          displayError(
+          testFormValidation(
             ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName,
             ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "0.00"
           )(s"add-claim-amount.claim-amount-${EUR.entryName.toLowerCase}.$TooSmall")
+        }
+
+        "claim amount entered in GBP exceeds maximum allowed value in EUR when converted" in {
+          testConvertedAmountValidation(
+            ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
+            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "£999999.99",
+          )(s"add-claim-amount.claim-amount-${GBP.entryName.toLowerCase}.$TooBig")
         }
 
       }
@@ -537,7 +568,7 @@ class SubsidyControllerSpec
 
     "redirect to the confirm converted amount page if a GBP amount is entered" in {
       val subsidyJourney = SubsidyJourney(
-        claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
+        claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some)
       )
 
       val claimAmount = "100.00"
@@ -550,6 +581,7 @@ class SubsidyControllerSpec
         mockAuthWithEnrolmentAndValidEmail()
         mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
         mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+        mockRetrieveExchangeRate(claimDate)(exchangeRate.toFuture)
         mockUpdate[SubsidyJourney](_ => subsidyJourneyWithClaimAmount, eori1)(Right(subsidyJourney))
       }
 
