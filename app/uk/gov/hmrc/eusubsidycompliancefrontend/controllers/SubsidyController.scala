@@ -187,7 +187,6 @@ class SubsidyController @Inject() (
             BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture,
           claimAmountEntered => {
             val result = for {
-              // At this point we validate and yield either a redirect or a bad request
               _ <- validateClaimAmount(addClaimDate.toLocalDate, claimAmountEntered).toContext
               journey <- store.update[SubsidyJourney](_.setClaimAmount(claimAmountEntered)).toContext
               redirect <- journey.next.toContext
@@ -264,8 +263,7 @@ class SubsidyController @Inject() (
       case EUR => Future.successful(None)
     }
 
-  // TODO - give this a better name
-  private def validateClaimAmount(date: LocalDate, claimAmount: ClaimAmount)(implicit hc: HeaderCarrier): Future[Option[ClaimAmount]] =
+  private def validateClaimAmount(date: LocalDate, claimAmount: ClaimAmount)(implicit hc: HeaderCarrier) =
     claimAmount.currencyCode match {
       case GBP =>
         for {
