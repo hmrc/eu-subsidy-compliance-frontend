@@ -147,7 +147,7 @@ class EscService @Inject() (
       }
 
   // TODO - consider making this private since the detail of creating a SubsidyRetrieve object should be hidden
-  def retrieveSubsidies(
+  private def retrieveSubsidies(
     subsidyRetrieve: SubsidyRetrieve
   )(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingSubsidies] =
     undertakingCache

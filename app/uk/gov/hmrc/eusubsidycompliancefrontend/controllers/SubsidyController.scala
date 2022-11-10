@@ -103,7 +103,7 @@ class SubsidyController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     escService
-      .retrieveSubsidies(SubsidyRetrieve(r, d.toSearchRange.some))
+      .retrieveSubsidies(r, d.toSearchRange)
       .map(Option(_))
       .fallbackTo(Option.empty.toFuture)
   }
