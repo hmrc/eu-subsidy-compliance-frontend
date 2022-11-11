@@ -146,7 +146,6 @@ class EscService @Inject() (
         } yield ref
       }
 
-  // TODO - consider making this private since the detail of creating a SubsidyRetrieve object should be hidden
   private def retrieveSubsidies(
     subsidyRetrieve: SubsidyRetrieve
   )(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingSubsidies] =
