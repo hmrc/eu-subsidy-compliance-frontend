@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -85,10 +85,16 @@ trait EscServiceSupport { this: ControllerSpec =>
       .expects(subsidyUpdate, *)
       .returning(result.fold(e => Future.failed(e), _.toFuture))
 
-  def mockRetrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(result: Future[UndertakingSubsidies]) =
+  def mockRetrieveSubsidies(ref: UndertakingRef)(result: Future[UndertakingSubsidies]) =
     (mockEscService
-      .retrieveSubsidies(_: SubsidyRetrieve)(_: HeaderCarrier, _: EORI))
-      .expects(subsidyRetrieve, *, *)
+      .retrieveSubsidies(_: UndertakingRef)(_: HeaderCarrier, _: EORI))
+      .expects(ref, *, *)
+      .returning(result)
+
+  def mockRetrieveSubsidies(ref: UndertakingRef, dateRange: (LocalDate, LocalDate))(result: Future[UndertakingSubsidies]) =
+    (mockEscService
+      .retrieveSubsidies(_: UndertakingRef, _: (LocalDate, LocalDate))(_: HeaderCarrier, _: EORI))
+      .expects(ref, dateRange, *, *)
       .returning(result)
 
   def mockRemoveSubsidy(reference: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(

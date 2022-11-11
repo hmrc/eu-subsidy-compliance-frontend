@@ -68,7 +68,7 @@ class NoClaimNotificationControllerSpec
           mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeProviderToday(fixedDate)
-          mockRetrieveSubsidy(SubsidyRetrieve(undertaking.reference, (startDate, fixedDate).some))(emptyUndertakingSubsidies.toFuture)
+          mockRetrieveSubsidies(undertakingRef, (startDate, fixedDate))(emptyUndertakingSubsidies.toFuture)
           mockTimeProviderToday(fixedDate)
         }
 
@@ -92,7 +92,7 @@ class NoClaimNotificationControllerSpec
           mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeProviderToday(fixedDate)
-          mockRetrieveSubsidy(SubsidyRetrieve(undertaking.reference, (startDate, fixedDate).some))(undertakingSubsidies.toFuture)
+          mockRetrieveSubsidies(undertakingRef, (startDate, fixedDate))(undertakingSubsidies.toFuture)
           mockTimeProviderToday(fixedDate)
         }
 
@@ -140,6 +140,8 @@ class NoClaimNotificationControllerSpec
         (LocalDate.of(2020, 4, 6), currentDay).some
       )
 
+      val dateRange = (LocalDate.of(2020, 4, 6), currentDay)
+
       "throw technical error" when {
 
         val nilReturnJourney = NilReturnJourney()
@@ -154,7 +156,7 @@ class NoClaimNotificationControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderToday(currentDay)
-            mockRetrieveSubsidy(subsidyRetrieve)(undertakingSubsidies.toFuture)
+            mockRetrieveSubsidies(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
             mockTimeProviderToday(currentDay)
             mockTimeProviderToday(currentDay)
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Left(ConnectorError(exception)))
@@ -167,7 +169,7 @@ class NoClaimNotificationControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderToday(currentDay)
-            mockRetrieveSubsidy(subsidyRetrieve)(undertakingSubsidies.toFuture)
+            mockRetrieveSubsidies(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
             mockTimeProviderToday(currentDay)
             mockTimeProviderToday(currentDay)
             mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
@@ -187,7 +189,7 @@ class NoClaimNotificationControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderToday(currentDay)
-            mockRetrieveSubsidy(subsidyRetrieve)(undertakingSubsidies.toFuture)
+            mockRetrieveSubsidies(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
             mockTimeProviderToday(currentDay)
           }
 
@@ -205,7 +207,7 @@ class NoClaimNotificationControllerSpec
           mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeProviderToday(currentDay)
-          mockRetrieveSubsidy(subsidyRetrieve)(undertakingSubsidies.toFuture)
+          mockRetrieveSubsidies(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
           mockTimeProviderToday(currentDay)
           mockTimeProviderToday(currentDay)
           mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
