@@ -68,10 +68,6 @@ class SubsidyControllerSpec
   private val exception = new Exception("oh no!")
   private val currentDate = LocalDate.of(2022, 10, 9)
 
-  private val subsidyRetrieveWithDates = subsidyRetrieve.copy(
-    inDateRange = Some((LocalDate.of(2020, 4, 6), LocalDate.of(2022, 10, 9)))
-  )
-
   private val dateRange = (LocalDate.of(2020, 4, 6), LocalDate.of(2022, 10, 9))
 
   "SubsidyControllerSpec" when {

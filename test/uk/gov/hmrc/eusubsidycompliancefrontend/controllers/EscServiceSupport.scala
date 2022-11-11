@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
