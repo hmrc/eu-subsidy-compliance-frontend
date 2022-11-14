@@ -110,8 +110,7 @@ class SubsidyController @Inject() (
     escService.retrieveSubsidies(undertaking.reference, currentDate.toSearchRange).map { subsidies =>
       Ok(
         reportedPaymentsPage(
-          // TODO - check this - can we ever get an empty response?
-          subsidies.forReportedPaymentsPage.some,
+          subsidies.forReportedPaymentsPage,
           undertaking,
           currentDate.toEarliestTaxYearStart,
           currentDate.toTaxYearEnd.minusYears(1),
