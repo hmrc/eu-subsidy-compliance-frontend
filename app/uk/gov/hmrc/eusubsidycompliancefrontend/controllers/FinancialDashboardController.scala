@@ -48,24 +48,15 @@ class FinancialDashboardController @Inject() (
 
     val today = timeProvider.today
 
-    // TODO - review this - can this be simplified further?
     // The search period covers the current tax year to date, and the previous 2 tax years.
     val result = for {
       undertaking <- escService.retrieveUndertaking(eori).toContext
       r <- undertaking.reference.toContext
       subsidies <- escService.retrieveSubsidiesForDateRange(r, today.toSearchRange).toContext
-    } yield (undertaking, subsidies)
+      summary = FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, subsidies, today)
+    } yield Ok(financialDashboardPage(summary))
 
     result
-      .map { case (undertaking, subsidies) =>
-        val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
-          undertaking,
-          subsidies,
-          today,
-        )
-
-        Ok(financialDashboardPage(summary))
-      }
       .getOrElse(handleMissingSessionData("Undertaking"))
 
   }
