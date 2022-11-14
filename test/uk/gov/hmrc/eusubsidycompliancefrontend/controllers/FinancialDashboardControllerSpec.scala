@@ -70,7 +70,7 @@ class FinancialDashboardControllerSpec
       "return the dashboard page for a logged in user with a valid EORI" in {
         mockAuthWithEnrolmentAndNoEmailVerification(eori1)
         mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-        mockRetrieveSubsidies(undertakingRef, fakeTimeProvider.today.toSearchRange)(undertakingSubsidies.toFuture)
+        mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(undertakingSubsidies.toFuture)
 
         running(fakeApplication) {
           val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard().url)

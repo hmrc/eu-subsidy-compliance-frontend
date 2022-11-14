@@ -107,7 +107,7 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderToday(currentDate)
-            mockRetrieveSubsidies(undertakingRef, dateRange)(subsidies.toFuture)
+            mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(subsidies.toFuture)
           }
         }
 
@@ -1213,7 +1213,7 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderToday(currentDate)
-            mockRetrieveSubsidies(undertakingRef, dateRange)(Future.failed(exception))
+            mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction(transactionId)))
         }
@@ -1223,7 +1223,7 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             mockTimeProviderToday(currentDate)
-            mockRetrieveSubsidies(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
+            mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
           }
           assertThrows[Exception](await(performAction(transactionId)))
         }
@@ -1258,7 +1258,7 @@ class SubsidyControllerSpec
           mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeProviderToday(currentDate)
-          mockRetrieveSubsidies(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
+          mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
         }
 
         checkPageIsDisplayed(
@@ -1302,7 +1302,7 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderToday(currentDate)
-            mockRetrieveSubsidies(undertakingRef, dateRange)(Future.failed(exception))
+            mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction("removeSubsidyClaim" -> "true")("TID1234")))
         }
@@ -1312,7 +1312,7 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderToday(currentDate)
-            mockRetrieveSubsidies(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
+            mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
             mockRemoveSubsidy(undertakingRef, nonHmrcSubsidyList1.head)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("removeSubsidyClaim" -> "true")("TID1234")))
@@ -1327,7 +1327,7 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderToday(currentDate)
-            mockRetrieveSubsidies(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
+            mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
           }
           checkFormErrorIsDisplayed(
             performAction()("TID1234"),
@@ -1344,11 +1344,11 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderToday(currentDate)
-            mockRetrieveSubsidies(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
+            mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
             mockRemoveSubsidy(undertakingRef, nonHmrcSubsidyList1.head)(Right(undertakingRef))
             mockSendAuditEvent[NonCustomsSubsidyRemoved](AuditEvent.NonCustomsSubsidyRemoved("1123", undertakingRef))
             mockTimeProviderToday(currentDate)
-            mockRetrieveSubsidies(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
+            mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
           }
 
           val result = performAction("removeSubsidyClaim" -> "true")("TID1234")
