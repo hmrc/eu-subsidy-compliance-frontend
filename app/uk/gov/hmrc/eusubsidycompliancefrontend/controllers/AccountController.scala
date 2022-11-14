@@ -83,7 +83,7 @@ class AccountController @Inject() (
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent], e: EORI): Future[Result] = {
     val result = for {
       _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(u))
-      subsidies <- escService.retrieveSubsidies(u.reference).toContext
+      subsidies <- escService.retrieveAllSubsidies(u.reference).toContext
       result <- renderAccountPage(u, subsidies).toContext
     } yield result
 

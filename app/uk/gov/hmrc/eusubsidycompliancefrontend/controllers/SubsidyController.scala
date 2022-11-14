@@ -107,7 +107,7 @@ class SubsidyController @Inject() (
 
     val currentDate = timeProvider.today
 
-    escService.retrieveSubsidies(undertaking.reference, currentDate.toSearchRange).map { subsidies =>
+    escService.retrieveSubsidiesForDateRange(undertaking.reference, currentDate.toSearchRange).map { subsidies =>
       Ok(
         reportedPaymentsPage(
           subsidies.forReportedPaymentsPage,
@@ -493,7 +493,7 @@ class SubsidyController @Inject() (
     withLeadUndertaking { undertaking =>
       val result = for {
         reference <- undertaking.reference.toContext
-        subsidies <- escService.retrieveSubsidies(reference, timeProvider.today.toSearchRange).toContext
+        subsidies <- escService.retrieveSubsidiesForDateRange(reference, timeProvider.today.toSearchRange).toContext
         sub <- subsidies.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext
       } yield Ok(confirmRemovePage(removeSubsidyClaimForm, sub))
       result.fold(handleMissingSessionData("Subsidy Journey"))(identity)
@@ -519,7 +519,7 @@ class SubsidyController @Inject() (
     reference: UndertakingRef
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent]): OptionT[Future, NonHmrcSubsidy] = {
     implicit val e: EORI = r.eoriNumber
-    escService.retrieveSubsidies(reference, timeProvider.today.toSearchRange)
+    escService.retrieveSubsidiesForDateRange(reference, timeProvider.today.toSearchRange)
       .toContext
       .flatMap(_.findNonHmrcSubsidy(transactionId).toContext)
   }

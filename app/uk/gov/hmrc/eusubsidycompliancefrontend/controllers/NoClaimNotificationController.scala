@@ -57,7 +57,7 @@ class NoClaimNotificationController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     withLeadUndertaking { undertaking =>
-      escService.retrieveSubsidies(undertaking.reference, timeProvider.today.toSearchRange).toContext
+      escService.retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange).toContext
         .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
           val previous = routes.AccountController.getAccountPage().url
           val today = timeProvider.today
@@ -82,7 +82,7 @@ class NoClaimNotificationController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     withLeadUndertaking { undertaking =>
-      escService.retrieveSubsidies(undertaking.reference, timeProvider.today.toSearchRange).toContext
+      escService.retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange).toContext
         .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
           val previous = routes.AccountController.getAccountPage().url
           val today = timeProvider.today

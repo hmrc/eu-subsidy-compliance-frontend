@@ -53,7 +53,7 @@ class FinancialDashboardController @Inject() (
     val result = for {
       undertaking <- escService.retrieveUndertaking(eori).toContext
       r <- undertaking.reference.toContext
-      subsidies <- escService.retrieveSubsidies(r, today.toSearchRange).toContext
+      subsidies <- escService.retrieveSubsidiesForDateRange(r, today.toSearchRange).toContext
     } yield (undertaking, subsidies)
 
     result

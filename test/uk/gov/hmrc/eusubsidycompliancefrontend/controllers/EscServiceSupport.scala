@@ -87,13 +87,13 @@ trait EscServiceSupport { this: ControllerSpec =>
 
   def mockRetrieveSubsidies(ref: UndertakingRef)(result: Future[UndertakingSubsidies]) =
     (mockEscService
-      .retrieveSubsidies(_: UndertakingRef)(_: HeaderCarrier, _: EORI))
+      .retrieveAllSubsidies(_: UndertakingRef)(_: HeaderCarrier, _: EORI))
       .expects(ref, *, *)
       .returning(result)
 
   def mockRetrieveSubsidies(ref: UndertakingRef, dateRange: (LocalDate, LocalDate))(result: Future[UndertakingSubsidies]) =
     (mockEscService
-      .retrieveSubsidies(_: UndertakingRef, _: (LocalDate, LocalDate))(_: HeaderCarrier, _: EORI))
+      .retrieveSubsidiesForDateRange(_: UndertakingRef, _: (LocalDate, LocalDate))(_: HeaderCarrier, _: EORI))
       .expects(ref, dateRange, *, *)
       .returning(result)
 
