@@ -519,7 +519,6 @@ class SubsidyController @Inject() (
     reference: UndertakingRef
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent]): OptionT[Future, NonHmrcSubsidy] = {
     implicit val e: EORI = r.eoriNumber
-    // TODO - do we need to handle the empty case? there's specific logic for this for a reason :/
     escService.retrieveSubsidies(reference, timeProvider.today.toSearchRange)
       .toContext
       .flatMap(_.findNonHmrcSubsidy(transactionId).toContext)
