@@ -38,7 +38,7 @@
 )
 
 @(
-    subsidies: Option[UndertakingSubsidies] = None,
+    subsidies: UndertakingSubsidies,
     undertaking: Undertaking,
     earliestAllowedDate: LocalDate,
     previousTaxYearEnd: LocalDate,
@@ -82,7 +82,7 @@
             </div>
         </div>
 
-        @if(subsidies.nonEmpty && subsidies.get.nonHMRCSubsidyUsage.nonEmpty) {
+        @if(subsidies.nonHMRCSubsidyUsage.nonEmpty) {
 
             <style>
                 table.@responsiveTableClass td:nth-of-type(1):before { content: "@{messages(date)}" }
@@ -96,7 +96,7 @@
                 Table(
                     classes = s"responsive-table ${responsiveTableClass}",
                     attributes = Map("id" -> "subsidy-list"),
-                    rows = subsidies.get.nonHMRCSubsidyUsage.map { sub =>
+                    rows = subsidies.nonHMRCSubsidyUsage.map { sub =>
                         Seq(
                             TableRow(content = Text(sub.allocationDate.toShortDisplayFormat)),
                             TableRow(content = Text(sub.nonHMRCSubsidyAmtEUR.toEuros)),

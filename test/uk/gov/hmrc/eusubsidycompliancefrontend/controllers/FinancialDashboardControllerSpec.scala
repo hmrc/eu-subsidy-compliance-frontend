@@ -29,7 +29,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailVerificationService, EscService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, subsidyRetrieveForDate, undertaking, undertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertakingRef, undertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
@@ -69,7 +70,7 @@ class FinancialDashboardControllerSpec
       "return the dashboard page for a logged in user with a valid EORI" in {
         mockAuthWithEnrolmentAndNoEmailVerification(eori1)
         mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-        mockRetrieveSubsidy(subsidyRetrieveForDate(fakeTimeProvider.today))(undertakingSubsidies.toFuture)
+        mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(undertakingSubsidies.toFuture)
 
         running(fakeApplication) {
           val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard().url)

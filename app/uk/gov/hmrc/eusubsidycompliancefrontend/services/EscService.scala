@@ -146,7 +146,7 @@ class EscService @Inject() (
         } yield ref
       }
 
-  def retrieveSubsidies(
+  private def retrieveSubsidies(
     subsidyRetrieve: SubsidyRetrieve
   )(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingSubsidies] =
     undertakingCache
@@ -165,6 +165,17 @@ class EscService @Inject() (
               }
           }
       }
+
+  def retrieveAllSubsidies(
+    undertakingRef: UndertakingRef
+  )(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingSubsidies] =
+    retrieveSubsidies(SubsidyRetrieve(undertakingRef, Option.empty))
+
+  def retrieveSubsidiesForDateRange(
+    undertakingRef: UndertakingRef,
+    dateRange: (LocalDate, LocalDate)
+  )(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingSubsidies] =
+    retrieveSubsidies(SubsidyRetrieve(undertakingRef, dateRange.some))
 
   def removeSubsidy(
     undertakingRef: UndertakingRef,

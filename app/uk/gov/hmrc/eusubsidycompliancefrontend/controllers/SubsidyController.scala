@@ -99,26 +99,18 @@ class SubsidyController @Inject() (
     withLeadUndertaking(renderReportedPaymentsPage(_))
   }
 
-  private def retrieveSubsidies(r: UndertakingRef, d: LocalDate)(implicit request: AuthenticatedEnrolledRequest[AnyContent]) = {
-    implicit val eori: EORI = request.eoriNumber
-
-    escService
-      .retrieveSubsidies(SubsidyRetrieve(r, d.toSearchRange.some))
-      .map(Option(_))
-      .fallbackTo(Option.empty.toFuture)
-  }
-
   private def renderReportedPaymentsPage(
     undertaking: Undertaking,
     showSuccess: Boolean = false
   )(implicit request: AuthenticatedEnrolledRequest[AnyContent]) = {
+    implicit val eori: EORI = request.eoriNumber
 
     val currentDate = timeProvider.today
 
-    retrieveSubsidies(undertaking.reference, currentDate).map { subsidies =>
+    escService.retrieveSubsidiesForDateRange(undertaking.reference, currentDate.toSearchRange).map { subsidies =>
       Ok(
         reportedPaymentsPage(
-          subsidies.map(_.forReportedPaymentsPage),
+          subsidies.forReportedPaymentsPage,
           undertaking,
           currentDate.toEarliestTaxYearStart,
           currentDate.toTaxYearEnd.minusYears(1),
@@ -496,16 +488,16 @@ class SubsidyController @Inject() (
     Ok(confirmCreatedPage(nextClaimDueDate)).toFuture
   }
 
-  def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = verifiedEmail.async {
-    implicit request =>
-      withLeadUndertaking { undertaking =>
-        val result = for {
-          reference <- undertaking.reference.toContext
-          subsidies <- retrieveSubsidies(reference, timeProvider.today).toContext
-          sub <- subsidies.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext
-        } yield Ok(confirmRemovePage(removeSubsidyClaimForm, sub))
-        result.fold(handleMissingSessionData("Subsidy Journey"))(identity)
-      }
+  def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = verifiedEmail.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    withLeadUndertaking { undertaking =>
+      val result = for {
+        reference <- undertaking.reference.toContext
+        subsidies <- escService.retrieveSubsidiesForDateRange(reference, timeProvider.today.toSearchRange).toContext
+        sub <- subsidies.nonHMRCSubsidyUsage.find(_.subsidyUsageTransactionId.contains(transactionId)).toContext
+      } yield Ok(confirmRemovePage(removeSubsidyClaimForm, sub))
+      result.fold(handleMissingSessionData("Subsidy Journey"))(identity)
+    }
   }
 
   def postRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = verifiedEmail.async {
@@ -525,11 +517,12 @@ class SubsidyController @Inject() (
   private def getNonHmrcSubsidy(
     transactionId: String,
     reference: UndertakingRef
-  )(implicit r: AuthenticatedEnrolledRequest[AnyContent]): OptionT[Future, NonHmrcSubsidy] =
-    retrieveSubsidies(reference, timeProvider.today)
-      .recoverWith({ case _ => Option.empty[UndertakingSubsidies].toFuture })
+  )(implicit r: AuthenticatedEnrolledRequest[AnyContent]): OptionT[Future, NonHmrcSubsidy] = {
+    implicit val e: EORI = r.eoriNumber
+    escService.retrieveSubsidiesForDateRange(reference, timeProvider.today.toSearchRange)
       .toContext
       .flatMap(_.findNonHmrcSubsidy(transactionId).toContext)
+  }
 
   private def handleRemoveSubsidyFormError(
     formWithErrors: Form[FormValues],

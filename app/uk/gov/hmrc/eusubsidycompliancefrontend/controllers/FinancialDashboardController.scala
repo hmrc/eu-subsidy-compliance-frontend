@@ -16,13 +16,11 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.data.OptionT
 import cats.implicits._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{SubsidyRetrieve, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
@@ -31,7 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class FinancialDashboardController @Inject() (
@@ -51,25 +49,14 @@ class FinancialDashboardController @Inject() (
     val today = timeProvider.today
 
     // The search period covers the current tax year to date, and the previous 2 tax years.
-    val searchRange = today.toSearchRange.some
-
-    val result: OptionT[Future, (Undertaking, UndertakingSubsidies)] = for {
+    val result = for {
       undertaking <- escService.retrieveUndertaking(eori).toContext
       r <- undertaking.reference.toContext
-      s = SubsidyRetrieve(r, searchRange)
-      subsidies <- escService.retrieveSubsidies(s).toContext
-    } yield (undertaking, subsidies)
+      subsidies <- escService.retrieveSubsidiesForDateRange(r, today.toSearchRange).toContext
+      summary = FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, subsidies, today)
+    } yield Ok(financialDashboardPage(summary))
 
     result
-      .map { case (undertaking, subsidies) =>
-        val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
-          undertaking,
-          subsidies,
-          today,
-        )
-
-        Ok(financialDashboardPage(summary))
-      }
       .getOrElse(handleMissingSessionData("Undertaking"))
 
   }

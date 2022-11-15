@@ -16,17 +16,15 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NilReturnJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyNilReturn
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyRetrieve, SubsidyUpdate}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyUpdate}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EscService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -56,8 +54,10 @@ class NoClaimNotificationController @Inject() (
   import actionBuilders._
 
   def getNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+
     withLeadUndertaking { undertaking =>
-      retrieveSubsidies(undertaking.reference).toContext
+      escService.retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange).toContext
         .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
           val previous = routes.AccountController.getAccountPage().url
           val today = timeProvider.today
@@ -78,30 +78,19 @@ class NoClaimNotificationController @Inject() (
     }
   }
 
-  private def retrieveSubsidies(r: UndertakingRef)(implicit request: AuthenticatedEnrolledRequest[AnyContent]) = {
+  def postNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    val searchRange = timeProvider.today.toSearchRange.some
-
-    escService
-      .retrieveSubsidies(SubsidyRetrieve(r, searchRange))
-      .map(Option(_))
-      .fallbackTo(Option.empty.toFuture)
-  }
-
-  def postNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
-      retrieveSubsidies(undertaking.reference).toContext
+      escService.retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange).toContext
         .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
-          implicit val eori = request.eoriNumber
-
           val previous = routes.AccountController.getAccountPage().url
           val today = timeProvider.today
           val startDate = today.toEarliestTaxYearStart
 
           val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
 
-          def handleValidNoClaim(form: FormValues): Future[Result] = {
+          def handleValidNoClaim(): Future[Result] = {
             val nilSubmissionDate = timeProvider.today.plusDays(1)
             val result = for {
               reference <- undertaking.reference.toContext
@@ -128,7 +117,7 @@ class NoClaimNotificationController @Inject() (
                   lastSubmitted.map(_.toDisplayFormat).getOrElse("") // TODO - can we display something sensible if the date is missing?
                 )
               ).toFuture,
-              handleValidNoClaim
+              _ => handleValidNoClaim()
             )
       }
     }
