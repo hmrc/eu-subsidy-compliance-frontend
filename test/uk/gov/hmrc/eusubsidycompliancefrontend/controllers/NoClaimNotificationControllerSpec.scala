@@ -129,7 +129,7 @@ class NoClaimNotificationControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postNoClaimNotification(
-          FakeRequest()
+          FakeRequest(POST, "/")
             .withFormUrlEncodedBody(data: _*)
         )
 

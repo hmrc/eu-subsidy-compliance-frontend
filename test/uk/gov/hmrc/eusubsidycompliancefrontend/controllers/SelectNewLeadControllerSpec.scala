@@ -135,7 +135,7 @@ class SelectNewLeadControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postSelectNewLead(
-          FakeRequest()
+          FakeRequest(POST, "/")
             .withFormUrlEncodedBody(data: _*)
         )
 

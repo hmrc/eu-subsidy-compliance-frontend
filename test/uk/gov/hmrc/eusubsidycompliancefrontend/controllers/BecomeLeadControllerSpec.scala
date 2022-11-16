@@ -152,7 +152,7 @@ class BecomeLeadControllerSpec
     "handling request to post Become Lead Eori" must {
 
       def performAction(data: (String, String)*) = controller
-        .postBecomeLeadEori(FakeRequest().withFormUrlEncodedBody(data: _*))
+        .postBecomeLeadEori(FakeRequest(POST, "/").withFormUrlEncodedBody(data: _*))
 
       "throw technical error" when {
 
@@ -394,7 +394,7 @@ class BecomeLeadControllerSpec
     val verificationUrl = routes.BecomeLeadController.getVerifyEmail("SomeId").url
 
     def performAction(data: (String, String)*) =
-      controller.postConfirmEmail(FakeRequest().withFormUrlEncodedBody(data: _*))
+      controller.postConfirmEmail(FakeRequest(POST, "/").withFormUrlEncodedBody(data: _*))
 
     "redirect to the correct page" when {
 

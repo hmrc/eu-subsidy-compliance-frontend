@@ -1172,7 +1172,7 @@ class UndertakingControllerSpec
     "handling request to Post Confirmation page" must {
 
       def performAction(data: (String, String)*) =
-        controller.postConfirmation(FakeRequest().withFormUrlEncodedBody(data: _*))
+        controller.postConfirmation(FakeRequest(POST, "/").withFormUrlEncodedBody(data: _*))
       def update(u: UndertakingJourney) = u.copy(confirmation = UndertakingConfirmationFormPage(value = true.some))
 
       val undertakingJourney =

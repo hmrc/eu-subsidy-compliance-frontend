@@ -99,7 +99,7 @@ class EligibilityControllerSpec
 
     "handling request to get do you claim" must {
 
-      def performAction() = controller.getDoYouClaim(FakeRequest())
+      def performAction() = controller.getDoYouClaim(FakeRequest(POST, "/"))
 
       "display the page" in {
 
@@ -133,7 +133,7 @@ class EligibilityControllerSpec
     "handling request to post do you claim" must {
       def performAction(data: (String, String)*) = controller
         .postDoYouClaim(
-          FakeRequest(GET, routes.EligibilityController.getDoYouClaim().url)
+          FakeRequest(POST, routes.EligibilityController.getDoYouClaim().url)
             .withFormUrlEncodedBody(data: _*)
             .withHeaders("Referer" -> routes.EligibilityController.getDoYouClaim().url)
         )
@@ -212,7 +212,7 @@ class EligibilityControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postWillYouClaim(
-          FakeRequest(GET, routes.EligibilityController.getWillYouClaim().url)
+          FakeRequest(POST, routes.EligibilityController.getWillYouClaim().url)
             .withFormUrlEncodedBody(data: _*)
         )
 

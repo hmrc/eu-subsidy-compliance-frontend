@@ -16,11 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.email
 
-import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.EmailAddress
 
 case class RetrieveEmailResponse(emailType: EmailType, emailAddress: Option[EmailAddress])
-
-object RetrieveEmailResponse {
-  implicit val format: OFormat[RetrieveEmailResponse] = Json.format
-}

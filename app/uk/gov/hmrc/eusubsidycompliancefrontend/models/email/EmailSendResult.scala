@@ -16,19 +16,16 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.email
 
-import ai.x.play.json.Jsonx
-import play.api.libs.json.Format
-import ai.x.play.json.SingletonEncoder.simpleName
-import ai.x.play.json.implicits.formatSingleton
+import enumeratum._
 
-sealed trait EmailSendResult extends Product with Serializable
+sealed trait EmailSendResult extends EnumEntry
 
-object EmailSendResult {
+object EmailSendResult extends Enum[EmailSendResult] {
 
   case object EmailSent extends EmailSendResult
   case object EmailSentFailure extends EmailSendResult
   case object EmailNotSent extends EmailSendResult
 
-  implicit val format: Format[EmailSendResult] = Jsonx.formatSealed[EmailSendResult]
+  override val values = findValues
 
 }

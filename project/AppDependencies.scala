@@ -5,18 +5,17 @@ import sbt._
 
 object AppDependencies {
 
-  val bootStrapVersion = "5.23.0"
-  val hmrcMongoVersion = "0.68.0"
+  val bootStrapVersion = "7.11.0"
+  val hmrcMongoVersion = "0.74.0"
   val enumeratumVersion = "1.7.0"
 
   val compile = Seq(
     "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"    % bootStrapVersion,
-    "uk.gov.hmrc"       %% "play-frontend-hmrc"            % "3.14.0-play-28",
+    "uk.gov.hmrc"       %% "play-frontend-hmrc"            % "3.33.0-play-28",
     "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"            % hmrcMongoVersion,
     "org.typelevel"     %% "cats-core"                     % "2.7.0",
-    "ai.x"              %% "play-json-extensions"          % "0.42.0",
     "com.chuusai"       %% "shapeless"                     % "2.3.9",
-    "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.11.0-play-28",
+    "uk.gov.hmrc"       %% "play-conditional-form-mapping" % "1.12.0-play-28",
     "com.beachape"      %% "enumeratum"                    % enumeratumVersion,
     "com.beachape"      %% "enumeratum-play-json"          % enumeratumVersion
   )
