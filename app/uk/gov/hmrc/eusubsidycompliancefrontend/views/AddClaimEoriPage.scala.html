@@ -43,9 +43,6 @@
       Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}")))
     } else None,
     inputType = "text",
-    hint = Some(Hint(
-      content = Text(messages("add-claim-eori.label.hint"))
-    )),
     label = Label(
       content = Text(messages("add-claim-eori.label"))
     ),
