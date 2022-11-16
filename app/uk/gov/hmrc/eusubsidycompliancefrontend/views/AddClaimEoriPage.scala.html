@@ -47,8 +47,7 @@
       content = Text(messages("add-claim-eori.label"))
     ),
     classes = "govuk-input--width-20",
-    value = form.data.get(inputIdentifier),
-    prefix = Some(PrefixOrSuffix(content = Text("GB")))
+    value = form.data.get(inputIdentifier)
   ))
 }
 

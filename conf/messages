@@ -102,7 +102,6 @@ eligibilityTerms.warning=You must report any de minimis aid payment (less Custom
 eligibilityTerms.p3=It is the responsibility of the undertaking administrator to add any other businesses in your organisation to this single undertaking. The administrator must ensure all account details are correct and up to date.
 eligibilityTerms.p4=If you do not agree to these terms and conditions, you should <a href="{0}" class="govuk-link">sign out</a> now.
 
-
 eoricheck.title = Is the EORI number you want to register {0}?
 eoricheck.p1 = This is the EORI number registered to your Government Gateway ID.
 eoricheck.p2 = This number is usually the same as your XI EORI number.
@@ -189,7 +188,7 @@ error.businessEntityEori.required = Enter a valid EORI number
 businessEntityContact.title=What are the contact details of the business you want to add?
 businessEntityContact.p1=We will only use this telephone number to contact the business if there is an issue with the account.
 businessEntityContact.phone.label=Telephone number
-businessEntityContact.phone.hint=For international numbers include the country code. 
+businessEntityContact.phone.hint=For international numbers include the country code.
 businessEntityContact.mobile.label=Mobile
 
 businessEntity.cya.title=Check your answers
@@ -208,7 +207,6 @@ removeBusiness.error.required = Select yes if you want to remove business entity
 undertaking.confirmation.title = Undertaking registered
 undertaking.confirmation.p1 = We have sent you a confirmation email.
 undertaking.confirmation.p2 = You can now add businesses to your undertaking using the <a href="{0}">Add and remove businesses</a> link in the ‘Undertaking administration’ section of the homepage.
-
 
 lead-account-homepage.title = Manage your undertaking
 lead-account-homepage.h2 = Your next report date
@@ -277,6 +275,7 @@ reportedPayments.removed = Reported payment removed
 reportedPayments.removed.label = REMOVED
 
 # Add Claim Amount Form
+
 add-claim-amount.title = What currency was the payment received in?
 add-claim-amount.eur = Euros (EUR)
 add-claim-amount.gbp = Pounds sterling (GBP)
@@ -284,15 +283,18 @@ add-claim-amount.input-label = Enter amount
 add-claim-amount.input-hint = Figure should include two decimal places, like 248.56
 
 # Form validation errors
+
 add-claim-amount.currency-code.error.required = Select the currency the payment was made in
 
 # GBP field validation errors
+
 add-claim-amount.claim-amount-gbp.error.required = Enter number value of subsidy allocated, like 248.56
 add-claim-amount.claim-amount-gbp.error.incorrect-format = Enter number value of subsidy allocated, like 248.56
 add-claim-amount.claim-amount-gbp.error.tooBig=Subsidy amount must be a maximum of 10 characters (including a comma or full stop), or fewer, like £134,253.71
 add-claim-amount.claim-amount-gbp.error.tooSmall=Subsidy amount must be more than zero
 
 # EUR field validation errors
+
 add-claim-amount.claim-amount-eur.error.required = Enter number value of subsidy allocated, like 248.56
 add-claim-amount.claim-amount-eur.error.incorrect-format = Enter number value of subsidy allocated, like 248.56
 add-claim-amount.claim-amount-eur.error.tooBig=Subsidy amount must be a maximum of 10 characters (including a comma or full stop), or fewer, like €134,253.71
@@ -332,12 +334,12 @@ add-claim-public-authority.hint = For example, Invest NI, NI Direct
 error.claim-public-authority.required = Enter the name of the public authority that granted the payment
 error.claim-public-authority.tooManyChars = Public authority name must be 150 characters or fewer
 
-add-claim-eori.title = Would you like to add an EORI number for the business that claimed the payment?
+add-claim-eori.title = Does the business that claimed the payment have an EORI number?
 add-claim-eori.label = This must be a GB EORI number
-add-claim-eori.hint = The EORI number must be from a business already in your undertaking. This is for your own records and is not a mandatory field
+add-claim-eori.hint = The EORI number starts with ‘GB’ and is followed by 12 or 15 digits, like GB123123123123
 should-claim-eori.error.required=Select yes if you would like to add a valid EORI number
-claim-eori.error.incorrect-format=GB EORI number must be 12 or 15 digits
-claim-eori.error.required=GB EORI number must be 12 or 15 digits
+claim-eori.error.incorrect-format = Enter the EORI number in the correct format
+claim-eori.error.required = Enter the EORI number in the correct format
 claim-eori.error.not-in-undertaking=The EORI number you entered is not part of this undertaking. Enter a valid EORI number.
 claim-eori.error.in-another-undertaking=The EORI number you entered is part of another undertaking. Enter a valid EORI number.
 
@@ -435,6 +437,7 @@ leadEORIChanged.link = <a href="{0}" class="govuk-link">Go to account home</a>
 noBusinessPresent.title = There are no other businesses added to your undertaking
 
 # Financial Dashboard
+
 dashboard.title = Summary of your allowance
 dashboard.p1 = This report summarises all customs subsidies (Customs Duty waivers) and non-customs subsidy payments recorded against your undertaking. These payments are referred to as ‘de minimis aid’.
 dashboard.p2 = The report includes all payments recorded against your undertaking since 6 April 2020.
@@ -453,7 +456,7 @@ dashboard.allowance.remaining.heading = Allowance remaining
 become-admin.title = Do you want to become the administrator for this undertaking?
 become-admin.p1 = As the administrator for this undertaking you will be responsible for reporting all non-customs subsidy payments received by any member of the undertaking.
 become-admin.p2 = You must do this every 90 days.
-becomeAdmin.error.required = Select yes if you want to become administrator for this undertaking 
+becomeAdmin.error.required = Select yes if you want to become administrator for this undertaking
 
 become-admin-responsibilities.title = Become the administrator for this undertaking
 become-admin-responsibilities.p1 = By taking on the role of undertaking administrator it is your role to:
@@ -481,7 +484,6 @@ emailUnverifiedForLeadPromotion.p3 = They will then need to login to the service
 #disableUndertakingWarning
 disableUndertakingWarning.title = Deregister your undertaking
 disableUndertakingWarning.p1 = You will no longer have access to the payments you have previously reported.
-
 
 #disableUndertakingConfirm
 disableUndertakingConfirm.title = Are you sure you want to deregister this undertaking?
