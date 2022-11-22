@@ -116,7 +116,7 @@ class UndertakingController @Inject() (
   def getSector: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking()) { journey =>
-      if (journey.isEligibleForStep) {
+      runIfStepIsEligible(journey) {
         val form = journey.sector.value.fold(undertakingSectorForm) { sector =>
           undertakingSectorForm.fill(FormValues(sector.id.toString))
         }
@@ -129,7 +129,6 @@ class UndertakingController @Inject() (
           )
         ).toFuture
       }
-      else Redirect(journey.previous).toFuture
     }
   }
 
@@ -194,9 +193,7 @@ class UndertakingController @Inject() (
   def getAddBusiness: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking()) { journey =>
-      if (!journey.isEligibleForStep) {
-        Redirect(journey.previous).toFuture
-      } else {
+      runIfStepIsEligible(journey) {
         val form = journey.addBusiness.value.fold(undertakingSectorForm)(addBusiness =>
           addBusinessForm.fill(FormValues(addBusiness.toString))
         )

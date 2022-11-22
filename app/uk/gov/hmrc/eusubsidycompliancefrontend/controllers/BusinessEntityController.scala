@@ -20,11 +20,12 @@ import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Invalid, Valid}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.{formWithSingleMandatoryField, mandatory}
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{BusinessEntityJourney, Journey}
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityRemovedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate._
@@ -32,7 +33,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.withGbPrefix
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -179,10 +179,6 @@ class BusinessEntityController @Inject() (
         }
     }
   }
-
-  private def runIfStepIsEligible(journey: Journey)(f: => Future[Result])(implicit r: Request[_]) =
-    if (journey.isEligibleForStep) f
-    else Redirect(journey.previous).toFuture
 
   def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = verifiedEmail.async {
     implicit request =>
