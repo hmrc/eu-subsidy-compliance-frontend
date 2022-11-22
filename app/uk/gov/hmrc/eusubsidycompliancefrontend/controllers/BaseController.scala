@@ -31,7 +31,7 @@ class BaseController(mcc: MessagesControllerComponents) extends FrontendControll
   protected def handleMissingSessionData(dataLabel: String) =
     throw new IllegalStateException(s"$dataLabel data missing on session")
 
-  protected def runIfStepIsEligible(journey: Journey)(f: => Future[Result])(implicit r: Request[_]): Future[Result] =
+  protected def runStepIfEligible(journey: Journey)(f: => Future[Result])(implicit r: Request[_]): Future[Result] =
     if (journey.isEligibleForStep) f
     else Redirect(journey.previous).toFuture
 

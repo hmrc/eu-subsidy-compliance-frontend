@@ -111,7 +111,7 @@ class BusinessEntityController @Inject() (
         .get[BusinessEntityJourney]
         .toContext
         .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture) { journey =>
-          runIfStepIsEligible(journey) {
+          runStepIfEligible(journey) {
             val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori)))
             Ok(eoriPage(form, journey.previous)).toFuture
           }
@@ -168,7 +168,7 @@ class BusinessEntityController @Inject() (
         .get[BusinessEntityJourney]
         .toContext
         .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture) { journey =>
-          runIfStepIsEligible(journey) {
+          runStepIfEligible(journey) {
             eoriForm
               .bindFromRequest()
               .fold(
