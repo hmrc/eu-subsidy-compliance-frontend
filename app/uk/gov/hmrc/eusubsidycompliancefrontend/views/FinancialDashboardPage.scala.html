@@ -33,7 +33,7 @@
 @layout(
     pageTitle = Some(title),
     backLinkEnabled = true,
-    backLink = Some(routes.AccountController.getAccountPage().url)
+    backLink = Some(routes.AccountController.getAccountPage.url)
 ) {
 
 
@@ -122,5 +122,5 @@
         ))
     }
 
-    <div><a href="@controllers.routes.AccountController.getAccountPage().url" class="govuk-link">@messages("common.go-account-home")</a></div>
+    <div><a href="@controllers.routes.AccountController.getAccountPage.url" class="govuk-link">@messages("common.go-account-home")</a></div>
 }

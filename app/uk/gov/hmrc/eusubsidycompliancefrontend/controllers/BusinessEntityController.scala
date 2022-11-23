@@ -91,7 +91,7 @@ class BusinessEntityController @Inject() (
     def handleValidAnswer(form: FormValues) =
       if (form.value.isTrue)
         store.update[BusinessEntityJourney](_.setAddBusiness(form.value.toBoolean)).flatMap(_.next)
-      else Redirect(routes.AccountController.getAccountPage()).toFuture
+      else Redirect(routes.AccountController.getAccountPage).toFuture
 
     withLeadUndertaking { undertaking =>
       addBusinessForm
@@ -110,7 +110,7 @@ class BusinessEntityController @Inject() (
       store
         .get[BusinessEntityJourney]
         .toContext
-        .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture) { journey =>
+        .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity).toFuture) { journey =>
           runStepIfEligible(journey) {
             val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori)))
             Ok(eoriPage(form, journey.previous)).toFuture
@@ -167,7 +167,7 @@ class BusinessEntityController @Inject() (
       store
         .get[BusinessEntityJourney]
         .toContext
-        .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture) { journey =>
+        .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity).toFuture) { journey =>
           runStepIfEligible(journey) {
             eoriForm
               .bindFromRequest()
@@ -187,7 +187,7 @@ class BusinessEntityController @Inject() (
           case Some(undertaking) =>
             val removeBE = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
             Ok(removeBusinessPage(removeBusinessForm, removeBE))
-          case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity())
+          case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity)
         }
       }
   }
@@ -195,12 +195,12 @@ class BusinessEntityController @Inject() (
   def getRemoveYourselfBusinessEntity: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    val previous = routes.AccountController.getAccountPage().url
+    val previous = routes.AccountController.getAccountPage.url
 
     escService
       .retrieveUndertaking(eori)
       .toContext
-      .fold(Redirect(routes.BusinessEntityController.getAddBusinessEntity())) { undertaking =>
+      .fold(Redirect(routes.BusinessEntityController.getAddBusinessEntity)) { undertaking =>
         Ok(removeYourselfBEPage(removeYourselfBusinessForm, undertaking.getBusinessEntityByEORI(eori), previous))
       }
   }
@@ -220,9 +220,9 @@ class BusinessEntityController @Inject() (
                 .sendEvent(
                   AuditEvent.BusinessEntityRemoved(undertakingRef, request.authorityId, eori, EORI(eoriEntered))
                 )
-            } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
+            } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity)
         }
-        else Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture
+        else Redirect(routes.BusinessEntityController.getAddBusinessEntity).toFuture
 
       withLeadUndertaking { _ =>
         escService.retrieveUndertaking(EORI(eoriEntered)).flatMap {
@@ -236,7 +236,7 @@ class BusinessEntityController @Inject() (
                 errors => BadRequest(removeBusinessPage(errors, removeBE)).toFuture,
                 success = form => handleValidBE(form, undertakingRef, removeBE, undertaking)
               )
-          case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture
+          case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity).toFuture
         }
       }
   }
@@ -248,7 +248,7 @@ class BusinessEntityController @Inject() (
       removeYourselfBusinessForm
         .bindFromRequest()
         .fold(
-          errors => BadRequest(removeYourselfBEPage(errors, b, routes.AccountController.getAccountPage().url)).toContext,
+          errors => BadRequest(removeYourselfBEPage(errors, b, routes.AccountController.getAccountPage.url)).toContext,
           handleValidFormSubmission(u, b)
         )
 
@@ -262,7 +262,7 @@ class BusinessEntityController @Inject() (
           _ <- emailService.sendEmail(u.getLeadEORI, eori, MemberRemoveSelfToLead, u, effectiveDate).toContext
           _ = auditService.sendEvent(BusinessEntityRemovedSelf(u.reference, request.authorityId, u.getLeadEORI, eori))
         } yield Redirect(routes.SignOutController.signOut())
-      } else Redirect(routes.AccountController.getAccountPage()).toContext
+      } else Redirect(routes.AccountController.getAccountPage).toContext
 
     val result = for {
       undertaking <- escService.retrieveUndertaking(eori).toContext
@@ -278,11 +278,11 @@ class BusinessEntityController @Inject() (
       case Some(true) =>
         store
           .put[BusinessEntityJourney](BusinessEntityJourney(isLeadSelectJourney = true.some))
-          .map(_ => Redirect(routes.SelectNewLeadController.getSelectNewLead()))
+          .map(_ => Redirect(routes.SelectNewLeadController.getSelectNewLead))
       case _ =>
         store
           .put[BusinessEntityJourney](BusinessEntityJourney())
-          .map(_ => Redirect(routes.BusinessEntityController.getAddBusinessEntity()))
+          .map(_ => Redirect(routes.BusinessEntityController.getAddBusinessEntity))
     }
 
   private val addBusinessForm = formWithSingleMandatoryField("addBusiness")

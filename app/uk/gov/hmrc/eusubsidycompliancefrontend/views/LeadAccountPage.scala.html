@@ -48,8 +48,8 @@
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"lead-account-homepage"}
 @linkURL = @{
-    if(isNonLeadEORIPresent) routes.SelectNewLeadController.getSelectNewLead()
-    else routes.NoBusinessPresentController.getNoBusinessPresent()
+    if(isNonLeadEORIPresent) routes.SelectNewLeadController.getSelectNewLead
+    else routes.NoBusinessPresentController.getNoBusinessPresent
 }
 
 @layout(
@@ -85,8 +85,8 @@
     ))
 
     <ul class="govuk-list govuk-list--spaced">
-      <li><a class="govuk-link" href="@routes.SubsidyController.getClaimDate()">@messages("lead-account-homepage.ul1-li1")</a></li>
-      <li><a class="govuk-link" href="@routes.NoClaimNotificationController.getNoClaimNotification()">@messages("lead-account-homepage.ul1-li2")</a></li>
+      <li><a class="govuk-link" href="@routes.SubsidyController.getClaimDate">@messages("lead-account-homepage.ul1-li1")</a></li>
+      <li><a class="govuk-link" href="@routes.NoClaimNotificationController.getNoClaimNotification">@messages("lead-account-homepage.ul1-li2")</a></li>
     </ul>
     
     @H2(messages("lead-account-homepage.h2-2"), Some("govuk-heading-m govuk-!-margin-top-8"))
@@ -100,15 +100,15 @@
 
     @H2(messages("lead-account-homepage.h2-3"), Some("govuk-heading-m govuk-!-margin-top-8"))
     <ul class="govuk-list govuk-list--spaced">
-      <li><a class="govuk-link" href="@routes.SubsidyController.getReportedPayments()">@messages("lead-account-homepage.ul2-li1")</a></li>
-      <li><a class="govuk-link" href="@routes.FinancialDashboardController.getFinancialDashboard()">@messages("lead-account-homepage.ul2-li2")</a></li>
+      <li><a class="govuk-link" href="@routes.SubsidyController.getReportedPayments">@messages("lead-account-homepage.ul2-li1")</a></li>
+      <li><a class="govuk-link" href="@routes.FinancialDashboardController.getFinancialDashboard">@messages("lead-account-homepage.ul2-li2")</a></li>
     </ul>
 
     
     @H2(messages("lead-account-homepage.h2-4"), Some("govuk-heading-m govuk-!-margin-top-8"))
     <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-8">
-      <li><a class="govuk-link" href="@routes.BusinessEntityController.getAddBusinessEntity()">@messages("lead-account-homepage.ul3-li1")</a></li>
-      <li><a class="govuk-link" href="@routes.UndertakingController.getAmendUndertakingDetails()">@messages("lead-account-homepage.ul3-li2")</a></li>
-      <li><a class="govuk-link" href="@routes.UndertakingController.getDisableUndertakingWarning()">@messages("lead-account-homepage.ul3-li3")</a></li>
+      <li><a class="govuk-link" href="@routes.BusinessEntityController.getAddBusinessEntity">@messages("lead-account-homepage.ul3-li1")</a></li>
+      <li><a class="govuk-link" href="@routes.UndertakingController.getAmendUndertakingDetails">@messages("lead-account-homepage.ul3-li2")</a></li>
+      <li><a class="govuk-link" href="@routes.UndertakingController.getDisableUndertakingWarning">@messages("lead-account-homepage.ul3-li3")</a></li>
     </ul>
 }

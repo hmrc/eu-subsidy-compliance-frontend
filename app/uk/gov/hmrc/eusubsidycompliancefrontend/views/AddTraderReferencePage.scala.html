@@ -56,7 +56,7 @@
     hasErrors = form.hasErrors
 ) {
 
-    @formHelper(action = controllers.routes.SubsidyController.postAddClaimReference()) {
+    @formHelper(action = controllers.routes.SubsidyController.postAddClaimReference) {
       @if(form.hasErrors) {
           @govukErrorSummary(
               ErrorSummary(

@@ -56,7 +56,7 @@
                         actions = Some(Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = controllers.routes.UndertakingController.getSector().toString,
+                                    href = controllers.routes.UndertakingController.getSector.toString,
                                     content = Text(messages("common.change")),
                                     visuallyHiddenText = Some(messages("undertaking.amendUndertaking.summary-list.change.industry-sector"))
                                 )
@@ -73,7 +73,7 @@
                         actions = Some(Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = controllers.routes.UndertakingController.getConfirmEmail().toString,
+                                    href = controllers.routes.UndertakingController.getConfirmEmail.toString,
                                     content = Text(messages("common.change")),
                                     visuallyHiddenText = Some(messages("undertaking.amendUndertaking.summary-list.change.email"))
                                 )

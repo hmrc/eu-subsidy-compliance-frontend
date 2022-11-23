@@ -61,9 +61,9 @@ class NoBusinessPresentControllerSpec
           performAction(),
           messageFromMessageKey("noBusinessPresent.title"),
           { doc =>
-            doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
+            doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
             val button = doc.select("form")
-            button.attr("action") shouldBe routes.NoBusinessPresentController.postNoBusinessPresent().url
+            button.attr("action") shouldBe routes.NoBusinessPresentController.postNoBusinessPresent.url
           }
         )
       }
@@ -105,7 +105,7 @@ class NoBusinessPresentControllerSpec
         }
         checkIsRedirect(
           performAction(),
-          routes.BusinessEntityController.getAddBusinessEntity().url
+          routes.BusinessEntityController.getAddBusinessEntity.url
         )
       }
 

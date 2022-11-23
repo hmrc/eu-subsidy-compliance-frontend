@@ -35,7 +35,7 @@ object NewLeadJourney {
     private val controller = routes.SelectNewLeadController
 
     case class SelectNewLeadFormPage(value: Form[EORI] = None) extends FormPage[EORI] {
-      def uri = controller.getSelectNewLead().url
+      def uri = controller.getSelectNewLead.url
     }
 
     object SelectNewLeadFormPage {

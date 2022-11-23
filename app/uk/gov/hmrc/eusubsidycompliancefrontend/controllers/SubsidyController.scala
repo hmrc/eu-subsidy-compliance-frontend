@@ -115,7 +115,7 @@ class SubsidyController @Inject() (
           currentDate.toEarliestTaxYearStart,
           currentDate.toTaxYearEnd.minusYears(1),
           currentDate.toTaxYearStart,
-          routes.AccountController.getAccountPage().url,
+          routes.AccountController.getAccountPage.url,
           showSuccessBanner = showSuccess
         )
       )
@@ -164,7 +164,7 @@ class SubsidyController @Inject() (
         val form = subsidyJourney.claimAmount.value.fold(claimAmountForm)(claimAmountForm.fill)
         Ok(addClaimAmountPage(form, previous, addClaimDate.year, addClaimDate.month))
       }
-      result.getOrElse(Redirect(routes.SubsidyController.getClaimDate()))
+      result.getOrElse(Redirect(routes.SubsidyController.getClaimDate))
     }
   }
 
@@ -310,7 +310,7 @@ class SubsidyController @Inject() (
                   ).toFuture
                 }
           // Default case. Should never happen if form submitted via our frontend.
-          case _ => Redirect(routes.SubsidyController.getAddClaimEori()).toFuture
+          case _ => Redirect(routes.SubsidyController.getAddClaimEori).toFuture
         }
 
       processFormSubmission[SubsidyJourney] { journey =>
@@ -345,7 +345,7 @@ class SubsidyController @Inject() (
           updatedJourney <- store.update[SubsidyJourney](_.setAddBusiness(f.value.isTrue)).toContext
           next <- updatedJourney.next.toContext
           updateBusiness = updatedJourney.getAddBusiness
-        } yield if (updateBusiness) next else Redirect(routes.SubsidyController.getAddClaimEori())
+        } yield if (updateBusiness) next else Redirect(routes.SubsidyController.getAddClaimEori)
       }
 
       processFormSubmission[SubsidyJourney] { journey =>
@@ -430,7 +430,7 @@ class SubsidyController @Inject() (
       } yield Ok(cyaPage(claimDate, euroAmount, claimEori, authority, traderRef, previous))
 
       result
-        .getOrElse(Redirect(routes.AccountController.getAccountPage()))
+        .getOrElse(Redirect(routes.AccountController.getAccountPage))
     }
   }
 
@@ -460,7 +460,7 @@ class SubsidyController @Inject() (
           _ = auditService.sendEvent[NonCustomsSubsidyAdded](
             AuditEvent.NonCustomsSubsidyAdded(request.authorityId, eori, ref, journey, currentDate)
           )
-        } yield Redirect(routes.SubsidyController.getClaimConfirmationPage())
+        } yield Redirect(routes.SubsidyController.getClaimConfirmationPage)
 
         result.getOrElse(sys.error("Error processing subsidy cya form submission"))
       }
@@ -509,7 +509,7 @@ class SubsidyController @Inject() (
             formWithErrors => handleRemoveSubsidyFormError(formWithErrors, transactionId, undertaking),
             formValue =>
               if (formValue.value.isTrue) handleRemoveSubsidyValidAnswer(transactionId, undertaking)
-              else Redirect(routes.SubsidyController.getReportedPayments()).toFuture
+              else Redirect(routes.SubsidyController.getReportedPayments).toFuture
           )
       }
   }
@@ -563,7 +563,7 @@ class SubsidyController @Inject() (
         if (journey.isEligibleForStep) f(journey)
         else Redirect(journey.previous)
       }
-      .getOrElse(Redirect(routes.SubsidyController.getReportedPayments().url))
+      .getOrElse(Redirect(routes.SubsidyController.getReportedPayments.url))
 
     }
 

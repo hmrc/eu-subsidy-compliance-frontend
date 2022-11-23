@@ -45,7 +45,7 @@ class NoBusinessPresentController @Inject() (
 
   def getNoBusinessPresent: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
-      val previous = routes.AccountController.getAccountPage().url
+      val previous = routes.AccountController.getAccountPage.url
       Ok(noBusinessPresentPage(previous)).toFuture
     }
   }
@@ -55,7 +55,7 @@ class NoBusinessPresentController @Inject() (
       implicit val eori: EORI = request.eoriNumber
       for {
         _ <- store.update[BusinessEntityJourney](_.copy(isLeadSelectJourney = true.some))
-      } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity())
+      } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity)
     }
 
   }

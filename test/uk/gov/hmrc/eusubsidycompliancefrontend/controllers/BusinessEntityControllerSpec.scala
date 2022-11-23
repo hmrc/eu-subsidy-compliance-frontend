@@ -139,7 +139,7 @@ class BusinessEntityControllerSpec
               }
 
               val button = doc.select("form")
-              button.attr("action") shouldBe routes.BusinessEntityController.postAddBusinessEntity().url
+              button.attr("action") shouldBe routes.BusinessEntityController.postAddBusinessEntity.url
             }
           )
         }
@@ -169,7 +169,7 @@ class BusinessEntityControllerSpec
     "handling request to post add Business Page" must {
 
       def performAction(data: (String, String)*) = controller.postAddBusinessEntity(
-        FakeRequest(POST, routes.BusinessEntityController.getAddBusinessEntity().url).withFormUrlEncodedBody(data: _*)
+        FakeRequest(POST, routes.BusinessEntityController.getAddBusinessEntity.url).withFormUrlEncodedBody(data: _*)
       )
 
       "throw technical error" when {
@@ -221,7 +221,7 @@ class BusinessEntityControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           }
-          checkIsRedirect(performAction("addBusiness" -> "false"), routes.AccountController.getAccountPage().url)
+          checkIsRedirect(performAction("addBusiness" -> "false"), routes.AccountController.getAccountPage.url)
         }
 
         "user selected Yes" in {
@@ -234,7 +234,7 @@ class BusinessEntityControllerSpec
               Right(BusinessEntityJourney(addBusiness = AddBusinessFormPage(true.some)))
             )
           }
-          checkIsRedirect(performAction("addBusiness" -> "true"), routes.BusinessEntityController.getEori().url)
+          checkIsRedirect(performAction("addBusiness" -> "true"), routes.BusinessEntityController.getEori.url)
         }
 
       }
@@ -248,7 +248,7 @@ class BusinessEntityControllerSpec
     }
 
     "handling request to get EORI Page" must {
-      def performAction() = controller.getEori(FakeRequest(GET, routes.BusinessEntityController.getEori().url))
+      def performAction() = controller.getEori(FakeRequest(GET, routes.BusinessEntityController.getEori.url))
 
       "throw technical error" when {
         val exception = new Exception("oh no")
@@ -268,7 +268,7 @@ class BusinessEntityControllerSpec
       "display the page" when {
 
         def test(businessEntityJourney: BusinessEntityJourney): Unit = {
-          val previousUrl = routes.BusinessEntityController.getAddBusinessEntity().url
+          val previousUrl = routes.BusinessEntityController.getAddBusinessEntity.url
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -285,7 +285,7 @@ class BusinessEntityControllerSpec
               input shouldBe businessEntityJourney.eori.value.map(_.drop(2)).getOrElse("")
 
               val button = doc.select("form")
-              button.attr("action") shouldBe routes.BusinessEntityController.postEori().url
+              button.attr("action") shouldBe routes.BusinessEntityController.postEori.url
             }
           )
         }
@@ -320,7 +320,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[BusinessEntityJourney](eori1)(Right(None))
           }
-          checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity().url)
+          checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity.url)
 
         }
       }
@@ -331,7 +331,7 @@ class BusinessEntityControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postEori(
-          FakeRequest(POST, routes.BusinessEntityController.getEori().url)
+          FakeRequest(POST, routes.BusinessEntityController.getEori.url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -453,7 +453,7 @@ class BusinessEntityControllerSpec
               }
               checkIsRedirect(
                 performAction("businessEntityEori" -> eoriEntered),
-                routes.BusinessEntityController.getAddBusinessEntity().url
+                routes.BusinessEntityController.getAddBusinessEntity.url
               )
             }
           }
@@ -488,14 +488,14 @@ class BusinessEntityControllerSpec
             { doc =>
               doc
                 .select(".govuk-back-link")
-                .attr("href") shouldBe routes.AccountController.getAccountPage().url
+                .attr("href") shouldBe routes.AccountController.getAccountPage.url
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               inputDate match {
                 case Some(value) => selectedOptions.attr("value") shouldBe value
                 case None => selectedOptions.isEmpty shouldBe true
               }
               val button = doc.select("form")
-              button.attr("action") shouldBe routes.BusinessEntityController.postRemoveYourselfBusinessEntity().url
+              button.attr("action") shouldBe routes.BusinessEntityController.postRemoveYourselfBusinessEntity.url
             }
           )
 
@@ -512,7 +512,7 @@ class BusinessEntityControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postRemoveYourselfBusinessEntity(
-          FakeRequest(POST, routes.BusinessEntityController.getRemoveYourselfBusinessEntity().url)
+          FakeRequest(POST, routes.BusinessEntityController.getRemoveYourselfBusinessEntity.url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -576,7 +576,7 @@ class BusinessEntityControllerSpec
           }
           checkIsRedirect(
             performAction("removeYourselfBusinessEntity" -> "false"),
-            routes.AccountController.getAccountPage().url
+            routes.AccountController.getAccountPage.url
           )
         }
       }
@@ -719,7 +719,7 @@ class BusinessEntityControllerSpec
           }
           checkIsRedirect(
             performAction("removeBusiness" -> "true")(eori4),
-            routes.BusinessEntityController.getAddBusinessEntity().url
+            routes.BusinessEntityController.getAddBusinessEntity.url
           )
         }
 
@@ -735,7 +735,7 @@ class BusinessEntityControllerSpec
           }
           checkIsRedirect(
             performAction("removeBusiness" -> "false")(eori4),
-            routes.BusinessEntityController.getAddBusinessEntity().url
+            routes.BusinessEntityController.getAddBusinessEntity.url
           )
         }
       }

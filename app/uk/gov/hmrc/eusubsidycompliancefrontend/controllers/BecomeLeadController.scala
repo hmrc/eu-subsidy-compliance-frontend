@@ -68,28 +68,28 @@ class BecomeLeadController @Inject() (
       _ <- store.getOrCreate[BecomeLeadJourney](BecomeLeadJourney()).toContext
     } yield Ok(becomeAdminAcceptResponsibilitiesPage(eori))
 
-    result.getOrElse(Redirect(routes.AccountController.getAccountPage()))
+    result.getOrElse(Redirect(routes.AccountController.getAccountPage))
   }
 
   def postAcceptResponsibilities: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store
       .update[BecomeLeadJourney](_.setAcceptResponsibilities(true))
-      .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getConfirmEmail())))
+      .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getConfirmEmail)))
   }
 
   def getConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
     handleConfirmEmailGet[BecomeLeadJourney](
       previous = routes.BecomeLeadController.getAcceptResponsibilities(),
-      formAction = routes.BecomeLeadController.postConfirmEmail()
+      formAction = routes.BecomeLeadController.postConfirmEmail
     )
   }
 
   def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
     handleConfirmEmailPost[BecomeLeadJourney](
-      previous = routes.BecomeLeadController.getConfirmEmail(),
+      previous = routes.BecomeLeadController.getConfirmEmail,
       next = routes.BecomeLeadController.getBecomeLeadEori(),
-      formAction = routes.BecomeLeadController.postConfirmEmail(),
+      formAction = routes.BecomeLeadController.postConfirmEmail,
       generateVerifyEmailUrl = (id: String) => routes.BecomeLeadController.getVerifyEmail(id).url
     )
   }
@@ -97,7 +97,7 @@ class BecomeLeadController @Inject() (
   def getVerifyEmail(verificationId: String): Action[AnyContent] = enrolled.async { implicit request =>
     handleVerifyEmailGet[BecomeLeadJourney](
       verificationId = verificationId,
-      previous = routes.BecomeLeadController.getConfirmEmail(),
+      previous = routes.BecomeLeadController.getConfirmEmail,
       next = routes.BecomeLeadController.getBecomeLeadEori()
     )
   }
@@ -120,10 +120,10 @@ class BecomeLeadController @Inject() (
 
     def handleFormSubmission(form: FormValues) = {
       if (form.value.isTrue) promoteBusinessEntity()
-      else Redirect(routes.AccountController.getAccountPage()).toFuture
+      else Redirect(routes.AccountController.getAccountPage).toFuture
     }
 
-    def promoteBusinessEntity() = withJourneyOrRedirect[BecomeLeadJourney](routes.AccountController.getAccountPage()) { _ =>
+    def promoteBusinessEntity() = withJourneyOrRedirect[BecomeLeadJourney](routes.AccountController.getAccountPage) { _ =>
       val result = for {
         undertaking <- escService.getUndertaking(eori).toContext
         ref = undertaking.reference

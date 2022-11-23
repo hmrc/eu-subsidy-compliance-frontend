@@ -79,7 +79,7 @@ class NotEnrolledActionBuilder @Inject() (
             // Execute the block if the user is not enrolled...
             .fold(block(AuthenticatedRequest(credentials.providerId, groupId, request))) { _ =>
               // ...otherwise redirect to account home which will figure out where to send the user.
-              Redirect(routes.AccountController.getAccountPage()).toFuture
+              Redirect(routes.AccountController.getAccountPage).toFuture
             }
         case _ ~ _ => Future.failed(throw InternalError())
       }(hc(request), executionContext).recover(handleFailure(request, appConfig))

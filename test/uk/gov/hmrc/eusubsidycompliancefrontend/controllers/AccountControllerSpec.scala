@@ -173,7 +173,7 @@ class AccountControllerSpec
           )
         }
 
-        "today's date is after the deadling" in {
+        "today's date is after the deadline" in {
           val lastUpdatedDate = LocalDate.of(2021, 12, 1)
           testTimeToReport(
             undertaking.copy(lastSubsidyUsageUpdt = lastUpdatedDate.some),
@@ -207,8 +207,8 @@ class AccountControllerSpec
               { doc =>
                 val htmlBody = doc.select(".govuk-list").html
                 htmlBody should include regex routes.BecomeLeadController.getAcceptResponsibilities().url
-                htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard().url
-                htmlBody should include regex routes.BusinessEntityController.getRemoveYourselfBusinessEntity().url
+                htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard.url
+                htmlBody should include regex routes.BusinessEntityController.getRemoveYourselfBusinessEntity.url
               }
             )
           }
@@ -273,7 +273,7 @@ class AccountControllerSpec
               mockGetOrCreate[EligibilityJourney](eori1)(Right(EligibilityJourney()))
               mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             }
-            checkIsRedirect(performAction(), routes.EligibilityController.firstEmptyPage().url)
+            checkIsRedirect(performAction(), routes.EligibilityController.firstEmptyPage.url)
           }
 
         }
@@ -287,7 +287,7 @@ class AccountControllerSpec
               mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
               mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             }
-            checkIsRedirect(performAction(), routes.EligibilityController.firstEmptyPage())
+            checkIsRedirect(performAction(), routes.EligibilityController.firstEmptyPage)
           }
 
           "eligibility Journey  is complete and undertaking Journey is not complete" in {
@@ -297,7 +297,7 @@ class AccountControllerSpec
               mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
               mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             }
-            checkIsRedirect(performAction(), routes.UndertakingController.firstEmptyPage())
+            checkIsRedirect(performAction(), routes.UndertakingController.firstEmptyPage)
           }
 
           "eligibility Journey  and undertaking Journey are  complete" in {
@@ -307,7 +307,7 @@ class AccountControllerSpec
               mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
               mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1))
             }
-            checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity())
+            checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity)
           }
         }
 

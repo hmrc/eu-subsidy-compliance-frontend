@@ -73,7 +73,7 @@ class FinancialDashboardControllerSpec
         mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(undertakingSubsidies.toFuture)
 
         running(fakeApplication) {
-          val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard().url)
+          val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
 
           val result = route(fakeApplication, request).get
 

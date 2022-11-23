@@ -85,7 +85,7 @@ class EnrolledActionBuilderSpec
         val result = underTest.invokeBlock(request, block)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(routes.EligibilityController.getDoYouClaim().url)
+        redirectLocation(result) should contain(routes.EligibilityController.getDoYouClaim.url)
       }
     }
 

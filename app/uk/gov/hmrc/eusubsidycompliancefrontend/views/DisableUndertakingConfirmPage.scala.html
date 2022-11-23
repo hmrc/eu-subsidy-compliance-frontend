@@ -35,10 +35,10 @@
 
 @layout(pageTitle = Some(title),
     backLinkEnabled = true,
-    backLink = Some(controllers.routes.UndertakingController.getDisableUndertakingWarning().url),
+    backLink = Some(controllers.routes.UndertakingController.getDisableUndertakingWarning.url),
     hasErrors = form.hasErrors) {
 
-    @formHelper(action = controllers.routes.UndertakingController.postDisableUndertakingConfirm()) {
+    @formHelper(action = controllers.routes.UndertakingController.postDisableUndertakingConfirm) {
         @form.errors.map { err =>
             @govukErrorSummary(ErrorSummary(
                 errorList = Seq(

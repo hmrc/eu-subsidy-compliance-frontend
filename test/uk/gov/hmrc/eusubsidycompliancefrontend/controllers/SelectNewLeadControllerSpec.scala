@@ -88,12 +88,12 @@ class SelectNewLeadControllerSpec
             performAction(),
             messageFromMessageKey("selectNewLead.title"),
             { doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
+              doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               selectedOptions.isEmpty shouldBe true
 
               val button = doc.select("form")
-              button.attr("action") shouldBe routes.SelectNewLeadController.postSelectNewLead().url
+              button.attr("action") shouldBe routes.SelectNewLeadController.postSelectNewLead.url
             }
           )
 
@@ -108,7 +108,7 @@ class SelectNewLeadControllerSpec
             performAction(),
             messageFromMessageKey("selectNewLead.title"),
             { doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
+              doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               selectedOptions.attr("value") shouldBe eori4
 
@@ -116,7 +116,7 @@ class SelectNewLeadControllerSpec
               radioOptions.size() shouldBe undertaking1.undertakingBusinessEntity.filterNot(_.leadEORI).size
 
               val button = doc.select("form")
-              button.attr("action") shouldBe routes.SelectNewLeadController.postSelectNewLead().url
+              button.attr("action") shouldBe routes.SelectNewLeadController.postSelectNewLead.url
             }
           )
 
@@ -206,7 +206,7 @@ class SelectNewLeadControllerSpec
         }
 
         "for a valid request" in {
-          testRedirection(routes.SelectNewLeadController.getLeadEORIChanged().url)
+          testRedirection(routes.SelectNewLeadController.getLeadEORIChanged.url)
         }
 
         "email address of BE is unverified" in {
@@ -222,7 +222,7 @@ class SelectNewLeadControllerSpec
           }
           checkIsRedirect(
             performAction("selectNewLead" -> eori4),
-            routes.SelectNewLeadController.emailNotVerified().url
+            routes.SelectNewLeadController.emailNotVerified.url
           )
 
         }
@@ -326,7 +326,7 @@ class SelectNewLeadControllerSpec
 
             htmlText should include regex messageFromMessageKey(
               "leadEORIChanged.link",
-              routes.AccountController.getAccountPage().url
+              routes.AccountController.getAccountPage.url
             )
 
             val htmlText1 = doc.select(".govuk-panel").html()
@@ -350,7 +350,7 @@ class SelectNewLeadControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[NewLeadJourney](eori1)(Right(None))
           }
-          checkIsRedirect(performAction(), routes.SelectNewLeadController.getSelectNewLead().url)
+          checkIsRedirect(performAction(), routes.SelectNewLeadController.getSelectNewLead.url)
 
         }
       }
@@ -405,7 +405,7 @@ class SelectNewLeadControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockGet[NewLeadJourney](eori1)(Right(None))
           }
-          checkIsRedirect(performAction(), routes.SelectNewLeadController.getSelectNewLead().url)
+          checkIsRedirect(performAction(), routes.SelectNewLeadController.getSelectNewLead.url)
 
         }
       }

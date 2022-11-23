@@ -76,12 +76,12 @@ class NoClaimNotificationControllerSpec
           performAction(),
           messageFromMessageKey("noClaimNotification.never-submitted.title", startDate.toDisplayFormat),
           { doc =>
-            doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
+            doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
             val selectedOptions = doc.select(".govuk-checkboxes__input[checked]")
             selectedOptions.isEmpty shouldBe true
 
             val button = doc.select("form")
-            button.attr("action") shouldBe routes.NoClaimNotificationController.postNoClaimNotification().url
+            button.attr("action") shouldBe routes.NoClaimNotificationController.postNoClaimNotification.url
           }
         )
 
@@ -100,12 +100,12 @@ class NoClaimNotificationControllerSpec
           performAction(),
           messageFromMessageKey("noClaimNotification.has-submitted.title", fixedDate.toDisplayFormat),
           { doc =>
-            doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
+            doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
             val selectedOptions = doc.select(".govuk-checkboxes__input[checked]")
             selectedOptions.isEmpty shouldBe true
 
             val button = doc.select("form")
-            button.attr("action") shouldBe routes.NoClaimNotificationController.postNoClaimNotification().url
+            button.attr("action") shouldBe routes.NoClaimNotificationController.postNoClaimNotification.url
           }
         )
 
@@ -215,7 +215,7 @@ class NoClaimNotificationControllerSpec
         }
         checkIsRedirect(
           performAction("noClaimNotification" -> "true"),
-          routes.NoClaimNotificationController.getNotificationConfirmation().url
+          routes.NoClaimNotificationController.getNotificationConfirmation.url
         )
       }
     }

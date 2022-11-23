@@ -41,7 +41,7 @@ trait LeadOnlyUndertakingSupport { this: FrontendController =>
 
     escService.retrieveUndertaking(eori).toContext
       .filter(_.isLeadEORI(r.eoriNumber))
-      .foldF(Redirect(routes.AccountController.getAccountPage()).toFuture)(f)
+      .foldF(Redirect(routes.AccountController.getAccountPage).toFuture)(f)
   }
 
 }

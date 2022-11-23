@@ -59,7 +59,7 @@ class SelectNewLeadController @Inject() (
 
   def getSelectNewLead: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
-      val previous = routes.AccountController.getAccountPage().url
+      val previous = routes.AccountController.getAccountPage.url
       implicit val eori: EORI = request.eoriNumber
 
       val result = for {
@@ -79,7 +79,7 @@ class SelectNewLeadController @Inject() (
         BadRequest(
           selectNewLeadPage(
             errors,
-            routes.AccountController.getAccountPage().url,
+            routes.AccountController.getAccountPage.url,
             undertaking.getAllNonLeadEORIs
           )
         ).toFuture
@@ -108,8 +108,8 @@ class SelectNewLeadController @Inject() (
     }
   }
   private def redirectTo(emailResult: EmailSendResult) = emailResult match {
-    case EmailNotSent => Redirect(routes.SelectNewLeadController.emailNotVerified())
-    case EmailSent => Redirect(routes.SelectNewLeadController.getLeadEORIChanged())
+    case EmailNotSent => Redirect(routes.SelectNewLeadController.emailNotVerified)
+    case EmailSent => Redirect(routes.SelectNewLeadController.getLeadEORIChanged)
     case _ => handleMissingSessionData("Email result Response")
   }
 
@@ -126,7 +126,7 @@ class SelectNewLeadController @Inject() (
           } yield selectedEORI.fold(Redirect(newLeadJourney.previous))(eori =>
             Ok(leadEORIChangedPage(eori))
           )
-        case None => Redirect(routes.SelectNewLeadController.getSelectNewLead()).toFuture
+        case None => Redirect(routes.SelectNewLeadController.getSelectNewLead).toFuture
       }
     }
   }
@@ -138,7 +138,7 @@ class SelectNewLeadController @Inject() (
         val beEori =
           newLeadJourney.selectNewLead.value.getOrElse(handleMissingSessionData("Selected EORi for promotion"))
         store.put[NewLeadJourney](NewLeadJourney()).map(_ => Ok(emailNotVerifiedForLeadPromotionPage(beEori)))
-      case None => Redirect(routes.SelectNewLeadController.getSelectNewLead()).toFuture
+      case None => Redirect(routes.SelectNewLeadController.getSelectNewLead).toFuture
     }
   }
 

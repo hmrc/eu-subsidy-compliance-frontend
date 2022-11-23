@@ -56,7 +56,7 @@
     hasErrors = form.hasErrors
 ) {
     
-    @formHelper(action = controllers.routes.NoClaimNotificationController.postNoClaimNotification()) {
+    @formHelper(action = controllers.routes.NoClaimNotificationController.postNoClaimNotification) {
         @form.errors.map { err =>
             @govukErrorSummary(ErrorSummary(
                 errorList = Seq(
