@@ -25,6 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.{formWithSingleMandatoryField, mandatory}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityRemovedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate._
@@ -32,7 +33,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.withGbPrefix
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -110,11 +110,10 @@ class BusinessEntityController @Inject() (
       store
         .get[BusinessEntityJourney]
         .toContext
-        .fold(Redirect(routes.BusinessEntityController.getAddBusinessEntity())) { journey =>
-          if (!journey.isEligibleForStep) Redirect(journey.previous)
-          else {
+        .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture) { journey =>
+          runStepIfEligible(journey) {
             val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori)))
-            Ok(eoriPage(form, journey.previous))
+            Ok(eoriPage(form, journey.previous)).toFuture
           }
         }
     }
@@ -169,8 +168,7 @@ class BusinessEntityController @Inject() (
         .get[BusinessEntityJourney]
         .toContext
         .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture) { journey =>
-          if (!journey.isEligibleForStep) Redirect(journey.previous).toFuture
-          else {
+          runStepIfEligible(journey) {
             eoriForm
               .bindFromRequest()
               .fold(

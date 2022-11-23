@@ -18,14 +18,21 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.i18n.I18nSupport
 import play.api.mvc._
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import javax.inject.Singleton
+import scala.concurrent.Future
 
 @Singleton
 class BaseController(mcc: MessagesControllerComponents) extends FrontendController(mcc) with I18nSupport {
 
   protected def handleMissingSessionData(dataLabel: String) =
     throw new IllegalStateException(s"$dataLabel data missing on session")
+
+  protected def runStepIfEligible(journey: Journey)(f: => Future[Result])(implicit r: Request[_]): Future[Result] =
+    if (journey.isEligibleForStep) f
+    else Redirect(journey.previous).toFuture
 
 }
