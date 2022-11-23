@@ -66,7 +66,7 @@
                         actions = Some(Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = routes.UndertakingController.getSector().toString,
+                                    href = routes.UndertakingController.getSector.toString,
                                     content = Text(messages("common.cya.change")),
                                     visuallyHiddenText = Some(messages(s"$key.change.hidden.industry-sector"))
                                 )
@@ -83,7 +83,7 @@
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = routes.UndertakingController.getConfirmEmail().toString,
+                                href = routes.UndertakingController.getConfirmEmail.toString,
                                 content = Text(messages("common.cya.change")),
                                 visuallyHiddenText = Some(messages(s"$key.change.hidden.verified-email"))
                             )

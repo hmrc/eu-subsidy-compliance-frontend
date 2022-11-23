@@ -35,7 +35,7 @@
 @layout(
   pageTitle = Some(messages("become-admin.title")),
   backLinkEnabled = true,
-  backLink = Some(controllers.routes.BecomeLeadController.getConfirmEmail().url),
+  backLink = Some(controllers.routes.BecomeLeadController.getConfirmEmail.url),
   hasErrors = form.hasErrors
 ) {
 

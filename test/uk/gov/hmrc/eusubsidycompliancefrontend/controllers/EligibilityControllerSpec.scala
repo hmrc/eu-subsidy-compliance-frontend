@@ -56,7 +56,7 @@ class EligibilityControllerSpec
 
       def performAction() = controller
         .firstEmptyPage(
-          FakeRequest(GET, routes.EligibilityController.firstEmptyPage().url)
+          FakeRequest(GET, routes.EligibilityController.firstEmptyPage.url)
             .withFormUrlEncodedBody()
         )
 
@@ -83,15 +83,15 @@ class EligibilityControllerSpec
         }
 
         "no eligibility journey present in store" in {
-          redirect(None, routes.EligibilityController.getEoriCheck().url)
+          redirect(None, routes.EligibilityController.getEoriCheck.url)
         }
 
         "no values are set in the eligibility journey" in {
-          redirect(EligibilityJourney().some, routes.EligibilityController.getDoYouClaim().url)
+          redirect(EligibilityJourney().some, routes.EligibilityController.getDoYouClaim.url)
         }
 
         "eligibility journey is complete" in {
-          redirect(eligibilityJourney.some, routes.UndertakingController.firstEmptyPage().url)
+          redirect(eligibilityJourney.some, routes.UndertakingController.firstEmptyPage.url)
         }
 
       }
@@ -120,7 +120,7 @@ class EligibilityControllerSpec
                 case None => selectedOptions.isEmpty shouldBe true
               }
               val button = doc.select("form")
-              button.attr("action") shouldBe routes.EligibilityController.getDoYouClaim().url
+              button.attr("action") shouldBe routes.EligibilityController.getDoYouClaim.url
 
             }
           )
@@ -133,9 +133,9 @@ class EligibilityControllerSpec
     "handling request to post do you claim" must {
       def performAction(data: (String, String)*) = controller
         .postDoYouClaim(
-          FakeRequest(POST, routes.EligibilityController.getDoYouClaim().url)
+          FakeRequest(POST, routes.EligibilityController.getDoYouClaim.url)
             .withFormUrlEncodedBody(data: _*)
-            .withHeaders("Referer" -> routes.EligibilityController.getDoYouClaim().url)
+            .withHeaders("Referer" -> routes.EligibilityController.getDoYouClaim.url)
         )
 
       "display form error" when {
@@ -170,7 +170,7 @@ class EligibilityControllerSpec
         }
 
         "No is selected" in {
-          testRedirection(false, routes.EligibilityController.getWillYouClaim().url)
+          testRedirection(false, routes.EligibilityController.getWillYouClaim.url)
         }
 
       }
@@ -180,13 +180,13 @@ class EligibilityControllerSpec
     "handling request to get will you claim" must {
       def performAction() = controller
         .getWillYouClaim(
-          FakeRequest(GET, routes.EligibilityController.getWillYouClaim().url)
+          FakeRequest(GET, routes.EligibilityController.getWillYouClaim.url)
             .withFormUrlEncodedBody()
         )
 
       "display the page" in {
 
-        val previousUrl = routes.EligibilityController.getDoYouClaim().url
+        val previousUrl = routes.EligibilityController.getDoYouClaim.url
 
         inSequence {
           mockAuthWithoutEnrolment()
@@ -199,7 +199,7 @@ class EligibilityControllerSpec
             val selectedOptions = doc.select(".govuk-radios__input[checked]")
             selectedOptions.isEmpty shouldBe true
             val button = doc.select("form")
-            button.attr("action") shouldBe routes.EligibilityController.postWillYouClaim().url
+            button.attr("action") shouldBe routes.EligibilityController.postWillYouClaim.url
 
           }
         )
@@ -212,7 +212,7 @@ class EligibilityControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postWillYouClaim(
-          FakeRequest(POST, routes.EligibilityController.getWillYouClaim().url)
+          FakeRequest(POST, routes.EligibilityController.getWillYouClaim.url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -244,11 +244,11 @@ class EligibilityControllerSpec
         }
 
         "Yes is selected" in {
-          testRedirection(true, routes.EligibilityController.getEoriCheck().url)
+          testRedirection(true, routes.EligibilityController.getEoriCheck.url)
         }
 
         "No is selected" in {
-          testRedirection(false, routes.EligibilityController.getNotEligible().url)
+          testRedirection(false, routes.EligibilityController.getNotEligible.url)
         }
 
       }
@@ -259,7 +259,7 @@ class EligibilityControllerSpec
 
       def performAction() = controller
         .getNotEligible(
-          FakeRequest(GET, routes.EligibilityController.getNotEligible().url)
+          FakeRequest(GET, routes.EligibilityController.getNotEligible.url)
             .withFormUrlEncodedBody()
         )
 
@@ -279,7 +279,7 @@ class EligibilityControllerSpec
 
       def performAction() = controller
         .getEoriCheck(
-          FakeRequest(GET, routes.EligibilityController.getEoriCheck().url)
+          FakeRequest(GET, routes.EligibilityController.getEoriCheck.url)
             .withFormUrlEncodedBody()
         )
 
@@ -303,7 +303,7 @@ class EligibilityControllerSpec
 
               }
               val button = doc.select("form")
-              button.attr("action") shouldBe routes.EligibilityController.postEoriCheck().url
+              button.attr("action") shouldBe routes.EligibilityController.postEoriCheck.url
 
             }
           )
@@ -332,7 +332,7 @@ class EligibilityControllerSpec
 
           val result = performAction()
 
-          redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
+          redirectLocation(result) should contain(routes.AccountController.getAccountPage.url)
         }
       }
 
@@ -342,7 +342,7 @@ class EligibilityControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postEoriCheck(
-          FakeRequest(POST, routes.EligibilityController.postEoriCheck().url)
+          FakeRequest(POST, routes.EligibilityController.postEoriCheck.url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -391,11 +391,11 @@ class EligibilityControllerSpec
           }
 
         "yes is selected" in {
-          testRedirection(true, routes.AccountController.getAccountPage().url)
+          testRedirection(true, routes.AccountController.getAccountPage.url)
         }
 
         "no is selected" in {
-          testRedirection(false, routes.EligibilityController.getIncorrectEori().url)
+          testRedirection(false, routes.EligibilityController.getIncorrectEori.url)
         }
       }
 
@@ -405,7 +405,7 @@ class EligibilityControllerSpec
 
       def performAction() = controller
         .getIncorrectEori(
-          FakeRequest(GET, routes.EligibilityController.getIncorrectEori().url)
+          FakeRequest(GET, routes.EligibilityController.getIncorrectEori.url)
             .withFormUrlEncodedBody()
         )
 

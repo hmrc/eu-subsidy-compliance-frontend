@@ -35,7 +35,7 @@ object NilReturnJourney {
     private val controller = routes.NoClaimNotificationController
 
     case class NilReturnFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getNoClaimNotification().url
+      def uri = controller.getNoClaimNotification.url
     }
 
     object NilReturnFormPage {

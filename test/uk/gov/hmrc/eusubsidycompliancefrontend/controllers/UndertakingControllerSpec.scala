@@ -102,7 +102,7 @@ class UndertakingControllerSpec
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete))
           }
-          checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity().url)
+          checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity.url)
         }
 
         "undertaking journey is present and  is not None and is not complete" when {
@@ -120,7 +120,7 @@ class UndertakingControllerSpec
               UndertakingJourney(
                 about = AboutUndertakingFormPage("TestUndertaking".some)
               ),
-              routes.UndertakingController.getSector().url
+              routes.UndertakingController.getSector.url
             )
           }
 
@@ -130,7 +130,7 @@ class UndertakingControllerSpec
                 about = AboutUndertakingFormPage("TestUndertaking".some),
                 sector = UndertakingSectorFormPage(Sector(1).some)
               ),
-              routes.UndertakingController.getConfirmEmail().url
+              routes.UndertakingController.getConfirmEmail.url
             )
           }
 
@@ -141,7 +141,7 @@ class UndertakingControllerSpec
                 sector = UndertakingSectorFormPage(Sector(1).some),
                 verifiedEmail = UndertakingConfirmEmailFormPage("joe.bloggs@something.com".some)
               ),
-              routes.UndertakingController.getAddBusiness().url
+              routes.UndertakingController.getAddBusiness.url
             )
           }
 
@@ -153,7 +153,7 @@ class UndertakingControllerSpec
                 verifiedEmail = UndertakingConfirmEmailFormPage("joe.bloggs@something.com".some),
                   addBusiness = UndertakingAddBusinessFormPage(false.some)
               ),
-              routes.UndertakingController.getCheckAnswers().url
+              routes.UndertakingController.getCheckAnswers.url
             )
           }
 
@@ -166,7 +166,7 @@ class UndertakingControllerSpec
                 addBusiness = UndertakingAddBusinessFormPage(false.some),
                 cya = UndertakingCyaFormPage(true.some)
               ),
-              routes.UndertakingController.postConfirmation().url
+              routes.UndertakingController.postConfirmation.url
             )
           }
 
@@ -180,7 +180,7 @@ class UndertakingControllerSpec
                 addBusiness = UndertakingAddBusinessFormPage(false.some),
                 confirmation = UndertakingConfirmationFormPage(true.some)
               ),
-              routes.BusinessEntityController.getAddBusinessEntity().url
+              routes.BusinessEntityController.getAddBusinessEntity.url
             )
           }
 
@@ -193,7 +193,7 @@ class UndertakingControllerSpec
     "handling request to get About Undertaking" must {
 
       def performAction() =
-        controller.getAboutUndertaking(FakeRequest(GET, routes.UndertakingController.getAboutUndertaking().url))
+        controller.getAboutUndertaking(FakeRequest(GET, routes.UndertakingController.getAboutUndertaking.url))
 
       "display the page" when {
 
@@ -208,7 +208,7 @@ class UndertakingControllerSpec
             messageFromMessageKey("undertakingName.title"),
             { doc =>
               doc.select(".govuk-back-link").attr("href") shouldBe backUrl
-              doc.select("form").attr("action") shouldBe routes.UndertakingController.postAboutUndertaking().url
+              doc.select("form").attr("action") shouldBe routes.UndertakingController.postAboutUndertaking.url
             }
           )
 
@@ -224,23 +224,23 @@ class UndertakingControllerSpec
             messageFromMessageKey("undertakingName.title"),
             { doc =>
               doc.select(".govuk-back-link").attr("href") shouldBe routes.EligibilityController
-                .getEoriCheck()
+                .getEoriCheck
                 .url
               val input = doc.select(".govuk-input").attr("value")
               input shouldBe ""
 
               val button = doc.select("form")
-              button.attr("action") shouldBe routes.UndertakingController.postAboutUndertaking().url
+              button.attr("action") shouldBe routes.UndertakingController.postAboutUndertaking.url
             }
           )
         }
 
         "undertaking journey is there in store and user has already answered the questions and all answers are complete" in {
-          testDisplay(undertakingJourneyComplete, routes.EligibilityController.getEoriCheck().url)
+          testDisplay(undertakingJourneyComplete, routes.EligibilityController.getEoriCheck.url)
         }
 
         "undertaking journey is there in store and user hasn't  answered any questions" in {
-          testDisplay(UndertakingJourney(), routes.EligibilityController.getEoriCheck().url)
+          testDisplay(UndertakingJourney(), routes.EligibilityController.getEoriCheck.url)
         }
 
         "undertaking journey is there in store and user has answered the question but journey is not complete" in {
@@ -248,12 +248,12 @@ class UndertakingControllerSpec
             UndertakingJourney(
               about = AboutUndertakingFormPage("TestUndertaking".some)
             ),
-            routes.EligibilityController.getEoriCheck().url
+            routes.EligibilityController.getEoriCheck.url
           )
         }
 
         "page appeared via amend undertaking journey" in {
-          testDisplay(undertakingJourneyComplete1, routes.UndertakingController.getAmendUndertakingDetails().url)
+          testDisplay(undertakingJourneyComplete1, routes.UndertakingController.getAmendUndertakingDetails.url)
         }
       }
 
@@ -263,7 +263,7 @@ class UndertakingControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postAboutUndertaking(
-          FakeRequest(POST, routes.UndertakingController.getAboutUndertaking().url)
+          FakeRequest(POST, routes.UndertakingController.getAboutUndertaking.url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -324,16 +324,16 @@ class UndertakingControllerSpec
         }
 
         "page is reached via amend details page " in {
-          test(undertakingJourneyComplete1, routes.UndertakingController.getAmendUndertakingDetails().url)
+          test(undertakingJourneyComplete1, routes.UndertakingController.getAmendUndertakingDetails.url)
 
         }
 
         "page is reached via normal undertaking creation process" in {
-          test(UndertakingJourney(), routes.UndertakingController.getSector().url)
+          test(UndertakingJourney(), routes.UndertakingController.getSector.url)
         }
 
         "page is reached via normal undertaking creation process when all answers have been provided" in {
-          test(undertakingJourneyComplete, routes.UndertakingController.getCheckAnswers().url)
+          test(undertakingJourneyComplete, routes.UndertakingController.getCheckAnswers.url)
         }
 
       }
@@ -342,7 +342,7 @@ class UndertakingControllerSpec
 
     "handling request to get sector" must {
 
-      def performAction() = controller.getSector(FakeRequest(GET, routes.UndertakingController.getSector().url))
+      def performAction() = controller.getSector(FakeRequest(GET, routes.UndertakingController.getSector.url))
 
       "throw technical error" when {
 
@@ -392,7 +392,7 @@ class UndertakingControllerSpec
 
               val form = doc.select("form")
               form
-                .attr("action") shouldBe routes.UndertakingController.postSector().url
+                .attr("action") shouldBe routes.UndertakingController.postSector.url
             }
           )
 
@@ -401,7 +401,7 @@ class UndertakingControllerSpec
         "user has not already answered the question (normal add undertaking journey)" in {
           test(
             undertakingJourney = UndertakingJourney(about = AboutUndertakingFormPage("TestUndertaking1".some)),
-            previousCall = routes.UndertakingController.getAboutUndertaking().url,
+            previousCall = routes.UndertakingController.getAboutUndertaking.url,
             inputValue = None
           )
         }
@@ -412,7 +412,7 @@ class UndertakingControllerSpec
               about = AboutUndertakingFormPage("TestUndertaking1".some),
               sector = UndertakingSectorFormPage(Sector(2).some)
             ),
-            previousCall = routes.UndertakingController.getAboutUndertaking().url,
+            previousCall = routes.UndertakingController.getAboutUndertaking.url,
             inputValue = "2".some
           )
         }
@@ -420,7 +420,7 @@ class UndertakingControllerSpec
         "user has already answered the question and is on Amend journey" in {
           test(
             undertakingJourney = undertakingJourneyComplete1,
-            previousCall = routes.UndertakingController.getAmendUndertakingDetails().url,
+            previousCall = routes.UndertakingController.getAmendUndertakingDetails.url,
             inputValue = "2".some
           )
         }
@@ -434,7 +434,7 @@ class UndertakingControllerSpec
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(None))
           }
-          checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking().url)
+          checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking.url)
         }
       }
 
@@ -445,7 +445,7 @@ class UndertakingControllerSpec
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney().some))
           }
-          checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking().url)
+          checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking.url)
         }
       }
 
@@ -454,7 +454,7 @@ class UndertakingControllerSpec
     "handling request to post sector" must {
       def performAction(data: (String, String)*) = controller
         .postSector(
-          FakeRequest(POST, routes.UndertakingController.getSector().url)
+          FakeRequest(POST, routes.UndertakingController.getSector.url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -536,16 +536,16 @@ class UndertakingControllerSpec
         }
 
         "page is reached via amend details page " in {
-          test(undertakingJourneyComplete1, routes.UndertakingController.getAmendUndertakingDetails().url)
+          test(undertakingJourneyComplete1, routes.UndertakingController.getAmendUndertakingDetails.url)
 
         }
 
         "page is reached via normal undertaking creation process" in {
-          test(UndertakingJourney(), routes.UndertakingController.getConfirmEmail().url)
+          test(UndertakingJourney(), routes.UndertakingController.getConfirmEmail.url)
         }
 
         "page is reached via normal undertaking creation process when all answers have been provided" in {
-          test(undertakingJourneyComplete, routes.UndertakingController.getCheckAnswers().url)
+          test(undertakingJourneyComplete, routes.UndertakingController.getCheckAnswers.url)
         }
 
       }
@@ -587,7 +587,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](identity, eori1)(Right(undertakingJourney))
           }
 
-          redirectLocation(performAction("id")) shouldBe Some(routes.UndertakingController.getAddBusiness().url)
+          redirectLocation(performAction("id")) shouldBe Some(routes.UndertakingController.getAddBusiness.url)
         }
       }
 
@@ -595,7 +595,7 @@ class UndertakingControllerSpec
 
     "handling request to get confirm email" must {
 
-      def performAction() = controller.getConfirmEmail(FakeRequest(GET, routes.UndertakingController.getConfirmEmail().url))
+      def performAction() = controller.getConfirmEmail(FakeRequest(GET, routes.UndertakingController.getConfirmEmail.url))
 
       "throw technical error" when {
 
@@ -617,7 +617,7 @@ class UndertakingControllerSpec
               about = AboutUndertakingFormPage("TestUndertaking1".some),
               sector = UndertakingSectorFormPage(Sector(2).some)
             )
-            val previousCall = routes.UndertakingController.getSector().url
+            val previousCall = routes.UndertakingController.getSector.url
 
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification()
@@ -632,7 +632,7 @@ class UndertakingControllerSpec
 
                 val form = doc.select("form")
                 form
-                  .attr("action") shouldBe routes.UndertakingController.postConfirmEmail().url
+                  .attr("action") shouldBe routes.UndertakingController.postConfirmEmail.url
               }
             )
 
@@ -643,7 +643,7 @@ class UndertakingControllerSpec
             about = AboutUndertakingFormPage("TestUndertaking1".some),
             sector = UndertakingSectorFormPage(Sector(2).some)
           )
-          val previousCall = routes.UndertakingController.getSector().url
+          val previousCall = routes.UndertakingController.getSector.url
 
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
@@ -658,7 +658,7 @@ class UndertakingControllerSpec
 
               val form = doc.select("form")
               form
-                .attr("action") shouldBe routes.UndertakingController.postConfirmEmail().url
+                .attr("action") shouldBe routes.UndertakingController.postConfirmEmail.url
             }
           )
 
@@ -672,7 +672,7 @@ class UndertakingControllerSpec
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(None))
           }
-          checkIsRedirect(performAction(), routes.UndertakingController.getSector().url)
+          checkIsRedirect(performAction(), routes.UndertakingController.getSector.url)
         }
       }
 
@@ -682,7 +682,7 @@ class UndertakingControllerSpec
 
       def performAction(data: (String, String)*) =
         controller.postConfirmEmail(
-          FakeRequest(POST, routes.UndertakingController.postConfirmEmail().url)
+          FakeRequest(POST, routes.UndertakingController.postConfirmEmail.url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -724,7 +724,7 @@ class UndertakingControllerSpec
          }
          checkIsRedirect(
            performAction("using-stored-email" -> "true"),
-           routes.UndertakingController.getAddBusiness().url
+           routes.UndertakingController.getAddBusiness.url
          )
        }
 
@@ -754,7 +754,7 @@ class UndertakingControllerSpec
     "handling request to get intention to add business" must {
 
       def performAction() = controller.getAddBusiness(
-        FakeRequest(GET, routes.UndertakingController.getAddBusiness().url)
+        FakeRequest(GET, routes.UndertakingController.getAddBusiness.url)
       )
 
       "throw technical error" when {
@@ -778,7 +778,7 @@ class UndertakingControllerSpec
             sector = UndertakingSectorFormPage(Sector(2).some),
             verifiedEmail = UndertakingConfirmEmailFormPage("some@email.com".some),
           )
-          val previousCall = routes.UndertakingController.getConfirmEmail().url
+          val previousCall = routes.UndertakingController.getConfirmEmail.url
 
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
@@ -792,7 +792,7 @@ class UndertakingControllerSpec
 
               val form = doc.select("form")
               form
-                .attr("action") shouldBe routes.UndertakingController.postAddBusiness().url
+                .attr("action") shouldBe routes.UndertakingController.postAddBusiness.url
             }
           )
 
@@ -805,7 +805,7 @@ class UndertakingControllerSpec
             verifiedEmail = UndertakingConfirmEmailFormPage("some@email.com".some),
             addBusiness = UndertakingAddBusinessFormPage(true.some)
           )
-          val previousCall = routes.UndertakingController.getConfirmEmail().url
+          val previousCall = routes.UndertakingController.getConfirmEmail.url
 
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
@@ -819,7 +819,7 @@ class UndertakingControllerSpec
 
               val form = doc.select("form")
               form
-                .attr("action") shouldBe routes.UndertakingController.postAddBusiness().url
+                .attr("action") shouldBe routes.UndertakingController.postAddBusiness.url
             }
           )
 
@@ -833,7 +833,7 @@ class UndertakingControllerSpec
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(None))
           }
-          checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking().url)
+          checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking.url)
         }
       }
 
@@ -847,7 +847,7 @@ class UndertakingControllerSpec
               sector = UndertakingSectorFormPage(Sector(1).some)
             ).some))
           }
-          checkIsRedirect(performAction(), routes.UndertakingController.getConfirmEmail().url)
+          checkIsRedirect(performAction(), routes.UndertakingController.getConfirmEmail.url)
         }
       }
 
@@ -856,7 +856,7 @@ class UndertakingControllerSpec
     "handling request to post intention to add business" must {
 
       def performAction(data: (String, String)*) = controller.postAddBusiness(
-        FakeRequest(POST, routes.UndertakingController.postAddBusiness().url).withFormUrlEncodedBody(data: _*)
+        FakeRequest(POST, routes.UndertakingController.postAddBusiness.url).withFormUrlEncodedBody(data: _*)
       )
 
       "throw technical error" when {
@@ -913,7 +913,7 @@ class UndertakingControllerSpec
               Right(UndertakingJourney(addBusiness = UndertakingAddBusinessFormPage(false.some)))
             )
           }
-          checkIsRedirect(performAction("addBusiness" -> "false"), routes.UndertakingController.getCheckAnswers().url)
+          checkIsRedirect(performAction("addBusiness" -> "false"), routes.UndertakingController.getCheckAnswers.url)
         }
 
         "user selected Yes" in {
@@ -924,7 +924,7 @@ class UndertakingControllerSpec
               Right(UndertakingJourney(addBusiness = UndertakingAddBusinessFormPage(true.some)))
             )
           }
-          checkIsRedirect(performAction("addBusiness" -> "true"), routes.UndertakingController.getCheckAnswers().url)
+          checkIsRedirect(performAction("addBusiness" -> "true"), routes.UndertakingController.getCheckAnswers.url)
         }
 
       }
@@ -936,7 +936,7 @@ class UndertakingControllerSpec
     "handling request to get check your answers page" must {
 
       def performAction() = controller.getCheckAnswers(
-        FakeRequest(GET, routes.UndertakingController.getCheckAnswers().url)
+        FakeRequest(GET, routes.UndertakingController.getCheckAnswers.url)
       )
 
       "display the page" in {
@@ -950,12 +950,12 @@ class UndertakingControllerSpec
           ModifyUndertakingRow(
             messageFromMessageKey("undertaking.cya.summary-list.sector.key"),
             messageFromMessageKey(s"sector.label.${undertaking.industrySector.id.toString}"),
-            routes.UndertakingController.getSector().url
+            routes.UndertakingController.getSector.url
           ),
           ModifyUndertakingRow(
             messageFromMessageKey("undertaking.cya.summary-list.verified-email"),
             "joebloggs@something.com",
-            routes.UndertakingController.getConfirmEmail().url
+            routes.UndertakingController.getConfirmEmail.url
           ),
         )
         inSequence {
@@ -967,7 +967,7 @@ class UndertakingControllerSpec
           performAction(),
           messageFromMessageKey("undertaking.cya.title"),
           { doc =>
-            doc.select(".govuk-back-link").attr("href") shouldBe routes.UndertakingController.getAddBusiness().url
+            doc.select(".govuk-back-link").attr("href") shouldBe routes.UndertakingController.getAddBusiness.url
             val rows =
               doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
                 val question = element.select(".govuk-summary-list__key").text()
@@ -1003,7 +1003,7 @@ class UndertakingControllerSpec
               Right(undertakingJourneyComplete.copy(verifiedEmail = UndertakingConfirmEmailFormPage()).some)
             )
           }
-          redirectLocation(performAction()) shouldBe Some(routes.UndertakingController.getAddBusiness().url)
+          redirectLocation(performAction()) shouldBe Some(routes.UndertakingController.getAddBusiness.url)
         }
 
         "to journey start when call to get undertaking journey fetches nothing" in {
@@ -1011,7 +1011,7 @@ class UndertakingControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockGet[UndertakingJourney](eori1)(Right(None))
           }
-          checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking().url)
+          checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking.url)
         }
       }
 
@@ -1021,7 +1021,7 @@ class UndertakingControllerSpec
 
       def performAction(data: (String, String)*) =
         controller.postCheckAnswers(
-          FakeRequest(POST, routes.UndertakingController.getCheckAnswers().url)
+          FakeRequest(POST, routes.UndertakingController.getCheckAnswers.url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -1143,7 +1143,7 @@ class UndertakingControllerSpec
           { doc =>
             val heading2 = doc.select(".govuk-body").text()
             heading2 should include regex messageFromMessageKey("undertaking.confirmation.p1")
-            doc.text() should not include messageFromMessageKey("undertaking.confirmation.p2", routes.BusinessEntityController.getAddBusinessEntity())
+            doc.text() should not include messageFromMessageKey("undertaking.confirmation.p2", routes.BusinessEntityController.getAddBusinessEntity)
           }
         )
 
@@ -1161,7 +1161,7 @@ class UndertakingControllerSpec
           { doc =>
             val heading2 = doc.select(".govuk-body").text()
             heading2 should include regex messageFromMessageKey("undertaking.confirmation.p1")
-            doc.html() should include regex messageFromMessageKey("undertaking.confirmation.p2", routes.BusinessEntityController.getAddBusinessEntity().url)
+            doc.html() should include regex messageFromMessageKey("undertaking.confirmation.p2", routes.BusinessEntityController.getAddBusinessEntity.url)
           }
         )
 
@@ -1202,7 +1202,7 @@ class UndertakingControllerSpec
           mockUpdate[UndertakingJourney](_ => update(undertakingJourney), eori1)(Right(undertakingJourneyComplete))
         }
 
-        checkIsRedirect(performAction("confirm" -> "true"), routes.AccountController.getAccountPage().url)
+        checkIsRedirect(performAction("confirm" -> "true"), routes.AccountController.getAccountPage.url)
       }
 
     }
@@ -1217,12 +1217,12 @@ class UndertakingControllerSpec
         ModifyUndertakingRow(
           messageFromMessageKey("undertaking.amendUndertaking.summary-list.sector.key"),
           messageFromMessageKey(s"sector.label.${undertaking.industrySector.id.toString}"),
-          routes.UndertakingController.getSector().url
+          routes.UndertakingController.getSector.url
         ),
           ModifyUndertakingRow(
           messageFromMessageKey("undertaking.amendUndertaking.summary-list.undertaking-admin-email.key"),
           "foo@example.com",
-          routes.UndertakingController.getConfirmEmail().url
+          routes.UndertakingController.getConfirmEmail.url
         )
       )
 
@@ -1266,7 +1266,7 @@ class UndertakingControllerSpec
             performAction(),
             messageFromMessageKey("undertaking.amendUndertaking.title"),
             { doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
+              doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
 
               val rows =
                 doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
@@ -1295,7 +1295,7 @@ class UndertakingControllerSpec
             performAction(),
             messageFromMessageKey("undertaking.amendUndertaking.title"),
             { doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
+              doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
 
               val rows =
                 doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
@@ -1319,7 +1319,7 @@ class UndertakingControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[UndertakingJourney](eori1)(Right(None))
           }
-          checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking().url)
+          checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking.url)
         }
 
       }
@@ -1330,7 +1330,7 @@ class UndertakingControllerSpec
 
       def performAction(data: (String, String)*) = controller
         .postAmendUndertaking(
-          FakeRequest(POST, routes.UndertakingController.getAmendUndertakingDetails().url)
+          FakeRequest(POST, routes.UndertakingController.getAmendUndertakingDetails.url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -1431,7 +1431,7 @@ class UndertakingControllerSpec
             UndertakingUpdated("1123", eori1, undertakingRef, undertaking1.name, undertaking1.industrySector)
           )
         }
-        checkIsRedirect(performAction("amendUndertaking" -> "true"), routes.AccountController.getAccountPage().url)
+        checkIsRedirect(performAction("amendUndertaking" -> "true"), routes.AccountController.getAccountPage.url)
       }
 
     }
@@ -1447,7 +1447,7 @@ class UndertakingControllerSpec
         checkPageIsDisplayed(
           performAction(),
           messageFromMessageKey("disableUndertakingWarning.title"),
-          doc => doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage().url
+          doc => doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
         )
       }
 
@@ -1466,11 +1466,11 @@ class UndertakingControllerSpec
           messageFromMessageKey("disableUndertakingConfirm.title"),
           { doc =>
             doc.select(".govuk-back-link").attr("href") shouldBe routes.UndertakingController
-              .getDisableUndertakingWarning()
+              .getDisableUndertakingWarning
               .url
             val form = doc.select("form")
             form
-              .attr("action") shouldBe routes.UndertakingController.postDisableUndertakingConfirm().url
+              .attr("action") shouldBe routes.UndertakingController.postDisableUndertakingConfirm.url
           }
         )
       }
@@ -1480,7 +1480,7 @@ class UndertakingControllerSpec
     "handling request to post Disable undertaking confirm" must {
       def performAction(data: (String, String)*) = controller
         .postDisableUndertakingConfirm(
-          FakeRequest(POST, routes.UndertakingController.getDisableUndertakingConfirm().url)
+          FakeRequest(POST, routes.UndertakingController.getDisableUndertakingConfirm.url)
             .withFormUrlEncodedBody(data: _*)
         )
 
@@ -1531,7 +1531,7 @@ class UndertakingControllerSpec
           }
           checkIsRedirect(
             performAction("disableUndertakingConfirm" -> "true"),
-            routes.UndertakingController.getUndertakingDisabled().url
+            routes.UndertakingController.getUndertakingDisabled.url
           )
         }
 
@@ -1542,7 +1542,7 @@ class UndertakingControllerSpec
           }
           checkIsRedirect(
             performAction("disableUndertakingConfirm" -> "false"),
-            routes.AccountController.getAccountPage().url
+            routes.AccountController.getAccountPage.url
           )
         }
       }

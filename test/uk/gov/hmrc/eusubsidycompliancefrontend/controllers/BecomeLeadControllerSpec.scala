@@ -221,7 +221,7 @@ class BecomeLeadControllerSpec
             mockAuthWithEnrolmentAndValidEmail(eori4)
           }
 
-          checkIsRedirect(performAction("becomeAdmin" -> "false"), routes.AccountController.getAccountPage().url)
+          checkIsRedirect(performAction("becomeAdmin" -> "false"), routes.AccountController.getAccountPage.url)
         }
 
       }
@@ -305,7 +305,7 @@ class BecomeLeadControllerSpec
             mockAuthWithEnrolment(eori4)
             mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori4)(Right(newBecomeLeadJourney))
           }
-          redirectLocation(performAction()) shouldBe routes.BecomeLeadController.getConfirmEmail().url.some
+          redirectLocation(performAction()) shouldBe routes.BecomeLeadController.getConfirmEmail.url.some
         }
       }
     }
@@ -465,7 +465,7 @@ class BecomeLeadControllerSpec
         val result = performAction(verificationId)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(routes.BecomeLeadController.getConfirmEmail().url)
+        redirectLocation(result) should contain(routes.BecomeLeadController.getConfirmEmail.url)
       }
 
       "the email verification record is not found" in {
@@ -479,7 +479,7 @@ class BecomeLeadControllerSpec
         val result = performAction(verificationId)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(routes.BecomeLeadController.getConfirmEmail().url)
+        redirectLocation(result) should contain(routes.BecomeLeadController.getConfirmEmail.url)
       }
 
       "the verification request is successful" in {
@@ -506,7 +506,7 @@ class BecomeLeadControllerSpec
         val result = performAction(verificationId)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(routes.BecomeLeadController.getConfirmEmail().url)
+        redirectLocation(result) should contain(routes.BecomeLeadController.getConfirmEmail.url)
       }
     }
 

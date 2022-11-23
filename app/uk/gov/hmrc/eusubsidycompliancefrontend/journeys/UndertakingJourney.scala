@@ -49,17 +49,17 @@ case class UndertakingJourney(
     confirmation
   )
   private lazy val previousMap: Map[String, Uri] = Map(
-    routes.UndertakingController.getAboutUndertaking().url -> routes.EligibilityController.getEoriCheck().url,
-    routes.UndertakingController.getSector().url -> routes.UndertakingController.getAboutUndertaking().url
+    routes.UndertakingController.getAboutUndertaking.url -> routes.EligibilityController.getEoriCheck.url,
+    routes.UndertakingController.getSector.url -> routes.UndertakingController.getAboutUndertaking.url
   )
 
   override def previous(implicit r: Request[_]): Uri =
-    if (isAmend) routes.UndertakingController.getAmendUndertakingDetails().url
+    if (isAmend) routes.UndertakingController.getAmendUndertakingDetails.url
     else previousMap.getOrElse(r.uri, super.previous)
 
   override def next(implicit request: Request[_]): Future[Result] =
-    if (isAmend) Redirect(routes.UndertakingController.getAmendUndertakingDetails()).toFuture
-    else if (requiredDetailsProvided) Redirect(routes.UndertakingController.getCheckAnswers()).toFuture
+    if (isAmend) Redirect(routes.UndertakingController.getAmendUndertakingDetails).toFuture
+    else if (requiredDetailsProvided) Redirect(routes.UndertakingController.getCheckAnswers).toFuture
     else super.next
 
   def isEmpty: Boolean = steps.flatMap(_.value).isEmpty
@@ -95,22 +95,22 @@ object UndertakingJourney {
     private val controller = routes.UndertakingController
 
     case class AboutUndertakingFormPage(value: Form[String] = None) extends FormPage[String] {
-      def uri = controller.getAboutUndertaking().url
+      def uri = controller.getAboutUndertaking.url
     }
     case class UndertakingSectorFormPage(value: Form[Sector] = None) extends FormPage[Sector] {
-      def uri = controller.getSector().url
+      def uri = controller.getSector.url
     }
     case class UndertakingConfirmEmailFormPage(value: Form[String] = None) extends FormPage[String] {
-      def uri = controller.getConfirmEmail().url
+      def uri = controller.getConfirmEmail.url
     }
     case class UndertakingAddBusinessFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getAddBusiness().url
+      def uri = controller.getAddBusiness.url
     }
     case class UndertakingCyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getCheckAnswers().url
+      def uri = controller.getCheckAnswers.url
     }
     case class UndertakingConfirmationFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.postConfirmation().url
+      def uri = controller.postConfirmation.url
     }
 
     object AboutUndertakingFormPage {

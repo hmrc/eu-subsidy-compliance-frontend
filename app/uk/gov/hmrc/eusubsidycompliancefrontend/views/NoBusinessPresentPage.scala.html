@@ -24,7 +24,7 @@
 @key = @{"noBusinessPresent"}
 @title = @{messages(s"$key.title")}
 @layout(pageTitle = Some(title), backLinkEnabled = true, backLink = Some(previous)) {
- @formHelper(action = controllers.routes.NoBusinessPresentController.postNoBusinessPresent()) {
+ @formHelper(action = controllers.routes.NoBusinessPresentController.postNoBusinessPresent) {
   <h1 class="govuk-heading-xl">@title</h1>
   @govukButton(Button(content = Text(messages("button.addBusiness"))))
  }

@@ -74,19 +74,19 @@ object EligibilityJourney {
     private val controller = routes.EligibilityController
 
     case class DoYouClaimFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getDoYouClaim().url
+      def uri = controller.getDoYouClaim.url
     }
     case class WillYouClaimFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getWillYouClaim().url
+      def uri = controller.getWillYouClaim.url
     }
     case class NotEligibleFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getNotEligible().url
+      def uri = controller.getNotEligible.url
     }
     case class EoriCheckFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getEoriCheck().url
+      def uri = controller.getEoriCheck.url
     }
     case class SignOutBadEoriFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getIncorrectEori().url
+      def uri = controller.getIncorrectEori.url
     }
 
     object DoYouClaimFormPage { implicit val customsWaiversFormPageFormat: OFormat[DoYouClaimFormPage] = Json.format }

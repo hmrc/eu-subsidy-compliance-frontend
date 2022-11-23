@@ -37,7 +37,7 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
   private val groupId = Some("groupIdentifier")
 
   private lazy val expectedSignInUrl: String =
-    s"$ggSignInUrl?" + s"continue=${URLEncoder.encode("http://localhost/", "UTF-8")}&origin=$appName"
+    s"$ggSignInUrl?continue=" + URLEncoder.encode("http://localhost/", "UTF-8") + s"&origin=$appName"
 
   private def identifiers(eori: EORI) = Seq(EnrolmentIdentifier(EccEnrolmentIdentifier, eori))
   private def eccEnrolments(eori: EORI) = Enrolment(key = EccEnrolmentKey, identifiers = identifiers(eori), state = "")

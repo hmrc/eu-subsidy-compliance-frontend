@@ -83,7 +83,7 @@ class LeadOnlyUndertakingSupportSpec
         val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
+        redirectLocation(result) should contain(routes.AccountController.getAccountPage.url)
       }
 
       "no undertaking could be found for the eori associated with the request" in {
@@ -96,7 +96,7 @@ class LeadOnlyUndertakingSupportSpec
         val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
+        redirectLocation(result) should contain(routes.AccountController.getAccountPage.url)
       }
     }
 

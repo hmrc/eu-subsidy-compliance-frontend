@@ -79,7 +79,7 @@
     }
 }
 
-  @formHelper(action = controllers.routes.SubsidyController.postClaimDate()) {
+  @formHelper(action = controllers.routes.SubsidyController.postClaimDate) {
     @H1(title, Some("govuk-heading-xl govuk-!-margin-bottom-3"))
     @P(messages("add-claim-date.p1", earliestAllowedClaimDate.toDisplayFormat))
     @defining(form.errors.headOption) { maybeError =>

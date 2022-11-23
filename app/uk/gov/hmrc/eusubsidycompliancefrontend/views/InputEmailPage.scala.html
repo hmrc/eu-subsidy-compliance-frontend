@@ -42,7 +42,7 @@
     hasErrors = form.hasErrors
 ) {
 
-    @formHelper(action = controllers.routes.UndertakingController.postConfirmEmail()) {
+    @formHelper(action = controllers.routes.UndertakingController.postConfirmEmail) {
       @if(form.hasErrors) {
           @govukErrorSummary(
               ErrorSummary(

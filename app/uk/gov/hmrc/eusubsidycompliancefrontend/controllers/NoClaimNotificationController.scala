@@ -59,7 +59,7 @@ class NoClaimNotificationController @Inject() (
     withLeadUndertaking { undertaking =>
       escService.retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange).toContext
         .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
-          val previous = routes.AccountController.getAccountPage().url
+          val previous = routes.AccountController.getAccountPage.url
           val today = timeProvider.today
           val startDate = today.toEarliestTaxYearStart
 
@@ -84,7 +84,7 @@ class NoClaimNotificationController @Inject() (
     withLeadUndertaking { undertaking =>
       escService.retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange).toContext
         .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
-          val previous = routes.AccountController.getAccountPage().url
+          val previous = routes.AccountController.getAccountPage.url
           val today = timeProvider.today
           val startDate = today.toEarliestTaxYearStart
 
@@ -100,7 +100,7 @@ class NoClaimNotificationController @Inject() (
                 .sendEvent(
                   NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate)
                 )
-            } yield Redirect(routes.NoClaimNotificationController.getNotificationConfirmation())
+            } yield Redirect(routes.NoClaimNotificationController.getNotificationConfirmation)
 
             result.getOrElse(handleMissingSessionData("Undertaking ref"))
           }

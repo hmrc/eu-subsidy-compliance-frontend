@@ -80,7 +80,7 @@ class EnrolledActionBuilder @Inject() (
                 .getIdentifier(EccEnrolmentIdentifier)
                 .fold(throw new IllegalStateException("no eori provided"))(_.value)
               block(AuthenticatedEnrolledRequest(credentials.providerId, groupId, request, EORI(identifier)))
-            case _ => Redirect(routes.EligibilityController.getDoYouClaim().url).toFuture
+            case _ => Redirect(routes.EligibilityController.getDoYouClaim.url).toFuture
           }
         case _ ~ _ => Future.failed(throw InternalError())
       }(hc(request), executionContext).recover(handleFailure(request, appConfig))

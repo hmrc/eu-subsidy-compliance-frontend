@@ -71,9 +71,9 @@ case class SubsidyJourney(
       if (convertedClaimAmountConfirmation.isCurrentPage) claimAmount.uri
       else if (addClaimBusiness.isCurrentPage) addClaimEori.uri
       else if (!cya.isCurrentPage) cya.uri
-      else extractAndParseRefererUrl.getOrElse(routes.AccountController.getAccountPage().url)
+      else extractAndParseRefererUrl.getOrElse(routes.AccountController.getAccountPage.url)
     else
-      if (claimDate.isCurrentPage) routes.AccountController.getAccountPage().url
+      if (claimDate.isCurrentPage) routes.AccountController.getAccountPage.url
       else if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.uri
       else if (publicAuthority.isCurrentPage && !shouldAddNewBusiness) addClaimEori.uri
       else super.previous
@@ -130,28 +130,28 @@ object SubsidyJourney {
     private val controller = routes.SubsidyController
 
     case class ClaimDateFormPage(value: Form[DateFormValues] = None) extends FormPage[DateFormValues] {
-      def uri = controller.getClaimDate().url
+      def uri = controller.getClaimDate.url
     }
     case class ClaimAmountFormPage(value: Form[ClaimAmount] = None) extends FormPage[ClaimAmount] {
-      def uri = controller.getClaimAmount().url
+      def uri = controller.getClaimAmount.url
     }
     case class ConvertedClaimAmountConfirmationPage(value: Form[ClaimAmount] = None) extends FormPage[ClaimAmount] {
-      def uri = controller.getConfirmClaimAmount().url
+      def uri = controller.getConfirmClaimAmount.url
     }
     case class AddClaimEoriFormPage(value: Form[OptionalClaimEori] = None) extends FormPage[OptionalClaimEori] {
-      def uri = controller.getAddClaimEori().url
+      def uri = controller.getAddClaimEori.url
     }
     case class AddClaimBusinessFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getAddClaimBusiness().url
+      def uri = controller.getAddClaimBusiness.url
     }
     case class PublicAuthorityFormPage(value: Form[String] = None) extends FormPage[String] {
-      def uri = controller.getAddClaimPublicAuthority().url
+      def uri = controller.getAddClaimPublicAuthority.url
     }
     case class TraderRefFormPage(value: Form[OptionalTraderRef] = None) extends FormPage[OptionalTraderRef] {
-      def uri = controller.getAddClaimReference().url
+      def uri = controller.getAddClaimReference.url
     }
     case class CyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getCheckAnswers().url
+      def uri = controller.getCheckAnswers.url
     }
 
     object ClaimDateFormPage { implicit val claimDateFormPageFormat: OFormat[ClaimDateFormPage] = Json.format }

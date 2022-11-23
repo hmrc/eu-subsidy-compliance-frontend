@@ -34,7 +34,7 @@ trait LeadOnlyRedirectSupport extends MockFactory with Matchers {
       mockRetrieveUndertaking(eori3)(undertaking.some.toFuture)
     }
 
-    checkIsRedirect(f(), routes.AccountController.getAccountPage().url)
+    checkIsRedirect(f(), routes.AccountController.getAccountPage.url)
   }
 
 }

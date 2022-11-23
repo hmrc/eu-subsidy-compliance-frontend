@@ -82,7 +82,7 @@ class NotEnrolledActionBuilderSpec extends AnyWordSpec
         val result = underTest.invokeBlock(request, block)
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(routes.AccountController.getAccountPage().url)
+        redirectLocation(result) should contain(routes.AccountController.getAccountPage.url)
       }
     }
 
