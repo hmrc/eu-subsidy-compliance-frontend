@@ -342,7 +342,7 @@ should-claim-eori.error.required=Select yes if you would like to add a valid EOR
 claim-eori.error.incorrect-format = Enter the EORI number in the correct format
 claim-eori.error.required = Enter the EORI number in the correct format
 claim-eori.error.not-in-undertaking=The EORI number you entered is not part of this undertaking. Enter a valid EORI number.
-claim-eori.error.in-another-undertaking=The EORI number you entered is part of another undertaking. Enter a valid EORI number.
+claim-eori.error.in-another-undertaking=The EORI number you entered is already part of another undertaking. Enter another EORI number
 
 add-claim-business.title = Do you want to add this business to your undertaking?
 add-claim-business.hint = This business is not currently in your undertaking. Are you sure you want to add this business to your undertaking?
