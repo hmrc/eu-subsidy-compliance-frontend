@@ -114,7 +114,7 @@ class SelectNewLeadController @Inject() (
   }
 
   def getLeadEORIChanged = verifiedEmail.async { implicit request =>
-    withLeadUndertaking { undertaking =>
+    withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
 
       store.get[NewLeadJourney].flatMap {

@@ -340,7 +340,7 @@ class SubsidyController @Inject() (
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
 
-      def handleValidFormSubmission(j: SubsidyJourney)(f: FormValues): OptionT[Future, Result] = {
+      def handleValidFormSubmission(f: FormValues): OptionT[Future, Result] = {
         for {
           updatedJourney <- store.update[SubsidyJourney](_.setAddBusiness(f.value.isTrue)).toContext
           next <- updatedJourney.next.toContext
@@ -353,7 +353,7 @@ class SubsidyController @Inject() (
           .bindFromRequest()
           .fold(
             errors => BadRequest(addClaimBusinessPage(errors, journey.previous)).toContext,
-            handleValidFormSubmission(journey)
+            handleValidFormSubmission
           )
       }
     }
