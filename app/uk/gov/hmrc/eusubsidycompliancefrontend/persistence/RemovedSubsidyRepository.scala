@@ -68,8 +68,8 @@ class RemovedSubsidyRepository @Inject() (mongoComponent: MongoComponent)(implic
       .collection
       .find(Filters.equal("_id", eori))
       .headOption()
-      .map { thing: Option[CacheItem] =>
-        thing.fold(Seq.empty[NonHmrcSubsidy]) { item =>
+      .map { item: Option[CacheItem] =>
+        item.fold(Seq.empty[NonHmrcSubsidy]) { item =>
           (item.data \ SubsidiesArrayFieldName).as[Seq[NonHmrcSubsidy]]
         }
       }

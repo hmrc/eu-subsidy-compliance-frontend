@@ -227,7 +227,7 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
-            mockUpdate[SubsidyJourney](j => j.copy(claimDate = ClaimDateFormPage(updatedDate.some)), eori1)(
+            mockUpdate[SubsidyJourney](eori1)(
               Right(SubsidyJourney(claimDate = ClaimDateFormPage(updatedDate.some)))
             )
           }
@@ -416,15 +416,12 @@ class SubsidyControllerSpec
             claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some)
           )
 
-          def update(subsidyJourney: SubsidyJourney) =
-            subsidyJourney.copy(claimAmount = ClaimAmountFormPage(value = claimAmountPounds.some))
-
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
             mockRetrieveExchangeRate(claimDate)(exchangeRate.toFuture)
-            mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction(
             ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "123.45",
@@ -552,7 +549,7 @@ class SubsidyControllerSpec
           mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
-          mockUpdate[SubsidyJourney](_ => subsidyJourneyWithClaimAmount, eori1)(Right(subsidyJourneyWithClaimAmount))
+          mockUpdate[SubsidyJourney](eori1)(Right(subsidyJourneyWithClaimAmount))
         }
 
         checkIsRedirect(
@@ -571,16 +568,12 @@ class SubsidyControllerSpec
 
       val claimAmount = "100.00"
 
-      val subsidyJourneyWithClaimAmount = subsidyJourney.copy(
-        claimAmount = ClaimAmountFormPage(ClaimAmount(GBP, claimAmount).some)
-      )
-
       inSequence {
         mockAuthWithEnrolmentAndValidEmail()
         mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
         mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
         mockRetrieveExchangeRate(claimDate)(exchangeRate.toFuture)
-        mockUpdate[SubsidyJourney](_ => subsidyJourneyWithClaimAmount, eori1)(Right(subsidyJourney))
+        mockUpdate[SubsidyJourney](eori1)(Right(subsidyJourney))
       }
 
       checkIsRedirect(
@@ -817,18 +810,11 @@ class SubsidyControllerSpec
         }
 
         "call to update subsidy journey fails" in {
-
-          def update(subsidyJourney: SubsidyJourney) =
-            subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage(OptionalClaimEori("false", None).some))
-
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
-            mockUpdate[SubsidyJourney](
-              _ => update(subsidyJourney.copy(addClaimEori = AddClaimEoriFormPage(None))),
-              eori1
-            )(Left(ConnectorError(exception)))
+            mockUpdate[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("should-claim-eori" -> "false")))
         }
@@ -903,9 +889,7 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(journey.some))
-            mockUpdate[SubsidyJourney](_ => update(journey, optionalEORI.some), eori1)(
-              Right(updatedSubsidyJourney)
-            )
+            mockUpdate[SubsidyJourney](eori1)(Right(updatedSubsidyJourney))
           }
           checkIsRedirect(performAction(inputAnswer: _*), routes.SubsidyController.getAddClaimPublicAuthority.url)
         }
@@ -934,9 +918,7 @@ class SubsidyControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(journey.some))
             mockRetrieveUndertaking(eori3)(Option.empty.toFuture)
-            mockUpdate[SubsidyJourney](_ => update(journey, optionalEORI.some), eori1)(
-              Right(updatedSubsidyJourney)
-            )
+            mockUpdate[SubsidyJourney](eori1)(Right(updatedSubsidyJourney))
           }
 
           checkIsRedirect(
@@ -1009,10 +991,7 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(journey.some))
-            mockUpdate[SubsidyJourney](
-              j => j.copy(publicAuthority = PublicAuthorityFormPage(Some("My Authority"))),
-              eori1
-            )(
+            mockUpdate[SubsidyJourney](eori1)(
               Right(journey.copy(publicAuthority = PublicAuthorityFormPage(Some("My Authority"))))
             )
           }
@@ -1455,9 +1434,6 @@ class SubsidyControllerSpec
             .withFormUrlEncodedBody(data: _*)
         )
 
-      def update(subsidyJourney: SubsidyJourney) =
-        subsidyJourney.copy(cya = CyaFormPage(value = true.some))
-
       val updatedJourney = subsidyJourney.copy(cya = CyaFormPage(value = true.some))
 
       "throw technical error" when {
@@ -1466,7 +1442,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("cya" -> "true")))
         }
@@ -1476,7 +1452,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Right(updatedJourney))
+            mockUpdate[SubsidyJourney](eori1)(Right(updatedJourney))
             mockTimeProviderToday(currentDate)
             mockCreateSubsidy(
               SubsidyController.toSubsidyUpdate(subsidyJourney, undertakingRef, currentDate)
@@ -1489,7 +1465,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockUpdate[SubsidyJourney](_ => update(subsidyJourney), eori1)(Right(updatedJourney))
+            mockUpdate[SubsidyJourney](eori1)(Right(updatedJourney))
             mockTimeProviderToday(currentDate)
             mockCreateSubsidy(
               SubsidyController.toSubsidyUpdate(subsidyJourney, undertakingRef, currentDate)
@@ -1508,10 +1484,7 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockUpdate[SubsidyJourney](
-              _ => update(subsidyJourney),
-              eori1
-            )(Right(updatedSJ))
+            mockUpdate[SubsidyJourney](eori1)(Right(updatedSJ))
             mockTimeProviderToday(currentDate)
             mockCreateSubsidy(
               SubsidyController.toSubsidyUpdate(updatedSJ, undertakingRef, currentDate)
@@ -1602,7 +1575,7 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail(eori1)
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(journeyWithEoriToAdd.some))
-            mockUpdate[SubsidyJourney](_.setAddBusiness(true), eori1)(Right(journeyWithEoriToAdd))
+            mockUpdate[SubsidyJourney](eori1)(Right(journeyWithEoriToAdd))
           }
 
           val result = performAction(
@@ -1619,7 +1592,7 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail(eori1)
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(journeyWithEoriToAdd.some))
-            mockUpdate[SubsidyJourney](_.setAddBusiness(false), eori1)(Right(journeyWithEoriToAdd.setAddBusiness(false)))
+            mockUpdate[SubsidyJourney](eori1)(Right(journeyWithEoriToAdd.setAddBusiness(false)))
           }
 
           val result = performAction(

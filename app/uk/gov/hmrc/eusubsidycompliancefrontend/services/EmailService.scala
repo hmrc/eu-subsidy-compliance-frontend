@@ -82,11 +82,10 @@ class EmailService @Inject() (
     executionContext: ExecutionContext
   ): Future[EmailSendResult] = {
     emailVerificationService.getEmailVerification(eori1).flatMap {
-      case Some(value) => {
+      case Some(value) =>
         val parameters = EmailParameters(eori1, eori2, undertaking.name, removeEffectiveDate)
         val templateId = appConfig.getTemplateId(template).getOrElse(s"No template ID for email template: $template")
         sendEmail(EmailAddress(value.email), parameters, templateId)
-      }
       case None =>
         retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
           retrieveEmailResponse.emailType match {

@@ -35,12 +35,10 @@ object BusinessEntityUpdate {
       (JsPath \ "leadEORIIndicator").write[Boolean]
   )(unlift(BusinessEntity.unapply))
 
-  implicit val businessEntityUpdateWrites: Writes[BusinessEntityUpdate] = new Writes[BusinessEntityUpdate] {
-    override def writes(o: BusinessEntityUpdate): JsValue = Json.obj(
-      "amendmentType" -> o.amendmentType,
-      "amendmentEffectiveDate" -> o.amendmentEffectiveDate,
-      "businessEntity" -> o.businessEntity
-    )
-  }
+  implicit val businessEntityUpdateWrites: Writes[BusinessEntityUpdate] = (o: BusinessEntityUpdate) => Json.obj(
+    "amendmentType" -> o.amendmentType,
+    "amendmentEffectiveDate" -> o.amendmentEffectiveDate,
+    "businessEntity" -> o.businessEntity
+  )
 
 }

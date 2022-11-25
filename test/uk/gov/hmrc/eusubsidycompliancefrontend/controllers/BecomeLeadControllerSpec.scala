@@ -25,6 +25,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BecomeLeadJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BecomeLeadJourney.FormPages.AcceptResponsibilitiesFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
@@ -32,7 +33,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{Promo
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BecomeLeadJourney.FormPages.{AcceptResponsibilitiesFormPage, BecomeLeadEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -299,11 +299,9 @@ class BecomeLeadControllerSpec
       "redirect" when {
 
         "redirect to email confirmation page if no verified email exists" in {
-          def update(j: BecomeLeadJourney) = j.copy(becomeLeadEori = BecomeLeadEoriFormPage())
-
           inSequence {
             mockAuthWithEnrolment(eori4)
-            mockUpdate[BecomeLeadJourney](_ => update(BecomeLeadJourney()), eori4)(Right(newBecomeLeadJourney))
+            mockUpdate[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney))
           }
           redirectLocation(performAction()) shouldBe routes.BecomeLeadController.getConfirmEmail.url.some
         }

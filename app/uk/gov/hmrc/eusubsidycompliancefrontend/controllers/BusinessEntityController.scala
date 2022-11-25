@@ -131,7 +131,7 @@ class BusinessEntityController @Inject() (
       escService.retrieveUndertakingAndHandleErrors(EORI(form.value)).flatMap {
         case Right(Some(_)) => getErrorResponse("businessEntityEori.eoriInUse", previous, form)
         case Left(_) => getErrorResponse(s"error.$businessEntityEori.required", previous, form)
-        case Right(None) => {
+        case Right(None) =>
           val result = for {
             businessEntityJourney <- store.get[BusinessEntityJourney].toContext
             undertakingRef <- undertaking.reference.toContext
@@ -160,7 +160,6 @@ class BusinessEntityController @Inject() (
             redirect <- getNext(businessEntityJourney)(eori).toContext
           } yield redirect
           result.fold(handleMissingSessionData("BusinessEntity Data"))(identity)
-        }
       }
 
     withLeadUndertaking { undertaking =>

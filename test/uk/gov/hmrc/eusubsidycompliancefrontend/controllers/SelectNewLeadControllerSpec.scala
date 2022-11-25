@@ -22,6 +22,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NewLeadJourney.Forms.SelectNewLeadFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{BusinessEntityJourney, NewLeadJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
@@ -29,8 +30,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.{EmailNotSent, EmailSent}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedOtherAsLeadToBusinessEntity, PromotedOtherAsLeadToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney.FormPages.AddEoriFormPage
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NewLeadJourney.Forms.SelectNewLeadFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -142,14 +141,11 @@ class SelectNewLeadControllerSpec
       "throw technical error" when {
         val exception = new Exception("oh no!")
 
-        def update(j: NewLeadJourney) = j.copy(selectNewLead = SelectNewLeadFormPage(eori4.some))
-
         "call to update new lead journey fails" in {
-
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[NewLeadJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4)))
         }
@@ -158,7 +154,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
+            mockUpdate[NewLeadJourney](eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
@@ -186,13 +182,11 @@ class SelectNewLeadControllerSpec
 
       "redirect to next page" when {
 
-        def update(j: NewLeadJourney) = j.copy(selectNewLead = SelectNewLeadFormPage(eori4.some))
-
         def testRedirection(nextCall: String): Unit = {
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
+            mockUpdate[NewLeadJourney](eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
@@ -213,7 +207,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[NewLeadJourney](_ => update(NewLeadJourney()), eori1)(
+            mockUpdate[NewLeadJourney](eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
@@ -240,8 +234,6 @@ class SelectNewLeadControllerSpec
 
       def performAction() = controller.getLeadEORIChanged(FakeRequest())
       behave like authBehaviour(() => performAction())
-
-      def update(b: BusinessEntityJourney) = b.copy(isLeadSelectJourney = None)
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
@@ -271,10 +263,7 @@ class SelectNewLeadControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
-            mockUpdate[BusinessEntityJourney](
-              _ => update(businessEntityJourneyLead.copy(eori = AddEoriFormPage(eori4.some))),
-              eori1
-            )(Left(ConnectorError(exception)))
+            mockUpdate[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -285,14 +274,7 @@ class SelectNewLeadControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
-            mockUpdate[BusinessEntityJourney](
-              _ =>
-                update(
-                  businessEntityJourneyLead
-                    .copy(eori = AddEoriFormPage(eori4.some))
-                ),
-              eori1
-            )(Right(businessEntityJourneyLead))
+            mockUpdate[BusinessEntityJourney](eori1)(Right(businessEntityJourneyLead))
 
             mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Left(ConnectorError(exception)))
           }
@@ -307,14 +289,7 @@ class SelectNewLeadControllerSpec
           mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
-          mockUpdate[BusinessEntityJourney](
-            _ =>
-              update(
-                businessEntityJourneyLead
-                  .copy(eori = AddEoriFormPage(eori4.some))
-              ),
-            eori1
-          )(Right(businessEntityJourneyLead))
+          mockUpdate[BusinessEntityJourney](eori1)(Right(businessEntityJourneyLead))
           mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Right(NewLeadJourney()))
         }
         checkPageIsDisplayed(
