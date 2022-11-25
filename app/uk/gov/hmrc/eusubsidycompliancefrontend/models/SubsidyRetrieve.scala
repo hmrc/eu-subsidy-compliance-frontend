@@ -31,31 +31,27 @@ case class SubsidyRetrieve(
 
 object SubsidyRetrieve {
 
-  implicit val writes: Writes[SubsidyRetrieve] = new Writes[SubsidyRetrieve] {
-    override def writes(o: SubsidyRetrieve): JsValue = {
-      val l: List[(String, Json.JsValueWrapper)] =
-        List(
-          ("undertakingIdentifier", JsString(o.undertakingIdentifier)),
-          ("getNonHMRCUsageTransaction", JsBoolean(true)),
-          ("getHMRCUsageTransaction", JsBoolean(true))
-        )
-      val x =
-        nullableOpt[LocalDate]("dateFromNonHMRCSubsidyUsage", o.inDateRange.map(_._1)) ++
-          nullableOpt[LocalDate]("dateFromHMRCSubsidyUsage", o.inDateRange.map(_._1)) ++
-          nullableOpt[LocalDate]("dateToNonHMRCSubsidyUsage", o.inDateRange.map(_._2)) ++
-          nullableOpt[LocalDate]("dateToHMRCSubsidyUsage", o.inDateRange.map(_._2))
+  implicit val writes: Writes[SubsidyRetrieve] = (o: SubsidyRetrieve) => {
+    val l: List[(String, Json.JsValueWrapper)] =
+      List(
+        ("undertakingIdentifier", JsString(o.undertakingIdentifier)),
+        ("getNonHMRCUsageTransaction", JsBoolean(true)),
+        ("getHMRCUsageTransaction", JsBoolean(true))
+      )
+    val x =
+      nullableOpt[LocalDate]("dateFromNonHMRCSubsidyUsage", o.inDateRange.map(_._1)) ++
+        nullableOpt[LocalDate]("dateFromHMRCSubsidyUsage", o.inDateRange.map(_._1)) ++
+        nullableOpt[LocalDate]("dateToNonHMRCSubsidyUsage", o.inDateRange.map(_._2)) ++
+        nullableOpt[LocalDate]("dateToHMRCSubsidyUsage", o.inDateRange.map(_._2))
 
-      Json.obj(l ++ x: _*)
-    }
+    Json.obj(l ++ x: _*)
   }
 
-  implicit val reads: Reads[SubsidyRetrieve] = new Reads[SubsidyRetrieve] {
-    override def reads(json: JsValue): JsResult[SubsidyRetrieve] = {
-      val undertakingIdentifier = (json \ "undertakingIdentifier").as[UndertakingRef]
-      val from = (json \ "dateFromNonHMRCSubsidyUsage").asOpt[LocalDate]
-      val to = (json \ "dateToNonHMRCSubsidyUsage").asOpt[LocalDate]
-      val range = (from, to).bisequence
-      JsSuccess(SubsidyRetrieve(undertakingIdentifier, range))
-    }
+  implicit val reads: Reads[SubsidyRetrieve] = (json: JsValue) => {
+    val undertakingIdentifier = (json \ "undertakingIdentifier").as[UndertakingRef]
+    val from = (json \ "dateFromNonHMRCSubsidyUsage").asOpt[LocalDate]
+    val to = (json \ "dateToNonHMRCSubsidyUsage").asOpt[LocalDate]
+    val range = (from, to).bisequence
+    JsSuccess(SubsidyRetrieve(undertakingIdentifier, range))
   }
 }
