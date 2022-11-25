@@ -346,14 +346,12 @@ class EligibilityControllerSpec
             .withFormUrlEncodedBody(data: _*)
         )
 
-      def update(ej: EligibilityJourney) = ej.copy(doYouClaim = DoYouClaimFormPage(true.some))
-
       "throw technical error" when {
 
         "eligibility journey fail to update" in {
           inSequence {
             mockAuthWithEnrolment()
-            mockUpdate[EligibilityJourney](_ => update(eligibilityJourney), eori1)(
+            mockUpdate[EligibilityJourney](eori1)(
               Left(ConnectorError(exception))
             )
           }
@@ -383,7 +381,7 @@ class EligibilityControllerSpec
         def testRedirection(input: Boolean, nextCall: String) =
           inSequence {
             mockAuthWithEnrolment()
-            mockUpdate[EligibilityJourney](_ => update(journey), eori1)(
+            mockUpdate[EligibilityJourney](eori1)(
               Right(journey.copy(eoriCheck = EoriCheckFormPage(input.some)))
             )
 

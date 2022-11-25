@@ -176,13 +176,10 @@ class BusinessEntityControllerSpec
         val exception = new Exception("oh no")
 
         "call to update BusinessEntityJourney fails" in {
-
-          def update(j: BusinessEntityJourney) = j.copy(addBusiness = j.addBusiness.copy(value = Some(true)))
-
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney), eori1)(
+            mockUpdate[BusinessEntityJourney](eori1)(
               Left(ConnectorError(exception))
             )
           }
@@ -225,12 +222,10 @@ class BusinessEntityControllerSpec
         }
 
         "user selected Yes" in {
-          def update(j: BusinessEntityJourney) = j.copy(addBusiness = j.addBusiness.copy(value = Some(true)))
-
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[BusinessEntityJourney](_ => update(BusinessEntityJourney()), eori1)(
+            mockUpdate[BusinessEntityJourney](eori1)(
               Right(BusinessEntityJourney(addBusiness = AddBusinessFormPage(true.some)))
             )
           }

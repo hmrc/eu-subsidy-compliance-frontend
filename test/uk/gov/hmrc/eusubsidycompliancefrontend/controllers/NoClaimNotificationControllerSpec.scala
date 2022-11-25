@@ -121,11 +121,7 @@ class NoClaimNotificationControllerSpec
 
     "handling request to post No claim notification " must {
 
-      val nilReturnJourney = NilReturnJourney()
-      val updatedNilReturnJourney = NilReturnJourney(NilReturnFormPage(true.some), true)
-
-      def update(j: NilReturnJourney) =
-        j.copy(nilReturn = j.nilReturn.copy(value = Some(true)), false)
+      val updatedNilReturnJourney = NilReturnJourney(NilReturnFormPage(true.some), displayNotification = true)
 
       def performAction(data: (String, String)*) = controller
         .postNoClaimNotification(
@@ -139,10 +135,7 @@ class NoClaimNotificationControllerSpec
 
       "throw technical error" when {
 
-        val nilReturnJourney = NilReturnJourney()
         val updatedNilReturnJourney = NilReturnJourney(NilReturnFormPage(true.some))
-
-        def update(j: NilReturnJourney) = j.copy(nilReturn = j.nilReturn.copy(value = Some(true)), false)
 
         val exception = new Exception("oh no")
 
@@ -154,7 +147,7 @@ class NoClaimNotificationControllerSpec
             mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
             mockTimeProviderToday(currentDay)
             mockTimeProviderToday(currentDay)
-            mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Left(ConnectorError(exception)))
+            mockUpdate[NilReturnJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
         }
@@ -167,7 +160,7 @@ class NoClaimNotificationControllerSpec
             mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
             mockTimeProviderToday(currentDay)
             mockTimeProviderToday(currentDay)
-            mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
+            mockUpdate[NilReturnJourney](eori1)(Right(updatedNilReturnJourney))
             mockCreateSubsidy(SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay.plusDays(1))))(
               Left(ConnectorError(exception))
             )
@@ -205,7 +198,7 @@ class NoClaimNotificationControllerSpec
           mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
           mockTimeProviderToday(currentDay)
           mockTimeProviderToday(currentDay)
-          mockUpdate[NilReturnJourney](_ => update(nilReturnJourney), eori1)(Right(updatedNilReturnJourney))
+          mockUpdate[NilReturnJourney](eori1)(Right(updatedNilReturnJourney))
           mockCreateSubsidy(SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay.plusDays(1))))(
             Right(undertakingRef)
           )

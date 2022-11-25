@@ -75,10 +75,9 @@ class NoBusinessPresentControllerSpec
       }
     }
 
-    "handling request to post No Business Pesent" must {
-      def performAction() = controller.postNoBusinessPresent(FakeRequest())
+    "handling request to post No Business Present" must {
 
-      def update(j: BusinessEntityJourney) = j.copy(isLeadSelectJourney = true.some)
+      def performAction() = controller.postNoBusinessPresent(FakeRequest())
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
@@ -86,9 +85,7 @@ class NoBusinessPresentControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1), eori1)(
-              Left(ConnectorError(exception))
-            )
+            mockUpdate[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -99,9 +96,7 @@ class NoBusinessPresentControllerSpec
         inSequence {
           mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-          mockUpdate[BusinessEntityJourney](_ => update(businessEntityJourney1), eori1)(
-            Right(businessEntityJourney1)
-          )
+          mockUpdate[BusinessEntityJourney](eori1)(Right(businessEntityJourney1))
         }
         checkIsRedirect(
           performAction(),
