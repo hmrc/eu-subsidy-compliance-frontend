@@ -25,7 +25,9 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{RetrieveEmailConnecto
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.Singleton
@@ -81,24 +83,22 @@ class EmailService @Inject() (
     hc: HeaderCarrier,
     executionContext: ExecutionContext
   ): Future[EmailSendResult] = {
-    emailVerificationService.getEmailVerification(eori1).flatMap {
-      case Some(value) =>
-        val parameters = EmailParameters(eori1, eori2, undertaking.name, removeEffectiveDate)
-        val templateId = appConfig.getTemplateId(template).getOrElse(s"No template ID for email template: $template")
-        sendEmail(EmailAddress(value.email), parameters, templateId)
-      case None =>
-        retrieveEmailByEORI(eori1).flatMap { retrieveEmailResponse =>
-          retrieveEmailResponse.emailType match {
-            case EmailType.VerifiedEmail =>
-              val parameters = EmailParameters(eori1, eori2, undertaking.name, removeEffectiveDate)
-              val templateId = appConfig.getTemplateId(template).getOrElse(s"No template ID for email template: $template")
-              retrieveEmailResponse.emailAddress.map { emailAddress =>
-                sendEmail(emailAddress, parameters, templateId)
-              } getOrElse sys.error("Email address not found")
-            case _ => Future.successful(EmailSendResult.EmailNotSent)
-          }
-        }
-    }
+
+    val parameters = EmailParameters(eori1, eori2, undertaking.name, removeEffectiveDate)
+    val templateId = appConfig.getTemplateId(template).getOrElse(s"No template ID for email template: $template")
+
+    def fetchEmailAndSend(): Future[EmailSendResult] =
+      retrieveEmailByEORI(eori1).flatMap {
+        case RetrieveEmailResponse(EmailType.VerifiedEmail, Some(email)) => sendEmail(email, parameters, templateId)
+        case RetrieveEmailResponse(EmailType.VerifiedEmail, None) => Future.failed(sys.error("Email address not found"))
+        case _ => EmailSendResult.EmailNotSent.toFuture
+      }
+
+    emailVerificationService
+      .getEmailVerification(eori1)
+      .toContext
+      .foldF(fetchEmailAndSend())(e => sendEmail(EmailAddress(e.email), parameters, templateId))
+
   }
 
   def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RetrieveEmailResponse] =

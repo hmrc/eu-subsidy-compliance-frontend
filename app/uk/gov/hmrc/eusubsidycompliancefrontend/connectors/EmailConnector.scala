@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailConnector.ConnectorSyntax.ResponseStatusOps
+import play.api.http.Status.NOT_FOUND
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.Connector.ConnectorSyntax.ResponseStatusOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.http.{HttpClient, HttpResponse, UpstreamErrorResponse}
 
@@ -28,19 +29,11 @@ trait EmailConnector extends Connector {
   )(implicit ec: ExecutionContext): ConnectorResult =
     request(http) map { r: HttpResponse =>
       if (r.status.isSuccess) Right(r)
+      // Allow 404s to be handled by the caller on the happy path.
+      else if (r.status == NOT_FOUND) Right(r)
       else Left(ConnectorError(UpstreamErrorResponse(s"Unexpected response - got HTTP ${r.status}", r.status)))
-    } recover { case e: Exception =>
-      Left(ConnectorError(e))
+    } recover {
+      case e: Exception => Left(ConnectorError(e))
     }
-
-}
-
-object EmailConnector {
-
-  object ConnectorSyntax {
-    implicit class ResponseStatusOps(val status: Int) extends AnyVal {
-      def isSuccess: Boolean = (status == 404) || (status >= 200 && status < 300)
-    }
-  }
 
 }
