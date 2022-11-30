@@ -23,7 +23,7 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NonHmrcSubsidy, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NilReturnJourney.Forms.NilReturnFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
@@ -119,7 +119,6 @@ class AccountControllerSpec
         def testTimeToReport(
           undertaking: Undertaking,
           currentDate: LocalDate,
-          isTimeToReport: Boolean,
           dueDate: String,
           isOverdue: Boolean
         ): Unit = {
@@ -129,7 +128,16 @@ class AccountControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-            mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.copy(nonHMRCSubsidyUsage = List(nonHmrcSubsidy.copy(submissionDate = undertaking.lastSubsidyUsageUpdt.get))).toFuture)
+
+            // If we have a lastSubsidyUsageUpdt on the undertaking, return a single subsidy in the mock response with
+            // this date, otherwise return no subsidies.
+            val subsidies =
+              undertaking
+                .lastSubsidyUsageUpdt
+                .fold(List.empty[NonHmrcSubsidy])(d => List(nonHmrcSubsidy.copy(submissionDate = d)))
+
+            mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.copy(nonHMRCSubsidyUsage = subsidies).toFuture)
+
             mockTimeProviderToday(currentDate)
             mockTimeProviderToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilJourneyCreate))
@@ -138,15 +146,12 @@ class AccountControllerSpec
             performAction(),
             messageFromMessageKey("lead-account-homepage.title"),
             doc => {
-              if (isTimeToReport) {
-                val content = doc.select(".govuk-grid-column-two-thirds").toString
-                content should include regex
-                  messageFromMessageKey("lead-account-homepage.p2.not-overdue", dueDate)
-              } else if (isOverdue) {
-                val content = doc.select(".govuk-warning-text").text
-                content should include regex
+              if (isOverdue)
+                doc.select(".govuk-warning-text").text should include regex
                   messageFromMessageKey("lead-account-homepage.p2.is-overdue", dueDate)
-              }
+              else
+                doc.select(".govuk-grid-column-two-thirds").toString should include regex
+                  messageFromMessageKey("lead-account-homepage.p2.not-overdue", dueDate)
             }
           )
         }
@@ -159,7 +164,7 @@ class AccountControllerSpec
           test(undertaking.copy(undertakingBusinessEntity = List(businessEntity1)))
         }
 
-        "The undertaking  any non-Lead  business entities " in {
+        "The undertaking has at least one non-Lead business entity" in {
           test(undertaking1)
         }
 
@@ -167,7 +172,6 @@ class AccountControllerSpec
           testTimeToReport(
             undertaking.copy(lastSubsidyUsageUpdt = LocalDate.of(2021, 12, 1).some),
             currentDate = LocalDate.of(2022, 2, 16),
-            isTimeToReport = true,
             dueDate = "1 March 2022",
             isOverdue = false
           )
@@ -178,10 +182,21 @@ class AccountControllerSpec
           testTimeToReport(
             undertaking.copy(lastSubsidyUsageUpdt = lastUpdatedDate.some),
             currentDate = lastUpdatedDate.plusDays(91),
-            isTimeToReport = false,
             dueDate = "1 March 2022",
             isOverdue = true
           )
+        }
+
+        "due date falls back to current date plus 90 days where no lastSubsidyUsageUpdt value set on undertaking" in {
+          val currentDate = LocalDate.of(2022, 1, 1)
+
+          testTimeToReport(
+            undertaking.copy(lastSubsidyUsageUpdt = None),
+            currentDate = currentDate,
+            dueDate = "1 April 2022", // currentDate + 90 days
+            isOverdue = false
+          )
+
         }
 
       }
