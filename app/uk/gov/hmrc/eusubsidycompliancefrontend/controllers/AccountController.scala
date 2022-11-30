@@ -55,8 +55,6 @@ class AccountController @Inject() (
 
   import actionBuilders._
 
-  private val dueDays = 90
-
   def getAccountPage: Action[AnyContent] =
     enrolled.async { implicit request =>
       implicit val eori: EORI = request.eoriNumber
@@ -100,18 +98,12 @@ class AccountController @Inject() (
   private def renderAccountPage(undertaking: Undertaking, undertakingSubsidies: UndertakingSubsidies)(implicit r: AuthenticatedEnrolledRequest[AnyContent]) = {
     implicit val eori: EORI = r.eoriNumber
 
-    val currentDay = timeProvider.today
-
-    val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
-
-    val isTimeToReport = ReportReminderHelpers.isTimeToReport(lastSubmitted, currentDay)
-    val dueDate = ReportReminderHelpers.dueDateToReport(lastSubmitted)
-      .getOrElse(currentDay.plusDays(dueDays))
-      .toDisplayFormat
-    val isOverdue = ReportReminderHelpers.isOverdue(lastSubmitted, currentDay)
-
     val today = timeProvider.today
 
+    val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
+    val isTimeToReport = ReportReminderHelpers.isTimeToReport(lastSubmitted, today)
+    val dueDate = ReportReminderHelpers.dueDateToReport(lastSubmitted.getOrElse(today)).toDisplayFormat
+    val isOverdue = ReportReminderHelpers.isOverdue(lastSubmitted, today)
     val startDate = today.toEarliestTaxYearStart
 
     val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
