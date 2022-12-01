@@ -20,13 +20,13 @@ import java.time.LocalDate
 
 object ReportReminderHelpers {
 
-  private val OneDayBeforeRemdinderDay = 75
-  private val OneDayAfterDueDay = 91
+  private val OneDayBeforeReminderDay = 75
   private val ReportDeminimisDueDay = 90
+  private val OneDayAfterDueDay = ReportDeminimisDueDay + 1
 
   def isTimeToReport(od: Option[LocalDate], currentDate: LocalDate): Boolean =
     od.exists { lastUpdated =>
-      lastUpdated.plusDays(OneDayBeforeRemdinderDay).isBefore(currentDate) &&
+      lastUpdated.plusDays(OneDayBeforeReminderDay).isBefore(currentDate) &&
         lastUpdated.plusDays(OneDayAfterDueDay).isAfter(currentDate)
     }
 
