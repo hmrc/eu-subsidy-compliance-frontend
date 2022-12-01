@@ -107,19 +107,21 @@ class SubsidyController @Inject() (
 
     val currentDate = timeProvider.today
 
-    escService.retrieveSubsidiesForDateRange(undertaking.reference, currentDate.toSearchRange).map { subsidies =>
-      Ok(
-        reportedPaymentsPage(
-          subsidies.forReportedPaymentsPage,
-          undertaking,
-          currentDate.toEarliestTaxYearStart,
-          currentDate.toTaxYearEnd.minusYears(1),
-          currentDate.toTaxYearStart,
-          routes.AccountController.getAccountPage.url,
-          showSuccessBanner = showSuccess
+    escService
+      .retrieveSubsidiesForDateRange(undertaking.reference, currentDate.toSearchRange)
+      .map { subsidies =>
+        Ok(
+          reportedPaymentsPage(
+            subsidies.forReportedPaymentsPage,
+            undertaking,
+            currentDate.toEarliestTaxYearStart,
+            currentDate.toTaxYearEnd.minusYears(1),
+            currentDate.toTaxYearStart,
+            routes.AccountController.getAccountPage.url,
+            showSuccessBanner = showSuccess
+          )
         )
-      )
-    }
+      }
   }
 
   def getClaimDate: Action[AnyContent] = verifiedEmail.async { implicit request =>
