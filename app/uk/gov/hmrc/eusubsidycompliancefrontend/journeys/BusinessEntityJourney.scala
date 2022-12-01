@@ -37,6 +37,7 @@ case class BusinessEntityJourney(
     )
 
   def isAmend: Boolean = oldEORI.nonEmpty
+  def onLeadSelectJourney: Boolean = isLeadSelectJourney.contains(true)
 
   def setEori(e: EORI): BusinessEntityJourney =
     this.copy(
