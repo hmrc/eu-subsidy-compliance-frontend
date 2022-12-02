@@ -33,10 +33,11 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   lazy val ggSignOutUrl: String = config.get[String](s"urls.ggSignOutUrl")
   lazy val eccEscSubscribeUrl: String = config.get[String](s"urls.eccEscSubscribeUrl")
   lazy val exitSurveyUrl: String = config.get[String]("urls.feedback-survey")
-  lazy val contactFrontendUrl: String =
+
+  private lazy val contactFrontendUrl: String =
     contactFrontendConfig.baseUrl.getOrElse(sys.error("Could not find config for contact frontend url"))
 
-  lazy val contactFormServiceIdentifier: String =
+  private lazy val contactFormServiceIdentifier: String =
     contactFrontendConfig.serviceId.getOrElse(sys.error("Could not find config for contact frontend service id"))
 
   lazy val betaFeedbackUrlNoAuth: String =

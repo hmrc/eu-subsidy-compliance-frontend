@@ -38,14 +38,12 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class EligibilityController @Inject() (
                                         mcc: MessagesControllerComponents,
-                                        auditService: AuditService,
                                         doYouClaimPage: DoYouClaimPage,
                                         willYouClaimPage: WillYouClaimPage,
                                         notEligiblePage: NotEligiblePage,
                                         checkEoriPage: CheckEoriPage,
                                         incorrectEoriPage: IncorrectEoriPage,
                                         actionBuilders: ActionBuilders,
-                                        emailService: EmailService,
                                         escService: EscService,
                                         override val store: Store
 )(implicit

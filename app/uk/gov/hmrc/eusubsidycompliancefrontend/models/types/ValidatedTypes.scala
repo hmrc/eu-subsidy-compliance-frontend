@@ -28,7 +28,7 @@ trait ValidatedType[BaseType] {
 
   trait Tag
 
-  lazy val className: String = this.getClass.getSimpleName
+  private lazy val className: String = this.getClass.getSimpleName
 
   def validateAndTransform(in: BaseType): Option[BaseType]
 
@@ -50,7 +50,7 @@ class RegexValidatedString(
   transform: String => String = identity
 ) extends ValidatedType[String] {
 
-  val regexCompiled: Regex = regex.r
+  private val regexCompiled: Regex = regex.r
 
   def validateAndTransform(in: String): Option[String] =
     transform(in).some.filter(regexCompiled.findFirstIn(_).isDefined)
@@ -58,7 +58,7 @@ class RegexValidatedString(
 
 trait SimpleJson {
 
-  def validatedStringFormat(
+  private def validatedStringFormat(
     A: ValidatedType[String],
     name: String
   ): Format[@@[String, A.Tag]] = new Format[String @@ A.Tag] {
@@ -79,7 +79,7 @@ trait SimpleJson {
     ): JsValue = JsString(o)
   }
 
-  def validatedBigDecimalFormat(
+  private def validatedBigDecimalFormat(
     A: ValidatedType[BigDecimal],
     name: String
   ): Format[@@[BigDecimal, A.Tag]] = new Format[BigDecimal @@ A.Tag] {

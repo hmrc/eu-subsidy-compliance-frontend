@@ -23,10 +23,8 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers.GET
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
 class SignOutControllerSpec
     extends ControllerSpec
@@ -41,12 +39,6 @@ class SignOutControllerSpec
 
   override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
-    bind[Store].toInstance(mockJourneyStore),
-    bind[EmailService].toInstance(mockEmailService),
-    bind[EscService].toInstance(mockEscService),
-    bind[EmailVerificationService].toInstance(mockEmailVerificationService),
-    bind[TimeProvider].toInstance(mockTimeProvider),
-    bind[AuditService].toInstance(mockAuditService)
   )
 
   private val controller = instanceOf[SignOutController]

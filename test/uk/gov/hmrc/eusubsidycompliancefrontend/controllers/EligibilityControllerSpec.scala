@@ -34,17 +34,13 @@ class EligibilityControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
-    with AuditServiceSupport
-    with EscServiceSupport
-    with EmailSupport {
+    with EscServiceSupport {
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[EmailVerificationService].toInstance(mockEmailVerificationService),
     bind[Store].toInstance(mockJourneyStore),
-    bind[AuditService].toInstance(mockAuditService),
     bind[EscService].toInstance(mockEscService),
-    bind[EmailService].toInstance(mockEmailService)
   )
 
   private val controller = instanceOf[EligibilityController]
@@ -166,11 +162,11 @@ class EligibilityControllerSpec
         }
 
         "Yes is selected" in {
-          testRedirection(true, appConfig.eccEscSubscribeUrl)
+          testRedirection(inputValue = true, appConfig.eccEscSubscribeUrl)
         }
 
         "No is selected" in {
-          testRedirection(false, routes.EligibilityController.getWillYouClaim.url)
+          testRedirection(inputValue = false, routes.EligibilityController.getWillYouClaim.url)
         }
 
       }
@@ -244,11 +240,11 @@ class EligibilityControllerSpec
         }
 
         "Yes is selected" in {
-          testRedirection(true, routes.EligibilityController.getEoriCheck.url)
+          testRedirection(input = true, routes.EligibilityController.getEoriCheck.url)
         }
 
         "No is selected" in {
-          testRedirection(false, routes.EligibilityController.getNotEligible.url)
+          testRedirection(input = false, routes.EligibilityController.getNotEligible.url)
         }
 
       }
@@ -389,11 +385,11 @@ class EligibilityControllerSpec
           }
 
         "yes is selected" in {
-          testRedirection(true, routes.AccountController.getAccountPage.url)
+          testRedirection(input = true, routes.AccountController.getAccountPage.url)
         }
 
         "no is selected" in {
-          testRedirection(false, routes.EligibilityController.getIncorrectEori.url)
+          testRedirection(input = false, routes.EligibilityController.getIncorrectEori.url)
         }
       }
 
