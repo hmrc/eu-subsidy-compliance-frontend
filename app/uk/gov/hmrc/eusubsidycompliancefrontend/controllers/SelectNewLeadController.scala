@@ -113,7 +113,7 @@ class SelectNewLeadController @Inject() (
     case _ => handleMissingSessionData("Email result Response")
   }
 
-  def getLeadEORIChanged = verifiedEmail.async { implicit request =>
+  def getLeadEORIChanged: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -131,7 +131,7 @@ class SelectNewLeadController @Inject() (
     }
   }
 
-  def emailNotVerified = verifiedEmail.async { implicit request =>
+  def emailNotVerified: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[NewLeadJourney].flatMap {
       case Some(newLeadJourney) =>

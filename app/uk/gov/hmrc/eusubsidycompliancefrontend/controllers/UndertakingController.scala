@@ -134,22 +134,16 @@ class UndertakingController @Inject() (
 
   def postSector: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
     processFormSubmission[UndertakingJourney] { journey =>
       undertakingSectorForm
         .bindFromRequest()
         .fold(
-          errors => {
-            val result = for {
-              undertakingName <- journey.about.value.toContext
-            } yield BadRequest(undertakingSectorPage(errors, journey.previous, undertakingName))
-            result
-              .fold(handleMissingSessionData("Undertaking Journey"))(identity)
-              .toContext
-          },
+          errors => BadRequest(undertakingSectorPage(errors, journey.previous, journey.about.value.get)).toContext,
           form =>
-              store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-                .flatMap(_.next)
-                .toContext
+            store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+              .flatMap(_.next)
+              .toContext
         )
     }
   }
@@ -225,15 +219,18 @@ class UndertakingController @Inject() (
 
   def getCheckAnswers: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    store.get[UndertakingJourney].flatMap {
-      case Some(journey) =>
-        val result: OptionT[Future, Result] = for {
+
+    store
+      .get[UndertakingJourney]
+      .toContext
+      .foldF(Redirect(routes.UndertakingController.getAboutUndertaking).toFuture) { journey =>
+        val result = for {
           undertakingSector <- journey.sector.value.toContext
           undertakingVerifiedEmail <- journey.verifiedEmail.value.toContext
         } yield Ok(cyaPage(eori, undertakingSector, undertakingVerifiedEmail, journey.previous))
-        result.fold(Redirect(journey.previous))(identity)
-      case _ => Redirect(routes.UndertakingController.getAboutUndertaking).toFuture
-    }
+
+        result.getOrElse(Redirect(journey.previous))
+      }
   }
 
   def postCheckAnswers: Action[AnyContent] = verifiedEmail.async { implicit request =>

@@ -62,7 +62,7 @@ trait Journey {
   private def nextIndex(implicit r: Request[_]) = currentIndex + 1
   private def lastIndex = steps.length - 1
 
-  def redirectWithSession(u: String)(implicit r: Request[_]): Result = Redirect(u).withSession(r.session)
+  private def redirectWithSession(u: String)(implicit r: Request[_]): Result = Redirect(u).withSession(r.session)
 }
 
 object Journey {

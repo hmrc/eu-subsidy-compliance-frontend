@@ -58,10 +58,10 @@ class AccountController @Inject() (
   def getAccountPage: Action[AnyContent] =
     enrolled.async { implicit request =>
       implicit val eori: EORI = request.eoriNumber
-      escService.retrieveUndertaking(eori) flatMap {
-        case Some(u) => handleExistingUndertaking(u)
-        case None => handleUndertakingNotCreated
-      }
+      escService
+        .retrieveUndertaking(eori)
+        .toContext
+        .foldF(handleUndertakingNotCreated)(handleExistingUndertaking)
     }
 
   private def handleUndertakingNotCreated(implicit e: EORI): Future[Result] = {

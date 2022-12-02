@@ -42,8 +42,8 @@ case class EligibilityJourney(
     Seq(doYouClaim.value, willYouClaim.value).flatten.contains(true)
 
   override def steps: Array[FormPage[_]] =
+    // Remove steps based on user responses during the eligibility journey.
     journeySteps
-      // Remove steps based on user responses during the eligibility journey. -.filterNot {
       .filterNot {
         case DoYouClaimFormPage(_) => doYouClaim.value.isDefined
         case WillYouClaimFormPage(_) => doYouClaim.value.contains(true)

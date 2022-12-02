@@ -22,23 +22,15 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EmailService, EscService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 @Singleton
 class SignOutController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  escService: EscService,
-  store: Store,
-  emailService: EmailService,
-  auditService: AuditService,
   timedOutPage: TimedOut,
   signOutPage: SignOutPage,
-  timeProvider: TimeProvider
 )(implicit val appConfig: AppConfig)
     extends BaseController(mcc)
     with I18nSupport
