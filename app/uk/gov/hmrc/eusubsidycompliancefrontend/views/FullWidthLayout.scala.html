@@ -106,6 +106,6 @@
     ),
     scriptsBlock = Some(hmrcScripts(nonce = CSPNonce.get)),
     footerBlock = Some(hmrcStandardFooter()),
-    beforeContentBlock = Some(beforeContentWrapper(printDialog = Some(printDialog))),
+    beforeContentBlock = Some(beforeContentWrapper),
     mainContentLayout = mainContentLayout
 )(content)
