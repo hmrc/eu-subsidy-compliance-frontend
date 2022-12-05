@@ -62,6 +62,11 @@
     }
 }
 
+@scripts = {
+    @scriptsBlock.getOrElse(Html(""))
+    @Html(s"""<script src="${controllers.routes.Assets.versioned("javascript/application.js")}" ${CSPNonce.attr}></script>""")
+}
+
 @beforeContentWrapper = {
     @beforeContentBlock(backLinkEnabled, backLink)
     @{if(appConfig.welshLanguageSupportEnabled) Some(hmrcLanguageSelectHelper()) else None}
@@ -83,7 +88,7 @@
         serviceUrl  = Some(routes.AccountController.getAccountPage.url),
         signOutUrl = if(showSignOutLink) Some(appConfig.signOutUrl(continueUrl = Some(appConfig.exitSurveyUrl))) else None)
     ),
-    scriptsBlock = Some(hmrcScripts(nonce = CSPNonce.get)),
+    scriptsBlock = Some(hmrcScripts(scriptsBlock = Some(scripts), nonce = CSPNonce.get)),
     footerBlock = Some(hmrcStandardFooter()),
     beforeContentBlock = Some(beforeContentWrapper),
 )(content)

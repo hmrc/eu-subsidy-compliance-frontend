@@ -14,6 +14,7 @@ common.continue.only=Continue
 common.accept=Accept and send
 common.go-account-home = Go to homepage
 common.cya.change = Change
+common.print = Print this page
 
 continue.button=Save and continue
 button.addBusiness = Add a business to this undertaking
