@@ -30,12 +30,17 @@
 @(summary: FinancialDashboardSummary)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"dashboard"}
 @title = @{messages(s"$key.title")}
+
+@printDialog = {
+    <div class="print-dialogue"><a class="govuk-link" href="#print-dialogue">@messages("common.print")</a></div>
+}
+
 @layout(
     pageTitle = Some(title),
     backLinkEnabled = true,
-    backLink = Some(routes.AccountController.getAccountPage.url)
+    backLink = Some(routes.AccountController.getAccountPage.url),
+    printDialog = Some(printDialog)
 ) {
-
 
     @H1(title)
     @P(messages(s"$key.p1"))
