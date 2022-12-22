@@ -317,8 +317,8 @@ confirm-converted-amount.p2 = We’ve converted your amount from pounds sterling
 confirm-converted-amount.p3 = We calculate your euro amounts using the currency exchange rates published by the European Central Bank.
 
 add-claim-date.title = What date were you awarded the payment?
-add-claim-date.p1 = You must report all non-customs subsidy payments you have received since {0}.
-add-claim-date.hint = For example, 27 07 2020
+add-claim-date.p1 = You must report all non-customs subsidy payments you have received since <span class="date-no-break">{0}</span>.
+add-claim-date.hint = The date should be the date you received the payment offer, in this format, <span class="date-no-break">27 7 2020</span>
 
 add-claim-date.error.required = Enter the date you were awarded the payment
 add-claim-date.error.day-missing = The date you were awarded the payment must include a day
