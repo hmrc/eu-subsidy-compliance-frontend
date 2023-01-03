@@ -120,7 +120,7 @@ undertakingName.p1 = Your subsidy allowance applies to all parts of your organis
 undertakingName.p2 = This may include more than one business. This group of businesses is referred to as an undertaking. An undertaking could be a sole trader, a company, a partnership, or any combination of these.
 undertakingName.p3 = These businesses must not report payments they receive separately. You are responsible for reporting received payments on their behalf.
 
-undertakingSector.error.required=Select an industry sector
+undertakingSector.error.required = Select the industry sector of your undertaking
 undertakingSector.title=What is the industry sector of your undertaking?
 undertakingSector.p1=Your undertaking may have businesses working in different sectors. For your whole undertaking the lowest subsidy allowance will apply.
 
@@ -156,10 +156,10 @@ inputEmail.title=What is your email address?
 inputEmail.label=Enter an email address
 inputEmail.p=This email address will be used to send you notifications from this service.
 
-email.error.required = Enter your email address
+email.error.required = Enter the email address you want to use to receive notifications
 email.error.email = Enter a valid email address
 email.error.maxLength = The email address for your undertaking must be 254 characters or less
-using-stored-email.error.required = Select yes if this is the email address you want to use for your undertaking
+using-stored-email.error.required = Select yes if this is the email address you want to use to receive notifications
 
 undertaking.cya.title=Check your answers
 undertaking.cya.change.hidden.industry-sector = industry sector
@@ -176,7 +176,7 @@ addBusiness.p2 = Each business will be notified by email that they have been add
 addBusiness.legend = Do you want to add another business?
 addBusiness.businesses-added.legend = Do you need to add another business?
 addBusiness.hint = You only need to add businesses that have received customs subsidies (Customs Duty waivers) or non-customs subsidies
-addBusiness.error.required=Select yes if you need to add a business to your undertaking?
+addBusiness.error.required = Select yes if there are other businesses in your undertaking
 addBusiness.change-remove.snippet = business with EORI
 
 businessEntityEori.title = What is the EORI number of the business you want to add?
@@ -286,7 +286,7 @@ add-claim-amount.input-hint-gbp = The amount should include two decimal places, 
 
 # Form validation errors
 
-add-claim-amount.currency-code.error.required = Select the currency the payment was made in
+add-claim-amount.currency-code.error.required = Select what currency your payment was received in; pounds or euros
 
 # GBP field validation errors
 
@@ -320,7 +320,7 @@ add-claim-date.title = What date were you awarded the payment?
 add-claim-date.p1 = You must report all non-customs subsidy payments you have received since <span class="date-no-break">{0}</span>.
 add-claim-date.hint = The date should be the date you received the payment offer, in this format, <span class="date-no-break">27 7 2020</span>
 
-add-claim-date.error.required = Enter the date you were awarded the payment
+add-claim-date.error.required = Enter the date in the correct format
 add-claim-date.error.day-missing = The date you were awarded the payment must include a day
 add-claim-date.error.day-and-month-missing = The date you were awarded the payment must include a day and month
 add-claim-date.error.day-and-year-missing = The date you were awarded the payment must include a day and year
@@ -333,13 +333,13 @@ add-claim-date.error.in-future = The date you were awarded the payment must be i
 
 add-claim-public-authority.title = Which public authority granted the payment?
 add-claim-public-authority.hint = For example, Invest NI, NI Direct
-error.claim-public-authority.required = Enter the name of the public authority that granted the payment
+error.claim-public-authority.required = Enter the public authority which granted the payment
 error.claim-public-authority.tooManyChars = Public authority name must be 150 characters or fewer
 
 add-claim-eori.title = Does the business that claimed the payment have an EORI number?
 add-claim-eori.label = This must be a GB EORI number
 add-claim-eori.hint = The EORI number starts with ‘GB’ and is followed by 12 or 15 digits, like GB123123123123
-should-claim-eori.error.required=Select yes if you would like to add a valid EORI number
+should-claim-eori.error.required = Select yes if the business that claimed the payment has an EORI number
 claim-eori.error.incorrect-format = Enter the EORI number in the correct format
 claim-eori.error.required = Enter the EORI number in the correct format
 claim-eori.error.not-in-undertaking=The EORI number you entered is not part of this undertaking. Enter a valid EORI number.
