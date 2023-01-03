@@ -18,8 +18,10 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.data.OptionT
 import cats.implicits._
-import play.api.data.{Form, FormError}
-import play.api.data.Forms.{mapping, nonEmptyText}
+import play.api.data.Forms.text.verifying
+import play.api.data.{Form, FormError, Mapping}
+import play.api.data.Forms.{mapping, nonEmptyText, text}
+import play.api.data.validation.{Constraint, Constraints, Invalid, Valid}
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
@@ -27,12 +29,14 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.toSubsidyUpdate
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.{Errors, Fields}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.{formWithSingleMandatoryField, mandatory}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.IncorrectFormat
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimAmountFormProvider, ClaimDateFormProvider, ClaimEoriFormProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{Journey, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{NonCustomsSubsidyAdded, NonCustomsSubsidyRemoved}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.withGbPrefix
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, TraderRef, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -80,12 +84,20 @@ class SubsidyController @Inject() (
   private val cyaForm: Form[FormValues] = formWithSingleMandatoryField("cya")
   private val addClaimBusinessForm: Form[FormValues] = formWithSingleMandatoryField("add-claim-business")
 
+  private val enteredTradingRefIsValid = Constraint[String] { traderRef: String =>
+    if (traderRef.matches(TraderRef.regex)) Valid
+    else Invalid(IncorrectFormat)
+  }
+
   private val claimTraderRefForm: Form[OptionalTraderRef] = Form(
     mapping(
       "should-store-trader-ref" -> mandatory("should-store-trader-ref"),
-      "claim-trader-ref" -> mandatoryIfEqual("should-store-trader-ref", "true", nonEmptyText)
+      "claim-trader-ref" -> mandatoryIfEqual("should-store-trader-ref", "true",
+        text.verifying(enteredTradingRefIsValid))
     )(OptionalTraderRef.apply)(OptionalTraderRef.unapply)
   )
+
+
 
   private val claimPublicAuthorityForm: Form[String] = Form(
     "claim-public-authority" -> mandatory("claim-public-authority")
