@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ package object types extends SimpleJson {
   type TraderRef = String @@ TraderRef.Tag
   object TraderRef
       extends RegexValidatedString(
-        regex = """[A-Za-z0-9]{0,35}""" // n.b. no longer exact match for spec which accepts n of any char
+        regex = """[A-Za-z0-9]{1,35}""" // n.b. no longer exact match for spec which accepts n of any char
       )
 
   type UndertakingName = String @@ UndertakingName.Tag
