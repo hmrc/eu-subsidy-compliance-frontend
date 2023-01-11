@@ -1,5 +1,5 @@
 @*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@
   govukRadios : GovukRadios,
   govukWarningText : GovukWarningText,
   govukInsetText : GovukInsetText,
+  govukDetails : GovukDetails,
   govukNotificationBanner : GovukNotificationBanner
 )
 
@@ -52,6 +53,15 @@
     else routes.NoBusinessPresentController.getNoBusinessPresent
 }
 
+@detailsHtml = {
+  <ul class="govuk-list govuk-list--bullet">
+    <li>@messages(s"$key.details.ul1-li1")</li>
+    <li>@messages(s"$key.details.ul1-li2", currentPeriodStart)</li>
+    <li>@messages(s"$key.details.ul1-li3")</li>
+    <li>@messages(s"$key.details.ul1-li4")</li>
+  </ul>
+}
+
 @layout(
   pageTitle = Some(messages(s"$key.title")),
   backLinkEnabled = false,
@@ -59,56 +69,47 @@
 ) {
     
     @H1(messages("lead-account-homepage.title"), Some("govuk-heading-xl govuk-!-margin-bottom-0"))
-    <p class="govuk-hint govuk-!-font-size-24 govuk-!-margin-top-1 govuk-!-margin-bottom-8">@eori</p>
 
-    @H2(messages(s"$key.h2"))
-    @P(messages(s"$key.p1", currentPeriodStart))
+    <p class="govuk-hint govuk-!-font-size-24 govuk-!-margin-top-1 govuk-!-margin-bottom-8">@eori</p>
 
     @if(isOverdue) {
         @govukWarningText(WarningText(
-            content = Text(messages(s"$key.p2.is-overdue", dueDate))
+            content = Text(messages(s"$key.p1.is-overdue", dueDate))
         ))
     } else {
-        @P(messages(s"$key.p2.not-overdue", dueDate))
+        @P(messages(s"$key.p1.not-overdue", dueDate))
     }
     
-    @if(!neverSubmitted){
-      @P(messages(s"$key.p3.has-submitted", lastSubmitted.getOrElse("")))
-    } else {
-      @P(messages(s"$key.p3.never-submitted"))
-    }
+    @P(messages(s"$key.p2"))
 
-
-    @P(messages(s"$key.p4"))
-    @govukInsetText(InsetText(
-      content = Text(messages(s"$key.p5-inset"))
-    ))
-
-    <ul class="govuk-list govuk-list--spaced">
-      <li><a class="govuk-link" href="@routes.SubsidyController.getClaimDate">@messages("lead-account-homepage.ul1-li1")</a></li>
-      <li><a class="govuk-link" href="@routes.NoClaimNotificationController.getNoClaimNotification">@messages("lead-account-homepage.ul1-li2")</a></li>
-    </ul>
-    
-    @H2(messages("lead-account-homepage.h2-2"), Some("govuk-heading-m govuk-!-margin-top-8"))
-    @P(messages(
-      "lead-account-homepage.p5",
-      allowance,
-      currentPeriodStart,
-      totalSubsidies
-    ))
-    @P(messages("lead-account-homepage.p6", remainingAmount))
-
-    @H2(messages("lead-account-homepage.h2-3"), Some("govuk-heading-m govuk-!-margin-top-8"))
-    <ul class="govuk-list govuk-list--spaced">
-      <li><a class="govuk-link" href="@routes.SubsidyController.getReportedPayments">@messages("lead-account-homepage.ul2-li1")</a></li>
-      <li><a class="govuk-link" href="@routes.FinancialDashboardController.getFinancialDashboard">@messages("lead-account-homepage.ul2-li2")</a></li>
+    <ul class="govuk-list govuk-list--bullet">
+      <li>@messages(s"$key.ul1-li1")</li>
+      <li>@messages(s"$key.ul1-li2")</li>
     </ul>
 
-    
-    @H2(messages("lead-account-homepage.h2-4"), Some("govuk-heading-m govuk-!-margin-top-8"))
+    @govukDetails(Details(
+      summary = Text(messages(s"$key.details.title")),
+      content = HtmlContent(detailsHtml)
+    ))
+
+    @button("common.submit-report")
+
+    @H2(messages("lead-account-homepage.h2-3"), Some("govuk-heading-m govuk-!-margin-top-4"))
     <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-8">
-      <li><a class="govuk-link" href="@routes.BusinessEntityController.getAddBusinessEntity">@messages("lead-account-homepage.ul3-li1")</a></li>
-      <li><a class="govuk-link" href="@routes.UndertakingController.getAmendUndertakingDetails">@messages("lead-account-homepage.ul3-li2")</a></li>
-      <li><a class="govuk-link" href="@routes.UndertakingController.getDisableUndertakingWarning">@messages("lead-account-homepage.ul3-li3")</a></li>
+      <li><a class="govuk-link" href="@routes.SubsidyController.getReportedPayments">@messages("lead-account-homepage.ul2-li1")</a></li>
+    </ul>
+
+    @H2(messages("lead-account-homepage.h2-4"), Some("govuk-heading-m govuk-!-margin-top-4"))
+    @P(messages(s"$key.p3", remainingAmount, allowance))
+    <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-8">
+      <li><a class="govuk-link" href="@routes.FinancialDashboardController.getFinancialDashboard">@messages("lead-account-homepage.ul3-li1")</a></li>
+    </ul>
+
+    
+    @H2(messages("lead-account-homepage.h2-5"), Some("govuk-heading-m"))
+    <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-8">
+      <li><a class="govuk-link" href="@routes.BusinessEntityController.getAddBusinessEntity">@messages("lead-account-homepage.ul4-li1")</a></li>
+      <li><a class="govuk-link" href="@routes.UndertakingController.getAmendUndertakingDetails">@messages("lead-account-homepage.ul4-li2")</a></li>
+       <li><a class="govuk-link" href="@routes.UndertakingController.getDisableUndertakingWarning">@messages("lead-account-homepage.ul4-li3")</a></li>
     </ul>
 }

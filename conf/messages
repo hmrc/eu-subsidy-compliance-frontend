@@ -11,6 +11,7 @@ common.submit = Submit
 common.continue=Save and continue
 common.accept-continue=Accept and continue
 common.continue.only=Continue
+common.submit-report=Submit a report
 common.accept=Accept and send
 common.go-account-home = Go to homepage
 common.cya.change = Change
@@ -210,30 +211,28 @@ undertaking.confirmation.p1 = We have sent you a confirmation email.
 undertaking.confirmation.p2 = You can now add businesses to your undertaking using the <a href="{0}">Add and remove businesses</a> link in the ‘Undertaking administration’ section of the homepage.
 
 lead-account-homepage.title = Manage your undertaking
-lead-account-homepage.h2 = Your next report date
-lead-account-homepage.p1 = You must use this service to report all non-customs subsidy payments you have received since {0}. You must submit a report at least once every 90 days, even if you haven’t received any payments.
-lead-account-homepage.p2.not-overdue = Your next report is due on or before <strong>{0}</strong>.
-lead-account-homepage.p2.is-overdue = Your report was due by {0}.
-lead-account-homepage.p3.has-submitted = This date is 90 days after the last report you submitted, on {0}.
-lead-account-homepage.p3.never-submitted = This date is 90 days after you registered your undertaking.
-lead-account-homepage.p4 = If you don’t submit a report, your undertaking may no longer be able to claim Customs Duty waivers.
-lead-account-homepage.p5-inset = You no longer need to report customs subsidies (Customs Duty waivers). This is now done automatically.
-
-lead-account-homepage.ul1-li1 = Report a non-customs subsidy payment
-lead-account-homepage.ul1-li2 = Tell us you don’t have any payments to report
-
-lead-account-homepage.h2-2 = Your remaining allowance
-lead-account-homepage.p5 = Your allowance is {0} for the period including the current tax year and the previous 2 tax years. Since {1}, your payments for customs and non-customs subsidies total {2}.
-lead-account-homepage.p6 = You currently have a remaining balance of <strong>{0}</strong>.
+lead-account-homepage.p1.not-overdue = Your next report is due by <strong>{0}</strong>.
+lead-account-homepage.p1.is-overdue = Your report was due by {0}.
+lead-account-homepage.p2 = You must either:
+lead-account-homepage.ul1-li1 = report a non-customs subsidy payment
+lead-account-homepage.ul1-li2 = report that you have not been awarded any non-customs subsidy payments
+lead-account-homepage.details.title = What you need to report, and when
+lead-account-homepage.details.ul1-li1 = this date is 90 days after you registered your undertaking on [TODO: REGISTERED DATE HERE]
+lead-account-homepage.details.ul1-li2 = you must use this service to report all non-customs subsidy payments you have received since {0}
+lead-account-homepage.details.ul1-li3 = you must submit a report at least once every 90 days, even if you haven’t received any payments
+lead-account-homepage.details.ul1-li4 = if you don’t submit a report, your undertaking may no longer be able to claim Customs Duty waivers
 
 lead-account-homepage.h2-3 = Report history
-lead-account-homepage.ul2-li1 = View non-customs subsidy payments reported
-lead-account-homepage.ul2-li2 = View summary of your allowance (customs subsidies and non-customs subsidies)
+lead-account-homepage.ul2-li1 = View reported non-customs subsidy payments
 
-lead-account-homepage.h2-4 = Undertaking administration
-lead-account-homepage.ul3-li1 = Add or remove businesses
-lead-account-homepage.ul3-li2 = Update your email address, or change the industry sector of your undertaking
-lead-account-homepage.ul3-li3 = Deregister your undertaking
+lead-account-homepage.h2-4 = Remaining allowance
+lead-account-homepage.p3 = Your undertaking currently has a remaining balance of {0}, from your sector allowance of {1}.
+lead-account-homepage.ul3-li1 = View summary of your allowance (customs subsidies and non-customs subsidies)
+
+lead-account-homepage.h2-5 = Undertaking administration
+lead-account-homepage.ul4-li1 = Add or remove businesses
+lead-account-homepage.ul4-li2 = Update your email address, or change the industry sector of your undertaking
+lead-account-homepage.ul4-li3 = Deregister your undertaking
 
 lead-account-homepage.inset=Your next entry is due by {0}. You can report de minimis aid payment, or let HMRC know that you have not received any, by following the links in the Payments received section below.
 lead-account-homepage-overdue.inset=Your due date of {0} has passed. You have not submitted your return within the 90-day period.
