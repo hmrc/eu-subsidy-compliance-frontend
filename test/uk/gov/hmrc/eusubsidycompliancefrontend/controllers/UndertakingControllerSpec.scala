@@ -861,7 +861,7 @@ class UndertakingControllerSpec
             mockUpdate[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
 
-          assertThrows[Exception](await(performAction("addBusiness" -> "true")))
+          assertThrows[Exception](await(performAction("addBusinessIntent" -> "true")))
         }
 
       }
@@ -898,7 +898,7 @@ class UndertakingControllerSpec
               Right(UndertakingJourney(addBusiness = UndertakingAddBusinessFormPage(false.some)))
             )
           }
-          checkIsRedirect(performAction("addBusiness" -> "false"), routes.UndertakingController.getCheckAnswers.url)
+          checkIsRedirect(performAction("addBusinessIntent" -> "false"), routes.UndertakingController.getCheckAnswers.url)
         }
 
         "user selected Yes" in {
@@ -909,7 +909,7 @@ class UndertakingControllerSpec
               Right(UndertakingJourney(addBusiness = UndertakingAddBusinessFormPage(true.some)))
             )
           }
-          checkIsRedirect(performAction("addBusiness" -> "true"), routes.UndertakingController.getCheckAnswers.url)
+          checkIsRedirect(performAction("addBusinessIntent" -> "true"), routes.UndertakingController.getCheckAnswers.url)
         }
 
       }

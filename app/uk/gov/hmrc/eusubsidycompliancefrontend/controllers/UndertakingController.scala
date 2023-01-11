@@ -188,7 +188,7 @@ class UndertakingController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
       runStepIfEligible(journey) {
-        val form = journey.addBusiness.value.fold(undertakingSectorForm)(addBusiness =>
+        val form = journey.addBusiness.value.fold(addBusinessForm)(addBusiness =>
           addBusinessForm.fill(FormValues(addBusiness.toString))
         )
         Ok(
@@ -416,7 +416,7 @@ class UndertakingController @Inject() (
   )
 
   private val undertakingSectorForm: Form[FormValues] = formWithSingleMandatoryField("undertakingSector")
-  private val addBusinessForm: Form[FormValues] = formWithSingleMandatoryField("addBusiness")
+  private val addBusinessForm: Form[FormValues] = formWithSingleMandatoryField("addBusinessIntent")
   private val cyaForm: Form[FormValues] = formWithSingleMandatoryField("cya")
   private val confirmationForm: Form[FormValues] = formWithSingleMandatoryField("confirm")
   private val amendUndertakingForm: Form[FormValues] = formWithSingleMandatoryField("amendUndertaking")
