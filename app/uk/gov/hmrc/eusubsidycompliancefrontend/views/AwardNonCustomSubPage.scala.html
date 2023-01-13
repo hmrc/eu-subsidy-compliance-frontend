@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax._
 @import java.time.LocalDate
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 
 @this(
   layout: Layout,
@@ -34,11 +35,12 @@
 
 @(
     form: Form[_],
+        since: LocalDate,
     previous: Journey.Uri,
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@key = @{"add-claim-date"}
-@title = @{messages(s"$key.title")}
+@key = @{"award"}
+@title = @{messages(s"$key.title", DateFormatter.govDisplayFormat(since))}
 
 @layout(
   pageTitle = Some(title),
@@ -61,9 +63,9 @@
           )
       )
     }
-}
+  }
 
-  @formHelper(action = controllers.routes.SubsidyController.postClaimDate) {
+  @formHelper(action = controllers.routes.SubsidyController.postHasBeenAwarded) {
     @H1(title, Some("govuk-heading-xl govuk-!-margin-bottom-3"))
 
         @govukRadios(Radios(
@@ -94,9 +96,8 @@
             ),
                 classes = "govuk-radios--inline"
             ))
+          @button("common.continue")
     }
 
-    @button("common.continue")
 
-  }
 }

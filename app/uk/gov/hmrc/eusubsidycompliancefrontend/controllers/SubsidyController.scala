@@ -31,7 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.{Er
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.{formWithSingleMandatoryField, mandatory}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.IncorrectFormat
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimAmountFormProvider, ClaimDateFormProvider, ClaimEoriFormProvider}
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{Journey, SubsidyJourney}
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, Journey, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
@@ -104,14 +104,34 @@ class SubsidyController @Inject() (
     "claim-public-authority" -> mandatory("claim-public-authority")
   )
 
+  private val awardForm = formWithSingleMandatoryField("award")
+
   private val claimAmountForm: Form[ClaimAmount] = ClaimAmountFormProvider().form
 
   private val claimDateForm: Form[DateFormValues] = ClaimDateFormProvider(timeProvider).form
 
+  val since = LocalDate.of(2020, 4, 6)
+  // TODO - rename this to getHasBeenAwarded
   def haveBeenAwardSince: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    Ok(awardNonCustomSubPage()).toFuture
+    //TODO - fix the url
+    Ok(awardNonCustomSubPage(awardForm, since, routes.AccountController.getAccountPage.url )).toFuture
   }
+
+  def postHasBeenAwarded: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    //TODO - fix the url
+    awardForm
+      .bindFromRequest()
+      .fold(
+        errors => BadRequest(awardNonCustomSubPage(errors, since, routes.AccountController.getAccountPage.url )).toFuture,
+        form => {
+          if (form.value.isTrue) Ok("You said true. Thank you").toFuture
+          else Ok("You said false. I will end you.").toFuture
+        }
+      )
+  }
+
+
 
   def getReportedPayments: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking(renderReportedPaymentsPage(_))

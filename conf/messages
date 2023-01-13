@@ -210,6 +210,8 @@ undertaking.confirmation.title = Undertaking registered
 undertaking.confirmation.p1 = We have sent you a confirmation email.
 undertaking.confirmation.p2 = You can now add businesses to your undertaking using the <a href="{0}">Add and remove businesses</a> link in the ‘Undertaking administration’ section of the homepage.
 
+award.title=Have you been awarded any non-customs subsidies since {0}?
+
 lead-account-homepage.title = Manage your undertaking
 lead-account-homepage.p1.not-overdue = Your next report is due by <strong>{0}</strong>.
 lead-account-homepage.p1.is-overdue = Your report was due by {0}.
