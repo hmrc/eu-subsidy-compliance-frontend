@@ -68,6 +68,7 @@ class SubsidyController @Inject() (
   addClaimDatePage: AddClaimDatePage,
   addPublicAuthorityPage: AddPublicAuthorityPage,
   addTraderReferencePage: AddTraderReferencePage,
+  awardNonCustomSubPage: AwardNonCustomSubPage,
   cyaPage: ClaimCheckYourAnswerPage,
   confirmCreatedPage: ClaimConfirmationPage,
   confirmRemovePage: ConfirmRemoveClaim,
@@ -109,7 +110,7 @@ class SubsidyController @Inject() (
 
   def haveBeenAwardSince: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    Ok("Yolo lol").toFuture
+    Ok(awardNonCustomSubPage()).toFuture
   }
 
   def getReportedPayments: Action[AnyContent] = verifiedEmail.async { implicit request =>
