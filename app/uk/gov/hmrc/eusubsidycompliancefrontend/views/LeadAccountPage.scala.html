@@ -55,7 +55,7 @@
 
 @detailsHtml = {
   <ul class="govuk-list govuk-list--bullet">
-    <li>@messages(s"$key.details.ul1-li1")</li>
+    <li>@messages(s"$key.details.ul1-li1", lastSubmitted.getOrElse(""))</li>
     <li>@messages(s"$key.details.ul1-li2", currentPeriodStart)</li>
     <li>@messages(s"$key.details.ul1-li3")</li>
     <li>@messages(s"$key.details.ul1-li4")</li>
@@ -92,7 +92,10 @@
       content = HtmlContent(detailsHtml)
     ))
 
-    @button("common.submit-report")
+    @button(
+      msg = "common.submit-report",
+      href = Some(routes.SubsidyController.getClaimDate.url),
+    )
 
     @H2(messages("lead-account-homepage.h2-3"), Some("govuk-heading-m govuk-!-margin-top-4"))
     <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-8">
