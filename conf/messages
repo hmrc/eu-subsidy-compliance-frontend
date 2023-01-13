@@ -212,6 +212,9 @@ undertaking.confirmation.p2 = You can now add businesses to your undertaking usi
 
 award.title=Have you been awarded any non-customs subsidies since {0}?
 
+award-yes.title=You must report all non-customs subsidies for the last 3 tax years
+award-yes.p1=You need to report for the current tax year, and the previous 2 tax years
+
 lead-account-homepage.title = Manage your undertaking
 lead-account-homepage.p1.not-overdue = Your next report is due by <strong>{0}</strong>.
 lead-account-homepage.p1.is-overdue = Your report was due by {0}.

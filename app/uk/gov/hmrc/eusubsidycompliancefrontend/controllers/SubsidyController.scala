@@ -69,6 +69,7 @@ class SubsidyController @Inject() (
   addPublicAuthorityPage: AddPublicAuthorityPage,
   addTraderReferencePage: AddTraderReferencePage,
   awardNonCustomSubPage: AwardNonCustomSubPage,
+  reportNonCustomSubPage: ReportNonCustomSubPage,
   cyaPage: ClaimCheckYourAnswerPage,
   confirmCreatedPage: ClaimConfirmationPage,
   confirmRemovePage: ConfirmRemoveClaim,
@@ -112,20 +113,23 @@ class SubsidyController @Inject() (
 
   val since = LocalDate.of(2020, 4, 6)
   // TODO - rename this to getHasBeenAwarded
-  def haveBeenAwardSince: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def getHasBeenAwardedSince: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     //TODO - fix the url
-    Ok(awardNonCustomSubPage(awardForm, since, routes.AccountController.getAccountPage.url )).toFuture
+    Ok(awardNonCustomSubPage(awardForm, since, routes.AccountController.getAccountPage.url)).toFuture
   }
 
-  def postHasBeenAwarded: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    def postHasBeenAwardedSince: Action[AnyContent] = verifiedEmail.async { implicit request =>
     //TODO - fix the url
     awardForm
       .bindFromRequest()
       .fold(
         errors => BadRequest(awardNonCustomSubPage(errors, since, routes.AccountController.getAccountPage.url )).toFuture,
         form => {
-          if (form.value.isTrue) Ok("You said true. Thank you").toFuture
+          if (form.value.isTrue){
+
+            Ok(reportNonCustomSubPage(since, routes.AccountController.getAccountPage.url)).toFuture
+          }
           else Ok("You said false. I will end you.").toFuture
         }
       )
