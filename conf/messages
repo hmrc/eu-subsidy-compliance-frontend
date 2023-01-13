@@ -69,7 +69,7 @@ date.truncated.12=Dec
 
 customswaivers.title = Does your business claim Customs Duty waivers?
 customswaivers.hint = You will need to use this service if your business, or any other business in your organisation, claims Customs Duty waivers
-customswaivers.error.required = Select yes if you, or any business in your organisation, claim Customs Duty waivers
+customswaivers.error.required = Select yes if your business claims Customs Duty waivers
 
 mainbusinesscheck.error.required=Select yes if the business will be responsible for reporting de minimis aid for this undertaking
 mainbusinesscheck.title=Reporting de minimis aid payments (less Customs Duty waivers) as a single undertaking
@@ -84,7 +84,7 @@ mainbusinesscheck.p6=You must add any relevant business within your organisation
 mainbusinesscheck.legend=Will the business EORI number {0} be responsible for reporting de minimis aid (less Customs Duty waivers) payments for this single undertaking?
 
 willyouclaim.title = Will your business claim Customs Duty waivers in the future?
-willyouclaim.error.required = Select if you, or any business in your organisation, will claim Customs Duty waivers in the future
+willyouclaim.error.required = Select yes if your business will claim Customs Duty waivers in the future
 
 notEligible.title = You are not required to use this service
 notEligible.p1 = You only need to use this service if you claim Customs Duty waivers.
@@ -120,7 +120,7 @@ undertakingName.p1 = Your subsidy allowance applies to all parts of your organis
 undertakingName.p2 = This may include more than one business. This group of businesses is referred to as an undertaking. An undertaking could be a sole trader, a company, a partnership, or any combination of these.
 undertakingName.p3 = These businesses must not report payments they receive separately. You are responsible for reporting received payments on their behalf.
 
-undertakingSector.error.required=Select an industry sector
+undertakingSector.error.required = Select the industry sector of your undertaking
 undertakingSector.title=What is the industry sector of your undertaking?
 undertakingSector.p1=Your undertaking may have businesses working in different sectors. For your whole undertaking the lowest subsidy allowance will apply.
 
@@ -156,10 +156,10 @@ inputEmail.title=What is your email address?
 inputEmail.label=Enter an email address
 inputEmail.p=This email address will be used to send you notifications from this service.
 
-email.error.required = Enter your email address
+email.error.required = Enter the email address you want to use to receive notifications
 email.error.email = Enter a valid email address
 email.error.maxLength = The email address for your undertaking must be 254 characters or less
-using-stored-email.error.required = Select yes if this is the email address you want to use for your undertaking
+using-stored-email.error.required = Select yes if this is the email address you want to use to receive notifications
 
 undertaking.cya.title=Check your answers
 undertaking.cya.change.hidden.industry-sector = industry sector
@@ -176,7 +176,7 @@ addBusiness.p2 = Each business will be notified by email that they have been add
 addBusiness.legend = Do you want to add another business?
 addBusiness.businesses-added.legend = Do you need to add another business?
 addBusiness.hint = You only need to add businesses that have received customs subsidies (Customs Duty waivers) or non-customs subsidies
-addBusiness.error.required=Select yes if you need to add a business to your undertaking?
+addBusiness.error.required = Select yes if you need to add another business
 addBusiness.change-remove.snippet = business with EORI
 
 businessEntityEori.title = What is the EORI number of the business you want to add?
@@ -202,8 +202,8 @@ removeBusinessEntity.title= You are about to remove a business from your underta
 removeBusinessEntity.p1 = You are about to remove the business with EORI number {0}.
 removeBusinessEntity.p2 = Reported payments for this business will remain in your undertaking, and will continue to affect your remaining sector allowance. These reported payments will be removed only when the business joins or creates another undertaking.
 removeBusinessEntity.subtitle = Are you sure you want to remove this business from your undertaking?
-removeBusinessEntity.error.required = Select yes if you want to remove business entity.
-removeBusiness.error.required = Select yes if you want to remove business entity.
+removeBusinessEntity.error.required = Select if you want to remove a business from your undertaking
+removeBusiness.error.required = Select if you want to remove a business from your undertaking
 
 undertaking.confirmation.title = Undertaking registered
 undertaking.confirmation.p1 = We have sent you a confirmation email.
@@ -286,7 +286,7 @@ add-claim-amount.input-hint-gbp = The amount should include two decimal places, 
 
 # Form validation errors
 
-add-claim-amount.currency-code.error.required = Select the currency the payment was made in
+add-claim-amount.currency-code.error.required = Select what currency your payment was received in; pounds or euros
 
 # GBP field validation errors
 
@@ -320,7 +320,7 @@ add-claim-date.title = What date were you awarded the payment?
 add-claim-date.p1 = You must report all non-customs subsidy payments you have received since <span class="date-no-break">{0}</span>.
 add-claim-date.hint = The date should be the date you received the payment offer, in this format, <span class="date-no-break">27 7 2020</span>
 
-add-claim-date.error.required = Enter the date you were awarded the payment
+add-claim-date.error.required = Enter the date in the correct format
 add-claim-date.error.day-missing = The date you were awarded the payment must include a day
 add-claim-date.error.day-and-month-missing = The date you were awarded the payment must include a day and month
 add-claim-date.error.day-and-year-missing = The date you were awarded the payment must include a day and year
@@ -333,13 +333,13 @@ add-claim-date.error.in-future = The date you were awarded the payment must be i
 
 add-claim-public-authority.title = Which public authority granted the payment?
 add-claim-public-authority.hint = For example, Invest NI, NI Direct
-error.claim-public-authority.required = Enter the name of the public authority that granted the payment
+error.claim-public-authority.required = Enter the public authority which granted the payment
 error.claim-public-authority.tooManyChars = Public authority name must be 150 characters or fewer
 
 add-claim-eori.title = Does the business that claimed the payment have an EORI number?
 add-claim-eori.label = This must be a GB EORI number
 add-claim-eori.hint = The EORI number starts with ‘GB’ and is followed by 12 or 15 digits, like GB123123123123
-should-claim-eori.error.required=Select yes if you would like to add a valid EORI number
+should-claim-eori.error.required = Select yes if the business that claimed the payment has an EORI number
 claim-eori.error.incorrect-format = Enter the EORI number in the correct format
 claim-eori.error.required = Enter the EORI number in the correct format
 claim-eori.error.not-in-undertaking=The EORI number you entered is not part of this undertaking. Enter a valid EORI number.
@@ -353,6 +353,7 @@ add-claim-trader-reference.title=Would you like to add a reference?
 add-claim-trader-reference.hint = This is for your own records and is not a mandatory field
 add-claim-trader-reference.label=Enter the reference you would like to add
 should-store-trader-ref.error.required=Select yes if you would like to add a reference
+claim-trader-ref.error.incorrect-format = Enter your reference, in under 36 characters
 claim-trader-ref.error.required=Enter your reference
 
 subsidy.cya.title=Check your answers
@@ -377,7 +378,7 @@ subsidy.created.l2 = Go to homepage
 subsidy.remove.title = You are about to remove a reported payment
 subsidy.remove.p1 = If you remove this payment then your remaining allowance will change.
 subsidy.remove.yesno.legend = Are you sure you want to remove this payment?
-subsidy.remove.error.required = Select yes if you want to remove the above de minimis payment
+subsidy.remove.error.required = Select yes if you want to remove this payment
 
 #Amend Undertaking
 undertaking.amendUndertaking.title = Undertaking Details
@@ -401,7 +402,7 @@ removeYourselfBusinessEntity.title = You are about to leave this undertaking
 removeYourselfBusinessEntity.p1 = Payments reported on your behalf will remain in the payments report for your undertaking administrator.
 removeYourselfBusinessEntity.p2 = If you join or create a new undertaking at any point, these payments will be moved to your new undertaking.
 removeYourselfBusinessEntity.legend = Are you sure you want to leave this undertaking?
-removeYourselfBusinessEntity.error.required = Select yes if you wish to remove yourself from this single undertaking.
+removeYourselfBusinessEntity.error.required = Select yes if you want to leave this undertaking 
 
 noClaimNotification.never-submitted.title = Tell us your undertaking has not received any non-customs subsidy payments since {0}
 noClaimNotification.never-submitted.p1 = If you have not received any payments in this tax year or the two tax years before, you must report this at least once every 90 days.
@@ -412,7 +413,7 @@ noClaimNotification.has-submitted.p1 = You last reported a non-customs subsidy 
 noClaimNotification.has-submitted.p2 = If you don’t have any payments to report since then, you must tell us every 90 days.
 noClaimNotification.has-submitted.label = This undertaking doesn’t currently have any non-customs subsidy payments to report
 
-noClaimNotification.error.required = Select if you want to declare you have not received de minimis aid in the past 90 days
+noClaimNotification.error.required = Select if you have not received non-customs subsidies in the past 90 days
 
 #noClaimConfirmation
 noClaimConfirmation.title = Report sent
@@ -489,7 +490,7 @@ disableUndertakingWarning.p1 = You will no longer have access to the payments yo
 
 #disableUndertakingConfirm
 disableUndertakingConfirm.title = Are you sure you want to deregister this undertaking?
-disableUndertakingConfirm.error.required = Select Yes if you want to disable the single undertaking.
+disableUndertakingConfirm.error.required = Select yes if you want to deregister this undertaking
 
 #undertakingDisabled
 undertakingDisabled.title = You have deregistered your undertaking
