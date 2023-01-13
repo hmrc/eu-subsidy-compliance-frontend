@@ -107,6 +107,11 @@ class SubsidyController @Inject() (
 
   private val claimDateForm: Form[DateFormValues] = ClaimDateFormProvider(timeProvider).form
 
+  def haveBeenAwardSince: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    Ok("Yolo lol").toFuture
+  }
+
   def getReportedPayments: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking(renderReportedPaymentsPage(_))
   }
