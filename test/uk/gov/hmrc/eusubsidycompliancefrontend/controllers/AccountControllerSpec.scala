@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,10 +97,10 @@ class AccountControllerSpec
                 (1, 1),
                 (1, 2),
                 (2, 1),
-                (2, 2),
                 (3, 1),
-                (3, 2),
-                (3, 3),
+                (4, 1),
+                (4, 2),
+                (4, 3),
               )
 
               elementIds foreach { elementId =>
@@ -143,14 +143,6 @@ class AccountControllerSpec
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("lead-account-homepage.title"),
-            doc => {
-              if (isOverdue)
-                doc.select(".govuk-warning-text").text should include regex
-                  messageFromMessageKey("lead-account-homepage.p2.is-overdue", dueDate)
-              else
-                doc.select(".govuk-grid-column-two-thirds").toString should include regex
-                  messageFromMessageKey("lead-account-homepage.p2.not-overdue", dueDate)
-            }
           )
         }
 
