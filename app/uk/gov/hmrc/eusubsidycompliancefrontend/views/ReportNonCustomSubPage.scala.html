@@ -43,6 +43,11 @@
 @title = @{messages(s"$key.title", DateFormatter.govDisplayFormat(since))}
 @shorty = @{LocalDate.now().minusYears(2)}
 
+@getDateRangeTaxYearMinusN(n: Int) = @{
+    val year = LocalDate.now().minusYears(n)
+    s"${DateFormatter.govDisplayFormat(year.toTaxYearStart)} to ${DateFormatter.govDisplayFormat(year.toTaxYearEnd)}"
+}
+
 @layout(
   pageTitle = Some(title),
   backLinkEnabled = true,
@@ -54,17 +59,12 @@
 
         @P(messages(s"$key.p1"))
         <ul class="govuk-list govuk-list--bullet">
-            <li>@DateFormatter.govDisplayFormat(shorty.toTaxYearStart) to @DateFormatter.govDisplayFormat(shorty.toTaxYearEnd)</li>
-            <li>@messages(s"$key.ul1-li2")</li>
+
+            <li>@getDateRangeTaxYearMinusN(2)</li>
+            <li>@getDateRangeTaxYearMinusN(1)</li>
+            <li>@getDateRangeTaxYearMinusN(0)</li>
+
         </ul>
-
-
-        @LocalDate.now().toTaxYearStart
-        @LocalDate.now().toTaxYearEnd
-        @LocalDate.now().minusYears(1).toTaxYearStart
-        @LocalDate.now().minusYears(1).toTaxYearEnd
-        @LocalDate.now().minusYears(2).toTaxYearStart
-        @LocalDate.now().minusYears(2).toTaxYearEnd
 
         @button("common.continue")
     }
