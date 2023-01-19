@@ -70,6 +70,7 @@ class SubsidyController @Inject() (
   addTraderReferencePage: AddTraderReferencePage,
   awardNonCustomSubPage: AwardNonCustomSubPage,
   reportNonCustomSubPage: ReportNonCustomSubPage,
+  reportNotReceivedCustomSubPage: ReportNotReceivedCustomSubPage,
   cyaPage: ClaimCheckYourAnswerPage,
   confirmCreatedPage: ClaimConfirmationPage,
   confirmRemovePage: ConfirmRemoveClaim,
@@ -130,7 +131,7 @@ class SubsidyController @Inject() (
 
             Ok(reportNonCustomSubPage(since, routes.AccountController.getAccountPage.url)).toFuture
           }
-          else Ok("You said false. I will end you.").toFuture
+          else Ok(reportNotReceivedCustomSubPage(since, routes.AccountController.getAccountPage.url)).toFuture
         }
       )
   }
