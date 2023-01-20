@@ -92,11 +92,9 @@
       summary = Text(messages(s"$key.details.title")),
       content = HtmlContent(detailsHtml)
     ))
-
-
-    @formHelper(action = routes.SubsidyController.postHasBeenAwardedSince) {
+    <a href="@routes.SubsidyController.getHasBeenAwardedSince">
         @button("common.submit-report" )
-    }
+    </a>
 
     @H2(messages("lead-account-homepage.h2-3"), Some("govuk-heading-m govuk-!-margin-top-4"))
     <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-8">

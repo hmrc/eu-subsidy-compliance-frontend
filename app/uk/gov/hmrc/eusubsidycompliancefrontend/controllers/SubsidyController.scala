@@ -69,12 +69,13 @@ class SubsidyController @Inject() (
   addPublicAuthorityPage: AddPublicAuthorityPage,
   addTraderReferencePage: AddTraderReferencePage,
   awardNonCustomSubPage: AwardNonCustomSubPage,
-  reportNonCustomSubPage: ReportNonCustomSubPage,
-  reportNotReceivedCustomSubPage: ReportNotReceivedCustomSubPage,
   cyaPage: ClaimCheckYourAnswerPage,
   confirmCreatedPage: ClaimConfirmationPage,
   confirmRemovePage: ConfirmRemoveClaim,
   confirmConvertedAmountPage: ConfirmClaimAmountConversionToEuros,
+  reportNonCustomSubPage: ReportNonCustomSubPage,
+  reportNotReceivedCustomSubPage: ReportNotReceivedCustomSubPage,
+  submitAReportPage: SubmitAReportPage,
   timeProvider: TimeProvider
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
@@ -113,30 +114,44 @@ class SubsidyController @Inject() (
   private val claimDateForm: Form[DateFormValues] = ClaimDateFormProvider(timeProvider).form
 
   val since = LocalDate.of(2020, 4, 6)
-  // TODO - rename this to getHasBeenAwarded
   def getHasBeenAwardedSince: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    //TODO - fix the url
-    Ok(awardNonCustomSubPage(awardForm, since, routes.AccountController.getAccountPage.url)).toFuture
+    withLeadUndertaking {
+      undertaking => {
+        for {
+          subsidies <- escService.retrieveAllSubsidies(undertaking.reference)
+          hasNeverSubmitted = subsidies.hasNeverSubmitted
+        } yield {
+          if (hasNeverSubmitted)
+            Ok(submitAReportPage(awardForm, since, routes.AccountController.getAccountPage.url))
+          else
+            Ok(awardNonCustomSubPage(awardForm, since, routes.AccountController.getAccountPage.url))
+        }
+      }
+    }
   }
 
     def postHasBeenAwardedSince: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    //TODO - fix the url
     awardForm
       .bindFromRequest()
       .fold(
         errors => BadRequest(awardNonCustomSubPage(errors, since, routes.AccountController.getAccountPage.url )).toFuture,
         form => {
           if (form.value.isTrue){
-
             Ok(reportNonCustomSubPage(since, routes.AccountController.getAccountPage.url)).toFuture
           }
           else Ok(reportNotReceivedCustomSubPage(since, routes.AccountController.getAccountPage.url)).toFuture
         }
       )
+    }
+
+  def postSubmitAReport: Action[AnyContent] = verifiedEmail.async { implicit request =>
+
   }
 
-
+  def postNotReceivedNonCustomsSub: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    Redirect(routes.AccountController.getAccountPage.url).toFuture
+  }
 
   def getReportedPayments: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking(renderReportedPaymentsPage(_))

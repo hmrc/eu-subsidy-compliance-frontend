@@ -210,6 +210,10 @@ undertaking.confirmation.title = Undertaking registered
 undertaking.confirmation.p1 = We have sent you a confirmation email.
 undertaking.confirmation.p2 = You can now add businesses to your undertaking using the <a href="{0}">Add and remove businesses</a> link in the ‘Undertaking administration’ section of the homepage.
 
+submit-a-report.title=What do you need to report?
+submit-a-report.ul1-li1=A non-customs subsidy payment
+submit-a-report.ul2-li2=I have no payments to report
+
 award.title=Have you been awarded any non-customs subsidies since {0}?
 
 award-yes.title=You must report all non-customs subsidies for the last 3 tax years
