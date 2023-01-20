@@ -143,7 +143,8 @@ class SubsidyController @Inject() (
           if (form.value.isTrue){
             Ok(reportNonCustomSubPage(since, routes.AccountController.getAccountPage.url)).toFuture
           }
-          else Ok(reportNotReceivedCustomSubPage(since, routes.AccountController.getAccountPage.url)).toFuture
+          else
+            Ok(reportNotReceivedCustomSubPage(since, routes.AccountController.getAccountPage.url)).toFuture
         }
       )
     }
@@ -155,9 +156,9 @@ class SubsidyController @Inject() (
         errors => BadRequest(submitAReportPage(errors, since, routes.AccountController.getAccountPage.url)).toFuture,
         form => {
           if (form.value.isTrue) {
-            Ok("You have said - A non-customs subsidy payment").toFuture
+            Redirect(routes.SubsidyController.getClaimDate).toFuture
           } else {
-            Ok("You have said - I have no payments to report").toFuture
+            Redirect(routes.NoClaimNotificationController.getNoClaimNotification).toFuture
           }
         }
       )
