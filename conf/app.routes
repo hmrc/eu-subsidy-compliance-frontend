@@ -71,6 +71,7 @@ GET        /lead-undertaking-non-customs-subsidy-award                          
 POST       /lead-undertaking-non-customs-subsidy-award                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postHasBeenAwardedSince
 
 POST       /lead-undertaking-non-customs-subsidy-no-report                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postNotReceivedNonCustomsSub
+POST       /lead-undertaking-non-customs-subsidy-no-report1                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postSubmitAReport
 
 GET        /lead-undertaking-add-claim-eori                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimEori
 POST       /lead-undertaking-add-claim-eori                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimEori

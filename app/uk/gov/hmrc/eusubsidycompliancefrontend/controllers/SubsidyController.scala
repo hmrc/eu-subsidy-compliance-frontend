@@ -109,11 +109,14 @@ class SubsidyController @Inject() (
 
   private val awardForm = formWithSingleMandatoryField("award")
 
+  private val submitAReportForm = formWithSingleMandatoryField("submit-a-report")
+
   private val claimAmountForm: Form[ClaimAmount] = ClaimAmountFormProvider().form
 
   private val claimDateForm: Form[DateFormValues] = ClaimDateFormProvider(timeProvider).form
 
   val since = LocalDate.of(2020, 4, 6)
+
   def getHasBeenAwardedSince: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     withLeadUndertaking {
@@ -123,7 +126,7 @@ class SubsidyController @Inject() (
           hasNeverSubmitted = subsidies.hasNeverSubmitted
         } yield {
           if (hasNeverSubmitted)
-            Ok(submitAReportPage(awardForm, since, routes.AccountController.getAccountPage.url))
+            Ok(submitAReportPage(submitAReportForm, since, routes.AccountController.getAccountPage.url))
           else
             Ok(awardNonCustomSubPage(awardForm, since, routes.AccountController.getAccountPage.url))
         }
@@ -145,8 +148,19 @@ class SubsidyController @Inject() (
       )
     }
 
-  def postSubmitAReport: Action[AnyContent] = verifiedEmail.async { implicit request =>
-
+  def postSubmitAReport: Action[AnyContent]  = verifiedEmail.async { implicit request =>
+    submitAReportForm
+      .bindFromRequest()
+      .fold(
+        errors => BadRequest(submitAReportPage(errors, since, routes.AccountController.getAccountPage.url)).toFuture,
+        form => {
+          if (form.value.isTrue) {
+            Ok("You have said - A non-customs subsidy payment").toFuture
+          } else {
+            Ok("You have said - I have no payments to report").toFuture
+          }
+        }
+      )
   }
 
   def postNotReceivedNonCustomsSub: Action[AnyContent] = verifiedEmail.async { implicit request =>
