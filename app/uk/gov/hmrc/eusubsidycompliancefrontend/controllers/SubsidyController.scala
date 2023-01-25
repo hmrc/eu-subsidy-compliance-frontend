@@ -188,10 +188,8 @@ class SubsidyController @Inject() (
     def handleFormSubmit(previous: Journey.Uri, addClaimDate: DateFormValues): Future[Result] = {
       val form = {
         val f = claimAmountForm.bindFromRequest()
-        println("\n\n\n\n" + f.value + "\n\n\n\n")
         // Verify that the user hasn't entered a currency symbol which doesn't match the currency they selected
-        f.value.fold(f) { claimAmount =>
-          println("\n\n\n\n" + claimAmount.toString() + "\n\n\n\n\n")
+        f.value.fold(f){claimAmount =>
           claimAmount.amount.head match {
             case GBP.symbol if claimAmount.currencyCode != GBP => f.withError(Fields.ClaimAmountEUR, IncorrectFormat)
             case EUR.symbol if claimAmount.currencyCode != EUR => f.withError(Fields.ClaimAmountGBP, IncorrectFormat)
