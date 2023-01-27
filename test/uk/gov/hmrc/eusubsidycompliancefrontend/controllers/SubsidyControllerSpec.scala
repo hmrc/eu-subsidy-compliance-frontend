@@ -525,6 +525,20 @@ class SubsidyControllerSpec
           )(s"add-claim-amount.claim-amount-${EUR.entryName.toLowerCase}.$TooSmall")
         }
 
+        "claim amount claims to be euros, but submits value with pound sign prefix" in {
+          testFormValidation(
+            ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName,
+            ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "£99.99",
+          )(s"add-claim-amount.claim-amount-eur.error.incorrect-format")
+        }
+
+        "claim amount claims to be gbp, but submits value with eur sign prefix" in {
+          testFormValidation(
+            ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
+            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "€99.99",
+          )(s"add-claim-amount.claim-amount-gbp.error.incorrect-format")
+        }
+
         "claim amount entered in GBP exceeds maximum allowed value in EUR when converted" in {
           testConvertedAmountValidation(
             ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,

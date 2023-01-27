@@ -189,8 +189,16 @@ class SubsidyController @Inject() (
       claimAmountForm
         .bindFromRequest()
         .fold(
-          formWithErrors =>
-            BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture,
+          formWithErrors => {
+            if(formWithErrors.errors.head.messages.head == "error.incorrect-format") {
+              val key = if(formWithErrors.data("currency-code") == "EUR") "claim-amount-eur" else "claim-amount-gbp"
+              val newFormWithErrors = formWithErrors.withError(key, "error.incorrect-format")
+              BadRequest(addClaimAmountPage(newFormWithErrors.copy(errors = newFormWithErrors.errors.tail)
+                , previous, addClaimDate.year, addClaimDate.month)).toFuture
+            } else {
+              BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture
+            }
+          },
           claimAmountEntered => {
             val result = for {
               _ <- validateClaimAmount(addClaimDate.toLocalDate, claimAmountEntered).toContext
