@@ -429,7 +429,7 @@ class BusinessEntityControllerSpec
             )
 
           def updatedBusinessJourney() =
-              businessEntityJourney.copy(eori = businessEntityJourney.eori.copy(value = None))
+            businessEntityJourney.copy(eori = businessEntityJourney.eori.copy(value = None))
           List("123456789010", "GB123456789013").foreach { eoriEntered =>
             withClue(s" For eori entered :: $eoriEntered") {
               val validEori = EORI(withGbPrefix(eoriEntered))
@@ -444,7 +444,10 @@ class BusinessEntityControllerSpec
                 mockSendEmail(validEori, AddMemberToBusinessEntity, undertaking)(Right(EmailSent))
                 mockSendEmail(eori1, validEori, AddMemberToLead, undertaking)(Right(EmailSent))
                 mockSendAuditEvent(AuditEvent.BusinessEntityAdded(undertakingRef, "1123", eori1, validEori))
-                mockPut[BusinessEntityJourney](updatedBusinessJourney().copy(addBusiness = AddBusinessFormPage(None)), eori1)(Right(BusinessEntityJourney()))
+                mockPut[BusinessEntityJourney](
+                  updatedBusinessJourney().copy(addBusiness = AddBusinessFormPage(None)),
+                  eori1
+                )(Right(BusinessEntityJourney()))
               }
               checkIsRedirect(
                 performAction("businessEntityEori" -> eoriEntered),

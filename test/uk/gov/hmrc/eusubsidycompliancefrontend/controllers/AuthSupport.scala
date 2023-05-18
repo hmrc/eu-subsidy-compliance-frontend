@@ -51,25 +51,30 @@ trait AuthSupport { this: ControllerSpec =>
       .expects(predicate, retrieval, *, *)
       .returning(result)
 
-  def mockAuthWithEccRetrievals(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]): Unit = {
+  def mockAuthWithEccRetrievals(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]): Unit =
     mockAuth(EmptyPredicate, authRetrievals)(
       (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
-  }
 
-  def mockAuthWithEccAuthRetrievalsWithEmailCheck(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]): CallHandler1[EORI, Future[Option[VerifiedEmail]]] = {
+  def mockAuthWithEccAuthRetrievalsWithEmailCheck(
+    enrolments: Enrolments,
+    providerId: String,
+    groupIdentifier: Option[String]
+  ): CallHandler1[EORI, Future[Option[VerifiedEmail]]] = {
     mockAuth(EmptyPredicate, authRetrievals)(
       (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
     mockGetEmailVerification()
   }
 
-
-  def mockAuthWithEccAuthRetrievalsNoEmailVerification(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]): Unit =
+  def mockAuthWithEccAuthRetrievalsNoEmailVerification(
+    enrolments: Enrolments,
+    providerId: String,
+    groupIdentifier: Option[String]
+  ): Unit =
     mockAuth(EmptyPredicate, authRetrievals)(
       (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
-
 
   def mockGetEmailVerification(result: Option[VerifiedEmail]): CallHandler1[EORI, Future[Option[VerifiedEmail]]] =
     (mockEmailVerificationService

@@ -135,7 +135,9 @@ class EmailFormProviderSpec extends AnyWordSpecLike with Matchers {
     result mustBe Right(expected)
   }
 
-  private def validateAndCheckError[A](provider: FormProvider[A])(form: (String, String)*)(errorField: String, errorMessage: String) = {
+  private def validateAndCheckError[A](
+    provider: FormProvider[A]
+  )(form: (String, String)*)(errorField: String, errorMessage: String) = {
     val result = processForm[A](provider)(form: _*)
 
     val foundExpectedErrorMessage = result.leftSideValue match {

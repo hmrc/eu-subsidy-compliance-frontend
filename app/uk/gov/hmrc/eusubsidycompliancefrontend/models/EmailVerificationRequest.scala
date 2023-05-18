@@ -19,16 +19,16 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 import play.api.libs.json.{Format, Json, OFormat, Reads}
 
 case class EmailVerificationRequest(
-                               credId: String,
-                               continueUrl: String,
-                               origin: String,
-                               deskproServiceName: Option[String],
-                               accessibilityStatementUrl: String,
-                               email: Option[Email],
-                               lang: Option[String],
-                               backUrl: Option[String],
-                               pageTitle: Option[String]
-                             )
+  credId: String,
+  continueUrl: String,
+  origin: String,
+  deskproServiceName: Option[String],
+  accessibilityStatementUrl: String,
+  email: Option[Email],
+  lang: Option[String],
+  backUrl: Option[String],
+  pageTitle: Option[String]
+)
 
 case class Email(address: String, enterUrl: String)
 
@@ -46,10 +46,10 @@ object EmailVerificationResponse {
 }
 
 case class CompletedEmail(
-                           emailAddress: String,
-                           verified: Boolean,
-                           locked: Boolean
-                         )
+  emailAddress: String,
+  verified: Boolean,
+  locked: Boolean
+)
 
 object CompletedEmail {
   implicit val reads: Reads[CompletedEmail] = Json.reads[CompletedEmail]

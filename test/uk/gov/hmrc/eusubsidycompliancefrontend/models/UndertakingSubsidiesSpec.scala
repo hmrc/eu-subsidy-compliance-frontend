@@ -53,11 +53,13 @@ class UndertakingSubsidiesSpec extends AnyWordSpec with Matchers {
       }
 
       "return the most recent submission date if there are multiple subsidies" in {
-        val underTest = undertakingSubsidies.copy(nonHMRCSubsidyUsage = List(
-          nonHmrcSubsidy.copy(submissionDate = fixedDate.minusDays(2)),
-          nonHmrcSubsidy.copy(submissionDate = fixedDate.minusDays(1)),
-          nonHmrcSubsidy.copy(submissionDate = fixedDate.minusDays(0)),
-        ))
+        val underTest = undertakingSubsidies.copy(nonHMRCSubsidyUsage =
+          List(
+            nonHmrcSubsidy.copy(submissionDate = fixedDate.minusDays(2)),
+            nonHmrcSubsidy.copy(submissionDate = fixedDate.minusDays(1)),
+            nonHmrcSubsidy.copy(submissionDate = fixedDate.minusDays(0))
+          )
+        )
 
         underTest.lastSubmitted shouldBe Some(fixedDate)
       }
@@ -71,11 +73,13 @@ class UndertakingSubsidiesSpec extends AnyWordSpec with Matchers {
         val subsidy2 = nonHmrcSubsidy.copy(submissionDate = fixedDate.plusDays(2))
         val subsidy3 = nonHmrcSubsidy.copy(submissionDate = fixedDate.plusDays(3))
 
-        val underTest = undertakingSubsidies.copy(nonHMRCSubsidyUsage = List(
-          subsidy1,
-          subsidy2,
-          subsidy3
-        ))
+        val underTest = undertakingSubsidies.copy(nonHMRCSubsidyUsage =
+          List(
+            subsidy1,
+            subsidy2,
+            subsidy3
+          )
+        )
 
         underTest.forReportedPaymentsPage.nonHMRCSubsidyUsage shouldBe List(subsidy3, subsidy2, subsidy1)
       }
@@ -87,12 +91,13 @@ class UndertakingSubsidiesSpec extends AnyWordSpec with Matchers {
       val subsidy2 = nonHmrcSubsidy.copy(subsidyUsageTransactionId = SubsidyRef("34").some)
       val subsidy3 = nonHmrcSubsidy.copy(subsidyUsageTransactionId = SubsidyRef("56").some, removed = true.some)
 
-      val underTest = undertakingSubsidies.copy(nonHMRCSubsidyUsage = List(
-        subsidy1,
-        subsidy2,
-        subsidy3
-      ))
-
+      val underTest = undertakingSubsidies.copy(nonHMRCSubsidyUsage =
+        List(
+          subsidy1,
+          subsidy2,
+          subsidy3
+        )
+      )
 
       "return None if no subsidy matching given transaction ID is found" in {
         underTest.findNonHmrcSubsidy("This ID does not exist") shouldBe None
@@ -103,7 +108,7 @@ class UndertakingSubsidiesSpec extends AnyWordSpec with Matchers {
       }
 
       "ignore subsidies that are marked as removed" in {
-          underTest.findNonHmrcSubsidy("56") shouldBe None
+        underTest.findNonHmrcSubsidy("56") shouldBe None
       }
 
     }

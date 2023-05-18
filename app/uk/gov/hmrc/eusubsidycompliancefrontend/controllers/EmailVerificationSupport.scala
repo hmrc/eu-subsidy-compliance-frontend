@@ -51,12 +51,11 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
 
   protected val emailForm: Form[FormValues] = EmailFormProvider().form
 
-  protected def findVerifiedEmail(implicit eori: EORI, hc: HeaderCarrier): Future[Option[String]] = {
+  protected def findVerifiedEmail(implicit eori: EORI, hc: HeaderCarrier): Future[Option[String]] =
     emailVerificationService
       .getEmailVerification(eori)
       .toContext
       .foldF(retrieveCdsEmail)(_.email.some.toFuture)
-  }
 
   private def retrieveCdsEmail(implicit eori: EORI, hc: HeaderCarrier): Future[Option[String]] =
     emailService
@@ -67,26 +66,28 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
       }
 
   // Runs the supplied function if a journey is found in the store. Otherwise redirects back to noJourneyFound.
-  protected def withJourneyOrRedirect[A: ClassTag](noJourneyFound: Call)(f: A => Future[Result])(implicit eori: EORI, reads: Reads[A]): Future[Result] =
+  protected def withJourneyOrRedirect[A : ClassTag](
+    noJourneyFound: Call
+  )(f: A => Future[Result])(implicit eori: EORI, reads: Reads[A]): Future[Result] =
     store
       .get[A]
       .toContext
       .foldF(Redirect(noJourneyFound).toFuture)(f)
 
-  protected def handleConfirmEmailGet[A: ClassTag](
+  protected def handleConfirmEmailGet[A : ClassTag](
     previous: Call,
-    formAction: Call,
-  )(implicit request: AuthenticatedEnrolledRequest[AnyContent],
+    formAction: Call
+  )(implicit
+    request: AuthenticatedEnrolledRequest[AnyContent],
     messages: Messages,
     appConfig: AppConfig,
-    format: Format[A],
+    format: Format[A]
   ): Future[Result] = {
 
     implicit val eori: EORI = request.eoriNumber
 
     withJourneyOrRedirect[A](previous) { _ =>
-      findVerifiedEmail
-        .toContext
+      findVerifiedEmail.toContext
         .fold(Ok(inputEmailPage(emailForm, previous.url))) { e =>
           Ok(confirmEmailPage(optionalEmailForm, formAction, EmailAddress(e), previous.url))
         }
@@ -95,14 +96,15 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
 
   protected def addVerifiedEmailToJourney(email: String)(implicit eori: EORI): Future[Unit]
 
-  protected def handleConfirmEmailPost[A: ClassTag](
+  protected def handleConfirmEmailPost[A : ClassTag](
     previous: Call,
     next: Call,
     formAction: Call,
     generateVerifyEmailUrl: String => String
-  )(implicit request: AuthenticatedEnrolledRequest[AnyContent],
+  )(implicit
+    request: AuthenticatedEnrolledRequest[AnyContent],
     messages: Messages,
-    appConfig: AppConfig,
+    appConfig: AppConfig
   ): Future[Result] = {
 
     implicit val eori: EORI = request.eoriNumber
@@ -114,7 +116,7 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
         .bindFromRequest()
         .fold(
           errors => BadRequest(confirmEmailPage(errors, formAction, EmailAddress(email), previous.url)).toFuture,
-          form => {
+          form =>
             if (form.usingStoredEmail.isTrue)
               for {
                 _ <- emailVerificationService.addVerifiedEmail(eori, email)
@@ -127,7 +129,6 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
                 emailVerificationService.makeVerificationRequestAndRedirect(email, previous, verifyEmailUrl)
               }
             }
-          }
         )
 
     def handleInputEmailPageSubmission() =
@@ -138,18 +139,15 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
           form => emailVerificationService.makeVerificationRequestAndRedirect(form.value, previous, verifyEmailUrl)
         )
 
-    findVerifiedEmail
-      .toContext
+    findVerifiedEmail.toContext
       .foldF(handleInputEmailPageSubmission())(email => handleConfirmEmailPageSubmission(email))
   }
 
-  protected def handleVerifyEmailGet[A: ClassTag](
+  protected def handleVerifyEmailGet[A : ClassTag](
     verificationId: String,
     previous: Call,
-    next: Call,
-  )(implicit request: AuthenticatedEnrolledRequest[AnyContent],
-    format: Format[A],
-  ): Future[Result] = {
+    next: Call
+  )(implicit request: AuthenticatedEnrolledRequest[AnyContent], format: Format[A]): Future[Result] = {
 
     implicit val eori: EORI = request.eoriNumber
 
@@ -162,8 +160,7 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
           } yield Redirect(next.url)
 
           result.getOrElse(Redirect(previous))
-        }
-        else Redirect(previous.url).toFuture
+        } else Redirect(previous.url).toFuture
       }
     }
 

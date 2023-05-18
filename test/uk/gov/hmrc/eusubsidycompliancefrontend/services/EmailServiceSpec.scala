@@ -46,9 +46,11 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
     .map(t => t.entryName -> "templateId1")
     .toMap
 
-  private val templateConfig = Configuration.from(Map(
-    "email-send" -> templates
-  ))
+  private val templateConfig = Configuration.from(
+    Map(
+      "email-send" -> templates
+    )
+  )
 
   private val fakeAppConfig = {
     new AppConfig(
@@ -153,7 +155,9 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
         "the email is sent successfully with a removeEffectiveDate value" in {
           mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
-          mockSendEmail(emailSendRequest.copy(parameters = singleEoriWithDateEmailParameters))(Right(HttpResponse(ACCEPTED, "")))
+          mockSendEmail(emailSendRequest.copy(parameters = singleEoriWithDateEmailParameters))(
+            Right(HttpResponse(ACCEPTED, ""))
+          )
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking, dateTime.toString)
           result.futureValue shouldBe EmailSent
         }
@@ -161,7 +165,9 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
         "the email is sent successfully with a second eori" in {
           mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
-          mockSendEmail(emailSendRequest.copy(parameters = doubleEoriEmailParameters))(Right(HttpResponse(ACCEPTED, "")))
+          mockSendEmail(emailSendRequest.copy(parameters = doubleEoriEmailParameters))(
+            Right(HttpResponse(ACCEPTED, ""))
+          )
           val result = service.sendEmail(eori1, eori2, CreateUndertaking, undertaking)
           result.futureValue shouldBe EmailSent
         }
@@ -169,7 +175,9 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
         "the email is sent successfully with a second eori and a removeEffectiveDate value" in {
           mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
-          mockSendEmail(emailSendRequest.copy(parameters = doubleEoriWithDateEmailParameters))(Right(HttpResponse(ACCEPTED, "")))
+          mockSendEmail(emailSendRequest.copy(parameters = doubleEoriWithDateEmailParameters))(
+            Right(HttpResponse(ACCEPTED, ""))
+          )
           val result = service.sendEmail(eori1, eori2, CreateUndertaking, undertaking, dateTime.toString)
           result.futureValue shouldBe EmailSent
         }

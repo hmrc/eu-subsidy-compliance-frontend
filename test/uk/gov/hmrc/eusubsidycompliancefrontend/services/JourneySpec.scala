@@ -54,7 +54,7 @@ class JourneySpec extends AnyWordSpecLike with Matchers with MockFactory with Sc
     override def steps: Array[FormPage[_]] = Array(
       formPage1,
       formPage2,
-      formPage3,
+      formPage3
     )
   }
 
@@ -103,7 +103,6 @@ class JourneySpec extends AnyWordSpecLike with Matchers with MockFactory with Sc
       "return false if the journey is not complete" in {
         incompleteJourney.isComplete shouldBe false
       }
-
 
     }
 

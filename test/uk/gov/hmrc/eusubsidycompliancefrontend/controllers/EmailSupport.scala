@@ -38,13 +38,10 @@ trait EmailSupport { this: ControllerSpec =>
   def mockSendEmail(
     eori1: EORI,
     key: EmailTemplate,
-    undertaking: Undertaking,
+    undertaking: Undertaking
   )(result: Either[ConnectorError, EmailSendResult]) =
     (mockEmailService
-      .sendEmail(
-        _: EORI,
-        _: EmailTemplate,
-        _: Undertaking)(_: HeaderCarrier, _: ExecutionContext))
+      .sendEmail(_: EORI, _: EmailTemplate, _: Undertaking)(_: HeaderCarrier, _: ExecutionContext))
       .expects(eori1, key, undertaking, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
 
@@ -52,14 +49,10 @@ trait EmailSupport { this: ControllerSpec =>
     eori1: EORI,
     eori2: EORI,
     key: EmailTemplate,
-    undertaking: Undertaking,
+    undertaking: Undertaking
   )(result: Either[ConnectorError, EmailSendResult]) =
     (mockEmailService
-      .sendEmail(
-        _: EORI,
-        _: EORI,
-        _: EmailTemplate,
-        _: Undertaking)(_: HeaderCarrier, _: ExecutionContext))
+      .sendEmail(_: EORI, _: EORI, _: EmailTemplate, _: Undertaking)(_: HeaderCarrier, _: ExecutionContext))
       .expects(eori1, eori2, key, undertaking, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
 
@@ -70,11 +63,7 @@ trait EmailSupport { this: ControllerSpec =>
     removeEffectiveDate: String
   )(result: Either[ConnectorError, EmailSendResult]) =
     (mockEmailService
-      .sendEmail(
-        _: EORI,
-        _: EmailTemplate,
-        _: Undertaking,
-        _: String)(_: HeaderCarrier, _: ExecutionContext))
+      .sendEmail(_: EORI, _: EmailTemplate, _: Undertaking, _: String)(_: HeaderCarrier, _: ExecutionContext))
       .expects(eori1, key, undertaking, removeEffectiveDate, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
 
@@ -86,12 +75,7 @@ trait EmailSupport { this: ControllerSpec =>
     removeEffectiveDate: String
   )(result: Either[ConnectorError, EmailSendResult]) =
     (mockEmailService
-      .sendEmail(
-        _: EORI,
-        _: EORI,
-        _: EmailTemplate,
-        _: Undertaking,
-        _: String)(_: HeaderCarrier, _: ExecutionContext))
+      .sendEmail(_: EORI, _: EORI, _: EmailTemplate, _: Undertaking, _: String)(_: HeaderCarrier, _: ExecutionContext))
       .expects(eori1, eori2, key, undertaking, removeEffectiveDate, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
 }

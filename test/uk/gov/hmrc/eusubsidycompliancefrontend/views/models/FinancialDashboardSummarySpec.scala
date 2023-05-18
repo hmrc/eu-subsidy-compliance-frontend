@@ -31,7 +31,7 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
 
     "convert and return an instance with zero summaries where no subsidy data is present" in {
       val today = LocalDate.parse("2022-03-01").toTaxYearEnd
-      val end   = today.toTaxYearEnd
+      val end = today.toTaxYearEnd
       val start = end.minusYears(2).toTaxYearStart
 
       val emptyUndertakingSubsidies = undertakingSubsidies.copy(
@@ -58,7 +58,7 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
             startYear = year,
             hmrcSubsidyTotal = SubsidyAmount.Zero,
             nonHmrcSubsidyTotal = SubsidyAmount.Zero,
-            isCurrentTaxYear = year == 2021,
+            isCurrentTaxYear = year == 2021
           )
         }
       )
@@ -67,9 +67,9 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
     }
 
     "convert and return a valid FinancialDashboardSummary instance" in {
-      val today       = LocalDate.of(2022, 3, 1)
-      val end         = today.toTaxYearEnd
-      val start       = end.minusYears(2).toTaxYearStart
+      val today = LocalDate.of(2022, 3, 1)
+      val end = today.toTaxYearEnd
+      val start = end.minusYears(2).toTaxYearStart
       val yearOffsets = List(2, 1, 0)
 
       val result = FinancialDashboardSummary.fromUndertakingSubsidies(
@@ -101,9 +101,9 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
     }
 
     "ignore removed non HMRC subsidy payments" in {
-      val today       = LocalDate.of(2022, 3, 1)
-      val end         = today.toTaxYearEnd
-      val start       = end.minusYears(2).toTaxYearStart
+      val today = LocalDate.of(2022, 3, 1)
+      val end = today.toTaxYearEnd
+      val start = end.minusYears(2).toTaxYearStart
       val yearOffsets = List(2, 1, 0)
 
       val result = FinancialDashboardSummary.fromUndertakingSubsidies(
@@ -113,10 +113,10 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
           nonHMRCSubsidyUsage = yearOffsets.map { y =>
             nonHmrcSubsidy.copy(
               allocationDate = start.plusYears(y),
-              removed = Some(true),
+              removed = Some(true)
             )
           },
-          nonHMRCSubsidyTotalEUR = SubsidyAmount.Zero,
+          nonHMRCSubsidyTotalEUR = SubsidyAmount.Zero
         ),
         today
       )
@@ -154,8 +154,8 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
       val sectorLimits = Map(
         agriculture -> IndustrySectorLimit(30000.00),
         aquaculture -> IndustrySectorLimit(20000.00),
-        other       -> IndustrySectorLimit(200000.00),
-        transport   -> IndustrySectorLimit(100000.00)
+        other -> IndustrySectorLimit(200000.00),
+        transport -> IndustrySectorLimit(100000.00)
       )
 
       sectorLimits.keys.foreach { sector =>
@@ -166,7 +166,7 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
         val result = FinancialDashboardSummary.fromUndertakingSubsidies(
           undertakingForSector,
           emptyUndertakingSubsidies,
-          today,
+          today
         )
         result.overall.sectorCap shouldBe sectorLimits(sector)
       }
@@ -176,7 +176,7 @@ class FinancialDashboardSummarySpec extends AnyWordSpecLike with Matchers {
     "tax year summary should compute total correctly" in {
       TaxYearSummary(
         startYear = 2000,
-         SubsidyAmount(1.00),
+        SubsidyAmount(1.00),
         SubsidyAmount(2.00),
         isCurrentTaxYear = false
       ).total shouldBe SubsidyAmount(3.00)

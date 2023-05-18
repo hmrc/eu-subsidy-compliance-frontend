@@ -44,7 +44,6 @@ class AccountControllerSpec
     with TimeProviderSupport
     with EscServiceSupport {
 
-
   override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[EmailVerificationService].toInstance(mockEmailVerificationService),
@@ -100,7 +99,7 @@ class AccountControllerSpec
                 (3, 1),
                 (4, 1),
                 (4, 2),
-                (4, 3),
+                (4, 3)
               )
 
               elementIds foreach { elementId =>
@@ -131,18 +130,19 @@ class AccountControllerSpec
             // If we have a lastSubsidyUsageUpdt on the undertaking, return a single subsidy in the mock response with
             // this date, otherwise return no subsidies.
             val subsidies =
-              undertaking
-                .lastSubsidyUsageUpdt
+              undertaking.lastSubsidyUsageUpdt
                 .fold(List.empty[NonHmrcSubsidy])(d => List(nonHmrcSubsidy.copy(submissionDate = d)))
 
-            mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.copy(nonHMRCSubsidyUsage = subsidies).toFuture)
+            mockRetrieveAllSubsidies(undertakingRef)(
+              undertakingSubsidies.copy(nonHMRCSubsidyUsage = subsidies).toFuture
+            )
 
             mockTimeProviderToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilJourneyCreate))
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("lead-account-homepage.title"),
+            messageFromMessageKey("lead-account-homepage.title")
           )
         }
 

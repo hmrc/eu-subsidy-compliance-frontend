@@ -26,8 +26,8 @@ import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 case class EmailFormProvider() extends FormProvider[FormValues] {
 
   override protected def mapping: Mapping[FormValues] = Forms.mapping(
-      Fields.Email -> EmailAddressFieldMapping
-    )(FormValues.apply)(FormValues.unapply)
+    Fields.Email -> EmailAddressFieldMapping
+  )(FormValues.apply)(FormValues.unapply)
 
 }
 

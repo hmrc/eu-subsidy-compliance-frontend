@@ -34,18 +34,17 @@ case class UndertakingSubsidies(
   def hasNeverSubmitted: Boolean = nonHMRCSubsidyUsage.isEmpty
 
   def lastSubmitted: Option[LocalDate] =
-      nonHMRCSubsidyUsage
-        .sorted(NonHmrcSubsidy.SortOrder.bySubmissionDate)
-        .lastOption
-        .map(_.submissionDate)
+    nonHMRCSubsidyUsage
+      .sorted(NonHmrcSubsidy.SortOrder.bySubmissionDate)
+      .lastOption
+      .map(_.submissionDate)
 
   // For display use cases that require the payments to be ordered by reverse allocation date
   def forReportedPaymentsPage: UndertakingSubsidies =
     this.copy(
-      nonHMRCSubsidyUsage =
-        nonHMRCSubsidyUsage
-          .sorted(NonHmrcSubsidy.SortOrder.byAllocationDate)
-          .reverse
+      nonHMRCSubsidyUsage = nonHMRCSubsidyUsage
+        .sorted(NonHmrcSubsidy.SortOrder.byAllocationDate)
+        .reverse
     )
 
   // Finds a matching subsidy for a given transactionID, but only where that subsidy has not been removed.
@@ -53,7 +52,7 @@ case class UndertakingSubsidies(
     nonHMRCSubsidyUsage
       .find { subsidy =>
         subsidy.subsidyUsageTransactionId.contains(transactionId) &&
-          !subsidy.isRemoved
+        !subsidy.isRemoved
       }
 
 }

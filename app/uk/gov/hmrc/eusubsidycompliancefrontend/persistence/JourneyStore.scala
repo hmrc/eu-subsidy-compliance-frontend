@@ -67,7 +67,7 @@ class JourneyStore @Inject() (
       .toFuture()
       .map(_ => ())
 
-  override def update[A: ClassTag](f: A => A)(implicit eori: EORI, format: Format[A]): Future[A] =
+  override def update[A : ClassTag](f: A => A)(implicit eori: EORI, format: Format[A]): Future[A] =
     get.toContext
       .map(f)
       .foldF(throw new IllegalStateException("trying to update non-existent model"))(put(_))

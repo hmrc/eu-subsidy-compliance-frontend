@@ -37,9 +37,9 @@ case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvide
   private val dateFormatter = DateTimeFormatter.ofPattern("d M yyyy")
 
   private def formValueMapping = tuple(
-    Day   -> text,
+    Day -> text,
     Month -> text,
-    Year  -> text
+    Year -> text
   )
 
   override protected def mapping: Mapping[DateFormValues] =
@@ -114,20 +114,20 @@ case class ClaimDateFormProvider(timeProvider: TimeProvider) extends FormProvide
 object ClaimDateFormProvider {
 
   object Fields {
-    val Day   = "day"
+    val Day = "day"
     val Month = "month"
-    val Year  = "year"
+    val Year = "year"
   }
 
   object Errors {
-    val DayAndMonthMissing          = "error.day-and-month-missing"
-    val DayAndYearMissing           = "error.day-and-year-missing"
-    val DayMissing                  = "error.day-missing"
-    val InFuture                    = "error.in-future"
-    val MonthAndYearMissing         = "error.month-and-year-missing"
-    val MonthMissing                = "error.month-missing"
-    val OutsideAllowedTaxYearRange  = "error.outside-allowed-tax-year-range"
-    val YearMissing                 = "error.year-missing"
+    val DayAndMonthMissing = "error.day-and-month-missing"
+    val DayAndYearMissing = "error.day-and-year-missing"
+    val DayMissing = "error.day-missing"
+    val InFuture = "error.in-future"
+    val MonthAndYearMissing = "error.month-and-year-missing"
+    val MonthMissing = "error.month-missing"
+    val OutsideAllowedTaxYearRange = "error.outside-allowed-tax-year-range"
+    val YearMissing = "error.year-missing"
   }
 
 }

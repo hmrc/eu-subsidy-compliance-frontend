@@ -34,21 +34,21 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 /**
- * Action builder that runs the supplied block only if the user is authenticated with GG and is not enrolled for this
- * service in ECC.
- *
- * If they are enrolled we redirect to / where the AccountController will figure out where to send the user according
- * to their current state.
- *
- * See AccountController.getAccountPage
- *
- * @param config
- * @param env
- * @param authConnector
- * @param mcc
- * @param executionContext
- * @param appConfig
- */
+  * Action builder that runs the supplied block only if the user is authenticated with GG and is not enrolled for this
+  * service in ECC.
+  *
+  * If they are enrolled we redirect to / where the AccountController will figure out where to send the user according
+  * to their current state.
+  *
+  * See AccountController.getAccountPage
+  *
+  * @param config
+  * @param env
+  * @param authConnector
+  * @param mcc
+  * @param executionContext
+  * @param appConfig
+  */
 class NotEnrolledActionBuilder @Inject() (
   override val config: Configuration,
   override val env: Environment,
@@ -72,7 +72,8 @@ class NotEnrolledActionBuilder @Inject() (
     request: Request[A],
     block: AuthenticatedRequest[A] => Future[Result]
   ): Future[Result] =
-    authorised().retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](retrievals) {
+    authorised()
+      .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](retrievals) {
         case Some(credentials) ~ Some(groupId) ~ enrolments =>
           enrolments
             .getEnrolment(EccEnrolmentKey)
@@ -82,6 +83,7 @@ class NotEnrolledActionBuilder @Inject() (
               Redirect(routes.AccountController.getAccountPage).toFuture
             }
         case _ ~ _ => Future.failed(throw InternalError())
-      }(hc(request), executionContext).recover(handleFailure(request, appConfig))
+      }(hc(request), executionContext)
+      .recover(handleFailure(request, appConfig))
 
 }

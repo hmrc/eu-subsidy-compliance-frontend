@@ -34,8 +34,8 @@ class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: Execu
 
   private val auditSource: String = "eu-subsidy-compliance-frontend"
 
-  def sendEvent[A <: AuditEvent](auditEvent: A)(
-    implicit hc: HeaderCarrier,
+  def sendEvent[A <: AuditEvent](auditEvent: A)(implicit
+    hc: HeaderCarrier,
     writes: Writes[A],
     request: Request[_]
   ): Unit = {

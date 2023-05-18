@@ -61,10 +61,9 @@ case class SubsidyJourney(
       if (claimAmount.isCurrentPage && !shouldSkipCurrencyConversion) convertedClaimAmountConfirmation.redirect
       else if (addClaimEori.isCurrentPage && shouldAddNewBusiness) addClaimBusiness.redirect
       else cya.redirect
-    else
-      if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion) addClaimEori.redirect
-      else if (addClaimEori.isCurrentPage && !hasBusinessEoriToAdd) publicAuthority.redirect
-      else super.next
+    else if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion) addClaimEori.redirect
+    else if (addClaimEori.isCurrentPage && !hasBusinessEoriToAdd) publicAuthority.redirect
+    else super.next
 
   override def previous(implicit request: Request[_]): Journey.Uri =
     if (isAmend)
@@ -72,15 +71,14 @@ case class SubsidyJourney(
       else if (addClaimBusiness.isCurrentPage) addClaimEori.uri
       else if (!cya.isCurrentPage) cya.uri
       else extractAndParseRefererUrl.getOrElse(routes.AccountController.getAccountPage.url)
-    else
-      if (claimDate.isCurrentPage) routes.AccountController.getAccountPage.url
-      else if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.uri
-      else if (publicAuthority.isCurrentPage && !shouldAddNewBusiness) addClaimEori.uri
-      else super.previous
+    else if (claimDate.isCurrentPage) routes.AccountController.getAccountPage.url
+    else if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.uri
+    else if (publicAuthority.isCurrentPage && !shouldAddNewBusiness) addClaimEori.uri
+    else super.previous
 
   private def extractAndParseRefererUrl(implicit request: Request[_]): Option[String] =
-    request
-      .headers.get(REFERER)
+    request.headers
+      .get(REFERER)
       .flatMap { u =>
         Try(URI.create(u))
           .fold(_ => None, uri => Some(uri.getPath))
@@ -156,10 +154,17 @@ object SubsidyJourney {
 
     object ClaimDateFormPage { implicit val claimDateFormPageFormat: OFormat[ClaimDateFormPage] = Json.format }
     object ClaimAmountFormPage { implicit val claimAmountFormPageFormat: OFormat[ClaimAmountFormPage] = Json.format }
-    object ConvertedClaimAmountConfirmationPage { implicit val convertedClaimAmountConfirmationPageFormat: OFormat[ConvertedClaimAmountConfirmationPage] = Json.format }
+    object ConvertedClaimAmountConfirmationPage {
+      implicit val convertedClaimAmountConfirmationPageFormat: OFormat[ConvertedClaimAmountConfirmationPage] =
+        Json.format
+    }
     object AddClaimEoriFormPage { implicit val claimAmountFormPageFormat: OFormat[AddClaimEoriFormPage] = Json.format }
-    object AddClaimBusinessFormPage { implicit val claimBusinessFormPageFormat: OFormat[AddClaimBusinessFormPage] = Json.format }
-    object PublicAuthorityFormPage { implicit val claimAmountFormPageFormat: OFormat[PublicAuthorityFormPage] = Json.format }
+    object AddClaimBusinessFormPage {
+      implicit val claimBusinessFormPageFormat: OFormat[AddClaimBusinessFormPage] = Json.format
+    }
+    object PublicAuthorityFormPage {
+      implicit val claimAmountFormPageFormat: OFormat[PublicAuthorityFormPage] = Json.format
+    }
     object TraderRefFormPage { implicit val claimAmountFormPageFormat: OFormat[TraderRefFormPage] = Json.format }
     object CyaFormPage { implicit val claimAmountFormPageFormat: OFormat[CyaFormPage] = Json.format }
 

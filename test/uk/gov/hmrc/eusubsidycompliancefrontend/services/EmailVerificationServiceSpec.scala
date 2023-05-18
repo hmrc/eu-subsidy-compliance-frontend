@@ -39,8 +39,14 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll with MockFactory
-  with ScalaFutures with DefaultAwaitTimeout with DefaultPlayMongoRepositorySupport[CacheItem] {
+class EmailVerificationServiceSpec
+    extends AnyWordSpec
+    with Matchers
+    with BeforeAndAfterAll
+    with MockFactory
+    with ScalaFutures
+    with DefaultAwaitTimeout
+    with DefaultPlayMongoRepositorySupport[CacheItem] {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -53,7 +59,7 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
   private val service = new EmailVerificationService(
     mockEmailVerificationConnector,
     repository,
-    mockServicesConfig,
+    mockServicesConfig
   )
 
   override def afterAll(): Unit = repository.collection.deleteMany(filter = Filters.exists("_id"))
@@ -66,7 +72,6 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
        |{
        |  "redirectUri": "$nextPageUrl"
        |}""".stripMargin
-
 
   def mockVerifyEmail(status: Int = CREATED) = (mockEmailVerificationConnector
     .verifyEmail(_: EmailVerificationRequest)(_: HeaderCarrier, _: ExecutionContext))
@@ -85,22 +90,25 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
 
     "getEmailVerification is called" must {
 
-        "return none" in {
-          repository.put(eori1, unverifiedVerificationRequest).futureValue.id shouldBe eori1
-          service.getEmailVerification(eori1).futureValue shouldBe None
-        }
+      "return none" in {
+        repository.put(eori1, unverifiedVerificationRequest).futureValue.id shouldBe eori1
+        service.getEmailVerification(eori1).futureValue shouldBe None
+      }
 
-        "return verified" in {
-          repository.put(eori2, verifiedVerificationRequest) .futureValue.id shouldBe eori2
-          service.getEmailVerification(eori2).futureValue should contain(verifiedVerificationRequest)
-        }
+      "return verified" in {
+        repository.put(eori2, verifiedVerificationRequest).futureValue.id shouldBe eori2
+        service.getEmailVerification(eori2).futureValue should contain(verifiedVerificationRequest)
+      }
 
     }
 
     "approveVerificationRequest is called" must {
 
       "report success for a successful update" in {
-        repository.put(eori1, unverifiedVerificationRequest.copy(verificationId = "pending")).futureValue.id shouldBe eori1
+        repository
+          .put(eori1, unverifiedVerificationRequest.copy(verificationId = "pending"))
+          .futureValue
+          .id shouldBe eori1
         service.approveVerificationRequest(eori1, "pending").futureValue shouldBe true
 
         service.getEmailVerification(eori1).futureValue should
@@ -143,7 +151,7 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
         val result = service.makeVerificationRequestAndRedirect(
           "foo@example.com",
           previousPage,
-          _ => nextPageUrl,
+          _ => nextPageUrl
         )
 
         status(result) shouldBe SEE_OTHER
@@ -158,7 +166,7 @@ class EmailVerificationServiceSpec extends AnyWordSpec with Matchers with Before
         val result = service.makeVerificationRequestAndRedirect(
           "foo@example.com",
           previousPage,
-          _ => nextPageUrl,
+          _ => nextPageUrl
         )
 
         status(result) shouldBe SEE_OTHER

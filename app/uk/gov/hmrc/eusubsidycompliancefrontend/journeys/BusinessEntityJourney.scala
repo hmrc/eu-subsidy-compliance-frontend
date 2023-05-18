@@ -33,7 +33,7 @@ case class BusinessEntityJourney(
   override def steps: Array[FormPage[_]] =
     Array(
       addBusiness,
-      eori,
+      eori
     )
 
   def isAmend: Boolean = oldEORI.nonEmpty

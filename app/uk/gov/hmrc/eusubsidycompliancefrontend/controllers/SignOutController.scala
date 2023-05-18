@@ -30,7 +30,7 @@ class SignOutController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
   timedOutPage: TimedOut,
-  signOutPage: SignOutPage,
+  signOutPage: SignOutPage
 )(implicit val appConfig: AppConfig)
     extends BaseController(mcc)
     with I18nSupport
@@ -43,6 +43,6 @@ class SignOutController @Inject() (
   }
 
   val signOut: Action[AnyContent] = enrolled.async { implicit request =>
-      Ok(signOutPage()).withNewSession.toFuture
+    Ok(signOutPage()).withNewSession.toFuture
   }
 }

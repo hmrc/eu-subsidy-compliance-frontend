@@ -48,12 +48,18 @@ trait EmailVerificationServiceSupport { this: MockFactory with AuthSupport =>
       .returning(result)
 
   def mockMakeVerificationRequestAndRedirect(result: Future[Result]) =
-    (mockEmailVerificationService
-      .makeVerificationRequestAndRedirect(
-        _: String,
-        _: Call,
-        _: String => String
-      )(_: AuthenticatedEnrolledRequest[AnyContent], _: ExecutionContext, _: HeaderCarrier))
+    (
+      mockEmailVerificationService
+        .makeVerificationRequestAndRedirect(
+          _: String,
+          _: Call,
+          _: String => String
+        )(
+          _: AuthenticatedEnrolledRequest[AnyContent],
+          _: ExecutionContext,
+          _: HeaderCarrier
+        )
+      )
       .expects(*, *, *, *, *, *)
       .returning(result)
 }

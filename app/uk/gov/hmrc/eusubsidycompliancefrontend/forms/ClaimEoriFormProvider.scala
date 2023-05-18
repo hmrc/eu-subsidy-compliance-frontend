@@ -31,7 +31,7 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
 
   override protected def mapping: Mapping[OptionalClaimEori] = Forms.mapping(
     YesNoRadioButton -> text,
-    EoriNumber -> mandatoryIfEqual(YesNoRadioButton, "true", eoriNumberMapping),
+    EoriNumber -> mandatoryIfEqual(YesNoRadioButton, "true", eoriNumberMapping)
   )(toOptionalClaimEori)(fromOptionalClaimEori)
 
   private val eoriEntered = Constraint[String] { eori: String =>

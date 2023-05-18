@@ -42,7 +42,9 @@ class EscService @Inject() (
   removedSubsidyRepository: RemovedSubsidyRepository
 )(implicit ec: ExecutionContext) {
 
-  def createUndertaking(undertaking: UndertakingCreate)(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingRef] =
+  def createUndertaking(
+    undertaking: UndertakingCreate
+  )(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingRef] =
     escConnector
       .createUndertaking(undertaking)
       .flatMap { response =>

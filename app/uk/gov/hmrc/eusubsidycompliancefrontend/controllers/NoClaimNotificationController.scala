@@ -39,14 +39,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class NoClaimNotificationController @Inject() (
-                                                mcc: MessagesControllerComponents,
-                                                actionBuilders: ActionBuilders,
-                                                override val store: Store,
-                                                override val escService: EscService,
-                                                auditService: AuditService,
-                                                timeProvider: TimeProvider,
-                                                noClaimNotificationPage: NoClaimNotificationPage,
-                                                noClaimConfirmationPage: NoClaimConfirmationPage,
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  override val store: Store,
+  override val escService: EscService,
+  auditService: AuditService,
+  timeProvider: TimeProvider,
+  noClaimNotificationPage: NoClaimNotificationPage,
+  noClaimConfirmationPage: NoClaimConfirmationPage
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with ControllerFormHelpers
@@ -57,7 +57,9 @@ class NoClaimNotificationController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     withLeadUndertaking { undertaking =>
-      escService.retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange).toContext
+      escService
+        .retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange)
+        .toContext
         .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
           val previous = routes.AccountController.getAccountPage.url
           val today = timeProvider.today
@@ -69,9 +71,11 @@ class NoClaimNotificationController @Inject() (
             noClaimNotificationPage(
               noClaimForm,
               previous,
-              undertakingSubsidies.hasNeverSubmitted, 
+              undertakingSubsidies.hasNeverSubmitted,
               startDate.toDisplayFormat,
-              lastSubmitted.map(_.toDisplayFormat).getOrElse(""), // TODO - can we display something sensible if the value is missing?
+              lastSubmitted
+                .map(_.toDisplayFormat)
+                .getOrElse("") // TODO - can we display something sensible if the value is missing?
             )
           ).toFuture
         }
@@ -82,7 +86,9 @@ class NoClaimNotificationController @Inject() (
     implicit val eori: EORI = request.eoriNumber
 
     withLeadUndertaking { undertaking =>
-      escService.retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange).toContext
+      escService
+        .retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange)
+        .toContext
         .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
           val previous = routes.AccountController.getAccountPage.url
           val today = timeProvider.today
@@ -108,18 +114,21 @@ class NoClaimNotificationController @Inject() (
           noClaimForm
             .bindFromRequest()
             .fold(
-              errors => BadRequest(
-                noClaimNotificationPage(
-                  errors,
-                  previous,
-                  undertakingSubsidies.hasNeverSubmitted,
-                  startDate.toDisplayFormat,
-                  lastSubmitted.map(_.toDisplayFormat).getOrElse("") // TODO - can we display something sensible if the date is missing?
-                )
-              ).toFuture,
+              errors =>
+                BadRequest(
+                  noClaimNotificationPage(
+                    errors,
+                    previous,
+                    undertakingSubsidies.hasNeverSubmitted,
+                    startDate.toDisplayFormat,
+                    lastSubmitted
+                      .map(_.toDisplayFormat)
+                      .getOrElse("") // TODO - can we display something sensible if the date is missing?
+                  )
+                ).toFuture,
               _ => handleValidNoClaim()
             )
-      }
+        }
     }
   }
 

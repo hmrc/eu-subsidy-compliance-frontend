@@ -23,10 +23,10 @@ import java.time.LocalDate
 
 class TaxYearHelpersSpec extends AnyWordSpecLike with Matchers {
 
-  private val BeforeTaxYearEnd  = LocalDate.parse("2022-03-01")
-  private val LastDayOfTaxYear  = LocalDate.parse("2022-04-05")
+  private val BeforeTaxYearEnd = LocalDate.parse("2022-03-01")
+  private val LastDayOfTaxYear = LocalDate.parse("2022-04-05")
   private val FirstDayOfTaxYear = LocalDate.parse("2022-04-06")
-  private val AfterTaxYearEnd   = LocalDate.parse("2022-05-01")
+  private val AfterTaxYearEnd = LocalDate.parse("2022-05-01")
 
   "taxYearStartForDate" must {
 
@@ -91,7 +91,7 @@ class TaxYearHelpersSpec extends AnyWordSpecLike with Matchers {
   "searchRange" must {
 
     "return a valid 3 tax year search range for the specified date" in {
-      TaxYearHelpers.searchRange(BeforeTaxYearEnd) mustBe((LocalDate.parse("2019-04-06"), BeforeTaxYearEnd))
+      TaxYearHelpers.searchRange(BeforeTaxYearEnd) mustBe ((LocalDate.parse("2019-04-06"), BeforeTaxYearEnd))
     }
 
   }

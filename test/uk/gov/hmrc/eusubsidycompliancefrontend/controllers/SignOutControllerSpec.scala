@@ -38,7 +38,7 @@ class SignOutControllerSpec
     with AuditServiceSupport {
 
   override def overrideBindings: List[GuiceableModule] = List(
-    bind[AuthConnector].toInstance(mockAuthConnector),
+    bind[AuthConnector].toInstance(mockAuthConnector)
   )
 
   private val controller = instanceOf[SignOutController]

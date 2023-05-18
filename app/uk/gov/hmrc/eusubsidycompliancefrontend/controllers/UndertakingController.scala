@@ -47,25 +47,25 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class UndertakingController @Inject() (
-                                        mcc: MessagesControllerComponents,
-                                        actionBuilders: ActionBuilders,
-                                        override val store: Store,
-                                        override val escService: EscService,
-                                        override val emailService: EmailService,
-                                        override val emailVerificationService: EmailVerificationService,
-                                        timeProvider: TimeProvider,
-                                        auditService: AuditService,
-                                        aboutUndertakingPage: AboutUndertakingPage,
-                                        undertakingSectorPage: UndertakingSectorPage,
-                                        undertakingAddBusinessPage: UndertakingAddBusinessPage,
-                                        override val confirmEmailPage: ConfirmEmailPage,
-                                        override val inputEmailPage: InputEmailPage,
-                                        cyaPage: UndertakingCheckYourAnswersPage,
-                                        confirmationPage: ConfirmationPage,
-                                        amendUndertakingPage: AmendUndertakingPage,
-                                        disableUndertakingWarningPage: DisableUndertakingWarningPage,
-                                        disableUndertakingConfirmPage: DisableUndertakingConfirmPage,
-                                        undertakingDisabledPage: UndertakingDisabledPage,
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  override val store: Store,
+  override val escService: EscService,
+  override val emailService: EmailService,
+  override val emailVerificationService: EmailVerificationService,
+  timeProvider: TimeProvider,
+  auditService: AuditService,
+  aboutUndertakingPage: AboutUndertakingPage,
+  undertakingSectorPage: UndertakingSectorPage,
+  undertakingAddBusinessPage: UndertakingAddBusinessPage,
+  override val confirmEmailPage: ConfirmEmailPage,
+  override val inputEmailPage: InputEmailPage,
+  cyaPage: UndertakingCheckYourAnswersPage,
+  confirmationPage: ConfirmationPage,
+  amendUndertakingPage: AmendUndertakingPage,
+  disableUndertakingWarningPage: DisableUndertakingWarningPage,
+  disableUndertakingConfirmPage: DisableUndertakingConfirmPage,
+  undertakingDisabledPage: UndertakingDisabledPage
 )(implicit
   val appConfig: AppConfig,
   override val executionContext: ExecutionContext
@@ -100,13 +100,12 @@ class UndertakingController @Inject() (
           .bindFromRequest()
           .fold(
             _ => throw new IllegalStateException("Unexpected form submission"),
-            _ => {
+            _ =>
               for {
                 // We store the EORI in the undertaking name field.
                 updatedUndertakingJourney <- store.update[UndertakingJourney](_.setUndertakingName(eori))
                 redirect <- updatedUndertakingJourney.next
               } yield redirect
-            }
           )
       case None => handleMissingSessionData("Undertaking Journey")
 
@@ -141,7 +140,8 @@ class UndertakingController @Inject() (
         .fold(
           errors => BadRequest(undertakingSectorPage(errors, journey.previous, journey.about.value.get)).toContext,
           form =>
-            store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+            store
+              .update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
               .flatMap(_.next)
               .toContext
         )
@@ -155,18 +155,21 @@ class UndertakingController @Inject() (
     )
   }
 
-  override def addVerifiedEmailToJourney(email: String)(implicit eori: EORI): Future[Unit] = {
+  override def addVerifiedEmailToJourney(email: String)(implicit eori: EORI): Future[Unit] =
     store
       .update[UndertakingJourney](_.setVerifiedEmail(email))
       .map(_ => ())
-  }
 
   def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
       handleConfirmEmailPost[UndertakingJourney](
-        previous = if(journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails else routes.UndertakingController.getConfirmEmail,
-        next = if(journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails else routes.UndertakingController.getAddBusiness,
+        previous =
+          if (journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails
+          else routes.UndertakingController.getConfirmEmail,
+        next =
+          if (journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails
+          else routes.UndertakingController.getAddBusiness,
         formAction = routes.UndertakingController.postConfirmEmail,
         generateVerifyEmailUrl = (id: String) => routes.UndertakingController.getVerifyEmail(id).url
       )
@@ -178,8 +181,12 @@ class UndertakingController @Inject() (
     withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
       handleVerifyEmailGet[UndertakingJourney](
         verificationId = verificationId,
-        previous = if(journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails else routes.UndertakingController.getConfirmEmail,
-        next = if(journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails else routes.UndertakingController.getAddBusiness,
+        previous =
+          if (journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails
+          else routes.UndertakingController.getConfirmEmail,
+        next =
+          if (journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails
+          else routes.UndertakingController.getAddBusiness
       )
     }
   }
@@ -209,13 +216,13 @@ class UndertakingController @Inject() (
         .fold(
           errors => BadRequest(undertakingAddBusinessPage(errors, journey.previous)).toContext,
           form =>
-            store.update[UndertakingJourney](_.setAddBusiness(form.value.isTrue))
+            store
+              .update[UndertakingJourney](_.setAddBusiness(form.value.isTrue))
               .flatMap(_.next)
               .toContext
         )
     }
   }
-
 
   def getCheckAnswers: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
@@ -257,7 +264,7 @@ class UndertakingController @Inject() (
   }
 
   private def createUndertakingAndSendEmail(
-    undertaking: UndertakingCreate,
+    undertaking: UndertakingCreate
   )(implicit request: AuthenticatedEnrolledRequest[_], eori: EORI): Future[Result] =
     for {
       ref <- escService.createUndertaking(undertaking)
@@ -271,18 +278,17 @@ class UndertakingController @Inject() (
       _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
     } yield Redirect(routes.UndertakingController.getConfirmation(ref))
 
-  def getConfirmation(ref: String): Action[AnyContent] = verifiedEmail.async {
-    implicit request =>
-      implicit val eori: EORI = request.eoriNumber
+  def getConfirmation(ref: String): Action[AnyContent] = verifiedEmail.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
 
-      store.get[UndertakingJourney].flatMap {
-        case Some(journey) =>
-          val result: OptionT[Future, Result] = for {
-            addBusiness <- journey.addBusiness.value.toContext
-          } yield Ok(confirmationPage(UndertakingRef(ref), eori, addBusiness))
-          result.fold(Redirect(journey.previous))(identity)
-        case _ => Redirect(routes.UndertakingController.getAboutUndertaking).toFuture
-      }
+    store.get[UndertakingJourney].flatMap {
+      case Some(journey) =>
+        val result: OptionT[Future, Result] = for {
+          addBusiness <- journey.addBusiness.value.toContext
+        } yield Ok(confirmationPage(UndertakingRef(ref), eori, addBusiness))
+        result.fold(Redirect(journey.previous))(identity)
+      case _ => Redirect(routes.UndertakingController.getAboutUndertaking).toFuture
+    }
   }
 
   def postConfirmation: Action[AnyContent] = verifiedEmail.async { implicit request =>
@@ -361,9 +367,7 @@ class UndertakingController @Inject() (
   }
 
   def getDisableUndertakingConfirm: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    withLeadUndertaking(_ =>
-      Ok(disableUndertakingConfirmPage(disableUndertakingConfirmForm)).toFuture
-    )
+    withLeadUndertaking(_ => Ok(disableUndertakingConfirmPage(disableUndertakingConfirmForm)).toFuture)
   }
 
   def postDisableUndertakingConfirm: Action[AnyContent] = verifiedEmail.async { implicit request =>
@@ -408,8 +412,7 @@ class UndertakingController @Inject() (
           )
         }
       } yield Redirect(routes.UndertakingController.getUndertakingDisabled)
-    }
-    else Redirect(routes.AccountController.getAccountPage).toFuture
+    } else Redirect(routes.AccountController.getAccountPage).toFuture
 
   private val aboutUndertakingForm: Form[FormValues] = Form(
     mapping("continue" -> mandatory("continue"))(FormValues.apply)(FormValues.unapply)
@@ -420,6 +423,8 @@ class UndertakingController @Inject() (
   private val cyaForm: Form[FormValues] = formWithSingleMandatoryField("cya")
   private val confirmationForm: Form[FormValues] = formWithSingleMandatoryField("confirm")
   private val amendUndertakingForm: Form[FormValues] = formWithSingleMandatoryField("amendUndertaking")
-  private val disableUndertakingConfirmForm: Form[FormValues] = formWithSingleMandatoryField("disableUndertakingConfirm")
+  private val disableUndertakingConfirmForm: Form[FormValues] = formWithSingleMandatoryField(
+    "disableUndertakingConfirm"
+  )
 
 }

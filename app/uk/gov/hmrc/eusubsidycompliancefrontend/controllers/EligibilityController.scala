@@ -37,15 +37,15 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class EligibilityController @Inject() (
-                                        mcc: MessagesControllerComponents,
-                                        doYouClaimPage: DoYouClaimPage,
-                                        willYouClaimPage: WillYouClaimPage,
-                                        notEligiblePage: NotEligiblePage,
-                                        checkEoriPage: CheckEoriPage,
-                                        incorrectEoriPage: IncorrectEoriPage,
-                                        actionBuilders: ActionBuilders,
-                                        escService: EscService,
-                                        override val store: Store
+  mcc: MessagesControllerComponents,
+  doYouClaimPage: DoYouClaimPage,
+  willYouClaimPage: WillYouClaimPage,
+  notEligiblePage: NotEligiblePage,
+  checkEoriPage: CheckEoriPage,
+  incorrectEoriPage: IncorrectEoriPage,
+  actionBuilders: ActionBuilders,
+  escService: EscService,
+  override val store: Store
 )(implicit
   val appConfig: AppConfig,
   override val executionContext: ExecutionContext
@@ -64,7 +64,9 @@ class EligibilityController @Inject() (
   def firstEmptyPage: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    store.get[EligibilityJourney].toContext
+    store
+      .get[EligibilityJourney]
+      .toContext
       .map(_.firstEmpty.getOrElse(Redirect(routes.UndertakingController.firstEmptyPage)))
       .getOrElse {
         // If we get here it must be the first time we've hit the service with an enrolment since there is nothing
@@ -82,12 +84,12 @@ class EligibilityController @Inject() (
       .bindFromRequest()
       .fold(
         errors => BadRequest(doYouClaimPage(errors)).toFuture,
-        form => {
+        form =>
           if (form.value.isTrue) checkEnrolment
-          else EligibilityJourney()
-            .withDoYouClaim(false)
-            .next
-        }
+          else
+            EligibilityJourney()
+              .withDoYouClaim(false)
+              .next
       )
   }
 
@@ -100,7 +102,7 @@ class EligibilityController @Inject() (
       .bindFromRequest()
       .fold(
         errors => BadRequest(willYouClaimPage(errors, routes.EligibilityController.getDoYouClaim.url)).toFuture,
-        form => {
+        form =>
           if (form.value.isTrue) checkEnrolment
           else
             // Set up representative state in EligibilityJourney before we call next.
@@ -109,7 +111,6 @@ class EligibilityController @Inject() (
               .withDoYouClaim(false)
               .withWillYouClaim(false)
               .next
-        }
       )
 
   }
@@ -135,10 +136,8 @@ class EligibilityController @Inject() (
         .withWillYouClaim(true)
 
       store.getOrCreate[EligibilityJourney](eligibilityJourney).map { journey =>
-
-        val form = journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck =>
-          eoriCheckForm.fill(FormValues(eoriCheck.toString))
-        )
+        val form =
+          journey.eoriCheck.value.fold(eoriCheckForm)(eoriCheck => eoriCheckForm.fill(FormValues(eoriCheck.toString)))
 
         val backLink = request.headers
           .get("Referer")
@@ -162,8 +161,7 @@ class EligibilityController @Inject() (
     eoriCheckForm
       .bindFromRequest()
       .fold(
-        errors =>
-          BadRequest(checkEoriPage(errors, eori, routes.EligibilityController.getDoYouClaim.url)).toFuture,
+        errors => BadRequest(checkEoriPage(errors, eori, routes.EligibilityController.getDoYouClaim.url)).toFuture,
         form =>
           store
             .update[EligibilityJourney](_.setEoriCheck(form.value.toBoolean))

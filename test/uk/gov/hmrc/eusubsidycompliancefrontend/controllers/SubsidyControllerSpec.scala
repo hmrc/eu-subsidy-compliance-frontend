@@ -423,10 +423,14 @@ class SubsidyControllerSpec
             mockRetrieveExchangeRate(claimDate)(exchangeRate.toFuture)
             mockUpdate[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction(
-            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "123.45",
-            ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
-          )))
+          assertThrows[Exception](
+            await(
+              performAction(
+                ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "123.45",
+                ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName
+              )
+            )
+          )
         }
       }
 
@@ -482,7 +486,7 @@ class SubsidyControllerSpec
         "nothing is entered" in {
           CurrencyCode.values.foreach { c =>
             testFormValidation(
-              ClaimAmountFormProvider.Fields.CurrencyCode -> c.entryName,
+              ClaimAmountFormProvider.Fields.CurrencyCode -> c.entryName
             )(s"add-claim-amount.claim-amount-${c.entryName.toLowerCase}.$Required")
           }
         }
@@ -499,15 +503,14 @@ class SubsidyControllerSpec
         "claim amount entered in GBP is too big" in {
           testFormValidation(
             ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
-            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "£123456789012.12",
+            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "£123456789012.12"
           )(s"add-claim-amount.claim-amount-${GBP.entryName.toLowerCase}.$TooBig")
         }
-
 
         "claim amount entered in EUR is too big" in {
           testFormValidation(
             ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName,
-            ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "€123456789012.12",
+            ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "€123456789012.12"
           )(s"add-claim-amount.claim-amount-${EUR.entryName.toLowerCase}.$TooBig")
         }
 
@@ -528,21 +531,21 @@ class SubsidyControllerSpec
         "claim amount claims to be euros, but submits value with pound sign prefix" in {
           testFormValidation(
             ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName,
-            ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "£99.99",
+            ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "£99.99"
           )(s"add-claim-amount.claim-amount-eur.error.incorrect-format")
         }
 
         "claim amount claims to be gbp, but submits value with eur sign prefix" in {
           testFormValidation(
             ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
-            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "€99.99",
+            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "€99.99"
           )(s"add-claim-amount.claim-amount-gbp.error.incorrect-format")
         }
 
         "claim amount entered in GBP exceeds maximum allowed value in EUR when converted" in {
           testConvertedAmountValidation(
             ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
-            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "£999999.99",
+            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "£999999.99"
           )(s"add-claim-amount.claim-amount-${GBP.entryName.toLowerCase}.$TooBig")
         }
 
@@ -573,32 +576,32 @@ class SubsidyControllerSpec
           ),
           routes.SubsidyController.getAddClaimEori.url
         )
-    }
-
-    "redirect to the confirm converted amount page if a GBP amount is entered" in {
-      val subsidyJourney = SubsidyJourney(
-        claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some)
-      )
-
-      val claimAmount = "100.00"
-
-      inSequence {
-        mockAuthWithEnrolmentAndValidEmail()
-        mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-        mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
-        mockRetrieveExchangeRate(claimDate)(exchangeRate.toFuture)
-        mockUpdate[SubsidyJourney](eori1)(Right(subsidyJourney))
       }
 
-      checkIsRedirect(
-        performAction(
-          ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
-          ClaimAmountFormProvider.Fields.ClaimAmountGBP -> claimAmount
-        ),
-        routes.SubsidyController.getConfirmClaimAmount.url
-      )
+      "redirect to the confirm converted amount page if a GBP amount is entered" in {
+        val subsidyJourney = SubsidyJourney(
+          claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some)
+        )
 
-    }
+        val claimAmount = "100.00"
+
+        inSequence {
+          mockAuthWithEnrolmentAndValidEmail()
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+          mockRetrieveExchangeRate(claimDate)(exchangeRate.toFuture)
+          mockUpdate[SubsidyJourney](eori1)(Right(subsidyJourney))
+        }
+
+        checkIsRedirect(
+          performAction(
+            ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
+            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> claimAmount
+          ),
+          routes.SubsidyController.getConfirmClaimAmount.url
+        )
+
+      }
 
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {
@@ -630,7 +633,9 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.copy(claimAmount = ClaimAmountFormPage(claimAmountPounds.some)).some))
+            mockGet[SubsidyJourney](eori1)(
+              Right(subsidyJourney.copy(claimAmount = ClaimAmountFormPage(claimAmountPounds.some)).some)
+            )
             mockRetrieveExchangeRate(claimDate)(Future.failed(exception))
           }
 
@@ -646,13 +651,15 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.copy(claimAmount = ClaimAmountFormPage(claimAmountPounds.some)).some))
+            mockGet[SubsidyJourney](eori1)(
+              Right(subsidyJourney.copy(claimAmount = ClaimAmountFormPage(claimAmountPounds.some)).some)
+            )
             mockRetrieveExchangeRate(claimDate)(exchangeRate.toFuture)
           }
 
           checkPageIsDisplayed(
             result = performAction(),
-            expectedTitle = messageFromMessageKey("confirm-converted-amount.title"),
+            expectedTitle = messageFromMessageKey("confirm-converted-amount.title")
           )
 
         }
@@ -691,7 +698,9 @@ class SubsidyControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.copy(claimAmount = ClaimAmountFormPage(claimAmountPounds.some)).some))
+            mockGet[SubsidyJourney](eori1)(
+              Right(subsidyJourney.copy(claimAmount = ClaimAmountFormPage(claimAmountPounds.some)).some)
+            )
             mockRetrieveExchangeRate(claimDate)(Future.failed(exception))
           }
 
@@ -705,7 +714,7 @@ class SubsidyControllerSpec
         "the user submits the form to accept the exchange rate" in {
           val initialJourney = SubsidyJourney(
             claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some),
-            claimAmount = ClaimAmountFormPage(claimAmountPounds.some),
+            claimAmount = ClaimAmountFormPage(claimAmountPounds.some)
           )
 
           val updatedJourney = initialJourney.copy(
@@ -957,10 +966,12 @@ class SubsidyControllerSpec
 
     "handling request to get add claim public authority" must {
 
-      def performAction() = controller.getAddClaimPublicAuthority(FakeRequest(
-        GET,
-        routes.SubsidyController.getAddClaimPublicAuthority.url
-      ))
+      def performAction() = controller.getAddClaimPublicAuthority(
+        FakeRequest(
+          GET,
+          routes.SubsidyController.getAddClaimPublicAuthority.url
+        )
+      )
 
       "display the page" when {
         "a valid request is made" in {
@@ -1460,7 +1471,6 @@ class SubsidyControllerSpec
           }
           assertThrows[Exception](await(performAction("cya" -> "true")))
         }
-
 
         "call to create subsidy fails" in {
           inSequence {

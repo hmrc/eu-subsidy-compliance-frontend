@@ -23,7 +23,6 @@ case class OptionalTraderRef(
   value: Option[String]
 )
 
-
 object OptionalTraderRef {
   implicit val format: Format[OptionalTraderRef] = Json.format[OptionalTraderRef]
 }

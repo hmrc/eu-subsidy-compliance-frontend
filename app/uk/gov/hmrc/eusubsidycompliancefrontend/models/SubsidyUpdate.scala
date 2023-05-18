@@ -73,8 +73,10 @@ object SubsidyUpdate {
   def forDelete(undertakingIdentifier: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy): SubsidyUpdate =
     SubsidyUpdate(
       undertakingIdentifier,
-      UndertakingSubsidyAmendment(List(
-        nonHmrcSubsidy.copy(amendmentType = Some(EisSubsidyAmendmentType("3")))
-      ))
+      UndertakingSubsidyAmendment(
+        List(
+          nonHmrcSubsidy.copy(amendmentType = Some(EisSubsidyAmendmentType("3")))
+        )
+      )
     )
 }

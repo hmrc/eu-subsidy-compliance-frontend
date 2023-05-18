@@ -128,9 +128,11 @@ class BecomeLeadControllerSpec
         "new lead journey already exists" in {
           inSequence {
             mockAuthWithEnrolmentAndValidEmail(eori4)
-            mockGetOrCreate[BecomeLeadJourney](eori4)(Right(
-              newBecomeLeadJourney.copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = Some(true)))
-            ))
+            mockGetOrCreate[BecomeLeadJourney](eori4)(
+              Right(
+                newBecomeLeadJourney.copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = Some(true)))
+              )
+            )
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
           }
           checkPageIsDisplayed(
@@ -213,7 +215,10 @@ class BecomeLeadControllerSpec
             )
           }
 
-          checkIsRedirect(performAction("becomeAdmin" -> "true"), routes.BecomeLeadController.getPromotionConfirmation().url)
+          checkIsRedirect(
+            performAction("becomeAdmin" -> "true"),
+            routes.BecomeLeadController.getPromotionConfirmation().url
+          )
         }
 
         "user submits No" in {
@@ -359,7 +364,9 @@ class BecomeLeadControllerSpec
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
           mockGetEmailVerification(Option.empty)
-          mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("foo@example.com").some)))
+          mockRetrieveEmail(eori1)(
+            Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("foo@example.com").some))
+          )
         }
 
         val result = performAction()

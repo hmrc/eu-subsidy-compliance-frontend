@@ -27,7 +27,7 @@ object FormProvider {
 
   object CommonErrors {
     val IncorrectFormat = "error.incorrect-format"
-    val Required        = "error.required"
+    val Required = "error.required"
   }
 
 }

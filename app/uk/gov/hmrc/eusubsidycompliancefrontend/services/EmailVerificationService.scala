@@ -38,9 +38,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EmailVerificationService @Inject() (
-   emailVerificationConnector: EmailVerificationConnector,
-   eoriEmailDatastore: EoriEmailRepository,
-   servicesConfig: ServicesConfig
+  emailVerificationConnector: EmailVerificationConnector,
+  eoriEmailDatastore: EoriEmailRepository,
+  servicesConfig: ServicesConfig
 ) extends Logging {
 
   def getEmailVerification(eori: EORI): Future[Option[VerifiedEmail]] = eoriEmailDatastore.getEmailVerification(eori)
@@ -57,25 +57,29 @@ class EmailVerificationService @Inject() (
       _ <- verifyEmailForEori(eori)
     } yield ()
 
-
   def makeVerificationRequestAndRedirect(
     email: String,
     previousPage: Call,
-    nextPageUrl: String => String,
-  )(implicit request: AuthenticatedEnrolledRequest[AnyContent],
+    nextPageUrl: String => String
+  )(implicit
+    request: AuthenticatedEnrolledRequest[AnyContent],
     ec: ExecutionContext,
     hc: HeaderCarrier
   ): Future[Result] = for {
     verificationId <- addVerificationRequest(request.eoriNumber, email)
     verificationResponse <- verifyEmail(nextPageUrl(verificationId), previousPage.url)(request.authorityId, email)
-  } yield verificationResponse.fold(Redirect(previousPage))(value => Redirect(generateEmailServiceUrl(value.redirectUri)))
+  } yield verificationResponse.fold(Redirect(previousPage))(value =>
+    Redirect(generateEmailServiceUrl(value.redirectUri))
+  )
 
   private def verifyEmail(
     verifyEmailUrl: String,
     confirmEmailUrl: String
-  )(credId: String,
-    email: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext, request: AuthenticatedEnrolledRequest[AnyContent]): Future[Option[EmailVerificationResponse]] = {
+  )(credId: String, email: String)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext,
+    request: AuthenticatedEnrolledRequest[AnyContent]
+  ): Future[Option[EmailVerificationResponse]] =
     emailVerificationConnector
       .verifyEmail(
         EmailVerificationRequest(
@@ -84,27 +88,29 @@ class EmailVerificationService @Inject() (
           origin = "EU Subsidy Compliance",
           deskproServiceName = None,
           accessibilityStatementUrl = "",
-          email = Some(Email(
-            address = email,
-            enterUrl = ""
-          )),
+          email = Some(
+            Email(
+              address = email,
+              enterUrl = ""
+            )
+          ),
           lang = None,
           backUrl = Some(request.toRedirectTarget(confirmEmailUrl)),
           pageTitle = None
         )
-      ).map {
-      case Left(error) =>
-        throw ConnectorError(s"Error sending email:Id", error)
-      case Right(value) =>
-        value.status match {
-          case CREATED => Some(value.json.as[EmailVerificationResponse])
-          case _ => None
-        }
-    }
-  }
+      )
+      .map {
+        case Left(error) =>
+          throw ConnectorError(s"Error sending email:Id", error)
+        case Right(value) =>
+          value.status match {
+            case CREATED => Some(value.json.as[EmailVerificationResponse])
+            case _ => None
+          }
+      }
 
   private def generateEmailServiceUrl[A](redirectUrl: String)(implicit req: WrappedRequest[A]): String =
-    if(req.isLocal) servicesConfig.baseUrl("email-verification-frontend") + redirectUrl
+    if (req.isLocal) servicesConfig.baseUrl("email-verification-frontend") + redirectUrl
     else redirectUrl
 
   private def verifyEmailForEori(eori: EORI): Future[CacheItem] = eoriEmailDatastore.verifyEmail(eori)

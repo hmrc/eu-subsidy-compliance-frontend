@@ -31,17 +31,16 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 
 @Singleton
-class EoriEmailRepository @Inject()(
+class EoriEmailRepository @Inject() (
   mongoComponent: MongoComponent
 )(implicit ec: ExecutionContext)
-  extends MongoCacheRepository[EORI](
-    mongoComponent = mongoComponent,
-    collectionName = "eoriEmailStore",
-    ttl = DefaultTtl,
-    timestampSupport = new CurrentTimestampSupport,
-    cacheIdType = EoriIdType
-  ) {
-
+    extends MongoCacheRepository[EORI](
+      mongoComponent = mongoComponent,
+      collectionName = "eoriEmailStore",
+      ttl = DefaultTtl,
+      timestampSupport = new CurrentTimestampSupport,
+      cacheIdType = EoriIdType
+    ) {
 
   def verifyEmail(key: EORI): Future[CacheItem] = {
     val timestamp = Instant.now()
@@ -52,7 +51,7 @@ class EoriEmailRepository @Inject()(
           Updates.set("data.verified", true),
           Updates.set("modifiedDetails.lastUpdated", timestamp),
           Updates.set("modifiedDetails.createdAt", timestamp)
-      ),
+        ),
         options = FindOneAndUpdateOptions().upsert(true).returnDocument(ReturnDocument.AFTER)
       )
       .toFuture()
@@ -74,9 +73,9 @@ class EoriEmailRepository @Inject()(
         options = FindOneAndUpdateOptions().upsert(true).returnDocument(ReturnDocument.AFTER)
       )
       .headOption()
-      .map(e => {
+      .map { e =>
         e.flatMap(cache => cache.data.asOpt[VerifiedEmail])
-      })
+      }
   }
 
   def approveVerificationRequest(key: EORI, verificationId: String): Future[UpdateResult] = {
@@ -87,11 +86,12 @@ class EoriEmailRepository @Inject()(
           Filters.equal("_id", key),
           Filters.equal("data.verificationId", verificationId)
         ),
-          update = Updates.combine(
-            Updates.set("data.verified", true),
-            Updates.set("modifiedDetails.lastUpdated", timestamp)
+        update = Updates.combine(
+          Updates.set("data.verified", true),
+          Updates.set("modifiedDetails.lastUpdated", timestamp)
         )
-      ).toFuture()
+      )
+      .toFuture()
   }
 
   def put(eori: EORI, state: VerifiedEmail): Future[CacheItem] = {
@@ -111,18 +111,16 @@ class EoriEmailRepository @Inject()(
       .toFuture()
   }
 
-  def getEmailVerification(key: EORI) = {
+  def getEmailVerification(key: EORI) =
     collection
       .find(
         filter = Filters.and(
           Filters.equal("_id", key),
-          Filters.equal("data.verified", true),
+          Filters.equal("data.verified", true)
         )
       )
       .headOption()
-      .map(e => e.flatMap(cache => cache.data.asOpt[VerifiedEmail])
-    )
-  }
+      .map(e => e.flatMap(cache => cache.data.asOpt[VerifiedEmail]))
 }
 
 object EoriEmailRepository {

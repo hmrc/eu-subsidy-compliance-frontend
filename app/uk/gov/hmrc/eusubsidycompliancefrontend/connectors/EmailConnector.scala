@@ -32,8 +32,8 @@ trait EmailConnector extends Connector {
       // Allow 404s to be handled by the caller on the happy path.
       else if (r.status == NOT_FOUND) Right(r)
       else Left(ConnectorError(UpstreamErrorResponse(s"Unexpected response - got HTTP ${r.status}", r.status)))
-    } recover {
-      case e: Exception => Left(ConnectorError(e))
+    } recover { case e: Exception =>
+      Left(ConnectorError(e))
     }
 
 }

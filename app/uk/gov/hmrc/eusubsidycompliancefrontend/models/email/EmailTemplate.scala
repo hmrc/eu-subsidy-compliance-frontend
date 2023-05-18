@@ -40,4 +40,3 @@ object EmailTemplate extends Enum[EmailTemplate] {
   override val values = findValues
 
 }
-

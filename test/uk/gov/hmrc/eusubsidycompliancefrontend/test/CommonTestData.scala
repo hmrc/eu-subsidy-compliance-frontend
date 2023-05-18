@@ -104,7 +104,7 @@ object CommonTestData {
     hmrcSubsidyTotalEUR = SubsidyAmount(0),
     hmrcSubsidyTotalGBP = SubsidyAmount(0),
     nonHMRCSubsidyUsage = List.empty,
-    hmrcSubsidyUsage = List.empty,
+    hmrcSubsidyUsage = List.empty
   )
 
   val claimAmountPounds = ClaimAmount(GBP, subsidyAmount.toString())
@@ -117,7 +117,7 @@ object CommonTestData {
     traderRef = TraderRefFormPage(optionalTraderRef.some),
     claimAmount = ClaimAmountFormPage(claimAmountEuros.some),
     addClaimEori = AddClaimEoriFormPage(optionalEORI.some),
-    claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some),
+    claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some)
   )
 
   val subsidyUpdate = SubsidyUpdate(
@@ -181,18 +181,18 @@ object CommonTestData {
 
   val eligibilityJourneyNotComplete = EligibilityJourney(
     doYouClaim = DoYouClaimFormPage(true.some),
-    willYouClaim = WillYouClaimFormPage(true.some),
+    willYouClaim = WillYouClaimFormPage(true.some)
   )
 
   val eligibilityJourneyComplete = eligibilityJourneyNotComplete.copy(
     doYouClaim = DoYouClaimFormPage(true.some),
-    eoriCheck = EoriCheckFormPage(true.some),
+    eoriCheck = EoriCheckFormPage(true.some)
   )
 
   val undertakingJourneyComplete = UndertakingJourney(
     about = AboutUndertakingFormPage("TestUndertaking".some),
     sector = UndertakingSectorFormPage(Sector(1).some),
-    verifiedEmail =  UndertakingConfirmEmailFormPage("joebloggs@something.com".some),
+    verifiedEmail = UndertakingConfirmEmailFormPage("joebloggs@something.com".some),
     addBusiness = UndertakingAddBusinessFormPage(false.some),
     cya = UndertakingCyaFormPage(true.some),
     confirmation = UndertakingConfirmationFormPage(true.some)
@@ -208,12 +208,12 @@ object CommonTestData {
 
   val businessEntityJourney = BusinessEntityJourney(
     addBusiness = AddBusinessFormPage(true.some),
-    eori = AddEoriFormPage(eori1.some),
+    eori = AddEoriFormPage(eori1.some)
   )
 
   val businessEntityJourney1 = BusinessEntityJourney(
     addBusiness = AddBusinessFormPage(true.some),
-    eori = AddEoriFormPage(eori2.some),
+    eori = AddEoriFormPage(eori2.some)
   )
   val businessEntityJourneyLead = BusinessEntityJourney(
     addBusiness = AddBusinessFormPage(true.some),
@@ -252,7 +252,7 @@ object CommonTestData {
     willYouClaim = WillYouClaimFormPage(true.some),
     notEligible = NotEligibleFormPage(true.some),
     eoriCheck = EoriCheckFormPage(true.some),
-    signOutBadEori = SignOutBadEoriFormPage(true.some),
+    signOutBadEori = SignOutBadEoriFormPage(true.some)
   )
 
   val timeNow = LocalDateTime.of(2021, 10, 9, 10, 9, 0, 0)
@@ -273,7 +273,7 @@ object CommonTestData {
 
   val exchangeRate = ExchangeRate(EUR, GBP, BigDecimal(0.891))
 
-  val emailVerificationRequest  = EmailVerificationRequest(
+  val emailVerificationRequest = EmailVerificationRequest(
     "credId",
     "continueUrl",
     "origin",

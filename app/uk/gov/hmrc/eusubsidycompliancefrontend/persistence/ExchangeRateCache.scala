@@ -45,13 +45,13 @@ object YearAndMonthIdType extends CacheIdType[YearAndMonth] {
 class ExchangeRateCache @Inject() (
   mongoComponent: MongoComponent
 )(implicit ec: ExecutionContext)
-  extends MongoCacheRepository[YearAndMonth](
-    mongoComponent = mongoComponent,
-    collectionName = "exchangeRateCache",
-    ttl = DefaultCacheTtl,
-    timestampSupport = new CurrentTimestampSupport,
-    cacheIdType = YearAndMonthIdType
-  ) {
+    extends MongoCacheRepository[YearAndMonth](
+      mongoComponent = mongoComponent,
+      collectionName = "exchangeRateCache",
+      ttl = DefaultCacheTtl,
+      timestampSupport = new CurrentTimestampSupport,
+      cacheIdType = YearAndMonthIdType
+    ) {
 
   def get[A : ClassTag](key: YearAndMonth)(implicit reads: Reads[A]): Future[Option[A]] =
     super.get[A](key)(dataKeyForType[A])

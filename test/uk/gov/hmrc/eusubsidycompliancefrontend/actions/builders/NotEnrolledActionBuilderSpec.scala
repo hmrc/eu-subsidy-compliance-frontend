@@ -36,25 +36,28 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 
 import scala.concurrent.Future
 
-class NotEnrolledActionBuilderSpec extends AnyWordSpec
-  with ControllerSpec
-  with AuthSupport
-  with JourneyStoreSupport
-  with AuthAndSessionDataBehaviour
-  with Matchers
-  with MockFactory
-  with ScalaFutures
-  with DefaultAwaitTimeout {
+class NotEnrolledActionBuilderSpec
+    extends AnyWordSpec
+    with ControllerSpec
+    with AuthSupport
+    with JourneyStoreSupport
+    with AuthAndSessionDataBehaviour
+    with Matchers
+    with MockFactory
+    with ScalaFutures
+    with DefaultAwaitTimeout {
 
   override def overrideBindings: List[GuiceableModule] = List(
-    bind[AuthConnector].toInstance(mockAuthConnector),
+    bind[AuthConnector].toInstance(mockAuthConnector)
   )
 
   private def FakeSignInUrl = "/fake/gg/signin"
 
-  override def additionalConfig: Configuration = Configuration.from(Map(
-    "urls.ggSignInUrl" -> FakeSignInUrl
-  ))
+  override def additionalConfig: Configuration = Configuration.from(
+    Map(
+      "urls.ggSignInUrl" -> FakeSignInUrl
+    )
+  )
 
   private val underTest = instanceOf[NotEnrolledActionBuilder]
 
