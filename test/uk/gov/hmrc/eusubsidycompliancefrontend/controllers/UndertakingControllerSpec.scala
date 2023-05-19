@@ -53,7 +53,6 @@ class UndertakingControllerSpec
     with EmailVerificationServiceSupport
     with TimeProviderSupport {
 
-
   override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
@@ -151,7 +150,7 @@ class UndertakingControllerSpec
                 about = AboutUndertakingFormPage("TestUndertaking".some),
                 sector = UndertakingSectorFormPage(Sector(1).some),
                 verifiedEmail = UndertakingConfirmEmailFormPage("joe.bloggs@something.com".some),
-                  addBusiness = UndertakingAddBusinessFormPage(false.some)
+                addBusiness = UndertakingAddBusinessFormPage(false.some)
               ),
               routes.UndertakingController.getCheckAnswers.url
             )
@@ -223,9 +222,7 @@ class UndertakingControllerSpec
             performAction(),
             messageFromMessageKey("undertakingName.title"),
             { doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe routes.EligibilityController
-                .getEoriCheck
-                .url
+              doc.select(".govuk-back-link").attr("href") shouldBe routes.EligibilityController.getEoriCheck.url
               val input = doc.select(".govuk-input").attr("value")
               input shouldBe ""
 
@@ -546,7 +543,9 @@ class UndertakingControllerSpec
 
     "handling request to get verify email" must {
 
-      def performAction(pendingVerificationId: String) = controller.getVerifyEmail(pendingVerificationId)(FakeRequest(GET, routes.UndertakingController.getVerifyEmail(pendingVerificationId).url))
+      def performAction(pendingVerificationId: String) = controller.getVerifyEmail(pendingVerificationId)(
+        FakeRequest(GET, routes.UndertakingController.getVerifyEmail(pendingVerificationId).url)
+      )
 
       "throw technical error" when {
 
@@ -587,7 +586,8 @@ class UndertakingControllerSpec
 
     "handling request to get confirm email" must {
 
-      def performAction() = controller.getConfirmEmail(FakeRequest(GET, routes.UndertakingController.getConfirmEmail.url))
+      def performAction() =
+        controller.getConfirmEmail(FakeRequest(GET, routes.UndertakingController.getConfirmEmail.url))
 
       "throw technical error" when {
 
@@ -605,30 +605,30 @@ class UndertakingControllerSpec
       "display the page" when {
 
         "User has verified email in CDS" in {
-            val undertakingJourney = UndertakingJourney(
-              about = AboutUndertakingFormPage("TestUndertaking1".some),
-              sector = UndertakingSectorFormPage(Sector(2).some)
-            )
-            val previousCall = routes.UndertakingController.getSector.url
+          val undertakingJourney = UndertakingJourney(
+            about = AboutUndertakingFormPage("TestUndertaking1".some),
+            sector = UndertakingSectorFormPage(Sector(2).some)
+          )
+          val previousCall = routes.UndertakingController.getSector.url
 
-            inSequence {
-              mockAuthWithEnrolmentAndNoEmailVerification()
-              mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-              mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
-            }
-            checkPageIsDisplayed(
-              performAction(),
-              messageFromMessageKey("confirmEmail.title", undertakingJourney.about.value.getOrElse("")),
-              { doc =>
-                doc.select(".govuk-back-link").attr("href") shouldBe previousCall
-
-                val form = doc.select("form")
-                form
-                  .attr("action") shouldBe routes.UndertakingController.postConfirmEmail.url
-              }
-            )
-
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
+            mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
           }
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("confirmEmail.title", undertakingJourney.about.value.getOrElse("")),
+            { doc =>
+              doc.select(".govuk-back-link").attr("href") shouldBe previousCall
+
+              val form = doc.select("form")
+              form
+                .attr("action") shouldBe routes.UndertakingController.postConfirmEmail.url
+            }
+          )
+
+        }
 
         "User does not have verified email in CDS" in {
           val undertakingJourney = UndertakingJourney(
@@ -685,9 +685,13 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
           }
-          assertThrows[Exception](await(performAction(
-            "using-stored-email" -> "false"
-          )))
+          assertThrows[Exception](
+            await(
+              performAction(
+                "using-stored-email" -> "false"
+              )
+            )
+          )
         }
 
         "email submitted is invalid" in {
@@ -695,51 +699,57 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
           }
-          assertThrows[Exception](await(performAction(
-            "using-stored-email" -> "false",
-            "email" -> "joe bloggs"
-          )))
+          assertThrows[Exception](
+            await(
+              performAction(
+                "using-stored-email" -> "false",
+                "email" -> "joe bloggs"
+              )
+            )
+          )
         }
 
       }
 
-     "redirect to add business page" when {
+      "redirect to add business page" when {
 
-       "all api calls are successful" in {
-         inSequence {
-           mockAuthWithEnrolment(eori1)
-           mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-           mockGetEmailVerification()
-           mockAddVerifiedEmail(eori1, "foo@example.com")()
-           mockUpdate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete))
+        "all api calls are successful" in {
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+            mockGetEmailVerification()
+            mockAddVerifiedEmail(eori1, "foo@example.com")()
+            mockUpdate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete))
 
-         }
-         checkIsRedirect(
-           performAction("using-stored-email" -> "true"),
-           routes.UndertakingController.getAddBusiness.url
-         )
-       }
-
-      "No verification found or cds with valid form should redirect" in {
-        inSequence {
-          mockAuthWithEnrolment(eori1)
-          mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-          mockGetEmailVerification()
-          mockMakeVerificationRequestAndRedirect(Redirect("email-verification-redirect").toFuture)
+          }
+          checkIsRedirect(
+            performAction("using-stored-email" -> "true"),
+            routes.UndertakingController.getAddBusiness.url
+          )
         }
-        redirectLocation(performAction("using-stored-email" -> "false", "email" -> "something@aol.com")) shouldBe "email-verification-redirect".some
+
+        "No verification found or cds with valid form should redirect" in {
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+            mockGetEmailVerification()
+            mockMakeVerificationRequestAndRedirect(Redirect("email-verification-redirect").toFuture)
+          }
+          redirectLocation(
+            performAction("using-stored-email" -> "false", "email" -> "something@aol.com")
+          ) shouldBe "email-verification-redirect".some
+        }
+
+        "No verification found or cds with invalid form should be bad request" in {
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+            mockGetEmailVerification()
+          }
+          status(performAction("using-stored-email" -> "false", "email" -> "somethingl.com")) shouldBe BAD_REQUEST
+        }
+
       }
-
-       "No verification found or cds with invalid form should be bad request" in {
-         inSequence {
-           mockAuthWithEnrolment(eori1)
-           mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-           mockGetEmailVerification()
-         }
-         status(performAction("using-stored-email" -> "false", "email" -> "somethingl.com")) shouldBe BAD_REQUEST
-       }
-
-     }
 
     }
 
@@ -768,7 +778,7 @@ class UndertakingControllerSpec
           val undertakingJourney = UndertakingJourney(
             about = AboutUndertakingFormPage("TestUndertaking1".some),
             sector = UndertakingSectorFormPage(Sector(2).some),
-            verifiedEmail = UndertakingConfirmEmailFormPage("some@email.com".some),
+            verifiedEmail = UndertakingConfirmEmailFormPage("some@email.com".some)
           )
           val previousCall = routes.UndertakingController.getConfirmEmail.url
 
@@ -834,10 +844,14 @@ class UndertakingControllerSpec
         "email question has not been answered" in {
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
-            mockGet[UndertakingJourney](eori1)(Right(UndertakingJourney(
-              about = AboutUndertakingFormPage("TestUndertaking".some),
-              sector = UndertakingSectorFormPage(Sector(1).some)
-            ).some))
+            mockGet[UndertakingJourney](eori1)(
+              Right(
+                UndertakingJourney(
+                  about = AboutUndertakingFormPage("TestUndertaking".some),
+                  sector = UndertakingSectorFormPage(Sector(1).some)
+                ).some
+              )
+            )
           }
           checkIsRedirect(performAction(), routes.UndertakingController.getConfirmEmail.url)
         }
@@ -898,7 +912,10 @@ class UndertakingControllerSpec
               Right(UndertakingJourney(addBusiness = UndertakingAddBusinessFormPage(false.some)))
             )
           }
-          checkIsRedirect(performAction("addBusinessIntent" -> "false"), routes.UndertakingController.getCheckAnswers.url)
+          checkIsRedirect(
+            performAction("addBusinessIntent" -> "false"),
+            routes.UndertakingController.getCheckAnswers.url
+          )
         }
 
         "user selected Yes" in {
@@ -909,14 +926,15 @@ class UndertakingControllerSpec
               Right(UndertakingJourney(addBusiness = UndertakingAddBusinessFormPage(true.some)))
             )
           }
-          checkIsRedirect(performAction("addBusinessIntent" -> "true"), routes.UndertakingController.getCheckAnswers.url)
+          checkIsRedirect(
+            performAction("addBusinessIntent" -> "true"),
+            routes.UndertakingController.getCheckAnswers.url
+          )
         }
 
       }
 
     }
-
-
 
     "handling request to get check your answers page" must {
 
@@ -941,7 +959,7 @@ class UndertakingControllerSpec
             messageFromMessageKey("undertaking.cya.summary-list.verified-email"),
             "joebloggs@something.com",
             routes.UndertakingController.getConfirmEmail.url
-          ),
+          )
         )
         inSequence {
           mockAuthWithEnrolmentAndValidEmail()
@@ -1128,7 +1146,10 @@ class UndertakingControllerSpec
           { doc =>
             val heading2 = doc.select(".govuk-body").text()
             heading2 should include regex messageFromMessageKey("undertaking.confirmation.p1")
-            doc.text() should not include messageFromMessageKey("undertaking.confirmation.p2", routes.BusinessEntityController.getAddBusinessEntity)
+            doc.text() should not include messageFromMessageKey(
+              "undertaking.confirmation.p2",
+              routes.BusinessEntityController.getAddBusinessEntity
+            )
           }
         )
 
@@ -1137,7 +1158,9 @@ class UndertakingControllerSpec
       "display the page with intent to add business" in {
         inSequence {
           mockAuthWithEnrolmentAndValidEmail()
-          mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.copy(addBusiness = UndertakingAddBusinessFormPage(true.some)).some))
+          mockGet[UndertakingJourney](eori1)(
+            Right(undertakingJourneyComplete.copy(addBusiness = UndertakingAddBusinessFormPage(true.some)).some)
+          )
         }
 
         checkPageIsDisplayed(
@@ -1146,7 +1169,10 @@ class UndertakingControllerSpec
           { doc =>
             val heading2 = doc.select(".govuk-body").text()
             heading2 should include regex messageFromMessageKey("undertaking.confirmation.p1")
-            doc.html() should include regex messageFromMessageKey("undertaking.confirmation.p2", routes.BusinessEntityController.getAddBusinessEntity.url)
+            doc.html() should include regex messageFromMessageKey(
+              "undertaking.confirmation.p2",
+              routes.BusinessEntityController.getAddBusinessEntity.url
+            )
           }
         )
 
@@ -1198,7 +1224,7 @@ class UndertakingControllerSpec
           messageFromMessageKey(s"sector.label.${undertaking.industrySector.id.toString}"),
           routes.UndertakingController.getSector.url
         ),
-          ModifyUndertakingRow(
+        ModifyUndertakingRow(
           messageFromMessageKey("undertaking.amendUndertaking.summary-list.undertaking-admin-email.key"),
           "foo@example.com",
           routes.UndertakingController.getConfirmEmail.url
@@ -1436,9 +1462,9 @@ class UndertakingControllerSpec
           performAction(),
           messageFromMessageKey("disableUndertakingConfirm.title"),
           { doc =>
-            doc.select(".govuk-back-link").attr("href") shouldBe routes.UndertakingController
-              .getDisableUndertakingWarning
-              .url
+            doc
+              .select(".govuk-back-link")
+              .attr("href") shouldBe routes.UndertakingController.getDisableUndertakingWarning.url
             val form = doc.select("form")
             form
               .attr("action") shouldBe routes.UndertakingController.postDisableUndertakingConfirm.url

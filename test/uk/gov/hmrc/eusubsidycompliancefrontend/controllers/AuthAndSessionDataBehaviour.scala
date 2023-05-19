@@ -60,7 +60,9 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
     mockAuthWithEccRetrievals(Enrolments(Set(eccEnrolments(eori))), providerId, groupId)
 
   def mockAuthWithEnrolmentWithoutEori(): Unit = mockAuthWithEccRetrievals(
-    Enrolments(Set(Enrolment(EccEnrolmentKey, Seq.empty, state = ""))), providerId, groupId
+    Enrolments(Set(Enrolment(EccEnrolmentKey, Seq.empty, state = ""))),
+    providerId,
+    groupId
   )
 
   def mockAuthWithEnrolmentAndValidEmail(eori: EORI = eori1): Unit =

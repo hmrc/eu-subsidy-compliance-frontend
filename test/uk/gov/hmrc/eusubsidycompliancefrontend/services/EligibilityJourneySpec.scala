@@ -35,7 +35,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
           underTest.willYouClaim,
           underTest.notEligible,
           underTest.eoriCheck,
-          underTest.signOutBadEori,
+          underTest.signOutBadEori
         )
       }
 
@@ -45,7 +45,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
         )
         underTest.steps shouldBe Array(
           underTest.eoriCheck,
-          underTest.signOutBadEori,
+          underTest.signOutBadEori
         )
       }
 
@@ -55,7 +55,7 @@ class EligibilityJourneySpec extends AnyWordSpecLike with Matchers {
           eoriCheck = EoriCheckFormPage(Some(true))
         )
         underTest.steps shouldBe Array(
-          underTest.eoriCheck,
+          underTest.eoriCheck
         )
       }
 

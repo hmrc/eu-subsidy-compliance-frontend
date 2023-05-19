@@ -31,14 +31,15 @@ import scala.util.Try
 
 case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
 
-  override protected def mapping: Mapping[ClaimAmount] = Forms.mapping(
-    Fields.CurrencyCode ->
-      text
-        .verifying(currencyCodeIsValid)
-        .transform(CurrencyCode.withName, (c: CurrencyCode) => c.entryName),
-    Fields.ClaimAmountEUR -> mandatoryIfEqual(Fields.CurrencyCode, EUR.entryName, claimAmountMapping),
-    Fields.ClaimAmountGBP -> mandatoryIfEqual(Fields.CurrencyCode, GBP.entryName, claimAmountMapping),
-  )(ClaimAmount.fromForm)(ClaimAmount.toForm)
+  override protected def mapping: Mapping[ClaimAmount] = Forms
+    .mapping(
+      Fields.CurrencyCode ->
+        text
+          .verifying(currencyCodeIsValid)
+          .transform(CurrencyCode.withName, (c: CurrencyCode) => c.entryName),
+      Fields.ClaimAmountEUR -> mandatoryIfEqual(Fields.CurrencyCode, EUR.entryName, claimAmountMapping),
+      Fields.ClaimAmountGBP -> mandatoryIfEqual(Fields.CurrencyCode, GBP.entryName, claimAmountMapping)
+    )(ClaimAmount.fromForm)(ClaimAmount.toForm)
     .verifying(claimAmountCurrencyMatchesSelection)
     .transform(c => c.copy(amount = cleanAmount(c.amount)), identity[ClaimAmount])
 

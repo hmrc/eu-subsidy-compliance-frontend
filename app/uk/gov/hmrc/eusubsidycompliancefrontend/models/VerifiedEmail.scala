@@ -20,7 +20,6 @@ import play.api.libs.json.{Json, OFormat}
 
 case class VerifiedEmail(email: String, verificationId: String, verified: Boolean)
 
-
 object VerifiedEmail {
   implicit val undertakingFormat: OFormat[VerifiedEmail] = Json.format[VerifiedEmail]
 }

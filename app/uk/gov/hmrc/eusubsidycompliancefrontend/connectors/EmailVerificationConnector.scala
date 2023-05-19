@@ -25,16 +25,18 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class EmailVerificationConnector @Inject()(
-    override protected val http: HttpClient,
-    servicesConfig: ServicesConfig
-  ) extends Connector {
+class EmailVerificationConnector @Inject() (
+  override protected val http: HttpClient,
+  servicesConfig: ServicesConfig
+) extends Connector {
 
   lazy private val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")
 
   lazy private val verifyEmailUrl = s"$emailVerificationBaseUrl/email-verification/verify-email"
 
-  def verifyEmail(request: EmailVerificationRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): ConnectorResult =
+  def verifyEmail(
+    request: EmailVerificationRequest
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): ConnectorResult =
     makeRequest(
       _.POST[EmailVerificationRequest, HttpResponse](
         verifyEmailUrl,

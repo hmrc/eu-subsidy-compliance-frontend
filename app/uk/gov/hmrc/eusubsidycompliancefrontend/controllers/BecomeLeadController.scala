@@ -49,12 +49,12 @@ class BecomeLeadController @Inject() (
   becomeAdminAcceptResponsibilitiesPage: BecomeAdminAcceptResponsibilitiesPage,
   becomeAdminConfirmationPage: BecomeAdminConfirmationPage,
   override protected val confirmEmailPage: ConfirmEmailPage,
-  override protected val inputEmailPage: InputEmailPage,
-
+  override protected val inputEmailPage: InputEmailPage
 )(implicit
   val appConfig: AppConfig,
   override protected val executionContext: ExecutionContext
-) extends BaseController(mcc) with EmailVerificationSupport {
+) extends BaseController(mcc)
+    with EmailVerificationSupport {
 
   import actionBuilders._
 
@@ -114,41 +114,42 @@ class BecomeLeadController @Inject() (
     result.getOrElse(handleMissingSessionData("No undertaking Found"))
   }
 
-
   def postBecomeLeadEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    def handleFormSubmission(form: FormValues) = {
+    def handleFormSubmission(form: FormValues) =
       if (form.value.isTrue) promoteBusinessEntity()
       else Redirect(routes.AccountController.getAccountPage).toFuture
-    }
 
-    def promoteBusinessEntity() = withJourneyOrRedirect[BecomeLeadJourney](routes.AccountController.getAccountPage) { _ =>
-      val result = for {
-        undertaking <- escService.getUndertaking(eori).toContext
-        ref = undertaking.reference
-        newLead = undertaking.getBusinessEntityByEORI(eori).copy(leadEORI = true)
-        formerLead = undertaking.getLeadBusinessEntity.copy(leadEORI = false)
-        // Promote new lead
-        _ <- escService.addMember(ref, newLead).toContext
-        _ <- emailService.sendEmail(eori, PromotedSelfToNewLead, undertaking).toContext
-        // Demote former lead
-        _ <- escService.addMember(ref, formerLead).toContext
-        _ <- emailService.sendEmail(formerLead.businessEntityIdentifier, RemovedAsLeadToFormerLead, undertaking).toContext
-        // Flush any stale journey state
-        _ <- store.deleteAll.toContext
-        // Send audit event
-        _ = auditService.sendEvent[BusinessEntityPromotedSelf](
-          AuditEvent.BusinessEntityPromotedSelf(
-            ref,
-            request.authorityId,
-            formerLead.businessEntityIdentifier,
-            newLead.businessEntityIdentifier
+    def promoteBusinessEntity() = withJourneyOrRedirect[BecomeLeadJourney](routes.AccountController.getAccountPage) {
+      _ =>
+        val result = for {
+          undertaking <- escService.getUndertaking(eori).toContext
+          ref = undertaking.reference
+          newLead = undertaking.getBusinessEntityByEORI(eori).copy(leadEORI = true)
+          formerLead = undertaking.getLeadBusinessEntity.copy(leadEORI = false)
+          // Promote new lead
+          _ <- escService.addMember(ref, newLead).toContext
+          _ <- emailService.sendEmail(eori, PromotedSelfToNewLead, undertaking).toContext
+          // Demote former lead
+          _ <- escService.addMember(ref, formerLead).toContext
+          _ <- emailService
+            .sendEmail(formerLead.businessEntityIdentifier, RemovedAsLeadToFormerLead, undertaking)
+            .toContext
+          // Flush any stale journey state
+          _ <- store.deleteAll.toContext
+          // Send audit event
+          _ = auditService.sendEvent[BusinessEntityPromotedSelf](
+            AuditEvent.BusinessEntityPromotedSelf(
+              ref,
+              request.authorityId,
+              formerLead.businessEntityIdentifier,
+              newLead.businessEntityIdentifier
+            )
           )
-        )
-      } yield Redirect(routes.BecomeLeadController.getPromotionConfirmation())
+        } yield Redirect(routes.BecomeLeadController.getPromotionConfirmation())
 
-      result.getOrElse(throw new IllegalStateException("Unexpected error promoting business entity to lead"))
+        result.getOrElse(throw new IllegalStateException("Unexpected error promoting business entity to lead"))
     }
 
     becomeAdminForm
@@ -158,7 +159,6 @@ class BecomeLeadController @Inject() (
         handleFormSubmission
       )
   }
-
 
   def getPromotionConfirmation: Action[AnyContent] = verifiedEmail.async { implicit request =>
     Ok(becomeAdminConfirmationPage()).toFuture

@@ -112,15 +112,16 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
       }
 
       "return a redirect to the check your answers page if a GBP to EUR conversion has been confirmed" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routes.SubsidyController.getConfirmClaimAmount.url)
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getConfirmClaimAmount.url)
         val result = SubsidyJourney().setTraderRef(OptionalTraderRef("true", None)).next
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers.url)
       }
 
-
       "return a redirect to the add claim business page if an eori has been entered that is not part of any undertaking" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routes.SubsidyController.getAddClaimEori.url)
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getAddClaimEori.url)
         val result = SubsidyJourney(
           existingTransactionId = SubsidyRef("SomeRef").some,
           claimAmount = ClaimAmountFormPage(claimAmountEuros.some),
@@ -131,7 +132,8 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
       }
 
       "return a redirect to the add public authority page if an eori has been entered that is part of the current undertaking" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routes.SubsidyController.getAddClaimEori.url)
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getAddClaimEori.url)
         val result = SubsidyJourney(
           existingTransactionId = SubsidyRef("SomeRef").some,
           claimAmount = ClaimAmountFormPage(claimAmountEuros.some),
@@ -146,28 +148,32 @@ class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures
     "when next is called on the amend journey" should {
 
       "return a redirect to the confirm claim amount page if a GBP amount is entered" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routes.SubsidyController.getClaimAmount.url)
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getClaimAmount.url)
         val result = amendJourney.next
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) should contain(routes.SubsidyController.getConfirmClaimAmount.url)
       }
 
       "return a redirect to the check your answers page if an EUR amount is entered" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routes.SubsidyController.getClaimAmount.url)
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getClaimAmount.url)
         val result = amendJourney.setClaimAmount(claimAmountEuros).next
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers.url)
       }
 
       "return a redirect to the confirm converted amount page if a GBP amount is entered" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routes.SubsidyController.getClaimAmount.url)
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getClaimAmount.url)
         val result = amendJourney.setClaimAmount(claimAmountPounds).next
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) should contain(routes.SubsidyController.getConfirmClaimAmount.url)
       }
 
       "return a redirect to the add claim business page if an eori has been entered that is not part of any undertaking" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, routes.SubsidyController.getAddClaimEori.url)
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getAddClaimEori.url)
         val result = amendJourney
           .setClaimEori(optionalEORI.copy(addToUndertaking = true))
           .next

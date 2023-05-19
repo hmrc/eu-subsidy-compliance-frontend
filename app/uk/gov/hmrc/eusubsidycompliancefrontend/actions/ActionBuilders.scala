@@ -26,7 +26,7 @@ import javax.inject.{Inject, Singleton}
 class ActionBuilders @Inject() (
   enrolledActionBuilder: EnrolledActionBuilder,
   notEnrolledActionBuilder: NotEnrolledActionBuilder,
-  verifiedEmailActionBuilder: VerifiedEmailActionBuilder,
+  verifiedEmailActionBuilder: VerifiedEmailActionBuilder
 ) {
 
   // GG Auth with ECC Enrolment - redirect to ECC if not enrolled

@@ -65,7 +65,6 @@ class ClaimEoriFormProviderSpec extends AnyWordSpecLike with Matchers {
   )(errorField: String, errorMessage: String, args: String*) = {
     val result = processForm(radioButton, eoriNumber)
 
-
     val foundExpectedErrorMessage = result.leftSideValue match {
       case Left(errors) => errors.contains(FormError(errorField, errorMessage, args))
       case _ => false

@@ -48,7 +48,7 @@ case class TaxYearSummary(
   startYear: Int,
   hmrcSubsidyTotal: SubsidyAmount,
   nonHmrcSubsidyTotal: SubsidyAmount,
-  isCurrentTaxYear: Boolean,
+  isCurrentTaxYear: Boolean
 ) {
   def total: SubsidyAmount = SubsidyAmount(hmrcSubsidyTotal + nonHmrcSubsidyTotal)
   def endYear: Int = startYear + 1
@@ -69,7 +69,7 @@ object FinancialDashboardSummary {
   def fromUndertakingSubsidies(
     undertaking: Undertaking,
     subsidies: UndertakingSubsidies,
-    today: LocalDate,
+    today: LocalDate
   ): FinancialDashboardSummary = {
 
     val startDate = today.toEarliestTaxYearStart
@@ -103,8 +103,7 @@ object FinancialDashboardSummary {
     )
 
     val nonHmrcSubsidiesByTaxYearStart: Map[LocalDate, SubsidyAmount] = sumByTaxYear(
-      subsidies
-        .nonHMRCSubsidyUsage
+      subsidies.nonHMRCSubsidyUsage
         .filterNot(_.isRemoved)
         .map(i => i.allocationDate.toTaxYearStart -> i.nonHMRCSubsidyAmtEUR)
     )
@@ -114,8 +113,8 @@ object FinancialDashboardSummary {
       val endDate = LocalDate.of(startYear + 1, Month.APRIL, 5)
 
       today.isEqual(startDate) ||
-        today.isEqual(endDate) ||
-        (today.isAfter(startDate) && today.isBefore(endDate))
+      today.isEqual(endDate) ||
+      (today.isAfter(startDate) && today.isBefore(endDate))
     }
 
     // Generate summaries for each starting tax year value in descending year order.

@@ -39,15 +39,15 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class SelectNewLeadController @Inject() (
-                                          mcc: MessagesControllerComponents,
-                                          actionBuilders: ActionBuilders,
-                                          override val escService: EscService,
-                                          override val store: Store,
-                                          emailService: EmailService,
-                                          auditService: AuditService,
-                                          selectNewLeadPage: SelectNewLeadPage,
-                                          leadEORIChangedPage: LeadEORIChangedPage,
-                                          emailNotVerifiedForLeadPromotionPage: EmailNotVerifiedForLeadPromotionPage
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  override val escService: EscService,
+  override val store: Store,
+  emailService: EmailService,
+  auditService: AuditService,
+  selectNewLeadPage: SelectNewLeadPage,
+  leadEORIChangedPage: LeadEORIChangedPage,
+  emailNotVerifiedForLeadPromotionPage: EmailNotVerifiedForLeadPromotionPage
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with ControllerFormHelpers
@@ -94,7 +94,8 @@ class SelectNewLeadController @Inject() (
           }
           _ = auditService.sendEvent(BusinessEntityPromoted(undertakingRef, request.authorityId, eori, eoriBE))
           _ <- emailService.sendEmail(eori, eoriBE, PromotedOtherAsLeadToLead, undertaking)
-          result <- emailService.sendEmail(eoriBE, PromotedOtherAsLeadToBusinessEntity, undertaking)
+          result <- emailService
+            .sendEmail(eoriBE, PromotedOtherAsLeadToBusinessEntity, undertaking)
             .map(redirectTo)
         } yield result
       }
@@ -123,9 +124,7 @@ class SelectNewLeadController @Inject() (
             _ <- store.update[BusinessEntityJourney](b => b.copy(isLeadSelectJourney = None))
             _ <- store.put[NewLeadJourney](NewLeadJourney())
             selectedEORI = newLeadJourney.selectNewLead.value
-          } yield selectedEORI.fold(Redirect(newLeadJourney.previous))(eori =>
-            Ok(leadEORIChangedPage(eori))
-          )
+          } yield selectedEORI.fold(Redirect(newLeadJourney.previous))(eori => Ok(leadEORIChangedPage(eori)))
         case None => Redirect(routes.SelectNewLeadController.getSelectNewLead).toFuture
       }
     }

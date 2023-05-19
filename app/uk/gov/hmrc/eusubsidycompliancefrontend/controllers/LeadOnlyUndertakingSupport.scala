@@ -39,7 +39,9 @@ trait LeadOnlyUndertakingSupport { this: FrontendController =>
   )(implicit r: AuthenticatedEnrolledRequest[A]): Future[Result] = {
     implicit val eori: EORI = r.eoriNumber
 
-    escService.retrieveUndertaking(eori).toContext
+    escService
+      .retrieveUndertaking(eori)
+      .toContext
       .filter(_.isLeadEORI(r.eoriNumber))
       .foldF(Redirect(routes.AccountController.getAccountPage).toFuture)(f)
   }

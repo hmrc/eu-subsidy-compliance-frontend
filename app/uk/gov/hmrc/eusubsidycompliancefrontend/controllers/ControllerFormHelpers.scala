@@ -31,10 +31,13 @@ trait ControllerFormHelpers {
   protected val store: Store
   protected implicit val executionContext: ExecutionContext
 
-  protected def processFormSubmission[A : ClassTag](f: A => OptionT[Future, Result])(implicit e: EORI, r: Reads[A]): Future[Result] =
-    store.get[A].toContext
+  protected def processFormSubmission[A : ClassTag](
+    f: A => OptionT[Future, Result]
+  )(implicit e: EORI, r: Reads[A]): Future[Result] =
+    store
+      .get[A]
+      .toContext
       .flatMap(f)
       .getOrElse(throw new IllegalStateException("Missing journey data - unable to process form submission"))
-
 
 }

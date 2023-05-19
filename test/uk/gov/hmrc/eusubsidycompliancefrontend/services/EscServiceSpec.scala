@@ -52,7 +52,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
     mockEscConnector,
     mockUndertakingCache,
     mockExchangeRateCache,
-    mockRemovedSubsidyRepository,
+    mockRemovedSubsidyRepository
   )
 
   private def mockCreateUndertaking(undertaking: UndertakingCreate)(
@@ -158,7 +158,9 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
         }
 
         "the http response doesn't come back with status 201(created)" in {
-          mockCreateUndertaking(writeableUndertaking)(Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders)))
+          mockCreateUndertaking(writeableUndertaking)(
+            Right(HttpResponse(BAD_REQUEST, undertakingRefJson, emptyHeaders))
+          )
           service.createUndertaking(writeableUndertaking).failed.futureValue shouldBe a[RuntimeException]
         }
 
@@ -413,9 +415,8 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
 
       "return an error" when {
 
-        def isError: Assertion = {
+        def isError: Assertion =
           service.retrieveAllSubsidies(undertakingRef).failed.futureValue shouldBe a[RuntimeException]
-        }
 
         "the http call fails" in {
           mockRetrieveSubsidy(subsidyRetrieve)(Left(ConnectorError("")))
@@ -463,9 +464,8 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
 
       "return an error" when {
 
-        def isError: Assertion = {
+        def isError: Assertion =
           service.removeSubsidy(undertakingRef, nonHmrcSubsidy).failed.futureValue shouldBe a[RuntimeException]
-        }
 
         "the http call fails" in {
           mockRemoveSubsidy(undertakingRef, nonHmrcSubsidy)(Left(ConnectorError("")))

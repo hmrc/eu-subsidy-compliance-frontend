@@ -44,14 +44,13 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
           "10  0.00",
           "£10  0.00",
           "100,000.00",
-          "£100,000.00",
+          "£100,000.00"
         )
 
         amounts.foreach { amount =>
           validateAndCheckSuccess(GBP, amount)
         }
-    }
-
+      }
 
       "handling valid EUR form submissions" in {
         val amounts = Seq(
@@ -63,7 +62,7 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
           "10  0.00",
           "€10  0.00",
           "100,000.00",
-          "€100,000.00",
+          "€100,000.00"
         )
 
         amounts.foreach { amount =>
@@ -84,7 +83,7 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
           "1,212,121,212,121,212.10",
           "£1,212,121,212,121,212.10",
           "9999999999999",
-          "9999999999999.00",
+          "9999999999999.00"
         )
 
         amounts.foreach { amount =>
@@ -103,7 +102,7 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
           "€1,000,000.00.00",
           "this is definitely not a number",
           "$100.00",
-          "A100.00",
+          "A100.00"
         )
 
         amounts.foreach { amount =>
@@ -143,10 +142,13 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
       case GBP => processForm(currencyCode.entryName, "", amount)
     }
     val parsedAmount = amount.replaceAll("[^\\d.]*", "")
-    result mustBe  Right(ClaimAmount(currencyCode, parsedAmount))
+    result mustBe Right(ClaimAmount(currencyCode, parsedAmount))
   }
 
-  private def validateAndCheckError(currencyCode: String, amountEUR: String = "", amountGBP: String = "")(field: String, errorMessage: String) = {
+  private def validateAndCheckError(currencyCode: String, amountEUR: String = "", amountGBP: String = "")(
+    field: String,
+    errorMessage: String
+  ) = {
     val result = processForm(currencyCode, amountEUR, amountGBP)
 
     val foundExpectedErrorMessage = result.leftSideValue match {
@@ -158,12 +160,16 @@ class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
       s"got result $result which did not contain expected error $errorMessage for field $field"
   }
 
-  private def processForm(currencyCode: String, amountEUR: String, amountGBP: String): Either[Seq[FormError], ClaimAmount] =
+  private def processForm(
+    currencyCode: String,
+    amountEUR: String,
+    amountGBP: String
+  ): Either[Seq[FormError], ClaimAmount] =
     underTest.form.mapping.bind(
       Map(
         Fields.CurrencyCode -> currencyCode,
         Fields.ClaimAmountEUR -> amountEUR,
-        Fields.ClaimAmountGBP -> amountGBP,
+        Fields.ClaimAmountGBP -> amountGBP
       )
     )
 

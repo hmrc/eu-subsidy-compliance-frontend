@@ -31,13 +31,13 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import scala.concurrent.Future
 
 case class UndertakingJourney(
-                               about: AboutUndertakingFormPage = AboutUndertakingFormPage(),
-                               sector: UndertakingSectorFormPage = UndertakingSectorFormPage(),
-                               verifiedEmail: UndertakingConfirmEmailFormPage = UndertakingConfirmEmailFormPage(),
-                               addBusiness: UndertakingAddBusinessFormPage = UndertakingAddBusinessFormPage(),
-                               cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
-                               confirmation: UndertakingConfirmationFormPage = UndertakingConfirmationFormPage(),
-                               isAmend: Boolean = false
+  about: AboutUndertakingFormPage = AboutUndertakingFormPage(),
+  sector: UndertakingSectorFormPage = UndertakingSectorFormPage(),
+  verifiedEmail: UndertakingConfirmEmailFormPage = UndertakingConfirmEmailFormPage(),
+  addBusiness: UndertakingAddBusinessFormPage = UndertakingAddBusinessFormPage(),
+  cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
+  confirmation: UndertakingConfirmationFormPage = UndertakingConfirmationFormPage(),
+  isAmend: Boolean = false
 ) extends Journey {
 
   override def steps: Array[FormPage[_]] = Array(
@@ -64,7 +64,8 @@ case class UndertakingJourney(
 
   def isEmpty: Boolean = steps.flatMap(_.value).isEmpty
 
-  private def requiredDetailsProvided = Seq(about, sector, verifiedEmail).map(_.value.isDefined) == Seq(true, true, true)
+  private def requiredDetailsProvided =
+    Seq(about, sector, verifiedEmail).map(_.value.isDefined) == Seq(true, true, true)
 
   def setUndertakingName(n: String): UndertakingJourney = this.copy(about = about.copy(value = Some(n)))
 
@@ -119,8 +120,12 @@ object UndertakingJourney {
     object UndertakingSectorFormPage {
       implicit val undertakingSectorFormPage: OFormat[UndertakingSectorFormPage] = Json.format
     }
-    object UndertakingConfirmEmailFormPage { implicit val confirmEmailFormPageFormat: OFormat[UndertakingConfirmEmailFormPage] = Json.format }
-    object UndertakingAddBusinessFormPage { implicit val confirmEmailFormPageFormat: OFormat[UndertakingAddBusinessFormPage] = Json.format }
+    object UndertakingConfirmEmailFormPage {
+      implicit val confirmEmailFormPageFormat: OFormat[UndertakingConfirmEmailFormPage] = Json.format
+    }
+    object UndertakingAddBusinessFormPage {
+      implicit val confirmEmailFormPageFormat: OFormat[UndertakingAddBusinessFormPage] = Json.format
+    }
     object UndertakingCyaFormPage { implicit val undertakingCyaFormPage: OFormat[UndertakingCyaFormPage] = Json.format }
     object UndertakingConfirmationFormPage {
       implicit val undertakingConfirmationFormPage: OFormat[UndertakingConfirmationFormPage] = Json.format

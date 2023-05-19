@@ -91,11 +91,15 @@ class AccountController @Inject() (
   private def getOrCreateJourneys(u: UndertakingJourney = UndertakingJourney())(implicit e: EORI) =
     for {
       // At this point the user has an ECC enrolment so they must be eligible to use the service.
-      ej <- store.getOrCreate[EligibilityJourney](EligibilityJourney(doYouClaim = DoYouClaimFormPage(true.some))).toContext
+      ej <- store
+        .getOrCreate[EligibilityJourney](EligibilityJourney(doYouClaim = DoYouClaimFormPage(true.some)))
+        .toContext
       uj <- store.getOrCreate[UndertakingJourney](u).toContext
     } yield (ej, uj)
 
-  private def renderAccountPage(undertaking: Undertaking, undertakingSubsidies: UndertakingSubsidies)(implicit r: AuthenticatedEnrolledRequest[AnyContent]) = {
+  private def renderAccountPage(undertaking: Undertaking, undertakingSubsidies: UndertakingSubsidies)(implicit
+    r: AuthenticatedEnrolledRequest[AnyContent]
+  ) = {
     implicit val eori: EORI = r.eoriNumber
 
     val today = timeProvider.today
@@ -109,7 +113,7 @@ class AccountController @Inject() (
     val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
       undertaking,
       undertakingSubsidies,
-      today,
+      today
     )
 
     def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] =
@@ -141,18 +145,21 @@ class AccountController @Inject() (
 
       result.getOrElse(handleMissingSessionData("Nil Return Journey"))
 
-    } else Ok(nonLeadAccountPage(
-      undertaking,
-      undertaking.getLeadEORI,
-      dueDate,
-      isOverdue,
-      lastSubmitted.map(_.toDisplayFormat),
-      undertakingSubsidies.hasNeverSubmitted,
-      BigDecimal(summary.overall.sectorCap.toString()).toEuros,
-      summary.overall.total.toEuros,
-      summary.overall.allowanceRemaining.toEuros,
-      startDate.toDisplayFormat,
-    )).toFuture
+    } else
+      Ok(
+        nonLeadAccountPage(
+          undertaking,
+          undertaking.getLeadEORI,
+          dueDate,
+          isOverdue,
+          lastSubmitted.map(_.toDisplayFormat),
+          undertakingSubsidies.hasNeverSubmitted,
+          BigDecimal(summary.overall.sectorCap.toString()).toEuros,
+          summary.overall.total.toEuros,
+          summary.overall.allowanceRemaining.toEuros,
+          startDate.toDisplayFormat
+        )
+      ).toFuture
   }
 
 }

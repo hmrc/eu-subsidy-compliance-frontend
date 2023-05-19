@@ -109,9 +109,9 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
   private def validateAndCheckSuccess(d: String, m: String, y: String) = {
     val result: Either[Seq[FormError], DateFormValues] = underTest.form.mapping.bind(
       Map(
-        Day   -> d,
+        Day -> d,
         Month -> m,
-        Year  -> y
+        Year -> y
       )
     )
 
@@ -125,9 +125,9 @@ class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
   private def validateAndCheckError(d: String, m: String, y: String)(errorMessage: String, args: String*) = {
     val result = underTest.form.mapping.bind(
       Map(
-        Day   -> d,
+        Day -> d,
         Month -> m,
-        Year  -> y
+        Year -> y
       )
     )
 

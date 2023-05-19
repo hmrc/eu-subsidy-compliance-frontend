@@ -45,7 +45,7 @@ class RemovedSubsidyRepository @Inject() (mongoComponent: MongoComponent)(implic
 
   def add(eori: EORI, subsidy: NonHmrcSubsidy): Future[Unit] =
     MongoUtils.retryOnDuplicateKey(retries = 3) {
-      val id        = EoriIdType.run(eori)
+      val id = EoriIdType.run(eori)
       val timestamp = timestampSupport.timestamp()
       repository.collection
         .findOneAndUpdate(
@@ -54,7 +54,7 @@ class RemovedSubsidyRepository @Inject() (mongoComponent: MongoComponent)(implic
             Updates.push(s"data.$SubsidiesArrayFieldName", Codecs.toBson(subsidy)),
             Updates.set("modifiedDetails.lastUpdated", timestamp),
             Updates.setOnInsert("_id", id),
-            Updates.setOnInsert("modifiedDetails.createdAt", timestamp),
+            Updates.setOnInsert("modifiedDetails.createdAt", timestamp)
           ),
           options = FindOneAndUpdateOptions()
             .upsert(true)
@@ -63,9 +63,8 @@ class RemovedSubsidyRepository @Inject() (mongoComponent: MongoComponent)(implic
         .map(_ => ())
     }
 
-  def getAll(eori: EORI): Future[Seq[NonHmrcSubsidy]] = {
-    repository
-      .collection
+  def getAll(eori: EORI): Future[Seq[NonHmrcSubsidy]] =
+    repository.collection
       .find(Filters.equal("_id", eori))
       .headOption()
       .map { item: Option[CacheItem] =>
@@ -73,7 +72,6 @@ class RemovedSubsidyRepository @Inject() (mongoComponent: MongoComponent)(implic
           (item.data \ SubsidiesArrayFieldName).as[Seq[NonHmrcSubsidy]]
         }
       }
-  }
 
 }
 

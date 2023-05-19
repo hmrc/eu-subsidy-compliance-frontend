@@ -32,11 +32,11 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class NoBusinessPresentController @Inject() (
-                                              mcc: MessagesControllerComponents,
-                                              actionBuilders: ActionBuilders,
-                                              store: Store,
-                                              override val escService: EscService,
-                                              noBusinessPresentPage: NoBusinessPresentPage
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  store: Store,
+  override val escService: EscService,
+  noBusinessPresentPage: NoBusinessPresentPage
 )(implicit val appConfig: AppConfig, val executionContext: ExecutionContext)
     extends BaseController(mcc)
     with LeadOnlyUndertakingSupport {

@@ -92,12 +92,13 @@ class SubsidyController @Inject() (
   private val claimTraderRefForm: Form[OptionalTraderRef] = Form(
     mapping(
       "should-store-trader-ref" -> mandatory("should-store-trader-ref"),
-      "claim-trader-ref" -> mandatoryIfEqual("should-store-trader-ref", "true",
-        text.verifying(enteredTradingRefIsValid))
+      "claim-trader-ref" -> mandatoryIfEqual(
+        "should-store-trader-ref",
+        "true",
+        text.verifying(enteredTradingRefIsValid)
+      )
     )(OptionalTraderRef.apply)(OptionalTraderRef.unapply)
   )
-
-
 
   private val claimPublicAuthorityForm: Form[String] = Form(
     "claim-public-authority" -> mandatory("claim-public-authority")
@@ -159,7 +160,8 @@ class SubsidyController @Inject() (
               BadRequest(addClaimDatePage(formWithErrors, journey.previous, earliestAllowedClaimDate)).toContext
             },
             form =>
-              store.update[SubsidyJourney](_.setClaimDate(form))
+              store
+                .update[SubsidyJourney](_.setClaimDate(form))
                 .flatMap(_.next)
                 .toContext
           )
@@ -189,16 +191,21 @@ class SubsidyController @Inject() (
       claimAmountForm
         .bindFromRequest()
         .fold(
-          formWithErrors => {
-            if(formWithErrors.errors.head.messages.head == "error.incorrect-format") {
-              val key = if(formWithErrors.data("currency-code") == "EUR") "claim-amount-eur" else "claim-amount-gbp"
+          formWithErrors =>
+            if (formWithErrors.errors.head.messages.head == "error.incorrect-format") {
+              val key = if (formWithErrors.data("currency-code") == "EUR") "claim-amount-eur" else "claim-amount-gbp"
               val newFormWithErrors = formWithErrors.withError(key, "error.incorrect-format")
-              BadRequest(addClaimAmountPage(newFormWithErrors.copy(errors = newFormWithErrors.errors.tail)
-                , previous, addClaimDate.year, addClaimDate.month)).toFuture
+              BadRequest(
+                addClaimAmountPage(
+                  newFormWithErrors.copy(errors = newFormWithErrors.errors.tail),
+                  previous,
+                  addClaimDate.year,
+                  addClaimDate.month
+                )
+              ).toFuture
             } else {
               BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture
-            }
-          },
+            },
           claimAmountEntered => {
             val result = for {
               _ <- validateClaimAmount(addClaimDate.toLocalDate, claimAmountEntered).toContext
@@ -206,17 +213,19 @@ class SubsidyController @Inject() (
               redirect <- journey.next.toContext
             } yield redirect
 
-            result.getOrElse(BadRequest(
-              addClaimAmountPage(
-                // The error case here will be due to failure to convert the converted amount into a SubsidyAmount.
-                // In this instance we report this as a 'tooBig' error in the form for the user to action.
-                claimAmountForm
-                  .bindFromRequest()
-                  .withError(FormError(Fields.ClaimAmountGBP, List(Errors.TooBig))),
-                previous,
-                addClaimDate.year,
-                addClaimDate.month
-              ))
+            result.getOrElse(
+              BadRequest(
+                addClaimAmountPage(
+                  // The error case here will be due to failure to convert the converted amount into a SubsidyAmount.
+                  // In this instance we report this as a 'tooBig' error in the form for the user to action.
+                  claimAmountForm
+                    .bindFromRequest()
+                    .withError(FormError(Fields.ClaimAmountGBP, List(Errors.TooBig))),
+                  previous,
+                  addClaimDate.year,
+                  addClaimDate.month
+                )
+              )
             )
           }
         )
@@ -257,7 +266,9 @@ class SubsidyController @Inject() (
         claimAmount <- subsidyJourney.claimAmount.value.toContext
         claimDate <- subsidyJourney.claimDate.value.toContext
         euroAmount <- convertPoundsToEuros(claimDate.toLocalDate, claimAmount).toContext
-        updatedSubsidyJourney = subsidyJourney.setConvertedClaimAmount(ClaimAmount(EUR, euroAmount.toRoundedAmount.toString()))
+        updatedSubsidyJourney = subsidyJourney.setConvertedClaimAmount(
+          ClaimAmount(EUR, euroAmount.toRoundedAmount.toString())
+        )
         _ <- store.put[SubsidyJourney](updatedSubsidyJourney).toContext
         redirect <- updatedSubsidyJourney.next.toContext
       } yield redirect
@@ -362,13 +373,12 @@ class SubsidyController @Inject() (
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
 
-      def handleValidFormSubmission(f: FormValues): OptionT[Future, Result] = {
+      def handleValidFormSubmission(f: FormValues): OptionT[Future, Result] =
         for {
           updatedJourney <- store.update[SubsidyJourney](_.setAddBusiness(f.value.isTrue)).toContext
           next <- updatedJourney.next.toContext
           updateBusiness = updatedJourney.getAddBusiness
         } yield if (updateBusiness) next else Redirect(routes.SubsidyController.getAddClaimEori)
-      }
 
       processFormSubmission[SubsidyJourney] { journey =>
         addClaimBusinessForm
@@ -430,7 +440,6 @@ class SubsidyController @Inject() (
   }
 
   def getCheckAnswers: Action[AnyContent] = verifiedEmail.async { implicit request =>
-
     def getEuroAmount(j: SubsidyJourney) =
       if (j.claimAmountIsInEuros) j.getClaimAmount
       else j.getConvertedClaimAmount
@@ -522,18 +531,17 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = verifiedEmail.async {
-    implicit request =>
-      withLeadUndertaking { undertaking =>
-        removeSubsidyClaimForm
-          .bindFromRequest()
-          .fold(
-            formWithErrors => handleRemoveSubsidyFormError(formWithErrors, transactionId, undertaking),
-            formValue =>
-              if (formValue.value.isTrue) handleRemoveSubsidyValidAnswer(transactionId, undertaking)
-              else Redirect(routes.SubsidyController.getReportedPayments).toFuture
-          )
-      }
+  def postRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { undertaking =>
+      removeSubsidyClaimForm
+        .bindFromRequest()
+        .fold(
+          formWithErrors => handleRemoveSubsidyFormError(formWithErrors, transactionId, undertaking),
+          formValue =>
+            if (formValue.value.isTrue) handleRemoveSubsidyValidAnswer(transactionId, undertaking)
+            else Redirect(routes.SubsidyController.getReportedPayments).toFuture
+        )
+    }
   }
 
   private def getNonHmrcSubsidy(
@@ -541,7 +549,8 @@ class SubsidyController @Inject() (
     reference: UndertakingRef
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent]): OptionT[Future, NonHmrcSubsidy] = {
     implicit val e: EORI = r.eoriNumber
-    escService.retrieveSubsidiesForDateRange(reference, timeProvider.today.toSearchRange)
+    escService
+      .retrieveSubsidiesForDateRange(reference, timeProvider.today.toSearchRange)
       .toContext
       .flatMap(_.findNonHmrcSubsidy(transactionId).toContext)
   }
@@ -569,7 +578,9 @@ class SubsidyController @Inject() (
       reference <- undertaking.reference.toContext
       nonHmrcSubsidy <- getNonHmrcSubsidy(transactionId, reference)
       _ <- escService.removeSubsidy(reference, nonHmrcSubsidy).toContext
-      _ = auditService.sendEvent[NonCustomsSubsidyRemoved](AuditEvent.NonCustomsSubsidyRemoved(request.authorityId, reference))
+      _ = auditService.sendEvent[NonCustomsSubsidyRemoved](
+        AuditEvent.NonCustomsSubsidyRemoved(request.authorityId, reference)
+      )
     } yield ()
 
     result.foldF(handleMissingSessionData("nonHMRC subsidy")) { _ =>
@@ -577,17 +588,21 @@ class SubsidyController @Inject() (
     }
   }
 
-  protected def renderFormIfEligible(f: SubsidyJourney => Result)(implicit r: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
+  protected def renderFormIfEligible(
+    f: SubsidyJourney => Result
+  )(implicit r: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
     implicit val eori: EORI = r.eoriNumber
 
-    store.getOrCreate[SubsidyJourney](SubsidyJourney()).toContext
+    store
+      .getOrCreate[SubsidyJourney](SubsidyJourney())
+      .toContext
       .map { journey =>
         if (journey.isEligibleForStep) f(journey)
         else Redirect(journey.previous)
       }
       .getOrElse(Redirect(routes.SubsidyController.getReportedPayments.url))
 
-    }
+  }
 
 }
 
@@ -615,7 +630,7 @@ object SubsidyController {
                 SubsidyAmount(journey.getClaimAmount.getOrElse(sys.error("Claim amount Missing")))
               else
                 SubsidyAmount(journey.getConvertedClaimAmount.getOrElse(sys.error("Converted claim amount Missing"))),
-              businessEntityIdentifier = journey.addClaimEori.value.fold(sys.error("eori value missing"))(oprionalEORI =>
+            businessEntityIdentifier = journey.addClaimEori.value.fold(sys.error("eori value missing"))(oprionalEORI =>
               oprionalEORI.value.map(EORI(_))
             ),
             amendmentType = journey.existingTransactionId.fold(Some(EisSubsidyAmendmentType("1")))(_ =>

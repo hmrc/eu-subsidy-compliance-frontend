@@ -27,7 +27,7 @@ case class EligibilityJourney(
   willYouClaim: WillYouClaimFormPage = WillYouClaimFormPage(),
   notEligible: NotEligibleFormPage = NotEligibleFormPage(),
   eoriCheck: EoriCheckFormPage = EoriCheckFormPage(),
-  signOutBadEori: SignOutBadEoriFormPage = SignOutBadEoriFormPage(),
+  signOutBadEori: SignOutBadEoriFormPage = SignOutBadEoriFormPage()
 ) extends Journey {
 
   private val journeySteps = List(
@@ -35,7 +35,7 @@ case class EligibilityJourney(
     willYouClaim,
     notEligible,
     eoriCheck,
-    signOutBadEori,
+    signOutBadEori
   )
 
   private def isEligible =
@@ -43,14 +43,13 @@ case class EligibilityJourney(
 
   override def steps: Array[FormPage[_]] =
     // Remove steps based on user responses during the eligibility journey.
-    journeySteps
-      .filterNot {
-        case DoYouClaimFormPage(_) => doYouClaim.value.isDefined
-        case WillYouClaimFormPage(_) => doYouClaim.value.contains(true)
-        case NotEligibleFormPage(_) => isEligible
-        case SignOutBadEoriFormPage(_) => eoriCheck.value.contains(true)
-        case _ => false
-      }.toArray
+    journeySteps.filterNot {
+      case DoYouClaimFormPage(_) => doYouClaim.value.isDefined
+      case WillYouClaimFormPage(_) => doYouClaim.value.contains(true)
+      case NotEligibleFormPage(_) => isEligible
+      case SignOutBadEoriFormPage(_) => eoriCheck.value.contains(true)
+      case _ => false
+    }.toArray
 
   def setEoriCheck(newEoriCheck: Boolean): EligibilityJourney =
     this.copy(eoriCheck = eoriCheck.copy(value = Some(newEoriCheck)))

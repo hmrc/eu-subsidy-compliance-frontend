@@ -22,7 +22,7 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolments, InternalError}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.EscActionBuilder.{EccEnrolmentKey, EccEnrolmentIdentifier}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.EscActionBuilder.{EccEnrolmentIdentifier, EccEnrolmentKey}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
@@ -35,19 +35,19 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 /**
- * Action builder that runs the supplied block only if the user is authenticated with GG and already enrolled for this
- * service in ECC.
- *
- * If there is no enrolment we redirect the user to the first page of the new user journey since we can only assume
- * that they are a new user to the service.
- *
- * @param config
- * @param env
- * @param authConnector
- * @param mcc
- * @param executionContext
- * @param appConfig
- */
+  * Action builder that runs the supplied block only if the user is authenticated with GG and already enrolled for this
+  * service in ECC.
+  *
+  * If there is no enrolment we redirect the user to the first page of the new user journey since we can only assume
+  * that they are a new user to the service.
+  *
+  * @param config
+  * @param env
+  * @param authConnector
+  * @param mcc
+  * @param executionContext
+  * @param appConfig
+  */
 class EnrolledActionBuilder @Inject() (
   override val config: Configuration,
   override val env: Environment,
@@ -83,6 +83,7 @@ class EnrolledActionBuilder @Inject() (
             case _ => Redirect(routes.EligibilityController.getDoYouClaim.url).toFuture
           }
         case _ ~ _ => Future.failed(throw InternalError())
-      }(hc(request), executionContext).recover(handleFailure(request, appConfig))
+      }(hc(request), executionContext)
+      .recover(handleFailure(request, appConfig))
 
 }
