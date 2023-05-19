@@ -17,9 +17,9 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.EmailVerificationRequest
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext

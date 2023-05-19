@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import play.api.mvc._
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
@@ -53,7 +53,7 @@ class BecomeLeadController @Inject() (
 )(implicit
   val appConfig: AppConfig,
   override protected val executionContext: ExecutionContext
-) extends BaseController(mcc)
+) extends uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BaseController(mcc)
     with EmailVerificationSupport {
 
   import actionBuilders._

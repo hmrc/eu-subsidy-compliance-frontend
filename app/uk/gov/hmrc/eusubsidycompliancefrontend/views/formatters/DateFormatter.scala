@@ -28,10 +28,10 @@ object DateFormatter {
   def govDisplayFormatTruncated(date: LocalDate)(implicit messages: Messages): String =
     constructDateString(date, "date.truncated.")
 
-  private def constructDateString(date: LocalDate, monthKeyPrefix: String)(implicit messages: Messages) = Seq(
-    date.getDayOfMonth,
+  private def constructDateString(date: LocalDate, monthKeyPrefix: String)(implicit messages: Messages): String = Seq(
+    date.getDayOfMonth.toString,
     messages(monthKeyPrefix + date.getMonthValue),
-    date.getYear
+    date.getYear.toString
   ).mkString(" ")
 
   object Syntax {

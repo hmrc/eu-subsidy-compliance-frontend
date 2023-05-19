@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-import play.api.libs.json.{Json, OFormat}
 import play.api.i18n.Messages
+import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDate
 

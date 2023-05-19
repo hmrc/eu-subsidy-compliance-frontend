@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.syntax
 
-import play.api.mvc.Request
 import play.api.http.HeaderNames.REFERER
+import play.api.mvc.Request
 
 import java.net.URI
 

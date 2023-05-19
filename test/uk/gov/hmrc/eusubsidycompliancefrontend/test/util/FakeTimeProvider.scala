@@ -25,7 +25,7 @@ object FakeTimeProvider {
   def withFixedDate(day: Int, month: Int, year: Int, hr: Int = 0, mm: Int = 0, ss: Int = 0): TimeProvider =
     new TimeProvider {
       override def today: LocalDate = LocalDate.of(year, month, day)
-      override def today(z: ZoneId): LocalDate = today
+      override def zonedToday(z: ZoneId): LocalDate = today
       override def now: LocalDateTime = LocalDateTime.of(year, month, day, hr, mm, ss)
     }
 

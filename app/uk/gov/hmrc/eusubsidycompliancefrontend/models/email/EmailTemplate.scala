@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.email
 
-import enumeratum._
 import enumeratum.EnumEntry.LowerCamelcase
+import enumeratum._
 
 sealed trait EmailTemplate extends EnumEntry with LowerCamelcase
 

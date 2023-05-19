@@ -20,11 +20,11 @@ import com.google.inject.{Inject, Singleton}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import play.api._
 import play.api.http.HttpConfiguration
 import play.api.i18n._
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
-import play.api._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.PlaySupport
 
 import scala.concurrent.Future

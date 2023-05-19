@@ -23,13 +23,13 @@ import java.time.{LocalDate, LocalDateTime, ZoneId}
 @ImplementedBy(classOf[SystemTimeProvider])
 trait TimeProvider {
   def today: LocalDate
-  def today(z: ZoneId): LocalDate
+  def zonedToday(z: ZoneId): LocalDate
   def now: LocalDateTime
 }
 
 @Singleton
 class SystemTimeProvider extends TimeProvider {
   override def today: LocalDate = LocalDate.now()
-  override def today(z: ZoneId): LocalDate = LocalDate.now(z)
+  override def zonedToday(z: ZoneId): LocalDate = LocalDate.now(z)
   override def now: LocalDateTime = LocalDateTime.now()
 }

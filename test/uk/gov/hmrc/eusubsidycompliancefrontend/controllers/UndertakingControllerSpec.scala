@@ -26,21 +26,21 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.ModifyUndertakingRow
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{CreateUndertaking, DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
 import java.time.LocalDate
-import scala.collection.JavaConverters._
 import scala.concurrent.Future
+import scala.jdk.CollectionConverters._
 
 class UndertakingControllerSpec
     extends ControllerSpec
@@ -1272,7 +1272,7 @@ class UndertakingControllerSpec
               doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
 
               val rows =
-                doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
+                doc.select(".govuk-summary-list__row").asScala.toList.map { element =>
                   val question = element.select(".govuk-summary-list__key").text()
                   val answer = element.select(".govuk-summary-list__value").text()
                   val changeUrl = element.select(".govuk-link").attr("href")
@@ -1299,7 +1299,7 @@ class UndertakingControllerSpec
               doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
 
               val rows =
-                doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
+                doc.select(".govuk-summary-list__row").asScala.toList.map { element =>
                   val question = element.select(".govuk-summary-list__key").text()
                   val answer = element.select(".govuk-summary-list__value").text()
                   val changeUrl = element.select(".govuk-link").attr("href")

@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.syntax
 
-import org.scalatest.wordspec.AnyWordSpec
-import RequestSyntax._
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.http.HeaderNames.{HOST, REFERER}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.GET
+import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.RequestSyntax._
 
 class RequestSyntaxSpec extends AnyWordSpec with Matchers {
 

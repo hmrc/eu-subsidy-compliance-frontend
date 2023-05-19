@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.Connector.ConnectorSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.http.{HttpClient, HttpResponse, UpstreamErrorResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
-import Connector.ConnectorSyntax._
 
 trait Connector {
 

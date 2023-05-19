@@ -59,8 +59,8 @@ class SelectNewLeadControllerSpec
 
     "handling request to get Select New Lead" must {
 
-      def performAction() = controller.getSelectNewLead(FakeRequest())
-      behave like authBehaviour(() => performAction())
+      def performAction = controller.getSelectNewLead(FakeRequest())
+      behave like authBehaviour(() => performAction)
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
@@ -70,7 +70,7 @@ class SelectNewLeadControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[NewLeadJourney](eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction))
 
         }
       }
@@ -84,7 +84,7 @@ class SelectNewLeadControllerSpec
             mockGetOrCreate[NewLeadJourney](eori1)(Right(NewLeadJourney()))
           }
           checkPageIsDisplayed(
-            performAction(),
+            performAction,
             messageFromMessageKey("selectNewLead.title"),
             { doc =>
               doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
@@ -104,7 +104,7 @@ class SelectNewLeadControllerSpec
             mockGetOrCreate[NewLeadJourney](eori1)(Right(newLeadJourney))
           }
           checkPageIsDisplayed(
-            performAction(),
+            performAction,
             messageFromMessageKey("selectNewLead.title"),
             { doc =>
               doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
@@ -124,7 +124,7 @@ class SelectNewLeadControllerSpec
 
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(performAction)
+          testLeadOnlyRedirect(() => performAction)
         }
       }
 
@@ -232,8 +232,8 @@ class SelectNewLeadControllerSpec
 
     "handling request to get lead EORI changed" must {
 
-      def performAction() = controller.getLeadEORIChanged(FakeRequest())
-      behave like authBehaviour(() => performAction())
+      def performAction = controller.getLeadEORIChanged(FakeRequest())
+      behave like authBehaviour(() => performAction)
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
@@ -244,7 +244,7 @@ class SelectNewLeadControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[NewLeadJourney](eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction))
 
         }
 
@@ -254,7 +254,7 @@ class SelectNewLeadControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[NewLeadJourney](eori1)(Right(NewLeadJourney().some))
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction))
 
         }
 
@@ -265,7 +265,7 @@ class SelectNewLeadControllerSpec
             mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
             mockUpdate[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction))
 
         }
 
@@ -278,7 +278,7 @@ class SelectNewLeadControllerSpec
 
             mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction))
 
         }
       }
@@ -293,7 +293,7 @@ class SelectNewLeadControllerSpec
           mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Right(NewLeadJourney()))
         }
         checkPageIsDisplayed(
-          performAction(),
+          performAction,
           messageFromMessageKey("leadEORIChanged.title"),
           { doc =>
             val htmlText = doc.select(".govuk-body").html()
@@ -316,7 +316,7 @@ class SelectNewLeadControllerSpec
       "redirect to next page" when {
 
         "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(performAction)
+          testLeadOnlyRedirect(() => performAction)
         }
 
         "call to fetch new lead journey came back with None" in {
@@ -325,7 +325,7 @@ class SelectNewLeadControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[NewLeadJourney](eori1)(Right(None))
           }
-          checkIsRedirect(performAction(), routes.SelectNewLeadController.getSelectNewLead.url)
+          checkIsRedirect(performAction, routes.SelectNewLeadController.getSelectNewLead.url)
 
         }
       }

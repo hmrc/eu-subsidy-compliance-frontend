@@ -48,9 +48,9 @@ class NoBusinessPresentControllerSpec
   "NoBusinessPresentControllerSpec" when {
 
     "handling request to get No Business Present" must {
-      def performAction() = controller.getNoBusinessPresent(FakeRequest())
+      def performAction = controller.getNoBusinessPresent(FakeRequest())
 
-      behave like authBehaviour(() => performAction())
+      behave like authBehaviour(() => performAction)
 
       "display the page" in {
         inSequence {
@@ -58,7 +58,7 @@ class NoBusinessPresentControllerSpec
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
         }
         checkPageIsDisplayed(
-          performAction(),
+          performAction,
           messageFromMessageKey("noBusinessPresent.title"),
           { doc =>
             doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
@@ -70,14 +70,14 @@ class NoBusinessPresentControllerSpec
 
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(performAction)
+          testLeadOnlyRedirect(() => performAction)
         }
       }
     }
 
     "handling request to post No Business Present" must {
 
-      def performAction() = controller.postNoBusinessPresent(FakeRequest())
+      def performAction = controller.postNoBusinessPresent(FakeRequest())
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
@@ -87,7 +87,7 @@ class NoBusinessPresentControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             mockUpdate[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction))
 
         }
       }
@@ -99,14 +99,14 @@ class NoBusinessPresentControllerSpec
           mockUpdate[BusinessEntityJourney](eori1)(Right(businessEntityJourney1))
         }
         checkIsRedirect(
-          performAction(),
+          performAction,
           routes.BusinessEntityController.getAddBusinessEntity.url
         )
       }
 
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(performAction)
+          testLeadOnlyRedirect(() => performAction)
         }
       }
     }

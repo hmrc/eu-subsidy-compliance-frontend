@@ -22,9 +22,9 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.SendEmailConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.emailSendRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.emailSendRequest
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
