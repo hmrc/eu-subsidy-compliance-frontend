@@ -4,7 +4,7 @@ import scoverage.ScoverageKeys
 
 val appName = "eu-subsidy-compliance-frontend"
 
-val silencerVersion = "1.7.8"
+val silencerVersion = "1.7.12"
 
 PlayKeys.playDefaultPort := 9093
 
@@ -13,7 +13,7 @@ lazy val microservice = Project(appName, file("."))
   .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
     majorVersion := 0,
-    scalaVersion := "2.12.15",
+    scalaVersion := "2.13.8",
     libraryDependencies ++= AppDependencies.compile ++ AppDependencies.test,
     Assets / pipelineStages := Seq(gzip),
     // Use the silencer plugin to suppress warnings

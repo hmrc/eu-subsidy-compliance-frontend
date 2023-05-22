@@ -17,10 +17,10 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Json, OFormat}
-
-import java.time.LocalDate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
+
+import java.time.LocalDate
 
 case class Undertaking(
   reference: UndertakingRef,

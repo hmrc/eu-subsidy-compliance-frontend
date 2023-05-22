@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 import cats.implicits._
 import play.api.libs.json._
 import shapeless._
-import tag._
+import shapeless.tag._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 
 import scala.util.matching.Regex

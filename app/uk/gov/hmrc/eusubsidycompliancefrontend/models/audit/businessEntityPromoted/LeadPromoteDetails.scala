@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoted
 
 import play.api.libs.json.{Json, Writes}
-
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
 final case class LeadPromoteDetails(leadEori: EORI, promoteEori: EORI)

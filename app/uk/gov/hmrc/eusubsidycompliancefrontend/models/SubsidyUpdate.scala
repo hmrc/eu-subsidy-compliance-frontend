@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-import java.time.LocalDate
 import cats.implicits._
-import play.api.libs.json.{JsResult, _}
+import play.api.libs.json._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EisSubsidyAmendmentType, UndertakingRef}
 
+import java.time.LocalDate
 import scala.reflect.ClassTag
 
 sealed trait Update

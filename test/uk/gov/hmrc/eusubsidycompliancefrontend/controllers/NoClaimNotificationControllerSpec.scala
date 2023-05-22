@@ -58,8 +58,8 @@ class NoClaimNotificationControllerSpec
 
     "handling request to get No claim notification" must {
 
-      def performAction() = controller.getNoClaimNotification(FakeRequest())
-      behave like authBehaviour(() => performAction())
+      def performAction = controller.getNoClaimNotification(FakeRequest())
+      behave like authBehaviour(() => performAction)
 
       val startDate = LocalDate.of(2018, 4, 6)
 
@@ -73,7 +73,7 @@ class NoClaimNotificationControllerSpec
         }
 
         checkPageIsDisplayed(
-          performAction(),
+          performAction,
           messageFromMessageKey("noClaimNotification.never-submitted.title", startDate.toDisplayFormat),
           { doc =>
             doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
@@ -97,7 +97,7 @@ class NoClaimNotificationControllerSpec
         }
 
         checkPageIsDisplayed(
-          performAction(),
+          performAction,
           messageFromMessageKey("noClaimNotification.has-submitted.title", fixedDate.toDisplayFormat),
           { doc =>
             doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
@@ -113,7 +113,7 @@ class NoClaimNotificationControllerSpec
 
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(performAction)
+          testLeadOnlyRedirect(() => performAction)
         }
       }
 

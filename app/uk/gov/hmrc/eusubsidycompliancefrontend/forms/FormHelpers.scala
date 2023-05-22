@@ -17,8 +17,8 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
 import play.api.data.Forms.{mapping, text}
-import play.api.data.{Form, Mapping}
 import play.api.data.validation.{Constraint, Invalid, Valid}
+import play.api.data.{Form, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 
 object FormHelpers {

@@ -23,17 +23,17 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyControllerSpec.RemoveSubsidyRow
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimAmountFormProvider, ClaimEoriFormProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{TooBig, TooSmall}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.{IncorrectFormat, Required}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimAmountFormProvider, ClaimEoriFormProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyRemoved
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -42,8 +42,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormat
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 
 import java.time.LocalDate
-import scala.collection.JavaConverters.asScalaIteratorConverter
 import scala.concurrent.Future
+import scala.jdk.CollectionConverters.CollectionHasAsScala
 
 class SubsidyControllerSpec
     extends ControllerSpec
@@ -74,7 +74,7 @@ class SubsidyControllerSpec
 
     "handling request to get reported payments page" must {
 
-      def performAction() =
+      def performAction =
         controller.getReportedPayments(FakeRequest(GET, routes.SubsidyController.getReportedPayments.url))
 
       "throw technical error" when {
@@ -84,7 +84,7 @@ class SubsidyControllerSpec
             mockRetrieveUndertaking(eori1)(Future.failed(new RuntimeException("Oh no!")))
           }
 
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction))
         }
 
         "call to get subsidy journey fails" in {
@@ -92,7 +92,7 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction))
         }
 
       }
@@ -114,7 +114,7 @@ class SubsidyControllerSpec
         "user has not reported any payments" in {
           test(List.empty)
           checkPageIsDisplayed(
-            performAction(),
+            performAction,
             messageFromMessageKey("reportedPayments.title"),
             { doc =>
               doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
@@ -126,7 +126,7 @@ class SubsidyControllerSpec
         "user has reported at least one payment" in {
           test(nonHmrcSubsidyList.map(_.copy(subsidyUsageTransactionId = SubsidyRef("Z12345").some)))
           checkPageIsDisplayed(
-            performAction(),
+            performAction,
             messageFromMessageKey("reportedPayments.title"),
             { doc =>
               doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
@@ -155,7 +155,7 @@ class SubsidyControllerSpec
 
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(performAction)
+          testLeadOnlyRedirect(() => performAction)
         }
       }
 
@@ -163,7 +163,7 @@ class SubsidyControllerSpec
 
     "handling request to get claim date page" must {
 
-      def performAction() = controller.getClaimDate(FakeRequest(GET, routes.SubsidyController.getClaimDate.url))
+      def performAction = controller.getClaimDate(FakeRequest(GET, routes.SubsidyController.getClaimDate.url))
 
       "throw technical error" when {
 
@@ -175,7 +175,7 @@ class SubsidyControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction))
 
         }
 
@@ -191,7 +191,7 @@ class SubsidyControllerSpec
             mockTimeProviderToday(fixedDate)
           }
           checkPageIsDisplayed(
-            performAction(),
+            performAction,
             messageFromMessageKey("add-claim-date.title"),
             { doc =>
               doc.select("#claim-date > div:nth-child(1) > div > label").text() shouldBe "Day"
@@ -208,7 +208,7 @@ class SubsidyControllerSpec
       "redirect " when {
 
         "user is not an undertaking lead to account home page" in {
-          testLeadOnlyRedirect(performAction)
+          testLeadOnlyRedirect(() => performAction)
         }
 
       }
@@ -262,7 +262,7 @@ class SubsidyControllerSpec
 
     "handling request to get claim amount" must {
 
-      def performAction() = controller
+      def performAction = controller
         .getClaimAmount(FakeRequest(GET, routes.SubsidyController.getClaimAmount.url))
 
       "throw technical error" when {
@@ -275,7 +275,7 @@ class SubsidyControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction))
         }
 
       }
@@ -286,7 +286,7 @@ class SubsidyControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(SubsidyJourney().some))
           }
-          redirectLocation(performAction()) shouldBe Some(routes.SubsidyController.getClaimDate.url)
+          redirectLocation(performAction) shouldBe Some(routes.SubsidyController.getClaimDate.url)
         }
       }
 
@@ -301,7 +301,7 @@ class SubsidyControllerSpec
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
 
           checkPageIsDisplayed(
-            performAction(),
+            performAction,
             messageFromMessageKey("add-claim-amount.title"),
             { doc =>
               val input = doc.getElementById(elementId).attributes().get("value")
@@ -356,7 +356,7 @@ class SubsidyControllerSpec
 
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(performAction)
+          testLeadOnlyRedirect(() => performAction)
         }
       }
 
@@ -740,7 +740,7 @@ class SubsidyControllerSpec
 
     "handling request to get Add Claim Eori" must {
 
-      def performAction() = controller
+      def performAction = controller
         .getAddClaimEori(FakeRequest(GET, routes.SubsidyController.getAddClaimEori.url))
 
       "throw technical error" when {
@@ -753,7 +753,7 @@ class SubsidyControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction))
         }
 
       }
@@ -767,7 +767,7 @@ class SubsidyControllerSpec
             mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
           }
           checkPageIsDisplayed(
-            performAction(),
+            performAction,
             messageFromMessageKey("add-claim-eori.title"),
             { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
@@ -806,7 +806,7 @@ class SubsidyControllerSpec
 
       "redirect" when {
         "user is not an undertaking lead, to the account home page" in {
-          testLeadOnlyRedirect(performAction)
+          testLeadOnlyRedirect(() => performAction)
         }
       }
     }
@@ -966,7 +966,7 @@ class SubsidyControllerSpec
 
     "handling request to get add claim public authority" must {
 
-      def performAction() = controller.getAddClaimPublicAuthority(
+      def performAction = controller.getAddClaimPublicAuthority(
         FakeRequest(
           GET,
           routes.SubsidyController.getAddClaimPublicAuthority.url
@@ -983,7 +983,7 @@ class SubsidyControllerSpec
             mockGetOrCreate[SubsidyJourney](eori1)(Right(incompleteJourney))
           }
           checkPageIsDisplayed(
-            performAction(),
+            performAction,
             messageFromMessageKey("add-claim-public-authority.title"),
             { doc =>
               doc.select("#claim-public-authority-hint").text() shouldBe "For example, Invest NI, NI Direct"
@@ -996,7 +996,7 @@ class SubsidyControllerSpec
 
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(performAction)
+          testLeadOnlyRedirect(() => performAction)
         }
       }
     }
@@ -1056,7 +1056,7 @@ class SubsidyControllerSpec
     }
 
     "handling request to get Add Claim Reference" must {
-      def performAction() = controller
+      def performAction = controller
         .getAddClaimReference(FakeRequest(GET, routes.SubsidyController.getAddClaimReference.url))
 
       "throw technical error" when {
@@ -1069,7 +1069,7 @@ class SubsidyControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction))
         }
 
       }
@@ -1083,7 +1083,7 @@ class SubsidyControllerSpec
             mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
           }
           checkPageIsDisplayed(
-            performAction(),
+            performAction,
             messageFromMessageKey("add-claim-trader-reference.title"),
             { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
@@ -1130,7 +1130,7 @@ class SubsidyControllerSpec
       "redirect " when {
 
         "user is not an undertaking lead, to the account home page" in {
-          testLeadOnlyRedirect(performAction)
+          testLeadOnlyRedirect(() => performAction)
         }
 
       }
@@ -1270,7 +1270,7 @@ class SubsidyControllerSpec
           messageFromMessageKey("subsidy.remove.title"),
           { doc =>
             val rows =
-              doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
+              doc.select(".govuk-summary-list__row").asScala.toList.map { element =>
                 val question = element.select(".govuk-summary-list__key").text()
                 val answer = element.select(".govuk-summary-list__value").text()
                 RemoveSubsidyRow(question, answer)

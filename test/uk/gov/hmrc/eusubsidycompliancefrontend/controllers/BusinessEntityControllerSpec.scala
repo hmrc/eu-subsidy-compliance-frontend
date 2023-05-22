@@ -26,6 +26,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate._
@@ -33,7 +34,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.withGbPrefix
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData
@@ -97,7 +97,7 @@ class BusinessEntityControllerSpec
 
     "handling request to get add Business Page" must {
 
-      def performAction() = controller.getAddBusinessEntity(FakeRequest())
+      def performAction = controller.getAddBusinessEntity(FakeRequest())
 
       "throw technical error" when {
         val exception = new Exception("oh no")
@@ -108,7 +108,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGetOrCreate[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction))
         }
       }
 
@@ -126,7 +126,7 @@ class BusinessEntityControllerSpec
           }
 
           checkPageIsDisplayed(
-            performAction(),
+            performAction,
             if (undertaking.undertakingBusinessEntity.size > 1)
               messageFromMessageKey("addBusiness.businesses-added.legend")
             else messageFromMessageKey("addBusiness.legend"),
@@ -160,7 +160,7 @@ class BusinessEntityControllerSpec
       "redirect to the account home page" when {
 
         "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(performAction)
+          testLeadOnlyRedirect(() => performAction)
         }
       }
 
@@ -243,7 +243,7 @@ class BusinessEntityControllerSpec
     }
 
     "handling request to get EORI Page" must {
-      def performAction() = controller.getEori(FakeRequest(GET, routes.BusinessEntityController.getEori.url))
+      def performAction = controller.getEori(FakeRequest(GET, routes.BusinessEntityController.getEori.url))
 
       "throw technical error" when {
         val exception = new Exception("oh no")
@@ -254,7 +254,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction))
 
         }
 
@@ -271,7 +271,7 @@ class BusinessEntityControllerSpec
           }
 
           checkPageIsDisplayed(
-            performAction(),
+            performAction,
             messageFromMessageKey("businessEntityEori.title"),
             { doc =>
               doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
@@ -306,7 +306,7 @@ class BusinessEntityControllerSpec
 
       "redirect " when {
         "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(performAction)
+          testLeadOnlyRedirect(() => performAction)
         }
 
         "call to get business entity journey came back empty" in {
@@ -315,7 +315,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[BusinessEntityJourney](eori1)(Right(None))
           }
-          checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity.url)
+          checkIsRedirect(performAction, routes.BusinessEntityController.getAddBusinessEntity.url)
 
         }
       }
@@ -544,10 +544,10 @@ class BusinessEntityControllerSpec
 
       "redirect to next page" when {
 
-        val effectiveDate = Seq(
-          fixedDate.plusDays(1).getDayOfMonth,
+        val effectiveDate: String = Seq(
+          fixedDate.plusDays(1).getDayOfMonth.toString,
           fixedDate.plusDays(1).getMonth.name().toLowerCase().capitalize,
-          fixedDate.plusDays(1).getYear
+          fixedDate.plusDays(1).getYear.toString
         ).mkString(" ")
 
         "user selected yes" in {
@@ -582,7 +582,7 @@ class BusinessEntityControllerSpec
     }
 
     "handling request to get remove Business entity by Lead" must {
-      def performAction() = controller.getRemoveBusinessEntity(eori4)(FakeRequest())
+      def performAction = controller.getRemoveBusinessEntity(eori4)(FakeRequest())
 
       "throw technical error" when {
 
@@ -591,7 +591,7 @@ class BusinessEntityControllerSpec
             mockAuthWithEnrolmentAndValidEmail(eori1)
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
           }
-          assertThrows[Exception](await(performAction()))
+          assertThrows[Exception](await(performAction))
         }
 
       }
@@ -604,7 +604,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
           }
           checkPageIsDisplayed(
-            performAction(),
+            performAction,
             messageFromMessageKey("removeBusinessEntity.title"),
             { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
@@ -630,7 +630,7 @@ class BusinessEntityControllerSpec
 
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(performAction)
+          testLeadOnlyRedirect(() => performAction)
         }
       }
 

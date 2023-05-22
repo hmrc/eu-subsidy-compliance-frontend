@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connector
 
+import org.scalamock.handlers.CallHandler6
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should._
 import play.api.libs.json.Writes
@@ -24,7 +25,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait HttpSupport { this: MockFactory with Matchers ⇒
+trait HttpSupport { this: MockFactory with Matchers =>
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
   val mockHttp: HttpClient = mock[HttpClient]
@@ -33,7 +34,9 @@ trait HttpSupport { this: MockFactory with Matchers ⇒
     url: String
   )(
     response: Option[A]
-  ) =
+  ): CallHandler6[String, Seq[(String, String)], Seq[(String, String)], HttpReads[
+    A
+  ], HeaderCarrier, ExecutionContext, Future[A]] =
     (mockHttp
       .GET(_: String, _: Seq[(String, String)], _: Seq[(String, String)])(
         _: HttpReads[A],
@@ -48,7 +51,7 @@ trait HttpSupport { this: MockFactory with Matchers ⇒
           _: HttpReads[A],
           h: HeaderCarrier,
           _: ExecutionContext
-        ) ⇒
+        ) =>
           // use matchers here to get useful error messages when the following predicates
           // are not satisfied - otherwise it is difficult to tell in the logs what went wrong
           u shouldBe url

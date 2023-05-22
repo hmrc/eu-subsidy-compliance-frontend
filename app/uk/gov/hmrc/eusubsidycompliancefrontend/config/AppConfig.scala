@@ -15,12 +15,11 @@
  */
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.config
+import play.api.Configuration
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate
 import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 
 import javax.inject.{Inject, Singleton}
-import play.api.Configuration
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate
-
 import scala.concurrent.duration.FiniteDuration
 
 @Singleton

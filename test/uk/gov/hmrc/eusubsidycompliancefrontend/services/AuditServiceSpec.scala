@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
+import org.scalamock.handlers.CallHandler3
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -25,23 +26,25 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.GET
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions.auditHeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 
-import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
 class AuditServiceSpec extends Matchers with AnyWordSpecLike with MockFactory {
 
   private val mockAuditConnector = mock[AuditConnector]
 
-  private def mockSendExtendedEvent(expectedEvent: ExtendedDataEvent)(result: Future[AuditResult]) =
+  private def mockSendExtendedEvent(expectedEvent: ExtendedDataEvent)(
+    result: Future[AuditResult]
+  ): CallHandler3[ExtendedDataEvent, HeaderCarrier, ExecutionContext, Future[AuditResult]] =
     (mockAuditConnector
       .sendExtendedEvent(_: ExtendedDataEvent)(_: HeaderCarrier, _: ExecutionContext))
-      .expects(where { case (actualEvent, _, _) =>
+      .expects(where { (actualEvent: ExtendedDataEvent, _: HeaderCarrier, _: ExecutionContext) =>
         actualEvent.auditType === expectedEvent.auditType
         actualEvent.auditSource === expectedEvent.auditSource
         actualEvent.detail === expectedEvent.detail

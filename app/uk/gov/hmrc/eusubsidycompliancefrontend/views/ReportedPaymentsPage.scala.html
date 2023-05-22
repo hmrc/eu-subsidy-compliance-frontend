@@ -14,17 +14,15 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.Subsidy
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.UndertakingSubsidies
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
-@import java.time.LocalDate
-
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingSubsidies}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax._
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+
+@import java.time.LocalDate
 
 @this(
   layout: FullWidthLayout,

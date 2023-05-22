@@ -17,11 +17,11 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import cats.implicits._
-import java.time.LocalDate
-
 import play.api.libs.json._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.json._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
+
+import java.time.LocalDate
 
 // assuming that we always want both subsidy types, and that any date range should apply to both
 case class SubsidyRetrieve(
