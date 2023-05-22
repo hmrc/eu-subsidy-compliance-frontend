@@ -31,25 +31,20 @@ import scala.util.Try
 
 case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
 
-  override protected def mapping: Mapping[ClaimAmount] = Forms
-    .mapping(
-      Fields.CurrencyCode ->
-        text
-          .verifying(currencyCodeIsValid)
-          .transform(CurrencyCode.withName, (c: CurrencyCode) => c.entryName),
-      Fields.ClaimAmountEUR -> mandatoryIfEqual(Fields.CurrencyCode, EUR.entryName, claimAmountMapping),
-      Fields.ClaimAmountGBP -> mandatoryIfEqual(Fields.CurrencyCode, GBP.entryName, claimAmountMapping)
-    )(ClaimAmount.fromForm)(ClaimAmount.toForm)
-    .verifying(claimAmountCurrencyMatchesSelection)
-    .transform(c => c.copy(amount = cleanAmount(c.amount)), identity[ClaimAmount])
+  override protected def mapping: Mapping[ClaimAmount] = Forms.mapping(
+    Fields.CurrencyCode ->
+      text
+        .verifying(currencyCodeIsValid)
+        .transform(CurrencyCode.withName, (c: CurrencyCode) => c.entryName),
+    Fields.ClaimAmountEUR -> mandatoryIfEqual(Fields.CurrencyCode, EUR.entryName, claimAmountMapping),
+    Fields.ClaimAmountGBP -> mandatoryIfEqual(Fields.CurrencyCode, GBP.entryName, claimAmountMapping)
+  )(ClaimAmount.fromForm)(ClaimAmount.toForm)
 
   private def claimAmountMapping: Mapping[String] =
     text
       .verifying(claimAmountFormatIsValid)
       .verifying(claimAmountAboveZero)
       .verifying(claimAmountIsBelowMaximumAllowedValue)
-
-  private val allowedCurrencySymbols = CurrencyCode.values.map(_.symbol)
 
   private val claimAmountIsBelowMaximumAllowedValue = Constraint[String] { claimAmount: String =>
     val amount = cleanAmount(claimAmount)
@@ -75,16 +70,6 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
     )
   }
 
-  // Verify that the user hasn't entered a currency symbol which doesn't match the currency they selected
-  private val claimAmountCurrencyMatchesSelection = Constraint[ClaimAmount] { claimAmount: ClaimAmount =>
-    claimAmount.amount.head match {
-      case GBP.symbol if claimAmount.currencyCode != GBP => Invalid(IncorrectFormat)
-      case EUR.symbol if claimAmount.currencyCode != EUR => Invalid(IncorrectFormat)
-      case c if allowedCurrencySymbols.contains(c) => Valid
-      case _ => Valid
-    }
-  }
-
   private val currencyCodeIsValid = Constraint[String] { currencyCode: String =>
     if (currencyCode.isEmpty || !CurrencyCode.namesToValuesMap.contains(currencyCode)) Invalid(IncorrectFormat)
     else Valid
@@ -96,6 +81,8 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
 }
 
 object ClaimAmountFormProvider {
+
+  val allowedCurrencySymbols = CurrencyCode.values.map(_.symbol)
 
   object Fields {
     val CurrencyCode = "currency-code"

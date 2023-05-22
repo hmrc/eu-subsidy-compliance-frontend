@@ -185,25 +185,25 @@ class SubsidyController @Inject() (
   def postAddClaimAmount: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    def handleFormSubmit(previous: Journey.Uri, addClaimDate: DateFormValues): Future[Result] =
-      claimAmountForm
-        .bindFromRequest()
+    def handleFormSubmit(previous: Journey.Uri, addClaimDate: DateFormValues): Future[Result] = {
+      val form = {
+        val f = claimAmountForm.bindFromRequest()
+        println("\n\n\n\n" + f.value + "\n\n\n\n")
+        // Verify that the user hasn't entered a currency symbol which doesn't match the currency they selected
+        f.value.fold(f) { claimAmount =>
+          println("\n\n\n\n" + claimAmount.toString() + "\n\n\n\n\n")
+          claimAmount.amount.head match {
+            case GBP.symbol if claimAmount.currencyCode != GBP => f.withError(Fields.ClaimAmountEUR, IncorrectFormat)
+            case EUR.symbol if claimAmount.currencyCode != EUR => f.withError(Fields.ClaimAmountGBP, IncorrectFormat)
+            case c if ClaimAmountFormProvider.allowedCurrencySymbols.contains(c) => f
+            case _ => f
+          }
+        }
+      }
+      form
         .fold(
           formWithErrors =>
-            if (formWithErrors.errors.head.messages.head == "error.incorrect-format") {
-              val key = if (formWithErrors.data("currency-code") == "EUR") "claim-amount-eur" else "claim-amount-gbp"
-              val newFormWithErrors = formWithErrors.withError(key, "error.incorrect-format")
-              BadRequest(
-                addClaimAmountPage(
-                  newFormWithErrors.copy(errors = newFormWithErrors.errors.tail),
-                  previous,
-                  addClaimDate.year,
-                  addClaimDate.month
-                )
-              ).toFuture
-            } else {
-              BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture
-            },
+            BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture,
           claimAmountEntered => {
             val result = for {
               _ <- validateClaimAmount(addClaimDate.toLocalDate, claimAmountEntered).toContext
@@ -227,6 +227,7 @@ class SubsidyController @Inject() (
             )
           }
         )
+    }
 
     withLeadUndertaking { _ =>
       val result = for {
