@@ -145,7 +145,7 @@ class EscService @Inject() (
           .getOrElse {
             s"retrieveUndertaking did not find undertaking for EORI '$eori'"
           },
-      s"Failed getting EURI undertaking '$eori'"
+      s"retrieveUndertaking failed getting EURI undertaking '$eori'"
     )
   }
 
