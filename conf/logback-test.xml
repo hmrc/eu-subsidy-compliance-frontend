@@ -7,8 +7,10 @@
         </encoder>
     </appender>
 
-    <!-- supress log output to stdout during test runs -->
-    <root level="OFF">
+    <!-- DO NOT suppress log output to stdout during test runs as it makes CI much less interesting when things fail. Tests
+     are about failure not success as they should point to how to fix things. Good luck fixing indeterminate failures without this on-->
+
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>
 
