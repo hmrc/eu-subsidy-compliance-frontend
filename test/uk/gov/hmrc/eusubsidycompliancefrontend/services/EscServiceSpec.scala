@@ -101,7 +101,7 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
       .thenReturn(result.toFuture)
 
   private def mockCachePut[A](eori: EORI, in: A)(result: Either[Exception, A]) =
-    when(mockUndertakingCache.put(argEq(eori), argEq(in))(any()))
+    when(mockUndertakingCache.put(argEq(eori), argEq(in))(any(), any()))
       .thenReturn(result.fold(Future.failed, _.toFuture))
 
   private def mockCacheGet[A : ClassTag](eori: EORI)(result: Either[Exception, Option[A]]) =
