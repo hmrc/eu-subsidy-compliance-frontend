@@ -53,7 +53,7 @@ class EscService @Inject() (
 
       eventualResult.map { result =>
         val successMessage = successCall(result)
-        logger.info(successMessage)
+        logger.error(successMessage)
 
         result
       }
@@ -154,7 +154,7 @@ class EscService @Inject() (
   )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[Undertaking]]] = {
     val eitherLogger = new ResponseParsingLogger[ConnectorError, Undertaking] {
       override def logSuccess(undertaking: Undertaking): Unit =
-        logger.info(
+        logger.error(
           s"retrieveUndertakingAndHandleErrors: Successfully received undertaking for EORI:$eori with UndertakingName:${undertaking.name}"
         )
 
@@ -188,7 +188,7 @@ class EscService @Inject() (
         parseResponse(httpResponse).toFuture
       }
       .recover { case ConnectorError(_, WithStatusCode(NOT_FOUND)) =>
-        logger.info(s"retrieveUndertakingAndHandleErrors EORI:$eori not found")
+        logger.error(s"retrieveUndertakingAndHandleErrors EORI:$eori not found")
         None
       }
       .value

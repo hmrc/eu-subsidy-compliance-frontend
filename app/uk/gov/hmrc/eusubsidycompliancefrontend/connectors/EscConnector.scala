@@ -38,7 +38,7 @@ class EscConnector @Inject() (
   private lazy val escUrl: String = servicesConfig.baseUrl("esc")
 
   //euSubsidyComplianceFrontend is camelCased as kibana breaks words on hyphens
-  logger.info(s"escUrl for euSubsidyComplianceFrontend is $escUrl")
+  logger.error(s"escUrl for euSubsidyComplianceFrontend is $escUrl")
 
   private lazy val createUndertakingUrl = s"$escUrl/eu-subsidy-compliance/undertaking"
   private lazy val updateUndertakingUrl = s"$escUrl/eu-subsidy-compliance/undertaking/update"
