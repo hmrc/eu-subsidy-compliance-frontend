@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import org.mongodb.scala.MongoCollection
 import org.mongodb.scala.model.{Filters, IndexOptions, Indexes, Updates}
+import play.api.Logging
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.PersistenceHelpers.dataKeyForType
@@ -41,7 +42,8 @@ class UndertakingCache @Inject() (
       ttl = DefaultCacheTtl,
       timestampSupport = new CurrentTimestampSupport,
       cacheIdType = EoriIdType
-    ) {
+    )
+    with Logging {
 
   private val UndertakingReference = "data.Undertaking.reference"
   private val UndertakingSubsidiesIdentifier = "data.UndertakingSubsidies.undertakingIdentifier"
@@ -71,36 +73,78 @@ class UndertakingCache @Inject() (
         .headOption()
     } yield collection
 
-  def get[A : ClassTag](eori: EORI)(implicit reads: Reads[A]): Future[Option[A]] =
-    indexedCollection.flatMap { _ =>
-      super
-        .get[A](eori)(dataKeyForType[A])
-    }
+  def get[A : ClassTag](eori: EORI)(implicit reads: Reads[A]): Future[Option[A]] = {
+    logged {
+      indexedCollection.flatMap { _ =>
+        super
+          .get[A](eori)(dataKeyForType[A])
+      }
+    }(
+      preMessage = s"UndertakingCache.get is being called for EORI '$eori'",
+      successMessage = s"UndertakingCache.get returned %s for  EORI '$eori'",
+      errorMessage = s"UndertakingCache.get failed EORI '$eori'"
+    )
+  }
 
-  def put[A](eori: EORI, in: A)(implicit writes: Writes[A]): Future[A] =
-    indexedCollection.flatMap { _ =>
-      super
-        .put[A](eori)(DataKey(in.getClass.getSimpleName), in)
-        .map(_ => in)
-    }
+  private def logged[A](call: Future[A])(preMessage: String, successMessage: String, errorMessage: String)(implicit
+    classTag: ClassTag[A]
+  ) = {
+    val forMessage = s" (for $classTag)"
+    logger.info(preMessage + forMessage)
 
-  def deleteUndertaking(ref: UndertakingRef): Future[Unit] =
-    indexedCollection.flatMap { c =>
-      c.updateMany(
-        filter = Filters.equal(UndertakingReference, ref),
-        update = Updates.unset("data.Undertaking")
-      ).toFuture()
-        .map(_ => ())
-    }
+    call.failed.foreach(error => logger.error(errorMessage + s"(${error.getMessage})" + forMessage, error))
 
-  def deleteUndertakingSubsidies(ref: UndertakingRef): Future[Unit] =
-    indexedCollection.flatMap { c =>
-      c.updateMany(
-        filter = Filters.equal(UndertakingSubsidiesIdentifier, ref),
-        update = Updates.unset("data.UndertakingSubsidies")
-      ).toFuture()
-        .map(_ => ())
+    call.map { result =>
+      logger.info(successMessage.format(result))
+      result
     }
+  }
+
+  def put[A](eori: EORI, in: A)(implicit writes: Writes[A], classTag: ClassTag[A]): Future[A] = {
+    logged {
+      indexedCollection.flatMap { _ =>
+        super
+          .put[A](eori)(DataKey(in.getClass.getSimpleName), in)
+          .map(_ => in)
+      }
+    }(
+      preMessage = s"UndertakingCache.put is setting $in into EURO:$eori",
+      successMessage = s"UndertakingCache.put succeeded in setting $in into EURO:$eori",
+      errorMessage = s"UndertakingCache.put failed in setting $in into EURO:$eori"
+    )
+  }
+
+  def deleteUndertaking(ref: UndertakingRef): Future[Unit] = {
+    logged {
+      indexedCollection.flatMap { c =>
+        c.updateMany(
+          filter = Filters.equal(UndertakingReference, ref),
+          update = Updates.unset("data.Undertaking")
+        ).toFuture()
+          .map(_ => ())
+      }
+    }(
+      preMessage = s"UndertakingCache.deleteUndertaking is deleting UndertakingRef:$ref",
+      successMessage = s"UndertakingCache.deleteUndertaking succeeded in deleting UndertakingRef:$ref",
+      errorMessage = s"UndertakingCache.deleteUndertaking failed in deleting UndertakingRef:$ref"
+    )
+  }
+
+  def deleteUndertakingSubsidies(ref: UndertakingRef): Future[Unit] = {
+    logged {
+      indexedCollection.flatMap { c =>
+        c.updateMany(
+          filter = Filters.equal(UndertakingSubsidiesIdentifier, ref),
+          update = Updates.unset("data.UndertakingSubsidies")
+        ).toFuture()
+          .map(_ => ())
+      }
+    }(
+      preMessage = s"UndertakingCache.deleteUndertakingSubsidies is deleting UndertakingRef:$ref",
+      successMessage = s"UndertakingCache.deleteUndertakingSubsidies succeeded in deleting UndertakingRef:$ref",
+      errorMessage = s"UndertakingCache.deleteUndertakingSubsidies failed in deleting UndertakingRef:$ref"
+    )
+  }
 
 }
 
