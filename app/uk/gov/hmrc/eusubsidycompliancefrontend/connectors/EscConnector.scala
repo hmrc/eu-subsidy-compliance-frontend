@@ -17,11 +17,10 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import com.google.inject.{Inject, Singleton}
-import play.api.{Logger, Logging}
+import play.api.Logging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.time.LocalDate
@@ -51,47 +50,46 @@ class EscConnector @Inject() (
   private lazy val retrieveExchangeRateUrl = s"$escUrl/eu-subsidy-compliance/exchangerate"
 
   def createUndertaking(undertaking: UndertakingCreate)(implicit hc: HeaderCarrier): ConnectorResult =
-    makeRequest(_.POST[UndertakingCreate, HttpResponse](createUndertakingUrl, undertaking))
+    logPost("createUndertaking", createUndertakingUrl, undertaking)
 
   def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): ConnectorResult =
-    makeRequest(_.POST[Undertaking, HttpResponse](updateUndertakingUrl, undertaking))
+    logPost("updateUndertaking", updateUndertakingUrl, undertaking)
 
   def disableUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): ConnectorResult =
-    makeRequest(_.POST[Undertaking, HttpResponse](disableUpdateUndertakingUrl, undertaking))
+    logPost("disableUndertaking", disableUpdateUndertakingUrl, undertaking)
 
-  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): ConnectorResult =
-    makeRequest(_.GET[HttpResponse](s"$retrieveUndertakingUrl/$eori"))
+  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): ConnectorResult = {
+    logGet("retrieveUndertaking", s"$retrieveUndertakingUrl/$eori")
+  }
 
   def addMember(
     undertakingRef: UndertakingRef,
     businessEntity: BusinessEntity
   )(implicit hc: HeaderCarrier): ConnectorResult =
-    makeRequest(_.POST[BusinessEntity, HttpResponse](s"$addMemberUrl/$undertakingRef", businessEntity))
+    logPost("addMember", s"$addMemberUrl/$undertakingRef", businessEntity)
 
   def removeMember(
     undertakingRef: UndertakingRef,
     businessEntity: BusinessEntity
   )(implicit hc: HeaderCarrier): ConnectorResult =
-    makeRequest(_.POST[BusinessEntity, HttpResponse](s"$removeMemberUrl/$undertakingRef", businessEntity))
+    logPost("removeMember", s"$removeMemberUrl/$undertakingRef", businessEntity)
 
   def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit hc: HeaderCarrier): ConnectorResult =
-    makeRequest(_.POST[SubsidyUpdate, HttpResponse](updateSubsidyUrl, subsidyUpdate))
+    logPost("createSubsidy", updateSubsidyUrl, subsidyUpdate)
 
   def removeSubsidy(
     undertakingRef: UndertakingRef,
     nonHmrcSubsidy: NonHmrcSubsidy
-  )(implicit hc: HeaderCarrier): ConnectorResult =
-    makeRequest(
-      _.POST[SubsidyUpdate, HttpResponse](
-        updateSubsidyUrl,
-        SubsidyUpdate.forDelete(undertakingRef, nonHmrcSubsidy)
-      )
-    )
+  )(implicit hc: HeaderCarrier): ConnectorResult = {
+    val removeSubsidyPayload = SubsidyUpdate.forDelete(undertakingRef, nonHmrcSubsidy)
+    logPost("removeSubsidy", updateSubsidyUrl, removeSubsidyPayload)
+  }
 
-  def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): ConnectorResult =
-    makeRequest(_.POST[SubsidyRetrieve, HttpResponse](retrieveSubsidyUrl, subsidyRetrieve))
+  def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): ConnectorResult = {
+    logPost("retrieveSubsidy", retrieveSubsidyUrl, subsidyRetrieve)
+  }
 
   def retrieveExchangeRate(date: LocalDate)(implicit hc: HeaderCarrier): ConnectorResult =
-    makeRequest(_.GET[HttpResponse](s"$retrieveExchangeRateUrl/$date"))
+    logGet("retrieveExchangeRate", s"$retrieveExchangeRateUrl/$date")
 
 }
