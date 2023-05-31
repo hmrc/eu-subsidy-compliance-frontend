@@ -16,13 +16,19 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
+import play.api.Logging
+import play.api.libs.json.Writes
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.Connector.ConnectorSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
-import uk.gov.hmrc.http.{HttpClient, HttpResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait Connector {
+//Probably better if this was not a trait and injected as a class. Bouncing up and down vertically is not very fun.
+//Traits are still inheritance, easy to start with, not so easy to live with as. "Replace Inheritance with Delegation"
+//is a refactoring that requires a greater amount of skill than creating the problem it solves so best not create the
+//problem.
+trait Connector extends Logging {
 
   type ConnectorResult = Future[Either[ConnectorError, HttpResponse]]
 
@@ -31,12 +37,55 @@ trait Connector {
   protected def makeRequest(
     request: HttpClient => Future[HttpResponse]
   )(implicit ec: ExecutionContext): ConnectorResult =
-    request(http) map { r: HttpResponse =>
-      if (r.status.isSuccess) Right(r)
-      else Left(ConnectorError(UpstreamErrorResponse(s"Unexpected response - got HTTP ${r.status}", r.status)))
-    } recover { case e: Exception =>
-      Left(ConnectorError(e))
+    request(http)
+      .map({ r: HttpResponse =>
+        if (r.status.isSuccess) {
+          Right(r)
+        } else {
+          Left(ConnectorError(UpstreamErrorResponse(s"Unexpected response - got HTTP ${r.status}", r.status)))
+        }
+      })
+      .recover({ case e: Exception =>
+        Left(ConnectorError(e))
+      })
+
+  private val className = getClass.getSimpleName
+
+  /**
+    * Connector hides everything so we have wrap everything bit by bit
+    */
+  protected def logPost[A](
+    methodName: String,
+    url: String,
+    payload: A
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, wts: Writes[A]): ConnectorResult = {
+    logger.info(s"$className.$methodName - posting to $url with $payload")
+    makeRequest(_.POST[A, HttpResponse](url, payload)).map {
+      case Left(error) =>
+        logger.error(s"$className.$methodName - failed POST to $url with $payload", error)
+        Left(error)
+      case Right(successResponse: HttpResponse) =>
+        logger.info(
+          s"$className.$methodName - successful POST to $url with $payload returned ${successResponse.body}"
+        )
+        Right(successResponse)
     }
+  }
+
+  protected def logGet(
+    methodName: String,
+    url: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): ConnectorResult = {
+    logger.info(s"EscConnector.$methodName - getting from $url")
+    makeRequest(_.GET[HttpResponse](url)).map {
+      case Left(error) =>
+        logger.error(s"EscConnector.$methodName - failed GET from $url")
+        Left(error)
+      case Right(successResponse: HttpResponse) =>
+        logger.info(s"EscConnector.$methodName - successful GET from $url with ${successResponse.body}")
+        Right(successResponse)
+    }
+  }
 
 }
 
