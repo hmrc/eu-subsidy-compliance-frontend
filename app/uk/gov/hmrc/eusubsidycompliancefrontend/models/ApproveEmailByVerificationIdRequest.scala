@@ -16,15 +16,12 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-import play.api.libs.json.{JsObject, Json, OFormat}
+import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
-case class VerifiedEmail(email: String, verificationId: String, verified: Boolean)
-
-object VerifiedEmail {
-  implicit val verifiedEmailFormat: OFormat[VerifiedEmail] = Json.format[VerifiedEmail]
-
-  implicit class VerifiedEmailOps(verifiedEmail: VerifiedEmail) {
-    val asJson: JsObject = verifiedEmailFormat.writes(verifiedEmail)
-  }
-
+object ApproveEmailByVerificationIdRequest {
+  implicit val approveEmailVerificationRequestFormat: Format[ApproveEmailByVerificationIdRequest] =
+    Json.format[ApproveEmailByVerificationIdRequest]
 }
+
+case class ApproveEmailByVerificationIdRequest(eori: EORI, verificationId: String)

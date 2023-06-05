@@ -34,13 +34,13 @@ trait Connector extends TracedLogging {
   import uk.gov.hmrc.http.HttpReads.Implicits._
   //  import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 
-  type ConnectorResult = Future[Either[ConnectorError, HttpResponse]]
+  type EventualConnectorResult = Future[Either[ConnectorError, HttpResponse]]
 
   protected val http: HttpClient
 
   protected def makeRequest(
     request: HttpClient => Future[HttpResponse]
-  )(implicit ec: ExecutionContext): ConnectorResult =
+  )(implicit ec: ExecutionContext): EventualConnectorResult =
     request(http)
       .map({ r: HttpResponse =>
         if (r.status.isSuccess) {
@@ -62,7 +62,7 @@ trait Connector extends TracedLogging {
     methodName: String,
     url: String,
     payload: A
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext, wts: Writes[A]): ConnectorResult = {
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, wts: Writes[A]): EventualConnectorResult = {
     logger.info(s"$className.$methodName - posting to $url with $payload")
     makeRequest(_.POST[A, HttpResponse](url, payload)).map {
       case Left(error) =>
@@ -79,7 +79,7 @@ trait Connector extends TracedLogging {
   protected def logGet(
     methodName: String,
     url: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): ConnectorResult = {
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): EventualConnectorResult = {
     logger.info(s"EscConnector.$methodName - getting from $url")
     makeRequest(_.GET[HttpResponse](url)).map {
       case Left(error) =>

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
-import org.scalamock.handlers.CallHandler1
+import org.scalamock.handlers.{CallHandler1, CallHandler3}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.{EmptyPredicate, Predicate}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
@@ -60,7 +60,7 @@ trait AuthSupport { this: ControllerSpec =>
     enrolments: Enrolments,
     providerId: String,
     groupIdentifier: Option[String]
-  ): CallHandler1[EORI, Future[Option[VerifiedEmail]]] = {
+  ): CallHandler3[EORI, ExecutionContext, HeaderCarrier, Future[Option[VerifiedEmail]]] = {
     mockAuth(EmptyPredicate, authRetrievals)(
       (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
@@ -76,13 +76,21 @@ trait AuthSupport { this: ControllerSpec =>
       (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
 
-  def mockGetEmailVerification(result: Option[VerifiedEmail]): CallHandler1[EORI, Future[Option[VerifiedEmail]]] =
+  def mockGetEmailVerification(
+    result: Option[VerifiedEmail]
+  ): CallHandler3[EORI, ExecutionContext, HeaderCarrier, Future[Option[VerifiedEmail]]] =
     (mockEmailVerificationService
-      .getEmailVerification(_: EORI))
-      .expects(*)
+      .getEmailVerification(_: EORI)(
+        _: ExecutionContext,
+        _: HeaderCarrier
+      ))
+      .expects(*, *, *)
       .returning(result.toFuture)
 
-  def mockGetEmailVerification(email: String = "foo@example.com"): CallHandler1[EORI, Future[Option[VerifiedEmail]]] =
-    mockGetEmailVerification(VerifiedEmail(email, "", verified = true).some)
+  def mockGetEmailVerification(
+    email: String = "foo@example.com",
+    verificationId: String = "verificationId-999"
+  ): CallHandler3[EORI, ExecutionContext, HeaderCarrier, Future[Option[VerifiedEmail]]] =
+    mockGetEmailVerification(VerifiedEmail(email, verificationId, verified = true).some)
 
 }

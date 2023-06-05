@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-import play.api.libs.json.{Format, Json, OFormat, Reads}
+import play.api.libs.json._
 
 case class EmailVerificationRequest(
   credId: String,
@@ -37,6 +37,36 @@ object Email {
 }
 object EmailVerificationRequest {
   implicit val writes: OFormat[EmailVerificationRequest] = Json.format[EmailVerificationRequest]
+
+  implicit class EmailVerificationRequestOps(emailVerificationRequest: EmailVerificationRequest) {
+    val asJson: JsObject = writes.writes(emailVerificationRequest)
+  }
+
+  // This should have its own test, verifyEmail in EmailVerificationService test was just using wildcards so line coverage
+  //  is achieved without actually testing the messaging done by parameters
+  def createVerifyEmailRequest(
+    credId: String,
+    redirectVerifyEmailUrl: String,
+    email: String,
+    backUrl: String
+  ): EmailVerificationRequest =
+    EmailVerificationRequest(
+      credId = credId,
+      continueUrl = redirectVerifyEmailUrl,
+      origin = "EU Subsidy Compliance",
+      deskproServiceName = None,
+      accessibilityStatementUrl = "",
+      email = Some(
+        Email(
+          address = email,
+          enterUrl = ""
+        )
+      ),
+      lang = None,
+      backUrl = Some(backUrl),
+      pageTitle = None
+    )
+
 }
 
 case class EmailVerificationResponse(redirectUri: String)

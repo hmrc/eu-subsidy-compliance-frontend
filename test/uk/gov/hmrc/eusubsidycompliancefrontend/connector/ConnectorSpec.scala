@@ -29,7 +29,7 @@ trait ConnectorSpec { this: Matchers with AnyWordSpecLike =>
   def connectorBehaviour[A](
     mockResponse: Option[HttpResponse] => Unit,
     performCall: () => Future[Either[A, HttpResponse]]
-  ) = {
+  ): Unit = {
 
     "do a get http call and return the result" in {
       List(

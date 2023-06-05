@@ -38,6 +38,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EmailServiceSpec extends BaseSpec with Matchers with MockFactory with ScalaFutures with DefaultAwaitTimeout {
@@ -85,8 +86,8 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockFactory with Scal
 
   private def mockVerifiedEmail() =
     (mockEmailVerificationService
-      .getEmailVerification(_: EORI))
-      .expects(*)
+      .getEmailVerification(_: EORI)(_: ExecutionContext, _: HeaderCarrier))
+      .expects(*, *, *)
       .returning(None.toFuture)
 
   private val service = new EmailService(

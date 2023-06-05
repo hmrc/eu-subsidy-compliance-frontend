@@ -36,7 +36,7 @@ class EmailVerificationConnector @Inject() (
 
   def verifyEmail(
     request: EmailVerificationRequest
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): ConnectorResult =
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): EventualConnectorResult =
     makeRequest(
       _.POST[EmailVerificationRequest, HttpResponse](
         verifyEmailUrl,

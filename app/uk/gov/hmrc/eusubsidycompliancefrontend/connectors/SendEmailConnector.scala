@@ -34,7 +34,7 @@ class SendEmailConnector @Inject() (
   private lazy val baseUrl: String = servicesConfig.baseUrl("email-send")
   private lazy val sendEmailUrl: String = s"$baseUrl/hmrc/email"
 
-  def sendEmail(request: EmailSendRequest)(implicit hc: HeaderCarrier): ConnectorResult =
+  def sendEmail(request: EmailSendRequest)(implicit hc: HeaderCarrier): EventualConnectorResult =
     makeRequest(_.POST[EmailSendRequest, HttpResponse](sendEmailUrl, request))
 
 }
