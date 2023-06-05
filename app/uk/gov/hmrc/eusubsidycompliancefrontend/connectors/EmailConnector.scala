@@ -26,7 +26,7 @@ import scala.concurrent.{ExecutionContext, Future}
 trait EmailConnector extends Connector {
   override protected def makeRequest(
     request: HttpClient => Future[HttpResponse]
-  )(implicit ec: ExecutionContext): ConnectorResult =
+  )(implicit ec: ExecutionContext): EventualConnectorResult =
     request(http) map { r: HttpResponse =>
       if (r.status.isSuccess) Right(r)
       // Allow 404s to be handled by the caller on the happy path.

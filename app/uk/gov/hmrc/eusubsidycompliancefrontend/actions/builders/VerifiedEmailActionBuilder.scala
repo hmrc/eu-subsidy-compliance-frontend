@@ -23,6 +23,7 @@ import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailVerificationService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
@@ -66,14 +67,22 @@ class VerifiedEmailActionBuilder @Inject() (
   override val parser: BodyParser[AnyContent] = mcc.parsers.anyContent
 
   // Delegates to EnrolledActionBuilder to handle ECC Enrolment check.
-  override def invokeBlock[A](r: Request[A], f: AuthenticatedEnrolledRequest[A] => Future[Result]): Future[Result] =
+  override def invokeBlock[A](
+    request: Request[A],
+    authenticatedRequestCall: AuthenticatedEnrolledRequest[A] => Future[Result]
+  ): Future[Result] = {
+    // implicit val hc: HeaderCarrier = ???
     enrolledActionBuilder.invokeBlock(
-      r,
+      request,
       { enrolledRequest: AuthenticatedEnrolledRequest[A] =>
+        implicit val headerCarrier: HeaderCarrier = hc(request)
         emailVerificationService
           .getEmailVerification(enrolledRequest.eoriNumber)
           .toContext
-          .foldF(throw new IllegalStateException("No verified email address found"))(_ => f(enrolledRequest))
+          .foldF(throw new IllegalStateException("No verified email address found"))(_ =>
+            authenticatedRequestCall(enrolledRequest)
+          )
       }
     )
+  }
 }

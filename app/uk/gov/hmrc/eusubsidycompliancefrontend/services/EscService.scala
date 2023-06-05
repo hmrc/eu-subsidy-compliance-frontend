@@ -30,7 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.{HttpResponseOps, ResponseParsingLogger}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.http.UpstreamErrorResponse.WithStatusCode
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, Upstream4xxResponse}
 
 import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
@@ -83,7 +83,7 @@ class EscService @Inject() (
     classTag: ClassTag[A] // is used but can appear hidden
   ): A = {
     r.fold(
-      _ => sys.error(s"Error executing $action"),
+      error => throw new RuntimeException(s"Error executing $action", error),
       response =>
         if (response.status =!= OK) sys.error(s"Error executing $action - Got response status: ${response.status}")
         else
@@ -304,7 +304,7 @@ class EscService @Inject() (
   )(implicit eori: EORI, hc: HeaderCarrier): Future[UndertakingRef] =
     escConnector
       .removeSubsidy(undertakingRef, nonHmrcSubsidy)
-      .flatMap { response =>
+      .flatMap { response: Either[ConnectorError, HttpResponse] =>
         for {
           ref <- handleResponse[UndertakingRef](response, "remove subsidy").toFuture
           _ <- removedSubsidyRepository.add(eori, nonHmrcSubsidy.copy(removed = Some(true)))
@@ -336,5 +336,84 @@ class EscService @Inject() (
       (exchangeRate: ExchangeRate) => s"retrieveExchangeRate for LocalDate:$date returned ExchangeRate:$exchangeRate",
     errorMessage = s"retrieveExchangeRate failed for LocalDate:$date"
   )
+
+  def approveEmailByEori(eori: EORI)(implicit hc: HeaderCarrier): Future[VerifiedEmail] = {
+    escConnector
+      .approveEmailByEori(eori)
+      .flatMap { errorOrHttpResponse =>
+        handleResponse[VerifiedEmail](errorOrHttpResponse, s"approve email by eori").toFuture
+      }
+      .logResult(
+        successCall = (verifiedEmail: VerifiedEmail) =>
+          createLoggableVerifiedEmailMessage("approveEmailByEori", eori, verifiedEmail),
+        errorMessage = s"approveEmailByEori failed for EORI:$eori"
+      )
+  }
+
+  private def createLoggableVerifiedEmailMessage(
+    callReference: String,
+    eori: EORI,
+    verifiedEmail: VerifiedEmail
+  ) = {
+    s"$callReference for $eori returned verificationId:${verifiedEmail.verificationId}, verified:${verifiedEmail.verified}"
+  }
+
+  def startVerification(eori: EORI, address: String)(implicit hc: HeaderCarrier): Future[VerifiedEmail] = {
+    escConnector
+      .startVerification(eori, address)
+      .flatMap { errorOrHttpResponse =>
+        handleResponse[VerifiedEmail](errorOrHttpResponse, s"startVerification").toFuture
+      }
+      .logResult(
+        successCall = (verifiedEmail: VerifiedEmail) =>
+          s"startVerification EORI:$eori -> verificationId:${verifiedEmail.verificationId}",
+        errorMessage = s"startVerification failed for EORI:$eori"
+      )
+  }
+
+  def approveEmailByVerificationId(eori: EORI, verificationId: String)(implicit
+    hc: HeaderCarrier
+  ): Future[VerifiedEmail] = {
+    escConnector
+      .approveEmailByVerificationId(eori, verificationId)
+      .flatMap { errorOrHttpResponse =>
+        handleResponse[VerifiedEmail](errorOrHttpResponse, s"approveEmailByVerificationId").toFuture
+      }
+      .logResult(
+        successCall = (verifiedEmail: VerifiedEmail) => {
+          createLoggableVerifiedEmailMessage("approveEmailByVerificationId", eori, verifiedEmail)
+        },
+        errorMessage = s"approveEmailByVerificationId failed for EORI:$eori"
+      )
+  }
+
+  def getEmailVerification(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[VerifiedEmail]] = {
+    val eventualMaybeVerifiedEmail = escConnector
+      .getEmailVerification(eori)
+      .flatMap {
+        case Left(connectorError) =>
+          connectorError.cause match {
+            // The import uk.gov.hmrc.http.HttpReads.Implicits._ import in the connector remaps the cause for 404's
+            case _: Upstream4xxResponse =>
+              Future.successful(None)
+
+            case _ =>
+              Some(handleResponse[VerifiedEmail](Left(connectorError), s"getEmailVerification")).toFuture
+
+          }
+        case Right(httpResponse) =>
+          Some(handleResponse[VerifiedEmail](Right(httpResponse), s"getEmailVerification")).toFuture
+      }
+
+    eventualMaybeVerifiedEmail
+      .logResult(
+        successCall = (maybeVerifiedEmail: Option[VerifiedEmail]) => {
+          val maybeVerificationId = maybeVerifiedEmail.map(_.verificationId)
+          val maybeVerified = maybeVerifiedEmail.map(_.verified)
+          s"getEmailVerification verificationId:$maybeVerificationId->verified:${maybeVerified}"
+        },
+        errorMessage = s"getEmailVerification failed for EORI:$eori"
+      )
+  }
 
 }

@@ -31,20 +31,20 @@ trait EmailVerificationServiceSupport { this: MockFactory with AuthSupport =>
 
   def mockApproveVerification(eori: EORI, verificationId: String)(result: Either[ConnectorError, Boolean]) =
     (mockEmailVerificationService
-      .approveVerificationRequest(_: EORI, _: String)(_: ExecutionContext))
-      .expects(eori, verificationId, *)
+      .approveVerificationRequest(_: EORI, _: String)(_: ExecutionContext, _: HeaderCarrier))
+      .expects(eori, verificationId, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
 
   def mockGetEmailVerification(eori: EORI)(result: Either[ConnectorError, Option[VerifiedEmail]]) =
     (mockEmailVerificationService
-      .getEmailVerification(_: EORI))
-      .expects(eori)
+      .getEmailVerification(_: EORI)(_: ExecutionContext, _: HeaderCarrier))
+      .expects(eori, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
 
-  def mockAddVerifiedEmail(eori: EORI, emailAddress: String)(result: Future[Unit] = ().toFuture) =
+  def mockAddVerifiedEmail(eori: EORI, emailAddress: String)(result: Future[Boolean] = true.toFuture) =
     (mockEmailVerificationService
-      .addVerifiedEmail(_: EORI, _: String)(_: ExecutionContext))
-      .expects(eori, emailAddress, *)
+      .addVerifiedEmail(_: EORI, _: String)(_: ExecutionContext, _: HeaderCarrier))
+      .expects(eori, emailAddress, *, *)
       .returning(result)
 
   def mockMakeVerificationRequestAndRedirect(result: Future[Result]) =

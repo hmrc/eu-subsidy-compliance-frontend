@@ -407,7 +407,7 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEnrolment(eori1)
           mockGetEmailVerification()
-          mockAddVerifiedEmail(eori1, "foo@example.com")(Future.successful(()))
+          mockAddVerifiedEmail(eori1, "foo@example.com")(Future.successful(true))
         }
 
         val result = performAction("using-stored-email" -> "true")

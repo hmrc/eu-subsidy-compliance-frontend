@@ -23,7 +23,7 @@ import org.scalatest.Assertion
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsString, JsValue, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController
@@ -544,6 +544,109 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
 
       }
 
+    }
+
+    "approveEmailByEori" must {
+      "return the VerifiedEmail on success" in {
+
+        val verifiedEmail = VerifiedEmail(email = "a", verificationId = "b", verified = true)
+
+        when(mockEscConnector.approveEmailByEori(eori1)(hc))
+          .thenReturn(Future.successful(Right(HttpResponse(200, verifiedEmail.asJson.toString))))
+
+        service.approveEmailByEori(eori1).futureValue shouldBe verifiedEmail
+      }
+
+      "fail with the cause on failure" in {
+        val cause = ConnectorError("more approveEmailByEori problems")
+        when(mockEscConnector.approveEmailByEori(eori1)(hc))
+          .thenReturn(Future.successful(Left(cause)))
+
+        val actualFailure = service.approveEmailByEori(eori1).failed.futureValue
+
+        actualFailure shouldBe a[RuntimeException]
+        actualFailure.getCause shouldBe cause
+      }
+    }
+
+    "startVerification" must {
+      val emailAddress = "emailAddress"
+
+      "return the EORI on success" in {
+        val verifiedEmail = VerifiedEmail(email = "a", verificationId = "b", verified = false)
+
+        when(mockEscConnector.startVerification(eori1, emailAddress)(hc))
+          .thenReturn(Future.successful(Right(HttpResponse(200, verifiedEmail.asJson.toString()))))
+
+        service.startVerification(eori1, emailAddress).futureValue shouldBe verifiedEmail
+      }
+
+      "fail with the cause on failure" in {
+        val cause = ConnectorError("more startVerification problems")
+
+        when(mockEscConnector.startVerification(eori1, emailAddress)(hc))
+          .thenReturn(Future.successful(Left(cause)))
+
+        val actualFailure = service.startVerification(eori1, emailAddress).failed.futureValue
+
+        actualFailure shouldBe a[RuntimeException]
+        actualFailure.getCause shouldBe cause
+      }
+    }
+
+    "approveEmailByVerificationId" must {
+      val emailAddress = "emailAddress"
+
+      "return the VerifiedEmail on success" in {
+        val verifiedEmail = VerifiedEmail(email = "a", verificationId = "b", verified = true)
+
+        when(mockEscConnector.approveEmailByVerificationId(eori1, emailAddress)(hc))
+          .thenReturn(Future.successful(Right(HttpResponse(200, verifiedEmail.asJson.toString()))))
+
+        service.approveEmailByVerificationId(eori1, emailAddress).futureValue shouldBe verifiedEmail
+      }
+
+      "fail with the cause on failure" in {
+        val cause = ConnectorError("more approveEmailByVerificationId problems")
+
+        when(mockEscConnector.approveEmailByVerificationId(eori1, emailAddress)(hc))
+          .thenReturn(Future.successful(Left(cause)))
+
+        val actualFailure = service.approveEmailByVerificationId(eori1, emailAddress).failed.futureValue
+
+        actualFailure shouldBe a[RuntimeException]
+        actualFailure.getCause shouldBe cause
+      }
+    }
+
+    "getEmailVerification" must {
+
+      "return the VerifiedEmail on success" in {
+        val verifiedEmail = VerifiedEmail(email = "a", verificationId = "b", verified = false)
+
+        when(mockEscConnector.getEmailVerification(eori1)(hc))
+          .thenReturn(Future.successful(Right(HttpResponse(200, verifiedEmail.asJson.toString))))
+
+        service.getEmailVerification(eori1).futureValue shouldBe Some(verifiedEmail)
+      }
+
+      "return None if it is not found upstream" in {
+        when(mockEscConnector.getEmailVerification(eori1)(hc))
+          .thenReturn(Future.successful(Left(ConnectorError("not found", UpstreamErrorResponse.apply("", 404)))))
+
+        service.getEmailVerification(eori1).futureValue shouldBe None
+      }
+
+      "fail with the cause on failure" in {
+        val cause = ConnectorError("more approveEmailByVerificationId problems")
+        when(mockEscConnector.getEmailVerification(eori1)(hc))
+          .thenReturn(Future.successful(Left(cause)))
+
+        val actualFailure = service.getEmailVerification(eori1).failed.futureValue
+
+        actualFailure shouldBe a[RuntimeException]
+        actualFailure.getCause shouldBe cause
+      }
     }
 
   }

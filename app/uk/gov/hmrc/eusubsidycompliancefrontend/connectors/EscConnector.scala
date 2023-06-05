@@ -46,47 +46,77 @@ class EscConnector @Inject() (
   private lazy val retrieveSubsidyUrl = s"$escUrl/eu-subsidy-compliance/subsidy/retrieve"
   private lazy val retrieveExchangeRateUrl = s"$escUrl/eu-subsidy-compliance/exchangerate"
 
-  def createUndertaking(undertaking: UndertakingCreate)(implicit hc: HeaderCarrier): ConnectorResult =
+  object emailUrl {
+    private val baseEmailUrl = s"$escUrl/eu-subsidy-compliance/email"
+
+    val approveEmailByEori: String = s"$baseEmailUrl/approve/eori"
+    val approveEmailByVerificationId: String = s"$baseEmailUrl/approve/verification-id"
+    val startVerification: String = s"$baseEmailUrl/start-verification"
+    val getVerificationFormat: String = s"$baseEmailUrl/verification-status/%s"
+  }
+
+  def createUndertaking(undertaking: UndertakingCreate)(implicit hc: HeaderCarrier): EventualConnectorResult =
     logPost("createUndertaking", createUndertakingUrl, undertaking)
 
-  def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): ConnectorResult =
+  def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): EventualConnectorResult =
     logPost("updateUndertaking", updateUndertakingUrl, undertaking)
 
-  def disableUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): ConnectorResult =
+  def disableUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): EventualConnectorResult =
     logPost("disableUndertaking", disableUpdateUndertakingUrl, undertaking)
 
-  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): ConnectorResult = {
+  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): EventualConnectorResult = {
     logGet("retrieveUndertaking", s"$retrieveUndertakingUrl/$eori")
   }
 
   def addMember(
     undertakingRef: UndertakingRef,
     businessEntity: BusinessEntity
-  )(implicit hc: HeaderCarrier): ConnectorResult =
+  )(implicit hc: HeaderCarrier): EventualConnectorResult =
     logPost("addMember", s"$addMemberUrl/$undertakingRef", businessEntity)
 
   def removeMember(
     undertakingRef: UndertakingRef,
     businessEntity: BusinessEntity
-  )(implicit hc: HeaderCarrier): ConnectorResult =
+  )(implicit hc: HeaderCarrier): EventualConnectorResult =
     logPost("removeMember", s"$removeMemberUrl/$undertakingRef", businessEntity)
 
-  def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit hc: HeaderCarrier): ConnectorResult =
+  def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit hc: HeaderCarrier): EventualConnectorResult =
     logPost("createSubsidy", updateSubsidyUrl, subsidyUpdate)
 
   def removeSubsidy(
     undertakingRef: UndertakingRef,
     nonHmrcSubsidy: NonHmrcSubsidy
-  )(implicit hc: HeaderCarrier): ConnectorResult = {
-    val removeSubsidyPayload = SubsidyUpdate.forDelete(undertakingRef, nonHmrcSubsidy)
+  )(implicit hc: HeaderCarrier): EventualConnectorResult = {
+    val removeSubsidyPayload: SubsidyUpdate = SubsidyUpdate.forDelete(undertakingRef, nonHmrcSubsidy)
     logPost("removeSubsidy", updateSubsidyUrl, removeSubsidyPayload)
   }
 
-  def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): ConnectorResult = {
+  def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): EventualConnectorResult = {
     logPost("retrieveSubsidy", retrieveSubsidyUrl, subsidyRetrieve)
   }
 
-  def retrieveExchangeRate(date: LocalDate)(implicit hc: HeaderCarrier): ConnectorResult =
+  def retrieveExchangeRate(date: LocalDate)(implicit hc: HeaderCarrier): EventualConnectorResult =
     logGet("retrieveExchangeRate", s"$retrieveExchangeRateUrl/$date")
+
+  def approveEmailByEori(eori: EORI)(implicit hc: HeaderCarrier): EventualConnectorResult =
+    logPost("approveEmailByEori", emailUrl.approveEmailByEori, ApproveEmailAsVerifiedByEoriRequest(eori))
+
+  def startVerification(eori: EORI, emailAddress: String)(implicit hc: HeaderCarrier): EventualConnectorResult =
+    logPost("startVerification", emailUrl.startVerification, StartEmailVerificationRequest(eori, emailAddress))
+
+  def approveEmailByVerificationId(eori: EORI, verificationId: String)(implicit
+    hc: HeaderCarrier
+  ): EventualConnectorResult =
+    logPost(
+      "approveEmailByVerificationId",
+      emailUrl.approveEmailByVerificationId,
+      ApproveEmailByVerificationIdRequest(eori, verificationId)
+    )
+
+  def getEmailVerification(key: EORI)(implicit hc: HeaderCarrier): EventualConnectorResult =
+    logGet(
+      "getEmailVerification",
+      emailUrl.getVerificationFormat.format(key)
+    )
 
 }

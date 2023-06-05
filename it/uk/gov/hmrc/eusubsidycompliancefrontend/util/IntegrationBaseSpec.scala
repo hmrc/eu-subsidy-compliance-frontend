@@ -18,8 +18,9 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.util
 
 import com.codahale.metrics.SharedMetricRegistries
 import org.scalatest.BeforeAndAfter
-import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.time.{Millisecond, Second, Seconds, Span}
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.test.DefaultAwaitTimeout
 import uk.gov.hmrc.http.HeaderCarrier
@@ -29,11 +30,18 @@ abstract class IntegrationBaseSpec
     with ScalaFutures
     with DefaultAwaitTimeout
     with Matchers
-    with BeforeAndAfter {
+    with BeforeAndAfter
+    with IntegrationPatience {
 
   before {
     SharedMetricRegistries.clear()
   }
 
+  //Default polls every 400 millis so stalls tests
+  override implicit val patienceConfig: PatienceConfig = {
+    PatienceConfig(Span(15, Seconds), Span(1, Millisecond))
+  }
+
   protected implicit val headerCarrier: HeaderCarrier = new HeaderCarrier()
+
 }
