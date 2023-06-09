@@ -30,6 +30,9 @@ import scala.concurrent.{ExecutionContext, Future}
 //problem.
 trait Connector extends Logging {
 
+  //Need to write a test for what this actually affects as no tests fail when removed by frontend no longer works
+  import uk.gov.hmrc.http.HttpReads.Implicits._
+
   type ConnectorResult = Future[Either[ConnectorError, HttpResponse]]
 
   protected val http: HttpClient
