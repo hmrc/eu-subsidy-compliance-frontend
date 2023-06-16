@@ -22,7 +22,6 @@ import org.mockito.Mockito.when
 import org.scalatest.Assertion
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
@@ -32,16 +31,16 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{ExchangeRateCache, RemovedSubsidyRepository, UndertakingCache, YearAndMonth}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.{BaseSpec, CommonTestData}
+import uk.gov.hmrc.http.{HttpResponse, UpstreamErrorResponse}
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.reflect.ClassTag
 
-class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with ScalaFutures with IntegrationPatience {
+class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with ScalaFutures with IntegrationPatience {
 
   private val mockEscConnector = mock[EscConnector]
   private val mockUndertakingCache = mock[UndertakingCache]
@@ -101,19 +100,19 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
       .thenReturn(result.toFuture)
 
   private def mockCachePut[A](eori: EORI, in: A)(result: Either[Exception, A]) =
-    when(mockUndertakingCache.put(argEq(eori), argEq(in))(any(), any()))
+    when(mockUndertakingCache.put(argEq(eori), argEq(in))(any(), any(), any()))
       .thenReturn(result.fold(Future.failed, _.toFuture))
 
   private def mockCacheGet[A : ClassTag](eori: EORI)(result: Either[Exception, Option[A]]) =
-    when(mockUndertakingCache.get[A](argEq(eori))(any(), any()))
+    when(mockUndertakingCache.get[A](argEq(eori))(any(), any(), any()))
       .thenReturn(result.fold(Future.failed, _.toFuture))
 
   private def mockCacheDeleteUndertaking(ref: UndertakingRef)(result: Either[Exception, Unit]) =
-    when(mockUndertakingCache.deleteUndertaking(argEq(ref)))
+    when(mockUndertakingCache.deleteUndertaking(argEq(ref))(any()))
       .thenReturn(result.fold(Future.failed, _.toFuture))
 
   private def mockCacheDeleteUndertakingSubsidies(ref: UndertakingRef)(result: Either[Exception, Unit]) =
-    when(mockUndertakingCache.deleteUndertakingSubsidies(argEq(ref)))
+    when(mockUndertakingCache.deleteUndertakingSubsidies(argEq(ref))(any()))
       .thenReturn(result.fold(Future.failed, _.toFuture))
 
   private def mockRetrieveExchangeRate(date: LocalDate)(result: Either[ConnectorError, HttpResponse]) =
@@ -143,7 +142,6 @@ class EscServiceSpec extends AnyWordSpec with Matchers with MockitoSugar with Sc
 
   private val emptyHeaders = Map.empty[String, Seq[String]]
 
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
   private implicit val e: EORI = CommonTestData.eori1
 
   "EscService" when {

@@ -20,17 +20,16 @@ import com.typesafe.config.ConfigFactory
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EmailVerificationConnectorSpec
-    extends AnyWordSpec
+    extends BaseSpec
     with Matchers
     with MockFactory
     with HttpSupport
@@ -51,8 +50,6 @@ class EmailVerificationConnectorSpec
   )
 
   private val connector = new EmailVerificationConnector(mockHttp, new ServicesConfig(config))
-
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "EmailVerificationConnector" when {
 

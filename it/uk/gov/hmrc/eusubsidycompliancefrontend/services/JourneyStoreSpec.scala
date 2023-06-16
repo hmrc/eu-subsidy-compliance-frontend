@@ -18,7 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
 import play.api.libs.json.{Json, OFormat}
 import play.api.test.DefaultAwaitTimeout
@@ -26,13 +25,14 @@ import shapeless.tag.@@
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.JourneyStore
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.IntegrationBaseSpec
 import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class JourneyStoreSpec
-    extends AnyWordSpec
+    extends IntegrationBaseSpec
     with DefaultPlayMongoRepositorySupport[CacheItem]
     with ScalaFutures
     with DefaultAwaitTimeout

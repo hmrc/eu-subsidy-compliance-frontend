@@ -19,17 +19,16 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.connector
 import com.typesafe.config.ConfigFactory
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.RetrieveEmailConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class RetrieveEmailConnectorSpec
-    extends AnyWordSpec
+    extends BaseSpec
     with Matchers
     with MockFactory
     with HttpSupport
@@ -49,7 +48,6 @@ class RetrieveEmailConnectorSpec
 
   private val connector = new RetrieveEmailConnector(mockHttp, new ServicesConfig(config))
 
-  implicit private val hc: HeaderCarrier = HeaderCarrier()
   val expectedUrl = s"$protocol://$host:$port/customs-data-store/eori/$eori1/verified-email"
 
   "RetrieveEmailConnector" when {

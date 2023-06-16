@@ -17,12 +17,12 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.config
 
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.running
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 
-class AppConfigSpec extends AnyWordSpec with Matchers {
+class AppConfigSpec extends BaseSpec with Matchers {
 
   "AppConfig" when {
 

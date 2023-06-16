@@ -17,11 +17,11 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BecomeLeadJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 
-class BecomeLeadJourneySpec extends AnyWordSpecLike with Matchers {
+class BecomeLeadJourneySpec extends BaseSpec with Matchers {
 
   "BecomeLeadJourney" when {
 

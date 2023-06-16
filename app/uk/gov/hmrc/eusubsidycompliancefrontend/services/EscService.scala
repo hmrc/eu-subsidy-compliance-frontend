@@ -19,10 +19,10 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import cats.data.EitherT
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
-import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.{JsPath, JsonValidationError, Reads}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{ExchangeRateCache, RemovedSubsidyRepository, UndertakingCache, YearAndMonth}
@@ -43,10 +43,12 @@ class EscService @Inject() (
   exchangeRateCache: ExchangeRateCache,
   removedSubsidyRepository: RemovedSubsidyRepository
 )(implicit ec: ExecutionContext)
-    extends Logging {
+    extends TracedLogging {
 
   private implicit class LogFutureOps[A](eventualResult: Future[A]) {
-    def logResult(successCall: A => String, errorMessage: => String): Future[A] = {
+    def logResult(successCall: A => String, errorMessage: => String)(implicit
+      headerCarrier: HeaderCarrier
+    ): Future[A] = {
       eventualResult.failed.foreach { error =>
         logger.error(errorMessage, error)
       }

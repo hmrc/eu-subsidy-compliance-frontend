@@ -19,12 +19,12 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters
 import org.mockito.ArgumentMatchers.{any, eq => mockitoEq}
 import org.mockito.Mockito.when
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.fixedDate
 
-class DateFormatterSpec extends AnyWordSpecLike with MockitoSugar with Matchers {
+class DateFormatterSpec extends BaseSpec with MockitoSugar with Matchers {
 
   "TimeUtils" when {
 

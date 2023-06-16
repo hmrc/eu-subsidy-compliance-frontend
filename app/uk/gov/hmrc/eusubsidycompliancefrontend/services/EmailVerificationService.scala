@@ -17,12 +17,12 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import com.google.inject.Inject
-import play.api.Logging
 import play.api.http.Status.CREATED
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Call, Result, WrappedRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.EoriEmailRepository
@@ -41,7 +41,7 @@ class EmailVerificationService @Inject() (
   emailVerificationConnector: EmailVerificationConnector,
   eoriEmailDatastore: EoriEmailRepository,
   servicesConfig: ServicesConfig
-) extends Logging {
+) extends TracedLogging {
 
   def getEmailVerification(eori: EORI): Future[Option[VerifiedEmail]] = eoriEmailDatastore.getEmailVerification(eori)
 

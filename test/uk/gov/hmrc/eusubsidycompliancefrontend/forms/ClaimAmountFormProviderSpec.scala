@@ -18,15 +18,15 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
 import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{TooBig, TooSmall}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.IncorrectFormat
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ClaimAmount, CurrencyCode}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 
-class ClaimAmountFormProviderSpec extends AnyWordSpecLike with Matchers {
+class ClaimAmountFormProviderSpec extends BaseSpec with Matchers {
 
   private val underTest = new ClaimAmountFormProvider()
 

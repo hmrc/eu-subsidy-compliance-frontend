@@ -21,7 +21,6 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.Helpers._
 import play.api.test.{DefaultAwaitTimeout, FakeRequest}
@@ -30,6 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConne
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailVerificationRequest, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.EoriEmailRepository
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.mongo.cache.CacheItem
@@ -40,15 +40,13 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EmailVerificationServiceSpec
-    extends AnyWordSpec
+    extends BaseSpec
     with Matchers
     with BeforeAndAfterAll
     with MockFactory
     with ScalaFutures
     with DefaultAwaitTimeout
     with DefaultPlayMongoRepositorySupport[CacheItem] {
-
-  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private val mockEmailVerificationConnector: EmailVerificationConnector = mock[EmailVerificationConnector]
 

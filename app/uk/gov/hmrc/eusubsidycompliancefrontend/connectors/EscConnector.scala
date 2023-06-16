@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import com.google.inject.{Inject, Singleton}
-import play.api.Logging
+import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -32,12 +32,9 @@ class EscConnector @Inject() (
   servicesConfig: ServicesConfig
 )(implicit ec: ExecutionContext)
     extends Connector
-    with Logging {
+    with TracedLogging {
 
   private lazy val escUrl: String = servicesConfig.baseUrl("esc")
-
-  //euSubsidyComplianceFrontend is camelCased as kibana breaks words on hyphens
-  logger.error(s"escUrl for euSubsidyComplianceFrontend is $escUrl")
 
   private lazy val createUndertakingUrl = s"$escUrl/eu-subsidy-compliance/undertaking"
   private lazy val updateUndertakingUrl = s"$escUrl/eu-subsidy-compliance/undertaking/update"

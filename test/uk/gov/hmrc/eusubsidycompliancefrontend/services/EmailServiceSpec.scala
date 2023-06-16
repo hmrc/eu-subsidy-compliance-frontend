@@ -20,7 +20,6 @@ import cats.implicits.catsSyntaxOptionId
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.test.DefaultAwaitTimeout
@@ -34,13 +33,14 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.VerifiedEm
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendRequest, EmailTemplate, EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with ScalaFutures with DefaultAwaitTimeout {
+class EmailServiceSpec extends BaseSpec with Matchers with MockFactory with ScalaFutures with DefaultAwaitTimeout {
 
   private val templates = EmailTemplate.values
     .map(t => t.entryName -> "templateId1")
@@ -95,8 +95,6 @@ class EmailServiceSpec extends AnyWordSpec with Matchers with MockFactory with S
     mockRetrieveEmailConnector,
     mockEmailVerificationService
   )
-
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "EmailService" when {
 

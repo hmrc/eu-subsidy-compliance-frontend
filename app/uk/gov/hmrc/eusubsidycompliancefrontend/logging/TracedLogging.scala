@@ -14,24 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
+package uk.gov.hmrc.eusubsidycompliancefrontend.logging
 
-import org.scalatest.matchers.should.Matchers
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
+trait TracedLogging {
 
-class YearAndMonthSpec extends BaseSpec with Matchers {
-
-  "YearAndMonth" should {
-
-    "generate the expected string representation when toString is called" in {
-      val underTest = YearAndMonth(2001, 12)
-      underTest.toString shouldBe "2001-12"
-    }
-
-    "pad the year and month values correctly" in {
-      val underTest = YearAndMonth(1, 1)
-      underTest.toString shouldBe "0001-01"
-    }
-  }
-
+  def logger: RequestAwareLogger = new RequestAwareLogger(this.getClass)
 }

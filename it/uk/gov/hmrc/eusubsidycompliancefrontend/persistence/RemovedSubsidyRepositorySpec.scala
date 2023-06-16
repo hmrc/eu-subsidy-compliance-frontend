@@ -17,24 +17,16 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import cats.implicits.catsSyntaxOptionId
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import play.api.test.DefaultAwaitTimeout
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.NonHmrcSubsidy
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EisSubsidyAmendmentType, SubsidyAmount, SubsidyRef, TraderRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.IntegrationBaseSpec
 import uk.gov.hmrc.mongo.cache.{CacheItem, MongoCacheRepository}
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class RemovedSubsidyRepositorySpec
-    extends AnyWordSpec
-    with DefaultPlayMongoRepositorySupport[CacheItem]
-    with ScalaFutures
-    with DefaultAwaitTimeout
-    with Matchers {
+class RemovedSubsidyRepositorySpec extends IntegrationBaseSpec with DefaultPlayMongoRepositorySupport[CacheItem] {
 
   private val underTest = new RemovedSubsidyRepository(mongoComponent)
 

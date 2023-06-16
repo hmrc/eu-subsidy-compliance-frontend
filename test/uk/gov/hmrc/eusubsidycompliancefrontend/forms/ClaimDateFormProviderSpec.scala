@@ -18,17 +18,17 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
 import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider.Errors._
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimDateFormProvider.Fields.{Day, Month, Year}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.DateFormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 
 import java.time.LocalDate
 
-class ClaimDateFormProviderSpec extends AnyWordSpecLike with Matchers {
+class ClaimDateFormProviderSpec extends BaseSpec with Matchers {
 
   private val day = 1
   private val month = 1

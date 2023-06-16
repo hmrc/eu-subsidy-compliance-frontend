@@ -19,15 +19,15 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 import cats.implicits.catsSyntaxOptionId
 import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.EmailFormProvider.Errors.{InvalidFormat, MaxLength}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.EmailFormProvider.Fields.{Email, UsingStoredEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.EmailFormProvider.MaximumEmailLength
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.Required
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, OptionalEmailFormInput}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 
-class EmailFormProviderSpec extends AnyWordSpecLike with Matchers {
+class EmailFormProviderSpec extends BaseSpec with Matchers {
 
   "EmailFormProvider" when {
 

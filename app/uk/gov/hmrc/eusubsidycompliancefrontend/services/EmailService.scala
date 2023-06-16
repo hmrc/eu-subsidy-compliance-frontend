@@ -18,10 +18,10 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.catsSyntaxOptionId
 import com.google.inject.Inject
-import play.api.Logging
 import play.api.http.Status.{ACCEPTED, NOT_FOUND, OK}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{RetrieveEmailConnector, SendEmailConnector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -39,7 +39,7 @@ class EmailService @Inject() (
   sendEmailConnector: SendEmailConnector,
   retrieveEmailConnector: RetrieveEmailConnector,
   emailVerificationService: EmailVerificationService
-) extends Logging {
+) extends TracedLogging {
 
   def sendEmail(
     eori1: EORI,

@@ -17,13 +17,13 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.syntax
 
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import play.api.http.HeaderNames.{HOST, REFERER}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.GET
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.RequestSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 
-class RequestSyntaxSpec extends AnyWordSpec with Matchers {
+class RequestSyntaxSpec extends BaseSpec with Matchers {
 
   private val RequestPath = "/some-resource"
   private val LocalHostAndPort = "localhost:12345"

@@ -17,11 +17,11 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 
 import java.time.LocalDate
 
-class DateFormValuesSpec extends AnyWordSpecLike with Matchers {
+class DateFormValuesSpec extends BaseSpec with Matchers {
 
   "DateFormValues" when {
 

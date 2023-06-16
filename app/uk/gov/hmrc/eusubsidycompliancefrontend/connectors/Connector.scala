@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
-import play.api.Logging
 import play.api.libs.json.Writes
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.Connector.ConnectorSyntax._
+import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
 
@@ -28,10 +28,11 @@ import scala.concurrent.{ExecutionContext, Future}
 //Traits are still inheritance, easy to start with, not so easy to live with as. "Replace Inheritance with Delegation"
 //is a refactoring that requires a greater amount of skill than creating the problem it solves so best not create the
 //problem.
-trait Connector extends Logging {
+trait Connector extends TracedLogging {
 
   //Need to write a test for what this actually affects as no tests fail when removed by frontend no longer works
   import uk.gov.hmrc.http.HttpReads.Implicits._
+  //  import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 
   type ConnectorResult = Future[Either[ConnectorError, HttpResponse]]
 
