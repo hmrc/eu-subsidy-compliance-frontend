@@ -18,11 +18,12 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import org.mongodb.scala.MongoCollection
 import org.mongodb.scala.model.{Filters, IndexOptions, Indexes, Updates}
-import play.api.Logging
 import play.api.libs.json.{Reads, Writes}
+import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.PersistenceHelpers.dataKeyForType
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.UndertakingCache.DefaultCacheTtl
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.cache.{CacheItem, DataKey, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
@@ -43,7 +44,7 @@ class UndertakingCache @Inject() (
       timestampSupport = new CurrentTimestampSupport,
       cacheIdType = EoriIdType
     )
-    with Logging {
+    with TracedLogging {
 
   private val UndertakingReference = "data.Undertaking.reference"
   private val UndertakingSubsidiesIdentifier = "data.UndertakingSubsidies.undertakingIdentifier"
@@ -73,7 +74,7 @@ class UndertakingCache @Inject() (
         .headOption()
     } yield collection
 
-  def get[A : ClassTag](eori: EORI)(implicit reads: Reads[A]): Future[Option[A]] = {
+  def get[A : ClassTag](eori: EORI)(implicit reads: Reads[A], headerCarrier: HeaderCarrier): Future[Option[A]] = {
     logged {
       indexedCollection.flatMap { _ =>
         super
@@ -87,7 +88,8 @@ class UndertakingCache @Inject() (
   }
 
   private def logged[A](call: Future[A])(preMessage: String, successMessage: String, errorMessage: String)(implicit
-    classTag: ClassTag[A]
+    classTag: ClassTag[A],
+    headerCarrier: HeaderCarrier
   ) = {
     val forMessage = s" (for $classTag)"
     logger.info(preMessage + forMessage)
@@ -100,7 +102,11 @@ class UndertakingCache @Inject() (
     }
   }
 
-  def put[A](eori: EORI, in: A)(implicit writes: Writes[A], classTag: ClassTag[A]): Future[A] = {
+  def put[A](eori: EORI, in: A)(implicit
+    writes: Writes[A],
+    classTag: ClassTag[A],
+    headerCarrier: HeaderCarrier
+  ): Future[A] = {
     logged {
       indexedCollection.flatMap { _ =>
         super
@@ -114,7 +120,7 @@ class UndertakingCache @Inject() (
     )
   }
 
-  def deleteUndertaking(ref: UndertakingRef): Future[Unit] = {
+  def deleteUndertaking(ref: UndertakingRef)(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
     logged {
       indexedCollection.flatMap { c =>
         c.updateMany(
@@ -130,7 +136,7 @@ class UndertakingCache @Inject() (
     )
   }
 
-  def deleteUndertakingSubsidies(ref: UndertakingRef): Future[Unit] = {
+  def deleteUndertakingSubsidies(ref: UndertakingRef)(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
     logged {
       indexedCollection.flatMap { c =>
         c.updateMany(

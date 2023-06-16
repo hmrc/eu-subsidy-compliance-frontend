@@ -17,9 +17,9 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters
 
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 
-class BigDecimalFormatterSpec extends AnyWordSpecLike with Matchers {
+class BigDecimalFormatterSpec extends BaseSpec with Matchers {
 
   "BigDecimalFormatter" when {
 

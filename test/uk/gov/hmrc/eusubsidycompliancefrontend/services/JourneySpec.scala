@@ -19,7 +19,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.AnyContent
 import play.api.mvc.Results.Redirect
@@ -27,8 +26,9 @@ import play.api.test.Helpers.{GET, redirectLocation, status}
 import play.api.test.{DefaultAwaitTimeout, FakeRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.{Form, Uri}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{FormPage, Journey}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 
-class JourneySpec extends AnyWordSpecLike with Matchers with MockFactory with ScalaFutures with DefaultAwaitTimeout {
+class JourneySpec extends BaseSpec with Matchers with MockFactory with ScalaFutures with DefaultAwaitTimeout {
 
   private val formPage1 = new FormPage[String] {
     override val value: Form[String] = Some("Foo")

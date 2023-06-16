@@ -19,16 +19,15 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.connector
 import com.typesafe.config.ConfigFactory
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.SendEmailConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.emailSendRequest
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class SendEmailConnectorSpec extends AnyWordSpec with Matchers with MockFactory with HttpSupport with ConnectorSpec {
+class SendEmailConnectorSpec extends BaseSpec with Matchers with MockFactory with HttpSupport with ConnectorSpec {
 
   private val (protocol, host, port) = ("http", "host", "123")
 
@@ -43,8 +42,6 @@ class SendEmailConnectorSpec extends AnyWordSpec with Matchers with MockFactory 
   )
 
   private val connector = new SendEmailConnector(mockHttp, new ServicesConfig(config))
-
-  implicit private val hc: HeaderCarrier = HeaderCarrier()
 
   "SendEmailConnectorSpec" when {
     "handling request to send  email address " must {

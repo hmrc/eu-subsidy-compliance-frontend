@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import com.codahale.metrics.SharedMetricRegistries
 import com.google.inject.{Inject, Singleton}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
@@ -30,6 +31,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.PlaySupport
 import scala.concurrent.Future
 
 trait ControllerSpec extends PlaySupport with ScalaFutures with IntegrationPatience {
+
+  SharedMetricRegistries.clear()
 
   def checkIsRedirect(result: Future[Result], expectedRedirectLocation: String): Unit = {
     status(result) shouldBe SEE_OTHER

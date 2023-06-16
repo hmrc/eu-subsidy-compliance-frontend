@@ -17,11 +17,11 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import com.google.inject.{Inject, Singleton}
-import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
@@ -34,7 +34,7 @@ class SignOutController @Inject() (
 )(implicit val appConfig: AppConfig)
     extends BaseController(mcc)
     with I18nSupport
-    with Logging {
+    with TracedLogging {
 
   import actionBuilders._
 

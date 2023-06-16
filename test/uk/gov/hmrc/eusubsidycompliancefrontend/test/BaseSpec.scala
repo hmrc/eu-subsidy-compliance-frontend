@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
+package uk.gov.hmrc.eusubsidycompliancefrontend.test
 
-import org.scalatest.matchers.should.Matchers
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
+import com.codahale.metrics.SharedMetricRegistries
+import org.scalatest.BeforeAndAfter
+import org.scalatest.wordspec.AnyWordSpec
+import uk.gov.hmrc.http.HeaderCarrier
 
-class YearAndMonthSpec extends BaseSpec with Matchers {
+abstract class BaseSpec extends AnyWordSpec with BeforeAndAfter {
 
-  "YearAndMonth" should {
+  final val _ = SharedMetricRegistries.clear()
 
-    "generate the expected string representation when toString is called" in {
-      val underTest = YearAndMonth(2001, 12)
-      underTest.toString shouldBe "2001-12"
-    }
-
-    "pad the year and month values correctly" in {
-      val underTest = YearAndMonth(1, 1)
-      underTest.toString shouldBe "0001-01"
-    }
-  }
+  protected implicit val hc: HeaderCarrier = new HeaderCarrier()
 
 }

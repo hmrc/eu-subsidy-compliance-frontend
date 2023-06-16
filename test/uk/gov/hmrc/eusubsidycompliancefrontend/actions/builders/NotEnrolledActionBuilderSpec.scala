@@ -19,7 +19,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -32,12 +31,13 @@ import uk.gov.hmrc.auth.core.{AuthConnector, InvalidBearerToken}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 
 import scala.concurrent.Future
 
 class NotEnrolledActionBuilderSpec
-    extends AnyWordSpec
+    extends BaseSpec
     with ControllerSpec
     with AuthSupport
     with JourneyStoreSupport

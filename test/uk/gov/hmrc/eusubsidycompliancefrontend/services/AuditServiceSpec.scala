@@ -26,6 +26,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.GET
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.TermsAndConditionsAccepted
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions.auditHeaderCarrier
@@ -35,7 +36,7 @@ import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class AuditServiceSpec extends Matchers with AnyWordSpecLike with MockFactory {
+class AuditServiceSpec extends BaseSpec with Matchers with AnyWordSpecLike with MockFactory {
 
   private val mockAuditConnector = mock[AuditConnector]
 
@@ -64,8 +65,6 @@ class AuditServiceSpec extends Matchers with AnyWordSpecLike with MockFactory {
         val requestUri = "/uri"
 
         implicit val request: Request[_] = FakeRequest(GET, requestUri, Headers(), "")
-
-        implicit val hc: HeaderCarrier = HeaderCarrier()
 
         val auditEvent = TermsAndConditionsAccepted(eori1)
 

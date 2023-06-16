@@ -18,12 +18,12 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.catsSyntaxOptionId
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 
-class BusinessEntityJourneySpec extends AnyWordSpecLike with Matchers {
+class BusinessEntityJourneySpec extends BaseSpec with Matchers {
 
   "BusinessEntityJourney" should {
 

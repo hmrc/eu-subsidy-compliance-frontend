@@ -18,11 +18,11 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import cats.implicits.catsSyntaxOptionId
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{fixedDate, nonHmrcSubsidy, undertakingSubsidies}
 
-class UndertakingSubsidiesSpec extends AnyWordSpec with Matchers {
+class UndertakingSubsidiesSpec extends BaseSpec with Matchers {
 
   "UndertakingSubsidies" when {
 

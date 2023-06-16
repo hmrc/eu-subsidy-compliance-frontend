@@ -19,7 +19,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import cats.implicits.catsSyntaxOptionId
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.http.HeaderNames.REFERER
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.AnyContentAsEmpty
@@ -30,9 +29,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.SubsidyRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{DateFormValues, OptionalClaimEori, OptionalTraderRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
-class SubsidyJourneySpec extends AnyWordSpecLike with Matchers with ScalaFutures {
+class SubsidyJourneySpec extends BaseSpec with Matchers with ScalaFutures {
 
   private val amendJourney = SubsidyJourney().setTraderRef(optionalTraderRef)
 

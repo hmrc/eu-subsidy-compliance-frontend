@@ -17,11 +17,11 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.util
 
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 
 import java.time.LocalDate
 
-class TaxYearHelpersSpec extends AnyWordSpecLike with Matchers {
+class TaxYearHelpersSpec extends BaseSpec with Matchers {
 
   private val BeforeTaxYearEnd = LocalDate.parse("2022-03-01")
   private val LastDayOfTaxYear = LocalDate.parse("2022-04-05")

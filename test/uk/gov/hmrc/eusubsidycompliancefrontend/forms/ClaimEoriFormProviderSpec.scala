@@ -18,15 +18,15 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
 import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimEoriFormProvider.Fields._
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.OptionalClaimEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.withGbPrefix
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking}
 
-class ClaimEoriFormProviderSpec extends AnyWordSpecLike with Matchers {
+class ClaimEoriFormProviderSpec extends BaseSpec with Matchers {
 
   private val underTest = new ClaimEoriFormProvider(undertaking)
 

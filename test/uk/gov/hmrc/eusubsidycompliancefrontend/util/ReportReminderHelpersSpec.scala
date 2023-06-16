@@ -18,11 +18,11 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.util
 
 import cats.implicits.catsSyntaxOptionId
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpecLike
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 
 import java.time.LocalDate
 
-class ReportReminderHelpersSpec extends AnyWordSpecLike with Matchers {
+class ReportReminderHelpersSpec extends BaseSpec with Matchers {
 
   "ReportDeMinimisReminderHelperSpec" when {
 
