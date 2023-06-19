@@ -76,6 +76,19 @@ class UndertakingController @Inject() (
 
   import actionBuilders._
 
+  private val aboutUndertakingForm: Form[FormValues] = Form(
+    mapping("continue" -> mandatory("continue"))(FormValues.apply)(FormValues.unapply)
+  )
+
+  private val undertakingSectorForm: Form[FormValues] = formWithSingleMandatoryField("undertakingSector")
+  private val addBusinessForm: Form[FormValues] = formWithSingleMandatoryField("addBusinessIntent")
+  private val cyaForm: Form[FormValues] = formWithSingleMandatoryField("cya")
+  private val confirmationForm: Form[FormValues] = formWithSingleMandatoryField("confirm")
+  private val amendUndertakingForm: Form[FormValues] = formWithSingleMandatoryField("amendUndertaking")
+  private val disableUndertakingConfirmForm: Form[FormValues] = formWithSingleMandatoryField(
+    "disableUndertakingConfirm"
+  )
+
   def firstEmptyPage: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).map { journey =>
@@ -390,6 +403,10 @@ class UndertakingController @Inject() (
     request: AuthenticatedEnrolledRequest[_]
   ): Future[Result] =
     if (form.value.isTrue) {
+      logger.info(
+        "SelectNewLeadController.handleDisableUndertakingFormSubmission"
+      )
+
       for {
         _ <- escService.disableUndertaking(undertaking)
         _ <- undertaking.undertakingBusinessEntity.traverse(be => store.deleteAll(be.businessEntityIdentifier))
@@ -411,20 +428,17 @@ class UndertakingController @Inject() (
             formattedDate
           )
         }
-      } yield Redirect(routes.UndertakingController.getUndertakingDisabled)
-    } else Redirect(routes.AccountController.getAccountPage).toFuture
-
-  private val aboutUndertakingForm: Form[FormValues] = Form(
-    mapping("continue" -> mandatory("continue"))(FormValues.apply)(FormValues.unapply)
-  )
-
-  private val undertakingSectorForm: Form[FormValues] = formWithSingleMandatoryField("undertakingSector")
-  private val addBusinessForm: Form[FormValues] = formWithSingleMandatoryField("addBusinessIntent")
-  private val cyaForm: Form[FormValues] = formWithSingleMandatoryField("cya")
-  private val confirmationForm: Form[FormValues] = formWithSingleMandatoryField("confirm")
-  private val amendUndertakingForm: Form[FormValues] = formWithSingleMandatoryField("amendUndertaking")
-  private val disableUndertakingConfirmForm: Form[FormValues] = formWithSingleMandatoryField(
-    "disableUndertakingConfirm"
-  )
+      } yield {
+        logger.info(
+          "SelectNewLeadController.handleDisableUndertakingFormSubmission - form.value.isTrue so redirecting to routes.UndertakingController.getUndertakingDisabled"
+        )
+        Redirect(routes.UndertakingController.getUndertakingDisabled)
+      }
+    } else {
+      logger.info(
+        "SelectNewLeadController.handleDisableUndertakingFormSubmission - form.value.isTrue is not true so redirecting to routes.AccountController.getAccountPage"
+      )
+      Redirect(routes.AccountController.getAccountPage).toFuture
+    }
 
 }

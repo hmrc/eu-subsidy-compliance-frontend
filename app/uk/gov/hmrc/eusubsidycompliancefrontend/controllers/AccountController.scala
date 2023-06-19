@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.data.OptionT
 import cats.implicits.catsSyntaxOptionId
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
@@ -35,6 +36,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormat
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -55,47 +57,68 @@ class AccountController @Inject() (
 
   import actionBuilders._
 
-  def getAccountPage: Action[AnyContent] =
+  def getAccountPage: Action[AnyContent] = {
     enrolled.async { implicit request =>
       implicit val eori: EORI = request.eoriNumber
+      logger.info("showing get account page")
       escService
         .retrieveUndertaking(eori)
         .toContext
         .foldF(handleUndertakingNotCreated)(handleExistingUndertaking)
     }
+  }
 
-  private def handleUndertakingNotCreated(implicit e: EORI): Future[Result] = {
+  private def handleUndertakingNotCreated(implicit e: EORI, hc: HeaderCarrier): Future[Result] = {
+    logger.info("handleUndertakingNotCreated")
     val result = getOrCreateJourneys().map {
-      case (ej, uj) if !ej.isComplete && uj.isEmpty =>
+      case (eligibilityJourney, undertakingJourney) if !eligibilityJourney.isComplete && undertakingJourney.isEmpty =>
+        logger.info(
+          "Eligibility journey is not complete but and undertakingJourney is empty so redirecting to Eligibility first empty page"
+        )
         Redirect(routes.EligibilityController.firstEmptyPage)
-      case (_, uj) if !uj.isComplete =>
+      case (_, undertakingJourney) if !undertakingJourney.isComplete =>
+        logger.info(
+          "Eligibility journey is not complete but and undertakingJourney is not empty so redirecting to Undertaking first empty page"
+        )
         Redirect(routes.UndertakingController.firstEmptyPage)
       case _ =>
+        logger.info(
+          "Eligibility journey is complete so redirecting to BusinessEntity getAddBusinessEntity"
+        )
         Redirect(routes.BusinessEntityController.getAddBusinessEntity)
     }
     result.getOrElse(handleMissingSessionData("Account Home - Undertaking not created -"))
   }
 
   private def handleExistingUndertaking(
-    u: Undertaking
+    undertaking: Undertaking
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent], e: EORI): Future[Result] = {
+    logger.info("handleExistingUndertaking")
+
     val result = for {
-      _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(u))
-      subsidies <- escService.retrieveAllSubsidies(u.reference).toContext
-      result <- renderAccountPage(u, subsidies).toContext
+      _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(undertaking))
+      subsidies <- escService.retrieveAllSubsidies(undertaking.reference).toContext
+      result <- renderAccountPage(undertaking, subsidies).toContext
     } yield result
 
-    result.getOrElse(handleMissingSessionData("Account Home - Existing Undertaking -"))
+    result.getOrElse {
+      logger.info(s"handling missing session data for $undertaking")
+      handleMissingSessionData("Account Home - Existing Undertaking -")
+    }
   }
 
-  private def getOrCreateJourneys(u: UndertakingJourney = UndertakingJourney())(implicit e: EORI) =
+  private def getOrCreateJourneys(
+    undertakingJourney: UndertakingJourney = UndertakingJourney()
+  )(implicit e: EORI, hc: HeaderCarrier): OptionT[Future, (EligibilityJourney, UndertakingJourney)] = {
+    logger.info("getOrCreateJourneys")
     for {
       // At this point the user has an ECC enrolment so they must be eligible to use the service.
-      ej <- store
+      eligibilityJourney <- store
         .getOrCreate[EligibilityJourney](EligibilityJourney(doYouClaim = DoYouClaimFormPage(true.some)))
         .toContext
-      uj <- store.getOrCreate[UndertakingJourney](u).toContext
-    } yield (ej, uj)
+      undertakingJourney <- store.getOrCreate[UndertakingJourney](undertakingJourney).toContext
+    } yield (eligibilityJourney, undertakingJourney)
+  }
 
   private def renderAccountPage(undertaking: Undertaking, undertakingSubsidies: UndertakingSubsidies)(implicit
     r: AuthenticatedEnrolledRequest[AnyContent]
@@ -121,6 +144,7 @@ class AccountController @Inject() (
       else n.toFuture
 
     if (undertaking.isLeadEORI(eori)) {
+      logger.info("showing account page for lead")
       val result = for {
         nilReturnJourney <- store.getOrCreate[NilReturnJourney](NilReturnJourney()).toContext
         _ <- updateNilReturnJourney(nilReturnJourney).toContext
@@ -144,8 +168,8 @@ class AccountController @Inject() (
       )
 
       result.getOrElse(handleMissingSessionData("Nil Return Journey"))
-
-    } else
+    } else {
+      logger.info("showing nonLeadAccountPage for non lead")
       Ok(
         nonLeadAccountPage(
           undertaking,
@@ -160,6 +184,7 @@ class AccountController @Inject() (
           startDate.toDisplayFormat
         )
       ).toFuture
+    }
   }
 
 }

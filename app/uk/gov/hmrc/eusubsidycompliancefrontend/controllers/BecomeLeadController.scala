@@ -62,6 +62,7 @@ class BecomeLeadController @Inject() (
 
   def getAcceptResponsibilities: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+    logger.info("BecomeLeadController.getAcceptResponsibilities")
 
     val result = for {
       _ <- escService.getUndertaking(eori).toContext
@@ -73,12 +74,15 @@ class BecomeLeadController @Inject() (
 
   def postAcceptResponsibilities: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+    logger.info("BecomeLeadController.postAcceptResponsibilities")
+
     store
       .update[BecomeLeadJourney](_.setAcceptResponsibilities(true))
       .flatMap(_ => Future(Redirect(routes.BecomeLeadController.getConfirmEmail)))
   }
 
   def getConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
+    logger.info("BecomeLeadController.getConfirmEmail")
     handleConfirmEmailGet[BecomeLeadJourney](
       previous = routes.BecomeLeadController.getAcceptResponsibilities(),
       formAction = routes.BecomeLeadController.postConfirmEmail
@@ -86,6 +90,7 @@ class BecomeLeadController @Inject() (
   }
 
   def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
+    logger.info("BecomeLeadController.postConfirmEmail")
     handleConfirmEmailPost[BecomeLeadJourney](
       previous = routes.BecomeLeadController.getConfirmEmail,
       next = routes.BecomeLeadController.getBecomeLeadEori(),
@@ -95,6 +100,7 @@ class BecomeLeadController @Inject() (
   }
 
   def getVerifyEmail(verificationId: String): Action[AnyContent] = enrolled.async { implicit request =>
+    logger.info("BecomeLeadController.getVerifyEmail")
     handleVerifyEmailGet[BecomeLeadJourney](
       verificationId = verificationId,
       previous = routes.BecomeLeadController.getConfirmEmail,
@@ -104,7 +110,7 @@ class BecomeLeadController @Inject() (
 
   def getBecomeLeadEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
+    logger.info("BecomeLeadController.getBecomeLeadEori")
     val result = for {
       journey <- store.getOrCreate[BecomeLeadJourney](BecomeLeadJourney()).toContext
       _ <- escService.retrieveUndertaking(eori).toContext
@@ -115,6 +121,7 @@ class BecomeLeadController @Inject() (
   }
 
   def postBecomeLeadEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    logger.info("BecomeLeadController.postBecomeLeadEori")
     implicit val eori: EORI = request.eoriNumber
 
     def handleFormSubmission(form: FormValues) =
@@ -161,6 +168,7 @@ class BecomeLeadController @Inject() (
   }
 
   def getPromotionConfirmation: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    logger.info("BecomeLeadController.getPromotionConfirmation")
     Ok(becomeAdminConfirmationPage()).toFuture
   }
 

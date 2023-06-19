@@ -45,17 +45,30 @@ class NoBusinessPresentController @Inject() (
 
   def getNoBusinessPresent: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
+      logger.info(
+        "NoBusinessPresentController.getNoBusinessPresent showing noBusinessPresentPage"
+      )
+
       Ok(noBusinessPresentPage(routes.AccountController.getAccountPage.url)).toFuture
     }
   }
 
   def postNoBusinessPresent: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+    logger.info(
+      "NoBusinessPresentController.postNoBusinessPresent"
+    )
 
     withLeadUndertaking { _ =>
       store
         .update[BusinessEntityJourney](_.copy(isLeadSelectJourney = true.some))
-        .map(_ => Redirect(routes.BusinessEntityController.getAddBusinessEntity))
+        .map { businessEntityJourney: BusinessEntityJourney =>
+          logger.info(
+            s"NoBusinessPresentController.postNoBusinessPresent redirecting to businessEntityJourney eori:${businessEntityJourney.eori}"
+          )
+
+          Redirect(routes.BusinessEntityController.getAddBusinessEntity)
+        }
     }
   }
 

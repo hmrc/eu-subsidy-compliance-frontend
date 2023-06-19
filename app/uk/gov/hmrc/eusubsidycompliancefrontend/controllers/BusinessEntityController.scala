@@ -16,12 +16,15 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import cats.data.OptionT
 import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Invalid, Valid}
+import play.api.i18n.Messages
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.{formWithSingleMandatoryField, mandatory}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney
@@ -40,6 +43,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
+import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -66,9 +70,32 @@ class BusinessEntityController @Inject() (
 
   import actionBuilders._
 
+  private val addBusinessForm = formWithSingleMandatoryField("addBusiness")
+  private val removeBusinessForm = formWithSingleMandatoryField("removeBusiness")
+  private val removeYourselfBusinessForm = formWithSingleMandatoryField("removeYourselfBusinessEntity")
+
+  private val isEoriLengthValid = Constraint[String] { eori: String =>
+    if (EORI.ValidLengthsWithPrefix.contains(withGbPrefix(eori).length)) Valid
+    else Invalid("businessEntityEori.error.incorrect-length")
+  }
+
+  private val isEoriValid = Constraint[String] { eori: String =>
+    if (withGbPrefix(eori).matches(EORI.regex)) Valid
+    else Invalid("businessEntityEori.regex.error")
+  }
+
+  private val eoriForm: Form[FormValues] = Form(
+    mapping(
+      "businessEntityEori" -> mandatory("businessEntityEori")
+        .verifying(isEoriLengthValid)
+        .verifying(isEoriValid)
+    )(eoriEntered => FormValues(withGbPrefix(eoriEntered)))(eori => eori.value.drop(2).some)
+  )
+
   def getAddBusinessEntity: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
+      logger.info("BusinessEntityController.getAddBusinessEntity")
       store
         .getOrCreate[BusinessEntityJourney](BusinessEntityJourney())
         .map { journey =>
@@ -76,6 +103,7 @@ class BusinessEntityController @Inject() (
             journey.addBusiness.value
               .fold(addBusinessForm)(bool => addBusinessForm.fill(FormValues(bool.toString)))
 
+          logger.info("BusinessEntityController showing undertakingBusinessEntity")
           Ok(addBusinessPage(form, undertaking.undertakingBusinessEntity))
         }
     }
@@ -83,7 +111,7 @@ class BusinessEntityController @Inject() (
 
   def postAddBusinessEntity: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-
+    logger.info("BusinessEntityController.postAddBusinessEntity")
     def handleValidAnswer(form: FormValues) =
       if (form.value.isTrue) store.update[BusinessEntityJourney](_.setAddBusiness(form.value.toBoolean)).flatMap(_.next)
       else Redirect(routes.AccountController.getAccountPage).toFuture
@@ -101,6 +129,7 @@ class BusinessEntityController @Inject() (
   def getEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
+      logger.info("BusinessEntityController.getEori")
       store
         .get[BusinessEntityJourney]
         .toContext
@@ -115,6 +144,7 @@ class BusinessEntityController @Inject() (
 
   def postEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+    logger.info("BusinessEntityController.postEori")
 
     val businessEntityEori = "businessEntityEori"
 
@@ -160,108 +190,18 @@ class BusinessEntityController @Inject() (
             eoriForm
               .bindFromRequest()
               .fold(
-                errors => BadRequest(eoriPage(errors, journey.previous)).toFuture,
-                form => handleValidEori(form, journey.previous, undertaking)
+                errors => {
+                  logger.info("BusinessEntityController.postEori failed validation, showing errors")
+                  BadRequest(eoriPage(errors, journey.previous)).toFuture
+                },
+                form => {
+                  logger.info("BusinessEntityController.postEori succeeded validation")
+                  handleValidEori(form, journey.previous, undertaking)
+                }
               )
           }
         }
     }
-  }
-
-  def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = verifiedEmail.async { implicit request =>
-    withLeadUndertaking { _ =>
-      escService.retrieveUndertaking(EORI(eoriEntered)).map {
-        case Some(undertaking) =>
-          val removeBE = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
-          Ok(removeBusinessPage(removeBusinessForm, removeBE))
-        case _ => Redirect(routes.BusinessEntityController.getAddBusinessEntity)
-      }
-    }
-  }
-
-  def getRemoveYourselfBusinessEntity: Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    val previous = routes.AccountController.getAccountPage.url
-
-    escService
-      .retrieveUndertaking(eori)
-      .toContext
-      .fold(Redirect(routes.BusinessEntityController.getAddBusinessEntity)) { undertaking =>
-        Ok(removeYourselfBEPage(removeYourselfBusinessForm, undertaking.getBusinessEntityByEORI(eori), previous))
-      }
-  }
-
-  def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = verifiedEmail.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    def handleValidBE(
-      form: FormValues,
-      undertakingRef: UndertakingRef,
-      removeBE: BusinessEntity,
-      undertaking: Undertaking
-    ) =
-      if (form.value.isTrue) {
-        val effectiveDate = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
-        for {
-          _ <- escService.removeMember(undertakingRef, removeBE)
-          _ <- emailService.sendEmail(EORI(eoriEntered), RemoveMemberToBusinessEntity, undertaking, effectiveDate)
-          _ <- emailService.sendEmail(eori, EORI(eoriEntered), RemoveMemberToLead, undertaking, effectiveDate)
-          _ = auditService
-            .sendEvent(
-              AuditEvent.BusinessEntityRemoved(undertakingRef, request.authorityId, eori, EORI(eoriEntered))
-            )
-        } yield Redirect(routes.BusinessEntityController.getAddBusinessEntity)
-      } else Redirect(routes.BusinessEntityController.getAddBusinessEntity).toFuture
-
-    withLeadUndertaking { _ =>
-      escService
-        .retrieveUndertaking(EORI(eoriEntered))
-        .toContext
-        .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity).toFuture) { undertaking =>
-          val undertakingRef = undertaking.reference
-          val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
-
-          removeBusinessForm
-            .bindFromRequest()
-            .fold(
-              errors => BadRequest(removeBusinessPage(errors, removeBE)).toFuture,
-              success = form => handleValidBE(form, undertakingRef, removeBE, undertaking)
-            )
-        }
-    }
-  }
-
-  def postRemoveYourselfBusinessEntity: Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-
-    def handleFormSubmission(u: Undertaking, b: BusinessEntity) =
-      removeYourselfBusinessForm
-        .bindFromRequest()
-        .fold(
-          errors => BadRequest(removeYourselfBEPage(errors, b, routes.AccountController.getAccountPage.url)).toContext,
-          handleValidFormSubmission(u, b)
-        )
-
-    def handleValidFormSubmission(u: Undertaking, b: BusinessEntity)(form: FormValues) =
-      if (form.value.isTrue) {
-        for {
-          _ <- escService.removeMember(u.reference, b).toContext
-          _ <- store.deleteAll.toContext
-          effectiveDate = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
-          _ <- emailService.sendEmail(eori, MemberRemoveSelfToBusinessEntity, u, effectiveDate).toContext
-          _ <- emailService.sendEmail(u.getLeadEORI, eori, MemberRemoveSelfToLead, u, effectiveDate).toContext
-          _ = auditService.sendEvent(BusinessEntityRemovedSelf(u.reference, request.authorityId, u.getLeadEORI, eori))
-        } yield Redirect(routes.SignOutController.signOut())
-      } else Redirect(routes.AccountController.getAccountPage).toContext
-
-    val result = for {
-      undertaking <- escService.retrieveUndertaking(eori).toContext
-      businessEntityToRemove <- undertaking.findBusinessEntity(eori).toContext
-      r <- handleFormSubmission(undertaking, businessEntityToRemove)
-    } yield r
-
-    result.getOrElse(handleMissingSessionData("Undertaking"))
   }
 
   private def createJourneyAndRedirect(businessEntityJourney: BusinessEntityJourney)(implicit EORI: EORI) =
@@ -274,26 +214,150 @@ class BusinessEntityController @Inject() (
         .put[BusinessEntityJourney](BusinessEntityJourney())
         .map(_ => Redirect(routes.BusinessEntityController.getAddBusinessEntity))
 
-  private val addBusinessForm = formWithSingleMandatoryField("addBusiness")
-  private val removeBusinessForm = formWithSingleMandatoryField("removeBusiness")
-  private val removeYourselfBusinessForm = formWithSingleMandatoryField("removeYourselfBusinessEntity")
-
-  private val isEoriLengthValid = Constraint[String] { eori: String =>
-    if (EORI.ValidLengthsWithPrefix.contains(withGbPrefix(eori).length)) Valid
-    else Invalid("businessEntityEori.error.incorrect-length")
+  def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = verifiedEmail.async { implicit request =>
+    logger.info("BusinessEntityController.getRemoveBusinessEntity")
+    withLeadUndertaking { _ =>
+      escService.retrieveUndertaking(EORI(eoriEntered)).map {
+        case Some(undertaking) =>
+          logger.info(s"Found undertaking for $eoriEntered")
+          val removeBE = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
+          Ok(removeBusinessPage(removeBusinessForm, removeBE))
+        case _ =>
+          logger.info(
+            s"Did not find undertaking for $eoriEntered, redirecting to BusinessEntityController.getAddBusinessEntity"
+          )
+          Redirect(routes.BusinessEntityController.getAddBusinessEntity)
+      }
+    }
   }
 
-  private val isEoriValid = Constraint[String] { eori: String =>
-    if (withGbPrefix(eori).matches(EORI.regex)) Valid
-    else Invalid("businessEntityEori.regex.error")
+  def getRemoveYourselfBusinessEntity: Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    logger.info("BusinessEntityController.getRemoveYourselfBusinessEntity")
+
+    val previous = routes.AccountController.getAccountPage.url
+
+    escService
+      .retrieveUndertaking(eori)
+      .toContext
+      .fold {
+        logger.info(
+          s"Could not find undertaking for $eori, redirecting to BusinessEntityController.getAddBusinessEntity"
+        )
+        Redirect(routes.BusinessEntityController.getAddBusinessEntity)
+      } { undertaking =>
+        logger.info(
+          s"Found undertaking for $eori, showing removeYourselfBEPage"
+        )
+        Ok(removeYourselfBEPage(removeYourselfBusinessForm, undertaking.getBusinessEntityByEORI(eori), previous))
+      }
   }
 
-  private val eoriForm: Form[FormValues] = Form(
-    mapping(
-      "businessEntityEori" -> mandatory("businessEntityEori")
-        .verifying(isEoriLengthValid)
-        .verifying(isEoriValid)
-    )(eoriEntered => FormValues(withGbPrefix(eoriEntered)))(eori => eori.value.drop(2).some)
-  )
+  def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = verifiedEmail.async {
+    implicit request: AuthenticatedEnrolledRequest[AnyContent] =>
+      logger.info("BusinessEntityController.postRemoveBusinessEntity")
+
+      withLeadUndertaking { _ =>
+        escService
+          .retrieveUndertaking(EORI(eoriEntered))
+          .toContext
+          .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity).toFuture) { undertaking =>
+            val undertakingRef = undertaking.reference
+            val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
+            logger.info(
+              s""
+            )
+            removeBusinessForm
+              .bindFromRequest()
+              .fold(
+                errors => BadRequest(removeBusinessPage(errors, removeBE)).toFuture,
+                success = form => handleValidBE(eoriEntered, form, undertakingRef, removeBE, undertaking)
+              )
+          }
+      }
+  }
+
+  private def handleValidBE(
+    eoriEntered: String,
+    form: FormValues,
+    undertakingRef: UndertakingRef,
+    businessEntityToRemove: BusinessEntity,
+    undertaking: Undertaking
+  )(implicit request: AuthenticatedEnrolledRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
+    implicit val eori: EORI = request.eoriNumber
+    logger.info(
+      s"handleValidBE for eoriEntered:$eoriEntered"
+    )
+
+    if (form.value.isTrue) {
+      logger.info("processing form as true is selected")
+      val effectiveDate = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
+      for {
+        _ <- escService.removeMember(undertakingRef, businessEntityToRemove)
+        _ <- emailService.sendEmail(EORI(eoriEntered), RemoveMemberToBusinessEntity, undertaking, effectiveDate)
+        _ <- emailService.sendEmail(eori, EORI(eoriEntered), RemoveMemberToLead, undertaking, effectiveDate)
+        _ = auditService
+          .sendEvent(
+            AuditEvent.BusinessEntityRemoved(undertakingRef, request.authorityId, eori, EORI(eoriEntered))
+          )
+      } yield {
+        logger.info(
+          s"Removed undertakingRef:$undertakingRef, Redirecting to BusinessEntityController.getAddBusinessEntity"
+        )
+        Redirect(routes.BusinessEntityController.getAddBusinessEntity)
+      }
+    } else {
+      logger.info(
+        s"Did not remove undertakingRef:$undertakingRef as form was not true, redirecting to BusinessEntityController.getAddBusinessEntity"
+      )
+      Redirect(routes.BusinessEntityController.getAddBusinessEntity).toFuture
+    }
+  }
+
+  def postRemoveYourselfBusinessEntity: Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    logger.info("BusinessEntityController.postRemoveYourselfBusinessEntity")
+    def handleFormSubmission(undertaking: Undertaking, businessEntity: BusinessEntity): OptionT[Future, Result] =
+      removeYourselfBusinessForm
+        .bindFromRequest()
+        .fold(
+          errors => {
+            logger.info("Failed validating postRemoveYourselfBusinessEntity, showing errors")
+            BadRequest(
+              removeYourselfBEPage(errors, businessEntity, routes.AccountController.getAccountPage.url)
+            ).toContext
+          }, {
+            logger
+              .info(s"Passed validating postRemoveYourselfBusinessEntity, handleValidFormSubmission for $undertaking")
+            handleValidFormSubmission(undertaking, businessEntity)
+          }
+        )
+
+    def handleValidFormSubmission(undertaking: Undertaking, businessEntity: BusinessEntity)(
+      form: FormValues
+    ): OptionT[Future, Result] =
+      if (form.value.isTrue) {
+        for {
+          _ <- escService.removeMember(undertaking.reference, businessEntity).toContext
+          _ <- store.deleteAll.toContext
+          effectiveDate = DateFormatter.govDisplayFormat(timeProvider.today.plusDays(1))
+          _ <- emailService.sendEmail(eori, MemberRemoveSelfToBusinessEntity, undertaking, effectiveDate).toContext
+          _ <- emailService
+            .sendEmail(undertaking.getLeadEORI, eori, MemberRemoveSelfToLead, undertaking, effectiveDate)
+            .toContext
+          _ = auditService.sendEvent(
+            BusinessEntityRemovedSelf(undertaking.reference, request.authorityId, undertaking.getLeadEORI, eori)
+          )
+        } yield Redirect(routes.SignOutController.signOut())
+      } else Redirect(routes.AccountController.getAccountPage).toContext
+
+    val result = for {
+      undertaking <- escService.retrieveUndertaking(eori).toContext
+      businessEntityToRemove <- undertaking.findBusinessEntity(eori).toContext
+      r <- handleFormSubmission(undertaking, businessEntityToRemove)
+    } yield r
+
+    result.getOrElse(handleMissingSessionData("Undertaking"))
+  }
 
 }

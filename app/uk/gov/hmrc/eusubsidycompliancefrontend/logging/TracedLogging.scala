@@ -18,5 +18,5 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.logging
 
 trait TracedLogging {
 
-  def logger: RequestAwareLogger = new RequestAwareLogger(this.getClass)
+  val logger: RequestAwareLogger = new RequestAwareLogger(this.getClass)
 }
