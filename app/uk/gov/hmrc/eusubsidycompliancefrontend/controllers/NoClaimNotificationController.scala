@@ -19,12 +19,13 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NilReturnJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.NonCustomsSubsidyNilReturn
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyUpdate}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, NilSubmissionDate, SubsidyUpdate, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{AuditService, EscService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -53,8 +54,14 @@ class NoClaimNotificationController @Inject() (
     with LeadOnlyUndertakingSupport {
   import actionBuilders._
 
+  private val noClaimForm: Form[FormValues] = formWithSingleMandatoryField("noClaimNotification")
+
   def getNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
+    logger.info(
+      "NoBusinessPresentController.getNoClaimNotification"
+    )
 
     withLeadUndertaking { undertaking =>
       escService
@@ -66,6 +73,10 @@ class NoClaimNotificationController @Inject() (
           val startDate = today.toEarliestTaxYearStart
 
           val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
+
+          logger.info(
+            "NoBusinessPresentController.getNoClaimNotification showing noClaimNotificationPage"
+          )
 
           Ok(
             noClaimNotificationPage(
@@ -85,7 +96,11 @@ class NoClaimNotificationController @Inject() (
   def postNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    withLeadUndertaking { undertaking =>
+    logger.info(
+      "NoBusinessPresentController.postNoClaimNotification"
+    )
+
+    withLeadUndertaking { undertaking: Undertaking =>
       escService
         .retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange)
         .toContext
@@ -96,25 +111,14 @@ class NoClaimNotificationController @Inject() (
 
           val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
 
-          def handleValidNoClaim(): Future[Result] = {
-            val nilSubmissionDate = timeProvider.today.plusDays(1)
-            val result = for {
-              reference <- undertaking.reference.toContext
-              _ <- store.update[NilReturnJourney](e => e.copy(displayNotification = true)).toContext
-              _ <- escService.createSubsidy(SubsidyUpdate(reference, NilSubmissionDate(nilSubmissionDate))).toContext
-              _ = auditService
-                .sendEvent(
-                  NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate)
-                )
-            } yield Redirect(routes.NoClaimNotificationController.getNotificationConfirmation)
-
-            result.getOrElse(handleMissingSessionData("Undertaking ref"))
-          }
-
           noClaimForm
             .bindFromRequest()
             .fold(
-              errors =>
+              errors => {
+                logger.info(
+                  s"NoBusinessPresentController.postNoClaimNotification showing errors ${errors.errors}"
+                )
+
                 BadRequest(
                   noClaimNotificationPage(
                     errors,
@@ -125,21 +129,45 @@ class NoClaimNotificationController @Inject() (
                       .map(_.toDisplayFormat)
                       .getOrElse("") // TODO - can we display something sensible if the date is missing?
                   )
-                ).toFuture,
-              _ => handleValidNoClaim()
+                ).toFuture
+              },
+              _ => {
+                handleValidNoClaim(undertaking)
+              }
             )
         }
     }
   }
 
+  private def handleValidNoClaim(
+    undertaking: Undertaking
+  )(implicit request: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
+    implicit val eori: EORI = request.eoriNumber
+
+    val nilSubmissionDate = timeProvider.today.plusDays(1)
+    val result = for {
+      reference <- undertaking.reference.toContext
+      _ <- store.update[NilReturnJourney](e => e.copy(displayNotification = true)).toContext
+      _ <- escService.createSubsidy(SubsidyUpdate(reference, NilSubmissionDate(nilSubmissionDate))).toContext
+      _ = auditService
+        .sendEvent(
+          NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate)
+        )
+    } yield Redirect(routes.NoClaimNotificationController.getNotificationConfirmation)
+
+    result.getOrElse(handleMissingSessionData("Undertaking ref"))
+  }
+
   // We need to show a confirmation along with the next submission date
   def getNotificationConfirmation: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    logger.info(
+      "NoBusinessPresentController.getNotificationConfirmation"
+    )
+
     withLeadUndertaking { _ =>
       val nextClaimDueDate = ReportReminderHelpers.dueDateToReport(timeProvider.today)
       Ok(noClaimConfirmationPage(nextClaimDueDate)).toFuture
     }
   }
-
-  private val noClaimForm: Form[FormValues] = formWithSingleMandatoryField("noClaimNotification")
 
 }

@@ -46,6 +46,10 @@ class FinancialDashboardController @Inject() (
   def getFinancialDashboard: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
+    logger.info(
+      "FinancialDashboardController.getFinancialDashboard"
+    )
+
     val today = timeProvider.today
 
     // The search period covers the current tax year to date, and the previous 2 tax years.
