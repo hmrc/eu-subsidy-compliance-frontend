@@ -211,6 +211,9 @@ class UndertakingController @Inject() (
         val form = journey.addBusiness.value.fold(addBusinessForm)(addBusiness =>
           addBusinessForm.fill(FormValues(addBusiness.toString))
         )
+
+        println(form)
+
         Ok(
           undertakingAddBusinessPage(
             form,

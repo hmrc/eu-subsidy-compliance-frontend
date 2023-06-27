@@ -23,7 +23,7 @@
      Button(
       content = Text(messages(msg)),
       href = href,
-      preventDoubleClick = preventDoubleClick,
+      preventDoubleClick = Some(preventDoubleClick),
       classes = classes.getOrElse("")
      )
 
@@ -31,7 +31,7 @@
      Button(
       content = Text(messages(msg)),
       href = href,
-      preventDoubleClick = preventDoubleClick,
+      preventDoubleClick = Some(preventDoubleClick),
       attributes = Map("id" -> id),
       classes = classes.getOrElse("")
      )
