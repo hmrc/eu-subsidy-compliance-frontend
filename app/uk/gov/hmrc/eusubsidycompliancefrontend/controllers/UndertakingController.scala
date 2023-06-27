@@ -91,7 +91,14 @@ class UndertakingController @Inject() (
 
   def firstEmptyPage: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+    logger.info(s"UndertakingController.firstEmptyPage attempting to find the journeys next step for EORI:$eori")
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).map { journey =>
+      logger.info(s"UndertakingJourney for EORI:$eori is completed ${journey.isComplete}")
+      logger.info(s"UndertakingJourney's firstEmpty for EORI:$eori is ${journey.firstEmpty}")
+      journey.steps.foreach { step =>
+        logger.info(s"UndertakingJourney step for EORI:$eori" + step.uri + "=" + step.value.isDefined)
+      }
+
       journey.firstEmpty
         .fold(Redirect(routes.BusinessEntityController.getAddBusinessEntity))(identity)
     }
