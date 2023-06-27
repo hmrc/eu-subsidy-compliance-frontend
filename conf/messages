@@ -72,6 +72,13 @@ customswaivers.title = Does your business claim Customs Duty waivers?
 customswaivers.hint = You will need to use this service if your business, or any other business in your organisation, claims Customs Duty waivers
 customswaivers.error.required = Select yes if your business claims Customs Duty waivers
 
+
+# ReportedPaymentReturnJourney
+reportPaymentReturnJourney.title = What do you need to report?
+reportPaymentReturnJourney.option1 = A non-customs subsidy payment
+reportPaymentReturnJourney.option2 = I have no payments to report
+reportPaymentReturnJourney.error.required = Required
+
 mainbusinesscheck.error.required=Select yes if the business will be responsible for reporting de minimis aid for this undertaking
 mainbusinesscheck.title=Reporting de minimis aid payments (less Customs Duty waivers) as a single undertaking
 mainbusinesscheck.h2=What are de minimis aid payments (less Customs Duty waivers)?
@@ -487,3 +494,4 @@ disableUndertakingConfirm.error.required = Select yes if you want to deregister 
 undertakingDisabled.title = You have deregistered your undertaking
 undertakingDisabled.p1 = We have sent you a confirmation email.
 undertakingDisabled.p2 = You have been signed out.
+
