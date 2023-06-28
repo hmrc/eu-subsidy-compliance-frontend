@@ -3,8 +3,7 @@
 ->         /hmrc-frontend                             hmrcfrontend.Routes
 GET        /                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
 
-GET        /home                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPaymentFirstTimeUser
-# uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
+GET        /home                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
 
 GET        /assets/*file                              controllers.Assets.versioned(path = "/public", file: Asset)
 

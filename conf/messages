@@ -320,9 +320,9 @@ reportPaymentReturnJourney.error.required = Required
 # ReportNonCustomSubsidy
 reportNonCustomSubsidy.title = You must report all non-customs subsidies for the last 3 tax years
 reportNonCustomSubsidy.p1 = You need to report for the current tax year, and the previous 2 tax years
-reportNonCustomSubsidy.p2.year1 = 6 April 2020 to 5 April 2021
-reportNonCustomSubsidy.p2.year2 = 6 April 2020 to 5 April 2022
-reportNonCustomSubsidy.p2.year3 = 6 April 2020 to 5 April 2023
+reportNonCustomSubsidy.p2.year1 = 6 April {0} to 5 April {1}
+reportNonCustomSubsidy.p2.year2 = 6 April {0} to 5 April {1}
+reportNonCustomSubsidy.p2.year3 = 6 April {0} to 5 April {1}
 
 add-claim-date.title = What date were you awarded the payment?
 add-claim-date.p1 = You must report all non-customs subsidy payments you have received since <span class="date-no-break">{0}</span>.

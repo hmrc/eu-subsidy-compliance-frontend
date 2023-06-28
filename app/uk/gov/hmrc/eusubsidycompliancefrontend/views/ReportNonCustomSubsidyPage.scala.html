@@ -19,22 +19,17 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
-@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios : GovukRadios,
-    govukInput : GovukInput
+    button: components.Button
 )
 
-@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], previous: Journey.Uri, currentYear: String, previousYear: String, twoYearBack: String, threeYearBack: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"reportNonCustomSubsidy"}
 @title = @{messages(s"$key.title")}
-<!--@radioIdentifier = @{"report-payment-return"}-->
 
 @layout(
     pageTitle = Some(title),
@@ -45,9 +40,9 @@
     @H1(messages("reportNonCustomSubsidy.title"))
     @{P(messages(s"reportNonCustomSubsidy.p1"))}
     <ul class="govuk-list govuk-list--bullet">
-        <li>@messages(s"reportNonCustomSubsidy.p2.year1")</li>
-        <li>@messages(s"reportNonCustomSubsidy.p2.year2")</li>
-        <li>@messages(s"reportNonCustomSubsidy.p2.year3")</li>
+        <li> @messages("reportNonCustomSubsidy.p2.year1", threeYearBack, twoYearBack) </li>
+        <li> @messages("reportNonCustomSubsidy.p2.year2", twoYearBack, previousYear) </li>
+        <li> @messages("reportNonCustomSubsidy.p2.year3", previousYear, currentYear) </li>
     </ul>
 
     @button("common.continue", href = Some(controllers.routes.SubsidyController.getClaimDate.url))

@@ -173,34 +173,16 @@ class SubsidyController @Inject() (
           else Redirect(routes.SubsidyController.getReportedPaymentReturningUserPage)
         }
       }
-//        for {
-//          updatedJourney <- store.update[SubsidyJourney](_.setReportPaymentFirstTimeUser(f.value.isTrue)).toContext
-////          next <- updatedJourney.next.toContext
-////          updateBusiness = updatedJourney.getAddBusiness
-//        } yield Redirect(routes.SubsidyController.getReportedNoCustomSubsidyPage)
 
       processFormSubmission[SubsidyJourney] { journey =>
         reportedPaymentFirstTimeUserForm
           .bindFromRequest()
           .fold(
-            errors => BadRequest(reportPaymentFirstTimeUserPage(errors, routes.AccountController.getAccountPage.url)).toContext,
+            errors =>
+              BadRequest(reportPaymentFirstTimeUserPage(errors, routes.AccountController.getAccountPage.url)).toContext,
             handleValidFormSubmission
           )
       }
-
-
-//      processFormSubmission[UndertakingJourney] { journey =>
-//        addBusinessForm
-//          .bindFromRequest()
-//          .fold(
-//            errors => BadRequest(undertakingAddBusinessPage(errors, journey.previous)).toContext,
-//            form =>
-//              store
-//                .update[UndertakingJourney](_.setAddBusiness(form.value.isTrue))
-//                .flatMap(_.next)
-//                .toContext
-//          )
-//      }
     }
   }
 
@@ -233,7 +215,10 @@ class SubsidyController @Inject() (
         reportedPaymentReturningUserForm
           .bindFromRequest()
           .fold(
-            errors => BadRequest(addClaimBusinessPage(errors, routes.SubsidyController.getReportPaymentFirstTimeUser.url)).toContext,
+            errors =>
+              BadRequest(
+                addClaimBusinessPage(errors, routes.SubsidyController.getReportPaymentFirstTimeUser.url)
+              ).toContext,
             handleValidFormSubmission
           )
       }
@@ -247,10 +232,22 @@ class SubsidyController @Inject() (
           journey.reportedNonCustomSubsidy.value
             .fold(reportedPaymentNonCustomSubsidyForm)(v => reportedPaymentNonCustomSubsidyForm.fill(FormValues(v)))
 
-        val previousUrl = if(journey.getReportPaymentReturningUser)
-          routes.SubsidyController.getReportedPaymentReturningUserPage.url
-        else routes.SubsidyController.getReportPaymentFirstTimeUser.url
-        Ok(reportNonCustomSubsidyPage(updatedForm, previousUrl))
+        val previousUrl =
+          if (journey.getReportPaymentReturningUser)
+            routes.SubsidyController.getReportedPaymentReturningUserPage.url
+          else routes.SubsidyController.getReportPaymentFirstTimeUser.url
+
+        val currentYear = LocalDate.now.getYear
+        Ok(
+          reportNonCustomSubsidyPage(
+            updatedForm,
+            previousUrl,
+            currentYear.toString,
+            (currentYear - 1).toString,
+            (currentYear - 2).toString,
+            (currentYear - 3).toString
+          )
+        )
       }
     }
   }
