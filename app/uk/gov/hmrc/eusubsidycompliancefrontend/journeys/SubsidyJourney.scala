@@ -119,6 +119,8 @@ case class SubsidyJourney(
   def setTraderRef(o: OptionalTraderRef): SubsidyJourney = this.copy(traderRef = traderRef.copy(o.some))
   def setCya(v: Boolean): SubsidyJourney = this.copy(cya = cya.copy(v.some))
 
+  def getReportPaymentFirstTimeUser: Boolean = reportPaymentFirstTimeUser.value.getOrElse(false)
+
   def getClaimAmount: Option[BigDecimal] = claimAmountToBigDecimal(claimAmount)
   def getConvertedClaimAmount: Option[BigDecimal] = claimAmountToBigDecimal(convertedClaimAmountConfirmation)
   def getClaimEori: Option[EORI] = addClaimEori.value.flatMap(_.value).map(EORI(_))
