@@ -72,20 +72,6 @@ customswaivers.title = Does your business claim Customs Duty waivers?
 customswaivers.hint = You will need to use this service if your business, or any other business in your organisation, claims Customs Duty waivers
 customswaivers.error.required = Select yes if your business claims Customs Duty waivers
 
-
-# ReportedPaymentReturnJourney
-reportPaymentReturnJourney.title = What do you need to report?
-reportPaymentReturnJourney.option1 = A non-customs subsidy payment
-reportPaymentReturnJourney.option2 = I have no payments to report
-reportPaymentReturnJourney.error.required = Required
-
-# ReportNonCustomSubsidy
-reportNonCustomSubsidy.title = You must report all non-customs subsidies for the last 3 tax years
-reportNonCustomSubsidy.p1 = You need to report for the current tax year, and the previous 2 tax years
-reportNonCustomSubsidy.p2.year1 = 6 April 2020 to 5 April 2021
-reportNonCustomSubsidy.p2.year2 = 6 April 2020 to 5 April 2022
-reportNonCustomSubsidy.p2.year3 = 6 April 2020 to 5 April 2023
-
 mainbusinesscheck.error.required=Select yes if the business will be responsible for reporting de minimis aid for this undertaking
 mainbusinesscheck.title=Reporting de minimis aid payments (less Customs Duty waivers) as a single undertaking
 mainbusinesscheck.h2=What are de minimis aid payments (less Customs Duty waivers)?
@@ -320,6 +306,23 @@ confirm-converted-amount.title = Your amount in euros
 confirm-converted-amount.p1 = Your pounds sterling amount of {0}, converted to euros, is <strong>{1}</strong>.
 confirm-converted-amount.p2 = We’ve converted your amount from pounds sterling as this type of aid is measured in euros.
 confirm-converted-amount.p3 = We calculate your euro amounts using the currency exchange rates published by the European Central Bank.
+
+# ReportPaymentFirstTimeUser
+reportPaymentFirstTimeUser.title = Have you been awarded any non-customs subsidies since 6 April 2020?
+reportPaymentFirstTimeUser.error.required = Please select Yes or No
+
+# ReportedPaymentReturnJourney
+reportPaymentReturnJourney.title = What do you need to report?
+reportPaymentReturnJourney.option1 = A non-customs subsidy payment
+reportPaymentReturnJourney.option2 = I have no payments to report
+reportPaymentReturnJourney.error.required = Required
+
+# ReportNonCustomSubsidy
+reportNonCustomSubsidy.title = You must report all non-customs subsidies for the last 3 tax years
+reportNonCustomSubsidy.p1 = You need to report for the current tax year, and the previous 2 tax years
+reportNonCustomSubsidy.p2.year1 = 6 April 2020 to 5 April 2021
+reportNonCustomSubsidy.p2.year2 = 6 April 2020 to 5 April 2022
+reportNonCustomSubsidy.p2.year3 = 6 April 2020 to 5 April 2023
 
 add-claim-date.title = What date were you awarded the payment?
 add-claim-date.p1 = You must report all non-customs subsidy payments you have received since <span class="date-no-break">{0}</span>.
