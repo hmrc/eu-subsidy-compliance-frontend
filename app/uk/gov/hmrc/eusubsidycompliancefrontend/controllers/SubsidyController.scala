@@ -87,7 +87,7 @@ class SubsidyController @Inject() (
   private val reportedPaymentFirstTimeUserForm: Form[FormValues] = formWithSingleMandatoryField(
     "reportPaymentFirstTimeUser"
   )
-  private val reportPaymentNonCustomSubsidyForm: Form[FormValues] = formWithSingleMandatoryField(
+  private val reportedPaymentNonCustomSubsidyForm: Form[FormValues] = formWithSingleMandatoryField(
     "reportNonCustomSubsidy"
   )
   private val reportedPaymentReturningUserForm: Form[FormValues] = formWithSingleMandatoryField(
@@ -219,12 +219,12 @@ class SubsidyController @Inject() (
     }
   }
 
-  def getReportNoCustomSubsidyPage: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def getReportedNoCustomSubsidyPage: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       renderFormIfEligible { journey =>
         val updatedForm =
           journey.addClaimBusiness.value
-            .fold(addClaimBusinessForm)(v => addClaimBusinessForm.fill(FormValues(v)))
+            .fold(reportedPaymentNonCustomSubsidyForm)(v => addClaimBusinessForm.fill(FormValues(v)))
 
         Ok(addClaimBusinessPage(updatedForm, journey.previous))
       }

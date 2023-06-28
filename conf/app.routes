@@ -3,7 +3,8 @@
 ->         /hmrc-frontend                             hmrcfrontend.Routes
 GET        /                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
 
-GET        /home                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
+GET        /home                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPaymentFirstTimeUser
+# uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccountController.getAccountPage
 
 GET        /assets/*file                              controllers.Assets.versioned(path = "/public", file: Asset)
 
@@ -90,8 +91,8 @@ GET        /lead-undertaking-add-claim-date                                     
 GET        /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportedPaymentReturningUserPage
 POST       /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportedPaymentReturningUserPage
 
-GET        /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportNoCustomSubsidyPage
-POST       /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportNoCustomSubsidyPage
+GET        /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportedNoCustomSubsidyPage
+POST       /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportedNoCustomSubsidyPage
 
 POST       /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postClaimDate
 GET        /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getClaimDate

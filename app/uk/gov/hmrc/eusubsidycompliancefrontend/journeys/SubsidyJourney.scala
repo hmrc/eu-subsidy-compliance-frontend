@@ -150,7 +150,7 @@ object SubsidyJourney {
     }
 
     case class ReportedNonCustomSubsidyFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getReportNoCustomSubsidyPage.url
+      def uri = controller.getReportedNoCustomSubsidyPage.url
     }
 
     case class ClaimDateFormPage(value: Form[DateFormValues] = None) extends FormPage[DateFormValues] {
