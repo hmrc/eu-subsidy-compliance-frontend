@@ -57,6 +57,7 @@
 }
 
     @formHelper(action = controllers.routes.SubsidyController.getReportedPayments) {
+        @{P(messages(s"reportNonCustomSubsidy.p1"))}
         <ul class="govuk-list govuk-list--bullet">
             <li>@messages(s"reportNonCustomSubsidy.p2.year1")</li>
             <li>@messages(s"reportNonCustomSubsidy.p2.year2")</li>
