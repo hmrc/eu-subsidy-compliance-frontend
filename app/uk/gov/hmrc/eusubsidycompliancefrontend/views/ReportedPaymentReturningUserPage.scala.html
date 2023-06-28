@@ -53,7 +53,7 @@
     )
 }
 
-@formHelper(action = controllers.routes.SubsidyController.getReportedPayments) {
+@formHelper(action = controllers.routes.SubsidyController.postReportedPaymentReturningUserPage) {
 
         @govukRadios(Radios(
             fieldset = Some(Fieldset(
@@ -77,9 +77,9 @@
                         checked = form.data.get(radioIdentifier).contains("true")
                     ),
                     RadioItem(
-                        content = Text(messages("reportPaymentReturnJourney.option1")),
-                        checked = form.data.get(radioIdentifier).contains("false"),
-                        value = Some("false")
+                        content = Text(messages("reportPaymentReturnJourney.option2")),
+                        value = Some("false"),
+                        checked = form.data.get(radioIdentifier).contains("false")
                     )
                     )
         ))

@@ -100,14 +100,11 @@ case class SubsidyJourney(
 
   private def shouldAddNewBusiness = addClaimEori.value.exists(_.addToUndertaking == true)
 
-  def setReportPaymentFirstTimeUser(): SubsidyJourney =
-    this.copy(reportPaymentFirstTimeUser)
+  def setReportPaymentFirstTimeUser(v: Boolean): SubsidyJourney =
+    this.copy(reportPaymentFirstTimeUser = reportPaymentFirstTimeUser.copy(v.some))
 
   def setReportedPaymentReturningUser(v: Boolean): SubsidyJourney =
     this.copy(reportPaymentReturningUser = reportPaymentReturningUser.copy(v.some))
-
-  def setReportedNonCustomSubsidy(v: Boolean): SubsidyJourney =
-    this.copy(reportedNonCustomSubsidy = reportedNonCustomSubsidy.copy(v.some))
 
   def setClaimAmount(c: ClaimAmount): SubsidyJourney = this.copy(claimAmount = claimAmount.copy(value = c.some))
   def setConvertedClaimAmount(c: ClaimAmount): SubsidyJourney =
@@ -120,11 +117,13 @@ case class SubsidyJourney(
   def setCya(v: Boolean): SubsidyJourney = this.copy(cya = cya.copy(v.some))
 
   def getReportPaymentFirstTimeUser: Boolean = reportPaymentFirstTimeUser.value.getOrElse(false)
+  def getReportPaymentReturningUser: Boolean = reportPaymentReturningUser.value.getOrElse(false)
 
   def getClaimAmount: Option[BigDecimal] = claimAmountToBigDecimal(claimAmount)
   def getConvertedClaimAmount: Option[BigDecimal] = claimAmountToBigDecimal(convertedClaimAmountConfirmation)
   def getClaimEori: Option[EORI] = addClaimEori.value.flatMap(_.value).map(EORI(_))
   def getAddBusiness: Boolean = addClaimBusiness.value.getOrElse(false)
+  def getReportedNoCustomSubsidy: Boolean = reportedNonCustomSubsidy.value.getOrElse(false)
 
   def claimAmountIsInEuros: Boolean = claimAmount.value.map(_.currencyCode).contains(EUR)
 

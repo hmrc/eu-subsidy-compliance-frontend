@@ -42,29 +42,14 @@
     backLink = Some(previous),
     hasErrors = form.hasErrors
 ) {
+    @H1(messages("reportNonCustomSubsidy.title"))
+    @{P(messages(s"reportNonCustomSubsidy.p1"))}
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages(s"reportNonCustomSubsidy.p2.year1")</li>
+        <li>@messages(s"reportNonCustomSubsidy.p2.year2")</li>
+        <li>@messages(s"reportNonCustomSubsidy.p2.year3")</li>
+    </ul>
 
-@if(form.hasErrors) {
-    @govukErrorSummary(ErrorSummary(errorList = Seq(
-                        ErrorLink(
-                            href = Some(s"#${form.errors.head.key}"),
-                            content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}"),
-                            attributes = Map("class" ->"govuk-link")
-                        )
-                    ),
-                    title = Text(messages("common.error.summary.title"))
-                    )
-                )
-}
-
-    @formHelper(action = controllers.routes.SubsidyController.getReportedPayments) {
-        @{P(messages(s"reportNonCustomSubsidy.p1"))}
-        <ul class="govuk-list govuk-list--bullet">
-            <li>@messages(s"reportNonCustomSubsidy.p2.year1")</li>
-            <li>@messages(s"reportNonCustomSubsidy.p2.year2")</li>
-            <li>@messages(s"reportNonCustomSubsidy.p2.year3")</li>
-        </ul>
-
-        @button("common.continue")
-    }
+    @button("common.continue", href = Some(controllers.routes.SubsidyController.getClaimDate.url))
 }
 

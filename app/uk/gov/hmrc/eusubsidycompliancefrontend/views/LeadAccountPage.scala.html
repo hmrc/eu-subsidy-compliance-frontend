@@ -48,9 +48,13 @@
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"lead-account-homepage"}
 @linkURL = @{
-    <!--if(isNonLeadEORIPresent) routes.SelectNewLeadController.getSelectNewLead-->
-     if(true) routes.SubsidyController.getReportPaymentFirstTimeUser
+    if(isNonLeadEORIPresent) routes.SelectNewLeadController.getSelectNewLead
     else routes.NoBusinessPresentController.getNoBusinessPresent
+}
+
+@continueUrl = @{
+    if(neverSubmitted) routes.SubsidyController.getReportPaymentFirstTimeUser.url
+    else routes.SubsidyController.getReportedPaymentReturningUserPage.url
 }
 
 @detailsHtml = {
@@ -67,7 +71,7 @@
   backLinkEnabled = false,
   backLink = None
 ) {
-    
+
     @H1(messages("lead-account-homepage.title"), Some("govuk-heading-xl govuk-!-margin-bottom-0"))
 
     <p class="govuk-hint govuk-!-font-size-24 govuk-!-margin-top-1 govuk-!-margin-bottom-8">@eori</p>
@@ -94,7 +98,7 @@
 
     @button(
       msg = "common.submit-report",
-      href = Some(routes.SubsidyController.getClaimDate.url),
+      href = Some(continueUrl),
     )
 
     @H2(messages("lead-account-homepage.h2-3"), Some("govuk-heading-m govuk-!-margin-top-4"))

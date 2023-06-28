@@ -80,22 +80,16 @@ POST       /lead-undertaking-add-payment-amount                                 
 GET        /lead-undertaking-check-converted-amount                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getConfirmClaimAmount
 POST       /lead-undertaking-check-converted-amount                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postConfirmClaimAmount
 
-GET        /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPaymentFirstTimeUser
-POST       /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPaymentFirstTimeUser
+GET        /lead-undertaking-first-time-user                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPaymentFirstTimeUser
+POST       /lead-undertaking-first-time-user                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPaymentFirstTimeUser
 
+GET        /lead-undertaking-returning-user                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportedPaymentReturningUserPage
+POST       /lead-undertaking-returning-user                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportedPaymentReturningUserPage
 
-### Report Payment
-POST       /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPaymentFirstTimeUser
-GET        /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPaymentFirstTimeUser
+GET        /lead-undertaking-no-custom-subsidy                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportedNoCustomSubsidyPage
 
-GET        /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportedPaymentReturningUserPage
-POST       /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportedPaymentReturningUserPage
-
-GET        /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportedNoCustomSubsidyPage
-POST       /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportedNoCustomSubsidyPage
-
-POST       /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postClaimDate
 GET        /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getClaimDate
+POST       /lead-undertaking-add-claim-date                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postClaimDate
 
 GET        /lead-undertaking-add-public-authority                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getAddClaimPublicAuthority
 POST       /lead-undertaking-add-public-authority                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postAddClaimPublicAuthority

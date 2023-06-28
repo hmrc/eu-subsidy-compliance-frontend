@@ -156,9 +156,8 @@ class SubsidyController @Inject() (
       renderFormIfEligible { journey =>
         val updatedForm =
           journey.reportPaymentFirstTimeUser.value
-            .fold(reportedPaymentFirstTimeUserForm)(v => addClaimBusinessForm.fill(FormValues(v)))
-
-        Ok(addClaimBusinessPage(updatedForm, journey.previous))
+            .fold(reportedPaymentFirstTimeUserForm)(v => reportedPaymentFirstTimeUserForm.fill(FormValues(v)))
+        Ok(reportPaymentFirstTimeUserPage(updatedForm, routes.AccountController.getAccountPage.url))
       }
     }
   }
@@ -167,21 +166,41 @@ class SubsidyController @Inject() (
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
 
-      def handleValidFormSubmission(f: FormValues): OptionT[Future, Result] =
-        for {
-          updatedJourney <- store.update[SubsidyJourney](_.setAddBusiness(f.value.isTrue)).toContext
-          next <- updatedJourney.next.toContext
-          updateBusiness = updatedJourney.getAddBusiness
-        } yield if (updateBusiness) next else Redirect(routes.SelectNewLeadController.getSelectNewLead)
+      def handleValidFormSubmission(f: FormValues): OptionT[Future, Result] = {
+        val userSelection = f.value.isTrue
+        store.update[SubsidyJourney](_.setReportPaymentFirstTimeUser(userSelection)).toContext.map { updatedJourney =>
+          if (userSelection) Redirect(routes.SubsidyController.getReportedNoCustomSubsidyPage)
+          else Redirect(routes.SubsidyController.getReportedPaymentReturningUserPage)
+        }
+      }
+//        for {
+//          updatedJourney <- store.update[SubsidyJourney](_.setReportPaymentFirstTimeUser(f.value.isTrue)).toContext
+////          next <- updatedJourney.next.toContext
+////          updateBusiness = updatedJourney.getAddBusiness
+//        } yield Redirect(routes.SubsidyController.getReportedNoCustomSubsidyPage)
 
       processFormSubmission[SubsidyJourney] { journey =>
-        addClaimBusinessForm
+        reportedPaymentFirstTimeUserForm
           .bindFromRequest()
           .fold(
-            errors => BadRequest(addClaimBusinessPage(errors, journey.previous)).toContext,
+            errors => BadRequest(reportPaymentFirstTimeUserPage(errors, routes.AccountController.getAccountPage.url)).toContext,
             handleValidFormSubmission
           )
       }
+
+
+//      processFormSubmission[UndertakingJourney] { journey =>
+//        addBusinessForm
+//          .bindFromRequest()
+//          .fold(
+//            errors => BadRequest(undertakingAddBusinessPage(errors, journey.previous)).toContext,
+//            form =>
+//              store
+//                .update[UndertakingJourney](_.setAddBusiness(form.value.isTrue))
+//                .flatMap(_.next)
+//                .toContext
+//          )
+//      }
     }
   }
 
@@ -190,9 +209,9 @@ class SubsidyController @Inject() (
       renderFormIfEligible { journey =>
         val updatedForm =
           journey.reportPaymentReturningUser.value
-            .fold(reportedPaymentReturningUserForm)(v => addClaimBusinessForm.fill(FormValues(v)))
+            .fold(reportedPaymentReturningUserForm)(v => reportedPaymentReturningUserForm.fill(FormValues(v)))
 
-        Ok(addClaimBusinessPage(updatedForm, journey.previous))
+        Ok(reportedPaymentReturningUserPage(updatedForm, routes.SubsidyController.getReportPaymentFirstTimeUser.url))
       }
     }
   }
@@ -201,18 +220,20 @@ class SubsidyController @Inject() (
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
 
-      def handleValidFormSubmission(f: FormValues): OptionT[Future, Result] =
-        for {
-          updatedJourney <- store.update[SubsidyJourney](_.setAddBusiness(f.value.isTrue)).toContext
-          next <- updatedJourney.next.toContext
-          updateBusiness = updatedJourney.getAddBusiness
-        } yield if (updateBusiness) next else Redirect(routes.SelectNewLeadController.getSelectNewLead)
+      def handleValidFormSubmission(f: FormValues): OptionT[Future, Result] = {
+        val userSelection = f.value.isTrue
+        store.update[SubsidyJourney](_.setReportedPaymentReturningUser(userSelection)).toContext.map { _ =>
+          if (userSelection)
+            Redirect(routes.SubsidyController.getReportedNoCustomSubsidyPage)
+          else Redirect(routes.NoClaimNotificationController.getNoClaimNotification)
+        }
+      }
 
       processFormSubmission[SubsidyJourney] { journey =>
-        addClaimBusinessForm
+        reportedPaymentReturningUserForm
           .bindFromRequest()
           .fold(
-            errors => BadRequest(addClaimBusinessPage(errors, journey.previous)).toContext,
+            errors => BadRequest(addClaimBusinessPage(errors, routes.SubsidyController.getReportPaymentFirstTimeUser.url)).toContext,
             handleValidFormSubmission
           )
       }
@@ -223,35 +244,13 @@ class SubsidyController @Inject() (
     withLeadUndertaking { _ =>
       renderFormIfEligible { journey =>
         val updatedForm =
-          journey.addClaimBusiness.value
-            .fold(reportedPaymentNonCustomSubsidyForm)(v => addClaimBusinessForm.fill(FormValues(v)))
+          journey.reportedNonCustomSubsidy.value
+            .fold(reportedPaymentNonCustomSubsidyForm)(v => reportedPaymentNonCustomSubsidyForm.fill(FormValues(v)))
 
-        Ok(addClaimBusinessPage(updatedForm, journey.previous))
-      }
-    }
-  }
-
-  def postReportedNoCustomSubsidyPage: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    withLeadUndertaking { _ =>
-      implicit val eori: EORI = request.eoriNumber
-      logger.info(
-        "SelectNewLeadController.postClaimDate"
-      )
-
-      processFormSubmission[SubsidyJourney] { journey =>
-        claimDateForm
-          .bindFromRequest()
-          .fold(
-            formWithErrors => {
-              val earliestAllowedClaimDate = timeProvider.today.toEarliestTaxYearStart
-              BadRequest(addClaimDatePage(formWithErrors, journey.previous, earliestAllowedClaimDate)).toContext
-            },
-            form =>
-              store
-                .update[SubsidyJourney](_.setClaimDate(form))
-                .flatMap(_.next)
-                .toContext
-          )
+        val previousUrl = if(journey.getReportPaymentReturningUser)
+          routes.SubsidyController.getReportedPaymentReturningUserPage.url
+        else routes.SubsidyController.getReportPaymentFirstTimeUser.url
+        Ok(reportNonCustomSubsidyPage(updatedForm, previousUrl))
       }
     }
   }
