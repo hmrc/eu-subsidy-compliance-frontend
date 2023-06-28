@@ -231,8 +231,8 @@ class SubsidyController @Inject() (
     }
   }
 
-  def postReportNoCustomSubsidyPage: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    /*withLeadUndertaking { _ =>
+  def postReportedNoCustomSubsidyPage: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       logger.info(
         "SelectNewLeadController.postClaimDate"
@@ -253,7 +253,7 @@ class SubsidyController @Inject() (
                 .toContext
           )
       }
-    }*/
+    }
   }
 
   def getClaimDate: Action[AnyContent] = verifiedEmail.async { implicit request =>

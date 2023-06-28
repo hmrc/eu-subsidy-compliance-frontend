@@ -182,8 +182,8 @@ object SubsidyJourney {
       implicit val reportPaymentFirstTimeUserPageFormPageFormat: OFormat[ReportPaymentFirstTimeUserFormPage] =
         Json.format
     }
-    object ReportNonCustomSubsidyFormPage {
-      implicit val reportNonCustomSubsidyPageFormPageFormat: OFormat[ReportedNonCustomSubsidyFormPage] = Json.format
+    object ReportedNonCustomSubsidyFormPage {
+      implicit val reportedNonCustomSubsidyPageFormPageFormat: OFormat[ReportedNonCustomSubsidyFormPage] = Json.format
     }
     object ReportedPaymentReturningUserFormPage {
       //def apply(): ReportedPaymentReturningUserPage = ???
