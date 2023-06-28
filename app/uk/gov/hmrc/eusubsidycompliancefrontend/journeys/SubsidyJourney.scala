@@ -22,7 +22,7 @@ import play.api.libs.json._
 import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Form
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms._
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms.{_}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.EUR
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef}
@@ -32,6 +32,9 @@ import scala.concurrent.Future
 import scala.util.Try
 
 case class SubsidyJourney(
+  reportPaymentFirstTimeUser: ReportPaymentFirstTimeUserFormPage = ReportPaymentFirstTimeUserFormPage(),
+  reportPaymentReturningUser: ReportedPaymentReturningUserFormPage = ReportedPaymentReturningUserFormPage(),
+  reportedNonCustomSubsidy: ReportedNonCustomSubsidyFormPage = ReportedNonCustomSubsidyFormPage(),
   claimDate: ClaimDateFormPage = ClaimDateFormPage(),
   claimAmount: ClaimAmountFormPage = ClaimAmountFormPage(),
   convertedClaimAmountConfirmation: ConvertedClaimAmountConfirmationPage = ConvertedClaimAmountConfirmationPage(),
@@ -97,6 +100,15 @@ case class SubsidyJourney(
 
   private def shouldAddNewBusiness = addClaimEori.value.exists(_.addToUndertaking == true)
 
+  def setReportPaymentFirstTimeUser(): SubsidyJourney =
+    this.copy(reportPaymentFirstTimeUser)
+
+  def setReportedPaymentReturningUser(v: Boolean): SubsidyJourney =
+    this.copy(reportPaymentReturningUser = reportPaymentReturningUser.copy(v.some))
+
+  def setReportedNonCustomSubsidy(v: Boolean): SubsidyJourney =
+    this.copy(reportedNonCustomSubsidy = reportedNonCustomSubsidy.copy(v.some))
+
   def setClaimAmount(c: ClaimAmount): SubsidyJourney = this.copy(claimAmount = claimAmount.copy(value = c.some))
   def setConvertedClaimAmount(c: ClaimAmount): SubsidyJourney =
     this.copy(convertedClaimAmountConfirmation = convertedClaimAmountConfirmation.copy(value = c.some))
@@ -127,6 +139,18 @@ object SubsidyJourney {
 
     private val controller = routes.SubsidyController
 
+    case class ReportPaymentFirstTimeUserFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
+      def uri = controller.getReportPaymentFirstTimeUser.url
+    }
+
+    case class ReportedPaymentReturningUserFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
+      def uri = controller.getReportedPaymentReturningUserPage.url
+    }
+
+    case class ReportedNonCustomSubsidyFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
+      def uri = controller.getReportNoCustomSubsidyPage.url
+    }
+
     case class ClaimDateFormPage(value: Form[DateFormValues] = None) extends FormPage[DateFormValues] {
       def uri = controller.getClaimDate.url
     }
@@ -150,6 +174,20 @@ object SubsidyJourney {
     }
     case class CyaFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getCheckAnswers.url
+    }
+
+    object ReportPaymentFirstTimeUserFormPage {
+      implicit val reportPaymentFirstTimeUserPageFormPageFormat: OFormat[ReportPaymentFirstTimeUserFormPage] =
+        Json.format
+    }
+    object ReportNonCustomSubsidyFormPage {
+      implicit val reportNonCustomSubsidyPageFormPageFormat: OFormat[ReportedNonCustomSubsidyFormPage] = Json.format
+    }
+    object ReportedPaymentReturningUserFormPage {
+      //def apply(): ReportedPaymentReturningUserPage = ???
+
+      implicit val reportedPaymentReturningUserFormPageFormat: OFormat[ReportedPaymentReturningUserFormPage] =
+        Json.format
     }
 
     object ClaimDateFormPage { implicit val claimDateFormPageFormat: OFormat[ClaimDateFormPage] = Json.format }

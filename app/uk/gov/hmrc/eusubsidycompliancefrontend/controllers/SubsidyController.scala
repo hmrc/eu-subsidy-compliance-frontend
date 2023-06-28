@@ -63,6 +63,9 @@ class SubsidyController @Inject() (
   addClaimEoriPage: AddClaimEoriPage,
   addClaimBusinessPage: AddClaimBusinessPage,
   addClaimAmountPage: AddClaimAmountPage,
+  reportPaymentFirstTimeUserPage: ReportPaymentFirstTimeUserPage,
+  reportedPaymentReturningUserPage: ReportedPaymentReturningUserPage,
+  reportNonCustomSubsidyPage: ReportNonCustomSubsidyPage,
   addClaimDatePage: AddClaimDatePage,
   addPublicAuthorityPage: AddPublicAuthorityPage,
   addTraderReferencePage: AddTraderReferencePage,
@@ -81,6 +84,15 @@ class SubsidyController @Inject() (
   private val removeSubsidyClaimForm: Form[FormValues] = formWithSingleMandatoryField("removeSubsidyClaim")
   private val cyaForm: Form[FormValues] = formWithSingleMandatoryField("cya")
   private val addClaimBusinessForm: Form[FormValues] = formWithSingleMandatoryField("add-claim-business")
+  private val reportedPaymentFirstTimeUserForm: Form[FormValues] = formWithSingleMandatoryField(
+    "reportPaymentFirstTimeUser"
+  )
+  private val reportPaymentNonCustomSubsidyForm: Form[FormValues] = formWithSingleMandatoryField(
+    "reportNonCustomSubsidy"
+  )
+  private val reportedPaymentReturningUserForm: Form[FormValues] = formWithSingleMandatoryField(
+    "report-payment-return"
+  )
 
   private val enteredTradingRefIsValid = Constraint[String] { traderRef: String =>
     if (traderRef.matches(TraderRef.regex)) Valid
@@ -137,6 +149,111 @@ class SubsidyController @Inject() (
           )
         )
       }
+  }
+
+  def getReportPaymentFirstTimeUser: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
+      renderFormIfEligible { journey =>
+        val updatedForm =
+          journey.reportPaymentFirstTimeUser.value
+            .fold(reportedPaymentFirstTimeUserForm)(v => addClaimBusinessForm.fill(FormValues(v)))
+
+        Ok(addClaimBusinessPage(updatedForm, journey.previous))
+      }
+    }
+  }
+
+  def postReportPaymentFirstTimeUser: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+
+      def handleValidFormSubmission(f: FormValues): OptionT[Future, Result] =
+        for {
+          updatedJourney <- store.update[SubsidyJourney](_.setAddBusiness(f.value.isTrue)).toContext
+          next <- updatedJourney.next.toContext
+          updateBusiness = updatedJourney.getAddBusiness
+        } yield if (updateBusiness) next else Redirect(routes.SelectNewLeadController.getSelectNewLead)
+
+      processFormSubmission[SubsidyJourney] { journey =>
+        addClaimBusinessForm
+          .bindFromRequest()
+          .fold(
+            errors => BadRequest(addClaimBusinessPage(errors, journey.previous)).toContext,
+            handleValidFormSubmission
+          )
+      }
+    }
+  }
+
+  def getReportedPaymentReturningUserPage: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
+      renderFormIfEligible { journey =>
+        val updatedForm =
+          journey.reportPaymentReturningUser.value
+            .fold(reportedPaymentReturningUserForm)(v => addClaimBusinessForm.fill(FormValues(v)))
+
+        Ok(addClaimBusinessPage(updatedForm, journey.previous))
+      }
+    }
+  }
+
+  def postReportedPaymentReturningUserPage: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+
+      def handleValidFormSubmission(f: FormValues): OptionT[Future, Result] =
+        for {
+          updatedJourney <- store.update[SubsidyJourney](_.setAddBusiness(f.value.isTrue)).toContext
+          next <- updatedJourney.next.toContext
+          updateBusiness = updatedJourney.getAddBusiness
+        } yield if (updateBusiness) next else Redirect(routes.SelectNewLeadController.getSelectNewLead)
+
+      processFormSubmission[SubsidyJourney] { journey =>
+        addClaimBusinessForm
+          .bindFromRequest()
+          .fold(
+            errors => BadRequest(addClaimBusinessPage(errors, journey.previous)).toContext,
+            handleValidFormSubmission
+          )
+      }
+    }
+  }
+
+  def getReportNoCustomSubsidyPage: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
+      renderFormIfEligible { journey =>
+        val updatedForm =
+          journey.addClaimBusiness.value
+            .fold(addClaimBusinessForm)(v => addClaimBusinessForm.fill(FormValues(v)))
+
+        Ok(addClaimBusinessPage(updatedForm, journey.previous))
+      }
+    }
+  }
+
+  def postReportNoCustomSubsidyPage: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    /*withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+      logger.info(
+        "SelectNewLeadController.postClaimDate"
+      )
+
+      processFormSubmission[SubsidyJourney] { journey =>
+        claimDateForm
+          .bindFromRequest()
+          .fold(
+            formWithErrors => {
+              val earliestAllowedClaimDate = timeProvider.today.toEarliestTaxYearStart
+              BadRequest(addClaimDatePage(formWithErrors, journey.previous, earliestAllowedClaimDate)).toContext
+            },
+            form =>
+              store
+                .update[SubsidyJourney](_.setClaimDate(form))
+                .flatMap(_.next)
+                .toContext
+          )
+      }
+    }*/
   }
 
   def getClaimDate: Action[AnyContent] = verifiedEmail.async { implicit request =>
