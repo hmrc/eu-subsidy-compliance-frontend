@@ -170,7 +170,7 @@ class SubsidyController @Inject() (
         val userSelection = f.value.isTrue
         store.update[SubsidyJourney](_.setReportPaymentFirstTimeUser(userSelection)).toContext.map { updatedJourney =>
           if (userSelection) Redirect(routes.SubsidyController.getReportedNoCustomSubsidyPage)
-          else Redirect(routes.SubsidyController.getReportedPaymentReturningUserPage)
+          else Redirect(routes.NoClaimNotificationController.getNoClaimNotification)
         }
       }
 
