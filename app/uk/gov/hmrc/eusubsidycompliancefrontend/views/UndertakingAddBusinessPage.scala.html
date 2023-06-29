@@ -70,12 +70,12 @@
         RadioItem(
           content = Text(messages("common.yes")),
           value = Some("true"),
-          checked = form.data.get(fieldName).fold(false)(e => e)
+          checked = form.data.get(fieldName).fold(false){e => e == "true"}
         ),
           RadioItem(
               content = Text(messages("common.no")),
               value = Some("false"),
-              checked = form.data.get(fieldName).fold(false)(e => e)
+              checked = form.data.get(fieldName).fold(false){e => e == "false"}
           )
         ),
         classes = "govuk-radios--inline"
