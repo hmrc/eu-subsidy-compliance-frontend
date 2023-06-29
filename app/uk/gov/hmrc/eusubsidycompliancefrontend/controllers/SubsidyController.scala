@@ -193,7 +193,7 @@ class SubsidyController @Inject() (
           journey.reportPaymentReturningUser.value
             .fold(reportedPaymentReturningUserForm)(v => reportedPaymentReturningUserForm.fill(FormValues(v)))
 
-        Ok(reportedPaymentReturningUserPage(updatedForm, routes.SubsidyController.getReportPaymentFirstTimeUser.url))
+        Ok(reportedPaymentReturningUserPage(updatedForm, routes.AccountController.getAccountPage.url))
       }
     }
   }
@@ -217,7 +217,7 @@ class SubsidyController @Inject() (
           .fold(
             errors =>
               BadRequest(
-                addClaimBusinessPage(errors, routes.SubsidyController.getReportPaymentFirstTimeUser.url)
+                reportedPaymentReturningUserPage(errors, routes.SubsidyController.getReportPaymentFirstTimeUser.url)
               ).toContext,
             handleValidFormSubmission
           )
@@ -261,7 +261,7 @@ class SubsidyController @Inject() (
       renderFormIfEligible { journey =>
         val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
         val earliestAllowedClaimDate = timeProvider.today.toEarliestTaxYearStart
-        Ok(addClaimDatePage(form, journey.previous, earliestAllowedClaimDate))
+        Ok(addClaimDatePage(form, routes.SubsidyController.getReportedNoCustomSubsidyPage.url, earliestAllowedClaimDate))
       }
     }
   }

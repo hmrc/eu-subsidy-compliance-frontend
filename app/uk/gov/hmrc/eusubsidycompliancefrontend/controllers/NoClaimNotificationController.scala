@@ -68,7 +68,9 @@ class NoClaimNotificationController @Inject() (
         .retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange)
         .toContext
         .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
-          val previous = routes.AccountController.getAccountPage.url
+          val previous =
+            if(undertakingSubsidies.hasNeverSubmitted) routes.SubsidyController.getReportPaymentFirstTimeUser.url
+            else routes.SubsidyController.getReportedPaymentReturningUserPage.url
           val today = timeProvider.today
           val startDate = today.toEarliestTaxYearStart
 
