@@ -309,13 +309,13 @@ confirm-converted-amount.p3 = We calculate your euro amounts using the currency 
 
 # ReportPaymentFirstTimeUser
 reportPaymentFirstTimeUser.title = Have you been awarded any non-customs subsidies since 6 April 2020?
-reportPaymentFirstTimeUser.error.required = Please select Yes or No
+reportPaymentFirstTimeUser.error.required = Select yes if you have been awarded any non-customs subsidies since the date mentioned
 
 # ReportedPaymentReturnJourney
 reportPaymentReturnJourney.title = What do you need to report?
 reportPaymentReturnJourney.option1 = A non-customs subsidy payment
 reportPaymentReturnJourney.option2 = I have no payments to report
-reportPaymentReturnJourney.error.required = Required
+reportPaymentReturnJourney.error.required = Select if you need to report a non-customs payment or you have no payments to report
 
 # ReportNonCustomSubsidy
 reportNonCustomSubsidy.title = You must report all non-customs subsidies for the last 3 tax years

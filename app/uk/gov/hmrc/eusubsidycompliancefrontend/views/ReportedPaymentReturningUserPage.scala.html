@@ -44,7 +44,7 @@
     @govukErrorSummary(ErrorSummary(errorList = Seq(
         ErrorLink(
             href = Some(s"#${form.errors.head.key}"),
-            content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}"),
+            content = Text(messages("reportPaymentReturnJourney.error.required")),
             attributes = Map("class" ->"govuk-link")
         )
         ),
@@ -65,7 +65,7 @@
             )),
 
         errorMessage = if (form.hasErrors && form.errors.head.key == radioIdentifier) {
-                            Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}")))
+                            Some(ErrorMessage(content = Text(messages("reportPaymentReturnJourney.error.required"))))
                         } else None,
 
         idPrefix = Some(radioIdentifier),
