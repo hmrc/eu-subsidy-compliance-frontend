@@ -63,6 +63,9 @@ class SubsidyController @Inject() (
   addClaimEoriPage: AddClaimEoriPage,
   addClaimBusinessPage: AddClaimBusinessPage,
   addClaimAmountPage: AddClaimAmountPage,
+  reportPaymentFirstTimeUserPage: ReportPaymentFirstTimeUserPage,
+  reportedPaymentReturningUserPage: ReportedPaymentReturningUserPage,
+  reportNonCustomSubsidyPage: ReportNonCustomSubsidyPage,
   addClaimDatePage: AddClaimDatePage,
   addPublicAuthorityPage: AddPublicAuthorityPage,
   addTraderReferencePage: AddTraderReferencePage,
@@ -81,6 +84,15 @@ class SubsidyController @Inject() (
   private val removeSubsidyClaimForm: Form[FormValues] = formWithSingleMandatoryField("removeSubsidyClaim")
   private val cyaForm: Form[FormValues] = formWithSingleMandatoryField("cya")
   private val addClaimBusinessForm: Form[FormValues] = formWithSingleMandatoryField("add-claim-business")
+  private val reportedPaymentFirstTimeUserForm: Form[FormValues] = formWithSingleMandatoryField(
+    "reportPaymentFirstTimeUser"
+  )
+  private val reportedPaymentNonCustomSubsidyForm: Form[FormValues] = formWithSingleMandatoryField(
+    "reportNonCustomSubsidy"
+  )
+  private val reportedPaymentReturningUserForm: Form[FormValues] = formWithSingleMandatoryField(
+    "report-payment-return"
+  )
 
   private val enteredTradingRefIsValid = Constraint[String] { traderRef: String =>
     if (traderRef.matches(TraderRef.regex)) Valid
@@ -139,6 +151,107 @@ class SubsidyController @Inject() (
       }
   }
 
+  def getReportPaymentFirstTimeUser: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
+      renderFormIfEligible { journey =>
+        val updatedForm =
+          journey.reportPaymentFirstTimeUser.value
+            .fold(reportedPaymentFirstTimeUserForm)(v => reportedPaymentFirstTimeUserForm.fill(FormValues(v)))
+        Ok(reportPaymentFirstTimeUserPage(updatedForm, routes.AccountController.getAccountPage.url))
+      }
+    }
+  }
+
+  def postReportPaymentFirstTimeUser: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+
+      def handleValidFormSubmission(f: FormValues): OptionT[Future, Result] = {
+        val userSelection = f.value.isTrue
+        store.update[SubsidyJourney](_.setReportPaymentFirstTimeUser(userSelection)).toContext.map { updatedJourney =>
+          if (userSelection) Redirect(routes.SubsidyController.getReportedNoCustomSubsidyPage)
+          else Redirect(routes.NoClaimNotificationController.getNoClaimNotification)
+        }
+      }
+
+      processFormSubmission[SubsidyJourney] { journey =>
+        reportedPaymentFirstTimeUserForm
+          .bindFromRequest()
+          .fold(
+            errors =>
+              BadRequest(reportPaymentFirstTimeUserPage(errors, routes.AccountController.getAccountPage.url)).toContext,
+            handleValidFormSubmission
+          )
+      }
+    }
+  }
+
+  def getReportedPaymentReturningUserPage: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
+      renderFormIfEligible { journey =>
+        val updatedForm =
+          journey.reportPaymentReturningUser.value
+            .fold(reportedPaymentReturningUserForm)(v => reportedPaymentReturningUserForm.fill(FormValues(v)))
+
+        Ok(reportedPaymentReturningUserPage(updatedForm, routes.AccountController.getAccountPage.url))
+      }
+    }
+  }
+
+  def postReportedPaymentReturningUserPage: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+
+      def handleValidFormSubmission(f: FormValues): OptionT[Future, Result] = {
+        val userSelection = f.value.isTrue
+        store.update[SubsidyJourney](_.setReportedPaymentReturningUser(userSelection)).toContext.map { _ =>
+          if (userSelection)
+            Redirect(routes.SubsidyController.getReportedNoCustomSubsidyPage)
+          else Redirect(routes.NoClaimNotificationController.getNoClaimNotification)
+        }
+      }
+
+      processFormSubmission[SubsidyJourney] { journey =>
+        reportedPaymentReturningUserForm
+          .bindFromRequest()
+          .fold(
+            errors =>
+              BadRequest(
+                reportedPaymentReturningUserPage(errors, routes.SubsidyController.getReportPaymentFirstTimeUser.url)
+              ).toContext,
+            handleValidFormSubmission
+          )
+      }
+    }
+  }
+
+  def getReportedNoCustomSubsidyPage: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
+      renderFormIfEligible { journey =>
+        val updatedForm =
+          journey.reportedNonCustomSubsidy.value
+            .fold(reportedPaymentNonCustomSubsidyForm)(v => reportedPaymentNonCustomSubsidyForm.fill(FormValues(v)))
+
+        val previousUrl =
+          if (journey.getReportPaymentReturningUser)
+            routes.SubsidyController.getReportedPaymentReturningUserPage.url
+          else routes.SubsidyController.getReportPaymentFirstTimeUser.url
+
+        val currentYear = LocalDate.now.getYear
+        Ok(
+          reportNonCustomSubsidyPage(
+            updatedForm,
+            previousUrl,
+            currentYear.toString,
+            (currentYear - 1).toString,
+            (currentYear - 2).toString,
+            (currentYear - 3).toString
+          )
+        )
+      }
+    }
+  }
+
   def getClaimDate: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       logger.info(
@@ -148,7 +261,9 @@ class SubsidyController @Inject() (
       renderFormIfEligible { journey =>
         val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
         val earliestAllowedClaimDate = timeProvider.today.toEarliestTaxYearStart
-        Ok(addClaimDatePage(form, journey.previous, earliestAllowedClaimDate))
+        Ok(
+          addClaimDatePage(form, routes.SubsidyController.getReportedNoCustomSubsidyPage.url, earliestAllowedClaimDate)
+        )
       }
     }
   }

@@ -76,7 +76,9 @@ class NoClaimNotificationControllerSpec
           performAction,
           messageFromMessageKey("noClaimNotification.never-submitted.title", startDate.toDisplayFormat),
           { doc =>
-            doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
+            doc
+              .select(".govuk-back-link")
+              .attr("href") shouldBe routes.SubsidyController.getReportPaymentFirstTimeUser.url
             val selectedOptions = doc.select(".govuk-checkboxes__input[checked]")
             selectedOptions.isEmpty shouldBe true
 
@@ -100,7 +102,9 @@ class NoClaimNotificationControllerSpec
           performAction,
           messageFromMessageKey("noClaimNotification.has-submitted.title", fixedDate.toDisplayFormat),
           { doc =>
-            doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
+            doc
+              .select(".govuk-back-link")
+              .attr("href") shouldBe routes.SubsidyController.getReportedPaymentReturningUserPage.url
             val selectedOptions = doc.select(".govuk-checkboxes__input[checked]")
             selectedOptions.isEmpty shouldBe true
 

@@ -1,0 +1,50 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+
+@this(
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: components.Button
+)
+
+@(form: Form[_], previous: Journey.Uri, currentYear: String, previousYear: String, twoYearBack: String, threeYearBack: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@key = @{"reportNonCustomSubsidy"}
+@title = @{messages(s"$key.title")}
+
+@layout(
+    pageTitle = Some(title),
+    backLinkEnabled = true,
+    backLink = Some(previous),
+    hasErrors = form.hasErrors
+) {
+    @H1(messages("reportNonCustomSubsidy.title"))
+    @{P(messages(s"reportNonCustomSubsidy.p1"))}
+    <ul class="govuk-list govuk-list--bullet">
+        <li> @messages("reportNonCustomSubsidy.p2.year1", threeYearBack, twoYearBack) </li>
+        <li> @messages("reportNonCustomSubsidy.p2.year2", twoYearBack, previousYear) </li>
+        <li> @messages("reportNonCustomSubsidy.p2.year3", previousYear, currentYear) </li>
+    </ul>
+
+    @button("common.continue", href = Some(controllers.routes.SubsidyController.getClaimDate.url))
+}
+
