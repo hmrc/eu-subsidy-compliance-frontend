@@ -261,7 +261,9 @@ class SubsidyController @Inject() (
       renderFormIfEligible { journey =>
         val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
         val earliestAllowedClaimDate = timeProvider.today.toEarliestTaxYearStart
-        Ok(addClaimDatePage(form, routes.SubsidyController.getReportedNoCustomSubsidyPage.url, earliestAllowedClaimDate))
+        Ok(
+          addClaimDatePage(form, routes.SubsidyController.getReportedNoCustomSubsidyPage.url, earliestAllowedClaimDate)
+        )
       }
     }
   }
