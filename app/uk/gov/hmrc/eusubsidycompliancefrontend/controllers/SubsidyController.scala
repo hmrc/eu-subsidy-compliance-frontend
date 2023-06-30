@@ -44,6 +44,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.BigDecimalOps
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
@@ -157,7 +158,15 @@ class SubsidyController @Inject() (
         val updatedForm =
           journey.reportPaymentFirstTimeUser.value
             .fold(reportedPaymentFirstTimeUserForm)(v => reportedPaymentFirstTimeUserForm.fill(FormValues(v)))
-        Ok(reportPaymentFirstTimeUserPage(updatedForm, routes.AccountController.getAccountPage.url))
+        val today = timeProvider.today
+        val startDate = today.toEarliestTaxYearStart
+        Ok(
+          reportPaymentFirstTimeUserPage(
+            updatedForm,
+            startDate.toDisplayFormat,
+            routes.AccountController.getAccountPage.url
+          )
+        )
       }
     }
   }
@@ -174,12 +183,20 @@ class SubsidyController @Inject() (
         }
       }
 
+      val today = timeProvider.today
+      val startDate = today.toEarliestTaxYearStart
       processFormSubmission[SubsidyJourney] { journey =>
         reportedPaymentFirstTimeUserForm
           .bindFromRequest()
           .fold(
             errors =>
-              BadRequest(reportPaymentFirstTimeUserPage(errors, routes.AccountController.getAccountPage.url)).toContext,
+              BadRequest(
+                reportPaymentFirstTimeUserPage(
+                  errors,
+                  startDate.toDisplayFormat,
+                  routes.AccountController.getAccountPage.url
+                )
+              ).toContext,
             handleValidFormSubmission
           )
       }

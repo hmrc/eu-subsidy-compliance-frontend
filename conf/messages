@@ -308,7 +308,7 @@ confirm-converted-amount.p2 = We’ve converted your amount from pounds sterling
 confirm-converted-amount.p3 = We calculate your euro amounts using the currency exchange rates published by the European Central Bank.
 
 # ReportPaymentFirstTimeUser
-reportPaymentFirstTimeUser.title = Have you been awarded any non-customs subsidies since 6 April 2020?
+reportPaymentFirstTimeUser.title = Have you been awarded any non-customs subsidies since {0}?
 reportPaymentFirstTimeUser.error.required = Select yes if you have been awarded any non-customs subsidies since the date mentioned
 
 # ReportedPaymentReturnJourney
