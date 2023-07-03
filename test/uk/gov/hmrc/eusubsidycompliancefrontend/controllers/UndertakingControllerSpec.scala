@@ -57,7 +57,7 @@ class UndertakingControllerSpec
     bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
     bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
-    bind[EmailService].toInstance(mockEmailService),
+    bind[EmailService].toInstance(emailSupport.mockEmailService),
     bind[AuditService].toInstance(mockAuditService),
     bind[TimeProvider].toInstance(mockTimeProvider),
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService)
@@ -1089,7 +1089,7 @@ class UndertakingControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             journeyStoreSupport.mockUpdate[UndertakingJourney](eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockSendEmail(eori1, CreateUndertaking, undertakingCreated.toUndertakingWithRef(undertakingRef))(
+            emailSupport.mockSendEmail(eori1, CreateUndertaking, undertakingCreated.toUndertakingWithRef(undertakingRef))(
               Left(ConnectorError(exception))
             )
           }
@@ -1108,7 +1108,7 @@ class UndertakingControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             journeyStoreSupport.mockUpdate[UndertakingJourney](eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockSendEmail(eori1, CreateUndertaking, undertakingCreated.toUndertakingWithRef(undertakingRef))(
+            emailSupport.mockSendEmail(eori1, CreateUndertaking, undertakingCreated.toUndertakingWithRef(undertakingRef))(
               Right(EmailSent)
             )
             mockTimeProviderNow(timeNow)
@@ -1527,8 +1527,8 @@ class UndertakingControllerSpec
             mockTimeProviderToday(currentDate)
             mockSendAuditEvent[UndertakingDisabled](UndertakingDisabled("1123", undertakingRef, currentDate))
             mockTimeProviderToday(currentDate)
-            mockSendEmail(eori1, DisableUndertakingToLead, undertaking1, formattedDate)(Right(EmailSent))
-            mockSendEmail(eori1, DisableUndertakingToBusinessEntity, undertaking1, formattedDate)(Right(EmailSent))
+            emailSupport.mockSendEmail(eori1, DisableUndertakingToLead, undertaking1, formattedDate)(Right(EmailSent))
+            emailSupport.mockSendEmail(eori1, DisableUndertakingToBusinessEntity, undertaking1, formattedDate)(Right(EmailSent))
           }
           checkIsRedirect(
             performAction("disableUndertakingConfirm" -> "true"),

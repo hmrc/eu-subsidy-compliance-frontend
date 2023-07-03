@@ -49,7 +49,7 @@ class SelectNewLeadControllerSpec
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
-    bind[EmailService].toInstance(mockEmailService),
+    bind[EmailService].toInstance(emailSupport.mockEmailService),
     bind[AuditService].toInstance(mockAuditService)
   )
 
@@ -158,7 +158,9 @@ class SelectNewLeadControllerSpec
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
-            mockSendEmail(eori1, eori4, PromotedOtherAsLeadToLead, undertaking)(Left(ConnectorError(exception)))
+            emailSupport.mockSendEmail(eori1, eori4, PromotedOtherAsLeadToLead, undertaking)(
+              Left(ConnectorError(exception))
+            )
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4)))
         }
@@ -190,8 +192,12 @@ class SelectNewLeadControllerSpec
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
-            mockSendEmail(eori1, eori4, PromotedOtherAsLeadToLead, undertaking)(Right(EmailSendResult.EmailSent))
-            mockSendEmail(eori4, PromotedOtherAsLeadToBusinessEntity, undertaking)(Right(EmailSendResult.EmailSent))
+            emailSupport.mockSendEmail(eori1, eori4, PromotedOtherAsLeadToLead, undertaking)(
+              Right(EmailSendResult.EmailSent)
+            )
+            emailSupport.mockSendEmail(eori4, PromotedOtherAsLeadToBusinessEntity, undertaking)(
+              Right(EmailSendResult.EmailSent)
+            )
           }
           checkIsRedirect(
             performAction("selectNewLead" -> eori4),
@@ -211,8 +217,8 @@ class SelectNewLeadControllerSpec
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
-            mockSendEmail(eori1, eori4, PromotedOtherAsLeadToLead, undertaking)(Right(EmailSent))
-            mockSendEmail(eori4, PromotedOtherAsLeadToBusinessEntity, undertaking)(Right(EmailNotSent))
+            emailSupport.mockSendEmail(eori1, eori4, PromotedOtherAsLeadToLead, undertaking)(Right(EmailSent))
+            emailSupport.mockSendEmail(eori4, PromotedOtherAsLeadToBusinessEntity, undertaking)(Right(EmailNotSent))
           }
           checkIsRedirect(
             performAction("selectNewLead" -> eori4),

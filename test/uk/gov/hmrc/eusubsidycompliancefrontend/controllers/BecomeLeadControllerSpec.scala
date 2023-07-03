@@ -55,7 +55,7 @@ class BecomeLeadControllerSpec
     bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     bind[EscService].toInstance(mockEscService),
-    bind[EmailService].toInstance(mockEmailService),
+    bind[EmailService].toInstance(emailSupport.mockEmailService),
     bind[AuditService].toInstance(mockAuditService)
   )
 
@@ -207,9 +207,9 @@ class BecomeLeadControllerSpec
             )
             mockGetUndertaking(eori4)(undertaking1.toFuture)
             mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
-            mockSendEmail(eori4, PromotedSelfToNewLead, undertaking1)(Right(EmailSent))
+            emailSupport.mockSendEmail(eori4, PromotedSelfToNewLead, undertaking1)(Right(EmailSent))
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
-            mockSendEmail(eori1, RemovedAsLeadToFormerLead, undertaking1)(Right(EmailSent))
+            emailSupport.mockSendEmail(eori1, RemovedAsLeadToFormerLead, undertaking1)(Right(EmailSent))
             journeyStoreSupport.mockDeleteAll(eori4)(Right(()))
             mockSendAuditEvent[BusinessEntityPromotedSelf](
               AuditEvent.BusinessEntityPromotedSelf(undertakingRef, "1123", eori1, eori4)
@@ -365,7 +365,7 @@ class BecomeLeadControllerSpec
           authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           journeyStoreSupport.mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
           authSupport.mockGetEmailVerification(Option.empty)
-          mockRetrieveEmail(eori1)(
+          emailSupport.mockRetrieveEmail(eori1)(
             Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("foo@example.com").some))
           )
         }
@@ -382,7 +382,7 @@ class BecomeLeadControllerSpec
           authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           journeyStoreSupport.mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
           authSupport.mockGetEmailVerification(Option.empty)
-          mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
+          emailSupport.mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
         }
 
         val result = performAction()
@@ -438,7 +438,7 @@ class BecomeLeadControllerSpec
         inSequence {
           authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           authSupport.mockGetEmailVerification(None)
-          mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
+          emailSupport.mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
           mockMakeVerificationRequestAndRedirect(Redirect(verificationUrl).toFuture)
         }
 

@@ -50,7 +50,7 @@ class AccountControllerSpec
     bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[TimeProvider].toInstance(mockTimeProvider),
-    bind[EmailService].toInstance(mockEmailService)
+    bind[EmailService].toInstance(emailSupport.mockEmailService)
   )
 
   override def additionalConfig: Configuration = super.additionalConfig.withFallback(
@@ -78,7 +78,7 @@ class AccountControllerSpec
 
           val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
           inSequence {
-            authAndSessionDataBehaviour. mockAuthWithEnrolmentAndNoEmailVerification()
+            authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))

@@ -60,7 +60,7 @@ class BusinessEntityControllerSpec
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
-    bind[EmailService].toInstance(mockEmailService),
+    bind[EmailService].toInstance(emailSupport.mockEmailService),
     bind[TimeProvider].toInstance(mockTimeProvider),
     bind[AuditService].toInstance(mockAuditService)
   )
@@ -441,8 +441,8 @@ class BusinessEntityControllerSpec
                 mockRetrieveUndertakingWithErrorResponse(validEori)(Right(None))
                 journeyStoreSupport.mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
                 mockAddMember(undertakingRef, BusinessEntity(validEori, leadEORI = false))(Right(undertakingRef))
-                mockSendEmail(validEori, AddMemberToBusinessEntity, undertaking)(Right(EmailSent))
-                mockSendEmail(eori1, validEori, AddMemberToLead, undertaking)(Right(EmailSent))
+                emailSupport.mockSendEmail(validEori, AddMemberToBusinessEntity, undertaking)(Right(EmailSent))
+                emailSupport.mockSendEmail(eori1, validEori, AddMemberToLead, undertaking)(Right(EmailSent))
                 mockSendAuditEvent(AuditEvent.BusinessEntityAdded(undertakingRef, "1123", eori1, validEori))
                 journeyStoreSupport.mockPut[BusinessEntityJourney](
                   updatedBusinessJourney().copy(addBusiness = AddBusinessFormPage(None)),
@@ -557,8 +557,12 @@ class BusinessEntityControllerSpec
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
             journeyStoreSupport.mockDeleteAll(eori4)(Right(()))
             mockTimeProviderToday(fixedDate)
-            mockSendEmail(eori4, MemberRemoveSelfToBusinessEntity, undertaking1, effectiveDate)(Right(EmailSent))
-            mockSendEmail(eori1, eori4, MemberRemoveSelfToLead, undertaking1, effectiveDate)(Right(EmailSent))
+            emailSupport.mockSendEmail(eori4, MemberRemoveSelfToBusinessEntity, undertaking1, effectiveDate)(
+              Right(EmailSent)
+            )
+            emailSupport.mockSendEmail(eori1, eori4, MemberRemoveSelfToLead, undertaking1, effectiveDate)(
+              Right(EmailSent)
+            )
             mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf(undertakingRef, "1123", eori1, eori4))
           }
           checkIsRedirect(
@@ -675,7 +679,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockTimeProviderToday(effectiveDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, "10 October 2022")(
+            emailSupport.mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, "10 October 2022")(
               Left(ConnectorError(new RuntimeException()))
             )
           }
@@ -711,8 +715,8 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockTimeProviderToday(effectiveDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, date)(Right(EmailSent))
-            mockSendEmail(eori1, eori4, RemoveMemberToLead, undertaking1, date)(Right(EmailSent))
+            emailSupport.mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, date)(Right(EmailSent))
+            emailSupport.mockSendEmail(eori1, eori4, RemoveMemberToLead, undertaking1, date)(Right(EmailSent))
             mockSendAuditEvent(AuditEvent.BusinessEntityRemoved(undertakingRef, "1123", eori1, eori4))
           }
           checkIsRedirect(
