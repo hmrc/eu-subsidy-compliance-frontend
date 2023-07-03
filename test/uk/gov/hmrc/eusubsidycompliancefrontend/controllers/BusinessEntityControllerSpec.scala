@@ -58,7 +58,7 @@ class BusinessEntityControllerSpec
   override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
-    bind[Store].toInstance(mockJourneyStore),
+    bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[EmailService].toInstance(mockEmailService),
     bind[TimeProvider].toInstance(mockTimeProvider),
@@ -106,7 +106,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
+            journeyStoreSupport.mockGetOrCreate[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction))
         }
@@ -122,7 +122,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
+            journeyStoreSupport.mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
           }
 
           checkPageIsDisplayed(
@@ -179,7 +179,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[BusinessEntityJourney](eori1)(
+            journeyStoreSupport.mockUpdate[BusinessEntityJourney](eori1)(
               Left(ConnectorError(exception))
             )
           }
@@ -225,7 +225,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[BusinessEntityJourney](eori1)(
+            journeyStoreSupport.mockUpdate[BusinessEntityJourney](eori1)(
               Right(BusinessEntityJourney(addBusiness = AddBusinessFormPage(true.some)))
             )
           }
@@ -252,7 +252,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
+            journeyStoreSupport.mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction))
 
@@ -267,7 +267,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+            journeyStoreSupport.mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
           }
 
           checkPageIsDisplayed(
@@ -313,7 +313,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(None))
+            journeyStoreSupport.mockGet[BusinessEntityJourney](eori1)(Right(None))
           }
           checkIsRedirect(performAction, routes.BusinessEntityController.getAddBusinessEntity.url)
 
@@ -338,7 +338,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
+            journeyStoreSupport.mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -352,7 +352,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+            journeyStoreSupport.mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
           }
           checkFormErrorIsDisplayed(
             performAction(data: _*),
@@ -367,7 +367,7 @@ class BusinessEntityControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+            journeyStoreSupport.mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
             mockRetrieveUndertakingWithErrorResponse(eori4)(retrieveResponse)
           }
           checkFormErrorIsDisplayed(
@@ -436,15 +436,15 @@ class BusinessEntityControllerSpec
               inSequence {
                 mockAuthWithEnrolmentAndValidEmail()
                 mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-                mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+                journeyStoreSupport.mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
 
                 mockRetrieveUndertakingWithErrorResponse(validEori)(Right(None))
-                mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
+                journeyStoreSupport.mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
                 mockAddMember(undertakingRef, BusinessEntity(validEori, leadEORI = false))(Right(undertakingRef))
                 mockSendEmail(validEori, AddMemberToBusinessEntity, undertaking)(Right(EmailSent))
                 mockSendEmail(eori1, validEori, AddMemberToLead, undertaking)(Right(EmailSent))
                 mockSendAuditEvent(AuditEvent.BusinessEntityAdded(undertakingRef, "1123", eori1, validEori))
-                mockPut[BusinessEntityJourney](
+                journeyStoreSupport.mockPut[BusinessEntityJourney](
                   updatedBusinessJourney().copy(addBusiness = AddBusinessFormPage(None)),
                   eori1
                 )(Right(BusinessEntityJourney()))
@@ -555,7 +555,7 @@ class BusinessEntityControllerSpec
             mockAuthWithEnrolmentAndNoEmailVerification(eori4)
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockDeleteAll(eori4)(Right(()))
+            journeyStoreSupport.mockDeleteAll(eori4)(Right(()))
             mockTimeProviderToday(fixedDate)
             mockSendEmail(eori4, MemberRemoveSelfToBusinessEntity, undertaking1, effectiveDate)(Right(EmailSent))
             mockSendEmail(eori1, eori4, MemberRemoveSelfToLead, undertaking1, effectiveDate)(Right(EmailSent))

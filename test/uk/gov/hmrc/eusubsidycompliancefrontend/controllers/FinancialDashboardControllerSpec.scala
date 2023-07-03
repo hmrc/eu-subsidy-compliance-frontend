@@ -50,7 +50,7 @@ class FinancialDashboardControllerSpec
 
   override def overrideBindings: List[GuiceableModule] = List(
     inject.bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
-    inject.bind[Store].toInstance(mockJourneyStore),
+    inject.bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     inject.bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     inject.bind[EscService].toInstance(mockEscService),
     inject.bind[TimeProvider].toInstance(fakeTimeProvider)

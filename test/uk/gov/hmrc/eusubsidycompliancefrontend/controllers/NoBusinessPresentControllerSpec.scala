@@ -40,7 +40,7 @@ class NoBusinessPresentControllerSpec
   override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
-    bind[Store].toInstance(mockJourneyStore),
+    bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EscService].toInstance(mockEscService)
   )
 
@@ -86,7 +86,7 @@ class NoBusinessPresentControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockUpdate[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
+            journeyStoreSupport.mockUpdate[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction))
 
@@ -97,7 +97,7 @@ class NoBusinessPresentControllerSpec
         inSequence {
           mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-          mockUpdate[BusinessEntityJourney](eori1)(Right(businessEntityJourney1))
+          journeyStoreSupport.mockUpdate[BusinessEntityJourney](eori1)(Right(businessEntityJourney1))
         }
         checkIsRedirect(
           performAction,

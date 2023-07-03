@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -44,9 +45,9 @@ class NoClaimNotificationControllerSpec
     with EscServiceSupport
     with TimeProviderSupport {
 
-  override def overrideBindings = List(
+  override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
-    bind[Store].toInstance(mockJourneyStore),
+    bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     bind[TimeProvider].toInstance(mockTimeProvider),
@@ -151,7 +152,7 @@ class NoClaimNotificationControllerSpec
             mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
             mockTimeProviderToday(currentDay)
             mockTimeProviderToday(currentDay)
-            mockUpdate[NilReturnJourney](eori1)(Left(ConnectorError(exception)))
+            journeyStoreSupport.mockUpdate[NilReturnJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("noClaimNotification" -> "true")))
         }
@@ -164,7 +165,7 @@ class NoClaimNotificationControllerSpec
             mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
             mockTimeProviderToday(currentDay)
             mockTimeProviderToday(currentDay)
-            mockUpdate[NilReturnJourney](eori1)(Right(updatedNilReturnJourney))
+            journeyStoreSupport.mockUpdate[NilReturnJourney](eori1)(Right(updatedNilReturnJourney))
             mockCreateSubsidy(SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay.plusDays(1))))(
               Left(ConnectorError(exception))
             )
@@ -202,7 +203,7 @@ class NoClaimNotificationControllerSpec
           mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
           mockTimeProviderToday(currentDay)
           mockTimeProviderToday(currentDay)
-          mockUpdate[NilReturnJourney](eori1)(Right(updatedNilReturnJourney))
+          journeyStoreSupport.mockUpdate[NilReturnJourney](eori1)(Right(updatedNilReturnJourney))
           mockCreateSubsidy(SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay.plusDays(1))))(
             Right(undertakingRef)
           )

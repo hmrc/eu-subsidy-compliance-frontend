@@ -47,7 +47,7 @@ class AccountControllerSpec
   override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
-    bind[Store].toInstance(mockJourneyStore),
+    bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[TimeProvider].toInstance(mockTimeProvider),
     bind[EmailService].toInstance(mockEmailService)
@@ -80,11 +80,11 @@ class AccountControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
-            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+            journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+            journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.toFuture)
             mockTimeProviderToday(fixedDate)
-            mockGetOrCreate(eori1)(Right(nilJourneyCreate))
+            journeyStoreSupport.mockGetOrCreate(eori1)(Right(nilJourneyCreate))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -124,8 +124,8 @@ class AccountControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
-            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+            journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+            journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
 
             // If we have a lastSubsidyUsageUpdt on the undertaking, return a single subsidy in the mock response with
             // this date, otherwise return no subsidies.
@@ -138,7 +138,7 @@ class AccountControllerSpec
             )
 
             mockTimeProviderToday(currentDate)
-            mockGetOrCreate[NilReturnJourney](eori1)(Right(nilJourneyCreate))
+            journeyStoreSupport.mockGetOrCreate[NilReturnJourney](eori1)(Right(nilJourneyCreate))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -199,8 +199,8 @@ class AccountControllerSpec
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification(eori4)
               mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-              mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
-              mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
+              journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
+              journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
               mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.toFuture)
               mockTimeProviderToday(fixedDate)
             }
@@ -236,7 +236,7 @@ class AccountControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
+            journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -246,8 +246,8 @@ class AccountControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
-            mockGetOrCreate[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
+            journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
+            journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -257,8 +257,8 @@ class AccountControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
-            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+            journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+            journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -274,8 +274,8 @@ class AccountControllerSpec
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification(eori1)
               mockRetrieveUndertaking(eori1)(None.toFuture)
-              mockGetOrCreate[EligibilityJourney](eori1)(Right(EligibilityJourney()))
-              mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+              journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(EligibilityJourney()))
+              journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             }
             checkIsRedirect(performAction(), routes.EligibilityController.firstEmptyPage.url)
           }
@@ -288,8 +288,8 @@ class AccountControllerSpec
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification()
               mockRetrieveUndertaking(eori1)(None.toFuture)
-              mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
-              mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+              journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
+              journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             }
             checkIsRedirect(performAction(), routes.EligibilityController.firstEmptyPage)
           }
@@ -298,8 +298,8 @@ class AccountControllerSpec
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification()
               mockRetrieveUndertaking(eori1)(None.toFuture)
-              mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
-              mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+              journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+              journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             }
             checkIsRedirect(performAction(), routes.UndertakingController.firstEmptyPage)
           }
@@ -308,8 +308,8 @@ class AccountControllerSpec
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification()
               mockRetrieveUndertaking(eori1)(None.toFuture)
-              mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
-              mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1))
+              journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+              journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1))
             }
             checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity)
           }

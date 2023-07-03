@@ -47,7 +47,7 @@ class SelectNewLeadControllerSpec
   override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
-    bind[Store].toInstance(mockJourneyStore),
+    bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[EmailService].toInstance(mockEmailService),
     bind[AuditService].toInstance(mockAuditService)
@@ -68,7 +68,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[NewLeadJourney](eori1)(Left(ConnectorError(exception)))
+            journeyStoreSupport.mockGetOrCreate[NewLeadJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction))
 
@@ -81,7 +81,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[NewLeadJourney](eori1)(Right(NewLeadJourney()))
+            journeyStoreSupport.mockGetOrCreate[NewLeadJourney](eori1)(Right(NewLeadJourney()))
           }
           checkPageIsDisplayed(
             performAction,
@@ -101,7 +101,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockGetOrCreate[NewLeadJourney](eori1)(Right(newLeadJourney))
+            journeyStoreSupport.mockGetOrCreate[NewLeadJourney](eori1)(Right(newLeadJourney))
           }
           checkPageIsDisplayed(
             performAction,
@@ -145,7 +145,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[NewLeadJourney](eori1)(Left(ConnectorError(exception)))
+            journeyStoreSupport.mockUpdate[NewLeadJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("selectNewLead" -> eori4)))
         }
@@ -154,7 +154,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[NewLeadJourney](eori1)(
+            journeyStoreSupport.mockUpdate[NewLeadJourney](eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
@@ -186,7 +186,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[NewLeadJourney](eori1)(
+            journeyStoreSupport.mockUpdate[NewLeadJourney](eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
@@ -207,7 +207,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockUpdate[NewLeadJourney](eori1)(
+            journeyStoreSupport.mockUpdate[NewLeadJourney](eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
             mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
@@ -242,7 +242,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[NewLeadJourney](eori1)(Left(ConnectorError(exception)))
+            journeyStoreSupport.mockGet[NewLeadJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction))
 
@@ -252,7 +252,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[NewLeadJourney](eori1)(Right(NewLeadJourney().some))
+            journeyStoreSupport.mockGet[NewLeadJourney](eori1)(Right(NewLeadJourney().some))
           }
           assertThrows[Exception](await(performAction))
 
@@ -262,8 +262,8 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
-            mockUpdate[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
+            journeyStoreSupport.mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
+            journeyStoreSupport.mockUpdate[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction))
 
@@ -273,10 +273,10 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
-            mockUpdate[BusinessEntityJourney](eori1)(Right(businessEntityJourneyLead))
+            journeyStoreSupport.mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
+            journeyStoreSupport.mockUpdate[BusinessEntityJourney](eori1)(Right(businessEntityJourneyLead))
 
-            mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Left(ConnectorError(exception)))
+            journeyStoreSupport.mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction))
 
@@ -288,9 +288,9 @@ class SelectNewLeadControllerSpec
         inSequence {
           mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-          mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
-          mockUpdate[BusinessEntityJourney](eori1)(Right(businessEntityJourneyLead))
-          mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Right(NewLeadJourney()))
+          journeyStoreSupport.mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
+          journeyStoreSupport.mockUpdate[BusinessEntityJourney](eori1)(Right(businessEntityJourneyLead))
+          journeyStoreSupport.mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Right(NewLeadJourney()))
         }
         checkPageIsDisplayed(
           performAction,
@@ -323,7 +323,7 @@ class SelectNewLeadControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[NewLeadJourney](eori1)(Right(None))
+            journeyStoreSupport.mockGet[NewLeadJourney](eori1)(Right(None))
           }
           checkIsRedirect(performAction, routes.SelectNewLeadController.getSelectNewLead.url)
 
@@ -342,7 +342,7 @@ class SelectNewLeadControllerSpec
         "call to get New lead journey  fails" in {
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
-            mockGet[NewLeadJourney](eori1)(Left(ConnectorError(exception)))
+            journeyStoreSupport.mockGet[NewLeadJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -350,8 +350,8 @@ class SelectNewLeadControllerSpec
         "call to reset New lead journey  fails" in {
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
-            mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
-            mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Left(ConnectorError(exception)))
+            journeyStoreSupport.mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
+            journeyStoreSupport.mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -362,8 +362,8 @@ class SelectNewLeadControllerSpec
 
         inSequence {
           mockAuthWithEnrolmentAndValidEmail()
-          mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
-          mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Right(NewLeadJourney()))
+          journeyStoreSupport.mockGet[NewLeadJourney](eori1)(Right(newLeadJourney.some))
+          journeyStoreSupport.mockPut[NewLeadJourney](NewLeadJourney(), eori1)(Right(NewLeadJourney()))
         }
         checkPageIsDisplayed(
           performAction(),
@@ -378,7 +378,7 @@ class SelectNewLeadControllerSpec
         "call to fetch new lead journey came back with None" in {
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
-            mockGet[NewLeadJourney](eori1)(Right(None))
+            journeyStoreSupport.mockGet[NewLeadJourney](eori1)(Right(None))
           }
           checkIsRedirect(performAction(), routes.SelectNewLeadController.getSelectNewLead.url)
 

@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import org.scalamock.handlers.{CallHandler1, CallHandler2, CallHandler3, CallHandler4}
 import org.scalamock.scalatest.MockFactory
 import play.api.libs.json.{Format, Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
@@ -28,42 +29,52 @@ import scala.reflect.ClassTag
 
 trait JourneyStoreSupport { this: MockFactory =>
 
-  val mockJourneyStore: Store = mock[Store]
+  object journeyStoreSupport {
+    val mockJourneyStore: Store = mock[Store]
 
-  def mockGet[A](eori: EORI)(result: Either[ConnectorError, Option[A]]) =
-    (mockJourneyStore
-      .get(_: ClassTag[A], _: EORI, _: Reads[A]))
-      .expects(*, eori, *)
-      .returning(result.fold(Future.failed, _.toFuture))
+    def mockGet[A](
+      eori: EORI
+    )(result: Either[ConnectorError, Option[A]]): CallHandler3[ClassTag[A], EORI, Reads[A], Future[Option[A]]] =
+      (mockJourneyStore
+        .get(_: ClassTag[A], _: EORI, _: Reads[A]))
+        .expects(*, eori, *)
+        .returning(result.fold(Future.failed, _.toFuture))
 
-  def mockGetOrCreate[A](eori: EORI)(result: Either[ConnectorError, A]) =
-    (mockJourneyStore
-      .getOrCreate(_: A)(_: ClassTag[A], _: EORI, _: Format[A]))
-      .expects(*, *, eori, *)
-      .returning(result.fold(Future.failed, _.toFuture))
+    def mockGetOrCreate[A](
+      eori: EORI
+    )(result: Either[ConnectorError, A]): CallHandler4[A, ClassTag[A], EORI, Format[A], Future[A]] =
+      (mockJourneyStore
+        .getOrCreate(_: A)(_: ClassTag[A], _: EORI, _: Format[A]))
+        .expects(*, *, eori, *)
+        .returning(result.fold(Future.failed, _.toFuture))
 
-  def mockPut[A](input: A, eori: EORI)(result: Either[ConnectorError, A]) =
-    (mockJourneyStore
-      .put(_: A)(_: EORI, _: Writes[A]))
-      .expects(input, eori, *)
-      .returning(result.fold(Future.failed, _.toFuture))
+    def mockPut[A](input: A, eori: EORI)(
+      result: Either[ConnectorError, A]
+    ): CallHandler3[A, EORI, Writes[A], Future[A]] =
+      (mockJourneyStore
+        .put(_: A)(_: EORI, _: Writes[A]))
+        .expects(input, eori, *)
+        .returning(result.fold(Future.failed, _.toFuture))
 
-  def mockUpdate[A](eori: EORI)(result: Either[ConnectorError, A]) =
-    (mockJourneyStore
-      .update(_: A => A)(_: ClassTag[A], _: EORI, _: Format[A]))
-      .expects(*, *, eori, *)
-      .returning(result.fold(Future.failed, _.toFuture))
+    def mockUpdate[A](
+      eori: EORI
+    )(result: Either[ConnectorError, A]): CallHandler4[A => A, ClassTag[A], EORI, Format[A], Future[A]] =
+      (mockJourneyStore
+        .update(_: A => A)(_: ClassTag[A], _: EORI, _: Format[A]))
+        .expects(*, *, eori, *)
+        .returning(result.fold(Future.failed, _.toFuture))
 
-  def mockDelete[A](eori: EORI)(result: Either[ConnectorError, Unit]) =
-    (mockJourneyStore
-      .delete(_: ClassTag[A], _: EORI))
-      .expects(*, eori)
-      .returning(result.fold(Future.failed, _.toFuture))
+    def mockDelete[A](eori: EORI)(result: Either[ConnectorError, Unit]): CallHandler2[ClassTag[A], EORI, Future[Unit]] =
+      (mockJourneyStore
+        .delete(_: ClassTag[A], _: EORI))
+        .expects(*, eori)
+        .returning(result.fold(Future.failed, _.toFuture))
 
-  def mockDeleteAll(eori: EORI)(result: Either[ConnectorError, Unit]) =
-    (mockJourneyStore
-      .deleteAll(_: EORI))
-      .expects(eori)
-      .returning(result.fold(Future.failed, _.toFuture))
+    def mockDeleteAll(eori: EORI)(result: Either[ConnectorError, Unit]): CallHandler1[EORI, Future[Unit]] =
+      (mockJourneyStore
+        .deleteAll(_: EORI))
+        .expects(eori)
+        .returning(result.fold(Future.failed, _.toFuture))
+  }
 
 }

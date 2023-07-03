@@ -40,7 +40,7 @@ class EligibilityControllerSpec
   override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
-    bind[Store].toInstance(mockJourneyStore),
+    bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EscService].toInstance(mockEscService)
   )
 
@@ -62,7 +62,7 @@ class EligibilityControllerSpec
         "call to get eligibility journey fails" in {
           inSequence {
             mockAuthWithEnrolment()
-            mockGet[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
+            journeyStoreSupport.mockGet[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -74,7 +74,7 @@ class EligibilityControllerSpec
         def redirect(eligibilityJourney: Option[EligibilityJourney], expectedRedirectLocation: String) = {
           inSequence {
             mockAuthWithEnrolment()
-            mockGet[EligibilityJourney](eori1)(Right(eligibilityJourney))
+            journeyStoreSupport.     mockGet[EligibilityJourney](eori1)(Right(eligibilityJourney))
           }
           checkIsRedirect(performAction(), expectedRedirectLocation)
         }
@@ -286,7 +286,7 @@ class EligibilityControllerSpec
           inSequence {
             mockAuthWithEnrolment()
             mockRetrieveUndertaking(eori1)(Option.empty.toFuture)
-            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourney))
+            journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourney))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -348,7 +348,7 @@ class EligibilityControllerSpec
         "eligibility journey fail to update" in {
           inSequence {
             mockAuthWithEnrolment()
-            mockUpdate[EligibilityJourney](eori1)(
+            journeyStoreSupport.mockUpdate[EligibilityJourney](eori1)(
               Left(ConnectorError(exception))
             )
           }
@@ -378,7 +378,7 @@ class EligibilityControllerSpec
         def testRedirection(input: Boolean, nextCall: String) =
           inSequence {
             mockAuthWithEnrolment()
-            mockUpdate[EligibilityJourney](eori1)(
+            journeyStoreSupport.mockUpdate[EligibilityJourney](eori1)(
               Right(journey.copy(eoriCheck = EoriCheckFormPage(input.some)))
             )
 
