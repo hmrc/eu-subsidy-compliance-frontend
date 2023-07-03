@@ -48,7 +48,7 @@ class EnrolledActionBuilderSpec
     with DefaultAwaitTimeout {
 
   override def overrideBindings: List[GuiceableModule] = List(
-    bind[AuthConnector].toInstance(mockAuthConnector)
+    bind[AuthConnector].toInstance(authSupport.mockAuthConnector)
   )
 
   private def FakeSignInUrl = "/fake/gg/signin"
@@ -67,7 +67,7 @@ class EnrolledActionBuilderSpec
 
     "redirect to the government gateway login page" when {
       "handling a request that is not authenticated" in {
-        mockAuth(EmptyPredicate, authRetrievals)(Future.failed(InvalidBearerToken()))
+        authSupport.mockAuth(EmptyPredicate, authSupport.authRetrievals)(Future.failed(InvalidBearerToken()))
 
         val request = FakeRequest().withHeaders(HOST -> "www.example.com")
         val result = underTest.invokeBlock(request, block)

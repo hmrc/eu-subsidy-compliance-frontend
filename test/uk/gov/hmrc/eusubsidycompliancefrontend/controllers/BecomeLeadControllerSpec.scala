@@ -20,6 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.mvc.Results.Redirect
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -49,10 +50,10 @@ class BecomeLeadControllerSpec
     with AuditServiceSupport
     with EscServiceSupport {
 
-  override def overrideBindings = List(
-    bind[AuthConnector].toInstance(mockAuthConnector),
+  override def overrideBindings: List[GuiceableModule] = List(
+    bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
-    bind[EmailVerificationService].toInstance(mockEmailVerificationService),
+    bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     bind[EscService].toInstance(mockEscService),
     bind[EmailService].toInstance(mockEmailService),
     bind[AuditService].toInstance(mockAuditService)
@@ -350,7 +351,7 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          mockGetEmailVerification()
+          authSupport.mockGetEmailVerification()
         }
 
         val result = performAction()
@@ -363,7 +364,7 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          mockGetEmailVerification(Option.empty)
+          authSupport.mockGetEmailVerification(Option.empty)
           mockRetrieveEmail(eori1)(
             Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("foo@example.com").some))
           )
@@ -380,7 +381,7 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          mockGetEmailVerification(Option.empty)
+          authSupport.mockGetEmailVerification(Option.empty)
           mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
         }
 
@@ -406,7 +407,7 @@ class BecomeLeadControllerSpec
       "user selects existing verified email address" in {
         inSequence {
           mockAuthWithEnrolment(eori1)
-          mockGetEmailVerification()
+          authSupport.mockGetEmailVerification()
           mockAddVerifiedEmail(eori1, "foo@example.com")(Future.successful(()))
         }
 
@@ -419,7 +420,7 @@ class BecomeLeadControllerSpec
       "user has existing verified email address but elects to enter a new one" in {
         inSequence {
           mockAuthWithEnrolment(eori1)
-          mockGetEmailVerification()
+          authSupport.mockGetEmailVerification()
           mockMakeVerificationRequestAndRedirect(Redirect(verificationUrl).toFuture)
         }
 
@@ -436,7 +437,7 @@ class BecomeLeadControllerSpec
       "user has no existing email address and enters a new one" in {
         inSequence {
           mockAuthWithEnrolment(eori1)
-          mockGetEmailVerification(None)
+          authSupport.mockGetEmailVerification(None)
           mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
           mockMakeVerificationRequestAndRedirect(Redirect(verificationUrl).toFuture)
         }
@@ -478,7 +479,7 @@ class BecomeLeadControllerSpec
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
           mockApproveVerification(eori1, verificationId)(Right(true))
-          mockGetEmailVerification(Option.empty)
+          authSupport.mockGetEmailVerification(Option.empty)
         }
 
         val result = performAction(verificationId)
@@ -492,7 +493,7 @@ class BecomeLeadControllerSpec
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
           mockApproveVerification(eori1, verificationId)(Right(true))
-          mockGetEmailVerification()
+          authSupport.mockGetEmailVerification()
         }
 
         val result = performAction(verificationId)

@@ -49,9 +49,9 @@ class FinancialDashboardControllerSpec
   private val fakeTimeProvider = FakeTimeProvider.withFixedDate(1, 1, 2022)
 
   override def overrideBindings: List[GuiceableModule] = List(
-    inject.bind[AuthConnector].toInstance(mockAuthConnector),
+    inject.bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
     inject.bind[Store].toInstance(mockJourneyStore),
-    inject.bind[EmailVerificationService].toInstance(mockEmailVerificationService),
+    inject.bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     inject.bind[EscService].toInstance(mockEscService),
     inject.bind[TimeProvider].toInstance(fakeTimeProvider)
   )

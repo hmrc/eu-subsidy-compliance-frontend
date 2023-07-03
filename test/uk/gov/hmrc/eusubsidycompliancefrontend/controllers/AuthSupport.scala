@@ -33,56 +33,60 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait AuthSupport { this: ControllerSpec =>
 
-  protected val mockAuthConnector: AuthConnector = mock[AuthConnector]
+  object authSupport {
 
-  protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
+    val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
-  protected val authRetrievals: Retrieval[Option[Credentials] ~ Option[String] ~ Enrolments] =
-    Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
+    val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
 
-  def mockAuth[R](predicate: Predicate, retrieval: Retrieval[R])(
-    result: Future[R]
-  ): Unit =
-    (mockAuthConnector
-      .authorise(_: Predicate, _: Retrieval[R])(
-        _: HeaderCarrier,
-        _: ExecutionContext
-      ))
-      .expects(predicate, retrieval, *, *)
-      .returning(result)
+    val authRetrievals: Retrieval[Option[Credentials] ~ Option[String] ~ Enrolments] =
+      Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
 
-  def mockAuthWithEccRetrievals(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]): Unit =
-    mockAuth(EmptyPredicate, authRetrievals)(
-      (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
-    )
+    def mockAuth[R](predicate: Predicate, retrieval: Retrieval[R])(
+      result: Future[R]
+    ): Unit =
+      (mockAuthConnector
+        .authorise(_: Predicate, _: Retrieval[R])(
+          _: HeaderCarrier,
+          _: ExecutionContext
+        ))
+        .expects(predicate, retrieval, *, *)
+        .returning(result)
 
-  def mockAuthWithEccAuthRetrievalsWithEmailCheck(
-    enrolments: Enrolments,
-    providerId: String,
-    groupIdentifier: Option[String]
-  ): CallHandler1[EORI, Future[Option[VerifiedEmail]]] = {
-    mockAuth(EmptyPredicate, authRetrievals)(
-      (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
-    )
-    mockGetEmailVerification()
+    def mockAuthWithEccRetrievals(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]): Unit =
+      mockAuth(EmptyPredicate, authRetrievals)(
+        (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
+      )
+
+    def mockAuthWithEccAuthRetrievalsWithEmailCheck(
+      enrolments: Enrolments,
+      providerId: String,
+      groupIdentifier: Option[String]
+    ): CallHandler1[EORI, Future[Option[VerifiedEmail]]] = {
+      mockAuth(EmptyPredicate, authRetrievals)(
+        (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
+      )
+      mockGetEmailVerification()
+    }
+
+    def mockAuthWithEccAuthRetrievalsNoEmailVerification(
+      enrolments: Enrolments,
+      providerId: String,
+      groupIdentifier: Option[String]
+    ): Unit =
+      mockAuth(EmptyPredicate, authRetrievals)(
+        (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
+      )
+
+    def mockGetEmailVerification(result: Option[VerifiedEmail]): CallHandler1[EORI, Future[Option[VerifiedEmail]]] =
+      (mockEmailVerificationService
+        .getEmailVerification(_: EORI))
+        .expects(*)
+        .returning(result.toFuture)
+
+    def mockGetEmailVerification(email: String = "foo@example.com"): CallHandler1[EORI, Future[Option[VerifiedEmail]]] =
+      mockGetEmailVerification(VerifiedEmail(email, "", verified = true).some)
+
   }
-
-  def mockAuthWithEccAuthRetrievalsNoEmailVerification(
-    enrolments: Enrolments,
-    providerId: String,
-    groupIdentifier: Option[String]
-  ): Unit =
-    mockAuth(EmptyPredicate, authRetrievals)(
-      (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
-    )
-
-  def mockGetEmailVerification(result: Option[VerifiedEmail]): CallHandler1[EORI, Future[Option[VerifiedEmail]]] =
-    (mockEmailVerificationService
-      .getEmailVerification(_: EORI))
-      .expects(*)
-      .returning(result.toFuture)
-
-  def mockGetEmailVerification(email: String = "foo@example.com"): CallHandler1[EORI, Future[Option[VerifiedEmail]]] =
-    mockGetEmailVerification(VerifiedEmail(email, "", verified = true).some)
 
 }

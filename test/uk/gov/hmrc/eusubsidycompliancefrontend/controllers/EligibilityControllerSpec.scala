@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.inject.bind
+import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -36,9 +37,9 @@ class EligibilityControllerSpec
     with AuthAndSessionDataBehaviour
     with EscServiceSupport {
 
-  override def overrideBindings = List(
-    bind[AuthConnector].toInstance(mockAuthConnector),
-    bind[EmailVerificationService].toInstance(mockEmailVerificationService),
+  override def overrideBindings: List[GuiceableModule] = List(
+    bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
+    bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService)
   )

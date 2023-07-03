@@ -54,13 +54,13 @@ class UndertakingControllerSpec
     with TimeProviderSupport {
 
   override def overrideBindings: List[GuiceableModule] = List(
-    bind[AuthConnector].toInstance(mockAuthConnector),
+    bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[EmailService].toInstance(mockEmailService),
     bind[AuditService].toInstance(mockAuditService),
     bind[TimeProvider].toInstance(mockTimeProvider),
-    bind[EmailVerificationService].toInstance(mockEmailVerificationService)
+    bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService)
   )
 
   override def additionalConfig: Configuration = super.additionalConfig.withFallback(
@@ -717,7 +717,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori1)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockGetEmailVerification()
+            authSupport.mockGetEmailVerification()
             mockAddVerifiedEmail(eori1, "foo@example.com")()
             mockUpdate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete))
 
@@ -732,7 +732,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori1)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockGetEmailVerification()
+            authSupport.mockGetEmailVerification()
             mockMakeVerificationRequestAndRedirect(Redirect("email-verification-redirect").toFuture)
           }
           redirectLocation(
@@ -744,7 +744,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori1)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockGetEmailVerification()
+            authSupport.mockGetEmailVerification()
           }
           status(performAction("using-stored-email" -> "false", "email" -> "somethingl.com")) shouldBe BAD_REQUEST
         }
@@ -1262,7 +1262,7 @@ class UndertakingControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.copy(isAmend = true).some))
-            mockGetEmailVerification()
+            authSupport.mockGetEmailVerification()
           }
 
           checkPageIsDisplayed(
@@ -1289,7 +1289,7 @@ class UndertakingControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
             mockUpdate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.copy(isAmend = true)))
-            mockGetEmailVerification()
+            authSupport.mockGetEmailVerification()
           }
 
           checkPageIsDisplayed(

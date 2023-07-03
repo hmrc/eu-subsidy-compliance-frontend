@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
+import org.scalamock.handlers.{CallHandler1, CallHandler3, CallHandler6}
 import org.scalamock.scalatest.MockFactory
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
@@ -29,27 +30,37 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait EmailVerificationServiceSupport { this: MockFactory with AuthSupport =>
 
-  def mockApproveVerification(eori: EORI, verificationId: String)(result: Either[ConnectorError, Boolean]) =
-    (mockEmailVerificationService
+  def mockApproveVerification(eori: EORI, verificationId: String)(
+    result: Either[ConnectorError, Boolean]
+  ): CallHandler3[EORI, String, ExecutionContext, Future[Boolean]] =
+    (authSupport.mockEmailVerificationService
       .approveVerificationRequest(_: EORI, _: String)(_: ExecutionContext))
       .expects(eori, verificationId, *)
       .returning(result.fold(Future.failed, _.toFuture))
 
-  def mockGetEmailVerification(eori: EORI)(result: Either[ConnectorError, Option[VerifiedEmail]]) =
-    (mockEmailVerificationService
+  def mockGetEmailVerification(
+    eori: EORI
+  )(result: Either[ConnectorError, Option[VerifiedEmail]]): CallHandler1[EORI, Future[Option[VerifiedEmail]]] =
+    (authSupport.mockEmailVerificationService
       .getEmailVerification(_: EORI))
       .expects(eori)
       .returning(result.fold(Future.failed, _.toFuture))
 
-  def mockAddVerifiedEmail(eori: EORI, emailAddress: String)(result: Future[Unit] = ().toFuture) =
-    (mockEmailVerificationService
+  def mockAddVerifiedEmail(eori: EORI, emailAddress: String)(
+    result: Future[Unit] = ().toFuture
+  ): CallHandler3[EORI, String, ExecutionContext, Future[Unit]] =
+    (authSupport.mockEmailVerificationService
       .addVerifiedEmail(_: EORI, _: String)(_: ExecutionContext))
       .expects(eori, emailAddress, *)
       .returning(result)
 
-  def mockMakeVerificationRequestAndRedirect(result: Future[Result]) =
+  def mockMakeVerificationRequestAndRedirect(
+    result: Future[Result]
+  ): CallHandler6[String, Call, String => String, AuthenticatedEnrolledRequest[
+    AnyContent
+  ], ExecutionContext, HeaderCarrier, Future[Result]] =
     (
-      mockEmailVerificationService
+      authSupport.mockEmailVerificationService
         .makeVerificationRequestAndRedirect(
           _: String,
           _: Call,

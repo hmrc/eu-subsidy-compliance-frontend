@@ -45,10 +45,10 @@ class NoClaimNotificationControllerSpec
     with TimeProviderSupport {
 
   override def overrideBindings = List(
-    bind[AuthConnector].toInstance(mockAuthConnector),
+    bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
-    bind[EmailVerificationService].toInstance(mockEmailVerificationService),
+    bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     bind[TimeProvider].toInstance(mockTimeProvider),
     bind[AuditService].toInstance(mockAuditService)
   )
