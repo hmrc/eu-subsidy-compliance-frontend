@@ -206,9 +206,13 @@ class BecomeLeadControllerSpec
               Right(newBecomeLeadJourney.copy(acceptResponsibilities = AcceptResponsibilitiesFormPage(true.some)).some)
             )
             escServiceSupport.mockGetUndertaking(eori4)(undertaking1.toFuture)
-            escServiceSupport.mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
+            escServiceSupport.mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(
+              Right(undertakingRef)
+            )
             emailSupport.mockSendEmail(eori4, PromotedSelfToNewLead, undertaking1)(Right(EmailSent))
-            escServiceSupport.mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
+            escServiceSupport.mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(
+              Right(undertakingRef)
+            )
             emailSupport.mockSendEmail(eori1, RemovedAsLeadToFormerLead, undertaking1)(Right(EmailSent))
             journeyStoreSupport.mockDeleteAll(eori4)(Right(()))
             auditServiceSupport.mockSendAuditEvent[BusinessEntityPromotedSelf](

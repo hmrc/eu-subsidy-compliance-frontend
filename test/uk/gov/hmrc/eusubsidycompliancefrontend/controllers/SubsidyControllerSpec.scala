@@ -1227,7 +1227,9 @@ class SubsidyControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             timeProviderSupport.mockTimeProviderToday(currentDate)
-            escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
+            escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(
+              undertakingSubsidies.toFuture
+            )
           }
           assertThrows[Exception](await(performAction(transactionId)))
         }
@@ -1316,8 +1318,12 @@ class SubsidyControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             timeProviderSupport.mockTimeProviderToday(currentDate)
-            escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
-            escServiceSupport.mockRemoveSubsidy(undertakingRef, nonHmrcSubsidyList1.head)(Left(ConnectorError(exception)))
+            escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(
+              undertakingSubsidies1.toFuture
+            )
+            escServiceSupport.mockRemoveSubsidy(undertakingRef, nonHmrcSubsidyList1.head)(
+              Left(ConnectorError(exception))
+            )
           }
           assertThrows[Exception](await(performAction("removeSubsidyClaim" -> "true")("TID1234")))
         }
@@ -1331,7 +1337,9 @@ class SubsidyControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             timeProviderSupport.mockTimeProviderToday(currentDate)
-            escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
+            escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(
+              undertakingSubsidies1.toFuture
+            )
           }
           checkFormErrorIsDisplayed(
             performAction()("TID1234"),
@@ -1348,11 +1356,17 @@ class SubsidyControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             timeProviderSupport.mockTimeProviderToday(currentDate)
-            escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
+            escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(
+              undertakingSubsidies1.toFuture
+            )
             escServiceSupport.mockRemoveSubsidy(undertakingRef, nonHmrcSubsidyList1.head)(Right(undertakingRef))
-            auditServiceSupport.mockSendAuditEvent[NonCustomsSubsidyRemoved](AuditEvent.NonCustomsSubsidyRemoved("1123", undertakingRef))
+            auditServiceSupport.mockSendAuditEvent[NonCustomsSubsidyRemoved](
+              AuditEvent.NonCustomsSubsidyRemoved("1123", undertakingRef)
+            )
             timeProviderSupport.mockTimeProviderToday(currentDate)
-            escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
+            escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(
+              undertakingSubsidies1.toFuture
+            )
           }
 
           val result = performAction("removeSubsidyClaim" -> "true")("TID1234")

@@ -574,7 +574,9 @@ class UndertakingControllerSpec
             journeyStoreSupport.mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
             journeyStoreSupport.mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
             emailVerificationServiceSupport.mockApproveVerification(eori1, "id")(Right(true))
-            emailVerificationServiceSupport.mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
+            emailVerificationServiceSupport.mockGetEmailVerification(eori1)(
+              Right(VerifiedEmail("", "", verified = true).some)
+            )
             journeyStoreSupport.mockUpdate[UndertakingJourney](eori1)(Right(undertakingJourney))
           }
 
@@ -614,7 +616,9 @@ class UndertakingControllerSpec
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification()
             journeyStoreSupport.mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-            emailVerificationServiceSupport.    mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
+            emailVerificationServiceSupport.mockGetEmailVerification(eori1)(
+              Right(VerifiedEmail("", "", verified = true).some)
+            )
           }
           checkPageIsDisplayed(
             performAction(),
@@ -640,7 +644,9 @@ class UndertakingControllerSpec
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification()
             journeyStoreSupport.mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-            emailVerificationServiceSupport.mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
+            emailVerificationServiceSupport.mockGetEmailVerification(eori1)(
+              Right(VerifiedEmail("", "", verified = true).some)
+            )
           }
           checkPageIsDisplayed(
             performAction(),
@@ -733,7 +739,9 @@ class UndertakingControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
             journeyStoreSupport.mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
             authSupport.mockGetEmailVerification()
-            emailVerificationServiceSupport.mockMakeVerificationRequestAndRedirect(Redirect("email-verification-redirect").toFuture)
+            emailVerificationServiceSupport.mockMakeVerificationRequestAndRedirect(
+              Redirect("email-verification-redirect").toFuture
+            )
           }
           redirectLocation(
             performAction("using-stored-email" -> "false", "email" -> "something@aol.com")
@@ -1089,7 +1097,11 @@ class UndertakingControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             journeyStoreSupport.mockUpdate[UndertakingJourney](eori1)(Right(updatedUndertakingJourney))
             escServiceSupport.mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            emailSupport.mockSendEmail(eori1, CreateUndertaking, undertakingCreated.toUndertakingWithRef(undertakingRef))(
+            emailSupport.mockSendEmail(
+              eori1,
+              CreateUndertaking,
+              undertakingCreated.toUndertakingWithRef(undertakingRef)
+            )(
               Left(ConnectorError(exception))
             )
           }
@@ -1108,7 +1120,11 @@ class UndertakingControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             journeyStoreSupport.mockUpdate[UndertakingJourney](eori1)(Right(updatedUndertakingJourney))
             escServiceSupport.mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            emailSupport.mockSendEmail(eori1, CreateUndertaking, undertakingCreated.toUndertakingWithRef(undertakingRef))(
+            emailSupport.mockSendEmail(
+              eori1,
+              CreateUndertaking,
+              undertakingCreated.toUndertakingWithRef(undertakingRef)
+            )(
               Right(EmailSent)
             )
             timeProviderSupport.mockTimeProviderNow(timeNow)
@@ -1525,10 +1541,14 @@ class UndertakingControllerSpec
             journeyStoreSupport.mockDeleteAll(eori1)(Right(()))
             journeyStoreSupport.mockDeleteAll(eori4)(Right(()))
             timeProviderSupport.mockTimeProviderToday(currentDate)
-            auditServiceSupport.mockSendAuditEvent[UndertakingDisabled](UndertakingDisabled("1123", undertakingRef, currentDate))
+            auditServiceSupport.mockSendAuditEvent[UndertakingDisabled](
+              UndertakingDisabled("1123", undertakingRef, currentDate)
+            )
             timeProviderSupport.mockTimeProviderToday(currentDate)
             emailSupport.mockSendEmail(eori1, DisableUndertakingToLead, undertaking1, formattedDate)(Right(EmailSent))
-            emailSupport.mockSendEmail(eori1, DisableUndertakingToBusinessEntity, undertaking1, formattedDate)(Right(EmailSent))
+            emailSupport.mockSendEmail(eori1, DisableUndertakingToBusinessEntity, undertaking1, formattedDate)(
+              Right(EmailSent)
+            )
           }
           checkIsRedirect(
             performAction("disableUndertakingConfirm" -> "true"),

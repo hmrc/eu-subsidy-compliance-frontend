@@ -83,7 +83,7 @@ class AccountControllerSpec
             journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             escServiceSupport.mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.toFuture)
-            timeProviderSupport. mockTimeProviderToday(fixedDate)
+            timeProviderSupport.mockTimeProviderToday(fixedDate)
             journeyStoreSupport.mockGetOrCreate(eori1)(Right(nilJourneyCreate))
           }
           checkPageIsDisplayed(

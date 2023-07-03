@@ -74,7 +74,7 @@ class EligibilityControllerSpec
         def redirect(eligibilityJourney: Option[EligibilityJourney], expectedRedirectLocation: String) = {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolment()
-            journeyStoreSupport.     mockGet[EligibilityJourney](eori1)(Right(eligibilityJourney))
+            journeyStoreSupport.mockGet[EligibilityJourney](eori1)(Right(eligibilityJourney))
           }
           checkIsRedirect(performAction(), expectedRedirectLocation)
         }
