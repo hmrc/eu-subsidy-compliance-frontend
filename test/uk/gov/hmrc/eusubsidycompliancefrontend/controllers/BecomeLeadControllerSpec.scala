@@ -56,7 +56,7 @@ class BecomeLeadControllerSpec
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     bind[EscService].toInstance(mockEscService),
     bind[EmailService].toInstance(emailSupport.mockEmailService),
-    bind[AuditService].toInstance(mockAuditService)
+    bind[AuditService].toInstance(auditServiceSupport.mockAuditService)
   )
 
   override def additionalConfig: Configuration = super.additionalConfig.withFallback(
@@ -211,7 +211,7 @@ class BecomeLeadControllerSpec
             mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
             emailSupport.mockSendEmail(eori1, RemovedAsLeadToFormerLead, undertaking1)(Right(EmailSent))
             journeyStoreSupport.mockDeleteAll(eori4)(Right(()))
-            mockSendAuditEvent[BusinessEntityPromotedSelf](
+            auditServiceSupport.mockSendAuditEvent[BusinessEntityPromotedSelf](
               AuditEvent.BusinessEntityPromotedSelf(undertakingRef, "1123", eori1, eori4)
             )
           }

@@ -50,7 +50,7 @@ class SelectNewLeadControllerSpec
     bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[EmailService].toInstance(emailSupport.mockEmailService),
-    bind[AuditService].toInstance(mockAuditService)
+    bind[AuditService].toInstance(auditServiceSupport.mockAuditService)
   )
 
   private val controller = instanceOf[SelectNewLeadController]
@@ -157,7 +157,7 @@ class SelectNewLeadControllerSpec
             journeyStoreSupport.mockUpdate[NewLeadJourney](eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
-            mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
+            auditServiceSupport.mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
             emailSupport.mockSendEmail(eori1, eori4, PromotedOtherAsLeadToLead, undertaking)(
               Left(ConnectorError(exception))
             )
@@ -191,7 +191,7 @@ class SelectNewLeadControllerSpec
             journeyStoreSupport.mockUpdate[NewLeadJourney](eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
-            mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
+            auditServiceSupport.mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
             emailSupport.mockSendEmail(eori1, eori4, PromotedOtherAsLeadToLead, undertaking)(
               Right(EmailSendResult.EmailSent)
             )
@@ -216,7 +216,7 @@ class SelectNewLeadControllerSpec
             journeyStoreSupport.mockUpdate[NewLeadJourney](eori1)(
               Right(NewLeadJourney(SelectNewLeadFormPage(eori4.some)))
             )
-            mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
+            auditServiceSupport.mockSendAuditEvent(AuditEvent.BusinessEntityPromoted(undertakingRef, "1123", eori1, eori4))
             emailSupport.mockSendEmail(eori1, eori4, PromotedOtherAsLeadToLead, undertaking)(Right(EmailSent))
             emailSupport.mockSendEmail(eori4, PromotedOtherAsLeadToBusinessEntity, undertaking)(Right(EmailNotSent))
           }

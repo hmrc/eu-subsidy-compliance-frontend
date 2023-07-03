@@ -51,7 +51,7 @@ class NoClaimNotificationControllerSpec
     bind[EscService].toInstance(mockEscService),
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     bind[TimeProvider].toInstance(mockTimeProvider),
-    bind[AuditService].toInstance(mockAuditService)
+    bind[AuditService].toInstance(auditServiceSupport.mockAuditService)
   )
   private val controller = instanceOf[NoClaimNotificationController]
 
@@ -207,7 +207,7 @@ class NoClaimNotificationControllerSpec
           mockCreateSubsidy(SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay.plusDays(1))))(
             Right(undertakingRef)
           )
-          mockSendAuditEvent(
+          auditServiceSupport.mockSendAuditEvent(
             AuditEvent.NonCustomsSubsidyNilReturn("1123", eori1, undertakingRef, currentDay.plusDays(1))
           )
         }

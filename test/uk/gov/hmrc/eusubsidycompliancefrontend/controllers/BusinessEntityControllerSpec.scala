@@ -62,7 +62,7 @@ class BusinessEntityControllerSpec
     bind[EscService].toInstance(mockEscService),
     bind[EmailService].toInstance(emailSupport.mockEmailService),
     bind[TimeProvider].toInstance(mockTimeProvider),
-    bind[AuditService].toInstance(mockAuditService)
+    bind[AuditService].toInstance(auditServiceSupport.mockAuditService)
   )
 
   override def additionalConfig: Configuration = super.additionalConfig.withFallback(
@@ -443,7 +443,7 @@ class BusinessEntityControllerSpec
                 mockAddMember(undertakingRef, BusinessEntity(validEori, leadEORI = false))(Right(undertakingRef))
                 emailSupport.mockSendEmail(validEori, AddMemberToBusinessEntity, undertaking)(Right(EmailSent))
                 emailSupport.mockSendEmail(eori1, validEori, AddMemberToLead, undertaking)(Right(EmailSent))
-                mockSendAuditEvent(AuditEvent.BusinessEntityAdded(undertakingRef, "1123", eori1, validEori))
+                auditServiceSupport.mockSendAuditEvent(AuditEvent.BusinessEntityAdded(undertakingRef, "1123", eori1, validEori))
                 journeyStoreSupport.mockPut[BusinessEntityJourney](
                   updatedBusinessJourney().copy(addBusiness = AddBusinessFormPage(None)),
                   eori1
@@ -563,7 +563,7 @@ class BusinessEntityControllerSpec
             emailSupport.mockSendEmail(eori1, eori4, MemberRemoveSelfToLead, undertaking1, effectiveDate)(
               Right(EmailSent)
             )
-            mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf(undertakingRef, "1123", eori1, eori4))
+            auditServiceSupport.mockSendAuditEvent(AuditEvent.BusinessEntityRemovedSelf(undertakingRef, "1123", eori1, eori4))
           }
           checkIsRedirect(
             performAction("removeYourselfBusinessEntity" -> "true"),
@@ -717,7 +717,7 @@ class BusinessEntityControllerSpec
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
             emailSupport.mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, date)(Right(EmailSent))
             emailSupport.mockSendEmail(eori1, eori4, RemoveMemberToLead, undertaking1, date)(Right(EmailSent))
-            mockSendAuditEvent(AuditEvent.BusinessEntityRemoved(undertakingRef, "1123", eori1, eori4))
+            auditServiceSupport.mockSendAuditEvent(AuditEvent.BusinessEntityRemoved(undertakingRef, "1123", eori1, eori4))
           }
           checkIsRedirect(
             performAction("removeBusiness" -> "true")(eori4),

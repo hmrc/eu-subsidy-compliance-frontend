@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
+import org.scalamock.handlers.CallHandler4
 import org.scalamock.scalatest.MockFactory
 import play.api.libs.json.Writes
 import play.api.mvc.Request
@@ -24,11 +25,13 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 trait AuditServiceSupport { this: MockFactory =>
 
-  val mockAuditService = mock[AuditService]
+  object auditServiceSupport {
+    val mockAuditService: AuditService = mock[AuditService]
 
-  def mockSendAuditEvent[A <: AuditEvent](event: A) =
-    (mockAuditService
-      .sendEvent(_: A)(_: HeaderCarrier, _: Writes[A], _: Request[_]))
-      .expects(event, *, *, *)
-      .returning(())
+    def mockSendAuditEvent[A <: AuditEvent](event: A): CallHandler4[A, HeaderCarrier, Writes[A], Request[_], Unit] =
+      (mockAuditService
+        .sendEvent(_: A)(_: HeaderCarrier, _: Writes[A], _: Request[_]))
+        .expects(event, *, *, *)
+        .returning(())
+  }
 }

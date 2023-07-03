@@ -58,7 +58,7 @@ class UndertakingControllerSpec
     bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
     bind[EmailService].toInstance(emailSupport.mockEmailService),
-    bind[AuditService].toInstance(mockAuditService),
+    bind[AuditService].toInstance(auditServiceSupport.mockAuditService),
     bind[TimeProvider].toInstance(mockTimeProvider),
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService)
   )
@@ -1112,7 +1112,7 @@ class UndertakingControllerSpec
               Right(EmailSent)
             )
             mockTimeProviderNow(timeNow)
-            mockSendAuditEvent(createUndertakingAuditEvent)
+            auditServiceSupport.mockSendAuditEvent(createUndertakingAuditEvent)
           }
           checkIsRedirect(
             performAction("cya" -> "true"),
@@ -1428,7 +1428,7 @@ class UndertakingControllerSpec
           )
           mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
           mockUpdateUndertaking(updatedUndertaking)(Right(undertakingRef))
-          mockSendAuditEvent(
+          auditServiceSupport.mockSendAuditEvent(
             UndertakingUpdated("1123", eori1, undertakingRef, undertaking1.name, undertaking1.industrySector)
           )
         }
@@ -1525,7 +1525,7 @@ class UndertakingControllerSpec
             journeyStoreSupport.mockDeleteAll(eori1)(Right(()))
             journeyStoreSupport.mockDeleteAll(eori4)(Right(()))
             mockTimeProviderToday(currentDate)
-            mockSendAuditEvent[UndertakingDisabled](UndertakingDisabled("1123", undertakingRef, currentDate))
+            auditServiceSupport.mockSendAuditEvent[UndertakingDisabled](UndertakingDisabled("1123", undertakingRef, currentDate))
             mockTimeProviderToday(currentDate)
             emailSupport.mockSendEmail(eori1, DisableUndertakingToLead, undertaking1, formattedDate)(Right(EmailSent))
             emailSupport.mockSendEmail(eori1, DisableUndertakingToBusinessEntity, undertaking1, formattedDate)(Right(EmailSent))

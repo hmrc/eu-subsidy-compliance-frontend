@@ -60,7 +60,7 @@ class SubsidyControllerSpec
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
-    bind[AuditService].toInstance(mockAuditService),
+    bind[AuditService].toInstance(auditServiceSupport.mockAuditService),
     bind[TimeProvider].toInstance(mockTimeProvider)
   )
 
@@ -1350,7 +1350,7 @@ class SubsidyControllerSpec
             mockTimeProviderToday(currentDate)
             mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
             mockRemoveSubsidy(undertakingRef, nonHmrcSubsidyList1.head)(Right(undertakingRef))
-            mockSendAuditEvent[NonCustomsSubsidyRemoved](AuditEvent.NonCustomsSubsidyRemoved("1123", undertakingRef))
+            auditServiceSupport.mockSendAuditEvent[NonCustomsSubsidyRemoved](AuditEvent.NonCustomsSubsidyRemoved("1123", undertakingRef))
             mockTimeProviderToday(currentDate)
             mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
           }
@@ -1514,7 +1514,7 @@ class SubsidyControllerSpec
               SubsidyController.toSubsidyUpdate(updatedSJ, undertakingRef, currentDate)
             )(Right(undertakingRef))
             journeyStoreSupport.mockDelete[SubsidyJourney](eori1)(Right(SubsidyJourney()))
-            mockSendAuditEvent[AuditEvent.NonCustomsSubsidyAdded](
+            auditServiceSupport.mockSendAuditEvent[AuditEvent.NonCustomsSubsidyAdded](
               AuditEvent.NonCustomsSubsidyAdded(
                 ggDetails = "1123",
                 leadEori = eori1,
