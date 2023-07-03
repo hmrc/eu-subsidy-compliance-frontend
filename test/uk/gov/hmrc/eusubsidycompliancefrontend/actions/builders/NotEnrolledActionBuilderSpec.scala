@@ -79,7 +79,7 @@ class NotEnrolledActionBuilderSpec
 
     "redirect to the account page" when {
       "handling a request that is authenticated and enrolled" in {
-        mockAuthWithEnrolment(eori1)
+        authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
 
         val request = FakeRequest()
         val result = underTest.invokeBlock(request, block)
@@ -91,7 +91,7 @@ class NotEnrolledActionBuilderSpec
 
     "invoke the supplied block" when {
       "handling a request that is authenticated but not enrolled" in {
-        mockAuthWithoutEnrolment()
+        authAndSessionDataBehaviour.mockAuthWithoutEnrolment()
 
         val request = FakeRequest()
         val result = underTest.invokeBlock(request, block)

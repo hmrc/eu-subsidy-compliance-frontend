@@ -82,13 +82,13 @@ class BecomeLeadControllerSpec
 
       def performAction() = controller.getBecomeLeadEori(FakeRequest())
 
-      behave like authBehaviour(() => performAction())
+      behave like authAndSessionDataBehaviour.authBehaviour(() => performAction())
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
         "call to fetch new lead journey fails" in {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail(eori4)
+            authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori4)
             journeyStoreSupport.mockGetOrCreate[BecomeLeadJourney](eori4)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -96,7 +96,7 @@ class BecomeLeadControllerSpec
 
         "call to fetch undertaking returns None" in {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail(eori4)
+            authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori4)
             journeyStoreSupport.mockGetOrCreate[BecomeLeadJourney](eori4)(Right(BecomeLeadJourney()))
             mockRetrieveUndertaking(eori4)(None.toFuture)
           }
@@ -108,7 +108,7 @@ class BecomeLeadControllerSpec
 
         "Become lead journey is blank " in {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail(eori4)
+            authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori4)
             journeyStoreSupport.mockGetOrCreate[BecomeLeadJourney](eori4)(Right(BecomeLeadJourney()))
             mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
           }
@@ -128,7 +128,7 @@ class BecomeLeadControllerSpec
 
         "new lead journey already exists" in {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail(eori4)
+            authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori4)
             journeyStoreSupport.mockGetOrCreate[BecomeLeadJourney](eori4)(
               Right(
                 newBecomeLeadJourney.copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = Some(true)))
@@ -161,7 +161,7 @@ class BecomeLeadControllerSpec
 
         "call to get become lead journey fails" in {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail(eori4)
+            authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori4)
             journeyStoreSupport.mockGet[BecomeLeadJourney](eori4)(Left(ConnectorError("Error")))
           }
           assertThrows[Exception](await(performAction("becomeAdmin" -> "true")))
@@ -174,7 +174,7 @@ class BecomeLeadControllerSpec
         "Nothing is submitted" in {
 
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail(eori4)
+            authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori4)
           }
           checkFormErrorIsDisplayed(
             performAction(),
@@ -185,7 +185,7 @@ class BecomeLeadControllerSpec
 
         "An invalid form is submitted" in {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail(eori4)
+            authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori4)
           }
           checkFormErrorIsDisplayed(
             performAction("invalidFieldName" -> "true"),
@@ -201,7 +201,7 @@ class BecomeLeadControllerSpec
 
         "user submits Yes" in {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail(eori4)
+            authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori4)
             journeyStoreSupport.mockGet[BecomeLeadJourney](eori4)(
               Right(newBecomeLeadJourney.copy(acceptResponsibilities = AcceptResponsibilitiesFormPage(true.some)).some)
             )
@@ -224,7 +224,7 @@ class BecomeLeadControllerSpec
 
         "user submits No" in {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail(eori4)
+            authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori4)
           }
 
           checkIsRedirect(performAction("becomeAdmin" -> "false"), routes.AccountController.getAccountPage.url)
@@ -238,14 +238,14 @@ class BecomeLeadControllerSpec
 
       def performAction() = controller.getAcceptResponsibilities(FakeRequest())
 
-      behave like authBehaviour(() => performAction())
+      behave like authAndSessionDataBehaviour.authBehaviour(() => performAction())
 
       "throw technical error" when {
         val exception = new Exception("oh no!")
 
         "call to get undertaking fails" in {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            authAndSessionDataBehaviour.mockAuthWithEnrolment(eori4)
             mockGetUndertaking(eori4)(Future.failed(new IllegalStateException()))
           }
           assertThrows[Exception](await(performAction()))
@@ -253,7 +253,7 @@ class BecomeLeadControllerSpec
 
         "call to fetch new become lead journey fails" in {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            authAndSessionDataBehaviour.mockAuthWithEnrolment(eori4)
             mockGetUndertaking(eori4)(undertaking.toFuture)
             journeyStoreSupport.mockGetOrCreate(eori4)(Left(ConnectorError(exception)))
           }
@@ -265,7 +265,7 @@ class BecomeLeadControllerSpec
       "display the page where the become lead journey exists" in {
 
         inSequence {
-          mockAuthWithEnrolment(eori4)
+          authAndSessionDataBehaviour.mockAuthWithEnrolment(eori4)
           mockGetUndertaking(eori4)(undertaking.toFuture)
           journeyStoreSupport.mockGetOrCreate(eori4)(
             Right(
@@ -284,7 +284,7 @@ class BecomeLeadControllerSpec
       "display the page where the become lead journey does not exist" in {
 
         inSequence {
-          mockAuthWithEnrolment(eori4)
+          authAndSessionDataBehaviour.mockAuthWithEnrolment(eori4)
           mockGetUndertaking(eori4)(undertaking.toFuture)
           journeyStoreSupport.mockGetOrCreate[BecomeLeadJourney](eori4)(Right(BecomeLeadJourney()))
         }
@@ -306,7 +306,7 @@ class BecomeLeadControllerSpec
 
         "redirect to email confirmation page if no verified email exists" in {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            authAndSessionDataBehaviour.mockAuthWithEnrolment(eori4)
             journeyStoreSupport.mockUpdate[BecomeLeadJourney](eori4)(Right(newBecomeLeadJourney))
           }
           redirectLocation(performAction()) shouldBe routes.BecomeLeadController.getConfirmEmail.url.some
@@ -322,7 +322,7 @@ class BecomeLeadControllerSpec
 
         def testDisplay(): Unit = {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail(eori4)
+            authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori4)
           }
 
           checkPageIsDisplayed(
@@ -349,7 +349,7 @@ class BecomeLeadControllerSpec
 
       "user has a verified email address in our store" in {
         inSequence {
-          mockAuthWithEnrolment(eori1)
+          authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           journeyStoreSupport.mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
           authSupport.mockGetEmailVerification()
         }
@@ -362,7 +362,7 @@ class BecomeLeadControllerSpec
 
       "user has no verified email address but they do have an email address in CDS" in {
         inSequence {
-          mockAuthWithEnrolment(eori1)
+          authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           journeyStoreSupport.mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
           authSupport.mockGetEmailVerification(Option.empty)
           mockRetrieveEmail(eori1)(
@@ -379,7 +379,7 @@ class BecomeLeadControllerSpec
 
       "user has no verified email nor do they have an email address in CDS" in {
         inSequence {
-          mockAuthWithEnrolment(eori1)
+          authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           journeyStoreSupport.mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
           authSupport.mockGetEmailVerification(Option.empty)
           mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
@@ -406,7 +406,7 @@ class BecomeLeadControllerSpec
 
       "user selects existing verified email address" in {
         inSequence {
-          mockAuthWithEnrolment(eori1)
+          authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           authSupport.mockGetEmailVerification()
           mockAddVerifiedEmail(eori1, "foo@example.com")(Future.successful(()))
         }
@@ -419,7 +419,7 @@ class BecomeLeadControllerSpec
 
       "user has existing verified email address but elects to enter a new one" in {
         inSequence {
-          mockAuthWithEnrolment(eori1)
+          authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           authSupport.mockGetEmailVerification()
           mockMakeVerificationRequestAndRedirect(Redirect(verificationUrl).toFuture)
         }
@@ -436,7 +436,7 @@ class BecomeLeadControllerSpec
 
       "user has no existing email address and enters a new one" in {
         inSequence {
-          mockAuthWithEnrolment(eori1)
+          authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           authSupport.mockGetEmailVerification(None)
           mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
           mockMakeVerificationRequestAndRedirect(Redirect(verificationUrl).toFuture)
@@ -464,7 +464,7 @@ class BecomeLeadControllerSpec
 
       "the become lead journey is not found" in {
         inSequence {
-          mockAuthWithEnrolment(eori1)
+          authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           journeyStoreSupport.mockGet[BecomeLeadJourney](eori1)(Right(None))
         }
 
@@ -476,7 +476,7 @@ class BecomeLeadControllerSpec
 
       "the email verification record is not found" in {
         inSequence {
-          mockAuthWithEnrolment(eori1)
+          authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           journeyStoreSupport.mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
           mockApproveVerification(eori1, verificationId)(Right(true))
           authSupport.mockGetEmailVerification(Option.empty)
@@ -490,7 +490,7 @@ class BecomeLeadControllerSpec
 
       "the verification request is successful" in {
         inSequence {
-          mockAuthWithEnrolment(eori1)
+          authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           journeyStoreSupport.mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
           mockApproveVerification(eori1, verificationId)(Right(true))
           authSupport.mockGetEmailVerification()
@@ -504,7 +504,7 @@ class BecomeLeadControllerSpec
 
       "the verification request is not successful" in {
         inSequence {
-          mockAuthWithEnrolment(eori1)
+          authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           journeyStoreSupport.mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
           mockApproveVerification(eori1, verificationId)(Right(false))
         }

@@ -60,13 +60,13 @@ class NoClaimNotificationControllerSpec
     "handling request to get No claim notification" must {
 
       def performAction = controller.getNoClaimNotification(FakeRequest())
-      behave like authBehaviour(() => performAction)
+      behave like authAndSessionDataBehaviour.authBehaviour(() => performAction)
 
       val startDate = LocalDate.of(2018, 4, 6)
 
       "display the page correctly if no previous claims have been submitted" in {
         inSequence {
-          mockAuthWithEnrolmentAndValidEmail()
+          authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeProviderToday(fixedDate)
           mockRetrieveSubsidiesForDateRange(undertakingRef, (startDate, fixedDate))(emptyUndertakingSubsidies.toFuture)
@@ -92,7 +92,7 @@ class NoClaimNotificationControllerSpec
 
       "display the page correctly if at least one previous claim has been submitted" in {
         inSequence {
-          mockAuthWithEnrolmentAndValidEmail()
+          authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeProviderToday(fixedDate)
           mockRetrieveSubsidiesForDateRange(undertakingRef, (startDate, fixedDate))(undertakingSubsidies.toFuture)
@@ -146,7 +146,7 @@ class NoClaimNotificationControllerSpec
 
         "call to update  Nil return journey fails" in {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
+            authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderToday(currentDay)
             mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
@@ -159,7 +159,7 @@ class NoClaimNotificationControllerSpec
 
         "call to create Subsidy fails" in {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
+            authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderToday(currentDay)
             mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
@@ -179,7 +179,7 @@ class NoClaimNotificationControllerSpec
 
         "check box is not checked" in {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
+            authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderToday(currentDay)
             mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
@@ -197,7 +197,7 @@ class NoClaimNotificationControllerSpec
       "redirect to next page " in {
 
         inSequence {
-          mockAuthWithEnrolmentAndValidEmail()
+          authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeProviderToday(currentDay)
           mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)

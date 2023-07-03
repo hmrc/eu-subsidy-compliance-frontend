@@ -68,7 +68,7 @@ class FinancialDashboardControllerSpec
     "getFinancialDashboard is called" must {
 
       "return the dashboard page for a logged in user with a valid EORI" in {
-        mockAuthWithEnrolmentAndNoEmailVerification(eori1)
+        authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification(eori1)
         mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
         mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
           undertakingSubsidies.toFuture

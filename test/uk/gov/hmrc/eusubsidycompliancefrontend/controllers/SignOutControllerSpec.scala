@@ -82,7 +82,7 @@ class SignOutControllerSpec
 
         def testDisplay(): Unit = {
           inSequence {
-            mockAuthWithEnrolment(eori4)
+            authAndSessionDataBehaviour.mockAuthWithEnrolment(eori4)
           }
 
           checkPageIsDisplayed(

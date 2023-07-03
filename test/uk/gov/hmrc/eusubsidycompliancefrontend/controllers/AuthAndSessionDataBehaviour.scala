@@ -43,6 +43,11 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
   private def eccEnrolments(eori: EORI) = Enrolment(key = EccEnrolmentKey, identifiers = identifiers(eori), state = "")
   private def enrolmentSets(eori: EORI) = Set(eccEnrolments(eori))
 
+  //This is a bit ghost in a shell. The tests have so much logic spread horizontally via traits
+  //it makes them incoherent. A good test is if you were asked to audit the tests for accuracy how much
+  //would you scream.
+  //
+  //Over time tests can start passing for the wrong reasons so this needs to be achievable
   override def additionalConfig: Configuration = Configuration(
     ConfigFactory.parseString(
       s"""
@@ -53,37 +58,39 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
     )
   )
 
-  def mockAuthWithoutEnrolment(): Unit =
-    authSupport.mockAuthWithEccRetrievals(Enrolments(Set.empty), providerId, groupId)
+  object authAndSessionDataBehaviour {
+    def mockAuthWithoutEnrolment(): Unit =
+      authSupport.mockAuthWithEccRetrievals(Enrolments(Set.empty), providerId, groupId)
 
-  def mockAuthWithEnrolment(eori: EORI = eori1): Unit =
-    authSupport.mockAuthWithEccRetrievals(Enrolments(Set(eccEnrolments(eori))), providerId, groupId)
+    def mockAuthWithEnrolment(eori: EORI = eori1): Unit =
+      authSupport.mockAuthWithEccRetrievals(Enrolments(Set(eccEnrolments(eori))), providerId, groupId)
 
-  def mockAuthWithEnrolmentWithoutEori(): Unit = authSupport.mockAuthWithEccRetrievals(
-    Enrolments(Set(Enrolment(EccEnrolmentKey, Seq.empty, state = ""))),
-    providerId,
-    groupId
-  )
+    def mockAuthWithEnrolmentWithoutEori(): Unit = authSupport.mockAuthWithEccRetrievals(
+      Enrolments(Set(Enrolment(EccEnrolmentKey, Seq.empty, state = ""))),
+      providerId,
+      groupId
+    )
 
-  def mockAuthWithEnrolmentAndValidEmail(eori: EORI = eori1): Unit =
-    authSupport.mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), providerId, groupId)
+    def mockAuthWithEnrolmentAndValidEmail(eori: EORI = eori1): Unit =
+      authSupport.mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), providerId, groupId)
 
-  def mockAuthWithEnrolmentAndNoEmailVerification(eori: EORI = eori1): Unit =
-    authSupport.mockAuthWithEccAuthRetrievalsNoEmailVerification(Enrolments(enrolmentSets(eori)), providerId, groupId)
+    def mockAuthWithEnrolmentAndNoEmailVerification(eori: EORI = eori1): Unit =
+      authSupport.mockAuthWithEccAuthRetrievalsNoEmailVerification(Enrolments(enrolmentSets(eori)), providerId, groupId)
 
-  def authBehaviour(performAction: () => Future[Result]): Unit =
-    "redirect to the login page when the user is not logged in" in {
-      List[NoActiveSession](
-        BearerTokenExpired(),
-        MissingBearerToken(),
-        InvalidBearerToken(),
-        SessionRecordNotFound()
-      ).foreach { e =>
-        withClue(s"For AuthorisationException $e: ") {
-          authSupport.mockAuth(EmptyPredicate, authSupport.authRetrievals)(Future.failed(e))
-          checkIsRedirect(performAction(), expectedSignInUrl)
+    def authBehaviour(performAction: () => Future[Result]): Unit =
+      "redirect to the login page when the user is not logged in" in {
+        List[NoActiveSession](
+          BearerTokenExpired(),
+          MissingBearerToken(),
+          InvalidBearerToken(),
+          SessionRecordNotFound()
+        ).foreach { e =>
+          withClue(s"For AuthorisationException $e: ") {
+            authSupport.mockAuth(EmptyPredicate, authSupport.authRetrievals)(Future.failed(e))
+            checkIsRedirect(performAction(), expectedSignInUrl)
+          }
         }
       }
-    }
+  }
 
 }
