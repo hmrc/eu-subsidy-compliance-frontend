@@ -41,7 +41,7 @@ class NoBusinessPresentControllerSpec
     bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
-    bind[EscService].toInstance(mockEscService)
+    bind[EscService].toInstance(escServiceSupport.mockEscService)
   )
 
   private val controller = instanceOf[NoBusinessPresentController]
@@ -56,7 +56,7 @@ class NoBusinessPresentControllerSpec
       "display the page" in {
         inSequence {
           authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
         }
         checkPageIsDisplayed(
           performAction,
@@ -85,7 +85,7 @@ class NoBusinessPresentControllerSpec
         "call to update business entity journey fails" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             journeyStoreSupport.mockUpdate[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction))
@@ -96,7 +96,7 @@ class NoBusinessPresentControllerSpec
       "redirect to next page" in {
         inSequence {
           authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-          mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
+          escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
           journeyStoreSupport.mockUpdate[BusinessEntityJourney](eori1)(Right(businessEntityJourney1))
         }
         checkIsRedirect(

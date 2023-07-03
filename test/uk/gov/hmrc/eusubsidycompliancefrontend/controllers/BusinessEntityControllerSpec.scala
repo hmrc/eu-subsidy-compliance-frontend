@@ -59,7 +59,7 @@ class BusinessEntityControllerSpec
     bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
-    bind[EscService].toInstance(mockEscService),
+    bind[EscService].toInstance(escServiceSupport.mockEscService),
     bind[EmailService].toInstance(emailSupport.mockEmailService),
     bind[TimeProvider].toInstance(mockTimeProvider),
     bind[AuditService].toInstance(auditServiceSupport.mockAuditService)
@@ -105,7 +105,7 @@ class BusinessEntityControllerSpec
         "call to get business entity journey fails" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockGetOrCreate[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction))
@@ -121,7 +121,7 @@ class BusinessEntityControllerSpec
         ): Unit = {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
           }
 
@@ -178,7 +178,7 @@ class BusinessEntityControllerSpec
         "call to update BusinessEntityJourney fails" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockUpdate[BusinessEntityJourney](eori1)(
               Left(ConnectorError(exception))
             )
@@ -195,7 +195,7 @@ class BusinessEntityControllerSpec
 
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           }
 
           checkFormErrorIsDisplayed(
@@ -216,7 +216,7 @@ class BusinessEntityControllerSpec
         "user selected No" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           }
           checkIsRedirect(performAction("addBusiness" -> "false"), routes.AccountController.getAccountPage.url)
         }
@@ -224,7 +224,7 @@ class BusinessEntityControllerSpec
         "user selected Yes" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockUpdate[BusinessEntityJourney](eori1)(
               Right(BusinessEntityJourney(addBusiness = AddBusinessFormPage(true.some)))
             )
@@ -251,7 +251,7 @@ class BusinessEntityControllerSpec
         "call to get business entity journey fails" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction))
@@ -266,7 +266,7 @@ class BusinessEntityControllerSpec
           val previousUrl = routes.BusinessEntityController.getAddBusinessEntity.url
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
           }
 
@@ -312,7 +312,7 @@ class BusinessEntityControllerSpec
         "call to get business entity journey came back empty" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockGet[BusinessEntityJourney](eori1)(Right(None))
           }
           checkIsRedirect(performAction, routes.BusinessEntityController.getAddBusinessEntity.url)
@@ -337,7 +337,7 @@ class BusinessEntityControllerSpec
         "call to get previous uri fails" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockGet[BusinessEntityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -351,7 +351,7 @@ class BusinessEntityControllerSpec
         def test(data: (String, String)*)(errorMessageKey: String): Unit = {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
           }
           checkFormErrorIsDisplayed(
@@ -366,9 +366,9 @@ class BusinessEntityControllerSpec
         )(retrieveResponse: Either[ConnectorError, Option[Undertaking]], errorMessageKey: String): Unit = {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-            mockRetrieveUndertakingWithErrorResponse(eori4)(retrieveResponse)
+            escServiceSupport.mockRetrieveUndertakingWithErrorResponse(eori4)(retrieveResponse)
           }
           checkFormErrorIsDisplayed(
             performAction(data: _*),
@@ -435,12 +435,12 @@ class BusinessEntityControllerSpec
               val validEori = EORI(withGbPrefix(eoriEntered))
               inSequence {
                 authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-                mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+                escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
                 journeyStoreSupport.mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
 
-                mockRetrieveUndertakingWithErrorResponse(validEori)(Right(None))
+                escServiceSupport.mockRetrieveUndertakingWithErrorResponse(validEori)(Right(None))
                 journeyStoreSupport.mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-                mockAddMember(undertakingRef, BusinessEntity(validEori, leadEORI = false))(Right(undertakingRef))
+                escServiceSupport.mockAddMember(undertakingRef, BusinessEntity(validEori, leadEORI = false))(Right(undertakingRef))
                 emailSupport.mockSendEmail(validEori, AddMemberToBusinessEntity, undertaking)(Right(EmailSent))
                 emailSupport.mockSendEmail(eori1, validEori, AddMemberToLead, undertaking)(Right(EmailSent))
                 auditServiceSupport.mockSendAuditEvent(AuditEvent.BusinessEntityAdded(undertakingRef, "1123", eori1, validEori))
@@ -467,7 +467,7 @@ class BusinessEntityControllerSpec
         "call to retrieve undertaking returns undertaking having no BE with that eori" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification(eori4)
-            mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -478,7 +478,7 @@ class BusinessEntityControllerSpec
         def test(undertaking: Undertaking, inputDate: Option[String]): Unit = {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification(eori4)
-            mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
           }
           checkPageIsDisplayed(
             performAction(),
@@ -518,7 +518,7 @@ class BusinessEntityControllerSpec
         "call to retrieve undertaking returns undertaking having no BE with that eori" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification(eori4)
-            mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -530,7 +530,7 @@ class BusinessEntityControllerSpec
         "nothing is selected" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification(eori4)
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
           }
           checkFormErrorIsDisplayed(
             performAction(),
@@ -553,8 +553,8 @@ class BusinessEntityControllerSpec
         "user selected yes" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification(eori4)
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
+            escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+            escServiceSupport.mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
             journeyStoreSupport.mockDeleteAll(eori4)(Right(()))
             mockTimeProviderToday(fixedDate)
             emailSupport.mockSendEmail(eori4, MemberRemoveSelfToBusinessEntity, undertaking1, effectiveDate)(
@@ -574,7 +574,7 @@ class BusinessEntityControllerSpec
         "user selected no" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification(eori4)
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
           }
           checkIsRedirect(
             performAction("removeYourselfBusinessEntity" -> "false"),
@@ -593,7 +593,7 @@ class BusinessEntityControllerSpec
         "call to retrieve undertaking returns undertaking having no BE with that eori" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori1)
-            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
           }
           assertThrows[Exception](await(performAction))
         }
@@ -604,8 +604,8 @@ class BusinessEntityControllerSpec
         def test(undertaking: Undertaking, inputDate: Option[String]): Unit = {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori1)
-            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
           }
           checkPageIsDisplayed(
             performAction,
@@ -656,7 +656,7 @@ class BusinessEntityControllerSpec
         "call to retrieve undertaking returns undertaking having no BE with that eori" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori1)
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           }
           assertThrows[Exception](await(performAction()(eori4)))
         }
@@ -664,10 +664,10 @@ class BusinessEntityControllerSpec
         "call to remove BE fails" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori1)
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockTimeProviderToday(effectiveDate)
-            mockRemoveMember(undertakingRef, businessEntity4)(Left(ConnectorError(exception)))
+            escServiceSupport.mockRemoveMember(undertakingRef, businessEntity4)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
         }
@@ -675,10 +675,10 @@ class BusinessEntityControllerSpec
         "call to send email fails" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori1)
-            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockTimeProviderToday(effectiveDate)
-            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
+            escServiceSupport.mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
             emailSupport.mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, "10 October 2022")(
               Left(ConnectorError(new RuntimeException()))
             )
@@ -693,8 +693,8 @@ class BusinessEntityControllerSpec
         "nothing is selected" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori1)
-            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
           }
           checkFormErrorIsDisplayed(
             performAction()(eori4),
@@ -711,10 +711,10 @@ class BusinessEntityControllerSpec
         def testRedirection(date: String): Unit = {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori1)
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockTimeProviderToday(effectiveDate)
-            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
+            escServiceSupport.mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
             emailSupport.mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, date)(Right(EmailSent))
             emailSupport.mockSendEmail(eori1, eori4, RemoveMemberToLead, undertaking1, date)(Right(EmailSent))
             auditServiceSupport.mockSendAuditEvent(AuditEvent.BusinessEntityRemoved(undertakingRef, "1123", eori1, eori4))
@@ -732,8 +732,8 @@ class BusinessEntityControllerSpec
         "user selects No as input" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori1)
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
           }
           checkIsRedirect(
             performAction("removeBusiness" -> "false")(eori4),

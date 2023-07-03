@@ -48,7 +48,7 @@ class AccountControllerSpec
     bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
-    bind[EscService].toInstance(mockEscService),
+    bind[EscService].toInstance(escServiceSupport.mockEscService),
     bind[TimeProvider].toInstance(mockTimeProvider),
     bind[EmailService].toInstance(emailSupport.mockEmailService)
   )
@@ -79,10 +79,10 @@ class AccountControllerSpec
           val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-            mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.toFuture)
+            escServiceSupport.mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.toFuture)
             mockTimeProviderToday(fixedDate)
             journeyStoreSupport.mockGetOrCreate(eori1)(Right(nilJourneyCreate))
           }
@@ -123,7 +123,7 @@ class AccountControllerSpec
           val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
 
@@ -133,7 +133,7 @@ class AccountControllerSpec
               undertaking.lastSubsidyUsageUpdt
                 .fold(List.empty[NonHmrcSubsidy])(d => List(nonHmrcSubsidy.copy(submissionDate = d)))
 
-            mockRetrieveAllSubsidies(undertakingRef)(
+            escServiceSupport.mockRetrieveAllSubsidies(undertakingRef)(
               undertakingSubsidies.copy(nonHMRCSubsidyUsage = subsidies).toFuture
             )
 
@@ -198,10 +198,10 @@ class AccountControllerSpec
           "Only ECC enrolment is present" in {
             inSequence {
               authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification(eori4)
-              mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+              escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
               journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
               journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
-              mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.toFuture)
+              escServiceSupport.mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.toFuture)
               mockTimeProviderToday(fixedDate)
             }
 
@@ -226,7 +226,7 @@ class AccountControllerSpec
         "there is error in retrieving the undertaking" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification()
-            mockRetrieveUndertaking(eori1)(Future.failed(exception))
+            escServiceSupport.mockRetrieveUndertaking(eori1)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction()))
 
@@ -235,7 +235,7 @@ class AccountControllerSpec
         "there is an error in fetching eligibility journey data" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -245,7 +245,7 @@ class AccountControllerSpec
         "there is an error in retrieving undertaking journey data" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
             journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
           }
@@ -256,7 +256,7 @@ class AccountControllerSpec
         "there is an error in fetching Business entity journey data" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
           }
@@ -273,7 +273,7 @@ class AccountControllerSpec
           "retrieve undertaking journey is not there" in {
             inSequence {
               authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification(eori1)
-              mockRetrieveUndertaking(eori1)(None.toFuture)
+              escServiceSupport.mockRetrieveUndertaking(eori1)(None.toFuture)
               journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(EligibilityJourney()))
               journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             }
@@ -287,7 +287,7 @@ class AccountControllerSpec
           "eligibility Journey is not complete and undertaking Journey is blank" in {
             inSequence {
               authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification()
-              mockRetrieveUndertaking(eori1)(None.toFuture)
+              escServiceSupport.mockRetrieveUndertaking(eori1)(None.toFuture)
               journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
               journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             }
@@ -297,7 +297,7 @@ class AccountControllerSpec
           "eligibility Journey  is complete and undertaking Journey is not complete" in {
             inSequence {
               authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification()
-              mockRetrieveUndertaking(eori1)(None.toFuture)
+              escServiceSupport.mockRetrieveUndertaking(eori1)(None.toFuture)
               journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
               journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             }
@@ -307,7 +307,7 @@ class AccountControllerSpec
           "eligibility Journey  and undertaking Journey are  complete" in {
             inSequence {
               authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification()
-              mockRetrieveUndertaking(eori1)(None.toFuture)
+              escServiceSupport.mockRetrieveUndertaking(eori1)(None.toFuture)
               journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
               journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1))
             }

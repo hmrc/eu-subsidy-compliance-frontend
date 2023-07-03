@@ -54,7 +54,7 @@ class BecomeLeadControllerSpec
     bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
     bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
-    bind[EscService].toInstance(mockEscService),
+    bind[EscService].toInstance(escServiceSupport.mockEscService),
     bind[EmailService].toInstance(emailSupport.mockEmailService),
     bind[AuditService].toInstance(auditServiceSupport.mockAuditService)
   )
@@ -98,7 +98,7 @@ class BecomeLeadControllerSpec
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori4)
             journeyStoreSupport.mockGetOrCreate[BecomeLeadJourney](eori4)(Right(BecomeLeadJourney()))
-            mockRetrieveUndertaking(eori4)(None.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori4)(None.toFuture)
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -110,7 +110,7 @@ class BecomeLeadControllerSpec
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori4)
             journeyStoreSupport.mockGetOrCreate[BecomeLeadJourney](eori4)(Right(BecomeLeadJourney()))
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
           }
           checkPageIsDisplayed(
             performAction(),
@@ -134,7 +134,7 @@ class BecomeLeadControllerSpec
                 newBecomeLeadJourney.copy(becomeLeadEori = newBecomeLeadJourney.becomeLeadEori.copy(value = Some(true)))
               )
             )
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
           }
           checkPageIsDisplayed(
             performAction(),
@@ -205,10 +205,10 @@ class BecomeLeadControllerSpec
             journeyStoreSupport.mockGet[BecomeLeadJourney](eori4)(
               Right(newBecomeLeadJourney.copy(acceptResponsibilities = AcceptResponsibilitiesFormPage(true.some)).some)
             )
-            mockGetUndertaking(eori4)(undertaking1.toFuture)
-            mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
+            escServiceSupport.mockGetUndertaking(eori4)(undertaking1.toFuture)
+            escServiceSupport.mockAddMember(undertakingRef, businessEntity4.copy(leadEORI = true))(Right(undertakingRef))
             emailSupport.mockSendEmail(eori4, PromotedSelfToNewLead, undertaking1)(Right(EmailSent))
-            mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
+            escServiceSupport.mockAddMember(undertakingRef, businessEntity1.copy(leadEORI = false))(Right(undertakingRef))
             emailSupport.mockSendEmail(eori1, RemovedAsLeadToFormerLead, undertaking1)(Right(EmailSent))
             journeyStoreSupport.mockDeleteAll(eori4)(Right(()))
             auditServiceSupport.mockSendAuditEvent[BusinessEntityPromotedSelf](
@@ -246,7 +246,7 @@ class BecomeLeadControllerSpec
         "call to get undertaking fails" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolment(eori4)
-            mockGetUndertaking(eori4)(Future.failed(new IllegalStateException()))
+            escServiceSupport.mockGetUndertaking(eori4)(Future.failed(new IllegalStateException()))
           }
           assertThrows[Exception](await(performAction()))
         }
@@ -254,7 +254,7 @@ class BecomeLeadControllerSpec
         "call to fetch new become lead journey fails" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolment(eori4)
-            mockGetUndertaking(eori4)(undertaking.toFuture)
+            escServiceSupport.mockGetUndertaking(eori4)(undertaking.toFuture)
             journeyStoreSupport.mockGetOrCreate(eori4)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction()))
@@ -266,7 +266,7 @@ class BecomeLeadControllerSpec
 
         inSequence {
           authAndSessionDataBehaviour.mockAuthWithEnrolment(eori4)
-          mockGetUndertaking(eori4)(undertaking.toFuture)
+          escServiceSupport.mockGetUndertaking(eori4)(undertaking.toFuture)
           journeyStoreSupport.mockGetOrCreate(eori4)(
             Right(
               newBecomeLeadJourney
@@ -285,7 +285,7 @@ class BecomeLeadControllerSpec
 
         inSequence {
           authAndSessionDataBehaviour.mockAuthWithEnrolment(eori4)
-          mockGetUndertaking(eori4)(undertaking.toFuture)
+          escServiceSupport.mockGetUndertaking(eori4)(undertaking.toFuture)
           journeyStoreSupport.mockGetOrCreate[BecomeLeadJourney](eori4)(Right(BecomeLeadJourney()))
         }
 

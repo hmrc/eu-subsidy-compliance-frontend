@@ -41,7 +41,7 @@ class EligibilityControllerSpec
     bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
-    bind[EscService].toInstance(mockEscService)
+    bind[EscService].toInstance(escServiceSupport.mockEscService)
   )
 
   private val controller = instanceOf[EligibilityController]
@@ -285,7 +285,7 @@ class EligibilityControllerSpec
         def testDisplay(eligibilityJourney: EligibilityJourney) = {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolment()
-            mockRetrieveUndertaking(eori1)(Option.empty.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(Option.empty.toFuture)
             journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourney))
           }
           checkPageIsDisplayed(
@@ -324,7 +324,7 @@ class EligibilityControllerSpec
         "undertaking has already been created" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolment()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           }
 
           val result = performAction()

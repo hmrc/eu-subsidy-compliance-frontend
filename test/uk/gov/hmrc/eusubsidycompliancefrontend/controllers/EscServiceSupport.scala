@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import org.scalamock.handlers.{CallHandler2, CallHandler3, CallHandler4}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
@@ -27,96 +28,114 @@ import scala.concurrent.Future
 
 trait EscServiceSupport { this: ControllerSpec =>
 
-  val mockEscService = mock[EscService]
+  object escServiceSupport {
+    val mockEscService: EscService = mock[EscService]
 
-  def mockCreateUndertaking(undertaking: UndertakingCreate)(result: Either[ConnectorError, UndertakingRef]) =
-    (mockEscService
-      .createUndertaking(_: UndertakingCreate)(_: HeaderCarrier, _: EORI))
-      .expects(undertaking, *, *)
-      .returning(result.fold(e => Future.failed(e), _.toFuture))
+    def mockCreateUndertaking(undertaking: UndertakingCreate)(
+      result: Either[ConnectorError, UndertakingRef]
+    ): CallHandler3[UndertakingCreate, HeaderCarrier, EORI, Future[UndertakingRef]] =
+      (mockEscService
+        .createUndertaking(_: UndertakingCreate)(_: HeaderCarrier, _: EORI))
+        .expects(undertaking, *, *)
+        .returning(result.fold(e => Future.failed(e), _.toFuture))
 
-  def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result)
+    def mockRetrieveUndertaking(
+      eori: EORI
+    )(result: Future[Option[Undertaking]]): CallHandler2[EORI, HeaderCarrier, Future[Option[Undertaking]]] =
+      (mockEscService
+        .retrieveUndertaking(_: EORI)(_: HeaderCarrier))
+        .expects(eori, *)
+        .returning(result)
 
-  def mockGetUndertaking(eori: EORI)(result: Future[Undertaking]) =
-    (mockEscService
-      .getUndertaking(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result)
+    def mockGetUndertaking(
+      eori: EORI
+    )(result: Future[Undertaking]): CallHandler2[EORI, HeaderCarrier, Future[Undertaking]] =
+      (mockEscService
+        .getUndertaking(_: EORI)(_: HeaderCarrier))
+        .expects(eori, *)
+        .returning(result)
 
-  def mockRetrieveUndertakingWithErrorResponse(
-    eori: EORI
-  )(result: Either[ConnectorError, Option[Undertaking]]) =
-    (mockEscService
-      .retrieveUndertakingAndHandleErrors(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result.toFuture)
+    def mockRetrieveUndertakingWithErrorResponse(
+      eori: EORI
+    )(
+      result: Either[ConnectorError, Option[Undertaking]]
+    ): CallHandler2[EORI, HeaderCarrier, Future[Either[ConnectorError, Option[Undertaking]]]] =
+      (mockEscService
+        .retrieveUndertakingAndHandleErrors(_: EORI)(_: HeaderCarrier))
+        .expects(eori, *)
+        .returning(result.toFuture)
 
-  def mockUpdateUndertaking(undertaking: Undertaking)(result: Either[ConnectorError, UndertakingRef]) =
-    (mockEscService
-      .updateUndertaking(_: Undertaking)(_: HeaderCarrier))
-      .expects(undertaking, *)
-      .returning(result.fold(e => Future.failed(e), _.toFuture))
+    def mockUpdateUndertaking(undertaking: Undertaking)(
+      result: Either[ConnectorError, UndertakingRef]
+    ): CallHandler2[Undertaking, HeaderCarrier, Future[UndertakingRef]] =
+      (mockEscService
+        .updateUndertaking(_: Undertaking)(_: HeaderCarrier))
+        .expects(undertaking, *)
+        .returning(result.fold(e => Future.failed(e), _.toFuture))
 
-  def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
-    result: Either[ConnectorError, UndertakingRef]
-  ) =
-    (mockEscService
-      .addMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
-      .expects(undertakingRef, businessEntity, *)
-      .returning(result.fold(e => Future.failed(e), _.toFuture))
+    def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
+      result: Either[ConnectorError, UndertakingRef]
+    ): CallHandler3[UndertakingRef, BusinessEntity, HeaderCarrier, Future[UndertakingRef]] =
+      (mockEscService
+        .addMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
+        .expects(undertakingRef, businessEntity, *)
+        .returning(result.fold(e => Future.failed(e), _.toFuture))
 
-  def mockRemoveMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
-    result: Either[ConnectorError, UndertakingRef]
-  ) =
-    (mockEscService
-      .removeMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
-      .expects(undertakingRef, businessEntity, *)
-      .returning(result.fold(e => Future.failed(e), _.toFuture))
+    def mockRemoveMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
+      result: Either[ConnectorError, UndertakingRef]
+    ): CallHandler3[UndertakingRef, BusinessEntity, HeaderCarrier, Future[UndertakingRef]] =
+      (mockEscService
+        .removeMember(_: UndertakingRef, _: BusinessEntity)(_: HeaderCarrier))
+        .expects(undertakingRef, businessEntity, *)
+        .returning(result.fold(e => Future.failed(e), _.toFuture))
 
-  def mockCreateSubsidy(subsidyUpdate: SubsidyUpdate)(
-    result: Either[ConnectorError, UndertakingRef]
-  ) =
-    (mockEscService
-      .createSubsidy(_: SubsidyUpdate)(_: HeaderCarrier))
-      .expects(subsidyUpdate, *)
-      .returning(result.fold(e => Future.failed(e), _.toFuture))
+    def mockCreateSubsidy(subsidyUpdate: SubsidyUpdate)(
+      result: Either[ConnectorError, UndertakingRef]
+    ): CallHandler2[SubsidyUpdate, HeaderCarrier, Future[UndertakingRef]] =
+      (mockEscService
+        .createSubsidy(_: SubsidyUpdate)(_: HeaderCarrier))
+        .expects(subsidyUpdate, *)
+        .returning(result.fold(e => Future.failed(e), _.toFuture))
 
-  def mockRetrieveAllSubsidies(ref: UndertakingRef)(result: Future[UndertakingSubsidies]) =
-    (mockEscService
-      .retrieveAllSubsidies(_: UndertakingRef)(_: HeaderCarrier, _: EORI))
-      .expects(ref, *, *)
-      .returning(result)
+    def mockRetrieveAllSubsidies(ref: UndertakingRef)(
+      result: Future[UndertakingSubsidies]
+    ): CallHandler3[UndertakingRef, HeaderCarrier, EORI, Future[UndertakingSubsidies]] =
+      (mockEscService
+        .retrieveAllSubsidies(_: UndertakingRef)(_: HeaderCarrier, _: EORI))
+        .expects(ref, *, *)
+        .returning(result)
 
-  def mockRetrieveSubsidiesForDateRange(ref: UndertakingRef, dateRange: (LocalDate, LocalDate))(
-    result: Future[UndertakingSubsidies]
-  ) =
-    (mockEscService
-      .retrieveSubsidiesForDateRange(_: UndertakingRef, _: (LocalDate, LocalDate))(_: HeaderCarrier, _: EORI))
-      .expects(ref, dateRange, *, *)
-      .returning(result)
+    def mockRetrieveSubsidiesForDateRange(ref: UndertakingRef, dateRange: (LocalDate, LocalDate))(
+      result: Future[UndertakingSubsidies]
+    ): CallHandler4[UndertakingRef, (LocalDate, LocalDate), HeaderCarrier, EORI, Future[UndertakingSubsidies]] =
+      (mockEscService
+        .retrieveSubsidiesForDateRange(_: UndertakingRef, _: (LocalDate, LocalDate))(_: HeaderCarrier, _: EORI))
+        .expects(ref, dateRange, *, *)
+        .returning(result)
 
-  def mockRemoveSubsidy(reference: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(
-    result: Either[ConnectorError, UndertakingRef]
-  ) =
-    (mockEscService
-      .removeSubsidy(_: UndertakingRef, _: NonHmrcSubsidy)(_: EORI, _: HeaderCarrier))
-      .expects(reference, nonHmrcSubsidy, *, *)
-      .returning(result.fold(e => Future.failed(e), _.toFuture))
+    def mockRemoveSubsidy(reference: UndertakingRef, nonHmrcSubsidy: NonHmrcSubsidy)(
+      result: Either[ConnectorError, UndertakingRef]
+    ): CallHandler4[UndertakingRef, NonHmrcSubsidy, EORI, HeaderCarrier, Future[UndertakingRef]] =
+      (mockEscService
+        .removeSubsidy(_: UndertakingRef, _: NonHmrcSubsidy)(_: EORI, _: HeaderCarrier))
+        .expects(reference, nonHmrcSubsidy, *, *)
+        .returning(result.fold(e => Future.failed(e), _.toFuture))
 
-  def mockDisableUndertaking(undertaking: Undertaking)(result: Either[ConnectorError, UndertakingRef]) =
-    (mockEscService
-      .disableUndertaking(_: Undertaking)(_: HeaderCarrier))
-      .expects(undertaking, *)
-      .returning(result.fold(e => Future.failed(e), _.toFuture))
+    def mockDisableUndertaking(undertaking: Undertaking)(
+      result: Either[ConnectorError, UndertakingRef]
+    ): CallHandler2[Undertaking, HeaderCarrier, Future[UndertakingRef]] =
+      (mockEscService
+        .disableUndertaking(_: Undertaking)(_: HeaderCarrier))
+        .expects(undertaking, *)
+        .returning(result.fold(e => Future.failed(e), _.toFuture))
 
-  def mockRetrieveExchangeRate(date: LocalDate)(result: Future[ExchangeRate]) =
-    (mockEscService
-      .retrieveExchangeRate(_: LocalDate)(_: HeaderCarrier))
-      .expects(date, *)
-      .returning(result)
+    def mockRetrieveExchangeRate(
+      date: LocalDate
+    )(result: Future[ExchangeRate]): CallHandler2[LocalDate, HeaderCarrier, Future[ExchangeRate]] =
+      (mockEscService
+        .retrieveExchangeRate(_: LocalDate)(_: HeaderCarrier))
+        .expects(date, *)
+        .returning(result)
+  }
 
 }

@@ -48,7 +48,7 @@ class NoClaimNotificationControllerSpec
   override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
     bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
-    bind[EscService].toInstance(mockEscService),
+    bind[EscService].toInstance(escServiceSupport.mockEscService),
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     bind[TimeProvider].toInstance(mockTimeProvider),
     bind[AuditService].toInstance(auditServiceSupport.mockAuditService)
@@ -67,9 +67,9 @@ class NoClaimNotificationControllerSpec
       "display the page correctly if no previous claims have been submitted" in {
         inSequence {
           authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeProviderToday(fixedDate)
-          mockRetrieveSubsidiesForDateRange(undertakingRef, (startDate, fixedDate))(emptyUndertakingSubsidies.toFuture)
+          escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, (startDate, fixedDate))(emptyUndertakingSubsidies.toFuture)
           mockTimeProviderToday(fixedDate)
         }
 
@@ -93,9 +93,9 @@ class NoClaimNotificationControllerSpec
       "display the page correctly if at least one previous claim has been submitted" in {
         inSequence {
           authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeProviderToday(fixedDate)
-          mockRetrieveSubsidiesForDateRange(undertakingRef, (startDate, fixedDate))(undertakingSubsidies.toFuture)
+          escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, (startDate, fixedDate))(undertakingSubsidies.toFuture)
           mockTimeProviderToday(fixedDate)
         }
 
@@ -147,9 +147,9 @@ class NoClaimNotificationControllerSpec
         "call to update  Nil return journey fails" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderToday(currentDay)
-            mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
+            escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
             mockTimeProviderToday(currentDay)
             mockTimeProviderToday(currentDay)
             journeyStoreSupport.mockUpdate[NilReturnJourney](eori1)(Left(ConnectorError(exception)))
@@ -160,13 +160,13 @@ class NoClaimNotificationControllerSpec
         "call to create Subsidy fails" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderToday(currentDay)
-            mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
+            escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
             mockTimeProviderToday(currentDay)
             mockTimeProviderToday(currentDay)
             journeyStoreSupport.mockUpdate[NilReturnJourney](eori1)(Right(updatedNilReturnJourney))
-            mockCreateSubsidy(SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay.plusDays(1))))(
+            escServiceSupport.mockCreateSubsidy(SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay.plusDays(1))))(
               Left(ConnectorError(exception))
             )
           }
@@ -180,9 +180,9 @@ class NoClaimNotificationControllerSpec
         "check box is not checked" in {
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderToday(currentDay)
-            mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
+            escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
             mockTimeProviderToday(currentDay)
           }
 
@@ -198,13 +198,13 @@ class NoClaimNotificationControllerSpec
 
         inSequence {
           authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockTimeProviderToday(currentDay)
-          mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
+          escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
           mockTimeProviderToday(currentDay)
           mockTimeProviderToday(currentDay)
           journeyStoreSupport.mockUpdate[NilReturnJourney](eori1)(Right(updatedNilReturnJourney))
-          mockCreateSubsidy(SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay.plusDays(1))))(
+          escServiceSupport.mockCreateSubsidy(SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay.plusDays(1))))(
             Right(undertakingRef)
           )
           auditServiceSupport.mockSendAuditEvent(

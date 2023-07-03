@@ -52,7 +52,7 @@ class FinancialDashboardControllerSpec
     inject.bind[AuthConnector].toInstance(authSupport.mockAuthConnector),
     inject.bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     inject.bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
-    inject.bind[EscService].toInstance(mockEscService),
+    inject.bind[EscService].toInstance(escServiceSupport.mockEscService),
     inject.bind[TimeProvider].toInstance(fakeTimeProvider)
   )
 
@@ -69,8 +69,8 @@ class FinancialDashboardControllerSpec
 
       "return the dashboard page for a logged in user with a valid EORI" in {
         authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification(eori1)
-        mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-        mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
+        escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+        escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
           undertakingSubsidies.toFuture
         )
 
