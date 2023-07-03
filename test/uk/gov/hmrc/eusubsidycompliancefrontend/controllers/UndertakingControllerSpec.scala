@@ -573,8 +573,8 @@ class UndertakingControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
             journeyStoreSupport.mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
             journeyStoreSupport.mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockApproveVerification(eori1, "id")(Right(true))
-            mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
+            emailVerificationServiceSupport.mockApproveVerification(eori1, "id")(Right(true))
+            emailVerificationServiceSupport.mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
             journeyStoreSupport.mockUpdate[UndertakingJourney](eori1)(Right(undertakingJourney))
           }
 
@@ -614,7 +614,7 @@ class UndertakingControllerSpec
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification()
             journeyStoreSupport.mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-            mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
+            emailVerificationServiceSupport.    mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -640,7 +640,7 @@ class UndertakingControllerSpec
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndNoEmailVerification()
             journeyStoreSupport.mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-            mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
+            emailVerificationServiceSupport.mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
           }
           checkPageIsDisplayed(
             performAction(),
@@ -718,7 +718,7 @@ class UndertakingControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
             journeyStoreSupport.mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
             authSupport.mockGetEmailVerification()
-            mockAddVerifiedEmail(eori1, "foo@example.com")()
+            emailVerificationServiceSupport.mockAddVerifiedEmail(eori1, "foo@example.com")()
             journeyStoreSupport.mockUpdate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete))
 
           }
@@ -733,7 +733,7 @@ class UndertakingControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
             journeyStoreSupport.mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
             authSupport.mockGetEmailVerification()
-            mockMakeVerificationRequestAndRedirect(Redirect("email-verification-redirect").toFuture)
+            emailVerificationServiceSupport.mockMakeVerificationRequestAndRedirect(Redirect("email-verification-redirect").toFuture)
           }
           redirectLocation(
             performAction("using-stored-email" -> "false", "email" -> "something@aol.com")

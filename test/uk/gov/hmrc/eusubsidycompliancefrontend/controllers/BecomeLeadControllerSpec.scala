@@ -408,7 +408,7 @@ class BecomeLeadControllerSpec
         inSequence {
           authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           authSupport.mockGetEmailVerification()
-          mockAddVerifiedEmail(eori1, "foo@example.com")(Future.successful(()))
+          emailVerificationServiceSupport.mockAddVerifiedEmail(eori1, "foo@example.com")(Future.successful(()))
         }
 
         val result = performAction("using-stored-email" -> "true")
@@ -421,7 +421,7 @@ class BecomeLeadControllerSpec
         inSequence {
           authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           authSupport.mockGetEmailVerification()
-          mockMakeVerificationRequestAndRedirect(Redirect(verificationUrl).toFuture)
+          emailVerificationServiceSupport.mockMakeVerificationRequestAndRedirect(Redirect(verificationUrl).toFuture)
         }
 
         val result = performAction(
@@ -439,7 +439,7 @@ class BecomeLeadControllerSpec
           authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           authSupport.mockGetEmailVerification(None)
           emailSupport.mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
-          mockMakeVerificationRequestAndRedirect(Redirect(verificationUrl).toFuture)
+          emailVerificationServiceSupport.mockMakeVerificationRequestAndRedirect(Redirect(verificationUrl).toFuture)
         }
 
         val result = performAction(
@@ -478,7 +478,7 @@ class BecomeLeadControllerSpec
         inSequence {
           authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           journeyStoreSupport.mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          mockApproveVerification(eori1, verificationId)(Right(true))
+          emailVerificationServiceSupport.mockApproveVerification(eori1, verificationId)(Right(true))
           authSupport.mockGetEmailVerification(Option.empty)
         }
 
@@ -492,7 +492,7 @@ class BecomeLeadControllerSpec
         inSequence {
           authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           journeyStoreSupport.mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          mockApproveVerification(eori1, verificationId)(Right(true))
+          emailVerificationServiceSupport.mockApproveVerification(eori1, verificationId)(Right(true))
           authSupport.mockGetEmailVerification()
         }
 
@@ -506,7 +506,7 @@ class BecomeLeadControllerSpec
         inSequence {
           authAndSessionDataBehaviour.mockAuthWithEnrolment(eori1)
           journeyStoreSupport.mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          mockApproveVerification(eori1, verificationId)(Right(false))
+          emailVerificationServiceSupport.mockApproveVerification(eori1, verificationId)(Right(false))
         }
 
         val result = performAction(verificationId)
