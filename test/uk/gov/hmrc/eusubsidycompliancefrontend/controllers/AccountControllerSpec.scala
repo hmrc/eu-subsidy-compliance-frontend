@@ -49,7 +49,7 @@ class AccountControllerSpec
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService),
     bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EscService].toInstance(escServiceSupport.mockEscService),
-    bind[TimeProvider].toInstance(mockTimeProvider),
+    bind[TimeProvider].toInstance(timeProviderSupport.mockTimeProvider),
     bind[EmailService].toInstance(emailSupport.mockEmailService)
   )
 
@@ -83,7 +83,7 @@ class AccountControllerSpec
             journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             escServiceSupport.mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.toFuture)
-            mockTimeProviderToday(fixedDate)
+            timeProviderSupport. mockTimeProviderToday(fixedDate)
             journeyStoreSupport.mockGetOrCreate(eori1)(Right(nilJourneyCreate))
           }
           checkPageIsDisplayed(
@@ -137,7 +137,7 @@ class AccountControllerSpec
               undertakingSubsidies.copy(nonHMRCSubsidyUsage = subsidies).toFuture
             )
 
-            mockTimeProviderToday(currentDate)
+            timeProviderSupport.mockTimeProviderToday(currentDate)
             journeyStoreSupport.mockGetOrCreate[NilReturnJourney](eori1)(Right(nilJourneyCreate))
           }
           checkPageIsDisplayed(
@@ -202,7 +202,7 @@ class AccountControllerSpec
               journeyStoreSupport.mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
               journeyStoreSupport.mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
               escServiceSupport.mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.toFuture)
-              mockTimeProviderToday(fixedDate)
+              timeProviderSupport.mockTimeProviderToday(fixedDate)
             }
 
             checkPageIsDisplayed(

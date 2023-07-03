@@ -23,12 +23,14 @@ import java.time.{LocalDate, LocalDateTime}
 
 trait TimeProviderSupport { this: ControllerSpec =>
 
-  val mockTimeProvider: TimeProvider = mock[TimeProvider]
+  object timeProviderSupport{
+    val mockTimeProvider: TimeProvider = mock[TimeProvider]
 
-  def mockTimeProviderNow(now: LocalDateTime): CallHandler0[LocalDateTime] =
-    (() => mockTimeProvider.now).expects().returning(now)
+    def mockTimeProviderNow(now: LocalDateTime): CallHandler0[LocalDateTime] =
+      (() => mockTimeProvider.now).expects().returning(now)
 
-  def mockTimeProviderToday(now: LocalDate): CallHandler0[LocalDate] =
-    (() => mockTimeProvider.today).expects().returning(now)
+    def mockTimeProviderToday(now: LocalDate): CallHandler0[LocalDate] =
+      (() => mockTimeProvider.today).expects().returning(now)
+  }
 
 }

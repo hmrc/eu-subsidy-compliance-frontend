@@ -61,7 +61,7 @@ class BusinessEntityControllerSpec
     bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EscService].toInstance(escServiceSupport.mockEscService),
     bind[EmailService].toInstance(emailSupport.mockEmailService),
-    bind[TimeProvider].toInstance(mockTimeProvider),
+    bind[TimeProvider].toInstance(timeProviderSupport.mockTimeProvider),
     bind[AuditService].toInstance(auditServiceSupport.mockAuditService)
   )
 
@@ -556,7 +556,7 @@ class BusinessEntityControllerSpec
             escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             escServiceSupport.mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
             journeyStoreSupport.mockDeleteAll(eori4)(Right(()))
-            mockTimeProviderToday(fixedDate)
+            timeProviderSupport.mockTimeProviderToday(fixedDate)
             emailSupport.mockSendEmail(eori4, MemberRemoveSelfToBusinessEntity, undertaking1, effectiveDate)(
               Right(EmailSent)
             )
@@ -666,7 +666,7 @@ class BusinessEntityControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori1)
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-            mockTimeProviderToday(effectiveDate)
+            timeProviderSupport.mockTimeProviderToday(effectiveDate)
             escServiceSupport.mockRemoveMember(undertakingRef, businessEntity4)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
@@ -677,7 +677,7 @@ class BusinessEntityControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori1)
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-            mockTimeProviderToday(effectiveDate)
+            timeProviderSupport.mockTimeProviderToday(effectiveDate)
             escServiceSupport.mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
             emailSupport.mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, "10 October 2022")(
               Left(ConnectorError(new RuntimeException()))
@@ -713,7 +713,7 @@ class BusinessEntityControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail(eori1)
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             escServiceSupport.mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-            mockTimeProviderToday(effectiveDate)
+            timeProviderSupport.mockTimeProviderToday(effectiveDate)
             escServiceSupport.mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
             emailSupport.mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, date)(Right(EmailSent))
             emailSupport.mockSendEmail(eori1, eori4, RemoveMemberToLead, undertaking1, date)(Right(EmailSent))

@@ -61,7 +61,7 @@ class SubsidyControllerSpec
     bind[Store].toInstance(journeyStoreSupport.mockJourneyStore),
     bind[EscService].toInstance(escServiceSupport.mockEscService),
     bind[AuditService].toInstance(auditServiceSupport.mockAuditService),
-    bind[TimeProvider].toInstance(mockTimeProvider)
+    bind[TimeProvider].toInstance(timeProviderSupport.mockTimeProvider)
   )
 
   private val controller = instanceOf[SubsidyController]
@@ -106,7 +106,7 @@ class SubsidyControllerSpec
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockTimeProviderToday(currentDate)
+            timeProviderSupport.mockTimeProviderToday(currentDate)
             escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(subsidies.toFuture)
           }
         }
@@ -188,7 +188,7 @@ class SubsidyControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
-            mockTimeProviderToday(fixedDate)
+            timeProviderSupport.mockTimeProviderToday(fixedDate)
           }
           checkPageIsDisplayed(
             performAction,
@@ -245,7 +245,7 @@ class SubsidyControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             journeyStoreSupport.mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
-            mockTimeProviderToday(fixedDate)
+            timeProviderSupport.mockTimeProviderToday(fixedDate)
           }
           status(
             performAction("day" -> updatedDate.day, "month" -> updatedDate.month, "year" -> updatedDate.year)
@@ -1216,7 +1216,7 @@ class SubsidyControllerSpec
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockTimeProviderToday(currentDate)
+            timeProviderSupport.mockTimeProviderToday(currentDate)
             escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction(transactionId)))
@@ -1226,7 +1226,7 @@ class SubsidyControllerSpec
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockTimeProviderToday(currentDate)
+            timeProviderSupport.mockTimeProviderToday(currentDate)
             escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies.toFuture)
           }
           assertThrows[Exception](await(performAction(transactionId)))
@@ -1261,7 +1261,7 @@ class SubsidyControllerSpec
         inSequence {
           authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
           escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-          mockTimeProviderToday(currentDate)
+          timeProviderSupport.mockTimeProviderToday(currentDate)
           escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
         }
 
@@ -1305,7 +1305,7 @@ class SubsidyControllerSpec
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockTimeProviderToday(currentDate)
+            timeProviderSupport.mockTimeProviderToday(currentDate)
             escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(Future.failed(exception))
           }
           assertThrows[Exception](await(performAction("removeSubsidyClaim" -> "true")("TID1234")))
@@ -1315,7 +1315,7 @@ class SubsidyControllerSpec
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockTimeProviderToday(currentDate)
+            timeProviderSupport.mockTimeProviderToday(currentDate)
             escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
             escServiceSupport.mockRemoveSubsidy(undertakingRef, nonHmrcSubsidyList1.head)(Left(ConnectorError(exception)))
           }
@@ -1330,7 +1330,7 @@ class SubsidyControllerSpec
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockTimeProviderToday(currentDate)
+            timeProviderSupport.mockTimeProviderToday(currentDate)
             escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
           }
           checkFormErrorIsDisplayed(
@@ -1347,11 +1347,11 @@ class SubsidyControllerSpec
           inSequence {
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockTimeProviderToday(currentDate)
+            timeProviderSupport.mockTimeProviderToday(currentDate)
             escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
             escServiceSupport.mockRemoveSubsidy(undertakingRef, nonHmrcSubsidyList1.head)(Right(undertakingRef))
             auditServiceSupport.mockSendAuditEvent[NonCustomsSubsidyRemoved](AuditEvent.NonCustomsSubsidyRemoved("1123", undertakingRef))
-            mockTimeProviderToday(currentDate)
+            timeProviderSupport.mockTimeProviderToday(currentDate)
             escServiceSupport.mockRetrieveSubsidiesForDateRange(undertakingRef, dateRange)(undertakingSubsidies1.toFuture)
           }
 
@@ -1477,7 +1477,7 @@ class SubsidyControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             journeyStoreSupport.mockUpdate[SubsidyJourney](eori1)(Right(updatedJourney))
-            mockTimeProviderToday(currentDate)
+            timeProviderSupport.mockTimeProviderToday(currentDate)
             escServiceSupport.mockCreateSubsidy(
               SubsidyController.toSubsidyUpdate(subsidyJourney, undertakingRef, currentDate)
             )(Left(ConnectorError(exception)))
@@ -1490,7 +1490,7 @@ class SubsidyControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             journeyStoreSupport.mockUpdate[SubsidyJourney](eori1)(Right(updatedJourney))
-            mockTimeProviderToday(currentDate)
+            timeProviderSupport.mockTimeProviderToday(currentDate)
             escServiceSupport.mockCreateSubsidy(
               SubsidyController.toSubsidyUpdate(subsidyJourney, undertakingRef, currentDate)
             )(Right(undertakingRef))
@@ -1509,7 +1509,7 @@ class SubsidyControllerSpec
             authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
             escServiceSupport.mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
             journeyStoreSupport.mockUpdate[SubsidyJourney](eori1)(Right(updatedSJ))
-            mockTimeProviderToday(currentDate)
+            timeProviderSupport.mockTimeProviderToday(currentDate)
             escServiceSupport.mockCreateSubsidy(
               SubsidyController.toSubsidyUpdate(updatedSJ, undertakingRef, currentDate)
             )(Right(undertakingRef))
@@ -1547,7 +1547,7 @@ class SubsidyControllerSpec
       "display the page" in {
         inSequence {
           authAndSessionDataBehaviour.mockAuthWithEnrolmentAndValidEmail()
-          mockTimeProviderToday(fixedDate)
+          timeProviderSupport.mockTimeProviderToday(fixedDate)
         }
 
         val result = performAction()

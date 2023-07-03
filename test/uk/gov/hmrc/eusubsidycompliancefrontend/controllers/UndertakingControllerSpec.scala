@@ -59,7 +59,7 @@ class UndertakingControllerSpec
     bind[EscService].toInstance(escServiceSupport.mockEscService),
     bind[EmailService].toInstance(emailSupport.mockEmailService),
     bind[AuditService].toInstance(auditServiceSupport.mockAuditService),
-    bind[TimeProvider].toInstance(mockTimeProvider),
+    bind[TimeProvider].toInstance(timeProviderSupport.mockTimeProvider),
     bind[EmailVerificationService].toInstance(authSupport.mockEmailVerificationService)
   )
 
@@ -1111,7 +1111,7 @@ class UndertakingControllerSpec
             emailSupport.mockSendEmail(eori1, CreateUndertaking, undertakingCreated.toUndertakingWithRef(undertakingRef))(
               Right(EmailSent)
             )
-            mockTimeProviderNow(timeNow)
+            timeProviderSupport.mockTimeProviderNow(timeNow)
             auditServiceSupport.mockSendAuditEvent(createUndertakingAuditEvent)
           }
           checkIsRedirect(
@@ -1524,9 +1524,9 @@ class UndertakingControllerSpec
             escServiceSupport.mockDisableUndertaking(undertaking1)(Right(undertakingRef))
             journeyStoreSupport.mockDeleteAll(eori1)(Right(()))
             journeyStoreSupport.mockDeleteAll(eori4)(Right(()))
-            mockTimeProviderToday(currentDate)
+            timeProviderSupport.mockTimeProviderToday(currentDate)
             auditServiceSupport.mockSendAuditEvent[UndertakingDisabled](UndertakingDisabled("1123", undertakingRef, currentDate))
-            mockTimeProviderToday(currentDate)
+            timeProviderSupport.mockTimeProviderToday(currentDate)
             emailSupport.mockSendEmail(eori1, DisableUndertakingToLead, undertaking1, formattedDate)(Right(EmailSent))
             emailSupport.mockSendEmail(eori1, DisableUndertakingToBusinessEntity, undertaking1, formattedDate)(Right(EmailSent))
           }
