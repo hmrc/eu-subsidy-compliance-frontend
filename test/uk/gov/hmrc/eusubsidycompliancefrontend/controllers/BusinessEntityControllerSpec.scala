@@ -92,6 +92,31 @@ class BusinessEntityControllerSpec
     )
   )
 
+  abstract class AddBusinessPageSetup(
+    method: String = GET,
+    theUndertaking: Undertaking = undertaking,
+    theBusinessEntityJourney: BusinessEntityJourney = businessEntityJourney
+  ) {
+
+    if (method == GET) {
+      inSequence {
+        mockAuthWithEnrolmentAndValidEmail()
+        mockRetrieveUndertaking(eori1)(theUndertaking.some.toFuture)
+        mockGetOrCreate[BusinessEntityJourney](eori1)(Right(theBusinessEntityJourney))
+      }
+    }
+
+    def verifyAddBusinessPageCommonElements(document: Document, errorPresent: Boolean = false) = {
+      val titlePrefix = if (errorPresent) "Error: " else ""
+      document.title shouldBe s"${titlePrefix}Businesses in your undertaking - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
+      document
+        .getElementsByAttributeValue("action", routes.BusinessEntityController.postAddBusinessEntity.url)
+        .size() shouldBe 1 //verify form is on the page
+      document.getElementById("continue").text() shouldBe "Save and continue"
+    }
+
+  }
+
   private val controller = instanceOf[BusinessEntityController]
 
   private val invalidPrefixEoris = List("GA1234567890", "AB1234567890")
@@ -772,30 +797,6 @@ class BusinessEntityControllerSpec
       }
 
     }
-  }
-  abstract class AddBusinessPageSetup(
-    method: String = GET,
-    theUndertaking: Undertaking = undertaking,
-    theBusinessEntityJourney: BusinessEntityJourney = businessEntityJourney
-  ) {
-
-    if (method == GET) {
-      inSequence {
-        mockAuthWithEnrolmentAndValidEmail()
-        mockRetrieveUndertaking(eori1)(theUndertaking.some.toFuture)
-        mockGetOrCreate[BusinessEntityJourney](eori1)(Right(theBusinessEntityJourney))
-      }
-    }
-
-    def verifyAddBusinessPageCommonElements(document: Document, errorPresent: Boolean = false) = {
-      val titlePrefix = if (errorPresent) "Error: " else ""
-      document.title shouldBe s"${titlePrefix}Businesses in your undertaking - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
-      document
-        .getElementsByAttributeValue("action", routes.BusinessEntityController.postAddBusinessEntity.url)
-        .size() shouldBe 1 //verify form is on the page
-      document.getElementById("continue").text() shouldBe "Save and continue"
-    }
-
   }
 
 }
