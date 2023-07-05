@@ -58,8 +58,8 @@ object FinancialDashboardSummary {
 
   // Fallback values should no sector be defined on the undertaking.
   private val DefaultSectorLimits = Map(
-    Sector.agriculture -> IndustrySectorLimit(30000.00),
-    Sector.aquaculture -> IndustrySectorLimit(20000.00),
+    Sector.agriculture -> IndustrySectorLimit(20000.00),
+    Sector.aquaculture -> IndustrySectorLimit(30000.00),
     Sector.other -> IndustrySectorLimit(200000.00),
     Sector.transport -> IndustrySectorLimit(100000.00)
   )
