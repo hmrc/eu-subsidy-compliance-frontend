@@ -32,8 +32,8 @@
 )
 
 @(form: Form[_], businessEntity: List[BusinessEntity])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@key = @{"addBusiness"}
-@titleKey = @{messages(s"$key.title")}
+
+@titleKey = @{messages("addBusiness.title")}
 
 @layout(
   pageTitle = Some(titleKey),
@@ -58,18 +58,20 @@
     @{H1(titleKey)}
       
     @if(businessEntity.length == 1){
-      @{P(messages(s"$key.empty.p1"), Some("govuk-body govuk-!-margin-bottom-8"))}
+      @{P(messages("addBusiness.empty.p1"), Some("govuk-body govuk-!-margin-bottom-8"), Some("no-other-businesses"))}
     }
+
+    @P(messages("addBusiness.p2"))
     
     @if(businessEntity.length > 1){
       <dl class="govuk-summary-list">
         @businessEntity.filter(a => !a.leadEORI).map { b => 
             <div class="govuk-summary-list__row govuk-summary-list__row-nobold">
-                <dt class="govuk-summary-list__key">
+                <dt class="govuk-summary-list__key" id="business-entity-@b.businessEntityIdentifier">
                   @b.businessEntityIdentifier
                 </dt>
                 <dd class="govuk-summary-list__actions">
-                  <a class="govuk-link" href="@routes.BusinessEntityController.getRemoveBusinessEntity(b.businessEntityIdentifier).toString">
+                  <a id="remove-link-@b.businessEntityIdentifier" class="govuk-link" href="@routes.BusinessEntityController.getRemoveBusinessEntity(b.businessEntityIdentifier).toString">
                     <span aria-hidden="true">@messages("common.remove")</span>
                     <span class="govuk-visually-hidden">@messages("common.remove") @b.businessEntityIdentifier</span>
                   </a>
@@ -101,7 +103,7 @@
               ))
           )),
           hint = Some(Hint(
-            content = Text(messages(s"$key.hint"))
+            content = Text(messages("addBusiness.hint"))
           )),
           idPrefix = Some("addBusiness"),
           name = "addBusiness",
@@ -120,8 +122,6 @@
       ))
     }
 
-    @P(messages(s"$key.p2"))
-
-    @button("common.continue")
+    @button("common.continue", id = Some("continue"))
   }
 }
