@@ -150,20 +150,20 @@ class AccountController @Inject() (
         _ <- updateNilReturnJourney(nilReturnJourney).toContext
       } yield Ok(
         leadAccountPage(
-          undertaking,
-          eori,
-          undertaking.getAllNonLeadEORIs.nonEmpty,
-          isTimeToReport,
-          dueDate,
-          isOverdue,
-          nilReturnJourney.displayNotification,
-          lastSubmitted.map(_.toDisplayFormat),
-          undertakingSubsidies.hasNeverSubmitted,
-          BigDecimal(summary.overall.sectorCap.toString()).toEuros,
-          summary.overall.total.toEuros,
-          summary.overall.allowanceRemaining.toEuros,
-          startDate.toDisplayFormat,
-          summary.overall.allowanceExceeded
+          undertaking = undertaking,
+          eori = eori,
+          isNonLeadEORIPresent = undertaking.getAllNonLeadEORIs.nonEmpty,
+          isTimeToReport = isTimeToReport,
+          dueDate = dueDate,
+          isOverdue = isOverdue,
+          isNilReturnDoneRecently = nilReturnJourney.displayNotification,
+          lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
+          neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
+          allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
+          totalSubsidies = summary.overall.total.toEuros,
+          remainingAmount = summary.overall.allowanceRemaining.toEuros,
+          currentPeriodStart = startDate.toDisplayFormat,
+          isOverAllowance = summary.overall.allowanceExceeded
         )
       )
 

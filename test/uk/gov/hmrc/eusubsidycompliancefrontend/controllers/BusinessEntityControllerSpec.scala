@@ -18,10 +18,13 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -37,11 +40,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{businessEntityJourney, _}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.http.UpstreamErrorResponse
 
 import java.time.LocalDate
+import scala.concurrent.Future
 
 class BusinessEntityControllerSpec
     extends ControllerSpec
@@ -114,47 +118,77 @@ class BusinessEntityControllerSpec
 
       "display the page" when {
 
-        def test(
-          input: Option[String],
-          businessEntityJourney: BusinessEntityJourney,
-          undertaking: Undertaking
-        ): Unit = {
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[BusinessEntityJourney](eori1)(Right(businessEntityJourney))
-          }
+        "user has not already answered the question - no added business entities added" in new AddBusinessPageSetup(
+          theUndertaking = undertaking.copy(undertakingBusinessEntity = List(businessEntity1)),
+          theBusinessEntityJourney = businessEntityJourney.copy(addBusiness = AddBusinessFormPage())
+        ) {
 
-          checkPageIsDisplayed(
-            performAction,
-            if (undertaking.undertakingBusinessEntity.size > 1)
-              messageFromMessageKey("addBusiness.businesses-added.legend")
-            else messageFromMessageKey("addBusiness.legend"),
-            { doc =>
-              val selectedOptions = doc.select(".govuk-radios__input[checked]")
+          val result = performAction
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
 
-              input match {
-                case Some(value) => selectedOptions.attr("value") shouldBe value
-                case None => selectedOptions.isEmpty shouldBe true
-              }
-
-              val button = doc.select("form")
-              button.attr("action") shouldBe routes.BusinessEntityController.postAddBusinessEntity.url
-            }
-          )
+          verifyAddBusinessPageCommonElements(document)
+          document
+            .getElementById("no-other-businesses")
+            .text() shouldBe "Other than the undertaking administrator, there are currently no other businesses in your undertaking."
+          document.getElementById("addBusiness").hasAttr("checked") shouldBe false
+          document.getElementById("addBusiness-2").hasAttr("checked") shouldBe false
         }
 
-        "user hasn't already answered the question" in {
-          test(None, BusinessEntityJourney(), undertaking)
+        "user has not already answered the question - some added business entities added" in new AddBusinessPageSetup(
+          theUndertaking = undertaking.copy(undertakingBusinessEntity = List(businessEntity1, businessEntity4)),
+          theBusinessEntityJourney = businessEntityJourney.copy(addBusiness = AddBusinessFormPage())
+        ) {
+
+          val result = performAction
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          verifyAddBusinessPageCommonElements(document)
+          document.getElementById("no-other-businesses") shouldBe null
+          document.getElementsByClass("govuk-summary-list__row").size() shouldBe 1
+          document
+            .getElementById(s"business-entity-${businessEntity4.businessEntityIdentifier}")
+            .text shouldBe businessEntity4.businessEntityIdentifier
+          document
+            .getElementById(s"remove-link-${businessEntity4.businessEntityIdentifier}")
+            .attr(
+              "href"
+            ) shouldBe s"/report-and-manage-your-allowance-for-customs-duty-waiver-claims/lead-undertaking-remove-business-entity/${businessEntity4.businessEntityIdentifier}"
+          document.getElementById("addBusiness").hasAttr("checked") shouldBe false
+          document.getElementById("addBusiness-2").hasAttr("checked") shouldBe false
         }
 
-        "user hasn't already answered the question and has no BE in the undertaking" in {
-          test(None, BusinessEntityJourney(), undertaking.copy(undertakingBusinessEntity = List(businessEntity1)))
+        "user has already answered yes" in new AddBusinessPageSetup(
+          theUndertaking = undertaking.copy(undertakingBusinessEntity = List(businessEntity1, businessEntity4)),
+          theBusinessEntityJourney = businessEntityJourney.copy(addBusiness = AddBusinessFormPage(Some(true)))
+        ) {
+
+          val result = performAction
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          verifyAddBusinessPageCommonElements(document)
+
+          document.getElementById("addBusiness").hasAttr("checked") shouldBe true
+          document.getElementById("addBusiness-2").hasAttr("checked") shouldBe false
         }
 
-        "user has already answered the question" in {
-          test(Some("true"), BusinessEntityJourney(addBusiness = AddBusinessFormPage(true.some)), undertaking)
+        "user has already answered no" in new AddBusinessPageSetup(
+          theUndertaking = undertaking.copy(undertakingBusinessEntity = List(businessEntity1, businessEntity4)),
+          theBusinessEntityJourney = businessEntityJourney.copy(addBusiness = AddBusinessFormPage(Some(false)))
+        ) {
+
+          val result = performAction
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          verifyAddBusinessPageCommonElements(document)
+
+          document.getElementById("addBusiness").hasAttr("checked") shouldBe false
+          document.getElementById("addBusiness-2").hasAttr("checked") shouldBe true
         }
+
       }
 
       "redirect to the account home page" when {
@@ -190,30 +224,25 @@ class BusinessEntityControllerSpec
       }
 
       "show a form error" when {
-
-        def displayErrorTest(data: (String, String)*)(errorMessage: String): Unit = {
+        "nothing has been submitted" in new AddBusinessPageSetup(method = POST) {
+          val errorMessage = "Select yes if you need to add another business"
 
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           }
+          val result: Future[Result] = performAction()
+          status(result) shouldBe BAD_REQUEST
 
-          checkFormErrorIsDisplayed(
-            performAction(data: _*),
-            messageFromMessageKey("addBusiness.title"),
-            messageFromMessageKey(errorMessage)
-          )
+          val document = Jsoup.parse(contentAsString(result))
+          verifyAddBusinessPageCommonElements(document = document, errorPresent = true)
+          document.select(".govuk-error-summary").select("a").text() shouldBe errorMessage
+          document.select(".govuk-error-message").text() shouldBe s"Error: $errorMessage"
         }
-
-        "nothing has been submitted" in {
-          displayErrorTest()("addBusiness.error.required")
-        }
-
       }
 
       "redirect to the next page" when {
-
-        "user selected No" in {
+        "user selected No" in new AddBusinessPageSetup(method = POST) {
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -221,7 +250,7 @@ class BusinessEntityControllerSpec
           checkIsRedirect(performAction("addBusiness" -> "false"), routes.AccountController.getAccountPage.url)
         }
 
-        "user selected Yes" in {
+        "user selected Yes" in new AddBusinessPageSetup(method = POST) {
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -231,9 +260,7 @@ class BusinessEntityControllerSpec
           }
           checkIsRedirect(performAction("addBusiness" -> "true"), routes.BusinessEntityController.getEori.url)
         }
-
       }
-
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {
           testLeadOnlyRedirect(() => performAction())
@@ -746,9 +773,29 @@ class BusinessEntityControllerSpec
 
     }
   }
+  abstract class AddBusinessPageSetup(
+    method: String = GET,
+    theUndertaking: Undertaking = undertaking,
+    theBusinessEntityJourney: BusinessEntityJourney = businessEntityJourney
+  ) {
 
-}
+    if (method == GET) {
+      inSequence {
+        mockAuthWithEnrolmentAndValidEmail()
+        mockRetrieveUndertaking(eori1)(theUndertaking.some.toFuture)
+        mockGetOrCreate[BusinessEntityJourney](eori1)(Right(theBusinessEntityJourney))
+      }
+    }
 
-object BusinessEntityControllerSpec {
-  final case class CheckYourAnswersRowBE(question: String, answer: String, changeUrl: String)
+    def verifyAddBusinessPageCommonElements(document: Document, errorPresent: Boolean = false) = {
+      val titlePrefix = if (errorPresent) "Error: " else ""
+      document.title shouldBe s"${titlePrefix}Businesses in your undertaking - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
+      document
+        .getElementsByAttributeValue("action", routes.BusinessEntityController.postAddBusinessEntity.url)
+        .size() shouldBe 1 //verify form is on the page
+      document.getElementById("continue").text() shouldBe "Save and continue"
+    }
+
+  }
+
 }
