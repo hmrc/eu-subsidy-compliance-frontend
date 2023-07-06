@@ -95,8 +95,8 @@ package object types extends SimpleJson {
     type Sector = Value
     val other: types.Sector.Value = Value("0")
     val transport: types.Sector.Value = Value("1")
-    val agriculture: types.Sector.Value = Value("2")
-    val aquaculture: types.Sector.Value = Value("3")
+    val aquaculture: types.Sector.Value = Value("2")
+    val agriculture: types.Sector.Value = Value("3")
     implicit val format: Format[Sector] = Json.formatEnum(Sector)
   }
 
