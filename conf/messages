@@ -359,9 +359,9 @@ add-claim-business.error.required = Select yes if you want to add this business 
 
 add-claim-trader-reference.title=Would you like to add a reference?
 add-claim-trader-reference.hint = This is for your own records and is not a mandatory field
-add-claim-trader-reference.label=Enter the reference you would like to add
-should-store-trader-ref.error.required=Select yes if you would like to add a reference
-claim-trader-ref.error.incorrect-format = Enter your reference, in under 36 characters
+add-claim-trader-reference.label=Enter the reference you would like to use
+should-store-trader-ref.error.required=Enter your reference
+claim-trader-ref.error.incorrect-format = Enter your reference
 claim-trader-ref.error.required=Enter your reference
 
 subsidy.cya.title=Check your answers
