@@ -17,6 +17,8 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import com.typesafe.config.ConfigFactory
+import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
@@ -69,6 +71,16 @@ class SubsidyControllerSpec
   private val currentDate = LocalDate.of(2022, 10, 9)
 
   private val dateRange = (LocalDate.of(2020, 4, 6), LocalDate.of(2022, 10, 9))
+
+  override def additionalConfig: Configuration = Configuration(
+    ConfigFactory.parseString(
+      s"""
+         | appName = "appName"
+         | features.euro-only-enabled = "false"
+         |
+         |""".stripMargin
+    )
+  )
 
   "SubsidyControllerSpec" when {
 

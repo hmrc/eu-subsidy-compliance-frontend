@@ -28,6 +28,9 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   val welshLanguageSupportEnabled: Boolean =
     config.getOptional[Boolean]("features.welsh-language-support").getOrElse(false)
 
+  val euroOnlyEnabled: Boolean =
+    config.getOptional[Boolean]("features.euro-only-enabled").getOrElse(false)
+
   lazy val ggSignInUrl: String = config.get[String](s"urls.ggSignInUrl")
   lazy val ggSignOutUrl: String = config.get[String](s"urls.ggSignOutUrl")
   lazy val eccEscSubscribeUrl: String = config.get[String](s"urls.eccEscSubscribeUrl")
