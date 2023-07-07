@@ -30,6 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.{Er
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.{formWithSingleMandatoryField, mandatory}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.IncorrectFormat
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimAmountFormProvider, ClaimDateFormProvider, ClaimEoriFormProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{Journey, SubsidyJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
@@ -64,6 +65,7 @@ class SubsidyController @Inject() (
   addClaimEoriPage: AddClaimEoriPage,
   addClaimBusinessPage: AddClaimBusinessPage,
   addClaimAmountPage: AddClaimAmountPage,
+  addEuroOnlyClaimAmountPage: AddEuroOnlyClaimAmountPage,
   reportPaymentFirstTimeUserPage: ReportPaymentFirstTimeUserPage,
   reportedPaymentReturningUserPage: ReportedPaymentReturningUserPage,
   reportNonCustomSubsidyPage: ReportNonCustomSubsidyPage,
@@ -318,8 +320,17 @@ class SubsidyController @Inject() (
         addClaimDate <- subsidyJourney.claimDate.value.toContext
         previous = subsidyJourney.previous
       } yield {
-        val form = subsidyJourney.claimAmount.value.fold(claimAmountForm)(claimAmountForm.fill)
-        Ok(addClaimAmountPage(form, previous, addClaimDate.year, addClaimDate.month))
+        val form = subsidyJourney.claimAmount.value.fold(claimAmountForm) { ca =>
+          if (appConfig.euroOnlyEnabled && ca.currencyCode == CurrencyCode.GBP)
+            claimAmountForm
+          else if (appConfig.euroOnlyEnabled && ca.currencyCode == CurrencyCode.EUR)
+            claimAmountForm.fill(ca)
+          else claimAmountForm.fill(ca)
+        }
+
+        if (appConfig.euroOnlyEnabled)
+          Ok(addEuroOnlyClaimAmountPage(form, previous, addClaimDate.year, addClaimDate.month))
+        else Ok(addClaimAmountPage(form, previous, addClaimDate.year, addClaimDate.month))
       }
       result.getOrElse(Redirect(routes.SubsidyController.getClaimDate))
     }
@@ -327,6 +338,25 @@ class SubsidyController @Inject() (
 
   def postAddClaimAmount: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
+
+    def badRequest(previous: Uri, addClaimDate: DateFormValues, formWithErrors: Form[ClaimAmount]) = {
+      BadRequest(
+        if (appConfig.euroOnlyEnabled)
+          addEuroOnlyClaimAmountPage(
+            formWithErrors,
+            previous,
+            addClaimDate.year,
+            addClaimDate.month
+          )
+        else
+          addClaimAmountPage(
+            formWithErrors,
+            previous,
+            addClaimDate.year,
+            addClaimDate.month
+          )
+      )
+    }
 
     def handleFormSubmit(previous: Journey.Uri, addClaimDate: DateFormValues): Future[Result] =
       claimAmountForm
@@ -336,16 +366,11 @@ class SubsidyController @Inject() (
             if (formWithErrors.errors.head.messages.head == "error.incorrect-format") {
               val key = if (formWithErrors.data("currency-code") == "EUR") "claim-amount-eur" else "claim-amount-gbp"
               val newFormWithErrors = formWithErrors.withError(key, "error.incorrect-format")
-              BadRequest(
-                addClaimAmountPage(
-                  newFormWithErrors.copy(errors = newFormWithErrors.errors.tail),
-                  previous,
-                  addClaimDate.year,
-                  addClaimDate.month
-                )
-              ).toFuture
+              Future.successful(
+                badRequest(previous, addClaimDate, newFormWithErrors.copy(errors = newFormWithErrors.errors.tail))
+              )
             } else {
-              BadRequest(addClaimAmountPage(formWithErrors, previous, addClaimDate.year, addClaimDate.month)).toFuture
+              Future.successful(badRequest(previous, addClaimDate, formWithErrors))
             },
           claimAmountEntered => {
             val result = for {
@@ -355,17 +380,14 @@ class SubsidyController @Inject() (
             } yield redirect
 
             result.getOrElse(
-              BadRequest(
-                addClaimAmountPage(
-                  // The error case here will be due to failure to convert the converted amount into a SubsidyAmount.
-                  // In this instance we report this as a 'tooBig' error in the form for the user to action.
-                  claimAmountForm
-                    .bindFromRequest()
-                    .withError(FormError(Fields.ClaimAmountGBP, List(Errors.TooBig))),
-                  previous,
-                  addClaimDate.year,
-                  addClaimDate.month
-                )
+              // The error case here will be due to failure to convert the converted amount into a SubsidyAmount.
+              // In this instance we report this as a 'tooBig' error in the form for the user to action.
+              badRequest(
+                previous,
+                addClaimDate,
+                claimAmountForm
+                  .bindFromRequest()
+                  .withError(FormError(Fields.ClaimAmountGBP, List(Errors.TooBig)))
               )
             )
           }
@@ -447,7 +469,10 @@ class SubsidyController @Inject() (
         val updatedForm = journey.addClaimEori.value.fold(claimEoriForm) { optionalEORI =>
           claimEoriForm.fill(OptionalClaimEori(optionalEORI.setValue, optionalEORI.value))
         }
-        Ok(addClaimEoriPage(updatedForm, journey.previous))
+        val previous =
+          if (appConfig.euroOnlyEnabled) routes.SubsidyController.getClaimAmount.url
+          else journey.previous
+        Ok(addClaimEoriPage(updatedForm, previous))
       }
     }
   }

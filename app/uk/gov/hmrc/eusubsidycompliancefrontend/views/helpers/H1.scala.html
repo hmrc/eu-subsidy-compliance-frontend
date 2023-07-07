@@ -14,5 +14,5 @@
  * limitations under the License.
  *@
 
-@(content: String, classes: Option[String] = None)(implicit messages: play.api.i18n.Messages)
-<h1 class="@classes.getOrElse("govuk-heading-xl")">@content</h1>
+@(content: String, classes: Option[String] = None, id: Option[String] = None)(implicit messages: play.api.i18n.Messages)
+<h1 @if(id){ id="@id" } class="@classes.getOrElse("govuk-heading-xl")">@content</h1>
