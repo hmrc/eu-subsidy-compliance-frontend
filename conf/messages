@@ -165,10 +165,13 @@ using-stored-email.error.required = Select yes if this is the email address you 
 undertaking.cya.title=Check your answers
 undertaking.cya.change.hidden.industry-sector = industry sector
 undertaking.cya.change.hidden.verified-email = email address
+undertaking.cya.change.hidden.other-business = Other businesses in undertaking?
 undertaking.cya.summary-list.eori.key = Your EORI number
 undertaking.cya.summary-list.sector.key = Industry sector
 undertaking.cya.summary-list.phone.key = Telephone number
 undertaking.cya.summary-list.verified-email = Email address
+undertaking.cya.summary-list.other-business = Other businesses in undertaking?
+
 undertaking.cya.p = By sending these details you are confirming that, to the best of your knowledge, they are correct.
 
 addBusiness.title = Businesses in your undertaking

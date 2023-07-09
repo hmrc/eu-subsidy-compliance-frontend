@@ -32,7 +32,7 @@
     govukSummaryList : GovukSummaryList
 )
 
-@(eori: EORI, sector: Sector, verifiedEmail: String, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(eori: EORI, sector: Sector, verifiedEmail: String, addBusiness: String, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"undertaking.cya"}
 @layout(
     pageTitle = Some(messages(s"$key.title")),
@@ -86,6 +86,23 @@
                                 href = routes.UndertakingController.getConfirmEmail.toString,
                                 content = Text(messages("common.cya.change")),
                                 visuallyHiddenText = Some(messages(s"$key.change.hidden.verified-email"))
+                            )
+                        )
+                    ))
+                    ),
+                    SummaryListRow(
+                    key = Key(
+                        content = Text(messages(s"$key.summary-list.other-business"))
+                    ),
+                    value = Value(
+                        content = Text(addBusiness)
+                    ),
+                    actions = Some(Actions(
+                        items = Seq(
+                            ActionItem(
+                                href = routes.UndertakingController.getAddBusiness.toString,
+                                content = Text(messages("common.cya.change")),
+                                visuallyHiddenText = Some(messages(s"$key.change.hidden.other-business"))
                             )
                         )
                     ))
