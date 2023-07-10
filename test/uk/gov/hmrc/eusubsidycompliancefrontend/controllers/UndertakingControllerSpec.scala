@@ -959,6 +959,11 @@ class UndertakingControllerSpec
             messageFromMessageKey("undertaking.cya.summary-list.verified-email"),
             "joebloggs@something.com",
             routes.UndertakingController.getConfirmEmail.url
+          ),
+          ModifyUndertakingRow(
+            messageFromMessageKey("undertaking.cya.summary-list.other-business"),
+            "false",
+            routes.UndertakingController.getAddBusiness.url
           )
         )
         inSequence {

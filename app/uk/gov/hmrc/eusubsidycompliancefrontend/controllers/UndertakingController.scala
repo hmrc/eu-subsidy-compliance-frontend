@@ -254,7 +254,10 @@ class UndertakingController @Inject() (
         val result = for {
           undertakingSector <- journey.sector.value.toContext
           undertakingVerifiedEmail <- journey.verifiedEmail.value.toContext
-        } yield Ok(cyaPage(eori, undertakingSector, undertakingVerifiedEmail, journey.previous))
+          undertakingAddBusiness <- journey.addBusiness.value.toContext
+        } yield Ok(
+          cyaPage(eori, undertakingSector, undertakingVerifiedEmail, undertakingAddBusiness.toString, journey.previous)
+        )
 
         result.getOrElse(Redirect(journey.previous))
       }
