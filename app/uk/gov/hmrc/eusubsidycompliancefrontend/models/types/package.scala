@@ -63,7 +63,7 @@ package object types extends SimpleJson {
   type TraderRef = String @@ TraderRef.Tag
   object TraderRef
       extends RegexValidatedString(
-        regex = """.{1,400}"""
+        regex = """[A-Za-z0-9 ]{1,400}"""   //dev agreed setting an arbitary limit of 400
       )
 
   type UndertakingName = String @@ UndertakingName.Tag
