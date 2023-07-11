@@ -1182,6 +1182,17 @@ class SubsidyControllerSpec
           testFormError(Some(List("should-store-trader-ref" -> "true")), "claim-trader-ref.error.required")
         }
 
+        " should throw an error if illegal characters are submitted and display appropriate error message" in {
+
+          val l1 = List(
+            "should-store-trader-ref" -> "true",
+            "claim-trader-ref" -> "%%$^$%^$%^$$^%$"
+          )
+
+          testFormError(Some(l1), "should-store-trader-ref.error.required")
+
+        }
+
       }
 
       "redirect to the account home page" when {
