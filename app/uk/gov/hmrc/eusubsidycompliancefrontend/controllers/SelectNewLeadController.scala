@@ -59,10 +59,7 @@ class SelectNewLeadController @Inject() (
 
   def getSelectNewLead: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
-      logger.info(
-        "SelectNewLeadController.getSelectNewLead"
-      )
-
+      logger.info("SelectNewLeadController.getSelectNewLead")
       val previous = routes.AccountController.getAccountPage.url
       implicit val eori: EORI = request.eoriNumber
 
@@ -79,9 +76,7 @@ class SelectNewLeadController @Inject() (
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
-      logger.info(
-        "SelectNewLeadController.postSelectNewLead"
-      )
+      logger.info("SelectNewLeadController.postSelectNewLead")
 
       def handleFormErrors(errors: Form[FormValues]) =
         BadRequest(
@@ -125,9 +120,7 @@ class SelectNewLeadController @Inject() (
 
   def getLeadEORIChanged: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
-      logger.info(
-        "SelectNewLeadController.redirectTo"
-      )
+      logger.info("SelectNewLeadController.redirectTo")
 
       implicit val eori: EORI = request.eoriNumber
 
@@ -146,9 +139,7 @@ class SelectNewLeadController @Inject() (
   def emailNotVerified: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    logger.info(
-      "SelectNewLeadController.emailNotVerified"
-    )
+    logger.info("SelectNewLeadController.emailNotVerified")
 
     store.get[NewLeadJourney].flatMap {
       case Some(newLeadJourney) =>

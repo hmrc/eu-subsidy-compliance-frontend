@@ -122,9 +122,7 @@ class SubsidyController @Inject() (
   private val claimDateForm: Form[DateFormValues] = ClaimDateFormProvider(timeProvider).form
 
   def getReportedPayments: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    logger.info(
-      "SelectNewLeadController.getReportedPayments"
-    )
+    logger.info("SelectNewLeadController.getReportedPayments")
 
     withLeadUndertaking(renderReportedPaymentsPage(_))
   }
@@ -273,9 +271,7 @@ class SubsidyController @Inject() (
 
   def getClaimDate: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
-      logger.info(
-        "SelectNewLeadController.getClaimDate"
-      )
+      logger.info("SelectNewLeadController.getClaimDate")
 
       renderFormIfEligible { journey =>
         val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
@@ -290,9 +286,7 @@ class SubsidyController @Inject() (
   def postClaimDate: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
-      logger.info(
-        "SelectNewLeadController.postClaimDate"
-      )
+      logger.info("SelectNewLeadController.postClaimDate")
 
       processFormSubmission[SubsidyJourney] { journey =>
         claimDateForm

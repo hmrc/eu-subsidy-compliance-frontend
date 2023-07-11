@@ -55,7 +55,7 @@ class EscService @Inject() (
 
       eventualResult.map { result =>
         val successMessage = successCall(result)
-        logger.error(successMessage)
+        logger.info(successMessage)
 
         result
       }
@@ -63,19 +63,19 @@ class EscService @Inject() (
   }
 
   def createUndertaking(
-    undertaking: UndertakingCreate
+    undertakingCreate: UndertakingCreate
   )(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingRef] =
     escConnector
-      .createUndertaking(undertaking)
+      .createUndertaking(undertakingCreate)
       .flatMap { response =>
         for {
           ref <- handleResponse[UndertakingRef](response, "create undertaking").toFuture
-          _ <- undertakingCache.put[Undertaking](eori, undertaking.toUndertakingWithRef(ref))
+          _ <- undertakingCache.put[Undertaking](eori, undertakingCreate.toUndertakingWithRef(ref))
         } yield ref
       }
       .logResult(
-        successCall = (undertaking: UndertakingRef) => s"createUndertaking $undertaking",
-        errorMessage = s"createUndertaking failed for UndertakingCreate:$undertaking"
+        successCall = (undertakingRef: UndertakingRef) => s"createUndertaking undertakingRef:$undertakingRef",
+        errorMessage = s"createUndertaking failed for UndertakingCreate"
       )
 
   private def handleResponse[A](r: Either[ConnectorError, HttpResponse], action: String)(implicit
@@ -103,8 +103,8 @@ class EscService @Inject() (
         } yield ref
       }
       .logResult(
-        successCall = (undertaking: UndertakingRef) => s"updateUndertaking undertaking $undertaking",
-        errorMessage = s"updateUndertaking failed for $undertaking"
+        successCall = (undertakingRef: UndertakingRef) => s"updateUndertaking undertaking reference $undertakingRef",
+        errorMessage = s"updateUndertaking failed for ${undertaking.reference}"
       )
 
   def disableUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): Future[UndertakingRef] =
@@ -142,12 +142,12 @@ class EscService @Inject() (
       (maybeUndertaking: Option[Undertaking]) =>
         maybeUndertaking
           .map { undertaking =>
-            s"retrieveUndertaking found undertaking $undertaking for EORI '$eori''"
+            s"retrieveUndertaking found undertaking reference ${undertaking.reference} for EORI '$eori'"
           }
           .getOrElse {
             s"retrieveUndertaking did not find undertaking for EORI '$eori'"
           },
-      s"retrieveUndertaking failed getting EURI undertaking '$eori'"
+      s"retrieveUndertaking failed getting EORI undertaking '$eori'"
     )
   }
 
@@ -165,12 +165,12 @@ class EscService @Inject() (
         validationFailures: collection.Seq[(JsPath, collection.Seq[JsonValidationError])]
       ): Unit =
         logger.error(
-          s"retrieveUndertakingAndHandleErrors: Failed validation for response ${response.body} with $validationFailures"
+          s"retrieveUndertakingAndHandleErrors: Failed validation for eori:$eori response with $validationFailures"
         )
 
       override def logParsingFailure(response: HttpResponse, throwable: Throwable): Unit =
         logger.error(
-          s"retrieveUndertakingAndHandleErrors: Failed parsing ${response.body} to Undertaking",
+          s"retrieveUndertakingAndHandleErrors: Failed parsing for eori:$eori to Undertaking",
           throwable
         )
     }
@@ -182,7 +182,7 @@ class EscService @Inject() (
         .parseJSON[Undertaking]
         .map(j => Right(j.some))
         .getOrElse {
-          sys.error(s"Error parsing EORI:$eori Undertaking from ESC response ${response.body}")
+          sys.error(s"Error parsing EORI:$eori Undertaking from ESC")
         }
 
     EitherT(escConnector.retrieveUndertaking(eori))
@@ -292,9 +292,8 @@ class EscService @Inject() (
   )(implicit hc: HeaderCarrier, eori: EORI): Future[UndertakingSubsidies] =
     retrieveSubsidies(SubsidyRetrieve(undertakingRef, dateRange.some))
       .logResult(
-        successCall = (undertakingSubsidies: UndertakingSubsidies) =>
-          s"retrieveSubsidiesForDateRange UndertakingRef:$undertakingRef " +
-            s"returned $undertakingSubsidies",
+        successCall =
+          (_: UndertakingSubsidies) => s"retrieveSubsidiesForDateRange UndertakingRef:$undertakingRef succeeded",
         errorMessage = s"retrieveSubsidiesForDateRange failed for UndertakingRef:$undertakingRef"
       )
 

@@ -264,9 +264,7 @@ class BusinessEntityController @Inject() (
           .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity).toFuture) { undertaking =>
             val undertakingRef = undertaking.reference
             val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
-            logger.info(
-              s""
-            )
+
             removeBusinessForm
               .bindFromRequest()
               .fold(
@@ -285,9 +283,7 @@ class BusinessEntityController @Inject() (
     undertaking: Undertaking
   )(implicit request: AuthenticatedEnrolledRequest[AnyContent], hc: HeaderCarrier): Future[Result] = {
     implicit val eori: EORI = request.eoriNumber
-    logger.info(
-      s"handleValidBE for eoriEntered:$eoriEntered"
-    )
+    logger.info(s"handleValidBE for eoriEntered:$eoriEntered")
 
     if (form.value.isTrue) {
       logger.info("processing form as true is selected")

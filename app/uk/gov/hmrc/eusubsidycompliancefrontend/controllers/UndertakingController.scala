@@ -410,9 +410,7 @@ class UndertakingController @Inject() (
     request: AuthenticatedEnrolledRequest[_]
   ): Future[Result] =
     if (form.value.isTrue) {
-      logger.info(
-        "SelectNewLeadController.handleDisableUndertakingFormSubmission"
-      )
+      logger.info("SelectNewLeadController.handleDisableUndertakingFormSubmission")
 
       for {
         _ <- escService.disableUndertaking(undertaking)
