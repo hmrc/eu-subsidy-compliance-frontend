@@ -962,7 +962,7 @@ class UndertakingControllerSpec
           ),
           ModifyUndertakingRow(
             messageFromMessageKey("undertaking.cya.summary-list.other-business"),
-            "false",
+            "No",
             routes.UndertakingController.getAddBusiness.url
           )
         )

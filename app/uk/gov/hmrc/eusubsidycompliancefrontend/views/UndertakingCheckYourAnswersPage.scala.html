@@ -34,11 +34,15 @@
 
 @(eori: EORI, sector: Sector, verifiedEmail: String, addBusiness: String, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"undertaking.cya"}
+@businessCyaVal = @{if(addBusiness == "true") messages("undertaking.cya.summary-list.other-businessYes") else messages("undertaking.cya.summary-list.other-businessNo")}
+
 @layout(
     pageTitle = Some(messages(s"$key.title")),
     backLinkEnabled = true,
     backLink = Some(previous)
 ) {
+
+
 
         @formHelper(action = routes.UndertakingController.postCheckAnswers) {
             <input type=hidden name=cya value=true>
@@ -95,7 +99,7 @@
                         content = Text(messages(s"$key.summary-list.other-business"))
                     ),
                     value = Value(
-                        content = Text(addBusiness)
+                        content = Text(businessCyaVal)
                     ),
                     actions = Some(Actions(
                         items = Seq(
