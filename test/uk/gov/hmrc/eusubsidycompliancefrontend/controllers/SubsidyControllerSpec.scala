@@ -1194,6 +1194,46 @@ class SubsidyControllerSpec
           testFormError(Some(List("should-store-trader-ref" -> "true")), "claim-trader-ref.error.required")
         }
 
+        " should throw an error if illegal characters are submitted and display appropriate error message" in {
+
+          val l1 = List(
+            "should-store-trader-ref" -> "true",
+            "claim-trader-ref" -> "%%$^$%^$%^$$^%$"
+          )
+
+          testFormError(Some(l1), "should-store-trader-ref.error.required")
+
+        }
+
+      }
+
+      "redirect to the next page" when {
+        "user selected No" in {
+          mockForPostAddTraderReference
+          checkIsRedirect(
+            performAction("should-store-trader-ref" -> "false"),
+            routes.SubsidyController.getCheckAnswers.url
+          )
+        }
+
+        "user selected Yes and enters valid reference format" in {
+          mockForPostAddTraderReference
+          checkIsRedirect(
+            performAction("should-store-trader-ref" -> "true", "claim-trader-ref" -> "valid ref"),
+            routes.SubsidyController.getCheckAnswers.url
+          )
+        }
+
+        "user selected Yes and enters valid reference format with more than 36 characters" in {
+          mockForPostAddTraderReference
+          checkIsRedirect(
+            performAction(
+              "should-store-trader-ref" -> "true",
+              "claim-trader-ref" -> "1234567890 1234567890 1234567890 1234567890"
+            ),
+            routes.SubsidyController.getCheckAnswers.url
+          )
+        }
       }
 
       "redirect to the account home page" when {
@@ -1642,6 +1682,17 @@ class SubsidyControllerSpec
       }
     }
 
+  }
+
+  private def mockForPostAddTraderReference = {
+    inSequence {
+      mockAuthWithEnrolmentAndValidEmail()
+      mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+      mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+      mockUpdate[SubsidyJourney](eori1)(
+        Right(subsidyJourney)
+      )
+    }
   }
 }
 
