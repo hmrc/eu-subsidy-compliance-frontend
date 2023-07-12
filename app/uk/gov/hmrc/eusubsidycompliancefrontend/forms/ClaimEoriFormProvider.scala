@@ -34,20 +34,26 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
     EoriNumber -> mandatoryIfEqual(YesNoRadioButton, "true", eoriNumberMapping)
   )(toOptionalClaimEori)(fromOptionalClaimEori)
 
+  private val isEoriLengthValid = Constraint[String] { eori: String =>
+    if (EORI.ValidLengthsWithPrefix.contains(eori.replaceAll(" ", "").length)) Valid
+    else Invalid(IncorrectLength)
+  }
+
   private val eoriEntered = Constraint[String] { eori: String =>
     if (eori.isEmpty) Invalid(Required)
     else Valid
   }
 
   private val enteredEoriIsValid = Constraint[String] { eori: String =>
-    if (withGbPrefix(eori).matches(EORI.regex)) Valid
+    if (eori.matches(EORI.regex)) Valid
     else Invalid(IncorrectFormat)
   }
 
   private val eoriNumberMapping: Mapping[String] =
     text
       .verifying(eoriEntered)
-      .transform(e => withGbPrefix(e), (s: String) => s.drop(2))
+      .verifying(isEoriLengthValid)
+      .transform(e => e, (s: String) => s)
       .verifying(enteredEoriIsValid)
 
 }

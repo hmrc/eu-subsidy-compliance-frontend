@@ -75,7 +75,7 @@ package object types extends SimpleJson {
   type EORI = String @@ EORI.Tag
   object EORI
       extends RegexValidatedString(
-        """^(GB|XI)[0-9]{12,15}$"""
+        """^(gb|Gb|gB|GB|XI)[0-9]{12,15}$"""
       ) {
 
     val ValidLengthsWithPrefix = Set(14, 17) // Valid lengths with 2 letter prefix
@@ -83,6 +83,11 @@ package object types extends SimpleJson {
     def withGbPrefix(eori: String): String =
       if (eori.startsWith("GB")) eori
       else s"GB$eori"
+
+    def formatEori(eori: String): String = {
+      val s = eori.replaceAll(" ", "")
+      s.take(2).toUpperCase + s.drop(2)
+    }
   }
 
   type UndertakingRef = String @@ UndertakingRef.Tag

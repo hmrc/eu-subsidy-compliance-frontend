@@ -49,6 +49,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Sy
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.formatEori
 
 import java.time.LocalDate
 import javax.inject.{Inject, Singleton}
@@ -491,7 +492,7 @@ class SubsidyController @Inject() (
         o match {
           case OptionalClaimEori("false", None, _) => storeOptionalEoriAndRedirect(o)
           case OptionalClaimEori("true", Some(e), _) =>
-            val enteredEori = EORI(e)
+            val enteredEori = EORI(formatEori(e))
 
             if (undertaking.hasEORI(enteredEori)) storeOptionalEoriAndRedirect(o)
             else

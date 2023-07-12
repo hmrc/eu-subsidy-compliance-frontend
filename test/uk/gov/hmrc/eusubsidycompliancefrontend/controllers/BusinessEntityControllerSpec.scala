@@ -119,8 +119,8 @@ class BusinessEntityControllerSpec
 
   private val controller = instanceOf[BusinessEntityController]
 
-  private val invalidPrefixEoris = List("GA1234567890", "AB1234567890")
-  private val invalidLengthEoris = List("1234567890", "12345678901234", "GB1234567890")
+  private val invalidPrefixEoris = List("GA123456789012", "AB123456789012", "12345678901212")
+  private val invalidLengthEoris = List("GB1234567890", "GB12345678901234")
 
   "BusinessEntityControllerSpec" when {
 
@@ -329,7 +329,7 @@ class BusinessEntityControllerSpec
               doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
 
               val input = doc.select(".govuk-input").attr("value")
-              input shouldBe businessEntityJourney.eori.value.map(_.drop(2)).getOrElse("")
+              input shouldBe businessEntityJourney.eori.value.getOrElse("")
 
               val button = doc.select("form")
               button.attr("action") shouldBe routes.BusinessEntityController.postEori.url
@@ -452,14 +452,14 @@ class BusinessEntityControllerSpec
         }
 
         "eori submitted is already in use" in {
-          testEORIvalidation("businessEntityEori" -> "123456789010")(
+          testEORIvalidation("businessEntityEori" -> "GB123456789010")(
             Right(undertaking1.some),
             "businessEntityEori.eoriInUse"
           )
         }
 
         "eori submitted is not stored in SMTP" in {
-          testEORIvalidation("businessEntityEori" -> "123456789010")(
+          testEORIvalidation("businessEntityEori" -> "GB123456789010")(
             Left(ConnectorError(UpstreamErrorResponse("EORI not present in SMTP", 406))),
             "error.businessEntityEori.required"
           )
@@ -482,7 +482,7 @@ class BusinessEntityControllerSpec
 
           def updatedBusinessJourney() =
             businessEntityJourney.copy(eori = businessEntityJourney.eori.copy(value = None))
-          List("123456789010", "GB123456789013").foreach { eoriEntered =>
+          List("GB123456789010", "GB123456789013").foreach { eoriEntered =>
             withClue(s" For eori entered :: $eoriEntered") {
               val validEori = EORI(withGbPrefix(eoriEntered))
               inSequence {
