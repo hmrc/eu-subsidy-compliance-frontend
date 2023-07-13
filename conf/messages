@@ -151,7 +151,7 @@ addBusinessIntent.error.required=Select yes if you need to add a business to you
 
 confirmEmail.no.label=Enter an email address
 confirmEmail.title=Is this the email address you want to use to receive notifications?
-confirmEmail.question=Is this the email address {0} you want to use to receive notifications?
+confirmEmail.question=Is this {0} the email address you want to use to receive notifications?
 confirmEmail.p1 = This email address will be used to send you notifications from this service.
 
 inputEmail.title=What is your email address?
@@ -333,19 +333,19 @@ reportNonCustomSubsidy.p2.year2 = 6 April {0} to 5 April {1}
 reportNonCustomSubsidy.p2.year3 = 6 April {0} to 5 April {1}
 
 add-claim-date.title = What date were you awarded the payment?
-add-claim-date.p1 = You must report all non-customs subsidy payments you have received since <span class="date-no-break">{0}</span>.
-add-claim-date.hint = The date should be the date you received the payment offer, in this format, <span class="date-no-break">27 7 2020</span>
+add-claim-date.p1 = You must report all non-customs subsidy payments you were awarded since <span class="date-no-break">{0}</span>.
+add-claim-date.hint = The date should be the date you were awarded the payment offer, in this format, <span class="date-no-break">27 7 2020</span>
 
-add-claim-date.error.required = Enter the date in the correct format
+add-claim-date.error.required = Enter the date you were awarded the payment
 add-claim-date.error.day-missing = The date you were awarded the payment must include a day
 add-claim-date.error.day-and-month-missing = The date you were awarded the payment must include a day and month
 add-claim-date.error.day-and-year-missing = The date you were awarded the payment must include a day and year
 add-claim-date.error.month-missing = The date you were awarded the payment must include a month
 add-claim-date.error.month-and-year-missing = The date you were awarded the payment must include a month and year
 add-claim-date.error.year-missing = The date you were awarded the payment must include a year
-add-claim-date.error.incorrect-format = Enter a real date, like 23 11 2019
-add-claim-date.error.outside-allowed-tax-year-range = Enter the date you were awarded the payment. Date must be {0}, or later.
-add-claim-date.error.in-future = The date you were awarded the payment must be in the past
+add-claim-date.error.incorrect-format = Date must be a real date
+add-claim-date.error.outside-allowed-tax-year-range = Date must be {0}, or later.
+add-claim-date.error.in-future = Date you were awarded the payment must be in the past
 
 add-claim-public-authority.title = Which public authority granted the payment?
 add-claim-public-authority.hint = For example, Invest NI, NI Direct
