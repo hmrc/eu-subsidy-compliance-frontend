@@ -15,4 +15,4 @@
  *@
 
 @(content: String, classes: Option[String] = None, id: Option[String] = None)(implicit messages: play.api.i18n.Messages)
-<h1 @if(id){ id="@id" } class="@classes.getOrElse("govuk-heading-xl")">@content</h1>
+<h1 @if(id){ id="@id" } class="@classes.getOrElse("govuk-heading-xl")">@Html(content)</h1>
