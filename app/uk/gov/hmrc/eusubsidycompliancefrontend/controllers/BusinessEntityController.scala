@@ -32,8 +32,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Uri
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityRemovedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.withGbPrefix
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI.formatEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValues, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -75,12 +75,12 @@ class BusinessEntityController @Inject() (
   private val removeYourselfBusinessForm = formWithSingleMandatoryField("removeYourselfBusinessEntity")
 
   private val isEoriLengthValid = Constraint[String] { eori: String =>
-    if (EORI.ValidLengthsWithPrefix.contains(withGbPrefix(eori).length)) Valid
+    if (EORI.ValidLengthsWithPrefix.contains(eori.replaceAll(" ", "").length)) Valid
     else Invalid("businessEntityEori.error.incorrect-length")
   }
 
   private val isEoriValid = Constraint[String] { eori: String =>
-    if (withGbPrefix(eori).matches(EORI.regex)) Valid
+    if (eori.matches(EORI.regex)) Valid
     else Invalid("businessEntityEori.regex.error")
   }
 
@@ -89,7 +89,7 @@ class BusinessEntityController @Inject() (
       "businessEntityEori" -> mandatory("businessEntityEori")
         .verifying(isEoriLengthValid)
         .verifying(isEoriValid)
-    )(eoriEntered => FormValues(withGbPrefix(eoriEntered)))(eori => eori.value.drop(2).some)
+    )(eoriEntered => FormValues(eoriEntered))(eori => eori.value.some)
   )
 
   def getAddBusinessEntity: Action[AnyContent] = verifiedEmail.async { implicit request =>
@@ -163,15 +163,15 @@ class BusinessEntityController @Inject() (
         auditService.sendEvent(AuditEvent.BusinessEntityUpdated(ref, request.authorityId, eori, businessEori))
       else auditService.sendEvent(AuditEvent.BusinessEntityAdded(ref, request.authorityId, eori, businessEori))
 
-    def handleValidEori(form: FormValues, previous: Uri, undertaking: Undertaking): Future[Result] =
-      escService.retrieveUndertakingAndHandleErrors(EORI(form.value)).flatMap {
+    def handleValidEori(form: FormValues, previous: Uri, undertaking: Undertaking): Future[Result] = {
+      val businessEori = EORI(formatEori(form.value))
+      escService.retrieveUndertakingAndHandleErrors(businessEori).flatMap {
         case Right(Some(_)) => getErrorResponse("businessEntityEori.eoriInUse", previous, form)
         case Left(_) => getErrorResponse(s"error.$businessEntityEori.required", previous, form)
         case Right(None) =>
           val result = for {
             businessEntityJourney <- store.get[BusinessEntityJourney].toContext
             undertakingRef <- undertaking.reference.toContext
-            businessEori = EORI(form.value)
             _ <- updateOrCreateBusinessEntity(businessEntityJourney, undertakingRef, businessEori).toContext
             _ <- emailService.sendEmail(businessEori, AddMemberToBusinessEntity, undertaking).toContext
             _ <- emailService.sendEmail(eori, businessEori, AddMemberToLead, undertaking).toContext
@@ -180,6 +180,7 @@ class BusinessEntityController @Inject() (
           } yield redirect
           result.fold(handleMissingSessionData("BusinessEntity Data"))(identity)
       }
+    }
 
     withLeadUndertaking { undertaking =>
       store

@@ -788,7 +788,7 @@ class SubsidyControllerSpec
               subsidyJourney.addClaimEori.value match {
                 case Some(OptionalClaimEori(input, eori, _)) =>
                   selectedOptions.attr("value") shouldBe input
-                  inputText shouldBe eori.map(_.drop(2)).getOrElse("")
+                  inputText shouldBe eori.getOrElse("")
                 case _ => selectedOptions.isEmpty shouldBe true
               }
 
@@ -886,7 +886,7 @@ class SubsidyControllerSpec
 
         "yes is selected but eori entered is invalid" in {
           testFormError(
-            Some(List("should-claim-eori" -> "true", "claim-eori" -> "GB1234567890")),
+            Some(List("should-claim-eori" -> "true", "claim-eori" -> "GBUK1234567890")),
             s"claim-eori.$IncorrectFormat"
           )
 
@@ -931,8 +931,8 @@ class SubsidyControllerSpec
 
         "user selected yes and entered a valid eori part of the existing undertaking" in {
           testRedirect(
-            OptionalClaimEori("true", "123456789013".some),
-            List("should-claim-eori" -> "true", "claim-eori" -> "123456789013")
+            OptionalClaimEori("true", "GB123456789013".some),
+            List("should-claim-eori" -> "true", "claim-eori" -> "GB123456789013")
           )
         }
 

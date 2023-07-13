@@ -37,7 +37,7 @@ class ClaimEoriFormProviderSpec extends BaseSpec with Matchers {
     }
 
     "return no errors for a submission where an EORI was entered" in {
-      validateAndCheckSuccess("true", Some(eori1.drop(2)))
+      validateAndCheckSuccess("true", Some(eori1))
     }
 
     "return no errors for a submission where an EORI was entered with prefix GB" in {
@@ -49,7 +49,15 @@ class ClaimEoriFormProviderSpec extends BaseSpec with Matchers {
     }
 
     "return an error if the yes radio button is selected and an invalid eori number is entered" in {
-      validateAndCheckError("true", Some("sausages"))("claim-eori", IncorrectFormat)
+      validateAndCheckError("true", Some("nobeefsausages"))(EoriNumber, IncorrectFormat)
+    }
+
+    "return an error if the yes radio button is selected and an invalid prefix eori number is entered" in {
+      validateAndCheckError("true", Some("XC123456789012"))(EoriNumber, IncorrectFormat)
+    }
+
+    "return an error if the yes radio button is selected and an invalid length eori number is entered" in {
+      validateAndCheckError("true", Some("GB12345678990123456778990"))(EoriNumber, IncorrectLength)
     }
 
   }

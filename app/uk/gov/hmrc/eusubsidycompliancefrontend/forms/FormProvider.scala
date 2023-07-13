@@ -26,6 +26,7 @@ trait FormProvider[T] {
 object FormProvider {
 
   object CommonErrors {
+    val IncorrectLength = "error.incorrect-length"
     val IncorrectFormat = "error.incorrect-format"
     val Required = "error.required"
   }

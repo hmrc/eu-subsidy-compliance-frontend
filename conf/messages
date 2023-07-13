@@ -187,10 +187,10 @@ addBusiness.change-remove.snippet = business with EORI
 
 businessEntityEori.title = What is the EORI number of the business you want to add?
 businessEntityEori.hint = The first 2 letters will be the country code, GB. This is followed by 12 or 15 digits, like GB123456123456
-businessEntityEori.error.incorrect-length = Enter the EORI number in the correct format
-businessEntityEori.regex.error = Enter the EORI number in the correct format
+businessEntityEori.error.incorrect-length = The EORI number of the business you want to add must start with GB and be followed by 12 or 15 numbers, like GB123456123456
+businessEntityEori.regex.error = The EORI number of the business you want to add must only include the letters GB and numbers 0 to 9
 businessEntityEori.eoriInUse = The EORI number you entered is already part of an another undertaking. Enter another EORI number.
-error.businessEntityEori.required = Enter the EORI number in the correct format
+error.businessEntityEori.required = Enter the EORI number of the business you want to add
 
 businessEntityContact.title=What are the contact details of the business you want to add?
 businessEntityContact.p1=We will only use this telephone number to contact the business if there is an issue with the account.
@@ -355,8 +355,9 @@ add-claim-eori.title = Does the business that claimed the payment have an EORI n
 add-claim-eori.label = This must be a GB EORI number
 add-claim-eori.hint = The EORI number starts with ‘GB’ and is followed by 12 or 15 digits, like GB123123123123
 should-claim-eori.error.required = Select yes if the business that claimed the payment has an EORI number
-claim-eori.error.incorrect-format = Enter the EORI number in the correct format
-claim-eori.error.required = Enter the EORI number in the correct format
+claim-eori.error.incorrect-length = The EORI number of the business that claimed the payment must start with GB and be followed by 12 or 15 numbers, like GB123456123456
+claim-eori.error.incorrect-format = The EORI number of the business that claimed the payment must only include the letters GB and numbers 0 to 9
+claim-eori.error.required = Enter the EORI number of the business that claimed the payment
 claim-eori.error.not-in-undertaking=The EORI number you entered is not part of this undertaking. Enter a valid EORI number.
 claim-eori.error.in-another-undertaking=The EORI number you entered is already part of another undertaking. Enter another EORI number
 
