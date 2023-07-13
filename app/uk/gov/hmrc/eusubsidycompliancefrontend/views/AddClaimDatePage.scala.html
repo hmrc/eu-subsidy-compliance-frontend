@@ -49,10 +49,10 @@
 }}
 
 @inputHasErrors(input: String) = @{input match {
+  case i: String if form.hasErrors && form.errors.head.toString.contains("outside-allowed-tax-year-range") => true
   case i: String if form.hasErrors && form.errors.head.toString.contains(i) => true
-  case i: String if form.hasErrors && form.errors.head.toString.contains("emptyfields") => true
-  case i: String if form.hasErrors && form.errors.head.toString.contains("invalidentry") => true
-  case i: String if form.hasErrors && form.errors.head.toString.contains("invalid") => true
+  case i: String if form.hasErrors && form.errors.head.toString.contains("required") => true
+  case i: String if form.hasErrors && form.errors.head.toString.contains("incorrect-format") => true
   case i: String if form.hasErrors && form.errors.head.toString.contains("in-future") => true
   case _ => false
 }}
