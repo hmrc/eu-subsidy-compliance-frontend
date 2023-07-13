@@ -1201,7 +1201,7 @@ class SubsidyControllerSpec
             "claim-trader-ref" -> "%%$^$%^$%^$$^%$"
           )
 
-          testFormError(Some(l1), "should-store-trader-ref.error.required")
+          testFormError(Some(l1), "claim-trader-ref.error.incorrect-format")
 
         }
 
