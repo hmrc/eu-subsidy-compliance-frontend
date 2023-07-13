@@ -79,16 +79,12 @@ class EligibilityController @Inject() (
   }
 
   def getDoYouClaim: Action[AnyContent] = notEnrolled.async { implicit request =>
-    logger.info(
-      "EligibilityController.getDoYouClaim"
-    )
+    logger.info("EligibilityController.getDoYouClaim")
     Ok(doYouClaimPage(doYouClaimForm)).toFuture
   }
 
   def postDoYouClaim: Action[AnyContent] = notEnrolled.async { implicit request =>
-    logger.info(
-      "EligibilityController.postDoYouClaim"
-    )
+    logger.info("EligibilityController.postDoYouClaim")
     doYouClaimForm
       .bindFromRequest()
       .fold(
@@ -103,30 +99,22 @@ class EligibilityController @Inject() (
   }
 
   def getWillYouClaim: Action[AnyContent] = notEnrolled.async { implicit request =>
-    logger.info(
-      "EligibilityController.getWillYouClaim"
-    )
+    logger.info("EligibilityController.getWillYouClaim")
     Ok(willYouClaimPage(willYouClaimForm, routes.EligibilityController.getDoYouClaim.url)).toFuture
   }
 
   def postWillYouClaim: Action[AnyContent] = notEnrolled.async { implicit request =>
-    logger.info(
-      "EligibilityController.postWillYouClaim"
-    )
+    logger.info("EligibilityController.postWillYouClaim")
     willYouClaimForm
       .bindFromRequest()
       .fold(
         errors => BadRequest(willYouClaimPage(errors, routes.EligibilityController.getDoYouClaim.url)).toFuture,
         form =>
           if (form.value.isTrue) {
-            logger.info(
-              "EligibilityController.getNotEligible, form was true so checkEnrolment"
-            )
+            logger.info("EligibilityController.getNotEligible, form was true so checkEnrolment")
             checkEnrolment
           } else {
-            logger.info(
-              "EligibilityController.getNotEligible, form was not true so showing EligibilityJourney()"
-            )
+            logger.info("EligibilityController.getNotEligible, form was not true so showing EligibilityJourney()")
             // Set up representative state in EligibilityJourney before we call next.
             EligibilityJourney()
               // We are on the will you claim page so the user must have entered false on the do you claim form
@@ -145,19 +133,14 @@ class EligibilityController @Inject() (
       Redirect(routes.EligibilityController.getEoriCheck.url).toFuture
 
   def getNotEligible: Action[AnyContent] = notEnrolled.async { implicit request =>
-    logger.info(
-      "EligibilityController.getNotEligible, showing notEligiblePage"
-    )
+    logger.info("EligibilityController.getNotEligible, showing notEligiblePage")
     Ok(notEligiblePage()).toFuture
   }
 
   def getEoriCheck: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    logger.info(
-      "EligibilityController.getEoriCheck"
-    )
-
+    logger.info("EligibilityController.getEoriCheck")
     def renderPage = {
       // At this stage, we have an enrolment, so the user must be eligible to use the service. Thus we can provide
       // defaults for the first two eligibility questions to reflect this.
@@ -173,9 +156,7 @@ class EligibilityController @Inject() (
           .get("Referer")
           .getOrElse(doYouClaimUrl)
 
-        logger.info(
-          s"Showing checkEoriPage for $eori"
-        )
+        logger.info(s"Showing checkEoriPage for $eori")
 
         Ok(checkEoriPage(form, eori, backLink))
       }
@@ -187,9 +168,7 @@ class EligibilityController @Inject() (
       .retrieveUndertaking(eori)
       .toContext
       .foldF(renderPage) { _ =>
-        logger.info(
-          s"Redirecting to AccountController.getAccountPage for eori:$eori"
-        )
+        logger.info(s"Redirecting to AccountController.getAccountPage for eori:$eori")
         Redirect(routes.AccountController.getAccountPage.url).toFuture
       }
 
@@ -198,17 +177,13 @@ class EligibilityController @Inject() (
   def postEoriCheck: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    logger.info(
-      "EligibilityController.postEoriCheck"
-    )
+    logger.info("EligibilityController.postEoriCheck")
 
     eoriCheckForm
       .bindFromRequest()
       .fold(
         errors => {
-          logger.info(
-            s"BadRequest to AccountController.postEoriCheck for eori:$eori as a bad request ${errors.errors}"
-          )
+          logger.info(s"BadRequest to AccountController.postEoriCheck for eori:$eori as a bad request ${errors.errors}")
           val previousJourneyUrl = routes.EligibilityController.getDoYouClaim.url
           BadRequest(checkEoriPage(errors, eori, previousJourneyUrl)).toFuture
         },
@@ -223,9 +198,7 @@ class EligibilityController @Inject() (
   }
 
   def getIncorrectEori: Action[AnyContent] = enrolled.async { implicit request =>
-    logger.info(
-      s"EligibilityController.getIncorrectEori showing incorrectEoriPage"
-    )
+    logger.info(s"EligibilityController.getIncorrectEori showing incorrectEoriPage")
     Ok(incorrectEoriPage()).toFuture
   }
 
