@@ -512,11 +512,14 @@ class SubsidyController @Inject() (
           .bindFromRequest()
           .fold(
             formWithErrors => BadRequest(addClaimEoriPage(formWithErrors, journey.previous)).toContext,
-            optionalEori => handleValidFormSubmission(journey, optionalEori).toContext
+            optionalEori => handleValidFormSubmission(journey, removeSpacesFromEnteredEori(optionalEori)).toContext
           )
       }
     }
   }
+
+  private def removeSpacesFromEnteredEori(optionalEori: OptionalClaimEori) =
+    optionalEori.copy(value = optionalEori.value.map(_.replaceAll(" ", "")))
 
   def getAddClaimBusiness: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>

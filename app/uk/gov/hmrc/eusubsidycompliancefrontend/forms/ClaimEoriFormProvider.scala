@@ -35,8 +35,12 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
   )(toOptionalClaimEori)(fromOptionalClaimEori)
 
   private val isEoriLengthValid = Constraint[String] { eori: String =>
-    if (EORI.ValidLengthsWithPrefix.contains(eori.replaceAll(" ", "").length)) Valid
+    if (EORI.ValidLengthsWithPrefix.contains(removeSpaces(eori).length)) Valid
     else Invalid(IncorrectLength)
+  }
+
+  private def removeSpaces(eori: String) = {
+    eori.replaceAll(" ", "")
   }
 
   private val eoriEntered = Constraint[String] { eori: String =>
@@ -45,7 +49,7 @@ case class ClaimEoriFormProvider(undertaking: Undertaking) extends FormProvider[
   }
 
   private val enteredEoriIsValid = Constraint[String] { eori: String =>
-    if (eori.matches(EORI.regex)) Valid
+    if (removeSpaces(eori).matches(EORI.regex)) Valid
     else Invalid(IncorrectFormat)
   }
 
