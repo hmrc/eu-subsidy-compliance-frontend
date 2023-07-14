@@ -44,6 +44,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormat
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 
 import java.time.LocalDate
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import scala.concurrent.Future
 import scala.jdk.CollectionConverters.CollectionHasAsScala
 
@@ -958,6 +959,26 @@ class SubsidyControllerSpec
 
           checkIsRedirect(
             performAction("should-claim-eori" -> optionalEORI.setValue, "claim-eori" -> eori3),
+            routes.SubsidyController.getAddClaimBusiness.url
+          )
+        }
+
+        "user selected yes and entered a valid EORI that is not part of the existing or any other undertaking and has spaces" in {
+          val eori = "GB 99 34 56 78 90 99"
+          val optionalEORI = OptionalClaimEori("true", eori.some)
+
+          val updatedSubsidyJourney = update(journey, optionalEORI.copy(addToUndertaking = true).some)
+
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(journey.some))
+            mockRetrieveUndertaking(EORI(eori.replaceAll(" ", "")))(Option.empty.toFuture)
+            mockUpdate[SubsidyJourney](eori1)(Right(updatedSubsidyJourney))
+          }
+
+          checkIsRedirect(
+            performAction("should-claim-eori" -> optionalEORI.setValue, "claim-eori" -> eori),
             routes.SubsidyController.getAddClaimBusiness.url
           )
         }

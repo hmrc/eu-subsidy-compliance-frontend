@@ -473,7 +473,7 @@ class BusinessEntityControllerSpec
           testLeadOnlyRedirect(() => performAction())
         }
 
-        "user is an undertaking lead and eori entered prefixed with/without GB" in {
+        "user is an undertaking lead and eori entered prefixed with GB (and spaces)" in {
           val businessEntityJourney = BusinessEntityJourney()
             .copy(
               addBusiness = AddBusinessFormPage(true.some),
@@ -482,9 +482,10 @@ class BusinessEntityControllerSpec
 
           def updatedBusinessJourney() =
             businessEntityJourney.copy(eori = businessEntityJourney.eori.copy(value = None))
-          List("GB123456789010", "GB123456789013").foreach { eoriEntered =>
+          List("GB123456789010", "GB123456789013", "GB 123 456 789 999").foreach { eoriEntered =>
             withClue(s" For eori entered :: $eoriEntered") {
-              val validEori = EORI(withGbPrefix(eoriEntered))
+              val enteredEoriWithNoSpaces = eoriEntered.replaceAll(" ", "")
+              val validEori = EORI(enteredEoriWithNoSpaces)
               inSequence {
                 mockAuthWithEnrolmentAndValidEmail()
                 mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
