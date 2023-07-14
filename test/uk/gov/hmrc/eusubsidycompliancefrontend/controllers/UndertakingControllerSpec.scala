@@ -614,12 +614,15 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-            mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
+            mockGetEmailVerification(eori1)(Right(VerifiedEmail("email@test.com", "id123", verified = true).some))
           }
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("confirmEmail.title", undertakingJourney.about.value.getOrElse("")),
             { doc =>
+              doc.getElementById("hidden-email").text() shouldBe "email@test.com"
+              doc.getElementById("hidden-email").attr("class") shouldBe "govuk-visually-hidden"
+
               doc.select(".govuk-back-link").attr("href") shouldBe previousCall
 
               val form = doc.select("form")
@@ -959,6 +962,11 @@ class UndertakingControllerSpec
             messageFromMessageKey("undertaking.cya.summary-list.verified-email"),
             "joebloggs@something.com",
             routes.UndertakingController.getConfirmEmail.url
+          ),
+          ModifyUndertakingRow(
+            messageFromMessageKey("undertaking.cya.summary-list.other-business"),
+            "No",
+            routes.UndertakingController.getAddBusiness.url
           )
         )
         inSequence {

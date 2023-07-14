@@ -23,14 +23,14 @@ class SectorSpec extends BaseSpec with Matchers {
 
   "Sector" when {
     "agriculture" must {
-      "return three as sector value" in {
-        Sector.agriculture.toString mustBe "3"
+      "return two as sector value" in {
+        Sector.agriculture.toString mustBe "2"
       }
     }
 
     "aquaculture" must {
-      "return two as sector value" in {
-        Sector.aquaculture.toString mustBe "2"
+      "return three as sector value" in {
+        Sector.aquaculture.toString mustBe "3"
       }
     }
 

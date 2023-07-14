@@ -254,7 +254,10 @@ class UndertakingController @Inject() (
         val result = for {
           undertakingSector <- journey.sector.value.toContext
           undertakingVerifiedEmail <- journey.verifiedEmail.value.toContext
-        } yield Ok(cyaPage(eori, undertakingSector, undertakingVerifiedEmail, journey.previous))
+          undertakingAddBusiness <- journey.addBusiness.value.toContext
+        } yield Ok(
+          cyaPage(eori, undertakingSector, undertakingVerifiedEmail, undertakingAddBusiness.toString, journey.previous)
+        )
 
         result.getOrElse(Redirect(journey.previous))
       }
@@ -410,9 +413,7 @@ class UndertakingController @Inject() (
     request: AuthenticatedEnrolledRequest[_]
   ): Future[Result] =
     if (form.value.isTrue) {
-      logger.info(
-        "SelectNewLeadController.handleDisableUndertakingFormSubmission"
-      )
+      logger.info("SelectNewLeadController.handleDisableUndertakingFormSubmission")
 
       for {
         _ <- escService.disableUndertaking(undertaking)

@@ -63,14 +63,14 @@ trait Connector extends TracedLogging {
     url: String,
     payload: A
   )(implicit hc: HeaderCarrier, ec: ExecutionContext, wts: Writes[A]): ConnectorResult = {
-    logger.info(s"$className.$methodName - posting to $url with $payload")
+    logger.info(s"$className.$methodName - posting to $url")
     makeRequest(_.POST[A, HttpResponse](url, payload)).map {
       case Left(error) =>
-        logger.error(s"$className.$methodName - failed POST to $url with $payload", error)
+        logger.error(s"$className.$methodName - failed POST to $url", error)
         Left(error)
       case Right(successResponse: HttpResponse) =>
         logger.info(
-          s"$className.$methodName - successful POST to $url with $payload returned ${successResponse.body}"
+          s"$className.$methodName - successful POST to $url"
         )
         Right(successResponse)
     }
@@ -86,7 +86,8 @@ trait Connector extends TracedLogging {
         logger.error(s"EscConnector.$methodName - failed GET from $url")
         Left(error)
       case Right(successResponse: HttpResponse) =>
-        logger.info(s"EscConnector.$methodName - successful GET from $url with ${successResponse.body}")
+        logger.info(s"EscConnector.$methodName - successful GET from $url")
+
         Right(successResponse)
     }
   }

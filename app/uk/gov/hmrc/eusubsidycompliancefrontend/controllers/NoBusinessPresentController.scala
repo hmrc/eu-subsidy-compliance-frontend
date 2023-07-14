@@ -45,9 +45,7 @@ class NoBusinessPresentController @Inject() (
 
   def getNoBusinessPresent: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
-      logger.info(
-        "NoBusinessPresentController.getNoBusinessPresent showing noBusinessPresentPage"
-      )
+      logger.info("NoBusinessPresentController.getNoBusinessPresent showing noBusinessPresentPage")
 
       Ok(noBusinessPresentPage(routes.AccountController.getAccountPage.url)).toFuture
     }

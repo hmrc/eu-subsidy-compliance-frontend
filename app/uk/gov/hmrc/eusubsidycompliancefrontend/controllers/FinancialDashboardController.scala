@@ -46,9 +46,7 @@ class FinancialDashboardController @Inject() (
   def getFinancialDashboard: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    logger.info(
-      "FinancialDashboardController.getFinancialDashboard"
-    )
+    logger.info("FinancialDashboardController.getFinancialDashboard")
 
     val today = timeProvider.today
 

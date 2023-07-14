@@ -59,9 +59,7 @@ class NoClaimNotificationController @Inject() (
   def getNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    logger.info(
-      "NoBusinessPresentController.getNoClaimNotification"
-    )
+    logger.info("NoBusinessPresentController.getNoClaimNotification")
 
     withLeadUndertaking { undertaking =>
       escService
@@ -76,9 +74,7 @@ class NoClaimNotificationController @Inject() (
 
           val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
 
-          logger.info(
-            "NoBusinessPresentController.getNoClaimNotification showing noClaimNotificationPage"
-          )
+          logger.info("NoBusinessPresentController.getNoClaimNotification showing noClaimNotificationPage")
 
           Ok(
             noClaimNotificationPage(
@@ -98,15 +94,13 @@ class NoClaimNotificationController @Inject() (
   def postNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
-    logger.info(
-      "NoBusinessPresentController.postNoClaimNotification"
-    )
+    logger.info("NoBusinessPresentController.postNoClaimNotification")
 
     withLeadUndertaking { undertaking: Undertaking =>
       escService
         .retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange)
         .toContext
-        .foldF(handleMissingSessionData("No claim notification - subsidies -")) { undertakingSubsidies =>
+        .foldF(handleMissingSessionData("No claim notification - subsidies")) { undertakingSubsidies =>
           val previous = routes.AccountController.getAccountPage.url
           val today = timeProvider.today
           val startDate = today.toEarliestTaxYearStart
@@ -117,9 +111,7 @@ class NoClaimNotificationController @Inject() (
             .bindFromRequest()
             .fold(
               errors => {
-                logger.info(
-                  s"NoBusinessPresentController.postNoClaimNotification showing errors ${errors.errors}"
-                )
+                logger.info(s"NoBusinessPresentController.postNoClaimNotification showing errors")
 
                 BadRequest(
                   noClaimNotificationPage(
@@ -162,9 +154,7 @@ class NoClaimNotificationController @Inject() (
 
   // We need to show a confirmation along with the next submission date
   def getNotificationConfirmation: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    logger.info(
-      "NoBusinessPresentController.getNotificationConfirmation"
-    )
+    logger.info("NoBusinessPresentController.getNotificationConfirmation")
 
     withLeadUndertaking { _ =>
       val nextClaimDueDate = ReportReminderHelpers.dueDateToReport(timeProvider.today)

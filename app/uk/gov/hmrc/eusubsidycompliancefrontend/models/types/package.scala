@@ -63,7 +63,7 @@ package object types extends SimpleJson {
   type TraderRef = String @@ TraderRef.Tag
   object TraderRef
       extends RegexValidatedString(
-        regex = """[A-Za-z0-9]{1,35}""" // n.b. no longer exact match for spec which accepts n of any char
+        regex = """[A-Za-z0-9 ]{1,400}""" //dev agreed setting an arbitary limit of 400
       )
 
   type UndertakingName = String @@ UndertakingName.Tag
@@ -100,8 +100,8 @@ package object types extends SimpleJson {
     type Sector = Value
     val other: types.Sector.Value = Value("0")
     val transport: types.Sector.Value = Value("1")
-    val aquaculture: types.Sector.Value = Value("2")
-    val agriculture: types.Sector.Value = Value("3")
+    val agriculture: types.Sector.Value = Value("2")
+    val aquaculture: types.Sector.Value = Value("3")
     implicit val format: Format[Sector] = Json.formatEnum(Sector)
   }
 

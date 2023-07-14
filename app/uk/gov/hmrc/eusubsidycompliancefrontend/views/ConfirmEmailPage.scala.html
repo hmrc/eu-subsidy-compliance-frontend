@@ -39,6 +39,10 @@
 @radioIdentifier = @{"using-stored-email"}
 @inputIdentifier = @{"email"}
 
+@visuallyHiddenText = @{
+    s"""<span id="hidden-email" class="govuk-visually-hidden">${email.value}</span>"""
+}
+
 @textHtml = {
   @govukInput(Input(
     id = inputIdentifier,
@@ -81,7 +85,7 @@
       }
 
 
-      @H1(messages("confirmEmail.title"), Some("govuk-heading-xl govuk-!-margin-bottom-5"))
+      @H1(messages("confirmEmail.question", visuallyHiddenText), Some("govuk-heading-xl govuk-!-margin-bottom-5"), id = Some("page-question"))
       @P(messages("confirmEmail.p1"))
 
       @govukInsetText(InsetText(
