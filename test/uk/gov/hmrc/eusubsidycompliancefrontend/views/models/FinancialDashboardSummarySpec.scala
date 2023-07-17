@@ -152,8 +152,8 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
       )
 
       val sectorLimits = Map(
-        agriculture -> IndustrySectorLimit(30000.00),
-        aquaculture -> IndustrySectorLimit(20000.00),
+        agriculture -> IndustrySectorLimit(20000.00),
+        aquaculture -> IndustrySectorLimit(30000.00),
         other -> IndustrySectorLimit(200000.00),
         transport -> IndustrySectorLimit(100000.00)
       )
