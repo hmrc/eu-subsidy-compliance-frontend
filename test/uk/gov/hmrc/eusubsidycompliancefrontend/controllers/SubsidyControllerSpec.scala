@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
+import org.jsoup.Jsoup
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -45,6 +46,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Sy
 
 import java.time.LocalDate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+
 import scala.concurrent.Future
 import scala.jdk.CollectionConverters.CollectionHasAsScala
 
@@ -1629,6 +1631,13 @@ class SubsidyControllerSpec
 
         val expectedDeadlineDate = "20 April 2021"
         contentAsString(result) should include(expectedDeadlineDate)
+
+        val document = Jsoup.parse(contentAsString(result))
+        document
+          .getElementById("report-another-payment")
+          .attr("href") shouldBe routes.SubsidyController.getReportedPaymentReturningUserPage.url
+        document.getElementById("home-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
+
       }
 
     }
