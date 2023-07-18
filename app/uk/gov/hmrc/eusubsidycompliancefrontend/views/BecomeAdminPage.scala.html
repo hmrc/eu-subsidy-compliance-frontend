@@ -59,12 +59,7 @@
             content = Text(messages("becomeAdmin.error.required"))
         ))} else None,
         fieldset = Some(Fieldset(
-          describedBy = Some("become-admin-desc-1 become-admin-desc-2"),
-            legend = Some(Legend(
-                content = Text(messages("become-admin.title")),
-                classes = "govuk-visually-hidden",
-                isPageHeading = false
-            ))
+          describedBy = Some("become-admin-desc-1 become-admin-desc-2")
         )),
         idPrefix = Some("becomeAdmin"),
         name = "becomeAdmin",
