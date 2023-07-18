@@ -214,7 +214,7 @@ removeBusiness.error.required = Select if you want to remove a business from you
 
 undertaking.confirmation.title = Undertaking registered
 undertaking.confirmation.p1 = We have sent you a confirmation email.
-undertaking.confirmation.p2 = You can now add businesses to your undertaking using the <a href="{0}">Add and remove businesses</a> link in the ‘Undertaking administration’ section of the homepage.
+undertaking.confirmation.p2 = You can now add businesses to your undertaking using the <a href="{0}" class="govuk-link">Add and remove businesses</a> link in the ‘Undertaking administration’ section of the homepage.
 
 lead-account-homepage.title = Manage your undertaking
 lead-account-homepage.p1.not-overdue = Your next report is due by <strong>{0}</strong>.
