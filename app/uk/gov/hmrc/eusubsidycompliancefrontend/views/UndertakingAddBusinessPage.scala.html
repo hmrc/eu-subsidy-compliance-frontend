@@ -58,11 +58,7 @@
         content = Text(messages("addBusinessIntent.error.required"))
       ))} else None,
       fieldset = Some(Fieldset(
-        legend = Some(Legend(
-          content = Text(messages("addBusinessIntent.title")),
-          classes = "govuk-visually-hidden",
-          isPageHeading = false
-        ))
+        legend = None
       )),
       idPrefix = Some(fieldName),
       name = fieldName,

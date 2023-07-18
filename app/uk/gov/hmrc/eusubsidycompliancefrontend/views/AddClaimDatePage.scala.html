@@ -108,11 +108,7 @@
               content = HtmlContent(messages(s"$key.hint"))
           )),
         fieldset = Some(Fieldset(
-          legend = Some(Legend(
-            content = Text(title),
-            classes = "govuk-fieldset__legend--xl govuk-visually-hidden",
-            isPageHeading = false
-          ))
+          legend = None
         ))
       ))
     }

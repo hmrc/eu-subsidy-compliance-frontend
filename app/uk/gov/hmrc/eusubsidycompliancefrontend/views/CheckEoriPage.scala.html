@@ -60,12 +60,7 @@
                 content = Text(messages(s"$key.error.required"))
             ))} else None,
             fieldset = Some(Fieldset(
-                describedBy = Some("eoricheck-desc-1 eoricheck-desc-2"),
-                legend = Some(Legend(
-                    content = Text(title),
-                    classes = "govuk-visually-hidden",
-                    isPageHeading = false
-                ))
+                describedBy = Some("eoricheck-desc-1 eoricheck-desc-2")
             )),
             idPrefix = Some(key),
             name = key,
