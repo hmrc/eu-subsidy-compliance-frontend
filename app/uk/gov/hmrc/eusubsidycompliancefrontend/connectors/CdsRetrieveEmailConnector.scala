@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class RetrieveEmailConnector @Inject() (override protected val http: HttpClient, servicesConfig: ServicesConfig)(
+class CdsRetrieveEmailConnector @Inject() (override protected val http: HttpClient, servicesConfig: ServicesConfig)(
   implicit ec: ExecutionContext
 ) extends EmailConnector {
 

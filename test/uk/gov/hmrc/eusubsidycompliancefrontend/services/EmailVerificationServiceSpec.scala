@@ -90,12 +90,12 @@ class EmailVerificationServiceSpec
 
       "return none" in {
         repository.put(eori1, unverifiedVerificationRequest).futureValue.id shouldBe eori1
-        service.getEmailVerification(eori1).futureValue shouldBe None
+        service.getCachedEmailVerification(eori1).futureValue shouldBe None
       }
 
       "return verified" in {
         repository.put(eori2, verifiedVerificationRequest).futureValue.id shouldBe eori2
-        service.getEmailVerification(eori2).futureValue should contain(verifiedVerificationRequest)
+        service.getCachedEmailVerification(eori2).futureValue should contain(verifiedVerificationRequest)
       }
 
     }
@@ -107,9 +107,9 @@ class EmailVerificationServiceSpec
           .put(eori1, unverifiedVerificationRequest.copy(verificationId = "pending"))
           .futureValue
           .id shouldBe eori1
-        service.approveVerificationRequest(eori1, "pending").futureValue shouldBe true
+        service.approveVerificationRequestInCache(eori1, "pending").futureValue shouldBe true
 
-        service.getEmailVerification(eori1).futureValue should
+        service.getCachedEmailVerification(eori1).futureValue should
           contain(unverifiedVerificationRequest.copy(verified = true, verificationId = "pending"))
       }
     }
@@ -119,10 +119,10 @@ class EmailVerificationServiceSpec
       "store a new email verification request and mark it as verified" in {
         val email = "foo@example.com"
 
-        service.addVerifiedEmail(eori4, email).futureValue shouldBe (())
+        service.addVerifiedEmailToCache(eori4, email).futureValue shouldBe (())
 
         // Query mongo to confirm that we have a verified record
-        val result = service.getEmailVerification(eori4)
+        val result = service.getCachedEmailVerification(eori4)
 
         result.futureValue.map(_.email) should contain(email)
         result.futureValue.map(_.verified) should contain(true)

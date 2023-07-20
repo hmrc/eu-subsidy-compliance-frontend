@@ -20,9 +20,10 @@ import cats.implicits.catsSyntaxOptionId
 import com.google.inject.Inject
 import play.api.http.Status.{ACCEPTED, NOT_FOUND, OK}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{RetrieveEmailConnector, SendEmailConnector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{CdsRetrieveEmailConnector, SendEmailConnector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.{EmailNotSent, EmailSentFailure}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -37,9 +38,41 @@ import scala.concurrent.{ExecutionContext, Future}
 class EmailService @Inject() (
   appConfig: AppConfig,
   sendEmailConnector: SendEmailConnector,
-  retrieveEmailConnector: RetrieveEmailConnector,
+  cdsRetrieveEmailConnector: CdsRetrieveEmailConnector,
   emailVerificationService: EmailVerificationService
 ) extends TracedLogging {
+
+  def findVerifiedEmailPrioritisingCDS(
+    eori: EORI
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[String]] = {
+    val eventualMaybeEmailFromCDS =
+      retrieveEmailByEORIFromCds(eori)
+        .map(_.emailAddress.map(_.value))
+
+    val eventualEventualMaybeEmailAddress = eventualMaybeEmailFromCDS.flatMap {
+      case Some(emailFromCds) =>
+        logger.info(s"found email from cds for eori $eori")
+
+        Future.successful(Some(emailFromCds))
+      case None =>
+        logger.warn(s"$eori could not be found in CDS so deferring to local cache")
+        findCachedVerifiedEmail(eori)
+    }
+
+    //Trap any errors we have with the EORI. Quite often we have errors but the EORI is unknown so not resolvable
+    eventualEventualMaybeEmailAddress.failed.foreach(exception =>
+      logger.error(s"failed retrieving email for $eori", exception)
+    )
+
+    eventualEventualMaybeEmailAddress
+  }
+
+  private def findCachedVerifiedEmail(
+    EORI: EORI
+  )(implicit ec: ExecutionContext): Future[Option[String]] =
+    emailVerificationService
+      .getCachedEmailVerification(EORI)
+      .map(_.map(_.email))
 
   def sendEmail(
     eori1: EORI,
@@ -83,44 +116,69 @@ class EmailService @Inject() (
     hc: HeaderCarrier,
     executionContext: ExecutionContext
   ): Future[EmailSendResult] = {
+    val parameters: EmailParameters = EmailParameters(
+      eori = eori1,
+      beEORI = eori2,
+      undertakingName = undertaking.name,
+      effectiveDate = removeEffectiveDate
+    )
+    val templateId: String =
+      appConfig.getTemplateId(template).getOrElse(s"No template ID for email template: $template")
 
-    val parameters = EmailParameters(eori1, eori2, undertaking.name, removeEffectiveDate)
-    val templateId = appConfig.getTemplateId(template).getOrElse(s"No template ID for email template: $template")
-
-    def fetchEmailAndSend(): Future[EmailSendResult] =
-      retrieveEmailByEORI(eori1).flatMap {
-        case RetrieveEmailResponse(EmailType.VerifiedEmail, Some(email)) => sendEmail(email, parameters, templateId)
-        case RetrieveEmailResponse(EmailType.VerifiedEmail, None) => Future.failed(sys.error("Email address not found"))
-        case _ => EmailSendResult.EmailNotSent.toFuture
+    findVerifiedEmailPrioritisingCDS(eori1)
+      .flatMap { maybeEmail: Option[String] =>
+        maybeEmail
+          .map { email =>
+            sendEmail(EmailAddress(email), parameters, templateId)
+          }
+          .getOrElse {
+            logger.warn(s"No email found for $eori1 so could not send $template")
+            Future.successful(EmailNotSent)
+          }
       }
-
-    emailVerificationService
-      .getEmailVerification(eori1)
-      .toContext
-      .foldF(fetchEmailAndSend())(e => sendEmail(EmailAddress(e.email), parameters, templateId))
-
+      .recover { case e: Throwable =>
+        logger.error(s"failed sending email to $eori1 for template $template", e)
+        EmailSentFailure
+      }
   }
 
-  def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RetrieveEmailResponse] =
-    retrieveEmailConnector.retrieveEmailByEORI(eori).map {
+  private def fetchEmailFromCdsAndSend(eori: EORI, parameters: EmailParameters, templateId: String)(implicit
+    hc: HeaderCarrier,
+    executionContext: ExecutionContext
+  ): Future[EmailSendResult] =
+    retrieveEmailByEORIFromCds(eori).flatMap {
+      case RetrieveEmailResponse(EmailType.VerifiedEmail, Some(email)) => sendEmail(email, parameters, templateId)
+      case RetrieveEmailResponse(EmailType.VerifiedEmail, None) =>
+        Future.failed(sys.error(s"Email address for EORI $eori not found from CDS"))
+      case _ => EmailSendResult.EmailNotSent.toFuture
+    }
+
+  def retrieveEmailByEORIFromCds(
+    eori: EORI
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RetrieveEmailResponse] =
+    cdsRetrieveEmailConnector.retrieveEmailByEORI(eori).map {
       case Left(error) => throw error
       case Right(value: HttpResponse) =>
         value.status match {
-          case NOT_FOUND => RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)
+          case NOT_FOUND =>
+            RetrieveEmailResponse(emailType = EmailType.UnVerifiedEmail, emailAddress = None)
           case OK =>
             value
               .parseJSON[EmailAddressResponse]
-              .fold(_ => sys.error("Error in parsing Email Address"), handleEmailAddressResponse)
-          case _ => sys.error("Error in retrieving Email Address Response")
+              .fold(_ => sys.error("Error in parsing Email Address"), handleRetrieveEmailAddressResponse)
+          case _ =>
+            sys.error("Error in retrieving Email Address Response")
         }
     }
 
-  private def handleEmailAddressResponse(emailAddressResponse: EmailAddressResponse): RetrieveEmailResponse =
+  private def handleRetrieveEmailAddressResponse(emailAddressResponse: EmailAddressResponse): RetrieveEmailResponse =
     emailAddressResponse match {
-      case EmailAddressResponse(email, Some(_), None) => RetrieveEmailResponse(EmailType.VerifiedEmail, email.some)
+      case EmailAddressResponse(email, Some(_), None) =>
+        RetrieveEmailResponse(EmailType.VerifiedEmail, email.some)
       case EmailAddressResponse(email, Some(_), Some(_)) =>
         RetrieveEmailResponse(EmailType.UnDeliverableEmail, email.some)
-      case EmailAddressResponse(email, None, None) => RetrieveEmailResponse(EmailType.UnVerifiedEmail, email.some)
+      case EmailAddressResponse(email, None, None) =>
+        RetrieveEmailResponse(EmailType.UnVerifiedEmail, email.some)
       case _ => sys.error("Email address response is not valid")
     }
 

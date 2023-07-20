@@ -71,9 +71,15 @@ class VerifiedEmailActionBuilder @Inject() (
       r,
       { enrolledRequest: AuthenticatedEnrolledRequest[A] =>
         emailVerificationService
-          .getEmailVerification(enrolledRequest.eoriNumber)
-          .toContext
-          .foldF(throw new IllegalStateException("No verified email address found"))(_ => f(enrolledRequest))
+          .hasVerifiedEmail(enrolledRequest.eoriNumber)
+          .flatMap { hasVerified: Boolean =>
+            if (hasVerified) {
+              f(enrolledRequest)
+            } else {
+              Future
+                .failed(new IllegalStateException(s"No verified email address found for ${enrolledRequest.eoriNumber}"))
+            }
+          }
       }
     )
 }

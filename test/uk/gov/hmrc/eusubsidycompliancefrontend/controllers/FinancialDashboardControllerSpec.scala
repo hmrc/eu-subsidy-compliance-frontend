@@ -39,6 +39,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSu
 class FinancialDashboardControllerSpec
     extends ControllerSpec
     with AuthSupport
+    with EmailSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with Matchers

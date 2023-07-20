@@ -40,6 +40,7 @@ class EnrolledActionBuilderSpec
     extends BaseSpec
     with ControllerSpec
     with AuthSupport
+    with EmailSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with Matchers

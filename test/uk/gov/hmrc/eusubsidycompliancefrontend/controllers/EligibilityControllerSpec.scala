@@ -31,7 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 class EligibilityControllerSpec
     extends ControllerSpec
-    with AuthSupport
+    with AuthSupport with EmailSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with EscServiceSupport {

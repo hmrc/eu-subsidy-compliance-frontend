@@ -37,6 +37,7 @@ import java.time.LocalDate
 class NoClaimNotificationControllerSpec
     extends ControllerSpec
     with AuthSupport
+    with EmailSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with AuditServiceSupport

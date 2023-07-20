@@ -25,13 +25,13 @@ import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval, ~}
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailVerificationService
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailService, EmailVerificationService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait AuthSupport { this: ControllerSpec =>
+trait AuthSupport { this: ControllerSpec with EmailSupport =>
 
   protected val mockAuthConnector: AuthConnector = mock[AuthConnector]
 
@@ -60,11 +60,11 @@ trait AuthSupport { this: ControllerSpec =>
     enrolments: Enrolments,
     providerId: String,
     groupIdentifier: Option[String]
-  ): CallHandler1[EORI, Future[Option[VerifiedEmail]]] = {
+  ): Unit = {
     mockAuth(EmptyPredicate, authRetrievals)(
       (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
-    mockGetEmailVerification()
+    mockHasCacheEmailVerification()
   }
 
   def mockAuthWithEccAuthRetrievalsNoEmailVerification(
@@ -76,13 +76,21 @@ trait AuthSupport { this: ControllerSpec =>
       (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
 
-  def mockGetEmailVerification(result: Option[VerifiedEmail]): CallHandler1[EORI, Future[Option[VerifiedEmail]]] =
-    (mockEmailVerificationService
-      .getEmailVerification(_: EORI))
-      .expects(*)
-      .returning(result.toFuture)
+  def mockEmailVerificationPrioritisingCds(email: String = "foo@example.com"): Unit =
+    mockEmailVerificationPrioritisingCds(VerifiedEmail(email, "", verified = true).some)
 
-  def mockGetEmailVerification(email: String = "foo@example.com"): CallHandler1[EORI, Future[Option[VerifiedEmail]]] =
-    mockGetEmailVerification(VerifiedEmail(email, "", verified = true).some)
+  def mockEmailVerificationPrioritisingCds(
+    maybeVerifiedEmail: Option[VerifiedEmail]
+  ): Unit =
+    (mockEmailService
+      .findVerifiedEmailPrioritisingCDS(_: EORI)(_: HeaderCarrier, _: ExecutionContext))
+      .expects(*, *, *)
+      .returning(maybeVerifiedEmail.map(_.email).toFuture)
+
+  def mockHasCacheEmailVerification(hasVerified: Boolean = true): Unit =
+    (mockEmailVerificationService.hasVerifiedEmail _)
+      //should not really have all this wildcarded :(
+      .expects(*)
+      .returning(hasVerified.toFuture)
 
 }

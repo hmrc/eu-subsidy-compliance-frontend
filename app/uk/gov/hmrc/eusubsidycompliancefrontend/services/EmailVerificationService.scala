@@ -21,7 +21,7 @@ import play.api.http.Status.CREATED
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Call, Result, WrappedRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{CdsRetrieveEmailConnector, EmailVerificationConnector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -43,15 +43,21 @@ class EmailVerificationService @Inject() (
   servicesConfig: ServicesConfig
 ) extends TracedLogging {
 
-  def getEmailVerification(eori: EORI): Future[Option[VerifiedEmail]] = eoriEmailDatastore.getEmailVerification(eori)
+  def getCachedEmailVerification(eori: EORI): Future[Option[VerifiedEmail]] =
+    eoriEmailDatastore.getEmailVerification(eori)
 
-  def approveVerificationRequest(key: EORI, verificationId: String)(implicit ec: ExecutionContext): Future[Boolean] =
+  def hasVerifiedEmail(eori: EORI): Future[Boolean] =
+    eoriEmailDatastore.hasVerifiedEmail(eori)
+
+  def approveVerificationRequestInCache(key: EORI, verificationId: String)(implicit
+    ec: ExecutionContext
+  ): Future[Boolean] =
     eoriEmailDatastore
       .approveVerificationRequest(key, verificationId)
       .map(_.getMatchedCount > 0)
 
   // Add an email address that's already approved
-  def addVerifiedEmail(eori: EORI, emailAddress: String)(implicit ec: ExecutionContext): Future[Unit] =
+  def addVerifiedEmailToCache(eori: EORI, emailAddress: String)(implicit ec: ExecutionContext): Future[Unit] =
     for {
       _ <- addVerificationRequest(eori, emailAddress)
       _ <- verifyEmailForEori(eori)

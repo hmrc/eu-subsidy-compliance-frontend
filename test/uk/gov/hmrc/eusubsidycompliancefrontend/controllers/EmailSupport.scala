@@ -31,7 +31,7 @@ trait EmailSupport { this: ControllerSpec =>
 
   def mockRetrieveEmail(eori: EORI)(result: Either[ConnectorError, RetrieveEmailResponse]) =
     (mockEmailService
-      .retrieveEmailByEORI(_: EORI)(_: HeaderCarrier, _: ExecutionContext))
+      .retrieveEmailByEORIFromCds(_: EORI)(_: HeaderCarrier, _: ExecutionContext))
       .expects(eori, *, *)
       .returning(result.fold(e => Future.failed(e), _.toFuture))
 

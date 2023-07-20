@@ -719,7 +719,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori1)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockGetEmailVerification()
+            mockEmailVerificationPrioritisingCds()
             mockAddVerifiedEmail(eori1, "foo@example.com")()
             mockUpdate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete))
 
@@ -734,7 +734,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori1)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockGetEmailVerification()
+            mockEmailVerificationPrioritisingCds()
             mockMakeVerificationRequestAndRedirect(Redirect("email-verification-redirect").toFuture)
           }
           redirectLocation(
@@ -746,7 +746,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori1)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockGetEmailVerification()
+            mockEmailVerificationPrioritisingCds()
           }
           status(performAction("using-stored-email" -> "false", "email" -> "somethingl.com")) shouldBe BAD_REQUEST
         }
@@ -1269,7 +1269,7 @@ class UndertakingControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.copy(isAmend = true).some))
-            mockGetEmailVerification()
+            mockEmailVerificationPrioritisingCds()
           }
 
           checkPageIsDisplayed(
@@ -1296,7 +1296,7 @@ class UndertakingControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
             mockUpdate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.copy(isAmend = true)))
-            mockGetEmailVerification()
+            mockEmailVerificationPrioritisingCds()
           }
 
           checkPageIsDisplayed(

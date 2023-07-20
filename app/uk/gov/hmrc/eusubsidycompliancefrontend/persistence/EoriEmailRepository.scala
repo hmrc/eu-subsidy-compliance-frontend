@@ -111,7 +111,10 @@ class EoriEmailRepository @Inject() (
       .toFuture()
   }
 
-  def getEmailVerification(key: EORI) =
+  def hasVerifiedEmail(key: EORI): Future[Boolean] =
+    getEmailVerification(key).map(_.nonEmpty)
+
+  def getEmailVerification(key: EORI): Future[Option[VerifiedEmail]] =
     collection
       .find(
         filter = Filters.and(

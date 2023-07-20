@@ -336,11 +336,11 @@ class UndertakingController @Inject() (
       withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
         for {
           updatedJourney <- if (journey.isAmend) journey.toFuture else updateIsAmendState(value = true)
-          verifiedEmail <- emailVerificationService.getEmailVerification(eori)
+          verifiedEmail <- emailVerificationService.getCachedEmailVerification(eori)
         } yield Ok(
           amendUndertakingPage(
             updatedJourney.sector.value.getOrElse(handleMissingSessionData("Undertaking sector")),
-            verifiedEmail.fold(handleMissingSessionData("Verified email"))(e => e.email),
+            verifiedEmail.fold(ifEmpty = handleMissingSessionData("Verified email"))(e => e.email),
             routes.AccountController.getAccountPage.url
           )
         )

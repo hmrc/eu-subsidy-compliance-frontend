@@ -31,6 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 class NoBusinessPresentControllerSpec
     extends ControllerSpec
     with AuthSupport
+    with EmailSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with LeadOnlyRedirectSupport

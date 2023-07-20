@@ -20,7 +20,7 @@ import com.typesafe.config.ConfigFactory
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
 import play.api.Configuration
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.RetrieveEmailConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.CdsRetrieveEmailConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -46,7 +46,7 @@ class RetrieveEmailConnectorSpec
                                  |""".stripMargin)
   )
 
-  private val connector = new RetrieveEmailConnector(mockHttp, new ServicesConfig(config))
+  private val connector = new CdsRetrieveEmailConnector(mockHttp, new ServicesConfig(config))
 
   val expectedUrl = s"$protocol://$host:$port/customs-data-store/eori/$eori1/verified-email"
 

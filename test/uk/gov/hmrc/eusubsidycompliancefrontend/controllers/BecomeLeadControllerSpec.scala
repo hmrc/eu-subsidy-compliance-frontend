@@ -20,6 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.inject.bind
+import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -346,11 +347,11 @@ class BecomeLeadControllerSpec
 
     "display the correct page" when {
 
-      "user has a verified email address in our store" in {
+      "user has a verified email address" in {
         inSequence {
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          mockGetEmailVerification()
+          mockEmailVerificationPrioritisingCds()
         }
 
         val result = performAction()
@@ -359,29 +360,11 @@ class BecomeLeadControllerSpec
         contentAsString(result) should include(messages("confirmEmail.title"))
       }
 
-      "user has no verified email address but they do have an email address in CDS" in {
+      "user has no verified email" in {
         inSequence {
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          mockGetEmailVerification(Option.empty)
-          mockRetrieveEmail(eori1)(
-            Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("foo@example.com").some))
-          )
-        }
-
-        val result = performAction()
-
-        status(result) shouldBe OK
-        contentAsString(result) should include(messages("confirmEmail.title"))
-        contentAsString(result) should include("foo@example.com")
-      }
-
-      "user has no verified email nor do they have an email address in CDS" in {
-        inSequence {
-          mockAuthWithEnrolment(eori1)
-          mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          mockGetEmailVerification(Option.empty)
-          mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
+          mockEmailVerificationPrioritisingCds(None)
         }
 
         val result = performAction()
@@ -406,7 +389,7 @@ class BecomeLeadControllerSpec
       "user selects existing verified email address" in {
         inSequence {
           mockAuthWithEnrolment(eori1)
-          mockGetEmailVerification()
+          mockEmailVerificationPrioritisingCds()
           mockAddVerifiedEmail(eori1, "foo@example.com")(Future.successful(()))
         }
 
@@ -419,7 +402,7 @@ class BecomeLeadControllerSpec
       "user has existing verified email address but elects to enter a new one" in {
         inSequence {
           mockAuthWithEnrolment(eori1)
-          mockGetEmailVerification()
+          mockEmailVerificationPrioritisingCds()
           mockMakeVerificationRequestAndRedirect(Redirect(verificationUrl).toFuture)
         }
 
@@ -436,8 +419,7 @@ class BecomeLeadControllerSpec
       "user has no existing email address and enters a new one" in {
         inSequence {
           mockAuthWithEnrolment(eori1)
-          mockGetEmailVerification(None)
-          mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
+          mockEmailVerificationPrioritisingCds(None)
           mockMakeVerificationRequestAndRedirect(Redirect(verificationUrl).toFuture)
         }
 
@@ -453,11 +435,12 @@ class BecomeLeadControllerSpec
 
   }
 
-  "handling request to get Verify Email page" must {
+  "getVerifyEmail controller action" must {
 
     val verificationId = "SomeVerificationId"
 
-    def performAction(verificationId: String) = controller.getVerifyEmail(verificationId)(FakeRequest())
+    def performAction(verificationId: String): Future[Result] =
+      controller.getVerifyEmail(verificationId)(FakeRequest())
 
     "redirect to the correct page" when {
 
@@ -478,7 +461,7 @@ class BecomeLeadControllerSpec
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
           mockApproveVerification(eori1, verificationId)(Right(true))
-          mockGetEmailVerification(Option.empty)
+          mockEmailVerificationPrioritisingCds(None)
         }
 
         val result = performAction(verificationId)
@@ -492,7 +475,7 @@ class BecomeLeadControllerSpec
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
           mockApproveVerification(eori1, verificationId)(Right(true))
-          mockGetEmailVerification()
+          mockEmailVerificationPrioritisingCds()
         }
 
         val result = performAction(verificationId)

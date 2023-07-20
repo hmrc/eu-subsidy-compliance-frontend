@@ -45,6 +45,7 @@ import java.time.LocalDate
 class EuOnlySubsidyControllerSpec
     extends ControllerSpec
     with AuthSupport
+    with EmailSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
     with AuditServiceSupport

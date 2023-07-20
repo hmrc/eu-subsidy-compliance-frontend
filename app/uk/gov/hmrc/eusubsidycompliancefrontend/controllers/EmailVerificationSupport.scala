@@ -24,6 +24,7 @@ import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{EmailFormProvider, OptionalEmailFormProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, FormValues, OptionalEmailFormInput}
@@ -38,7 +39,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
-trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendController =>
+trait EmailVerificationSupport extends ControllerFormHelpers with TracedLogging { this: FrontendController =>
 
   protected val emailService: EmailService
   protected val emailVerificationService: EmailVerificationService
@@ -51,15 +52,9 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
 
   protected val emailForm: Form[FormValues] = EmailFormProvider().form
 
-  protected def findVerifiedEmail(implicit eori: EORI, hc: HeaderCarrier): Future[Option[String]] =
-    emailVerificationService
-      .getEmailVerification(eori)
-      .toContext
-      .foldF(retrieveCdsEmail)(_.email.some.toFuture)
-
   private def retrieveCdsEmail(implicit eori: EORI, hc: HeaderCarrier): Future[Option[String]] =
     emailService
-      .retrieveEmailByEORI(eori)
+      .retrieveEmailByEORIFromCds(eori)
       .map {
         case RetrieveEmailResponse(EmailType.VerifiedEmail, email) => email.map(_.value)
         case _ => Option.empty
@@ -87,11 +82,17 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
     implicit val eori: EORI = request.eoriNumber
 
     withJourneyOrRedirect[A](previous) { _ =>
-      findVerifiedEmail.toContext
-        .fold(Ok(inputEmailPage(emailForm, previous.url))) { e =>
+      findVerifiedEmailPrioritisingCDS(eori).toContext
+        .fold(default = Ok(inputEmailPage(emailForm, previous.url))) { e =>
           Ok(confirmEmailPage(optionalEmailForm, formAction, EmailAddress(e), previous.url))
         }
     }
+  }
+
+  private def findVerifiedEmailPrioritisingCDS(
+    eori: EORI
+  )(implicit hc: HeaderCarrier): Future[Option[String]] = {
+    emailService.findVerifiedEmailPrioritisingCDS(eori)
   }
 
   protected def addVerifiedEmailToJourney(email: String)(implicit eori: EORI): Future[Unit]
@@ -119,13 +120,13 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
           form =>
             if (form.usingStoredEmail.isTrue)
               for {
-                _ <- emailVerificationService.addVerifiedEmail(eori, email)
+                _ <- emailVerificationService.addVerifiedEmailToCache(eori, email)
                 _ <- addVerifiedEmailToJourney(email)
               } yield Redirect(next)
             else {
               // Redirect back to the previous page if no email address appears to be entered. This should never happen
               // with a legitimate form submission.
-              form.value.fold(Redirect(previous).toFuture) { email =>
+              form.value.fold(ifEmpty = Redirect(previous).toFuture) { email: String =>
                 emailVerificationService.makeVerificationRequestAndRedirect(email, previous, verifyEmailUrl)
               }
             }
@@ -139,10 +140,22 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
           form => emailVerificationService.makeVerificationRequestAndRedirect(form.value, previous, verifyEmailUrl)
         )
 
-    findVerifiedEmail.toContext
-      .foldF(handleInputEmailPageSubmission())(email => handleConfirmEmailPageSubmission(email))
+    findVerifiedEmailPrioritisingCDS(eori).toContext
+      .foldF(default = handleInputEmailPageSubmission())(email => handleConfirmEmailPageSubmission(email))
   }
 
+  /**
+    * This only uses the cache to get the email
+    * Possibly more sensible approach would be to check we have an verified email for the EORI in the cache, but
+    *  get the email address from CDS
+    * @param verificationId
+    * @param previous
+    * @param next
+    * @param request
+    * @param format
+    * @tparam A
+    * @return
+    */
   protected def handleVerifyEmailGet[A : ClassTag](
     verificationId: String,
     previous: Call,
@@ -152,11 +165,12 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
     implicit val eori: EORI = request.eoriNumber
 
     withJourneyOrRedirect[A](previous) { _ =>
-      emailVerificationService.approveVerificationRequest(eori, verificationId).flatMap { approveSuccessful =>
+      emailVerificationService.approveVerificationRequestInCache(eori, verificationId).flatMap { approveSuccessful =>
         if (approveSuccessful) {
           val result = for {
-            stored <- emailVerificationService.getEmailVerification(eori).toContext
-            _ <- addVerifiedEmailToJourney(stored.email).toContext
+            // stored <- emailVerificationService.getCachedEmailVerification(eori).toContext
+            email <- emailService.findVerifiedEmailPrioritisingCDS(eori).toContext
+            _ <- addVerifiedEmailToJourney(email).toContext
           } yield Redirect(next.url)
 
           result.getOrElse(Redirect(previous))

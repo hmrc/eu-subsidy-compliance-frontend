@@ -31,19 +31,19 @@ trait EmailVerificationServiceSupport { this: MockFactory with AuthSupport =>
 
   def mockApproveVerification(eori: EORI, verificationId: String)(result: Either[ConnectorError, Boolean]) =
     (mockEmailVerificationService
-      .approveVerificationRequest(_: EORI, _: String)(_: ExecutionContext))
+      .approveVerificationRequestInCache(_: EORI, _: String)(_: ExecutionContext))
       .expects(eori, verificationId, *)
       .returning(result.fold(Future.failed, _.toFuture))
 
   def mockGetEmailVerification(eori: EORI)(result: Either[ConnectorError, Option[VerifiedEmail]]) =
     (mockEmailVerificationService
-      .getEmailVerification(_: EORI))
+      .getCachedEmailVerification(_: EORI))
       .expects(eori)
       .returning(result.fold(Future.failed, _.toFuture))
 
   def mockAddVerifiedEmail(eori: EORI, emailAddress: String)(result: Future[Unit] = ().toFuture) =
     (mockEmailVerificationService
-      .addVerifiedEmail(_: EORI, _: String)(_: ExecutionContext))
+      .addVerifiedEmailToCache(_: EORI, _: String)(_: ExecutionContext))
       .expects(eori, emailAddress, *)
       .returning(result)
 
