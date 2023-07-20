@@ -93,11 +93,7 @@
         } else None,
         fieldset = Some(Fieldset(
           describedBy = Some("email-address-confirmation"),
-          legend = Some(Legend(
-            content = Text(messages("confirmEmail.title")),
-            classes = "govuk-fieldset__legend--xl govuk-visually-hidden",
-            isPageHeading = false
-          ))
+          legend = None
         )),
         name = radioIdentifier,
         items = Seq(
