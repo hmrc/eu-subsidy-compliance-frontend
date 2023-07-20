@@ -611,18 +611,17 @@ class UndertakingControllerSpec
           )
           val previousCall = routes.UndertakingController.getSector.url
 
+          val email = "email@test.com"
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-            mockGetEmailVerification(eori1)(Right(VerifiedEmail("email@test.com", "id123", verified = true).some))
+            mockGetEmailVerification(eori1)(Right(VerifiedEmail(email, "id123", verified = true).some))
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("confirmEmail.title", undertakingJourney.about.value.getOrElse("")),
+            messageFromMessageKey("confirmEmail.title", email),
             { doc =>
-              doc.getElementById("hidden-email").text() shouldBe "email@test.com"
-              doc.getElementById("hidden-email").attr("class") shouldBe "govuk-visually-hidden"
-
+              doc.getElementById("page-question").text() shouldBe messageFromMessageKey("confirmEmail.title", email)
               doc.select(".govuk-back-link").attr("href") shouldBe previousCall
 
               val form = doc.select("form")
@@ -647,7 +646,7 @@ class UndertakingControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("confirmEmail.title", undertakingJourney.about.value.getOrElse("")),
+            messageFromMessageKey("confirmEmail.title", ""),
             { doc =>
               doc.select(".govuk-back-link").attr("href") shouldBe previousCall
 

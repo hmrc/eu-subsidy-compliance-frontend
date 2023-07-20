@@ -26,8 +26,7 @@
   button: components.Button,
   govukErrorSummary: GovukErrorSummary,
   govukRadios : GovukRadios,
-  govukInput : GovukInput,
-  govukInsetText: GovukInsetText
+  govukInput : GovukInput
 )
 @(
     form: Form[_],
@@ -39,8 +38,8 @@
 @radioIdentifier = @{"using-stored-email"}
 @inputIdentifier = @{"email"}
 
-@visuallyHiddenText = @{
-    s"""<span id="hidden-email" class="govuk-visually-hidden">${email.value}</span>"""
+@pageTitle = @{
+    messages("confirmEmail.title", email.value)
 }
 
 @textHtml = {
@@ -62,7 +61,7 @@
 }
 
 @layout(
-    pageTitle = Some(messages("confirmEmail.title")),
+    pageTitle = Some(pageTitle),
     backLinkEnabled = true,
     backLink = Some(previous),
     hasErrors = form.hasErrors
@@ -85,13 +84,8 @@
       }
 
 
-      @H1(messages("confirmEmail.question", visuallyHiddenText), Some("govuk-heading-xl govuk-!-margin-bottom-5"), id = Some("page-question"))
+      @H1(pageTitle, Some("govuk-heading-xl govuk-!-margin-bottom-5"), id = Some("page-question"))
       @P(messages("confirmEmail.p1"))
-
-      @govukInsetText(InsetText(
-        content = Text(email.value),
-        id = Some("email-address-confirmation")
-      ))
 
       @govukRadios(Radios(
         errorMessage = if (form.hasErrors && form.errors.head.key == radioIdentifier) {
