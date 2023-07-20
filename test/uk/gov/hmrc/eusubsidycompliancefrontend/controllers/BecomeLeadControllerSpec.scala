@@ -356,7 +356,7 @@ class BecomeLeadControllerSpec
         val result = performAction()
 
         status(result) shouldBe OK
-        contentAsString(result) should include(messages("confirmEmail.title"))
+        contentAsString(result) should include(messages("confirmEmail.title", "foo@example.com"))
       }
 
       "user has no verified email address but they do have an email address in CDS" in {
@@ -372,8 +372,7 @@ class BecomeLeadControllerSpec
         val result = performAction()
 
         status(result) shouldBe OK
-        contentAsString(result) should include(messages("confirmEmail.title"))
-        contentAsString(result) should include("foo@example.com")
+        contentAsString(result) should include(messages("confirmEmail.title", "foo@example.com"))
       }
 
       "user has no verified email nor do they have an email address in CDS" in {
