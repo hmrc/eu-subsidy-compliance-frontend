@@ -53,6 +53,7 @@ POST       /lead-undertaking-disable-confirm                                    
 
 GET        /lead-undertaking-disabled                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getUndertakingDisabled
 
+GET        /lead-undertaking-add-business/start                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.startJourney
 GET        /lead-undertaking-add-business                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getAddBusinessEntity
 POST       /lead-undertaking-add-business                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postAddBusinessEntity
 
@@ -82,6 +83,7 @@ POST       /lead-undertaking-check-converted-amount                             
 GET        /lead-undertaking-first-time-user                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPaymentFirstTimeUser
 POST       /lead-undertaking-first-time-user                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPaymentFirstTimeUser
 
+GET        /lead-undertaking-returning-user/start                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.startJourney
 GET        /lead-undertaking-returning-user                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportedPaymentReturningUserPage
 POST       /lead-undertaking-returning-user                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportedPaymentReturningUserPage
 
