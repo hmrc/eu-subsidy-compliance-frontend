@@ -277,6 +277,8 @@ add-claim-amount.title = What currency was the payment received in?
 add-claim-amount.euro-only.title = What is the payment amount in euros?
 add-claim-amount.eur = Euros (EUR)
 add-claim-amount.gbp = Pounds sterling (GBP)
+add-claim-amount.euros.input-label = Enter the amount in euros
+add-claim-amount.pounds.input-label = Enter the amount in pounds
 add-claim-amount.input-label = Enter amount
 add-claim-amount.euro-only.help = <a id="currency-exchange-link" class="govuk-link" target="_blank" href="https://ec.europa.eu/info/funding-tenders/procedures-guidelines-tenders/information-contractors-and-beneficiaries/exchange-rate-inforeuro_en">Convert payments in pounds to euros with this tool (opens in another tab).</a>
 add-claim-amount.input-hint-eur = The amount should include two decimal places, like €248.65

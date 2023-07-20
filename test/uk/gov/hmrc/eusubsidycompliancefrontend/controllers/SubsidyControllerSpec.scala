@@ -327,6 +327,13 @@ class SubsidyControllerSpec
               val input = doc.getElementById(elementId).attributes().get("value")
               input shouldBe subsidyJourney.claimAmount.value.map(_.amount).getOrElse("")
 
+              doc.getElementById("euros-label").text() shouldBe messageFromMessageKey(
+                "add-claim-amount.euros.input-label"
+              )
+              doc.getElementById("pounds-label").text() shouldBe messageFromMessageKey(
+                "add-claim-amount.pounds.input-label"
+              )
+
               val button = doc.select("form")
               button.attr("action") shouldBe routes.SubsidyController.postAddClaimAmount.url
 
