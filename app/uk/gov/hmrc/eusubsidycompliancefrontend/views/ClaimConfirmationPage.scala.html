@@ -47,7 +47,7 @@
     @P(messages("subsidy.created.p1", s"<strong>${nextClaimDueDate.toDisplayFormat}</strong>"))
 
     <ul class="govuk-list govuk-list--spaced">
-        <li><a id="report-another-payment" class="govuk-link" href="@routes.SubsidyController.getReportedPaymentReturningUserPage.url">@messages("subsidy.created.l1")</a></li>
+        <li><a id="report-another-payment" class="govuk-link" href="@routes.SubsidyController.startJourney.url">@messages("subsidy.created.l1")</a></li>
         <li><a id="home-link" class="govuk-link" href="@routes.AccountController.getAccountPage.url">@messages("subsidy.created.l2")</a></li>
     </ul>
 }

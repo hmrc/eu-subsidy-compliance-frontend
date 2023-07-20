@@ -92,6 +92,14 @@ class BusinessEntityController @Inject() (
     )(eoriEntered => FormValues(eoriEntered))(eori => eori.value.some)
   )
 
+  def startJourney: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
+      startNewJourney { _ =>
+        Redirect(routes.BusinessEntityController.getAddBusinessEntity.url)
+      }
+    }
+  }
+
   def getAddBusinessEntity: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
@@ -203,6 +211,18 @@ class BusinessEntityController @Inject() (
           }
         }
     }
+  }
+
+  protected def startNewJourney(
+    f: BusinessEntityJourney => Result
+  )(implicit r: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
+    implicit val eori: EORI = r.eoriNumber
+    store
+      .put[BusinessEntityJourney](BusinessEntityJourney())
+      .toContext
+      .map(journey => f(journey))
+      .getOrElse(Redirect(routes.BusinessEntityController.getAddBusinessEntity.url))
+
   }
 
   private def createJourneyAndRedirect(businessEntityJourney: BusinessEntityJourney)(implicit EORI: EORI) =

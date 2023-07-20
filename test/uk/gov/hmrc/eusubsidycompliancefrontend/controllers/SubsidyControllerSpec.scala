@@ -1647,7 +1647,7 @@ class SubsidyControllerSpec
         val document = Jsoup.parse(contentAsString(result))
         document
           .getElementById("report-another-payment")
-          .attr("href") shouldBe routes.SubsidyController.getReportedPaymentReturningUserPage.url
+          .attr("href") shouldBe routes.SubsidyController.startJourney.url
         document.getElementById("home-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
 
       }
@@ -1719,6 +1719,28 @@ class SubsidyControllerSpec
 
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) should contain(routes.SubsidyController.getAddClaimEori.url)
+
+        }
+      }
+    }
+
+    "startJourney" must {
+      def performAction() = controller.startJourney(
+        FakeRequest(GET, routes.SubsidyController.startJourney.url)
+      )
+
+      "redirect to returning user page" when {
+        "user starts new journey" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockPut[SubsidyJourney](SubsidyJourney(), eori1)(Right(SubsidyJourney()))
+          }
+
+          val result = performAction()
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) should contain(routes.SubsidyController.getReportedPaymentReturningUserPage.url)
 
         }
       }

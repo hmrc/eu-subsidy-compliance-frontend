@@ -798,6 +798,28 @@ class BusinessEntityControllerSpec
       }
 
     }
+
+    "startJourney" must {
+      def performAction() = controller.startJourney(
+        FakeRequest(GET, routes.BusinessEntityController.startJourney.url)
+      )
+
+      "redirect to add business entity page" when {
+        "user starts new journey" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockPut[BusinessEntityJourney](BusinessEntityJourney(), eori1)(Right(BusinessEntityJourney()))
+          }
+
+          val result = performAction()
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) should contain(routes.BusinessEntityController.getAddBusinessEntity.url)
+
+        }
+      }
+    }
   }
 
 }
