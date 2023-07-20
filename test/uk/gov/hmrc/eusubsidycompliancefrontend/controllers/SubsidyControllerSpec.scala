@@ -514,7 +514,7 @@ class SubsidyControllerSpec
 
         status(result) shouldBe OK
         contentAsString(result) should include(
-          "You must report all non-customs subsidies for the last 3 tax years - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
+          messageFromMessageKey("reportNonCustomSubsidy.title")
         )
         contentAsString(result) should include(routes.SubsidyController.getReportedPaymentReturningUserPage.url)
         contentAsString(result) should not include routes.SubsidyController.getReportPaymentFirstTimeUser.url
@@ -538,7 +538,7 @@ class SubsidyControllerSpec
 
         status(result) shouldBe OK
         contentAsString(result) should include(
-          "You need to report for the current tax year, and the previous 2 tax years"
+          messageFromMessageKey("reportNonCustomSubsidy.p1")
         )
         contentAsString(result) should not include routes.SubsidyController.getReportedPaymentReturningUserPage.url
         contentAsString(result) should include(routes.SubsidyController.getReportPaymentFirstTimeUser.url)
