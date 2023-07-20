@@ -331,9 +331,9 @@ reportNonCustomSubsidy.p2.year1 = 6 April {0} to 5 April {1}
 reportNonCustomSubsidy.p2.year2 = 6 April {0} to 5 April {1}
 reportNonCustomSubsidy.p2.year3 = 6 April {0} to 5 April {1}
 
-add-claim-date.title = What date were you awarded the payment?
-add-claim-date.p1 = You must report all non-customs subsidy payments you were awarded since <span class="date-no-break">{0}</span>.
-add-claim-date.hint = The date should be the date you were awarded the payment offer, in this format, <span class="date-no-break">27 7 2020</span>
+add-claim-date.title = Date payment awarded
+add-claim-date.p1 = What date were you awarded the payment?
+add-claim-date.hint = For example, <span class="date-no-break">27 7 2020</span>
 
 add-claim-date.error.required = Enter the date you were awarded the payment
 add-claim-date.error.day-missing = The date you were awarded the payment must include a day

@@ -209,6 +209,11 @@ class SubsidyControllerSpec
             performAction,
             messageFromMessageKey("add-claim-date.title"),
             { doc =>
+              doc.getElementById("page-question").text() shouldBe messageFromMessageKey("add-claim-date.title")
+              val legend = doc.getElementsByClass("govuk-fieldset__legend")
+              legend.size() shouldBe 1
+              legend.first().text() shouldBe messageFromMessageKey("add-claim-date.p1")
+
               doc.select("#claim-date > div:nth-child(1) > div > label").text() shouldBe "Day"
               doc.select("#claim-date > div:nth-child(2) > div > label").text() shouldBe "Month"
               doc.select("#claim-date > div:nth-child(3) > div > label").text() shouldBe "Year"

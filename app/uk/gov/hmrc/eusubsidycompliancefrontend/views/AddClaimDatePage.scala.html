@@ -81,8 +81,8 @@
 }
 
   @formHelper(action = controllers.routes.SubsidyController.postClaimDate) {
-    @H1(title, Some("govuk-heading-xl govuk-!-margin-bottom-3"))
-    @P(messages("add-claim-date.p1", earliestAllowedClaimDate.toDisplayFormat))
+    @H1(title, Some("govuk-heading-xl govuk-!-margin-bottom-3"), id = Some("page-question"))
+
     @defining(form.errors.headOption) { maybeError =>
       @govukDateInput(DateInput(
         id = "claim-date",
@@ -108,7 +108,10 @@
               content = HtmlContent(messages(s"$key.hint"))
           )),
         fieldset = Some(Fieldset(
-          legend = None
+          legend = Some(Legend(
+            content = Text(messages("add-claim-date.p1")),
+            isPageHeading = false
+          ))
         ))
       ))
     }
