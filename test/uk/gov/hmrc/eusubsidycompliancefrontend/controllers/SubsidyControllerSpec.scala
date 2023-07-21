@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import org.jsoup.Jsoup
-
+import org.jsoup.nodes.Document
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -49,6 +49,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Sy
 import java.time.LocalDate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
+import java.time.format.DateTimeFormatter
 import scala.concurrent.Future
 import scala.jdk.CollectionConverters.CollectionHasAsScala
 
@@ -375,9 +376,18 @@ class SubsidyControllerSpec
             mockTimeProviderToday(fixedDate)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
           }
-          val result = performAction()
 
-          status(result) shouldBe BAD_REQUEST
+          val result = performAction()
+          checkFormErrorIsDisplayed(
+            result,
+            messageFromMessageKey(
+              "reportPaymentFirstTimeUser.title",
+              "6 April 2018"
+            ),
+            messageFromMessageKey(
+              "reportPaymentFirstTimeUser.error.required"
+            )
+          )
         }
       }
 
@@ -510,17 +520,30 @@ class SubsidyControllerSpec
         }
 
         val result = performAction()
+        val document: Document = Jsoup.parse(contentAsString(result))
+
+        val expectedTaxYears = List(
+          (LocalDate.of(2020, 4, 6), LocalDate.of(2021, 4, 5)),
+          (LocalDate.of(2021, 4, 6), LocalDate.of(2022, 4, 5)),
+          (LocalDate.of(2022, 4, 6), LocalDate.of(2023, 4, 5))
+        )
+
+        val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+
+        val listItems = document.select("ul.govuk-list li")
 
         status(result) shouldBe OK
-        contentAsString(result) should include(
-          messageFromMessageKey("reportNonCustomSubsidy.title")
-        )
-        contentAsString(result) should include(routes.SubsidyController.getReportedPaymentReturningUserPage.url)
-        contentAsString(result) should not include routes.SubsidyController.getReportPaymentFirstTimeUser.url
-        contentAsString(result) should include(LocalDate.now.getYear.toString)
-        contentAsString(result) should include((LocalDate.now.getYear - 1).toString)
-        contentAsString(result) should include((LocalDate.now.getYear - 2).toString)
-        contentAsString(result) should include((LocalDate.now.getYear - 3).toString)
+
+        document
+          .select(".govuk-back-link")
+          .attr("href") shouldBe routes.SubsidyController.getReportedPaymentReturningUserPage.url
+
+        listItems.size shouldBe expectedTaxYears.size
+
+        expectedTaxYears.zipWithIndex.foreach { case ((startYear, endYear), index) =>
+          val expectedRange = s"${startYear.format(formatter)} to ${endYear.format(formatter)}"
+          listItems.get(index).text() should include(expectedRange)
+        }
       }
 
       "render the page with different URL" in {
@@ -534,18 +557,27 @@ class SubsidyControllerSpec
         }
 
         val result = performAction()
-
-        status(result) shouldBe OK
-        contentAsString(result) should include(
-          messageFromMessageKey("reportNonCustomSubsidy.p1")
+        val document: Document = Jsoup.parse(contentAsString(result))
+        val expectedTaxYears = List(
+          (LocalDate.of(2020, 4, 6), LocalDate.of(2021, 4, 5)),
+          (LocalDate.of(2021, 4, 6), LocalDate.of(2022, 4, 5)),
+          (LocalDate.of(2022, 4, 6), LocalDate.of(2023, 4, 5))
         )
-        contentAsString(result) should not include routes.SubsidyController.getReportedPaymentReturningUserPage.url
-        contentAsString(result) should include(routes.SubsidyController.getReportPaymentFirstTimeUser.url)
-        contentAsString(result) should include(LocalDate.now.getYear.toString)
-        contentAsString(result) should include((LocalDate.now.getYear - 1).toString)
-        contentAsString(result) should include((LocalDate.now.getYear - 2).toString)
-        contentAsString(result) should include((LocalDate.now.getYear - 3).toString)
+
+        val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+        val listItems = document.select("ul.govuk-list li")
+        status(result) shouldBe OK
+        document
+          .select(".govuk-back-link")
+          .attr("href") shouldBe routes.SubsidyController.getReportPaymentFirstTimeUser.url
+
+        listItems.size shouldBe expectedTaxYears.size
+        expectedTaxYears.zipWithIndex.foreach { case ((startYear, endYear), index) =>
+          val expectedRange = s"${startYear.format(formatter)} to ${endYear.format(formatter)}"
+          listItems.get(index).text() should include(expectedRange)
+        }
       }
+
     }
 
     "handling request to get claim amount" must {
