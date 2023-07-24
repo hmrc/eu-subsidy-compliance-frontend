@@ -49,7 +49,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Sy
 import java.time.LocalDate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 
-import java.time.format.DateTimeFormatter
 import scala.concurrent.Future
 import scala.jdk.CollectionConverters.CollectionHasAsScala
 
@@ -522,15 +521,12 @@ class SubsidyControllerSpec
         val result = performAction()
         val document: Document = Jsoup.parse(contentAsString(result))
 
+        val listElement = document.select("ul.govuk-list.govuk-list--bullet")
         val expectedTaxYears = List(
-          (LocalDate.of(2020, 4, 6), LocalDate.of(2021, 4, 5)),
-          (LocalDate.of(2021, 4, 6), LocalDate.of(2022, 4, 5)),
-          (LocalDate.of(2022, 4, 6), LocalDate.of(2023, 4, 5))
+          "6 April 2020 to 5 April 2021",
+          "6 April 2021 to 5 April 2022",
+          "6 April 2022 to 5 April 2023"
         )
-
-        val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-
-        val listItems = document.select("ul.govuk-list li")
 
         status(result) shouldBe OK
 
@@ -538,12 +534,10 @@ class SubsidyControllerSpec
           .select(".govuk-back-link")
           .attr("href") shouldBe routes.SubsidyController.getReportedPaymentReturningUserPage.url
 
-        listItems.size shouldBe expectedTaxYears.size
+        document.getElementById("twoYearBack").text shouldBe expectedTaxYears.head
+        document.getElementById("previousYear").text shouldBe expectedTaxYears(1)
+        document.getElementById("currentYear").text shouldBe expectedTaxYears(2)
 
-        expectedTaxYears.zipWithIndex.foreach { case ((startYear, endYear), index) =>
-          val expectedRange = s"${startYear.format(formatter)} to ${endYear.format(formatter)}"
-          listItems.get(index).text() should include(expectedRange)
-        }
       }
 
       "render the page with different URL" in {
@@ -558,24 +552,22 @@ class SubsidyControllerSpec
 
         val result = performAction()
         val document: Document = Jsoup.parse(contentAsString(result))
+        val listElement = document.selectFirst("ul.govuk-list.govuk-list--bullet")
         val expectedTaxYears = List(
-          (LocalDate.of(2020, 4, 6), LocalDate.of(2021, 4, 5)),
-          (LocalDate.of(2021, 4, 6), LocalDate.of(2022, 4, 5)),
-          (LocalDate.of(2022, 4, 6), LocalDate.of(2023, 4, 5))
+          "6 April 2020 to 5 April 2021",
+          "6 April 2021 to 5 April 2022",
+          "6 April 2022 to 5 April 2023"
         )
 
-        val formatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
-        val listItems = document.select("ul.govuk-list li")
         status(result) shouldBe OK
         document
           .select(".govuk-back-link")
           .attr("href") shouldBe routes.SubsidyController.getReportPaymentFirstTimeUser.url
 
-        listItems.size shouldBe expectedTaxYears.size
-        expectedTaxYears.zipWithIndex.foreach { case ((startYear, endYear), index) =>
-          val expectedRange = s"${startYear.format(formatter)} to ${endYear.format(formatter)}"
-          listItems.get(index).text() should include(expectedRange)
-        }
+        document.getElementById("twoYearBack").text shouldBe expectedTaxYears.head
+        document.getElementById("previousYear").text shouldBe expectedTaxYears(1)
+        document.getElementById("currentYear").text shouldBe expectedTaxYears(2)
+
       }
 
     }
