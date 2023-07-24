@@ -40,9 +40,9 @@
     @H1(messages("reportNonCustomSubsidy.title"))
     @{P(messages(s"reportNonCustomSubsidy.p1"))}
     <ul class="govuk-list govuk-list--bullet">
-        <li> @messages("reportNonCustomSubsidy.p2.year1", threeYearBack, twoYearBack) </li>
-        <li> @messages("reportNonCustomSubsidy.p2.year2", twoYearBack, previousYear) </li>
-        <li> @messages("reportNonCustomSubsidy.p2.year3", previousYear, currentYear) </li>
+        <li id="twoYearBack"> @messages("reportNonCustomSubsidy.p2.year1", threeYearBack, twoYearBack) </li>
+        <li id="previousYear"> @messages("reportNonCustomSubsidy.p2.year2", twoYearBack, previousYear) </li>
+        <li id="currentYear"> @messages("reportNonCustomSubsidy.p2.year3", previousYear, currentYear) </li>
     </ul>
 
     @button("common.continue", href = Some(controllers.routes.SubsidyController.getClaimDate.url))

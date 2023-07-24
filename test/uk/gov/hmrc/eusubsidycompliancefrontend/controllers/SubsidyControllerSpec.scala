@@ -19,9 +19,11 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -278,6 +280,296 @@ class SubsidyControllerSpec
           testLeadOnlyRedirect(() => performAction())
         }
       }
+    }
+
+    "handling submit report request to get first time user page" must {
+
+      def performAction = controller.getReportPaymentFirstTimeUser(
+        FakeRequest(GET, routes.SubsidyController.getReportPaymentFirstTimeUser.url)
+      )
+
+      "call to get session fails" in {
+        inSequence {
+          mockAuthWithEnrolmentAndValidEmail()
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          mockGetOrCreate[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
+        }
+        assertThrows[Exception](await(performAction))
+      }
+
+      "display the page" when {
+        "a request is made" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
+            mockTimeProviderToday(fixedDate)
+          }
+          checkPageIsDisplayed(
+            performAction,
+            messageFromMessageKey("reportPaymentFirstTimeUser.title", "6 April 2018"),
+            { doc =>
+              doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
+              doc.select("form").attr("action") shouldBe routes.SubsidyController.postReportPaymentFirstTimeUser.url
+            }
+          )
+        }
+      }
+
+    }
+
+    "handling post to report payment first time user page" must {
+      def performAction(form: (String, String)*) = controller.postReportPaymentFirstTimeUser(
+        FakeRequest(POST, routes.SubsidyController.postReportPaymentFirstTimeUser.url)
+          .withFormUrlEncodedBody(form: _*)
+      )
+
+      "redirect to next page" when {
+
+        val journeyWithReportPaymentFirstTimeUser = subsidyJourney
+          .setReportPaymentFirstTimeUser(true)
+
+        "the user selects 'true' for report payment first time user" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockTimeProviderToday(fixedDate)
+            mockGet[SubsidyJourney](eori1)(Right(journeyWithReportPaymentFirstTimeUser.some))
+            mockUpdate[SubsidyJourney](eori1)(Right(journeyWithReportPaymentFirstTimeUser))
+
+          }
+
+          val result = performAction(
+            "reportPaymentFirstTimeUser" -> "true"
+          )
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) should contain(routes.SubsidyController.getReportedNoCustomSubsidyPage.url)
+        }
+
+        "the user selects 'false' for report payment first time user" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockTimeProviderToday(fixedDate)
+            mockGet[SubsidyJourney](eori1)(Right(journeyWithReportPaymentFirstTimeUser.some))
+            mockUpdate[SubsidyJourney](eori1)(
+              Right(journeyWithReportPaymentFirstTimeUser.setReportPaymentFirstTimeUser(false))
+            )
+          }
+
+          val result = performAction(
+            "reportPaymentFirstTimeUser" -> "false"
+          )
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) should contain(routes.NoClaimNotificationController.getNoClaimNotification.url)
+        }
+      }
+
+      "return bad request" when {
+        "the form submission is invalid" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockTimeProviderToday(fixedDate)
+            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+          }
+
+          val result = performAction()
+          checkFormErrorIsDisplayed(
+            result,
+            messageFromMessageKey(
+              "reportPaymentFirstTimeUser.title",
+              "6 April 2018"
+            ),
+            messageFromMessageKey(
+              "reportPaymentFirstTimeUser.error.required"
+            )
+          )
+        }
+      }
+
+      "show form error" when {
+
+        def performAction(form: (String, String)*) = controller.postReportPaymentFirstTimeUser(
+          FakeRequest(POST, routes.SubsidyController.getReportPaymentFirstTimeUser.url)
+            .withFormUrlEncodedBody(form: _*)
+        )
+
+        def testFormError(
+          input: Option[List[(String, String)]],
+          errorMessageKey: String
+        ): Unit = {
+          val radio = input.getOrElse(Nil)
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockTimeProviderToday(fixedDate)
+            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+          }
+
+          checkFormErrorIsDisplayed(
+            performAction(radio: _*),
+            messageFromMessageKey("reportPaymentFirstTimeUser.title", "6 April 2018"),
+            messageFromMessageKey(errorMessageKey)
+          )
+
+        }
+
+        "nothing is selected" in {
+          testFormError(None, "reportPaymentFirstTimeUser.error.required")
+        }
+      }
+    }
+
+    "handling post to reported payment returning user page" must {
+      def performAction(form: (String, String)*) = controller.postReportedPaymentReturningUserPage(
+        FakeRequest(POST, routes.SubsidyController.postReportedPaymentReturningUserPage.url)
+          .withFormUrlEncodedBody(form: _*)
+      )
+
+      "redirect to next page" when {
+        val journeyWithReportedPaymentReturningUser = subsidyJourney
+          .setReportedPaymentReturningUser(true)
+
+        "the user selects 'true' for reported payment returning user" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(journeyWithReportedPaymentReturningUser.some))
+            mockUpdate[SubsidyJourney](eori1)(Right(journeyWithReportedPaymentReturningUser))
+          }
+
+          val result = performAction(
+            "report-payment-return" -> "true"
+          )
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) should contain(routes.SubsidyController.getReportedNoCustomSubsidyPage.url)
+        }
+
+        "the user selects 'false' for reported payment returning user" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(journeyWithReportedPaymentReturningUser.some))
+            mockUpdate[SubsidyJourney](eori1)(
+              Right(journeyWithReportedPaymentReturningUser.setReportedPaymentReturningUser(false))
+            )
+          }
+
+          val result = performAction(
+            "report-payment-return" -> "false"
+          )
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) should contain(routes.NoClaimNotificationController.getNoClaimNotification.url)
+        }
+      }
+    }
+
+    "handling request to get returning user page" must {
+
+      def performAction = controller.getReportedPaymentReturningUserPage(
+        FakeRequest(GET, routes.SubsidyController.getReportedPaymentReturningUserPage.url)
+      )
+
+      "call to get session fails" in {
+        inSequence {
+          mockAuthWithEnrolmentAndValidEmail()
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          mockGetOrCreate[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
+        }
+        assertThrows[Exception](await(performAction))
+      }
+
+      "display the page" when {
+        "a request is made" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
+          }
+          checkPageIsDisplayed(
+            performAction,
+            messageFromMessageKey("reportPaymentReturnJourney.title"),
+            { doc =>
+              doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
+              doc
+                .select("form")
+                .attr("action") shouldBe routes.SubsidyController.postReportedPaymentReturningUserPage.url
+            }
+          )
+        }
+      }
+    }
+
+    "handling get to reported all non custom subsidy page" must {
+      def performAction(): Future[Result] = controller.getReportedNoCustomSubsidyPage(FakeRequest())
+
+      "render the page with bullet list of current tax year and previous 2 years for returning user" in {
+        val journeyWithReportedNonCustomSubsidyReturningUser = subsidyJourney
+          .setReportedPaymentReturningUser(true)
+
+        inSequence {
+          mockAuthWithEnrolmentAndValidEmail(eori1)
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          mockGetOrCreate[SubsidyJourney](eori1)(Right(journeyWithReportedNonCustomSubsidyReturningUser))
+        }
+
+        val result = performAction()
+        val document: Document = Jsoup.parse(contentAsString(result))
+
+        val listElement = document.select("ul.govuk-list.govuk-list--bullet")
+        val expectedTaxYears = List(
+          "6 April 2020 to 5 April 2021",
+          "6 April 2021 to 5 April 2022",
+          "6 April 2022 to 5 April 2023"
+        )
+
+        status(result) shouldBe OK
+
+        document
+          .select(".govuk-back-link")
+          .attr("href") shouldBe routes.SubsidyController.getReportedPaymentReturningUserPage.url
+
+        document.getElementById("twoYearBack").text shouldBe expectedTaxYears.head
+        document.getElementById("previousYear").text shouldBe expectedTaxYears(1)
+        document.getElementById("currentYear").text shouldBe expectedTaxYears(2)
+
+      }
+
+      "render the page with bullet list of current tax year and previous 2 years for first time user" in {
+        val journeyWithReportedNonCustomSubsidyFirstTimeUser = subsidyJourney
+          .setReportedPaymentReturningUser(false)
+
+        inSequence {
+          mockAuthWithEnrolmentAndValidEmail(eori1)
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          mockGetOrCreate[SubsidyJourney](eori1)(Right(journeyWithReportedNonCustomSubsidyFirstTimeUser))
+        }
+
+        val result = performAction()
+        val document: Document = Jsoup.parse(contentAsString(result))
+        val listElement = document.selectFirst("ul.govuk-list.govuk-list--bullet")
+        val expectedTaxYears = List(
+          "6 April 2020 to 5 April 2021",
+          "6 April 2021 to 5 April 2022",
+          "6 April 2022 to 5 April 2023"
+        )
+
+        status(result) shouldBe OK
+        document
+          .select(".govuk-back-link")
+          .attr("href") shouldBe routes.SubsidyController.getReportPaymentFirstTimeUser.url
+
+        document.getElementById("twoYearBack").text shouldBe expectedTaxYears.head
+        document.getElementById("previousYear").text shouldBe expectedTaxYears(1)
+        document.getElementById("currentYear").text shouldBe expectedTaxYears(2)
+
+      }
+
     }
 
     "handling request to get claim amount" must {
