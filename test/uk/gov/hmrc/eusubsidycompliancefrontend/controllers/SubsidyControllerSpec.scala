@@ -505,10 +505,10 @@ class SubsidyControllerSpec
       }
     }
 
-    "handling get to reported no custom subsidy page" must {
+    "handling get to reported all non custom subsidy page" must {
       def performAction(): Future[Result] = controller.getReportedNoCustomSubsidyPage(FakeRequest())
 
-      "render the page with updated form and correct URLs" in {
+      "render the page with bullet list of current tax year and previous 2 years for returning user" in {
         val journeyWithReportedNonCustomSubsidyReturningUser = subsidyJourney
           .setReportedPaymentReturningUser(true)
 
@@ -540,7 +540,7 @@ class SubsidyControllerSpec
 
       }
 
-      "render the page with different URL" in {
+      "render the page with bullet list of current tax year and previous 2 years for first time user" in {
         val journeyWithReportedNonCustomSubsidyFirstTimeUser = subsidyJourney
           .setReportedPaymentReturningUser(false)
 
