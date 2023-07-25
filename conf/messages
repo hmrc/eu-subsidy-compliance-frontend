@@ -136,13 +136,13 @@ phone.regex.error = Enter a valid phone number
 
 sector.label.0=Other
 sector.label.1=Road freight transport for hire or reward
-sector.label.2=Fishery and aquaculture products
-sector.label.3=Primary production of agricultural products
+sector.label.2=Primary production of agricultural products
+sector.label.3=Fishery and aquaculture products
 
 sector.hint.0=The cap for all other sectors is €200,000
 sector.hint.1=This sector includes couriers and hauliers who get paid by someone to transport their goods by road. The cap for this sector is €100,000
-sector.hint.2=If any part of your business is involved in the production, processing or marketing of fishery and aquaculture products. A ‘fishery product’ means aquatic organisms resulting from any fishing activity or products derived from them. The cap for this sector is €30,000
-sector.hint.3=An ‘agricultural product’ can be products such as: live animals, meat and edible meat offal, dairy produce, birds’ eggs, natural honey. The cap for this sector is €20,000
+sector.hint.2=An ‘agricultural product’ can be products such as: live animals, meat and edible meat offal, dairy produce, birds’ eggs, natural honey. The cap for this sector is €20,000
+sector.hint.3=If any part of your business is involved in the production, processing or marketing of fishery and aquaculture products. A ‘fishery product’ means aquatic organisms resulting from any fishing activity or products derived from them. The cap for this sector is €30,000
 
 addBusinessIntent.title = Are there other businesses in your undertaking?
 addBusinessIntent.p1 = You need tell us about other businesses in your undertaking that receive payments for customs subsidies or non-customs subsidies. These payments are referred to as ‘de minimis aid’.
