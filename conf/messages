@@ -145,7 +145,7 @@ sector.hint.2=An ‘agricultural product’ can be products such as: live animal
 sector.hint.3=If any part of your business is involved in the production, processing or marketing of fishery and aquaculture products. A ‘fishery product’ means aquatic organisms resulting from any fishing activity or products derived from them. The cap for this sector is €30,000
 
 addBusinessIntent.title = Are there other businesses in your undertaking?
-addBusinessIntent.p1 = You need tell us about other businesses in your undertaking that receive payments for customs subsidies or non-customs subsidies. These payments are referred to as ‘de minimis aid’.
+addBusinessIntent.p1 = You need to tell us about other businesses in your undertaking that receive payments for customs subsidies or non-customs subsidies. These payments are referred to as ‘de minimis aid’.
 addBusinessIntent.hint=Are there other businesses in your undertaking
 addBusinessIntent.error.required=Select yes if you need to add a business to your undertaking?
 
@@ -179,9 +179,9 @@ undertaking.cya.p = By sending these details you are confirming that, to the bes
 addBusiness.title = Businesses in your undertaking
 addBusiness.empty.p1 = Other than the undertaking administrator, there are currently no other businesses in your undertaking.
 addBusiness.p2 = Each business will be notified by email that they have been added to this undertaking, if the business provided an email address.
-addBusiness.legend = Do you want to add another business?
+addBusiness.legend = Do you need to add another business?
 addBusiness.businesses-added.legend = Do you need to add another business?
-addBusiness.hint = You only need to add businesses that have received customs subsidies (Customs Duty waivers) or non-customs subsidies
+addBusiness.hint = You only need to add businesses that have received customs subsidies (Customs Duty waivers) or non-customs subsidies.
 addBusiness.error.required = Select yes if you need to add another business
 addBusiness.change-remove.snippet = business with EORI
 
@@ -345,7 +345,7 @@ add-claim-date.error.month-missing = The date you were awarded the payment must 
 add-claim-date.error.month-and-year-missing = The date you were awarded the payment must include a month and year
 add-claim-date.error.year-missing = The date you were awarded the payment must include a year
 add-claim-date.error.incorrect-format = Date must be a real date
-add-claim-date.error.outside-allowed-tax-year-range = Date must be {0}, or later.
+add-claim-date.error.outside-allowed-tax-year-range = Date must be {0}, or later
 add-claim-date.error.in-future = Date you were awarded the payment must be in the past
 
 add-claim-public-authority.title = Which public authority granted the payment?
@@ -399,7 +399,7 @@ subsidy.remove.yesno.legend = Are you sure you want to remove this payment?
 subsidy.remove.error.required = Select yes if you want to remove this payment
 
 #Amend Undertaking
-undertaking.amendUndertaking.title = Undertaking Details
+undertaking.amendUndertaking.title = Undertaking details
 undertaking.amendUndertaking.summary-list.name.key = Name of undertaking
 undertaking.amendUndertaking.summary-list.sector.key = Industry sector
 undertaking.amendUndertaking.summary-list.telephone.key = Telephone number
@@ -426,8 +426,8 @@ noClaimNotification.never-submitted.title = Tell us your undertaking has not rec
 noClaimNotification.never-submitted.p1 = If you have not received any payments in this tax year or the two tax years before, you must report this at least once every 90 days.
 noClaimNotification.never-submitted.label = This undertaking has not received any non-customs subsidy payments since {0}.
 
-noClaimNotification.has-submitted.title = Tell us your undertaking doesn’t have any payments to report
-noClaimNotification.has-submitted.p1 = You last reported a non-customs subsidy payment on {0}.
+noClaimNotification.has-submitted.title = Tell us your undertaking does not have any payments to report
+noClaimNotification.has-submitted.p1 = You last reported a non-customs subsidy payment on {0}.
 noClaimNotification.has-submitted.p2 = If you don’t have any payments to report since then, you must tell us every 90 days.
 noClaimNotification.has-submitted.label = This undertaking doesn’t currently have any non-customs subsidy payments to report
 
