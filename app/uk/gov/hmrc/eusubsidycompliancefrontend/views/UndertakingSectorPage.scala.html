@@ -31,6 +31,45 @@
 @(form: Form[_], previous: Journey.Uri, undertakingName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"undertakingSector"}
+
+@radioOptions = @{
+    Seq(
+        RadioItem(
+          content = Text(messages("sector.label.2")),
+          hint = Some(Hint(
+            content = Text(messages("sector.hint.2"))
+          )),
+          value = Some(Sector.agriculture.toString),
+          checked = form.data.get(fieldName).fold(false)(x => x == Sector.agriculture.toString)
+        ),
+        RadioItem(
+          content = Text(messages("sector.label.3")),
+          hint = Some(Hint(
+            content = Text(messages("sector.hint.3"))
+          )),
+          value = Some(Sector.aquaculture.toString),
+          checked = form.data.get(fieldName).fold(false)(x => x == Sector.aquaculture.toString)
+        ),
+        RadioItem(
+          content = Text(messages("sector.label.1")),
+          hint = Some(Hint(
+            content = Text(messages("sector.hint.1"))
+          )),
+          value = Some(Sector.transport.toString),
+          checked = form.data.get(fieldName).fold(false)(x => x == Sector.transport.toString)
+        ),
+        RadioItem(
+          content = Text(messages("sector.label.0")),
+          hint = Some(Hint(
+            content = Text(messages("sector.hint.0"))
+          )),
+          value = Some(Sector.other.toString),
+          checked = form.data.get(fieldName).fold(false)(x => x == Sector.other.toString)
+        )
+    )
+}
+
+
 @layout(
   pageTitle = Some(messages("undertakingSector.title")),
   backLinkEnabled = true,
@@ -63,16 +102,7 @@
       )),
       idPrefix = Some(fieldName),
       name = fieldName,
-      items = Sector.values.toList.reverse.map(item => {
-        RadioItem(
-          content = Text(messages("sector.label." + item)),
-          hint = Some(Hint(
-            content = Text(messages("sector.hint." + item))
-          )),
-          value = Some(item.toString),
-          checked = form.data.get(fieldName).fold(false)(x => x == item.toString)
-        )
-      })
+      items = radioOptions)
     ))
 
     @button("continue.button")

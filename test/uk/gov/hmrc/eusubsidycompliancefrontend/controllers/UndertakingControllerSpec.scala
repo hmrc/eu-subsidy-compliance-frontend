@@ -353,10 +353,10 @@ class UndertakingControllerSpec
       "display the page" when {
 
         val allRadioTexts: List[String] = List(
-          s"${messageFromMessageKey("sector.label.3")}" +
-            s" ${messageFromMessageKey("sector.hint.3")}",
           s"${messageFromMessageKey("sector.label.2")}" +
             s" ${messageFromMessageKey("sector.hint.2")}",
+          s"${messageFromMessageKey("sector.label.3")}" +
+            s" ${messageFromMessageKey("sector.hint.3")}",
           s"${messageFromMessageKey("sector.label.1")}" +
             s" ${messageFromMessageKey("sector.hint.1")}",
           messageFromMessageKey("sector.label.0") +
