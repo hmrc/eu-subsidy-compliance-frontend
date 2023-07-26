@@ -48,7 +48,7 @@ object EmailFormProvider {
 
   val EmailAddressFieldMapping: Mapping[String] =
     nonEmptyText(maxLength = MaximumEmailLength)
-      .verifying(Constraints.emailAddress)
+      .verifying(Errors.InvalidFormat, EmailAddressValidation.isValid(_))
 
   object Fields {
     val Email = "email"

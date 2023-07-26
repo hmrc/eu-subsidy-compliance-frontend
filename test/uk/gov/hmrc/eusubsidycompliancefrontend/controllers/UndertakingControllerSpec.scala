@@ -622,6 +622,7 @@ class UndertakingControllerSpec
             messageFromMessageKey("confirmEmail.title", email),
             { doc =>
               doc.getElementById("page-question").text() shouldBe messageFromMessageKey("confirmEmail.title", email)
+              doc.getElementById("page-question").hasClass("break-word") shouldBe true
               doc.select(".govuk-back-link").attr("href") shouldBe previousCall
 
               val form = doc.select("form")
@@ -708,6 +709,52 @@ class UndertakingControllerSpec
                 "email" -> "joe bloggs"
               )
             )
+          )
+        }
+
+      }
+
+      "return bad request and show error" when {
+
+        "invalid email format - no domain" in {
+          val email = "foo@example.com"
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+            mockGetEmailVerification()
+          }
+          checkFormErrorIsDisplayed(
+            result = performAction("using-stored-email" -> "false", "email" -> "some@thing"),
+            expectedTitle = messageFromMessageKey("confirmEmail.title", email),
+            formError = messageFromMessageKey("email.error.email")
+          )
+        }
+
+        "invalid email format - has spaces" in {
+          val email = "foo@example.com"
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+            mockGetEmailVerification()
+          }
+          checkFormErrorIsDisplayed(
+            result = performAction("using-stored-email" -> "false", "email" -> "some @ thing.com"),
+            expectedTitle = messageFromMessageKey("confirmEmail.title", email),
+            formError = messageFromMessageKey("email.error.email")
+          )
+        }
+
+        "invalid email format - no @" in {
+          val email = "foo@example.com"
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+            mockGetEmailVerification()
+          }
+          checkFormErrorIsDisplayed(
+            result = performAction("using-stored-email" -> "false", "email" -> "something.com"),
+            expectedTitle = messageFromMessageKey("confirmEmail.title", email),
+            formError = messageFromMessageKey("email.error.email")
           )
         }
 
