@@ -143,6 +143,39 @@ class BusinessEntityControllerSpec
 
       "display the page" when {
 
+        //You only need to add businesses that have received customs subsidies (Customs Duty waivers) or non-customs subsidies.
+        "addBusiness page should display Business Hint" in new AddBusinessPageSetup(
+          theUndertaking = undertaking.copy(undertakingBusinessEntity = List(businessEntity1)),
+          theBusinessEntityJourney = businessEntityJourney.copy(addBusiness = AddBusinessFormPage())
+        ) {
+
+          val result = performAction
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          // Assertion to check the the hint
+          val hintElement = document.getElementById("addBusiness-hint")
+          hintElement.text() shouldBe messageFromMessageKey("addBusiness.hint")
+        }
+
+        //replacing want with need in the "Do you want to add another business?"
+        "addBusiness has legend tag message" in new AddBusinessPageSetup(
+          theUndertaking = undertaking.copy(undertakingBusinessEntity = List(businessEntity1)),
+          theBusinessEntityJourney = businessEntityJourney.copy(addBusiness = AddBusinessFormPage())
+        ) {
+
+          val result = performAction
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          // Find the fieldset element that contains the legend
+          val fieldsetElement = document.getElementById("addBusiness-hint").parent()
+
+          // Assertion to check the updated legend text
+          val legendText: String = fieldsetElement.select("legend.govuk-fieldset__legend--m").text()
+          legendText shouldBe messageFromMessageKey("addBusiness.legend")
+        }
+
         "user has not already answered the question - no added business entities added" in new AddBusinessPageSetup(
           theUndertaking = undertaking.copy(undertakingBusinessEntity = List(businessEntity1)),
           theBusinessEntityJourney = businessEntityJourney.copy(addBusiness = AddBusinessFormPage())

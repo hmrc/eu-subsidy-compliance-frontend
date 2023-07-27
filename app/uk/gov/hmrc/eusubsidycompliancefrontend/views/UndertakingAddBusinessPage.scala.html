@@ -51,7 +51,7 @@
     }
 
     @H1(messages("addBusinessIntent.title"), Some("govuk-heading-xl govuk-!-margin-bottom-3"))
-    @P(messages("addBusinessIntent.p1"))
+    @P(messages("addBusinessIntent.p1"), id = Some("intentId"))
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
