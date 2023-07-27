@@ -41,7 +41,7 @@
 @neverSubmittedTitle = @{messages(s"$key.never-submitted.title", neverSubmittedTaxYearDate)}
 
 @hasSubmittedHtml = {
-    @P(messages("noClaimNotification.has-submitted.p1", lastSubmitted))
+    @P(messages("noClaimNotification.has-submitted.p1", lastSubmitted), id = Some("you-last-reported"))
     @P(messages("noClaimNotification.has-submitted.p2"))
 }
 
