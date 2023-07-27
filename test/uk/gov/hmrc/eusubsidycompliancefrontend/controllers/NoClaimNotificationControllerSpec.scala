@@ -108,6 +108,10 @@ class NoClaimNotificationControllerSpec
             val selectedOptions = doc.select(".govuk-checkboxes__input[checked]")
             selectedOptions.isEmpty shouldBe true
 
+            doc
+              .getElementById("you-last-reported")
+              .text shouldBe s"You last reported a non-customs subsidy payment on ${fixedDate.toDisplayFormat}."
+
             val button = doc.select("form")
             button.attr("action") shouldBe routes.NoClaimNotificationController.postNoClaimNotification.url
           }
