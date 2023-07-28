@@ -256,7 +256,7 @@ class SubsidyControllerSpec
 
           status(result) shouldBe BAD_REQUEST
           val findElement = document.getElementById("claim-date-error").text()
-          findElement.replace("Error: ", "") shouldBe messageFromMessageKey("add-claim-date.error.incorrect-format")
+          findElement shouldBe "Error: " + messageFromMessageKey("add-claim-date.error.incorrect-format")
 
         }
 
