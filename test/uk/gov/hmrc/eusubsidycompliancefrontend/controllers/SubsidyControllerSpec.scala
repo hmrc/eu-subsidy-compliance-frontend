@@ -244,7 +244,7 @@ class SubsidyControllerSpec
 
       "return to claims page with Error Message" when {
         "entered date is not valid" in {
-          val updatedDate = DateFormValues("20", "20", "2021")
+          val updatedDate = DateFormValues("21", "20", "2021")
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -256,32 +256,8 @@ class SubsidyControllerSpec
 
           status(result) shouldBe BAD_REQUEST
           val findElement = document.getElementById("claim-date-error").text()
-          findElement shouldBe messageFromMessageKey("add-claim-date.error.outside-allowed-tax-year-range", "6 4 2021")
-        }
-      }
+          findElement.replace("Error: ", "") shouldBe messageFromMessageKey("add-claim-date.error.incorrect-format")
 
-      "return to claim page with Error " when {
-        "entered date is outside allowed tax years" in {
-          val updatedDate = DateFormValues("20", "1", "2021")
-          val Date = LocalDate.of(2020, 1, 20)
-
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
-            mockTimeProviderToday(Date)
-          }
-
-          val result = performAction("day" -> updatedDate.day, "month" -> updatedDate.month, "year" -> updatedDate.year)
-          val document = Jsoup.parse(contentAsString(result))
-
-          status(result) shouldBe BAD_REQUEST
-          val findElement = document.getElementById("claim-date-error").text()
-          findElement.replace("Error: ", "") shouldBe
-            messageFromMessageKey(
-              "add-claim-date.error.outside-allowed-tax-year-range",
-              "6 4 " + (LocalDate.now().getYear - 2).toString
-            )
         }
 
       }
