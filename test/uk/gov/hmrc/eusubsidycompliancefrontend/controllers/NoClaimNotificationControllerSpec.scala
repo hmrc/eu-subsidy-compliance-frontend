@@ -64,7 +64,7 @@ class NoClaimNotificationControllerSpec
 
       val startDate = LocalDate.of(2018, 4, 6)
 
-      "noClaimNotification page should have title" in {
+      "noClaimNotification page should have correct h1 title content" in {
         inSequence {
           mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
