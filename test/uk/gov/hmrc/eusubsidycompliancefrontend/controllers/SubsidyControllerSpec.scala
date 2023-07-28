@@ -242,6 +242,26 @@ class SubsidyControllerSpec
         FakeRequest(POST, routes.SubsidyController.postClaimDate.url).withFormUrlEncodedBody(data: _*)
       )
 
+      "return to claims page with Error Message" when {
+        "entered date is not valid" in {
+          val updatedDate = DateFormValues("21", "20", "2021")
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+            mockTimeProviderToday(fixedDate)
+          }
+          val result = performAction("day" -> updatedDate.day, "month" -> updatedDate.month, "year" -> updatedDate.year)
+          val document = Jsoup.parse(contentAsString(result))
+
+          status(result) shouldBe BAD_REQUEST
+          val findElement = document.getElementById("claim-date-error").text()
+          findElement shouldBe "Error: " + messageFromMessageKey("add-claim-date.error.incorrect-format")
+
+        }
+
+      }
+
       "redirect to the next page" when {
         "entered date is valid" in {
           val updatedDate = DateFormValues("1", "2", LocalDate.now().getYear.toString)

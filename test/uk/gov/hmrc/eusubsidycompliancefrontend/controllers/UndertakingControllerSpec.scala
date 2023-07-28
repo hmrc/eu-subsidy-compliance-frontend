@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import org.jsoup.Jsoup
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -822,6 +823,24 @@ class UndertakingControllerSpec
       }
 
       "display the page" when {
+
+        "addBusiness page has an intent" in {
+          val undertakingJourney = UndertakingJourney(
+            about = AboutUndertakingFormPage("TestUndertaking1".some),
+            sector = UndertakingSectorFormPage(Sector(2).some),
+            verifiedEmail = UndertakingConfirmEmailFormPage("some@email.com".some)
+          )
+          val previousCall = routes.UndertakingController.getConfirmEmail.url
+
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
+          }
+          val document = Jsoup.parse(contentAsString(performAction()))
+          document.select(".govuk-back-link").attr("href") shouldBe previousCall
+          val paraElement = document.getElementById("intentId").text()
+          paraElement shouldBe messageFromMessageKey("addBusinessIntent.p1")
+        }
 
         "when question has not been answered" in {
           val undertakingJourney = UndertakingJourney(

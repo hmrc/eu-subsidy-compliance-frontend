@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import org.jsoup.Jsoup
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -62,6 +63,22 @@ class NoClaimNotificationControllerSpec
       behave like authBehaviour(() => performAction)
 
       val startDate = LocalDate.of(2018, 4, 6)
+
+      "noClaimNotification page should have correct h1 title content" in {
+        inSequence {
+          mockAuthWithEnrolmentAndValidEmail()
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          mockTimeProviderToday(fixedDate)
+          mockRetrieveSubsidiesForDateRange(undertakingRef, (startDate, fixedDate))(undertakingSubsidies.toFuture)
+          mockTimeProviderToday(fixedDate)
+        }
+
+        val result = performAction
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+        val title = document.getElementById("noClaimNotifId").text()
+        title shouldBe messageFromMessageKey("noClaimNotification.has-submitted.title")
+      }
 
       "display the page correctly if no previous claims have been submitted" in {
         inSequence {
