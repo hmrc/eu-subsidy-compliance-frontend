@@ -474,12 +474,13 @@ dashboard.sector.name.2 = Aquaculture
 dashboard.sector.name.3 = Agriculture
 dashboard.allowance.remaining.heading = Allowance remaining
 
-become-admin.title = Do you want to become the administrator for this undertaking?
+become-admin.title = Change of undertaking administrator
 become-admin.p1 = As the administrator for this undertaking you will be responsible for reporting all non-customs subsidy payments received by any member of the undertaking.
 become-admin.p2 = You must do this every 90 days.
 becomeAdmin.error.required = Select yes if you want to become administrator for this undertaking
 
 become-admin-responsibilities.title = Become the administrator for this undertaking
+become-admin.legend = Do you want to become the administrator for this undertaking?
 become-admin-responsibilities.p1 = By taking on the role of undertaking administrator it is your role to:
 become-admin-responsibilities.li1 = report all non-customs subsidy payments received by any member of the undertaking. You must do this every 90 days
 become-admin-responsibilities.li2 = report if the undertaking has not received any non-customs subsidy payments. You must do this every 90 days
