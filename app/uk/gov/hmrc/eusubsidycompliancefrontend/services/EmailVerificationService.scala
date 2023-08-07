@@ -22,6 +22,7 @@ import play.api.mvc.Results.Redirect
 import play.api.mvc.{AnyContent, Call, Result, WrappedRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -31,6 +32,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.RequestSyntax.RequestOps
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import play.api.i18n.Messages
 
 import java.util.UUID
 import javax.inject.Singleton
@@ -64,7 +66,8 @@ class EmailVerificationService @Inject() (
   )(implicit
     request: AuthenticatedEnrolledRequest[AnyContent],
     ec: ExecutionContext,
-    hc: HeaderCarrier
+    hc: HeaderCarrier,
+    messages: Messages
   ): Future[Result] = for {
     verificationId <- addVerificationRequest(request.eoriNumber, email)
     verificationResponse <- verifyEmail(nextPageUrl(verificationId), previousPage.url)(request.authorityId, email)
@@ -78,7 +81,8 @@ class EmailVerificationService @Inject() (
   )(credId: String, email: String)(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext,
-    request: AuthenticatedEnrolledRequest[AnyContent]
+    request: AuthenticatedEnrolledRequest[AnyContent],
+    messages: Messages
   ): Future[Option[EmailVerificationResponse]] =
     emailVerificationConnector
       .verifyEmail(
@@ -87,16 +91,16 @@ class EmailVerificationService @Inject() (
           continueUrl = request.toRedirectTarget(verifyEmailUrl),
           origin = "EU Subsidy Compliance",
           deskproServiceName = None,
-          accessibilityStatementUrl = "",
+          accessibilityStatementUrl = servicesConfig.getString("accessibility-statement.service-path"),
           email = Some(
             Email(
               address = email,
-              enterUrl = ""
+              enterUrl = request.toRedirectTarget(routes.UndertakingController.getConfirmEmail.url)
             )
           ),
           lang = None,
           backUrl = Some(request.toRedirectTarget(confirmEmailUrl)),
-          pageTitle = None
+          pageTitle = Some(messages("service.name"))
         )
       )
       .map {
