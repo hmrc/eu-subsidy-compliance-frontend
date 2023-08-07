@@ -3,6 +3,9 @@
 We use mongodb for things like journey state. We are referring to the email mongodb as a cache, but it is not really 
 a cache as it can become divergent by design.
 
+If we do switch to just using CDS we will possibly have to upsync our current changed emails with them, this may 
+impact other services as they have possibly set a custom value differing to our value. Something to think about.
+
 ## Where do we initially get the emails from in an undertaking?
 
 ![create-undertaking-workflow.png](create-undertaking-workflow.png)
