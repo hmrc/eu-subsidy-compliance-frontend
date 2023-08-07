@@ -94,7 +94,7 @@ assumption tied to it.
 
 All email addresses are retrieved by EORI. We give the option to email using a manually entered EORIs such as when 
 removing a business entity. We send to the EORI from the login session as well. We may get storage misses from the 
-manually entered EORI as they may not have created an undertaking via our service, but we should not get them from 
+manually entered EORI as they may not have created an undertaking via our service, but we should not get storage misses from 
 the primary session-based EORI. 
 
 ## CDS response for unverified email?
