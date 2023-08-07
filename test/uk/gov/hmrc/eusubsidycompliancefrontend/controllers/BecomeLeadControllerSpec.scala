@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
+import org.jsoup.Jsoup
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.mvc.Results.Redirect
@@ -104,6 +105,35 @@ class BecomeLeadControllerSpec
       }
 
       "display the page" when {
+
+        "When Change of undertaking administrator title is available in" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori4)
+            mockGetOrCreate[BecomeLeadJourney](eori4)(Right(BecomeLeadJourney()))
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+          }
+          val result = performAction()
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          val findTitle = document.getElementById("titleId").text()
+          findTitle shouldBe "Change of undertaking administrator"
+        }
+
+        "When legend is displayed in fieldset component" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori4)
+            mockGetOrCreate[BecomeLeadJourney](eori4)(Right(BecomeLeadJourney()))
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+          }
+          val result = performAction()
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          val legendText: String =
+            document.getElementsByClass("govuk-fieldset__legend govuk-fieldset__legend--m").text()
+          legendText shouldBe "Do you want to become the administrator for this undertaking?"
+        }
 
         "Become lead journey is blank " in {
           inSequence {

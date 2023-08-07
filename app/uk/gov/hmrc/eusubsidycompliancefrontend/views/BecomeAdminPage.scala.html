@@ -49,17 +49,20 @@
       ))
     }
 
-    @H1(messages("become-admin.title"), Some("govuk-heading-xl govuk-!-margin-bottom-5"))
+    @H1(messages("become-admin.title"), Some("govuk-heading-xl govuk-!-margin-bottom-5"),id = Some("titleId"))
     @P(messages("become-admin.p1"), None, Some("become-admin-desc-1"))
     @P(messages("become-admin.p2"), None, Some("become-admin-desc-2"))
 
     @govukRadios(Radios(
-        classes = "govuk-radios--inline",
         errorMessage = if(form.hasErrors) {Some(ErrorMessage(
             content = Text(messages("becomeAdmin.error.required"))
         ))} else None,
         fieldset = Some(Fieldset(
-          describedBy = Some("become-admin-desc-1 become-admin-desc-2")
+            legend = Some(Legend(
+            content = Text(messages("become-admin.legend")),
+            classes = "govuk-fieldset__legend--m",
+            isPageHeading = false
+            ))
         )),
         idPrefix = Some("becomeAdmin"),
         name = "becomeAdmin",
