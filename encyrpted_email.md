@@ -98,8 +98,8 @@ manually entered EORI as they may not have created an undertaking via our servic
 the primary session-based EORI. 
 
 ## CDS response for unverified email?
-CDS has no concept of verified. The CDS storage does not have that flag. We are assuming its value is verified. If they do 
-not have it they defer to Sub09 to fill their storage. If it is not attainable, at the moment we fail in the undertaking journey.
+CDS has no real concept of verified, the CDS storage does not have that flag. We are assuming its value is verified. If they do 
+not have it, they defer to Sub09 to fill their storage. If it is not attainable, we fail in the undertaking journey.
 
 ## What would the design using CDS only look like
 
