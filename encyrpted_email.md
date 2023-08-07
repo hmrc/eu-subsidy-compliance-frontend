@@ -16,7 +16,7 @@ We always add the email to our MongoDb email store whether it exists or not so s
 ## CDS workflow
 ![cds.png](cds.png)
 
-CDS defers to Sub09 for initial cache population, but after that the data stored potentially branches off.
+CDS defers to Sub09 for initial cache population, but after that the data stored potentially branches off from updates from services.
 
 ## Sending email 
 ![sending-email.png](sending-email.png)
@@ -25,19 +25,19 @@ If we do not have it in our cache, we defer to CDS. We do not add that value to 
 
 ## Do we need to store the email in our cache?
 
-Unfortunately, if we want an email to be verified, then yes. We are assuming that CDS/Sub09 has emails that have been
+Unfortunately, if we want to guarantee the email to be verified, then yes. We are assuming that CDS/Sub09 has emails that have been
 verified but this may not be the case. The CDS update cache process does not update its original authoritative source, the
 update endpoint also may be used by services that have not done verification (trust issues?).
 
 In an ideal world, an EORI would have one email assigned to it, and we could just refer to that source. A verification
-process would manage and guard that cache. Currently, application may have its own email value set per EORI.
+process would manage and guard that storage. Currently, each application may have its own email value set per EORI.
 
 ## How long do we want to keep the entry in MongoDB?
 
-In the current design, if we lose the cached value, everything breaks as has been demonstrated last week.
-We only populate the cache in the "create undertaking" journey. On many journeys, we check for the existence 
-of a verified email in our MongoDB email cache. If we do not have a cache entry, we currently blow up with no way to
-rectify. We are changing the design to fire off the email verification process in those cases, so losing the cache entry
+In the current design, if we lose the stored value, everything breaks as has been demonstrated last week.
+We only populate the storage in the "create undertaking" journey. On many journeys, we check for the existence 
+of a verified email in our MongoDB email storage. If we do not have a storage entry, we currently blow up with no way to
+rectify. We are changing the design to fire off the email verification process in those cases, so losing the storage entry
 will no longer be catastrophic.
 
 ### With the improved self-rectifying verified email process, what would the issue/s be if we lost the cache entry? 
@@ -59,7 +59,7 @@ recommends we move it to the backend and encrypt it.
 ## question for CDS - if we get a response from CDS - is it verified? can we raise this with CDS please
 
 We could raise it, but as their endpoint is not forcefully tied to verification and relies on the consumers to verify before 
- updating, it becomes an issue of faith. Did Sub09 verify its value where CDS got its value from?
+ updating, it becomes an issue of faith. Did Sub09 verify its value where CDS got its value from? Is this good enough for us?
 
 ## If we encrypt the emails - impact to the performance?
 
@@ -79,7 +79,7 @@ smoothness before turning off.
 
 ![email-lookup-encrypted-interim.png](email-lookup-encrypted-interim.png)
 
-## can we add logs to the code to highlight how often we use our cache
+## can we add logs to the code to highlight how often we use our cache?
 
 The cache really is storage as it diverges. We should probably refrain from using the term cache as it indicates there
 is an authoritative source we can rely on. As mentioned, we cannot see logs that are not warnings/errors in production.
@@ -90,5 +90,22 @@ This is expected on a first journey. The journey populates our storage. We also 
 correct, so they can set another which fires off the verification process. The email in CDS being verified has some 
 assumption tied to it.
 
+### Storage is missed when sending an Email
 
-### 
+All email addresses are retrieved by EORI. We give the option to email using a manually entered EORIs such as when 
+removing a business entity. We send to the EORI from the login session as well. We may get storage misses from the 
+manually entered EORI as they may not have created an undertaking via our service, but we should not get them from 
+the primary session-based EORI. 
+
+## CDS response for unverified email?
+CDS has no concept of verified. The CDS storage does not have that flag. We are assuming its value is verified. If they do 
+not have it they defer to Sub09 to fill their storage. If it is not attainable, at the moment we fail in the undertaking journey.
+
+## What would the design using CDS only look like
+
+CDS does not have a pending verified state.
+
+* We would still have to have a mongo db, we would need to keep track of the email prior to the user verifying. 
+* We would update CDS and delete our entry after the user verifies. 
+
+![cds-as-central-store.png](cds-as-central-store.png)
