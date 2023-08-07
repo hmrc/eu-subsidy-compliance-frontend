@@ -27,7 +27,7 @@ Unfortunately, if we want an email to be verified, then yes. We are assuming tha
 verified but this may not be the case. The CDS update cache process does not update its original authoritative source, the
 update endpoint also may be used by services that have not done verification (trust issues?).
 
-In an ideal world, an EORI would have one email assigned to it, and we could just refer to that source. The verification
-process would manage that cache. Currently, application may have its own email value set per EORI.
+In an ideal world, an EORI would have one email assigned to it, and we could just refer to that source. A verification
+process would manage and guard that cache. Currently, application may have its own email value set per EORI.
 
 
