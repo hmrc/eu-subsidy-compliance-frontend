@@ -628,6 +628,12 @@ class UndertakingControllerSpec
               heading.text shouldBe pageTitle
               doc.select(".govuk-back-link").attr("href") shouldBe previousCall
 
+              doc
+                .getElementsByTag("legend")
+                .hasClass(
+                  "govuk-fieldset__legend govuk-fieldset__legend--xl govuk-!-display-block break-word"
+                ) shouldBe true
+
               val form = doc.select("form")
               form
                 .attr("action") shouldBe routes.UndertakingController.postConfirmEmail.url
