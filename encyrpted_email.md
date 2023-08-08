@@ -138,3 +138,10 @@ We have detached from our frontend Mongo, all CDS logic is in the backend.
 
 ![final-design-where-we-store-verified-email-in-the-backend.png](final-design-where-we-store-verified-email-in-the-backend.png)
 
+
+## Migrating data to the backend
+
+We can batch as mentioned in the diagram. If we decide to have an interim stage where we keep the old store and can repair
+on the fly we start treating the backend mongo as primary, so we no longer update via the migration tooling.
+
+![verified-email-mongo-db-migration-process.png](verified-email-mongo-db-migration-process.png)
