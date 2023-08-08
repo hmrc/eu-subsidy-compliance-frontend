@@ -11,25 +11,25 @@ impact other services as they have possibly set a custom value differing to our 
 ![create-undertaking-workflow.png](create-undertaking-workflow.png)
 
 Our mongodb is likely missing the email address. In that case, we defer to CDS to get the email in the "create undertaking" journey.
-We assume the email has been verified in the CDS cache. Though that cache could have an unverified email set as the update email
-cache endpoint on their service could be used by another service without going through a verification process.
+We assume the email has been verified in the CDS storage. Though that storage could have an unverified email set as the update email
+storage endpoint on their service could be used by another service without going through a verification process.
 
 We always add the email to our MongoDb email store whether it exists or not so self repairs.
 
 ## CDS workflow
 ![cds.png](cds.png)
 
-CDS defers to Sub09 for initial cache population, but after that the data stored potentially branches off from updates from services.
+CDS defers to Sub09 for initial storage population, but after that the data stored potentially branches off from updates from services.
 
 ## Sending email 
 ![sending-email.png](sending-email.png)
 
-If we do not have it in our cache, we defer to CDS. We do not add that value to our cache.
+If we do not have it in our stroage, we defer to CDS. We do not add that value to our storage.
 
-## Do we need to store the email in our cache?
+## Do we need to store the email in our storage?
 
 Unfortunately, if we want to guarantee the email to be verified, then yes. We are assuming that CDS/Sub09 has emails that have been
-verified but this may not be the case. The CDS update cache process does not update its original authoritative source, the
+verified but this may not be the case. The CDS update storage process does not update its original authoritative source, the
 update endpoint also may be used by services that have not done verification (trust issues?).
 
 In an ideal world, an EORI would have one email assigned to it, and we could just refer to that source. A verification
@@ -43,15 +43,15 @@ of a verified email in our MongoDB email storage. If we do not have a storage en
 rectify. We are changing the design to fire off the email verification process in those cases, so losing the storage entry
 will no longer be catastrophic.
 
-### With the improved self-rectifying verified email process, what would the issue/s be if we lost the cache entry? 
+### With the improved self-rectifying verified email process, what would the issue/s be if we lost the storage entry? 
 
 The main issue is user experience. The user would have to redo the verification. This comes down to the lack of authoritative  
 source for a verified email tied to an EORI we can self repair from. Can we design a user experience where we only keep
 it say yearly if we have the reverification mechanism?
 
-## How consistent are we in checking the cache before checking CDS
+## How consistent are we in checking the storage before checking CDS
 
-We always check our MongoDB email storage. As our storage diverges from CDS it is not a cache. As mentioned, CDS can also
+We always check our MongoDB email storage. As our storage diverges from CDS it is not a storage. As mentioned, CDS can also
 diverge.
 
 ## PII concerns? Do we need GDRP?
@@ -70,7 +70,7 @@ Not noticeably, we would have to be under very high load to notice adding such l
 
 ## What and whose support is needed for encryption?
 
-Encryption is done by the JSON serializer/deserializer which we use to create and read the cached entry. The data migration
+Encryption is done by the JSON serializer/deserializer which we use to create and read the stored entry. The data migration
 task is where the fun will happen. 
 
 ##  Are we going to test the encryption in QA before Prod? How?
@@ -82,9 +82,9 @@ smoothness before turning off.
 
 ![email-lookup-encrypted-interim.png](email-lookup-encrypted-interim.png)
 
-## can we add logs to the code to highlight how often we use our cache?
+## can we add logs to the code to highlight how often we use our storage?
 
-The cache really is storage as it diverges. We should probably refrain from using the term cache as it indicates there
+We should probably refrain from using the term cache as it indicates there
 is an authoritative source we can rely on. As mentioned, we cannot see logs that are not warnings/errors in production.
 We can log warnings where we do not hit our storage. Though in some cases, this is expected.
 
