@@ -613,6 +613,7 @@ class UndertakingControllerSpec
           val previousCall = routes.UndertakingController.getSector.url
 
           val email = "email@test.com"
+          val pageTitle = s"Is $email the right email address to receive notifications?"
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
@@ -620,10 +621,11 @@ class UndertakingControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("confirmEmail.title", email),
+            pageTitle,
             { doc =>
-              doc.getElementById("page-question").text() shouldBe messageFromMessageKey("confirmEmail.title", email)
-              doc.getElementById("page-question").hasClass("break-word") shouldBe true
+              val heading = doc.getElementsByClass("govuk-fieldset__heading")
+              heading.size shouldBe 1
+              heading.text shouldBe pageTitle
               doc.select(".govuk-back-link").attr("href") shouldBe previousCall
 
               val form = doc.select("form")

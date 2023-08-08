@@ -150,8 +150,7 @@ addBusinessIntent.hint=Are there other businesses in your undertaking
 addBusinessIntent.error.required=Select yes if you need to add a business to your undertaking?
 
 confirmEmail.no.label=Enter an email address
-confirmEmail.title=Is {0} the right email address for you to receive notifications?
-confirmEmail.p1 = This email address will be used to send you notifications from this service.
+confirmEmail.title=Is {0} the right email address to receive notifications?
 
 inputEmail.title=What is your email address?
 inputEmail.label=Enter an email address
