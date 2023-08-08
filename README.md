@@ -51,7 +51,7 @@ sbt clean coverage test it:test coverageReport
 
 ## Monitoring
 
-The following grafana and kibana dashboards are available for this service
+The following grafana and kibana dashboards are available for this service:
 * [grafana](https://grafana.tools.production.tax.service.gov.uk/d/RwwxDLSnz/eu-subsidy-compliance-frontend)
 * [kibana](https://kibana.tools.production.tax.service.gov.uk/app/kibana#/dashboard/eu-subsidy-compliance-frontend)
 
