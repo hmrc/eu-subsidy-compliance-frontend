@@ -30,7 +30,7 @@
 
 @(form: Form[_], eori: EORI, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"eoricheck"}
-@title = @{messages(s"$key.title", eori)}
+@title = @{messages(s"$key.title")}
 @layout(
     pageTitle = Some(title),
     backLinkEnabled = true,
@@ -51,16 +51,20 @@
             ))
         }
 
-        @H1(title, Some("govuk-heading-xl govuk-!-margin-bottom-5"))
+        @H1(title, Some("govuk-heading-xl govuk-!-margin-bottom-5"), id = Some("page-heading"))
         @P(messages(s"$key.p1"), None, Some("eoricheck-desc-1"))
-        @P(messages(s"$key.p2"), None, Some("eoricheck-desc-2"))
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
                 content = Text(messages(s"$key.error.required"))
             ))} else None,
             fieldset = Some(Fieldset(
-                describedBy = Some("eoricheck-desc-1 eoricheck-desc-2")
+                describedBy = Some("eoricheck-desc-1"),
+                legend = Some(Legend(
+                    content = Text(messages(s"$key.legend", eori)),
+                    classes = "govuk-fieldset__legend--m",
+                    isPageHeading = false
+                ))
             )),
             idPrefix = Some(key),
             name = key,
@@ -75,8 +79,7 @@
                     value = Some("false"),
                     checked = form.data.exists(_._2 == "false")
                 )
-            ),
-            classes = "govuk-radios--inline"
+            )
         ))
 
         @button("common.continue")

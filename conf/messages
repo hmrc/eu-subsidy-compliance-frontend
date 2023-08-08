@@ -104,9 +104,9 @@ eligibilityTerms.warning=You must report any de minimis aid payment (less Custom
 eligibilityTerms.p3=It is the responsibility of the undertaking administrator to add any other businesses in your organisation to this single undertaking. The administrator must ensure all account details are correct and up to date.
 eligibilityTerms.p4=If you do not agree to these terms and conditions, you should <a href="{0}" class="govuk-link">sign out</a> now.
 
-eoricheck.title = Is the EORI number you want to register {0}?
-eoricheck.p1 = This is the EORI number registered to your Government Gateway ID.
-eoricheck.p2 = This number is usually the same as your XI EORI number.
+eoricheck.title = Registering an EORI number
+eoricheck.p1 = This is the EORI number that is registered to your Government Gateway ID. This number is usually the same as your XI EORI number, XI234513513536.
+eoricheck.legend = Is the EORI number you want to register {0}?
 eoricheck.error.required = Select yes if this is the EORI number you want to register
 
 incorrectEori.title = Sign out
