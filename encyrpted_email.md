@@ -112,6 +112,8 @@ CDS does not have a pending verified state.
 * We would still have to have a mongo db, we would need to keep track of the email prior to the user verifying. 
 * We would update CDS and delete our entry after the user verifies. 
 
+A more ideal CDS design would cater for this and also allow application namespacing for email addresses if we desired.
+
 ![cds-as-central-store.png](cds-as-central-store.png)
 
 ## What could the design look like with email encrypted in the backend with an interim recovery mechanism?
@@ -129,4 +131,7 @@ as our system diverges from CDS.
 
 ![Interim-design-where-we-move-verified-emails-to-the-backend-encrypted.png](Interim-design-where-we-move-verified-emails-to-the-backend-encrypted.png)
 
+## Final design with all verified email logic in the backend
+We have detached from our frontend Mongo, all CDS logic is in the backend.
 
+![final-design-where-we-store-verified-email-in-the-backend.png](final-design-where-we-store-verified-email-in-the-backend.png)
