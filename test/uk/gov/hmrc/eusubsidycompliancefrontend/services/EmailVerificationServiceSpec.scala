@@ -21,6 +21,8 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
+import play.api.i18n.Lang.defaultLang
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call}
 import play.api.test.Helpers._
 import play.api.test.{DefaultAwaitTimeout, FakeRequest}
@@ -80,6 +82,10 @@ class EmailVerificationServiceSpec
     .baseUrl(_: String))
     .expects(*)
     .returning("")
+  def mockServiceConfigGetString() = (mockServicesConfig
+    .getString(_: String))
+    .expects(*)
+    .returning("")
 
   private val unverifiedVerificationRequest = VerifiedEmail("unverified@something.com", "someId", verified = false)
   private val verifiedVerificationRequest = VerifiedEmail("verified@something.com", "someId", verified = true)
@@ -133,6 +139,7 @@ class EmailVerificationServiceSpec
 
     "makeVerificationRequest is called" must {
 
+      implicit val messages: Messages = stubMessagesApi().preferred(Seq(defaultLang))
       implicit val request: AuthenticatedEnrolledRequest[AnyContent] = AuthenticatedEnrolledRequest(
         authorityId = "SomeAuthorityId",
         groupId = "SomeGroupId",
@@ -142,6 +149,7 @@ class EmailVerificationServiceSpec
 
       "redirect to the next page if the email verification succeeded" in {
         inSequence {
+          mockServiceConfigGetString()
           mockVerifyEmail()
           mockServiceConfig()
         }
@@ -158,6 +166,7 @@ class EmailVerificationServiceSpec
 
       "redirect to the previous page if the email verification failed" in {
         inSequence {
+          mockServiceConfigGetString()
           mockVerifyEmail(status = BAD_REQUEST)
         }
 

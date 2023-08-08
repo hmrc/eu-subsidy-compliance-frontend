@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import org.scalamock.scalatest.MockFactory
+import play.api.i18n.Messages
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AuthSupport
@@ -57,9 +58,10 @@ trait EmailVerificationServiceSupport { this: MockFactory with AuthSupport =>
         )(
           _: AuthenticatedEnrolledRequest[AnyContent],
           _: ExecutionContext,
-          _: HeaderCarrier
+          _: HeaderCarrier,
+          _: Messages
         )
       )
-      .expects(*, *, *, *, *, *)
+      .expects(*, *, *, *, *, *, *)
       .returning(result)
 }
