@@ -101,8 +101,9 @@ manually entered EORI as they may not have created an undertaking via our servic
 the primary session-based EORI. 
 
 ## CDS response for unverified email?
-CDS has no real concept of verified, the CDS storage does not have that flag. We are assuming its value is verified. If they do 
-not have it, they defer to Sub09 to fill their storage. If it is not attainable, we fail in the undertaking journey.
+The CDS system has no real concept of verified, the CDS storage does not have that flag. We are assuming its value is 
+verified. If they do not have it, they defer to Sub09 to fill their storage. If it is not attainable, we fail in 
+the undertaking journey.
 
 ## What would the design using CDS only look like
 
@@ -112,3 +113,20 @@ CDS does not have a pending verified state.
 * We would update CDS and delete our entry after the user verifies. 
 
 ![cds-as-central-store.png](cds-as-central-store.png)
+
+## What could the design look like with email encrypted in the backend with an interim recovery mechanism?
+
+We are going to have to do data migration within the app. The JSON encoders within the application handle the encoding,
+so we will need to transfer data across from the frontend to the backend. In production, there is a level of blindness
+and second chances do not come easily (probably massive understatement).
+
+This is a variation of the strangler application pattern, priority is given to the backend storage, if it is not found
+there we defer to the frontend storage, if it is found there we log a warning as we had a migration issue and transfer 
+it to the backend. 
+
+We could move the CDS calls at this point, but we need to be careful as CDS may have an out-of-date email for the EORI
+as our system diverges from CDS.
+
+![Interim-design-where-we-move-verified-emails-to-the-backend-encrypted.png](Interim-design-where-we-move-verified-emails-to-the-backend-encrypted.png)
+
+
