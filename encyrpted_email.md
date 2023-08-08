@@ -17,6 +17,8 @@ storage endpoint on their service could be used by another service without going
 We always add the email to our MongoDb email store whether it exists or not so self repairs.
 
 ## CDS workflow
+Once the CDS storage is updated, it diverges, hence it is not a cache.
+
 ![cds.png](cds.png)
 
 CDS defers to Sub09 for initial storage population, but after that the data stored potentially branches off from updates from services.
