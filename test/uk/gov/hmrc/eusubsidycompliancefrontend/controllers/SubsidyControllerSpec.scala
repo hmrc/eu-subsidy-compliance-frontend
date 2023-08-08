@@ -200,6 +200,37 @@ class SubsidyControllerSpec
 
       "display the page" when {
 
+        "Undertaking add claim date hint is available in" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
+            mockTimeProviderToday(fixedDate)
+          }
+          val result = performAction
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          val findTitle = document.getElementById("claim-date-hint").text()
+          val year = LocalDate.now().getYear - 1
+          findTitle shouldBe s"For example, 15 3 ${year}"
+        }
+
+        "legend is displayed as H1 in fieldset component" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
+            mockTimeProviderToday(fixedDate)
+          }
+          val result = performAction
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          val legendText: String = document.getElementsByClass("govuk-fieldset__heading").text()
+          legendText shouldBe "What date were you awarded the payment?"
+        }
+
         "a valid request is made" in {
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
@@ -211,8 +242,7 @@ class SubsidyControllerSpec
             performAction,
             messageFromMessageKey("add-claim-date.title"),
             { doc =>
-              doc.getElementById("page-question").text() shouldBe messageFromMessageKey("add-claim-date.title")
-              val legend = doc.getElementsByClass("govuk-fieldset__legend")
+              val legend = doc.getElementsByClass("govuk-fieldset__heading")
               legend.size() shouldBe 1
               legend.first().text() shouldBe messageFromMessageKey("add-claim-date.p1")
 

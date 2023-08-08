@@ -80,9 +80,9 @@
     }
 }
 
+@defining(LocalDate.now().getYear - 1) { dynamicYear =>
+@defining(s"$dynamicYear") { dynamicHintDate =>
   @formHelper(action = controllers.routes.SubsidyController.postClaimDate) {
-    @H1(title, Some("govuk-heading-xl govuk-!-margin-bottom-3"), id = Some("page-question"))
-
     @defining(form.errors.headOption) { maybeError =>
       @govukDateInput(DateInput(
         id = "claim-date",
@@ -105,12 +105,13 @@
           )
         ),
           hint = Some(Hint(
-              content = HtmlContent(messages(s"$key.hint"))
+            content = HtmlContent(messages(s"$key.hint", dynamicHintDate))
           )),
         fieldset = Some(Fieldset(
           legend = Some(Legend(
-            content = Text(messages("add-claim-date.p1")),
-            isPageHeading = false
+            content = Text(title),
+            classes = "govuk-fieldset__legend--xl",
+            isPageHeading = true
           ))
         ))
       ))
@@ -119,4 +120,6 @@
     @button("common.continue")
 
   }
+}
+}
 }
