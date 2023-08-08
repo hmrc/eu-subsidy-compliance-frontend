@@ -293,7 +293,7 @@ class EligibilityControllerSpec
             { doc =>
               doc
                 .getElementById("eoricheck-desc-1")
-                .text shouldBe "This is the EORI number registered to your Government Gateway ID. This number is usually the same as your XI EORI number, XI1234513513536."
+                .text shouldBe "This is the EORI number that is registered to your Government Gateway ID. This number is usually the same as your XI EORI number, XI234513513536."
               val legend = doc.getElementsByClass("govuk-fieldset__legend govuk-fieldset__legend--m")
               legend.size shouldBe 1
               legend.text shouldBe s"Is the EORI number you want to register $eori1?"
