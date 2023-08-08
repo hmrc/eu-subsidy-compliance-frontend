@@ -211,9 +211,9 @@ class SubsidyControllerSpec
           status(result) shouldBe OK
           val document = Jsoup.parse(contentAsString(result))
 
-          val findTitle = document.getElementById("claim-date-hint").text()
+          val findHintText = document.getElementById("claim-date-hint").text()
           val year = LocalDate.now().getYear - 1
-          findTitle shouldBe s"For example, 15 3 ${year}"
+          findHintText shouldBe s"For example, 15 3 ${year}"
         }
 
         "legend is displayed as H1 in fieldset component" in {
