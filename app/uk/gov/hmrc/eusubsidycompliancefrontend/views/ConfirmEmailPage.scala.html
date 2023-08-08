@@ -83,17 +83,17 @@
           )
       }
 
-
-      @H1(pageTitle, Some("govuk-heading-xl govuk-!-margin-bottom-5 break-word"), id = Some("page-question"))
-      @P(messages("confirmEmail.p1"))
-
       @govukRadios(Radios(
         errorMessage = if (form.hasErrors && form.errors.head.key == radioIdentifier) {
             Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}")))
         } else None,
         fieldset = Some(Fieldset(
           describedBy = Some("email-address-confirmation"),
-          legend = None
+          legend = Some(Legend(
+            content = Text(pageTitle),
+            classes = "govuk-fieldset__legend--xl break-word",
+            isPageHeading = true
+          ))
         )),
         name = radioIdentifier,
         items = Seq(
