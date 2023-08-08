@@ -134,5 +134,5 @@ as our system diverges from CDS.
 ## Final design with all verified email logic in the backend
 We have detached from our frontend Mongo, all CDS logic is in the backend.
 
-![final-design-where-we-store-verified-email-in-the-backend2.png](final-design-where-we-store-verified-email-in-the-backend2.png)
+![final-design-where-we-store-verified-email-in-the-backend.png](final-design-where-we-store-verified-email-in-the-backend.png)
 
