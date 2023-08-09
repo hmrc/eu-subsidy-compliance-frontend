@@ -91,7 +91,7 @@ class EmailVerificationService @Inject() (
           continueUrl = request.toRedirectTarget(verifyEmailUrl),
           origin = "EU Subsidy Compliance",
           deskproServiceName = None,
-          accessibilityStatementUrl = servicesConfig.getString("accessibility-statement.service-path"),
+          accessibilityStatementUrl = servicesConfig.getString("verify-email.accessibility-statement.url"),
           email = Some(
             Email(
               address = email,
