@@ -832,6 +832,46 @@ class UndertakingControllerSpec
 
       "display the page" when {
 
+        "When Change of undertaking business title is available in" in {
+          val undertakingJourney = UndertakingJourney(
+            about = AboutUndertakingFormPage("TestUndertaking1".some),
+            sector = UndertakingSectorFormPage(Sector(2).some),
+            verifiedEmail = UndertakingConfirmEmailFormPage("some@email.com".some)
+          )
+
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
+          }
+
+          val result = performAction()
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          val findTitle = document.getElementById("addBusinessTitleId").text()
+          findTitle shouldBe "Businesses in your undertaking"
+        }
+
+        "When legend is displayed in fieldset component" in {
+          val undertakingJourney = UndertakingJourney(
+            about = AboutUndertakingFormPage("TestUndertaking1".some),
+            sector = UndertakingSectorFormPage(Sector(2).some),
+            verifiedEmail = UndertakingConfirmEmailFormPage("some@email.com".some)
+          )
+
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
+          }
+          val result = performAction()
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          val legendText: String =
+            document.getElementsByClass("govuk-fieldset__legend govuk-fieldset__legend--m").text()
+          legendText shouldBe "Are there other businesses in your undertaking?"
+        }
+
         "addBusiness page has an intent" in {
           val undertakingJourney = UndertakingJourney(
             about = AboutUndertakingFormPage("TestUndertaking1".some),

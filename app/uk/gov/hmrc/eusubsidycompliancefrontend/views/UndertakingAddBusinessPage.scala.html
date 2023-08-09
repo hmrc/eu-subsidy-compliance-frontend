@@ -50,7 +50,7 @@
       ))
     }
 
-    @H1(messages("addBusinessIntent.title"), Some("govuk-heading-xl govuk-!-margin-bottom-3"))
+    @H1(messages("addBusinessIntent.title"), Some("govuk-heading-xl govuk-!-margin-bottom-3"), id = Some("addBusinessTitleId"))
     @P(messages("addBusinessIntent.p1"), id = Some("intentId"))
 
     @govukRadios(Radios(
@@ -58,7 +58,11 @@
         content = Text(messages("addBusinessIntent.error.required"))
       ))} else None,
       fieldset = Some(Fieldset(
-        legend = None
+        legend = Some(Legend(
+        content = Text(messages("addBusinessIntent.legend")),
+        classes = "govuk-fieldset__legend--m",
+        isPageHeading = false
+        ))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,
@@ -73,8 +77,7 @@
               value = Some("false"),
               checked = form.data.get(fieldName).fold(false){e => e == "false"}
           )
-        ),
-        classes = "govuk-radios--inline"
+        )
     ))
 
     @button("continue.button")
