@@ -66,6 +66,16 @@ recommends we move it to the backend and encrypt it.
 We could raise it, but as their endpoint is not forcefully tied to verification and relies on the consumers to verify before 
  updating, it becomes an issue of faith. Did Sub09 verify its value where CDS got its value from? Is this good enough for us?
 
+### CDS email payload
+
+```json
+{
+  "eori": "GB123456123456",
+  "address": "test@test.com",
+  "timestamp": "2023-08-09T11:16:23.751+01:00"
+}
+```
+
 ## If we encrypt the emails - impact to the performance?
 
 Not noticeably, we would have to be under very high load to notice adding such low level of cpu overhead. 
