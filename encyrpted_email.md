@@ -1,4 +1,6 @@
 # Current MongoDB email storage design
+This document covers why we store email addresses in our MongoDB, how potentially we stop storing emails and data migration
+to an encrypted version in the backend API if we need to do it.
 
 We use mongodb for things like journey state. We are referring to the email mongodb as a cache, but it is not really 
 a cache as it can become divergent by design.
