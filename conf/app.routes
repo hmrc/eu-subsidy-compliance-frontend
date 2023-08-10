@@ -29,8 +29,8 @@ POST       /first-login-journey-about-undertaking                               
 GET        /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSector
 POST       /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postSector
 
-GET        /add-email-for-verification/:status                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAddEmailForVerification(status: String)
-POST       /add-email-for-verification/:status                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAddEmailForVerification(status: String)
+GET        /add-email-for-verification/:status                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAddEmailForVerification(status: EmailStatus)
+POST       /add-email-for-verification/:status                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAddEmailForVerification(status: EmailStatus)
 
 GET        /first-login-confirm-email                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmEmail
 POST       /first-login-confirm-email                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmEmail
@@ -38,7 +38,7 @@ POST       /first-login-confirm-email                                           
 GET        /first-login-add-business                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAddBusiness
 POST       /first-login-add-business                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAddBusiness
 
-GET        /verify-email/:pendingVerificationId                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getVerifyEmail(pendingVerificationId: String, status: Option[String] ?= None)
+GET        /verify-email/:pendingVerificationId                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getVerifyEmail(pendingVerificationId: String, status: Option[EmailStatus] ?= None)
 
 GET        /first-login-journey-check-your-answers                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getCheckAnswers
 POST       /first-login-journey-check-your-answers                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postCheckAnswers

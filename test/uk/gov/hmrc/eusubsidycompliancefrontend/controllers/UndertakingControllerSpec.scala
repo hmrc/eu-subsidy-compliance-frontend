@@ -31,6 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{CreateUndertaking, DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.EmailStatus
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EmailStatus, Sector, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
@@ -1669,7 +1670,7 @@ class UndertakingControllerSpec
 
     "handling request to get add email for verification" must {
 
-      def performAction(status: String = EmailStatus.New.toString) =
+      def performAction(status: EmailStatus = EmailStatus.New) =
         controller.getAddEmailForVerification(status)(FakeRequest(GET, "/some-url"))
 
       "display the page" when {
@@ -1689,14 +1690,14 @@ class UndertakingControllerSpec
 
               val form = doc.select("form")
               form
-                .attr("action") shouldBe routes.UndertakingController.postAddEmailForVerification(EmailStatus.New.toString).url
+                .attr("action") shouldBe routes.UndertakingController.postAddEmailForVerification(EmailStatus.New).url
             }
           )
 
         }
 
         "status is 'unverified' (user has no verified email address)" in {
-          val status = EmailStatus.Unverified.toString
+          val status = EmailStatus.Unverified
           val pageTitle = "What is your email address?"
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
@@ -1718,6 +1719,75 @@ class UndertakingControllerSpec
       }
 
     }
+
+    "handling request to post add email for verification" must {
+
+      def performAction(status: EmailStatus, data: (String, String)*) =
+        controller.postAddEmailForVerification(status = status)(FakeRequest(POST, "/some-url").withFormUrlEncodedBody(data: _*))
+
+      "redirect to home page when status is EmailStatus.Unverified" in {
+        val redirectUrl = routes.AccountController.getAccountPage.url
+        inSequence {
+          mockAuthWithEnrolment(eori1)
+          mockMakeVerificationRequestAndRedirect(Redirect(redirectUrl).toFuture)
+        }
+        checkIsRedirect(performAction( status = EmailStatus.Unverified, data = ("email" -> "foo@example.com")), redirectUrl)
+      }
+
+      "redirect to add business page when status is EmailStatus.New" in {
+        val redirectUrl = routes.UndertakingController.getAddBusiness.url
+        inSequence {
+          mockAuthWithEnrolment(eori1)
+          mockMakeVerificationRequestAndRedirect(Redirect(redirectUrl).toFuture)
+        }
+        checkIsRedirect(performAction( status = EmailStatus.New, data = ("email" -> "foo@example.com")), redirectUrl)
+      }
+
+
+      "return bad request and show error" when {
+        val pageTitle = "What is your email address?"
+        val errorMessage = "Enter a valid email address"
+
+        "invalid email format - no domain" in {
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+          }
+          checkFormErrorIsDisplayed(
+            result = performAction(status = EmailStatus.New, data = "email" -> "some@thing"),
+            expectedTitle = pageTitle,
+            formError = errorMessage
+          )
+        }
+
+        "invalid email format - has spaces" in {
+          val email = "foo@example.com"
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+          }
+          checkFormErrorIsDisplayed(
+            result = performAction(status = EmailStatus.Unverified, data = "email" -> "some @ thing.com"),
+            expectedTitle = pageTitle,
+            formError = errorMessage
+          )
+        }
+
+        "invalid email format - no @" in {
+          val email = "foo@example.com"
+          inSequence {
+            mockAuthWithEnrolment(eori1)
+          }
+          checkFormErrorIsDisplayed(
+            result = performAction(status = EmailStatus.New, data = "email" -> "something.com"),
+            expectedTitle = pageTitle,
+            formError = errorMessage
+          )
+        }
+
+    }
+
+    }
+
+
 
 
   }

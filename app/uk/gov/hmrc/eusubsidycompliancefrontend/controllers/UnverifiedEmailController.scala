@@ -36,7 +36,7 @@ class UnverifiedEmailController @Inject() (
   import actionBuilders._
 
   def unverifiedEmail: Action[AnyContent] = enrolled.async { implicit request =>
-    Future.successful(Ok(unverifiedEmailPage()))
+    Future.successful(Ok(unverifiedEmailPage())) //fixme add test class
   }
 
 }

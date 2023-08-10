@@ -31,7 +31,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{CreateUndertaking, UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.EmailStatus
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EmailStatus, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -41,7 +42,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -177,18 +177,18 @@ class UndertakingController @Inject() (
     )
   }
 
-  def getAddEmailForVerification(status: String = EmailStatus.New.toString): Action[AnyContent] = enrolled.async {
+  def getAddEmailForVerification(status: EmailStatus = EmailStatus.New): Action[AnyContent] = enrolled.async {
     implicit request =>
-      val backLink = EmailStatus.withName(status) match {
+      val backLink = status match {
         case EmailStatus.Unverified => routes.UnverifiedEmailController.unverifiedEmail.url
         case _ => routes.UndertakingController.getSector.url
       }
       Future.successful(Ok(inputEmailPage(emailForm, backLink, Some(status))))
   }
 
-  def postAddEmailForVerification(status: String = EmailStatus.New.toString): Action[AnyContent] = enrolled.async {
+  def postAddEmailForVerification(status: EmailStatus = EmailStatus.New): Action[AnyContent] = enrolled.async {
     implicit request =>
-      val backLink = EmailStatus.withName(status) match {
+      val backLink = status match {
         case EmailStatus.Unverified => routes.UnverifiedEmailController.unverifiedEmail
         case _ => routes.UndertakingController.getSector
       }
@@ -233,14 +233,14 @@ class UndertakingController @Inject() (
 
   def getVerifyEmail(
     verificationId: String,
-    status: Option[String] = Some(EmailStatus.New.toString)
+    status: Option[EmailStatus] = Some(EmailStatus.New)
   ): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
-      val previousAndNext = Try(EmailStatus.withName(status.fold("")(_.toString))).toOption match {
+      val previousAndNext = status match {
         case Some(emailStatus @ EmailStatus.Unverified) =>
           (
-            routes.UndertakingController.getAddEmailForVerification(emailStatus.toString),
+            routes.UndertakingController.getAddEmailForVerification(emailStatus),
             routes.AccountController.getAccountPage
           )
         case _ if journey.isAmend =>
