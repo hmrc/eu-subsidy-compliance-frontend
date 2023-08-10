@@ -134,4 +134,12 @@ package object types extends SimpleJson {
         """.{1,255}"""
       )
 
+  object EmailStatus extends Enumeration {
+    type EmailStatus = Value
+    val Unverified: types.EmailStatus.Value = Value("unverified")
+    val New: types.EmailStatus.Value = Value("new")
+
+    implicit val format: Format[EmailStatus] = Json.formatEnum(EmailStatus)
+  }
+
 }

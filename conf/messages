@@ -516,3 +516,9 @@ undertakingDisabled.title = You have deregistered your undertaking
 undertakingDisabled.p1 = We have sent you a confirmation email.
 undertakingDisabled.p2 = You have been signed out.
 
+#unverified email page
+unverifiedEmail.title=Your email address needs verifying
+unverifiedEmail.h1=Your email address needs verifying
+unverifiedEmail.p=To complete tasks in your undertaking, re-enter the email address you would like to use so that we can verify it.
+unverifiedEmail.recoverLinkText=Re-enter your email address
+

@@ -62,7 +62,8 @@ class EmailVerificationService @Inject() (
   def makeVerificationRequestAndRedirect(
     email: String,
     previousPage: Call,
-    nextPageUrl: String => String
+    nextPageUrl: String => String,
+    reEnterEmailUrl: String = routes.UndertakingController.getConfirmEmail.url
   )(implicit
     request: AuthenticatedEnrolledRequest[AnyContent],
     ec: ExecutionContext,
@@ -70,14 +71,18 @@ class EmailVerificationService @Inject() (
     messages: Messages
   ): Future[Result] = for {
     verificationId <- addVerificationRequest(request.eoriNumber, email)
-    verificationResponse <- verifyEmail(nextPageUrl(verificationId), previousPage.url)(request.authorityId, email)
+    verificationResponse <- verifyEmail(nextPageUrl(verificationId), previousPage.url, reEnterEmailUrl)(
+      request.authorityId,
+      email
+    )
   } yield verificationResponse.fold(Redirect(previousPage))(value =>
     Redirect(generateEmailServiceUrl(value.redirectUri))
   )
 
   private def verifyEmail(
-    verifyEmailUrl: String,
-    confirmEmailUrl: String
+    continueUrl: String,
+    backUrl: String,
+    reEnterEmailUrl: String
   )(credId: String, email: String)(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext,
@@ -88,18 +93,18 @@ class EmailVerificationService @Inject() (
       .verifyEmail(
         EmailVerificationRequest(
           credId = credId,
-          continueUrl = request.toRedirectTarget(verifyEmailUrl),
+          continueUrl = request.toRedirectTarget(continueUrl),
           origin = "EU Subsidy Compliance",
           deskproServiceName = None,
           accessibilityStatementUrl = servicesConfig.getString("verify-email.accessibility-statement.url"),
           email = Some(
             Email(
               address = email,
-              enterUrl = request.toRedirectTarget(routes.UndertakingController.getConfirmEmail.url)
+              enterUrl = request.toRedirectTarget(reEnterEmailUrl)
             )
           ),
           lang = None,
-          backUrl = Some(request.toRedirectTarget(confirmEmailUrl)),
+          backUrl = Some(request.toRedirectTarget(backUrl)),
           pageTitle = Some(messages("service.name"))
         )
       )

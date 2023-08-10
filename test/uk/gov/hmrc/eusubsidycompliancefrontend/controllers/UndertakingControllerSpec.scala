@@ -31,7 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{CreateUndertaking, DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingName}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EmailStatus, Sector, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -1665,6 +1665,61 @@ class UndertakingControllerSpec
         )
       }
     }
+
+
+    "handling request to get add email for verification" must {
+
+      def performAction(status: String = EmailStatus.New.toString) =
+        controller.getAddEmailForVerification(status)(FakeRequest(GET, "/some-url"))
+
+      "display the page" when {
+
+        "status is 'new' (user is in registration journey)" in {
+
+          val pageTitle = "What is your email address?"
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+          }
+          checkPageIsDisplayed(
+            performAction(),
+            pageTitle,
+            { doc =>
+              doc.getElementById("inputEmail-h1").text shouldBe pageTitle
+              doc.select(".govuk-back-link").attr("href") shouldBe routes.UndertakingController.getSector.url
+
+              val form = doc.select("form")
+              form
+                .attr("action") shouldBe routes.UndertakingController.postAddEmailForVerification(EmailStatus.New.toString).url
+            }
+          )
+
+        }
+
+        "status is 'unverified' (user has no verified email address)" in {
+          val status = EmailStatus.Unverified.toString
+          val pageTitle = "What is your email address?"
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+          }
+          checkPageIsDisplayed(
+            performAction(status),
+            pageTitle,
+            { doc =>
+              doc.getElementById("inputEmail-h1").text shouldBe pageTitle
+              doc.select(".govuk-back-link").attr("href") shouldBe routes.UnverifiedEmailController.unverifiedEmail.url
+
+              val form = doc.select("form")
+              form
+                .attr("action") shouldBe routes.UndertakingController.postAddEmailForVerification(status).url
+            }
+          )
+
+        }
+      }
+
+    }
+
+
   }
 }
 

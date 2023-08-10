@@ -54,7 +54,8 @@ trait EmailVerificationServiceSupport { this: MockFactory with AuthSupport =>
         .makeVerificationRequestAndRedirect(
           _: String,
           _: Call,
-          _: String => String
+          _: String => String,
+          _: String
         )(
           _: AuthenticatedEnrolledRequest[AnyContent],
           _: ExecutionContext,
@@ -62,6 +63,6 @@ trait EmailVerificationServiceSupport { this: MockFactory with AuthSupport =>
           _: Messages
         )
       )
-      .expects(*, *, *, *, *, *, *)
+      .expects(*, *, *, *, *, *, *, *)
       .returning(result)
 }
