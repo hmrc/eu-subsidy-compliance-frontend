@@ -28,7 +28,7 @@ CDS defers to Sub09 for initial storage population, but after that the data stor
 ## Sending email 
 ![sending-email.png](sending-email.png)
 
-If we do not have it in our stroage, we defer to CDS. We do not add that value to our storage.
+If we do not have it in our storage, we defer to CDS. We do not add that value to our storage.
 
 ## Do we need to store the email in our storage?
 
@@ -61,14 +61,15 @@ diverge.
 ## PII concerns? Do we need GDRP?
 
 There are issues with the zone we are keeping the data in (it is in the frontend), and also it is not encrypted. Gerald Benischke
-recommends we move it to the backend and encrypt it. 
+recommends we move it to the backend and encrypt it. Though with the auto recovery mechanism we have added 
+do not need to keep it as long and can ask the user to potentially re-verify. This is a user journey question.
 
 ## question for CDS - if we get a response from CDS - is it verified? can we raise this with CDS please
 
 We could raise it, but as their endpoint is not forcefully tied to verification and relies on the consumers to verify before 
  updating, it becomes an issue of faith. Did Sub09 verify its value where CDS got its value from? Is this good enough for us?
 
-### CDS email payload
+### CDS update email payload
 
 ```json
 {
@@ -80,7 +81,9 @@ We could raise it, but as their endpoint is not forcefully tied to verification 
 
 ## If we encrypt the emails - impact to the performance?
 
-Not noticeably, we would have to be under very high load to notice adding such low level of cpu overhead. 
+Not noticeably, we would have to be under very high load (think manyrequests a second) to notice adding such low level of cpu overhead.
+CPU-based operations can scale horizontally with more services. Performance really becomes a killer when a single point such
+as a database becomes overloaded (think indexing, explain plans etc.).
 
 ## What and whose support is needed for encryption?
 
@@ -100,7 +103,8 @@ smoothness before turning off.
 
 We should probably refrain from using the term cache as it indicates there
 is an authoritative source we can rely on. As mentioned, we cannot see logs that are not warnings/errors in production.
-We can log warnings where we do not hit our storage. Though in some cases, this is expected.
+We can log warnings where we do not hit our storage. Though in some cases, this is expected as we fill our storage from 
+CDS.
 
 ### Storage is missed when creating an undertaking 
 This is expected on a first journey. The journey populates our storage. We also confirm with the user if that value is 
