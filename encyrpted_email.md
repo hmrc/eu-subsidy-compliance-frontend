@@ -134,7 +134,7 @@ A more ideal CDS design would cater for this and also allow application namespac
 
 ![cds-as-central-store.png](cds-as-central-store.png)
 
-### Can we use CDS and sync our data up to them, so we can eventually detatch from keeping email?
+### Can we use CDS and sync our data up to them, so we can eventually detach from keeping email?
 
 We could detect that our data is different from theirs and ask the user which one they want to keep.
 "We have detected multiple emails for this EORI, which one do you want to keep?"
