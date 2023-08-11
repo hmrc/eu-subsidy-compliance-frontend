@@ -140,7 +140,7 @@ We could detect that our data is different from theirs and ask the user which on
 "We have detected multiple emails for this EORI, which one do you want to keep?"
 Then sync it up to CDS if our one is the one we want to keep, then delete our local copy.
 
-We would have to determine how long we keep this option open for before just removing our mongo.
+We would have to determine how long we keep this option open for before removing our mongo.
 
 
 ## What could the design look like with email encrypted in the backend with an interim recovery mechanism?
