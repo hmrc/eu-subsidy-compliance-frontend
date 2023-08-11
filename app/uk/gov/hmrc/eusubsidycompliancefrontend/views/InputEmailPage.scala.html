@@ -18,6 +18,8 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.EmailStatus
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.New
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
@@ -29,18 +31,16 @@
   govukInput : GovukInput,
   govukInsetText: GovukInsetText
 )
-@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
-@inputIdentifier = @{"email"}
+@(form: Form[_], previous: Journey.Uri, status: Option[EmailStatus] = None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-    pageTitle = Some(messages("add-claim-trader-reference.title")),
+    pageTitle = Some(messages("inputEmail.title")),
     backLinkEnabled = true,
     backLink = Some(previous),
     hasErrors = form.hasErrors
 ) {
 
-    @formHelper(action = controllers.routes.UndertakingController.postConfirmEmail) {
+    @formHelper(action = controllers.routes.UndertakingController.postAddEmailForVerification(status.getOrElse(New))) {
       @if(form.hasErrors) {
           @govukErrorSummary(
               ErrorSummary(
@@ -57,17 +57,17 @@
       }
 
 
-      @H1(messages("inputEmail.title"))
+      @H1(messages("inputEmail.title"), id = Some("inputEmail-h1"))
 
       @P(messages("inputEmail.p"))
 
       @govukInput(Input(
-       id = inputIdentifier,
-       name = inputIdentifier,
-       errorMessage = if (form.hasErrors && form.errors.head.key == inputIdentifier) {
+       id = "email",
+       name = "email",
+       errorMessage = if (form.hasErrors && form.errors.head.key == "email") {
            Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}")))
        } else None,
-       value = form.data.get(inputIdentifier),
+       value = form.data.get("email"),
        label = Label(
            content = Text(messages("inputEmail.label"))
        ),

@@ -21,6 +21,7 @@ import play.api.mvc._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailVerificationService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
@@ -73,7 +74,9 @@ class VerifiedEmailActionBuilder @Inject() (
         emailVerificationService
           .getEmailVerification(enrolledRequest.eoriNumber)
           .toContext
-          .foldF(throw new IllegalStateException("No verified email address found"))(_ => f(enrolledRequest))
+          .foldF(Future.successful(Redirect(routes.UnverifiedEmailController.unverifiedEmail.url)))(_ =>
+            f(enrolledRequest)
+          )
       }
     )
 }

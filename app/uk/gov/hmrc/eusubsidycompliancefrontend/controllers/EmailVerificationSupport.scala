@@ -126,7 +126,11 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
               // Redirect back to the previous page if no email address appears to be entered. This should never happen
               // with a legitimate form submission.
               form.value.fold(Redirect(previous).toFuture) { email =>
-                emailVerificationService.makeVerificationRequestAndRedirect(email, previous, verifyEmailUrl)
+                emailVerificationService.makeVerificationRequestAndRedirect(
+                  email = email,
+                  previousPage = previous,
+                  nextPageUrl = verifyEmailUrl
+                )
               }
             }
         )

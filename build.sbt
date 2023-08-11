@@ -7,6 +7,14 @@ val silencerVersion = "1.7.12"
 
 PlayKeys.playDefaultPort := 9093
 
+val routesSettings: Seq[Setting[_]] = Seq(
+  routesImport ++= Seq(
+    "uk.gov.hmrc.eusubsidycompliancefrontend.models.types._",
+    "uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus._"
+  )
+)
+
+
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
@@ -28,6 +36,7 @@ lazy val microservice = Project(appName, file("."))
     // ***************
   )
   .configs(IntegrationTest)
+  .settings(routesSettings: _*)
   .settings(integrationTestSettings(): _*)
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(

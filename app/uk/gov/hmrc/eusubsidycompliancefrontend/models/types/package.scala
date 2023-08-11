@@ -17,7 +17,11 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Format, Json}
+import play.api.mvc.{PathBindable, QueryStringBindable}
 import shapeless.tag.@@
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.EmailStatus
+
+import scala.util.Try
 
 package object types extends SimpleJson {
 
@@ -133,5 +137,38 @@ package object types extends SimpleJson {
       extends RegexValidatedString(
         """.{1,255}"""
       )
+
+  object EmailStatus extends Enumeration {
+    type EmailStatus = Value
+    val Unverified: types.EmailStatus.Value = Value("unverified")
+    val New: types.EmailStatus.Value = Value("new")
+
+    implicit val format: Format[EmailStatus] = Json.formatEnum(EmailStatus)
+
+    implicit object Binder extends PathBindable[EmailStatus] {
+
+      override def bind(key: String, value: String): Either[String, EmailStatus] =
+        Try(EmailStatus.withName(value)).toOption
+          .map(Right(_))
+          .getOrElse(Left("Cannot parse parameter '" + key + "' as EmailStatus"))
+
+      override def unbind(key: String, value: EmailStatus): String = value.toString
+
+    }
+
+    implicit val queryStringBindable: QueryStringBindable[EmailStatus] =
+      new QueryStringBindable[EmailStatus] {
+        override def bind(
+          key: String,
+          params: Map[String, Seq[String]]
+        ): Option[Either[String, EmailStatus]] =
+          params.get(key).collect { case Seq(s) =>
+            EmailStatus.values.find(_.toString == s).toRight("invalid sort field parameter")
+          }
+
+        override def unbind(key: String, value: EmailStatus): String =
+          implicitly[QueryStringBindable[String]].unbind(key, value.toString)
+      }
+  }
 
 }
