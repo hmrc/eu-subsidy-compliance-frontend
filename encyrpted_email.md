@@ -134,6 +134,15 @@ A more ideal CDS design would cater for this and also allow application namespac
 
 ![cds-as-central-store.png](cds-as-central-store.png)
 
+### Can we use CDS and sync our data up to them, so we can eventually detatch from keeping email?
+
+We could detect that our data is different from theirs and ask the user which one they want to keep.
+"We have detected multiple emails for this EORI, which one do you want to keep?"
+Then sync it up to CDS if our one is the one we want to keep, then delete our local copy.
+
+We would have to determine how long we keep this option open for before just removing our mongo.
+
+
 ## What could the design look like with email encrypted in the backend with an interim recovery mechanism?
 
 We are going to have to do data migration within the app. The JSON encoders within the application handle the encoding,
