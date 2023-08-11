@@ -159,12 +159,11 @@ package object types extends SimpleJson {
     implicit val queryStringBindable: QueryStringBindable[EmailStatus] =
       new QueryStringBindable[EmailStatus] {
         override def bind(
-                           key: String,
-                           params: Map[String, Seq[String]]
-                         ): Option[Either[String, EmailStatus]] =
-          params.get(key).collect {
-            case Seq(s) =>
-              EmailStatus.values.find(_.toString == s).toRight("invalid sort field parameter")
+          key: String,
+          params: Map[String, Seq[String]]
+        ): Option[Either[String, EmailStatus]] =
+          params.get(key).collect { case Seq(s) =>
+            EmailStatus.values.find(_.toString == s).toRight("invalid sort field parameter")
           }
 
         override def unbind(key: String, value: EmailStatus): String =

@@ -23,8 +23,8 @@
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(messages("unverifiedEmail.title"))) {
-    @H1(messages("unverifiedEmail.h1"), id = Some("unverifiedEmail-title"))
+    @H1(messages("unverifiedEmail.h1"), id = Some("unverifiedEmail-h1"))
     @P(messages("unverifiedEmail.p"), id = Some("unverifiedEmail-p1"))
-    <a class="govuk-link govuk-body" href="@controllers.routes.UndertakingController.getAddEmailForVerification(Unverified).url">@messages("unverifiedEmail.recoverLinkText")</a>
+    <a id="unverifiedEmail-link" class="govuk-link govuk-body" href="@controllers.routes.UndertakingController.getAddEmailForVerification(Unverified).url">@messages("unverifiedEmail.recoverLinkText")</a>
 
 }

@@ -1667,7 +1667,6 @@ class UndertakingControllerSpec
       }
     }
 
-
     "handling request to get add email for verification" must {
 
       def performAction(status: EmailStatus = EmailStatus.New) =
@@ -1723,7 +1722,9 @@ class UndertakingControllerSpec
     "handling request to post add email for verification" must {
 
       def performAction(status: EmailStatus, data: (String, String)*) =
-        controller.postAddEmailForVerification(status = status)(FakeRequest(POST, "/some-url").withFormUrlEncodedBody(data: _*))
+        controller.postAddEmailForVerification(status = status)(
+          FakeRequest(POST, "/some-url").withFormUrlEncodedBody(data: _*)
+        )
 
       "redirect to home page when status is EmailStatus.Unverified" in {
         val redirectUrl = routes.AccountController.getAccountPage.url
@@ -1731,7 +1732,10 @@ class UndertakingControllerSpec
           mockAuthWithEnrolment(eori1)
           mockMakeVerificationRequestAndRedirect(Redirect(redirectUrl).toFuture)
         }
-        checkIsRedirect(performAction( status = EmailStatus.Unverified, data = ("email" -> "foo@example.com")), redirectUrl)
+        checkIsRedirect(
+          performAction(status = EmailStatus.Unverified, data = ("email" -> "foo@example.com")),
+          redirectUrl
+        )
       }
 
       "redirect to add business page when status is EmailStatus.New" in {
@@ -1740,9 +1744,8 @@ class UndertakingControllerSpec
           mockAuthWithEnrolment(eori1)
           mockMakeVerificationRequestAndRedirect(Redirect(redirectUrl).toFuture)
         }
-        checkIsRedirect(performAction( status = EmailStatus.New, data = ("email" -> "foo@example.com")), redirectUrl)
+        checkIsRedirect(performAction(status = EmailStatus.New, data = ("email" -> "foo@example.com")), redirectUrl)
       }
-
 
       "return bad request and show error" when {
         val pageTitle = "What is your email address?"
@@ -1783,12 +1786,9 @@ class UndertakingControllerSpec
           )
         }
 
-    }
+      }
 
     }
-
-
-
 
   }
 }
