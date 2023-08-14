@@ -142,6 +142,7 @@ Then sync it up to CDS if our one is the one we want to keep, then delete our lo
 
 We would have to determine how long we keep this option open for before removing our mongo.
 
+![slow-migration-to-cds.png](slow-migration-to-cds.png)
 
 ## What could the design look like with email encrypted in the backend with an interim recovery mechanism?
 
