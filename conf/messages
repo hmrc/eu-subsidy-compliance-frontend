@@ -139,10 +139,10 @@ sector.label.1=Road freight transport for hire or reward
 sector.label.2=Primary production of agricultural products
 sector.label.3=Fishery and aquaculture products
 
-sector.hint.0=The cap for all other sectors is €200,000
-sector.hint.1=This sector includes couriers and hauliers who get paid by someone to transport their goods by road. The cap for this sector is €100,000
-sector.hint.2=An ‘agricultural product’ can be products such as: live animals, meat and edible meat offal, dairy produce, birds’ eggs, natural honey. The cap for this sector is €20,000
-sector.hint.3=If any part of your business is involved in the production, processing or marketing of fishery and aquaculture products. A ‘fishery product’ means aquatic organisms resulting from any fishing activity or products derived from them. The cap for this sector is €30,000
+sector.hint.0=The cap for all other sectors is €200,000.
+sector.hint.1=This sector includes couriers and hauliers who get paid by someone to transport their goods by road. The cap for this sector is €100,000.
+sector.hint.2=An ‘agricultural product’ can be products such as: live animals, meat and edible meat offal, dairy produce, birds’ eggs, natural honey. The cap for this sector is €20,000.
+sector.hint.3=If any part of your business is involved in the production, processing or marketing of fishery and aquaculture products. A ‘fishery product’ means aquatic organisms resulting from any fishing activity or products derived from them. The cap for this sector is €30,000.
 
 addBusinessIntent.title = Businesses in your undertaking
 addBusinessIntent.legend = Are there other businesses in your undertaking?

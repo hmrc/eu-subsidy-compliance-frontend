@@ -98,7 +98,12 @@
         content = Text(messages("undertakingSector.error.required"))
       ))} else None,
       fieldset = Some(Fieldset(
-        describedBy = Some("sector-desc")
+        describedBy = Some("sector-desc"),
+        legend = Some(Legend(
+        content = Text(messages("undertakingSector.p1")),
+        classes = "govuk-visually-hidden govuk-!-display-block break-word",
+        isPageHeading = false
+        ))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,

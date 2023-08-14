@@ -420,6 +420,24 @@ class UndertakingControllerSpec
           )
         }
 
+        "hidden legend is displayed in fieldset component" in {
+          val undertakingJourney = UndertakingJourney(about = AboutUndertakingFormPage("TestUndertaking1".some))
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
+          }
+
+          val result = performAction()
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          val legendText: String =
+            document
+              .getElementsByClass("govuk-fieldset__legend govuk-visually-hidden govuk-!-display-block break-word")
+              .text()
+          legendText shouldBe "Your undertaking may have businesses working in different sectors. For your whole undertaking the lowest subsidy allowance will apply."
+        }
+
       }
 
       "redirect to journey start page" when {
