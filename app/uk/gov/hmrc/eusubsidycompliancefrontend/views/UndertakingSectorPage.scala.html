@@ -91,7 +91,7 @@
     }
 
     @H1(messages("undertakingSector.title"), Some("govuk-heading-xl govuk-!-margin-bottom-5"))
-    @P(messages("undertakingSector.p1"), None, Some("sector-desc"))
+    @P(messages("undertakingSector.p1"), Some("govuk-hint"), Some("sector-desc"))
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
