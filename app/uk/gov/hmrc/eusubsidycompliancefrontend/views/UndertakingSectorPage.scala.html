@@ -90,8 +90,7 @@
       ))
     }
 
-    @H1(messages("undertakingSector.title"), Some("govuk-heading-xl govuk-!-margin-bottom-5"))
-    @P(messages("undertakingSector.p1"), Some("govuk-hint"), Some("sector-desc"))
+
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
@@ -100,10 +99,13 @@
       fieldset = Some(Fieldset(
         describedBy = Some("sector-desc"),
         legend = Some(Legend(
-        content = Text(messages("undertakingSector.p1")),
-        classes = "govuk-visually-hidden govuk-!-display-block break-word",
-        isPageHeading = false
+        content = Text(messages("undertakingSector.title")),
+        classes = "govuk-fieldset__legend--xl break-word",
+        isPageHeading = true
         ))
+    )),
+        hint = Some(Hint(
+        content = Text(messages("undertakingSector.p1"))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,

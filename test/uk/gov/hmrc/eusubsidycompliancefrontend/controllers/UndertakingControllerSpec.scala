@@ -433,9 +433,15 @@ class UndertakingControllerSpec
 
           val legendText: String =
             document
-              .getElementsByClass("govuk-fieldset__legend govuk-visually-hidden govuk-!-display-block break-word")
+              .getElementsByClass("govuk-fieldset__legend--xl")
               .text()
-          legendText shouldBe "Your undertaking may have businesses working in different sectors. For your whole undertaking the lowest subsidy allowance will apply."
+          legendText shouldBe "What is the industry sector of your undertaking?"
+
+          val hintText: String =
+            document
+              .getElementById("undertakingSector-hint")
+              .text()
+          hintText shouldBe "Your undertaking may have businesses working in different sectors. For your whole undertaking the lowest subsidy allowance will apply."
         }
 
       }
