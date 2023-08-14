@@ -420,7 +420,7 @@ class UndertakingControllerSpec
           )
         }
 
-        "hidden legend is displayed in fieldset component" in {
+        "legend is displayed in fieldset component" in {
           val undertakingJourney = UndertakingJourney(about = AboutUndertakingFormPage("TestUndertaking1".some))
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
