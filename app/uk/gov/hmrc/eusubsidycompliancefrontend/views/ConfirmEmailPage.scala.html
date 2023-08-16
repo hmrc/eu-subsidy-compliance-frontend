@@ -88,7 +88,6 @@
             Some(ErrorMessage(content = Text(s"${messages(s"${form.errors.head.key}.${form.errors.head.message}")}")))
         } else None,
         fieldset = Some(Fieldset(
-          describedBy = Some("email-address-confirmation"),
           legend = Some(Legend(
             content = Text(pageTitle),
             classes = "govuk-fieldset__legend--xl govuk-!-display-block break-word",
