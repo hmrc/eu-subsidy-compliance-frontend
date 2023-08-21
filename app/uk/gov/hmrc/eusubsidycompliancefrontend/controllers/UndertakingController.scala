@@ -23,7 +23,7 @@ import play.api.data.Forms.mapping
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.{formWithSingleMandatoryField, mandatory}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
@@ -41,11 +41,11 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
+import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Try
 
 @Singleton
 class UndertakingController @Inject() (
@@ -55,6 +55,7 @@ class UndertakingController @Inject() (
   override val escService: EscService,
   override val emailService: EmailService,
   override val emailVerificationService: EmailVerificationService,
+  val errorHandler: ErrorHandler,
   timeProvider: TimeProvider,
   auditService: AuditService,
   aboutUndertakingPage: AboutUndertakingPage,
@@ -337,17 +338,34 @@ class UndertakingController @Inject() (
   private def createUndertakingAndSendEmail(
     undertaking: UndertakingCreate
   )(implicit request: AuthenticatedEnrolledRequest[_], eori: EORI): Future[Result] =
-    for {
-      ref <- escService.createUndertaking(undertaking)
-      _ <- emailService.sendEmail(eori, EmailTemplate.CreateUndertaking, undertaking.toUndertakingWithRef(ref))
-      auditEventCreateUndertaking = AuditEvent.CreateUndertaking(
-        request.authorityId,
-        ref,
-        undertaking,
-        timeProvider.now
-      )
-      _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
-    } yield Redirect(routes.UndertakingController.getConfirmation(ref))
+    (
+      for {
+        ref <- escService.createUndertaking(undertaking)
+        _ <- emailService.sendEmail(eori, EmailTemplate.CreateUndertaking, undertaking.toUndertakingWithRef(ref))
+        newlyCreatedUndertaking <- escService.retrieveUndertaking(eori).map {
+          case Some(ut) => ut
+          case None => {
+            logger.error(s"Unable to fetch undertaking with reference: $ref")
+            throw new NotFoundException(s"Unable to fetch undertaking with reference: $ref")
+          }
+        }
+        auditEventCreateUndertaking = AuditEvent.CreateUndertaking(
+          request.authorityId,
+          ref,
+          undertaking,
+          sectorCap = newlyCreatedUndertaking.industrySectorLimit.getOrElse(
+            FinancialDashboardSummary.DefaultSectorLimits(undertaking.industrySector)
+          ), //fixme update once industrySectorLimit has been made mandatory (ESC-1087)
+          timeProvider.now
+        )
+        _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
+      } yield Redirect(routes.UndertakingController.getConfirmation(ref))
+    ).recover {
+      case error: NotFoundException => {
+        logger.error(s"Error creating undertaking: $error")
+        InternalServerError(errorHandler.internalServerErrorTemplate)
+      }
+    }
 
   def getConfirmation(ref: String): Action[AnyContent] = verifiedEmail.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber

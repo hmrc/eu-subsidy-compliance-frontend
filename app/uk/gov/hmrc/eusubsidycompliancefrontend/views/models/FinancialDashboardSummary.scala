@@ -57,7 +57,7 @@ case class TaxYearSummary(
 object FinancialDashboardSummary {
 
   // Fallback values should no sector be defined on the undertaking.
-  private val DefaultSectorLimits = Map(
+  val DefaultSectorLimits = Map( //fixme this will be removed once ESC-1087 has been implemented
     Sector.agriculture -> IndustrySectorLimit(20000.00),
     Sector.aquaculture -> IndustrySectorLimit(30000.00),
     Sector.other -> IndustrySectorLimit(200000.00),
