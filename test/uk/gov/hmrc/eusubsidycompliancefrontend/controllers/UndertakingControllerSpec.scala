@@ -32,7 +32,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{Undertak
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{CreateUndertaking, DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.EmailStatus
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EmailStatus, Sector, UndertakingName}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EmailStatus, IndustrySectorLimit, Sector, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -1242,12 +1242,15 @@ class UndertakingControllerSpec
             mockSendEmail(eori1, CreateUndertaking, undertakingCreated.toUndertakingWithRef(undertakingRef))(
               Right(EmailSent)
             )
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderNow(timeNow)
-            mockSendAuditEvent(createUndertakingAuditEvent)
+            mockSendAuditEvent(
+              createUndertakingAuditEvent(undertaking1.industrySectorLimit.getOrElse(IndustrySectorLimit(100000.00)))
+            )
           }
           checkIsRedirect(
-            performAction("cya" -> "true"),
-            routes.UndertakingController.getConfirmation(undertakingRef).url
+            result = performAction("cya" -> "true"),
+            expectedRedirectLocation = routes.UndertakingController.getConfirmation(undertakingRef).url
           )
         }
 

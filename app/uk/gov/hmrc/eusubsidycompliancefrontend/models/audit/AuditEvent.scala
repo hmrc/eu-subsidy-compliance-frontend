@@ -18,14 +18,14 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.audit
 
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.UndertakingCreate
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{UndertakingCreate, UndertakingCreateWithSectorLimit}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityAddeed.BusinessDetailsAdded
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoteItself.BusinessEntityPromoteItselfDetails
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoted.LeadPromoteDetails
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityUpdated.BusinessDetailsUpdated
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyAmount, SubsidyRef, TraderRef, UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, IndustrySectorLimit, SubsidyAmount, SubsidyRef, TraderRef, UndertakingName, UndertakingRef}
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -52,7 +52,7 @@ object AuditEvent {
 
   final case class CreateUndertaking(
     ggDetails: String,
-    eisRequest: UndertakingCreate,
+    eisRequest: UndertakingCreateWithSectorLimit,
     eisResponse: EISResponse
   ) extends AuditEvent {
     override val auditType: String = "CreateUndertakingEIS"
@@ -65,6 +65,7 @@ object AuditEvent {
       ggCredId: String,
       ref: UndertakingRef,
       undertaking: UndertakingCreate,
+      sectorCap: IndustrySectorLimit,
       timeNow: LocalDateTime
     ): CreateUndertaking = {
       val eisResponse = EISResponse(
@@ -73,7 +74,7 @@ object AuditEvent {
           ResponseDetail(ref)
         )
       )
-      AuditEvent.CreateUndertaking(ggCredId, undertaking, eisResponse)
+      AuditEvent.CreateUndertaking(ggCredId, UndertakingCreateWithSectorLimit(undertaking, sectorCap), eisResponse)
     } //Do not delete
     implicit val writes: Writes[CreateUndertaking] = Json.writes
   }

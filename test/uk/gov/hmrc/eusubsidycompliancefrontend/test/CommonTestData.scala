@@ -257,9 +257,9 @@ object CommonTestData {
 
   val timeNow = LocalDateTime.of(2021, 10, 9, 10, 9, 0, 0)
 
-  val createUndertakingAuditEvent = AuditEvent.CreateUndertaking(
+  def createUndertakingAuditEvent(sectorLimit: IndustrySectorLimit) = AuditEvent.CreateUndertaking(
     "1123",
-    undertakingCreated,
+    UndertakingCreateWithSectorLimit(undertakingCreated, sectorLimit),
     EISResponse(
       CreateUndertakingResponse(
         ResponseCommonUndertaking("OK", timeNow),
