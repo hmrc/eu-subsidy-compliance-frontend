@@ -781,7 +781,7 @@ class BusinessEntityControllerSpec
           checkFormErrorIsDisplayed(
             performAction()(eori4),
             messageFromMessageKey("removeBusinessEntity.title"),
-            messageFromMessageKey("removeBusinessEntity.error.required")
+            "Select yes if you want to remove a business from your undertaking"
           )
 
         }

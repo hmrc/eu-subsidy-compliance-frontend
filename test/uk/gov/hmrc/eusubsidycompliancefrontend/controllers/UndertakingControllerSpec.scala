@@ -1602,8 +1602,11 @@ class UndertakingControllerSpec
             val form = doc.select("form")
             form
               .attr("action") shouldBe routes.UndertakingController.postDisableUndertakingConfirm.url
+            val hintText: String = doc.getElementById("disableUndertakingConfirm-hint").text()
+            hintText shouldBe "This cannot be reversed"
           }
         )
+
       }
 
     }
