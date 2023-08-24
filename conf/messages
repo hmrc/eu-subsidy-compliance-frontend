@@ -117,7 +117,7 @@ createUndertaking.h2=This will make EORI number {0} the administrator for this u
 createUndertaking.p1=If you are not the undertaking administrator, you should <a href="{0}" class="govuk-link">sign out</a> now.
 
 undertakingName.title = About your undertaking
-undertakingName.p1 = Your subsidy allowance applies to all parts of your organisation involved in bringing goods into Northern Ireland from Great Britain (England, Wales and Scotland) or from outside the EU.
+undertakingName.p1 = Your subsidy allowance applies to all parts of your organisation involved in bringing goods into Northern Ireland from Great Britain (England, Scotland and Wales) or from outside the EU.
 undertakingName.p2 = This may include more than one business. This group of businesses is referred to as an undertaking. An undertaking could be a sole trader, a company, a partnership, or any combination of these.
 undertakingName.p3 = These businesses must not report payments they receive separately. You are responsible for reporting received payments on their behalf.
 
