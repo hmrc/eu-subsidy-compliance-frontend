@@ -117,7 +117,7 @@ createUndertaking.h2=This will make EORI number {0} the administrator for this u
 createUndertaking.p1=If you are not the undertaking administrator, you should <a href="{0}" class="govuk-link">sign out</a> now.
 
 undertakingName.title = About your undertaking
-undertakingName.p1 = Your subsidy allowance applies to all parts of your organisation involved in bringing goods into Northern Ireland from Great Britain or from outside the EU.
+undertakingName.p1 = Your subsidy allowance applies to all parts of your organisation involved in bringing goods into Northern Ireland from Great Britain (England, Wales and Scotland) or from outside the EU.
 undertakingName.p2 = This may include more than one business. This group of businesses is referred to as an undertaking. An undertaking could be a sole trader, a company, a partnership, or any combination of these.
 undertakingName.p3 = These businesses must not report payments they receive separately. You are responsible for reporting received payments on their behalf.
 
@@ -148,7 +148,7 @@ addBusinessIntent.title = Businesses in your undertaking
 addBusinessIntent.legend = Are there other businesses in your undertaking?
 addBusinessIntent.p1 = You need to tell us about other businesses in your undertaking that receive payments for customs subsidies or non-customs subsidies. These payments are referred to as ‘de minimis aid’.
 addBusinessIntent.hint=Are there other businesses in your undertaking
-addBusinessIntent.error.required=Select yes if you need to add a business to your undertaking?
+addBusinessIntent.error.required=Select yes if you need to add a business to your undertaking
 
 confirmEmail.no.label=Enter an email address
 confirmEmail.title=Is {0} the right email address to receive notifications?
@@ -189,7 +189,7 @@ businessEntityEori.title = What is the EORI number of the business you want to a
 businessEntityEori.hint = The first 2 letters will be the country code, GB. This is followed by 12 or 15 digits, like GB123456123456
 businessEntityEori.error.incorrect-length = The EORI number of the business you want to add must start with GB and be followed by 12 or 15 numbers, like GB123456123456
 businessEntityEori.regex.error = The EORI number of the business you want to add must only include the letters GB and numbers 0 to 9
-businessEntityEori.eoriInUse = The EORI number you entered is already part of an another undertaking. Enter another EORI number.
+businessEntityEori.eoriInUse = The EORI number you entered is already part of a another undertaking. Enter another EORI number.
 error.businessEntityEori.required = Enter the EORI number of the business you want to add
 
 businessEntityContact.title=What are the contact details of the business you want to add?
@@ -208,8 +208,8 @@ removeBusinessEntity.title= You are about to remove a business from your underta
 removeBusinessEntity.p1 = You are about to remove the business with EORI number {0}.
 removeBusinessEntity.p2 = Reported payments for this business will remain in your undertaking, and will continue to affect your remaining sector allowance. These reported payments will be removed only when the business joins or creates another undertaking.
 removeBusinessEntity.subtitle = Are you sure you want to remove this business from your undertaking?
-removeBusinessEntity.error.required = Select if you want to remove a business from your undertaking
-removeBusiness.error.required = Select if you want to remove a business from your undertaking
+removeBusinessEntity.error.required = Select yes if you want to remove a business from your undertaking
+removeBusiness.error.required = Select yes if you want to remove a business from your undertaking
 
 undertaking.confirmation.title = Undertaking registered
 undertaking.confirmation.p1 = We have sent you a confirmation email.
@@ -405,7 +405,7 @@ undertaking.amendUndertaking.summary-list.sector.key = Industry sector
 undertaking.amendUndertaking.summary-list.telephone.key = Telephone number
 undertaking.amendUndertaking.summary-list.change.undertaking-name = name of undertaking
 undertaking.amendUndertaking.summary-list.change.industry-sector = industry sector
-undertaking.amendUndertaking.summary-list.change.email = undertaking emial
+undertaking.amendUndertaking.summary-list.change.email = undertaking email
 undertaking.amendUndertaking.p = By sending these details you are confirming that, to the best of your knowledge, they are correct
 undertaking.amendUndertaking.summary-list.verified-email=Verified email
 undertaking.amendUndertaking.summary-list.undertaking-admin-email.key = Undertaking administrator email
@@ -510,6 +510,7 @@ disableUndertakingWarning.p1 = You will no longer have access to the payments yo
 #disableUndertakingConfirm
 disableUndertakingConfirm.title = Are you sure you want to deregister this undertaking?
 disableUndertakingConfirm.error.required = Select yes if you want to deregister this undertaking
+disableUndertakingConfirm.hint = This cannot be reversed
 
 #undertakingDisabled
 undertakingDisabled.title = You have deregistered your undertaking
