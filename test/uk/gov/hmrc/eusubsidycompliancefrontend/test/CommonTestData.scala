@@ -28,7 +28,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendRequest}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.{agriculture, transport}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{DeclarationID, EORI, EisSubsidyAmendmentType, IndustrySectorLimit, Sector, SubsidyAmount, SubsidyRef, TaxType, TraderRef, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 
@@ -156,6 +156,15 @@ object CommonTestData {
     IndustrySectorLimit(12.34).some,
     LocalDate.of(2021, 1, 18).some,
     List(businessEntity4)
+  )
+
+  val undertaking3 = Undertaking(
+    undertakingRef,
+    UndertakingName("TestUndertaking"),
+    agriculture,
+    IndustrySectorLimit(32.34).some,
+    LocalDate.of(2023, 8, 23).some,
+    List(businessEntity1, businessEntity2)
   )
 
   val subsidyRetrieve = SubsidyRetrieve(
