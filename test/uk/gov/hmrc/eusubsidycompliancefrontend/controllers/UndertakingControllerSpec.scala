@@ -103,7 +103,7 @@ class UndertakingControllerSpec
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete))
           }
-          checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity.url)
+          checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity().url)
         }
 
         "undertaking journey is present and  is not None and is not complete" when {
@@ -181,7 +181,7 @@ class UndertakingControllerSpec
                 addBusiness = UndertakingAddBusinessFormPage(false.some),
                 confirmation = UndertakingConfirmationFormPage(true.some)
               ),
-              routes.BusinessEntityController.getAddBusinessEntity.url
+              routes.BusinessEntityController.getAddBusinessEntity().url
             )
           }
 
@@ -1282,7 +1282,7 @@ class UndertakingControllerSpec
             heading2 should include regex messageFromMessageKey("undertaking.confirmation.p1")
             doc.text() should not include messageFromMessageKey(
               "undertaking.confirmation.p2",
-              routes.BusinessEntityController.getAddBusinessEntity
+              routes.BusinessEntityController.getAddBusinessEntity()
             )
           }
         )
@@ -1302,11 +1302,15 @@ class UndertakingControllerSpec
           messageFromMessageKey("undertaking.confirmation.title"),
           { doc =>
             val heading2 = doc.select(".govuk-body").text()
-            heading2 should include regex messageFromMessageKey("undertaking.confirmation.p1")
-            doc.html() should include regex messageFromMessageKey(
-              "undertaking.confirmation.p2",
-              routes.BusinessEntityController.getAddBusinessEntity.url
-            )
+            heading2 should include regex messageFromMessageKey("undertaking.confirmation.p1") //fixme ???
+
+            val confirmationP2 = doc.getElementById("confirmation-p2")
+            confirmationP2.text should startWith("You can now add businesses to your undertaking using the ")
+            confirmationP2.text should endWith(" link in the ‘Undertaking administration’ section of the homepage.")
+            val link = doc.getElementById("add-remove-business-link")
+            link.text shouldBe "Add and remove businesses"
+            link.attr("href") shouldBe routes.BusinessEntityController.startJourney().url
+
           }
         )
 

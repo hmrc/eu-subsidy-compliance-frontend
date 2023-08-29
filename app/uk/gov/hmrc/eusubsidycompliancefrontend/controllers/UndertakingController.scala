@@ -103,7 +103,7 @@ class UndertakingController @Inject() (
       }
 
       journey.firstEmpty
-        .fold(Redirect(routes.BusinessEntityController.getAddBusinessEntity))(identity)
+        .fold(Redirect(routes.BusinessEntityController.getAddBusinessEntity()))(identity)
     }
   }
 

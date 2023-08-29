@@ -85,7 +85,7 @@ class AccountController @Inject() (
         logger.info(
           "Eligibility journey is complete so redirecting to BusinessEntity getAddBusinessEntity"
         )
-        Redirect(routes.BusinessEntityController.getAddBusinessEntity)
+        Redirect(routes.BusinessEntityController.getAddBusinessEntity())
     }
     result.getOrElse(handleMissingSessionData("Account Home - Undertaking not created -"))
   }

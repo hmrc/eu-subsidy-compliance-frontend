@@ -59,7 +59,7 @@ object BusinessEntityJourney {
     private val controller = routes.BusinessEntityController
 
     case class AddBusinessFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
-      def uri = controller.getAddBusinessEntity.url
+      def uri = controller.getAddBusinessEntity().url
     }
     case class AddEoriFormPage(value: Form[EORI] = None) extends FormPage[EORI] {
       def uri = controller.getEori.url

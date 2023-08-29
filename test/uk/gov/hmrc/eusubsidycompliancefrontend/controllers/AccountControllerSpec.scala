@@ -311,7 +311,7 @@ class AccountControllerSpec
               mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
               mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1))
             }
-            checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity)
+            checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity())
           }
         }
 
