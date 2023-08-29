@@ -20,6 +20,8 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
+@import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearHelpers
+@import java.time.LocalDate
 
 @this(
   layout: FullWidthLayout,
@@ -44,7 +46,7 @@
 
     @H1(title)
     @P(messages(s"$key.p1"))
-    @P(messages(s"$key.p2"))
+    @P(messages(s"$key.p2", TaxYearHelpers.taxYearStartForDate(LocalDate.now.minusYears(2)).getYear.toString))
 
     @govukSummaryList(SummaryList(
         rows = Seq(
