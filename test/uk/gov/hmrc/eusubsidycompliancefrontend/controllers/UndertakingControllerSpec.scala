@@ -1302,7 +1302,7 @@ class UndertakingControllerSpec
           messageFromMessageKey("undertaking.confirmation.title"),
           { doc =>
             val heading2 = doc.select(".govuk-body").text()
-            heading2 should include regex messageFromMessageKey("undertaking.confirmation.p1") //fixme ???
+            heading2 should include regex messageFromMessageKey("undertaking.confirmation.p1")
 
             val confirmationP2 = doc.getElementById("confirmation-p2")
             confirmationP2.text should startWith("You can now add businesses to your undertaking using the ")
