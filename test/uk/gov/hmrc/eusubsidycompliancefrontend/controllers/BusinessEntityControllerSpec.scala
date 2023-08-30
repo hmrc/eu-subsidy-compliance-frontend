@@ -126,7 +126,7 @@ class BusinessEntityControllerSpec
 
     "handling request to get add Business Page" must {
 
-      def performAction = controller.getAddBusinessEntity(FakeRequest())
+      def performAction = controller.getAddBusinessEntity()(FakeRequest())
 
       "throw technical error" when {
         val exception = new Exception("oh no")
@@ -217,6 +217,38 @@ class BusinessEntityControllerSpec
           document.getElementById("addBusiness-2").hasAttr("checked") shouldBe false
         }
 
+        "user has added a business entity" in new AddBusinessPageSetup(
+          theUndertaking = undertaking.copy(undertakingBusinessEntity = List(businessEntity1, businessEntity4)),
+          theBusinessEntityJourney = businessEntityJourney.copy(addBusiness = AddBusinessFormPage())
+        ) {
+
+          val result = controller.getAddBusinessEntity(businessAdded = Some(true))(FakeRequest())
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          verifyAddBusinessPageCommonElements(document)
+          document.getElementById("business-added-banner").text should endWith("Business added")
+          document.getElementById("business-added-warning").text should endWith(
+            "You have added one or more businesses. This could take up to 24 hours to show here. Any payments reported for those businesses in a previous undertaking will be moved to this undertaking and will affect the sector cap from now on."
+          )
+        }
+
+        "user has removed a business entity" in new AddBusinessPageSetup(
+          theUndertaking = undertaking.copy(undertakingBusinessEntity = List(businessEntity1)),
+          theBusinessEntityJourney = businessEntityJourney.copy(addBusiness = AddBusinessFormPage())
+        ) {
+
+          val result = controller.getAddBusinessEntity(businessRemoved = Some(true))(FakeRequest())
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          verifyAddBusinessPageCommonElements(document)
+          document.getElementById("business-removed-banner").text should endWith("Business removed")
+          document.getElementById("business-removed-warning").text should endWith(
+            "Removals of businesses could take up to 24 hours to show here. Payments reported up until the removal of any business will continue to affect your sector cap unless and until they move to another undertaking."
+          )
+        }
+
         "user has already answered yes" in new AddBusinessPageSetup(
           theUndertaking = undertaking.copy(undertakingBusinessEntity = List(businessEntity1, businessEntity4)),
           theBusinessEntityJourney = businessEntityJourney.copy(addBusiness = AddBusinessFormPage(Some(true)))
@@ -261,7 +293,7 @@ class BusinessEntityControllerSpec
     "handling request to post add Business Page" must {
 
       def performAction(data: (String, String)*) = controller.postAddBusinessEntity(
-        FakeRequest(POST, routes.BusinessEntityController.getAddBusinessEntity.url).withFormUrlEncodedBody(data: _*)
+        FakeRequest(POST, routes.BusinessEntityController.getAddBusinessEntity().url).withFormUrlEncodedBody(data: _*)
       )
 
       "throw technical error" when {
@@ -348,7 +380,7 @@ class BusinessEntityControllerSpec
       "display the page" when {
 
         def test(businessEntityJourney: BusinessEntityJourney): Unit = {
-          val previousUrl = routes.BusinessEntityController.getAddBusinessEntity.url
+          val previousUrl = routes.BusinessEntityController.getAddBusinessEntity().url
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -400,7 +432,7 @@ class BusinessEntityControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[BusinessEntityJourney](eori1)(Right(None))
           }
-          checkIsRedirect(performAction, routes.BusinessEntityController.getAddBusinessEntity.url)
+          checkIsRedirect(performAction, routes.BusinessEntityController.getAddBusinessEntity().url)
 
         }
       }
@@ -530,14 +562,10 @@ class BusinessEntityControllerSpec
                 mockSendEmail(validEori, AddMemberToBusinessEntity, undertaking)(Right(EmailSent))
                 mockSendEmail(eori1, validEori, AddMemberToLead, undertaking)(Right(EmailSent))
                 mockSendAuditEvent(AuditEvent.BusinessEntityAdded(undertakingRef, "1123", eori1, validEori))
-                mockPut[BusinessEntityJourney](
-                  updatedBusinessJourney().copy(addBusiness = AddBusinessFormPage(None)),
-                  eori1
-                )(Right(BusinessEntityJourney()))
               }
               checkIsRedirect(
                 performAction("businessEntityEori" -> eoriEntered),
-                routes.BusinessEntityController.getAddBusinessEntity.url
+                routes.BusinessEntityController.startJourney(businessAdded = Some(true)).url
               )
             }
           }
@@ -803,7 +831,7 @@ class BusinessEntityControllerSpec
           }
           checkIsRedirect(
             performAction("removeBusiness" -> "true")(eori4),
-            routes.BusinessEntityController.getAddBusinessEntity.url
+            routes.BusinessEntityController.startJourney(businessRemoved = Some(true)).url
           )
         }
 
@@ -819,7 +847,7 @@ class BusinessEntityControllerSpec
           }
           checkIsRedirect(
             performAction("removeBusiness" -> "false")(eori4),
-            routes.BusinessEntityController.getAddBusinessEntity.url
+            routes.BusinessEntityController.startJourney().url
           )
         }
       }
@@ -833,8 +861,8 @@ class BusinessEntityControllerSpec
     }
 
     "startJourney" must {
-      def performAction() = controller.startJourney(
-        FakeRequest(GET, routes.BusinessEntityController.startJourney.url)
+      def performAction() = controller.startJourney()(
+        FakeRequest(GET, "/some-url")
       )
 
       "redirect to add business entity page" when {
@@ -848,7 +876,7 @@ class BusinessEntityControllerSpec
           val result = performAction()
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result) should contain(routes.BusinessEntityController.getAddBusinessEntity.url)
+          redirectLocation(result) should contain(routes.BusinessEntityController.getAddBusinessEntity().url)
 
         }
       }

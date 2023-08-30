@@ -56,8 +56,8 @@ POST       /lead-undertaking-disable-confirm                                    
 
 GET        /lead-undertaking-disabled                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getUndertakingDisabled
 
-GET        /lead-undertaking-add-business/start                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.startJourney
-GET        /lead-undertaking-add-business                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getAddBusinessEntity
+GET        /lead-undertaking-add-business/start                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.startJourney(businessAdded: Option[Boolean] ?= None, businessRemoved: Option[Boolean] ?= None)
+GET        /lead-undertaking-add-business                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getAddBusinessEntity(businessAdded: Option[Boolean] ?= None, businessRemoved: Option[Boolean] ?= None)
 POST       /lead-undertaking-add-business                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.postAddBusinessEntity
 
 GET        /lead-undertaking-add-eori                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BusinessEntityController.getEori

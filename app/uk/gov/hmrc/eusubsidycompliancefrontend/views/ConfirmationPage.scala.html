@@ -47,7 +47,7 @@
         @P(messages("undertaking.confirmation.p1"))
 
         @if(intentToAddBusiness) {
-            <p class="govuk-body">@Html(messages("undertaking.confirmation.p2", controllers.routes.BusinessEntityController.getAddBusinessEntity.url))</p>
+            <p class="govuk-body" id="confirmation-p2">@Html(messages("undertaking.confirmation.p2", controllers.routes.BusinessEntityController.startJourney().url))</p>
         }
 
         @button("common.go-account-home")

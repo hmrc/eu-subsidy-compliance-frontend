@@ -28,12 +28,49 @@
   govukErrorSummary: GovukErrorSummary,
   govukRadios : GovukRadios,
   govukSummaryList: GovukSummaryList,
+  govukNotificationBanner: GovukNotificationBanner,
+  govukWarningText: GovukWarningText,
   hmrcAddToAList : HmrcAddToAList
 )
 
-@(form: Form[_], businessEntity: List[BusinessEntity])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], businessEntity: List[BusinessEntity], businessAdded: Boolean = false, businessRemoved: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @titleKey = @{messages("addBusiness.title")}
+
+@addedSuccessBanner = @{
+    govukNotificationBanner(NotificationBanner(
+        title = Text(messages("common.success")),
+        content = Text(messages("addBusiness.businessAdded.success.bannerTitle")),
+        bannerType = Some("success"),
+        role=Some("alert"),
+        attributes = Map("id" -> "business-added-banner")
+    ))
+}
+@addedWarning = @{
+    govukWarningText(WarningText(
+        iconFallbackText = Some(messages("common.warning")),
+        content = Text(messages("addBusiness.businessAdded.warningText")),
+        attributes = Map("id" -> "business-added-warning")
+    ))
+}
+
+@removedSuccessBanner = @{
+    govukNotificationBanner(NotificationBanner(
+        title = Text(messages("common.success")),
+        content = Text(messages("addBusiness.businessRemoved.success.bannerTitle")),
+        bannerType = Some("success"),
+        role=Some("alert"),
+        attributes = Map("id" -> "business-removed-banner")
+    ))
+}
+@removedWarning = @{
+    govukWarningText(WarningText(
+        iconFallbackText = Some(messages("common.warning")),
+        content = Text(messages("addBusiness.businessRemoved.warningText")),
+        attributes = Map("id" -> "business-removed-warning")
+    ))
+}
+
 
 @layout(
   pageTitle = Some(titleKey),
@@ -55,7 +92,21 @@
       ))
     }
 
+    @if(businessAdded){
+        @addedSuccessBanner
+    }
+    @if(businessRemoved){
+        @removedSuccessBanner
+    }
+
     @{H1(titleKey)}
+
+    @if(businessAdded){
+        @addedWarning
+    }
+    @if(businessRemoved){
+        @removedWarning
+    }
       
     @if(businessEntity.length == 1){
       @{P(messages("addBusiness.empty.p1"), Some("govuk-body govuk-!-margin-bottom-8"), Some("no-other-businesses"))}

@@ -92,15 +92,19 @@ class BusinessEntityController @Inject() (
     )(eoriEntered => FormValues(eoriEntered))(eori => eori.value.some)
   )
 
-  def startJourney: Action[AnyContent] = verifiedEmail.async { implicit request =>
-    withLeadUndertaking { _ =>
-      startNewJourney { _ =>
-        Redirect(routes.BusinessEntityController.getAddBusinessEntity.url)
+  def startJourney(businessAdded: Option[Boolean] = None, businessRemoved: Option[Boolean] = None): Action[AnyContent] =
+    verifiedEmail.async { implicit request =>
+      withLeadUndertaking { _ =>
+        startNewJourney { _ =>
+          Redirect(routes.BusinessEntityController.getAddBusinessEntity(businessAdded, businessRemoved).url)
+        }
       }
     }
-  }
 
-  def getAddBusinessEntity: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def getAddBusinessEntity(
+    businessAdded: Option[Boolean] = None,
+    businessRemoved: Option[Boolean] = None
+  ): Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
       logger.info("BusinessEntityController.getAddBusinessEntity")
@@ -112,7 +116,14 @@ class BusinessEntityController @Inject() (
               .fold(addBusinessForm)(bool => addBusinessForm.fill(FormValues(bool.toString)))
 
           logger.info("BusinessEntityController showing undertakingBusinessEntity")
-          Ok(addBusinessPage(form, undertaking.undertakingBusinessEntity))
+          Ok(
+            addBusinessPage(
+              form,
+              undertaking.undertakingBusinessEntity,
+              businessAdded.getOrElse(false),
+              businessRemoved.getOrElse(false)
+            )
+          )
         }
     }
   }
@@ -141,7 +152,7 @@ class BusinessEntityController @Inject() (
       store
         .get[BusinessEntityJourney]
         .toContext
-        .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity).toFuture) { journey =>
+        .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture) { journey =>
           runStepIfEligible(journey) {
             val form = journey.eori.value.fold(eoriForm)(eori => eoriForm.fill(FormValues(eori)))
             Ok(eoriPage(form, journey.previous)).toFuture
@@ -194,7 +205,7 @@ class BusinessEntityController @Inject() (
       store
         .get[BusinessEntityJourney]
         .toContext
-        .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity).toFuture) { journey =>
+        .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture) { journey =>
           runStepIfEligible(journey) {
             eoriForm
               .bindFromRequest()
@@ -214,14 +225,16 @@ class BusinessEntityController @Inject() (
   }
 
   protected def startNewJourney(
-    f: BusinessEntityJourney => Result
+    f: BusinessEntityJourney => Result,
+    businessAdded: Option[Boolean] = None,
+    businessRemoved: Option[Boolean] = None
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
     implicit val eori: EORI = r.eoriNumber
     store
       .put[BusinessEntityJourney](BusinessEntityJourney())
       .toContext
       .map(journey => f(journey))
-      .getOrElse(Redirect(routes.BusinessEntityController.getAddBusinessEntity.url))
+      .getOrElse(Redirect(routes.BusinessEntityController.getAddBusinessEntity(businessAdded, businessRemoved).url))
 
   }
 
@@ -230,10 +243,7 @@ class BusinessEntityController @Inject() (
       store
         .put[BusinessEntityJourney](BusinessEntityJourney(isLeadSelectJourney = true.some))
         .map(_ => Redirect(routes.SelectNewLeadController.getSelectNewLead))
-    else
-      store
-        .put[BusinessEntityJourney](BusinessEntityJourney())
-        .map(_ => Redirect(routes.BusinessEntityController.getAddBusinessEntity))
+    else Future.successful(Redirect(routes.BusinessEntityController.startJourney(businessAdded = Some(true))))
 
   def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = verifiedEmail.async { implicit request =>
     logger.info("BusinessEntityController.getRemoveBusinessEntity")
@@ -247,7 +257,7 @@ class BusinessEntityController @Inject() (
           logger.info(
             s"Did not find undertaking for $eoriEntered, redirecting to BusinessEntityController.getAddBusinessEntity"
           )
-          Redirect(routes.BusinessEntityController.getAddBusinessEntity)
+          Redirect(routes.BusinessEntityController.getAddBusinessEntity())
       }
     }
   }
@@ -265,7 +275,7 @@ class BusinessEntityController @Inject() (
         logger.info(
           s"Could not find undertaking for $eori, redirecting to BusinessEntityController.getAddBusinessEntity"
         )
-        Redirect(routes.BusinessEntityController.getAddBusinessEntity)
+        Redirect(routes.BusinessEntityController.getAddBusinessEntity())
       } { undertaking =>
         logger.info(
           s"Found undertaking for $eori, showing removeYourselfBEPage"
@@ -282,7 +292,7 @@ class BusinessEntityController @Inject() (
         escService
           .retrieveUndertaking(EORI(eoriEntered))
           .toContext
-          .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity).toFuture) { undertaking =>
+          .foldF(Redirect(routes.BusinessEntityController.getAddBusinessEntity()).toFuture) { undertaking =>
             val undertakingRef = undertaking.reference
             val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
 
@@ -321,13 +331,14 @@ class BusinessEntityController @Inject() (
         logger.info(
           s"Removed undertakingRef:$undertakingRef, Redirecting to BusinessEntityController.getAddBusinessEntity"
         )
-        Redirect(routes.BusinessEntityController.getAddBusinessEntity)
+        Redirect(routes.BusinessEntityController.startJourney(businessRemoved = Some(true)))
       }
     } else {
+      //fixme why do we need this?
       logger.info(
         s"Did not remove undertakingRef:$undertakingRef as form was not true, redirecting to BusinessEntityController.getAddBusinessEntity"
       )
-      Redirect(routes.BusinessEntityController.getAddBusinessEntity).toFuture
+      Redirect(routes.BusinessEntityController.startJourney()).toFuture
     }
   }
 

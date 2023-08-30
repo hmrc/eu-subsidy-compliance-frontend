@@ -26,6 +26,7 @@ service.homePageUrl = "test data"
 common.yes=Yes
 common.no=No
 common.warning=Warning
+common.success=Success
 common.alpha-info.p1=This is a new service – your
 common.alpha-info.link=feedback (opens in new tab)
 common.alpha-info.p2=will help us to improve it.
@@ -184,6 +185,10 @@ addBusiness.businesses-added.legend = Do you need to add another business?
 addBusiness.hint = You only need to add businesses that have received customs subsidies (Customs Duty waivers) or non-customs subsidies.
 addBusiness.error.required = Select yes if you need to add another business
 addBusiness.change-remove.snippet = business with EORI
+addBusiness.businessAdded.success.bannerTitle = Business added
+addBusiness.businessAdded.warningText = You have added one or more businesses. This could take up to 24 hours to show here. Any payments reported for those businesses in a previous undertaking will be moved to this undertaking and will affect the sector cap from now on.
+addBusiness.businessRemoved.success.bannerTitle = Business removed
+addBusiness.businessRemoved.warningText = Removals of businesses could take up to 24 hours to show here. Payments reported up until the removal of any business will continue to affect your sector cap unless and until they move to another undertaking.
 
 businessEntityEori.title = What is the EORI number of the business you want to add?
 businessEntityEori.hint = The first 2 letters will be the country code, GB. This is followed by 12 or 15 digits, like GB123456123456
@@ -213,7 +218,7 @@ removeBusiness.error.required = Select yes if you want to remove a business from
 
 undertaking.confirmation.title = Undertaking registered
 undertaking.confirmation.p1 = We have sent you a confirmation email.
-undertaking.confirmation.p2 = You can now add businesses to your undertaking using the <a href="{0}" class="govuk-link">Add and remove businesses</a> link in the ‘Undertaking administration’ section of the homepage.
+undertaking.confirmation.p2 = You can now add businesses to your undertaking using the <a id="add-remove-business-link" href="{0}" class="govuk-link">Add and remove businesses</a> link in the ‘Undertaking administration’ section of the homepage.
 
 lead-account-homepage.title = Manage your undertaking
 lead-account-homepage.p1.not-overdue = Your next report is due by <strong>{0}</strong>.
