@@ -266,11 +266,7 @@ class SubsidyController @Inject() (
         Ok(
           reportNonCustomSubsidyPage(
             updatedForm,
-            previousUrl,
-            currentYear.toString,
-            (currentYear - 1).toString,
-            (currentYear - 2).toString,
-            (currentYear - 3).toString
+            previousUrl
           )
         )
       }

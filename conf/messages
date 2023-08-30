@@ -332,11 +332,9 @@ reportPaymentReturnJourney.option2 = I have no payments to report
 reportPaymentReturnJourney.error.required = Select if you need to report a non-customs payment or you have no payments to report
 
 # ReportNonCustomSubsidy
-reportNonCustomSubsidy.title = You must report all non-customs subsidies for the last 3 tax years
-reportNonCustomSubsidy.p1 = You need to report for the current tax year, and the previous 2 tax years
-reportNonCustomSubsidy.p2.year1 = 6 April {0} to 5 April {1}
-reportNonCustomSubsidy.p2.year2 = 6 April {0} to 5 April {1}
-reportNonCustomSubsidy.p2.year3 = 6 April {0} to 5 April {1}
+reportNonCustomSubsidy.title = You must report all non-customs subsidies for 3 tax years
+reportNonCustomSubsidy.p1 = You need to report for the current tax year, and the previous 2 tax years:
+reportNonCustomSubsidy.p2.dateRange = 6 April {0} to 5 April {1}
 
 add-claim-date.title = What date were you awarded the payment?
 add-claim-date.p1 = What date were you awarded the payment?
@@ -466,7 +464,7 @@ noBusinessPresent.title = There are no other businesses added to your undertakin
 
 dashboard.title = Summary of your allowance
 dashboard.p1 = This report summarises all customs subsidies (Customs Duty waivers) and non-customs subsidy payments recorded against your undertaking. These payments are referred to as ‘de minimis aid’.
-dashboard.p2 = The report includes all payments recorded against your undertaking since 6 April 2020.
+dashboard.p2 = The report includes all payments recorded against your undertaking since 6 April {0}.
 dashboard.current-tax-year.heading = Current tax year
 dashboard.year.summary.heading = Tax year {0} to {1}
 dashboard.customs.duty.heading = Customs subsidies (Customs Duty waivers)

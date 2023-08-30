@@ -42,7 +42,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.{TaxYearHelpers, TimeProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 
@@ -570,23 +570,11 @@ class SubsidyControllerSpec
 
         val result = performAction()
         val document: Document = Jsoup.parse(contentAsString(result))
-
-        val listElement = document.select("ul.govuk-list.govuk-list--bullet")
-        val expectedTaxYears = List(
-          "6 April 2020 to 5 April 2021",
-          "6 April 2021 to 5 April 2022",
-          "6 April 2022 to 5 April 2023"
-        )
-
-        status(result) shouldBe OK
-
         document
           .select(".govuk-back-link")
           .attr("href") shouldBe routes.SubsidyController.getReportedPaymentReturningUserPage.url
 
-        document.getElementById("twoYearBack").text shouldBe expectedTaxYears.head
-        document.getElementById("previousYear").text shouldBe expectedTaxYears(1)
-        document.getElementById("currentYear").text shouldBe expectedTaxYears(2)
+        verifyTaxYearsPage(result, document)
 
       }
 
@@ -602,22 +590,12 @@ class SubsidyControllerSpec
 
         val result = performAction()
         val document: Document = Jsoup.parse(contentAsString(result))
-        val listElement = document.selectFirst("ul.govuk-list.govuk-list--bullet")
-        val expectedTaxYears = List(
-          "6 April 2020 to 5 April 2021",
-          "6 April 2021 to 5 April 2022",
-          "6 April 2022 to 5 April 2023"
-        )
 
-        status(result) shouldBe OK
         document
           .select(".govuk-back-link")
           .attr("href") shouldBe routes.SubsidyController.getReportPaymentFirstTimeUser.url
 
-        document.getElementById("twoYearBack").text shouldBe expectedTaxYears.head
-        document.getElementById("previousYear").text shouldBe expectedTaxYears(1)
-        document.getElementById("currentYear").text shouldBe expectedTaxYears(2)
-
+        verifyTaxYearsPage(result, document)
       }
 
     }
@@ -2088,6 +2066,25 @@ class SubsidyControllerSpec
       }
     }
 
+  }
+
+  private def verifyTaxYearsPage(result: Future[Result], document: Document) = {
+    val currentDate = LocalDate.now
+    val currentTaxYearStartYear = TaxYearHelpers.taxYearStartForDate(currentDate).getYear.toString
+    val currentTaxYearEndYear = TaxYearHelpers.taxYearEndForDate(currentDate).getYear.toString
+    val previousTaxYearStartYear = TaxYearHelpers.taxYearStartForDate(currentDate.minusYears(1)).getYear.toString
+    val twoYeasAgoTaxYearStartYear = TaxYearHelpers.taxYearStartForDate(currentDate.minusYears(2)).getYear.toString
+    val expectedTaxYears = List(
+      s"6 April $twoYeasAgoTaxYearStartYear to 5 April $previousTaxYearStartYear",
+      s"6 April $previousTaxYearStartYear to 5 April $currentTaxYearStartYear",
+      s"6 April $currentTaxYearStartYear to 5 April $currentTaxYearEndYear"
+    )
+
+    status(result) shouldBe OK
+
+    document.getElementById("twoYearBack").text shouldBe expectedTaxYears.head
+    document.getElementById("previousYear").text shouldBe expectedTaxYears(1)
+    document.getElementById("currentYear").text shouldBe expectedTaxYears(2)
   }
 
   private def mockForPostAddTraderReference = {
