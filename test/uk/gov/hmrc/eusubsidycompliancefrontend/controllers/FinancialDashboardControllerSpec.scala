@@ -89,9 +89,7 @@ class FinancialDashboardControllerSpec
         )
 
         val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
-
         val result = route(app, request).get
-
         val page = instanceOf[FinancialDashboardPage]
 
         val summaryData = FinancialDashboardSummary
@@ -118,9 +116,7 @@ class FinancialDashboardControllerSpec
       }
 
       val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
-
       val result = route(app, request).get
-
       val page = instanceOf[FinancialDashboardPage]
 
       val summaryData = FinancialDashboardSummary
