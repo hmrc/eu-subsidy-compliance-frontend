@@ -204,13 +204,24 @@ class SubsidyController @Inject() (
     }
   }
 
-  def startJourney: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def startFirstTimeUserJourney: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
-      startNewJourney { _ =>
-        Redirect(routes.SubsidyController.getReportedPaymentReturningUserPage.url)
-      }
+      implicit val eori: EORI = request.eoriNumber
+      store
+        .put[SubsidyJourney](SubsidyJourney())
+        .map(_ => Redirect(routes.SubsidyController.getReportPaymentFirstTimeUser.url))
     }
   }
+
+  def startJourney: Action[AnyContent] = verifiedEmail.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+      store
+        .put[SubsidyJourney](SubsidyJourney())
+        .map(_ => Redirect(routes.SubsidyController.getReportedPaymentReturningUserPage.url))
+    }
+  }
+
   def getReportedPaymentReturningUserPage: Action[AnyContent] = verifiedEmail.async { implicit request =>
     withLeadUndertaking { _ =>
       renderFormIfEligible { journey =>
@@ -768,17 +779,6 @@ class SubsidyController @Inject() (
         else Redirect(journey.previous)
       }
       .getOrElse(Redirect(routes.SubsidyController.getReportedPayments.url))
-
-  }
-  protected def startNewJourney(
-    f: SubsidyJourney => Result
-  )(implicit r: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
-    implicit val eori: EORI = r.eoriNumber
-    store
-      .put[SubsidyJourney](SubsidyJourney())
-      .toContext
-      .map(journey => f(journey))
-      .getOrElse(Redirect(routes.SubsidyController.getReportedPaymentReturningUserPage.url))
 
   }
 

@@ -83,6 +83,7 @@ POST       /lead-undertaking-add-payment-amount                                 
 GET        /lead-undertaking-check-converted-amount                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getConfirmClaimAmount
 POST       /lead-undertaking-check-converted-amount                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postConfirmClaimAmount
 
+GET        /lead-undertaking-first-time-user/start                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.startFirstTimeUserJourney
 GET        /lead-undertaking-first-time-user                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getReportPaymentFirstTimeUser
 POST       /lead-undertaking-first-time-user                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postReportPaymentFirstTimeUser
 
