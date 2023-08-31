@@ -21,7 +21,6 @@ import org.jsoup.Jsoup
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers
 import play.api.http.Status
-import play.api.http.Status.OK
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
@@ -69,7 +68,7 @@ class FinancialDashboardControllerSpec
       "play.filters.csp.nonce.enabled" -> false
     )
   )
-  override lazy val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+
   override lazy val fakeApplication: Application =
     new GuiceApplicationBuilder()
       .configure(additionalConfig)
@@ -130,7 +129,7 @@ class FinancialDashboardControllerSpec
       val data = contentAsString(result)
       data shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
       val document = Jsoup.parse(data)
-      val sectorCapElement = document.select("dt:contains(Sector cap (Agriculture))").text()
+      val sectorCapElement = document.getElementById("SectorCapId").text()
       sectorCapElement shouldBe "Sector cap (Agriculture)"
 
     }
