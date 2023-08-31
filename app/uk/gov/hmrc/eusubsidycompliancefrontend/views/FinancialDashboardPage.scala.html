@@ -76,7 +76,7 @@
             ),
             SummaryListRow(
                 key = Key(
-                    content = Text(messages(s"$key.sector.cap.heading", messages("dashboard.sector.name." + summary.overall.sector)))
+                    content = HtmlContent(s"""<span id="SectorCapId">${messages(s"$key.sector.cap.heading", messages("dashboard.sector.name." + summary.overall.sector))}</span>""")
                 ),
                 value = Value(
                     content = Text(summary.overall.sectorCap.toEuros)

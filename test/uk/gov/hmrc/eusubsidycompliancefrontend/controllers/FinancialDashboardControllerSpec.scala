@@ -17,24 +17,29 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import org.jsoup.Jsoup
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers
 import play.api.http.Status
-import play.api.inject.guice.GuiceableModule
+import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, route, running, status, writeableOf_AnyContentAsEmpty}
-import play.api.{Configuration, inject}
+import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
+import play.api.{Application, Configuration, inject}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailVerificationService, EscService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertakingRef, undertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertaking3, undertakingRef, undertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
+
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.i18n.MessagesApi
+import play.api.inject.bind
 
 class FinancialDashboardControllerSpec
     extends ControllerSpec
@@ -44,7 +49,8 @@ class FinancialDashboardControllerSpec
     with Matchers
     with ScalaFutures
     with IntegrationPatience
-    with EscServiceSupport {
+    with EscServiceSupport
+    with GuiceOneAppPerSuite {
 
   private val fakeTimeProvider = FakeTimeProvider.withFixedDate(1, 1, 2022)
 
@@ -63,6 +69,13 @@ class FinancialDashboardControllerSpec
     )
   )
 
+  override lazy val fakeApplication: Application =
+    new GuiceApplicationBuilder()
+      .configure(additionalConfig)
+      .overrides(overrideBindings: _*)
+      .overrides(bind[MessagesApi].toProvider[TestMessagesApiProvider])
+      .build()
+
   "FinancialDashboardController" when {
 
     "getFinancialDashboard is called" must {
@@ -74,24 +87,50 @@ class FinancialDashboardControllerSpec
           undertakingSubsidies.toFuture
         )
 
-        running(fakeApplication) {
-          val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
+        val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
+        val result = route(app, request).get
+        val page = instanceOf[FinancialDashboardPage]
 
-          val result = route(fakeApplication, request).get
+        val summaryData = FinancialDashboardSummary
+          .fromUndertakingSubsidies(
+            undertaking = undertaking,
+            subsidies = undertakingSubsidies,
+            today = fakeTimeProvider.today
+          )
 
-          val page = instanceOf[FinancialDashboardPage]
+        status(result) shouldBe Status.OK
+        contentAsString(result) shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
 
-          val summaryData = FinancialDashboardSummary
-            .fromUndertakingSubsidies(
-              undertaking = undertaking,
-              subsidies = undertakingSubsidies,
-              today = fakeTimeProvider.today
-            )
-
-          status(result) shouldBe Status.OK
-          contentAsString(result) shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
-        }
       }
+
+    }
+
+    "display sector cap as agriculture on financial Dashboard Page" in {
+      inSequence {
+        mockAuthWithEnrolmentAndNoEmailVerification(eori1)
+        mockRetrieveUndertaking(eori1)(undertaking3.some.toFuture)
+        mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
+          undertakingSubsidies.toFuture
+        )
+      }
+
+      val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
+      val result = route(app, request).get
+      val page = instanceOf[FinancialDashboardPage]
+
+      val summaryData = FinancialDashboardSummary
+        .fromUndertakingSubsidies(
+          undertaking = undertaking3,
+          subsidies = undertakingSubsidies,
+          today = fakeTimeProvider.today
+        )
+
+      status(result) shouldBe Status.OK
+      val data = contentAsString(result)
+      data shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
+      val document = Jsoup.parse(data)
+      val sectorCapElement = document.getElementById("SectorCapId").text()
+      sectorCapElement shouldBe "Sector cap (Agriculture)"
 
     }
 
