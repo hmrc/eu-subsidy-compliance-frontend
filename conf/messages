@@ -326,6 +326,8 @@ add-claim-amount.l3 = Enter the amount of aid you received in pounds sterling.
 add-claim-amount.l4 = Change the ‘From’ dropdown to ‘GBP’ and use the figure displayed below it.
 add-claim-amount.l5 = Enter amount in the box below.
 
+Test Commit=test commit
+
 confirm-converted-amount.title = Your amount in euros
 confirm-converted-amount.p1 = Your pounds sterling amount of {0}, converted to euros, is <strong>{1}</strong>.
 confirm-converted-amount.p2 = We’ve converted your amount from pounds sterling as this type of aid is measured in euros.
