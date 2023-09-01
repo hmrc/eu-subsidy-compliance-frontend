@@ -2066,6 +2066,28 @@ class SubsidyControllerSpec
       }
     }
 
+    "startFirstTimeUserJourney" must {
+      def performAction() = controller.startFirstTimeUserJourney(
+        FakeRequest(GET, "/some-url/")
+      )
+
+      "redirect to first time user page" when {
+        "user starts new journey" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockPut[SubsidyJourney](SubsidyJourney(), eori1)(Right(SubsidyJourney()))
+          }
+
+          val result = performAction()
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) should contain(routes.SubsidyController.getReportPaymentFirstTimeUser.url)
+
+        }
+      }
+    }
+
   }
 
   private def verifyTaxYearsPage(result: Future[Result], document: Document) = {

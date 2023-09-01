@@ -53,7 +53,7 @@
 }
 
 @continueUrl = @{
-    if(neverSubmitted) routes.SubsidyController.getReportPaymentFirstTimeUser.url
+    if(neverSubmitted) routes.SubsidyController.startFirstTimeUserJourney.url
     else routes.SubsidyController.startJourney.url
 }
 
