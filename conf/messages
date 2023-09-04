@@ -289,8 +289,7 @@ add-claim-amount.input-hint-gbp = The amount should include two decimal places, 
 
 # Add Claim Amount Form - Euro Only
 add-claim-amount-euro-only.title = What is the payment amount in euros?
-add-claim-amount-euro-only.help = <a id="currency-exchange-link" class="govuk-link" target="_blank" href="https://ec.europa.eu/info/funding-tenders/procedures-guidelines-tenders/information-contractors-and-beneficiaries/exchange-rate-inforeuro_en">Convert payments in pounds to euros with this tool (opens in another tab).</a>
-add-claim-amount-euro-only.input-hint = The amount should include two decimal places, like €248.65
+add-claim-amount-euro-only.input-hint = <a id="currency-exchange-link" class="govuk-link" target="_blank" href="https://ec.europa.eu/info/funding-tenders/procedures-guidelines-tenders/information-contractors-and-beneficiaries/exchange-rate-inforeuro_en">Convert payments in pounds to euros with this tool (opens in another tab).</a> The amount should include two decimal places, like €248.65
 
 # Form validation errors
 
