@@ -1548,18 +1548,6 @@ class SubsidyControllerSpec
         "yes is selected but no trader reference is added" in {
           testFormError(Some(List("should-store-trader-ref" -> "true")), "claim-trader-ref.error.required")
         }
-
-        " should throw an error if illegal characters are submitted and display appropriate error message" in {
-
-          val l1 = List(
-            "should-store-trader-ref" -> "true",
-            "claim-trader-ref" -> "%%$^$%^$%^$$^%$"
-          )
-
-          testFormError(Some(l1), "claim-trader-ref.error.incorrect-format")
-
-        }
-
       }
 
       "redirect to the next page" when {
@@ -1585,6 +1573,16 @@ class SubsidyControllerSpec
             performAction(
               "should-store-trader-ref" -> "true",
               "claim-trader-ref" -> "1234567890 1234567890 1234567890 1234567890"
+            ),
+            routes.SubsidyController.getCheckAnswers.url
+          )
+        }
+        "user selected Yes and enters Valid reference including special characters" in {
+          mockForPostAddTraderReference
+          checkIsRedirect(
+            performAction(
+              "should-store-trader-ref" -> "true",
+              "claim-trader-ref" -> "Test-Reference_with!Special@Characters"
             ),
             routes.SubsidyController.getCheckAnswers.url
           )
