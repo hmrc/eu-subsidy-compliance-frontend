@@ -77,6 +77,19 @@ class SubsidyControllerSpec
 
   private val dateRange = (LocalDate.of(2020, 4, 6), LocalDate.of(2022, 10, 9))
 
+  private val accentedCharactersList = List(
+    "Áá Éé Íí Óó Úú Ññ Üü",
+    "Àà Èè Ìì Òò Ùù Ââ Êê Îî Ôô Ûû",
+    "Ää Öö Åå Ææ Øø",
+    "Çç Şş Ğğ İı",
+    "Ññ ß Ýý Ææ Œœ",
+    "Šš Žž Čč Đđ",
+    "Āā Ēē Īī Ōō Ūū",
+    "ẞß Ẁẁ Ỳỳ Ẃẃ Ǣǣ",
+    "Ǖǖ Ǘǘ Ǎǎ ǫǬ ǭ",
+    "Ḉḉ Ḑḑ Ḕḕ Ḗḗ"
+  )
+
   override def additionalConfig: Configuration = Configuration(
     ConfigFactory.parseString(
       s"""
@@ -1586,6 +1599,19 @@ class SubsidyControllerSpec
             ),
             routes.SubsidyController.getCheckAnswers.url
           )
+        }
+
+        "user selected Yes and enters Valid reference including characters with accents" in {
+          accentedCharactersList.map(currentString => {
+            mockForPostAddTraderReference
+            checkIsRedirect(
+              performAction(
+                "should-store-trader-ref" -> "true",
+                "claim-trader-ref" -> currentString
+              ),
+              routes.SubsidyController.getCheckAnswers.url
+            )
+          })
         }
       }
 
