@@ -63,4 +63,6 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
 
   def getTemplateId(template: EmailTemplate): Option[String] = templateIds.get(template)
 
+  def sectorCap(sector: String): String = config.get[String](s"sectorCap.$sector")
+
 }

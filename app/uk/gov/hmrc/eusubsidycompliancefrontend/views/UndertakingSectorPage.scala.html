@@ -28,40 +28,47 @@
   govukRadios : GovukRadios
 )
 
+
 @(form: Form[_], previous: Journey.Uri, undertakingName: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"undertakingSector"}
 
+
+@radioText(id: String, content: String) = {
+    <span id="@id">@content</span>
+}
+
 @radioOptions = @{
     Seq(
         RadioItem(
-          content = Text(messages("sector.label.2")),
+          content = HtmlContent(radioText("sector-label-agriculture", messages("sector.label.2"))),
           hint = Some(Hint(
-            content = Text(messages("sector.hint.2"))
+            content = HtmlContent(radioText("sector-hint-agriculture", messages("sector.hint.2", appConfig.sectorCap("agriculture"))))
           )),
           value = Some(Sector.agriculture.toString),
           checked = form.data.get(fieldName).fold(false)(x => x == Sector.agriculture.toString)
         ),
         RadioItem(
-          content = Text(messages("sector.label.3")),
+          content = HtmlContent(radioText("sector-label-aquaculture", messages("sector.label.3"))),
           hint = Some(Hint(
-            content = Text(messages("sector.hint.3"))
+            content = HtmlContent(radioText("sector-hint-aquaculture", messages("sector.hint.3", appConfig.sectorCap("aquaculture"))))
           )),
           value = Some(Sector.aquaculture.toString),
           checked = form.data.get(fieldName).fold(false)(x => x == Sector.aquaculture.toString)
         ),
         RadioItem(
-          content = Text(messages("sector.label.1")),
+          content = HtmlContent(radioText("sector-label-transport", messages("sector.label.1"))),
           hint = Some(Hint(
-            content = Text(messages("sector.hint.1"))
+            content = HtmlContent(radioText("sector-hint-transport", messages("sector.hint.1", appConfig.sectorCap("transport"))))
           )),
           value = Some(Sector.transport.toString),
           checked = form.data.get(fieldName).fold(false)(x => x == Sector.transport.toString)
         ),
         RadioItem(
-          content = Text(messages("sector.label.0")),
+          content = HtmlContent(radioText("sector-label-other", messages("sector.label.0"))),
           hint = Some(Hint(
-            content = Text(messages("sector.hint.0"))
+            id = Some("sector-hint-other"),
+            content = HtmlContent(radioText("sector-hint-other", messages("sector.hint.0", appConfig.sectorCap("other"))))
           )),
           value = Some(Sector.other.toString),
           checked = form.data.get(fieldName).fold(false)(x => x == Sector.other.toString)

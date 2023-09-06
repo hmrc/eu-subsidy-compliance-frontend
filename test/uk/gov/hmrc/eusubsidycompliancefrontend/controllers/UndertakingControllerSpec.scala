@@ -25,7 +25,7 @@ import play.api.mvc.Results.Redirect
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.ModifyUndertakingRow
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.{ModifyUndertakingRow, SectorRadioOption}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{UndertakingDisabled, UndertakingUpdated}
@@ -354,15 +354,23 @@ class UndertakingControllerSpec
 
       "display the page" when {
 
-        val allRadioTexts: List[String] = List(
-          s"${messageFromMessageKey("sector.label.2")}" +
-            s" ${messageFromMessageKey("sector.hint.2")}",
-          s"${messageFromMessageKey("sector.label.3")}" +
-            s" ${messageFromMessageKey("sector.hint.3")}",
-          s"${messageFromMessageKey("sector.label.1")}" +
-            s" ${messageFromMessageKey("sector.hint.1")}",
-          messageFromMessageKey("sector.label.0") +
-            s" ${messageFromMessageKey("sector.hint.0")}"
+        val allRadioTexts: List[SectorRadioOption] = List(
+          SectorRadioOption(
+            "agriculture",
+            "Primary production of agricultural products",
+            "An ‘agricultural product’ can be products such as: live animals, meat and edible meat offal, dairy produce, birds’ eggs, natural honey. The cap for this sector is €20,000."
+          ),
+          SectorRadioOption(
+            "aquaculture",
+            "Fishery and aquaculture products",
+            "If any part of your business is involved in the production, processing or marketing of fishery and aquaculture products. A ‘fishery product’ means aquatic organisms resulting from any fishing activity or products derived from them. The cap for this sector is €30,000."
+          ),
+          SectorRadioOption(
+            "transport",
+            "Road freight transport for hire or reward",
+            "This sector includes couriers and hauliers who get paid by someone to transport their goods by road. The cap for this sector is €100,000."
+          ),
+          SectorRadioOption("other", "Other", "The cap for all other sectors is €200,000.")
         )
 
         def test(undertakingJourney: UndertakingJourney, previousCall: String, inputValue: Option[String]): Unit = {
@@ -1831,4 +1839,6 @@ class UndertakingControllerSpec
 
 object UndertakingControllerSpec {
   final case class ModifyUndertakingRow(question: String, answer: String, changeUrl: String)
+
+  final case class SectorRadioOption(sector: String, label: String, hint: String)
 }

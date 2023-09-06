@@ -26,6 +26,7 @@ import play.api.http.HttpConfiguration
 import play.api.i18n._
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
+import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.SectorRadioOption
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.PlaySupport
 
 import scala.concurrent.Future
@@ -108,12 +109,13 @@ trait ControllerSpec extends PlaySupport with ScalaFutures with IntegrationPatie
       expectedStatus
     )
 
-  def testRadioButtonOptions(doc: Document, expectedRadioOptionsTexts: List[String]) = {
+  def testRadioButtonOptions(doc: Document, expectedRadioOptionsTexts: List[SectorRadioOption]) = {
     val radioOptions = doc.select(".govuk-radios__item")
     radioOptions.size shouldBe expectedRadioOptionsTexts.size
-    expectedRadioOptionsTexts.zipWithIndex.map({ case (text, i) =>
-      radioOptions.get(i).text() shouldBe text
-    })
+    expectedRadioOptionsTexts.map { option =>
+      doc.getElementById(s"sector-label-${option.sector}").text shouldBe option.label
+      doc.getElementById(s"sector-hint-${option.sector}").text shouldBe option.hint
+    }
   }
 
 }
