@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models.audit
 
 import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{UndertakingCreate, UndertakingCreateWithSectorLimit}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingCreate, UndertakingCreateWithSectorLimit}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityAddeed.BusinessDetailsAdded
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoteItself.BusinessEntityPromoteItselfDetails
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.businessEntityPromoted.LeadPromoteDetails
@@ -280,7 +280,9 @@ object AuditEvent {
   final case class UndertakingDisabled(
     ggDetails: String,
     undertakingReference: UndertakingRef,
-    disablementStartDate: LocalDate
+    disablementStartDate: LocalDate,
+    leadEori: EORI,
+    members: List[EORI]
   ) extends AuditEvent {
     override val auditType: String = "UndertakingDisabled"
     override val transactionName: String = "UndertakingDisabled"
@@ -288,5 +290,19 @@ object AuditEvent {
 
   object UndertakingDisabled {
     implicit val writes: Writes[UndertakingDisabled] = Json.writes
+
+    def apply(
+      ggDetails: String,
+      undertakingReference: UndertakingRef,
+      disablementStartDate: LocalDate,
+      undertaking: Undertaking
+    ): UndertakingDisabled =
+      UndertakingDisabled(
+        ggDetails = ggDetails,
+        undertakingReference = undertakingReference,
+        disablementStartDate = disablementStartDate,
+        leadEori = undertaking.getLeadEORI,
+        members = undertaking.getAllNonLeadEORIs
+      )
   }
 }

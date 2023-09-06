@@ -485,7 +485,7 @@ class UndertakingController @Inject() (
         _ <- escService.disableUndertaking(undertaking)
         _ <- undertaking.undertakingBusinessEntity.traverse(be => store.deleteAll(be.businessEntityIdentifier))
         _ = auditService.sendEvent[UndertakingDisabled](
-          UndertakingDisabled(request.authorityId, undertaking.reference, timeProvider.today)
+          UndertakingDisabled(request.authorityId, undertaking.reference, timeProvider.today, undertaking)
         )
         formattedDate = DateFormatter.govDisplayFormat(timeProvider.today)
         _ <- emailService.sendEmail(
