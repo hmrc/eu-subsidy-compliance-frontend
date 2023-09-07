@@ -32,7 +32,7 @@ POST       /first-login-journey-what-sector                                     
 GET        /add-email-for-verification/:status                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAddEmailForVerification(status: EmailStatus)
 POST       /add-email-for-verification/:status                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAddEmailForVerification(status: EmailStatus)
 
-GET        /first-login-confirm-email                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmEmail
+GET        /first-login-confirm-email                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmEmail(isAmend: Boolean)
 POST       /first-login-confirm-email                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmEmail
 
 GET        /first-login-add-business                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAddBusiness

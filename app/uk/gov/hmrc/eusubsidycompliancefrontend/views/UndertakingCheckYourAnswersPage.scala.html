@@ -87,7 +87,7 @@
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = routes.UndertakingController.getConfirmEmail.toString,
+                                href = routes.UndertakingController.getConfirmEmail(isAmend = false).toString,
                                 content = Text(messages("common.cya.change")),
                                 visuallyHiddenText = Some(messages(s"$key.change.hidden.verified-email"))
                             )

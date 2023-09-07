@@ -102,7 +102,7 @@ object UndertakingJourney {
       def uri = controller.getSector.url
     }
     case class UndertakingConfirmEmailFormPage(value: Form[String] = None) extends FormPage[String] {
-      def uri = controller.getConfirmEmail.url
+      def uri = controller.getConfirmEmail(isAmend = false).url
     }
     case class UndertakingAddBusinessFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getAddBusiness.url

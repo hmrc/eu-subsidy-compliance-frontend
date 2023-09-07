@@ -171,9 +171,14 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
+  def getConfirmEmail(isAmend: Boolean = false): Action[AnyContent] = enrolled.async { implicit request =>
+    val backLink = if (isAmend) {
+      routes.UndertakingController.getAmendUndertakingDetails
+    } else {
+      routes.UndertakingController.getSector
+    }
     handleConfirmEmailGet[UndertakingJourney](
-      previous = routes.UndertakingController.getSector,
+      previous = backLink,
       formAction = routes.UndertakingController.postConfirmEmail
     )
   }
@@ -222,7 +227,7 @@ class UndertakingController @Inject() (
       handleConfirmEmailPost[UndertakingJourney](
         previous =
           if (journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails
-          else routes.UndertakingController.getConfirmEmail,
+          else routes.UndertakingController.getConfirmEmail(isAmend = false),
         next =
           if (journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails
           else routes.UndertakingController.getAddBusiness,
@@ -249,7 +254,8 @@ class UndertakingController @Inject() (
             routes.UndertakingController.getAmendUndertakingDetails,
             routes.UndertakingController.getAmendUndertakingDetails
           )
-        case _ => (routes.UndertakingController.getConfirmEmail, routes.UndertakingController.getAddBusiness)
+        case _ =>
+          (routes.UndertakingController.getConfirmEmail(isAmend = false), routes.UndertakingController.getAddBusiness)
       }
 
       handleVerifyEmailGet[UndertakingJourney](
