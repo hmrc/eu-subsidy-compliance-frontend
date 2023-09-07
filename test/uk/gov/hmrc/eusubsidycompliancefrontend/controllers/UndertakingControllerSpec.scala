@@ -31,7 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{CreateUndertaking, DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.EmailStatus
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.{Amend, EmailStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EmailStatus, IndustrySectorLimit, Sector, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
@@ -131,7 +131,7 @@ class UndertakingControllerSpec
                 about = AboutUndertakingFormPage("TestUndertaking".some),
                 sector = UndertakingSectorFormPage(Sector(1).some)
               ),
-              routes.UndertakingController.getConfirmEmail(false).url
+              routes.UndertakingController.getConfirmEmail.url
             )
           }
 
@@ -556,7 +556,7 @@ class UndertakingControllerSpec
         }
 
         "page is reached via normal undertaking creation process" in {
-          test(UndertakingJourney(), routes.UndertakingController.getConfirmEmail(false).url)
+          test(UndertakingJourney(), routes.UndertakingController.getConfirmEmail.url)
         }
 
         "page is reached via normal undertaking creation process when all answers have been provided" in {
@@ -613,7 +613,7 @@ class UndertakingControllerSpec
     "handling request to get confirm email" must {
 
       def performAction() =
-        controller.getConfirmEmail(false)(FakeRequest(GET, routes.UndertakingController.getConfirmEmail(false).url))
+        controller.getConfirmEmail(FakeRequest(GET, routes.UndertakingController.getConfirmEmail.url))
 
       "throw technical error" when {
 
@@ -888,7 +888,7 @@ class UndertakingControllerSpec
             sector = UndertakingSectorFormPage(Sector(2).some),
             verifiedEmail = UndertakingConfirmEmailFormPage("some@email.com".some)
           )
-          val previousCall = routes.UndertakingController.getConfirmEmail(false).url
+          val previousCall = routes.UndertakingController.getConfirmEmail.url
 
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
@@ -906,7 +906,7 @@ class UndertakingControllerSpec
             sector = UndertakingSectorFormPage(Sector(2).some),
             verifiedEmail = UndertakingConfirmEmailFormPage("some@email.com".some)
           )
-          val previousCall = routes.UndertakingController.getConfirmEmail(false).url
+          val previousCall = routes.UndertakingController.getConfirmEmail.url
 
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
@@ -933,7 +933,7 @@ class UndertakingControllerSpec
             verifiedEmail = UndertakingConfirmEmailFormPage("some@email.com".some),
             addBusiness = UndertakingAddBusinessFormPage(true.some)
           )
-          val previousCall = routes.UndertakingController.getConfirmEmail(false).url
+          val previousCall = routes.UndertakingController.getConfirmEmail.url
 
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
@@ -979,7 +979,7 @@ class UndertakingControllerSpec
               )
             )
           }
-          checkIsRedirect(performAction(), routes.UndertakingController.getConfirmEmail(false).url)
+          checkIsRedirect(performAction(), routes.UndertakingController.getConfirmEmail.url)
         }
       }
 
@@ -1084,7 +1084,7 @@ class UndertakingControllerSpec
           ModifyUndertakingRow(
             messageFromMessageKey("undertaking.cya.summary-list.verified-email"),
             "joebloggs@something.com",
-            routes.UndertakingController.getConfirmEmail(false).url
+            routes.UndertakingController.getConfirmEmail.url
           ),
           ModifyUndertakingRow(
             messageFromMessageKey("undertaking.cya.summary-list.other-business"),
@@ -1365,7 +1365,7 @@ class UndertakingControllerSpec
         ModifyUndertakingRow(
           messageFromMessageKey("undertaking.amendUndertaking.summary-list.undertaking-admin-email.key"),
           "foo@example.com",
-          routes.UndertakingController.getConfirmEmail(true).url
+          routes.UndertakingController.getAddEmailForVerification(Amend).url
         )
       )
 

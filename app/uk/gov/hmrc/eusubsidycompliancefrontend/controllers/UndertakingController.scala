@@ -171,14 +171,9 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getConfirmEmail(isAmend: Boolean = false): Action[AnyContent] = enrolled.async { implicit request =>
-    val backLink = if (isAmend) {
-      routes.UndertakingController.getAmendUndertakingDetails
-    } else {
-      routes.UndertakingController.getSector
-    }
+  def getConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
     handleConfirmEmailGet[UndertakingJourney](
-      previous = backLink,
+      previous = routes.UndertakingController.getSector,
       formAction = routes.UndertakingController.postConfirmEmail
     )
   }
@@ -187,6 +182,7 @@ class UndertakingController @Inject() (
     implicit request =>
       val backLink = status match {
         case EmailStatus.Unverified => routes.UnverifiedEmailController.unverifiedEmail.url
+        case EmailStatus.Amend => routes.UndertakingController.getAmendUndertakingDetails.url
         case _ => routes.UndertakingController.getSector.url
       }
       Future.successful(Ok(inputEmailPage(emailForm, backLink, Some(status))))
@@ -196,6 +192,7 @@ class UndertakingController @Inject() (
     implicit request =>
       val backLink = status match {
         case EmailStatus.Unverified => routes.UnverifiedEmailController.unverifiedEmail
+        case EmailStatus.Amend => routes.UndertakingController.getAmendUndertakingDetails
         case _ => routes.UndertakingController.getSector
       }
 
@@ -227,7 +224,7 @@ class UndertakingController @Inject() (
       handleConfirmEmailPost[UndertakingJourney](
         previous =
           if (journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails
-          else routes.UndertakingController.getConfirmEmail(isAmend = false),
+          else routes.UndertakingController.getConfirmEmail,
         next =
           if (journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails
           else routes.UndertakingController.getAddBusiness,
@@ -249,13 +246,13 @@ class UndertakingController @Inject() (
             routes.UndertakingController.getAddEmailForVerification(emailStatus),
             routes.AccountController.getAccountPage
           )
-        case _ if journey.isAmend =>
+        case Some(emailStatus @ EmailStatus.Amend) =>
           (
             routes.UndertakingController.getAmendUndertakingDetails,
             routes.UndertakingController.getAmendUndertakingDetails
           )
         case _ =>
-          (routes.UndertakingController.getConfirmEmail(isAmend = false), routes.UndertakingController.getAddBusiness)
+          (routes.UndertakingController.getConfirmEmail, routes.UndertakingController.getAddBusiness)
       }
 
       handleVerifyEmailGet[UndertakingJourney](
