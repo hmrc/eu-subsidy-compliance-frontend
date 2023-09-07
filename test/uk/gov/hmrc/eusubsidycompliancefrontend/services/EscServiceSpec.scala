@@ -180,7 +180,7 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
 
         "the http call succeeds and the body of the response can be parsed" in {
           mockCreateUndertaking(writeableUndertaking)(Right(HttpResponse(OK, undertakingRefJson, emptyHeaders)))
-          mockCachePut(eori1, writeableUndertaking.toUndertakingWithRef(undertakingRef))(Right(undertaking))
+          mockCachePut(eori1, undertaking)(Right(undertaking))
           service.createUndertaking(writeableUndertaking).futureValue shouldBe undertakingRef
         }
       }
