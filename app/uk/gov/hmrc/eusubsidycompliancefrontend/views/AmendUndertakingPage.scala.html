@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.Amend
 
 
 @this(
@@ -72,7 +73,7 @@
                         actions = Some(Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = controllers.routes.UndertakingController.getConfirmEmail.toString,
+                                    href = controllers.routes.UndertakingController.getAddEmailForVerification(Amend).toString,
                                     content = Text(messages("common.change")),
                                     visuallyHiddenText = Some(messages("undertaking.amendUndertaking.summary-list.change.email"))
                                 )

@@ -31,7 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{CreateUndertaking, DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.EmailStatus
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.{Amend, EmailStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EmailStatus, IndustrySectorLimit, Sector, UndertakingName}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
@@ -1374,7 +1374,7 @@ class UndertakingControllerSpec
         ModifyUndertakingRow(
           messageFromMessageKey("undertaking.amendUndertaking.summary-list.undertaking-admin-email.key"),
           "foo@example.com",
-          routes.UndertakingController.getConfirmEmail.url
+          routes.UndertakingController.getAddEmailForVerification(Amend).url
         )
       )
 

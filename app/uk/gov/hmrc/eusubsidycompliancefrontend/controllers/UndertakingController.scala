@@ -183,6 +183,7 @@ class UndertakingController @Inject() (
     implicit request =>
       val backLink = status match {
         case EmailStatus.Unverified => routes.UnverifiedEmailController.unverifiedEmail.url
+        case EmailStatus.Amend => routes.UndertakingController.getAmendUndertakingDetails.url
         case _ => routes.UndertakingController.getSector.url
       }
       Future.successful(Ok(inputEmailPage(emailForm, backLink, Some(status))))
@@ -192,6 +193,7 @@ class UndertakingController @Inject() (
     implicit request =>
       val backLink = status match {
         case EmailStatus.Unverified => routes.UnverifiedEmailController.unverifiedEmail
+        case EmailStatus.Amend => routes.UndertakingController.getAmendUndertakingDetails
         case _ => routes.UndertakingController.getSector
       }
 
@@ -245,12 +247,13 @@ class UndertakingController @Inject() (
             routes.UndertakingController.getAddEmailForVerification(emailStatus),
             routes.AccountController.getAccountPage
           )
-        case _ if journey.isAmend =>
+        case Some(emailStatus @ EmailStatus.Amend) =>
           (
             routes.UndertakingController.getAmendUndertakingDetails,
             routes.UndertakingController.getAmendUndertakingDetails
           )
-        case _ => (routes.UndertakingController.getConfirmEmail, routes.UndertakingController.getAddBusiness)
+        case _ =>
+          (routes.UndertakingController.getConfirmEmail, routes.UndertakingController.getAddBusiness)
       }
 
       handleVerifyEmailGet[UndertakingJourney](
