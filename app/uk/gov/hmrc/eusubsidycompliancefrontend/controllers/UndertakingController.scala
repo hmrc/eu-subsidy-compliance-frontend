@@ -33,7 +33,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.EmailStatus
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EmailStatus, UndertakingName, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{Store, UndertakingCache}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -68,7 +68,8 @@ class UndertakingController @Inject() (
   amendUndertakingPage: AmendUndertakingPage,
   disableUndertakingWarningPage: DisableUndertakingWarningPage,
   disableUndertakingConfirmPage: DisableUndertakingConfirmPage,
-  undertakingDisabledPage: UndertakingDisabledPage
+  undertakingDisabledPage: UndertakingDisabledPage,
+  undertakingCache: UndertakingCache
 )(implicit
   val appConfig: AppConfig,
   override val executionContext: ExecutionContext
@@ -341,7 +342,6 @@ class UndertakingController @Inject() (
     (
       for {
         ref <- escService.createUndertaking(undertaking)
-        _ <- emailService.sendEmail(eori, EmailTemplate.CreateUndertaking, undertaking.toUndertakingWithRef(ref))
         newlyCreatedUndertaking <- escService.retrieveUndertaking(eori).map {
           case Some(ut) => ut
           case None => {
@@ -349,13 +349,13 @@ class UndertakingController @Inject() (
             throw new NotFoundException(s"Unable to fetch undertaking with reference: $ref")
           }
         }
+        _ <- emailService.sendEmail(eori, EmailTemplate.CreateUndertaking, newlyCreatedUndertaking)
+        _ <- undertakingCache.put[Undertaking](eori, newlyCreatedUndertaking)
         auditEventCreateUndertaking = AuditEvent.CreateUndertaking(
           request.authorityId,
           ref,
           undertaking,
-          sectorCap = newlyCreatedUndertaking.industrySectorLimit.getOrElse(
-            FinancialDashboardSummary.DefaultSectorLimits(undertaking.industrySector)
-          ), //fixme update once industrySectorLimit has been made mandatory (ESC-1087)
+          sectorCap = newlyCreatedUndertaking.industrySectorLimit,
           timeProvider.now
         )
         _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)

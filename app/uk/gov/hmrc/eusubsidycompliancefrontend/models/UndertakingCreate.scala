@@ -24,17 +24,7 @@ case class UndertakingCreate(
   name: UndertakingName,
   industrySector: Sector,
   undertakingBusinessEntity: List[BusinessEntity]
-) {
-
-  def toUndertakingWithRef(ref: UndertakingRef): Undertaking = Undertaking(
-    reference = ref,
-    name = name,
-    industrySector = industrySector,
-    industrySectorLimit = None,
-    lastSubsidyUsageUpdt = None,
-    undertakingBusinessEntity = undertakingBusinessEntity
-  )
-}
+)
 
 object UndertakingCreate {
   implicit val writeableUndertakingFormat: OFormat[UndertakingCreate] = Json.format[UndertakingCreate]

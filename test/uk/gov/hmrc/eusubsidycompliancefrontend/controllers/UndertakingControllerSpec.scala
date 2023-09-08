@@ -1228,7 +1228,8 @@ class UndertakingControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockUpdate[UndertakingJourney](eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockSendEmail(eori1, CreateUndertaking, undertakingCreated.toUndertakingWithRef(undertakingRef))(
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockSendEmail(eori1, CreateUndertaking, undertaking)(
               Left(ConnectorError(exception))
             )
           }
@@ -1247,13 +1248,13 @@ class UndertakingControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockUpdate[UndertakingJourney](eori1)(Right(updatedUndertakingJourney))
             mockCreateUndertaking(undertakingCreated)(Right(undertakingRef))
-            mockSendEmail(eori1, CreateUndertaking, undertakingCreated.toUndertakingWithRef(undertakingRef))(
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockSendEmail(eori1, CreateUndertaking, undertaking)(
               Right(EmailSent)
             )
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockTimeProviderNow(timeNow)
             mockSendAuditEvent(
-              createUndertakingAuditEvent(undertaking1.industrySectorLimit.getOrElse(IndustrySectorLimit(100000.00)))
+              createUndertakingAuditEvent(undertaking1.industrySectorLimit)
             )
           }
           checkIsRedirect(

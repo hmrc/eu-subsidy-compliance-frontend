@@ -56,14 +56,6 @@ case class TaxYearSummary(
 
 object FinancialDashboardSummary {
 
-  // Fallback values should no sector be defined on the undertaking.
-  val DefaultSectorLimits = Map( //fixme this will be removed once ESC-1087 has been implemented
-    Sector.agriculture -> IndustrySectorLimit(20000.00),
-    Sector.aquaculture -> IndustrySectorLimit(30000.00),
-    Sector.other -> IndustrySectorLimit(200000.00),
-    Sector.transport -> IndustrySectorLimit(100000.00)
-  )
-
   // Generates summarised data to populate the financial dashboard page.
   // All currency amounts in EUR.
   def fromUndertakingSubsidies(
@@ -75,8 +67,7 @@ object FinancialDashboardSummary {
     val startDate = today.toEarliestTaxYearStart
     val endDate = today.toTaxYearEnd
 
-    val sectorCapOrDefault: IndustrySectorLimit = undertaking.industrySectorLimit
-      .getOrElse(DefaultSectorLimits(undertaking.industrySector))
+    val sectorCap: IndustrySectorLimit = undertaking.industrySectorLimit
 
     val overallSummary = OverallSummary(
       startYear = startDate.getYear,
@@ -84,7 +75,7 @@ object FinancialDashboardSummary {
       hmrcSubsidyTotal = SubsidyAmount(subsidies.hmrcSubsidyTotalEUR),
       nonHmrcSubsidyTotal = SubsidyAmount(subsidies.nonHMRCSubsidyTotalEUR),
       sector = undertaking.industrySector,
-      sectorCap = sectorCapOrDefault
+      sectorCap = sectorCap
     )
 
     // We assume that acceptanceDate is the correct field to use since it's mandatory. There is also an issueDate

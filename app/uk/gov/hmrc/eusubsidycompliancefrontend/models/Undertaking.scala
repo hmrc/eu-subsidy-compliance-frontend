@@ -26,7 +26,7 @@ case class Undertaking(
   reference: UndertakingRef,
   name: UndertakingName,
   industrySector: Sector,
-  industrySectorLimit: Option[IndustrySectorLimit],
+  industrySectorLimit: IndustrySectorLimit,
   lastSubsidyUsageUpdt: Option[LocalDate],
   undertakingBusinessEntity: List[BusinessEntity]
 ) {

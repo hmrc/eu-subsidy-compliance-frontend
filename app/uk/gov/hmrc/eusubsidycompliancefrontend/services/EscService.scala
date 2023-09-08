@@ -70,7 +70,6 @@ class EscService @Inject() (
       .flatMap { response =>
         for {
           ref <- handleResponse[UndertakingRef](response, "create undertaking").toFuture
-          _ <- undertakingCache.put[Undertaking](eori, undertakingCreate.toUndertakingWithRef(ref))
         } yield ref
       }
       .logResult(

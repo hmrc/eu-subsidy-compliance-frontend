@@ -141,38 +141,6 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
 
     }
 
-    "apply default sector limits where none defined on the undertaking" in {
-      val today = LocalDate.of(2022, 3, 1)
-
-      val emptyUndertakingSubsidies = undertakingSubsidies.copy(
-        nonHMRCSubsidyTotalEUR = SubsidyAmount.Zero,
-        hmrcSubsidyTotalEUR = SubsidyAmount.Zero,
-        nonHMRCSubsidyUsage = List.empty,
-        hmrcSubsidyUsage = List.empty
-      )
-
-      val sectorLimits = Map(
-        agriculture -> IndustrySectorLimit(20000.00),
-        aquaculture -> IndustrySectorLimit(30000.00),
-        other -> IndustrySectorLimit(200000.00),
-        transport -> IndustrySectorLimit(100000.00)
-      )
-
-      sectorLimits.keys.foreach { sector =>
-        val undertakingForSector = undertaking.copy(
-          industrySector = sector,
-          industrySectorLimit = None
-        )
-        val result = FinancialDashboardSummary.fromUndertakingSubsidies(
-          undertakingForSector,
-          emptyUndertakingSubsidies,
-          today
-        )
-        result.overall.sectorCap shouldBe sectorLimits(sector)
-      }
-
-    }
-
     "tax year summary should compute total correctly" in {
       TaxYearSummary(
         startYear = 2000,
