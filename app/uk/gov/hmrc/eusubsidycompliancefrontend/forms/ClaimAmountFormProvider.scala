@@ -21,7 +21,7 @@ import play.api.data.validation.{Constraint, Invalid, Valid, ValidationResult}
 import play.api.data.{Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{TooBig, TooSmall}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fields
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.IncorrectFormat
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.{IncorrectFormat, Required}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.PositiveSubsidyAmount
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ClaimAmount, CurrencyCode}
@@ -61,10 +61,14 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
 
   private val claimAmountFormatIsValid = Constraint[String] { claimAmount: String =>
     val amount = cleanAmount(claimAmount)
-    Try(BigDecimal(amount)).fold(
-      _ => Invalid(IncorrectFormat),
-      amount => if (amount.scale == 2 || amount.scale == 0) Valid else Invalid(IncorrectFormat)
-    )
+    if (claimAmount.isEmpty) {
+      Invalid(Required)
+    } else {
+      Try(BigDecimal(amount)).fold(
+        _ => Invalid(IncorrectFormat),
+        amount => if (amount.scale == 2 || amount.scale == 0) Valid else Invalid(IncorrectFormat)
+      )
+    }
   }
 
   private val claimAmountAboveZero = Constraint[String] { claimAmount: String =>
