@@ -358,7 +358,7 @@ class UndertakingController @Inject() (
           request.authorityId,
           ref,
           undertaking,
-          sectorCap = newlyCreatedUndertaking.industrySectorLimit,
+          sectorCap = newlyCreatedUndertaking.getIndustrySectorLimit,
           timeProvider.now
         )
         _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)

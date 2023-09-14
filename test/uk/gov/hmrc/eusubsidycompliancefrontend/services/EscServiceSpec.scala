@@ -69,6 +69,9 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
   private def mockRetrieveUndertaking(eori: EORI)(result: Either[ConnectorError, HttpResponse]) =
     when(mockEscConnector.retrieveUndertaking(argEq(eori))(any()))
       .thenReturn(result.toFuture)
+  private def mockCountUndertakingWithNoSectorLimit() =
+    when(mockUndertakingCache.countUndertakingWithNoSectorLimit()(any()))
+      .thenReturn(0L.toFuture)
 
   private def mockAddMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(
     result: Either[ConnectorError, HttpResponse]
@@ -231,6 +234,7 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
 
         "there is no json in the response, with status OK" in {
           mockCacheGet[Undertaking](eori1)(Right(None))
+          mockCountUndertakingWithNoSectorLimit()
           mockRetrieveUndertaking(eori1)(Right(HttpResponse(OK, "hi")))
           service.retrieveUndertaking(eori1).failed.futureValue shouldBe a[RuntimeException]
         }
@@ -244,6 +248,7 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
           "the undertaking is present in the cache" in {
             mockCacheGet[Undertaking](eori1)(Right(undertaking.some))
             mockCachePut(eori1, undertaking)(Right(undertaking))
+            mockCountUndertakingWithNoSectorLimit()
             service.retrieveUndertaking(eori1).futureValue shouldBe undertaking.some
           }
 
@@ -251,11 +256,13 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
             mockCacheGet[Undertaking](eori1)(Right(None))
             mockRetrieveUndertaking(eori1)(Right(HttpResponse(OK, undertakingJson, emptyHeaders)))
             mockCachePut(eori1, undertaking)(Right(undertaking))
+            mockCountUndertakingWithNoSectorLimit()
             service.retrieveUndertaking(eori1).futureValue shouldBe undertaking.some
           }
 
           "http response status is 404 and response body is empty" in {
             mockCacheGet[Undertaking](eori1)(Right(None))
+            mockCountUndertakingWithNoSectorLimit()
             mockRetrieveUndertaking(eori1)(
               Left(ConnectorError(UpstreamErrorResponse("Unexpected response - got HTTP 404", NOT_FOUND)))
             )
@@ -269,6 +276,7 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
           "http response status is 406 and response body is parsed" in {
             val ex = UpstreamErrorResponse("Unexpected response - got HTTP 406", NOT_ACCEPTABLE)
             mockCacheGet[Undertaking](eori1)(Right(None))
+            mockCountUndertakingWithNoSectorLimit()
             mockRetrieveUndertaking(eori1)(Left(ConnectorError(ex)))
             service.retrieveUndertaking(eori1).failed.futureValue shouldBe a[ConnectorError]
           }

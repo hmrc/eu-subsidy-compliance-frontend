@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import org.mongodb.scala.MongoCollection
+import org.mongodb.scala.model.Filters.{equal, exists}
 import org.mongodb.scala.model.{Filters, IndexOptions, Indexes, Updates}
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
@@ -48,6 +49,7 @@ class UndertakingCache @Inject() (
 
   private val UndertakingReference = "data.Undertaking.reference"
   private val UndertakingSubsidiesIdentifier = "data.UndertakingSubsidies.undertakingIdentifier"
+  private val industrySectorLimit = "data.Undertaking.industrySectorLimit"
 
   // Ensure additional indexes for undertaking and undertaking subsidies deletion are present.
   private lazy val indexedCollection: Future[MongoCollection[CacheItem]] =
@@ -68,6 +70,16 @@ class UndertakingCache @Inject() (
           IndexOptions()
             .background(false)
             .name("undertakingSubsidiesIdentifier")
+            .sparse(false)
+            .unique(false)
+        )
+        .headOption()
+      _ <- collection
+        .createIndex(
+          Indexes.ascending(industrySectorLimit),
+          IndexOptions()
+            .background(false)
+            .name("sectorLimit")
             .sparse(false)
             .unique(false)
         )
@@ -150,6 +162,14 @@ class UndertakingCache @Inject() (
       successMessage = s"UndertakingCache.deleteUndertakingSubsidies succeeded in deleting UndertakingRef:$ref",
       errorMessage = s"UndertakingCache.deleteUndertakingSubsidies failed in deleting UndertakingRef:$ref"
     )
+  }
+
+  def countUndertakingWithNoSectorLimit()(implicit headerCarrier: HeaderCarrier): Future[Long] = {
+    indexedCollection.flatMap { c =>
+      c.countDocuments(
+        filter = Filters.exists(industrySectorLimit, false)
+      ).toFuture()
+    }
   }
 
 }
