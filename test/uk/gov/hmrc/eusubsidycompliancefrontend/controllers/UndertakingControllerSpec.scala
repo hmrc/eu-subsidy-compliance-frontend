@@ -1254,7 +1254,7 @@ class UndertakingControllerSpec
             )
             mockTimeProviderNow(timeNow)
             mockSendAuditEvent(
-              createUndertakingAuditEvent(undertaking1.industrySectorLimit)
+              createUndertakingAuditEvent(undertaking1.getIndustrySectorLimit)
             )
           }
           checkIsRedirect(

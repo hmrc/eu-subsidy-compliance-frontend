@@ -67,7 +67,7 @@ object FinancialDashboardSummary {
     val startDate = today.toEarliestTaxYearStart
     val endDate = today.toTaxYearEnd
 
-    val sectorCap: IndustrySectorLimit = undertaking.industrySectorLimit
+    val sectorCap: IndustrySectorLimit = undertaking.getIndustrySectorLimit
 
     val overallSummary = OverallSummary(
       startYear = startDate.getYear,

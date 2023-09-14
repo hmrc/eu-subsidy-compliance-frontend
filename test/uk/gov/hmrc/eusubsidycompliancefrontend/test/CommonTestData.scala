@@ -129,7 +129,7 @@ object CommonTestData {
     undertakingRef,
     UndertakingName("TestUndertaking"),
     transport,
-    IndustrySectorLimit(12.34),
+    Some(IndustrySectorLimit(12.34)),
     LocalDate.of(2021, 1, 18).some,
     List(businessEntity1, businessEntity2)
   )
@@ -144,7 +144,7 @@ object CommonTestData {
     undertakingRef,
     UndertakingName("TestUndertaking"),
     transport,
-    IndustrySectorLimit(12.34),
+    Some(IndustrySectorLimit(12.34)),
     LocalDate.of(2021, 1, 18).some,
     List(businessEntity1, businessEntity4)
   )
@@ -153,7 +153,7 @@ object CommonTestData {
     undertakingRef,
     UndertakingName("TestUndertaking"),
     transport,
-    IndustrySectorLimit(12.34),
+    Some(IndustrySectorLimit(12.34)),
     LocalDate.of(2021, 1, 18).some,
     List(businessEntity4)
   )
@@ -162,7 +162,7 @@ object CommonTestData {
     undertakingRef,
     UndertakingName("TestUndertaking"),
     agriculture,
-    IndustrySectorLimit(32.34),
+    IndustrySectorLimit(32.34).some,
     Some(LocalDate.of(2021, 1, 18)),
     List(businessEntity1, businessEntity2)
   )

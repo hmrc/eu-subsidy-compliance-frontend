@@ -122,32 +122,28 @@ class EscService @Inject() (
       )
 
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[Undertaking]] = {
-    val eventualEoriRequest = undertakingCache
-      .get[Undertaking](eori)
-      .toContext
-      .orElseF {
-        retrieveUndertakingAndHandleErrors(eori).flatMap {
-          case Right(Some(undertaking)) =>
-            undertakingCache
-              .put[Undertaking](eori, undertaking)
-              .map(_ => undertaking.some)
-          case Right(None) => Option.empty[Undertaking].toFuture
-          case Left(ex) => Future.failed[Option[Undertaking]](ex)
-        }
-      }
-      .value
+    def retrieve(eoriNumber: EORI) = retrieveUndertakingAndHandleErrors(eoriNumber).flatMap {
+      case Right(Some(undertaking)) =>
+        undertakingCache
+          .put[Undertaking](eori, undertaking)
+          .map(_ => undertaking.some)
+      case Right(None) => Option.empty[Undertaking].toFuture
+      case Left(ex) => Future.failed[Option[Undertaking]](ex)
+    }
 
-    eventualEoriRequest.logResult(
-      (maybeUndertaking: Option[Undertaking]) =>
-        maybeUndertaking
-          .map { undertaking =>
-            s"retrieveUndertaking found undertaking reference ${undertaking.reference} for EORI '$eori'"
-          }
-          .getOrElse {
-            s"retrieveUndertaking did not find undertaking for EORI '$eori'"
-          },
-      s"retrieveUndertaking failed getting EORI undertaking '$eori'"
-    )
+    def logNumberOfUndertakingsWithoutSectorLimit = {
+      undertakingCache.countUndertakingWithNoSectorLimit().map { count =>
+        logger.warn(s"Number of Undertakings with no sector limit is now: $count")
+      }
+    }
+
+    logNumberOfUndertakingsWithoutSectorLimit
+    undertakingCache.get[Undertaking](eori).flatMap {
+      case Some(undertaking) if undertaking.industrySectorLimit.isEmpty =>
+        retrieve(eori) //fixme this line will be removed once ESC-1248 has been implemented
+      case Some(undertaking) => Future.successful(Some(undertaking))
+      case None => retrieve(eori)
+    }
   }
 
   def retrieveUndertakingAndHandleErrors(
