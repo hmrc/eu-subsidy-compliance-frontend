@@ -61,8 +61,9 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
 
   private val claimAmountFormatIsValid = Constraint[String] { claimAmount: String =>
     val amount = cleanAmount(claimAmount)
-    if (claimAmount.isEmpty) { Invalid(Required) }
-    else {
+    if (claimAmount.isEmpty) {
+      Invalid(Required)
+    } else {
       Try(BigDecimal(amount)).fold(
         _ => Invalid(IncorrectFormat),
         amount => if (amount.scale == 2 || amount.scale == 0) Valid else Invalid(IncorrectFormat)

@@ -275,28 +275,28 @@ class EuOnlySubsidyControllerSpec
         "nothing is entered" in {
           testFormValidation(
             ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName
-          )(s"add-claim-amount.claim-amount-${EUR.entryName.toLowerCase}.$Required")
+          )(s"add-claim-amount-euro-only.claim-amount-${EUR.entryName.toLowerCase}.$Required")
         }
 
         "claim amount entered in EUR is too big" in {
           testFormValidation(
             ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName,
             ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "€123456789012.12"
-          )(s"add-claim-amount.claim-amount-${EUR.entryName.toLowerCase}.$TooBig")
+          )(s"add-claim-amount-euro-only.claim-amount-${EUR.entryName.toLowerCase}.$TooBig")
         }
 
         "claim amount entered in EUR is too small" in {
           testFormValidation(
             ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName,
             ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "0.00"
-          )(s"add-claim-amount.claim-amount-${EUR.entryName.toLowerCase}.$TooSmall")
+          )(s"add-claim-amount-euro-only.claim-amount-${EUR.entryName.toLowerCase}.$TooSmall")
         }
 
         "claim amount claims to be euros, but submits value with pound sign prefix" in {
           testFormValidation(
             ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName,
             ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "£99.99"
-          )(s"add-claim-amount.claim-amount-eur.error.incorrect-format")
+          )(s"add-claim-amount-euro-only.claim-amount-eur.error.incorrect-format")
         }
 
       }
