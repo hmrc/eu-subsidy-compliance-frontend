@@ -851,13 +851,18 @@ class SubsidyControllerSpec
           }
         }
 
-        "claim amount entered in wrong format" in {
-          CurrencyCode.values.foreach { c =>
-            testFormValidation(
-              ClaimAmountFormProvider.Fields.CurrencyCode -> c.entryName,
-              ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "123.4"
-            )(s"add-claim-amount.claim-amount-${c.entryName.toLowerCase}.$IncorrectFormat")
-          }
+        "claim amount entered in GBP is in wrong format" in {
+          testFormValidation(
+            ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
+            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "123.4"
+          )(s"add-claim-amount.claim-amount-${GBP.entryName.toLowerCase}.$IncorrectFormat")
+        }
+
+        "claim amount entered in EUR is in wrong format" in {
+          testFormValidation(
+            ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName,
+            ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "123.4"
+          )(s"add-claim-amount.claim-amount-${EUR.entryName.toLowerCase}.$IncorrectFormat")
         }
 
         "claim amount entered in GBP is too big" in {
