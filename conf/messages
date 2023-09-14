@@ -291,7 +291,7 @@ add-claim-amount.input-hint-gbp = The amount should include two decimal places, 
 
 # Form validation errors
 
-add-claim-amount.currency-code.error.required = Select what currency your payment was received in
+add-claim-amount.currency-code.error.required = Select which currency your payment was received in
 
 # GBP field validation errors
 
