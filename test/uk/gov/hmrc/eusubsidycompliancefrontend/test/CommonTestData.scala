@@ -162,7 +162,7 @@ object CommonTestData {
     undertakingRef,
     UndertakingName("TestUndertaking"),
     agriculture,
-    IndustrySectorLimit(32.34).some,
+    Some(IndustrySectorLimit(32.34)),
     Some(LocalDate.of(2021, 1, 18)),
     List(businessEntity1, businessEntity2)
   )
