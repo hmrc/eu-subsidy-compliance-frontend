@@ -71,12 +71,5 @@ IntegrationTest / test := (IntegrationTest / test)
 
 //not to be used in ci, intellij has got a bit bumpy in the format on save on optimize imports across the project
 //Look at readme.md for setting up auto-format on save
-val formatAndTest =
-  taskKey[Unit]("format all code then run tests, do not use on CI as any changes will not be committed")
 
-formatAndTest :=
-  scalafmtAll
-    .dependsOn(Test / test)
-    .dependsOn(IntegrationTest / test)
-    .dependsOn(scalafmtAll)
-    .value
+addCommandAlias("precommit", ";scalafmt;test:scalafmt;it:test::scalafmt;coverage;test;it:test;coverageReport")
