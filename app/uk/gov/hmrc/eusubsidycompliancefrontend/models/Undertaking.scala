@@ -26,20 +26,10 @@ case class Undertaking(
   reference: UndertakingRef,
   name: UndertakingName,
   industrySector: Sector,
-  industrySectorLimit: Option[IndustrySectorLimit],
+  industrySectorLimit: IndustrySectorLimit,
   lastSubsidyUsageUpdt: Option[LocalDate],
   undertakingBusinessEntity: List[BusinessEntity]
 ) {
-
-  // Fallback values should no sector be defined on the undertaking.
-  val defaultSectorLimits = Map( //fixme this will be removed once ESC-1248 has been implemented
-    Sector.agriculture -> IndustrySectorLimit(20000.00),
-    Sector.aquaculture -> IndustrySectorLimit(30000.00),
-    Sector.other -> IndustrySectorLimit(200000.00),
-    Sector.transport -> IndustrySectorLimit(100000.00)
-  )
-
-  def getIndustrySectorLimit = industrySectorLimit.getOrElse(defaultSectorLimits(industrySector))
 
   def isLeadEORI(eori: EORI): Boolean = {
     val leadEORI: BusinessEntity = undertakingBusinessEntity
