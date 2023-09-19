@@ -64,7 +64,7 @@ class NoClaimNotificationControllerSpec
 
       val startDate = LocalDate.of(2018, 4, 6)
 
-      "noClaimNotification page should have correct h1 title content" in {
+      "noClaimNotification page should have correct h1 title,  para content and label text" in {
         inSequence {
           mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -78,6 +78,11 @@ class NoClaimNotificationControllerSpec
         val document = Jsoup.parse(contentAsString(result))
         val title = document.getElementById("noClaimNotifId").text()
         title shouldBe messageFromMessageKey("noClaimNotification.has-submitted.title")
+        val p2Text = document.getElementById("noClaimNotification-p2").text()
+        p2Text shouldBe "If you do not have any payments to report since then, you must tell us every 90 days."
+        val chkLabel = document.select("label[for=chknoClaim]")
+        chkLabel.text() shouldBe "This undertaking does not currently have any non-customs subsidy payments to report"
+
       }
 
       "display the page correctly if no previous claims have been submitted" in {
