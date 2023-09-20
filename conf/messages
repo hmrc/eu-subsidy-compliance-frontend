@@ -192,6 +192,14 @@ addBusiness.businessRemoved.warningText = Removals of businesses could take up t
 
 businessEntityEori.title = What is the EORI number of the business you want to add?
 businessEntityEori.hint = The first 2 letters will be the country code, GB. This is followed by 12 or 15 digits, like GB123456123456
+
+businessEntityEoriNew.title = Business EORI Number
+businessEntityEori.p1 = We need to know the EORI number of the business you want to add.
+businessEntityEori.p2 = The first 2 letters will be the country code, GB. This is followed by 12 or 15 digits, like GB123456123456
+businessEntityEori.p3 = This is the same as and linked with any XI EORI number you may also have. That means that if you have GB123456123456, the XI version of it would be XI123456123456
+businessEntityEori.p4 = What is the EORI number of the business you want to add?
+
+
 businessEntityEori.error.incorrect-length = The EORI number of the business you want to add must start with GB and be followed by 12 or 15 numbers, like GB123456123456
 businessEntityEori.regex.error = The EORI number of the business you want to add must only include the letters GB and numbers 0 to 9
 businessEntityEori.eoriInUse = The EORI number you entered is already part of a another undertaking. Enter another EORI number.

@@ -79,7 +79,7 @@ package object types extends SimpleJson {
   type EORI = String @@ EORI.Tag
   object EORI
       extends RegexValidatedString(
-        """^(gb|Gb|gB|GB|XI)[0-9]{12,15}$"""
+        """^(gb|Gb|gB|GB)[0-9]{12,15}$"""
       ) {
 
     val ValidLengthsWithPrefix = Set(14, 17) // Valid lengths with 2 letter prefix
