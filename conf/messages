@@ -313,7 +313,7 @@ add-claim-amount.claim-amount-eur.error.tooSmall= The payment amount received in
 
 add-claim-amount-euro-only.claim-amount-eur.error.required = Enter the amount of euros your payment was received in
 add-claim-amount-euro-only.claim-amount-eur.error.incorrect-format = The payment amount received in euros must only include numbers 0 to 9 and a decimal point
-add-claim-amount-euro-only.claim-amount-eur.error.tooBig=Subsidy amount must be a maximum of 10 characters (including a comma or full stop), or fewer, like £134,253.71
+add-claim-amount-euro-only.claim-amount-eur.error.tooBig=Subsidy amount must be a maximum of 10 characters (including a comma or full stop), or fewer, like €134,253.71
 add-claim-amount-euro-only.claim-amount-eur.error.tooSmall=The payment amount received in euros must be more than zero
 
 add-claim-amount.p1=This type of aid is measured in euros.
