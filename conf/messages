@@ -299,21 +299,21 @@ add-claim-amount.currency-code.error.required = Select which currency your payme
 
 add-claim-amount.claim-amount-gbp.error.required = Enter the amount of pounds your payment was received in
 add-claim-amount.claim-amount-gbp.error.incorrect-format = The payment amount received in pounds must only include numbers 0 to 9 and a decimal point
-add-claim-amount.claim-amount-gbp.error.tooBig= Payment amount must be between 1 and 10 characters
+add-claim-amount.claim-amount-gbp.error.tooBig= Subsidy amount must be a maximum of 10 characters (including a comma or full stop), or fewer, like £134,253.71
 add-claim-amount.claim-amount-gbp.error.tooSmall= The payment amount received in pounds must be more than zero
 
 # EUR field validation errors
 
 add-claim-amount.claim-amount-eur.error.required = Enter the amount of euros your payment was received in
 add-claim-amount.claim-amount-eur.error.incorrect-format = The payment amount received in euros must only include numbers 0 to 9 and a decimal point
-add-claim-amount.claim-amount-eur.error.tooBig= Payment amount must be between 1 and 10 characters
+add-claim-amount.claim-amount-eur.error.tooBig= Subsidy amount must be a maximum of 10 characters (including a comma or full stop), or fewer, like €134,253.71
 add-claim-amount.claim-amount-eur.error.tooSmall= The payment amount received in euros must be more than zero
 
 # EUR only field validation errors
 
 add-claim-amount-euro-only.claim-amount-eur.error.required = Enter the amount of euros your payment was received in
 add-claim-amount-euro-only.claim-amount-eur.error.incorrect-format = The payment amount received in euros must only include numbers 0 to 9 and a decimal point
-add-claim-amount-euro-only.claim-amount-eur.error.tooBig=Payment amount must be between 1 and 10 characters
+add-claim-amount-euro-only.claim-amount-eur.error.tooBig=Subsidy amount must be a maximum of 10 characters (including a comma or full stop), or fewer, like €134,253.71
 add-claim-amount-euro-only.claim-amount-eur.error.tooSmall=The payment amount received in euros must be more than zero
 
 add-claim-amount.p1=This type of aid is measured in euros.
