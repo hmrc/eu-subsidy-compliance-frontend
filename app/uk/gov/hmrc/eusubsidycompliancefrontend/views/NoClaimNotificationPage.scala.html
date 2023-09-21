@@ -42,7 +42,7 @@
 
 @hasSubmittedHtml = {
     @P(messages("noClaimNotification.has-submitted.p1", lastSubmitted), id = Some("you-last-reported"))
-    @P(messages("noClaimNotification.has-submitted.p2"))
+    @P(messages("noClaimNotification.has-submitted.p2") ,id = Some("noClaimNotification-p2"))
 }
 
 @neverSubmittedHtml = {
@@ -55,7 +55,7 @@
     backLink = Some(previous),
     hasErrors = form.hasErrors
 ) {
-    
+
     @formHelper(action = controllers.routes.NoClaimNotificationController.postNoClaimNotification) {
         @form.errors.map { err =>
             @govukErrorSummary(ErrorSummary(
@@ -90,7 +90,9 @@
                     value = "true",
                     name = Some(key),
                     checked = form.data.exists(_._2 == "true"),
-                    attributes = if(form.hasErrors) Map("aria-describedby" -> key) else Map()
+                    attributes = if(form.hasErrors) Map("aria-describedby" -> key) else Map(),
+                    id=Some("chknoClaim")
+
                 )
             )
         ))
