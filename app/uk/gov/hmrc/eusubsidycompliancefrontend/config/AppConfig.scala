@@ -34,8 +34,6 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   val xiEoriAdding: Boolean =
     config.getOptional[Boolean]("features.xi-eori-adding").getOrElse(true)
 
-
-
   lazy val ggSignInUrl: String = config.get[String](s"urls.ggSignInUrl")
   lazy val ggSignOutUrl: String = config.get[String](s"urls.ggSignOutUrl")
   lazy val eccEscSubscribeUrl: String = config.get[String](s"urls.eccEscSubscribeUrl")
