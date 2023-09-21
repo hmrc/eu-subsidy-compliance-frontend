@@ -34,7 +34,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{businessEnti
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
 class XIDisableBusinessControllerSpec
-  extends ControllerSpec
+    extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
@@ -78,7 +78,6 @@ class XIDisableBusinessControllerSpec
                                    |""".stripMargin)
     )
   )
-
 
   private val controller = instanceOf[BusinessEntityController]
 
