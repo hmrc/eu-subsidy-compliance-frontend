@@ -80,7 +80,8 @@ class BusinessEntityController @Inject() (
   }
 
   private val isEoriValid = Constraint[String] { eori: String =>
-    if (eori.replaceAll(" ", "").matches(EORI.regex)) Valid
+    if (appConfig.xiEoriAddingDisabled && eori.replaceAll(" ", "").matches("""^(gb|Gb|gB|GB)[0-9]{12,15}$""")) Valid
+    else if (!appConfig.xiEoriAddingDisabled && eori.replaceAll(" ", "").matches(EORI.regex)) Valid
     else Invalid("businessEntityEori.regex.error")
   }
 
