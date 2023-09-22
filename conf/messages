@@ -195,8 +195,8 @@ businessEntityEori.hint = The first 2 letters will be the country code, GB. This
 
 businessEntityEoriNew.title = Business EORI Number
 businessEntityEori.p1 = We need to know the EORI number of the business you want to add.
-businessEntityEori.p2 = The first 2 letters will be the country code, GB. This is followed by 12 or 15 digits, like GB123456123456
-businessEntityEori.p3 = This is the same as and linked with any XI EORI number you may also have. That means that if you have GB123456123456, the XI version of it would be XI123456123456
+businessEntityEori.p2 = The first 2 letters will be the country code, GB. This is followed by 12 or 15 digits, like GB123456123456.
+businessEntityEori.p3 = This is the same as and linked with any XI EORI number you may also have. That means that if you have GB123456123456, the XI version of it would be XI123456123456.
 businessEntityEori.p4 = What is the EORI number of the business you want to add?
 
 

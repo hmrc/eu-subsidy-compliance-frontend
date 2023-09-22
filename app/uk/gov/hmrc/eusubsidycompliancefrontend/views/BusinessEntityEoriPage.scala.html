@@ -31,7 +31,7 @@
 
 
 @layout(
-  pageTitle = Some(messages("businessEntityEori.title")),
+  pageTitle = if (appConfig.xiEoriAdding)  Some(messages("businessEntityEori.title")) else Some(messages("businessEntityEoriNew.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
