@@ -74,7 +74,7 @@ class XIDisableBusinessControllerSpec
                                    |     member-remove-themself-email-to-lead-template-en = "template_remove_yourself_lead_EN"
                                    |     member-remove-themself-email-to-lead-template-cy = "template_remove_yourself_lead_CY"
                                    |  }
-                                   |features.xi-eori-adding  = "false"
+                                   |features.xi-eori-adding-disabled  = "true"
                                    |""".stripMargin)
     )
   )

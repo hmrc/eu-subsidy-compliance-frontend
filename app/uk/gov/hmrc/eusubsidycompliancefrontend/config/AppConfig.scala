@@ -31,8 +31,8 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   val euroOnlyEnabled: Boolean =
     config.getOptional[Boolean]("features.euro-only-enabled").getOrElse(false)
 
-  val xiEoriAdding: Boolean =
-    config.getOptional[Boolean]("features.xi-eori-adding").getOrElse(true)
+  val xiEoriAddingDisabled: Boolean =
+    config.getOptional[Boolean]("features.xi-eori-adding-disabled").getOrElse(false)
 
   lazy val ggSignInUrl: String = config.get[String](s"urls.ggSignInUrl")
   lazy val ggSignOutUrl: String = config.get[String](s"urls.ggSignOutUrl")
