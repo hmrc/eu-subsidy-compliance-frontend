@@ -2001,6 +2001,38 @@ class SubsidyControllerSpec
 
       }
 
+      "title, heading and paragraph body available on getClaimConfirmation Page" in {
+        inSequence {
+          mockAuthWithEnrolmentAndValidEmail()
+          mockTimeProviderToday(fixedDate)
+        }
+        val result = performAction
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+
+        val claimTitle = document.getElementsByClass("govuk-panel__title").text()
+        claimTitle shouldBe "Payment reported"
+        val headingTitle = document.getElementById("claimSubheadingId").text()
+        headingTitle shouldBe "What happens next"
+        val paragraph = document.getElementById("claimParaId").text()
+        paragraph shouldBe "Your next report must be made by 20 April 2021."
+      }
+
+      "Display hyperlinks on getClaimConfirmation page" in {
+        inSequence {
+          mockAuthWithEnrolmentAndValidEmail()
+          mockTimeProviderToday(fixedDate)
+        }
+        val result = performAction
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+
+        val reportPaymentHref = document.getElementById("report-another-payment").attr("href")
+        val homeHref = document.getElementById("home-link").attr("href")
+        reportPaymentHref shouldBe "/report-and-manage-your-allowance-for-customs-duty-waiver-claims/lead-undertaking-returning-user/start"
+        homeHref shouldBe "/report-and-manage-your-allowance-for-customs-duty-waiver-claims"
+      }
+
     }
 
     "handling get of add claim business page" must {
