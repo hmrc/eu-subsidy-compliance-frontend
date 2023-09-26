@@ -95,6 +95,10 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
     when(mockEscConnector.retrieveSubsidy(argEq(subsidyRetrieve))(any()))
       .thenReturn(result.toFuture)
 
+  private def mockGetUndertakingBalance(eori: EORI)(result: UndertakingBalance) =
+    when(mockEscConnector.getUndertakingBalance(argEq(eori))(any()))
+      .thenReturn(result.toFuture)
+
   private def mockRemoveSubsidy(
     undertakingRef: UndertakingRef,
     nonHmrcSubsidy: NonHmrcSubsidy
@@ -552,6 +556,15 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
 
       }
 
+    }
+
+    "handling request to get an undertaking's balance " must {
+      "return successfully" when {
+        "the connector returns a balance" in {
+          mockGetUndertakingBalance(eori1)(undertakingBalance)
+          service.getUndertakingBalance(eori1).futureValue shouldBe undertakingBalance
+        }
+      }
     }
 
   }

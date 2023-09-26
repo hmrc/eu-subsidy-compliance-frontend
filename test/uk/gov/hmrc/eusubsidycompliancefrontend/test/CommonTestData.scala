@@ -293,4 +293,17 @@ object CommonTestData {
     None,
     None
   )
+
+  val industrySectorLimit = IndustrySectorLimit(20000)
+
+  val undertakingBalance = UndertakingBalance(
+    undertakingIdentifier = UndertakingRef("some-ref"),
+    nonHMRCSubsidyAllocationEUR = None,
+    hmrcSubsidyAllocationEUR = None,
+    industrySectorLimit = industrySectorLimit,
+    availableBalanceEUR = subsidyAmount,
+    availableBalanceGBP = subsidyAmount,
+    conversionRate = SubsidyAmount(1.2),
+    nationalCapBalanceEUR = industrySectorLimit
+  )
 }
