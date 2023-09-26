@@ -131,16 +131,7 @@ class EscService @Inject() (
       case Left(ex) => Future.failed[Option[Undertaking]](ex)
     }
 
-    def logNumberOfUndertakingsWithoutSectorLimit = {
-      undertakingCache.countUndertakingWithNoSectorLimit().map { count =>
-        logger.warn(s"Number of Undertakings with no sector limit is now: $count")
-      }
-    }
-
-    logNumberOfUndertakingsWithoutSectorLimit
     undertakingCache.get[Undertaking](eori).flatMap {
-      case Some(undertaking) if undertaking.industrySectorLimit.isEmpty =>
-        retrieve(eori) //fixme this line will be removed once ESC-1248 has been implemented
       case Some(undertaking) => Future.successful(Some(undertaking))
       case None => retrieve(eori)
     }

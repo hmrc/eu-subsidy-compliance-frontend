@@ -163,15 +163,6 @@ class UndertakingCache @Inject() (
       errorMessage = s"UndertakingCache.deleteUndertakingSubsidies failed in deleting UndertakingRef:$ref"
     )
   }
-
-  def countUndertakingWithNoSectorLimit()(implicit headerCarrier: HeaderCarrier): Future[Long] = {
-    indexedCollection.flatMap { c =>
-      c.countDocuments(
-        filter = Filters.exists(industrySectorLimit, false)
-      ).toFuture()
-    }
-  }
-
 }
 
 object UndertakingCache {

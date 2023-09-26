@@ -43,7 +43,7 @@ class UndertakingCacheSpec extends IntegrationBaseSpec with DefaultPlayMongoRepo
     undertakingRef,
     UndertakingName("TestUndertaking"),
     transport,
-    Some(IndustrySectorLimit(12.34)),
+    IndustrySectorLimit(12.34),
     LocalDate.of(2021, 1, 18).some,
     List(businessEntity1, businessEntity2)
   )
