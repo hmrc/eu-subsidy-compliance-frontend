@@ -182,6 +182,10 @@ class EscService @Inject() (
       .value
   }
 
+  def getUndertakingBalance(eori: EORI)(implicit hc: HeaderCarrier): Future[UndertakingBalance] = {
+    escConnector.getUndertakingBalance(eori)
+  }
+
   def getUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Undertaking] =
     retrieveUndertaking(eori).toContext
       .getOrElse(throw new IllegalStateException("Expected undertaking not found"))

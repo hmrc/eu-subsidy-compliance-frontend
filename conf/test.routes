@@ -1,0 +1,2 @@
+GET        /                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.test.TestOnlyController.testHome
+GET        /undertaking-balance          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.test.TestOnlyController.getUndertakingBalance

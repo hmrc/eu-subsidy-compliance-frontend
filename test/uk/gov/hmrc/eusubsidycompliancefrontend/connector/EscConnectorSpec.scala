@@ -124,6 +124,11 @@ class EscConnectorSpec
       )
     }
 
+    "handling request to get undertaking balance" in {
+      mockGet(s"$baseUrl/undertaking/balance/$eori1")(Some(undertakingBalance))
+      val actual = connector.getUndertakingBalance(eori1).futureValue
+      actual shouldBe undertakingBalance
+    }
   }
 
 }
