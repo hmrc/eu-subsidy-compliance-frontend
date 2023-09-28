@@ -21,18 +21,19 @@ import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.{JsPath, JsonValidationError, Reads}
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{EscConnector, EuropaConnector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{ExchangeRateCache, RemovedSubsidyRepository, UndertakingCache, YearAndMonth}
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{ExchangeRateCache, MonthlyExchangeRateCache, RemovedSubsidyRepository, UndertakingCache, YearAndMonth}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.{HttpResponseOps, ResponseParsingLogger}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.http.UpstreamErrorResponse.WithStatusCode
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
-import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, YearMonth}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
@@ -40,7 +41,6 @@ import scala.reflect.ClassTag
 class EscService @Inject() (
   escConnector: EscConnector,
   undertakingCache: UndertakingCache,
-  exchangeRateCache: ExchangeRateCache,
   removedSubsidyRepository: RemovedSubsidyRepository
 )(implicit ec: ExecutionContext)
     extends TracedLogging {
@@ -305,25 +305,5 @@ class EscService @Inject() (
           s"removeSubsidy UndertakingRef:$undertakingRef, NonHmrcSubsidy:$nonHmrcSubsidy returned UndertakingRef:$undertaking",
         errorMessage = s"removeSubsidy failed UndertakingRef:$undertakingRef, NonHmrcSubsidy:$nonHmrcSubsidy"
       )
-
-  def retrieveExchangeRate(date: LocalDate)(implicit hc: HeaderCarrier): Future[ExchangeRate] = {
-    val cacheKey = YearAndMonth.fromDate(date)
-
-    exchangeRateCache
-      .get[ExchangeRate](cacheKey)
-      .toContext
-      .getOrElseF {
-        escConnector
-          .retrieveExchangeRate(date)
-          .flatMap { response =>
-            val result = handleResponse[ExchangeRate](response, "exchange rate")
-            exchangeRateCache.put(cacheKey, result)
-          }
-      }
-  }.logResult(
-    successCall =
-      (exchangeRate: ExchangeRate) => s"retrieveExchangeRate for LocalDate:$date returned ExchangeRate:$exchangeRate",
-    errorMessage = s"retrieveExchangeRate failed for LocalDate:$date"
-  )
 
 }

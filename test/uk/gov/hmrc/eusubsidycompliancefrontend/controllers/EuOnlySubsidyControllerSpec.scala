@@ -259,7 +259,7 @@ class EuOnlySubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
-            mockRetrieveExchangeRate(claimDate)(exchangeRate.toFuture)
+            mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
           }
 
           val titleMessage = messageFromMessageKey("add-claim-amount.title")

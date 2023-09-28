@@ -18,8 +18,16 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Json, OFormat}
 
-case class ExchangeRate(from: CurrencyCode, to: CurrencyCode, rate: BigDecimal)
+import java.time.LocalDate
 
-object ExchangeRate {
-  implicit val exchangeRateFormat: OFormat[ExchangeRate] = Json.format[ExchangeRate]
+case class MonthlyExchangeRate(
+  currencyIso: String,
+  refCurrencyIso: String,
+  amount: BigDecimal,
+  dateStart: String,
+  dateEnd: String
+)
+
+object MonthlyExchangeRate {
+  implicit val formats: OFormat[MonthlyExchangeRate] = Json.format[MonthlyExchangeRate]
 }
