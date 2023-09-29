@@ -17,6 +17,8 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import com.typesafe.config.ConfigFactory
+import play.api.Configuration
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -41,6 +43,14 @@ class EligibilityControllerSpec
     bind[EmailVerificationService].toInstance(mockEmailVerificationService),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService)
+  )
+
+  override def additionalConfig: Configuration = super.additionalConfig.withFallback(
+    Configuration(
+      ConfigFactory.parseString(s"""
+           |features.xi-eori-adding-disabled  = "false"
+           |""".stripMargin)
+    )
   )
 
   private val controller = instanceOf[EligibilityController]
