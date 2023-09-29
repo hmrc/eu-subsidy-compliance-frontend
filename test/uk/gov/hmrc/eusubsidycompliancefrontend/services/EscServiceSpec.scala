@@ -25,11 +25,11 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.libs.json.{JsValue, Json}
 import play.api.test.Helpers._
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{EscConnector, EuropaConnector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{ExchangeRateCache, RemovedSubsidyRepository, UndertakingCache, YearAndMonth}
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{RemovedSubsidyRepository, UndertakingCache}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.{BaseSpec, CommonTestData}
@@ -128,7 +128,6 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
   private val undertakingRefJson = Json.toJson(undertakingRef)
   private val undertakingJson: JsValue = Json.toJson(undertaking)
   private val undertakingSubsidiesJson = Json.toJson(undertakingSubsidies)
-  private val exchangeRateJson = Json.toJson(exchangeRate)
 
   private val emptyHeaders = Map.empty[String, Seq[String]]
 

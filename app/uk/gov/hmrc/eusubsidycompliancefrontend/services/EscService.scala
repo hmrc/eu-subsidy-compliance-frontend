@@ -21,19 +21,18 @@ import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.{JsPath, JsonValidationError, Reads}
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{EscConnector, EuropaConnector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{ExchangeRateCache, MonthlyExchangeRateCache, RemovedSubsidyRepository, UndertakingCache, YearAndMonth}
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{RemovedSubsidyRepository, UndertakingCache}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.{HttpResponseOps, ResponseParsingLogger}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.http.UpstreamErrorResponse.WithStatusCode
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
-import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, YearMonth}
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
