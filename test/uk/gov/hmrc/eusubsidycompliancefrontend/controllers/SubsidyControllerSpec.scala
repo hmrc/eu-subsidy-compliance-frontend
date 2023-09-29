@@ -1771,7 +1771,7 @@ class SubsidyControllerSpec
           }
           checkFormErrorIsDisplayed(
             performAction()("TID1234"),
-            messageFromMessageKey("subsidy.remove.title"),
+            "You are about to remove a reported payment",
             "Select yes if you want to remove this reported payment"
           )
         }
