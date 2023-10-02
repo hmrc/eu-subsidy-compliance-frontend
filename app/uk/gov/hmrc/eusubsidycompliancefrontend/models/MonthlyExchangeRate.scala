@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
+package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
-import org.scalatest.matchers.should.Matchers
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
+import play.api.libs.json.{Json, OFormat}
 
-class YearAndMonthSpec extends BaseSpec with Matchers {
+import java.time.LocalDate
 
-  "YearAndMonth" should {
+case class MonthlyExchangeRate(
+  currencyIso: String,
+  refCurrencyIso: String,
+  amount: BigDecimal,
+  dateStart: String,
+  dateEnd: String
+)
 
-    "generate the expected string representation when toString is called" in {
-      val underTest = YearAndMonth(2001, 12)
-      underTest.toString shouldBe "2001-12"
-    }
-
-    "pad the year and month values correctly" in {
-      val underTest = YearAndMonth(1, 1)
-      underTest.toString shouldBe "0001-01"
-    }
-  }
-
+object MonthlyExchangeRate {
+  implicit val formats: OFormat[MonthlyExchangeRate] = Json.format[MonthlyExchangeRate]
 }

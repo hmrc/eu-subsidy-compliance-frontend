@@ -67,6 +67,7 @@ class SubsidyControllerSpec
     bind[EmailVerificationService].toInstance(mockEmailVerificationService),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
+    bind[ExchangeRateService].toInstance(mockExchangeRateService),
     bind[AuditService].toInstance(mockAuditService),
     bind[TimeProvider].toInstance(mockTimeProvider)
   )
@@ -780,7 +781,7 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
-            mockRetrieveExchangeRate(claimDate)(exchangeRate.toFuture)
+            mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
             mockUpdate[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](
@@ -826,7 +827,7 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
-            mockRetrieveExchangeRate(claimDate)(exchangeRate.toFuture)
+            mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
           }
 
           val titleMessage = messageFromMessageKey("add-claim-amount.title")
@@ -954,7 +955,7 @@ class SubsidyControllerSpec
           mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
-          mockRetrieveExchangeRate(claimDate)(exchangeRate.toFuture)
+          mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
           mockUpdate[SubsidyJourney](eori1)(Right(subsidyJourney))
         }
 
@@ -1019,7 +1020,7 @@ class SubsidyControllerSpec
             mockGet[SubsidyJourney](eori1)(
               Right(subsidyJourney.copy(claimAmount = ClaimAmountFormPage(claimAmountPounds.some)).some)
             )
-            mockRetrieveExchangeRate(claimDate)(exchangeRate.toFuture)
+            mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
           }
 
           checkPageIsDisplayed(
@@ -1090,7 +1091,7 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(initialJourney.some))
-            mockRetrieveExchangeRate(claimDate)(exchangeRate.toFuture)
+            mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
             mockPut[SubsidyJourney](updatedJourney, eori1)(Right(updatedJourney))
           }
 

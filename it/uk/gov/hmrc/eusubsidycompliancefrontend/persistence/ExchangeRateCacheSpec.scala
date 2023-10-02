@@ -16,38 +16,40 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ExchangeRate
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.MonthlyExchangeRate
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.IntegrationBaseSpec
-import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ExchangeRateCacheSpec extends IntegrationBaseSpec with DefaultPlayMongoRepositorySupport[CacheItem] {
+class ExchangeRateCacheSpec extends IntegrationBaseSpec with DefaultPlayMongoRepositorySupport[MonthlyExchangeRate] {
 
-  override protected def repository = new ExchangeRateCache(mongoComponent)
+  override protected def repository = new MonthlyExchangeRateCache(mongoComponent)
 
-  private val yearMonth1 = YearAndMonth(2022, 1)
-  private val yearMonth2 = YearAndMonth(2022, 6)
-
-  private val exchangeRate1 = ExchangeRate(EUR, GBP, BigDecimal(0.867))
-  private val exchangeRate2 = ExchangeRate(EUR, GBP, BigDecimal(0.807))
+  private val exchangeRate1 = MonthlyExchangeRate("GBP", "EUR", BigDecimal(0.867), "01/09/2023", "30/09/2023")
+  private val exchangeRate2 = MonthlyExchangeRate("GBP", "EUR", BigDecimal(0.807), "01/08/2023", "31/08/2023")
+  private val exchangeRateSeq = Seq(exchangeRate1, exchangeRate2)
 
   "ExchangeRateCache" should {
 
     "return None when the cache is empty" in {
-      repository.get[ExchangeRate](yearMonth1).futureValue shouldBe None
+      repository.getMonthlyExchangeRate("30/09/2023").futureValue shouldBe None
     }
 
     "return None when there is no matching item in the cache" in {
-      repository.put(yearMonth1, exchangeRate1).futureValue shouldBe exchangeRate1
-      repository.get[ExchangeRate](yearMonth2).futureValue shouldBe None
+      repository.put(exchangeRateSeq).futureValue shouldBe ()
+      repository.getMonthlyExchangeRate("01/09/2058").futureValue shouldBe None
+    }
+
+    "clear the repository when drop is called" in {
+      repository.put(exchangeRateSeq).futureValue
+      repository.drop.futureValue
+      repository.getMonthlyExchangeRate(exchangeRate1.dateEnd).futureValue shouldBe None
     }
 
     "return the item when present in the cache" in {
-      repository.put(yearMonth2, exchangeRate2).futureValue shouldBe exchangeRate2
-      repository.get[ExchangeRate](yearMonth2).futureValue shouldBe Some(exchangeRate2)
+      repository.put(exchangeRateSeq).futureValue shouldBe ()
+      repository.getMonthlyExchangeRate(exchangeRate1.dateEnd).futureValue shouldBe Some(exchangeRate1)
     }
 
   }

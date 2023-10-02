@@ -31,7 +31,8 @@ trait HttpSupport { this: MockFactory with Matchers =>
   val mockHttp: HttpClient = mock[HttpClient]
 
   def mockGet[A](
-    url: String
+    url: String,
+    expectedHeaders: Seq[(String, String)] = Seq.empty
   )(
     response: Option[A]
   ): CallHandler6[String, Seq[(String, String)], Seq[(String, String)], HttpReads[
@@ -56,7 +57,7 @@ trait HttpSupport { this: MockFactory with Matchers =>
           // are not satisfied - otherwise it is difficult to tell in the logs what went wrong
           u shouldBe url
           q shouldBe Seq.empty
-          r shouldBe Seq.empty
+          r shouldBe expectedHeaders
           h.extraHeaders shouldBe Seq.empty
           true
       })

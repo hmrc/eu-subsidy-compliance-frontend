@@ -23,7 +23,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRe
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -44,7 +43,6 @@ class EscConnector @Inject() (
   private lazy val removeMemberUrl = s"$escUrl/eu-subsidy-compliance/undertaking/member/remove"
   private lazy val updateSubsidyUrl = s"$escUrl/eu-subsidy-compliance/subsidy/update"
   private lazy val retrieveSubsidyUrl = s"$escUrl/eu-subsidy-compliance/subsidy/retrieve"
-  private lazy val retrieveExchangeRateUrl = s"$escUrl/eu-subsidy-compliance/exchangerate"
   private lazy val getUndertakingBalanceUrl = s"$escUrl/eu-subsidy-compliance/undertaking/balance"
 
   def createUndertaking(undertaking: UndertakingCreate)(implicit hc: HeaderCarrier): ConnectorResult =
@@ -86,9 +84,6 @@ class EscConnector @Inject() (
   def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): ConnectorResult = {
     logPost("retrieveSubsidy", retrieveSubsidyUrl, subsidyRetrieve)
   }
-
-  def retrieveExchangeRate(date: LocalDate)(implicit hc: HeaderCarrier): ConnectorResult =
-    logGet("retrieveExchangeRate", s"$retrieveExchangeRateUrl/$date")
 
   def getUndertakingBalance(eori: EORI)(implicit hc: HeaderCarrier): Future[UndertakingBalance] = {
     http.GET[UndertakingBalance](s"$getUndertakingBalanceUrl/$eori")

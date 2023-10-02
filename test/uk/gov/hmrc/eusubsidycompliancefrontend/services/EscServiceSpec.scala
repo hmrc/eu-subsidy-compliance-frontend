@@ -29,7 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{ExchangeRateCache, RemovedSubsidyRepository, UndertakingCache, YearAndMonth}
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{RemovedSubsidyRepository, UndertakingCache}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.{BaseSpec, CommonTestData}
@@ -44,13 +44,11 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
 
   private val mockEscConnector = mock[EscConnector]
   private val mockUndertakingCache = mock[UndertakingCache]
-  private val mockExchangeRateCache = mock[ExchangeRateCache]
   private val mockRemovedSubsidyRepository = mock[RemovedSubsidyRepository]
 
   private val service: EscService = new EscService(
     mockEscConnector,
     mockUndertakingCache,
-    mockExchangeRateCache,
     mockRemovedSubsidyRepository
   )
 
@@ -119,18 +117,6 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
     when(mockUndertakingCache.deleteUndertakingSubsidies(argEq(ref))(any()))
       .thenReturn(result.fold(Future.failed, _.toFuture))
 
-  private def mockRetrieveExchangeRate(date: LocalDate)(result: Either[ConnectorError, HttpResponse]) =
-    when(mockEscConnector.retrieveExchangeRate(argEq(date))(any()))
-      .thenReturn(result.toFuture)
-
-  private def mockExchangeRateCacheGet[A : ClassTag](key: YearAndMonth)(result: Either[Exception, Option[A]]) =
-    when(mockExchangeRateCache.get[A](argEq(key))(any(), any()))
-      .thenReturn(result.fold(Future.failed, _.toFuture))
-
-  private def mockExchangeRateCachePut[A](key: YearAndMonth, in: A)(result: Either[Exception, A]) =
-    when(mockExchangeRateCache.put[A](argEq(key), argEq(in))(any(), any()))
-      .thenReturn(result.fold(Future.failed, _.toFuture))
-
   private def mockAddRemovedSubsidy(eori: EORI, subsidy: NonHmrcSubsidy) =
     when(mockRemovedSubsidyRepository.add(argEq(eori), argEq(subsidy)))
       .thenReturn(().toFuture)
@@ -142,7 +128,6 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
   private val undertakingRefJson = Json.toJson(undertakingRef)
   private val undertakingJson: JsValue = Json.toJson(undertaking)
   private val undertakingSubsidiesJson = Json.toJson(undertakingSubsidies)
-  private val exchangeRateJson = Json.toJson(exchangeRate)
 
   private val emptyHeaders = Map.empty[String, Seq[String]]
 
@@ -504,48 +489,6 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
           val result = service.removeSubsidy(undertakingRef, nonHmrcSubsidy)
           result.futureValue shouldBe undertakingRef
         }
-      }
-
-    }
-
-    "handling request to retrieve exchange rate" must {
-
-      "return an error" when {
-
-        "no cached item is present and the http call fails" in {
-          mockExchangeRateCacheGet(YearAndMonth.fromDate(fixedDate))(Right(None))
-          mockRetrieveExchangeRate(fixedDate)(Left(ConnectorError("Error")))
-          service.retrieveExchangeRate(fixedDate).failed.futureValue shouldBe a[RuntimeException]
-        }
-
-        "no cached item is present and the http response is not successful" in {
-          mockExchangeRateCacheGet(YearAndMonth.fromDate(fixedDate))(Right(None))
-          mockRetrieveExchangeRate(fixedDate)(Right(HttpResponse(BAD_REQUEST, exchangeRateJson, emptyHeaders)))
-          service.retrieveExchangeRate(fixedDate).failed.futureValue shouldBe a[RuntimeException]
-        }
-
-        "no cached item is present and the response body could not be parsed" in {
-          mockExchangeRateCacheGet(YearAndMonth.fromDate(fixedDate))(Right(None))
-          mockRetrieveExchangeRate(fixedDate)(Right(HttpResponse(OK, "This is not valid json", emptyHeaders)))
-          service.retrieveExchangeRate(fixedDate).failed.futureValue shouldBe a[RuntimeException]
-        }
-
-      }
-
-      "return successfully" when {
-
-        "no cached item is present and the http call succeeds and the body of the response can be parsed" in {
-          mockExchangeRateCacheGet(YearAndMonth.fromDate(fixedDate))(Right(None))
-          mockRetrieveExchangeRate(fixedDate)(Right(HttpResponse(OK, exchangeRateJson, emptyHeaders)))
-          mockExchangeRateCachePut(YearAndMonth.fromDate(fixedDate), exchangeRate)(Right(exchangeRate))
-          service.retrieveExchangeRate(fixedDate).futureValue shouldBe exchangeRate
-        }
-
-        "an item is present in the cache" in {
-          mockExchangeRateCacheGet(YearAndMonth.fromDate(fixedDate))(Right(exchangeRate.some))
-          service.retrieveExchangeRate(fixedDate).futureValue shouldBe exchangeRate
-        }
-
       }
 
     }

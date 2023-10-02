@@ -115,15 +115,6 @@ class EscConnectorSpec
       )
     }
 
-    "handling request to retrieve exchange rate" must {
-      val date = LocalDate.of(2020, 1, 1)
-
-      behave like connectorBehaviour(
-        mockGet(s"$baseUrl/exchangerate/$date")(_),
-        () => connector.retrieveExchangeRate(date)
-      )
-    }
-
     "handling request to get undertaking balance" in {
       mockGet(s"$baseUrl/undertaking/balance/$eori1")(Some(undertakingBalance))
       val actual = connector.getUndertakingBalance(eori1).futureValue

@@ -61,6 +61,7 @@ class SubsidyController @Inject() (
   actionBuilders: ActionBuilders,
   override val store: Store,
   override val escService: EscService,
+  exchangeRateService: ExchangeRateService,
   auditService: AuditService,
   reportedPaymentsPage: ReportedPaymentsPage,
   addClaimEoriPage: AddClaimEoriPage,
@@ -421,7 +422,7 @@ class SubsidyController @Inject() (
         subsidyJourney <- store.get[SubsidyJourney].toContext
         claimAmount <- subsidyJourney.claimAmount.value.toContext
         claimDate <- subsidyJourney.claimDate.value.toContext
-        euroAmount <- convertPoundsToEuros(claimDate.toLocalDate, claimAmount).toContext
+        euroAmount <- convertPoundsToEurosMonthly(claimDate.toLocalDate, claimAmount).toContext
         previous = subsidyJourney.previous
       } yield Ok(confirmConvertedAmountPage(previous, BigDecimal(claimAmount.amount).toPounds, euroAmount.toEuros))
 
@@ -437,7 +438,7 @@ class SubsidyController @Inject() (
         subsidyJourney <- store.get[SubsidyJourney].toContext
         claimAmount <- subsidyJourney.claimAmount.value.toContext
         claimDate <- subsidyJourney.claimDate.value.toContext
-        euroAmount <- convertPoundsToEuros(claimDate.toLocalDate, claimAmount).toContext
+        euroAmount <- convertPoundsToEurosMonthly(claimDate.toLocalDate, claimAmount).toContext
         updatedSubsidyJourney = subsidyJourney.setConvertedClaimAmount(
           ClaimAmount(EUR, euroAmount.toRoundedAmount.toString())
         )
@@ -449,14 +450,14 @@ class SubsidyController @Inject() (
     }
   }
 
-  private def convertPoundsToEuros(date: LocalDate, claimAmount: ClaimAmount)(implicit hc: HeaderCarrier) =
+  private def convertPoundsToEurosMonthly(date: LocalDate, claimAmount: ClaimAmount)(implicit hc: HeaderCarrier) =
     claimAmount.currencyCode match {
       case GBP =>
         for {
-          exchangeRate <- escService.retrieveExchangeRate(date)
-          rate = exchangeRate.rate
-          converted = BigDecimal(claimAmount.amount) / rate
-        } yield converted.some
+          exchangeRate <- exchangeRateService.retrieveCachedMonthlyExchangeRate(date)
+          rateOption = exchangeRate.map(_.amount)
+          converted = rateOption.map(rate => BigDecimal(claimAmount.amount) / rate)
+        } yield converted
       case EUR => Future.successful(None)
     }
 
@@ -464,10 +465,12 @@ class SubsidyController @Inject() (
     claimAmount.currencyCode match {
       case GBP =>
         for {
-          exchangeRate <- escService.retrieveExchangeRate(date)
-          rate = exchangeRate.rate
-          converted = BigDecimal(claimAmount.amount) / rate
-        } yield SubsidyAmount.validateAndTransform(converted.toRoundedAmount).map(_ => claimAmount)
+          exchangeRate <- exchangeRateService.retrieveCachedMonthlyExchangeRate(date)
+          rateOption = exchangeRate.map(_.amount)
+          converted = rateOption.map(rate => BigDecimal(claimAmount.amount) / rate)
+        } yield SubsidyAmount
+          .validateAndTransform(converted.getOrElse(BigDecimal(0)).toRoundedAmount)
+          .map(_ => claimAmount)
       case EUR => claimAmount.some.toFuture
     }
 
