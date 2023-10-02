@@ -28,7 +28,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class EuropaConnector @Inject() (
-  val client: HttpClient
+  val client: ProxiedHttpClient
 ) {
   def retrieveMonthlyExchangeRates(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[MonthlyExchangeRate]] =
     client.GET[Seq[MonthlyExchangeRate]](

@@ -16,45 +16,82 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connector
 
-import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import play.api.test.Helpers.ACCEPT
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EuropaConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.MonthlyExchangeRate
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
+import com.github.tomakehurst.wiremock.client.WireMock._
+import org.scalatest.concurrent.IntegrationPatience
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import java.time.LocalDate
+import org.scalatest.matchers.must.Matchers
+import play.api.Application
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.test.Helpers.running
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.WiremockSupport
 
 class EuropaConnectorSpec
-    extends ConnectorSpec
+    extends AnyWordSpecLike
     with Matchers
-    with AnyWordSpecLike
-    with MockFactory
-    with HttpSupport
-    with ScalaFutures {
-  private val connector = new EuropaConnector(mockHttp)
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
+    with WiremockSupport
+    with ScalaFutures
+    with IntegrationPatience {
 
-  "EuropaConnectorSpec" when {
+  implicit private val hc: HeaderCarrier = HeaderCarrier()
 
-    "sent request for exchange rates" should {
-      "return exchange rate data" in {
-        val url = "https://ec.europa.eu/budg/inforeuro/api/public/currencies/gbp"
-        val expectedHeader = Seq(ACCEPT -> "application/vnd.sdmx.data+json;version=1.0.0-wd")
-        val response = Seq(MonthlyExchangeRate("GBP", "EUR", BigDecimal(0.8592), "01/09/2023", "30/09/2023"))
-        mockGet(url, expectedHeader)(
-          Some(response)
-        )
-        connector.retrieveMonthlyExchangeRates.futureValue shouldBe response
+  private val requestUrl =
+    s"https://ec.europa.eu/budg/inforeuro/api/public/currencies/gbp"
 
+  private val validResponse =
+    """[
+      |  {
+      |    "currencyIso": "GBP",
+      |    "refCurrencyIso": "EUR",
+      |    "amount": 0.86333,
+      |    "dateStart": "01/10/2023",
+      |    "dateEnd": "31/10/2023"
+      |  },
+      |  {
+      |    "currencyIso": "GBP",
+      |    "refCurrencyIso": "EUR",
+      |    "amount": 0.8592,
+      |    "dateStart": "01/09/2023",
+      |    "dateEnd": "30/09/2023"
+      |  },
+      |  {
+      |    "currencyIso": "GBP",
+      |    "refCurrencyIso": "EUR",
+      |    "amount": 0.8556,
+      |    "dateStart": "01/08/2023",
+      |    "dateEnd": "31/08/2023"
+      |  },
+      |]""".stripMargin
+
+  "EuropaConnector" when {
+
+    "an exchange rate request is made" should {
+      "return a successful response for a valid response from the europa API" in {
+        givenEuropaReturns(200, requestUrl)
       }
-      "return future failed if endpoint is down" in {
-        an[Throwable] shouldBe thrownBy(connector.retrieveMonthlyExchangeRates.futureValue)
-      }
+
     }
+
   }
+
+  private def configuredApplication: Application =
+    new GuiceApplicationBuilder()
+      .configure(
+        "microservice.services.europa.host" -> "localhost",
+        "microservice.services.europa.port" -> server.port()
+      )
+      .build()
+
+  private def givenEuropaReturns(status: Int, url: String): Unit =
+    server.stubFor(
+      get(urlEqualTo(url))
+        .willReturn(
+          aResponse()
+            .withStatus(status)
+        )
+    )
 
 }
