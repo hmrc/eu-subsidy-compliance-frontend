@@ -315,7 +315,7 @@ class BusinessEntityControllerSpec
 
       "show a form error" when {
         "nothing has been submitted" in new AddBusinessPageSetup(method = POST) {
-          val errorMessage = "Select yes if you need to add another business"
+          val errorMessage = "Select yes if you need to add another business to your undertaking"
 
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()

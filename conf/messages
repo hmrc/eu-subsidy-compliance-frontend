@@ -185,7 +185,7 @@ addBusiness.p2 = Each business will be notified by email that they have been add
 addBusiness.legend = Do you need to add another business?
 addBusiness.businesses-added.legend = Do you need to add another business?
 addBusiness.hint = You only need to add businesses that have received customs subsidies (Customs Duty waivers) or non-customs subsidies.
-addBusiness.error.required = Select yes if you need to add another business
+addBusiness.error.required = Select yes if you need to add another business to your undertaking
 addBusiness.change-remove.snippet = business with EORI
 addBusiness.businessAdded.success.bannerTitle = Business added
 addBusiness.businessAdded.warningText = You have added one or more businesses. This could take up to 24 hours to show here. Any payments reported for those businesses in a previous undertaking will be moved to this undertaking and will affect the sector cap from now on.
@@ -418,7 +418,7 @@ subsidy.created.l2 = Go to homepage
 subsidy.remove.title = You are about to remove a reported payment
 subsidy.remove.p1 = If you remove this payment then your remaining allowance will change.
 subsidy.remove.yesno.legend = Are you sure you want to remove this payment?
-subsidy.remove.error.required = Select yes if you want to remove this payment
+subsidy.remove.error.required = Select yes if you want to remove this reported payment
 
 #Amend Undertaking
 undertaking.amendUndertaking.title = Undertaking details
