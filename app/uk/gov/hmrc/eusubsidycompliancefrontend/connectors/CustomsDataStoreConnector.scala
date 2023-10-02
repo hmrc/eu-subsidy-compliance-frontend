@@ -17,15 +17,18 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import com.google.inject.{Inject, Singleton}
+import play.api.http.Status
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.UpdateEmailRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import scala.concurrent.ExecutionContext
+import java.time.LocalDateTime
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveEmailConnector @Inject() (override protected val http: HttpClient, servicesConfig: ServicesConfig)(
+class CustomsDataStoreConnector @Inject() (override protected val http: HttpClient, servicesConfig: ServicesConfig)(
   implicit ec: ExecutionContext
 ) extends EmailConnector {
 
@@ -35,5 +38,20 @@ class RetrieveEmailConnector @Inject() (override protected val http: HttpClient,
 
   def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): ConnectorResult =
     makeRequest(_.GET[HttpResponse](getUri(eori)))
+
+  def updateEmailForEori(eori: EORI, emailAddress: String, timestamp: LocalDateTime = LocalDateTime.now())(implicit
+    hc: HeaderCarrier
+  ): Future[Unit] =
+    http
+      .POST[UpdateEmailRequest, HttpResponse](
+        url = s"$cdsURL/customs-data-store/update-email",
+        body = UpdateEmailRequest(eori, emailAddress, timestamp)
+      )
+      .map { res =>
+        res.status match {
+          case Status.NO_CONTENT => ()
+          case _ => sys.error(s"Error updating email address for eori: $eori, new email address: $emailAddress")
+        }
+      }
 
 }

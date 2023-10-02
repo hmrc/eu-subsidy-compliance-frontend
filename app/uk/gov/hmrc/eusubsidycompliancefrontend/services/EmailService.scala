@@ -20,7 +20,7 @@ import cats.implicits.catsSyntaxOptionId
 import com.google.inject.Inject
 import play.api.http.Status.{ACCEPTED, NOT_FOUND, OK}
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{RetrieveEmailConnector, SendEmailConnector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{CustomsDataStoreConnector, SendEmailConnector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email._
@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class EmailService @Inject() (
   appConfig: AppConfig,
   sendEmailConnector: SendEmailConnector,
-  retrieveEmailConnector: RetrieveEmailConnector,
+  customsDataStoreConnector: CustomsDataStoreConnector,
   emailVerificationService: EmailVerificationService
 ) extends TracedLogging {
 
@@ -87,22 +87,15 @@ class EmailService @Inject() (
     val parameters = EmailParameters(eori1, eori2, undertaking.name, removeEffectiveDate)
     val templateId = appConfig.getTemplateId(template).getOrElse(s"No template ID for email template: $template")
 
-    def fetchEmailAndSend(): Future[EmailSendResult] =
-      retrieveEmailByEORI(eori1).flatMap {
-        case RetrieveEmailResponse(EmailType.VerifiedEmail, Some(email)) => sendEmail(email, parameters, templateId)
-        case RetrieveEmailResponse(EmailType.VerifiedEmail, None) => Future.failed(sys.error("Email address not found"))
-        case _ => EmailSendResult.EmailNotSent.toFuture
-      }
-
-    emailVerificationService
-      .getEmailVerification(eori1)
-      .toContext
-      .foldF(fetchEmailAndSend())(e => sendEmail(EmailAddress(e.email), parameters, templateId))
-
+    retrieveEmailByEORI(eori1).flatMap {
+      case RetrieveEmailResponse(EmailType.VerifiedEmail, Some(email)) => sendEmail(email, parameters, templateId)
+      case RetrieveEmailResponse(EmailType.VerifiedEmail, None) => Future.failed(sys.error("Email address not found"))
+      case _ => EmailSendResult.EmailNotSent.toFuture
+    }
   }
 
   def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RetrieveEmailResponse] =
-    retrieveEmailConnector.retrieveEmailByEORI(eori).map {
+    customsDataStoreConnector.retrieveEmailByEORI(eori).map {
       case Left(error) => throw error
       case Right(value: HttpResponse) =>
         value.status match {
@@ -114,6 +107,20 @@ class EmailService @Inject() (
           case _ => sys.error("Error in retrieving Email Address Response")
         }
     }
+
+  def retrieveVerifiedEmailAddressByEORI(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] =
+    retrieveEmailByEORI(eori).map { res =>
+      res.emailAddress match {
+        case Some(email) => email.value
+        case None => sys.error(s"Error in retrieving email address for eori: $eori")
+      }
+    }
+
+  def updateEmailForEori(eori: EORI, emailAddress: String)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Unit] =
+    customsDataStoreConnector.updateEmailForEori(eori, emailAddress)
 
   private def handleEmailAddressResponse(emailAddressResponse: EmailAddressResponse): RetrieveEmailResponse =
     emailAddressResponse match {

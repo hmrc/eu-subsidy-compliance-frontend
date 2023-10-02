@@ -33,7 +33,7 @@ import scala.concurrent.Future
 case class UndertakingJourney(
   about: AboutUndertakingFormPage = AboutUndertakingFormPage(),
   sector: UndertakingSectorFormPage = UndertakingSectorFormPage(),
-  verifiedEmail: UndertakingConfirmEmailFormPage = UndertakingConfirmEmailFormPage(),
+  hasVerifiedEmail: Option[UndertakingConfirmEmailFormPage] = Some(UndertakingConfirmEmailFormPage()),
   addBusiness: UndertakingAddBusinessFormPage = UndertakingAddBusinessFormPage(),
   cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
   confirmation: UndertakingConfirmationFormPage = UndertakingConfirmationFormPage(),
@@ -43,7 +43,7 @@ case class UndertakingJourney(
   override def steps: Array[FormPage[_]] = Array(
     about,
     sector,
-    verifiedEmail,
+    hasVerifiedEmail.getOrElse(UndertakingConfirmEmailFormPage()),
     addBusiness,
     cya,
     confirmation
@@ -65,7 +65,8 @@ case class UndertakingJourney(
   def isEmpty: Boolean = steps.flatMap(_.value).isEmpty
 
   private def requiredDetailsProvided =
-    Seq(about, sector, verifiedEmail).map(_.value.isDefined) == Seq(true, true, true)
+    Seq(about, sector, hasVerifiedEmail.getOrElse(UndertakingConfirmEmailFormPage()))
+      .map(_.value.isDefined) == Seq(true, true, true)
 
   def setUndertakingName(n: String): UndertakingJourney = this.copy(about = about.copy(value = Some(n)))
 
@@ -73,7 +74,8 @@ case class UndertakingJourney(
 
   def setUndertakingCYA(b: Boolean): UndertakingJourney = this.copy(cya = cya.copy(value = Some(b)))
 
-  def setVerifiedEmail(e: String): UndertakingJourney = this.copy(verifiedEmail = verifiedEmail.copy(value = Some(e)))
+  def setHasVerifiedEmail(e: Boolean): UndertakingJourney =
+    this.copy(hasVerifiedEmail = hasVerifiedEmail.map(_.copy(value = Some(e))))
 
   def setAddBusiness(b: Boolean): UndertakingJourney = this.copy(addBusiness = addBusiness.copy(value = b.some))
 
@@ -101,7 +103,8 @@ object UndertakingJourney {
     case class UndertakingSectorFormPage(value: Form[Sector] = None) extends FormPage[Sector] {
       def uri = controller.getSector.url
     }
-    case class UndertakingConfirmEmailFormPage(value: Form[String] = None) extends FormPage[String] {
+
+    case class UndertakingConfirmEmailFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getConfirmEmail.url
     }
     case class UndertakingAddBusinessFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
@@ -123,6 +126,7 @@ object UndertakingJourney {
     object UndertakingConfirmEmailFormPage {
       implicit val confirmEmailFormPageFormat: OFormat[UndertakingConfirmEmailFormPage] = Json.format
     }
+
     object UndertakingAddBusinessFormPage {
       implicit val confirmEmailFormPageFormat: OFormat[UndertakingAddBusinessFormPage] = Json.format
     }

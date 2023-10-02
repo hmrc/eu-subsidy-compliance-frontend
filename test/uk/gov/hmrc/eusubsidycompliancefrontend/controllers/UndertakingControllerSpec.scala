@@ -31,9 +31,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.{UndertakingDisabled, UndertakingUpdated}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{CreateUndertaking, DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse, VerificationStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.{Amend, EmailStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EmailStatus, IndustrySectorLimit, Sector, UndertakingName}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress, VerifiedEmail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -140,7 +141,7 @@ class UndertakingControllerSpec
               UndertakingJourney(
                 about = AboutUndertakingFormPage("TestUndertaking".some),
                 sector = UndertakingSectorFormPage(Sector(1).some),
-                verifiedEmail = UndertakingConfirmEmailFormPage("joe.bloggs@something.com".some)
+                hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some))
               ),
               routes.UndertakingController.getAddBusiness.url
             )
@@ -151,7 +152,7 @@ class UndertakingControllerSpec
               UndertakingJourney(
                 about = AboutUndertakingFormPage("TestUndertaking".some),
                 sector = UndertakingSectorFormPage(Sector(1).some),
-                verifiedEmail = UndertakingConfirmEmailFormPage("joe.bloggs@something.com".some),
+                hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some)),
                 addBusiness = UndertakingAddBusinessFormPage(false.some)
               ),
               routes.UndertakingController.getCheckAnswers.url
@@ -163,7 +164,7 @@ class UndertakingControllerSpec
               UndertakingJourney(
                 about = AboutUndertakingFormPage("TestUndertaking".some),
                 sector = UndertakingSectorFormPage(Sector(1).some),
-                verifiedEmail = UndertakingConfirmEmailFormPage("joe.bloggs@something.com".some),
+                hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some)),
                 addBusiness = UndertakingAddBusinessFormPage(false.some),
                 cya = UndertakingCyaFormPage(true.some)
               ),
@@ -177,7 +178,7 @@ class UndertakingControllerSpec
                 about = AboutUndertakingFormPage("TestUndertaking".some),
                 sector = UndertakingSectorFormPage(Sector(1).some),
                 cya = UndertakingCyaFormPage(true.some),
-                verifiedEmail = UndertakingConfirmEmailFormPage("joe.bloggs@something.com".some),
+                hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some)),
                 addBusiness = UndertakingAddBusinessFormPage(false.some),
                 confirmation = UndertakingConfirmationFormPage(true.some)
               ),
@@ -600,15 +601,19 @@ class UndertakingControllerSpec
           val undertakingJourney = UndertakingJourney(
             about = AboutUndertakingFormPage("TestUndertaking1".some),
             sector = UndertakingSectorFormPage(Sector(2).some),
-            verifiedEmail = UndertakingConfirmEmailFormPage("joe.bloggs@something.com".some)
+            hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some))
           )
+          val email = "joebloggs@something.com"
 
           inSequence {
             mockAuthWithEnrolment(eori1)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
             mockApproveVerification(eori1, "id")(Right(true))
-            mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
+            mockGetEmailVerificationStatus(
+              Future.successful(Some(VerificationStatus(emailAddress = email, verified = true, locked = false)))
+            )
+            mockUpdateEmailForEori(eori1, email)(Future.successful(()))
             mockUpdate[UndertakingJourney](eori1)(Right(undertakingJourney))
           }
 
@@ -650,7 +655,9 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-            mockGetEmailVerification(eori1)(Right(VerifiedEmail(email, "id123", verified = true).some))
+            mockRetrieveEmail(eori1)(
+              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress(email).some))
+            )
           }
           checkPageIsDisplayed(
             performAction(),
@@ -681,15 +688,18 @@ class UndertakingControllerSpec
             sector = UndertakingSectorFormPage(Sector(2).some)
           )
           val previousCall = routes.UndertakingController.getSector.url
+          val email = "email@t.com"
 
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
-            mockGetEmailVerification(eori1)(Right(VerifiedEmail("", "", verified = true).some))
+            mockRetrieveEmail(eori1)(
+              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress(email).some))
+            )
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("confirmEmail.title", ""),
+            "Is email@t.com the right email address to receive notifications?",
             { doc =>
               doc.select(".govuk-back-link").attr("href") shouldBe previousCall
 
@@ -763,7 +773,9 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori1)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockGetEmailVerification()
+            mockRetrieveEmail(eori1)(
+              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress(email).some))
+            )
           }
           checkFormErrorIsDisplayed(
             result = performAction("using-stored-email" -> "false", "email" -> "some@thing"),
@@ -777,7 +789,9 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori1)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockGetEmailVerification()
+            mockRetrieveEmail(eori1)(
+              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress(email).some))
+            )
           }
           checkFormErrorIsDisplayed(
             result = performAction("using-stored-email" -> "false", "email" -> "some @ thing.com"),
@@ -791,7 +805,9 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori1)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockGetEmailVerification()
+            mockRetrieveEmail(eori1)(
+              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress(email).some))
+            )
           }
           checkFormErrorIsDisplayed(
             result = performAction("using-stored-email" -> "false", "email" -> "something.com"),
@@ -805,11 +821,14 @@ class UndertakingControllerSpec
       "redirect to add business page" when {
 
         "all api calls are successful" in {
+          val email = "foo@example.com"
           inSequence {
             mockAuthWithEnrolment(eori1)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockGetEmailVerification()
-            mockAddVerifiedEmail(eori1, "foo@example.com")()
+            mockRetrieveEmail(eori1)(
+              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress(email).some))
+            )
+            mockAddVerifiedEmail(eori1, email)()
             mockUpdate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete))
 
           }
@@ -823,7 +842,9 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori1)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockGetEmailVerification()
+            mockRetrieveEmail(eori1)(
+              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("email").some))
+            )
             mockMakeVerificationRequestAndRedirect(Redirect("email-verification-redirect").toFuture)
           }
           redirectLocation(
@@ -835,7 +856,9 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithEnrolment(eori1)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockGetEmailVerification()
+            mockRetrieveEmail(eori1)(
+              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("email@mail.com").some))
+            )
           }
           status(performAction("using-stored-email" -> "false", "email" -> "somethingl.com")) shouldBe BAD_REQUEST
         }
@@ -869,7 +892,7 @@ class UndertakingControllerSpec
           val undertakingJourney = UndertakingJourney(
             about = AboutUndertakingFormPage("TestUndertaking1".some),
             sector = UndertakingSectorFormPage(Sector(2).some),
-            verifiedEmail = UndertakingConfirmEmailFormPage("some@email.com".some)
+            hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some))
           )
 
           inSequence {
@@ -894,7 +917,7 @@ class UndertakingControllerSpec
           val undertakingJourney = UndertakingJourney(
             about = AboutUndertakingFormPage("TestUndertaking1".some),
             sector = UndertakingSectorFormPage(Sector(2).some),
-            verifiedEmail = UndertakingConfirmEmailFormPage("some@email.com".some)
+            hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some))
           )
           val previousCall = routes.UndertakingController.getConfirmEmail.url
 
@@ -912,7 +935,7 @@ class UndertakingControllerSpec
           val undertakingJourney = UndertakingJourney(
             about = AboutUndertakingFormPage("TestUndertaking1".some),
             sector = UndertakingSectorFormPage(Sector(2).some),
-            verifiedEmail = UndertakingConfirmEmailFormPage("some@email.com".some)
+            hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some))
           )
           val previousCall = routes.UndertakingController.getConfirmEmail.url
 
@@ -938,7 +961,7 @@ class UndertakingControllerSpec
           val undertakingJourney = UndertakingJourney(
             about = AboutUndertakingFormPage("TestUndertaking1".some),
             sector = UndertakingSectorFormPage(Sector(2).some),
-            verifiedEmail = UndertakingConfirmEmailFormPage("some@email.com".some),
+            hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some)),
             addBusiness = UndertakingAddBusinessFormPage(true.some)
           )
           val previousCall = routes.UndertakingController.getConfirmEmail.url
@@ -1103,6 +1126,7 @@ class UndertakingControllerSpec
         inSequence {
           mockAuthWithEnrolmentAndValidEmail()
           mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+          mockRetrieveVerifiedEmailAddressByEORI(eori1)(Future.successful("joebloggs@something.com"))
         }
 
         checkPageIsDisplayed(
@@ -1138,16 +1162,6 @@ class UndertakingControllerSpec
       }
 
       "redirect" when {
-        "call to get undertaking journey fetches the journey without verified email" in {
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockGet[UndertakingJourney](eori1)(
-              Right(undertakingJourneyComplete.copy(verifiedEmail = UndertakingConfirmEmailFormPage()).some)
-            )
-          }
-          redirectLocation(performAction()) shouldBe Some(routes.UndertakingController.getAddBusiness.url)
-        }
-
         "to journey start when call to get undertaking journey fetches nothing" in {
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
@@ -1409,7 +1423,7 @@ class UndertakingControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.copy(isAmend = true).some))
-            mockGetEmailVerification()
+            mockRetrieveVerifiedEmailAddressByEORI(eori1)(Future.successful("foo@example.com"))
           }
 
           checkPageIsDisplayed(
@@ -1417,7 +1431,6 @@ class UndertakingControllerSpec
             messageFromMessageKey("undertaking.amendUndertaking.title"),
             { doc =>
               doc.select(".govuk-back-link").attr("href") shouldBe routes.AccountController.getAccountPage.url
-
               val rows =
                 doc.select(".govuk-summary-list__row").asScala.toList.map { element =>
                   val question = element.select(".govuk-summary-list__key").text()
@@ -1436,7 +1449,7 @@ class UndertakingControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
             mockUpdate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.copy(isAmend = true)))
-            mockGetEmailVerification()
+            mockRetrieveVerifiedEmailAddressByEORI(eori1)(Future.successful("foo@example.com"))
           }
 
           checkPageIsDisplayed(

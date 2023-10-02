@@ -48,7 +48,7 @@ import scala.concurrent.{ExecutionContext, Future}
   * @param mcc
   * @param executionContext
   */
-class VerifiedEmailActionBuilder @Inject() (
+class VerifiedEoriActionBuilder @Inject() (
   override val config: Configuration,
   override val env: Environment,
   override val authConnector: AuthConnector,

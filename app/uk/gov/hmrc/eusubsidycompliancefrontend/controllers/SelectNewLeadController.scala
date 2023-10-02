@@ -57,7 +57,7 @@ class SelectNewLeadController @Inject() (
 
   private val selectNewLeadForm: Form[FormValues] = formWithSingleMandatoryField("selectNewLead")
 
-  def getSelectNewLead: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def getSelectNewLead: Action[AnyContent] = verifiedEori.async { implicit request =>
     withLeadUndertaking { undertaking =>
       logger.info("SelectNewLeadController.getSelectNewLead")
       val previous = routes.AccountController.getAccountPage.url
@@ -72,7 +72,7 @@ class SelectNewLeadController @Inject() (
     }
   }
 
-  def postSelectNewLead: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def postSelectNewLead: Action[AnyContent] = verifiedEori.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
 
@@ -118,7 +118,7 @@ class SelectNewLeadController @Inject() (
     case _ => handleMissingSessionData("Email result Response")
   }
 
-  def getLeadEORIChanged: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def getLeadEORIChanged: Action[AnyContent] = verifiedEori.async { implicit request =>
     withLeadUndertaking { _ =>
       logger.info("SelectNewLeadController.redirectTo")
 
@@ -136,7 +136,7 @@ class SelectNewLeadController @Inject() (
     }
   }
 
-  def emailNotVerified: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def emailNotVerified: Action[AnyContent] = verifiedEori.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     logger.info("SelectNewLeadController.emailNotVerified")

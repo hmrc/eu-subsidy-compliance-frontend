@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.models
+package uk.gov.hmrc.eusubsidycompliancefrontend.models.email
 
 import play.api.libs.json.{Json, OFormat}
 
-case class VerifiedEmail(verificationId: String, verified: Boolean)
+import java.time.LocalDateTime
 
-object VerifiedEmail {
-  implicit val undertakingFormat: OFormat[VerifiedEmail] = Json.format[VerifiedEmail]
+case class UpdateEmailRequest(eori: String, address: String, timestamp: LocalDateTime = LocalDateTime.now())
+
+object UpdateEmailRequest {
+  implicit val format: OFormat[UpdateEmailRequest] = Json.format
 }
