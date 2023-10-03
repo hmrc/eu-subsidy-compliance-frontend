@@ -18,12 +18,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import play.api.http.HeaderNames.ACCEPT
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.MonthlyExchangeRate
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 @Singleton
