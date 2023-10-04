@@ -719,7 +719,7 @@ class BusinessEntityControllerSpec
           }
           checkPageIsDisplayed(
             performAction,
-            messageFromMessageKey("removeBusinessEntity.title"),
+            "You are about to remove a business from your undertaking",
             { doc =>
               val selectedOptions = doc.select(".govuk-radios__input[checked]")
               inputDate match {

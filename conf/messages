@@ -221,7 +221,7 @@ businessEntity.cya.change.eori=EORI number
 
 removeBusinessEntity.title= You are about to remove a business from your undertaking
 removeBusinessEntity.p1 = You are about to remove the business with EORI number {0}.
-removeBusinessEntity.p2 = Reported payments for this business will remain in your undertaking, and will continue to affect your remaining sector allowance. These reported payments will be removed only when the business joins or creates another undertaking.
+removeBusinessEntity.p2 = Reported payments for this business will remain in your undertaking, and will continue to affect your remaining sector allowance. These reported payments will only be removed when the business joins or creates another undertaking.
 removeBusinessEntity.subtitle = Are you sure you want to remove this business from your undertaking?
 removeBusinessEntity.error.required = Select yes if you want to remove a business from your undertaking
 removeBusiness.error.required = Select yes if you want to remove a business from your undertaking
