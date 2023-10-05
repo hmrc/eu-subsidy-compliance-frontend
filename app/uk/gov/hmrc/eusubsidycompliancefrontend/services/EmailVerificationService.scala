@@ -33,6 +33,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.cache.CacheItem
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import play.api.i18n.Messages
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.VerificationStatus
 
 import java.util.UUID
 import javax.inject.Singleton
@@ -45,6 +46,14 @@ class EmailVerificationService @Inject() (
   servicesConfig: ServicesConfig
 ) extends TracedLogging {
 
+  def getEmailVerificationStatus(implicit
+    request: AuthenticatedEnrolledRequest[AnyContent],
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Option[VerificationStatus]] =
+    emailVerificationConnector.getVerificationStatus(request.authorityId).map { response =>
+      response.emails.find(e => e.verified == true && e.locked == false)
+    }
   def getEmailVerification(eori: EORI): Future[Option[VerifiedEmail]] = eoriEmailDatastore.getEmailVerification(eori)
 
   def approveVerificationRequest(key: EORI, verificationId: String)(implicit ec: ExecutionContext): Future[Boolean] =
@@ -53,9 +62,9 @@ class EmailVerificationService @Inject() (
       .map(_.getMatchedCount > 0)
 
   // Add an email address that's already approved
-  def addVerifiedEmail(eori: EORI, emailAddress: String)(implicit ec: ExecutionContext): Future[Unit] =
+  def addVerifiedEmail(eori: EORI)(implicit ec: ExecutionContext): Future[Unit] =
     for {
-      _ <- addVerificationRequest(eori, emailAddress)
+      _ <- addVerificationRequest(eori)
       _ <- verifyEmailForEori(eori)
     } yield ()
 
@@ -70,8 +79,12 @@ class EmailVerificationService @Inject() (
     hc: HeaderCarrier,
     messages: Messages
   ): Future[Result] = for {
-    verificationId <- addVerificationRequest(request.eoriNumber, email)
-    verificationResponse <- verifyEmail(nextPageUrl(verificationId), previousPage.url, reEnterEmailUrl)(
+    verificationId <- addVerificationRequest(request.eoriNumber)
+    verificationResponse <- verifyEmail(
+      continueUrl = nextPageUrl(verificationId),
+      backUrl = previousPage.url,
+      reEnterEmailUrl = reEnterEmailUrl
+    )(
       request.authorityId,
       email
     )
@@ -124,9 +137,9 @@ class EmailVerificationService @Inject() (
 
   private def verifyEmailForEori(eori: EORI): Future[CacheItem] = eoriEmailDatastore.verifyEmail(eori)
 
-  private def addVerificationRequest(key: EORI, email: String)(implicit ec: ExecutionContext): Future[String] =
+  private def addVerificationRequest(key: EORI)(implicit ec: ExecutionContext): Future[String] =
     eoriEmailDatastore
-      .addVerificationRequest(key, email, UUID.randomUUID().toString)
+      .addVerificationRequest(key, UUID.randomUUID().toString)
       .toContext
       .map(_.verificationId)
       .getOrElse(throw new IllegalStateException("Error storing email verification request"))

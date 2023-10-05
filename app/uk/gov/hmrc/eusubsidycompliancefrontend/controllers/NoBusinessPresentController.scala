@@ -43,7 +43,7 @@ class NoBusinessPresentController @Inject() (
 
   import actionBuilders._
 
-  def getNoBusinessPresent: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def getNoBusinessPresent: Action[AnyContent] = verifiedEori.async { implicit request =>
     withLeadUndertaking { _ =>
       logger.info("NoBusinessPresentController.getNoBusinessPresent showing noBusinessPresentPage")
 
@@ -51,7 +51,7 @@ class NoBusinessPresentController @Inject() (
     }
   }
 
-  def postNoBusinessPresent: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def postNoBusinessPresent: Action[AnyContent] = verifiedEori.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     logger.info(
       "NoBusinessPresentController.postNoBusinessPresent"

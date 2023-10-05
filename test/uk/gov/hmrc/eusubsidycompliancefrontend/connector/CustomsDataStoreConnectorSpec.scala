@@ -20,14 +20,17 @@ import com.typesafe.config.ConfigFactory
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
 import play.api.Configuration
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.RetrieveEmailConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.CustomsDataStoreConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.UpdateEmailRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
+import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class RetrieveEmailConnectorSpec
+class CustomsDataStoreConnectorSpec
     extends BaseSpec
     with Matchers
     with MockFactory
@@ -46,16 +49,42 @@ class RetrieveEmailConnectorSpec
                                  |""".stripMargin)
   )
 
-  private val connector = new RetrieveEmailConnector(mockHttp, new ServicesConfig(config))
+  private val connector = new CustomsDataStoreConnector(mockHttp, new ServicesConfig(config))
 
-  val expectedUrl = s"$protocol://$host:$port/customs-data-store/eori/$eori1/verified-email"
+  val retrieveVerifiedEmailUrl = s"$protocol://$host:$port/customs-data-store/eori/$eori1/verified-email"
+  val updateVerifiedEmailUrl = s"$protocol://$host:$port/customs-data-store/update-email"
 
-  "RetrieveEmailConnector" when {
+  "CustomsDataStoreConnector" when {
     "handling request to retrieve email address by eori" must {
       behave like connectorBehaviourForRetrieveEmail(
-        mockGet(expectedUrl)(_),
+        mockGet(retrieveVerifiedEmailUrl)(_),
         () => connector.retrieveEmailByEORI(eori1)
       )
+    }
+
+    "handling request to updateEmailForEori - success" in {
+      val email = "email@dress.com"
+      val now = LocalDateTime.now()
+
+      mockPost(url = updateVerifiedEmailUrl, body = UpdateEmailRequest(eori1, email, now), headers = Seq.empty)(
+        Some(HttpResponse(204, "{}"))
+      )
+      connector.updateEmailForEori(eori1, email, now).map { res =>
+        res shouldBe ()
+      }
+    }
+
+    "handling request to updateEmailForEori - failure" in {
+      val email = "email@dress.com"
+      val now = LocalDateTime.now()
+      mockPost(url = updateVerifiedEmailUrl, body = UpdateEmailRequest(eori1, email, now), headers = Seq.empty)(
+        Some(HttpResponse(500, "{}"))
+      )
+      connector
+        .updateEmailForEori(eori1, email, now)
+        .map(
+          _ shouldBe new RuntimeException(s"Error updating email address for eori: $eori1, new email address: $email")
+        )
     }
 
   }

@@ -108,7 +108,7 @@ class BecomeLeadController @Inject() (
     )
   }
 
-  def getBecomeLeadEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def getBecomeLeadEori: Action[AnyContent] = verifiedEori.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     logger.info("BecomeLeadController.getBecomeLeadEori")
     val result = for {
@@ -120,7 +120,7 @@ class BecomeLeadController @Inject() (
     result.getOrElse(handleMissingSessionData("No undertaking Found"))
   }
 
-  def postBecomeLeadEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def postBecomeLeadEori: Action[AnyContent] = verifiedEori.async { implicit request =>
     logger.info("BecomeLeadController.postBecomeLeadEori")
     implicit val eori: EORI = request.eoriNumber
 
@@ -167,12 +167,12 @@ class BecomeLeadController @Inject() (
       )
   }
 
-  def getPromotionConfirmation: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def getPromotionConfirmation: Action[AnyContent] = verifiedEori.async { implicit request =>
     logger.info("BecomeLeadController.getPromotionConfirmation")
     Ok(becomeAdminConfirmationPage()).toFuture
   }
 
-  override protected def addVerifiedEmailToJourney(email: String)(implicit eori: EORI): Future[Unit] =
+  override protected def addVerifiedEmailToJourney(implicit eori: EORI): Future[Unit] =
     ().toFuture
 
 }

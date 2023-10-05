@@ -25,7 +25,7 @@ import play.api.libs.json.Json
 import play.api.test.DefaultAwaitTimeout
 import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{RetrieveEmailConnector, SendEmailConnector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{CustomsDataStoreConnector, SendEmailConnector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.{EmailNotSent, EmailSent}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.CreateUndertaking
@@ -69,7 +69,7 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockFactory with Scal
   private val unverifiedEmailResponseJson = Json.toJson(unverifiedEmailResponse)
 
   private val mockSendEmailConnector: SendEmailConnector = mock[SendEmailConnector]
-  private val mockRetrieveEmailConnector = mock[RetrieveEmailConnector]
+  private val mockRetrieveEmailConnector = mock[CustomsDataStoreConnector]
 
   private def mockSendEmail(emailSendRequest: EmailSendRequest)(result: Either[ConnectorError, HttpResponse]) =
     (mockSendEmailConnector
@@ -83,7 +83,7 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockFactory with Scal
       .expects(eori, *)
       .returning(result.toFuture)
 
-  private def mockVerifiedEmail() =
+  private def mockVerifiedEori() =
     (mockEmailVerificationService
       .getEmailVerification(_: EORI))
       .expects(*)
@@ -103,35 +103,30 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockFactory with Scal
       "return an error" when {
 
         "the email retrieval fails" in {
-          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Left(ConnectorError(new RuntimeException())))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
           result.failed.futureValue shouldBe a[ConnectorError]
         }
 
         "no email address is found" in {
-          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, unverifiedEmailResponseJson, emptyHeaders)))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
           result.futureValue shouldBe EmailNotSent
         }
 
         "the email address is undeliverable" in {
-          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, undeliverableResponseJson, emptyHeaders)))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
           result.futureValue shouldBe EmailNotSent
         }
 
         "the email address response is invalid" in {
-          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, inValidEmailResponseJson, emptyHeaders)))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
           result.failed.futureValue shouldBe a[RuntimeException]
         }
 
         "there is an error sending the email" in {
-          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockSendEmail(emailSendRequest)(Left(ConnectorError("Error")))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
@@ -143,7 +138,6 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockFactory with Scal
       "return success" when {
 
         "the email is sent successfully" in {
-          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockSendEmail(emailSendRequest)(Right(HttpResponse(ACCEPTED, "")))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
@@ -151,7 +145,6 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockFactory with Scal
         }
 
         "the email is sent successfully with a removeEffectiveDate value" in {
-          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockSendEmail(emailSendRequest.copy(parameters = singleEoriWithDateEmailParameters))(
             Right(HttpResponse(ACCEPTED, ""))
@@ -161,7 +154,6 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockFactory with Scal
         }
 
         "the email is sent successfully with a second eori" in {
-          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockSendEmail(emailSendRequest.copy(parameters = doubleEoriEmailParameters))(
             Right(HttpResponse(ACCEPTED, ""))
@@ -171,7 +163,6 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockFactory with Scal
         }
 
         "the email is sent successfully with a second eori and a removeEffectiveDate value" in {
-          mockVerifiedEmail()
           mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockSendEmail(emailSendRequest.copy(parameters = doubleEoriWithDateEmailParameters))(
             Right(HttpResponse(ACCEPTED, ""))

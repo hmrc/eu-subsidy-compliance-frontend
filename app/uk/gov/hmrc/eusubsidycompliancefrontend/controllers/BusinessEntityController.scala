@@ -94,7 +94,7 @@ class BusinessEntityController @Inject() (
   )
 
   def startJourney(businessAdded: Option[Boolean] = None, businessRemoved: Option[Boolean] = None): Action[AnyContent] =
-    verifiedEmail.async { implicit request =>
+    verifiedEori.async { implicit request =>
       withLeadUndertaking { _ =>
         startNewJourney { _ =>
           Redirect(routes.BusinessEntityController.getAddBusinessEntity(businessAdded, businessRemoved).url)
@@ -105,7 +105,7 @@ class BusinessEntityController @Inject() (
   def getAddBusinessEntity(
     businessAdded: Option[Boolean] = None,
     businessRemoved: Option[Boolean] = None
-  ): Action[AnyContent] = verifiedEmail.async { implicit request =>
+  ): Action[AnyContent] = verifiedEori.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
       logger.info("BusinessEntityController.getAddBusinessEntity")
@@ -129,7 +129,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postAddBusinessEntity: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def postAddBusinessEntity: Action[AnyContent] = verifiedEori.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     logger.info("BusinessEntityController.postAddBusinessEntity")
     def handleValidAnswer(form: FormValues) =
@@ -146,7 +146,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def getEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def getEori: Action[AnyContent] = verifiedEori.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
       logger.info("BusinessEntityController.getEori")
@@ -162,7 +162,7 @@ class BusinessEntityController @Inject() (
     }
   }
 
-  def postEori: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def postEori: Action[AnyContent] = verifiedEori.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     logger.info("BusinessEntityController.postEori")
 
@@ -246,7 +246,7 @@ class BusinessEntityController @Inject() (
         .map(_ => Redirect(routes.SelectNewLeadController.getSelectNewLead))
     else Future.successful(Redirect(routes.BusinessEntityController.startJourney(businessAdded = Some(true))))
 
-  def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def getRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = verifiedEori.async { implicit request =>
     logger.info("BusinessEntityController.getRemoveBusinessEntity")
     withLeadUndertaking { _ =>
       escService.retrieveUndertaking(EORI(eoriEntered)).map {
@@ -285,7 +285,7 @@ class BusinessEntityController @Inject() (
       }
   }
 
-  def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = verifiedEmail.async {
+  def postRemoveBusinessEntity(eoriEntered: String): Action[AnyContent] = verifiedEori.async {
     implicit request: AuthenticatedEnrolledRequest[AnyContent] =>
       logger.info("BusinessEntityController.postRemoveBusinessEntity")
 

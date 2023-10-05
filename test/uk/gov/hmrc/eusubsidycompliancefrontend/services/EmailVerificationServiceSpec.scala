@@ -87,8 +87,8 @@ class EmailVerificationServiceSpec
     .expects(*)
     .returning("")
 
-  private val unverifiedVerificationRequest = VerifiedEmail("unverified@something.com", "someId", verified = false)
-  private val verifiedVerificationRequest = VerifiedEmail("verified@something.com", "someId", verified = true)
+  private val unverifiedVerificationRequest = VerifiedEmail("someId", verified = false)
+  private val verifiedVerificationRequest = VerifiedEmail("someId", verified = true)
 
   "EmailVerificationService" when {
 
@@ -125,12 +125,11 @@ class EmailVerificationServiceSpec
       "store a new email verification request and mark it as verified" in {
         val email = "foo@example.com"
 
-        service.addVerifiedEmail(eori4, email).futureValue shouldBe (())
+        service.addVerifiedEmail(eori4).futureValue shouldBe (())
 
         // Query mongo to confirm that we have a verified record
         val result = service.getEmailVerification(eori4)
 
-        result.futureValue.map(_.email) should contain(email)
         result.futureValue.map(_.verified) should contain(true)
         result.futureValue.map(_.verificationId.length) should contain(36) // Crude UUID is set check
       }

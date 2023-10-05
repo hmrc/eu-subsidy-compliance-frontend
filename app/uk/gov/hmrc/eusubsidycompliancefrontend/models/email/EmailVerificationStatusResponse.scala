@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.models
+package uk.gov.hmrc.eusubsidycompliancefrontend.models.email
 
 import play.api.libs.json.{Json, OFormat}
 
-case class VerifiedEmail(verificationId: String, verified: Boolean)
+case class VerificationStatus(emailAddress: String, verified: Boolean, locked: Boolean)
 
-object VerifiedEmail {
-  implicit val undertakingFormat: OFormat[VerifiedEmail] = Json.format[VerifiedEmail]
+object VerificationStatus {
+  implicit val format: OFormat[VerificationStatus] = Json.format
+}
+case class EmailVerificationStatusResponse(emails: List[VerificationStatus])
+
+object EmailVerificationStatusResponse {
+  implicit val format: OFormat[EmailVerificationStatusResponse] = Json.format
 }

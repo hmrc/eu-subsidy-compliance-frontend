@@ -83,6 +83,6 @@ trait AuthSupport { this: ControllerSpec =>
       .returning(result.toFuture)
 
   def mockGetEmailVerification(email: String = "foo@example.com"): CallHandler1[EORI, Future[Option[VerifiedEmail]]] =
-    mockGetEmailVerification(VerifiedEmail(email, "", verified = true).some)
+    mockGetEmailVerification(VerifiedEmail("", verified = true).some)
 
 }
