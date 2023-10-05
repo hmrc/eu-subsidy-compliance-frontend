@@ -55,7 +55,8 @@ class FinancialDashboardController @Inject() (
       undertaking <- escService.retrieveUndertaking(eori).toContext
       r <- undertaking.reference.toContext
       subsidies <- escService.retrieveSubsidiesForDateRange(r, today.toSearchRange).toContext
-      summary = FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, subsidies, today)
+      balance <- escService.getUndertakingBalance(eori).toContext
+      summary = FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, subsidies, balance, today)
     } yield Ok(financialDashboardPage(summary))
 
     result

@@ -57,7 +57,8 @@ class AccountControllerSpec
     Configuration.from(
       Map(
         // Disable CSP n=once hashes in rendered output
-        "play.filters.csp.nonce.enabled" -> false
+        "play.filters.csp.nonce.enabled" -> false,
+        "features.scp08-enabled" -> false
       )
     )
   )
@@ -83,6 +84,7 @@ class AccountControllerSpec
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
             mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.toFuture)
+            mockGetUndertakingBalance(eori1)(Future.successful(undertakingBalance))
             mockTimeProviderToday(fixedDate)
             mockGetOrCreate(eori1)(Right(nilJourneyCreate))
           }
@@ -110,6 +112,11 @@ class AccountControllerSpec
                 }
               }
 
+              doc.getElementById("undertaking-balance-section-heading").text shouldBe "Remaining allowance"
+              doc
+                .getElementById("undertaking-balance-section-content")
+                .text shouldBe "Your undertaking currently has a remaining balance of €0.00, from your sector allowance of €12.34."
+
             }
           )
         }
@@ -136,7 +143,7 @@ class AccountControllerSpec
             mockRetrieveAllSubsidies(undertakingRef)(
               undertakingSubsidies.copy(nonHMRCSubsidyUsage = subsidies).toFuture
             )
-
+            mockGetUndertakingBalance(eori1)(Future.successful(undertakingBalance))
             mockTimeProviderToday(currentDate)
             mockGetOrCreate[NilReturnJourney](eori1)(Right(nilJourneyCreate))
           }
@@ -202,6 +209,7 @@ class AccountControllerSpec
               mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
               mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
               mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.toFuture)
+              mockGetUndertakingBalance(eori4)(Future.successful(undertakingBalance))
               mockTimeProviderToday(fixedDate)
             }
 
@@ -213,6 +221,11 @@ class AccountControllerSpec
                 htmlBody should include regex routes.BecomeLeadController.getAcceptResponsibilities().url
                 htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard.url
                 htmlBody should include regex routes.BusinessEntityController.getRemoveYourselfBusinessEntity.url
+
+                doc.getElementById("undertaking-balance-section-heading").text shouldBe "Remaining allowance"
+                doc
+                  .getElementById("undertaking-balance-section-content")
+                  .text shouldBe "Your undertaking currently has a remaining balance of €0.00, from your sector allowance of €12.34."
               }
             )
           }
