@@ -98,8 +98,13 @@ class AccountController @Inject() (
     val result = for {
       _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(undertaking))
       subsidies <- escService.retrieveAllSubsidies(undertaking.reference).toContext
-      balance <- escService.getUndertakingBalance(eori).toContext
-      result <- renderAccountPage(undertaking, subsidies, balance).toContext
+      result <-
+        if (appConfig.scp08Enabled)
+          escService
+            .getUndertakingBalance(eori)
+            .flatMap(b => renderAccountPage(undertaking, subsidies, Some(b)))
+            .toContext
+        else renderAccountPage(undertaking, subsidies, None).toContext
     } yield result
 
     result.getOrElse {
@@ -124,7 +129,7 @@ class AccountController @Inject() (
   private def renderAccountPage(
     undertaking: Undertaking,
     undertakingSubsidies: UndertakingSubsidies,
-    balance: UndertakingBalance
+    balance: Option[UndertakingBalance]
   )(implicit
     r: AuthenticatedEnrolledRequest[AnyContent]
   ) = {

@@ -62,7 +62,7 @@ object FinancialDashboardSummary {
   def fromUndertakingSubsidies(
     undertaking: Undertaking,
     subsidies: UndertakingSubsidies,
-    balance: UndertakingBalance,
+    balance: Option[UndertakingBalance],
     today: LocalDate
   ): FinancialDashboardSummary = {
 
@@ -126,7 +126,14 @@ object FinancialDashboardSummary {
     FinancialDashboardSummary(
       overall = overallSummary,
       taxYears = taxYearSummaries,
-      undertakingBalanceEUR = balance.availableBalanceEUR
+      undertakingBalanceEUR = balance.fold(overallSummary.allowanceRemaining)(_.availableBalanceEUR)
     )
   }
+
+  def fromUndertakingSubsidiesWithBalance(
+    undertaking: Undertaking,
+    subsidies: UndertakingSubsidies,
+    balance: UndertakingBalance,
+    today: LocalDate
+  ): FinancialDashboardSummary = fromUndertakingSubsidies(undertaking, subsidies, Some(balance), today)
 }

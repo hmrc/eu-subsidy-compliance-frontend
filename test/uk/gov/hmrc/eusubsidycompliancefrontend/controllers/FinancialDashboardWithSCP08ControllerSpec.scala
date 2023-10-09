@@ -100,7 +100,7 @@ class FinancialDashboardWithSCP08ControllerSpec
           .fromUndertakingSubsidies(
             undertaking = undertaking3,
             subsidies = undertakingSubsidies,
-            balance = undertakingBalance,
+            balance = Some(undertakingBalance),
             today = fakeTimeProvider.today
           )
 

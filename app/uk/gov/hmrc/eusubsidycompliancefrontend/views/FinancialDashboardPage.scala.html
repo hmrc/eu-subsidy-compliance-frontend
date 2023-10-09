@@ -94,7 +94,7 @@
                     content = HtmlContent(s"""<span id="allowance-remaining-heading">${messages(s"$key.allowance.remaining.heading")}</span>""")
                 ),
                 value = Value(
-                    content = HtmlContent(s"""<span id="allowance-remaining-value">${summary.overall.allowanceRemaining.toEuros}</span>""")
+                    content = HtmlContent(s"""<span id="allowance-remaining-value">${summary.undertakingBalanceEUR.toEuros}</span>""")
                 )
             )
         )

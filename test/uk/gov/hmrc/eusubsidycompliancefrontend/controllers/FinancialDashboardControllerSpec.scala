@@ -88,7 +88,6 @@ class FinancialDashboardControllerSpec
         mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
           undertakingSubsidies.toFuture
         )
-        mockGetUndertakingBalance(eori1)(Future.successful(undertakingBalance))
 
         val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
         val result = route(app, request).get
@@ -98,7 +97,7 @@ class FinancialDashboardControllerSpec
           .fromUndertakingSubsidies(
             undertaking = undertaking,
             subsidies = undertakingSubsidies,
-            balance = undertakingBalance,
+            balance = None,
             today = fakeTimeProvider.today
           )
 
@@ -123,7 +122,6 @@ class FinancialDashboardControllerSpec
         mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
           undertakingSubsidies.toFuture
         )
-        mockGetUndertakingBalance(eori1)(Future.successful(undertakingBalance))
       }
 
       val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
@@ -134,7 +132,7 @@ class FinancialDashboardControllerSpec
         .fromUndertakingSubsidies(
           undertaking = undertaking3,
           subsidies = undertakingSubsidies,
-          balance = undertakingBalance,
+          balance = None,
           today = fakeTimeProvider.today
         )
 

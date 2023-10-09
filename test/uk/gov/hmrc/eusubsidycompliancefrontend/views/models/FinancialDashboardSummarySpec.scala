@@ -45,7 +45,7 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
         FinancialDashboardSummary.fromUndertakingSubsidies(
           undertaking,
           emptyUndertakingSubsidies,
-          undertakingBalance.copy(availableBalanceEUR = SubsidyAmount.Zero),
+          Some(undertakingBalance.copy(availableBalanceEUR = SubsidyAmount.Zero)),
           today
         )
 
@@ -84,7 +84,7 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
           hmrcSubsidyUsage = yearOffsets.map(y => hmrcSubsidy.copy(acceptanceDate = start.plusYears(y))),
           nonHMRCSubsidyUsage = yearOffsets.map(y => nonHmrcSubsidy.copy(allocationDate = start.plusYears(y)))
         ),
-        undertakingBalance,
+        Some(undertakingBalance),
         today
       )
 
@@ -126,7 +126,7 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
           },
           nonHMRCSubsidyTotalEUR = SubsidyAmount.Zero
         ),
-        undertakingBalance,
+        Some(undertakingBalance),
         today
       )
 
