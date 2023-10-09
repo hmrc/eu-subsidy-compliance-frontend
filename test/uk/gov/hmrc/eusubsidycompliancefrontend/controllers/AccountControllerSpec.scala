@@ -88,7 +88,7 @@ class AccountControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("lead-account-homepage.title"),
+            "Manage your undertaking",
             { doc =>
               val htmlBody = doc.toString
 
@@ -142,7 +142,7 @@ class AccountControllerSpec
           }
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("lead-account-homepage.title")
+            "Manage your undertaking"
           )
         }
 
