@@ -16,20 +16,23 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
-import play.api.http.HeaderNames.ACCEPT
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.MonthlyExchangeRate
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import akka.actor.ActorSystem
+import play.api.Configuration
+import play.api.libs.ws.{WSClient, WSProxyServer}
+import uk.gov.hmrc.play.audit.http.HttpAuditing
+import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
+import uk.gov.hmrc.play.http.ws.{WSProxy, WSProxyConfiguration}
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+
 @Singleton
-class EuropaConnector @Inject() (
-  val client: ProxiedHttpClient
-) {
-  def retrieveMonthlyExchangeRates(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[MonthlyExchangeRate]] =
-    client.GET[Seq[MonthlyExchangeRate]](
-      url = "https://ec.europa.eu/budg/inforeuro/api/public/currencies/gbp",
-      headers = Seq(ACCEPT -> "application/vnd.sdmx.data+json;version=1.0.0-wd")
-    )
+class ProxiedHttpClient @Inject() (
+  configuration: Configuration,
+  httpAuditing: HttpAuditing,
+  wsClient: WSClient,
+  actorSystem: ActorSystem
+) extends DefaultHttpClient(configuration, httpAuditing, wsClient, actorSystem)
+    with WSProxy {
+
+  override def wsProxyServer: Option[WSProxyServer] = WSProxyConfiguration.buildWsProxyServer(configuration)
 
 }
