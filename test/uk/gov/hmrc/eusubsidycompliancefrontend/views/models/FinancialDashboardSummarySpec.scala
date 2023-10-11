@@ -21,7 +21,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.{agriculture,
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{IndustrySectorLimit, Sector, SubsidyAmount}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{hmrcSubsidy, nonHmrcSubsidy, undertaking, undertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{hmrcSubsidy, nonHmrcSubsidy, subsidyAmount, undertaking, undertakingBalance, undertakingSubsidies}
 
 import java.time.LocalDate
 
@@ -42,7 +42,12 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
       )
 
       val result =
-        FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, emptyUndertakingSubsidies, today)
+        FinancialDashboardSummary.fromUndertakingSubsidies(
+          undertaking,
+          emptyUndertakingSubsidies,
+          Some(undertakingBalance.copy(availableBalanceEUR = SubsidyAmount.Zero)),
+          today
+        )
 
       val expected = FinancialDashboardSummary(
         overall = OverallSummary(
@@ -60,7 +65,8 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
             nonHmrcSubsidyTotal = SubsidyAmount.Zero,
             isCurrentTaxYear = year == 2021
           )
-        }
+        },
+        undertakingBalanceEUR = SubsidyAmount.Zero
       )
 
       result shouldBe expected
@@ -78,6 +84,7 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
           hmrcSubsidyUsage = yearOffsets.map(y => hmrcSubsidy.copy(acceptanceDate = start.plusYears(y))),
           nonHMRCSubsidyUsage = yearOffsets.map(y => nonHmrcSubsidy.copy(allocationDate = start.plusYears(y)))
         ),
+        Some(undertakingBalance),
         today
       )
 
@@ -94,7 +101,8 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
           TaxYearSummary(2021, SubsidyAmount(123.45), SubsidyAmount(543.21), isCurrentTaxYear = true),
           TaxYearSummary(2020, SubsidyAmount(123.45), SubsidyAmount(543.21), isCurrentTaxYear = false),
           TaxYearSummary(2019, SubsidyAmount(123.45), SubsidyAmount(543.21), isCurrentTaxYear = false)
-        )
+        ),
+        undertakingBalanceEUR = undertakingSubsidies.hmrcSubsidyTotalEUR
       )
 
       result shouldBe expected
@@ -118,6 +126,7 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
           },
           nonHMRCSubsidyTotalEUR = SubsidyAmount.Zero
         ),
+        Some(undertakingBalance),
         today
       )
 
@@ -134,7 +143,8 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
           TaxYearSummary(2021, SubsidyAmount(123.45), SubsidyAmount(0), isCurrentTaxYear = true),
           TaxYearSummary(2020, SubsidyAmount(123.45), SubsidyAmount(0), isCurrentTaxYear = false),
           TaxYearSummary(2019, SubsidyAmount(123.45), SubsidyAmount(0), isCurrentTaxYear = false)
-        )
+        ),
+        undertakingBalanceEUR = subsidyAmount
       )
 
       result shouldBe expected

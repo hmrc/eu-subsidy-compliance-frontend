@@ -22,11 +22,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 @import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearHelpers
 @import java.time.LocalDate
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.UndertakingBalance
 
 @this(
   layout: FullWidthLayout,
   govukTable: GovukTable,
-  govukSummaryList: GovukSummaryList
+  govukSummaryList: GovukSummaryList,
+  govukInsetText: GovukInsetText
 )
 
 @(summary: FinancialDashboardSummary)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -37,19 +39,9 @@
     <div class="print-dialogue"><a class="govuk-link" href="#print-dialogue">@messages("common.print")</a></div>
 }
 
-@layout(
-    pageTitle = Some(title),
-    backLinkEnabled = true,
-    backLink = Some(routes.AccountController.getAccountPage.url),
-    printDialog = Some(printDialog)
-) {
-
-    @H1(title)
-    @P(messages(s"$key.p1"))
-    @P(messages(s"$key.p2", TaxYearHelpers.taxYearStartForDate(LocalDate.now.minusYears(2)).getYear.toString))
-
-    @govukSummaryList(SummaryList(
-        rows = Seq(
+@mainSummary = @{
+    val mainPart =
+        Seq(
             SummaryListRow(
                 key = Key(
                     content = Text(messages(s"$key.customs.duty.heading"))
@@ -81,16 +73,54 @@
                 value = Value(
                     content = Text(summary.overall.sectorCap.toEuros)
                 )
-            ),
+            )
+        )
+
+    if(appConfig.scp08Enabled){
+        Seq(
             SummaryListRow(
                 key = Key(
-                    content = Text(messages(s"$key.allowance.remaining.heading"))
+                    content = HtmlContent(s"""<span id="undertaking-balance-heading">${messages(s"$key.undertaking.balance.heading")}</span>""")
                 ),
                 value = Value(
-                    content = Text(summary.overall.allowanceRemaining.toEuros)
+                    content = HtmlContent(s"""<span id="undertaking-balance-value">${summary.undertakingBalanceEUR.toEuros}</span>""")
+                )
+            )
+        ) ++ mainPart
+    } else {
+        mainPart ++ Seq(
+            SummaryListRow(
+                key = Key(
+                    content = HtmlContent(s"""<span id="allowance-remaining-heading">${messages(s"$key.allowance.remaining.heading")}</span>""")
+                ),
+                value = Value(
+                    content = HtmlContent(s"""<span id="allowance-remaining-value">${summary.undertakingBalanceEUR.toEuros}</span>""")
                 )
             )
         )
+    }
+
+}
+
+@layout(
+    pageTitle = Some(title),
+    backLinkEnabled = true,
+    backLink = Some(routes.AccountController.getAccountPage.url),
+    printDialog = Some(printDialog)
+) {
+
+    @H1(title)
+    @P(messages(s"$key.p1"))
+    @P(messages(s"$key.p2", TaxYearHelpers.taxYearStartForDate(LocalDate.now.minusYears(2)).getYear.toString))
+
+    @if(appConfig.scp08Enabled){
+        @govukInsetText(InsetText(
+            content = Text(messages("dashboard.insetText"))
+        ))
+    }
+
+    @govukSummaryList(SummaryList(
+        rows = mainSummary
     ))
 
     @for(taxYear <- summary.taxYears) {

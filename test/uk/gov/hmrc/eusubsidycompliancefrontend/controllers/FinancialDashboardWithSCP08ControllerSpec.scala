@@ -20,7 +20,10 @@ import cats.implicits.catsSyntaxOptionId
 import org.jsoup.Jsoup
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.http.Status
+import play.api.i18n.MessagesApi
+import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, route, status, writeableOf_AnyContentAsEmpty}
@@ -31,18 +34,15 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailVerificationService, EscService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertaking3, undertakingBalance, undertakingRef, undertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import play.api.i18n.MessagesApi
-import play.api.inject.bind
 
 import scala.concurrent.Future
 
-class FinancialDashboardControllerSpec
+class FinancialDashboardWithSCP08ControllerSpec
     extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
@@ -67,7 +67,7 @@ class FinancialDashboardControllerSpec
     Map(
       // Disable CSP n=once hashes in rendered output
       "play.filters.csp.nonce.enabled" -> false,
-      "features.scp08-enabled" -> false
+      "features.scp08-enabled" -> true
     )
   )
 
@@ -83,11 +83,14 @@ class FinancialDashboardControllerSpec
     "getFinancialDashboard is called" must {
 
       "return the dashboard page for a logged in user with a valid EORI" in {
-        mockAuthWithEnrolmentAndNoEmailVerification(eori1)
-        mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-        mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
-          undertakingSubsidies.toFuture
-        )
+        inSequence {
+          mockAuthWithEnrolmentAndNoEmailVerification(eori1)
+          mockRetrieveUndertaking(eori1)(undertaking3.some.toFuture)
+          mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
+            undertakingSubsidies.toFuture
+          )
+          mockGetUndertakingBalance(eori1)(Future.successful(undertakingBalance))
+        }
 
         val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
         val result = route(app, request).get
@@ -95,52 +98,24 @@ class FinancialDashboardControllerSpec
 
         val summaryData = FinancialDashboardSummary
           .fromUndertakingSubsidies(
-            undertaking = undertaking,
+            undertaking = undertaking3,
             subsidies = undertakingSubsidies,
-            balance = None,
+            balance = Some(undertakingBalance),
             today = fakeTimeProvider.today
           )
 
         status(result) shouldBe Status.OK
-        contentAsString(result) shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
-
         val data = contentAsString(result)
+        data shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
         val document = Jsoup.parse(data)
-        document.getElementById("allowance-remaining-heading").text shouldBe "Allowance remaining"
-        document.getElementById("allowance-remaining-value").text shouldBe "€0.00"
-        document.getElementById("undertaking-balance-heading") shouldBe null
-        document.getElementById("undertaking-balance-value") shouldBe null
+        document.getElementById("SectorCapId").text() shouldBe "Sector cap (Agriculture)"
+        document.getElementById("undertaking-balance-heading").text shouldBe "Undertaking balance"
+        document.getElementById("undertaking-balance-value").text shouldBe "€123.45"
+        document.getElementById("allowance-remaining-heading") shouldBe null
+        document.getElementById("allowance-remaining-value") shouldBe null
 
       }
 
-    }
-
-    "display sector cap as agriculture on financial Dashboard Page" in {
-      inSequence {
-        mockAuthWithEnrolmentAndNoEmailVerification(eori1)
-        mockRetrieveUndertaking(eori1)(undertaking3.some.toFuture)
-        mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
-          undertakingSubsidies.toFuture
-        )
-      }
-
-      val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
-      val result = route(app, request).get
-      val page = instanceOf[FinancialDashboardPage]
-
-      val summaryData = FinancialDashboardSummary
-        .fromUndertakingSubsidies(
-          undertaking = undertaking3,
-          subsidies = undertakingSubsidies,
-          balance = None,
-          today = fakeTimeProvider.today
-        )
-
-      status(result) shouldBe Status.OK
-      val data = contentAsString(result)
-      data shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
-      val document = Jsoup.parse(data)
-      document.getElementById("SectorCapId").text() shouldBe "Sector cap (Agriculture)"
     }
 
   }

@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney.Forms.DoYouClaimFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingBalance, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -92,13 +92,19 @@ class AccountController @Inject() (
 
   private def handleExistingUndertaking(
     undertaking: Undertaking
-  )(implicit r: AuthenticatedEnrolledRequest[AnyContent], e: EORI): Future[Result] = {
+  )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
     logger.info("handleExistingUndertaking")
 
     val result = for {
       _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(undertaking))
       subsidies <- escService.retrieveAllSubsidies(undertaking.reference).toContext
-      result <- renderAccountPage(undertaking, subsidies).toContext
+      result <-
+        if (appConfig.scp08Enabled)
+          escService
+            .getUndertakingBalance(eori)
+            .flatMap(b => renderAccountPage(undertaking, subsidies, Some(b)))
+            .toContext
+        else renderAccountPage(undertaking, subsidies, None).toContext
     } yield result
 
     result.getOrElse {
@@ -120,7 +126,11 @@ class AccountController @Inject() (
     } yield (eligibilityJourney, undertakingJourney)
   }
 
-  private def renderAccountPage(undertaking: Undertaking, undertakingSubsidies: UndertakingSubsidies)(implicit
+  private def renderAccountPage(
+    undertaking: Undertaking,
+    undertakingSubsidies: UndertakingSubsidies,
+    balance: Option[UndertakingBalance]
+  )(implicit
     r: AuthenticatedEnrolledRequest[AnyContent]
   ) = {
     implicit val eori: EORI = r.eoriNumber
@@ -136,12 +146,17 @@ class AccountController @Inject() (
     val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
       undertaking,
       undertakingSubsidies,
+      balance,
       today
     )
 
     def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] =
       if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
       else n.toFuture
+
+    def getBalance = {
+      if (appConfig.scp08Enabled) summary.undertakingBalanceEUR.toEuros else summary.overall.allowanceRemaining.toEuros
+    }
 
     if (undertaking.isLeadEORI(eori)) {
       logger.info("showing account page for lead")
@@ -161,7 +176,7 @@ class AccountController @Inject() (
           neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
           allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
           totalSubsidies = summary.overall.total.toEuros,
-          remainingAmount = summary.overall.allowanceRemaining.toEuros,
+          remainingAmount = getBalance,
           currentPeriodStart = startDate.toDisplayFormat,
           isOverAllowance = summary.overall.allowanceExceeded
         )
@@ -180,7 +195,7 @@ class AccountController @Inject() (
           undertakingSubsidies.hasNeverSubmitted,
           BigDecimal(summary.overall.sectorCap.toString()).toEuros,
           summary.overall.total.toEuros,
-          summary.overall.allowanceRemaining.toEuros,
+          getBalance,
           startDate.toDisplayFormat
         )
       ).toFuture

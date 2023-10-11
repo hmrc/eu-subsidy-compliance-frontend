@@ -20,6 +20,7 @@ import cats.implicits._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.UndertakingBalance
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -29,7 +30,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class FinancialDashboardController @Inject() (
@@ -55,7 +56,13 @@ class FinancialDashboardController @Inject() (
       undertaking <- escService.retrieveUndertaking(eori).toContext
       r <- undertaking.reference.toContext
       subsidies <- escService.retrieveSubsidiesForDateRange(r, today.toSearchRange).toContext
-      summary = FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, subsidies, today)
+      summary <-
+        if (appConfig.scp08Enabled)
+          escService
+            .getUndertakingBalance(eori)
+            .map(b => FinancialDashboardSummary.fromUndertakingSubsidiesWithBalance(undertaking, subsidies, b, today))
+            .toContext
+        else FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, subsidies, None, today).toContext
     } yield Ok(financialDashboardPage(summary))
 
     result
