@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
-import org.mongodb.scala.model.Filters
+import org.mongodb.scala.model.{Filters, Updates}
+import org.mongodb.scala.result.UpdateResult
 import play.api.Configuration
 import play.api.libs.json.{Format, Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
@@ -71,6 +72,16 @@ class JourneyStore @Inject() (
     get.toContext
       .map(f)
       .foldF(throw new IllegalStateException("trying to update non-existent model"))(put(_))
+
+  def removeVerifiedEmailField(): Future[UpdateResult] =
+    collection
+      .updateMany(
+        filter = Filters.exists("data.UndertakingJourney.verifiedEmail", true),
+        update = Updates.combine(
+          Updates.unset("data.UndertakingJourney.verifiedEmail")
+        )
+      )
+      .toFuture()
 
 }
 
