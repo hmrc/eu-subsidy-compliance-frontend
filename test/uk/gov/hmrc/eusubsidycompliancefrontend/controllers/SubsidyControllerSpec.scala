@@ -827,7 +827,6 @@ class SubsidyControllerSpec
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
-            mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
           }
 
           val titleMessage = messageFromMessageKey("add-claim-amount.title")
@@ -911,7 +910,7 @@ class SubsidyControllerSpec
         "claim amount entered in GBP exceeds maximum allowed value in EUR when converted" in {
           testConvertedAmountValidation(
             ClaimAmountFormProvider.Fields.CurrencyCode -> GBP.entryName,
-            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "£999999.99"
+            ClaimAmountFormProvider.Fields.ClaimAmountGBP -> "£999999999999.99"
           )(s"add-claim-amount.claim-amount-${GBP.entryName.toLowerCase}.$TooBig")
         }
 
