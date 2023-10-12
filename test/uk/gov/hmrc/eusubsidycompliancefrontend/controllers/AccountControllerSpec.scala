@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import org.jsoup.Jsoup
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -34,6 +35,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
 import java.time.LocalDate
 import scala.concurrent.Future
+import scala.util.parsing.json.JSON.keywordCache.result
 
 class AccountControllerSpec
     extends ControllerSpec
@@ -112,6 +114,14 @@ class AccountControllerSpec
 
             }
           )
+        }
+
+
+        "leadAccount page should have the correct content for H2 title " in {
+            val content: String = "What you need to report, and when"
+            val document = Jsoup.parse(content)
+            val title = document.getElementById("page-details-title").text()
+            title shouldBe "What you need to report, and when"
         }
 
         def testTimeToReport(
