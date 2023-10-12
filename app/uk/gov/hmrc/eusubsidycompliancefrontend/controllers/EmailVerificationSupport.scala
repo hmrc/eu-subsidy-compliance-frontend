@@ -51,11 +51,7 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
 
   protected val emailForm: Form[FormValues] = EmailFormProvider().form
 
-  protected def findVerifiedEmail(implicit eori: EORI, hc: HeaderCarrier): Future[Option[String]] =
-    emailVerificationService
-      .getEmailVerification(eori)
-      .toContext
-      .foldF(retrieveCdsEmail)(_.email.some.toFuture)
+  protected def findVerifiedEmail(implicit eori: EORI, hc: HeaderCarrier): Future[Option[String]] = retrieveCdsEmail
 
   private def retrieveCdsEmail(implicit eori: EORI, hc: HeaderCarrier): Future[Option[String]] =
     emailService
@@ -94,7 +90,7 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
     }
   }
 
-  protected def addVerifiedEmailToJourney(email: String)(implicit eori: EORI): Future[Unit]
+  protected def addVerifiedEmailToJourney(implicit eori: EORI): Future[Unit]
 
   protected def handleConfirmEmailPost[A : ClassTag](
     previous: Call,
@@ -119,8 +115,8 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
           form =>
             if (form.usingStoredEmail.isTrue)
               for {
-                _ <- emailVerificationService.addVerifiedEmail(eori, email)
-                _ <- addVerifiedEmailToJourney(email)
+                _ <- emailVerificationService.addVerifiedEmail(eori)
+                _ <- addVerifiedEmailToJourney
               } yield Redirect(next)
             else {
               // Redirect back to the previous page if no email address appears to be entered. This should never happen
@@ -158,12 +154,16 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
     withJourneyOrRedirect[A](previous) { _ =>
       emailVerificationService.approveVerificationRequest(eori, verificationId).flatMap { approveSuccessful =>
         if (approveSuccessful) {
-          val result = for {
-            stored <- emailVerificationService.getEmailVerification(eori).toContext
-            _ <- addVerifiedEmailToJourney(stored.email).toContext
+          for {
+            emailStatusOpt <- emailVerificationService.getEmailVerificationStatus
+            emailAddress = emailStatusOpt match {
+              case Some(status) => status.emailAddress
+              case None => sys.error(s"No verified email for user with authorityId: ${request.authorityId}")
+            }
+            _ <- emailService
+              .updateEmailForEori(eori, emailAddress)
+            _ <- addVerifiedEmailToJourney
           } yield Redirect(next.url)
-
-          result.getOrElse(Redirect(previous))
         } else Redirect(previous.url).toFuture
       }
     }

@@ -22,6 +22,7 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import play.api.Configuration
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailVerificationStatusResponse, VerificationStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -58,6 +59,15 @@ class EmailVerificationConnectorSpec
         mockPost(s"$baseUrl/verify-email", Seq.empty, emailVerificationRequest)(_),
         () => connector.verifyEmail(emailVerificationRequest)
       )
+    }
+
+    "getVerificationStatus for logged in user" in {
+      val credId = "credId"
+      val response = EmailVerificationStatusResponse(
+        List(VerificationStatus(emailAddress = "email@dr.com", verified = true, locked = false))
+      )
+      mockGet(url = s"$baseUrl/verification-status/$credId")(Some(response))
+      connector.getVerificationStatus(credId).map(_ shouldBe response)
     }
   }
 }

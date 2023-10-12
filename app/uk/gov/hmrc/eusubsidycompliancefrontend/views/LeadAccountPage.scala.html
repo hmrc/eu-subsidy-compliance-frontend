@@ -57,6 +57,11 @@
     else routes.SubsidyController.startJourney.url
 }
 
+@balanceHeading = @{
+    if(appConfig.scp08Enabled) messages("lead-account-homepage.h2.undertakingBalance")
+    else messages("lead-account-homepage.h2-4")
+}
+
 @layout(
   pageTitle = Some(messages(s"$key.title")),
   backLinkEnabled = false,
@@ -104,8 +109,8 @@
       <li><a class="govuk-link" href="@routes.SubsidyController.getReportedPayments">@messages("lead-account-homepage.ul2-li1")</a></li>
     </ul>
 
-    @H2(messages("lead-account-homepage.h2-4"), Some("govuk-heading-m govuk-!-margin-top-4"))
-    @P(messages(s"$key.p3", remainingAmount, allowance))
+    @H2(balanceHeading, Some("govuk-heading-m govuk-!-margin-top-4"), id = Some("undertaking-balance-section-heading"))
+    @P(messages(s"$key.p3", remainingAmount, allowance), id = Some("undertaking-balance-section-content"))
     <ul class="govuk-list govuk-list--spaced govuk-!-margin-bottom-8">
       <li><a class="govuk-link" href="@routes.FinancialDashboardController.getFinancialDashboard">@messages("lead-account-homepage.ul3-li1")</a></li>
     </ul>

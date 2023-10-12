@@ -56,7 +56,7 @@ class NoClaimNotificationController @Inject() (
 
   private val noClaimForm: Form[FormValues] = formWithSingleMandatoryField("noClaimNotification")
 
-  def getNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def getNoClaimNotification: Action[AnyContent] = verifiedEori.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     logger.info("NoBusinessPresentController.getNoClaimNotification")
@@ -91,7 +91,7 @@ class NoClaimNotificationController @Inject() (
     }
   }
 
-  def postNoClaimNotification: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def postNoClaimNotification: Action[AnyContent] = verifiedEori.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     logger.info("NoBusinessPresentController.postNoClaimNotification")
@@ -153,7 +153,7 @@ class NoClaimNotificationController @Inject() (
   }
 
   // We need to show a confirmation along with the next submission date
-  def getNotificationConfirmation: Action[AnyContent] = verifiedEmail.async { implicit request =>
+  def getNotificationConfirmation: Action[AnyContent] = verifiedEori.async { implicit request =>
     logger.info("NoBusinessPresentController.getNotificationConfirmation")
 
     withLeadUndertaking { _ =>

@@ -201,7 +201,7 @@ object CommonTestData {
   val undertakingJourneyComplete = UndertakingJourney(
     about = AboutUndertakingFormPage("TestUndertaking".some),
     sector = UndertakingSectorFormPage(Sector(1).some),
-    verifiedEmail = UndertakingConfirmEmailFormPage("joebloggs@something.com".some),
+    hasVerifiedEmail = Some(UndertakingConfirmEmailFormPage(true.some)),
     addBusiness = UndertakingAddBusinessFormPage(false.some),
     cya = UndertakingCyaFormPage(true.some),
     confirmation = UndertakingConfirmationFormPage(true.some)

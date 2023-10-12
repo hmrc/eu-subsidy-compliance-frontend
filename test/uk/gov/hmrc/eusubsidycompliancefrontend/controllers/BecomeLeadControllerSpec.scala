@@ -31,7 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedSelfToNewLead, RemovedAsLeadToFormerLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse, VerificationStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -376,11 +376,13 @@ class BecomeLeadControllerSpec
 
     "display the correct page" when {
 
-      "user has a verified email address in our store" in {
+      "user's email has already been verified in our store" in {
         inSequence {
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          mockGetEmailVerification()
+          mockRetrieveEmail(eori1)(
+            Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("foo@example.com").some))
+          )
         }
 
         val result = performAction()
@@ -393,7 +395,6 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          mockGetEmailVerification(Option.empty)
           mockRetrieveEmail(eori1)(
             Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("foo@example.com").some))
           )
@@ -409,7 +410,6 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          mockGetEmailVerification(Option.empty)
           mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
         }
 
@@ -435,7 +435,9 @@ class BecomeLeadControllerSpec
       "user selects existing verified email address" in {
         inSequence {
           mockAuthWithEnrolment(eori1)
-          mockGetEmailVerification()
+          mockRetrieveEmail(eori1)(
+            Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("foo@example.com").some))
+          )
           mockAddVerifiedEmail(eori1, "foo@example.com")(Future.successful(()))
         }
 
@@ -448,7 +450,9 @@ class BecomeLeadControllerSpec
       "user has existing verified email address but elects to enter a new one" in {
         inSequence {
           mockAuthWithEnrolment(eori1)
-          mockGetEmailVerification()
+          mockRetrieveEmail(eori1)(
+            Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("foo@example.com").some))
+          )
           mockMakeVerificationRequestAndRedirect(Redirect(verificationUrl).toFuture)
         }
 
@@ -465,7 +469,6 @@ class BecomeLeadControllerSpec
       "user has no existing email address and enters a new one" in {
         inSequence {
           mockAuthWithEnrolment(eori1)
-          mockGetEmailVerification(None)
           mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
           mockMakeVerificationRequestAndRedirect(Redirect(verificationUrl).toFuture)
         }
@@ -506,8 +509,7 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          mockApproveVerification(eori1, verificationId)(Right(true))
-          mockGetEmailVerification(Option.empty)
+          mockApproveVerification(eori1, verificationId)(Right(false))
         }
 
         val result = performAction(verificationId)
@@ -517,11 +519,15 @@ class BecomeLeadControllerSpec
       }
 
       "the verification request is successful" in {
+        val email = "foo@example.com"
         inSequence {
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
           mockApproveVerification(eori1, verificationId)(Right(true))
-          mockGetEmailVerification()
+          mockGetEmailVerificationStatus(
+            Future.successful(Some(VerificationStatus(emailAddress = email, verified = true, locked = false)))
+          )
+          mockUpdateEmailForEori(eori1, email)(Future.successful(()))
         }
 
         val result = performAction(verificationId)

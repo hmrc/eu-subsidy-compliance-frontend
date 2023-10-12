@@ -248,6 +248,7 @@ lead-account-homepage.h2-3 = Report history
 lead-account-homepage.ul2-li1 = View reported non-customs subsidy payments
 
 lead-account-homepage.h2-4 = Remaining allowance
+lead-account-homepage.h2.undertakingBalance = Undertaking balance
 lead-account-homepage.p3 = Your undertaking currently has a remaining balance of {0}, from your sector allowance of {1}.
 lead-account-homepage.ul3-li1 = View summary of your allowance (customs subsidies and non-customs subsidies)
 
@@ -265,6 +266,7 @@ non-lead-account-homepage.p1 = Your undertaking’s next report is due by <stron
 non-lead-account-homepage.p1.is-overdue = Your undertaking’s report was due by {0}.
 
 non-lead-account-homepage.h2-2 = Remaining allowance
+non-lead-account-homepage.h2.undertakingBalance = Undertaking balance
 non-lead-account-homepage.p2 = Your undertaking currently has a remaining balance of <strong>{0}</strong>, from your sector allowance of {1}.
 
 non-lead-account-homepage.ul1-li1 = View summary of your allowance (customs subsidies and non-customs subsidies)
@@ -497,6 +499,8 @@ dashboard.sector.name.1 = Transport
 dashboard.sector.name.2 = Agriculture
 dashboard.sector.name.3 = Aquaculture
 dashboard.allowance.remaining.heading = Allowance remaining
+dashboard.undertaking.balance.heading = Undertaking balance
+dashboard.insetText = Customs subsidies (Customs Duty waivers) claims can take up to 24 hours to update here. This means that keeping a record of payments that you have received is advised.
 
 become-admin.title = Change of undertaking administrator
 become-admin.p1 = As the administrator for this undertaking you will be responsible for reporting all non-customs subsidy payments received by any member of the undertaking.

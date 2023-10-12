@@ -42,6 +42,11 @@
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"non-lead-account-homepage"}
 
+@balanceHeading = @{
+    if(appConfig.scp08Enabled) messages(s"$key.h2.undertakingBalance")
+    else messages(s"$key.h2-2")
+}
+
 @layout(
   pageTitle = Some(messages(s"$key.title")),
   backLinkEnabled = false,
@@ -63,8 +68,8 @@
     ))
   }
 
-  @H2(messages(s"$key.h2-2"))
-  @P(messages(s"$key.p2", remainingAmount, allowance))
+  @H2(balanceHeading, id = Some("undertaking-balance-section-heading"))
+  @P(messages(s"$key.p2", remainingAmount, allowance), id = Some("undertaking-balance-section-content"))
   
   <ul class="govuk-list govuk-list--spaced">
     <li><a href="@routes.FinancialDashboardController.getFinancialDashboard" class="govuk-link">@messages(s"$key.ul1-li1")</a></li>

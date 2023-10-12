@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import org.mongodb.scala.model.{Filters, FindOneAndUpdateOptions, ReturnDocument, Updates}
-import org.mongodb.scala.result.UpdateResult
+import org.mongodb.scala.result.{DeleteResult, UpdateResult}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.EoriEmailRepository.DefaultTtl
@@ -57,14 +57,13 @@ class EoriEmailRepository @Inject() (
       .toFuture()
   }
 
-  def addVerificationRequest(key: EORI, email: String, verificationId: String): Future[Option[VerifiedEmail]] = {
+  def addVerificationRequest(key: EORI, verificationId: String): Future[Option[VerifiedEmail]] = {
     val timestamp = Instant.now()
 
     collection
       .findOneAndUpdate(
         filter = Filters.equal("_id", key),
         update = Updates.combine(
-          Updates.set("data.email", email),
           Updates.set("data.verificationId", verificationId),
           Updates.set("data.verified", false),
           Updates.set("modifiedDetails.lastUpdated", timestamp),
@@ -100,7 +99,6 @@ class EoriEmailRepository @Inject() (
       .findOneAndUpdate(
         filter = Filters.equal("_id", eori),
         update = Updates.combine(
-          Updates.set("data.email", state.email),
           Updates.set("data.verificationId", state.verificationId),
           Updates.set("data.verified", state.verified),
           Updates.set("modifiedDetails.lastUpdated", timestamp),
@@ -121,6 +119,16 @@ class EoriEmailRepository @Inject() (
       )
       .headOption()
       .map(e => e.flatMap(cache => cache.data.asOpt[VerifiedEmail]))
+
+  def removeEmailField(): Future[UpdateResult] =
+    collection
+      .updateMany(
+        filter = Filters.exists("data.email", true),
+        update = Updates.combine(
+          Updates.unset("data.email")
+        )
+      )
+      .toFuture()
 }
 
 object EoriEmailRepository {

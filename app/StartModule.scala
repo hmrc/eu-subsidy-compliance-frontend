@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.models
+import com.google.inject.AbstractModule
+import uk.gov.hmrc.eusubsidycompliancefrontend.job.RemoveEmailJob
 
-import play.api.libs.json.{Json, OFormat}
-
-case class VerifiedEmail(verificationId: String, verified: Boolean)
-
-object VerifiedEmail {
-  implicit val undertakingFormat: OFormat[VerifiedEmail] = Json.format[VerifiedEmail]
+class StartModule extends AbstractModule {
+  override def configure() = {
+    bind(classOf[RemoveEmailJob]).asEagerSingleton()
+  }
 }

@@ -18,14 +18,15 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.views.models
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{IndustrySectorLimit, Sector, SubsidyAmount}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingBalance, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 
 import java.time.{LocalDate, Month}
 
 case class FinancialDashboardSummary(
   overall: OverallSummary,
-  taxYears: Seq[TaxYearSummary] = Seq.empty
+  taxYears: Seq[TaxYearSummary] = Seq.empty,
+  undertakingBalanceEUR: SubsidyAmount
 )
 
 case class OverallSummary(
@@ -61,6 +62,7 @@ object FinancialDashboardSummary {
   def fromUndertakingSubsidies(
     undertaking: Undertaking,
     subsidies: UndertakingSubsidies,
+    balance: Option[UndertakingBalance],
     today: LocalDate
   ): FinancialDashboardSummary = {
 
@@ -123,7 +125,15 @@ object FinancialDashboardSummary {
 
     FinancialDashboardSummary(
       overall = overallSummary,
-      taxYears = taxYearSummaries
+      taxYears = taxYearSummaries,
+      undertakingBalanceEUR = balance.fold(overallSummary.allowanceRemaining)(_.availableBalanceEUR)
     )
   }
+
+  def fromUndertakingSubsidiesWithBalance(
+    undertaking: Undertaking,
+    subsidies: UndertakingSubsidies,
+    balance: UndertakingBalance,
+    today: LocalDate
+  ): FinancialDashboardSummary = fromUndertakingSubsidies(undertaking, subsidies, Some(balance), today)
 }

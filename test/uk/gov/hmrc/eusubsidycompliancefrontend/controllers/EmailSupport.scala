@@ -35,6 +35,12 @@ trait EmailSupport { this: ControllerSpec =>
       .expects(eori, *, *)
       .returning(result.fold(e => Future.failed(e), _.toFuture))
 
+  def mockRetrieveVerifiedEmailAddressByEORI(eori: EORI)(result: Future[String]) =
+    (mockEmailService
+      .retrieveVerifiedEmailAddressByEORI(_: EORI)(_: HeaderCarrier, _: ExecutionContext))
+      .expects(eori, *, *)
+      .returning(result)
+
   def mockSendEmail(
     eori1: EORI,
     key: EmailTemplate,
@@ -78,4 +84,10 @@ trait EmailSupport { this: ControllerSpec =>
       .sendEmail(_: EORI, _: EORI, _: EmailTemplate, _: Undertaking, _: String)(_: HeaderCarrier, _: ExecutionContext))
       .expects(eori1, eori2, key, undertaking, removeEffectiveDate, *, *)
       .returning(result.fold(Future.failed, _.toFuture))
+
+  def mockUpdateEmailForEori(eori: EORI, emailAddress: String)(result: Future[Unit]) =
+    (mockEmailService
+      .updateEmailForEori(_: EORI, _: String)(_: HeaderCarrier, _: ExecutionContext))
+      .expects(eori, emailAddress, *, *)
+      .returning(result)
 }
