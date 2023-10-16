@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import org.jsoup.Jsoup
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -118,6 +119,35 @@ class AccountControllerSpec
 
             }
           )
+        }
+
+        "the leadAccountPage should have the correct content when submitted and right H2 title" in {
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+            mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.toFuture)
+
+            mockTimeProviderToday(fixedDate)
+
+          }
+
+          val result = performAction()
+
+          status(result) shouldBe OK
+
+
+          val document = Jsoup.parse(contentAsString(result))
+
+          val h2Title = document.getElementById("page-details-title").text()
+          h2Title shouldBe "What you need to report, and when"
+
+
+          val submitted = document.getElementById("details-ul1-li1").text()
+          submitted shouldBe "this date is 90 days after the last report you submitted on"
+
         }
 
         def testTimeToReport(

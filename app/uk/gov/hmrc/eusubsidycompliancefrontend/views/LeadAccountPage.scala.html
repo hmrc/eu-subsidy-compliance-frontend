@@ -57,15 +57,6 @@
     else routes.SubsidyController.startJourney.url
 }
 
-@detailsHtml = {
-  <ul class="govuk-list govuk-list--bullet">
-    <li>@messages(s"$key.details.ul1-li1", lastSubmitted.getOrElse(""))</li>
-    <li>@messages(s"$key.details.ul1-li2", currentPeriodStart)</li>
-    <li>@messages(s"$key.details.ul1-li3")</li>
-    <li>@messages(s"$key.details.ul1-li4")</li>
-  </ul>
-}
-
 @balanceHeading = @{
     if(appConfig.scp08Enabled) messages("lead-account-homepage.h2.undertakingBalance")
     else messages("lead-account-homepage.h2-4")
@@ -96,10 +87,17 @@
       <li>@messages(s"$key.ul1-li2")</li>
     </ul>
 
-    @govukDetails(Details(
-      summary = Text(messages(s"$key.details.title")),
-      content = HtmlContent(detailsHtml)
-    ))
+    <div id ="page-details-title">@H2((messages(s"$key.details.title")))</div>
+    <ul class="govuk-list govuk-list--bullet">
+        <li id="details-ul1-li1">
+            @messages(if (neverSubmitted) s"$key.details.ul1-li1"
+            else s"$key.details.submitted.ul1-li1",
+            lastSubmitted.getOrElse(""))
+        </li>
+        <li>@messages(s"$key.details.ul1-li2", currentPeriodStart)</li>
+        <li>@messages(s"$key.details.ul1-li3")</li>
+        <li>@messages(s"$key.details.ul1-li4")</li>
+    </ul>
 
     @button(
       msg = "common.submit-report",
