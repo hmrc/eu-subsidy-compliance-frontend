@@ -351,7 +351,6 @@ class AccountControllerSpec
       }
 
     }
-    
   }
 
 }
