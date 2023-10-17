@@ -351,10 +351,7 @@ class AccountControllerSpec
       }
 
     }
-
-    "lead account page submitted details" must {
-
-    }
+    
   }
 
 }
