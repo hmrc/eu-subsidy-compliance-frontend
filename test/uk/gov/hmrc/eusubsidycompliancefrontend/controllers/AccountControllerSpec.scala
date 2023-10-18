@@ -140,7 +140,7 @@ class AccountControllerSpec
           val document = Jsoup.parse(contentAsString(result))
 
           val submittedDetailsText = document.getElementById("submitted-details-ul1-li1").text()
-          submittedDetailsText shouldBe "this date is 90 days after the last report you submitted on 20 January 2021"
+          submittedDetailsText shouldBe "this date is 90 days after the last report you submitted, on 20 January 2021"
         }
 
         def testTimeToReport(
