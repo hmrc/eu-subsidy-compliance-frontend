@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import akka.http.scaladsl.model.headers.Date
 import cats.implicits.catsSyntaxOptionId
+import org.jsoup.Jsoup
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -25,7 +27,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NilReturnJourney.Forms.NilReturnFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NonHmrcSubsidy, Undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NonHmrcSubsidy, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -110,7 +112,6 @@ class AccountControllerSpec
                   htmlBody.contains(messageFromMessageKey(messageKey)) shouldBe true
                 }
               }
-
               doc.getElementById("undertaking-balance-section-heading").text shouldBe "Remaining allowance"
               doc
                 .getElementById("undertaking-balance-section-content")
@@ -118,6 +119,28 @@ class AccountControllerSpec
 
             }
           )
+        }
+
+        "display the correct string in the leadAccountPage after the report has been submitted" in {
+          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
+
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+            mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.toFuture)
+            mockTimeProviderToday(fixedDate)
+            mockGetOrCreate(eori1)(Right(nilJourneyCreate))
+          }
+
+          val result = performAction()
+          status(result) shouldBe OK
+
+          val document = Jsoup.parse(contentAsString(result))
+
+          val submittedDetailsText = document.getElementById("submitted-details-ul1-li1").text()
+          submittedDetailsText shouldBe "this date is 90 days after the last report you submitted, on 20 January 2021"
         }
 
         def testTimeToReport(
@@ -328,7 +351,6 @@ class AccountControllerSpec
       }
 
     }
-
   }
 
 }
