@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @this(
     layout: Layout,
@@ -55,6 +56,14 @@
 
     @formHelper(action = controllers.routes.SubsidyController.postAddClaimPublicAuthority) {
 
+      @H1(messages("add-claim-public-authority.title"))
+      @P(messages("add-claim-public-authority.p1"), id = Some("add-claim-public-authority.p1"))
+        <ul class="govuk-list govuk-list--bullet">
+            <li id=add-claim-public-authority.p2>@messages("add-claim-public-authority.p2")</li>
+            <li id=add-claim-public-authority.p3>@messages("add-claim-public-authority.p3")</li>
+            <li id=add-claim-public-authority.p4>@messages("add-claim-public-authority.p4")</li>
+        </ul>
+
       @govukInput(Input(
         id = "claim-public-authority",
         name = "claim-public-authority",
@@ -66,9 +75,9 @@
           content = Text(messages("add-claim-public-authority.hint"))
         )),
         label = Label(
-          isPageHeading = true,
-          classes = "govuk-label--xl",
-          content = Text(messages("add-claim-public-authority.title"))
+          isPageHeading = false,
+          classes = "govuk-label--m",
+          content = Text(messages("add-claim-public-authority.input"))
         ),
         value = form.data.get("claim-public-authority")
       ))

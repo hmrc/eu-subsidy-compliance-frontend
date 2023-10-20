@@ -374,7 +374,12 @@ add-claim-date.error.incorrect-format = Date must be a real date
 add-claim-date.error.outside-allowed-tax-year-range = Date must be {0}, or later
 add-claim-date.error.in-future = Date you were awarded the payment must be in the past
 
-add-claim-public-authority.title = Which public authority granted the payment?
+add-claim-public-authority.title = Public authorities and subsidy payments
+add-claim-public-authority.input = Which public authority granted the payment?
+add-claim-public-authority.p1 = Your subsidy payment may have come from:
+add-claim-public-authority.p2 = a government department, like the Department of Business & Trade
+add-claim-public-authority.p3 = a local government authority, like the London Borough of Hounslow
+add-claim-public-authority.p4 = other public authorities and offices, like the British Council
 add-claim-public-authority.hint = For example, Invest NI, NI Direct
 error.claim-public-authority.required = Enter the public authority which granted the payment
 error.claim-public-authority.tooManyChars = Public authority name must be 150 characters or fewer
