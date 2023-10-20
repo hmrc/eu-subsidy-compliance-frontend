@@ -1383,7 +1383,7 @@ class SubsidyControllerSpec
               doc
                 .getElementById("add-claim-public-authority.p4")
                 .text shouldBe "other public authorities and offices, like the British Council"
-              doc.select("#claim-public-authority-hint").text() shouldBe "For example, Invest NI, NI Direct"
+              doc.select("#claim-public-authority-hint").text() shouldBe "For example Invest NI, NI Direct"
               val button = doc.select("form")
               button.attr("action") shouldBe routes.SubsidyController.postAddClaimPublicAuthority.url
             }
