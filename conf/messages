@@ -538,7 +538,7 @@ disableUndertakingWarning.p1 = You will no longer have access to the payments yo
 #disableUndertakingConfirm
 disableUndertakingConfirm.title = Are you sure you want to deregister this undertaking?
 disableUndertakingConfirm.error.required = Select yes if you want to deregister this undertaking
-disableUndertakingConfirm.hint = This cannot be reversed
+disableUndertakingConfirm.hint = This cannot be reversed. If you deregister an undertaking by mistake, you can register it again as a new undertaking.
 
 #undertakingDisabled
 undertakingDisabled.title = You have deregistered your undertaking

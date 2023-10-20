@@ -1629,7 +1629,7 @@ class UndertakingControllerSpec
             form
               .attr("action") shouldBe routes.UndertakingController.postDisableUndertakingConfirm.url
             val hintText: String = doc.getElementById("disableUndertakingConfirm-hint").text()
-            hintText shouldBe "This cannot be reversed"
+            hintText shouldBe "This cannot be reversed. If you deregister an undertaking by mistake, you can register it again as a new undertaking."
           }
         )
 
