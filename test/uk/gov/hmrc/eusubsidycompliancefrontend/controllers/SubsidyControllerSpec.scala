@@ -1371,7 +1371,22 @@ class SubsidyControllerSpec
             performAction,
             messageFromMessageKey("add-claim-public-authority.title"),
             { doc =>
-              doc.select("#claim-public-authority-hint").text() shouldBe "For example, Invest NI, NI Direct"
+              doc
+                .getElementById("add-claim-public-authority.title")
+                .text shouldBe "Public authorities and subsidy payments"
+              doc
+                .getElementById("add-claim-public-authority.p1")
+                .text shouldBe "Your subsidy payment may have come from:"
+              doc
+                .getElementById("add-claim-public-authority.p2")
+                .text shouldBe "a government department, like the Department of Business & Trade"
+              doc
+                .getElementById("add-claim-public-authority.p3")
+                .text shouldBe "a local government authority, like the London Borough of Hounslow"
+              doc
+                .getElementById("add-claim-public-authority.p4")
+                .text shouldBe "other public authorities and offices, like the British Council"
+              doc.select("#claim-public-authority-hint").text() shouldBe "For example Invest NI, NI Direct"
               val button = doc.select("form")
               button.attr("action") shouldBe routes.SubsidyController.postAddClaimPublicAuthority.url
             }
