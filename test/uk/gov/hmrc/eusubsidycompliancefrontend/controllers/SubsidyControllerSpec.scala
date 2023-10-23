@@ -1372,6 +1372,9 @@ class SubsidyControllerSpec
             messageFromMessageKey("add-claim-public-authority.title"),
             { doc =>
               doc
+                .getElementById("add-claim-public-authority.title")
+                .text shouldBe "Public authorities and subsidy payments"
+              doc
                 .getElementById("add-claim-public-authority.p1")
                 .text shouldBe "Your subsidy payment may have come from:"
               doc

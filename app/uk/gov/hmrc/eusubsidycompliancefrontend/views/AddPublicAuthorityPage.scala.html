@@ -56,7 +56,7 @@
 
     @formHelper(action = controllers.routes.SubsidyController.postAddClaimPublicAuthority) {
 
-      @H1(messages("add-claim-public-authority.title"))
+      @H1(messages("add-claim-public-authority.title"), id = Some("add-claim-public-authority.title"))
       @P(messages("add-claim-public-authority.p1"), id = Some("add-claim-public-authority.p1"))
         <ul class="govuk-list govuk-list--bullet">
             <li id=add-claim-public-authority.p2>@messages("add-claim-public-authority.p2")</li>
