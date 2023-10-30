@@ -46,6 +46,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import play.api.mvc.ActionBuilder._
 
 @Singleton
 class UndertakingController @Inject() (
@@ -93,7 +94,7 @@ class UndertakingController @Inject() (
     "disableUndertakingConfirm"
   )
 
-  def firstEmptyPage: Action[AnyContent] = enrolled.async { implicit request =>
+  def firstEmptyPage: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     logger.info(s"UndertakingController.firstEmptyPage attempting to find the journeys next step for EORI:$eori")
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).map { journey =>
@@ -108,7 +109,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getAboutUndertaking: Action[AnyContent] = enrolled.async { implicit request =>
+  def getAboutUndertaking: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.getOrCreate[UndertakingJourney](UndertakingJourney()).flatMap { journey =>
       val form = journey.about.value.fold(aboutUndertakingForm)(name => aboutUndertakingForm.fill(FormValues(name)))
@@ -116,7 +117,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def postAboutUndertaking: Action[AnyContent] = enrolled.async { implicit request =>
+  def postAboutUndertaking: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     store.get[UndertakingJourney].flatMap {
       case Some(_) =>
@@ -136,7 +137,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getSector: Action[AnyContent] = enrolled.async { implicit request =>
+  def getSector: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
       runStepIfEligible(journey) {
@@ -155,7 +156,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def postSector: Action[AnyContent] = enrolled.async { implicit request =>
+  def postSector: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     processFormSubmission[UndertakingJourney] { journey =>
@@ -172,7 +173,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
+  def getConfirmEmail: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
     handleConfirmEmailGet[UndertakingJourney](
       previous = routes.UndertakingController.getSector,
       formAction = routes.UndertakingController.postConfirmEmail
@@ -219,7 +220,7 @@ class UndertakingController @Inject() (
       .update[UndertakingJourney](_.setHasVerifiedEmail(true))
       .map(_ => ())
 
-  def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
+  def postConfirmEmail: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
       handleConfirmEmailPost[UndertakingJourney](
@@ -264,7 +265,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getAddBusiness: Action[AnyContent] = enrolled.async { implicit request =>
+  def getAddBusiness: Action[AnyContent] = verifiedEoriUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
       runStepIfEligible(journey) {
@@ -281,7 +282,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def postAddBusiness: Action[AnyContent] = verifiedEori.async { implicit request =>
+  def postAddBusiness: Action[AnyContent] = verifiedEoriUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     processFormSubmission[UndertakingJourney] { journey =>
       addBusinessForm
@@ -297,7 +298,7 @@ class UndertakingController @Inject() (
     }
   }
 
-  def getCheckAnswers: Action[AnyContent] = verifiedEori.async { implicit request =>
+  def getCheckAnswers: Action[AnyContent] = verifiedEoriUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     store
@@ -309,14 +310,20 @@ class UndertakingController @Inject() (
           undertakingVerifiedEmail <- emailService.retrieveVerifiedEmailAddressByEORI(eori).toContext
           undertakingAddBusiness <- journey.addBusiness.value.toContext
         } yield Ok(
-          cyaPage(eori, undertakingSector, undertakingVerifiedEmail, undertakingAddBusiness.toString, journey.previous)
+          cyaPage(
+            eori,
+            undertakingSector,
+            undertakingVerifiedEmail,
+            undertakingAddBusiness.toString,
+            journey.previous
+          )
         )
 
         result.getOrElse(Redirect(journey.previous))
       }
   }
 
-  def postCheckAnswers: Action[AnyContent] = verifiedEori.async { implicit request =>
+  def postCheckAnswers: Action[AnyContent] = verifiedEoriUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     cyaForm
       .bindFromRequest()
@@ -370,7 +377,7 @@ class UndertakingController @Inject() (
       }
     }
 
-  def getConfirmation(ref: String): Action[AnyContent] = verifiedEori.async { implicit request =>
+  def getConfirmation(ref: String): Action[AnyContent] = verifiedEoriUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     store.get[UndertakingJourney].flatMap {

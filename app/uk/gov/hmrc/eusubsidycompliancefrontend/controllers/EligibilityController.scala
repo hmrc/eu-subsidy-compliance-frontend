@@ -137,7 +137,7 @@ class EligibilityController @Inject() (
     Ok(notEligiblePage()).toFuture
   }
 
-  def getEoriCheck: Action[AnyContent] = enrolled.async { implicit request =>
+  def getEoriCheck: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     logger.info("EligibilityController.getEoriCheck")
@@ -174,7 +174,7 @@ class EligibilityController @Inject() (
 
   }
 
-  def postEoriCheck: Action[AnyContent] = enrolled.async { implicit request =>
+  def postEoriCheck: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     logger.info("EligibilityController.postEoriCheck")

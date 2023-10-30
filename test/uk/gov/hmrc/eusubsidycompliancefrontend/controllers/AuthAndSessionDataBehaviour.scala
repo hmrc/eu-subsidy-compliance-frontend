@@ -22,6 +22,9 @@ import play.api.mvc.Result
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.EscActionBuilder.{EccEnrolmentIdentifier, EccEnrolmentKey}
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms.CyaFormPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms.UndertakingCyaFormPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{SubsidyJourney, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 
@@ -68,8 +71,38 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
   def mockAuthWithEnrolmentAndValidEmail(eori: EORI = eori1): Unit =
     mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), providerId, groupId)
 
+  def mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney(eori: EORI = eori1): Unit = {
+    mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), providerId, groupId)
+    mockGet[UndertakingJourney](eori)(Right(Some(UndertakingJourney())))
+  }
+
+  def mockAuthWithEnrolmentWithValidEmailAndSubmittedUndertakingJourney(eori: EORI = eori1): Unit = {
+    mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), providerId, groupId)
+    mockGet[UndertakingJourney](eori)(Right(Some(UndertakingJourney(cya = UndertakingCyaFormPage(Some(true))))))
+  }
+
+  def mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney(eori: EORI = eori1): Unit = {
+    mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), providerId, groupId)
+    mockGet[SubsidyJourney](eori)(Right(Some(SubsidyJourney())))
+  }
+
+  def mockAuthWithEnrolmentWithValidEmailAndSubmittedSubsidyJourney(eori: EORI = eori1): Unit = {
+    mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), providerId, groupId)
+    mockGet[SubsidyJourney](eori)(Right(Some(SubsidyJourney(cya = CyaFormPage(Some(true))))))
+  }
+
   def mockAuthWithEnrolmentAndNoEmailVerification(eori: EORI = eori1): Unit =
     mockAuthWithEccAuthRetrievalsNoEmailVerification(Enrolments(enrolmentSets(eori)), providerId, groupId)
+
+  def mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney(eori: EORI = eori1): Unit = {
+    mockAuthWithEccAuthRetrievalsNoEmailVerification(Enrolments(enrolmentSets(eori)), providerId, groupId)
+    mockGet[UndertakingJourney](eori)(Right(Some(UndertakingJourney())))
+  }
+
+  def mockAuthWithEnrolmentAndSubmittedUndertakingJourney(eori: EORI = eori1): Unit = {
+    mockAuthWithEccAuthRetrievalsNoEmailVerification(Enrolments(enrolmentSets(eori)), providerId, groupId)
+    mockGet[UndertakingJourney](eori)(Right(Some(UndertakingJourney(cya = UndertakingCyaFormPage(Some(true))))))
+  }
 
   def authBehaviour(performAction: () => Future[Result]): Unit =
     "redirect to the login page when the user is not logged in" in {

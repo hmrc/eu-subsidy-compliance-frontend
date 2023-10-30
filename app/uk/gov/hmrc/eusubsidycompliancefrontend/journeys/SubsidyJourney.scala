@@ -115,7 +115,6 @@ case class SubsidyJourney(
   def setPublicAuthority(a: String): SubsidyJourney = this.copy(publicAuthority = publicAuthority.copy(a.some))
   def setTraderRef(o: OptionalTraderRef): SubsidyJourney = this.copy(traderRef = traderRef.copy(o.some))
   def setCya(v: Boolean): SubsidyJourney = this.copy(cya = cya.copy(v.some))
-
   def getReportPaymentFirstTimeUser: Boolean = reportPaymentFirstTimeUser.value.getOrElse(false)
   def getReportPaymentReturningUser: Boolean = reportPaymentReturningUser.value.getOrElse(false)
 
@@ -126,6 +125,8 @@ case class SubsidyJourney(
   def getReportedNoCustomSubsidy: Boolean = reportedNonCustomSubsidy.value.getOrElse(false)
 
   def claimAmountIsInEuros: Boolean = claimAmount.value.map(_.currencyCode).contains(EUR)
+
+  def isSubmitted: Boolean = cya.value.getOrElse(false)
 
   private def claimAmountToBigDecimal(f: FormPage[ClaimAmount]) = f.value.map(a => BigDecimal(a.amount))
 

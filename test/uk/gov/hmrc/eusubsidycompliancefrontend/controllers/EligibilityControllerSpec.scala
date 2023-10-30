@@ -293,7 +293,7 @@ class EligibilityControllerSpec
 
         def testDisplay(eligibilityJourney: EligibilityJourney) = {
           inSequence {
-            mockAuthWithEnrolment()
+            mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney()
             mockRetrieveUndertaking(eori1)(Option.empty.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourney))
           }
@@ -340,13 +340,22 @@ class EligibilityControllerSpec
       "redirect to account home" when {
         "undertaking has already been created" in {
           inSequence {
-            mockAuthWithEnrolment()
+            mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           }
 
           val result = performAction()
 
           redirectLocation(result) should contain(routes.AccountController.getAccountPage.url)
+        }
+      }
+
+      "redirect to undertaking already submitted page" when {
+        "cya is true" in {
+          inSequence {
+            mockAuthWithEnrolmentAndSubmittedUndertakingJourney(eori1)
+          }
+          checkIsRedirect(performAction(), routes.RegistrationSubmittedController.registrationAlreadySubmitted.url)
         }
       }
 
@@ -364,7 +373,7 @@ class EligibilityControllerSpec
 
         "eligibility journey fail to update" in {
           inSequence {
-            mockAuthWithEnrolment()
+            mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney()
             mockUpdate[EligibilityJourney](eori1)(
               Left(ConnectorError(exception))
             )
@@ -376,7 +385,7 @@ class EligibilityControllerSpec
       "display form error" when {
         "nothing is submitted" in {
           inSequence {
-            mockAuthWithEnrolment()
+            mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney()
           }
           checkFormErrorIsDisplayed(
             performAction(),
@@ -394,7 +403,7 @@ class EligibilityControllerSpec
 
         def testRedirection(input: Boolean, nextCall: String) =
           inSequence {
-            mockAuthWithEnrolment()
+            mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney()
             mockUpdate[EligibilityJourney](eori1)(
               Right(journey.copy(eoriCheck = EoriCheckFormPage(input.some)))
             )
@@ -408,6 +417,15 @@ class EligibilityControllerSpec
 
         "no is selected" in {
           testRedirection(input = false, routes.EligibilityController.getIncorrectEori.url)
+        }
+      }
+
+      "redirect to undertaking already submitted page" when {
+        "cya is true" in {
+          inSequence {
+            mockAuthWithEnrolmentAndSubmittedUndertakingJourney(eori1)
+          }
+          checkIsRedirect(performAction(), routes.RegistrationSubmittedController.registrationAlreadySubmitted.url)
         }
       }
 

@@ -82,6 +82,8 @@ case class UndertakingJourney(
   def setUndertakingConfirmation(b: Boolean): UndertakingJourney =
     this.copy(confirmation = confirmation.copy(value = Some(b)))
 
+  def isSubmitted: Boolean = cya.value.getOrElse(false)
+
 }
 
 object UndertakingJourney {
