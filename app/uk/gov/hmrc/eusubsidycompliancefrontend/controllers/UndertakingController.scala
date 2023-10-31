@@ -377,7 +377,7 @@ class UndertakingController @Inject() (
       }
     }
 
-  def getConfirmation(ref: String): Action[AnyContent] = verifiedEoriUndertakingJourney.async { implicit request =>
+  def getConfirmation(ref: String): Action[AnyContent] = verifiedEori.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
     store.get[UndertakingJourney].flatMap {

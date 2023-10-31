@@ -1389,7 +1389,7 @@ class UndertakingControllerSpec
 
       "display the page" in {
         inSequence {
-          mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney()
+          mockAuthWithEnrolmentAndValidEmail()
           mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
         }
 
@@ -1410,7 +1410,7 @@ class UndertakingControllerSpec
 
       "display the page with intent to add business" in {
         inSequence {
-          mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney()
+          mockAuthWithEnrolmentAndValidEmail()
           mockGet[UndertakingJourney](eori1)(
             Right(undertakingJourneyComplete.copy(addBusiness = UndertakingAddBusinessFormPage(true.some)).some)
           )
@@ -1438,9 +1438,14 @@ class UndertakingControllerSpec
       "redirect to undertaking already submitted page" when {
         "cya is true" in {
           inSequence {
-            mockAuthWithEnrolmentWithValidEmailAndSubmittedUndertakingJourney(eori1)
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
           }
-          checkIsRedirect(performAction(), routes.RegistrationSubmittedController.registrationAlreadySubmitted.url)
+
+          checkPageIsDisplayed(
+            performAction(),
+            "Undertaking registered"
+          )
         }
       }
 
