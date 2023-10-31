@@ -694,7 +694,7 @@ class SubsidyController @Inject() (
       _ <- journey.traderRef.value.orElse(handleMissingSessionData("trader ref"))
     } yield ()
 
-  def getClaimConfirmationPage: Action[AnyContent] = subsidyJourney.async { implicit request =>
+  def getClaimConfirmationPage: Action[AnyContent] = verifiedEori.async { implicit request =>
     val nextClaimDueDate = ReportReminderHelpers.dueDateToReport(timeProvider.today)
     Ok(confirmCreatedPage(nextClaimDueDate)).toFuture
   }

@@ -2148,7 +2148,7 @@ class SubsidyControllerSpec
 
       "display the page" in {
         inSequence {
-          mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
+          mockAuthWithEnrolmentAndValidEmail()
           mockTimeProviderToday(fixedDate)
         }
 
@@ -2169,7 +2169,7 @@ class SubsidyControllerSpec
 
       "title, heading and paragraph body available on getClaimConfirmation Page" in {
         inSequence {
-          mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
+          mockAuthWithEnrolmentAndValidEmail()
           mockTimeProviderToday(fixedDate)
         }
         val result = performAction
@@ -2186,7 +2186,7 @@ class SubsidyControllerSpec
 
       "Display hyperlinks on getClaimConfirmation page" in {
         inSequence {
-          mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
+          mockAuthWithEnrolmentAndValidEmail()
           mockTimeProviderToday(fixedDate)
         }
         val result = performAction
@@ -2202,9 +2202,14 @@ class SubsidyControllerSpec
       "redirect to payment already submitted page" when {
         "cya is true" in {
           inSequence {
-            mockAuthWithEnrolmentWithValidEmailAndSubmittedSubsidyJourney(eori1)
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockTimeProviderToday(fixedDate)
           }
-          checkIsRedirect(performAction(), routes.PaymentSubmittedController.paymentAlreadySubmitted.url)
+
+          checkPageIsDisplayed(
+            performAction,
+            "Payment reported"
+          )
         }
       }
 

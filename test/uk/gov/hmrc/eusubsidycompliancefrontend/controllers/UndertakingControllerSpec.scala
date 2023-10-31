@@ -1435,7 +1435,7 @@ class UndertakingControllerSpec
 
       }
 
-      "redirect to undertaking already submitted page" when {
+      "show confirmation page even if undertaking already submitted page" when {
         "cya is true" in {
           inSequence {
             mockAuthWithEnrolmentAndValidEmail(eori1)
