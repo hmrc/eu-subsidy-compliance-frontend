@@ -240,7 +240,7 @@ class AccountControllerSpec
                 val htmlBody = doc.select(".govuk-list").html
                 htmlBody should include regex routes.BecomeLeadController.getAcceptResponsibilities().url
                 htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard.url
-                htmlBody should include regex routes.BusinessEntityController.getRemoveYourselfBusinessEntity.url
+                htmlBody should include regex routes.RemoveYourselfBusinessEntityController.getRemoveYourselfBusinessEntity.url
 
                 doc.getElementById("undertaking-balance-section-heading").text shouldBe "Remaining allowance"
                 doc
@@ -344,7 +344,7 @@ class AccountControllerSpec
               mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
               mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1))
             }
-            checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity())
+            checkIsRedirect(performAction(), routes.AddBusinessEntityController.getAddBusinessEntity())
           }
         }
 

@@ -79,17 +79,17 @@ class XIDisableBusinessControllerSpec
     )
   )
 
-  private val controller = instanceOf[BusinessEntityController]
+  private val controller = instanceOf[BusinessEntityEoriController]
 
   "BusinessEntityControllerWithoutXI" when {
 
     "handling request to get EORI Page" must {
-      def performAction = controller.getEori(FakeRequest(GET, routes.BusinessEntityController.getEori.url))
+      def performAction = controller.getEori(FakeRequest(GET, routes.BusinessEntityEoriController.getEori.url))
 
       "display the page" when {
 
         def test(businessEntityJourney: BusinessEntityJourney): Unit = {
-          val previousUrl = routes.BusinessEntityController.getAddBusinessEntity().url
+          val previousUrl = routes.AddBusinessEntityController.getAddBusinessEntity().url
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -106,7 +106,7 @@ class XIDisableBusinessControllerSpec
               input shouldBe businessEntityJourney.eori.value.getOrElse("")
 
               val button = doc.select("form")
-              button.attr("action") shouldBe routes.BusinessEntityController.postEori.url
+              button.attr("action") shouldBe routes.BusinessEntityEoriController.postEori.url
             }
           )
         }

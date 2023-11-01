@@ -36,7 +36,7 @@
   pageTitle = Some(title),
   hasErrors = form.hasErrors
 ) {
-  @formHelper(action = controllers.routes.BusinessEntityController.postRemoveBusinessEntity(bs.businessEntityIdentifier)) {
+  @formHelper(action = controllers.routes.RemoveBusinessEntityController.postRemoveBusinessEntity(bs.businessEntityIdentifier)) {
     @form.errors.map { err =>
       @govukErrorSummary(ErrorSummary(
         errorList = Seq(

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
@@ -31,7 +47,7 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 class BusinessEntityControllerSpec
-  extends ControllerSpec
+    extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
@@ -76,10 +92,10 @@ class BusinessEntityControllerSpec
   )
 
   abstract class AddBusinessPageSetup(
-                                       method: String = GET,
-                                       theUndertaking: Undertaking = undertaking,
-                                       theBusinessEntityJourney: BusinessEntityJourney = businessEntityJourney
-                                     ) {
+    method: String = GET,
+    theUndertaking: Undertaking = undertaking,
+    theBusinessEntityJourney: BusinessEntityJourney = businessEntityJourney
+  ) {
 
     if (method == GET) {
       inSequence {
@@ -104,177 +120,168 @@ class BusinessEntityControllerSpec
 
   "RemoveBusinessEntityControllerSpec" when {
 
-    "handling request to get remove Business Page" must {
+    "handling request to get remove Business entity by Lead" must {
+      def performAction = controller.getRemoveBusinessEntity(eori4)(FakeRequest())
+
+      "throw technical error" when {
+
+        "call to retrieve undertaking returns undertaking having no BE with that eori" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
+          }
+          assertThrows[Exception](await(performAction))
+        }
+
+      }
 
       "display the page" when {
-        "user has removed a business entity" in new AddBusinessPageSetup(
-          theUndertaking = undertaking.copy(undertakingBusinessEntity = List(businessEntity1)),
-          theBusinessEntityJourney = businessEntityJourney.copy(addBusiness = AddBusinessFormPage())
-        ) {
-
-          val result = controller.getAddBusinessEntity(businessRemoved = Some(true))(FakeRequest())
-          status(result) shouldBe OK
-          val document = Jsoup.parse(contentAsString(result))
-
-          verifyAddBusinessPageCommonElements(document)
-          document.getElementById("business-removed-banner").text should endWith("Business removed")
-          document.getElementById("business-removed-warning").text should endWith(
-            "Removals of businesses could take up to 24 hours to show here. Payments reported up until the removal of any business will continue to affect your sector cap unless and until they move to another undertaking."
-          )
-      }
-    }
-  }
-
-    "display the page" when {
-      def test(undertaking: Undertaking, inputDate: Option[String]): Unit = {
-        inSequence {
-          mockAuthWithEnrolmentAndValidEmail(eori1)
-          mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-          mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
-        }
-        checkPageIsDisplayed(
-          performAction,
-          "You are about to remove a business from your undertaking",
-          { doc =>
-            val selectedOptions = doc.select(".govuk-radios__input[checked]")
-            inputDate match {
-              case Some(value) => selectedOptions.attr("value") shouldBe value
-              case None => selectedOptions.isEmpty shouldBe true
-            }
-            val button = doc.select("form")
-            button.attr("action") shouldBe routes.RemoveBusinessEntityController.postRemoveBusinessEntity(eori4).url
-
-            doc.select(".govuk-body").text() should include(CommonTestData.eori4)
-
+        def test(undertaking: Undertaking, inputDate: Option[String]): Unit = {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
+            mockRetrieveUndertaking(eori4)(undertaking.some.toFuture)
           }
+          checkPageIsDisplayed(
+            performAction,
+            "You are about to remove a business from your undertaking",
+            { doc =>
+              val selectedOptions = doc.select(".govuk-radios__input[checked]")
+              inputDate match {
+                case Some(value) => selectedOptions.attr("value") shouldBe value
+                case None => selectedOptions.isEmpty shouldBe true
+              }
+              val button = doc.select("form")
+              button.attr("action") shouldBe routes.RemoveBusinessEntityController.postRemoveBusinessEntity(eori4).url
+
+              doc.select(".govuk-body").text() should include(CommonTestData.eori4)
+
+            }
+          )
+
+        }
+
+        "the user hasn't previously answered the question" in {
+          test(undertaking1, None)
+        }
+
+      }
+
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(() => performAction)
+        }
+      }
+
+    }
+
+    "handling request to post remove business entity" must {
+
+      def performAction(data: (String, String)*)(eori: EORI) = controller
+        .postRemoveBusinessEntity(eori)(
+          FakeRequest(POST, routes.RemoveBusinessEntityController.postRemoveBusinessEntity(eori4).url)
+            .withFormUrlEncodedBody(data: _*)
         )
 
-      }
+      val effectiveDate = LocalDate.of(2022, 10, 9)
 
-      "the user hasn't previously answered the question" in {
-        test(undertaking1, None)
-      }
+      "throw a technical error" when {
+        val exception = new Exception("oh no!")
 
-    }
-
-    "redirect to the account home page" when {
-      "user is not an undertaking lead" in {
-        testLeadOnlyRedirect(() => performAction)
-      }
-    }
-
-  }
-
-  "handling request to post remove business entity" must {
-
-    def performAction(data: (String, String)*)(eori: EORI) = controller
-      .postRemoveBusinessEntity(eori)(
-        FakeRequest(POST, routes.RemoveBusinessEntityController.postRemoveBusinessEntity(eori4).url)
-          .withFormUrlEncodedBody(data: _*)
-      )
-
-    val effectiveDate = LocalDate.of(2022, 10, 9)
-
-    "throw a technical error" when {
-      val exception = new Exception("oh no!")
-
-      "call to retrieve undertaking returns undertaking having no BE with that eori" in {
-        inSequence {
-          mockAuthWithEnrolmentAndValidEmail(eori1)
-          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+        "call to retrieve undertaking returns undertaking having no BE with that eori" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          }
+          assertThrows[Exception](await(performAction()(eori4)))
         }
-        assertThrows[Exception](await(performAction()(eori4)))
-      }
 
-      "call to remove BE fails" in {
-        inSequence {
-          mockAuthWithEnrolmentAndValidEmail(eori1)
-          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-          mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-          mockTimeProviderToday(effectiveDate)
-          mockRemoveMember(undertakingRef, businessEntity4)(Left(ConnectorError(exception)))
+        "call to remove BE fails" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+            mockTimeProviderToday(effectiveDate)
+            mockRemoveMember(undertakingRef, businessEntity4)(Left(ConnectorError(exception)))
+          }
+          assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
         }
-        assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
+
+        "call to send email fails" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+            mockTimeProviderToday(effectiveDate)
+            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
+            mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, "10 October 2022")(
+              Left(ConnectorError(new RuntimeException()))
+            )
+          }
+          assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
+        }
+
       }
 
-      "call to send email fails" in {
-        inSequence {
-          mockAuthWithEnrolmentAndValidEmail(eori1)
-          mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-          mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-          mockTimeProviderToday(effectiveDate)
-          mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-          mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, "10 October 2022")(
-            Left(ConnectorError(new RuntimeException()))
+      "display the form error" when {
+
+        "nothing is selected" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+          }
+          checkFormErrorIsDisplayed(
+            performAction()(eori4),
+            messageFromMessageKey("removeBusinessEntity.title"),
+            "Select yes if you want to remove a business from your undertaking"
+          )
+
+        }
+
+      }
+
+      "redirect to next page" when {
+
+        def testRedirection(date: String): Unit = {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+            mockTimeProviderToday(effectiveDate)
+            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
+            mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, date)(Right(EmailSent))
+            mockSendEmail(eori1, eori4, RemoveMemberToLead, undertaking1, date)(Right(EmailSent))
+            mockSendAuditEvent(AuditEvent.BusinessEntityRemoved(undertakingRef, "1123", eori1, eori4))
+          }
+          checkIsRedirect(
+            performAction("removeBusiness" -> "true")(eori4),
+            routes.AddBusinessEntityController.startJourney(businessRemoved = Some(true)).url
           )
         }
-        assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
-      }
 
-    }
-
-    "display the form error" when {
-
-      "nothing is selected" in {
-        inSequence {
-          mockAuthWithEnrolmentAndValidEmail(eori1)
-          mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-          mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+        "user select yes as input" in {
+          testRedirection("10 October 2022")
         }
-        checkFormErrorIsDisplayed(
-          performAction()(eori4),
-          messageFromMessageKey("removeBusinessEntity.title"),
-          "Select yes if you want to remove a business from your undertaking"
-        )
 
-      }
-
-    }
-
-    "redirect to next page" when {
-
-      def testRedirection(date: String): Unit = {
-        inSequence {
-          mockAuthWithEnrolmentAndValidEmail(eori1)
-          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-          mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-          mockTimeProviderToday(effectiveDate)
-          mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-          mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, date)(Right(EmailSent))
-          mockSendEmail(eori1, eori4, RemoveMemberToLead, undertaking1, date)(Right(EmailSent))
-          mockSendAuditEvent(AuditEvent.BusinessEntityRemoved(undertakingRef, "1123", eori1, eori4))
+        "user selects No as input" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+          }
+          checkIsRedirect(
+            performAction("removeBusiness" -> "false")(eori4),
+            routes.AddBusinessEntityController.startJourney().url
+          )
         }
-        checkIsRedirect(
-          performAction("removeBusiness" -> "true")(eori4),
-          routes.AddBusinessEntityController.startJourney(businessRemoved = Some(true)).url
-        )
       }
 
-      "user select yes as input" in {
-        testRedirection("10 October 2022")
-      }
-
-      "user selects No as input" in {
-        inSequence {
-          mockAuthWithEnrolmentAndValidEmail(eori1)
-          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-          mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+      "redirect to the account home page" when {
+        "user is not an undertaking lead" in {
+          testLeadOnlyRedirect(() => performAction()(eori4))
         }
-        checkIsRedirect(
-          performAction("removeBusiness" -> "false")(eori4),
-          routes.AddBusinessEntityController.startJourney().url
-        )
       }
     }
-
-    "redirect to the account home page" when {
-      "user is not an undertaking lead" in {
-        testLeadOnlyRedirect(() => performAction()(eori4))
-      }
-    }
-
-  }
-
-
   }
 }

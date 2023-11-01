@@ -65,7 +65,7 @@ class NoBusinessPresentController @Inject() (
             s"NoBusinessPresentController.postNoBusinessPresent redirecting to businessEntityJourney eori:${businessEntityJourney.eori}"
           )
 
-          Redirect(routes.BusinessEntityController.getAddBusinessEntity())
+          Redirect(routes.AddBusinessEntityController.getAddBusinessEntity())
         }
     }
   }

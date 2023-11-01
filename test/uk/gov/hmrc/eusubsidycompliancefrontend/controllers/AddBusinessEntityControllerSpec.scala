@@ -1,3 +1,19 @@
+/*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
@@ -32,16 +48,16 @@ import java.time.LocalDate
 import scala.concurrent.Future
 
 class AddBusinessEntityControllerSpec
-  extends ControllerSpec
-  with AuthSupport
-  with JourneyStoreSupport
-  with AuthAndSessionDataBehaviour
-  with EmailSupport
-  with AuditServiceSupport
-  with LeadOnlyRedirectSupport
-  with EscServiceSupport
-  with ScalaFutures
-  with TimeProviderSupport {
+    extends ControllerSpec
+    with AuthSupport
+    with JourneyStoreSupport
+    with AuthAndSessionDataBehaviour
+    with EmailSupport
+    with AuditServiceSupport
+    with LeadOnlyRedirectSupport
+    with EscServiceSupport
+    with ScalaFutures
+    with TimeProviderSupport {
 
   override def overrideBindings: List[GuiceableModule] = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
@@ -213,6 +229,22 @@ class AddBusinessEntityControllerSpec
           document.getElementById("business-added-banner").text should endWith("Business added")
           document.getElementById("business-added-warning").text should endWith(
             "You have added one or more businesses. This could take up to 24 hours to show here. Any payments reported for those businesses in a previous undertaking will be moved to this undertaking and will affect the sector cap from now on."
+          )
+        }
+
+        "user has removed a business entity" in new AddBusinessPageSetup(
+          theUndertaking = undertaking.copy(undertakingBusinessEntity = List(businessEntity1)),
+          theBusinessEntityJourney = businessEntityJourney.copy(addBusiness = AddBusinessFormPage())
+        ) {
+
+          val result = controller.getAddBusinessEntity(businessRemoved = Some(true))(FakeRequest())
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          verifyAddBusinessPageCommonElements(document)
+          document.getElementById("business-removed-banner").text should endWith("Business removed")
+          document.getElementById("business-removed-warning").text should endWith(
+            "Removals of businesses could take up to 24 hours to show here. Payments reported up until the removal of any business will continue to affect your sector cap unless and until they move to another undertaking."
           )
         }
 

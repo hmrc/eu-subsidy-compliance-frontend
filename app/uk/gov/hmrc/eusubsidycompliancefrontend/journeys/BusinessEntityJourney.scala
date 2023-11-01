@@ -56,13 +56,14 @@ object BusinessEntityJourney {
 
   object FormPages {
 
-    private val controller = routes.BusinessEntityController
+    private val controller = routes.AddBusinessEntityController
+    private val eoricontroller = routes.BusinessEntityEoriController
 
     case class AddBusinessFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getAddBusinessEntity().url
     }
     case class AddEoriFormPage(value: Form[EORI] = None) extends FormPage[EORI] {
-      def uri = controller.getEori.url
+      def uri = eoricontroller.getEori.url
     }
 
     object AddBusinessFormPage { implicit val addBusinessFormPageFormat: OFormat[AddBusinessFormPage] = Json.format }

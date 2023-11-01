@@ -100,7 +100,7 @@ class NoBusinessPresentControllerSpec
         }
         checkIsRedirect(
           performAction,
-          routes.BusinessEntityController.getAddBusinessEntity().url
+          routes.AddBusinessEntityController.getAddBusinessEntity().url
         )
       }
 
