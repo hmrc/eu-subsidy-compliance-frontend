@@ -567,7 +567,7 @@ class BusinessEntityControllerSpec
                 performAction("businessEntityEori" -> eoriEntered),
                 routes.BusinessEntityController.startJourney(businessAdded = Some(true)).url
               )
-            }
+            }§
           }
         }
       }
