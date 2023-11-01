@@ -42,7 +42,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
-import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException}
+import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException, Request}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -138,6 +138,10 @@ class UndertakingController @Inject() (
   }
 
   def getSector: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
+    getSectorPage()
+  }
+
+  private def getSectorPage(isUpdate: Boolean = false)(implicit request: AuthenticatedEnrolledRequest[_]) = {
     implicit val eori: EORI = request.eoriNumber
     withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
       runStepIfEligible(journey) {
@@ -149,21 +153,33 @@ class UndertakingController @Inject() (
           undertakingSectorPage(
             form,
             journey.previous,
-            journey.about.value.getOrElse("")
+            journey.about.value.getOrElse(""),
+            isUpdate
           )
         ).toFuture
       }
     }
   }
 
-  def postSector: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
+  def getSectorForUpdate: Action[AnyContent] = enrolled.async { implicit request =>
+    getSectorPage(isUpdate = true)
+  }
 
+  def postSector: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
+    updateSector()
+  }
+  def updateIndustrySector: Action[AnyContent] = enrolled.async { implicit request =>
+    updateSector(isUpdate = true)
+  }
+
+  private def updateSector(isUpdate: Boolean = false)(implicit request: AuthenticatedEnrolledRequest[_]) = {
+    implicit val eori: EORI = request.eoriNumber
     processFormSubmission[UndertakingJourney] { journey =>
       undertakingSectorForm
         .bindFromRequest()
         .fold(
-          errors => BadRequest(undertakingSectorPage(errors, journey.previous, journey.about.value.get)).toContext,
+          errors =>
+            BadRequest(undertakingSectorPage(errors, journey.previous, journey.about.value.get, isUpdate)).toContext,
           form =>
             store
               .update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))

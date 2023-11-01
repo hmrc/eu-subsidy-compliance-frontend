@@ -1493,7 +1493,7 @@ class UndertakingControllerSpec
         ModifyUndertakingRow(
           messageFromMessageKey("undertaking.amendUndertaking.summary-list.sector.key"),
           messageFromMessageKey(s"sector.label.${undertaking.industrySector.id.toString}"),
-          routes.UndertakingController.getSector.url
+          routes.UndertakingController.getSectorForUpdate.url
         ),
         ModifyUndertakingRow(
           messageFromMessageKey("undertaking.amendUndertaking.summary-list.undertaking-admin-email.key"),

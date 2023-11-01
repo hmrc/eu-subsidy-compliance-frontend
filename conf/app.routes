@@ -29,6 +29,9 @@ POST       /first-login-journey-about-undertaking                               
 GET        /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSector
 POST       /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postSector
 
+GET        /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSectorForUpdate
+POST       /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.updateIndustrySector
+
 GET        /add-email-for-verification/:status                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAddEmailForVerification(status: EmailStatus)
 POST       /add-email-for-verification/:status                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAddEmailForVerification(status: EmailStatus)
 
