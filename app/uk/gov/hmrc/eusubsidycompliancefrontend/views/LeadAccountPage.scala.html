@@ -57,6 +57,15 @@
     else routes.SubsidyController.startJourney.url
 }
 
+@detailsHtml = {
+<ul class="govuk-list govuk-list--bullet">
+    <li>@messages(s"$key.details.ul1-li1", lastSubmitted.getOrElse(""))</li>
+    <li>@messages(s"$key.details.ul1-li2", currentPeriodStart)</li>
+    <li>@messages(s"$key.details.ul1-li3")</li>
+    <li>@messages(s"$key.details.ul1-li4")</li>
+</ul>
+}
+
 @balanceHeading = @{
     if(appConfig.scp08Enabled) messages("lead-account-homepage.h2.undertakingBalance")
     else messages("lead-account-homepage.h2-4")
@@ -88,12 +97,7 @@
     </ul>
 
     @H2(messages(s"$key.details.title"), Some("govuk-heading-m govuk-!-margin-top-6"), id = Some("details-title-H2"))
-    <ul class="govuk-list govuk-list--bullet">
-        <li>@messages(s"$key.details.ul1-li1", lastSubmitted.getOrElse(""))</li>
-        <li>@messages(s"$key.details.ul1-li2", currentPeriodStart)</li>
-        <li>@messages(s"$key.details.ul1-li3")</li>
-        <li>@messages(s"$key.details.ul1-li4")</li>
-    </ul>
+    @detailsHtml
 
     @button(
       msg = "common.submit-report",
