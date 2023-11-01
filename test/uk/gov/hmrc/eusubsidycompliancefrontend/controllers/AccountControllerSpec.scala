@@ -121,28 +121,6 @@ class AccountControllerSpec
           )
         }
 
-        "display the correct string in the leadAccountPage after the report has been submitted" in {
-          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
-
-          inSequence {
-            mockAuthWithEnrolmentAndNoEmailVerification()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
-            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-            mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.toFuture)
-            mockTimeProviderToday(fixedDate)
-            mockGetOrCreate(eori1)(Right(nilJourneyCreate))
-          }
-
-          val result = performAction()
-          status(result) shouldBe OK
-
-          val document = Jsoup.parse(contentAsString(result))
-
-          val submittedDetailsText = document.getElementById("submitted-details-ul1-li1").text()
-          submittedDetailsText shouldBe "this date is 90 days after the last report you submitted, on 20 January 2021"
-        }
-
         def testTimeToReport(
           undertaking: Undertaking,
           currentDate: LocalDate,

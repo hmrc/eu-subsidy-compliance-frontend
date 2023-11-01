@@ -89,11 +89,7 @@
 
     @H2(messages(s"$key.details.title"), Some("govuk-heading-m govuk-!-margin-top-6"), id = Some("details-title-H2"))
     <ul class="govuk-list govuk-list--bullet">
-        <li id="submitted-details-ul1-li1">
-            @messages(if (neverSubmitted) s"$key.details.ul1-li1"
-            else s"$key.details.submitted.ul1-li1",
-            lastSubmitted.getOrElse(""))
-        </li>
+        <li>@messages(s"$key.details.ul1-li1", lastSubmitted.getOrElse(""))</li>
         <li>@messages(s"$key.details.ul1-li2", currentPeriodStart)</li>
         <li>@messages(s"$key.details.ul1-li3")</li>
         <li>@messages(s"$key.details.ul1-li4")</li>

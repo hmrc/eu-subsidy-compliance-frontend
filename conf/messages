@@ -242,7 +242,6 @@ lead-account-homepage.details.ul1-li2 = you must use this service to report all 
 lead-account-homepage.details.ul1-li3 = you must submit a report at least once every 90 days, even if you haven’t received any payments
 lead-account-homepage.details.ul1-li4 = if you don’t submit a report, your undertaking may no longer be able to claim Customs Duty waivers
 
-lead-account-homepage.details.submitted.ul1-li1 = this date is 90 days after the last report you submitted, on {0}
 
 lead-account-homepage.h2-3 = Report history
 lead-account-homepage.ul2-li1 = View reported non-customs subsidy payments
