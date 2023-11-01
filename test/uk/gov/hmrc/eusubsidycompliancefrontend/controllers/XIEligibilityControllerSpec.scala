@@ -66,21 +66,19 @@ class XIEligibilityControllerSpec
 
         "XIEORI title is available " in {
           inSequence {
-            mockAuthWithEnrolment()
+            mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney()
             mockRetrieveUndertaking(eori1)(Option.empty.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourney))
           }
           val result = performAction()
           status(result) shouldBe OK
           val document = Jsoup.parse(contentAsString(result))
-          println("data ===" + document.toString)
-          val xiEoriTitle = document.getElementById("page-heading").text()
-          xiEoriTitle shouldBe "Registering an EORI number"
+          document.getElementById("page-heading").text() shouldBe "Registering an EORI number"
         }
 
         "XIEORI paragraph body is available " in {
           inSequence {
-            mockAuthWithEnrolment()
+            mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney()
             mockRetrieveUndertaking(eori1)(Option.empty.toFuture)
             mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourney))
           }
@@ -97,6 +95,15 @@ class XIEligibilityControllerSpec
           legend.text shouldBe s"Is the EORI number you want to register $eori1?"
           val button = document.select("form")
           button.attr("action") shouldBe routes.EligibilityController.postEoriCheck.url
+        }
+      }
+
+      "redirect to undertaking already submitted page" when {
+        "cya is true" in {
+          inSequence {
+            mockAuthWithEnrolmentAndSubmittedUndertakingJourney(eori1)
+          }
+          checkIsRedirect(performAction(), routes.RegistrationSubmittedController.registrationAlreadySubmitted.url)
         }
       }
 

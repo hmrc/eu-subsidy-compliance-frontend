@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.actions
 
 import play.api.mvc.{ActionBuilder, AnyContent}
-import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.{EnrolledActionBuilder, NotEnrolledActionBuilder, VerifiedEoriActionBuilder}
+import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.{EnrolledActionBuilder, NotEnrolledActionBuilder, SubsidyJourneyActionBuilder, UndertakingJourneySubmittedActionBuilder, UndertakingJourneyWithVerifiedEmailActionBuilder, VerifiedEoriActionBuilder}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.{AuthenticatedEnrolledRequest, AuthenticatedRequest}
 
 import javax.inject.{Inject, Singleton}
@@ -26,7 +26,10 @@ import javax.inject.{Inject, Singleton}
 class ActionBuilders @Inject() (
   enrolledActionBuilder: EnrolledActionBuilder,
   notEnrolledActionBuilder: NotEnrolledActionBuilder,
-  verifiedEmailActionBuilder: VerifiedEoriActionBuilder
+  verifiedEoriActionBuilder: VerifiedEoriActionBuilder,
+  subsidyJourneyActionBuilder: SubsidyJourneyActionBuilder,
+  undertakingJourneyWithVerifiedEmailActionBuilder: UndertakingJourneyWithVerifiedEmailActionBuilder,
+  undertakingJourneySubmittedActionBuilder: UndertakingJourneySubmittedActionBuilder
 ) {
 
   // GG Auth with ECC Enrolment - redirect to ECC if not enrolled
@@ -36,6 +39,18 @@ class ActionBuilders @Inject() (
   val notEnrolled: ActionBuilder[AuthenticatedRequest, AnyContent] = notEnrolledActionBuilder
 
   // GG Auth with ECC Enrolment and Verified Email Address
-  val verifiedEori: ActionBuilder[AuthenticatedEnrolledRequest, AnyContent] = verifiedEmailActionBuilder
+  val verifiedEori: ActionBuilder[AuthenticatedEnrolledRequest, AnyContent] = verifiedEoriActionBuilder
+
+  // GG Auth with ECC Enrolment and verify if payment has been submitted
+  val subsidyJourney: ActionBuilder[AuthenticatedEnrolledRequest, AnyContent] =
+    subsidyJourneyActionBuilder
+
+  // GG Auth with ECC Enrolment and verify if undertaking registration has been submitted
+  val enrolledUndertakingJourney: ActionBuilder[AuthenticatedEnrolledRequest, AnyContent] =
+    undertakingJourneySubmittedActionBuilder
+
+  // GG Auth with ECC Enrolment, check that they have a verified email and verify if undertaking registration has been submitted
+  val verifiedEoriUndertakingJourney: ActionBuilder[AuthenticatedEnrolledRequest, AnyContent] =
+    undertakingJourneyWithVerifiedEmailActionBuilder
 
 }

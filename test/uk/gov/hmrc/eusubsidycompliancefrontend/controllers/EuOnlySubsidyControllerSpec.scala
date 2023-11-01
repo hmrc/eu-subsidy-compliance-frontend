@@ -90,7 +90,7 @@ class EuOnlySubsidyControllerSpec
 
         "call to get subsidy journey fails " in {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
+            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
@@ -101,7 +101,7 @@ class EuOnlySubsidyControllerSpec
       "redirect" when {
         "call to get subsidy journey come back with no claim date " in {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
+            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(SubsidyJourney().some))
           }
@@ -138,7 +138,7 @@ class EuOnlySubsidyControllerSpec
             claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
           )
 
-          mockAuthWithEnrolmentAndValidEmail()
+          mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockGet[SubsidyJourney](eori1)(Right(journey.some))
 
@@ -157,7 +157,7 @@ class EuOnlySubsidyControllerSpec
             claimAmount = ClaimAmountFormPage(value = claimAmountEuros.some)
           )
 
-          mockAuthWithEnrolmentAndValidEmail()
+          mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockGet[SubsidyJourney](eori1)(Right(journey.some))
 
@@ -172,7 +172,16 @@ class EuOnlySubsidyControllerSpec
 
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(() => performAction)
+          testLeadOnlyRedirect(() => performAction, checkSubmitted = true)
+        }
+      }
+
+      "redirect to payment already submitted page" when {
+        "cya is true" in {
+          inSequence {
+            mockAuthWithEnrolmentWithValidEmailAndSubmittedSubsidyJourney(eori1)
+          }
+          checkIsRedirect(performAction, routes.PaymentSubmittedController.paymentAlreadySubmitted.url)
         }
       }
 
@@ -192,7 +201,7 @@ class EuOnlySubsidyControllerSpec
 
         "call to get subsidy journey fails " in {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
+            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
@@ -201,7 +210,7 @@ class EuOnlySubsidyControllerSpec
 
         "call to get subsidy journey passes but come back empty " in {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
+            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(None))
           }
@@ -210,7 +219,7 @@ class EuOnlySubsidyControllerSpec
 
         "call to get subsidy journey passes but come back with No claim date " in {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
+            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(None))
           }
@@ -219,7 +228,7 @@ class EuOnlySubsidyControllerSpec
 
         "call to get subsidy journey come back with no claim date " in {
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
+            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(SubsidyJourney().some))
           }
@@ -234,7 +243,7 @@ class EuOnlySubsidyControllerSpec
             claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
           ).some
           inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
+            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney(eori1)
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
           }
@@ -313,7 +322,7 @@ class EuOnlySubsidyControllerSpec
         )
 
         inSequence {
-          mockAuthWithEnrolmentAndValidEmail()
+          mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney(eori1)
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
           mockUpdate[SubsidyJourney](eori1)(Right(subsidyJourneyWithClaimAmount))
@@ -330,7 +339,22 @@ class EuOnlySubsidyControllerSpec
 
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {
-          testLeadOnlyRedirect(() => performAction())
+          testLeadOnlyRedirect(() => performAction(), checkSubmitted = true)
+        }
+      }
+
+      "redirect to payment already submitted page" when {
+        "cya is true" in {
+          inSequence {
+            mockAuthWithEnrolmentWithValidEmailAndSubmittedSubsidyJourney(eori1)
+          }
+          checkIsRedirect(
+            performAction(
+              ClaimAmountFormProvider.Fields.CurrencyCode -> EUR.entryName,
+              ClaimAmountFormProvider.Fields.ClaimAmountEUR -> "100.00"
+            ),
+            routes.PaymentSubmittedController.paymentAlreadySubmitted.url
+          )
         }
       }
 

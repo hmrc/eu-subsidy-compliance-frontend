@@ -29,6 +29,9 @@ POST       /first-login-journey-about-undertaking                               
 GET        /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSector
 POST       /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postSector
 
+GET        /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSectorForUpdate
+POST       /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.updateIndustrySector
+
 GET        /add-email-for-verification/:status                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAddEmailForVerification(status: EmailStatus)
 POST       /add-email-for-verification/:status                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAddEmailForVerification(status: EmailStatus)
 
@@ -144,3 +147,7 @@ GET        /financial-dashboard                                                 
 GET        /lead-undertaking-promote-business-entity-email-unverified                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.emailNotVerified
 
 GET        /unverified-email                                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UnverifiedEmailController.unverifiedEmail
+
+GET        /payment-already-submitted                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PaymentSubmittedController.paymentAlreadySubmitted
+
+GET        /registration-already-submitted                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.RegistrationSubmittedController.registrationAlreadySubmitted

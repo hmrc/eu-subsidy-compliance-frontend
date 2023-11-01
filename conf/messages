@@ -556,3 +556,15 @@ unverifiedEmail.h1=Your email address needs verifying
 unverifiedEmail.p=To complete tasks in your undertaking, re-enter the email address you would like to use so that we can verify it.
 unverifiedEmail.recoverLinkText=Re-enter your email address
 
+#payment already submitted page
+paymentAlreadySubmitted.title=You have already successfully reported a payment
+paymentAlreadySubmitted.h1=You have already successfully reported a payment
+paymentAlreadySubmitted.p=You can now go to your homepage to submit another report, add a business or complete other tasks.
+paymentAlreadySubmitted.homeLinkText=Go to homepage
+
+#registration already submitted page
+registrationAlreadySubmitted.title=You have already successfully registered this EORI number as an undertaking
+registrationAlreadySubmitted.h1=You have already successfully registered this EORI number as an undertaking
+registrationAlreadySubmitted.p=You can now go to your homepage to submit a report, add a business or complete other tasks.
+registrationAlreadySubmitted.homeLinkText=Go to homepage
+

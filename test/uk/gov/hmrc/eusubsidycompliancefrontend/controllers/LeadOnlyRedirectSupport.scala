@@ -28,9 +28,12 @@ import scala.concurrent.Future
 trait LeadOnlyRedirectSupport extends MockFactory with Matchers {
   this: AuthAndSessionDataBehaviour with JourneyStoreSupport with ControllerSpec with EscServiceSupport =>
 
-  protected def testLeadOnlyRedirect(f: () => Future[Result]) = {
+  protected def testLeadOnlyRedirect(f: () => Future[Result], checkSubmitted: Boolean = false) = {
     inSequence {
-      mockAuthWithEnrolmentAndValidEmail(eori3)
+      if (checkSubmitted) {
+        mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney(eori3)
+      } else mockAuthWithEnrolmentAndValidEmail(eori3)
+
       mockRetrieveUndertaking(eori3)(undertaking.some.toFuture)
     }
 
