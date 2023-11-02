@@ -79,7 +79,7 @@
   hasErrors = form.hasErrors
 ) {
 
-  @formHelper(action = controllers.routes.BusinessEntityController.postAddBusinessEntity) {
+  @formHelper(action = controllers.routes.AddBusinessEntityController.postAddBusinessEntity) {
     @form.errors.map { err =>
       @govukErrorSummary(ErrorSummary(
         errorList = Seq(
@@ -122,7 +122,7 @@
                   @b.businessEntityIdentifier
                 </dt>
                 <dd class="govuk-summary-list__actions">
-                  <a id="remove-link-@b.businessEntityIdentifier" class="govuk-link" href="@routes.BusinessEntityController.getRemoveBusinessEntity(b.businessEntityIdentifier).toString">
+                  <a id="remove-link-@b.businessEntityIdentifier" class="govuk-link" href="@routes.RemoveBusinessEntityController.getRemoveBusinessEntity(b.businessEntityIdentifier).toString">
                     <span aria-hidden="true">@messages("common.remove")</span>
                     <span class="govuk-visually-hidden">@messages("common.remove") @b.businessEntityIdentifier</span>
                   </a>

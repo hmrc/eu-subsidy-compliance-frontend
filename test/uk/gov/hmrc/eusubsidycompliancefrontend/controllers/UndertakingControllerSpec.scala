@@ -104,7 +104,7 @@ class UndertakingControllerSpec
             mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney()
             mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete))
           }
-          checkIsRedirect(performAction(), routes.BusinessEntityController.getAddBusinessEntity().url)
+          checkIsRedirect(performAction(), routes.AddBusinessEntityController.getAddBusinessEntity().url)
         }
 
         "undertaking journey is present and  is not None and is not complete" when {
@@ -182,7 +182,7 @@ class UndertakingControllerSpec
                 addBusiness = UndertakingAddBusinessFormPage(false.some),
                 confirmation = UndertakingConfirmationFormPage(true.some)
               ),
-              routes.BusinessEntityController.getAddBusinessEntity().url
+              routes.AddBusinessEntityController.getAddBusinessEntity().url
             )
           }
 
@@ -1401,7 +1401,7 @@ class UndertakingControllerSpec
             heading2 should include regex messageFromMessageKey("undertaking.confirmation.p1")
             doc.text() should not include messageFromMessageKey(
               "undertaking.confirmation.p2",
-              routes.BusinessEntityController.getAddBusinessEntity()
+              routes.AddBusinessEntityController.getAddBusinessEntity()
             )
           }
         )
@@ -1428,7 +1428,7 @@ class UndertakingControllerSpec
             confirmationP2.text should endWith(" link in the ‘Undertaking administration’ section of the homepage.")
             val link = doc.getElementById("add-remove-business-link")
             link.text shouldBe "Add and remove businesses"
-            link.attr("href") shouldBe routes.BusinessEntityController.startJourney().url
+            link.attr("href") shouldBe routes.AddBusinessEntityController.startJourney().url
 
           }
         )

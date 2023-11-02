@@ -37,7 +37,7 @@
   hasErrors = form.hasErrors
   ) {
 
-  @formHelper(action = controllers.routes.BusinessEntityController.postEori) {
+  @formHelper(action = controllers.routes.BusinessEntityEoriController.postEori) {
 
     @if(form.hasErrors) {
       @govukErrorSummary(
