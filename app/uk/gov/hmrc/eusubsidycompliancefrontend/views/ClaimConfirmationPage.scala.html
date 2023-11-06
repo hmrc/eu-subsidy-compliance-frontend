@@ -43,7 +43,13 @@
     ))
 
     @H2(messages("subsidy.created.sub-heading"), id = Some("claimSubheadingId"))
+
+    @if(appConfig.submitAReportEnabled) {
+    @P(messages("subsidy.created.p"))
+    @P(messages("subsidy.created.p1New", s"<strong>${nextClaimDueDate.toDisplayFormat}</strong>") , id = Some("claimParaId"))
+    } else {
     @P(messages("subsidy.created.p1", s"<strong>${nextClaimDueDate.toDisplayFormat}</strong>") , id = Some("claimParaId"))
+    }
 
     <ul class="govuk-list">
         <li><a id="report-another-payment" class="govuk-link" href="@routes.SubsidyController.startJourney.url">@messages("subsidy.created.l1")</a></li>

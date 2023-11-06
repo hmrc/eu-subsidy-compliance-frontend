@@ -46,7 +46,13 @@
         ))
 
         @H2(messages("noClaimConfirmation.h2"))
-        @P(messages("noClaimConfirmation.p1", nextReportDueDate.toDisplayFormat))
+
+        @if(appConfig.submitAReportEnabled) {
+        @P(messages("noClaimConfirmation.p"))
+        @P(messages("noClaimConfirmation.p1New", s"<strong>${nextReportDueDate.toDisplayFormat}</strong>"))
+        } else {
+        @P(messages("noClaimConfirmation.p1", s"<strong>${nextReportDueDate.toDisplayFormat}</strong>"))
+        }
 
         <div><a href="@controllers.routes.AccountController.getAccountPage.url" class="govuk-link">@messages("common.go-account-home")</a></div>
     }

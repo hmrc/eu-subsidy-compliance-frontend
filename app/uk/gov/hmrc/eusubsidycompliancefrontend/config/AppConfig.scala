@@ -34,6 +34,9 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   val xiEoriAddingDisabled: Boolean =
     config.getOptional[Boolean]("features.xi-eori-adding-disabled").getOrElse(false)
 
+  val submitAReportEnabled: Boolean =
+    config.getOptional[Boolean]("features.submit-a-report-enabled").getOrElse(false)
+
   val scp08Enabled: Boolean =
     config.getOptional[Boolean]("features.scp08-enabled").getOrElse(false)
 
