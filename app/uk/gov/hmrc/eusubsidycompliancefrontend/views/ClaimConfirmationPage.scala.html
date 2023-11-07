@@ -44,11 +44,11 @@
 
     @H2(messages("subsidy.created.sub-heading"), id = Some("claimSubheadingId"))
 
-    @if(appConfig.submitAReportEnabled) {
-    @P(messages("subsidy.created.p"))
-    @P(messages("subsidy.created.p1New", s"<strong>${nextClaimDueDate.toDisplayFormat}</strong>") , id = Some("claimParaId"))
+    @if(appConfig.releaseCEnabled) {
+    @P(messages("subsidy.created.p"), id = Some("claimSubsidyNewParagraph"))
+    @P(messages("subsidy.created.p1New", s"<strong>${nextClaimDueDate.toDisplayFormat}</strong>"), id = Some("claimNewParaId"))
     } else {
-    @P(messages("subsidy.created.p1", s"<strong>${nextClaimDueDate.toDisplayFormat}</strong>") , id = Some("claimParaId"))
+    @P(messages("subsidy.created.p1", s"<strong>${nextClaimDueDate.toDisplayFormat}</strong>"), id = Some("claimParaId"))
     }
 
     <ul class="govuk-list">

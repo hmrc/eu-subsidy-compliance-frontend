@@ -45,13 +45,13 @@
             classes = "govuk-!-margin-bottom-7"
         ))
 
-        @H2(messages("noClaimConfirmation.h2"))
+        @H2(messages("noClaimConfirmation.h2"), id = Some("noClaimSubheadingId"))
 
-        @if(appConfig.submitAReportEnabled) {
-        @P(messages("noClaimConfirmation.p"))
-        @P(messages("noClaimConfirmation.p1New", s"<strong>${nextReportDueDate.toDisplayFormat}</strong>"))
+        @if(appConfig.releaseCEnabled) {
+        @P(messages("noClaimConfirmation.p"), id = Some("noClaimSubsidyNewParagraph"))
+        @P(messages("noClaimConfirmation.p1New", s"<strong>${nextReportDueDate.toDisplayFormat}</strong>"), id = Some("noClaimNewParaId"))
         } else {
-        @P(messages("noClaimConfirmation.p1", s"<strong>${nextReportDueDate.toDisplayFormat}</strong>"))
+        @P(messages("noClaimConfirmation.p1", s"<strong>${nextReportDueDate.toDisplayFormat}</strong>"), id = Some("noClaimParaId"))
         }
 
         <div><a href="@controllers.routes.AccountController.getAccountPage.url" class="govuk-link">@messages("common.go-account-home")</a></div>
