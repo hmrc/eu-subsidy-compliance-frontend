@@ -698,6 +698,7 @@ class SubsidyControllerSpec
           mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+          mockRetrieveExchangeRate(claimDate2)(Some(exchangeRate).toFuture)
 
           checkPageIsDisplayed(
             performAction,
@@ -836,6 +837,7 @@ class SubsidyControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
             mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
+            mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
             mockUpdate[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](
@@ -854,12 +856,19 @@ class SubsidyControllerSpec
         def testFormValidation(data: (String, String)*)(errorMessageKey: String): Unit = {
 
           val subsidyJourneyOpt = SubsidyJourney(
-            claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
+            claimDate = ClaimDateFormPage(
+              DateFormValues(
+                claimDate.getDayOfMonth.toString,
+                claimDate.getMonthValue.toString,
+                claimDate.getYear.toString
+              ).some
+            )
           ).some
           inSequence {
             mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
+            mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
           }
 
           val titleMessage = messageFromMessageKey("add-claim-amount.title")
@@ -875,12 +884,19 @@ class SubsidyControllerSpec
         def testConvertedAmountValidation(data: (String, String)*)(errorMessageKey: String): Unit = {
 
           val subsidyJourneyOpt = SubsidyJourney(
-            claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some)
+            claimDate = ClaimDateFormPage(
+              DateFormValues(
+                claimDate.getDayOfMonth.toString,
+                claimDate.getMonthValue.toString,
+                claimDate.getYear.toString
+              ).some
+            )
           ).some
           inSequence {
             mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
+            mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
           }
 
           val titleMessage = messageFromMessageKey("add-claim-amount.title")
@@ -972,7 +988,13 @@ class SubsidyControllerSpec
 
       "redirect to the add claim eori page if an EUR amount is entered" in {
         val subsidyJourney = SubsidyJourney(
-          claimDate = ClaimDateFormPage(DateFormValues("9", "10", "2022").some)
+          claimDate = ClaimDateFormPage(
+            DateFormValues(
+              claimDate.getDayOfMonth.toString,
+              claimDate.getMonthValue.toString,
+              claimDate.getYear.toString
+            ).some
+          )
         )
 
         val claimAmount = "100.00"
@@ -985,6 +1007,7 @@ class SubsidyControllerSpec
           mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+          mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
           mockUpdate[SubsidyJourney](eori1)(Right(subsidyJourneyWithClaimAmount))
         }
 
@@ -1008,6 +1031,7 @@ class SubsidyControllerSpec
           mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+          mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
           mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
           mockUpdate[SubsidyJourney](eori1)(Right(subsidyJourney))
         }

@@ -24,12 +24,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Fie
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.{IncorrectFormat, Required}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.PositiveSubsidyAmount
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ClaimAmount, CurrencyCode}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ClaimAmount, CurrencyCode, types}
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
 
 import scala.util.Try
 
-case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
+case class ClaimAmountFormProvider(conversionRate: BigDecimal) extends FormProvider[ClaimAmount] {
 
   override protected def mapping: Mapping[ClaimAmount] = Forms
     .mapping(
@@ -37,25 +37,37 @@ case class ClaimAmountFormProvider() extends FormProvider[ClaimAmount] {
         text
           .verifying(currencyCodeIsValid)
           .transform(CurrencyCode.withName, (c: CurrencyCode) => c.entryName),
-      Fields.ClaimAmountEUR -> mandatoryIfEqual(Fields.CurrencyCode, EUR.entryName, claimAmountMapping),
-      Fields.ClaimAmountGBP -> mandatoryIfEqual(Fields.CurrencyCode, GBP.entryName, claimAmountMapping)
+      Fields.ClaimAmountEUR -> mandatoryIfEqual(Fields.CurrencyCode, EUR.entryName, claimAmountMapping()),
+      Fields.ClaimAmountGBP -> mandatoryIfEqual(Fields.CurrencyCode, GBP.entryName, claimAmountMapping(true))
     )(ClaimAmount.fromForm)(ClaimAmount.toForm)
     .verifying(claimAmountCurrencyMatchesSelection)
     .transform(c => c.copy(amount = cleanAmount(c.amount)), identity[ClaimAmount])
 
-  private def claimAmountMapping: Mapping[String] =
+  private def claimAmountMapping(isGbp: Boolean = false): Mapping[String] =
     text
       .verifying(claimAmountFormatIsValid)
       .verifying(claimAmountAboveZero)
-      .verifying(claimAmountIsBelowMaximumAllowedValue)
+      .verifying(if (isGbp) claimAmountIsBelowMaximumAllowedValueGBP else claimAmountIsBelowMaximumAllowedValueEUR)
 
   private val allowedCurrencySymbols = CurrencyCode.values.map(_.symbol)
 
-  private val claimAmountIsBelowMaximumAllowedValue = Constraint[String] { claimAmount: String =>
+  private val claimAmountIsBelowMaximumAllowedValueEUR = Constraint[String] { claimAmount: String =>
     val amount = cleanAmount(claimAmount)
     Try(BigDecimal(amount)).fold(
       _ => Invalid(IncorrectFormat),
       amount => PositiveSubsidyAmount.validateAndTransform(amount).fold[ValidationResult](Invalid(TooBig))(_ => Valid)
+    )
+  }
+
+  private val claimAmountIsBelowMaximumAllowedValueGBP = Constraint[String] { claimAmount: String =>
+    val amount = cleanAmount(claimAmount)
+    Try(BigDecimal(amount)).fold(
+      _ => Invalid(IncorrectFormat),
+      amount => {
+        val maxInputValue = types.MaxInputValue / conversionRate
+        if ((amount >= 0) && (amount <= maxInputValue) && (amount.scale <= 2)) Valid
+        else Invalid(TooBig)
+      }
     )
   }
 

@@ -111,6 +111,7 @@ object CommonTestData {
   val claimAmountEuros = ClaimAmount(EUR, subsidyAmount.toString())
 
   val claimDate = LocalDate.of(2022, 1, 1)
+  val claimDate2 = LocalDate.of(2022, 10, 9)
 
   val subsidyJourney = SubsidyJourney(
     publicAuthority = PublicAuthorityFormPage("Local Authority".some),
