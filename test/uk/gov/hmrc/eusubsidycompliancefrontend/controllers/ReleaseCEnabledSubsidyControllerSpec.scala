@@ -34,7 +34,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
 import scala.concurrent.Future
 
-class ReleaseCEnabledControllerSpec
+class ReleaseCEnabledSubsidyControllerSpec
     extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
