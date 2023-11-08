@@ -35,7 +35,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import scala.concurrent.Future
 
 class ReleaseCEnabledControllerSpec
-  extends ControllerSpec
+    extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
     with AuthAndSessionDataBehaviour
@@ -90,8 +90,12 @@ class ReleaseCEnabledControllerSpec
           panel.text() shouldBe "Payment reported"
 
           document.getElementById("claimSubheadingId").text() shouldBe "What happens next"
-          document.getElementById("claimSubsidyNewParagraph").text() shouldBe "It may take up to 24 hours before you can continue to claim any further Customs Duty waivers that you may be entitled to."
-          document.getElementById("claimNewParaId").text() shouldBe "Your next report must be made by 20 April 2021. This date is 90 days after the missed deadline."
+          document
+            .getElementById("claimSubsidyNewParagraph")
+            .text() shouldBe "It may take up to 24 hours before you can continue to claim any further Customs Duty waivers that you may be entitled to."
+          document
+            .getElementById("claimNewParaId")
+            .text() shouldBe "Your next report must be made by 20 April 2021. This date is 90 days after the missed deadline."
         }
       }
     }
@@ -121,11 +125,14 @@ class ReleaseCEnabledControllerSpec
           panel.text() shouldBe "Report sent"
 
           document.getElementById("noClaimSubheadingId").text() shouldBe "What happens next"
-          document.getElementById("noClaimSubsidyNewParagraph").text() shouldBe "It may take up to 24 hours before you can continue to claim any further Customs Duty waivers that you may be entitled to."
-          document.getElementById("noClaimNewParaId").text() shouldBe "Your next report must be made by 20 April 2021. This date is 90 days after the missed deadline."
+          document
+            .getElementById("noClaimSubsidyNewParagraph")
+            .text() shouldBe "It may take up to 24 hours before you can continue to claim any further Customs Duty waivers that you may be entitled to."
+          document
+            .getElementById("noClaimNewParaId")
+            .text() shouldBe "Your next report must be made by 20 April 2021. This date is 90 days after the missed deadline."
         }
       }
     }
   }
 }
-
