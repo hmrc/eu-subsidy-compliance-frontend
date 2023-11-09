@@ -25,7 +25,7 @@ import scala.util.Try
 
 package object types extends SimpleJson {
 
-  private val MaxInputValue = 99999999999.99
+  val MaxInputValue = 99999999999.99
 
   type IndustrySectorLimit = BigDecimal @@ IndustrySectorLimit.Tag
   object IndustrySectorLimit extends ValidatedType[BigDecimal] {

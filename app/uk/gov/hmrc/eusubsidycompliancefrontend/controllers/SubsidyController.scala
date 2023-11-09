@@ -119,8 +119,6 @@ class SubsidyController @Inject() (
     "claim-public-authority" -> mandatory("claim-public-authority")
   )
 
-  private val claimAmountForm: Form[ClaimAmount] = ClaimAmountFormProvider().form
-
   private val claimDateForm: Form[DateFormValues] = ClaimDateFormProvider(timeProvider).form
 
   def getReportedPayments: Action[AnyContent] = verifiedEori.async { implicit request =>
@@ -329,6 +327,9 @@ class SubsidyController @Inject() (
         subsidyJourney <- store.get[SubsidyJourney].toContext
         addClaimDate <- subsidyJourney.claimDate.value.toContext
         previous = subsidyJourney.previous
+        exchangeRate <- exchangeRateService.retrieveCachedMonthlyExchangeRate(addClaimDate.toLocalDate).toContext
+        conversionRate = exchangeRate.amount
+        claimAmountForm = ClaimAmountFormProvider(conversionRate).form
       } yield {
         val form = subsidyJourney.claimAmount.value.fold(claimAmountForm) { ca =>
           if (appConfig.euroOnlyEnabled && ca.currencyCode == CurrencyCode.GBP)
@@ -368,7 +369,11 @@ class SubsidyController @Inject() (
       )
     }
 
-    def handleFormSubmit(previous: Journey.Uri, addClaimDate: DateFormValues): Future[Result] =
+    def handleFormSubmit(
+      previous: Journey.Uri,
+      addClaimDate: DateFormValues,
+      claimAmountForm: Form[ClaimAmount]
+    ): Future[Result] =
       claimAmountForm
         .bindFromRequest()
         .fold(
@@ -384,7 +389,6 @@ class SubsidyController @Inject() (
             },
           claimAmountEntered => {
             val result = for {
-              _ <- validateClaimAmount(addClaimDate.toLocalDate, claimAmountEntered).toContext
               journey <- store.update[SubsidyJourney](_.setClaimAmount(claimAmountEntered)).toContext
               redirect <- journey.next.toContext
             } yield redirect
@@ -408,7 +412,10 @@ class SubsidyController @Inject() (
         subsidyJourney <- store.get[SubsidyJourney].toContext
         addClaimDate <- subsidyJourney.claimDate.value.toContext
         previous = subsidyJourney.previous
-        submissionResult <- handleFormSubmit(previous, addClaimDate).toContext
+        exchangeRate <- exchangeRateService.retrieveCachedMonthlyExchangeRate(addClaimDate.toLocalDate).toContext
+        conversionRate = exchangeRate.amount
+        claimAmountForm = ClaimAmountFormProvider(conversionRate).form
+        submissionResult <- handleFormSubmit(previous, addClaimDate, claimAmountForm).toContext
       } yield submissionResult
       result.getOrElse(handleMissingSessionData("Subsidy journey"))
     }

@@ -28,7 +28,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 
 class ClaimAmountFormProviderSpec extends BaseSpec with Matchers {
 
-  private val underTest = new ClaimAmountFormProvider()
+  private val conversionRate: BigDecimal = BigDecimal(1.3)
+  private val underTest = new ClaimAmountFormProvider(conversionRate)
 
   "claim amount form validation" must {
 
