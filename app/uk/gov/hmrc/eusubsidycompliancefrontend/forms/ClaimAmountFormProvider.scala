@@ -64,8 +64,8 @@ case class ClaimAmountFormProvider(conversionRate: BigDecimal) extends FormProvi
     Try(BigDecimal(amount)).fold(
       _ => Invalid(IncorrectFormat),
       amount => {
-        val maxInputValue = types.MaxInputValue / conversionRate
-        if ((amount >= 0) && (amount <= maxInputValue) && (amount.scale <= 2)) Valid
+        val maxValue = BigDecimal(types.MaxInputValue) * conversionRate
+        if ((amount >= 0) && (amount <= maxValue) && (amount.scale <= 2)) Valid
         else Invalid(TooBig)
       }
     )

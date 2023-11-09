@@ -389,7 +389,6 @@ class SubsidyController @Inject() (
             },
           claimAmountEntered => {
             val result = for {
-              _ <- validateClaimAmount(addClaimDate.toLocalDate, claimAmountEntered).toContext
               journey <- store.update[SubsidyJourney](_.setClaimAmount(claimAmountEntered)).toContext
               redirect <- journey.next.toContext
             } yield redirect

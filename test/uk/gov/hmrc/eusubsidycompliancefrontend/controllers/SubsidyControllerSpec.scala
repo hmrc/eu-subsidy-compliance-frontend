@@ -837,7 +837,6 @@ class SubsidyControllerSpec
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
             mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
-            mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
             mockUpdate[SubsidyJourney](eori1)(Left(ConnectorError(exception)))
           }
           assertThrows[Exception](
@@ -1031,7 +1030,6 @@ class SubsidyControllerSpec
           mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
-          mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
           mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
           mockUpdate[SubsidyJourney](eori1)(Right(subsidyJourney))
         }
