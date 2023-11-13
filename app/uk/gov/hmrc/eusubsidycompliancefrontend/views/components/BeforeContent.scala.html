@@ -32,8 +32,8 @@
                 BackLink(
                     href = backLink.getOrElse("javascript:window.history.back()"),
                     classes = "govuk-!-display-none-print",
-                    content = Text(messages("common.back")
-                    )
+                    content = Text(messages("common.back")),
+                    attributes = Map("id" -> "back-link")
                 )
             )
         )

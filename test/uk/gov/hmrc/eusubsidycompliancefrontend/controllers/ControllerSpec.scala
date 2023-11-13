@@ -78,7 +78,8 @@ trait ControllerSpec extends PlaySupport with ScalaFutures with IntegrationPatie
     result: Future[Result],
     expectedTitle: String,
     formError: String,
-    expectedStatus: Int = BAD_REQUEST
+    expectedStatus: Int = BAD_REQUEST,
+    backLinkOpt: Option[String] = None
   ): Unit =
     checkPageIsDisplayed(
       result,
@@ -86,6 +87,7 @@ trait ControllerSpec extends PlaySupport with ScalaFutures with IntegrationPatie
       { doc =>
         doc.select(".govuk-error-summary").select("a").text() shouldBe formError
         doc.select(".govuk-error-message").text() shouldBe s"Error: $formError"
+        backLinkOpt.map(backLink => doc.getElementById("back-link").attr("href") shouldBe backLink)
       },
       expectedStatus
     )
