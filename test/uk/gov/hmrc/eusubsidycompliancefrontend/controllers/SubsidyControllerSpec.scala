@@ -570,7 +570,7 @@ class SubsidyControllerSpec
             result = performAction(),
             expectedTitle = "What do you need to report?",
             formError = "Select if you need to report a non-customs payment or you have no payments to report",
-            backLinkOpt = Some(routes.SubsidyController.getReportedPaymentReturningUserPage.url)
+            backLinkOpt = Some(routes.AccountController.getAccountPage.url)
           )
         }
       }

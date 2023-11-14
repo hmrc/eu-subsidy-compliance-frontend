@@ -254,7 +254,7 @@ class SubsidyController @Inject() (
               BadRequest(
                 reportedPaymentReturningUserPage(
                   errors,
-                  routes.SubsidyController.getReportedPaymentReturningUserPage.url
+                  routes.AccountController.getAccountPage.url
                 )
               ).toContext,
             handleValidFormSubmission
