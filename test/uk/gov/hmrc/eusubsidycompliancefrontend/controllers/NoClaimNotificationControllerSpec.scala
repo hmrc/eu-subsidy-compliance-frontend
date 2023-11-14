@@ -212,9 +212,10 @@ class NoClaimNotificationControllerSpec
           }
 
           checkFormErrorIsDisplayed(
-            performAction(),
-            messageFromMessageKey("noClaimNotification.has-submitted.title", "20 January 2021"),
-            messageFromMessageKey("noClaimNotification.error.required")
+            result = performAction(),
+            expectedTitle = messageFromMessageKey("noClaimNotification.has-submitted.title", "20 January 2021"),
+            formError = messageFromMessageKey("noClaimNotification.error.required"),
+            backLinkOpt = Some(routes.SubsidyController.getReportedPaymentReturningUserPage.url)
           )
         }
       }

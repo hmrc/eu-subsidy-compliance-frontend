@@ -252,7 +252,10 @@ class SubsidyController @Inject() (
           .fold(
             errors =>
               BadRequest(
-                reportedPaymentReturningUserPage(errors, routes.SubsidyController.getReportPaymentFirstTimeUser.url)
+                reportedPaymentReturningUserPage(
+                  errors,
+                  routes.AccountController.getAccountPage.url
+                )
               ).toContext,
             handleValidFormSubmission
           )
@@ -308,7 +311,13 @@ class SubsidyController @Inject() (
           .fold(
             formWithErrors => {
               val earliestAllowedClaimDate = timeProvider.today.toEarliestTaxYearStart
-              BadRequest(addClaimDatePage(formWithErrors, journey.previous, earliestAllowedClaimDate)).toContext
+              BadRequest(
+                addClaimDatePage(
+                  formWithErrors,
+                  routes.SubsidyController.getReportedNoCustomSubsidyPage.url,
+                  earliestAllowedClaimDate
+                )
+              ).toContext
             },
             form =>
               store

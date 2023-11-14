@@ -308,8 +308,12 @@ class SubsidyControllerSpec
           val document = Jsoup.parse(contentAsString(result))
 
           status(result) shouldBe BAD_REQUEST
-          val findElement = document.getElementById("claim-date-error").text()
-          findElement shouldBe "Error: " + messageFromMessageKey("add-claim-date.error.incorrect-format")
+          document.getElementById("claim-date-error").text() shouldBe "Error: " + messageFromMessageKey(
+            "add-claim-date.error.incorrect-format"
+          )
+          document
+            .getElementById("back-link")
+            .attr("href") shouldBe routes.SubsidyController.getReportedNoCustomSubsidyPage.url
 
         }
 
@@ -492,9 +496,10 @@ class SubsidyControllerSpec
           }
 
           checkFormErrorIsDisplayed(
-            performAction(radio: _*),
-            messageFromMessageKey("reportPaymentFirstTimeUser.title", "6 April 2018"),
-            messageFromMessageKey(errorMessageKey)
+            result = performAction(radio: _*),
+            expectedTitle = messageFromMessageKey("reportPaymentFirstTimeUser.title", "6 April 2018"),
+            formError = messageFromMessageKey(errorMessageKey),
+            backLinkOpt = Some(routes.AccountController.getAccountPage.url)
           )
 
         }
@@ -547,6 +552,26 @@ class SubsidyControllerSpec
 
           status(result) shouldBe SEE_OTHER
           redirectLocation(result) should contain(routes.NoClaimNotificationController.getNoClaimNotification.url)
+        }
+      }
+
+      "show form error" when {
+        val journeyWithReportedPaymentReturningUser = subsidyJourney
+          .setReportedPaymentReturningUser(true)
+
+        "nothing is selected" in {
+          inSequence {
+            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGet[SubsidyJourney](eori1)(Right(journeyWithReportedPaymentReturningUser.some))
+          }
+
+          checkFormErrorIsDisplayed(
+            result = performAction(),
+            expectedTitle = "What do you need to report?",
+            formError = "Select if you need to report a non-customs payment or you have no payments to report",
+            backLinkOpt = Some(routes.AccountController.getAccountPage.url)
+          )
         }
       }
 
