@@ -123,7 +123,10 @@ class RemoveBusinessEntityController @Inject() (
         logger.info(
           s"Removed undertakingRef:$undertakingRef, Redirecting to AddBusinessEntityController.getAddBusinessEntity"
         )
-        Redirect(routes.AddBusinessEntityController.startJourney(businessRemoved = Some(true)))
+        Redirect(
+          routes.AddBusinessEntityController
+            .startJourney(businessRemoved = Some(true), removedAddedEoriOpt = Some(eoriEntered))
+        )
       }
     } else {
       //fixme why do we need this?

@@ -69,18 +69,29 @@ class AddBusinessEntityController @Inject() (
 
   private val addBusinessForm = formWithSingleMandatoryField("addBusiness")
 
-  def startJourney(businessAdded: Option[Boolean] = None, businessRemoved: Option[Boolean] = None): Action[AnyContent] =
+  def startJourney(
+    businessAdded: Option[Boolean] = None,
+    businessRemoved: Option[Boolean] = None,
+    newlyAddedEoriOpt: Option[String] = None,
+    removedAddedEoriOpt: Option[String] = None
+  ): Action[AnyContent] =
     verifiedEori.async { implicit request =>
       withLeadUndertaking { _ =>
         startNewJourney { _ =>
-          Redirect(routes.AddBusinessEntityController.getAddBusinessEntity(businessAdded, businessRemoved).url)
+          Redirect(
+            routes.AddBusinessEntityController
+              .getAddBusinessEntity(businessAdded, businessRemoved, newlyAddedEoriOpt, removedAddedEoriOpt)
+              .url
+          )
         }
       }
     }
 
   def getAddBusinessEntity(
     businessAdded: Option[Boolean] = None,
-    businessRemoved: Option[Boolean] = None
+    businessRemoved: Option[Boolean] = None,
+    newlyAddedEoriOpt: Option[String] = None,
+    removedAddedEoriOpt: Option[String] = None
   ): Action[AnyContent] = verifiedEori.async { implicit request =>
     withLeadUndertaking { undertaking =>
       implicit val eori: EORI = request.eoriNumber
@@ -95,10 +106,12 @@ class AddBusinessEntityController @Inject() (
           logger.info("AddBusinessEntityController showing undertakingBusinessEntity")
           Ok(
             addBusinessPage(
-              form,
-              undertaking.undertakingBusinessEntity,
-              businessAdded.getOrElse(false),
-              businessRemoved.getOrElse(false)
+              form = form,
+              businessEntity = undertaking.undertakingBusinessEntity,
+              businessAdded = businessAdded.getOrElse(false),
+              businessRemoved = businessRemoved.getOrElse(false),
+              newlyAddedEoriOpt = newlyAddedEoriOpt,
+              removedAddedEoriOpt = removedAddedEoriOpt
             )
           )
         }

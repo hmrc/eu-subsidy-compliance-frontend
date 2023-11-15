@@ -188,9 +188,11 @@ addBusiness.hint = You only need to add businesses that have received customs su
 addBusiness.error.required = Select yes if you need to add another business to your undertaking
 addBusiness.change-remove.snippet = business with EORI
 addBusiness.businessAdded.success.bannerTitle = Business added
-addBusiness.businessAdded.warningText = You have added one or more businesses. This could take up to 24 hours to show here. Any payments reported for those businesses in a previous undertaking will be moved to this undertaking and will affect the sector cap from now on.
+addBusiness.businessAdded.success.bannerText = {0} will be added to this undertaking within 24 hours.
+addBusiness.businessAdded.warningText = You have added one or more businesses. Any payments reported for those businesses in a previous undertaking will be moved to this undertaking. These will affect the sector cap from now on.
 addBusiness.businessRemoved.success.bannerTitle = Business removed
-addBusiness.businessRemoved.warningText = Removals of businesses could take up to 24 hours to show here. Payments reported up until the removal of any business will continue to affect your sector cap unless and until they move to another undertaking.
+addBusiness.businessRemoved.success.bannerText = {0} will be removed from this undertaking within 24 hours.
+addBusiness.businessRemoved.warningText = Payments reported up until the removal of any business will continue to affect your sector cap unless and until they move to another undertaking.
 
 businessEntityEori.title = What is the EORI number of the business you want to add?
 businessEntityEori.hint = The first 2 letters will be the country code, GB. This is followed by 12 or 15 digits, like GB123456123456

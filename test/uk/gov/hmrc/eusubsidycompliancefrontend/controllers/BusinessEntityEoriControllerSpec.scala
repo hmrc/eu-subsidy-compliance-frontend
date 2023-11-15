@@ -329,7 +329,7 @@ class BusinessEntityEoriControllerSpec
               }
               checkIsRedirect(
                 performAction("businessEntityEori" -> eoriEntered),
-                routes.AddBusinessEntityController.startJourney(businessAdded = Some(true)).url
+                routes.AddBusinessEntityController.startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(validEori)).url
               )
             }
           }
