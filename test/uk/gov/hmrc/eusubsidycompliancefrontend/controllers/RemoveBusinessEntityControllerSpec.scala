@@ -256,7 +256,9 @@ class RemoveBusinessEntityControllerSpec
           }
           checkIsRedirect(
             performAction("removeBusiness" -> "true")(eori4),
-            routes.AddBusinessEntityController.startJourney(businessRemoved = Some(true), removedAddedEoriOpt = Some(eori4)).url
+            routes.AddBusinessEntityController
+              .startJourney(businessRemoved = Some(true), removedAddedEoriOpt = Some(eori4))
+              .url
           )
         }
 

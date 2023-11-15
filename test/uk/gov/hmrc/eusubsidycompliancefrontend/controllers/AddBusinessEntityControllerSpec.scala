@@ -238,7 +238,10 @@ class AddBusinessEntityControllerSpec
         ) {
           val newlyAddedEori = "GB123456783436"
 
-          val result = controller.getAddBusinessEntity(businessAdded = Some(true), newlyAddedEoriOpt = Some(newlyAddedEori))(FakeRequest())
+          val result =
+            controller.getAddBusinessEntity(businessAdded = Some(true), newlyAddedEoriOpt = Some(newlyAddedEori))(
+              FakeRequest()
+            )
           status(result) shouldBe OK
           val document = Jsoup.parse(contentAsString(result))
 
@@ -268,7 +271,10 @@ class AddBusinessEntityControllerSpec
         ) {
           val eoriEntered = "GB123456783436"
 
-          val result = controller.getAddBusinessEntity(businessRemoved = Some(true), removedAddedEoriOpt = Some(eoriEntered))(FakeRequest())
+          val result =
+            controller.getAddBusinessEntity(businessRemoved = Some(true), removedAddedEoriOpt = Some(eoriEntered))(
+              FakeRequest()
+            )
           status(result) shouldBe OK
 
           val document = Jsoup.parse(contentAsString(result))
