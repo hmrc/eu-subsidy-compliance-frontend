@@ -120,6 +120,17 @@ trait ControllerSpec extends PlaySupport with ScalaFutures with IntegrationPatie
     }
   }
 
+  def verifyScp08Banner(document: Document) = {
+    document.getElementById("scp08-maintenance-banner") should not be null
+    document
+      .getElementById("scp08-banner-p1")
+      .text shouldBe "Please be aware we are currently experiencing some technical difficulties with the Customs Duty Waiver Scheme service, causing some traders to see a miscalculation of the undertaking balance. We are working to resolve the issue and we will provide an update as soon as possible."
+    document
+      .getElementById("scp08-banner-p2")
+      .text shouldBe "If you think you may be impacted by this issue, and/or have any queries, please contact - customs.duty-waivers@hmrc.gov.uk"
+    document.getElementById("scp08-banner-p3").text shouldBe "Thank you for your patience whilst we resolve the issue."
+  }
+
 }
 
 @Singleton

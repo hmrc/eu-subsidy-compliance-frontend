@@ -100,10 +100,7 @@ class AccountController @Inject() (
       subsidies <- escService.retrieveAllSubsidies(undertaking.reference).toContext
       result <-
         if (appConfig.scp08Enabled)
-          escService
-            .getUndertakingBalance(eori)
-            .flatMap(b => renderAccountPage(undertaking, subsidies, Some(b)))
-            .toContext
+          escService.getUndertakingBalance(eori).flatMap(b => renderAccountPage(undertaking, subsidies, b)).toContext
         else renderAccountPage(undertaking, subsidies, None).toContext
     } yield result
 
@@ -135,70 +132,74 @@ class AccountController @Inject() (
   ) = {
     implicit val eori: EORI = r.eoriNumber
 
-    val today = timeProvider.today
+    if (appConfig.scp08Enabled && balance.isEmpty)
+      Future.successful(Redirect(routes.Scp08MaintenancePageController.showPage.url))
+    else {
+      val today = timeProvider.today
 
-    val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
-    val isTimeToReport = ReportReminderHelpers.isTimeToReport(lastSubmitted, today)
-    val dueDate = ReportReminderHelpers.dueDateToReport(lastSubmitted.getOrElse(today)).toDisplayFormat
-    val isOverdue = ReportReminderHelpers.isOverdue(lastSubmitted, today)
-    val startDate = today.toEarliestTaxYearStart
+      val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
+      val isTimeToReport = ReportReminderHelpers.isTimeToReport(lastSubmitted, today)
+      val dueDate = ReportReminderHelpers.dueDateToReport(lastSubmitted.getOrElse(today)).toDisplayFormat
+      val isOverdue = ReportReminderHelpers.isOverdue(lastSubmitted, today)
+      val startDate = today.toEarliestTaxYearStart
 
-    val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
-      undertaking,
-      undertakingSubsidies,
-      balance,
-      today
-    )
-
-    def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] =
-      if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
-      else n.toFuture
-
-    def getBalance = {
-      if (appConfig.scp08Enabled) summary.undertakingBalanceEUR.toEuros else summary.overall.allowanceRemaining.toEuros
-    }
-
-    if (undertaking.isLeadEORI(eori)) {
-      logger.info("showing account page for lead")
-      val result = for {
-        nilReturnJourney <- store.getOrCreate[NilReturnJourney](NilReturnJourney()).toContext
-        _ <- updateNilReturnJourney(nilReturnJourney).toContext
-      } yield Ok(
-        leadAccountPage(
-          undertaking = undertaking,
-          eori = eori,
-          isNonLeadEORIPresent = undertaking.getAllNonLeadEORIs.nonEmpty,
-          isTimeToReport = isTimeToReport,
-          dueDate = dueDate,
-          isOverdue = isOverdue,
-          isNilReturnDoneRecently = nilReturnJourney.displayNotification,
-          lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
-          neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
-          allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
-          totalSubsidies = summary.overall.total.toEuros,
-          remainingAmount = getBalance,
-          currentPeriodStart = startDate.toDisplayFormat,
-          isOverAllowance = summary.overall.allowanceExceeded
-        )
+      val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
+        undertaking,
+        undertakingSubsidies,
+        balance,
+        today
       )
 
-      result.getOrElse(handleMissingSessionData("Nil Return Journey"))
-    } else {
-      logger.info("showing nonLeadAccountPage for non lead")
-      Ok(
-        nonLeadAccountPage(
-          undertaking,
-          undertaking.getLeadEORI,
-          dueDate,
-          isOverdue,
-          lastSubmitted.map(_.toDisplayFormat),
-          undertakingSubsidies.hasNeverSubmitted,
-          BigDecimal(summary.overall.sectorCap.toString()).toEuros,
-          summary.overall.total.toEuros,
-          getBalance,
-          startDate.toDisplayFormat
+      def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] =
+        if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
+        else n.toFuture
+
+      def getBalance = {
+        if (appConfig.scp08Enabled) summary.undertakingBalanceEUR.toEuros
+        else summary.overall.allowanceRemaining.toEuros
+      }
+
+      if (undertaking.isLeadEORI(eori)) {
+        logger.info("showing account page for lead")
+        val result = for {
+          nilReturnJourney <- store.getOrCreate[NilReturnJourney](NilReturnJourney()).toContext
+          _ <- updateNilReturnJourney(nilReturnJourney).toContext
+        } yield Ok(
+          leadAccountPage(
+            undertaking = undertaking,
+            eori = eori,
+            isNonLeadEORIPresent = undertaking.getAllNonLeadEORIs.nonEmpty,
+            isTimeToReport = isTimeToReport,
+            dueDate = dueDate,
+            isOverdue = isOverdue,
+            isNilReturnDoneRecently = nilReturnJourney.displayNotification,
+            lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
+            neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
+            allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
+            totalSubsidies = summary.overall.total.toEuros,
+            remainingAmount = getBalance,
+            currentPeriodStart = startDate.toDisplayFormat,
+            isOverAllowance = summary.overall.allowanceExceeded
+          )
         )
-      ).toFuture
+        result.getOrElse(handleMissingSessionData("Nil Return Journey"))
+      } else {
+        logger.info("showing nonLeadAccountPage for non lead")
+        Ok(
+          nonLeadAccountPage(
+            undertaking,
+            undertaking.getLeadEORI,
+            dueDate,
+            isOverdue,
+            lastSubmitted.map(_.toDisplayFormat),
+            undertakingSubsidies.hasNeverSubmitted,
+            BigDecimal(summary.overall.sectorCap.toString()).toEuros,
+            summary.overall.total.toEuros,
+            getBalance,
+            startDate.toDisplayFormat
+          )
+        ).toFuture
+      }
     }
   }
 

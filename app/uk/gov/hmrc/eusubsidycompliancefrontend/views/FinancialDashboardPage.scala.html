@@ -18,17 +18,19 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P, scp08Banner}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 @import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearHelpers
 @import java.time.LocalDate
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.UndertakingBalance
 
 @this(
-  layout: FullWidthLayout,
+  layout: Layout,
   govukTable: GovukTable,
   govukSummaryList: GovukSummaryList,
-  govukInsetText: GovukInsetText
+  govukInsetText: GovukInsetText,
+  govukNotificationBanner : GovukNotificationBanner,
+  scp08Banner: scp08Banner
 )
 
 @(summary: FinancialDashboardSummary)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -109,6 +111,7 @@
     printDialog = Some(printDialog)
 ) {
 
+    @scp08Banner()
     @H1(title)
     @P(messages(s"$key.p1"))
     @P(messages(s"$key.p2", TaxYearHelpers.taxYearStartForDate(LocalDate.now.minusYears(2)).getYear.toString))

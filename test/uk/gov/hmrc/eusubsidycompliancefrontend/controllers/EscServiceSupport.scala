@@ -48,7 +48,7 @@ trait EscServiceSupport { this: ControllerSpec =>
       .expects(eori, *)
       .returning(result)
 
-  def mockGetUndertakingBalance(eori: EORI)(result: Future[UndertakingBalance]) =
+  def mockGetUndertakingBalance(eori: EORI)(result: Future[Option[UndertakingBalance]]) =
     (mockEscService
       .getUndertakingBalance(_: EORI)(_: HeaderCarrier))
       .expects(eori, *)

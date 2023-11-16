@@ -16,12 +16,14 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connector
 
+import uk.gov.hmrc.http.HttpResponse
 import com.typesafe.config.ConfigFactory
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
+import play.api.libs.json.Json
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.SubsidyUpdate
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
@@ -116,9 +118,11 @@ class EscConnectorSpec
     }
 
     "handling request to get undertaking balance" in {
-      mockGet(s"$baseUrl/undertaking/balance/$eori1")(Some(undertakingBalance))
+      val response = HttpResponse(status = 200, body = Json.toJson(undertakingBalance).toString())
+
+      mockGet(s"$baseUrl/undertaking/balance/$eori1")(Some(response))
       val actual = connector.getUndertakingBalance(eori1).futureValue
-      actual shouldBe undertakingBalance
+      actual shouldBe Some(undertakingBalance)
     }
   }
 

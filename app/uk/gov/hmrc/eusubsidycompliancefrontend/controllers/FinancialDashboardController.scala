@@ -52,21 +52,19 @@ class FinancialDashboardController @Inject() (
     val today = timeProvider.today
 
     // The search period covers the current tax year to date, and the previous 2 tax years.
-    val result = for {
-      undertaking <- escService.retrieveUndertaking(eori).toContext
-      r <- undertaking.reference.toContext
-      subsidies <- escService.retrieveSubsidiesForDateRange(r, today.toSearchRange).toContext
-      summary <-
-        if (appConfig.scp08Enabled)
-          escService
-            .getUndertakingBalance(eori)
-            .map(b => FinancialDashboardSummary.fromUndertakingSubsidiesWithBalance(undertaking, subsidies, b, today))
-            .toContext
-        else FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, subsidies, None, today).toContext
-    } yield Ok(financialDashboardPage(summary))
-
-    result
-      .getOrElse(handleMissingSessionData("Undertaking"))
+    for {
+      undertakingOpt <- escService.retrieveUndertaking(eori)
+      undertaking = undertakingOpt match {
+        case Some(u) => u
+      }
+      subsidies <- escService.retrieveSubsidiesForDateRange(undertaking.reference, today.toSearchRange)
+      balanceOpt: Option[UndertakingBalance] <-
+        if (appConfig.scp08Enabled) escService.getUndertakingBalance(eori)
+        else Future.successful(None)
+      summary = FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, subsidies, balanceOpt, today)
+    } yield
+      if (appConfig.scp08Enabled && balanceOpt.isEmpty) Redirect(routes.Scp08MaintenancePageController.showPage.url)
+      else Ok(financialDashboardPage(summary))
 
   }
 
