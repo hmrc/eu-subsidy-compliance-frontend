@@ -148,6 +148,8 @@ GET        /lead-undertaking-promote-business-entity-email-unverified           
 
 GET        /unverified-email                                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UnverifiedEmailController.unverifiedEmail
 
+GET        /scp08-unavailable                                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.Scp08MaintenancePageController.showPage
+
 GET        /payment-already-submitted                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PaymentSubmittedController.paymentAlreadySubmitted
 
 GET        /registration-already-submitted                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.RegistrationSubmittedController.registrationAlreadySubmitted

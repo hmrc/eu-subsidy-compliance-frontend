@@ -81,7 +81,7 @@ class AccountControllerWithSCP08Spec
           mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
           mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
           mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.toFuture)
-          mockGetUndertakingBalance(eori1)(Future.successful(undertakingBalance))
+          mockGetUndertakingBalance(eori1)(Future.successful(Some(undertakingBalance)))
           mockTimeProviderToday(fixedDate)
           mockGetOrCreate(eori1)(Right(nilJourneyCreate))
         }

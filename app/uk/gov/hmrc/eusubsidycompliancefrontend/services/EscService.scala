@@ -181,7 +181,7 @@ class EscService @Inject() (
       .value
   }
 
-  def getUndertakingBalance(eori: EORI)(implicit hc: HeaderCarrier): Future[UndertakingBalance] = {
+  def getUndertakingBalance(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[UndertakingBalance]] = {
     escConnector.getUndertakingBalance(eori)
   }
 

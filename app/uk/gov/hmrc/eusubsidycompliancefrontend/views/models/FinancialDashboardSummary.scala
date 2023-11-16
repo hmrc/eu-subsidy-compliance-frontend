@@ -133,7 +133,7 @@ object FinancialDashboardSummary {
   def fromUndertakingSubsidiesWithBalance(
     undertaking: Undertaking,
     subsidies: UndertakingSubsidies,
-    balance: UndertakingBalance,
+    balance: Option[UndertakingBalance],
     today: LocalDate
-  ): FinancialDashboardSummary = fromUndertakingSubsidies(undertaking, subsidies, Some(balance), today)
+  ): FinancialDashboardSummary = fromUndertakingSubsidies(undertaking, subsidies, balance, today)
 }

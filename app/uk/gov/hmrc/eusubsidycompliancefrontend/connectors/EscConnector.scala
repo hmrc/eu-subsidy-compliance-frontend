@@ -17,10 +17,12 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import com.google.inject.{Inject, Singleton}
+import play.api.libs.json.Json
+import play.mvc.Http.Status
 import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, NotFoundException}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -85,7 +87,20 @@ class EscConnector @Inject() (
     logPost("retrieveSubsidy", retrieveSubsidyUrl, subsidyRetrieve)
   }
 
-  def getUndertakingBalance(eori: EORI)(implicit hc: HeaderCarrier): Future[UndertakingBalance] = {
-    http.GET[UndertakingBalance](s"$getUndertakingBalanceUrl/$eori")
+  def getUndertakingBalance(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[UndertakingBalance]] = {
+    http
+      .GET(s"$getUndertakingBalanceUrl/$eori")
+      .map { response: HttpResponse =>
+        response.status match {
+          case Status.OK => Json.parse(response.body).asOpt[UndertakingBalance]
+          case _ => None
+        }
+      }
+      .recover {
+        case e: NotFoundException => {
+          logger.warn(s"undertaking balance for eori: $eori not found. Exception: $e")
+          None
+        }
+      }
   }
 }

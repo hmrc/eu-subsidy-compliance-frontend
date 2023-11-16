@@ -18,14 +18,15 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P, scp08Banner}
 
 @this(
   layout: Layout,
   button: components.Button,
   govukRadios : GovukRadios,
   govukWarningText : GovukWarningText,
-  govukInsetText : GovukInsetText
+  govukInsetText : GovukInsetText,
+  scp08Banner: scp08Banner
 )
 
 @(
@@ -53,6 +54,7 @@
   backLink = None
 ) {
 
+  @scp08Banner()
   @H1(messages(s"$key.title"), Some("govuk-heading-xl govuk-!-margin-bottom-0"))
 
 

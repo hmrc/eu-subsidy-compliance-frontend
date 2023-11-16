@@ -27,6 +27,7 @@ common.yes=Yes
 common.no=No
 common.warning=Warning
 common.success=Success
+common.important=Important
 common.alpha-info.p1=This is a new service – your
 common.alpha-info.link=feedback (opens in new tab)
 common.alpha-info.p2=will help us to improve it.
@@ -570,3 +571,8 @@ registrationAlreadySubmitted.h1=You have already successfully registered this EO
 registrationAlreadySubmitted.p=You can now go to your homepage to submit a report, add a business or complete other tasks.
 registrationAlreadySubmitted.homeLinkText=Go to homepage
 
+#scp08 maintenance page
+scp08.maintenance-text.title=There is a problem with the service
+scp08.maintenance-text.p1=Please be aware we are currently experiencing some technical difficulties with the Customs Duty Waiver Scheme service, causing some traders to see a miscalculation of the undertaking balance. We are working to resolve the issue and we will provide an update as soon as possible.
+scp08.maintenance-text.p2=If you think you may be impacted by this issue, and/or have any queries, please contact - <a class="govuk-link" href="mailto:customs.duty-waivers@hmrc.gov.uk">customs.duty-waivers@hmrc.gov.uk</a>
+scp08.maintenance-text.p3=Thank you for your patience whilst we resolve the issue.

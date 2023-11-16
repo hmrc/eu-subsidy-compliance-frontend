@@ -53,7 +53,14 @@ class TestOnlyController @Inject() (
   def getUndertakingBalance: Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     escService.getUndertakingBalance(eori).flatMap { balance =>
-      Future.successful(Ok(undertakingBalancePage(eori, balance)))
+      Future.successful(
+        Ok(
+          undertakingBalancePage(
+            eori,
+            balance.getOrElse(throw new RuntimeException(s"error retrieving unndertaking with eori: $eori"))
+          )
+        )
+      )
     }
   }
 

@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
@@ -89,7 +90,7 @@ class FinancialDashboardWithSCP08ControllerSpec
           mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
             undertakingSubsidies.toFuture
           )
-          mockGetUndertakingBalance(eori1)(Future.successful(undertakingBalance))
+          mockGetUndertakingBalance(eori1)(Future.successful(Some(undertakingBalance)))
         }
 
         val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
@@ -108,6 +109,7 @@ class FinancialDashboardWithSCP08ControllerSpec
         val data = contentAsString(result)
         data shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
         val document = Jsoup.parse(data)
+        verifyScp08Banner(document)
         document.getElementById("SectorCapId").text() shouldBe "Sector cap (Agriculture)"
         document.getElementById("undertaking-balance-heading").text shouldBe "Undertaking balance"
         document.getElementById("undertaking-balance-value").text shouldBe "€123.45"
@@ -119,5 +121,4 @@ class FinancialDashboardWithSCP08ControllerSpec
     }
 
   }
-
 }

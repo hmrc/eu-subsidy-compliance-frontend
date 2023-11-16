@@ -106,6 +106,7 @@ class FinancialDashboardControllerSpec
 
         val data = contentAsString(result)
         val document = Jsoup.parse(data)
+        verifyScp08Banner(document)
         document.getElementById("allowance-remaining-heading").text shouldBe "Allowance remaining"
         document.getElementById("allowance-remaining-value").text shouldBe "€0.00"
         document.getElementById("undertaking-balance-heading") shouldBe null
