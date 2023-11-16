@@ -33,14 +33,20 @@
   hmrcAddToAList : HmrcAddToAList
 )
 
-@(form: Form[_], businessEntity: List[BusinessEntity], businessAdded: Boolean = false, businessRemoved: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], businessEntity: List[BusinessEntity], businessAdded: Boolean = false, businessRemoved: Boolean = false, newlyAddedEoriOpt: Option[String] = None, removedAddedEoriOpt: Option[String] = None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @titleKey = @{messages("addBusiness.title")}
 
+@addedBannerContent = {
+    <h3 class="govuk-notification-banner__heading">@Html(messages("addBusiness.businessAdded.success.bannerTitle"))</h3>
+    @newlyAddedEoriOpt.map{newlyAddedEori =>
+        <p id="added-success-content" class="govuk-body">@Html(messages("addBusiness.businessAdded.success.bannerText", newlyAddedEori))</p>
+    }
+}
 @addedSuccessBanner = @{
     govukNotificationBanner(NotificationBanner(
         title = Text(messages("common.success")),
-        content = Text(messages("addBusiness.businessAdded.success.bannerTitle")),
+        content = HtmlContent(addedBannerContent),
         bannerType = Some("success"),
         role=Some("alert"),
         attributes = Map("id" -> "business-added-banner")
@@ -54,10 +60,16 @@
     ))
 }
 
+@removedBannerContent = {
+    <h3 class="govuk-notification-banner__heading">@Html(messages("addBusiness.businessRemoved.success.bannerTitle"))</h3>
+    @removedAddedEoriOpt.map{removedBusinessEori =>
+        <p id="removed-success-content" class="govuk-body">@Html(messages("addBusiness.businessRemoved.success.bannerText", removedBusinessEori))</p>
+    }
+}
 @removedSuccessBanner = @{
     govukNotificationBanner(NotificationBanner(
         title = Text(messages("common.success")),
-        content = Text(messages("addBusiness.businessRemoved.success.bannerTitle")),
+        content = HtmlContent(removedBannerContent),
         bannerType = Some("success"),
         role=Some("alert"),
         attributes = Map("id" -> "business-removed-banner")

@@ -46,7 +46,7 @@ import uk.gov.hmrc.http.UpstreamErrorResponse
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class BusinessEntityControllerSpec
+class RemoveBusinessEntityControllerSpec
     extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
@@ -256,7 +256,9 @@ class BusinessEntityControllerSpec
           }
           checkIsRedirect(
             performAction("removeBusiness" -> "true")(eori4),
-            routes.AddBusinessEntityController.startJourney(businessRemoved = Some(true)).url
+            routes.AddBusinessEntityController
+              .startJourney(businessRemoved = Some(true), removedAddedEoriOpt = Some(eori4))
+              .url
           )
         }
 

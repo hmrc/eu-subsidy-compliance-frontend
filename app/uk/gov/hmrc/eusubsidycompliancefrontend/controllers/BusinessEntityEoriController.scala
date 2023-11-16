@@ -101,12 +101,20 @@ class BusinessEntityEoriController @Inject() (
 
     val businessEntityEori = "businessEntityEori"
 
-    def createJourneyAndRedirect(businessEntityJourney: BusinessEntityJourney)(implicit eori: EORI) =
+    def createJourneyAndRedirect(businessEntityJourney: BusinessEntityJourney, newlyAddedEori: EORI)(implicit
+      eori: EORI
+    ) =
       if (businessEntityJourney.onLeadSelectJourney)
         store
           .put[BusinessEntityJourney](BusinessEntityJourney(isLeadSelectJourney = true.some))
           .map(_ => Redirect(routes.SelectNewLeadController.getSelectNewLead))
-      else Future.successful(Redirect(routes.AddBusinessEntityController.startJourney(businessAdded = Some(true))))
+      else
+        Future.successful(
+          Redirect(
+            routes.AddBusinessEntityController
+              .startJourney(businessAdded = Some(true), newlyAddedEoriOpt = Some(newlyAddedEori))
+          )
+        )
 
     def getErrorResponse(errorMessageKey: String, previous: String, form: FormValues): Future[Result] =
       BadRequest(eoriPage(eoriForm.withError(businessEntityEori, errorMessageKey).fill(form), previous)).toFuture
@@ -136,7 +144,7 @@ class BusinessEntityEoriController @Inject() (
             _ <- emailService.sendEmail(businessEori, AddMemberToBusinessEntity, undertaking).toContext
             _ <- emailService.sendEmail(eori, businessEori, AddMemberToLead, undertaking).toContext
             _ = sendAuditEvent(businessEntityJourney, undertakingRef, businessEori)
-            redirect <- createJourneyAndRedirect(businessEntityJourney)(eori).toContext
+            redirect <- createJourneyAndRedirect(businessEntityJourney, newlyAddedEori = businessEori)(eori).toContext
           } yield redirect
           result.fold(handleMissingSessionData("BusinessEntity Data"))(identity)
       }

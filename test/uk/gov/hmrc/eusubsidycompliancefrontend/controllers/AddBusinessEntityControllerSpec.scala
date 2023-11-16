@@ -228,8 +228,25 @@ class AddBusinessEntityControllerSpec
           verifyAddBusinessPageCommonElements(document)
           document.getElementById("business-added-banner").text should endWith("Business added")
           document.getElementById("business-added-warning").text should endWith(
-            "You have added one or more businesses. This could take up to 24 hours to show here. Any payments reported for those businesses in a previous undertaking will be moved to this undertaking and will affect the sector cap from now on."
+            "You have added one or more businesses. Any payments reported for those businesses in a previous undertaking will be moved to this undertaking. These will affect the sector cap from now on."
           )
+        }
+
+        "banner to show business eori has been added" in new AddBusinessPageSetup(
+          theUndertaking = undertaking.copy(undertakingBusinessEntity = List(businessEntity1)),
+          theBusinessEntityJourney = businessEntityJourney.copy(addBusiness = AddBusinessFormPage())
+        ) {
+          val newlyAddedEori = "GB123456783436"
+
+          val result =
+            controller.getAddBusinessEntity(businessAdded = Some(true), newlyAddedEoriOpt = Some(newlyAddedEori))(
+              FakeRequest()
+            )
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          val successBannerText = s"${newlyAddedEori} will be added to this undertaking within 24 hours."
+          document.getElementById("added-success-content").text shouldBe successBannerText
         }
 
         "user has removed a business entity" in new AddBusinessPageSetup(
@@ -244,8 +261,26 @@ class AddBusinessEntityControllerSpec
           verifyAddBusinessPageCommonElements(document)
           document.getElementById("business-removed-banner").text should endWith("Business removed")
           document.getElementById("business-removed-warning").text should endWith(
-            "Removals of businesses could take up to 24 hours to show here. Payments reported up until the removal of any business will continue to affect your sector cap unless and until they move to another undertaking."
+            "Payments reported up until the removal of any business will continue to affect your sector cap unless and until they move to another undertaking."
           )
+        }
+
+        "banner to show business eori has been removed" in new AddBusinessPageSetup(
+          theUndertaking = undertaking.copy(undertakingBusinessEntity = List(businessEntity1)),
+          theBusinessEntityJourney = businessEntityJourney.copy(addBusiness = AddBusinessFormPage())
+        ) {
+          val eoriEntered = "GB123456783436"
+
+          val result =
+            controller.getAddBusinessEntity(businessRemoved = Some(true), removedAddedEoriOpt = Some(eoriEntered))(
+              FakeRequest()
+            )
+          status(result) shouldBe OK
+
+          val document = Jsoup.parse(contentAsString(result))
+
+          val successBannerText = s"${eoriEntered} will be removed from this undertaking within 24 hours."
+          document.getElementById("removed-success-content").text shouldBe successBannerText
         }
 
         "user has already answered yes" in new AddBusinessPageSetup(
