@@ -732,6 +732,10 @@ class SubsidyControllerSpec
               val input = doc.getElementById(elementId).attributes().get("value")
               input shouldBe subsidyJourney.claimAmount.value.map(_.amount).getOrElse("")
 
+              doc
+                .getElementById("currency-code-hint")
+                .text() shouldBe "If the payment amount was in pounds, it will be converted into euros."
+
               doc.getElementById("euros-label").text() shouldBe messageFromMessageKey(
                 "add-claim-amount.euros.input-label"
               )
