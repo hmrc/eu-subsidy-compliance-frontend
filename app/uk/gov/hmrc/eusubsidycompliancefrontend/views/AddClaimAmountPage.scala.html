@@ -49,7 +49,7 @@
         value = if (form.data.get(radioIdentifier).contains("EUR")) form.data.get(inputIdentifierEUR) else None,
         label = Label(content = Text(messages("add-claim-amount.euros.input-label")), attributes = Map("id" -> "euros-label")),
         hint = Some(Hint(content = Text(messages("add-claim-amount.input-hint-eur")))),
-        classes = "govuk-input govuk-input--width-5"
+        classes = "govuk-input govuk-input--width-10"
     ))
 }
 
@@ -64,7 +64,7 @@
         value = if (form.data.get(radioIdentifier).contains("GBP")) form.data.get(inputIdentifierGBP) else None,
         label = Label(content = Text(messages("add-claim-amount.pounds.input-label")), attributes = Map("id" -> "pounds-label")),
         hint = Some(Hint(content = Text(messages("add-claim-amount.input-hint-gbp")))),
-        classes = "govuk-input govuk-input--width-5"
+        classes = "govuk-input govuk-input--width-10"
     ))
 }
 
