@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import cats.implicits.catsSyntaxOptionId
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus.active
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, IndustrySectorLimit, SubsidyAmount, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, Undertaking, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.IntegrationBaseSpec
@@ -45,6 +46,7 @@ class UndertakingCacheSpec extends IntegrationBaseSpec with DefaultPlayMongoRepo
     transport,
     IndustrySectorLimit(12.34),
     LocalDate.of(2021, 1, 18).some,
+    active.some,
     List(businessEntity1, businessEntity2)
   )
 
