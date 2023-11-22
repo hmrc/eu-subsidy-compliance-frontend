@@ -29,6 +29,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.createUndertaking.{CreateUndertakingResponse, EISResponse, ResponseCommonUndertaking, ResponseDetail}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailParameters, EmailSendRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.{agriculture, transport}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{DeclarationID, EORI, EisSubsidyAmendmentType, IndustrySectorLimit, Sector, SubsidyAmount, SubsidyRef, TaxType, TraderRef, UndertakingName, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 
@@ -132,6 +133,7 @@ object CommonTestData {
     transport,
     IndustrySectorLimit(12.34),
     LocalDate.of(2021, 1, 18).some,
+    Some(active),
     List(businessEntity1, businessEntity2)
   )
 
@@ -147,6 +149,7 @@ object CommonTestData {
     transport,
     IndustrySectorLimit(12.34),
     LocalDate.of(2021, 1, 18).some,
+    Some(active),
     List(businessEntity1, businessEntity4)
   )
 
@@ -156,6 +159,7 @@ object CommonTestData {
     transport,
     IndustrySectorLimit(12.34),
     LocalDate.of(2021, 1, 18).some,
+    Some(active),
     List(businessEntity4)
   )
 
@@ -165,6 +169,7 @@ object CommonTestData {
     agriculture,
     IndustrySectorLimit(32.34),
     Some(LocalDate.of(2021, 1, 18)),
+    Some(active),
     List(businessEntity1, businessEntity2)
   )
 

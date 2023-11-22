@@ -108,6 +108,14 @@ package object types extends SimpleJson {
     val aquaculture: types.Sector.Value = Value("3")
     implicit val format: Format[Sector] = Json.formatEnum(Sector)
   }
+  object UndertakingStatus extends Enumeration {
+    type UndertakingStatus = Value
+    val active: types.UndertakingStatus.Value = Value(0)
+    val suspendedAutomated: types.UndertakingStatus.Value = Value(1)
+    val suspendedManual: types.UndertakingStatus.Value = Value(5)
+    val inactive: types.UndertakingStatus.Value = Value(9)
+    implicit val format: Format[UndertakingStatus] = Json.formatEnum(UndertakingStatus)
+  }
 
   type SubsidyRef = String @@ SubsidyRef.Tag
   object SubsidyRef
