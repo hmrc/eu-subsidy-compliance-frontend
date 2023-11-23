@@ -48,10 +48,6 @@
     isOverAllowance: Boolean
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"lead-account-homepage"}
-@linkURL = @{
-    if(isNonLeadEORIPresent) routes.SelectNewLeadController.getSelectNewLead
-    else routes.NoBusinessPresentController.getNoBusinessPresent
-}
 
 @continueUrl = @{
     if(neverSubmitted) routes.SubsidyController.startFirstTimeUserJourney.url

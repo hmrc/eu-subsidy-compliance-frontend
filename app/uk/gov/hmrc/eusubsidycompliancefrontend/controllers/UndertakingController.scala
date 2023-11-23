@@ -505,7 +505,7 @@ class UndertakingController @Inject() (
     request: AuthenticatedEnrolledRequest[_]
   ): Future[Result] =
     if (form.value.isTrue) {
-      logger.info("SelectNewLeadController.handleDisableUndertakingFormSubmission")
+      logger.info("UndertakingController.handleDisableUndertakingFormSubmission")
 
       for {
         _ <- escService.disableUndertaking(undertaking)
@@ -530,13 +530,13 @@ class UndertakingController @Inject() (
         }
       } yield {
         logger.info(
-          "SelectNewLeadController.handleDisableUndertakingFormSubmission - form.value.isTrue so redirecting to routes.UndertakingController.getUndertakingDisabled"
+          "UndertakingController.handleDisableUndertakingFormSubmission - form.value.isTrue so redirecting to routes.UndertakingController.getUndertakingDisabled"
         )
         Redirect(routes.UndertakingController.getUndertakingDisabled)
       }
     } else {
       logger.info(
-        "SelectNewLeadController.handleDisableUndertakingFormSubmission - form.value.isTrue is not true so redirecting to routes.AccountController.getAccountPage"
+        "UndertakingController.handleDisableUndertakingFormSubmission - form.value.isTrue is not true so redirecting to routes.AccountController.getAccountPage"
       )
       Redirect(routes.AccountController.getAccountPage).toFuture
     }
