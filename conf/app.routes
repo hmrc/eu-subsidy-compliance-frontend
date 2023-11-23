@@ -113,11 +113,6 @@ GET        /lead-undertaking-claim-created                                      
 GET        /lead-undertaking-remove-non-customs-subsidy/:transactionId                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.getRemoveSubsidyClaim(transactionId)
 POST       /lead-undertaking-remove-non-customs-subsidy/:transactionId                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyController.postRemoveSubsidyClaim(transactionId)
 
-GET        /lead-undertaking-promote-business-entity-as-lead                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.getSelectNewLead
-POST       /lead-undertaking-promote-business-entity-as-lead                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.postSelectNewLead
-
-GET        /lead-undertaking-lead-eori-changed                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.getLeadEORIChanged
-
 GET        /business-enterprise-become-lead-eori                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.getBecomeLeadEori()
 POST       /business-enterprise-become-lead-eori                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.BecomeLeadController.postBecomeLeadEori()
 
@@ -144,7 +139,6 @@ GET        /lead-undertaking-no-business-present                                
 POST       /lead-undertaking-no-business-present                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NoBusinessPresentController.postNoBusinessPresent
 
 GET        /financial-dashboard                                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinancialDashboardController.getFinancialDashboard
-GET        /lead-undertaking-promote-business-entity-email-unverified                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SelectNewLeadController.emailNotVerified
 
 GET        /unverified-email                                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UnverifiedEmailController.unverifiedEmail
 

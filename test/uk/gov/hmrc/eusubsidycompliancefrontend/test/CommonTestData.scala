@@ -19,7 +19,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.test
 import cats.implicits.catsSyntaxOptionId
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney.FormPages.{AddBusinessFormPage, AddEoriFormPage}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney.Forms._
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NewLeadJourney.Forms.SelectNewLeadFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys._
@@ -230,8 +229,6 @@ object CommonTestData {
     eori = AddEoriFormPage(eori2.some),
     isLeadSelectJourney = true.some
   )
-
-  val newLeadJourney = NewLeadJourney(selectNewLead = SelectNewLeadFormPage(eori4.some))
 
   val newBecomeLeadJourney = BecomeLeadJourney()
 
