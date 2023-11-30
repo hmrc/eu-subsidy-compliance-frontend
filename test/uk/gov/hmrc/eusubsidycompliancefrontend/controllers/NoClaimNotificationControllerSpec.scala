@@ -191,7 +191,7 @@ class NoClaimNotificationControllerSpec
             mockTimeProviderToday(currentDay)
             mockTimeProviderToday(currentDay)
             mockUpdate[NilReturnJourney](eori1)(Right(updatedNilReturnJourney))
-            mockCreateSubsidy(SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay.plusDays(1))))(
+            mockCreateSubsidy(SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
               Left(ConnectorError(exception))
             )
           }
@@ -230,11 +230,11 @@ class NoClaimNotificationControllerSpec
           mockTimeProviderToday(currentDay)
           mockTimeProviderToday(currentDay)
           mockUpdate[NilReturnJourney](eori1)(Right(updatedNilReturnJourney))
-          mockCreateSubsidy(SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay.plusDays(1))))(
+          mockCreateSubsidy(SubsidyUpdate(undertakingRef, NilSubmissionDate(currentDay)))(
             Right(undertakingRef)
           )
           mockSendAuditEvent(
-            AuditEvent.NonCustomsSubsidyNilReturn("1123", eori1, undertakingRef, currentDay.plusDays(1))
+            AuditEvent.NonCustomsSubsidyNilReturn("1123", eori1, undertakingRef, currentDay)
           )
         }
         checkIsRedirect(

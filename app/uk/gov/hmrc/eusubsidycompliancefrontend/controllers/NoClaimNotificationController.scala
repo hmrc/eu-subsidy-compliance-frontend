@@ -140,7 +140,8 @@ class NoClaimNotificationController @Inject() (
   )(implicit request: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
     implicit val eori: EORI = request.eoriNumber
 
-    val nilSubmissionDate = timeProvider.today.plusDays(1)
+    val nilSubmissionDate = timeProvider.today
+
     val result = for {
       reference <- undertaking.reference.toContext
       _ <- store.update[NilReturnJourney](e => e.copy(displayNotification = true)).toContext
