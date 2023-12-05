@@ -45,7 +45,8 @@
     totalSubsidies: String,
     remainingAmount: String,
     currentPeriodStart: String,
-    isOverAllowance: Boolean
+    isOverAllowance: Boolean,
+    isSuspended: Boolean
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"lead-account-homepage"}
 
@@ -70,32 +71,54 @@
     @H1(messages("lead-account-homepage.title"), Some("govuk-heading-xl govuk-!-margin-bottom-0"))
     <p class="govuk-hint govuk-!-font-size-24 govuk-!-margin-top-1 govuk-!-margin-bottom-8">@eori</p>
 
-    @if(isOverdue) {
+
+    @if(isSuspended) {
         @govukWarningText(WarningText(
-            content = Text(messages(s"$key.p1.is-overdue", dueDate))
+            content = Text(messages("lead-account-homepage.90day.warning", dueDate)), attributes = Map("id" -> "warning-text")
         ))
+        @P(messages("lead-account-homepage.90day.p2"), id = Some("p2-text"))
     } else {
-        @P(messages(s"$key.p1.not-overdue", dueDate))
+        @if(isOverdue) {
+            @govukWarningText(WarningText(
+                content = Text(messages(s"$key.p1.is-overdue", dueDate))
+            ))
+        } else {
+            @P(messages(s"$key.p1.not-overdue", dueDate))
+        }
+        @P(messages(s"$key.p2"), id = Some("p2-text"))
     }
-    
-    @P(messages(s"$key.p2"))
 
     <ul class="govuk-list govuk-list--bullet">
       <li>@messages(s"$key.ul1-li1")</li>
       <li>@messages(s"$key.ul1-li2")</li>
     </ul>
 
-    @H2(messages(s"$key.details.title"), Some("govuk-heading-m govuk-!-margin-top-6"), id = Some("details-title-H2"))
-    <ul class="govuk-list govuk-list--bullet">
-        <li id="submitted-details-ul1-li1">
-            @messages(if (neverSubmitted) s"$key.details.ul1-li1"
-            else s"$key.details.submitted.ul1-li1",
-            lastSubmitted.getOrElse(""))
-        </li>
-        <li>@messages(s"$key.details.ul1-li2", currentPeriodStart)</li>
-        <li>@messages(s"$key.details.ul1-li3")</li>
-        <li>@messages(s"$key.details.ul1-li4")</li>
-    </ul>
+    @if(isSuspended) {
+        @H2(messages(s"lead-account-homepage.90day.details.title"), Some("govuk-heading-m govuk-!-margin-top-6"), id = Some("details-title-H2"))
+        <ul class="govuk-list govuk-list--bullet">
+            @if(neverSubmitted){
+                <li id="suspended-details-li1">@messages("lead-account-homepage.90day.neverSubmitted.details.ul1-li1", lastSubmitted.getOrElse(""))</li>
+                <li id="suspended-details-li2">@messages("lead-account-homepage.90day.neverSubmitted.details.ul1-li2", currentPeriodStart, dueDate)</li>
+            } else {
+                <li id="suspended-details-li1">@messages("lead-account-homepage.90day.hasSubmitted.details.ul1-li1")</li>
+                <li id="suspended-details-li2">@messages("lead-account-homepage.90day.hasSubmitted.details.ul1-li2", lastSubmitted.getOrElse(""), dueDate)</li>
+            }
+            <li id="suspended-details-li3">@messages("lead-account-homepage.90day.details.ul1-li3")</li>
+            <li id="suspended-details-li4">@messages("lead-account-homepage.90day.details.ul1-li4")</li>
+        </ul>
+    } else {
+        @H2(messages(s"$key.details.title"), Some("govuk-heading-m govuk-!-margin-top-6"), id = Some("details-title-H2"))
+        <ul class="govuk-list govuk-list--bullet">
+            <li id="submitted-details-ul1-li1">
+                @messages(if (neverSubmitted) s"$key.details.ul1-li1"
+                else s"$key.details.submitted.ul1-li1",
+                lastSubmitted.getOrElse(""))
+            </li>
+            <li>@messages(s"$key.details.ul1-li2", currentPeriodStart)</li>
+            <li>@messages(s"$key.details.ul1-li3")</li>
+            <li>@messages(s"$key.details.ul1-li4")</li>
+        </ul>
+    }
 
     @button(
       msg = "common.submit-report",

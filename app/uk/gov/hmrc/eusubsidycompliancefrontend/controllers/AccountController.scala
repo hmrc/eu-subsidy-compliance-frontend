@@ -24,7 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnr
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney.Forms.DoYouClaimFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingBalance, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -141,6 +141,8 @@ class AccountController @Inject() (
       val isTimeToReport = ReportReminderHelpers.isTimeToReport(lastSubmitted, today)
       val dueDate = ReportReminderHelpers.dueDateToReport(lastSubmitted.getOrElse(today)).toDisplayFormat
       val isOverdue = ReportReminderHelpers.isOverdue(lastSubmitted, today)
+      val isSuspended =
+        appConfig.releaseCEnabled && undertaking.undertakingStatus == Some(UndertakingStatus.suspendedAutomated)
       val startDate = today.toEarliestTaxYearStart
 
       val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
@@ -179,7 +181,8 @@ class AccountController @Inject() (
             totalSubsidies = summary.overall.total.toEuros,
             remainingAmount = getBalance,
             currentPeriodStart = startDate.toDisplayFormat,
-            isOverAllowance = summary.overall.allowanceExceeded
+            isOverAllowance = summary.overall.allowanceExceeded,
+            isSuspended = isSuspended
           )
         )
         result.getOrElse(handleMissingSessionData("Nil Return Journey"))
@@ -187,16 +190,17 @@ class AccountController @Inject() (
         logger.info("showing nonLeadAccountPage for non lead")
         Ok(
           nonLeadAccountPage(
-            undertaking,
-            undertaking.getLeadEORI,
-            dueDate,
-            isOverdue,
-            lastSubmitted.map(_.toDisplayFormat),
-            undertakingSubsidies.hasNeverSubmitted,
-            BigDecimal(summary.overall.sectorCap.toString()).toEuros,
-            summary.overall.total.toEuros,
-            getBalance,
-            startDate.toDisplayFormat
+            undertaking = undertaking,
+            eori = undertaking.getLeadEORI,
+            dueDate = dueDate,
+            isOverdue = isOverdue,
+            lastSubmitted = lastSubmitted.map(_.toDisplayFormat),
+            neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
+            allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
+            totalSubsidies = summary.overall.total.toEuros,
+            remainingAmount = getBalance,
+            currentPeriodStart = startDate.toDisplayFormat,
+            isSuspended = isSuspended
           )
         ).toFuture
       }
