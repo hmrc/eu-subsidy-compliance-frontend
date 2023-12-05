@@ -40,6 +40,7 @@
     totalSubsidies: String,
     remainingAmount: String,
     currentPeriodStart: String,
+    isSuspended: Boolean
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"non-lead-account-homepage"}
 
@@ -57,18 +58,22 @@
   @scp08Banner()
   @H1(messages(s"$key.title"), Some("govuk-heading-xl govuk-!-margin-bottom-0"))
 
-
-  <!-- I haz released -->
-
   <p class="govuk-hint govuk-!-font-size-24 govuk-!-margin-top-1 govuk-!-margin-bottom-8">@eori</p>
 
-  @if(!isOverdue) {
-    @P(messages(s"$key.p1", dueDate))
+  @if(isSuspended) {
+      @govukWarningText(WarningText(
+          content = Text(messages("non-lead-account-homepage.90day.warning", dueDate)), attributes = Map("id" -> "warning-text")
+      ))
   } else {
-    @govukWarningText(WarningText(
-      content = Text(messages(s"$key.p1.is-overdue", dueDate))
-    ))
+      @if(!isOverdue) {
+        @P(messages(s"$key.p1", dueDate))
+      } else {
+        @govukWarningText(WarningText(
+          content = Text(messages(s"$key.p1.is-overdue", dueDate))
+        ))
+      }
   }
+
 
   @H2(balanceHeading, id = Some("undertaking-balance-section-heading"))
   @P(messages(s"$key.p2", remainingAmount, allowance), id = Some("undertaking-balance-section-content"))

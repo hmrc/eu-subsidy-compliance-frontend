@@ -247,6 +247,22 @@ lead-account-homepage.details.ul1-li4 = if you don’t submit a report, your und
 
 lead-account-homepage.details.submitted.ul1-li1 = this date is 90 days after the last report you submitted, on {0}
 
+lead-account-homepage.90day.warning = Your deadline to submit a report passed on {0}.
+lead-account-homepage.90day.details.title = What you need to report now
+
+lead-account-homepage.90day.neverSubmitted.details.ul1-li1 = this date was 90 days after you registered your undertaking on {0}
+lead-account-homepage.90day.neverSubmitted.details.ul1-li2 = you must use this service to report all non-customs subsidy payments you have received between {0} and {1} to continue claiming de minimis state aid
+
+lead-account-homepage.90day.hasSubmitted.details.ul1-li1 = this date was 90 days after you last submitted a report
+lead-account-homepage.90day.hasSubmitted.details.ul1-li2 = you must use this service to report all non-customs subsidy payments you have received between {0} and {1} to continue claiming de minimis state aid
+
+lead-account-homepage.90day.details.ul1-li3 = these payments can include grants and loans, provided as de minimis state aid from government and public authorities, which you must report at least once every 90 days
+lead-account-homepage.90day.details.ul1-li4 = if you have received none, you must submit a report that you have received no payments for that period
+
+lead-account-homepage.details.ul1-li2 = you must use this service to report all non-customs subsidy payments you have received since {0}
+lead-account-homepage.details.ul1-li3 = you must submit a report at least once every 90 days, even if you haven’t received any payments
+lead-account-homepage.details.ul1-li4 = if you don’t submit a report, your undertaking may no longer be able to claim Customs Duty waivers
+
 lead-account-homepage.h2-3 = Report history
 lead-account-homepage.ul2-li1 = View reported non-customs subsidy payments
 
@@ -280,6 +296,8 @@ non-lead-account-homepage.ul2-li2 = Leave the undertaking
 
 non-lead-account-homepage.link2 = View financial dashboard for {0}
 non-lead-account-homepage.link3 = Remove yourself from this single undertaking
+
+non-lead-account-homepage.90day.warning = Your undertaking''s deadline to submit a report passed on {0}.
 
 reportedPayments.title = Reported payment history
 reportedPayments.p1=You have not yet reported any payments.
