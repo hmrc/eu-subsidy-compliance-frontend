@@ -105,6 +105,8 @@ class AccountControllerSpec
                 (4, 3)
               )
 
+              doc.getElementById("p2-text").text shouldBe "You must either:"
+
               elementIds foreach { elementId =>
                 val messageKey = s"lead-account-homepage.ul${elementId._1}-li${elementId._2}"
 

@@ -198,6 +198,7 @@ class AccountControllerWithSCP08Spec
 
   private def verifyAutoSuspendContentForLead(doc: Document, neverSubmitted: Boolean) = {
     doc.title() shouldBe "Manage your undertaking - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
+    doc.getElementById("p2-text").text shouldBe "You must now either:"
     if (neverSubmitted) {
       doc
         .getElementById("warning-text")

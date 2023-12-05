@@ -76,6 +76,7 @@
         @govukWarningText(WarningText(
             content = Text(messages("lead-account-homepage.90day.warning", dueDate)), attributes = Map("id" -> "warning-text")
         ))
+        @P(messages("lead-account-homepage.90day.p2"), id = Some("p2-text"))
     } else {
         @if(isOverdue) {
             @govukWarningText(WarningText(
@@ -84,9 +85,8 @@
         } else {
             @P(messages(s"$key.p1.not-overdue", dueDate))
         }
+        @P(messages(s"$key.p2"), id = Some("p2-text"))
     }
-
-    @P(messages(s"$key.p2"))
 
     <ul class="govuk-list govuk-list--bullet">
       <li>@messages(s"$key.ul1-li1")</li>

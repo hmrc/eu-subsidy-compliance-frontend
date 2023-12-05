@@ -248,6 +248,7 @@ lead-account-homepage.details.ul1-li4 = if you don’t submit a report, your und
 lead-account-homepage.details.submitted.ul1-li1 = this date is 90 days after the last report you submitted, on {0}
 
 lead-account-homepage.90day.warning = Your deadline to submit a report passed on {0}.
+lead-account-homepage.90day.p2 = You must now either:
 lead-account-homepage.90day.details.title = What you need to report now
 
 lead-account-homepage.90day.neverSubmitted.details.ul1-li1 = this date was 90 days after you registered your undertaking on {0}
