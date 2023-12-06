@@ -2171,7 +2171,7 @@ class SubsidyControllerSpec
 
           checkIsRedirect(
             performAction("cya" -> "true"),
-            routes.SubsidyController.getClaimConfirmationPage.url
+            routes.SubsidyController.getClaimConfirmationPage().url
           )
         }
       }
@@ -2193,8 +2193,8 @@ class SubsidyControllerSpec
     }
 
     "handling get of claim confirmation" must {
-      def performAction() = controller.getClaimConfirmationPage(
-        FakeRequest(GET, routes.SubsidyController.getClaimConfirmationPage.url)
+      def performAction() = controller.getClaimConfirmationPage()(
+        FakeRequest(GET, routes.SubsidyController.getClaimConfirmationPage().url)
       )
 
       "display the page" in {
@@ -2268,7 +2268,7 @@ class SubsidyControllerSpec
 
     "handling get of add claim business page" must {
       def performAction() = controller.getAddClaimBusiness(
-        FakeRequest(GET, routes.SubsidyController.getClaimConfirmationPage.url)
+        FakeRequest(GET, routes.SubsidyController.getClaimConfirmationPage().url)
       )
 
       "display the page" in {

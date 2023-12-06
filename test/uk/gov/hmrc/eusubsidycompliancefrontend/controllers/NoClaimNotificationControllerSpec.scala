@@ -239,7 +239,7 @@ class NoClaimNotificationControllerSpec
         }
         checkIsRedirect(
           performAction("noClaimNotification" -> "true"),
-          routes.NoClaimNotificationController.getNotificationConfirmation.url
+          routes.NoClaimNotificationController.getNotificationConfirmation().url
         )
       }
     }

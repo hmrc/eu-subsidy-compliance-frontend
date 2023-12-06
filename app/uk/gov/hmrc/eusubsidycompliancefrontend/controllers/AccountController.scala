@@ -141,8 +141,7 @@ class AccountController @Inject() (
       val isTimeToReport = ReportReminderHelpers.isTimeToReport(lastSubmitted, today)
       val dueDate = ReportReminderHelpers.dueDateToReport(lastSubmitted.getOrElse(today)).toDisplayFormat
       val isOverdue = ReportReminderHelpers.isOverdue(lastSubmitted, today)
-      val isSuspended =
-        appConfig.releaseCEnabled && undertaking.undertakingStatus == Some(UndertakingStatus.suspendedAutomated)
+      val isSuspended = appConfig.releaseCEnabled && undertaking.isSuspended
       val startDate = today.toEarliestTaxYearStart
 
       val summary = FinancialDashboardSummary.fromUndertakingSubsidies(

@@ -17,7 +17,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax._
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H2, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H2, P, autoSuspensionConfirmationContent}
 
 @import java.time.LocalDate
 
@@ -26,10 +26,11 @@
     formHelper: FormWithCSRF,
     button: components.Button,
     govukNotificationBanner : GovukNotificationBanner,
-    govukPanel : GovukPanel
+    govukPanel : GovukPanel,
+    autoSuspensionConfirmationContent: autoSuspensionConfirmationContent
 )
 
-@(nextClaimDueDate: LocalDate)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(nextClaimDueDate: LocalDate, isSuspended: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
     pageTitle = Some(messages("subsidy.created.title")),
@@ -43,7 +44,12 @@
     ))
 
     @H2(messages("subsidy.created.sub-heading"), id = Some("claimSubheadingId"))
-    @P(messages("subsidy.created.p1", s"<strong>${nextClaimDueDate.toDisplayFormat}</strong>") , id = Some("claimParaId"))
+
+    @if(isSuspended){
+        @autoSuspensionConfirmationContent(nextClaimDueDate.toDisplayFormat)
+    } else {
+        @P(messages("subsidy.created.p1", s"<strong>${nextClaimDueDate.toDisplayFormat}</strong>"), id = Some("claimParaId"))
+    }
 
     <ul class="govuk-list">
         <li><a id="report-another-payment" class="govuk-link" href="@routes.SubsidyController.startJourney.url">@messages("subsidy.created.l1")</a></li>
