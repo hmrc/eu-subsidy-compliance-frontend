@@ -71,15 +71,19 @@
 
         @if(neverSubmitted) {
             @H1(neverSubmittedTitle)
-            @neverSubmittedHtml
         } else {
             @H1(hasSubmittedTitle, id = Some("noClaimNotifId"))
-            @hasSubmittedHtml
         }
-
         @govukCheckboxes(Checkboxes(
             name = "value",
             hint = None,
+          fieldset = Some(Fieldset(
+              legend = Some(Legend(
+                  content = HtmlContent(if(neverSubmitted){ neverSubmittedHtml } else { hasSubmittedHtml }),
+                  classes = "govuk-fieldset__legend--m",
+                  isPageHeading = false
+              ))
+          )),
             idPrefix = Some(key),
              errorMessage = if(form.hasErrors) {Some(ErrorMessage(
                 content = Text(messages(s"$key.error.required"))
