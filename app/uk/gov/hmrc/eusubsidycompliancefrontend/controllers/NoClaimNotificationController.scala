@@ -150,19 +150,21 @@ class NoClaimNotificationController @Inject() (
         .sendEvent(
           NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate)
         )
-    } yield Redirect(routes.NoClaimNotificationController.getNotificationConfirmation)
+      isSuspended = appConfig.releaseCEnabled && undertaking.isSuspended
+    } yield Redirect(routes.NoClaimNotificationController.getNotificationConfirmation(isSuspended))
 
     result.getOrElse(handleMissingSessionData("Undertaking ref"))
   }
 
   // We need to show a confirmation along with the next submission date
-  def getNotificationConfirmation: Action[AnyContent] = verifiedEori.async { implicit request =>
-    logger.info("NoBusinessPresentController.getNotificationConfirmation")
+  def getNotificationConfirmation(isSuspended: Boolean = false): Action[AnyContent] = verifiedEori.async {
+    implicit request =>
+      logger.info("NoBusinessPresentController.getNotificationConfirmation")
 
-    withLeadUndertaking { _ =>
-      val nextClaimDueDate = ReportReminderHelpers.dueDateToReport(timeProvider.today)
-      Ok(noClaimConfirmationPage(nextClaimDueDate)).toFuture
-    }
+      withLeadUndertaking { _ =>
+        val nextClaimDueDate = ReportReminderHelpers.dueDateToReport(timeProvider.today)
+        Ok(noClaimConfirmationPage(nextClaimDueDate, isSuspended)).toFuture
+      }
   }
 
 }

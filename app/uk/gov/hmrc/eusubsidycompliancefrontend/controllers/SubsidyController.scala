@@ -687,7 +687,8 @@ class SubsidyController @Inject() (
           _ = auditService.sendEvent[NonCustomsSubsidyAdded](
             AuditEvent.NonCustomsSubsidyAdded(request.authorityId, eori, ref, journey, currentDate)
           )
-        } yield Redirect(routes.SubsidyController.getClaimConfirmationPage)
+          isSuspended = appConfig.releaseCEnabled && undertaking.isSuspended
+        } yield Redirect(routes.SubsidyController.getClaimConfirmationPage(isSuspended))
 
         result.getOrElse(sys.error("Error processing subsidy cya form submission"))
       }
@@ -710,9 +711,10 @@ class SubsidyController @Inject() (
       _ <- journey.traderRef.value.orElse(handleMissingSessionData("trader ref"))
     } yield ()
 
-  def getClaimConfirmationPage: Action[AnyContent] = verifiedEori.async { implicit request =>
-    val nextClaimDueDate = ReportReminderHelpers.dueDateToReport(timeProvider.today)
-    Ok(confirmCreatedPage(nextClaimDueDate)).toFuture
+  def getClaimConfirmationPage(isSuspended: Boolean = false): Action[AnyContent] = verifiedEori.async {
+    implicit request =>
+      val nextClaimDueDate = ReportReminderHelpers.dueDateToReport(timeProvider.today)
+      Ok(confirmCreatedPage(nextClaimDueDate, isSuspended)).toFuture
   }
 
   def getRemoveSubsidyClaim(transactionId: String): Action[AnyContent] = verifiedEori.async { implicit request =>
