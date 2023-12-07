@@ -17,11 +17,15 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
+import play.api.Configuration
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.http.Status.{OK, SEE_OTHER}
+import play.api.inject.NewInstanceInjector.instanceOf
 import play.api.mvc.MessagesControllerComponents
 import play.api.mvc.Results.Ok
 import play.api.test.FakeRequest
@@ -34,6 +38,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, eori3, undertaking}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -57,7 +63,7 @@ class LeadOnlyUndertakingSupportSpec
 
       def runTest() = {
         val fakeRequest = authorisedRequestForEori(eori1)
-        val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
+        val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest, instanceOf[AppConfig])
         status(result) shouldBe OK
       }
 
@@ -80,7 +86,7 @@ class LeadOnlyUndertakingSupportSpec
 
         val fakeRequest = authorisedRequestForEori(eori3)
 
-        val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
+        val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest, instanceOf[AppConfig])
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) should contain(routes.AccountController.getAccountPage.url)
@@ -93,7 +99,7 @@ class LeadOnlyUndertakingSupportSpec
 
         val fakeRequest = authorisedRequestForEori(eori1)
 
-        val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
+        val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest, instanceOf[AppConfig])
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) should contain(routes.AccountController.getAccountPage.url)
@@ -105,7 +111,7 @@ class LeadOnlyUndertakingSupportSpec
       def runTest() = {
         val fakeRequest = authorisedRequestForEori(eori1)
 
-        val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest)
+        val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest, instanceOf[AppConfig])
 
         a[RuntimeException] shouldBe thrownBy(result.futureValue)
       }

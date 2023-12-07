@@ -64,6 +64,8 @@ class FinancialDashboardController @Inject() (
       summary = FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, subsidies, balanceOpt, today)
     } yield
       if (appConfig.scp08Enabled && balanceOpt.isEmpty) Redirect(routes.Scp08MaintenancePageController.showPage.url)
+      else if (undertaking.isManuallySuspended && appConfig.manualSuspensionCheckEnabled)
+        Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori)).url)
       else Ok(financialDashboardPage(summary))
 
   }

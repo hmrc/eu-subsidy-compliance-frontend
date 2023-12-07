@@ -597,5 +597,15 @@ registrationAlreadySubmitted.homeLinkText=Go to homepage
 
 #scp08 maintenance page
 scp08.maintenance-text.title=There is a problem with the service
+scp08.maintenance-text.p1=Please be aware we are currently experiencing some technical difficulties with the Customs Duty Waiver Scheme service, causing some traders to see a miscalculation of the undertaking balance. We are working to resolve the issue and we will provide an update as soon as possible.
+scp08.maintenance-text.p2=If you think you may be impacted by this issue, and/or have any queries, please contact - <a class="govuk-link" href="mailto:customs.duty-waivers@hmrc.gov.uk">customs.duty-waivers@hmrc.gov.uk</a>
+scp08.maintenance-text.p3=Thank you for your patience whilst we resolve the issue.
+
+#Undertaking suspended page
+undertakingSuspended.title=Your undertaking has been suspended
+undertakingSuspended.p1=You are currently unable to access your undertaking as it has been suspended on this service.
+undertakingSuspended.admin.p2=You will have received a letter in the post about this decision. Contact the decision maker for more information.
+undertakingSuspended.user.p2=Contact your lead undertaking administrator for more information.
+
 scp08.maintenance-text.p1=Please be aware we are currently experiencing some technical difficulties with the Customs Duty Waiver Scheme service, causing some traders to see a miscalculation of the undertaking balance. We are working urgently to resolve but if you are still within balance on the system and your records you can continue to submit supplementary declarations as normal and we will rectify the online balance. We apologise for any inconvenience caused.
 scp08.maintenance-text.p2=If you are experiencing issues preventing you from submitting your supplementary declaration then please contact - <a class="govuk-link" href="mailto:customs.duty-waivers@hmrc.gov.uk">customs.duty-waivers@hmrc.gov.uk</a>
