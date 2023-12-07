@@ -134,7 +134,7 @@ class AccountController @Inject() (
 
     if (appConfig.scp08Enabled && balance.isEmpty)
       Future.successful(Redirect(routes.Scp08MaintenancePageController.showPage.url))
-    else if (undertaking.isManuallySuspended && appConfig.manualSuspensionCheckEnabled)
+    else if (undertaking.isManuallySuspended && appConfig.releaseCEnabled)
       Future.successful(Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori)).url))
     else {
       val today = timeProvider.today
