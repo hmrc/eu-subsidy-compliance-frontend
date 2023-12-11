@@ -34,7 +34,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
 class SubsidyJourneySpec extends BaseSpec with Matchers with ScalaFutures {
 
-  private val amendJourney = SubsidyJourney().setTraderRef(optionalTraderRef)
+  private val amendJourney = SubsidyJourney(cya = CyaFormPage(Some(true))).setTraderRef(optionalTraderRef)
 
   "SubsidyJourney" should {
 
@@ -88,13 +88,6 @@ class SubsidyJourneySpec extends BaseSpec with Matchers with ScalaFutures {
 
     "when next is called" should {
 
-      "return a redirect to the next page in the journey if not on amend journey" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, "/")
-        val result = SubsidyJourney().next
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(routes.SubsidyController.getClaimDate.url)
-      }
-
       "skip the confirm converted amount page if an amount in Euros is entered" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getClaimAmount.url)
@@ -111,12 +104,12 @@ class SubsidyJourneySpec extends BaseSpec with Matchers with ScalaFutures {
         redirectLocation(result) should contain(routes.SubsidyController.getConfirmClaimAmount.url)
       }
 
-      "return a redirect to the check your answers page if a GBP to EUR conversion has been confirmed" in {
+      "return a redirect to the add claim eori page if a GBP to EUR conversion has been confirmed" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getConfirmClaimAmount.url)
         val result = SubsidyJourney().setTraderRef(OptionalTraderRef("true", None)).next
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers.url)
+        redirectLocation(result) should contain(routes.SubsidyController.getAddClaimEori.url)
       }
 
       "return a redirect to the add claim business page if an eori has been entered that is not part of any undertaking" in {
@@ -171,6 +164,14 @@ class SubsidyJourneySpec extends BaseSpec with Matchers with ScalaFutures {
         redirectLocation(result) should contain(routes.SubsidyController.getConfirmClaimAmount.url)
       }
 
+      "return a redirect to the check your answers page if a GBP to EUR conversion has been confirmed" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getConfirmClaimAmount.url)
+        val result = amendJourney.setTraderRef(OptionalTraderRef("true", None)).next
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.SubsidyController.getCheckAnswers.url)
+      }
+
       "return a redirect to the add claim business page if an eori has been entered that is not part of any undertaking" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getAddClaimEori.url)
@@ -185,10 +186,10 @@ class SubsidyJourneySpec extends BaseSpec with Matchers with ScalaFutures {
 
     "when previous is called" should {
 
-      "return URI to the account home page if current page is claim date" in {
+      "return URI to the reported non custom subsidy page from the claim date page" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getClaimDate.url)
-        SubsidyJourney().previous shouldBe routes.AccountController.getAccountPage.url
+        SubsidyJourney().previous shouldBe routes.SubsidyController.getReportedNoCustomSubsidyPage.url
       }
 
       "return URI to confirm converted amount page if current page is add claim EORI and the amount entered is in GBP" in {
@@ -209,7 +210,7 @@ class SubsidyJourneySpec extends BaseSpec with Matchers with ScalaFutures {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getClaimAmount.url)
 
-        val result = SubsidyJourney()
+        val result = amendJourney
           .setTraderRef(OptionalTraderRef("true", None))
           .previous
 
@@ -222,50 +223,48 @@ class SubsidyJourneySpec extends BaseSpec with Matchers with ScalaFutures {
         SubsidyJourney().previous shouldBe routes.SubsidyController.getAddClaimPublicAuthority.url
       }
 
+      "return URI to account home page if on first time user page" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getReportPaymentFirstTimeUser.url)
+
+        SubsidyJourney().previous shouldBe routes.AccountController.getAccountPage.url
+      }
+      "return URI to account home page if on returning user page" in {
+        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
+          FakeRequest(GET, routes.SubsidyController.getReportedPaymentReturningUserPage.url)
+
+        SubsidyJourney().previous shouldBe routes.AccountController.getAccountPage.url
+      }
+
     }
 
     "when previous is called on the amend journey" should {
 
-      "return URI to claimAmount page if current page is confirm converted amount" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
-          FakeRequest(GET, routes.SubsidyController.getConfirmClaimAmount.url)
-
-        amendJourney.previous shouldBe routes.SubsidyController.getClaimAmount.url
-      }
-
-      "return URI to add EORI page if current page is add claim business" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
-          FakeRequest(GET, routes.SubsidyController.getAddClaimBusiness.url)
-
-        amendJourney.previous shouldBe routes.SubsidyController.getAddClaimEori.url
-      }
-
-      "return URI to the referring page if it is valid and matches a SubsidyJourney page" in {
+      "return URI to the claim reference page from the check your answers page" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
           FakeRequest(GET, routes.SubsidyController.getCheckAnswers.url)
-            .withHeaders(REFERER -> routes.SubsidyController.getClaimDate.url)
-
-        amendJourney.previous shouldBe routes.SubsidyController.getClaimDate.url
+        amendJourney.previous shouldBe routes.SubsidyController.backFromCheckYourAnswers.url
       }
 
-      "return URI to account home page if referer URL not in SubsidyJourney" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
-          FakeRequest(GET, routes.SubsidyController.getCheckAnswers.url)
-            .withHeaders(REFERER -> routes.AccountController.getAccountPage.url)
-
-        amendJourney.previous shouldBe routes.AccountController.getAccountPage.url
+      List(
+        routes.SubsidyController.getAddClaimReference.url,
+        routes.SubsidyController.getAddClaimPublicAuthority.url,
+        routes.SubsidyController.getAddClaimEori.url,
+        routes.SubsidyController.getClaimAmount.url,
+        routes.SubsidyController.getConfirmClaimAmount.url,
+        routes.SubsidyController.getClaimDate.url
+      ).foreach { page =>
+        testPreviousWhenCyaAlreadyVisited(page)
       }
-
-      "return URI to account home page if referer URL could not be parsed" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
-          FakeRequest(GET, routes.SubsidyController.getCheckAnswers.url)
-            .withHeaders(REFERER -> "this is not a valid url")
-
-        amendJourney.previous shouldBe routes.AccountController.getAccountPage.url
-      }
-
     }
 
+  }
+
+  private def testPreviousWhenCyaAlreadyVisited(uri: String): Unit = {
+    s"return URI to check your answers for $uri" in {
+      implicit val request: FakeRequest[AnyContentAsEmpty.type] = FakeRequest(GET, uri)
+      amendJourney.previous shouldBe routes.SubsidyController.getCheckAnswers.url
+    }
   }
 
 }

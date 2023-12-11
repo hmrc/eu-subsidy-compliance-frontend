@@ -631,7 +631,10 @@ class SubsidyControllerSpec
     }
 
     "handling get to reported all non custom subsidy page" must {
-      def performAction(): Future[Result] = controller.getReportedNoCustomSubsidyPage(FakeRequest())
+      def performAction(): Future[Result] =
+        controller.getReportedNoCustomSubsidyPage(
+          FakeRequest(GET, routes.SubsidyController.getReportedNoCustomSubsidyPage.url)
+        )
 
       "render the page with bullet list of current tax year and previous 2 years for returning user" in {
         val journeyWithReportedNonCustomSubsidyReturningUser = subsidyJourney
@@ -2081,6 +2084,7 @@ class SubsidyControllerSpec
           mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
           mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+          mockUpdate[SubsidyJourney](eori1)(Right(subsidyJourneyWithCyaVisited))
         }
 
         status(performAction()) shouldBe OK
@@ -2167,6 +2171,7 @@ class SubsidyControllerSpec
                 currentDate
               )
             )
+            mockUpdate[SubsidyJourney](eori1)(Right(submittedSubsidyJourney))
           }
 
           checkIsRedirect(
@@ -2268,7 +2273,7 @@ class SubsidyControllerSpec
 
     "handling get of add claim business page" must {
       def performAction() = controller.getAddClaimBusiness(
-        FakeRequest(GET, routes.SubsidyController.getClaimConfirmationPage().url)
+        FakeRequest(GET, routes.SubsidyController.getAddClaimBusiness.url)
       )
 
       "display the page" in {

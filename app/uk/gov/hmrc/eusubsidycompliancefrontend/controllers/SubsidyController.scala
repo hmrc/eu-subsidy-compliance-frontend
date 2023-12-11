@@ -43,7 +43,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.{CheckYourAnswersHelper, ReportReminderHelpers, TimeProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.BigDecimalOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -162,9 +162,9 @@ class SubsidyController @Inject() (
         val startDate = today.toEarliestTaxYearStart
         Ok(
           reportPaymentFirstTimeUserPage(
-            updatedForm,
-            startDate.toDisplayFormat,
-            routes.AccountController.getAccountPage.url
+            form = updatedForm,
+            neverSubmittedTaxYearDate = startDate.toDisplayFormat,
+            previous = journey.previous
           )
         )
       }
@@ -192,9 +192,9 @@ class SubsidyController @Inject() (
             errors =>
               BadRequest(
                 reportPaymentFirstTimeUserPage(
-                  errors,
-                  startDate.toDisplayFormat,
-                  routes.AccountController.getAccountPage.url
+                  form = errors,
+                  neverSubmittedTaxYearDate = startDate.toDisplayFormat,
+                  previous = journey.previous
                 )
               ).toContext,
             handleValidFormSubmission
@@ -228,7 +228,7 @@ class SubsidyController @Inject() (
           journey.reportPaymentReturningUser.value
             .fold(reportedPaymentReturningUserForm)(v => reportedPaymentReturningUserForm.fill(FormValues(v)))
 
-        Ok(reportedPaymentReturningUserPage(updatedForm, routes.AccountController.getAccountPage.url))
+        Ok(reportedPaymentReturningUserPage(updatedForm, journey.previous))
       }
     }
   }
@@ -254,7 +254,7 @@ class SubsidyController @Inject() (
               BadRequest(
                 reportedPaymentReturningUserPage(
                   errors,
-                  routes.AccountController.getAccountPage.url
+                  journey.previous
                 )
               ).toContext,
             handleValidFormSubmission
@@ -275,11 +275,10 @@ class SubsidyController @Inject() (
             routes.SubsidyController.getReportedPaymentReturningUserPage.url
           else routes.SubsidyController.getReportPaymentFirstTimeUser.url
 
-        val currentYear = LocalDate.now.getYear
         Ok(
           reportNonCustomSubsidyPage(
             updatedForm,
-            previousUrl
+            journey.previous
           )
         )
       }
@@ -294,7 +293,11 @@ class SubsidyController @Inject() (
         val form = journey.claimDate.value.fold(claimDateForm)(claimDateForm.fill)
         val earliestAllowedClaimDate = timeProvider.today.toEarliestTaxYearStart
         Ok(
-          addClaimDatePage(form, routes.SubsidyController.getReportedNoCustomSubsidyPage.url, earliestAllowedClaimDate)
+          addClaimDatePage(
+            form = form,
+            previous = journey.previous,
+            earliestAllowedClaimDate = earliestAllowedClaimDate
+          )
         )
       }
     }
@@ -314,7 +317,7 @@ class SubsidyController @Inject() (
               BadRequest(
                 addClaimDatePage(
                   formWithErrors,
-                  routes.SubsidyController.getReportedNoCustomSubsidyPage.url,
+                  journey.previous,
                   earliestAllowedClaimDate
                 )
               ).toContext
@@ -647,6 +650,7 @@ class SubsidyController @Inject() (
       val result: OptionT[Future, Result] = for {
         journey <- store.get[SubsidyJourney].toContext
         _ <- validateSubsidyJourneyFieldsPopulated(journey).toContext
+        _ <- store.update[SubsidyJourney](_.setCya(true)).toContext
         claimDate <- journey.claimDate.value.toContext
         euroAmount <- getEuroAmount(journey).toContext
         optionalEori <- journey.addClaimEori.value.toContext
@@ -659,6 +663,16 @@ class SubsidyController @Inject() (
 
       result
         .getOrElse(Redirect(routes.AccountController.getAccountPage))
+    }
+  }
+
+  def backFromCheckYourAnswers: Action[AnyContent] = subsidyJourney.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+
+      store.update[SubsidyJourney](_.setCya(false)).map { _ =>
+        Redirect(routes.SubsidyController.getAddClaimReference)
+      }
     }
   }
 
@@ -687,6 +701,7 @@ class SubsidyController @Inject() (
           _ = auditService.sendEvent[NonCustomsSubsidyAdded](
             AuditEvent.NonCustomsSubsidyAdded(request.authorityId, eori, ref, journey, currentDate)
           )
+          _ <- store.update[SubsidyJourney](_.setSubmitted(true)).toContext
           isSuspended = appConfig.releaseCEnabled && undertaking.isSuspended
         } yield Redirect(routes.SubsidyController.getClaimConfirmationPage(isSuspended))
 
