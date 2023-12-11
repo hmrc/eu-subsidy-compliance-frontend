@@ -136,6 +136,16 @@ object CommonTestData {
     List(businessEntity1, businessEntity2)
   )
 
+  val manuallySuspendedUndertaking = Undertaking(
+    undertakingRef,
+    UndertakingName("TestUndertaking"),
+    transport,
+    IndustrySectorLimit(12.34),
+    LocalDate.of(2021, 1, 18).some,
+    Some(suspendedManual),
+    List(businessEntity1, businessEntity2)
+  )
+
   val writeableUndertaking = UndertakingCreate(
     UndertakingName("TestUndertaking"),
     transport,

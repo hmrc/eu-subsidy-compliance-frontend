@@ -32,14 +32,14 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, eori3, undertaking}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, eori3, manuallySuspendedUndertaking, undertaking}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.PlaySupport
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class LeadOnlyUndertakingSupportSpec
+class LeadOnlyUndertakingSupportSCP08Enabled
     extends PlaySupport
     with AnyWordSpecLike
     with MockFactory
@@ -54,29 +54,34 @@ class LeadOnlyUndertakingSupportSpec
     override protected implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.global
   }
 
-  "LeadOnlyUnderTakingSupport" should {
+  override def additionalConfig = Configuration.from(
+    Map(
+      // enabled FF for testing
+      "features.release-c-enabled" -> true
+    )
+  )
+
+  "LeadOnlyUnderTakingSupportSCP08Enabled" should {
 
     "invoke the function" when {
-
       def runTest() = {
         val fakeRequest = authorisedRequestForEori(eori1)
         val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest, appConfig)
         status(result) shouldBe OK
       }
 
-      "called with a request from a lead undertaking user" in {
+      "called with a request from a lead undertaking user that is not manually suspended" in {
         inSequence {
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
         }
 
         runTest()
       }
-
     }
 
     "redirect to the account home page" when {
 
-      "called with a request from a non-lead undertaking user" in {
+      "called with a request from a non-lead undertaking user that is not manually suspended" in {
         inSequence {
           mockRetrieveUndertaking(eori3)(undertaking.some.toFuture)
         }
@@ -103,22 +108,32 @@ class LeadOnlyUndertakingSupportSpec
       }
     }
 
-    "throw an error" when {
+    "redirect to the manually suspended page" when {
 
-      def runTest() = {
+      "called with a request from a manually suspended user who is a lead" in {
+        inSequence {
+          mockRetrieveUndertaking(eori1)(manuallySuspendedUndertaking.some.toFuture)
+        }
         val fakeRequest = authorisedRequestForEori(eori1)
 
         val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest, appConfig)
 
-        a[RuntimeException] shouldBe thrownBy(result.futureValue)
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.UndertakingSuspendedPageController.showPage(true).url)
+
       }
 
-      "an error occurred retrieving the undertaking from the backend" in {
+      "called with a request from a manually suspended user who is a non-lead" in {
         inSequence {
-          mockRetrieveUndertaking(eori1)(Future.failed(new RuntimeException("Some error")))
+          mockRetrieveUndertaking(eori3)(manuallySuspendedUndertaking.some.toFuture)
         }
+        val fakeRequest = authorisedRequestForEori(eori3)
 
-        runTest()
+        val result = underTest.withLeadUndertaking(_ => Ok("Foo").toFuture)(fakeRequest, appConfig)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.UndertakingSuspendedPageController.showPage(false).url)
+
       }
     }
 

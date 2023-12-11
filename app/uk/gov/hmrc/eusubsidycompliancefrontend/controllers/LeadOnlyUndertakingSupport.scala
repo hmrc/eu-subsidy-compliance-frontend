@@ -40,8 +40,8 @@ trait LeadOnlyUndertakingSupport { this: FrontendController =>
     f: Undertaking => Future[Result]
   )(implicit r: AuthenticatedEnrolledRequest[A], appConfig: AppConfig): Future[Result] = {
     implicit val eori: EORI = r.eoriNumber
-    val retrievedUndertakingOpt = escService.retrieveUndertaking(eori).toContext
     if (appConfig.releaseCEnabled) {
+      val retrievedUndertakingOpt = escService.retrieveUndertaking(eori).toContext
       retrievedUndertakingOpt.foldF(Redirect(routes.AccountController.getAccountPage).toFuture) {
         case undertaking if !undertaking.isManuallySuspended && undertaking.isLeadEORI(eori) =>
           f(undertaking)
