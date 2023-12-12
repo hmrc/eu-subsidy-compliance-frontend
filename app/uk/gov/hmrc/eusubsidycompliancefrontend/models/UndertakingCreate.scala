@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{UndertakingName, UndertakingRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingName
 
 case class UndertakingCreate(
   name: UndertakingName,
