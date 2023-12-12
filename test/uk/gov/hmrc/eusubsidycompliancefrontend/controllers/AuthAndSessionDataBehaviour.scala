@@ -88,7 +88,7 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
 
   def mockAuthWithEnrolmentWithValidEmailAndSubmittedSubsidyJourney(eori: EORI = eori1): Unit = {
     mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), providerId, groupId)
-    mockGet[SubsidyJourney](eori)(Right(Some(SubsidyJourney(cya = CyaFormPage(Some(true))))))
+    mockGet[SubsidyJourney](eori)(Right(Some(SubsidyJourney(submitted = Some(true)))))
   }
 
   def mockAuthWithEnrolmentAndNoEmailVerification(eori: EORI = eori1): Unit =

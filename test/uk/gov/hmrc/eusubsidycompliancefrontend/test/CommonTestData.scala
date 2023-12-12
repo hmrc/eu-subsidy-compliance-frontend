@@ -309,4 +309,14 @@ object CommonTestData {
     conversionRate = SubsidyAmount(1.2),
     nationalCapBalanceEUR = industrySectorLimit
   )
+
+  val subsidyJourneyWithCyaVisited = subsidyJourney.copy(
+    cya = CyaFormPage(Some(true))
+  )
+
+  val submittedSubsidyJourney = subsidyJourney.copy(
+    cya = CyaFormPage(Some(true)),
+    submitted = Some(true)
+  )
+
 }

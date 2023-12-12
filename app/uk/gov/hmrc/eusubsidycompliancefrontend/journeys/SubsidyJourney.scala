@@ -19,13 +19,15 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.journeys
 import cats.implicits.catsSyntaxOptionId
 import play.api.http.HeaderNames.REFERER
 import play.api.libs.json._
-import play.api.mvc.{Request, Result}
+import play.api.mvc.{Request, Result, Results}
+import play.api.mvc.Results.Redirect
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Form
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms.{_}
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.EUR
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.CheckYourAnswersHelper
 
 import java.net.URI
 import scala.concurrent.Future
@@ -43,6 +45,7 @@ case class SubsidyJourney(
   publicAuthority: PublicAuthorityFormPage = PublicAuthorityFormPage(),
   traderRef: TraderRefFormPage = TraderRefFormPage(),
   cya: CyaFormPage = CyaFormPage(),
+  submitted: Option[Boolean] = None,
   existingTransactionId: Option[SubsidyRef] = None
 ) extends Journey {
 
@@ -59,25 +62,51 @@ case class SubsidyJourney(
 
   lazy val isAmend: Boolean = traderRef.value.nonEmpty
 
-  override def next(implicit r: Request[_]): Future[Result] =
-    if (isAmend)
-      if (claimAmount.isCurrentPage && !shouldSkipCurrencyConversion) convertedClaimAmountConfirmation.redirect
-      else if (addClaimEori.isCurrentPage && shouldAddNewBusiness) addClaimBusiness.redirect
-      else cya.redirect
-    else if (claimAmount.isCurrentPage && shouldSkipCurrencyConversion) addClaimEori.redirect
-    else if (addClaimEori.isCurrentPage && !hasBusinessEoriToAdd) publicAuthority.redirect
-    else super.next
+  override def next(implicit r: Request[_]): Future[Result] = {
+    val cyaVisited = this.cya.value.getOrElse(false)
+    val defaultContinueUri = r.uri match {
+      case url if url == routes.SubsidyController.postClaimDate.url => claimAmount.uri
+      case url if url == routes.SubsidyController.postAddClaimAmount.url =>
+        if (shouldSkipCurrencyConversion) addClaimEori.uri else convertedClaimAmountConfirmation.uri
+      case url if url == routes.SubsidyController.postConfirmClaimAmount.url => addClaimEori.uri
+      case url if url == routes.SubsidyController.postAddClaimEori.url =>
+        if (shouldAddNewBusiness) addClaimBusiness.uri else publicAuthority.uri
+      case url if url == routes.SubsidyController.postAddClaimPublicAuthority.url => traderRef.uri
+      case url if url == routes.SubsidyController.postAddClaimReference.url => cya.uri
+      case url if url == routes.SubsidyController.postAddClaimBusiness.url =>
+        if (addClaimBusiness.value.contains(true)) publicAuthority.uri else addClaimEori.uri
 
-  override def previous(implicit request: Request[_]): Journey.Uri =
-    if (isAmend)
-      if (convertedClaimAmountConfirmation.isCurrentPage) claimAmount.uri
-      else if (addClaimBusiness.isCurrentPage) addClaimEori.uri
-      else if (!cya.isCurrentPage) cya.uri
-      else extractAndParseRefererUrl.getOrElse(routes.AccountController.getAccountPage.url)
-    else if (claimDate.isCurrentPage) routes.AccountController.getAccountPage.url
-    else if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.uri
-    else if (publicAuthority.isCurrentPage && !shouldAddNewBusiness) addClaimEori.uri
-    else super.previous
+    }
+    val useDefaultContinueUri: Boolean =
+      (r.uri == routes.SubsidyController.postAddClaimAmount.url && !claimAmountIsInEuros) ||
+        (r.uri == routes.SubsidyController.postAddClaimEori.url && shouldAddNewBusiness)
+
+    Future.successful(
+      Redirect(CheckYourAnswersHelper.calculateContinueLink(cyaVisited, defaultContinueUri, useDefaultContinueUri))
+    )
+  }
+
+  override def previous(implicit request: Request[_]): Journey.Uri = {
+    val cyaVisited = this.cya.value.getOrElse(false)
+    val backLinkUrl = request.uri match {
+      case url if url == cya.uri => routes.SubsidyController.backFromCheckYourAnswers.url
+      case url if url == traderRef.uri => publicAuthority.uri
+      case url if url == publicAuthority.uri => addClaimEori.uri
+      case url if url == addClaimEori.uri =>
+        if (claimAmountIsInEuros) claimAmount.uri else convertedClaimAmountConfirmation.uri
+      case url if url == claimAmount.uri => claimDate.uri
+      case url if url == convertedClaimAmountConfirmation.uri => claimAmount.uri
+      case url if url == claimDate.uri => reportedNonCustomSubsidy.uri
+      case url if url == addClaimBusiness.uri => addClaimEori.uri
+      case url if url == reportedNonCustomSubsidy.uri =>
+        if (this.getReportPaymentReturningUser) reportPaymentReturningUser.uri
+        else reportPaymentFirstTimeUser.uri
+      case url if url == reportPaymentFirstTimeUser.uri => routes.AccountController.getAccountPage.url
+      case url if url == reportPaymentReturningUser.uri => routes.AccountController.getAccountPage.url
+    }
+    val useDefaultBackUri: Boolean = request.uri == cya.uri
+    CheckYourAnswersHelper.calculateBackLink(cyaVisited, backLinkUrl, useDefaultBackUri)
+  }
 
   private def extractAndParseRefererUrl(implicit request: Request[_]): Option[String] =
     request.headers
@@ -115,6 +144,8 @@ case class SubsidyJourney(
   def setPublicAuthority(a: String): SubsidyJourney = this.copy(publicAuthority = publicAuthority.copy(a.some))
   def setTraderRef(o: OptionalTraderRef): SubsidyJourney = this.copy(traderRef = traderRef.copy(o.some))
   def setCya(v: Boolean): SubsidyJourney = this.copy(cya = cya.copy(v.some))
+
+  def setSubmitted(v: Boolean): SubsidyJourney = this.copy(submitted = Some(v))
   def getReportPaymentFirstTimeUser: Boolean = reportPaymentFirstTimeUser.value.getOrElse(false)
   def getReportPaymentReturningUser: Boolean = reportPaymentReturningUser.value.getOrElse(false)
 
@@ -126,7 +157,7 @@ case class SubsidyJourney(
 
   def claimAmountIsInEuros: Boolean = claimAmount.value.map(_.currencyCode).contains(EUR)
 
-  def isSubmitted: Boolean = cya.value.getOrElse(false)
+  def isSubmitted: Boolean = submitted.getOrElse(false)
 
   private def claimAmountToBigDecimal(f: FormPage[ClaimAmount]) = f.value.map(a => BigDecimal(a.amount))
 
