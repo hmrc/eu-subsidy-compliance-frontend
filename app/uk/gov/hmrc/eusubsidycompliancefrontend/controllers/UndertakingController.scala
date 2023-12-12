@@ -240,9 +240,7 @@ class UndertakingController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
       handleConfirmEmailPost[UndertakingJourney](
-        previous =
-          if (journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails
-          else routes.UndertakingController.getConfirmEmail,
+        previous = routes.UndertakingController.getSector,
         next =
           if (journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails
           else routes.UndertakingController.getAddBusiness,
