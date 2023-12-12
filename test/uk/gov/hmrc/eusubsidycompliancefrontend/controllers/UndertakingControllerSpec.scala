@@ -825,7 +825,8 @@ class UndertakingControllerSpec
           checkFormErrorIsDisplayed(
             result = performAction("using-stored-email" -> "false", "email" -> "some@thing"),
             expectedTitle = messageFromMessageKey("confirmEmail.title", email),
-            formError = messageFromMessageKey("email.error.email")
+            formError = messageFromMessageKey("email.error.email"),
+            backLinkOpt = Some(routes.UndertakingController.getSector.url)
           )
         }
 
@@ -841,7 +842,8 @@ class UndertakingControllerSpec
           checkFormErrorIsDisplayed(
             result = performAction("using-stored-email" -> "false", "email" -> "some @ thing.com"),
             expectedTitle = messageFromMessageKey("confirmEmail.title", email),
-            formError = messageFromMessageKey("email.error.email")
+            formError = messageFromMessageKey("email.error.email"),
+            backLinkOpt = Some(routes.UndertakingController.getSector.url)
           )
         }
 
@@ -857,7 +859,8 @@ class UndertakingControllerSpec
           checkFormErrorIsDisplayed(
             result = performAction("using-stored-email" -> "false", "email" -> "something.com"),
             expectedTitle = messageFromMessageKey("confirmEmail.title", email),
-            formError = messageFromMessageKey("email.error.email")
+            formError = messageFromMessageKey("email.error.email"),
+            backLinkOpt = Some(routes.UndertakingController.getSector.url)
           )
         }
 
