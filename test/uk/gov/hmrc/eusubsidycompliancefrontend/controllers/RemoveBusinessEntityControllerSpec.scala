@@ -234,7 +234,8 @@ class RemoveBusinessEntityControllerSpec
           checkFormErrorIsDisplayed(
             performAction()(eori4),
             messageFromMessageKey("removeBusinessEntity.title"),
-            "Select yes if you want to remove a business from your undertaking"
+            "Select yes if you want to remove a business from your undertaking",
+            backLinkOpt = Some(routes.AddBusinessEntityController.startJourney().url)
           )
 
         }
