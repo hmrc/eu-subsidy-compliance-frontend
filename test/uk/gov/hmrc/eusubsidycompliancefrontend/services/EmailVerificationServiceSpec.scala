@@ -155,7 +155,7 @@ class EmailVerificationServiceSpec
 
         val result = service.makeVerificationRequestAndRedirect(
           "foo@example.com",
-          previousPage,
+          previousPage.url,
           _ => nextPageUrl
         )
 
@@ -171,7 +171,7 @@ class EmailVerificationServiceSpec
 
         val result = service.makeVerificationRequestAndRedirect(
           "foo@example.com",
-          previousPage,
+          previousPage.url,
           _ => nextPageUrl
         )
 

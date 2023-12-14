@@ -46,6 +46,8 @@ GET        /verify-email/:pendingVerificationId                                 
 GET        /first-login-journey-check-your-answers                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getCheckAnswers
 POST       /first-login-journey-check-your-answers                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postCheckAnswers
 
+GET        /first-login-journey-check-your-answers/back                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.backFromCheckYourAnswers
+
 GET        /first-login-journey-registered-undertaking/:undertakingRef/name             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmation(undertakingRef)
 POST       /first-login-journey-registered-undertaking                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmation
 

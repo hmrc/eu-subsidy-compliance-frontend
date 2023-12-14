@@ -60,7 +60,7 @@ trait EmailVerificationServiceSupport { this: MockFactory with AuthSupport =>
       mockEmailVerificationService
         .makeVerificationRequestAndRedirect(
           _: String,
-          _: Call,
+          _: String,
           _: String => String,
           _: String
         )(

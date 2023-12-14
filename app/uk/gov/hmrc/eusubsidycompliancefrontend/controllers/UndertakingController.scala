@@ -42,11 +42,13 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
-import uk.gov.hmrc.http.{HeaderCarrier, NotFoundException, Request}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpVerbs, NotFoundException, Request}
+import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.mvc.ActionBuilder._
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms.UndertakingCyaFormPage
 
 @Singleton
 class UndertakingController @Inject() (
@@ -190,10 +192,16 @@ class UndertakingController @Inject() (
   }
 
   def getConfirmEmail: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
-    handleConfirmEmailGet[UndertakingJourney](
-      previous = routes.UndertakingController.getSector,
-      formAction = routes.UndertakingController.postConfirmEmail
-    )
+    implicit val eori: EORI = request.eoriNumber
+    store
+      .get[UndertakingJourney]
+      .toContext
+      .foldF(Redirect(routes.UndertakingController.getAboutUndertaking).toFuture) { journey =>
+        handleConfirmEmailGet[UndertakingJourney](
+          previous = Call(HttpVerbs.GET, journey.previous),
+          formAction = routes.UndertakingController.postConfirmEmail
+        )
+      }
   }
 
   def getAddEmailForVerification(status: EmailStatus = EmailStatus.New): Action[AnyContent] = enrolled.async {
@@ -224,7 +232,7 @@ class UndertakingController @Inject() (
           form =>
             emailVerificationService.makeVerificationRequestAndRedirect(
               email = form.value,
-              previousPage = backLink,
+              previousPage = backLink.url,
               nextPageUrl = nextUrl,
               reEnterEmailUrl = reEnterEmailUrl
             )
@@ -240,10 +248,15 @@ class UndertakingController @Inject() (
     implicit val eori: EORI = request.eoriNumber
     withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
       handleConfirmEmailPost[UndertakingJourney](
-        previous = routes.UndertakingController.getSector,
-        next =
-          if (journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails
-          else routes.UndertakingController.getAddBusiness,
+        previous = journey.previous,
+        next = {
+          val call =
+            if (journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails
+            else routes.UndertakingController.getAddBusiness
+
+          if (journey.cya.value.getOrElse(false)) routes.UndertakingController.getCheckAnswers.url
+          else call.url
+        },
         formAction = routes.UndertakingController.postConfirmEmail,
         generateVerifyEmailUrl = (id: String) => routes.UndertakingController.getVerifyEmail(id).url
       )
@@ -312,6 +325,15 @@ class UndertakingController @Inject() (
     }
   }
 
+  def backFromCheckYourAnswers: Action[AnyContent] = verifiedEoriUndertakingJourney.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    store
+      .update[UndertakingJourney](_.setUndertakingCYA(false))
+      .map { _ =>
+        Redirect(routes.UndertakingController.getAddBusiness)
+      }
+  }
+
   def getCheckAnswers: Action[AnyContent] = verifiedEoriUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
 
@@ -323,13 +345,14 @@ class UndertakingController @Inject() (
           undertakingSector <- journey.sector.value.toContext
           undertakingVerifiedEmail <- emailService.retrieveVerifiedEmailAddressByEORI(eori).toContext
           undertakingAddBusiness <- journey.addBusiness.value.toContext
+          _ <- store.update[UndertakingJourney](j => j.copy(cya = UndertakingCyaFormPage(Some(true)))).toContext
         } yield Ok(
           cyaPage(
-            eori,
-            undertakingSector,
-            undertakingVerifiedEmail,
-            undertakingAddBusiness.toString,
-            journey.previous
+            eori = eori,
+            sector = undertakingSector,
+            verifiedEmail = undertakingVerifiedEmail,
+            addBusiness = undertakingAddBusiness.toString,
+            previous = routes.UndertakingController.backFromCheckYourAnswers.url
           )
         )
 
@@ -354,6 +377,7 @@ class UndertakingController @Inject() (
               List(BusinessEntity(eori, leadEORI = true))
             )
             undertakingCreated <- createUndertakingAndSendEmail(undertaking).toContext
+            _ <- store.update[UndertakingJourney](_.setSubmitted(true)).toContext
           } yield undertakingCreated
           result.fold(handleMissingSessionData("Undertaking create journey"))(identity)
         }

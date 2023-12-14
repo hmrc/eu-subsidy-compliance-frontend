@@ -78,7 +78,7 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
 
   def mockAuthWithEnrolmentWithValidEmailAndSubmittedUndertakingJourney(eori: EORI = eori1): Unit = {
     mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), providerId, groupId)
-    mockGet[UndertakingJourney](eori)(Right(Some(UndertakingJourney(cya = UndertakingCyaFormPage(Some(true))))))
+    mockGet[UndertakingJourney](eori)(Right(Some(UndertakingJourney(submitted = Some(true)))))
   }
 
   def mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney(eori: EORI = eori1): Unit = {
@@ -101,7 +101,7 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
 
   def mockAuthWithEnrolmentAndSubmittedUndertakingJourney(eori: EORI = eori1): Unit = {
     mockAuthWithEccAuthRetrievalsNoEmailVerification(Enrolments(enrolmentSets(eori)), providerId, groupId)
-    mockGet[UndertakingJourney](eori)(Right(Some(UndertakingJourney(cya = UndertakingCyaFormPage(Some(true))))))
+    mockGet[UndertakingJourney](eori)(Right(Some(UndertakingJourney(submitted = Some(true)))))
   }
 
   def authBehaviour(performAction: () => Future[Result]): Unit =

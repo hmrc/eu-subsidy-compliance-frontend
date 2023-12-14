@@ -236,7 +236,7 @@ class UndertakingControllerSpec
         }
 
         "undertaking journey is there in store and user has already answered the questions and all answers are complete" in {
-          testDisplay(undertakingJourneyComplete, routes.EligibilityController.getEoriCheck.url)
+          testDisplay(undertakingJourneyComplete, routes.UndertakingController.getCheckAnswers.url)
         }
 
         "undertaking journey is there in store and user hasn't  answered any questions" in {
@@ -691,6 +691,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
             mockRetrieveEmail(eori1)(
               Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress(email).some))
             )
@@ -729,6 +730,7 @@ class UndertakingControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney()
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourney.some))
             mockRetrieveEmail(eori1)(
               Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress(email).some))
             )
@@ -748,14 +750,14 @@ class UndertakingControllerSpec
         }
       }
 
-      "redirect to previous page" when {
+      "redirect to about undertaking page" when {
 
         "call to fetch undertaking journey returns no undertaking journey" in {
           inSequence {
             mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney()
             mockGet[UndertakingJourney](eori1)(Right(None))
           }
-          checkIsRedirect(performAction(), routes.UndertakingController.getSector.url)
+          checkIsRedirect(performAction(), routes.UndertakingController.getAboutUndertaking.url)
         }
       }
 
@@ -817,7 +819,7 @@ class UndertakingControllerSpec
           val email = "foo@example.com"
           inSequence {
             mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney(eori1)
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyWithCyaNotVisited.some))
             mockRetrieveEmail(eori1)(
               Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress(email).some))
             )
@@ -834,7 +836,7 @@ class UndertakingControllerSpec
           val email = "foo@example.com"
           inSequence {
             mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney(eori1)
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyWithCyaNotVisited.some))
             mockRetrieveEmail(eori1)(
               Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress(email).some))
             )
@@ -851,7 +853,7 @@ class UndertakingControllerSpec
           val email = "foo@example.com"
           inSequence {
             mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney(eori1)
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyWithCyaNotVisited.some))
             mockRetrieveEmail(eori1)(
               Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress(email).some))
             )
@@ -872,7 +874,7 @@ class UndertakingControllerSpec
           val email = "foo@example.com"
           inSequence {
             mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney(eori1)
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
+            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyWithCyaNotVisited.some))
             mockRetrieveEmail(eori1)(
               Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress(email).some))
             )
@@ -1208,13 +1210,16 @@ class UndertakingControllerSpec
           mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney()
           mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
           mockRetrieveVerifiedEmailAddressByEORI(eori1)(Future.successful("joebloggs@something.com"))
+          mockUpdate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete))
         }
 
         checkPageIsDisplayed(
           performAction(),
           messageFromMessageKey("undertaking.cya.title"),
           { doc =>
-            doc.select(".govuk-back-link").attr("href") shouldBe routes.UndertakingController.getAddBusiness.url
+            doc
+              .select(".govuk-back-link")
+              .attr("href") shouldBe routes.UndertakingController.backFromCheckYourAnswers.url
             val rows =
               doc.select(".govuk-summary-list__row").iterator().asScala.toList.map { element =>
                 val question = element.select(".govuk-summary-list__key").text()
@@ -1360,6 +1365,7 @@ class UndertakingControllerSpec
             mockSendAuditEvent(
               createUndertakingAuditEvent(undertaking1.industrySectorLimit)
             )
+            mockUpdate[UndertakingJourney](eori1)(Right(submittedUndertakingJourney))
           }
           checkIsRedirect(
             result = performAction("cya" -> "true"),
