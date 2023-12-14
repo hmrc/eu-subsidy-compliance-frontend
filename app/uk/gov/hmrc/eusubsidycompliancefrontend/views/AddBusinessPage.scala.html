@@ -154,7 +154,7 @@
       }
     ) { case (addLegend) =>
       @govukRadios(Radios(
-          classes = "govuk-radios--inline",
+          classes = "govuk-radios",
           errorMessage = if(form.hasErrors) {Some(ErrorMessage(
               content = Text(messages("addBusiness.error.required"))
           ))} else None,

@@ -54,7 +54,7 @@
     @P(messages("removeBusinessEntity.p2"))
 
     @govukRadios(Radios(
-      classes = "govuk-radios--inline",
+      classes = "govuk-radios",
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("removeBusiness.error.required"))
       ))} else None,

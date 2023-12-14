@@ -55,7 +55,7 @@
         @P(messages(s"$key.p2"))
 
         @govukRadios(Radios(
-            classes = "govuk-radios--inline",
+            classes = "govuk-radios",
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
                 content = Text(messages(s"$key.error.required"))
             ))} else None,
