@@ -412,7 +412,7 @@ class EligibilityControllerSpec
           }
 
         "yes is selected" in {
-          testRedirection(input = true, routes.AccountController.getAccountPage.url)
+          testRedirection(input = true, routes.UndertakingController.getAboutUndertaking.url)
         }
 
         "no is selected" in {

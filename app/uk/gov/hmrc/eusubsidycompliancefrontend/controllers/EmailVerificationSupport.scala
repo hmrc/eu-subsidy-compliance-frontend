@@ -93,8 +93,8 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
   protected def addVerifiedEmailToJourney(implicit eori: EORI): Future[Unit]
 
   protected def handleConfirmEmailPost[A : ClassTag](
-    previous: Call,
-    next: Call,
+    previous: String,
+    next: String,
     formAction: Call,
     generateVerifyEmailUrl: String => String
   )(implicit
@@ -111,7 +111,7 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
       optionalEmailForm
         .bindFromRequest()
         .fold(
-          errors => BadRequest(confirmEmailPage(errors, formAction, EmailAddress(email), previous.url)).toFuture,
+          errors => BadRequest(confirmEmailPage(errors, formAction, EmailAddress(email), previous)).toFuture,
           form =>
             if (form.usingStoredEmail.isTrue)
               for {
@@ -135,7 +135,7 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
       emailForm
         .bindFromRequest()
         .fold(
-          errors => BadRequest(inputEmailPage(errors, previous.url)).toFuture,
+          errors => BadRequest(inputEmailPage(errors, previous)).toFuture,
           form => emailVerificationService.makeVerificationRequestAndRedirect(form.value, previous, verifyEmailUrl)
         )
 

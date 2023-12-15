@@ -37,6 +37,7 @@ case class UndertakingJourney(
   addBusiness: UndertakingAddBusinessFormPage = UndertakingAddBusinessFormPage(),
   cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
   confirmation: UndertakingConfirmationFormPage = UndertakingConfirmationFormPage(),
+  submitted: Option[Boolean] = None,
   isAmend: Boolean = false
 ) extends Journey {
 
@@ -55,11 +56,12 @@ case class UndertakingJourney(
 
   override def previous(implicit r: Request[_]): Uri =
     if (isAmend) routes.UndertakingController.getAmendUndertakingDetails.url
+    else if (requiredDetailsProvided && cyaVisited) routes.UndertakingController.getCheckAnswers.url
     else previousMap.getOrElse(r.uri, super.previous)
 
   override def next(implicit request: Request[_]): Future[Result] =
     if (isAmend) Redirect(routes.UndertakingController.getAmendUndertakingDetails).toFuture
-    else if (requiredDetailsProvided) Redirect(routes.UndertakingController.getCheckAnswers).toFuture
+    else if (requiredDetailsProvided && cyaVisited) Redirect(routes.UndertakingController.getCheckAnswers).toFuture
     else super.next
 
   def isEmpty: Boolean = steps.flatMap(_.value).isEmpty
@@ -81,8 +83,12 @@ case class UndertakingJourney(
 
   def setUndertakingConfirmation(b: Boolean): UndertakingJourney =
     this.copy(confirmation = confirmation.copy(value = Some(b)))
+  def setSubmitted(b: Boolean): UndertakingJourney =
+    this.copy(submitted = Some(b))
 
-  def isSubmitted: Boolean = cya.value.getOrElse(false)
+  def isSubmitted: Boolean = submitted.getOrElse(false)
+
+  def cyaVisited = cya.value.getOrElse(false)
 
 }
 

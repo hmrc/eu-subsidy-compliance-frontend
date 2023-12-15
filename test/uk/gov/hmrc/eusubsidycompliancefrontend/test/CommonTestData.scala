@@ -221,6 +221,9 @@ object CommonTestData {
     cya = UndertakingCyaFormPage(true.some),
     confirmation = UndertakingConfirmationFormPage(true.some)
   )
+  val undertakingJourneyWithCyaNotVisited = undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage(Some(false)))
+
+  val submittedUndertakingJourney = undertakingJourneyComplete.copy(submitted = Some(true))
 
   val undertakingJourneyComplete1 = UndertakingJourney(
     about = AboutUndertakingFormPage("TestUndertaking1".some),

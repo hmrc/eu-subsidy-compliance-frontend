@@ -70,7 +70,7 @@ class EmailVerificationService @Inject() (
 
   def makeVerificationRequestAndRedirect(
     email: String,
-    previousPage: Call,
+    previousPage: String,
     nextPageUrl: String => String,
     reEnterEmailUrl: String = routes.UndertakingController.getConfirmEmail.url
   )(implicit
@@ -82,7 +82,7 @@ class EmailVerificationService @Inject() (
     verificationId <- addVerificationRequest(request.eoriNumber)
     verificationResponse <- verifyEmail(
       continueUrl = nextPageUrl(verificationId),
-      backUrl = previousPage.url,
+      backUrl = previousPage,
       reEnterEmailUrl = reEnterEmailUrl
     )(
       request.authorityId,
