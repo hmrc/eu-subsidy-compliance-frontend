@@ -29,11 +29,13 @@
 )
 
 
-@(form: Form[_], bs: BusinessEntity)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], bs: BusinessEntity, backLink: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key =@{"removeBusinessEntity"}
 @title = @{messages(s"$key.title")}
 @layout(
   pageTitle = Some(title),
+  backLinkEnabled = true,
+  backLink = Some(backLink),
   hasErrors = form.hasErrors
 ) {
   @formHelper(action = controllers.routes.RemoveBusinessEntityController.postRemoveBusinessEntity(bs.businessEntityIdentifier)) {

@@ -66,7 +66,7 @@ class RemoveBusinessEntityController @Inject() (
         case Some(undertaking) =>
           logger.info(s"Found undertaking for $eoriEntered")
           val removeBE = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
-          Ok(removeBusinessPage(removeBusinessForm, removeBE))
+          Ok(removeBusinessPage(removeBusinessForm, removeBE, routes.AddBusinessEntityController.startJourney().url))
         case _ =>
           logger.info(
             s"Did not find undertaking for $eoriEntered, redirecting to AddBusinessEntityController.getAddBusinessEntity"
@@ -91,7 +91,10 @@ class RemoveBusinessEntityController @Inject() (
             removeBusinessForm
               .bindFromRequest()
               .fold(
-                errors => BadRequest(removeBusinessPage(errors, removeBE)).toFuture,
+                errors =>
+                  BadRequest(
+                    removeBusinessPage(errors, removeBE, routes.AddBusinessEntityController.startJourney().url)
+                  ).toFuture,
                 success = form => handleValidBE(eoriEntered, form, undertakingRef, removeBE, undertaking)
               )
           }
