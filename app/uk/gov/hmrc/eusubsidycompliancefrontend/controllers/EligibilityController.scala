@@ -190,9 +190,9 @@ class EligibilityController @Inject() (
         form =>
           store
             .update[EligibilityJourney](_.setEoriCheck(form.value.toBoolean))
-            .flatMap { journey =>
-              if (journey.isComplete) Redirect(routes.AccountController.getAccountPage).toFuture
-              else journey.next
+            .flatMap { _ =>
+              if (form.value.toBoolean) Redirect(routes.UndertakingController.getAboutUndertaking.url).toFuture
+              else Redirect(routes.EligibilityController.getIncorrectEori.url).toFuture
             }
       )
   }
