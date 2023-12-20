@@ -38,6 +38,23 @@ GET /report-and-manage-your-allowance-for-customs-duty-waiver-claims
 ```
 This will prompt the user to log in if there isn't an active session yet.
 
+## Changing the Sector Cap
+
+The sector cap configuration is stored in the **application.conf** file. Navigate to the file and locate the sector cap config below:
+```
+sectorCap {
+  agriculture = ""
+  aquaculture = ""
+  transport = ""
+  other = ""
+}
+```
+Update the values as needed. Follow the same process to change the values in [eu-subsidy-compliance-stub](https://github.com/hmrc/eu-subsidy-compliance-stub) to match the values in this repository.
+
+Once you've made changes to the values, commit your changes, ensure changes are reviewed and merged. 
+
+To apply the updated sector cap values, restart the application. 
+
 ## Testing the service
 
 This service uses [sbt-scoverage](https://github.com/scoverage/sbt-scoverage) to
