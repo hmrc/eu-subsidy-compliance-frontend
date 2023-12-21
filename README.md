@@ -40,7 +40,7 @@ This will prompt the user to log in if there isn't an active session yet.
 
 ## Changing the Sector Cap
 
-The sector cap configuration is stored in the **application.conf** file. Navigate to the file and locate the sector cap config below:
+The industry sector caps may be updated as necessary. To prevent the requirement for a new release each time an update occurs, the sector cap is configured in the  **application.conf** file. Navigate to the file and locate the sector cap config below:
 ```
 sectorCap {
   agriculture = ""
@@ -49,11 +49,15 @@ sectorCap {
   other = ""
 }
 ```
-Update the values as needed. Follow the same process to change the values in [eu-subsidy-compliance-stub](https://github.com/hmrc/eu-subsidy-compliance-stub) to match the values in this repository.
+Adjust the values as required. To implement the updated sector cap values, merge your changes and restart the application.
 
-Once you've made changes to the values, commit your changes, ensure changes are reviewed and merged. 
+### Updating the Sector Cap in other environments
 
-To apply the updated sector cap values, restart the application. 
+Follow the same process to change the industry sector caps in [eu-subsidy-compliance-stub](https://github.com/hmrc/eu-subsidy-compliance-stub) to match the values in this repository.
+
+Ensure that adjustments are consistently applied across all configuration environments (development, qa, production, etc.).
+
+Once you've made changes to the values, commit and merge your changes and restart the application.
 
 ## Testing the service
 
