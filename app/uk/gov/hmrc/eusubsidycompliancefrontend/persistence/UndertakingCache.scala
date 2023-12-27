@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import org.mongodb.scala.MongoCollection
-import org.mongodb.scala.model.Filters.{equal, exists}
 import org.mongodb.scala.model.{Filters, IndexOptions, Indexes, Updates}
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging

@@ -32,8 +32,8 @@ trait EscServiceSupport { this: ControllerSpec =>
 
   def mockCreateUndertaking(undertaking: UndertakingCreate)(result: Either[ConnectorError, UndertakingRef]) =
     (mockEscService
-      .createUndertaking(_: UndertakingCreate)(_: HeaderCarrier, _: EORI))
-      .expects(undertaking, *, *)
+      .createUndertaking(_: UndertakingCreate)(_: HeaderCarrier))
+      .expects(undertaking, *)
       .returning(result.fold(e => Future.failed(e), _.toFuture))
 
   def mockRetrieveUndertaking(eori: EORI)(result: Future[Option[Undertaking]]) =

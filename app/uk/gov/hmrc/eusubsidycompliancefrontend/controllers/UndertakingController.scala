@@ -41,13 +41,11 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
-import uk.gov.hmrc.http.{HeaderCarrier, HttpVerbs, NotFoundException, Request}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpVerbs, NotFoundException}
 import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.mvc.ActionBuilder._
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms.UndertakingCyaFormPage
 
 @Singleton

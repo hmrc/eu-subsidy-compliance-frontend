@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import org.mongodb.scala.model.{Filters, FindOneAndUpdateOptions, ReturnDocument, Updates}
-import org.mongodb.scala.result.{DeleteResult, UpdateResult}
+import org.mongodb.scala.result.UpdateResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.EoriEmailRepository.DefaultTtl

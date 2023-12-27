@@ -17,9 +17,8 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.journeys
 
 import cats.implicits.catsSyntaxOptionId
-import play.api.http.HeaderNames.REFERER
 import play.api.libs.json._
-import play.api.mvc.{Request, Result, Results}
+import play.api.mvc.{Request, Result}
 import play.api.mvc.Results.Redirect
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Form
@@ -29,9 +28,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, SubsidyRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.CheckYourAnswersHelper
 
-import java.net.URI
 import scala.concurrent.Future
-import scala.util.Try
 
 case class SubsidyJourney(
   reportPaymentFirstTimeUser: ReportPaymentFirstTimeUserFormPage = ReportPaymentFirstTimeUserFormPage(),
@@ -108,16 +105,6 @@ case class SubsidyJourney(
     CheckYourAnswersHelper.calculateBackLink(cyaVisited, backLinkUrl, useDefaultBackUri)
   }
 
-  private def extractAndParseRefererUrl(implicit request: Request[_]): Option[String] =
-    request.headers
-      .get(REFERER)
-      .flatMap { u =>
-        Try(URI.create(u))
-          .fold(_ => None, uri => Some(uri.getPath))
-      }
-      .flatMap(getStepWithPath)
-      .map(_.uri)
-
   override def isEligibleForStep(implicit r: Request[_]): Boolean =
     if (addClaimEori.isCurrentPage && shouldSkipCurrencyConversion) claimAmount.value.isDefined
     else if (publicAuthority.isCurrentPage && !shouldAddNewBusiness) true
@@ -161,7 +148,6 @@ case class SubsidyJourney(
 
   private def claimAmountToBigDecimal(f: FormPage[ClaimAmount]) = f.value.map(a => BigDecimal(a.amount))
 
-  private def hasBusinessEoriToAdd = addClaimEori.value.exists(_.addToUndertaking)
 }
 
 object SubsidyJourney {
