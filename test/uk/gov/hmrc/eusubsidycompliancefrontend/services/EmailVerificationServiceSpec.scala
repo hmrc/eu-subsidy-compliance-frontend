@@ -123,7 +123,6 @@ class EmailVerificationServiceSpec
     "addVerifiedEmail is called" must {
 
       "store a new email verification request and mark it as verified" in {
-        val email = "foo@example.com"
 
         service.addVerifiedEmail(eori4).futureValue shouldBe (())
 
