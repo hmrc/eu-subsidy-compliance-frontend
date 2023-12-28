@@ -88,29 +88,6 @@ class XIDisableBusinessControllerSpec
 
       "display the page" when {
 
-        def test(businessEntityJourney: BusinessEntityJourney): Unit = {
-          val previousUrl = routes.AddBusinessEntityController.getAddBusinessEntity().url
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[BusinessEntityJourney](eori1)(Right(businessEntityJourney.some))
-          }
-
-          checkPageIsDisplayed(
-            performAction,
-            messageFromMessageKey("businessEntityEori.title"),
-            { doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe previousUrl
-
-              val input = doc.select(".govuk-input").attr("value")
-              input shouldBe businessEntityJourney.eori.value.getOrElse("")
-
-              val button = doc.select("form")
-              button.attr("action") shouldBe routes.BusinessEntityEoriController.postEori.url
-            }
-          )
-        }
-
         "BusineEntityEORI title is available " in {
           inSequence {
             mockAuthWithEnrolmentAndValidEmail()

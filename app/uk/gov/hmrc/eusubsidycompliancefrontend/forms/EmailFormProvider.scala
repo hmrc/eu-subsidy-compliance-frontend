@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 import play.api.data.Forms.nonEmptyText
-import play.api.data.validation.Constraints
 import play.api.data.{Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.EmailFormProvider.{EmailAddressFieldMapping, Fields}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.mandatory

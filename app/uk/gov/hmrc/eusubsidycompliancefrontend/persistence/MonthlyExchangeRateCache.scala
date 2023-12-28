@@ -20,12 +20,10 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.MonthlyExchangeRate
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import uk.gov.hmrc.mongo.MongoComponent
 import org.mongodb.scala.model._
-import play.api.libs.json.Writes
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration.DAYS
 import scala.concurrent.{ExecutionContext, Future}
-import scala.language.postfixOps
 
 @Singleton
 class MonthlyExchangeRateCache @Inject() (

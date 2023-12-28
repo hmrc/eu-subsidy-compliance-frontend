@@ -43,7 +43,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
-import uk.gov.hmrc.eusubsidycompliancefrontend.util.{CheckYourAnswersHelper, ReportReminderHelpers, TimeProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.BigDecimalOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
@@ -270,11 +270,6 @@ class SubsidyController @Inject() (
           journey.reportedNonCustomSubsidy.value
             .fold(reportedPaymentNonCustomSubsidyForm)(v => reportedPaymentNonCustomSubsidyForm.fill(FormValues(v)))
 
-        val previousUrl =
-          if (journey.getReportPaymentReturningUser)
-            routes.SubsidyController.getReportedPaymentReturningUserPage.url
-          else routes.SubsidyController.getReportPaymentFirstTimeUser.url
-
         Ok(
           reportNonCustomSubsidyPage(
             updatedForm,
@@ -478,19 +473,6 @@ class SubsidyController @Inject() (
           converted = rateOption.map(rate => BigDecimal(claimAmount.amount) / rate)
         } yield converted
       case EUR => Future.successful(None)
-    }
-
-  private def validateClaimAmount(date: LocalDate, claimAmount: ClaimAmount)(implicit hc: HeaderCarrier) =
-    claimAmount.currencyCode match {
-      case GBP =>
-        for {
-          exchangeRate <- exchangeRateService.retrieveCachedMonthlyExchangeRate(date)
-          rateOption = exchangeRate.map(_.amount)
-          converted = rateOption.map(rate => BigDecimal(claimAmount.amount) / rate)
-        } yield SubsidyAmount
-          .validateAndTransform(converted.getOrElse(BigDecimal(0)).toRoundedAmount)
-          .map(_ => claimAmount)
-      case EUR => claimAmount.some.toFuture
     }
 
   def getAddClaimEori: Action[AnyContent] = subsidyJourney.async { implicit request =>

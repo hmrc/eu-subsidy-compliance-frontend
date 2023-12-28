@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus.{UndertakingStatus, active}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus.UndertakingStatus
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types._
 
 import java.time.LocalDate

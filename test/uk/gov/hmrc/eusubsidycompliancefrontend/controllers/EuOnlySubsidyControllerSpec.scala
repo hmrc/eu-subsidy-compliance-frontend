@@ -26,21 +26,18 @@ import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.SubsidyControllerSpec.RemoveSubsidyRow
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider.Errors.{TooBig, TooSmall}
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.{IncorrectFormat, Required}
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{ClaimAmountFormProvider, ClaimEoriFormProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.Required
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.ClaimAmountFormProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms._
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.{EUR, GBP}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.EUR
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-
-import java.time.LocalDate
 
 class EuOnlySubsidyControllerSpec
     extends ControllerSpec
@@ -62,10 +59,6 @@ class EuOnlySubsidyControllerSpec
   )
 
   private val controller = instanceOf[SubsidyController]
-  private val exception = new Exception("oh no!")
-  private val currentDate = LocalDate.of(2022, 10, 9)
-
-  private val dateRange = (LocalDate.of(2020, 4, 6), LocalDate.of(2022, 10, 9))
 
   override def additionalConfig: Configuration = Configuration(
     ConfigFactory.parseString(
@@ -112,26 +105,6 @@ class EuOnlySubsidyControllerSpec
       "display the page" when {
 
         val claimAmountEurosId = "claim-amount-eur"
-        val claimAmountPoundsId = "claim-amount-gbp"
-
-        def test(subsidyJourney: SubsidyJourney, elementId: String): Unit = {
-          mockAuthWithEnrolmentAndValidEmail()
-          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-          mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
-
-          checkPageIsDisplayed(
-            performAction,
-            messageFromMessageKey("add-claim-amount.title"),
-            { doc =>
-              val input = doc.getElementById(elementId).attributes().get("value")
-              input shouldBe subsidyJourney.claimAmount.value.map(_.amount).getOrElse("")
-
-              val button = doc.select("form")
-              button.attr("action") shouldBe routes.SubsidyController.postAddClaimAmount.url
-
-            }
-          )
-        }
 
         "user hasn't already answered the question - EUR input field should be empty" in {
           val journey = SubsidyJourney(
@@ -257,28 +230,6 @@ class EuOnlySubsidyControllerSpec
 
           document.select(".govuk-error-summary").select("a").text() shouldBe errorMessage
           document.select(".govuk-error-message").text() shouldBe s"Error: $errorMessage"
-        }
-
-        def testConvertedAmountValidation(data: (String, String)*)(errorMessageKey: String): Unit = {
-
-          val subsidyJourneyOpt = SubsidyJourney(
-            claimDate = ClaimDateFormPage(DateFormValues("1", "1", "2022").some)
-          ).some
-          inSequence {
-            mockAuthWithEnrolmentAndValidEmail()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
-            mockRetrieveExchangeRate(claimDate)(Some(exchangeRate).toFuture)
-          }
-
-          val titleMessage = messageFromMessageKey("add-claim-amount.title")
-          val errorMessage = messageFromMessageKey(errorMessageKey)
-
-          checkFormErrorIsDisplayed(
-            performAction(data: _*),
-            titleMessage,
-            errorMessage
-          )
         }
 
         "nothing is entered" in {

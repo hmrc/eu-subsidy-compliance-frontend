@@ -16,14 +16,12 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.UndertakingBalance
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
@@ -56,6 +54,7 @@ class FinancialDashboardController @Inject() (
       undertakingOpt <- escService.retrieveUndertaking(eori)
       undertaking = undertakingOpt match {
         case Some(u) => u
+        case None => throw new IllegalStateException(s"Undertaking for EORI: $eori not found")
       }
       subsidies <- escService.retrieveSubsidiesForDateRange(undertaking.reference, today.toSearchRange)
       balanceOpt: Option[UndertakingBalance] <-

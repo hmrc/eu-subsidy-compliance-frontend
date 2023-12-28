@@ -2228,7 +2228,7 @@ class SubsidyControllerSpec
           mockAuthWithEnrolmentAndValidEmail()
           mockTimeProviderToday(fixedDate)
         }
-        val result = performAction
+        val result = performAction()
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
 
@@ -2245,7 +2245,7 @@ class SubsidyControllerSpec
           mockAuthWithEnrolmentAndValidEmail()
           mockTimeProviderToday(fixedDate)
         }
-        val result = performAction
+        val result = performAction()
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
 
@@ -2263,7 +2263,7 @@ class SubsidyControllerSpec
           }
 
           checkPageIsDisplayed(
-            performAction,
+            performAction(),
             "Payment reported"
           )
         }
