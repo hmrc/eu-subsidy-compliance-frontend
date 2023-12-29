@@ -23,14 +23,10 @@ import play.api.http.Status
 import play.api.inject
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, route, running, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, status}
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.Unverified
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class Scp08MaintenancePageControllerSpec
     extends ControllerSpec

@@ -18,19 +18,15 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import org.jsoup.Jsoup
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers
-import play.api.http.Status
 import play.api.http.Status.OK
 import play.api.inject
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, route, running, status, writeableOf_AnyContentAsEmpty}
+import play.api.test.Helpers.{GET, contentAsString, defaultAwaitTimeout, status}
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.Unverified
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 
-import scala.concurrent.ExecutionContext.Implicits.global
 class UndertakingSuspendedPageControllerSpec
     extends ControllerSpec
     with AuthSupport

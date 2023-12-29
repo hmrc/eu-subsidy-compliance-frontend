@@ -19,7 +19,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 import play.api.libs.json.{Format, Json}
 import play.api.mvc.{PathBindable, QueryStringBindable}
 import shapeless.tag.@@
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.EmailStatus
 
 import scala.util.Try
 
