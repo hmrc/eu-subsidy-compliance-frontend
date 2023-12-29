@@ -120,15 +120,6 @@ class EoriEmailRepository @Inject() (
       .headOption()
       .map(e => e.flatMap(cache => cache.data.asOpt[VerifiedEmail]))
 
-  def removeEmailField(): Future[UpdateResult] =
-    collection
-      .updateMany(
-        filter = Filters.exists("data.email", true),
-        update = Updates.combine(
-          Updates.unset("data.email")
-        )
-      )
-      .toFuture()
 }
 
 object EoriEmailRepository {

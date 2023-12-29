@@ -35,7 +35,6 @@ class EuropaConnectorSpec
     s"https://ec.europa.eu/budg/inforeuro/api/public/currencies/gbp"
 
   "EuropaConnector" when {
-
     "an exchange rate request is made" should {
       "return a successful response for a valid response from the europa API" in {
         givenEuropaReturns(200, requestUrl)
