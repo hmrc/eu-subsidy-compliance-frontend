@@ -84,7 +84,7 @@ class NoClaimNotificationController @Inject() (
               startDate.toDisplayFormat,
               lastSubmitted
                 .map(_.toDisplayFormat)
-                .getOrElse("") // TODO - can we display something sensible if the value is missing?
+                .getOrElse("")
             )
           ).toFuture
         }
@@ -123,7 +123,7 @@ class NoClaimNotificationController @Inject() (
                     startDate.toDisplayFormat,
                     lastSubmitted
                       .map(_.toDisplayFormat)
-                      .getOrElse("") // TODO - can we display something sensible if the date is missing?
+                      .getOrElse("")
                   )
                 ).toFuture
               },
