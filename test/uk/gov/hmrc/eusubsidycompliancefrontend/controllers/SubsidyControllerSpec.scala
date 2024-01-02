@@ -230,7 +230,7 @@ class SubsidyControllerSpec
           findHintText shouldBe s"For example, 15 3 ${year}"
         }
 
-        "H1 and paragraph both have legend both displayed in fieldset component" in {
+        "H1 is displayed as a legend" in {
           inSequence {
             mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -243,6 +243,18 @@ class SubsidyControllerSpec
 
           val header: String = document.getElementsByClass("govuk-fieldset__heading").text()
           header shouldBe "What date were you awarded the payment?"
+        }
+
+        "legend is displayed as a paragraph in fieldset component" in {
+          inSequence {
+            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
+            mockTimeProviderToday(fixedDate)
+          }
+          val result = performAction
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
 
           val paragraph: String = document.getElementsByClass("govuk-fieldset__legend").text()
           paragraph shouldBe "Enter the date you received formal confirmation of the payment due to be awarded."
