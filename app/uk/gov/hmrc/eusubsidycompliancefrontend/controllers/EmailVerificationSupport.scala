@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
-import cats.implicits.catsSyntaxOptionId
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.{Format, Reads}

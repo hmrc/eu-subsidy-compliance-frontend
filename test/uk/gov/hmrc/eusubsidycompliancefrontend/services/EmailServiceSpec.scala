@@ -83,12 +83,6 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockFactory with Scal
       .expects(eori, *)
       .returning(result.toFuture)
 
-  private def mockVerifiedEori() =
-    (mockEmailVerificationService
-      .getEmailVerification(_: EORI))
-      .expects(*)
-      .returning(None.toFuture)
-
   private val service = new EmailService(
     fakeAppConfig,
     mockSendEmailConnector,
