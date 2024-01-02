@@ -46,7 +46,6 @@ class TestOnlyController @Inject() (
   import actionBuilders._
 
   def testHome: Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
     Future.successful(Ok(testHomePage()))
   }
 

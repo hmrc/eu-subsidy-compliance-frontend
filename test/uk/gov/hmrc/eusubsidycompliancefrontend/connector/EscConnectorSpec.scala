@@ -31,7 +31,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EscConnectorSpec

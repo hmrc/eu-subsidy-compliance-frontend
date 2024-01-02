@@ -33,8 +33,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.Emai
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{CreateUndertaking, DisableUndertakingToBusinessEntity, DisableUndertakingToLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse, VerificationStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.{Amend, EmailStatus}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EmailStatus, IndustrySectorLimit, Sector, UndertakingName}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress, VerifiedEmail}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EmailStatus, Sector, UndertakingName}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -1940,7 +1940,6 @@ class UndertakingControllerSpec
         }
 
         "invalid email format - has spaces" in {
-          val email = "foo@example.com"
           inSequence {
             mockAuthWithEnrolment(eori1)
           }
@@ -1952,7 +1951,6 @@ class UndertakingControllerSpec
         }
 
         "invalid email format - no @" in {
-          val email = "foo@example.com"
           inSequence {
             mockAuthWithEnrolment(eori1)
           }

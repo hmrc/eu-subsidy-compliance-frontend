@@ -37,9 +37,6 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   val scp08Enabled: Boolean =
     config.getOptional[Boolean]("features.scp08-enabled").getOrElse(false)
 
-  val removeEmailJobEnabled: Boolean =
-    config.getOptional[Boolean]("features.run-remove-email-addresses-job-enabled").getOrElse(false)
-
   val releaseCEnabled: Boolean =
     config.getOptional[Boolean]("features.release-c-enabled").getOrElse(false)
 

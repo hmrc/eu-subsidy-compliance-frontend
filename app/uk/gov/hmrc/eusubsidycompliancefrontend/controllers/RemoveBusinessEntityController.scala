@@ -132,7 +132,6 @@ class RemoveBusinessEntityController @Inject() (
         )
       }
     } else {
-      //fixme why do we need this?
       logger.info(
         s"Did not remove undertakingRef:$undertakingRef as form was not true, redirecting to AddBusinessEntityController.getAddBusinessEntity"
       )

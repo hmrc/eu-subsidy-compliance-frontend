@@ -18,8 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Json, OFormat}
 
-import java.time.LocalDate
-
 case class MonthlyExchangeRate(
   currencyIso: String,
   refCurrencyIso: String,

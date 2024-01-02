@@ -87,7 +87,7 @@ trait EmailSupport { this: ControllerSpec =>
 
   def mockUpdateEmailForEori(eori: EORI, emailAddress: String)(result: Future[Unit]) =
     (mockEmailService
-      .updateEmailForEori(_: EORI, _: String)(_: HeaderCarrier, _: ExecutionContext))
-      .expects(eori, emailAddress, *, *)
+      .updateEmailForEori(_: EORI, _: String)(_: HeaderCarrier))
+      .expects(eori, emailAddress, *)
       .returning(result)
 }

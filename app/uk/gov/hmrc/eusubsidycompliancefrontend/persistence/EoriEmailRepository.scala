@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import org.mongodb.scala.model.{Filters, FindOneAndUpdateOptions, ReturnDocument, Updates}
-import org.mongodb.scala.result.{DeleteResult, UpdateResult}
+import org.mongodb.scala.result.UpdateResult
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.EoriEmailRepository.DefaultTtl
@@ -120,15 +120,6 @@ class EoriEmailRepository @Inject() (
       .headOption()
       .map(e => e.flatMap(cache => cache.data.asOpt[VerifiedEmail]))
 
-  def removeEmailField(): Future[UpdateResult] =
-    collection
-      .updateMany(
-        filter = Filters.exists("data.email", true),
-        update = Updates.combine(
-          Updates.unset("data.email")
-        )
-      )
-      .toFuture()
 }
 
 object EoriEmailRepository {
