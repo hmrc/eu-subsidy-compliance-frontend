@@ -230,7 +230,7 @@ class SubsidyControllerSpec
           findHintText shouldBe s"For example, 15 3 ${year}"
         }
 
-        "H1 is displayed as a legend" in {
+        "header is displayed on the page as" in {
           inSequence {
             mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -241,7 +241,7 @@ class SubsidyControllerSpec
           status(result) shouldBe OK
           val document = Jsoup.parse(contentAsString(result))
 
-          val header: String = document.getElementsByClass("govuk-fieldset__heading").text()
+          val header: String = document.getElementsByClass("govuk-heading-xl").text()
           header shouldBe "What date were you awarded the payment?"
         }
 
@@ -271,9 +271,9 @@ class SubsidyControllerSpec
             performAction,
             messageFromMessageKey("add-claim-date.title"),
             { doc =>
-              val legend = doc.getElementsByClass("govuk-fieldset__heading")
+              val legend = doc.getElementsByClass("govuk-fieldset__legend")
               legend.size() shouldBe 1
-              legend.first().text() shouldBe messageFromMessageKey("add-claim-date.p1")
+              legend.first().text() shouldBe messageFromMessageKey("add-claim-date.p2")
 
               doc.select("#claim-date > div:nth-child(1) > div > label").text() shouldBe "Day"
               doc.select("#claim-date > div:nth-child(2) > div > label").text() shouldBe "Month"

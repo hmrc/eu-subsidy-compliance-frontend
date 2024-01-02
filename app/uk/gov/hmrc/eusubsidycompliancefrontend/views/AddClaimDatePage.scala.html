@@ -85,9 +85,7 @@
 }
 
   @formHelper(action = controllers.routes.SubsidyController.postClaimDate) {
-<legend class="govuk-fieldset__legend--xl">
-<h1 class="govuk-fieldset__heading">@messages("add-claim-date.title")</h1>
-</legend>
+<h1 class="govuk-heading-xl govuk-!-margin-bottom-4">@messages("add-claim-date.title")</h1>
     @defining(form.errors.headOption) { maybeError =>
       @govukDateInput(DateInput(
         id = "claim-date",
