@@ -109,7 +109,7 @@ eligibilityTerms.p4=If you do not agree to these terms and conditions, you shoul
 eoricheck.title = Registering an EORI number
 eoricheck.p1 = This is the EORI number that is registered to your Government Gateway ID. This number is usually the same as your XI EORI number, XI234513513536.
 xieoricheck.p1 = This is the EORI number that is registered to your Government Gateway ID.
-xieoricheck.p2 = This is the same as and linked with any XI EORI number you may also have. That means that if you have GB123456123456, the XI version of it would be XI123456123456.
+xieoricheck.p2 = This is the same as, and linked with any XI EORI number you may also have. That means that if you have GB123456123456, the XI version of it would be XI123456123456.
 eoricheck.legend = Is the EORI number you want to register {0}?
 eoricheck.error.required = Select yes if this is the EORI number you want to register
 
@@ -201,7 +201,7 @@ businessEntityEori.hint = The first 2 letters will be the country code, GB. This
 businessEntityEoriNew.title = Business EORI Number
 businessEntityEori.p1 = We need to know the EORI number of the business you want to add.
 businessEntityEori.p2 = The first 2 letters will be the country code, GB. This is followed by 12 or 15 digits, like GB123456123456.
-businessEntityEori.p3 = This is the same as and linked with any XI EORI number you may also have. That means that if you have GB123456123456, the XI version of it would be XI123456123456.
+businessEntityEori.p3 = This is the same as, and linked with any XI EORI number you may also have. That means that if you have GB123456123456, the XI version of it would be XI123456123456.
 businessEntityEori.p4 = What is the EORI number of the business you want to add?
 
 
@@ -384,6 +384,7 @@ reportNonCustomSubsidy.p2.dateRange = 6 April {0} to 5 April {1}
 
 add-claim-date.title = What date were you awarded the payment?
 add-claim-date.p1 = What date were you awarded the payment?
+add-claim-date.p2 = Enter the date you received formal confirmation of the payment due to be awarded.
 add-claim-date.hint = For example, <span class="date-no-break">15 3 {0}</span>
 
 add-claim-date.error.required = Enter the date you were awarded the payment
@@ -443,7 +444,8 @@ subsidy.cya.change.hidden.your-reference=your reference
 
 subsidy.created.title = Payment reported
 subsidy.created.sub-heading = What happens next
-subsidy.created.p1 = Your next report must be made by {0}.
+subsidy.created.p1 = You must submit a report for each payment you have received in this 90-day period.
+subsidy.created.p2 = Your next report must be made by {0}.
 
 subsidy.created.suspended.p1 = It may take up to 24 hours before you can continue to claim any further Customs Duty waivers that you may be entitled to.
 subsidy.created.suspended.p2 = Your next report must be made by {0}. This date is 90 days after the missed deadline.

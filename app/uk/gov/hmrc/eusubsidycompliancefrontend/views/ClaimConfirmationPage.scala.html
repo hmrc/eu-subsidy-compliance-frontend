@@ -44,11 +44,12 @@
     ))
 
     @H2(messages("subsidy.created.sub-heading"), id = Some("claimSubheadingId"))
+    @P(messages("subsidy.created.p1"), id = Some("claimFirstParaId"))
 
     @if(isSuspended){
         @autoSuspensionConfirmationContent(nextClaimDueDate.toDisplayFormat)
     } else {
-        @P(messages("subsidy.created.p1", s"<strong>${nextClaimDueDate.toDisplayFormat}</strong>"), id = Some("claimParaId"))
+        @P(messages("subsidy.created.p2", s"<strong>${nextClaimDueDate.toDisplayFormat}</strong>"), id = Some("claimSecondParaId"))
     }
 
     <ul class="govuk-list">
