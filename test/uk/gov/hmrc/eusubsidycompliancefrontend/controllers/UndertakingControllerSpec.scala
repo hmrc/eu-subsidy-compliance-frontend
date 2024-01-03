@@ -387,9 +387,9 @@ class UndertakingControllerSpec
           SectorRadioOption(
             "transport",
             "Road freight transport for hire or reward",
-            "This sector includes couriers and hauliers who get paid by someone to transport their goods by road. The cap for this sector is €100,000."
+            "This sector includes couriers and hauliers who get paid by someone to transport their goods by road. The cap for this sector is €300,000."
           ),
-          SectorRadioOption("other", "Other", "The cap for all other sectors is €200,000.")
+          SectorRadioOption("other", "Other", "The cap for all other sectors is €300,000.")
         )
 
         def test(undertakingJourney: UndertakingJourney, previousCall: String, inputValue: Option[String]): Unit = {
