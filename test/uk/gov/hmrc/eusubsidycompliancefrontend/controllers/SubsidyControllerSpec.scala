@@ -230,7 +230,7 @@ class SubsidyControllerSpec
           findHintText shouldBe s"For example, 15 3 ${year}"
         }
 
-        "legend is displayed as H1 in fieldset component" in {
+        "header is displayed on the page as" in {
           inSequence {
             mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -241,8 +241,23 @@ class SubsidyControllerSpec
           status(result) shouldBe OK
           val document = Jsoup.parse(contentAsString(result))
 
-          val legendText: String = document.getElementsByClass("govuk-fieldset__heading").text()
-          legendText shouldBe "What date were you awarded the payment?"
+          val header: String = document.getElementsByClass("govuk-heading-xl").text()
+          header shouldBe "What date were you awarded the payment?"
+        }
+
+        "legend is displayed as a paragraph in fieldset component" in {
+          inSequence {
+            mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockGetOrCreate[SubsidyJourney](eori1)(Right(subsidyJourney))
+            mockTimeProviderToday(fixedDate)
+          }
+          val result = performAction
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          val paragraph: String = document.getElementsByClass("govuk-fieldset__legend").text()
+          paragraph shouldBe "Enter the date you received formal confirmation of the payment due to be awarded."
         }
 
         "a valid request is made" in {
@@ -256,9 +271,9 @@ class SubsidyControllerSpec
             performAction,
             messageFromMessageKey("add-claim-date.title"),
             { doc =>
-              val legend = doc.getElementsByClass("govuk-fieldset__heading")
+              val legend = doc.getElementsByClass("govuk-fieldset__legend")
               legend.size() shouldBe 1
-              legend.first().text() shouldBe messageFromMessageKey("add-claim-date.p1")
+              legend.first().text() shouldBe messageFromMessageKey("add-claim-date.p2")
 
               doc.select("#claim-date > div:nth-child(1) > div > label").text() shouldBe "Day"
               doc.select("#claim-date > div:nth-child(2) > div > label").text() shouldBe "Month"
@@ -2236,8 +2251,10 @@ class SubsidyControllerSpec
         claimTitle shouldBe "Payment reported"
         val headingTitle = document.getElementById("claimSubheadingId").text()
         headingTitle shouldBe "What happens next"
-        val paragraph = document.getElementById("claimParaId").text()
-        paragraph shouldBe "Your next report must be made by 20 April 2021."
+        val firstParagraph = document.getElementById("claimFirstParaId").text()
+        firstParagraph shouldBe "You must submit a report for each payment you have received in this 90-day period."
+        val secondParagraph = document.getElementById("claimSecondParaId").text()
+        secondParagraph shouldBe "Your next report must be made by 20 April 2021."
       }
 
       "Display hyperlinks on getClaimConfirmation page" in {

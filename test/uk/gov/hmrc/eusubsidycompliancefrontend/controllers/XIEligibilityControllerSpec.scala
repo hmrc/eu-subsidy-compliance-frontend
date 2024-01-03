@@ -89,7 +89,7 @@ class XIEligibilityControllerSpec
           paraOne shouldBe "This is the EORI number that is registered to your Government Gateway ID."
           val paraTwo = document.getElementById("paragraphId").text()
           paraTwo shouldBe
-            "This is the same as and linked with any XI EORI number you may also have. That means that if you have GB123456123456, the XI version of it would be XI123456123456."
+            "This is the same as, and linked with any XI EORI number you may also have. That means that if you have GB123456123456, the XI version of it would be XI123456123456."
           val legend = document.getElementsByClass("govuk-fieldset__legend govuk-fieldset__legend--m")
           legend.text shouldBe s"Is the EORI number you want to register $eori1?"
           val button = document.select("form")
