@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import org.scalamock.scalatest.MockFactory
 import play.api.i18n.Messages
-import play.api.mvc.{AnyContent, Call, Result}
+import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AuthSupport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.VerificationStatus

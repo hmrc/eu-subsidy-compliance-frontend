@@ -27,6 +27,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
+import cats.implicits.toFunctorOps
 
 @Singleton
 class RemovedSubsidyRepository @Inject() (mongoComponent: MongoComponent)(implicit ec: ExecutionContext) {
@@ -60,7 +61,7 @@ class RemovedSubsidyRepository @Inject() (mongoComponent: MongoComponent)(implic
             .upsert(true)
         )
         .toFuture()
-        .map(_ => ())
+        .void
     }
 
   def getAll(eori: EORI): Future[Seq[NonHmrcSubsidy]] =

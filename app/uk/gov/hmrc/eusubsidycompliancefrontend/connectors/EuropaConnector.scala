@@ -17,11 +17,18 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import play.api.http.HeaderNames.ACCEPT
+import play.api.libs.json.{Format, JsString, Json, OFormat, Reads}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.MonthlyExchangeRate
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpReads.Implicits._
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.chaining.scalaUtilChainingOps
+import EuropaConnector.restFormats
+
 @Singleton
 class EuropaConnector @Inject() (
   val client: ProxiedHttpClient
@@ -31,5 +38,13 @@ class EuropaConnector @Inject() (
       url = "https://ec.europa.eu/budg/inforeuro/api/public/currencies/gbp",
       headers = Seq(ACCEPT -> "application/vnd.sdmx.data+json;version=1.0.0-wd")
     )
+}
 
+object EuropaConnector {
+  private val datePatternStr = "dd/MM/yyyy"
+  private implicit val localDateFormat: Format[LocalDate] = Format[LocalDate](
+    Reads.localDateReads(datePatternStr),
+    date => date.format(DateTimeFormatter.ofPattern(datePatternStr)).pipe(JsString.apply)
+  )
+  implicit val restFormats: OFormat[MonthlyExchangeRate] = Json.format[MonthlyExchangeRate]
 }

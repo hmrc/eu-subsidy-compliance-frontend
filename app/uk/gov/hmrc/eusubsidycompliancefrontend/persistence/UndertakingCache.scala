@@ -16,16 +16,16 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
-import org.mongodb.scala.MongoCollection
-import org.mongodb.scala.model.{Filters, IndexOptions, Indexes, Updates}
+import cats.implicits.toFunctorOps
+import org.mongodb.scala.model.{Filters, IndexModel, IndexOptions, Indexes, Updates}
 import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.PersistenceHelpers.dataKeyForType
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.UndertakingCache.DefaultCacheTtl
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.mongo.cache.{CacheItem, DataKey, MongoCacheRepository}
-import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
+import uk.gov.hmrc.mongo.cache.{DataKey, MongoCacheRepository}
+import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent, MongoUtils}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
@@ -46,51 +46,31 @@ class UndertakingCache @Inject() (
     )
     with TracedLogging {
 
-  private val UndertakingReference = "data.Undertaking.reference"
-  private val UndertakingSubsidiesIdentifier = "data.UndertakingSubsidies.undertakingIdentifier"
-  private val industrySectorLimit = "data.Undertaking.industrySectorLimit"
+  private lazy val undertakingReference = "data.Undertaking.reference"
+  private lazy val undertakingSubsidiesIdentifier = "data.UndertakingSubsidies.undertakingIdentifier"
+  private lazy val industrySectorLimit = "data.Undertaking.industrySectorLimit"
+  lazy val allIndexes: Seq[IndexModel] = indexes ++ Seq(
+    IndexModel(
+      Indexes.ascending(undertakingReference),
+      IndexOptions().background(false).name("undertakingReference").sparse(false).unique(false)
+    ),
+    IndexModel(
+      Indexes.ascending(undertakingSubsidiesIdentifier),
+      IndexOptions().background(false).name("undertakingSubsidiesIdentifier").sparse(false).unique(false)
+    ),
+    IndexModel(
+      Indexes.ascending(industrySectorLimit),
+      IndexOptions().background(false).name("sectorLimit").sparse(false).unique(false)
+    )
+  )
 
-  // Ensure additional indexes for undertaking and undertaking subsidies deletion are present.
-  private lazy val indexedCollection: Future[MongoCollection[CacheItem]] =
-    for {
-      _ <- collection
-        .createIndex(
-          Indexes.ascending(UndertakingReference),
-          IndexOptions()
-            .background(false)
-            .name("undertakingReference")
-            .sparse(false)
-            .unique(false)
-        )
-        .headOption()
-      _ <- collection
-        .createIndex(
-          Indexes.ascending(UndertakingSubsidiesIdentifier),
-          IndexOptions()
-            .background(false)
-            .name("undertakingSubsidiesIdentifier")
-            .sparse(false)
-            .unique(false)
-        )
-        .headOption()
-      _ <- collection
-        .createIndex(
-          Indexes.ascending(industrySectorLimit),
-          IndexOptions()
-            .background(false)
-            .name("sectorLimit")
-            .sparse(false)
-            .unique(false)
-        )
-        .headOption()
-    } yield collection
+  override def ensureIndexes(): Future[Seq[String]] = {
+    MongoUtils.ensureIndexes(collection, allIndexes, replaceIndexes = true)
+  }
 
   def get[A : ClassTag](eori: EORI)(implicit reads: Reads[A], headerCarrier: HeaderCarrier): Future[Option[A]] = {
     logged {
-      indexedCollection.flatMap { _ =>
-        super
-          .get[A](eori)(dataKeyForType[A])
-      }
+      super.get[A](eori)(dataKeyForType[A])
     }(
       preMessage = s"UndertakingCache.get is being called for EORI '$eori'",
       successMessage = s"UndertakingCache.get returned %s for  EORI '$eori'",
@@ -119,11 +99,7 @@ class UndertakingCache @Inject() (
     headerCarrier: HeaderCarrier
   ): Future[A] = {
     logged {
-      indexedCollection.flatMap { _ =>
-        super
-          .put[A](eori)(DataKey(in.getClass.getSimpleName), in)
-          .map(_ => in)
-      }
+      super.put[A](eori)(DataKey(in.getClass.getSimpleName), in).as(in)
     }(
       preMessage = s"UndertakingCache.put is setting $in into EURO:$eori",
       successMessage = s"UndertakingCache.put succeeded in setting $in into EURO:$eori",
@@ -133,13 +109,13 @@ class UndertakingCache @Inject() (
 
   def deleteUndertaking(ref: UndertakingRef)(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
     logged {
-      indexedCollection.flatMap { c =>
-        c.updateMany(
-          filter = Filters.equal(UndertakingReference, ref),
+      collection
+        .updateMany(
+          filter = Filters.equal(undertakingReference, ref),
           update = Updates.unset("data.Undertaking")
-        ).toFuture()
-          .map(_ => ())
-      }
+        )
+        .toFuture()
+        .void
     }(
       preMessage = s"UndertakingCache.deleteUndertaking is deleting UndertakingRef:$ref",
       successMessage = s"UndertakingCache.deleteUndertaking succeeded in deleting UndertakingRef:$ref",
@@ -149,13 +125,13 @@ class UndertakingCache @Inject() (
 
   def deleteUndertakingSubsidies(ref: UndertakingRef)(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
     logged {
-      indexedCollection.flatMap { c =>
-        c.updateMany(
-          filter = Filters.equal(UndertakingSubsidiesIdentifier, ref),
+      collection
+        .updateMany(
+          filter = Filters.equal(undertakingSubsidiesIdentifier, ref),
           update = Updates.unset("data.UndertakingSubsidies")
-        ).toFuture()
-          .map(_ => ())
-      }
+        )
+        .toFuture()
+        .void
     }(
       preMessage = s"UndertakingCache.deleteUndertakingSubsidies is deleting UndertakingRef:$ref",
       successMessage = s"UndertakingCache.deleteUndertakingSubsidies succeeded in deleting UndertakingRef:$ref",

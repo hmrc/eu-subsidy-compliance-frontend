@@ -31,6 +31,7 @@ import scala.concurrent.duration.{DurationInt, FiniteDuration}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.language.postfixOps
 import scala.reflect.ClassTag
+import cats.implicits.toFunctorOps
 
 @Singleton
 class JourneyStore @Inject() (
@@ -52,7 +53,7 @@ class JourneyStore @Inject() (
     get[A](eori)(dataKeyForType[A])
 
   override def put[A](in: A)(implicit eori: EORI, writes: Writes[A]): Future[A] =
-    put[A](eori)(DataKey(in.getClass.getSimpleName), in).map(_ => in)
+    put[A](eori)(DataKey(in.getClass.getSimpleName), in).as(in)
 
   override def getOrCreate[A : ClassTag](default: A)(implicit eori: EORI, format: Format[A]): Future[A] =
     get[A].toContext
@@ -65,7 +66,7 @@ class JourneyStore @Inject() (
     collection
       .findOneAndDelete(Filters.equal("_id", EoriIdType.run(eori)))
       .toFuture()
-      .map(_ => ())
+      .void
 
   override def update[A : ClassTag](f: A => A)(implicit eori: EORI, format: Format[A]): Future[A] =
     get.toContext

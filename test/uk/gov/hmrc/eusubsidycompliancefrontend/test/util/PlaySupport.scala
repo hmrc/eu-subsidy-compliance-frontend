@@ -20,7 +20,7 @@ import org.scalamock.scalatest.MockFactory
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.i18n.{Lang, MessagesApi, MessagesImpl}
+import play.api.i18n.{Lang, Messages, MessagesApi, MessagesImpl}
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.{Application, Configuration, Play}
@@ -62,9 +62,9 @@ trait PlaySupport extends AnyWordSpec with Matchers with BeforeAndAfterAll with 
     super.afterAll()
   }
 
-  implicit lazy val messagesApi = instanceOf[MessagesApi]
+  implicit lazy val messagesApi: MessagesApi = instanceOf[MessagesApi]
 
-  implicit lazy val messages = MessagesImpl(lang, messagesApi)
+  implicit lazy val messages: Messages = MessagesImpl(lang, messagesApi)
 
   def instanceOf[A : ClassTag]: A = fakeApplication.injector.instanceOf[A]
 

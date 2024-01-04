@@ -17,13 +17,16 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.models
 
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats.Implicits.jatLocalDateFormat
+
+import java.time.LocalDate
 
 case class MonthlyExchangeRate(
   currencyIso: String,
   refCurrencyIso: String,
   amount: BigDecimal,
-  dateStart: String,
-  dateEnd: String
+  dateStart: LocalDate,
+  dateEnd: LocalDate
 )
 
 object MonthlyExchangeRate {
