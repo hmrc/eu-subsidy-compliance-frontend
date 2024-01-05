@@ -207,7 +207,7 @@ businessEntityEori.p4 = What is the EORI number of the business you want to add?
 
 businessEntityEori.error.incorrect-length = The EORI number of the business you want to add must start with GB and be followed by 12 or 15 numbers, like GB123456123456
 businessEntityEori.regex.error = The EORI number of the business you want to add must only include the letters GB and numbers 0 to 9
-businessEntityEori.eoriInUse = The EORI number you entered is already part of a another undertaking. Enter another EORI number.
+businessEntityEori.eoriInUse = The EORI number you entered is already part of another undertaking. Enter another EORI number.
 error.businessEntityEori.required = Enter the EORI number of the business you want to add
 
 businessEntityContact.title=What are the contact details of the business you want to add?
