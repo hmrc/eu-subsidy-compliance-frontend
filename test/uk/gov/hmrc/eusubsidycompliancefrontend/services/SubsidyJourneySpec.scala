@@ -19,7 +19,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import cats.implicits.catsSyntaxOptionId
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
-import play.api.http.HeaderNames.REFERER
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest

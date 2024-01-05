@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.eusubsidycompliancefrontend.models
+import com.google.inject.AbstractModule
+import uk.gov.hmrc.eusubsidycompliancefrontend.job.DropUndertakingCacheJob
 
-import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats.Implicits.jatLocalDateFormat
-
-import java.time.LocalDate
-
-case class MonthlyExchangeRate(
-  currencyIso: String,
-  refCurrencyIso: String,
-  amount: BigDecimal,
-  dateStart: LocalDate,
-  dateEnd: LocalDate
-)
-
-object MonthlyExchangeRate {
-  implicit val formats: OFormat[MonthlyExchangeRate] = Json.format[MonthlyExchangeRate]
+class StartModule extends AbstractModule {
+  override def configure(): Unit = {
+    bind(classOf[DropUndertakingCacheJob]).asEagerSingleton()
+  }
 }

@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import cats.implicits.catsSyntaxOptionId
+import org.mongodb.scala.model.IndexModel
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus.active
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, IndustrySectorLimit, SubsidyAmount, UndertakingName, UndertakingRef}
@@ -30,7 +31,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class UndertakingCacheSpec extends IntegrationBaseSpec with DefaultPlayMongoRepositorySupport[CacheItem] {
 
-  override protected def repository = new UndertakingCache(mongoComponent)
+  override protected val repository = new UndertakingCache(mongoComponent)
+  override protected lazy val indexes: Seq[IndexModel] = repository.allIndexes
 
   private val eori1 = EORI("GB123456789012")
   private val eori2 = EORI("GB123456789013")

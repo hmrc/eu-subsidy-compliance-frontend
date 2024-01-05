@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.views.models
 
 import org.scalatest.matchers.should.Matchers
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.{agriculture, aquaculture, other, transport}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{IndustrySectorLimit, Sector, SubsidyAmount}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec

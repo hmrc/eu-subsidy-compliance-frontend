@@ -240,7 +240,7 @@ class UndertakingController @Inject() (
   override def addVerifiedEmailToJourney(implicit eori: EORI): Future[Unit] =
     store
       .update[UndertakingJourney](_.setHasVerifiedEmail(true))
-      .map(_ => ())
+      .void
 
   def postConfirmEmail: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber

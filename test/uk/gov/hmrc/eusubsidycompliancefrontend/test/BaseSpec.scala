@@ -23,7 +23,9 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 abstract class BaseSpec extends AnyWordSpec with BeforeAndAfter {
 
-  final val _ = SharedMetricRegistries.clear()
+  locally {
+    SharedMetricRegistries.clear()
+  }
 
   protected implicit val hc: HeaderCarrier = new HeaderCarrier()
 

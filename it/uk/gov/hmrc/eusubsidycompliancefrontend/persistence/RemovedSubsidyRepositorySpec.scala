@@ -30,7 +30,7 @@ class RemovedSubsidyRepositorySpec extends IntegrationBaseSpec with DefaultPlayM
 
   private val underTest = new RemovedSubsidyRepository(mongoComponent)
 
-  override protected def repository: MongoCacheRepository[EORI] = underTest.repository
+  override protected val repository: MongoCacheRepository[EORI] = underTest.repository
 
   private val eori1 = EORI("GB123456789012")
   private val eori2 = EORI("GB123456789013")
