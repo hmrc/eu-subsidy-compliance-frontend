@@ -46,7 +46,11 @@ trait Connector extends TracedLogging {
         if (r.status.isSuccess) {
           Right(r)
         } else {
-          Left(ConnectorError(UpstreamErrorResponse(s"Unexpected response - got HTTP ${r.status}", r.status)))
+          Left(
+            ConnectorError(
+              UpstreamErrorResponse(s"Unexpected response - got HTTP ${r.status} with body: ${r.body}", r.status)
+            )
+          )
         }
       })
       .recover({ case e: Exception =>
