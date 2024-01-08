@@ -22,10 +22,10 @@ import play.api.libs.json.{Reads, Writes}
 import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.PersistenceHelpers.dataKeyForType
-import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.UndertakingCache.DefaultCacheTtl
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.UndertakingCache._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.cache.{DataKey, MongoCacheRepository}
-import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent, MongoUtils}
+import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
@@ -42,31 +42,14 @@ class UndertakingCache @Inject() (
       collectionName = "undertakingCache",
       ttl = DefaultCacheTtl,
       timestampSupport = new CurrentTimestampSupport,
-      cacheIdType = EoriIdType
+      cacheIdType = EoriIdType,
+      extraIndexes = Seq(
+        undertakingCacheIndex(undertakingReference, "undertakingReference"),
+        undertakingCacheIndex(undertakingSubsidiesIdentifier, "undertakingSubsidiesIdentifier"),
+        undertakingCacheIndex(industrySectorLimit, "sectorLimit")
+      )
     )
     with TracedLogging {
-
-  private lazy val undertakingReference = "data.Undertaking.reference"
-  private lazy val undertakingSubsidiesIdentifier = "data.UndertakingSubsidies.undertakingIdentifier"
-  private lazy val industrySectorLimit = "data.Undertaking.industrySectorLimit"
-  lazy val allIndexes: Seq[IndexModel] = indexes ++ Seq(
-    IndexModel(
-      Indexes.ascending(undertakingReference),
-      IndexOptions().background(false).name("undertakingReference").sparse(false).unique(false)
-    ),
-    IndexModel(
-      Indexes.ascending(undertakingSubsidiesIdentifier),
-      IndexOptions().background(false).name("undertakingSubsidiesIdentifier").sparse(false).unique(false)
-    ),
-    IndexModel(
-      Indexes.ascending(industrySectorLimit),
-      IndexOptions().background(false).name("sectorLimit").sparse(false).unique(false)
-    )
-  )
-
-  override def ensureIndexes(): Future[Seq[String]] = {
-    MongoUtils.ensureIndexes(collection, allIndexes, replaceIndexes = true)
-  }
 
   def get[A : ClassTag](eori: EORI)(implicit reads: Reads[A], headerCarrier: HeaderCarrier): Future[Option[A]] = {
     logged {
@@ -93,11 +76,7 @@ class UndertakingCache @Inject() (
     }
   }
 
-  def put[A](eori: EORI, in: A)(implicit
-    writes: Writes[A],
-    classTag: ClassTag[A],
-    headerCarrier: HeaderCarrier
-  ): Future[A] = {
+  def put[A : ClassTag : Writes](eori: EORI, in: A)(implicit headerCarrier: HeaderCarrier): Future[A] = {
     logged {
       super.put[A](eori)(DataKey(in.getClass.getSimpleName), in).as(in)
     }(
@@ -142,4 +121,15 @@ class UndertakingCache @Inject() (
 
 object UndertakingCache {
   val DefaultCacheTtl: FiniteDuration = 24 hours
+
+  private val undertakingReference = "data.Undertaking.reference"
+  private val undertakingSubsidiesIdentifier = "data.UndertakingSubsidies.undertakingIdentifier"
+  private val industrySectorLimit = "data.Undertaking.industrySectorLimit"
+
+  private def undertakingCacheIndex(field: String, name: String): IndexModel =
+    IndexModel(
+      Indexes.ascending(field),
+      IndexOptions().background(false).name(name).sparse(false).unique(false)
+    )
+
 }
