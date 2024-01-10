@@ -101,7 +101,7 @@ class UndertakingController @Inject() (
       logger.info(s"UndertakingJourney for EORI:$eori is completed ${journey.isComplete}")
       logger.info(s"UndertakingJourney's firstEmpty for EORI:$eori is ${journey.firstEmpty}")
       journey.steps.foreach { step =>
-        logger.info(s"UndertakingJourney step for EORI:$eori" + step.uri + "=" + step.value.isDefined)
+        logger.info(s"UndertakingJourney step for EORI:$eori ${step.uri}=${step.value.isDefined}")
       }
 
       journey.firstEmpty
@@ -390,10 +390,9 @@ class UndertakingController @Inject() (
         ref <- escService.createUndertaking(undertaking)
         newlyCreatedUndertaking <- escService.retrieveUndertaking(eori).map {
           case Some(ut) => ut
-          case None => {
+          case None =>
             logger.error(s"Unable to fetch undertaking with reference: $ref")
             throw new NotFoundException(s"Unable to fetch undertaking with reference: $ref")
-          }
         }
         _ <- emailService.sendEmail(eori, EmailTemplate.CreateUndertaking, newlyCreatedUndertaking)
         _ <- undertakingCache.put[Undertaking](eori, newlyCreatedUndertaking)
@@ -406,11 +405,9 @@ class UndertakingController @Inject() (
         )
         _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
       } yield Redirect(routes.UndertakingController.getConfirmation(ref))
-    ).recover {
-      case error: NotFoundException => {
-        logger.error(s"Error creating undertaking: $error")
-        InternalServerError(errorHandler.internalServerErrorTemplate)
-      }
+    ).recover { case error: NotFoundException =>
+      logger.error(s"Error creating undertaking: $error")
+      InternalServerError(errorHandler.internalServerErrorTemplate)
     }
 
   def getConfirmation(ref: String): Action[AnyContent] = verifiedEori.async { implicit request =>

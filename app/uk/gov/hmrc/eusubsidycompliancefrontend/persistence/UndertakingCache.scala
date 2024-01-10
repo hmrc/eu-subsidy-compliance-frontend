@@ -66,7 +66,7 @@ class UndertakingCache @Inject() (
     val forMessage = s" (for $classTag)"
     logger.info(preMessage + forMessage)
 
-    call.failed.foreach(error => logger.error(errorMessage + s"(${error.getMessage})" + forMessage, error))
+    call.failed.foreach(error => logger.error(s"$errorMessage - (${error.getMessage}) $forMessage", error))
 
     call.map { result =>
       logger.info(successMessage.format(result))

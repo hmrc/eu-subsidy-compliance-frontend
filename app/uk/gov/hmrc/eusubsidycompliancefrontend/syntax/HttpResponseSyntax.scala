@@ -78,7 +78,7 @@ object HttpResponseSyntax {
       Left("Could not parse http response JSON")
     }
 
-    private def processSuccessfulParsing[A, B](
+    private def processSuccessfulParsing[A](
       maybeLogger: Option[ResponseParsingLogger[ResponseError, A]],
       result: A
     ): Either[String, A] = {

@@ -95,7 +95,7 @@ class EscConnector @Inject() (
         }
       }
       .recover { case e: NotFoundException =>
-        logger.warn(s"undertaking balance for eori: $eori not found. Exception: $e")
+        logger.warn(s"undertaking balance for eori: $eori not found. Exception: $e", e)
         None
       }
   }

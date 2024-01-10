@@ -53,9 +53,7 @@ class NoBusinessPresentController @Inject() (
 
   def postNoBusinessPresent: Action[AnyContent] = verifiedEori.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    logger.info(
-      "NoBusinessPresentController.postNoBusinessPresent"
-    )
+    logger.info("NoBusinessPresentController.postNoBusinessPresent")
 
     withLeadUndertaking { _ =>
       store
