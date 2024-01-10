@@ -231,9 +231,8 @@ class EscService @Inject() (
         } yield ref
       }
       .logResult(
-        successCall = (undertaking: UndertakingRef) =>
-          s"createSubsidy SubsidyUpdate:$subsidyUpdate returned UndertakingRef:$undertaking",
-        errorMessage = s"Failed createSubsidy SubsidyUpdate:$subsidyUpdate"
+        successCall = undertakingRef => s"createSubsidy returned UndertakingRef:$undertakingRef",
+        errorMessage = s"Failed to createSubsidy for undertakingRef:${subsidyUpdate.undertakingIdentifier}"
       )
 
   def retrieveAllSubsidies(
