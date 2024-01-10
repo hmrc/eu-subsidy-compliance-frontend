@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
@@ -29,8 +30,7 @@ import scala.concurrent.Future
 @Singleton
 class BaseController(mcc: MessagesControllerComponents)
     extends FrontendController(mcc)
-    with I18nSupport
-    with TracedLogging {
+    with I18nSupport with Logging {
 
   protected def handleMissingSessionData(dataLabel: String) =
     throw new IllegalStateException(s"$dataLabel data missing on session")

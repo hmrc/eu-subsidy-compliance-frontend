@@ -25,6 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.VerifiedStatus.{Verified, VerifiedStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -106,6 +107,14 @@ class EmailService @Inject() (
           case _ => sys.error("Error in retrieving Email Address Response")
         }
     }
+
+  def hasVerifiedEmail(eori: EORI)(implicit
+                                            hc: HeaderCarrier,
+                                            ec: ExecutionContext
+  ): Future[Option[VerifiedStatus]] = retrieveEmailByEORI(eori).map {
+    case RetrieveEmailResponse(EmailType.VerifiedEmail, _) => Some(Verified)
+    case _ => None
+  }
 
   def retrieveVerifiedEmailAddressByEORI(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] =
     retrieveEmailByEORI(eori).map { res =>

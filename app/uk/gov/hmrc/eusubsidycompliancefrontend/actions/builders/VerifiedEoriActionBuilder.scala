@@ -22,7 +22,7 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailVerificationService
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailService, EmailVerificationService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
@@ -49,12 +49,12 @@ import scala.concurrent.{ExecutionContext, Future}
   * @param executionContext
   */
 class VerifiedEoriActionBuilder @Inject() (
-  override val config: Configuration,
-  override val env: Environment,
-  override val authConnector: AuthConnector,
-  emailVerificationService: EmailVerificationService,
-  enrolledActionBuilder: EnrolledActionBuilder,
-  mcc: ControllerComponents
+                                            override val config: Configuration,
+                                            override val env: Environment,
+                                            override val authConnector: AuthConnector,
+                                            emailService: EmailService,
+                                            enrolledActionBuilder: EnrolledActionBuilder,
+                                            mcc: ControllerComponents
 )(implicit val executionContext: ExecutionContext)
     extends ActionBuilder[AuthenticatedEnrolledRequest, AnyContent]
     with FrontendHeaderCarrierProvider
@@ -71,8 +71,8 @@ class VerifiedEoriActionBuilder @Inject() (
     enrolledActionBuilder.invokeBlock(
       r,
       { enrolledRequest: AuthenticatedEnrolledRequest[A] =>
-        emailVerificationService
-          .getEmailVerification(enrolledRequest.eoriNumber)
+        emailService
+          .hasVerifiedEmail(enrolledRequest.eoriNumber)(hc(enrolledRequest),executionContext) //fixme check undertakingCache instead???
           .toContext
           .foldF(Future.successful(Redirect(routes.UnverifiedEmailController.unverifiedEmail.url)))(_ =>
             f(enrolledRequest)

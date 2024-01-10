@@ -33,8 +33,7 @@ class SignOutController @Inject() (
   signOutPage: SignOutPage
 )(implicit val appConfig: AppConfig)
     extends BaseController(mcc)
-    with I18nSupport
-    with TracedLogging {
+    with I18nSupport {
 
   import actionBuilders._
 
