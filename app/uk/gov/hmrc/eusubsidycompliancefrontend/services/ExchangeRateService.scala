@@ -23,7 +23,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 
 import java.time.{LocalDate, YearMonth}
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,14 +36,13 @@ class ExchangeRateService @Inject() (
   def retrieveCachedMonthlyExchangeRate(
     date: LocalDate
   )(implicit hc: HeaderCarrier): Future[Option[MonthlyExchangeRate]] = {
-    val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-    val previousMonthYear = YearMonth.from(date).minusMonths(1).atEndOfMonth().format(formatter)
+    val previousMonthYear = YearMonth.from(date).minusMonths(1).atEndOfMonth()
     monthlyExchangeRateCache
       .getMonthlyExchangeRate(previousMonthYear)
       .toContext
       .orElseF {
         for {
-          _ <- monthlyExchangeRateCache.drop
+          _ <- monthlyExchangeRateCache.deleteAll()
           _ <- populateCache
           rate <- monthlyExchangeRateCache.getMonthlyExchangeRate(previousMonthYear)
         } yield rate

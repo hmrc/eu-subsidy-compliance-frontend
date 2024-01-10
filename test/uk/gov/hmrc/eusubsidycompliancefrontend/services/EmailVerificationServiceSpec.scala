@@ -18,7 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import org.mongodb.scala.model.Filters
 import org.scalamock.scalatest.MockFactory
-import org.scalatest.BeforeAndAfterAll
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Lang.defaultLang
@@ -43,16 +42,15 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class EmailVerificationServiceSpec
     extends BaseSpec
+    with DefaultPlayMongoRepositorySupport[CacheItem]
     with Matchers
-    with BeforeAndAfterAll
     with MockFactory
     with ScalaFutures
-    with DefaultAwaitTimeout
-    with DefaultPlayMongoRepositorySupport[CacheItem] {
+    with DefaultAwaitTimeout {
 
   private val mockEmailVerificationConnector: EmailVerificationConnector = mock[EmailVerificationConnector]
 
-  override protected def repository = new EoriEmailRepository(mongoComponent)
+  override protected val repository = new EoriEmailRepository(mongoComponent)
 
   private val mockServicesConfig = mock[ServicesConfig]
 

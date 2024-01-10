@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.models.email
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingName}
 
 case class EmailParameters(
@@ -27,5 +27,5 @@ case class EmailParameters(
 )
 
 object EmailParameters {
-  implicit val format = Json.format[EmailParameters]
+  implicit val format: OFormat[EmailParameters] = Json.format[EmailParameters]
 }

@@ -50,7 +50,7 @@ class JourneyStoreSpec
   private implicit val eori: String @@ types.EORI.Tag = EORI("GB123456789012")
   private val anotherEori = EORI("GB098765432109")
 
-  override protected def repository = new JourneyStore(mongoComponent, Configuration.empty)
+  override protected val repository = new JourneyStore(mongoComponent, Configuration.empty)
 
   "JourneyStore" when {
 

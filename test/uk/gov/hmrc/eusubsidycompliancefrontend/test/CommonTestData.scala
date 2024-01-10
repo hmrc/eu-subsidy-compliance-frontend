@@ -296,7 +296,8 @@ object CommonTestData {
   val businessEntityAddedEvent = AuditEvent.BusinessEntityAdded(undertakingRef, "1123", eori1, eori2)
   val businessEntityUpdatedEvent = AuditEvent.BusinessEntityUpdated(undertakingRef, "1123", eori1, eori2)
 
-  val exchangeRate = MonthlyExchangeRate("EUR", "GBP", BigDecimal(0.891), "01/01/2023", "31/01/2023")
+  val exchangeRate =
+    MonthlyExchangeRate("EUR", "GBP", BigDecimal(0.891), LocalDate.of(2023, 1, 1), LocalDate.of(2023, 1, 31))
 
   val emailVerificationRequest = EmailVerificationRequest(
     "credId",

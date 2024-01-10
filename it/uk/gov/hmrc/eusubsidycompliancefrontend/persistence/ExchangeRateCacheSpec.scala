@@ -20,30 +20,33 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.MonthlyExchangeRate
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.IntegrationBaseSpec
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ExchangeRateCacheSpec extends IntegrationBaseSpec with DefaultPlayMongoRepositorySupport[MonthlyExchangeRate] {
 
-  override protected def repository = new MonthlyExchangeRateCache(mongoComponent)
+  override protected val repository = new MonthlyExchangeRateCache(mongoComponent)
 
-  private val exchangeRate1 = MonthlyExchangeRate("GBP", "EUR", BigDecimal(0.867), "01/09/2023", "30/09/2023")
-  private val exchangeRate2 = MonthlyExchangeRate("GBP", "EUR", BigDecimal(0.807), "01/08/2023", "31/08/2023")
+  private val exchangeRate1 =
+    MonthlyExchangeRate("GBP", "EUR", BigDecimal(0.867), LocalDate.of(2023, 9, 1), LocalDate.of(2023, 9, 30))
+  private val exchangeRate2 =
+    MonthlyExchangeRate("GBP", "EUR", BigDecimal(0.807), LocalDate.of(2023, 8, 1), LocalDate.of(2023, 8, 31))
   private val exchangeRateSeq = Seq(exchangeRate1, exchangeRate2)
 
   "ExchangeRateCache" should {
 
     "return None when the cache is empty" in {
-      repository.getMonthlyExchangeRate("30/09/2023").futureValue shouldBe None
+      repository.getMonthlyExchangeRate(LocalDate.of(2023, 9, 30)).futureValue shouldBe None
     }
 
     "return None when there is no matching item in the cache" in {
       repository.put(exchangeRateSeq).futureValue shouldBe ()
-      repository.getMonthlyExchangeRate("01/09/2058").futureValue shouldBe None
+      repository.getMonthlyExchangeRate(LocalDate.of(2058, 9, 1)).futureValue shouldBe None
     }
 
     "clear the repository when drop is called" in {
       repository.put(exchangeRateSeq).futureValue
-      repository.drop.futureValue
+      repository.deleteAll().futureValue
       repository.getMonthlyExchangeRate(exchangeRate1.dateEnd).futureValue shouldBe None
     }
 

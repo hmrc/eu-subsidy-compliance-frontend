@@ -17,7 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verifyNoInteractions, verifyNoMoreInteractions, when}
+import org.mockito.Mockito.when
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
@@ -28,7 +28,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.exchangeRate
 import uk.gov.hmrc.http.HeaderCarrier
 
-import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, YearMonth}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,9 +37,8 @@ class ExchangeRateServiceSpec extends BaseSpec with OptionValues with Matchers w
   private val mockEuropaConnector = mock[EuropaConnector]
 
   val exchangeRateService = new ExchangeRateService(mockEuropaConnector, mockMonthlyExchangeRateCache)
-  val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-  val localDate: LocalDate = LocalDate.parse(exchangeRate.dateEnd, formatter)
-  val previousMonthYear: String = YearMonth.from(localDate).minusMonths(1).atEndOfMonth().format(formatter)
+  val localDate: LocalDate = exchangeRate.dateEnd
+  val previousMonthYear: LocalDate = YearMonth.from(localDate).minusMonths(1).atEndOfMonth()
 
   "handling request to retrieve exchange rate" must {
     "return an exception" when {
@@ -48,12 +46,12 @@ class ExchangeRateServiceSpec extends BaseSpec with OptionValues with Matchers w
       "no cached item is present and the http response is not successful" in {
         val exception = new RuntimeException("Europa endpoint failed")
         when(mockMonthlyExchangeRateCache.getMonthlyExchangeRate(previousMonthYear)).thenReturn(Future.successful(None))
-        when(mockMonthlyExchangeRateCache.drop).thenReturn(Future.unit)
+        when(mockMonthlyExchangeRateCache.deleteAll()).thenReturn(Future.unit)
         when(mockEuropaConnector.retrieveMonthlyExchangeRates(any[HeaderCarrier], any[ExecutionContext]))
           .thenReturn(Future.failed(exception))
 
         exchangeRateService
-          .retrieveCachedMonthlyExchangeRate(LocalDate.parse(exchangeRate.dateEnd, formatter))
+          .retrieveCachedMonthlyExchangeRate(exchangeRate.dateEnd)
           .failed
           .futureValue shouldBe exception
       }
@@ -65,7 +63,7 @@ class ExchangeRateServiceSpec extends BaseSpec with OptionValues with Matchers w
       "no cached item is present and the http call succeeds and the body of the response can be parsed" in {
         when(mockMonthlyExchangeRateCache.getMonthlyExchangeRate(previousMonthYear))
           .thenReturn(Future.successful(None))
-        when(mockMonthlyExchangeRateCache.drop)
+        when(mockMonthlyExchangeRateCache.deleteAll())
           .thenReturn(Future.unit)
         when(mockEuropaConnector.retrieveMonthlyExchangeRates(any[HeaderCarrier], any[ExecutionContext]))
           .thenReturn(Future.successful(Seq(exchangeRate)))
@@ -74,7 +72,7 @@ class ExchangeRateServiceSpec extends BaseSpec with OptionValues with Matchers w
         when(mockMonthlyExchangeRateCache.getMonthlyExchangeRate(previousMonthYear))
           .thenReturn(Future.successful(Some(exchangeRate)))
         exchangeRateService
-          .retrieveCachedMonthlyExchangeRate(LocalDate.parse(exchangeRate.dateEnd, formatter))
+          .retrieveCachedMonthlyExchangeRate(exchangeRate.dateEnd)
           .futureValue
           .value shouldBe exchangeRate
 
@@ -85,7 +83,7 @@ class ExchangeRateServiceSpec extends BaseSpec with OptionValues with Matchers w
           .thenReturn(Future.successful(Some(exchangeRate)))
 
         exchangeRateService
-          .retrieveCachedMonthlyExchangeRate(LocalDate.parse(exchangeRate.dateEnd, formatter))
+          .retrieveCachedMonthlyExchangeRate(exchangeRate.dateEnd)
           .futureValue
           .value shouldBe exchangeRate
 
