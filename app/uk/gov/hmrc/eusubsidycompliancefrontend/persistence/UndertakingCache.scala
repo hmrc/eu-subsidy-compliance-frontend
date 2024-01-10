@@ -18,12 +18,11 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import cats.implicits.toFunctorOps
 import org.mongodb.scala.model.{Filters, IndexModel, IndexOptions, Indexes, Updates}
+import play.api.Logging
 import play.api.libs.json.{Reads, Writes}
-import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.PersistenceHelpers.dataKeyForType
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.UndertakingCache._
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.mongo.cache.{DataKey, MongoCacheRepository}
 import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
@@ -49,9 +48,9 @@ class UndertakingCache @Inject() (
         undertakingCacheIndex(industrySectorLimit, "sectorLimit")
       )
     )
-    with TracedLogging {
+    with Logging {
 
-  def get[A : ClassTag](eori: EORI)(implicit reads: Reads[A], headerCarrier: HeaderCarrier): Future[Option[A]] = {
+  def get[A : ClassTag : Reads](eori: EORI): Future[Option[A]] = {
     logged {
       super.get[A](eori)(dataKeyForType[A])
     }(
@@ -61,10 +60,9 @@ class UndertakingCache @Inject() (
     )
   }
 
-  private def logged[A](call: Future[A])(preMessage: String, successMessage: String, errorMessage: String)(implicit
-    classTag: ClassTag[A],
-    headerCarrier: HeaderCarrier
-  ) = {
+  private def logged[A](
+    call: Future[A]
+  )(preMessage: String, successMessage: String, errorMessage: String)(implicit classTag: ClassTag[A]) = {
     val forMessage = s" (for $classTag)"
     logger.info(preMessage + forMessage)
 
@@ -76,7 +74,7 @@ class UndertakingCache @Inject() (
     }
   }
 
-  def put[A : ClassTag : Writes](eori: EORI, in: A)(implicit headerCarrier: HeaderCarrier): Future[A] = {
+  def put[A : ClassTag : Writes](eori: EORI, in: A): Future[A] = {
     logged {
       super.put[A](eori)(DataKey(in.getClass.getSimpleName), in).as(in)
     }(
@@ -86,7 +84,7 @@ class UndertakingCache @Inject() (
     )
   }
 
-  def deleteUndertaking(ref: UndertakingRef)(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+  def deleteUndertaking(ref: UndertakingRef): Future[Unit] = {
     logged {
       collection
         .updateMany(
@@ -102,7 +100,7 @@ class UndertakingCache @Inject() (
     )
   }
 
-  def deleteUndertakingSubsidies(ref: UndertakingRef)(implicit headerCarrier: HeaderCarrier): Future[Unit] = {
+  def deleteUndertakingSubsidies(ref: UndertakingRef): Future[Unit] = {
     logged {
       collection
         .updateMany(

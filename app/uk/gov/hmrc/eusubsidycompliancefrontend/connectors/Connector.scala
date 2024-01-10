@@ -16,11 +16,10 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
-import play.api.libs.json.Writes
+import play.api.Logging
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.Connector.ConnectorSyntax._
-import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.{HttpClient, HttpResponse, UpstreamErrorResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -28,12 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 //Traits are still inheritance, easy to start with, not so easy to live with as. "Replace Inheritance with Delegation"
 //is a refactoring that requires a greater amount of skill than creating the problem it solves so best not create the
 //problem.
-trait Connector extends TracedLogging {
-
-  //Need to write a test for what this actually affects as no tests fail when removed by frontend no longer works
-  import uk.gov.hmrc.http.HttpReads.Implicits._
-  //  import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
-
+trait Connector extends Logging {
   type ConnectorResult = Future[Either[ConnectorError, HttpResponse]]
 
   protected val http: HttpClient
@@ -42,60 +36,21 @@ trait Connector extends TracedLogging {
     request: HttpClient => Future[HttpResponse]
   )(implicit ec: ExecutionContext): ConnectorResult =
     request(http)
-      .map({ r: HttpResponse =>
-        if (r.status.isSuccess) {
-          Right(r)
+      .map { response =>
+        if (response.status.isSuccess) {
+          Right(response)
         } else {
           Left(
             ConnectorError(
-              UpstreamErrorResponse(s"Unexpected response - got HTTP ${r.status} with body: ${r.body}", r.status)
+              UpstreamErrorResponse(
+                s"Unexpected response - got HTTP ${response.status} with body: ${response.body}",
+                response.status
+              )
             )
           )
         }
-      })
-      .recover({ case e: Exception =>
-        Left(ConnectorError(e))
-      })
-
-  private val className = getClass.getSimpleName
-
-  /**
-    * Connector hides everything so we have wrap everything bit by bit
-    */
-  protected def logPost[A](
-    methodName: String,
-    url: String,
-    payload: A
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext, wts: Writes[A]): ConnectorResult = {
-    logger.info(s"$className.$methodName - posting to $url")
-    makeRequest(_.POST[A, HttpResponse](url, payload)).map {
-      case Left(error) =>
-        logger.error(s"$className.$methodName - failed POST to $url", error)
-        Left(error)
-      case Right(successResponse: HttpResponse) =>
-        logger.info(
-          s"$className.$methodName - successful POST to $url"
-        )
-        Right(successResponse)
-    }
-  }
-
-  protected def logGet(
-    methodName: String,
-    url: String
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): ConnectorResult = {
-    logger.info(s"EscConnector.$methodName - getting from $url")
-    makeRequest(_.GET[HttpResponse](url)).map {
-      case Left(error) =>
-        logger.error(s"EscConnector.$methodName - failed GET from $url")
-        Left(error)
-      case Right(successResponse: HttpResponse) =>
-        logger.info(s"EscConnector.$methodName - successful GET from $url")
-
-        Right(successResponse)
-    }
-  }
-
+      }
+      .recover(t => Left(ConnectorError(t)))
 }
 
 object Connector {

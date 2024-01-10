@@ -23,7 +23,6 @@ import play.api.mvc.{AnyContent, Result, WrappedRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.EoriEmailRepository
@@ -44,7 +43,7 @@ class EmailVerificationService @Inject() (
   emailVerificationConnector: EmailVerificationConnector,
   eoriEmailDatastore: EoriEmailRepository,
   servicesConfig: ServicesConfig
-) extends TracedLogging {
+) {
 
   def getEmailVerificationStatus(implicit
     request: AuthenticatedEnrolledRequest[AnyContent],

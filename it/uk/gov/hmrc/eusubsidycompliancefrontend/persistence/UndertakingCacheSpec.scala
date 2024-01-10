@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import cats.implicits.catsSyntaxOptionId
-import org.mongodb.scala.model.IndexModel
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.transport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus.active
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, IndustrySectorLimit, SubsidyAmount, UndertakingName, UndertakingRef}

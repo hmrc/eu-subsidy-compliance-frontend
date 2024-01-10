@@ -19,10 +19,10 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.services
 import cats.data.EitherT
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
+import play.api.Logging
 import play.api.http.Status.{NOT_FOUND, OK}
 import play.api.libs.json.{JsPath, JsonValidationError, Reads}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{RemovedSubsidyRepository, UndertakingCache}
@@ -42,12 +42,10 @@ class EscService @Inject() (
   undertakingCache: UndertakingCache,
   removedSubsidyRepository: RemovedSubsidyRepository
 )(implicit ec: ExecutionContext)
-    extends TracedLogging {
+    extends Logging {
 
   private implicit class LogFutureOps[A](eventualResult: Future[A]) {
-    def logResult(successCall: A => String, errorMessage: => String)(implicit
-      headerCarrier: HeaderCarrier
-    ): Future[A] = {
+    def logResult(successCall: A => String, errorMessage: => String): Future[A] = {
       eventualResult.failed.foreach { error =>
         logger.error(errorMessage, error)
       }
@@ -67,9 +65,7 @@ class EscService @Inject() (
     escConnector
       .createUndertaking(undertakingCreate)
       .flatMap { response =>
-        for {
-          ref <- handleResponse[UndertakingRef](response, "create undertaking").toFuture
-        } yield ref
+        handleResponse[UndertakingRef](response, "create undertaking").toFuture
       }
       .logResult(
         successCall = (undertakingRef: UndertakingRef) => s"createUndertaking undertakingRef:$undertakingRef",
@@ -141,9 +137,7 @@ class EscService @Inject() (
   )(implicit hc: HeaderCarrier): Future[Either[ConnectorError, Option[Undertaking]]] = {
     val eitherLogger = new ResponseParsingLogger[ConnectorError, Undertaking] {
       override def logSuccess(undertaking: Undertaking): Unit =
-        logger.error(
-          s"retrieveUndertakingAndHandleErrors: Successfully received undertaking for EORI:$eori with UndertakingName:${undertaking.name}"
-        )
+        logger.error(s"retrieveUndertakingAndHandleErrors: Successfully received undertaking for EORI:$eori")
 
       override def logValidationFailure(
         response: HttpResponse,
@@ -250,8 +244,7 @@ class EscService @Inject() (
     retrieveSubsidies(SubsidyRetrieve(undertakingRef, Option.empty))
       .logResult(
         successCall = (undertakingSubsidies: UndertakingSubsidies) =>
-          s"retrieveAllSubsidies UndertakingRef:$undertakingRef " +
-            s"returned $undertakingSubsidies",
+          s"retrieveAllSubsidies UndertakingRef:$undertakingRef returned $undertakingSubsidies",
         errorMessage = s"retrieveAllSubsidies failed for UndertakingRef:$undertakingRef"
       )
 
