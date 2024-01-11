@@ -13,9 +13,9 @@ common.accept-continue=Accept and continue
 common.continue.only=Continue
 common.submit-report=Submit a report
 common.accept=Accept and send
-common.go-account-home = Go to homepage
 common.cya.change = Change
 common.print = Print this page
+common.go-undertaking-home = Go to undertaking homepage
 
 continue.button=Save and continue
 button.addBusiness = Add a business to this undertaking
@@ -231,7 +231,8 @@ removeBusiness.error.required = Select yes if you want to remove a business from
 
 undertaking.confirmation.title = Undertaking registered
 undertaking.confirmation.p1 = We have sent you a confirmation email.
-undertaking.confirmation.p2 = You can now add businesses to your undertaking using the <a id="add-remove-business-link" href="{0}" class="govuk-link">Add and remove businesses</a> link in the ‘Undertaking administration’ section of the homepage.
+undertaking.confirmation.p2 = You can now submit reports of non-customs subsidy payments, or no payments in your undertaking.
+undertaking.confirmation.p3 = You can also add businesses to your undertaking using the <a id="add-remove-business-link" href="{0}" class="govuk-link">Add and remove businesses</a> link in the ‘Undertaking administration’ section of the undertaking.
 
 lead-account-homepage.title = Manage your undertaking
 lead-account-homepage.p1.not-overdue = Your next report is due by <strong>{0}</strong>.
@@ -451,7 +452,7 @@ subsidy.created.suspended.p1 = It may take up to 24 hours before you can continu
 subsidy.created.suspended.p2 = Your next report must be made by {0}. This date is 90 days after the missed deadline.
 
 subsidy.created.l1 = Report another payment
-subsidy.created.l2 = Go to homepage
+subsidy.created.l2 = Go to undertaking homepage
 
 subsidy.remove.title = You are about to remove a reported payment
 subsidy.remove.p1 = If you remove this payment then your remaining allowance will change.
@@ -497,7 +498,7 @@ noClaimNotification.error.required = Select if you have not received non-customs
 noClaimConfirmation.title = Report sent
 noClaimConfirmation.h2 = What happens next
 noClaimConfirmation.p1 = Your next report must be made by {0}.
-noClaimConfirmation.l1 = Go to homepage
+noClaimConfirmation.l1 = Go to undertaking homepage
 
 #Select New lead
 selectNewLead.title = Please choose the new administrator for your undertaking
@@ -559,12 +560,6 @@ cdsEnrolmentMissing.title = You must register for the Custom Declaration Service
 cdsEnrolmentMissing.p1 = Find out how to <a href="https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service" class="govuk-link">register for the Custom Declaration Service</a>
 cdsEnrolmentMissing.p2 = You have been logged out.
 
-#emailUnverifiedForLeadPromotion
-emailUnverifiedForLeadPromotion.title = {0} does not have a verified e-mail address
-emailUnverifiedForLeadPromotion.p1 = The selected EORI number does not have a verified email address. This means they will not be notified that you have asked them to become undertaking administrator.
-emailUnverifiedForLeadPromotion.p2 = The business/EORI number you have added will need to <a href="https://www.gov.uk/guidance/get-access-to-the-customs-declaration-service" class="govuk-link">register with CDS</a>.
-emailUnverifiedForLeadPromotion.p3 = They will then need to login to the service and accept the terms and conditions before they can become the undertaking administrator.
-
 #disableUndertakingWarning
 disableUndertakingWarning.title = Deregister your undertaking
 disableUndertakingWarning.p1 = You will no longer have access to the payments you have previously reported.
@@ -589,13 +584,13 @@ unverifiedEmail.recoverLinkText=Re-enter your email address
 paymentAlreadySubmitted.title=You have already successfully reported a payment
 paymentAlreadySubmitted.h1=You have already successfully reported a payment
 paymentAlreadySubmitted.p=You can now go to your homepage to submit another report, add a business or complete other tasks.
-paymentAlreadySubmitted.homeLinkText=Go to homepage
+paymentAlreadySubmitted.homeLinkText=Go to undertaking homepage
 
 #registration already submitted page
 registrationAlreadySubmitted.title=You have already successfully registered this EORI number as an undertaking
 registrationAlreadySubmitted.h1=You have already successfully registered this EORI number as an undertaking
 registrationAlreadySubmitted.p=You can now go to your homepage to submit a report, add a business or complete other tasks.
-registrationAlreadySubmitted.homeLinkText=Go to homepage
+registrationAlreadySubmitted.homeLinkText=Go to undertaking homepage
 
 #scp08 maintenance page
 scp08.maintenance-text.title=There is a problem with the service
