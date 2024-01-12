@@ -148,7 +148,7 @@ class BusinessEntityEoriController @Inject() (
               .bindFromRequest()
               .fold(
                 errors => {
-                  logger.info("BusinessEntityEoriController.postEori failed validation, showing errors")
+                  logger.warn("BusinessEntityEoriController.postEori failed validation, showing errors")
                   BadRequest(eoriPage(errors, journey.previous)).toFuture
                 },
                 form => {

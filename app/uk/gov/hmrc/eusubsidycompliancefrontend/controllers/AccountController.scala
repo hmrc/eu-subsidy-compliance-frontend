@@ -36,7 +36,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormat
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
-import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -68,7 +67,7 @@ class AccountController @Inject() (
     }
   }
 
-  private def handleUndertakingNotCreated(implicit e: EORI, hc: HeaderCarrier): Future[Result] = {
+  private def handleUndertakingNotCreated(implicit e: EORI): Future[Result] = {
     logger.info("handleUndertakingNotCreated")
     val result = getOrCreateJourneys().map {
       case (eligibilityJourney, undertakingJourney) if !eligibilityJourney.isComplete && undertakingJourney.isEmpty =>
@@ -112,7 +111,7 @@ class AccountController @Inject() (
 
   private def getOrCreateJourneys(
     undertakingJourney: UndertakingJourney = UndertakingJourney()
-  )(implicit e: EORI, hc: HeaderCarrier): OptionT[Future, (EligibilityJourney, UndertakingJourney)] = {
+  )(implicit e: EORI): OptionT[Future, (EligibilityJourney, UndertakingJourney)] = {
     logger.info("getOrCreateJourneys")
     for {
       // At this point the user has an ECC enrolment so they must be eligible to use the service.

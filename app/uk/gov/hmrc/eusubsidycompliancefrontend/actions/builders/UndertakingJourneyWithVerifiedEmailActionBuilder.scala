@@ -98,10 +98,9 @@ class UndertakingJourneyWithVerifiedEmailActionBuilder @Inject() (
         if (journey.isSubmitted)
           Future.successful(Redirect(routes.RegistrationSubmittedController.registrationAlreadySubmitted.url))
         else f(enrolledRequest)
-      case None => {
-        logger.error("No UndertakingJourney session data")
+      case None =>
+        logger.error(s"No UndertakingJourney session data for EORI:$eori")
         Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate(enrolledRequest)))
-      }
     }
   }
 }

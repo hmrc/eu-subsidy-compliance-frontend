@@ -89,7 +89,7 @@ class RemoveYourselfBusinessEntityController @Inject() (
         .bindFromRequest()
         .fold(
           errors => {
-            logger.info("Failed validating postRemoveYourselfBusinessEntity, showing errors")
+            logger.warn("Failed validating postRemoveYourselfBusinessEntity, showing errors")
             BadRequest(
               removeYourselfBEPage(errors, businessEntity, routes.AccountController.getAccountPage.url)
             ).toContext

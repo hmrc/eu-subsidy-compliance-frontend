@@ -98,10 +98,9 @@ class SubsidyJourneyActionBuilder @Inject() (
         if (journey.isSubmitted)
           Future.successful(Redirect(routes.PaymentSubmittedController.paymentAlreadySubmitted.url))
         else f(enrolledRequest)
-      case None => {
-        logger.error("No SubsidyJourney session data")
+      case None =>
+        logger.error(s"No SubsidyJourney session data for EORI:$eori")
         Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate(enrolledRequest)))
-      }
     }
   }
 }

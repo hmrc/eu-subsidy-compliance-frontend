@@ -17,9 +17,9 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import com.google.inject.{Inject, Singleton}
+import play.api.Logging
 import play.api.libs.json.Json
 import play.mvc.Http.Status
-import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, NotFoundException}
@@ -34,7 +34,7 @@ class EscConnector @Inject() (
   servicesConfig: ServicesConfig
 )(implicit ec: ExecutionContext)
     extends Connector
-    with TracedLogging {
+    with Logging {
 
   private lazy val escUrl: String = servicesConfig.baseUrl("esc")
 
@@ -49,44 +49,41 @@ class EscConnector @Inject() (
   private lazy val getUndertakingBalanceUrl = s"$escUrl/eu-subsidy-compliance/undertaking/balance"
 
   def createUndertaking(undertaking: UndertakingCreate)(implicit hc: HeaderCarrier): ConnectorResult =
-    logPost("createUndertaking", createUndertakingUrl, undertaking)
+    makeRequest(_.POST(createUndertakingUrl, undertaking))
 
   def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): ConnectorResult =
-    logPost("updateUndertaking", updateUndertakingUrl, undertaking)
+    makeRequest(_.POST(updateUndertakingUrl, undertaking))
 
   def disableUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): ConnectorResult =
-    logPost("disableUndertaking", disableUpdateUndertakingUrl, undertaking)
+    makeRequest(_.POST(disableUpdateUndertakingUrl, undertaking))
 
-  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): ConnectorResult = {
-    logGet("retrieveUndertaking", s"$retrieveUndertakingUrl/$eori")
-  }
+  def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): ConnectorResult =
+    makeRequest(_.GET(s"$retrieveUndertakingUrl/$eori"))
 
-  def addMember(
-    undertakingRef: UndertakingRef,
-    businessEntity: BusinessEntity
-  )(implicit hc: HeaderCarrier): ConnectorResult =
-    logPost("addMember", s"$addMemberUrl/$undertakingRef", businessEntity)
+  def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
+    hc: HeaderCarrier
+  ): ConnectorResult =
+    makeRequest(_.POST(s"$addMemberUrl/$undertakingRef", businessEntity))
 
   def removeMember(
     undertakingRef: UndertakingRef,
     businessEntity: BusinessEntity
   )(implicit hc: HeaderCarrier): ConnectorResult =
-    logPost("removeMember", s"$removeMemberUrl/$undertakingRef", businessEntity)
+    makeRequest(_.POST(s"$removeMemberUrl/$undertakingRef", businessEntity))
 
   def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit hc: HeaderCarrier): ConnectorResult =
-    logPost("createSubsidy", updateSubsidyUrl, subsidyUpdate)
+    makeRequest(_.POST(updateSubsidyUrl, subsidyUpdate))
 
   def removeSubsidy(
     undertakingRef: UndertakingRef,
     nonHmrcSubsidy: NonHmrcSubsidy
   )(implicit hc: HeaderCarrier): ConnectorResult = {
     val removeSubsidyPayload = SubsidyUpdate.forDelete(undertakingRef, nonHmrcSubsidy)
-    logPost("removeSubsidy", updateSubsidyUrl, removeSubsidyPayload)
+    makeRequest(_.POST(updateSubsidyUrl, removeSubsidyPayload))
   }
 
-  def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): ConnectorResult = {
-    logPost("retrieveSubsidy", retrieveSubsidyUrl, subsidyRetrieve)
-  }
+  def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): ConnectorResult =
+    makeRequest(_.POST(retrieveSubsidyUrl, subsidyRetrieve))
 
   def getUndertakingBalance(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[UndertakingBalance]] = {
     http
@@ -97,11 +94,9 @@ class EscConnector @Inject() (
           case _ => None
         }
       }
-      .recover {
-        case e: NotFoundException => {
-          logger.warn(s"undertaking balance for eori: $eori not found. Exception: $e")
-          None
-        }
+      .recover { case e: NotFoundException =>
+        logger.warn(s"undertaking balance for eori: $eori not found. Exception: $e", e)
+        None
       }
   }
 }

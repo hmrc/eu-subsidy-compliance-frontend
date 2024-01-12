@@ -102,19 +102,19 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
       .thenReturn(result.toFuture)
 
   private def mockCachePut[A](eori: EORI, in: A)(result: Either[Exception, A]) =
-    when(mockUndertakingCache.put(argEq(eori), argEq(in))(any(), any(), any()))
+    when(mockUndertakingCache.put(argEq(eori), argEq(in))(any(), any()))
       .thenReturn(result.fold(Future.failed, _.toFuture))
 
   private def mockCacheGet[A : ClassTag](eori: EORI)(result: Either[Exception, Option[A]]) =
-    when(mockUndertakingCache.get[A](argEq(eori))(any(), any(), any()))
+    when(mockUndertakingCache.get[A](argEq(eori))(any(), any()))
       .thenReturn(result.fold(Future.failed, _.toFuture))
 
   private def mockCacheDeleteUndertaking(ref: UndertakingRef)(result: Either[Exception, Unit]) =
-    when(mockUndertakingCache.deleteUndertaking(argEq(ref))(any()))
+    when(mockUndertakingCache.deleteUndertaking(argEq(ref)))
       .thenReturn(result.fold(Future.failed, _.toFuture))
 
   private def mockCacheDeleteUndertakingSubsidies(ref: UndertakingRef)(result: Either[Exception, Unit]) =
-    when(mockUndertakingCache.deleteUndertakingSubsidies(argEq(ref))(any()))
+    when(mockUndertakingCache.deleteUndertakingSubsidies(argEq(ref)))
       .thenReturn(result.fold(Future.failed, _.toFuture))
 
   private def mockAddRemovedSubsidy(eori: EORI, subsidy: NonHmrcSubsidy) =

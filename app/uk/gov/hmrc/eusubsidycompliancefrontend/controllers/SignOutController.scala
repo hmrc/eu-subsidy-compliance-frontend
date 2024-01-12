@@ -21,7 +21,6 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
@@ -33,8 +32,7 @@ class SignOutController @Inject() (
   signOutPage: SignOutPage
 )(implicit val appConfig: AppConfig)
     extends BaseController(mcc)
-    with I18nSupport
-    with TracedLogging {
+    with I18nSupport {
 
   import actionBuilders._
 
