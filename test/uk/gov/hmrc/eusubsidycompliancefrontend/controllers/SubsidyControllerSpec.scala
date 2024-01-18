@@ -2284,8 +2284,12 @@ class SubsidyControllerSpec
         val document = Jsoup.parse(contentAsString(result))
 
         document.getElementById("betaFeedbackHeaderId").text shouldBe "Before you go"
-        document.getElementById("betaFeedbackFirstParaId").text shouldBe "Your feedback helps us make our service better."
-        document.getElementById("beta-feedback-second-para").text shouldBe "Take our survey to share your feedback on this service. It takes about 1 minute to complete."
+        document
+          .getElementById("betaFeedbackFirstParaId")
+          .text shouldBe "Your feedback helps us make our service better."
+        document
+          .getElementById("beta-feedback-second-para")
+          .text shouldBe "Take our survey to share your feedback on this service. It takes about 1 minute to complete."
       }
 
       "redirect to payment already submitted page" when {
