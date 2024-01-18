@@ -2268,8 +2268,24 @@ class SubsidyControllerSpec
 
         val reportPaymentHref = document.getElementById("report-another-payment").attr("href")
         val homeHref = document.getElementById("home-link").attr("href")
+        val betaFeedback = document.getElementById("survey-beta-feedback").attr("href")
         reportPaymentHref shouldBe "/report-and-manage-your-allowance-for-customs-duty-waiver-claims/lead-undertaking-returning-user/start"
         homeHref shouldBe "/report-and-manage-your-allowance-for-customs-duty-waiver-claims"
+        betaFeedback shouldBe "http://tax.service.gov.uk/feedback/report-and-manage-your-allowance-for-customs-duty-waiver-claims"
+      }
+
+      "Display Before you go section on getClaimConfirmation page" in {
+        inSequence {
+          mockAuthWithEnrolmentAndValidEmail()
+          mockTimeProviderToday(fixedDate)
+        }
+        val result = performAction()
+        status(result) shouldBe OK
+        val document = Jsoup.parse(contentAsString(result))
+
+        document.getElementById("betaFeedbackHeaderId").text shouldBe "Before you go"
+        document.getElementById("betaFeedbackFirstParaId").text shouldBe "Your feedback helps us make our service better."
+        document.getElementById("beta-feedback-second-para").text shouldBe "Take our survey to share your feedback on this service. It takes about 1 minute to complete."
       }
 
       "redirect to payment already submitted page" when {

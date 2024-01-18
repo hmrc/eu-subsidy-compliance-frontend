@@ -38,6 +38,10 @@ common.change=Change
 common.remove=Remove
 common.currency.euros=€
 
+beta-feedback.header= Before you go
+beta-feedback.p1=  Your feedback helps us make our service better.
+beta-feedback.p2= <a id="survey-beta-feedback" href="http://tax.service.gov.uk/feedback/report-and-manage-your-allowance-for-customs-duty-waiver-claims" class="govuk-link">Take our survey</a> to share your feedback on this service. It takes about 1 minute to complete.
+
 hmrcTimeoutDialog.title = You’re about to be signed out
 
 timedOut.title = For your security, we signed you out
