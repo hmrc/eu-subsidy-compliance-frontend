@@ -56,4 +56,8 @@
         <li><a id="report-another-payment" class="govuk-link" href="@routes.SubsidyController.startJourney.url">@messages("subsidy.created.l1")</a></li>
         <li><a id="home-link" class="govuk-link" href="@routes.AccountController.getAccountPage.url">@messages("subsidy.created.l2")</a></li>
     </ul>
+
+    @H2(messages("beta-feedback.header"), id = Some("betaFeedbackHeaderId"))
+    @P(messages("beta-feedback.p1"), id = Some("betaFeedbackFirstParaId"))
+    <p class="govuk-body" id="beta-feedback-second-para">@Html(messages("beta-feedback.p2"))</p>
 }
