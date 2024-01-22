@@ -275,7 +275,7 @@ lead-account-homepage.ul2-li1 = View reported non-customs subsidy payments
 lead-account-homepage.h2-4 = Remaining allowance
 lead-account-homepage.h2.undertakingBalance = Undertaking balance
 lead-account-homepage.p3 = Your undertaking currently has a remaining balance of {0}, from your sector allowance of {1}.
-lead-account-homepage.ul3-li1 = View summary of your allowance (customs subsidies and non-customs subsidies)
+lead-account-homepage.ul3-li1 = View summary of your allowance (customs and non-customs subsidies)
 
 lead-account-homepage.h2-5 = Undertaking administration
 lead-account-homepage.ul4-li1 = Add or remove businesses
@@ -294,7 +294,7 @@ non-lead-account-homepage.h2-2 = Remaining allowance
 non-lead-account-homepage.h2.undertakingBalance = Undertaking balance
 non-lead-account-homepage.p2 = Your undertaking currently has a remaining balance of <strong>{0}</strong>, from your sector allowance of {1}.
 
-non-lead-account-homepage.ul1-li1 = View summary of your allowance (customs subsidies and non-customs subsidies)
+non-lead-account-homepage.ul1-li1 = View summary of your allowance (customs and non-customs subsidies)
 
 non-lead-account-homepage.h2-4 = Undertaking administration
 non-lead-account-homepage.ul2-li1 = Become the undertaking administrator
