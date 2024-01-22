@@ -28,6 +28,8 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 
+import java.time.LocalDate
+
 @Singleton
 class EscConnector @Inject() (
   override protected val http: HttpClient,
@@ -47,6 +49,7 @@ class EscConnector @Inject() (
   private lazy val updateSubsidyUrl = s"$escUrl/eu-subsidy-compliance/subsidy/update"
   private lazy val retrieveSubsidyUrl = s"$escUrl/eu-subsidy-compliance/subsidy/retrieve"
   private lazy val getUndertakingBalanceUrl = s"$escUrl/eu-subsidy-compliance/undertaking/balance"
+  private lazy val getExchangeRateUrl = s"$escUrl/eu-subsidy-compliance/retrieve-exchange-rate"
 
   def createUndertaking(undertaking: UndertakingCreate)(implicit hc: HeaderCarrier): ConnectorResult =
     makeRequest(_.POST(createUndertakingUrl, undertaking))
@@ -96,6 +99,22 @@ class EscConnector @Inject() (
       }
       .recover { case e: NotFoundException =>
         logger.warn(s"undertaking balance for eori: $eori not found. Exception: $e", e)
+        None
+      }
+  }
+
+  def getExchangeRate(date: LocalDate)(implicit hc: HeaderCarrier): Future[Option[MonthlyExchangeRate]] = {
+    val dateAsString = date.toString
+    http
+      .GET(s"$getExchangeRateUrl/$dateAsString")
+      .map { response: HttpResponse =>
+        response.status match {
+          case Status.OK => Json.parse(response.body).asOpt[MonthlyExchangeRate]
+          case _ => None
+        }
+      }
+      .recover { case e: NotFoundException =>
+        logger.warn(s"Unable to retrieve exchange rate because of exception: $e", e)
         None
       }
   }

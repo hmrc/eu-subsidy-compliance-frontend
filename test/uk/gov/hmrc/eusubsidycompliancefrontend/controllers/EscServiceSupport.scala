@@ -121,8 +121,8 @@ trait EscServiceSupport { this: ControllerSpec =>
       .returning(result.fold(e => Future.failed(e), _.toFuture))
 
   def mockRetrieveExchangeRate(date: LocalDate)(result: Future[Option[MonthlyExchangeRate]]) =
-    (mockExchangeRateService
-      .retrieveCachedMonthlyExchangeRate(_: LocalDate)(_: HeaderCarrier))
+    (mockEscService
+      .getExchangeRate(_: LocalDate)(_: HeaderCarrier))
       .expects(date, *)
       .returning(result)
 

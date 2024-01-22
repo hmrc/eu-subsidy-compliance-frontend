@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import cats.implicits.catsSyntaxOptionId
 import com.typesafe.config.ConfigFactory
-import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.scalatest.concurrent.ScalaFutures
 import play.api.Configuration
