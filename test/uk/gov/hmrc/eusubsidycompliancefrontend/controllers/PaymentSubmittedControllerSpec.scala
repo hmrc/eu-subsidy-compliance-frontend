@@ -65,7 +65,7 @@ class PaymentSubmittedControllerSpec
           document
             .getElementById("paymentAlreadySubmitted-p1")
             .text shouldBe "You can now go to your homepage to submit another report, add a business or complete other tasks."
-          document.getElementById("paymentAlreadySubmitted-link").text shouldBe "Go to homepage"
+          document.getElementById("paymentAlreadySubmitted-link").text shouldBe "Go to undertaking homepage"
           document
             .getElementById("paymentAlreadySubmitted-link")
             .attr("href") shouldBe routes.AccountController.getAccountPage.url

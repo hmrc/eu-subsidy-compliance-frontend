@@ -83,7 +83,13 @@ class NoClaimNotificationControllerWithReleaseCEnabledSpec
         document
           .getElementById("claim-confirmation-p2")
           .text shouldBe "Your next report must be made by 20 April 2021. This date is 90 days after the missed deadline."
-
+        document.getElementById("betaFeedbackHeaderId").text shouldBe "Before you go"
+        document
+          .getElementById("betaFeedbackFirstParaId")
+          .text shouldBe "Your feedback helps us make our service better."
+        document
+          .getElementById("beta-feedback-second-para")
+          .text shouldBe "Take our survey to share your feedback on this service. It takes about 1 minute to complete."
       }
 
       "display correct content when NOT suspended" in {
@@ -100,7 +106,13 @@ class NoClaimNotificationControllerWithReleaseCEnabledSpec
 
         document.title shouldBe "Report sent - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
         document.getElementById("claim-confirmation-p1").text shouldBe "Your next report must be made by 20 April 2021."
-
+        document.getElementById("betaFeedbackHeaderId").text shouldBe "Before you go"
+        document
+          .getElementById("betaFeedbackFirstParaId")
+          .text shouldBe "Your feedback helps us make our service better."
+        document
+          .getElementById("beta-feedback-second-para")
+          .text shouldBe "Take our survey to share your feedback on this service. It takes about 1 minute to complete."
       }
     }
   }

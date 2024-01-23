@@ -17,9 +17,9 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import com.google.inject.{Inject, Singleton}
+import play.api.Logging
 import play.api.libs.json.{Json, Writes}
 import play.api.mvc.Request
-import uk.gov.hmrc.eusubsidycompliancefrontend.logging.TracedLogging
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.AuditExtensions.auditHeaderCarrier
@@ -30,7 +30,7 @@ import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
 @Singleton
-class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: ExecutionContext) extends TracedLogging {
+class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: ExecutionContext) extends Logging {
 
   private val auditSource: String = "eu-subsidy-compliance-frontend"
 
@@ -51,7 +51,7 @@ class AuditService @Inject() (auditConnector: AuditConnector)(implicit ec: Execu
       case Success(_) => ()
       case Failure(e) =>
         // WARNING: do not change log message here without updating alert-config as well
-        logger.warn(s"Could not audit ${auditEvent.auditType} event: ${e.getMessage}")
+        logger.warn(s"Could not audit ${auditEvent.auditType} event: ${e.getMessage}", e)
     }
   }
 

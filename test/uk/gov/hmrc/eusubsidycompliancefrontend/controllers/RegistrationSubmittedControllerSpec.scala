@@ -66,7 +66,7 @@ class RegistrationSubmittedControllerSpec
           document
             .getElementById("registrationAlreadySubmitted-p1")
             .text shouldBe "You can now go to your homepage to submit a report, add a business or complete other tasks."
-          document.getElementById("registrationAlreadySubmitted-link").text shouldBe "Go to homepage"
+          document.getElementById("registrationAlreadySubmitted-link").text shouldBe "Go to undertaking homepage"
           document
             .getElementById("registrationAlreadySubmitted-link")
             .attr("href") shouldBe routes.AccountController.getAccountPage.url
