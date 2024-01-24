@@ -18,7 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import com.google.inject.{Inject, Singleton}
 import play.api.Logging
-import play.api.libs.json.Json
 import play.mvc.Http.Status
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
@@ -93,7 +92,7 @@ class EscConnector @Inject() (
       .GET(s"$getUndertakingBalanceUrl/$eori")
       .map { response: HttpResponse =>
         response.status match {
-          case Status.OK => Json.parse(response.body).asOpt[UndertakingBalance]
+          case Status.OK => response.json.asOpt[UndertakingBalance]
           case _ => None
         }
       }
@@ -109,7 +108,7 @@ class EscConnector @Inject() (
       .GET(s"$getExchangeRateUrl/$dateAsString")
       .map { response: HttpResponse =>
         response.status match {
-          case Status.OK => Json.parse(response.body).asOpt[MonthlyExchangeRate]
+          case Status.OK => response.json.asOpt[MonthlyExchangeRate]
           case _ => None
         }
       }
