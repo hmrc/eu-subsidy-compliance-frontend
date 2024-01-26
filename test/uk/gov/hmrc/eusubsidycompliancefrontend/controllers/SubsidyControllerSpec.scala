@@ -2271,7 +2271,7 @@ class SubsidyControllerSpec
         val betaFeedback = document.getElementById("survey-beta-feedback").attr("href")
         reportPaymentHref shouldBe "/report-and-manage-your-allowance-for-customs-duty-waiver-claims/lead-undertaking-returning-user/start"
         homeHref shouldBe "/report-and-manage-your-allowance-for-customs-duty-waiver-claims"
-        betaFeedback shouldBe "http://tax.service.gov.uk/feedback/report-and-manage-your-allowance-for-customs-duty-waiver-claims"
+        betaFeedback shouldBe "http://localhost:9514/feedback/report-and-manage-your-allowance-for-customs-duty-waiver-claims"
       }
 
       "Display Before you go section on getClaimConfirmation page" in {
