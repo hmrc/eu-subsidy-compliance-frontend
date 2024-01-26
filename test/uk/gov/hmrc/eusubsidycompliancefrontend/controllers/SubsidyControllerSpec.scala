@@ -2272,7 +2272,9 @@ class SubsidyControllerSpec
         reportPaymentHref shouldBe "/report-and-manage-your-allowance-for-customs-duty-waiver-claims/lead-undertaking-returning-user/start"
         homeHref shouldBe "/report-and-manage-your-allowance-for-customs-duty-waiver-claims"
         betaFeedback.text shouldBe "Take our survey"
-        betaFeedback.attr("href") shouldBe "http://localhost:9514/feedback/report-and-manage-your-allowance-for-customs-duty-waiver-claims"
+        betaFeedback.attr(
+          "href"
+        ) shouldBe "http://localhost:9514/feedback/report-and-manage-your-allowance-for-customs-duty-waiver-claims"
       }
 
       "Display Before you go section on getClaimConfirmation page" in {
