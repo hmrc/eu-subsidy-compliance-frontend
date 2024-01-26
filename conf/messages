@@ -40,7 +40,7 @@ common.currency.euros=€
 
 beta-feedback.header= Before you go
 beta-feedback.p1=  Your feedback helps us make our service better.
-beta-feedback.link= Take our survey
+beta-feedback.linkText= Take our survey
 beta-feedback.p2= to share your feedback on this service. It takes about 1 minute to complete.
 
 hmrcTimeoutDialog.title = You’re about to be signed out
