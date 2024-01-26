@@ -334,7 +334,7 @@ class SubsidyController @Inject() (
         subsidyJourney <- store.get[SubsidyJourney].toContext
         addClaimDate <- subsidyJourney.claimDate.value.toContext
         previous = subsidyJourney.previous
-        exchangeRate <- exchangeRateService.retrieveCachedMonthlyExchangeRate(addClaimDate.toLocalDate).toContext
+        exchangeRate <- escService.getExchangeRate(addClaimDate.toLocalDate).toContext
         conversionRate = exchangeRate.amount
         claimAmountForm = ClaimAmountFormProvider(conversionRate).form
       } yield {
@@ -419,7 +419,7 @@ class SubsidyController @Inject() (
         subsidyJourney <- store.get[SubsidyJourney].toContext
         addClaimDate <- subsidyJourney.claimDate.value.toContext
         previous = subsidyJourney.previous
-        exchangeRate <- exchangeRateService.retrieveCachedMonthlyExchangeRate(addClaimDate.toLocalDate).toContext
+        exchangeRate <- escService.getExchangeRate(addClaimDate.toLocalDate).toContext
         conversionRate = exchangeRate.amount
         claimAmountForm = ClaimAmountFormProvider(conversionRate).form
         submissionResult <- handleFormSubmit(previous, addClaimDate, claimAmountForm).toContext
@@ -468,7 +468,7 @@ class SubsidyController @Inject() (
     claimAmount.currencyCode match {
       case GBP =>
         for {
-          exchangeRate <- exchangeRateService.retrieveCachedMonthlyExchangeRate(date)
+          exchangeRate <- escService.getExchangeRate(date)
           rateOption = exchangeRate.map(_.amount)
           converted = rateOption.map(rate => BigDecimal(claimAmount.amount) / rate)
         } yield converted
