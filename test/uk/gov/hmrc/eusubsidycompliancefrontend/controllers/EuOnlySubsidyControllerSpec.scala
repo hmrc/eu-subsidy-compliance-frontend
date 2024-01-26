@@ -114,6 +114,7 @@ class EuOnlySubsidyControllerSpec
           mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockGet[SubsidyJourney](eori1)(Right(journey.some))
+          mockRetrieveExchangeRate(claimDate2)(Some(exchangeRate).toFuture)
 
           val result = performAction
           val document = Jsoup.parse(contentAsString(result))
@@ -133,6 +134,7 @@ class EuOnlySubsidyControllerSpec
           mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockGet[SubsidyJourney](eori1)(Right(journey.some))
+          mockRetrieveExchangeRate(claimDate2)(Some(exchangeRate).toFuture)
 
           val result = performAction
           val document = Jsoup.parse(contentAsString(result))
@@ -219,6 +221,7 @@ class EuOnlySubsidyControllerSpec
             mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney(eori1)
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
             mockGet[SubsidyJourney](eori1)(Right(subsidyJourneyOpt))
+            mockRetrieveExchangeRate(claimDate2)(Some(exchangeRate).toFuture)
           }
           val errorMessage = messageFromMessageKey(errorMessageKey)
 
@@ -276,6 +279,7 @@ class EuOnlySubsidyControllerSpec
           mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney(eori1)
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
           mockGet[SubsidyJourney](eori1)(Right(subsidyJourney.some))
+          mockRetrieveExchangeRate(claimDate2)(Some(exchangeRate).toFuture)
           mockUpdate[SubsidyJourney](eori1)(Right(subsidyJourneyWithClaimAmount))
         }
 

@@ -177,6 +177,10 @@ class EscService @Inject() (
     escConnector.getUndertakingBalance(eori)
   }
 
+  def getExchangeRate(date: LocalDate)(implicit hc: HeaderCarrier): Future[Option[MonthlyExchangeRate]] = {
+    escConnector.getExchangeRate(date)
+  }
+
   def getUndertaking(eori: EORI)(implicit hc: HeaderCarrier): Future[Undertaking] =
     retrieveUndertaking(eori).toContext
       .getOrElse(throw new IllegalStateException("Expected undertaking not found"))
