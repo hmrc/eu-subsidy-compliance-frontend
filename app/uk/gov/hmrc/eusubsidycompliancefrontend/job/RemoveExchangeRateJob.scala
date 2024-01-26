@@ -15,10 +15,12 @@
  */
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.job
+import cats.implicits.toFunctorOps
 import play.api.Logging
 import play.api.inject.ApplicationLifecycle
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.MonthlyExchangeRateCache
+import uk.gov.hmrc.mongo.MongoComponent
 
 import javax.inject._
 import javax.inject.Inject
@@ -27,15 +29,15 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class RemoveExchangeRateJob @Inject() (
   lifecycle: ApplicationLifecycle,
-  monthlyExchangeRateCache: MonthlyExchangeRateCache
-)(implicit
+  mongoComponent: MongoComponent
+                                      )(implicit
   val appConfig: AppConfig,
   executionContext: ExecutionContext
 ) extends Logging {
 
   def runExchangeRateRepoJob(): Unit = {
     logger.warn("=== clearing ExchangeRate Repository job starting ===")
-    monthlyExchangeRateCache.deleteAll().map(_ => logger.warn(s"=== exchangeRate cache cleared ==="))
+    mongoComponent.database.getCollection("exchangeRateMonthlyCache").drop().toFuture().void.map(_ => logger.warn(s"=== exchangeRate cache cleared ==="))
   }
 
   if (appConfig.clearExchangeRateJob) {
