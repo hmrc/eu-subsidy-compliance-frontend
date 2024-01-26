@@ -25,7 +25,7 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RemoveEmailJob @Inject() (
+class RemoveExchangeRateJob @Inject() (
   lifecycle: ApplicationLifecycle,
   monthlyExchangeRateCache: MonthlyExchangeRateCache
 )(implicit

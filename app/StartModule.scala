@@ -15,10 +15,10 @@
  */
 
 import com.google.inject.AbstractModule
-import uk.gov.hmrc.eusubsidycompliancefrontend.job.RemoveEmailJob
+import uk.gov.hmrc.eusubsidycompliancefrontend.job.RemoveExchangeRateJob
 
 class StartModule extends AbstractModule {
   override def configure() = {
-    bind(classOf[RemoveEmailJob]).asEagerSingleton()
+    bind(classOf[RemoveExchangeRateJob]).asEagerSingleton()
   }
 }
