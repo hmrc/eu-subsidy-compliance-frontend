@@ -119,7 +119,7 @@ class EmailService @Inject() (
         for {
           resp <- retrieveEmailByEORI(eori).flatMap {
             case RetrieveEmailResponse(EmailType.VerifiedEmail, _) =>
-              verifiedEoriCache.put(VerifiedEori(eori)).map { _ => Some(Verified) }
+              verifiedEoriCache.put(VerifiedEori(eori)).as(Some(Verified))
             case _ => Future.successful(None)
           }
         } yield resp
