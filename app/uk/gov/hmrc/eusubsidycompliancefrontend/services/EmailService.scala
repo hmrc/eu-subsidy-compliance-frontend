@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import cats.implicits.catsSyntaxOptionId
+import cats.implicits.{catsSyntaxOptionId, toFunctorOps}
 import com.google.inject.Inject
 import play.api.Logging
 import play.api.http.Status.{ACCEPTED, NOT_FOUND, OK}
