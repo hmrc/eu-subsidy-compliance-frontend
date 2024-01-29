@@ -182,7 +182,6 @@ package object types extends SimpleJson {
   object VerifiedStatus extends Enumeration {
     type VerifiedStatus = Value
     val Verified: types.VerifiedStatus.Value = Value("verified")
-//    val Unverified: types.VerifiedStatus.Value = Value("unverified")
 
     implicit val format: Format[VerifiedStatus] = Json.formatEnum(VerifiedStatus)
   }
