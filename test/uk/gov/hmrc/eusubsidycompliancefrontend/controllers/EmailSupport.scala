@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendResult, EmailTemplate, RetrieveEmailResponse}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.VerifiedStatus.VerifiedStatus
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -89,5 +90,11 @@ trait EmailSupport { this: ControllerSpec =>
     (mockEmailService
       .updateEmailForEori(_: EORI, _: String)(_: HeaderCarrier))
       .expects(eori, emailAddress, *)
+      .returning(result)
+
+  def mockHasVerifiedEmail(eori: EORI)(result: Future[Option[VerifiedStatus]]) =
+    (mockEmailService
+      .hasVerifiedEmail(_: EORI)(_: HeaderCarrier, _: ExecutionContext))
+      .expects(eori, *, *)
       .returning(result)
 }

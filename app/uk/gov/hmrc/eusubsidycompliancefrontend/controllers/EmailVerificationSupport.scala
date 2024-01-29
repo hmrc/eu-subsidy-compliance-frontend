@@ -114,15 +114,10 @@ trait EmailVerificationSupport extends ControllerFormHelpers with Logging { this
           errors => BadRequest(confirmEmailPage(errors, formAction, EmailAddress(email), previous)).toFuture,
           form =>
             if (form.usingStoredEmail.isTrue) {
-              for {
-//                _ <- emailVerificationService.addVerifiedEmail(eori) //fixme probably not required
-                _ <- addVerifiedEmailToJourney
-              } yield Redirect(next)
-//              println(">>>>>>>>>>>>>>>>>>>>>> form.usingStoredEmail.isTrue. next: "+next)
-//              Future.successful(Redirect(next))
+              addVerifiedEmailToJourney.map { _ =>
+                Redirect(next)
+              }
             } else {
-
-//              println(">>>>>>>>>>>>>>>>>>>>>> else")
               // Redirect back to the previous page if no email address appears to be entered. This should never happen
               // with a legitimate form submission.
               form.value.fold(Redirect(previous).toFuture) { email =>
@@ -154,23 +149,7 @@ trait EmailVerificationSupport extends ControllerFormHelpers with Logging { this
   )(implicit request: AuthenticatedEnrolledRequest[AnyContent], format: Format[A]): Future[Result] = {
 
     implicit val eori: EORI = request.eoriNumber
-//
-//    withJourneyOrRedirect[A](previous) { _ => //fixme line below could be replaced with: emailVerificationService.getEmailVerificationStatus - rely solely on cds
-//      emailVerificationService.approveVerificationRequest(eori, verificationId).flatMap { approveSuccessful =>
-//        if (approveSuccessful) {
-//          for {
-//            emailStatusOpt <- emailVerificationService.getEmailVerificationStatus
-//            emailAddress = emailStatusOpt match {
-//              case Some(status) => status.emailAddress
-//              case None => sys.error(s"No verified email for user with authorityId: ${request.authorityId}")
-//            }
-//            _ <- emailService
-//              .updateEmailForEori(eori, emailAddress)
-//            _ <- addVerifiedEmailToJourney
-//          } yield Redirect(next.url)
-//        } else Redirect(previous.url).toFuture
-//      }
-//    }
+
     withJourneyOrRedirect[A](previous) { _ =>
       emailVerificationService.getEmailVerificationStatus.flatMap {
         case Some(email) =>

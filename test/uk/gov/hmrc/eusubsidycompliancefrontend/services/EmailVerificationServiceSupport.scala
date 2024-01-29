@@ -22,37 +22,17 @@ import play.api.mvc.{AnyContent, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AuthSupport
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.VerificationStatus
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEmail}
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
+
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait EmailVerificationServiceSupport { this: MockFactory with AuthSupport =>
 
-  def mockApproveVerification(eori: EORI, verificationId: String)(result: Either[ConnectorError, Boolean]) =
-    (mockEmailVerificationService
-      .approveVerificationRequest(_: EORI, _: String)(_: ExecutionContext))
-      .expects(eori, verificationId, *)
-      .returning(result.fold(Future.failed, _.toFuture))
-
-  def mockGetEmailVerification(eori: EORI)(result: Either[ConnectorError, Option[VerifiedEmail]]) =
-    (mockEmailVerificationService
-      .getEmailVerification(_: EORI))
-      .expects(eori)
-      .returning(result.fold(Future.failed, _.toFuture))
-
   def mockGetEmailVerificationStatus(result: Future[Option[VerificationStatus]]) =
     (mockEmailVerificationService
       .getEmailVerificationStatus(_: AuthenticatedEnrolledRequest[AnyContent], _: HeaderCarrier, _: ExecutionContext))
       .expects(*, *, *)
-      .returning(result)
-
-  def mockAddVerifiedEmail(eori: EORI, emailAddress: String)(result: Future[Unit] = ().toFuture) =
-    (mockEmailVerificationService
-      .addVerifiedEmail(_: EORI)(_: ExecutionContext))
-      .expects(eori, *)
       .returning(result)
 
   def mockMakeVerificationRequestAndRedirect(result: Future[Result]) =

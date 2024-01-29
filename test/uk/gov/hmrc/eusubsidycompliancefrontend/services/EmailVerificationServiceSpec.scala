@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import org.mongodb.scala.model.Filters
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
@@ -27,14 +26,11 @@ import play.api.test.Helpers._
 import play.api.test.{DefaultAwaitTimeout, FakeRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailVerificationRequest, VerifiedEmail}
-import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.EoriEmailRepository
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.EmailVerificationRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.mongo.cache.CacheItem
-import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext
@@ -42,7 +38,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class EmailVerificationServiceSpec
     extends BaseSpec
-    with DefaultPlayMongoRepositorySupport[CacheItem]
     with Matchers
     with MockFactory
     with ScalaFutures
@@ -50,17 +45,12 @@ class EmailVerificationServiceSpec
 
   private val mockEmailVerificationConnector: EmailVerificationConnector = mock[EmailVerificationConnector]
 
-  override protected val repository = new EoriEmailRepository(mongoComponent)
-
   private val mockServicesConfig = mock[ServicesConfig]
 
   private val service = new EmailVerificationService(
     mockEmailVerificationConnector,
-    repository,
     mockServicesConfig
   )
-
-  override def afterAll(): Unit = repository.collection.deleteMany(filter = Filters.exists("_id"))
 
   val nextPageUrl = "/next-page-url"
   val previousPage = Call(GET, "/previous-page-url")
@@ -85,53 +75,7 @@ class EmailVerificationServiceSpec
     .expects(*)
     .returning("")
 
-  private val unverifiedVerificationRequest = VerifiedEmail("someId", verified = false)
-  private val verifiedVerificationRequest = VerifiedEmail("someId", verified = true)
-
   "EmailVerificationService" when {
-
-    "getEmailVerification is called" must {
-
-      "return none" in {
-        repository.put(eori1, unverifiedVerificationRequest).futureValue.id shouldBe eori1
-        service.getEmailVerification(eori1).futureValue shouldBe None
-      }
-
-      "return verified" in {
-        repository.put(eori2, verifiedVerificationRequest).futureValue.id shouldBe eori2
-        service.getEmailVerification(eori2).futureValue should contain(verifiedVerificationRequest)
-      }
-
-    }
-
-    "approveVerificationRequest is called" must {
-
-      "report success for a successful update" in {
-        repository
-          .put(eori1, unverifiedVerificationRequest.copy(verificationId = "pending"))
-          .futureValue
-          .id shouldBe eori1
-        service.approveVerificationRequest(eori1, "pending").futureValue shouldBe true
-
-        service.getEmailVerification(eori1).futureValue should
-          contain(unverifiedVerificationRequest.copy(verified = true, verificationId = "pending"))
-      }
-    }
-
-    "addVerifiedEmail is called" must {
-
-      "store a new email verification request and mark it as verified" in {
-
-        service.addVerifiedEmail(eori4).futureValue shouldBe (())
-
-        // Query mongo to confirm that we have a verified record
-        val result = service.getEmailVerification(eori4)
-
-        result.futureValue.map(_.verified) should contain(true)
-        result.futureValue.map(_.verificationId.length) should contain(36) // Crude UUID is set check
-      }
-
-    }
 
     "makeVerificationRequest is called" must {
 

@@ -26,7 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailService, EmailVerificationService}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
@@ -53,14 +53,14 @@ import scala.concurrent.{ExecutionContext, Future}
   * @param executionContext
   */
 class SubsidyJourneyActionBuilder @Inject() (
-                                              override val config: Configuration,
-                                              override val env: Environment,
-                                              override val authConnector: AuthConnector,
-                                              emailService: EmailService,
-                                              enrolledActionBuilder: EnrolledActionBuilder,
-                                              store: Store,
-                                              errorHandler: ErrorHandler,
-                                              mcc: ControllerComponents
+  override val config: Configuration,
+  override val env: Environment,
+  override val authConnector: AuthConnector,
+  emailService: EmailService,
+  enrolledActionBuilder: EnrolledActionBuilder,
+  store: Store,
+  errorHandler: ErrorHandler,
+  mcc: ControllerComponents
 )(implicit val executionContext: ExecutionContext)
     extends ActionBuilder[AuthenticatedEnrolledRequest, AnyContent]
     with FrontendHeaderCarrierProvider

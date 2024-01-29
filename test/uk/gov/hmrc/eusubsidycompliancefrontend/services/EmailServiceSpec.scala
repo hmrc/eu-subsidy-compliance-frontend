@@ -17,30 +17,34 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
 import cats.implicits.catsSyntaxOptionId
-import org.scalamock.scalatest.MockFactory
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.should.Matchers
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.Configuration
 import play.api.libs.json.Json
 import play.api.test.DefaultAwaitTimeout
 import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.{CustomsDataStoreConnector, SendEmailConnector}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, VerifiedEori}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.{EmailNotSent, EmailSent}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.CreateUndertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailType.VerifiedEmail
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailSendRequest, EmailTemplate, EmailType, RetrieveEmailResponse}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, VerifiedStatus}
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.VerifiedEoriCache
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
-class EmailServiceSpec extends BaseSpec with Matchers with MockFactory with ScalaFutures with DefaultAwaitTimeout {
+class EmailServiceSpec extends BaseSpec with Matchers with MockitoSugar with ScalaFutures with DefaultAwaitTimeout {
 
   private val templates = EmailTemplate.values
     .map(t => t.entryName -> "templateId1")
@@ -61,8 +65,6 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockFactory with Scal
 
   private val emptyHeaders = Map.empty[String, Seq[String]]
 
-  val mockEmailVerificationService = mock[EmailVerificationService]
-
   private val validEmailResponseJson = Json.toJson(validEmailResponse)
   private val inValidEmailResponseJson = Json.toJson(inValidEmailResponse)
   private val undeliverableResponseJson = Json.toJson(undeliverableEmailResponse)
@@ -70,25 +72,23 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockFactory with Scal
 
   private val mockSendEmailConnector: SendEmailConnector = mock[SendEmailConnector]
   private val mockRetrieveEmailConnector = mock[CustomsDataStoreConnector]
-
-  private def mockSendEmail(emailSendRequest: EmailSendRequest)(result: Either[ConnectorError, HttpResponse]) =
-    (mockSendEmailConnector
-      .sendEmail(_: EmailSendRequest)(_: HeaderCarrier))
-      .expects(emailSendRequest, *)
-      .returning(result.toFuture)
-
-  private def mockRetrieveEmail(eori: EORI)(result: Either[ConnectorError, HttpResponse]) =
-    (mockRetrieveEmailConnector
-      .retrieveEmailByEORI(_: EORI)(_: HeaderCarrier))
-      .expects(eori, *)
-      .returning(result.toFuture)
+  private val mockVerifiedEoriCache = mock[VerifiedEoriCache]
 
   private val service = new EmailService(
     fakeAppConfig,
     mockSendEmailConnector,
     mockRetrieveEmailConnector,
-    mockEmailVerificationService
+    mockVerifiedEoriCache
   )
+
+  private def mockSendEmail(emailSendRequest: EmailSendRequest)(result: Either[ConnectorError, HttpResponse]) =
+    when(mockSendEmailConnector.sendEmail(any())(any())).thenReturn(result.toFuture)
+
+  private def mockRetrieveEmail(eori: EORI)(result: Either[ConnectorError, HttpResponse]) =
+    when(mockRetrieveEmailConnector.retrieveEmailByEORI(any())(any())).thenReturn(result.toFuture)
+
+  private def mockGetVerifiedEori(eori: EORI)(result: Future[Option[VerifiedEori]]) =
+    when(mockVerifiedEoriCache.get(any())).thenReturn(result)
 
   "EmailService" when {
 
@@ -227,6 +227,38 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockFactory with Scal
         mockRetrieveEmail(eori1)(Right(HttpResponse(OK, unverifiedEmailResponseJson, emptyHeaders)))
         val result = service.retrieveEmailByEORI(eori1)
         await(result) shouldBe RetrieveEmailResponse(EmailType.UnVerifiedEmail, validEmailAddress.some)
+      }
+    }
+  }
+
+  "hasVerifiedEmail" must {
+
+    "return None" when {
+
+      "no verified eori in the cache and NO verified email found when retrieving email by eori number" in {
+        mockGetVerifiedEori(eori1)(Future.successful(None))
+        mockRetrieveEmail(eori1)(Right(HttpResponse(OK, unverifiedEmailResponseJson, emptyHeaders)))
+        val result = service.hasVerifiedEmail(eori1)
+        await(result) shouldBe None
+      }
+
+    }
+
+    "return successfully (Verified)" when {
+
+      "verified email exists in cache" in {
+        mockGetVerifiedEori(eori1)(Future.successful(Some(VerifiedEori(eori1))))
+        val result = service.hasVerifiedEmail(eori1)
+        await(result) shouldBe Some(VerifiedStatus.Verified)
+      }
+
+      "no verified email exists in cache but verified email IS found when retrieving email by eori number " in {
+        mockGetVerifiedEori(eori1)(Future.successful(None))
+        mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+        when(mockVerifiedEoriCache.put(any())).thenReturn(Future.successful(()))
+
+        val result = service.hasVerifiedEmail(eori1)
+        await(result) shouldBe Some(VerifiedStatus.Verified)
       }
     }
   }

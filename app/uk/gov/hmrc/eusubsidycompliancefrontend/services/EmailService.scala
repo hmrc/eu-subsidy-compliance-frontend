@@ -26,6 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.VerifiedStatus.{Verified, VerifiedStatus}
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.VerifiedEoriCache
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.HttpResponseOps
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -38,7 +39,7 @@ class EmailService @Inject() (
   appConfig: AppConfig,
   sendEmailConnector: SendEmailConnector,
   customsDataStoreConnector: CustomsDataStoreConnector,
-  emailVerificationService: EmailVerificationService
+  verifiedEoriCache: VerifiedEoriCache
 ) extends Logging {
 
   def sendEmail(
@@ -109,12 +110,20 @@ class EmailService @Inject() (
     }
 
   def hasVerifiedEmail(eori: EORI)(implicit
-                                            hc: HeaderCarrier,
-                                            ec: ExecutionContext
-  ): Future[Option[VerifiedStatus]] = retrieveEmailByEORI(eori).map {
-    case RetrieveEmailResponse(EmailType.VerifiedEmail, _) => Some(Verified)
-    case _ => None
-  }
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[Option[VerifiedStatus]] =
+    verifiedEoriCache.get(eori).flatMap {
+      case Some(_) => Future.successful(Some(Verified))
+      case None =>
+        for {
+          resp <- retrieveEmailByEORI(eori).flatMap {
+            case RetrieveEmailResponse(EmailType.VerifiedEmail, _) =>
+              verifiedEoriCache.put(VerifiedEori(eori)).map { _ => Some(Verified) }
+            case _ => Future.successful(None)
+          }
+        } yield resp
+    }
 
   def retrieveVerifiedEmailAddressByEORI(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] =
     retrieveEmailByEORI(eori).map { res =>

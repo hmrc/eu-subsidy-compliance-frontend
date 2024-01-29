@@ -23,13 +23,13 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.EscActionBuilder.{EccEnrolmentIdentifier, EccEnrolmentKey}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{SubsidyJourney, UndertakingJourney}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, VerifiedStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 
 import java.net.URLEncoder
 import scala.concurrent.Future
 
-trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with JourneyStoreSupport =>
+trait AuthAndSessionDataBehaviour extends ControllerSpec with AuthSupport with EmailSupport with JourneyStoreSupport {
 
   private val appName = "eu-subsidy-test"
   private val ggSignInUrl = "http://ggSignInUrl:123"
@@ -66,26 +66,32 @@ trait AuthAndSessionDataBehaviour { this: ControllerSpec with AuthSupport with J
     groupId
   )
 
-  def mockAuthWithEnrolmentAndValidEmail(eori: EORI = eori1): Unit =
-    mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), providerId, groupId)
+  def mockAuthWithEnrolmentAndValidEmail(eori: EORI = eori1): Unit = {
+    mockAuthWithEccRetrievals(Enrolments(enrolmentSets(eori)), providerId, groupId)
+    mockHasVerifiedEmail(eori)(Future.successful(Some(VerifiedStatus.Verified)))
+  }
 
   def mockAuthWithEnrolmentWithValidEmailAndUnsubmittedUndertakingJourney(eori: EORI = eori1): Unit = {
-    mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), providerId, groupId)
+    mockAuthWithEccRetrievals(Enrolments(enrolmentSets(eori)), providerId, groupId)
+    mockHasVerifiedEmail(eori)(Future.successful(Some(VerifiedStatus.Verified)))
     mockGet[UndertakingJourney](eori)(Right(Some(UndertakingJourney())))
   }
 
   def mockAuthWithEnrolmentWithValidEmailAndSubmittedUndertakingJourney(eori: EORI = eori1): Unit = {
-    mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), providerId, groupId)
+    mockAuthWithEccRetrievals(Enrolments(enrolmentSets(eori)), providerId, groupId)
+    mockHasVerifiedEmail(eori)(Future.successful(Some(VerifiedStatus.Verified)))
     mockGet[UndertakingJourney](eori)(Right(Some(UndertakingJourney(submitted = Some(true)))))
   }
 
   def mockAuthWithEnrolmentWithValidEmailAndUnsubmittedSubsidyJourney(eori: EORI = eori1): Unit = {
-    mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), providerId, groupId)
+    mockAuthWithEccRetrievals(Enrolments(enrolmentSets(eori)), providerId, groupId)
+    mockHasVerifiedEmail(eori)(Future.successful(Some(VerifiedStatus.Verified)))
     mockGet[SubsidyJourney](eori)(Right(Some(SubsidyJourney())))
   }
 
   def mockAuthWithEnrolmentWithValidEmailAndSubmittedSubsidyJourney(eori: EORI = eori1): Unit = {
-    mockAuthWithEccAuthRetrievalsWithEmailCheck(Enrolments(enrolmentSets(eori)), providerId, groupId)
+    mockAuthWithEccRetrievals(Enrolments(enrolmentSets(eori)), providerId, groupId)
+    mockHasVerifiedEmail(eori)(Future.successful(Some(VerifiedStatus.Verified)))
     mockGet[SubsidyJourney](eori)(Right(Some(SubsidyJourney(submitted = Some(true)))))
   }
 

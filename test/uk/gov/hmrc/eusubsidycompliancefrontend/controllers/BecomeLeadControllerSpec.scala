@@ -438,7 +438,6 @@ class BecomeLeadControllerSpec
           mockRetrieveEmail(eori1)(
             Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("foo@example.com").some))
           )
-          mockAddVerifiedEmail(eori1, "foo@example.com")(Future.successful(()))
         }
 
         val result = performAction("using-stored-email" -> "true")
@@ -509,7 +508,7 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          mockApproveVerification(eori1, verificationId)(Right(false))
+          mockGetEmailVerificationStatus(Future.successful(None))
         }
 
         val result = performAction(verificationId)
@@ -523,7 +522,6 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          mockApproveVerification(eori1, verificationId)(Right(true))
           mockGetEmailVerificationStatus(
             Future.successful(Some(VerificationStatus(emailAddress = email, verified = true, locked = false)))
           )
@@ -540,7 +538,7 @@ class BecomeLeadControllerSpec
         inSequence {
           mockAuthWithEnrolment(eori1)
           mockGet[BecomeLeadJourney](eori1)(Right(newBecomeLeadJourney.some))
-          mockApproveVerification(eori1, verificationId)(Right(false))
+          mockGetEmailVerificationStatus(Future.successful(None))
         }
 
         val result = performAction(verificationId)
