@@ -21,7 +21,6 @@ import com.typesafe.config.ConfigFactory
 import org.jsoup.Jsoup
 import play.api.Configuration
 import play.api.inject.bind
-import play.api.mvc.Results.Redirect
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -425,8 +424,6 @@ class BecomeLeadControllerSpec
 
   "handling request to post Confirm Email page" must {
 
-    val verificationUrl = routes.BecomeLeadController.getVerifyEmail("SomeId").url
-
     def performAction(data: (String, String)*) =
       controller.postConfirmEmail(FakeRequest(POST, "/").withFormUrlEncodedBody(data: _*))
 
@@ -452,33 +449,27 @@ class BecomeLeadControllerSpec
           mockRetrieveEmail(eori1)(
             Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("foo@example.com").some))
           )
-          mockMakeVerificationRequestAndRedirect(Redirect(verificationUrl).toFuture)
         }
 
         val result = performAction(
-          "using-stored-email" -> "false",
-          "email" -> "foo@example.com"
+          "using-stored-email" -> "false"
         )
 
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(verificationUrl)
-
+        status(result) shouldBe OK
       }
 
       "user has no existing email address and enters a new one" in {
+
         inSequence {
           mockAuthWithEnrolment(eori1)
           mockRetrieveEmail(eori1)(Right(RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)))
-          mockMakeVerificationRequestAndRedirect(Redirect(verificationUrl).toFuture)
         }
 
         val result = performAction(
-          "using-stored-email" -> "false",
-          "email" -> "foo@example.com"
+          "using-stored-email" -> "false"
         )
 
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result) should contain(verificationUrl)
+        status(result) shouldBe OK
       }
     }
 

@@ -170,6 +170,7 @@ email.error.required = Enter the email address you want to use to receive notifi
 email.error.email = Enter a valid email address
 email.error.maxLength = The email address for your undertaking must be 254 characters or less
 using-stored-email.error.required = Select yes if this is the email address you want to use to receive notifications
+using-stored-email.error.using-stored-email.required = Select yes if this is the email address you want to use to receive notifications
 
 undertaking.cya.title=Check your answers
 undertaking.cya.change.hidden.industry-sector = industry sector
