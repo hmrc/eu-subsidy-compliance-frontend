@@ -77,6 +77,7 @@ class UndertakingControllerSpec
   )
 
   private val controller = instanceOf[UndertakingController]
+
   val exception = new Exception("oh no")
 
   "UndertakingController" when {
@@ -645,7 +646,6 @@ class UndertakingControllerSpec
             mockAuthWithEnrolment(eori1)
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
             mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyComplete.some))
-            mockApproveVerification(eori1, "id")(Right(true))
             mockGetEmailVerificationStatus(
               Future.successful(Some(VerificationStatus(emailAddress = email, verified = true, locked = false)))
             )
@@ -878,7 +878,6 @@ class UndertakingControllerSpec
             mockRetrieveEmail(eori1)(
               Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress(email).some))
             )
-            mockAddVerifiedEmail(eori1, email)()
             mockUpdate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete))
 
           }

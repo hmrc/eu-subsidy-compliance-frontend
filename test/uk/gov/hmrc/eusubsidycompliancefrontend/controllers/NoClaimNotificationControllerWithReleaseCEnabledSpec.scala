@@ -43,7 +43,7 @@ class NoClaimNotificationControllerWithReleaseCEnabledSpec
     bind[AuthConnector].toInstance(mockAuthConnector),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
-    bind[EmailVerificationService].toInstance(mockEmailVerificationService),
+    bind[EmailService].toInstance(mockEmailService),
     bind[TimeProvider].toInstance(mockTimeProvider),
     bind[AuditService].toInstance(mockAuditService)
   )

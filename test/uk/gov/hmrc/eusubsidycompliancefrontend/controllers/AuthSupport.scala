@@ -17,14 +17,11 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
-import org.scalamock.handlers.CallHandler1
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.{EmptyPredicate, Predicate}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, Retrieval, ~}
 import uk.gov.hmrc.auth.core.syntax.retrieved.authSyntaxForRetrieved
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.VerifiedEmail
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailVerificationService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.http.HeaderCarrier
@@ -56,17 +53,6 @@ trait AuthSupport { this: ControllerSpec =>
       (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
 
-  def mockAuthWithEccAuthRetrievalsWithEmailCheck(
-    enrolments: Enrolments,
-    providerId: String,
-    groupIdentifier: Option[String]
-  ): CallHandler1[EORI, Future[Option[VerifiedEmail]]] = {
-    mockAuth(EmptyPredicate, authRetrievals)(
-      (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
-    )
-    mockGetEmailVerification()
-  }
-
   def mockAuthWithEccAuthRetrievalsNoEmailVerification(
     enrolments: Enrolments,
     providerId: String,
@@ -75,14 +61,5 @@ trait AuthSupport { this: ControllerSpec =>
     mockAuth(EmptyPredicate, authRetrievals)(
       (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
     )
-
-  def mockGetEmailVerification(result: Option[VerifiedEmail]): CallHandler1[EORI, Future[Option[VerifiedEmail]]] =
-    (mockEmailVerificationService
-      .getEmailVerification(_: EORI))
-      .expects(*)
-      .returning(result.toFuture)
-
-  def mockGetEmailVerification(email: String = "foo@example.com"): CallHandler1[EORI, Future[Option[VerifiedEmail]]] =
-    mockGetEmailVerification(VerifiedEmail("", verified = true).some)
 
 }

@@ -24,7 +24,7 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.BusinessEntityJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailVerificationService, EscService}
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailService, EscService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 
@@ -38,7 +38,7 @@ class NoBusinessPresentControllerSpec
 
   override def overrideBindings = List(
     bind[AuthConnector].toInstance(mockAuthConnector),
-    bind[EmailVerificationService].toInstance(mockEmailVerificationService),
+    bind[EmailService].toInstance(mockEmailService),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService)
   )

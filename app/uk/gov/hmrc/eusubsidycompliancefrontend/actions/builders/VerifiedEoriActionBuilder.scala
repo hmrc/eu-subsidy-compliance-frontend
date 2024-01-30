@@ -22,7 +22,7 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailVerificationService
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
@@ -52,7 +52,7 @@ class VerifiedEoriActionBuilder @Inject() (
   override val config: Configuration,
   override val env: Environment,
   override val authConnector: AuthConnector,
-  emailVerificationService: EmailVerificationService,
+  emailService: EmailService,
   enrolledActionBuilder: EnrolledActionBuilder,
   mcc: ControllerComponents
 )(implicit val executionContext: ExecutionContext)
@@ -71,8 +71,11 @@ class VerifiedEoriActionBuilder @Inject() (
     enrolledActionBuilder.invokeBlock(
       r,
       { enrolledRequest: AuthenticatedEnrolledRequest[A] =>
-        emailVerificationService
-          .getEmailVerification(enrolledRequest.eoriNumber)
+        emailService
+          .hasVerifiedEmail(enrolledRequest.eoriNumber)(
+            hc(enrolledRequest),
+            executionContext
+          )
           .toContext
           .foldF(Future.successful(Redirect(routes.UnverifiedEmailController.unverifiedEmail.url)))(_ =>
             f(enrolledRequest)

@@ -26,7 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailVerificationService
+import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
@@ -56,7 +56,7 @@ class SubsidyJourneyActionBuilder @Inject() (
   override val config: Configuration,
   override val env: Environment,
   override val authConnector: AuthConnector,
-  emailVerificationService: EmailVerificationService,
+  emailService: EmailService,
   enrolledActionBuilder: EnrolledActionBuilder,
   store: Store,
   errorHandler: ErrorHandler,
@@ -78,8 +78,8 @@ class SubsidyJourneyActionBuilder @Inject() (
     enrolledActionBuilder.invokeBlock(
       r,
       { enrolledRequest: AuthenticatedEnrolledRequest[A] =>
-        emailVerificationService
-          .getEmailVerification(enrolledRequest.eoriNumber)
+        emailService
+          .hasVerifiedEmail(enrolledRequest.eoriNumber)(hc(enrolledRequest), executionContext)
           .toContext
           .foldF(Future.successful(Redirect(routes.UnverifiedEmailController.unverifiedEmail.url)))(_ =>
             processIfNotSubmitted(enrolledRequest, f)

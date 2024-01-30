@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
+import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.{Format, Reads}
@@ -37,7 +38,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
-trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendController =>
+trait EmailVerificationSupport extends ControllerFormHelpers with Logging { this: FrontendController =>
 
   protected val emailService: EmailService
   protected val emailVerificationService: EmailVerificationService
@@ -112,12 +113,11 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
         .fold(
           errors => BadRequest(confirmEmailPage(errors, formAction, EmailAddress(email), previous)).toFuture,
           form =>
-            if (form.usingStoredEmail.isTrue)
-              for {
-                _ <- emailVerificationService.addVerifiedEmail(eori)
-                _ <- addVerifiedEmailToJourney
-              } yield Redirect(next)
-            else {
+            if (form.usingStoredEmail.isTrue) {
+              addVerifiedEmailToJourney.map { _ =>
+                Redirect(next)
+              }
+            } else {
               // Redirect back to the previous page if no email address appears to be entered. This should never happen
               // with a legitimate form submission.
               form.value.fold(Redirect(previous).toFuture) { email =>
@@ -151,19 +151,17 @@ trait EmailVerificationSupport extends ControllerFormHelpers { this: FrontendCon
     implicit val eori: EORI = request.eoriNumber
 
     withJourneyOrRedirect[A](previous) { _ =>
-      emailVerificationService.approveVerificationRequest(eori, verificationId).flatMap { approveSuccessful =>
-        if (approveSuccessful) {
+      emailVerificationService.getEmailVerificationStatus.flatMap {
+        case Some(email) =>
           for {
-            emailStatusOpt <- emailVerificationService.getEmailVerificationStatus
-            emailAddress = emailStatusOpt match {
-              case Some(status) => status.emailAddress
-              case None => sys.error(s"No verified email for user with authorityId: ${request.authorityId}")
-            }
             _ <- emailService
-              .updateEmailForEori(eori, emailAddress)
+              .updateEmailForEori(eori, email.emailAddress)
             _ <- addVerifiedEmailToJourney
           } yield Redirect(next.url)
-        } else Redirect(previous.url).toFuture
+        case None => {
+          logger.warn(s"No verified email for user with authorityId: ${request.authorityId}")
+          Redirect(previous.url).toFuture
+        }
       }
     }
 
