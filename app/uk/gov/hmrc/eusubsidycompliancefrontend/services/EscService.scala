@@ -25,7 +25,7 @@ import play.api.libs.json.{JsPath, JsonValidationError, Reads}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{RemovedSubsidyRepository, UndertakingCache}
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.UndertakingCache
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.{HttpResponseOps, ResponseParsingLogger}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
