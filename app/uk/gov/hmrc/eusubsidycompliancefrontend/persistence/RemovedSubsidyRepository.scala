@@ -16,12 +16,9 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
-import org.mongodb.scala.model.{Filters, FindOneAndUpdateOptions, Updates}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.NonHmrcSubsidy
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.mongo.cache.{CacheItem, MongoCacheRepository}
-import uk.gov.hmrc.mongo.play.json.Codecs
-import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent, MongoUtils}
+import uk.gov.hmrc.mongo.cache.MongoCacheRepository
+import uk.gov.hmrc.mongo.{CurrentTimestampSupport, MongoComponent}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.duration.{DurationInt, FiniteDuration}
@@ -31,8 +28,6 @@ import cats.implicits.toFunctorOps
 
 @Singleton
 class RemovedSubsidyRepository @Inject() (mongoComponent: MongoComponent)(implicit ec: ExecutionContext) {
-
-  private val SubsidiesArrayFieldName = "nonHmrcSubsidies"
 
   private val timestampSupport = new CurrentTimestampSupport
 
@@ -44,35 +39,9 @@ class RemovedSubsidyRepository @Inject() (mongoComponent: MongoComponent)(implic
     cacheIdType = EoriIdType
   )
 
-  def add(eori: EORI, subsidy: NonHmrcSubsidy): Future[Unit] =
-    MongoUtils.retryOnDuplicateKey(retries = 3) {
-      val id = EoriIdType.run(eori)
-      val timestamp = timestampSupport.timestamp()
-      repository.collection
-        .findOneAndUpdate(
-          filter = Filters.equal("_id", id),
-          update = Updates.combine(
-            Updates.push(s"data.$SubsidiesArrayFieldName", Codecs.toBson(subsidy)),
-            Updates.set("modifiedDetails.lastUpdated", timestamp),
-            Updates.setOnInsert("_id", id),
-            Updates.setOnInsert("modifiedDetails.createdAt", timestamp)
-          ),
-          options = FindOneAndUpdateOptions()
-            .upsert(true)
-        )
-        .toFuture()
-        .void
-    }
-
-  def getAll(eori: EORI): Future[Seq[NonHmrcSubsidy]] =
-    repository.collection
-      .find(Filters.equal("_id", eori))
-      .headOption()
-      .map { item: Option[CacheItem] =>
-        item.fold(Seq.empty[NonHmrcSubsidy]) { item =>
-          (item.data \ SubsidiesArrayFieldName).as[Seq[NonHmrcSubsidy]]
-        }
-      }
+  def drop(): Future[Unit] = {
+    repository.collection.drop().toFuture().void
+  }
 
 }
 

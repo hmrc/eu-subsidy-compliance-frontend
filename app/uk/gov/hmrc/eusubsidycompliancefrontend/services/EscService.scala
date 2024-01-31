@@ -39,8 +39,7 @@ import scala.reflect.ClassTag
 @Singleton
 class EscService @Inject() (
   escConnector: EscConnector,
-  undertakingCache: UndertakingCache,
-  removedSubsidyRepository: RemovedSubsidyRepository
+  undertakingCache: UndertakingCache
 )(implicit ec: ExecutionContext)
     extends Logging {
 
@@ -259,13 +258,8 @@ class EscService @Inject() (
         escConnector
           .retrieveSubsidy(subsidyRetrieve)
           .flatMap { response =>
-            val result: UndertakingSubsidies = handleResponse[UndertakingSubsidies](response, "subsidy retrieve")
-            removedSubsidyRepository
-              .getAll(eori)
-              .flatMap { subsidies =>
-                val updatedResult = result.copy(nonHMRCSubsidyUsage = result.nonHMRCSubsidyUsage ++ subsidies.toList)
-                undertakingCache.put[UndertakingSubsidies](eori, updatedResult)
-              }
+            undertakingCache
+              .put[UndertakingSubsidies](eori, handleResponse[UndertakingSubsidies](response, "subsidy retrieve"))
           }
       }
 
@@ -289,7 +283,6 @@ class EscService @Inject() (
       .flatMap { response =>
         for {
           ref <- handleResponse[UndertakingRef](response, "remove subsidy").toFuture
-          _ <- removedSubsidyRepository.add(eori, nonHmrcSubsidy.copy(removed = Some(true)))
           _ <- undertakingCache.deleteUndertakingSubsidies(ref)
         } yield ref
       }
