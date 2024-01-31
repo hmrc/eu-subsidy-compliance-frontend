@@ -767,7 +767,6 @@ class SubsidyController @Inject() (
     transactionId: String,
     undertaking: Undertaking
   )(implicit request: AuthenticatedEnrolledRequest[AnyContent]): Future[Result] = {
-    implicit val eori: EORI = request.eoriNumber
 
     val result: OptionT[Future, Unit] = for {
       reference <- undertaking.reference.toContext

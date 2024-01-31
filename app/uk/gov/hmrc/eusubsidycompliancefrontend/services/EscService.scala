@@ -277,7 +277,7 @@ class EscService @Inject() (
   def removeSubsidy(
     undertakingRef: UndertakingRef,
     nonHmrcSubsidy: NonHmrcSubsidy
-  )(implicit eori: EORI, hc: HeaderCarrier): Future[UndertakingRef] =
+  )(implicit hc: HeaderCarrier): Future[UndertakingRef] =
     escConnector
       .removeSubsidy(undertakingRef, nonHmrcSubsidy)
       .flatMap { response =>
