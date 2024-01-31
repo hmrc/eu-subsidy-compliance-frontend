@@ -97,7 +97,7 @@ trait EmailVerificationSupport extends ControllerFormHelpers with Logging { this
   protected def handleConfirmEmailPost[A : ClassTag](
     previous: String,
     next: String,
-    current: String,
+    inputEmailRoute: String,
     emailStatus: Option[EmailStatus] = None,
     formAction: Call
   )(implicit
@@ -119,15 +119,13 @@ trait EmailVerificationSupport extends ControllerFormHelpers with Logging { this
                 Redirect(next)
               }
             } else {
-              getInputEmailPage(current)
+              Redirect(inputEmailRoute).toFuture
             }
         )
     }
 
-    def getInputEmailPage(backLink: String) = Ok(inputEmailPage(emailForm, backLink, emailStatus)).toFuture
-
     findVerifiedEmail.toContext
-      .foldF(getInputEmailPage(previous))(email => handleConfirmEmailPageSubmission(email))
+      .foldF(Redirect(inputEmailRoute).toFuture)(email => handleConfirmEmailPageSubmission(email))
   }
 
   protected def handleVerifyEmailGet[A : ClassTag](

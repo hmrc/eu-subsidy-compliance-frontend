@@ -31,6 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessE
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendResult.EmailSent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedSelfToNewLead, RemovedAsLeadToFormerLead}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse, VerificationStatus}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, EmailAddress}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -74,6 +75,7 @@ class BecomeLeadControllerSpec
   )
 
   private val controller = instanceOf[BecomeLeadController]
+  val verificationUrlBecomeLead = routes.UndertakingController.getAddEmailForVerification(EmailStatus.BecomeLead).url
 
   "BecomeLeadControllerSpec" when {
 
@@ -455,7 +457,8 @@ class BecomeLeadControllerSpec
           "using-stored-email" -> "false"
         )
 
-        status(result) shouldBe OK
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(verificationUrlBecomeLead)
       }
 
       "user has no existing email address and enters a new one" in {
@@ -469,7 +472,8 @@ class BecomeLeadControllerSpec
           "using-stored-email" -> "false"
         )
 
-        status(result) shouldBe OK
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(verificationUrlBecomeLead)
       }
     }
 

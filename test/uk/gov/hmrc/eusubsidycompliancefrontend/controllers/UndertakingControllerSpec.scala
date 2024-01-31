@@ -77,7 +77,8 @@ class UndertakingControllerSpec
   )
 
   private val controller = instanceOf[UndertakingController]
-
+  val verificationUrlNew = routes.UndertakingController.getAddEmailForVerification(EmailStatus.New).url
+  val verificationUrlAmend = routes.UndertakingController.getAddEmailForVerification(EmailStatus.Amend).url
   val exception = new Exception("oh no")
 
   "UndertakingController" when {
@@ -847,7 +848,8 @@ class UndertakingControllerSpec
             "using-stored-email" -> "false"
           )
 
-          status(result) shouldBe OK
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) should contain(verificationUrlNew)
         }
 
         "No verification found or cds with invalid form should be bad request" in {
@@ -1841,6 +1843,55 @@ class UndertakingControllerSpec
           )
 
         }
+
+        "status is 'amend' (user clicks 'amend email')" in {
+          val status = EmailStatus.Amend
+          val pageTitle = "What is your email address?"
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+          }
+          checkPageIsDisplayed(
+            performAction(status),
+            pageTitle,
+            { doc =>
+              doc.getElementById("inputEmail-h1").text shouldBe pageTitle
+              doc
+                .select(".govuk-back-link")
+                .attr("href") shouldBe routes.UndertakingController.getAmendUndertakingDetails.url
+
+              val form = doc.select("form")
+              form
+                .attr("action") shouldBe routes.UndertakingController.postAddEmailForVerification(EmailStatus.Amend).url
+            }
+          )
+
+        }
+
+        "status is 'BecomeLead' (user has come from 'BecomeLead' controller)" in {
+          val status = EmailStatus.BecomeLead
+          val pageTitle = "What is your email address?"
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+          }
+          checkPageIsDisplayed(
+            performAction(status),
+            pageTitle,
+            { doc =>
+              doc.getElementById("inputEmail-h1").text shouldBe pageTitle
+              doc
+                .select(".govuk-back-link")
+                .attr("href") shouldBe routes.BecomeLeadController.getConfirmEmail.url
+
+              val form = doc.select("form")
+              form
+                .attr("action") shouldBe routes.UndertakingController
+                .postAddEmailForVerification(EmailStatus.BecomeLead)
+                .url
+            }
+          )
+
+        }
+
       }
 
     }
