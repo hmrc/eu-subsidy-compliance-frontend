@@ -19,9 +19,10 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolments, InternalError}
+import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, AuthorisedFunctions, Enrolments, InternalError}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.EscActionBuilder.{EccEnrolmentIdentifier, EccEnrolmentKey}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
@@ -70,10 +71,12 @@ class EnrolledActionBuilder @Inject() (
     block: AuthenticatedEnrolledRequest[A] => Future[Result]
   ): Future[Result] =
     authorised()
-      .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](
-        Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
+      .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments ~ Option[AffinityGroup]](
+        Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments and Retrievals.affinityGroup
       ) {
-        case Some(credentials) ~ Some(groupId) ~ enrolments =>
+        case Some(_) ~ Some(_) ~ _ ~ Some(affinityGroup) if affinityGroup == Agent =>
+          Redirect(routes.AgentNotAllowedController.showPage.url).toFuture
+        case Some(credentials) ~ Some(groupId) ~ enrolments ~ Some(_) =>
           enrolments.getEnrolment(EccEnrolmentKey) match {
             case Some(eccEnrolment) =>
               val identifier: String = eccEnrolment
