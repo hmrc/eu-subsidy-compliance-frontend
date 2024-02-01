@@ -19,6 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import com.typesafe.config.ConfigFactory
 import play.api.Configuration
 import play.api.mvc.Result
+import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.EmptyPredicate
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.EscActionBuilder.{EccEnrolmentIdentifier, EccEnrolmentKey}
@@ -59,6 +60,8 @@ trait AuthAndSessionDataBehaviour extends ControllerSpec with AuthSupport with E
 
   def mockAuthWithEnrolment(eori: EORI = eori1): Unit =
     mockAuthWithEccRetrievals(Enrolments(Set(eccEnrolments(eori))), providerId, groupId)
+  def mockAuthWithEnrolmentAsAgent(eori: EORI = eori1): Unit =
+    mockAuthWithEccRetrievals(Enrolments(Set(eccEnrolments(eori))), providerId, groupId, Some(Agent))
 
   def mockAuthWithEnrolmentWithoutEori(): Unit = mockAuthWithEccRetrievals(
     Enrolments(Set(Enrolment(EccEnrolmentKey, Seq.empty, state = ""))),

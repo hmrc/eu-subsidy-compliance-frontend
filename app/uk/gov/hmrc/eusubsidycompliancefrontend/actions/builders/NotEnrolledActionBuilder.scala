@@ -19,9 +19,10 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
-import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions, Enrolments, InternalError}
+import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, AuthorisedFunctions, Enrolments, InternalError}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders.EscActionBuilder.EccEnrolmentKey
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
@@ -66,15 +67,18 @@ class NotEnrolledActionBuilder @Inject() (
   override val messagesApi: MessagesApi = mcc.messagesApi
   override val parser: BodyParser[AnyContent] = mcc.parsers.anyContent
 
-  private val retrievals = Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
+  private val retrievals =
+    Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments and Retrievals.affinityGroup
 
   override def invokeBlock[A](
     request: Request[A],
     block: AuthenticatedRequest[A] => Future[Result]
   ): Future[Result] =
     authorised()
-      .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments](retrievals) {
-        case Some(credentials) ~ Some(groupId) ~ enrolments =>
+      .retrieve[Option[Credentials] ~ Option[String] ~ Enrolments ~ Option[AffinityGroup]](retrievals) {
+        case Some(_) ~ Some(_) ~ _ ~ Some(affinityGroup) if affinityGroup == Agent =>
+          Redirect(routes.AgentNotAllowedController.showPage.url).toFuture
+        case Some(credentials) ~ Some(groupId) ~ enrolments ~ Some(_) =>
           enrolments
             .getEnrolment(EccEnrolmentKey)
             // Execute the block if the user is not enrolled...
