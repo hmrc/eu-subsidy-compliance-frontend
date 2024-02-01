@@ -43,6 +43,9 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   val clearExchangeRateJob: Boolean =
     config.getOptional[Boolean]("features.run-clear-exchange-rate-job-enabled").getOrElse(false)
 
+  val removeRemovedSubsidiesJob: Boolean =
+    config.getOptional[Boolean]("features.run-remove-removed-subsidies-job-enabled").getOrElse(false)
+
   lazy val ggSignInUrl: String = config.get[String](s"urls.ggSignInUrl")
   lazy val ggSignOutUrl: String = config.get[String](s"urls.ggSignOutUrl")
   lazy val eccEscSubscribeUrl: String = config.get[String](s"urls.eccEscSubscribeUrl")

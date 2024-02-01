@@ -25,7 +25,7 @@ import play.api.libs.json.{JsPath, JsonValidationError, Reads}
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, UndertakingRef}
-import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.{RemovedSubsidyRepository, UndertakingCache}
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.UndertakingCache
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.HttpResponseSyntax.{HttpResponseOps, ResponseParsingLogger}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
@@ -39,8 +39,7 @@ import scala.reflect.ClassTag
 @Singleton
 class EscService @Inject() (
   escConnector: EscConnector,
-  undertakingCache: UndertakingCache,
-  removedSubsidyRepository: RemovedSubsidyRepository
+  undertakingCache: UndertakingCache
 )(implicit ec: ExecutionContext)
     extends Logging {
 
@@ -259,13 +258,8 @@ class EscService @Inject() (
         escConnector
           .retrieveSubsidy(subsidyRetrieve)
           .flatMap { response =>
-            val result: UndertakingSubsidies = handleResponse[UndertakingSubsidies](response, "subsidy retrieve")
-            removedSubsidyRepository
-              .getAll(eori)
-              .flatMap { subsidies =>
-                val updatedResult = result.copy(nonHMRCSubsidyUsage = result.nonHMRCSubsidyUsage ++ subsidies.toList)
-                undertakingCache.put[UndertakingSubsidies](eori, updatedResult)
-              }
+            undertakingCache
+              .put[UndertakingSubsidies](eori, handleResponse[UndertakingSubsidies](response, "subsidy retrieve"))
           }
       }
 
@@ -283,13 +277,12 @@ class EscService @Inject() (
   def removeSubsidy(
     undertakingRef: UndertakingRef,
     nonHmrcSubsidy: NonHmrcSubsidy
-  )(implicit eori: EORI, hc: HeaderCarrier): Future[UndertakingRef] =
+  )(implicit hc: HeaderCarrier): Future[UndertakingRef] =
     escConnector
       .removeSubsidy(undertakingRef, nonHmrcSubsidy)
       .flatMap { response =>
         for {
           ref <- handleResponse[UndertakingRef](response, "remove subsidy").toFuture
-          _ <- removedSubsidyRepository.add(eori, nonHmrcSubsidy.copy(removed = Some(true)))
           _ <- undertakingCache.deleteUndertakingSubsidies(ref)
         } yield ref
       }
