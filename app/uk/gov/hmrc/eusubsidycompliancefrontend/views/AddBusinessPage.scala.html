@@ -49,6 +49,7 @@
         content = HtmlContent(addedBannerContent),
         bannerType = Some("success"),
         role=Some("alert"),
+        disableAutoFocus = Some(true),
         attributes = Map("id" -> "business-added-banner")
     ))
 }
@@ -72,6 +73,7 @@
         content = HtmlContent(removedBannerContent),
         bannerType = Some("success"),
         role=Some("alert"),
+        disableAutoFocus = Some(true),
         attributes = Map("id" -> "business-removed-banner")
     ))
 }
