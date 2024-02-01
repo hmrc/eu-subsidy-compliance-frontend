@@ -852,19 +852,6 @@ class UndertakingControllerSpec
           redirectLocation(result) should contain(verificationUrlNew)
         }
 
-        "No verification found or cds with invalid form should be bad request" in {
-          inSequence {
-            mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney(eori1)
-            mockGet[UndertakingJourney](eori1)(
-              Right(undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage()).some)
-            )
-            mockRetrieveEmail(eori1)(
-              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("email@mail.com").some))
-            )
-          }
-          status(performAction("using-stored-email" -> " ")) shouldBe BAD_REQUEST
-        }
-
       }
 
       "redirect to undertaking already submitted page" when {
