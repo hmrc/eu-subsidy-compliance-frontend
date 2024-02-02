@@ -99,6 +99,7 @@ class UndertakingController @Inject() (
       case EmailStatus.Unverified => routes.UnverifiedEmailController.unverifiedEmail
       case EmailStatus.Amend => routes.UndertakingController.getAmendUndertakingDetails
       case EmailStatus.BecomeLead => routes.BecomeLeadController.getConfirmEmail
+      case EmailStatus.CYA => routes.UndertakingController.getCheckAnswers
       case _ => routes.UndertakingController.getSector
     }
   }
@@ -283,6 +284,11 @@ class UndertakingController @Inject() (
           (
             routes.UndertakingController.getAddEmailForVerification(emailStatus),
             routes.BecomeLeadController.getBecomeLeadEori()
+          )
+        case Some(emailStatus @ EmailStatus.CYA) =>
+          (
+            routes.UndertakingController.getAddEmailForVerification(emailStatus),
+            routes.UndertakingController.getCheckAnswers
           )
         case _ =>
           (routes.UndertakingController.getConfirmEmail, routes.UndertakingController.getAddBusiness)

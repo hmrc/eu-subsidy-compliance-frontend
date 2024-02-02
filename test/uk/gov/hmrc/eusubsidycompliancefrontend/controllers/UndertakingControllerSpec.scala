@@ -1132,7 +1132,7 @@ class UndertakingControllerSpec
           ModifyUndertakingRow(
             messageFromMessageKey("undertaking.cya.summary-list.verified-email"),
             "joebloggs@something.com",
-            routes.UndertakingController.getConfirmEmail.url
+            routes.UndertakingController.getAddEmailForVerification(EmailStatus.CYA).url
           ),
           ModifyUndertakingRow(
             messageFromMessageKey("undertaking.cya.summary-list.other-business"),
@@ -1873,6 +1873,30 @@ class UndertakingControllerSpec
               form
                 .attr("action") shouldBe routes.UndertakingController
                 .postAddEmailForVerification(EmailStatus.BecomeLead)
+                .url
+            }
+          )
+
+        }
+        "status is 'CYA' (user has come from 'change' link in CYA page)" in {
+          val status = EmailStatus.CYA
+          val pageTitle = "What is your email address?"
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+          }
+          checkPageIsDisplayed(
+            performAction(status),
+            pageTitle,
+            { doc =>
+              doc.getElementById("inputEmail-h1").text shouldBe pageTitle
+              doc
+                .select(".govuk-back-link")
+                .attr("href") shouldBe routes.UndertakingController.getCheckAnswers.url
+
+              val form = doc.select("form")
+              form
+                .attr("action") shouldBe routes.UndertakingController
+                .postAddEmailForVerification(EmailStatus.CYA)
                 .url
             }
           )
