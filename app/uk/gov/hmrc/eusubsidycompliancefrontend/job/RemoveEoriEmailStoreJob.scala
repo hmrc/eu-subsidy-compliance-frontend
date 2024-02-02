@@ -26,7 +26,7 @@ import javax.inject._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RemoveRemovedSubsidiesJob @Inject() (
+class RemoveEoriEmailStoreJob @Inject() (
   lifecycle: ApplicationLifecycle,
   mongoComponent: MongoComponent
 )(implicit
@@ -35,23 +35,22 @@ class RemoveRemovedSubsidiesJob @Inject() (
 ) extends Logging {
 
   def runJob(): Unit = {
-    logger.info("=== remove removedSubsidies job starting ===")
+    logger.info("=== remove eoriEmailStore job starting ===")
     mongoComponent.database
-      .getCollection("removedSubsidies")
+      .getCollection("eoriEmailStore")
       .drop()
       .toFuture()
       .void
-      .map(_ => logger.info(s"=== removedSubsidies cache cleared ==="))
+      .map(_ => logger.info(s"=== eoriEmailStore dropped ==="))
   }
 
-  if (appConfig.removeRemovedSubsidiesJob) {
-    logger.info("=== run-remove-removed-subsidies-job-enabled flag is true ===")
+  if (appConfig.removeEoriEmailStoreJob) {
+    logger.info("=== run-remove-eori-email-store-job-enabled flag is true ===")
     runJob()
-  } else logger.info("run-remove-removed-subsidies-job-enabled flag is false")
+  } else logger.info("run-remove-eori-email-store-job-enabled flag is false")
 
   // Shut-down hook
   lifecycle.addStopHook { () =>
     Future.successful(())
   }
-  //...
 }

@@ -46,6 +46,9 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   val removeRemovedSubsidiesJob: Boolean =
     config.getOptional[Boolean]("features.run-remove-removed-subsidies-job-enabled").getOrElse(false)
 
+  val removeEoriEmailStoreJob: Boolean =
+    config.getOptional[Boolean]("features.run-remove-eori-email-store-job-enabled").getOrElse(false)
+
   lazy val ggSignInUrl: String = config.get[String](s"urls.ggSignInUrl")
   lazy val ggSignOutUrl: String = config.get[String](s"urls.ggSignOutUrl")
   lazy val eccEscSubscribeUrl: String = config.get[String](s"urls.eccEscSubscribeUrl")

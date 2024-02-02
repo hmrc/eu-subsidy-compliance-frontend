@@ -35,19 +35,19 @@ class RemoveExchangeRateJob @Inject() (
 ) extends Logging {
 
   def runExchangeRateRepoJob(): Unit = {
-    logger.warn("=== clearing ExchangeRate Repository job starting ===")
+    logger.info("=== clearing ExchangeRate Repository job starting ===")
     mongoComponent.database
       .getCollection("exchangeRateMonthlyCache")
       .drop()
       .toFuture()
       .void
-      .map(_ => logger.warn(s"=== exchangeRate cache cleared ==="))
+      .map(_ => logger.info(s"=== exchangeRate cache cleared ==="))
   }
 
   if (appConfig.clearExchangeRateJob) {
-    logger.warn("=== RemoveEmailJob starting ===")
+    logger.info("=== RemoveEmailJob starting ===")
     runExchangeRateRepoJob()
-  } else logger.warn("removeEmailJobEnabled flag is false")
+  } else logger.info("removeEmailJobEnabled flag is false")
 
   // Shut-down hook
   lifecycle.addStopHook { () =>
