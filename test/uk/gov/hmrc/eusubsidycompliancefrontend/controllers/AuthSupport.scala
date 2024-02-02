@@ -17,6 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
+import uk.gov.hmrc.auth.core.AffinityGroup.Individual
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.{EmptyPredicate, Predicate}
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
@@ -34,8 +35,8 @@ trait AuthSupport { this: ControllerSpec =>
 
   protected val mockEmailVerificationService: EmailVerificationService = mock[EmailVerificationService]
 
-  protected val authRetrievals: Retrieval[Option[Credentials] ~ Option[String] ~ Enrolments] =
-    Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
+  protected val authRetrievals: Retrieval[Option[Credentials] ~ Option[String] ~ Enrolments ~ Option[AffinityGroup]] =
+    Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments and Retrievals.affinityGroup
 
   def mockAuth[R](predicate: Predicate, retrieval: Retrieval[R])(
     result: Future[R]
@@ -48,18 +49,24 @@ trait AuthSupport { this: ControllerSpec =>
       .expects(predicate, retrieval, *, *)
       .returning(result)
 
-  def mockAuthWithEccRetrievals(enrolments: Enrolments, providerId: String, groupIdentifier: Option[String]): Unit =
+  def mockAuthWithEccRetrievals(
+    enrolments: Enrolments,
+    providerId: String,
+    groupIdentifier: Option[String],
+    affinityGroup: Option[AffinityGroup] = Some(Individual)
+  ): Unit =
     mockAuth(EmptyPredicate, authRetrievals)(
-      (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
+      (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments and affinityGroup).toFuture
     )
 
   def mockAuthWithEccAuthRetrievalsNoEmailVerification(
     enrolments: Enrolments,
     providerId: String,
-    groupIdentifier: Option[String]
+    groupIdentifier: Option[String],
+    affinityGroup: Option[AffinityGroup] = Some(Individual)
   ): Unit =
     mockAuth(EmptyPredicate, authRetrievals)(
-      (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments).toFuture
+      (new ~(Credentials(providerId, "type").some, groupIdentifier) and enrolments and affinityGroup).toFuture
     )
 
 }

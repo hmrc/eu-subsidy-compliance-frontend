@@ -111,6 +111,18 @@ class EnrolledActionBuilderSpec
       }
     }
 
+    "redirect to the access denied for agents page" when {
+      "handling a request that has an affinityGroup of agent" in {
+        mockAuthWithEnrolmentAsAgent(eori1)
+
+        val request = FakeRequest()
+        val result = underTest.invokeBlock(request, block)
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) should contain(routes.AgentNotAllowedController.showPage.url)
+      }
+    }
+
   }
 
 }

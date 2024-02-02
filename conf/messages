@@ -624,3 +624,11 @@ undertakingSuspended.user.p2=Contact your lead undertaking administrator for mor
 
 scp08.maintenance-text.p1=Please be aware we are currently experiencing some technical difficulties with the Customs Duty Waiver Scheme service, causing some traders to see a miscalculation of the undertaking balance. We are working urgently to resolve but if you are still within balance on the system and your records you can continue to submit supplementary declarations as normal and we will rectify the online balance. We apologise for any inconvenience caused.
 scp08.maintenance-text.p2=If you are experiencing issues preventing you from submitting your supplementary declaration then please contact - <a class="govuk-link" href="mailto:customs.duty-waivers@hmrc.gov.uk">customs.duty-waivers@hmrc.gov.uk</a>
+
+
+# Access denied for agents page
+accessDeniedForAgents.title=You cannot access this service
+accessDeniedForAgents.p1=You will not be able to use this service because you’re logged in with an agent services account Government Gateway user ID.
+accessDeniedForAgents.p2=If your client needs to register an undertaking to report non-customs subsidy payments or no payments, they must do it themselves using their own Government Gateway account.
+accessDeniedForAgents.p3=If they do not have a Government Gateway user ID, they can create one when they start to register.
+accessDeniedForAgents.linkText=Find out more about using this service

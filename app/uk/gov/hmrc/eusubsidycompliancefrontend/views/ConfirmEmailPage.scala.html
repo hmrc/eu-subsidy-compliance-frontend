@@ -104,8 +104,7 @@
           RadioItem(
             content = Text(messages("common.no")),
             checked = form.data.get(radioIdentifier).contains("false"),
-            value = Some("false"),
-            conditionalHtml = Some(textHtml)
+            value = Some("false")
           )
         )
       ))

@@ -23,10 +23,12 @@ import play.api.libs.json.{Format, Reads}
 import play.api.mvc.{AnyContent, Call, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.{EmailFormProvider, OptionalEmailFormProvider}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.EmailFormProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailType, RetrieveEmailResponse}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, FormValues, OptionalEmailFormInput}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EmailStatus.EmailStatus
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{EmailAddress, FormValues}
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailService, EmailVerificationService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
@@ -47,7 +49,7 @@ trait EmailVerificationSupport extends ControllerFormHelpers with Logging { this
 
   protected implicit val executionContext: ExecutionContext
 
-  protected val optionalEmailForm: Form[OptionalEmailFormInput] = OptionalEmailFormProvider().form
+  protected val isThisYourEmailForm: Form[FormValues] = formWithSingleMandatoryField("using-stored-email")
 
   protected val emailForm: Form[FormValues] = EmailFormProvider().form
 
@@ -85,7 +87,7 @@ trait EmailVerificationSupport extends ControllerFormHelpers with Logging { this
     withJourneyOrRedirect[A](previous) { _ =>
       findVerifiedEmail.toContext
         .fold(Ok(inputEmailPage(emailForm, previous.url))) { e =>
-          Ok(confirmEmailPage(optionalEmailForm, formAction, EmailAddress(e), previous.url))
+          Ok(confirmEmailPage(isThisYourEmailForm, formAction, EmailAddress(e), previous.url))
         }
     }
   }
@@ -95,8 +97,9 @@ trait EmailVerificationSupport extends ControllerFormHelpers with Logging { this
   protected def handleConfirmEmailPost[A : ClassTag](
     previous: String,
     next: String,
-    formAction: Call,
-    generateVerifyEmailUrl: String => String
+    inputEmailRoute: String,
+    emailStatus: Option[EmailStatus] = None,
+    formAction: Call
   )(implicit
     request: AuthenticatedEnrolledRequest[AnyContent],
     messages: Messages,
@@ -105,41 +108,24 @@ trait EmailVerificationSupport extends ControllerFormHelpers with Logging { this
 
     implicit val eori: EORI = request.eoriNumber
 
-    def verifyEmailUrl(id: String) = generateVerifyEmailUrl(id)
-
-    def handleConfirmEmailPageSubmission(email: String) =
-      optionalEmailForm
+    def handleConfirmEmailPageSubmission(email: String) = {
+      isThisYourEmailForm
         .bindFromRequest()
         .fold(
           errors => BadRequest(confirmEmailPage(errors, formAction, EmailAddress(email), previous)).toFuture,
           form =>
-            if (form.usingStoredEmail.isTrue) {
+            if (form.value.isTrue) {
               addVerifiedEmailToJourney.map { _ =>
                 Redirect(next)
               }
             } else {
-              // Redirect back to the previous page if no email address appears to be entered. This should never happen
-              // with a legitimate form submission.
-              form.value.fold(Redirect(previous).toFuture) { email =>
-                emailVerificationService.makeVerificationRequestAndRedirect(
-                  email = email,
-                  previousPage = previous,
-                  nextPageUrl = verifyEmailUrl
-                )
-              }
+              Redirect(inputEmailRoute).toFuture
             }
         )
-
-    def handleInputEmailPageSubmission() =
-      emailForm
-        .bindFromRequest()
-        .fold(
-          errors => BadRequest(inputEmailPage(errors, previous)).toFuture,
-          form => emailVerificationService.makeVerificationRequestAndRedirect(form.value, previous, verifyEmailUrl)
-        )
+    }
 
     findVerifiedEmail.toContext
-      .foldF(handleInputEmailPageSubmission())(email => handleConfirmEmailPageSubmission(email))
+      .foldF(Redirect(inputEmailRoute).toFuture)(email => handleConfirmEmailPageSubmission(email))
   }
 
   protected def handleVerifyEmailGet[A : ClassTag](

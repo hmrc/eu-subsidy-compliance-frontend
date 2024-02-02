@@ -94,6 +94,16 @@ class UndertakingController @Inject() (
     "disableUndertakingConfirm"
   )
 
+  private def generateBackLink(emailStatus: EmailStatus): Call = {
+    emailStatus match {
+      case EmailStatus.Unverified => routes.UnverifiedEmailController.unverifiedEmail
+      case EmailStatus.Amend => routes.UndertakingController.getAmendUndertakingDetails
+      case EmailStatus.BecomeLead => routes.BecomeLeadController.getConfirmEmail
+      case EmailStatus.CYA => routes.UndertakingController.getCheckAnswers
+      case _ => routes.UndertakingController.getSector
+    }
+  }
+
   def firstEmptyPage: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
     logger.info(s"UndertakingController.firstEmptyPage attempting to find the journeys next step for EORI:$eori")
@@ -204,21 +214,13 @@ class UndertakingController @Inject() (
 
   def getAddEmailForVerification(status: EmailStatus = EmailStatus.New): Action[AnyContent] = enrolled.async {
     implicit request =>
-      val backLink = status match {
-        case EmailStatus.Unverified => routes.UnverifiedEmailController.unverifiedEmail.url
-        case EmailStatus.Amend => routes.UndertakingController.getAmendUndertakingDetails.url
-        case _ => routes.UndertakingController.getSector.url
-      }
+      val backLink = generateBackLink(status).url
       Future.successful(Ok(inputEmailPage(emailForm, backLink, Some(status))))
   }
 
   def postAddEmailForVerification(status: EmailStatus = EmailStatus.New): Action[AnyContent] = enrolled.async {
     implicit request =>
-      val backLink = status match {
-        case EmailStatus.Unverified => routes.UnverifiedEmailController.unverifiedEmail
-        case EmailStatus.Amend => routes.UndertakingController.getAmendUndertakingDetails
-        case _ => routes.UndertakingController.getSector
-      }
+      val backLink = generateBackLink(status)
 
       val nextUrl = (id: String) => routes.UndertakingController.getVerifyEmail(id, Some(status)).url
       val reEnterEmailUrl = routes.UndertakingController.getAddEmailForVerification(status).url
@@ -247,6 +249,7 @@ class UndertakingController @Inject() (
     withJourneyOrRedirect[UndertakingJourney](routes.UndertakingController.getAboutUndertaking) { journey =>
       handleConfirmEmailPost[UndertakingJourney](
         previous = journey.previous,
+        inputEmailRoute = routes.UndertakingController.getAddEmailForVerification(EmailStatus.New).url,
         next = {
           val call =
             if (journey.isAmend) routes.UndertakingController.getAmendUndertakingDetails
@@ -255,8 +258,7 @@ class UndertakingController @Inject() (
           if (journey.cya.value.getOrElse(false)) routes.UndertakingController.getCheckAnswers.url
           else call.url
         },
-        formAction = routes.UndertakingController.postConfirmEmail,
-        generateVerifyEmailUrl = (id: String) => routes.UndertakingController.getVerifyEmail(id).url
+        formAction = routes.UndertakingController.postConfirmEmail
       )
     }
   }
@@ -277,6 +279,16 @@ class UndertakingController @Inject() (
           (
             routes.UndertakingController.getAmendUndertakingDetails,
             routes.UndertakingController.getAmendUndertakingDetails
+          )
+        case Some(emailStatus @ EmailStatus.BecomeLead) =>
+          (
+            routes.UndertakingController.getAddEmailForVerification(emailStatus),
+            routes.BecomeLeadController.getBecomeLeadEori()
+          )
+        case Some(emailStatus @ EmailStatus.CYA) =>
+          (
+            routes.UndertakingController.getAddEmailForVerification(emailStatus),
+            routes.UndertakingController.getCheckAnswers
           )
         case _ =>
           (routes.UndertakingController.getConfirmEmail, routes.UndertakingController.getAddBusiness)

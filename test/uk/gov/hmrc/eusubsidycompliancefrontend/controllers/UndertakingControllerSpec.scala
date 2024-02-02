@@ -77,7 +77,8 @@ class UndertakingControllerSpec
   )
 
   private val controller = instanceOf[UndertakingController]
-
+  val verificationUrlNew = routes.UndertakingController.getAddEmailForVerification(EmailStatus.New).url
+  val verificationUrlAmend = routes.UndertakingController.getAddEmailForVerification(EmailStatus.Amend).url
   val exception = new Exception("oh no")
 
   "UndertakingController" when {
@@ -813,61 +814,6 @@ class UndertakingControllerSpec
 
       }
 
-      "return bad request and show error" when {
-
-        "invalid email format - no domain" in {
-          val email = "foo@example.com"
-          inSequence {
-            mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney(eori1)
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyWithCyaNotVisited.some))
-            mockRetrieveEmail(eori1)(
-              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress(email).some))
-            )
-          }
-          checkFormErrorIsDisplayed(
-            result = performAction("using-stored-email" -> "false", "email" -> "some@thing"),
-            expectedTitle = messageFromMessageKey("confirmEmail.title", email),
-            formError = messageFromMessageKey("email.error.email"),
-            backLinkOpt = Some(routes.UndertakingController.getSector.url)
-          )
-        }
-
-        "invalid email format - has spaces" in {
-          val email = "foo@example.com"
-          inSequence {
-            mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney(eori1)
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyWithCyaNotVisited.some))
-            mockRetrieveEmail(eori1)(
-              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress(email).some))
-            )
-          }
-          checkFormErrorIsDisplayed(
-            result = performAction("using-stored-email" -> "false", "email" -> "some @ thing.com"),
-            expectedTitle = messageFromMessageKey("confirmEmail.title", email),
-            formError = messageFromMessageKey("email.error.email"),
-            backLinkOpt = Some(routes.UndertakingController.getSector.url)
-          )
-        }
-
-        "invalid email format - no @" in {
-          val email = "foo@example.com"
-          inSequence {
-            mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney(eori1)
-            mockGet[UndertakingJourney](eori1)(Right(undertakingJourneyWithCyaNotVisited.some))
-            mockRetrieveEmail(eori1)(
-              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress(email).some))
-            )
-          }
-          checkFormErrorIsDisplayed(
-            result = performAction("using-stored-email" -> "false", "email" -> "something.com"),
-            expectedTitle = messageFromMessageKey("confirmEmail.title", email),
-            formError = messageFromMessageKey("email.error.email"),
-            backLinkOpt = Some(routes.UndertakingController.getSector.url)
-          )
-        }
-
-      }
-
       "redirect to add business page" when {
 
         "all api calls are successful" in {
@@ -897,24 +843,13 @@ class UndertakingControllerSpec
             mockRetrieveEmail(eori1)(
               Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("email").some))
             )
-            mockMakeVerificationRequestAndRedirect(Redirect("email-verification-redirect").toFuture)
           }
-          redirectLocation(
-            performAction("using-stored-email" -> "false", "email" -> "something@aol.com")
-          ) shouldBe "email-verification-redirect".some
-        }
+          val result = performAction(
+            "using-stored-email" -> "false"
+          )
 
-        "No verification found or cds with invalid form should be bad request" in {
-          inSequence {
-            mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney(eori1)
-            mockGet[UndertakingJourney](eori1)(
-              Right(undertakingJourneyComplete.copy(cya = UndertakingCyaFormPage()).some)
-            )
-            mockRetrieveEmail(eori1)(
-              Right(RetrieveEmailResponse(EmailType.VerifiedEmail, EmailAddress("email@mail.com").some))
-            )
-          }
-          status(performAction("using-stored-email" -> "false", "email" -> "somethingl.com")) shouldBe BAD_REQUEST
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) should contain(verificationUrlNew)
         }
 
       }
@@ -1197,7 +1132,7 @@ class UndertakingControllerSpec
           ModifyUndertakingRow(
             messageFromMessageKey("undertaking.cya.summary-list.verified-email"),
             "joebloggs@something.com",
-            routes.UndertakingController.getConfirmEmail.url
+            routes.UndertakingController.getAddEmailForVerification(EmailStatus.CYA).url
           ),
           ModifyUndertakingRow(
             messageFromMessageKey("undertaking.cya.summary-list.other-business"),
@@ -1895,6 +1830,79 @@ class UndertakingControllerSpec
           )
 
         }
+
+        "status is 'amend' (user clicks 'amend email')" in {
+          val status = EmailStatus.Amend
+          val pageTitle = "What is your email address?"
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+          }
+          checkPageIsDisplayed(
+            performAction(status),
+            pageTitle,
+            { doc =>
+              doc.getElementById("inputEmail-h1").text shouldBe pageTitle
+              doc
+                .select(".govuk-back-link")
+                .attr("href") shouldBe routes.UndertakingController.getAmendUndertakingDetails.url
+
+              val form = doc.select("form")
+              form
+                .attr("action") shouldBe routes.UndertakingController.postAddEmailForVerification(EmailStatus.Amend).url
+            }
+          )
+
+        }
+
+        "status is 'BecomeLead' (user has come from 'BecomeLead' controller)" in {
+          val status = EmailStatus.BecomeLead
+          val pageTitle = "What is your email address?"
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+          }
+          checkPageIsDisplayed(
+            performAction(status),
+            pageTitle,
+            { doc =>
+              doc.getElementById("inputEmail-h1").text shouldBe pageTitle
+              doc
+                .select(".govuk-back-link")
+                .attr("href") shouldBe routes.BecomeLeadController.getConfirmEmail.url
+
+              val form = doc.select("form")
+              form
+                .attr("action") shouldBe routes.UndertakingController
+                .postAddEmailForVerification(EmailStatus.BecomeLead)
+                .url
+            }
+          )
+
+        }
+        "status is 'CYA' (user has come from 'change' link in CYA page)" in {
+          val status = EmailStatus.CYA
+          val pageTitle = "What is your email address?"
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+          }
+          checkPageIsDisplayed(
+            performAction(status),
+            pageTitle,
+            { doc =>
+              doc.getElementById("inputEmail-h1").text shouldBe pageTitle
+              doc
+                .select(".govuk-back-link")
+                .attr("href") shouldBe routes.UndertakingController.getCheckAnswers.url
+
+              val form = doc.select("form")
+              form
+                .attr("action") shouldBe routes.UndertakingController
+                .postAddEmailForVerification(EmailStatus.CYA)
+                .url
+            }
+          )
+
+        }
+
       }
 
     }
@@ -1925,45 +1933,6 @@ class UndertakingControllerSpec
           mockMakeVerificationRequestAndRedirect(Redirect(redirectUrl).toFuture)
         }
         checkIsRedirect(performAction(status = EmailStatus.New, data = ("email" -> "foo@example.com")), redirectUrl)
-      }
-
-      "return bad request and show error" when {
-        val pageTitle = "What is your email address?"
-        val errorMessage = "Enter a valid email address"
-
-        "invalid email format - no domain" in {
-          inSequence {
-            mockAuthWithEnrolment(eori1)
-          }
-          checkFormErrorIsDisplayed(
-            result = performAction(status = EmailStatus.New, data = "email" -> "some@thing"),
-            expectedTitle = pageTitle,
-            formError = errorMessage
-          )
-        }
-
-        "invalid email format - has spaces" in {
-          inSequence {
-            mockAuthWithEnrolment(eori1)
-          }
-          checkFormErrorIsDisplayed(
-            result = performAction(status = EmailStatus.Unverified, data = "email" -> "some @ thing.com"),
-            expectedTitle = pageTitle,
-            formError = errorMessage
-          )
-        }
-
-        "invalid email format - no @" in {
-          inSequence {
-            mockAuthWithEnrolment(eori1)
-          }
-          checkFormErrorIsDisplayed(
-            result = performAction(status = EmailStatus.New, data = "email" -> "something.com"),
-            expectedTitle = pageTitle,
-            formError = errorMessage
-          )
-        }
-
       }
 
     }
