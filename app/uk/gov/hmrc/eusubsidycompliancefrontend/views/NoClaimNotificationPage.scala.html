@@ -47,15 +47,15 @@
     hasErrors = form.hasErrors
 ) {
     @if(form.hasErrors) {
-        @govukErrorSummary(ErrorSummary(errorList = Seq(
-            ErrorLink(
-                href = Some(s"#${form.errors.head.key}"),
-                content = Text(messages("noClaimNotification.error.required")),
-                attributes = Map("class" ->"govuk-link")
+        @govukErrorSummary(
+            ErrorSummary(
+                errorList = Seq(ErrorLink(
+                    href = Some(s"#${form.errors.head.key}"),
+                    content = Text(messages("noClaimNotification.error.required")),
+                    attributes = Map("class" ->"govuk-link")
+                )),
+                title = Text(messages("common.error.summary.title"))
             )
-        ),
-            title = Text(messages("common.error.summary.title"))
-        )
         )
     }
     @formHelper(action = controllers.routes.NoClaimNotificationController.postNoClaimNotification) {
