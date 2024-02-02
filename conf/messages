@@ -240,9 +240,7 @@ undertaking.confirmation.p2 = You can now submit reports of non-customs subsidy 
 undertaking.confirmation.p3 = You can also add businesses to your undertaking using the <a id="add-remove-business-link" href="{0}" class="govuk-link">Add and remove businesses</a> link in the ‘Undertaking administration’ section of the undertaking.
 
 lead-account-homepage.title = Manage your undertaking
-lead-account-homepage.p1.not-overdue = Your next report is due by <strong>{0}</strong>.
 lead-account-homepage.p1.is-overdue = Your report was due by {0}.
-lead-account-homepage.p2 = You must either:
 lead-account-homepage.ul1-li1 = report a non-customs subsidy payment
 lead-account-homepage.ul1-li2 = report that you have not been awarded any non-customs subsidy payments
 lead-account-homepage.details.title = What you need to report, and when
@@ -251,24 +249,39 @@ lead-account-homepage.details.ul1-li2 = you must use this service to report all 
 lead-account-homepage.details.ul1-li3 = you must submit a report at least once every 90 days, even if you haven’t received any payments
 lead-account-homepage.details.ul1-li4 = if you don’t submit a report, your undertaking may no longer be able to claim Customs Duty waivers
 
+
+lead-account-homepage.p1.not-overdue = Your next report is due by <strong>{0}</strong>.
+
 lead-account-homepage.details.submitted.ul1-li1 = this date is 90 days after the last report you submitted, on {0}
 
-lead-account-homepage.90day.warning = Your deadline to submit a report passed on {0}.
-lead-account-homepage.90day.p2 = You must now either:
-lead-account-homepage.90day.details.title = What you need to report now
+lead-account-homepage.preDeadline.p1 = This date is 90 days after you either:
+lead-account-homepage.postDeadline.p1 = This date was 90 days after you either:
 
-lead-account-homepage.90day.neverSubmitted.details.ul1-li1 = this date was 90 days after you registered your undertaking on {0}
-lead-account-homepage.90day.neverSubmitted.details.ul1-li2 = you must use this service to report all non-customs subsidy payments you have received between {0} and {1} to continue claiming de minimis state aid
+lead-account-homepage.p1.li1 = registered your undertaking
+lead-account-homepage.p1.li2 = submitted your last report of receiving a non-customs subsidy payment or no payments
+lead-account-homepage.preDeadline.p2 = You must either:
+lead-account-homepage.postDeadline.p2 = You must now either:
+lead-account-homepage.p2.li1 = report a non-customs subsidy payment
+lead-account-homepage.p2.li2 = report that you have not been awarded any non-customs subsidy payments
 
-lead-account-homepage.90day.hasSubmitted.details.ul1-li1 = this date was 90 days after you last submitted a report
-lead-account-homepage.90day.hasSubmitted.details.ul1-li2 = you must use this service to report all non-customs subsidy payments you have received between {0} and {1} to continue claiming de minimis state aid
+lead-account-homepage.preDeadline.h2 = What you need to report, and when
+lead-account-homepage.preDeadline.h2.p1 = You must use this service to report all non-customs subsidy payments you have received.
+lead-account-homepage.preDeadline.h2.p2 = You must submit a report at least once every 90 days, even if you have not received any payments.
+lead-account-homepage.preDeadline.h2.p3 = If you do not submit a report, your undertaking may no longer be able to claim Customs Duty waivers.
 
-lead-account-homepage.90day.details.ul1-li3 = these payments can include grants and loans, provided as de minimis state aid from government and public authorities, which you must report at least once every 90 days
-lead-account-homepage.90day.details.ul1-li4 = if you have received none, you must submit a report that you have received no payments for that period
 
-lead-account-homepage.details.ul1-li2 = you must use this service to report all non-customs subsidy payments you have received since {0}
-lead-account-homepage.details.ul1-li3 = you must submit a report at least once every 90 days, even if you haven’t received any payments
-lead-account-homepage.details.ul1-li4 = if you don’t submit a report, your undertaking may no longer be able to claim Customs Duty waivers
+lead-account-homepage.postDeadline.warning = Your deadline to submit a report passed on {0}.
+
+lead-account-homepage.postDeadline.h2 = What you need to report now
+lead-account-homepage.postDeadline.h2.p1 = You must use this service to report all non-customs subsidy payments you have received to continue claiming de minimis state aid.
+lead-account-homepage.postDeadline.h2.p2 = These payments can include grants and loans, provided as de minimis state aid from government and public authorities. You must report these at least once every 90 days, even if you have not received any payments.
+lead-account-homepage.postDeadline.h2.p3 = If you have received none, you must submit a report that you have received no payments for that period.
+
+lead-account-homepage.details.title = If you have previously submitted, or have never submitted a report
+lead-account-homepage.details.hasSubmitted.h3 = If you have previously submitted a report
+lead-account-homepage.details.hasSubmitted.h3.p1 = If you have submitted a non-customs subsidy payment or no payments report before, these will be any payments received within your latest 90-day reporting period.
+lead-account-homepage.details.neverSubmitted.h3 = If you have never submitted a report
+lead-account-homepage.details.neverSubmitted.h3.p1 = If you have not submitted a non-customs subsidy payment or no payments report before, these will be any payments received for the current tax year and the previous 2 tax years.
 
 lead-account-homepage.h2-3 = Report history
 lead-account-homepage.ul2-li1 = View reported non-customs subsidy payments
@@ -304,7 +317,7 @@ non-lead-account-homepage.ul2-li2 = Leave the undertaking
 non-lead-account-homepage.link2 = View financial dashboard for {0}
 non-lead-account-homepage.link3 = Remove yourself from this single undertaking
 
-non-lead-account-homepage.90day.warning = Your undertaking''s deadline to submit a report passed on {0}.
+non-lead-account-homepage.postDeadline.warning = Your undertaking''s deadline to submit a report passed on {0}.
 
 reportedPayments.title = Reported payment history
 reportedPayments.p1=You have not yet reported any payments.

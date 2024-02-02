@@ -62,7 +62,7 @@
 
   @if(isSuspended) {
       @govukWarningText(WarningText(
-          content = Text(messages("non-lead-account-homepage.90day.warning", dueDate)), attributes = Map("id" -> "warning-text")
+          content = Text(messages("non-lead-account-homepage.postDeadline.warning", dueDate)), attributes = Map("id" -> "warning-text")
       ))
   } else {
       @if(!isOverdue) {

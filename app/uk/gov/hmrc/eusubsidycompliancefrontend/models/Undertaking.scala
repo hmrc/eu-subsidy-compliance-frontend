@@ -33,7 +33,7 @@ case class Undertaking(
   undertakingBusinessEntity: List[BusinessEntity]
 ) {
 
-  def isSuspended: Boolean = undertakingStatus == Some(UndertakingStatus.suspendedAutomated)
+  def isAutoSuspended: Boolean = undertakingStatus == Some(UndertakingStatus.suspendedAutomated)
 
   def isLeadEORI(eori: EORI): Boolean = {
     val leadEORI: BusinessEntity = undertakingBusinessEntity

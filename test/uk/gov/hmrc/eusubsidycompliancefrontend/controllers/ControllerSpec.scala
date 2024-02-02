@@ -27,6 +27,8 @@ import play.api.i18n._
 import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingControllerSpec.SectorRadioOption
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.PlaySupport
 
 import scala.concurrent.Future
@@ -128,6 +130,11 @@ trait ControllerSpec extends PlaySupport with ScalaFutures with IntegrationPatie
     document
       .getElementById("scp08-banner-p2")
       .text shouldBe "If you are experiencing issues preventing you from submitting your supplementary declaration then please contact - customs.duty-waivers@hmrc.gov.uk"
+  }
+
+  def verifyGenericHomepageContentForLead(doc: Document, eori: EORI = CommonTestData.eori1) = {
+    doc.title() shouldBe "Manage your undertaking - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
+    doc.getElementById("undertaking-eori-number").text shouldBe eori
   }
 
 }

@@ -124,7 +124,29 @@ class AccountControllerWithSCP08Spec
       }
 
       "display the lead account home page with warning when undertaking is auto suspended" when {
-        "admin page loads home - already submitted" in {
+        "admin page loads home - 'undertakingStatus == active'" in {
+          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+            mockRetrieveUndertaking(eori1)(
+              undertaking.copy(undertakingStatus = Some(UndertakingStatus.active)).some.toFuture
+            )
+            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+            mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.toFuture)
+            mockGetUndertakingBalance(eori1)(Future.successful(Some(undertakingBalance)))
+            mockTimeProviderToday(fixedDate)
+            mockGetOrCreate(eori1)(Right(nilJourneyCreate))
+          }
+
+          val result = performAction()
+
+          val doc = Jsoup.parse(contentAsString(result))
+
+          verifyGenericHomepageContentForLead(doc)
+          verifyPreDeadlineContentForLead(doc)
+        }
+        "admin page loads home - 'undertakingStatus == suspendedAutomated'" in {
           val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
           inSequence {
             mockAuthWithEnrolmentAndNoEmailVerification()
@@ -143,29 +165,8 @@ class AccountControllerWithSCP08Spec
 
           val doc = Jsoup.parse(contentAsString(result))
 
-          verifyAutoSuspendContentForLead(doc = doc, neverSubmitted = true)
-
-        }
-        "admin page loads home - never submitted" in {
-          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
-          inSequence {
-            mockAuthWithEnrolmentAndNoEmailVerification()
-            mockRetrieveUndertaking(eori1)(
-              undertaking.copy(undertakingStatus = Some(UndertakingStatus.suspendedAutomated)).some.toFuture
-            )
-            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
-            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-            mockRetrieveAllSubsidies(undertakingRef)(emptyUndertakingSubsidies.toFuture)
-            mockGetUndertakingBalance(eori1)(Future.successful(Some(undertakingBalance)))
-            mockTimeProviderToday(fixedDate)
-            mockGetOrCreate(eori1)(Right(nilJourneyCreate))
-          }
-
-          val result = performAction()
-
-          val doc = Jsoup.parse(contentAsString(result))
-
-          verifyAutoSuspendContentForLead(doc = doc, neverSubmitted = false)
+          verifyGenericHomepageContentForLead(doc)
+          verifyAutoSuspendContentForLead(doc)
         }
         "member page loads home" in {
           inSequence {
@@ -194,35 +195,50 @@ class AccountControllerWithSCP08Spec
     }
   }
 
-  private def verifyAutoSuspendContentForLead(doc: Document, neverSubmitted: Boolean) = {
-    doc.title() shouldBe "Manage your undertaking - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
-    doc.getElementById("p2-text").text shouldBe "You must now either:"
-    if (neverSubmitted) {
-      doc
-        .getElementById("warning-text")
-        .text shouldBe "! Warning Your deadline to submit a report passed on 20 April 2021."
-      doc
-        .getElementById("suspended-details-li1")
-        .text shouldBe "this date was 90 days after you last submitted a report"
-      doc
-        .getElementById("suspended-details-li2")
-        .text shouldBe "you must use this service to report all non-customs subsidy payments you have received between 20 January 2021 and 20 April 2021 to continue claiming de minimis state aid"
-    } else {
-      doc
-        .getElementById("warning-text")
-        .text shouldBe "! Warning Your deadline to submit a report passed on 18 April 2021."
-      doc
-        .getElementById("suspended-details-li1")
-        .text shouldBe "this date was 90 days after you registered your undertaking on 18 January 2021"
-      doc
-        .getElementById("suspended-details-li2")
-        .text shouldBe "you must use this service to report all non-customs subsidy payments you have received between 6 April 2018 and 18 April 2021 to continue claiming de minimis state aid"
-    }
+  private def verifyAutoSuspendContentForLead(doc: Document) = {
     doc
-      .getElementById("suspended-details-li3")
-      .text shouldBe "these payments can include grants and loans, provided as de minimis state aid from government and public authorities, which you must report at least once every 90 days"
+      .getElementById("warning-text")
+      .text shouldBe "! Warning Your deadline to submit a report passed on 20 April 2021."
     doc
-      .getElementById("suspended-details-li4")
-      .text shouldBe "if you have received none, you must submit a report that you have received no payments for that period"
+      .getElementById("lead-account-homepage-p1")
+      .text shouldBe "This date was 90 days after you either:"
+    doc
+      .getElementById("lead-account-homepage-p2")
+      .text shouldBe "You must now either:"
+    doc
+      .getElementById("lead-account-homepage-h2")
+      .text shouldBe "What you need to report now"
+    doc
+      .getElementById("lead-account-homepage-h2-p1")
+      .text shouldBe "You must use this service to report all non-customs subsidy payments you have received to continue claiming de minimis state aid."
+    doc
+      .getElementById("lead-account-homepage-h2-p2")
+      .text shouldBe "These payments can include grants and loans, provided as de minimis state aid from government and public authorities. You must report these at least once every 90 days, even if you have not received any payments."
+    doc
+      .getElementById("lead-account-homepage-h2-p3")
+      .text shouldBe "If you have received none, you must submit a report that you have received no payments for that period."
+  }
+
+  private def verifyPreDeadlineContentForLead(doc: Document) = {
+    doc
+      .getElementById("warning-text") shouldBe null
+    doc
+      .getElementById("lead-account-homepage-p1")
+      .text shouldBe "This date is 90 days after you either:"
+    doc
+      .getElementById("lead-account-homepage-p2")
+      .text shouldBe "You must either:"
+    doc
+      .getElementById("lead-account-homepage-h2")
+      .text shouldBe "What you need to report, and when"
+    doc
+      .getElementById("lead-account-homepage-h2-p1")
+      .text shouldBe "You must use this service to report all non-customs subsidy payments you have received."
+    doc
+      .getElementById("lead-account-homepage-h2-p2")
+      .text shouldBe "You must submit a report at least once every 90 days, even if you have not received any payments."
+    doc
+      .getElementById("lead-account-homepage-h2-p3")
+      .text shouldBe "If you do not submit a report, your undertaking may no longer be able to claim Customs Duty waivers."
   }
 }
