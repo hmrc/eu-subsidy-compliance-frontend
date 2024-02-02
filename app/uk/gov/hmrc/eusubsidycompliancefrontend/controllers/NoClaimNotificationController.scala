@@ -150,7 +150,7 @@ class NoClaimNotificationController @Inject() (
         .sendEvent(
           NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate)
         )
-      isSuspended = appConfig.releaseCEnabled && undertaking.isSuspended
+      isSuspended = appConfig.releaseCEnabled && undertaking.isAutoSuspended
     } yield Redirect(routes.NoClaimNotificationController.getNotificationConfirmation(isSuspended))
 
     result.getOrElse(handleMissingSessionData("Undertaking ref"))
