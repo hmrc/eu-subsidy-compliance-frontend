@@ -67,7 +67,7 @@ class SubsidyController @Inject() (
   addClaimBusinessPage: AddClaimBusinessPage,
   addClaimAmountPage: AddClaimAmountPage,
   addEuroOnlyClaimAmountPage: AddEuroOnlyClaimAmountPage,
-  reportPaymentPage: ReportPaymentPage,
+  reportPaymentStartPage: ReportPaymentStartPage,
   reportNonCustomSubsidyPage: ReportNonCustomSubsidyPage,
   addClaimDatePage: AddClaimDatePage,
   addPublicAuthorityPage: AddPublicAuthorityPage,
@@ -160,7 +160,7 @@ class SubsidyController @Inject() (
         val updatedForm =
           journey.reportPayment.value
             .fold(reportPaymentForm)(v => reportPaymentForm.fill(FormValues(v)))
-        Ok(reportPaymentPage(updatedForm, journey.previous))
+        Ok(reportPaymentStartPage(updatedForm, journey.previous))
       }
     }
   }
@@ -184,7 +184,7 @@ class SubsidyController @Inject() (
           .fold(
             errors =>
               BadRequest(
-                reportPaymentPage(
+                reportPaymentStartPage(
                   errors,
                   journey.previous
                 )
