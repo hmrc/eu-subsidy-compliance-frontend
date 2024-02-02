@@ -16,15 +16,14 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 
-import cats.implicits.catsSyntaxOptionId
 import org.scalatest.AppendedClues.convertToClueful
 import org.scalatest.matchers.must.Matchers
 import play.api.data.FormError
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.EmailFormProvider.Errors.{InvalidFormat, MaxLength}
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.EmailFormProvider.Fields.{Email, UsingStoredEmail}
+import uk.gov.hmrc.eusubsidycompliancefrontend.forms.EmailFormProvider.Fields.Email
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.EmailFormProvider.MaximumEmailLength
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormProvider.CommonErrors.Required
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, OptionalEmailFormInput}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 
 class EmailFormProviderSpec extends BaseSpec with Matchers {
@@ -66,64 +65,6 @@ class EmailFormProviderSpec extends BaseSpec with Matchers {
         val email = s"$user$domain"
 
         testError(Email -> email)(Email, MaxLength)
-      }
-
-    }
-
-    "validating an OptionalEmailForm" must {
-
-      val underTest = OptionalEmailFormProvider()
-
-      def testSuccess(form: (String, String)*)(expected: OptionalEmailFormInput) =
-        validateAndCheckSuccess(underTest)(form: _*)(expected)
-
-      def testError(form: (String, String)*)(field: String, errorMessage: String) =
-        validateAndCheckError(underTest)(form: _*)(field, errorMessage)
-
-      "return no errors if user opts to use existing stored email" in {
-        testSuccess(UsingStoredEmail -> "true")(OptionalEmailFormInput("true", Option.empty))
-      }
-
-      "return no errors if user opts to enter their own valid email" in {
-        testSuccess(
-          UsingStoredEmail -> "false",
-          Email -> "foo@example.com"
-        )(OptionalEmailFormInput("false", "foo@example.com".some))
-      }
-
-      "return no errors for a valid email address that meets the maximum allowed length" in {
-        val domain = "@example.com"
-        val user = (1 to (MaximumEmailLength - domain.length)).map(_ => "l").mkString("")
-
-        testSuccess(
-          UsingStoredEmail -> "false",
-          Email -> s"$user$domain"
-        )(OptionalEmailFormInput("false", s"$user$domain".some))
-      }
-
-      "return an error if no email is entered" in {
-        testError(
-          UsingStoredEmail -> "false",
-          Email -> ""
-        )(Email, Required)
-      }
-
-      "return an error for an invalid email address" in {
-        testError(
-          UsingStoredEmail -> "false",
-          Email -> "this is not a valid email address"
-        )(Email, InvalidFormat)
-      }
-
-      "return an error if the email address is too long" in {
-        val domain = "@example.com"
-        val user = (1 to 500).map(_ => "l").mkString("")
-        val email = s"$user$domain"
-
-        testError(
-          UsingStoredEmail -> "false",
-          Email -> email
-        )(Email, MaxLength)
       }
 
     }

@@ -25,7 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.audit.AuditEvent.BusinessEntityPromotedSelf
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate.{PromotedSelfToNewLead, RemovedAsLeadToFormerLead}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, EmailStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -92,10 +92,11 @@ class BecomeLeadController @Inject() (
   def postConfirmEmail: Action[AnyContent] = enrolled.async { implicit request =>
     logger.info("BecomeLeadController.postConfirmEmail")
     handleConfirmEmailPost[BecomeLeadJourney](
-      previous = routes.BecomeLeadController.getConfirmEmail.url,
+      previous = routes.BecomeLeadController.getAcceptResponsibilities().url,
+      inputEmailRoute = routes.UndertakingController.getAddEmailForVerification(EmailStatus.BecomeLead).url,
+      emailStatus = Some(EmailStatus.BecomeLead),
       next = routes.BecomeLeadController.getBecomeLeadEori().url,
-      formAction = routes.BecomeLeadController.postConfirmEmail,
-      generateVerifyEmailUrl = (id: String) => routes.BecomeLeadController.getVerifyEmail(id).url
+      formAction = routes.BecomeLeadController.postConfirmEmail
     )
   }
 

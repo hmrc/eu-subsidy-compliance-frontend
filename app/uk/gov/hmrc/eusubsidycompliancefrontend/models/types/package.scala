@@ -150,6 +150,8 @@ package object types extends SimpleJson {
     val Unverified: types.EmailStatus.Value = Value("unverified")
     val New: types.EmailStatus.Value = Value("new")
     val Amend: types.EmailStatus.Value = Value("amend")
+    val BecomeLead: types.EmailStatus.Value = Value("become-lead")
+    val CYA: types.EmailStatus.Value = Value("cya")
 
     implicit val format: Format[EmailStatus] = Json.formatEnum(EmailStatus)
 

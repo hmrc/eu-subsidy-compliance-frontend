@@ -18,24 +18,13 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.forms
 import play.api.data.Forms.nonEmptyText
 import play.api.data.{Forms, Mapping}
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.EmailFormProvider.{EmailAddressFieldMapping, Fields}
-import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.mandatory
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{FormValues, OptionalEmailFormInput}
-import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 
 case class EmailFormProvider() extends FormProvider[FormValues] {
 
   override protected def mapping: Mapping[FormValues] = Forms.mapping(
     Fields.Email -> EmailAddressFieldMapping
   )(FormValues.apply)(FormValues.unapply)
-
-}
-
-case class OptionalEmailFormProvider() extends FormProvider[OptionalEmailFormInput] {
-
-  override protected def mapping: Mapping[OptionalEmailFormInput] = Forms.mapping(
-    Fields.UsingStoredEmail -> mandatory(Fields.UsingStoredEmail),
-    Fields.Email -> mandatoryIfEqual(Fields.UsingStoredEmail, "false", EmailAddressFieldMapping)
-  )(OptionalEmailFormInput.apply)(OptionalEmailFormInput.unapply)
 
 }
 
