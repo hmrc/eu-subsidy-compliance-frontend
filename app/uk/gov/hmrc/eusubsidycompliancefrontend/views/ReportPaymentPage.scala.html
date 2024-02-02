@@ -1,0 +1,89 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+
+@this(
+        layout: Layout,
+        formHelper: FormWithCSRF,
+        button: components.Button,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios : GovukRadios,
+        govukInput : GovukInput
+)
+
+
+@(form: Form[_], previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@radioIdentifier = @{"report-payment"}
+
+@layout(
+    pageTitle = Some(messages("reportPayment.title")),
+    backLinkEnabled = true,
+    backLink = Some(previous),
+    hasErrors = form.hasErrors
+) {
+
+    @if(form.hasErrors) {
+        @govukErrorSummary(ErrorSummary(errorList = Seq(
+            ErrorLink(
+                href = Some(s"#${form.errors.head.key}"),
+                content = Text(messages("reportPayment.error.required")),
+                attributes = Map("class" ->"govuk-link")
+            )
+        ),
+            title = Text(messages("common.error.summary.title"))
+        )
+        )
+    }
+
+    @formHelper(action = controllers.routes.SubsidyController.postReportPayment) {
+
+        @govukRadios(Radios(
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages("reportPayment.title")),
+                    classes = "govuk-fieldset__legend--xl",
+                    isPageHeading = true
+                ))
+            )),
+
+            errorMessage = if (form.hasErrors && form.errors.head.key == radioIdentifier) {
+                Some(ErrorMessage(content = Text(messages("reportPayment.error.required"))))
+            } else None,
+
+            idPrefix = Some(radioIdentifier),
+            name = radioIdentifier,
+            items = Seq(
+                RadioItem(
+                    content = Text(messages("reportPayment.option1")),
+                    value = Some("true"),
+                    checked = form.data.get(radioIdentifier).contains("true")
+                ),
+                RadioItem(
+                    content = Text(messages("reportPayment.option2")),
+                    value = Some("false"),
+                    checked = form.data.get(radioIdentifier).contains("false")
+                )
+            )
+        ))
+
+        @button("common.continue")
+    }
+}

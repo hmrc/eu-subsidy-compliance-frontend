@@ -222,15 +222,9 @@ class SubsidyJourneySpec extends BaseSpec with Matchers with ScalaFutures {
         SubsidyJourney().previous shouldBe routes.SubsidyController.getAddClaimPublicAuthority.url
       }
 
-      "return URI to account home page if on first time user page" in {
+      "return URI to account home page" in {
         implicit val request: FakeRequest[AnyContentAsEmpty.type] =
-          FakeRequest(GET, routes.SubsidyController.getReportPaymentFirstTimeUser.url)
-
-        SubsidyJourney().previous shouldBe routes.AccountController.getAccountPage.url
-      }
-      "return URI to account home page if on returning user page" in {
-        implicit val request: FakeRequest[AnyContentAsEmpty.type] =
-          FakeRequest(GET, routes.SubsidyController.getReportedPaymentReturningUserPage.url)
+          FakeRequest(GET, routes.SubsidyController.getReportPayment.url)
 
         SubsidyJourney().previous shouldBe routes.AccountController.getAccountPage.url
       }

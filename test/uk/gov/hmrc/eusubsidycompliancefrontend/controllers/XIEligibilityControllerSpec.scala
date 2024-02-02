@@ -58,7 +58,7 @@ class XIEligibilityControllerSpec
     "handling request to get XIEORI check" must {
 
       def performAction() = controller.getEoriCheck(
-        FakeRequest(GET, routes.SubsidyController.getReportPaymentFirstTimeUser.url)
+        FakeRequest(GET, routes.SubsidyController.getReportPayment.url)
       )
 
       "display the page" when {

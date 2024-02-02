@@ -50,10 +50,7 @@
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"lead-account-homepage"}
 
-@continueUrl = @{
-    if(neverSubmitted) routes.SubsidyController.startFirstTimeUserJourney.url
-    else routes.SubsidyController.startJourney.url
-}
+@continueUrl = @{routes.SubsidyController.startReportPaymentJourney.url}
 
 @balanceHeading = @{
     if(appConfig.scp08Enabled) messages("lead-account-homepage.h2.undertakingBalance")

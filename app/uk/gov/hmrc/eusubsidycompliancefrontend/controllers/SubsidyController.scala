@@ -45,7 +45,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.{ReportReminderHelpers, TimeProvider}
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax.BigDecimalOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter.Syntax.DateOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.voa.play.form.ConditionalMappings.mandatoryIfEqual
@@ -68,8 +67,7 @@ class SubsidyController @Inject() (
   addClaimBusinessPage: AddClaimBusinessPage,
   addClaimAmountPage: AddClaimAmountPage,
   addEuroOnlyClaimAmountPage: AddEuroOnlyClaimAmountPage,
-  reportPaymentFirstTimeUserPage: ReportPaymentFirstTimeUserPage,
-  reportedPaymentReturningUserPage: ReportedPaymentReturningUserPage,
+  reportPaymentPage: ReportPaymentPage,
   reportNonCustomSubsidyPage: ReportNonCustomSubsidyPage,
   addClaimDatePage: AddClaimDatePage,
   addPublicAuthorityPage: AddPublicAuthorityPage,
@@ -89,16 +87,12 @@ class SubsidyController @Inject() (
   private val removeSubsidyClaimForm: Form[FormValues] = formWithSingleMandatoryField("removeSubsidyClaim")
   private val cyaForm: Form[FormValues] = formWithSingleMandatoryField("cya")
   private val addClaimBusinessForm: Form[FormValues] = formWithSingleMandatoryField("add-claim-business")
-  private val reportedPaymentFirstTimeUserForm: Form[FormValues] = formWithSingleMandatoryField(
-    "reportPaymentFirstTimeUser"
-  )
   private val reportedPaymentNonCustomSubsidyForm: Form[FormValues] = formWithSingleMandatoryField(
     "reportNonCustomSubsidy"
   )
-  private val reportedPaymentReturningUserForm: Form[FormValues] = formWithSingleMandatoryField(
-    "report-payment-return"
+  private val reportPaymentForm: Form[FormValues] = formWithSingleMandatoryField(
+    "report-payment"
   )
-
   private val enteredTradingRefIsValid = Constraint[String] { traderRef: String =>
     if (traderRef.matches(TraderRef.regex)) Valid
     else Invalid(IncorrectFormat)
@@ -151,95 +145,33 @@ class SubsidyController @Inject() (
         )
       }
   }
+  def startReportPaymentJourney: Action[AnyContent] = verifiedEori.async { implicit request =>
+    withLeadUndertaking { _ =>
+      implicit val eori: EORI = request.eoriNumber
+      store
+        .put[SubsidyJourney](SubsidyJourney())
+        .map(_ => Redirect(routes.SubsidyController.getReportPayment.url))
+    }
+  }
 
-  def getReportPaymentFirstTimeUser: Action[AnyContent] = verifiedEori.async { implicit request =>
+  def getReportPayment: Action[AnyContent] = subsidyJourney.async { implicit request =>
     withLeadUndertaking { _ =>
       renderFormIfEligible { journey =>
         val updatedForm =
-          journey.reportPaymentFirstTimeUser.value
-            .fold(reportedPaymentFirstTimeUserForm)(v => reportedPaymentFirstTimeUserForm.fill(FormValues(v)))
-        val today = timeProvider.today
-        val startDate = today.toEarliestTaxYearStart
-        Ok(
-          reportPaymentFirstTimeUserPage(
-            form = updatedForm,
-            neverSubmittedTaxYearDate = startDate.toDisplayFormat,
-            previous = journey.previous
-          )
-        )
+          journey.reportPayment.value
+            .fold(reportPaymentForm)(v => reportPaymentForm.fill(FormValues(v)))
+        Ok(reportPaymentPage(updatedForm, journey.previous))
       }
     }
   }
 
-  def postReportPaymentFirstTimeUser: Action[AnyContent] = verifiedEori.async { implicit request =>
+  def postReportPayment: Action[AnyContent] = subsidyJourney.async { implicit request =>
     withLeadUndertaking { _ =>
       implicit val eori: EORI = request.eoriNumber
 
       def handleValidFormSubmission(f: FormValues): OptionT[Future, Result] = {
         val userSelection = f.value.isTrue
-        store.update[SubsidyJourney](_.setReportPaymentFirstTimeUser(userSelection)).toContext.map { updatedJourney =>
-          if (userSelection) Redirect(routes.SubsidyController.getReportedNoCustomSubsidyPage)
-          else Redirect(routes.NoClaimNotificationController.getNoClaimNotification)
-        }
-      }
-
-      val today = timeProvider.today
-      val startDate = today.toEarliestTaxYearStart
-      processFormSubmission[SubsidyJourney] { journey =>
-        reportedPaymentFirstTimeUserForm
-          .bindFromRequest()
-          .fold(
-            errors =>
-              BadRequest(
-                reportPaymentFirstTimeUserPage(
-                  form = errors,
-                  neverSubmittedTaxYearDate = startDate.toDisplayFormat,
-                  previous = journey.previous
-                )
-              ).toContext,
-            handleValidFormSubmission
-          )
-      }
-    }
-  }
-
-  def startFirstTimeUserJourney: Action[AnyContent] = verifiedEori.async { implicit request =>
-    withLeadUndertaking { _ =>
-      implicit val eori: EORI = request.eoriNumber
-      store
-        .put[SubsidyJourney](SubsidyJourney())
-        .map(_ => Redirect(routes.SubsidyController.getReportPaymentFirstTimeUser.url))
-    }
-  }
-
-  def startJourney: Action[AnyContent] = verifiedEori.async { implicit request =>
-    withLeadUndertaking { _ =>
-      implicit val eori: EORI = request.eoriNumber
-      store
-        .put[SubsidyJourney](SubsidyJourney())
-        .map(_ => Redirect(routes.SubsidyController.getReportedPaymentReturningUserPage.url))
-    }
-  }
-
-  def getReportedPaymentReturningUserPage: Action[AnyContent] = subsidyJourney.async { implicit request =>
-    withLeadUndertaking { _ =>
-      renderFormIfEligible { journey =>
-        val updatedForm =
-          journey.reportPaymentReturningUser.value
-            .fold(reportedPaymentReturningUserForm)(v => reportedPaymentReturningUserForm.fill(FormValues(v)))
-
-        Ok(reportedPaymentReturningUserPage(updatedForm, journey.previous))
-      }
-    }
-  }
-
-  def postReportedPaymentReturningUserPage: Action[AnyContent] = subsidyJourney.async { implicit request =>
-    withLeadUndertaking { _ =>
-      implicit val eori: EORI = request.eoriNumber
-
-      def handleValidFormSubmission(f: FormValues): OptionT[Future, Result] = {
-        val userSelection = f.value.isTrue
-        store.update[SubsidyJourney](_.setReportedPaymentReturningUser(userSelection)).toContext.map { _ =>
+        store.update[SubsidyJourney](_.setReportPayment(userSelection)).toContext.map { _ =>
           if (userSelection)
             Redirect(routes.SubsidyController.getReportedNoCustomSubsidyPage)
           else Redirect(routes.NoClaimNotificationController.getNoClaimNotification)
@@ -247,12 +179,12 @@ class SubsidyController @Inject() (
       }
 
       processFormSubmission[SubsidyJourney] { journey =>
-        reportedPaymentReturningUserForm
+        reportPaymentForm
           .bindFromRequest()
           .fold(
             errors =>
               BadRequest(
-                reportedPaymentReturningUserPage(
+                reportPaymentPage(
                   errors,
                   journey.previous
                 )
