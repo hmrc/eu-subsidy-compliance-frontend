@@ -35,19 +35,19 @@ class RemoveRemovedSubsidiesJob @Inject() (
 ) extends Logging {
 
   def runJob(): Unit = {
-    logger.warn("=== remove removedSubsidies job starting ===")
+    logger.info("=== remove removedSubsidies job starting ===")
     mongoComponent.database
       .getCollection("removedSubsidies")
       .drop()
       .toFuture()
       .void
-      .map(_ => logger.warn(s"=== removedSubsidies cache cleared ==="))
+      .map(_ => logger.info(s"=== removedSubsidies cache cleared ==="))
   }
 
   if (appConfig.removeRemovedSubsidiesJob) {
-    logger.warn("=== run-remove-removed-subsidies-job-enabled flag is true ===")
+    logger.info("=== run-remove-removed-subsidies-job-enabled flag is true ===")
     runJob()
-  } else logger.warn("run-remove-removed-subsidies-job-enabled flag is false")
+  } else logger.info("run-remove-removed-subsidies-job-enabled flag is false")
 
   // Shut-down hook
   lifecycle.addStopHook { () =>

@@ -685,7 +685,7 @@ class SubsidyController @Inject() (
           )
           _ <- store.update[SubsidyJourney](_.setSubmitted(true)).toContext
           _ <- escService.clearUndertakingCache(ref).toContext
-          isSuspended = appConfig.releaseCEnabled && undertaking.isSuspended
+          isSuspended = appConfig.releaseCEnabled && undertaking.isAutoSuspended
         } yield Redirect(routes.SubsidyController.getClaimConfirmationPage(isSuspended))
 
         result.getOrElse(sys.error("Error processing subsidy cya form submission"))
