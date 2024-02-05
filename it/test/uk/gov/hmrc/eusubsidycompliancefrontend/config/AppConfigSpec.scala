@@ -20,27 +20,20 @@ import org.scalatest.matchers.should.Matchers
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.running
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailTemplate
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
+import uk.gov.hmrc.eusubsidycompliancefrontend.util.IntegrationBaseSpec
 
-class AppConfigSpec extends BaseSpec with Matchers {
+class AppConfigSpec extends IntegrationBaseSpec with Matchers {
 
   "AppConfig" when {
-
     "all EmailTemplate values are present in default app configuration" in {
-
       val app = new GuiceApplicationBuilder().build()
-
       running(app) {
         val underTest = app.injector.instanceOf[AppConfig]
-
         EmailTemplate.values.foreach { template =>
           underTest.getTemplateId(template) shouldBe defined
         }
-
       }
-
     }
-
   }
 
 }
