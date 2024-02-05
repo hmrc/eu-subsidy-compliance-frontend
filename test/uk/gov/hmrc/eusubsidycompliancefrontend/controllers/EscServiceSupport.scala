@@ -126,4 +126,10 @@ trait EscServiceSupport { this: ControllerSpec =>
       .expects(date, *)
       .returning(result)
 
+  def mockClearUndertakingCache() =
+    (mockEscService
+      .clearUndertakingCache(_: UndertakingRef))
+      .expects(*)
+      .returning(Future.successful(()))
+
 }

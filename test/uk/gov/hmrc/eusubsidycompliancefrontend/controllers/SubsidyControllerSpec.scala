@@ -2187,6 +2187,7 @@ class SubsidyControllerSpec
               )
             )
             mockUpdate[SubsidyJourney](eori1)(Right(submittedSubsidyJourney))
+            mockClearUndertakingCache()
           }
 
           checkIsRedirect(

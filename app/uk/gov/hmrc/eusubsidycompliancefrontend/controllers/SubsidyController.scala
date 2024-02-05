@@ -684,6 +684,7 @@ class SubsidyController @Inject() (
             AuditEvent.NonCustomsSubsidyAdded(request.authorityId, eori, ref, journey, currentDate)
           )
           _ <- store.update[SubsidyJourney](_.setSubmitted(true)).toContext
+          _ <- escService.clearUndertakingCache(ref).toContext
           isSuspended = appConfig.releaseCEnabled && undertaking.isAutoSuspended
         } yield Redirect(routes.SubsidyController.getClaimConfirmationPage(isSuspended))
 

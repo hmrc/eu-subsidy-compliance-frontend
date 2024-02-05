@@ -490,6 +490,17 @@ class EscServiceSpec extends BaseSpec with Matchers with MockitoSugar with Scala
       }
     }
 
+    "clearUndertakingCache" must {
+      "clear undertaking and undertakingSubsidies" when {
+        " called" in {
+          mockCacheDeleteUndertaking(undertakingRef)(Right(()))
+          mockCacheDeleteUndertakingSubsidies(undertakingRef)(Right(()))
+
+          service.clearUndertakingCache(undertakingRef).futureValue shouldBe ()
+        }
+      }
+    }
+
   }
 
 }

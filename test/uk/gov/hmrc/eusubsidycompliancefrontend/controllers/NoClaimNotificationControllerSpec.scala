@@ -236,6 +236,7 @@ class NoClaimNotificationControllerSpec
           mockSendAuditEvent(
             AuditEvent.NonCustomsSubsidyNilReturn("1123", eori1, undertakingRef, currentDay)
           )
+          mockClearUndertakingCache()
         }
         checkIsRedirect(
           performAction("noClaimNotification" -> "true"),

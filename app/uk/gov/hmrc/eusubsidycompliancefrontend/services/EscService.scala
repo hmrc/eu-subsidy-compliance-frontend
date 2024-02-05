@@ -292,4 +292,10 @@ class EscService @Inject() (
         errorMessage = s"removeSubsidy failed UndertakingRef:$undertakingRef, NonHmrcSubsidy:$nonHmrcSubsidy"
       )
 
+  def clearUndertakingCache(ref: UndertakingRef): Future[Unit] =
+    for {
+      _ <- undertakingCache.deleteUndertaking(ref)
+      _ <- undertakingCache.deleteUndertakingSubsidies(ref)
+    } yield ()
+
 }
