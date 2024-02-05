@@ -25,12 +25,13 @@ import org.scalatest.wordspec.AnyWordSpec
 import play.api.Configuration
 import play.api.libs.json.Json
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.SubsidyUpdate
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{MonthlyExchangeRate, SubsidyUpdate}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EscConnectorSpec
@@ -122,6 +123,15 @@ class EscConnectorSpec
       mockGet(s"$baseUrl/undertaking/balance/$eori1")(Some(response))
       val actual = connector.getUndertakingBalance(eori1).futureValue
       actual shouldBe Some(undertakingBalance)
+    }
+
+    "handling request to get exchange rates" in {
+      val dateEnd = LocalDate.now
+      val rate = MonthlyExchangeRate("curr1", "curr2", 123, LocalDate.now(), dateEnd)
+      val response = HttpResponse(status = 200, body = Json.toJson(rate).toString)
+      mockGet(s"$baseUrl/retrieve-exchange-rate/${dateEnd.toString}")(Some(response))
+      val actual = connector.getExchangeRate(LocalDate.now()).futureValue
+      actual shouldBe Some(rate)
     }
   }
 
