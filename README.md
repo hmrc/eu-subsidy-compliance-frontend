@@ -24,7 +24,7 @@ The service also depends on `mongodb`
 
 All dependant services can be run via
 ```
-sm --start ESC_ALL
+sm2 --start ESC_ALL
 ```
 By default, this service runs on port `9093`. To bring up only this service, use
 ```
@@ -68,6 +68,15 @@ Use the following command to run the tests with coverage and generate a report.
 sbt clean coverage test it:test coverageReport
 ```
 
+The following command can also be run to format the code base and then execute all tests:
+
+```
+sbt precommit
+```
+
+## Formatting
+This is governed by the **.scalafmt.conf** file.
+
 ## Monitoring
 
 The following grafana and kibana dashboards are available for this service:
@@ -78,31 +87,6 @@ The following grafana and kibana dashboards are available for this service:
 
 The runbook for this service can be found
 [here](https://confluence.tools.tax.service.gov.uk/display/SC/Runbook+-+Subsidy+Compliance).
-
-## Formatting
-This is governed by the **.scalafmt.conf** file.
-
-### Formatting and running tests locally
-Running tests will now check formatting. Formatting on save as detailed later should make this test not noticeable, 
-running optimize imports across all files can make a mess so running. Well-formatted code makes Linus's law more effective
-```
-"given enough eyeballs, all bugs are shallow"
-```
-As it makes reading code for curiosity's sake easier so more eyeballs.
-
-
-```shell
-sbt formatAndTest
-```
-
-### Auto formatting on save in Intellij
-This actually handles most of the fuss of the formatting dance. Also catches some compilation errors early.
-
-![img.png](intellij-formatting.png)
-
-### Other IDE's
-Full instructions can be found here for Metals etc.
-
 
 ### License
 
