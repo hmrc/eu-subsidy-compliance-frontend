@@ -42,6 +42,7 @@ class UndertakingCache @Inject() (
       ttl = DefaultCacheTtl,
       timestampSupport = new CurrentTimestampSupport,
       cacheIdType = EoriIdType,
+      replaceIndexes = true,
       extraIndexes = Seq(
         undertakingCacheIndex(undertakingReference, "undertakingReference"),
         undertakingCacheIndex(undertakingSubsidiesIdentifier, "undertakingSubsidiesIdentifier"),
