@@ -119,7 +119,7 @@
                                     else {
                                         HtmlContent(
                                             s"""<a class='govuk-link' href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>
-                                                    ${messages("common.remove")}<span class="govuk-visually-hidden"> ${messages("reportedPayments.payment-dated")} ${sub.allocationDate.toShortDisplayFormat} ${sub.businessEntityIdentifier.map(messages("reportedPayments.eori")+ " " + _).mkString}</span>
+                                                    ${messages("common.remove")}<span class="govuk-visually-hidden"> ${messages("reportedPayments.payment-dated")} ${sub.allocationDate.toShortDisplayFormat}, ${sub.businessEntityIdentifier.map(messages("reportedPayments.eori")+ " " + _).mkString}</span>
                                             </a>""".stripMargin
                                         )
                                     },

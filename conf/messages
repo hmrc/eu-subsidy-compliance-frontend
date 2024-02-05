@@ -316,7 +316,7 @@ reportedPayments.table.head.public-authority=Public authority
 reportedPayments.table.head.ref=Your reference
 reportedPayments.table.head.action= Action
 reportedPayments.payment-dated = payment, dated
-reportedPayments.eori =, EORI number
+reportedPayments.eori = EORI number
 reportedPayments.removed = Reported payment removed
 reportedPayments.removed.label = REMOVED
 
