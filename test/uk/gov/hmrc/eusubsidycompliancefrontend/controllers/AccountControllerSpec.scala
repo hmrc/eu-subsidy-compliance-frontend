@@ -17,7 +17,6 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
-import org.jsoup.Jsoup
 import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
@@ -92,56 +91,25 @@ class AccountControllerSpec
             performAction(),
             messageFromMessageKey("lead-account-homepage.title"),
             { doc =>
-              val htmlBody = doc.toString
+              verifyGenericHomepageContentForLead(doc)
+              doc.getElementById("lead-account-homepage-p2").text shouldBe "You must either:"
 
-              val elementIds = List(
-                (1, 1),
-                (1, 2),
-                (2, 1),
-                (3, 1),
-                (4, 1),
-                (4, 2),
-                (4, 3)
-              )
+              doc.getElementById("lead-account-homepage-p1-li1").text shouldBe "registered your undertaking"
+              doc
+                .getElementById("lead-account-homepage-p1-li2")
+                .text shouldBe "submitted your last report of receiving a non-customs subsidy payment or no payments"
 
-              doc.getElementById("p2-text").text shouldBe "You must either:"
+              doc.getElementById("lead-account-homepage-p2-li1").text shouldBe "report a non-customs subsidy payment"
+              doc
+                .getElementById("lead-account-homepage-p2-li2")
+                .text shouldBe "report that you have not been awarded any non-customs subsidy payments"
 
-              elementIds foreach { elementId =>
-                val messageKey = s"lead-account-homepage.ul${elementId._1}-li${elementId._2}"
-
-                withClue(s"Could not locate content for messageKey: '$messageKey' in raw page content") {
-                  htmlBody.contains(messageFromMessageKey(messageKey)) shouldBe true
-                }
-              }
               doc.getElementById("undertaking-balance-section-heading").text shouldBe "Remaining allowance"
               doc
                 .getElementById("undertaking-balance-section-content")
                 .text shouldBe "Your undertaking currently has a remaining balance of €0.00, from your sector allowance of €12.34."
-
             }
           )
-        }
-
-        "display the correct string in the leadAccountPage after the report has been submitted" in {
-          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
-
-          inSequence {
-            mockAuthWithEnrolmentAndNoEmailVerification()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
-            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-            mockRetrieveAllSubsidies(undertakingRef)(undertakingSubsidies.toFuture)
-            mockTimeProviderToday(fixedDate)
-            mockGetOrCreate(eori1)(Right(nilJourneyCreate))
-          }
-
-          val result = performAction()
-          status(result) shouldBe OK
-
-          val document = Jsoup.parse(contentAsString(result))
-
-          val submittedDetailsText = document.getElementById("submitted-details-ul1-li1").text()
-          submittedDetailsText shouldBe "this date is 90 days after the last report you submitted, on 20 January 2021"
         }
 
         def testTimeToReport(
