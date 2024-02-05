@@ -150,6 +150,7 @@ class NoClaimNotificationController @Inject() (
         .sendEvent(
           NonCustomsSubsidyNilReturn(request.authorityId, eori, reference, nilSubmissionDate)
         )
+      _ <- escService.clearUndertakingCache(reference).toContext
       isSuspended = appConfig.releaseCEnabled && undertaking.isSuspended
     } yield Redirect(routes.NoClaimNotificationController.getNotificationConfirmation(isSuspended))
 
