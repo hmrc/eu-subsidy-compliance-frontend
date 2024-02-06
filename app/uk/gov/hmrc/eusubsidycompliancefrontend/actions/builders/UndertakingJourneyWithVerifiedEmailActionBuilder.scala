@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders
 
-import play.api.i18n.{I18nSupport, Lang, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logging}
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
@@ -92,7 +92,6 @@ class UndertakingJourneyWithVerifiedEmailActionBuilder @Inject() (
     f: AuthenticatedEnrolledRequest[A] => Future[Result]
   ): Future[Result] = {
     implicit val eori: EORI = enrolledRequest.eoriNumber
-    implicit val lang: Lang = Lang("en")
 
     store.get[UndertakingJourney].flatMap {
       case Some(journey) =>
@@ -103,11 +102,7 @@ class UndertakingJourneyWithVerifiedEmailActionBuilder @Inject() (
         logger.error(s"No UndertakingJourney session data for EORI:$eori")
         Future.successful(
           InternalServerError(
-            errorHandler.standardErrorTemplate(
-              messagesApi("service.name"),
-              messagesApi("service.unavailable.heading"),
-              messagesApi("service.unavailable.body")
-            )(enrolledRequest)
+            errorHandler.internalServerErrorTemplate(enrolledRequest)
           )
         )
     }

@@ -20,7 +20,7 @@ import cats.data.OptionT
 import cats.implicits._
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.i18n.{Lang, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
@@ -421,14 +421,9 @@ class UndertakingController @Inject() (
       } yield Redirect(routes.UndertakingController.getConfirmation(ref))
     ).recover { case error: NotFoundException =>
       logger.error(s"Error creating undertaking: $error")
-      implicit val lang: Lang = Lang("en")
 
       InternalServerError(
-        errorHandler.standardErrorTemplate(
-          messagesApi("service.name"),
-          messagesApi("service.unavailable.heading"),
-          messagesApi("service.unavailable.body")
-        )
+        errorHandler.internalServerErrorTemplate
       )
     }
 
