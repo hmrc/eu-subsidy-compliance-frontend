@@ -20,6 +20,7 @@ import cats.data.OptionT
 import cats.implicits._
 import play.api.data.Form
 import play.api.data.Forms.mapping
+import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
@@ -80,6 +81,7 @@ class UndertakingController @Inject() (
     with ControllerFormHelpers {
 
   import actionBuilders._
+  override val messagesApi: MessagesApi = mcc.messagesApi
 
   private val aboutUndertakingForm: Form[FormValues] = Form(
     mapping("continue" -> mandatory("continue"))(FormValues.apply)(FormValues.unapply)
@@ -419,7 +421,15 @@ class UndertakingController @Inject() (
       } yield Redirect(routes.UndertakingController.getConfirmation(ref))
     ).recover { case error: NotFoundException =>
       logger.error(s"Error creating undertaking: $error")
-      InternalServerError(errorHandler.internalServerErrorTemplate)
+      implicit val lang: Lang = Lang("en")
+
+      InternalServerError(
+        errorHandler.standardErrorTemplate(
+          messagesApi("service.name"),
+          messagesApi("service.unavailable.heading"),
+          messagesApi("service.unavailable.body")
+        )
+      )
     }
 
   def getConfirmation(ref: String): Action[AnyContent] = verifiedEori.async { implicit request =>
