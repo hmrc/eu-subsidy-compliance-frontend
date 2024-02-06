@@ -168,13 +168,16 @@ class SubsidyControllerSpec
               subsidyList.select("thead > tr > th:nth-child(3)").text() shouldBe "EORI number"
               subsidyList.select("thead > tr > th:nth-child(4)").text() shouldBe "Public authority"
               subsidyList.select("thead > tr > th:nth-child(5)").text() shouldBe "Your reference"
+              subsidyList.select("thead > tr > th:nth-child(6)").text() shouldBe "Action"
 
               subsidyList.select("tbody > tr > td:nth-child(1)").text() shouldBe "1 Jan 2022"
               subsidyList.select("tbody > tr > td:nth-child(2)").text() shouldBe "€543.21"
               subsidyList.select("tbody > tr > td:nth-child(3)").text() shouldBe "GB123456789012"
               subsidyList.select("tbody > tr > td:nth-child(4)").text() shouldBe "Local Authority"
               subsidyList.select("tbody > tr > td:nth-child(5)").text() shouldBe "ABC123"
-              subsidyList.select("tbody > tr > td:nth-child(6)").text() shouldBe "Remove payment, dated 1 Jan 2022"
+              subsidyList
+                .select("tbody > tr > td:nth-child(6)")
+                .text() shouldBe "Remove payment, dated 1 Jan 2022, EORI number GB123456789012"
 
               subsidyList.select("tbody > tr > td:nth-child(6) > a").attr("href") shouldBe routes.SubsidyController
                 .getRemoveSubsidyClaim("Z12345")

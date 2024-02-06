@@ -53,6 +53,7 @@
 @eori = @{s"$key.table.head.eori"}
 @publicAuthority = @{s"$key.table.head.public-authority"}
 @ref = @{s"$key.table.head.ref"}
+@action = @{s"$key.table.head.action"}
 
 @bannerContent = {
     <p class="govuk-notification-banner__heading">@messages(s"$key.removed")</p>
@@ -68,6 +69,7 @@
         table.@responsiveTableClass td:nth-of-type(3):before { content: "@{messages(eori)}" }
         table.@responsiveTableClass td:nth-of-type(4):before { content: "@{messages(publicAuthority)}" }
         table.@responsiveTableClass td:nth-of-type(5):before { content: "@{messages(ref)}" }
+        table.@responsiveTableClass td:nth-of-type(6):before { content: "@{messages(action)}" }
     </style>
 }
 
@@ -117,11 +119,10 @@
                                     else {
                                         HtmlContent(
                                             s"""<a class='govuk-link' href=${controllers.routes.SubsidyController.getRemoveSubsidyClaim(sub.subsidyUsageTransactionId.get).url}>
-                                            ${messages("common.remove")}<span class="govuk-visually-hidden"> ${messages("reportedPayments.payment-dated")} ${sub.allocationDate.toShortDisplayFormat}</span>
+                                                    ${messages("common.remove")}<span class="govuk-visually-hidden"> ${messages("reportedPayments.payment-dated")} ${sub.allocationDate.toShortDisplayFormat}, ${sub.businessEntityIdentifier.map(messages("reportedPayments.eori")+ " " + _).mkString}</span>
                                             </a>""".stripMargin
                                         )
-                                    },
-                                classes="responsive-nopad"
+                                    }
                             )
                         )
                     },
@@ -131,7 +132,7 @@
                         HeadCell(content = Text(messages(eori))),
                         HeadCell(content = Text(messages(publicAuthority))),
                         HeadCell(content = Text(messages(ref))),
-                        HeadCell(content = HtmlContent(s"""<span  class='govuk-visually-hidden'>${messages("common.remove")}</span>""")),
+                        HeadCell(content = Text(messages(action)))
                     ))
                 )
             )
