@@ -76,16 +76,25 @@ class NoClaimNotificationControllerSpec
         val result = performAction
         status(result) shouldBe OK
         val document = Jsoup.parse(contentAsString(result))
-        val title = document.getElementById("noClaimNotifId").text()
-        title shouldBe messageFromMessageKey("noClaimNotification.has-submitted.title")
+        val title = document.getElementById("noClaimNotification-h1").text()
+        title shouldBe messageFromMessageKey("noClaimNotification.title")
+        val p1Text = document.getElementById("noClaimNotification-p1").text()
+        p1Text shouldBe "If you have not received any non-customs subsidy payments, you must report this at least once every 90 days."
         val p2Text = document.getElementById("noClaimNotification-p2").text()
-        p2Text shouldBe "If you do not have any payments to report since then, you must tell us every 90 days."
-        val chkLabel = document.select("label[for=chknoClaim]")
-        chkLabel.text() shouldBe "This undertaking does not currently have any non-customs subsidy payments to report"
+        p2Text shouldBe "If you have never submitted a payment or no payments report"
+        val p3Text = document.getElementById("noClaimNotification-p3").text()
+        p3Text shouldBe "You must confirm that you have received no non-customs subsidy payments since 6 April 2021."
+        val p4Text = document.getElementById("noClaimNotification-p4").text()
+        p4Text shouldBe "If you have previously submitted a payment or no payments report"
+        val p5Text = document.getElementById("noClaimNotification-p5").text()
+        p5Text shouldBe "You must confirm that you have received no non-customs subsidy payments within your latest 90-day reporting period."
+
+        val chkLabel = document.select("label[for=noClaimNotification]")
+        chkLabel.text() shouldBe "This undertaking does not have any non-customs subsidy payments to report for the relevant period."
 
       }
 
-      "display the page correctly if no previous claims have been submitted" in {
+      "display the page correctly" in {
         inSequence {
           mockAuthWithEnrolmentAndValidEmail()
           mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
@@ -96,43 +105,13 @@ class NoClaimNotificationControllerSpec
 
         checkPageIsDisplayed(
           performAction,
-          messageFromMessageKey("noClaimNotification.never-submitted.title", startDate.toDisplayFormat),
+          messageFromMessageKey("noClaimNotification.title", startDate.toDisplayFormat),
           { doc =>
             doc
               .select(".govuk-back-link")
-              .attr("href") shouldBe routes.SubsidyController.getReportPaymentFirstTimeUser.url
+              .attr("href") shouldBe routes.SubsidyController.getReportPayment.url
             val selectedOptions = doc.select(".govuk-checkboxes__input[checked]")
             selectedOptions.isEmpty shouldBe true
-
-            val button = doc.select("form")
-            button.attr("action") shouldBe routes.NoClaimNotificationController.postNoClaimNotification.url
-          }
-        )
-
-      }
-
-      "display the page correctly if at least one previous claim has been submitted" in {
-        inSequence {
-          mockAuthWithEnrolmentAndValidEmail()
-          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-          mockTimeProviderToday(fixedDate)
-          mockRetrieveSubsidiesForDateRange(undertakingRef, (startDate, fixedDate))(undertakingSubsidies.toFuture)
-          mockTimeProviderToday(fixedDate)
-        }
-
-        checkPageIsDisplayed(
-          performAction,
-          messageFromMessageKey("noClaimNotification.has-submitted.title", fixedDate.toDisplayFormat),
-          { doc =>
-            doc
-              .select(".govuk-back-link")
-              .attr("href") shouldBe routes.SubsidyController.getReportedPaymentReturningUserPage.url
-            val selectedOptions = doc.select(".govuk-checkboxes__input[checked]")
-            selectedOptions.isEmpty shouldBe true
-
-            doc
-              .getElementById("you-last-reported")
-              .text shouldBe s"You last reported a non-customs subsidy payment on ${fixedDate.toDisplayFormat}."
 
             val button = doc.select("form")
             button.attr("action") shouldBe routes.NoClaimNotificationController.postNoClaimNotification.url
@@ -213,9 +192,9 @@ class NoClaimNotificationControllerSpec
 
           checkFormErrorIsDisplayed(
             result = performAction(),
-            expectedTitle = messageFromMessageKey("noClaimNotification.has-submitted.title", "20 January 2021"),
+            expectedTitle = messageFromMessageKey("noClaimNotification.title", "20 January 2021"),
             formError = messageFromMessageKey("noClaimNotification.error.required"),
-            backLinkOpt = Some(routes.SubsidyController.getReportedPaymentReturningUserPage.url)
+            backLinkOpt = Some(routes.SubsidyController.getReportPayment.url)
           )
         }
       }
