@@ -400,6 +400,12 @@ reportPaymentReturnJourney.option1 = A non-customs subsidy payment
 reportPaymentReturnJourney.option2 = I have no payments to report
 reportPaymentReturnJourney.error.required = Select if you need to report a non-customs payment or you have no payments to report
 
+# ReportPayment
+reportPayment.title = What do you need to report?
+reportPayment.option1 = A non-customs subsidy payment
+reportPayment.option2 = I have no payments to report
+reportPayment.error.required = Select if you need to report a non-customs payment or you have no payments to report
+
 # ReportNonCustomSubsidy
 reportNonCustomSubsidy.title = You must report all non-customs subsidies for 3 tax years
 reportNonCustomSubsidy.p1 = You need to report for the current tax year, and the previous 2 tax years:
@@ -505,16 +511,15 @@ removeYourselfBusinessEntity.p2 = If you join or create a new undertaking at any
 removeYourselfBusinessEntity.legend = Are you sure you want to leave this undertaking?
 removeYourselfBusinessEntity.error.required = Select yes if you want to leave this undertaking
 
-noClaimNotification.never-submitted.title = Tell us your undertaking has not received any non-customs subsidy payments since {0}
-noClaimNotification.never-submitted.p1 = If you have not received any payments in this tax year or the two tax years before, you must report this at least once every 90 days.
-noClaimNotification.never-submitted.label = This undertaking has not received any non-customs subsidy payments since {0}.
-
-noClaimNotification.has-submitted.title = Tell us your undertaking does not have any payments to report
-noClaimNotification.has-submitted.p1 = You last reported a non-customs subsidy payment on {0}.
-noClaimNotification.has-submitted.p2 = If you do not have any payments to report since then, you must tell us every 90 days.
-noClaimNotification.has-submitted.label = This undertaking does not currently have any non-customs subsidy payments to report
-
-noClaimNotification.error.required = Select if you have not received non-customs subsidies in the past 90 days
+#noClaimConfirmation
+noClaimNotification.title = Confirm your undertaking has no payments to report
+noClaimNotification.p1 = If you have not received any non-customs subsidy payments, you must report this at least once every 90 days.
+noClaimNotification.p2 = If you have never submitted a payment or no payments report
+noClaimNotification.p3 = You must confirm that you have received no non-customs subsidy payments since 6 April 2021.
+noClaimNotification.p4 = If you have previously submitted a payment or no payments report
+noClaimNotification.p5 = You must confirm that you have received no non-customs subsidy payments within your latest 90-day reporting period.
+noClaimNotification.label = This undertaking does not have any non-customs subsidy payments to report for the relevant period.
+noClaimNotification.error.required = Select if you have not received non-customs subsidy payments in the period of time relevant to you
 
 #noClaimConfirmation
 noClaimConfirmation.title = Report sent

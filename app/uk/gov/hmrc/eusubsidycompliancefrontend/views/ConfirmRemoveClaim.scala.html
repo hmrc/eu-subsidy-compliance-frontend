@@ -39,7 +39,6 @@
     backLink = Some(controllers.routes.SubsidyController.getReportedPayments.url),
     hasErrors = form.hasErrors
 ) {
-    @H1(messages("subsidy.remove.title"))
     @form.errors.map { err =>
         @govukErrorSummary(ErrorSummary(
             errorList = Seq(
@@ -51,6 +50,7 @@
             title = Text(messages("common.error.summary.title"))
         ))
     }
+    @H1(messages("subsidy.remove.title"))
     @govukSummaryList(SummaryList(
         rows = Seq(
                 SummaryListRow(

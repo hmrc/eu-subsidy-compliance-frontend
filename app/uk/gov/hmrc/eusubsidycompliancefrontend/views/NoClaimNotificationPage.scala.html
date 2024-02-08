@@ -37,65 +37,49 @@
 
 @key = @{"noClaimNotification"}
 
-@hasSubmittedTitle = @{messages(s"$key.has-submitted.title", lastSubmitted)}
-@neverSubmittedTitle = @{messages(s"$key.never-submitted.title", neverSubmittedTaxYearDate)}
+@title = @{messages(s"$key.title", lastSubmitted)}
 
-@hasSubmittedHtml = {
-    @P(messages("noClaimNotification.has-submitted.p1", lastSubmitted), id = Some("you-last-reported"))
-    @P(messages("noClaimNotification.has-submitted.p2") ,id = Some("noClaimNotification-p2"))
-}
-
-@neverSubmittedHtml = {
-    @P(messages("noClaimNotification.never-submitted.p1"))
-}
 
 @layout(
-    pageTitle = if(neverSubmitted) Some(neverSubmittedTitle) else Some(hasSubmittedTitle),
+    pageTitle = Some(title),
     backLinkEnabled = true,
     backLink = Some(previous),
     hasErrors = form.hasErrors
 ) {
-
-    @formHelper(action = controllers.routes.NoClaimNotificationController.postNoClaimNotification) {
-        @form.errors.map { err =>
-            @govukErrorSummary(ErrorSummary(
-                errorList = Seq(
-                    ErrorLink(
-                        href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(err.key++"." ++err.message)}")
-                    )
-                ),
+    @if(form.hasErrors) {
+        @govukErrorSummary(
+            ErrorSummary(
+                errorList = Seq(ErrorLink(
+                    href = Some(s"#${form.errors.head.key}"),
+                    content = Text(messages("noClaimNotification.error.required")),
+                    attributes = Map("class" ->"govuk-link")
+                )),
                 title = Text(messages("common.error.summary.title"))
-            ))
-        }
+            )
+        )
+    }
+    @formHelper(action = controllers.routes.NoClaimNotificationController.postNoClaimNotification) {
 
-        @if(neverSubmitted) {
-            @H1(neverSubmittedTitle)
-        } else {
-            @H1(hasSubmittedTitle, id = Some("noClaimNotifId"))
-        }
+        @H1(title, id = Some("noClaimNotification-h1"))
+        @P(messages(s"$key.p1"), id = Some("noClaimNotification-p1"))
+        <p class="govuk-body govuk-!-font-weight-bold" id="noClaimNotification-p2">@Html(messages(s"$key.p2"))</p>
+        @P(messages(s"$key.p3"), id = Some("noClaimNotification-p3"))
+        <p class="govuk-body govuk-!-font-weight-bold" id="noClaimNotification-p4">@Html(messages(s"$key.p4"))</p>
+        @P(messages(s"$key.p5"), id = Some("noClaimNotification-p5"))
+
         @govukCheckboxes(Checkboxes(
-            name = "value",
-            hint = None,
-          fieldset = Some(Fieldset(
-              legend = Some(Legend(
-                  content = HtmlContent(if(neverSubmitted){ neverSubmittedHtml } else { hasSubmittedHtml }),
-                  classes = "govuk-fieldset__legend--m",
-                  isPageHeading = false
-              ))
-          )),
-            idPrefix = Some(key),
-             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+            errorMessage = if(form.hasErrors && form.errors.head.key == key) {Some(ErrorMessage(
                 content = Text(messages(s"$key.error.required"))
             ))} else None,
+            idPrefix = Some(key),
+            name = key,
             items = Seq(
                 CheckboxItem(
-                    content = if(neverSubmitted) { Text(messages(s"$key.never-submitted.label", neverSubmittedTaxYearDate)) } else { Text(messages(s"$key.has-submitted.label")) },
+                    content = Text(messages(s"$key.label")),
                     value = "true",
-                    name = Some(key),
                     checked = form.data.exists(_._2 == "true"),
                     attributes = if(form.hasErrors) Map("aria-describedby" -> key) else Map(),
-                    id=Some("chknoClaim")
+                    id=Some(key)
 
                 )
             )
