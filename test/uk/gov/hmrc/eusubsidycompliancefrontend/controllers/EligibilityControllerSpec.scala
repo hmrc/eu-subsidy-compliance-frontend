@@ -17,8 +17,7 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
-import com.typesafe.config.ConfigFactory
-import play.api.Configuration
+import org.jsoup.Jsoup
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -43,14 +42,6 @@ class EligibilityControllerSpec
     bind[EmailVerificationService].toInstance(mockEmailVerificationService),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService)
-  )
-
-  override def additionalConfig: Configuration = super.additionalConfig.withFallback(
-    Configuration(
-      ConfigFactory.parseString(s"""
-           |features.xi-eori-adding-disabled  = "false"
-           |""".stripMargin)
-    )
   )
 
   private val controller = instanceOf[EligibilityController]
@@ -303,8 +294,7 @@ class EligibilityControllerSpec
             { doc =>
               doc
                 .getElementById("eoricheck-desc-1")
-                .text shouldBe "This is the EORI number that is registered to your Government Gateway ID." +
-                " This number is usually the same as your XI EORI number, XI234513513536."
+                .text shouldBe "This is the EORI number that is registered to your Government Gateway ID."
               val legend = doc.getElementsByClass("govuk-fieldset__legend govuk-fieldset__legend--m")
               legend.size shouldBe 1
               legend.text shouldBe s"Is the EORI number you want to register $eori1?"
@@ -333,6 +323,29 @@ class EligibilityControllerSpec
               testDisplay(EligibilityJourney(eoriCheck = EoriCheckFormPage(inputValue.some)))
             }
           }
+        }
+
+        "XIEORI content is available " in {
+          inSequence {
+            mockAuthWithEnrolmentAndUnsubmittedUndertakingJourney()
+            mockRetrieveUndertaking(eori1)(Option.empty.toFuture)
+            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourney))
+          }
+
+          val result = performAction()
+          status(result) shouldBe OK
+          val document = Jsoup.parse(contentAsString(result))
+
+          document.getElementById("page-heading").text() shouldBe "Registering an EORI number"
+          document
+            .getElementById("eoricheck-desc-1")
+            .text() shouldBe "This is the EORI number that is registered to your Government Gateway ID."
+          document.getElementById("paragraphId").text() shouldBe
+            "This is the same as, and linked with any XI EORI number you may also have. That means that if you have GB123456123456, the XI version of it would be XI123456123456."
+          document
+            .getElementsByClass("govuk-fieldset__legend govuk-fieldset__legend--m")
+            .text shouldBe s"Is the EORI number you want to register $eori1?"
+          document.select("form").attr("action") shouldBe routes.EligibilityController.postEoriCheck.url
         }
 
       }

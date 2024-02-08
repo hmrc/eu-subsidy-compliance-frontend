@@ -31,7 +31,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailVerificationService, EscService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertaking3, undertakingRef, undertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertaking3, undertakingBalance, undertakingRef, undertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
@@ -64,8 +64,7 @@ class FinancialDashboardControllerSpec
   override def additionalConfig = Configuration.from(
     Map(
       // Disable CSP n=once hashes in rendered output
-      "play.filters.csp.nonce.enabled" -> false,
-      "features.scp08-enabled" -> false
+      "play.filters.csp.nonce.enabled" -> false
     )
   )
 
@@ -86,6 +85,7 @@ class FinancialDashboardControllerSpec
         mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
           undertakingSubsidies.toFuture
         )
+        mockGetUndertakingBalance(eori1)(undertakingBalance.some.toFuture)
 
         val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
         val result = route(app, request).get
@@ -95,7 +95,7 @@ class FinancialDashboardControllerSpec
           .fromUndertakingSubsidies(
             undertaking = undertaking,
             subsidies = undertakingSubsidies,
-            balance = None,
+            balance = undertakingBalance.some,
             today = fakeTimeProvider.today
           )
 
@@ -104,11 +104,29 @@ class FinancialDashboardControllerSpec
 
         val data = contentAsString(result)
         val document = Jsoup.parse(data)
-        verifyScp08Banner(document)
-        document.getElementById("allowance-remaining-heading").text shouldBe "Allowance remaining"
-        document.getElementById("allowance-remaining-value").text shouldBe "€0.00"
-        document.getElementById("undertaking-balance-heading") shouldBe null
-        document.getElementById("undertaking-balance-value") shouldBe null
+        document.getElementById("undertaking-balance-heading").text shouldBe "Undertaking balance"
+        document.getElementById("undertaking-balance-value").text shouldBe "€123.45"
+
+      }
+
+      "return the dashboard page for a logged in user with a valid EORI - with scp08 issues" in {
+        mockAuthWithEnrolmentAndNoEmailVerification(eori1)
+        mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+        mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
+          undertakingSubsidies.toFuture
+        )
+        mockGetUndertakingBalance(eori1)(None.toFuture)
+
+        val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
+        val result = route(app, request).get
+        status(result) shouldBe Status.OK
+
+        val data = contentAsString(result)
+        val document = Jsoup.parse(data)
+        document.getElementById("undertaking-balance-heading").text shouldBe "Undertaking balance"
+        document
+          .getElementById("undertaking-balance-value")
+          .text shouldBe "€0.00 (this amount may show a temporary miscalculation which will be fixed within 24 hours)"
 
       }
 
@@ -121,6 +139,7 @@ class FinancialDashboardControllerSpec
         mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
           undertakingSubsidies.toFuture
         )
+        mockGetUndertakingBalance(eori1)(undertakingBalance.some.toFuture)
       }
 
       val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
@@ -131,7 +150,7 @@ class FinancialDashboardControllerSpec
         .fromUndertakingSubsidies(
           undertaking = undertaking3,
           subsidies = undertakingSubsidies,
-          balance = None,
+          balance = undertakingBalance.some,
           today = fakeTimeProvider.today
         )
 

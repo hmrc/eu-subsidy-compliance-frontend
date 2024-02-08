@@ -146,8 +146,6 @@ GET        /financial-dashboard                                                 
 
 GET        /unverified-email                                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UnverifiedEmailController.unverifiedEmail
 
-GET        /scp08-unavailable                                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.Scp08MaintenancePageController.showPage
-
 GET        /undertaking-suspended                                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingSuspendedPageController.showPage(isLead: Boolean ?= false)
 
 GET        /payment-already-submitted                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PaymentSubmittedController.paymentAlreadySubmitted

@@ -26,7 +26,8 @@ import java.time.{LocalDate, Month}
 case class FinancialDashboardSummary(
   overall: OverallSummary,
   taxYears: Seq[TaxYearSummary] = Seq.empty,
-  undertakingBalanceEUR: SubsidyAmount
+  undertakingBalanceEUR: SubsidyAmount,
+  usingAllowanceRemaining: Boolean
 )
 
 case class OverallSummary(
@@ -126,14 +127,8 @@ object FinancialDashboardSummary {
     FinancialDashboardSummary(
       overall = overallSummary,
       taxYears = taxYearSummaries,
-      undertakingBalanceEUR = balance.fold(overallSummary.allowanceRemaining)(_.availableBalanceEUR)
+      undertakingBalanceEUR = balance.fold(overallSummary.allowanceRemaining)(_.availableBalanceEUR),
+      usingAllowanceRemaining = balance.isEmpty
     )
   }
-
-  def fromUndertakingSubsidiesWithBalance(
-    undertaking: Undertaking,
-    subsidies: UndertakingSubsidies,
-    balance: Option[UndertakingBalance],
-    today: LocalDate
-  ): FinancialDashboardSummary = fromUndertakingSubsidies(undertaking, subsidies, balance, today)
 }

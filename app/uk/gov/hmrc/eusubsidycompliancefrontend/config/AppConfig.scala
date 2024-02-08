@@ -31,24 +31,6 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   val euroOnlyEnabled: Boolean =
     config.getOptional[Boolean]("features.euro-only-enabled").getOrElse(false)
 
-  val xiEoriAddingDisabled: Boolean =
-    config.getOptional[Boolean]("features.xi-eori-adding-disabled").getOrElse(false)
-
-  val scp08Enabled: Boolean =
-    config.getOptional[Boolean]("features.scp08-enabled").getOrElse(false)
-
-  val releaseCEnabled: Boolean =
-    config.getOptional[Boolean]("features.release-c-enabled").getOrElse(false)
-
-  val clearExchangeRateJob: Boolean =
-    config.getOptional[Boolean]("features.run-clear-exchange-rate-job-enabled").getOrElse(false)
-
-  val removeRemovedSubsidiesJob: Boolean =
-    config.getOptional[Boolean]("features.run-remove-removed-subsidies-job-enabled").getOrElse(false)
-
-  val removeEoriEmailStoreJob: Boolean =
-    config.getOptional[Boolean]("features.run-remove-eori-email-store-job-enabled").getOrElse(false)
-
   lazy val ggSignInUrl: String = config.get[String](s"urls.ggSignInUrl")
   lazy val ggSignOutUrl: String = config.get[String](s"urls.ggSignOutUrl")
   lazy val eccEscSubscribeUrl: String = config.get[String](s"urls.eccEscSubscribeUrl")

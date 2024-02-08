@@ -53,12 +53,8 @@
 
         @H1(title, Some("govuk-heading-xl govuk-!-margin-bottom-5"), id = Some("page-heading"))
 
-        @if(appConfig.xiEoriAddingDisabled){
-            @P(messages("xieoricheck.p1"), None, Some("eoricheck-desc-1"))
-            @P(messages("xieoricheck.p2"), None, id = Some("paragraphId"))
-        } else {
-            @P(messages(s"$key.p1"), None, Some("eoricheck-desc-1"))
-        }
+        @P(messages("xieoricheck.p1"), None, Some("eoricheck-desc-1"))
+        @P(messages("xieoricheck.p2"), None, id = Some("paragraphId"))
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(

@@ -18,7 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import play.api.mvc.Result
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
-import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EscService
@@ -38,24 +37,16 @@ trait LeadOnlyUndertakingSupport { this: FrontendController =>
   // If the undertaking is manually suspended, they are shown the undertaking suspended page. The content changes slightly based on if undertaking is lead or not, hence why the boolean is passed in.
   def withLeadUndertaking[A](
     f: Undertaking => Future[Result]
-  )(implicit r: AuthenticatedEnrolledRequest[A], appConfig: AppConfig): Future[Result] = {
+  )(implicit r: AuthenticatedEnrolledRequest[A]): Future[Result] = {
     implicit val eori: EORI = r.eoriNumber
-    if (appConfig.releaseCEnabled) {
-      val retrievedUndertakingOpt = escService.retrieveUndertaking(eori).toContext
-      retrievedUndertakingOpt.foldF(Redirect(routes.AccountController.getAccountPage).toFuture) {
-        case undertaking if !undertaking.isManuallySuspended && undertaking.isLeadEORI(eori) =>
-          f(undertaking)
-        case undertaking if !undertaking.isManuallySuspended =>
-          Redirect(routes.AccountController.getAccountPage).toFuture
-        case undertaking =>
-          Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori))).toFuture
-      }
-    } else {
-      escService
-        .retrieveUndertaking(eori)
-        .toContext
-        .filter(_.isLeadEORI(r.eoriNumber))
-        .foldF(Redirect(routes.AccountController.getAccountPage).toFuture)(f)
+    val retrievedUndertakingOpt = escService.retrieveUndertaking(eori).toContext
+    retrievedUndertakingOpt.foldF(Redirect(routes.AccountController.getAccountPage).toFuture) {
+      case undertaking if !undertaking.isManuallySuspended && undertaking.isLeadEORI(eori) =>
+        f(undertaking)
+      case undertaking if !undertaking.isManuallySuspended =>
+        Redirect(routes.AccountController.getAccountPage).toFuture
+      case undertaking =>
+        Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori))).toFuture
     }
   }
 }
