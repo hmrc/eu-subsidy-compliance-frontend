@@ -1,6 +1,8 @@
 gov.uk = GOV.UK
 
 service.name = Report and manage your allowance for Customs Duty waiver claims
+service.unavailable.heading = Sorry, the service is unavailable
+service.unavailable.body = You will be able to use the service later.
 
 generic.errorPrefix = Error:
 

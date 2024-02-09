@@ -100,7 +100,11 @@ class SubsidyJourneyActionBuilder @Inject() (
         else f(enrolledRequest)
       case None =>
         logger.error(s"No SubsidyJourney session data for EORI:$eori")
-        Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate(enrolledRequest)))
+        Future.successful(
+          InternalServerError(
+            errorHandler.internalServerErrorTemplate(enrolledRequest)
+          )
+        )
     }
   }
 }
