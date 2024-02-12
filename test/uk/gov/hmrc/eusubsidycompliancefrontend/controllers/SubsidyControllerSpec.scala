@@ -67,7 +67,6 @@ class SubsidyControllerSpec
     bind[EmailService].toInstance(mockEmailService),
     bind[Store].toInstance(mockJourneyStore),
     bind[EscService].toInstance(mockEscService),
-    bind[ExchangeRateService].toInstance(mockExchangeRateService),
     bind[AuditService].toInstance(mockAuditService),
     bind[TimeProvider].toInstance(mockTimeProvider)
   )
