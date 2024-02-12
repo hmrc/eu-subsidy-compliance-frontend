@@ -15,7 +15,7 @@
  *@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.P
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H2, P}
 
 @this(layout: Layout, govukPanel : GovukPanel)
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -30,7 +30,13 @@
         classes = "govuk-!-margin-bottom-3"
     ))
 
-    @P(messages(s"$key.p1"))
-    @P(messages(s"$key.p2"))
+    @P(messages(s"$key.p1"), id = Some("undertakingDisabledParaOneId"))
+    @P(messages(s"$key.p2"), id = Some("undertakingDisabledParaTwoId"))
 
+@H2(messages("beta-feedback.header"), id = Some("betaFeedbackHeaderId"))
+@P(messages("beta-feedback.p1"), id = Some("betaFeedbackFirstParaId"))
+<p class="govuk-body" id="beta-feedback-second-para">
+    <a class="govuk-link" id="survey-beta-feedback" href="@appConfig.exitSurveyUrl">@Html(messages("beta-feedback.linkText"))</a>
+    @Html(messages("beta-feedback.p2"))
+</p>
 }
