@@ -88,7 +88,19 @@ class SignOutControllerSpec
           checkPageIsDisplayed(
             performAction(),
             messageFromMessageKey("signOut.title"),
-            doc => doc.select(".govuk-body").text() should include regex messageFromMessageKey("signOut.p1")
+            { doc =>
+              doc
+                .getElementById("signOutParaOne")
+                .text shouldBe "A confirmation email has been sent to you, and to the administrator of the undertaking you have left."
+              doc.getElementById("signOutParaTwo").text shouldBe "You have been signed out."
+              doc.getElementById("signOutFeedbackHeader").text shouldBe "Before you go"
+              doc
+                .getElementById("signOutParaThree")
+                .text shouldBe "Your feedback helps us make our service better."
+              doc
+                .getElementById("signOutParaFour")
+                .text shouldBe "Take our survey to share your feedback on this service. It takes about 1 minute to complete."
+            }
           )
         }
 

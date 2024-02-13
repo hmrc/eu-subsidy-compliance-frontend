@@ -15,7 +15,7 @@
  *@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.P
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H2, P}
 
 @this(
   layout: Layout,
@@ -34,8 +34,13 @@
     classes = "govuk-!-margin-bottom-7"
   ))
 
-  @P(messages(s"$key.p1"))
-  @P(messages(s"$key.p2"))
+  @P(messages(s"$key.p1"), id = Some("signOutParaOne"))
+  @P(messages(s"$key.p2"), id = Some("signOutParaTwo"))
 
-
+@H2(messages("beta-feedback.header"), id = Some("signOutFeedbackHeader"))
+@P(messages("beta-feedback.p1"), id = Some("signOutParaThree"))
+<p class="govuk-body" id="signOutParaFour">
+    <a class="govuk-link" id="survey-beta-feedback" href="@appConfig.exitSurveyUrl">@Html(messages("beta-feedback.linkText"))</a>
+    @Html(messages("beta-feedback.p2"))
+</p>
 }
