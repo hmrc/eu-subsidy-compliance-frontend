@@ -21,7 +21,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
@@ -74,7 +74,7 @@ class EligibilityController @Inject() (
         )
         // If we get here it must be the first time we've hit the service with an enrolment since there is nothing
         // in the journey store. In this case we route the user to the eoriCheck page.
-        Redirect(routes.EligibilityController.getEoriCheck)
+        Redirect(routes.EligibilityController.startUndertakingJourney)
       }
   }
 
@@ -135,6 +135,17 @@ class EligibilityController @Inject() (
   def getNotEligible: Action[AnyContent] = notEnrolled.async { implicit request =>
     logger.info("EligibilityController.getNotEligible, showing notEligiblePage")
     Ok(notEligiblePage()).toFuture
+  }
+
+  def startUndertakingJourney: Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+
+    for {
+      // At this point the user has an ECC enrolment so they must be eligible to use the service.
+      _ <- store
+        .put[EligibilityJourney](EligibilityJourney())
+      _ <- store.put[UndertakingJourney](UndertakingJourney())
+    } yield Redirect(routes.EligibilityController.getEoriCheck.url)
   }
 
   def getEoriCheck: Action[AnyContent] = enrolledUndertakingJourney.async { implicit request =>
