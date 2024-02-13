@@ -360,14 +360,14 @@ class BecomeLeadControllerSpec
             messageFromMessageKey("become-admin-confirmation.title"),
             { doc =>
               doc
-                .getElementById("becomeAdminParaOneId")
+                .getElementById("becomeAdminParaOne")
                 .text shouldBe "We’ve sent you a confirmation email. We have also sent an email to the previous administrator."
-              doc.getElementById("betaFeedbackHeaderId").text shouldBe "Before you go"
+              doc.getElementById("becomeAdminFeedbackHeader").text shouldBe "Before you go"
               doc
-                .getElementById("betaFeedbackFirstParaId")
+                .getElementById("becomeAdminParaTwo")
                 .text shouldBe "Your feedback helps us make our service better."
               doc
-                .getElementById("beta-feedback-second-para")
+                .getElementById("becomeAdminParaThree")
                 .text shouldBe "Take our survey to share your feedback on this service. It takes about 1 minute to complete."
             }
           )

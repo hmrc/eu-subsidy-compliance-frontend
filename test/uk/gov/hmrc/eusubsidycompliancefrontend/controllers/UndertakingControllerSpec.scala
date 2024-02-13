@@ -1779,14 +1779,14 @@ class UndertakingControllerSpec
           performAction(),
           messageFromMessageKey("undertakingDisabled.title"),
           { doc =>
-            doc.getElementById("undertakingDisabledParaOneId").text shouldBe "We have sent you a confirmation email."
-            doc.getElementById("undertakingDisabledParaTwoId").text shouldBe "You have been signed out."
-            doc.getElementById("betaFeedbackHeaderId").text shouldBe "Before you go"
+            doc.getElementById("undertakingDisabledParaOne").text shouldBe "We have sent you a confirmation email."
+            doc.getElementById("undertakingDisabledParaTwo").text shouldBe "You have been signed out."
+            doc.getElementById("undertakingDisabledFeedbackHeader").text shouldBe "Before you go"
             doc
-              .getElementById("betaFeedbackFirstParaId")
+              .getElementById("undertakingDisabledParaThree")
               .text shouldBe "Your feedback helps us make our service better."
             doc
-              .getElementById("beta-feedback-second-para")
+              .getElementById("undertakingDisabledParaFour")
               .text shouldBe "Take our survey to share your feedback on this service. It takes about 1 minute to complete."
           }
         )

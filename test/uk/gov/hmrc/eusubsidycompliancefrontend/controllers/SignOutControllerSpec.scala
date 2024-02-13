@@ -90,15 +90,15 @@ class SignOutControllerSpec
             messageFromMessageKey("signOut.title"),
             { doc =>
               doc
-                .getElementById("signOutParaOneId")
+                .getElementById("signOutParaOne")
                 .text shouldBe "A confirmation email has been sent to you, and to the administrator of the undertaking you have left."
-              doc.getElementById("signOutParaTwoId").text shouldBe "You have been signed out."
-              doc.getElementById("betaFeedbackHeaderId").text shouldBe "Before you go"
+              doc.getElementById("signOutParaTwo").text shouldBe "You have been signed out."
+              doc.getElementById("signOutFeedbackHeader").text shouldBe "Before you go"
               doc
-                .getElementById("betaFeedbackFirstParaId")
+                .getElementById("signOutParaThree")
                 .text shouldBe "Your feedback helps us make our service better."
               doc
-                .getElementById("beta-feedback-second-para")
+                .getElementById("signOutParaFour")
                 .text shouldBe "Take our survey to share your feedback on this service. It takes about 1 minute to complete."
             }
           )

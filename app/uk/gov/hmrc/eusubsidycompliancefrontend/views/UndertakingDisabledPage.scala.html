@@ -30,12 +30,12 @@
         classes = "govuk-!-margin-bottom-3"
     ))
 
-    @P(messages(s"$key.p1"), id = Some("undertakingDisabledParaOneId"))
-    @P(messages(s"$key.p2"), id = Some("undertakingDisabledParaTwoId"))
+    @P(messages(s"$key.p1"), id = Some("undertakingDisabledParaOne"))
+    @P(messages(s"$key.p2"), id = Some("undertakingDisabledParaTwo"))
 
-@H2(messages("beta-feedback.header"), id = Some("betaFeedbackHeaderId"))
-@P(messages("beta-feedback.p1"), id = Some("betaFeedbackFirstParaId"))
-<p class="govuk-body" id="beta-feedback-second-para">
+@H2(messages("beta-feedback.header"), id = Some("undertakingDisabledFeedbackHeader"))
+@P(messages("beta-feedback.p1"), id = Some("undertakingDisabledParaThree"))
+<p class="govuk-body" id="undertakingDisabledParaFour">
     <a class="govuk-link" id="survey-beta-feedback" href="@appConfig.exitSurveyUrl">@Html(messages("beta-feedback.linkText"))</a>
     @Html(messages("beta-feedback.p2"))
 </p>
