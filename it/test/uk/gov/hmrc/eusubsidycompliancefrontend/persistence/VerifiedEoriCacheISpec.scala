@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.persistence
 
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.VerifiedEori
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.IntegrationBaseSpec
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
@@ -27,14 +28,14 @@ class VerifiedEoriCacheISpec extends IntegrationBaseSpec with DefaultPlayMongoRe
 
   override protected val repository = new VerifiedEoriCache(mongoComponent)
 
-  private val eori = EORI("GB123456789012")
+  private val eori = EORI("GB922456789077")
 
   private val verifiedEori1 = VerifiedEori(eori)
 
   "VerifiedEoriCache" should {
 
     "return None when eori is not found" in {
-      repository.get(eori).futureValue shouldBe None
+      repository.get(eori1).futureValue shouldBe None
     }
 
     "return the VerifiedEori when eori is found" in {
