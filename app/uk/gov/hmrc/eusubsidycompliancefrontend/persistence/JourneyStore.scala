@@ -76,5 +76,5 @@ class JourneyStore @Inject() (
 }
 
 object JourneyStore {
-  val DefaultCacheTtl: FiniteDuration = 24 hours
+  val DefaultCacheTtl: FiniteDuration = 30 minutes
 }
