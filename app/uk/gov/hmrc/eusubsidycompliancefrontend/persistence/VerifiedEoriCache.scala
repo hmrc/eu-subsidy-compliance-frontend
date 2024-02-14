@@ -47,11 +47,10 @@ class VerifiedEoriCache @Inject() (
       replaceIndexes = true,
       extraCodecs = Seq(Codecs.playFormatCodec(jatLocalDateFormat))
     ) {
-  def put(verifiedEori: VerifiedEori): Future[Unit] = {
+  def put(verifiedEori: VerifiedEori): Future[Unit] =
     collection.insertOne(verifiedEori).toFuture().void
-  }
 
-  def get(eori: EORI): Future[Option[VerifiedEori]] = {
+  def get(eori: EORI): Future[Option[VerifiedEori]] =
     collection.find(filter = Filters.equal("eori", eori)).headOption()
-  }
+
 }
