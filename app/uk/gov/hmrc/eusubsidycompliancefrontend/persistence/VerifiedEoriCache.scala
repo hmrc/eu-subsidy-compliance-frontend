@@ -38,10 +38,12 @@ class VerifiedEoriCache @Inject() (
       domainFormat = VerifiedEori.formats,
       indexes = Seq(
         IndexModel(
+          Indexes.ascending("eori"),
+          IndexOptions().name("eoriIdx").background(true)
+        ),
+        IndexModel(
           Indexes.ascending("createDate"),
-          IndexOptions()
-            .name("sessionTTL")
-            .expireAfter(24, HOURS)
+          IndexOptions().name("sessionTTL").expireAfter(24, HOURS)
         )
       ),
       replaceIndexes = true,
