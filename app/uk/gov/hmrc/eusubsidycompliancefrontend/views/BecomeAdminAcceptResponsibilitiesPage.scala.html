@@ -33,7 +33,9 @@
 @key = @{"become-admin-responsibilities"}
 
 @layout(
-  pageTitle = Some(messages(s"$key.title"))
+  pageTitle = Some(messages(s"$key.title")),
+  backLinkEnabled = true,
+  backLink = Some(controllers.routes.AccountController.getAccountPage.url)
 ) {
 
   @H1(messages(s"$key.title"))

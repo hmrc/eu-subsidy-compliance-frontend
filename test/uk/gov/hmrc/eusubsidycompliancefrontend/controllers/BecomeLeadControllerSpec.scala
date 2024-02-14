@@ -306,7 +306,12 @@ class BecomeLeadControllerSpec
         }
         checkPageIsDisplayed(
           performAction(),
-          messageFromMessageKey("become-admin-responsibilities.title")
+          messageFromMessageKey("become-admin-responsibilities.title"),
+          { doc =>
+            doc
+              .select(".govuk-back-link")
+              .attr("href") shouldBe routes.AccountController.getAccountPage.url
+          }
         )
 
       }
@@ -321,7 +326,12 @@ class BecomeLeadControllerSpec
 
         checkPageIsDisplayed(
           performAction(),
-          messageFromMessageKey("become-admin-responsibilities.title")
+          messageFromMessageKey("become-admin-responsibilities.title"),
+          { doc =>
+            doc
+              .select(".govuk-back-link")
+              .attr("href") shouldBe routes.AccountController.getAccountPage.url
+          }
         )
 
       }
