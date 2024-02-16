@@ -47,7 +47,6 @@
 @key = @{"reportedPayments"}
 @title = @{messages(s"$key.title")}
 
-@responsiveTableClass = @{s"report-payment-table"}
 @date = @{s"$key.table.head.date"}
 @amount = @{s"$key.table.head.amount"}
 @eori = @{s"$key.table.head.eori"}
@@ -62,22 +61,10 @@
     </p>
 }
 
-@headBlock = {
-    <style>
-        table.@responsiveTableClass td:nth-of-type(1):before { content: "@{messages(date)}" }
-        table.@responsiveTableClass td:nth-of-type(2):before { content: "@{messages(amount)}" }
-        table.@responsiveTableClass td:nth-of-type(3):before { content: "@{messages(eori)}" }
-        table.@responsiveTableClass td:nth-of-type(4):before { content: "@{messages(publicAuthority)}" }
-        table.@responsiveTableClass td:nth-of-type(5):before { content: "@{messages(ref)}" }
-        table.@responsiveTableClass td:nth-of-type(6):before { content: "@{messages(action)}" }
-    </style>
-}
-
 @layout(
   pageTitle = Some(title),
   backLinkEnabled = true,
-  backLink = Some(previous),
-  headBlock = Some(headBlock)
+  backLink = Some(previous)
 ) {
         @if(showSuccessBanner) {
             @govukNotificationBanner(NotificationBanner(
@@ -95,9 +82,9 @@
 
         @if(subsidies.nonHMRCSubsidyUsage.nonEmpty) {
 
+        <div style="overflow: scroll" role="region" aria-label=@messages(s"$key.title") class="scrollable" tabindex="0">
             @govukTable(
                 Table(
-                    classes = s"responsive-table ${responsiveTableClass}",
                     attributes = Map("id" -> "subsidy-list"),
                     rows = subsidies.nonHMRCSubsidyUsage.map { sub =>
                         Seq(
@@ -143,4 +130,4 @@
                 </div>
             </div>
         }
-}
+            }</div>
