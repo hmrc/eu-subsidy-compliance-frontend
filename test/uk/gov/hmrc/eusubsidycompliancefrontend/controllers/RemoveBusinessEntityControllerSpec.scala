@@ -190,22 +190,32 @@ class RemoveBusinessEntityControllerSpec
           assertThrows[Exception](await(performAction()(eori4)))
         }
 
-        "call to remove BE fails" in {
+        "call to remove BE fails for business entity that does not belong to this undertaking" in {
           inSequence {
             mockAuthWithEnrolmentAndValidEmail(eori1)
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
-            mockTimeProviderToday(effectiveDate)
-            mockRemoveMember(undertakingRef, businessEntity4)(Left(ConnectorError(exception)))
           }
-          assertThrows[Exception](await(performAction("removeBusiness" -> "true")(eori4)))
+          assertThrows[NoSuchElementException](
+            await(performAction("removeBusiness" -> "true")(businessEntity4.businessEntityIdentifier))
+          )
+        }
+
+        "call to remove BE fails for connection error" in {
+          inSequence {
+            mockAuthWithEnrolmentAndValidEmail(eori1)
+            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+            mockTimeProviderToday(effectiveDate)
+            mockRemoveMember(undertaking.reference, businessEntity1)(Left(ConnectorError(exception)))
+          }
+          assertThrows[Exception](
+            await(performAction("removeBusiness" -> "true")(businessEntity1.businessEntityIdentifier))
+          )
         }
 
         "call to send email fails" in {
           inSequence {
             mockAuthWithEnrolmentAndValidEmail(eori1)
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockTimeProviderToday(effectiveDate)
             mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
             mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, "10 October 2022")(
@@ -223,10 +233,9 @@ class RemoveBusinessEntityControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail(eori1)
             mockRetrieveUndertaking(eori1)(undertaking1.some.toFuture)
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
           }
           checkFormErrorIsDisplayed(
-            performAction()(eori4),
+            performAction("" -> "")(eori4),
             messageFromMessageKey("removeBusinessEntity.title"),
             "Select yes if you want to remove a business from your undertaking",
             backLinkOpt = Some(routes.AddBusinessEntityController.startJourney().url)
@@ -242,17 +251,16 @@ class RemoveBusinessEntityControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail(eori1)
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
             mockTimeProviderToday(effectiveDate)
-            mockRemoveMember(undertakingRef, businessEntity4)(Right(undertakingRef))
-            mockSendEmail(eori4, RemoveMemberToBusinessEntity, undertaking1, date)(Right(EmailSent))
-            mockSendEmail(eori1, eori4, RemoveMemberToLead, undertaking1, date)(Right(EmailSent))
-            mockSendAuditEvent(AuditEvent.BusinessEntityRemoved(undertakingRef, "1123", eori1, eori4))
+            mockRemoveMember(undertaking.reference, businessEntity2)(Right(undertaking.reference))
+            mockSendEmail(eori2, RemoveMemberToBusinessEntity, undertaking, date)(Right(EmailSent))
+            mockSendEmail(eori1, eori2, RemoveMemberToLead, undertaking, date)(Right(EmailSent))
+            mockSendAuditEvent(AuditEvent.BusinessEntityRemoved(undertaking.reference, "1123", eori1, eori2))
           }
           checkIsRedirect(
-            performAction("removeBusiness" -> "true")(eori4),
+            performAction("removeBusiness" -> "true")(eori2),
             routes.AddBusinessEntityController
-              .startJourney(businessRemoved = Some(true), removedAddedEoriOpt = Some(eori4))
+              .startJourney(businessRemoved = Some(true), removedAddedEoriOpt = Some(eori2))
               .url
           )
         }
@@ -265,10 +273,9 @@ class RemoveBusinessEntityControllerSpec
           inSequence {
             mockAuthWithEnrolmentAndValidEmail(eori1)
             mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
           }
           checkIsRedirect(
-            performAction("removeBusiness" -> "false")(eori4),
+            performAction("removeBusiness" -> "false")(eori2),
             routes.AddBusinessEntityController.startJourney().url
           )
         }

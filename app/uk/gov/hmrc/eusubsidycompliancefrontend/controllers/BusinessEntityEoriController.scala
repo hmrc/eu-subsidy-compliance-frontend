@@ -107,7 +107,7 @@ class BusinessEntityEoriController @Inject() (
       val businessEntity = BusinessEntity(eori, leadEORI = false)
       if (journey.isAmend)
         escService.removeMember(ref, businessEntity.copy(businessEntityIdentifier = journey.oldEORI.get))
-      else escService.addMember(ref, businessEntity).toContext
+      else escService.addMember(ref, businessEntity)
     }
 
     def sendAuditEvent(journey: BusinessEntityJourney, ref: UndertakingRef, businessEori: EORI) =
