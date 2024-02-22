@@ -28,7 +28,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.{BusinessEntity, FormValue
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.StringSyntax.StringOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
@@ -80,24 +79,19 @@ class RemoveBusinessEntityController @Inject() (
     implicit request: AuthenticatedEnrolledRequest[AnyContent] =>
       logger.info("RemoveBusinessEntityController.postRemoveBusinessEntity")
 
-      withLeadUndertaking { _ =>
-        escService
-          .retrieveUndertaking(EORI(eoriEntered))
-          .toContext
-          .foldF(Redirect(routes.AddBusinessEntityController.getAddBusinessEntity()).toFuture) { undertaking =>
-            val undertakingRef = undertaking.reference
-            val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
+      withLeadUndertaking { undertaking =>
+        val undertakingRef = undertaking.reference
+        val removeBE: BusinessEntity = undertaking.getBusinessEntityByEORI(EORI(eoriEntered))
 
-            removeBusinessForm
-              .bindFromRequest()
-              .fold(
-                errors =>
-                  BadRequest(
-                    removeBusinessPage(errors, removeBE, routes.AddBusinessEntityController.startJourney().url)
-                  ).toFuture,
-                success = form => handleValidBE(eoriEntered, form, undertakingRef, removeBE, undertaking)
-              )
-          }
+        removeBusinessForm
+          .bindFromRequest()
+          .fold(
+            errors =>
+              BadRequest(
+                removeBusinessPage(errors, removeBE, routes.AddBusinessEntityController.startJourney().url)
+              ).toFuture,
+            success = form => handleValidBE(eoriEntered, form, undertakingRef, removeBE, undertaking)
+          )
       }
   }
 
