@@ -1,0 +1,38 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+
+@this(
+ govukNotificationBanner : GovukNotificationBanner
+)
+
+@()(implicit messages: play.api.i18n.Messages, appConfig: AppConfig)
+
+@bannerContent = {
+    <p id="scp08-banner-p1" class="govuk-body">@Html(s"""<strong>${messages("scp08.maintenance-text.p1")}</strong>""")</p>
+    <p id="scp08-banner-p2" class="govuk-body">@Html(s"""<strong>${messages("scp08.maintenance-text.p2")}</strong>""")</p>
+    <p id="scp08-banner-p3" class="govuk-body">@Html(s"""<strong>${messages("scp08.maintenance-text.p3")}</strong>""")</p>
+}
+
+@if(appConfig.scp08BannerEnabled){
+    @govukNotificationBanner(NotificationBanner(
+        title = Text(messages("common.important")),
+        content = HtmlContent(bannerContent),
+        role=Some("alert"),
+        attributes = Map("id" -> "scp08-maintenance-banner")
+    ))
+}

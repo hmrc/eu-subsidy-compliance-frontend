@@ -306,7 +306,12 @@ class BecomeLeadControllerSpec
         }
         checkPageIsDisplayed(
           performAction(),
-          messageFromMessageKey("become-admin-responsibilities.title")
+          messageFromMessageKey("become-admin-responsibilities.title"),
+          { doc =>
+            doc
+              .select(".govuk-back-link")
+              .attr("href") shouldBe routes.AccountController.getAccountPage.url
+          }
         )
 
       }
@@ -321,7 +326,12 @@ class BecomeLeadControllerSpec
 
         checkPageIsDisplayed(
           performAction(),
-          messageFromMessageKey("become-admin-responsibilities.title")
+          messageFromMessageKey("become-admin-responsibilities.title"),
+          { doc =>
+            doc
+              .select(".govuk-back-link")
+              .attr("href") shouldBe routes.AccountController.getAccountPage.url
+          }
         )
 
       }
@@ -357,7 +367,19 @@ class BecomeLeadControllerSpec
 
           checkPageIsDisplayed(
             performAction(),
-            messageFromMessageKey("become-admin-confirmation.title")
+            messageFromMessageKey("become-admin-confirmation.title"),
+            { doc =>
+              doc
+                .getElementById("becomeAdminParaOne")
+                .text shouldBe "We’ve sent you a confirmation email. We have also sent an email to the previous administrator."
+              doc.getElementById("becomeAdminFeedbackHeader").text shouldBe "Before you go"
+              doc
+                .getElementById("becomeAdminParaTwo")
+                .text shouldBe "Your feedback helps us make our service better."
+              doc
+                .getElementById("becomeAdminParaThree")
+                .text shouldBe "Take our survey to share your feedback on this service. It takes about 1 minute to complete."
+            }
           )
         }
 

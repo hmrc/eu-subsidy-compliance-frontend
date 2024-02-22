@@ -1777,7 +1777,18 @@ class UndertakingControllerSpec
         }
         checkPageIsDisplayed(
           performAction(),
-          messageFromMessageKey("undertakingDisabled.title")
+          messageFromMessageKey("undertakingDisabled.title"),
+          { doc =>
+            doc.getElementById("undertakingDisabledParaOne").text shouldBe "We have sent you a confirmation email."
+            doc.getElementById("undertakingDisabledParaTwo").text shouldBe "You have been signed out."
+            doc.getElementById("undertakingDisabledFeedbackHeader").text shouldBe "Before you go"
+            doc
+              .getElementById("undertakingDisabledParaThree")
+              .text shouldBe "Your feedback helps us make our service better."
+            doc
+              .getElementById("undertakingDisabledParaFour")
+              .text shouldBe "Take our survey to share your feedback on this service. It takes about 1 minute to complete."
+          }
         )
       }
     }

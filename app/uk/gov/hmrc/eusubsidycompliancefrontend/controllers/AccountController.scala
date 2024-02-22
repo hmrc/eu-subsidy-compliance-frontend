@@ -178,7 +178,7 @@ class AccountController @Inject() (
             currentPeriodStart = startDate.toDisplayFormat,
             isOverAllowance = summary.overall.allowanceExceeded,
             isSuspended = isSuspended,
-            usingAllowanceRemaining = summary.usingAllowanceRemaining
+            scp08IssuesExist = summary.scp08IssuesExist
           )
         )
         result.getOrElse(handleMissingSessionData("Nil Return Journey"))
@@ -197,7 +197,7 @@ class AccountController @Inject() (
             remainingAmount = summary.undertakingBalanceEUR.toEuros,
             currentPeriodStart = startDate.toDisplayFormat,
             isSuspended = isSuspended,
-            usingAllowanceRemaining = summary.usingAllowanceRemaining
+            scp08IssuesExist = summary.scp08IssuesExist
           )
         ).toFuture
       }

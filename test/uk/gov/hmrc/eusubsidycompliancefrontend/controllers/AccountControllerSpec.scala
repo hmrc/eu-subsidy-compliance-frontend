@@ -98,6 +98,7 @@ class AccountControllerSpec
             performAction(),
             messageFromMessageKey("lead-account-homepage.title"),
             { doc =>
+              verifyScp08Banner(doc)
               verifyGenericHomepageContentForLead(doc)
               doc.getElementById("lead-account-homepage-p2").text shouldBe "You must either:"
 
@@ -253,6 +254,7 @@ class AccountControllerSpec
 
           val doc = Jsoup.parse(contentAsString(result))
 
+          verifyScp08Banner(doc)
           verifyGenericHomepageContentForLead(doc)
           verifyPreDeadlineContentForLead(doc)
         }
@@ -278,6 +280,7 @@ class AccountControllerSpec
 
           val doc = Jsoup.parse(contentAsString(result))
 
+          verifyScp08Banner(doc)
           verifyGenericHomepageContentForLead(doc)
           verifyAutoSuspendContentForLead(doc)
         }
@@ -305,6 +308,8 @@ class AccountControllerSpec
           doc
             .getElementById("warning-text")
             .text shouldBe "! Warning Your undertaking's deadline to submit a report passed on 20 April 2021."
+
+          verifyScp08Banner(doc)
         }
       }
 
@@ -460,7 +465,7 @@ class AccountControllerSpec
   private def verifyScp08IssuesMessage(doc: Document) = {
     doc
       .getElementById("scp08Issues-text")
-      .text shouldBe "Your undertaking balance may show a temporary miscalculation which will be fixed within 24 hours."
+      .text shouldBe "Your undertaking balance may show a temporary difference to your own records, which will be amended here within 24 hours."
   }
 
   private def verifyUndertakingBalance(doc: Document): Unit = {

@@ -18,7 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.BigDecimalFormatter.Syntax._
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P, scp08Banner}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 @import uk.gov.hmrc.eusubsidycompliancefrontend.util.TaxYearHelpers
 @import java.time.LocalDate
@@ -26,10 +26,11 @@
 
 @this(
   layout: Layout,
-  govukTable: GovukTable,
   govukSummaryList: GovukSummaryList,
   govukInsetText: GovukInsetText,
-  govukNotificationBanner : GovukNotificationBanner
+  govukWarningText: GovukWarningText,
+  govukNotificationBanner : GovukNotificationBanner,
+  scp08Banner: scp08Banner
 )
 
 @(summary: FinancialDashboardSummary)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -40,9 +41,25 @@
     <div class="print-dialogue"><a class="govuk-link" href="#print-dialogue">@messages("common.print")</a></div>
 }
 
-@possibleMiscalculationContent = {
-    @if(summary.usingAllowanceRemaining){
-        @messages("dashboard.scp08Issues.text")
+@scp08Warning = @{
+    govukWarningText(WarningText(
+        iconFallbackText = Some(messages("common.warning")),
+        content = Text(messages("dashboard.scp08.warningText")),
+        attributes = Map("id" -> "scp08-warning")
+    ))
+}
+
+@insetText = {
+    @govukInsetText(InsetText(
+        content = Text(messages("dashboard.insetText")), id = Some("dashboard-inset-text")
+    ))
+}
+
+@insetTextOrWarning = @{
+    if(summary.scp08IssuesExist){
+        scp08Warning
+    } else {
+        insetText
     }
 }
 
@@ -89,7 +106,7 @@
                 content = HtmlContent(s"""<span id="undertaking-balance-heading">${messages(s"$key.undertaking.balance.heading")}</span>""")
             ),
             value = Value(
-                content = HtmlContent(s"""<span id="undertaking-balance-value">${summary.undertakingBalanceEUR.toEuros} ${possibleMiscalculationContent}</span>""")
+                content = HtmlContent(s"""<span id="undertaking-balance-value">${summary.undertakingBalanceEUR.toEuros}</span>""")
             )
         )
     ) ++ mainPart
@@ -103,13 +120,12 @@
     printDialog = Some(printDialog)
 ) {
 
+    @scp08Banner()
     @H1(title)
     @P(messages(s"$key.p1"))
     @P(messages(s"$key.p2", TaxYearHelpers.taxYearStartForDate(LocalDate.now.minusYears(2)).getYear.toString))
 
-    @govukInsetText(InsetText(
-        content = Text(messages("dashboard.insetText"))
-    ))
+    @insetTextOrWarning
 
     @govukSummaryList(SummaryList(
         rows = mainSummary

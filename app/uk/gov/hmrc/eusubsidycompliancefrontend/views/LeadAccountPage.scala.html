@@ -18,7 +18,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.Undertaking
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P, scp08Banner}
 
 @this(
   layout: Layout,
@@ -27,7 +27,8 @@
   govukWarningText : GovukWarningText,
   govukInsetText : GovukInsetText,
   govukDetails : GovukDetails,
-  govukNotificationBanner : GovukNotificationBanner
+  govukNotificationBanner : GovukNotificationBanner,
+  scp08Banner: scp08Banner
 )
 
 @(
@@ -46,7 +47,7 @@
     currentPeriodStart: String,
     isOverAllowance: Boolean,
     isSuspended: Boolean,
-    usingAllowanceRemaining: Boolean
+    scp08IssuesExist: Boolean
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"lead-account-homepage"}
 
@@ -64,7 +65,7 @@
 }
 
 @possibleMiscalculationContent = {
-    @if(usingAllowanceRemaining){
+    @if(scp08IssuesExist){
         @govukInsetText(InsetText(
             content = Text(messages("account-homepage.scp08Issues.text")), id = Some("scp08Issues-text")
         ))
@@ -78,6 +79,7 @@
   backLink = None
 ) {
 
+    @scp08Banner()
     @H1(messages("lead-account-homepage.title"), Some("govuk-heading-xl govuk-!-margin-bottom-0"))
     <p id="undertaking-eori-number" class="govuk-hint govuk-!-font-size-24 govuk-!-margin-top-1 govuk-!-margin-bottom-8">@eori</p>
 

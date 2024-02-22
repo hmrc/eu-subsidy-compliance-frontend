@@ -80,7 +80,11 @@ class UndertakingJourneySubmittedActionBuilder @Inject() (
             else f(enrolledRequest)
           case None =>
             logger.error(s"No UndertakingJourney session data for EORI:$eori")
-            Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate(enrolledRequest)))
+            Future.successful(
+              InternalServerError(
+                errorHandler.internalServerErrorTemplate(enrolledRequest)
+              )
+            )
         }
 
       }

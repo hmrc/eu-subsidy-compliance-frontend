@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers
 import play.api.http.Status
@@ -107,6 +108,9 @@ class FinancialDashboardControllerSpec
         document.getElementById("undertaking-balance-heading").text shouldBe "Undertaking balance"
         document.getElementById("undertaking-balance-value").text shouldBe "€123.45"
 
+        verifyScp08Banner(document)
+        verifyInsetText(document)
+
       }
 
       "return the dashboard page for a logged in user with a valid EORI - with scp08 issues" in {
@@ -126,8 +130,10 @@ class FinancialDashboardControllerSpec
         document.getElementById("undertaking-balance-heading").text shouldBe "Undertaking balance"
         document
           .getElementById("undertaking-balance-value")
-          .text shouldBe "€0.00 (this amount may show a temporary miscalculation which will be fixed within 24 hours)"
+          .text shouldBe "€0.00"
 
+        verifyScp08Banner(document)
+        verifyScp08Warning(document)
       }
 
     }
@@ -159,8 +165,21 @@ class FinancialDashboardControllerSpec
       data shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
       val document = Jsoup.parse(data)
       document.getElementById("SectorCapId").text() shouldBe "Sector cap (Agriculture)"
+
+      verifyScp08Banner(document)
+      verifyInsetText(document)
     }
 
+  }
+  def verifyInsetText(document: Document): Unit = {
+    document
+      .getElementById("dashboard-inset-text")
+      .text() shouldBe "Customs subsidies (Customs Duty waivers) claims can take up to 24 hours to update here. This means that keeping a record of payments that you have received is advised."
+  }
+  def verifyScp08Warning(document: Document): Unit = {
+    document
+      .getElementById("scp08-warning")
+      .text() shouldBe "! Warning Your 'Undertaking balance', 'Total claimed' and 'Customs subsidies (Customs Duty waivers)' amounts in the first section may show temporary differences to your own records. They may take up to 24 hours to be amended here, so keeping a record of any payments you have received is advised."
   }
 
 }

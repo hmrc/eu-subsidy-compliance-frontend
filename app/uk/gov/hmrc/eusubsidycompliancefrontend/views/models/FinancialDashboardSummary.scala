@@ -27,7 +27,7 @@ case class FinancialDashboardSummary(
   overall: OverallSummary,
   taxYears: Seq[TaxYearSummary] = Seq.empty,
   undertakingBalanceEUR: SubsidyAmount,
-  usingAllowanceRemaining: Boolean
+  scp08IssuesExist: Boolean
 )
 
 case class OverallSummary(
@@ -128,7 +128,7 @@ object FinancialDashboardSummary {
       overall = overallSummary,
       taxYears = taxYearSummaries,
       undertakingBalanceEUR = balance.fold(overallSummary.allowanceRemaining)(_.availableBalanceEUR),
-      usingAllowanceRemaining = balance.isEmpty
+      scp08IssuesExist = balance.isEmpty
     )
   }
 }

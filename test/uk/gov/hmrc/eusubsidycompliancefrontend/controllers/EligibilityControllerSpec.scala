@@ -22,7 +22,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
@@ -80,7 +80,7 @@ class EligibilityControllerSpec
         }
 
         "no eligibility journey present in store" in {
-          redirect(None, routes.EligibilityController.getEoriCheck.url)
+          redirect(None, routes.EligibilityController.startUndertakingJourney.url)
         }
 
         "no values are set in the eligibility journey" in {
@@ -460,6 +460,25 @@ class EligibilityControllerSpec
           performAction(),
           messageFromMessageKey("incorrectEori.title")
         )
+
+      }
+    }
+
+    "startUndertakingJourney" must {
+
+      def performAction() = controller
+        .startUndertakingJourney(
+          FakeRequest(GET, "/some/url/")
+            .withFormUrlEncodedBody()
+        )
+
+      "redirect to check eori page" in {
+        inSequence {
+          mockAuthWithEnrolment()
+          mockPut[EligibilityJourney](EligibilityJourney(), eori1)(Right(EligibilityJourney()))
+          mockPut[UndertakingJourney](UndertakingJourney(), eori1)(Right(UndertakingJourney()))
+        }
+        checkIsRedirect(performAction(), routes.EligibilityController.getEoriCheck.url)
 
       }
     }

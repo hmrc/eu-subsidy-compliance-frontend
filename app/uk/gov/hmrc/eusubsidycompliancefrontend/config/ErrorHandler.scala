@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.config
 
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.Request
 import play.twirl.api.Html
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ErrorTemplate
@@ -36,4 +36,15 @@ class ErrorHandler @Inject() (
     request: Request[_]
   ): Html =
     errorTemplate(pageTitle, heading, message)
+
+  override def internalServerErrorTemplate(implicit request: Request[_]): Html = {
+    implicit val lang: Lang = Lang("en")
+
+    errorTemplate(
+      messagesApi("service.name"),
+      messagesApi("service.unavailable.heading"),
+      messagesApi("service.unavailable.body")
+    )
+  }
+
 }

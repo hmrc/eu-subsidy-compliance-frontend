@@ -60,7 +60,6 @@ class SubsidyController @Inject() (
   actionBuilders: ActionBuilders,
   override val store: Store,
   override val escService: EscService,
-  exchangeRateService: ExchangeRateService,
   auditService: AuditService,
   reportedPaymentsPage: ReportedPaymentsPage,
   addClaimEoriPage: AddClaimEoriPage,
