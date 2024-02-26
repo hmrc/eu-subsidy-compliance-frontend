@@ -20,7 +20,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @this(
-    layout: FullWidthLayout,
+    layout: Layout,
     formHelper: FormWithCSRF,
     button: components.Button
 )
@@ -38,6 +38,7 @@
     @P(messages("confirm-converted-amount.p1", poundsAmount, eurosAmount))
     @P(messages("confirm-converted-amount.p2"))
     @P(messages("confirm-converted-amount.p3"))
+    <br/>
 
     @formHelper(action = controllers.routes.SubsidyController.postConfirmClaimAmount) {
         @button("common.continue")
