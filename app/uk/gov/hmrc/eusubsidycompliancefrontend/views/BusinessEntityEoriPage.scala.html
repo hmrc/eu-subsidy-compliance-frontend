@@ -31,7 +31,7 @@
 
 
 @layout(
-  pageTitle = if (appConfig.xiEoriAddingDisabled) Some(messages("businessEntityEoriNew.title")) else Some(messages("businessEntityEori.title")),
+  pageTitle = Some(messages("businessEntityEoriNew.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -52,49 +52,29 @@
               title = Text(messages("common.error.summary.title"))
           )
       )
-  }
+    }
 
-@if(appConfig.xiEoriAddingDisabled) {
+    @H1(messages("businessEntityEoriNew.title"), id = Some("businessEntityEoriTitleId"))
+    @P(messages("businessEntityEori.p1"), id = Some("businessEntityEoriP1Id"))
+    @P(messages("businessEntityEori.p2"), id = Some("businessEntityEoriP2Id"))
+    @P(messages("businessEntityEori.p3"), id = Some("businessEntityEoriP3Id"))
 
-        @H1(messages("businessEntityEoriNew.title"), id = Some("businessEntityEoriTitleId"))
-        @P(messages("businessEntityEori.p1"), id = Some("businessEntityEoriP1Id"))
-        @P(messages("businessEntityEori.p2"), id = Some("businessEntityEoriP2Id"))
-        @P(messages("businessEntityEori.p3"), id = Some("businessEntityEoriP3Id"))
+    @govukInput(Input(
+        value = form.data.get("businessEntityEori"),
+        id = "businessEntityEori",
+        name = "businessEntityEori",
+        label = Label(
+        isPageHeading = false,
+        classes = "govuk-label govuk-label--m",
+        content = Text(messages("businessEntityEori.p4"))
+        ),
+        classes = "govuk-input--width-20",
+        errorMessage = if (form.hasErrors) {
+            Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
+        } else None
+    ))
 
-        @govukInput(Input(
-            value = form.data.get("businessEntityEori"),
-            id = "businessEntityEori",
-            name = "businessEntityEori",
-            label = Label(
-            isPageHeading = false,
-            classes = "govuk-label govuk-label--m",
-            content = Text(messages("businessEntityEori.p4"))
-            ),
-            classes = "govuk-input--width-20",
-            errorMessage = if (form.hasErrors) {
-                Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
-            } else None
-        ))
-
-} else {
-        @govukInput(Input(
-            value = form.data.get("businessEntityEori"),
-            id = "businessEntityEori",
-            name = "businessEntityEori",
-            label = Label(
-            isPageHeading = true,
-            classes = "govuk-label--xl",
-            content = Text(messages("businessEntityEori.title"))
-            ),
-            hint = Some(Hint(content = Text(messages("businessEntityEori.hint")))),
-            classes = "govuk-input--width-20",
-            errorMessage = if (form.hasErrors) {
-                Some(ErrorMessage(content = Text(messages(form.errors.head.message))))
-            } else None
-        ))
-}
-
-@button("continue.button")
+    @button("continue.button")
 
   }
 }

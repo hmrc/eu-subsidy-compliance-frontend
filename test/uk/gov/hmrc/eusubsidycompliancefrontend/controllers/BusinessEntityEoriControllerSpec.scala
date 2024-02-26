@@ -155,6 +155,17 @@ class BusinessEntityEoriControllerSpec
 
               val button = doc.select("form")
               button.attr("action") shouldBe routes.BusinessEntityEoriController.postEori.url
+
+              doc.getElementById("businessEntityEoriTitleId").text() shouldBe "Business EORI Number"
+              doc
+                .getElementById("businessEntityEoriP1Id")
+                .text() shouldBe "We need to know the EORI number of the business you want to add."
+              doc
+                .getElementById("businessEntityEoriP2Id")
+                .text() shouldBe "The first 2 letters will be the country code, GB. This is followed by 12 or 15 digits, like GB123456123456."
+              doc
+                .getElementById("businessEntityEoriP3Id")
+                .text() shouldBe "This is the same as, and linked with any XI EORI number you may also have. That means that if you have GB123456123456, the XI version of it would be XI123456123456."
             }
           )
         }

@@ -46,7 +46,6 @@ class VerifiedEoriCache @Inject() (
           IndexOptions().name("sessionTTL").expireAfter(24, HOURS)
         )
       ),
-      replaceIndexes = true,
       extraCodecs = Seq(Codecs.playFormatCodec(jatLocalDateFormat))
     ) {
   def put(verifiedEori: VerifiedEori): Future[Unit] =

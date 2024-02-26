@@ -302,6 +302,8 @@ lead-account-homepage.inset=Your next entry is due by {0}. You can report de min
 lead-account-homepage-overdue.inset=Your due date of {0} has passed. You have not submitted your return within the 90-day period.
 lead-account-homepage-never-submitted-overdue=You have created an undertaking, but not yet reported a claim. This means either you need to report a claim within the next 90 days, or that you are now overdue. You can report de minimis aid payments (less Customs Duty waivers), or let HMRC know that you have not received any, by following the links in the Reporting payments section below.
 
+account-homepage.scp08Issues.text=Your undertaking balance may show a temporary difference to your own records, which will be amended here within 24 hours.
+
 non-lead-account-homepage.title = Your undertaking
 non-lead-account-homepage.p1 = Your undertaking’s next report is due by <strong>{0}</strong>.
 non-lead-account-homepage.p1.is-overdue = Your undertaking’s report was due by {0}.
@@ -560,9 +562,9 @@ dashboard.sector.name.0 = Other
 dashboard.sector.name.1 = Transport
 dashboard.sector.name.2 = Agriculture
 dashboard.sector.name.3 = Aquaculture
-dashboard.allowance.remaining.heading = Allowance remaining
 dashboard.undertaking.balance.heading = Undertaking balance
 dashboard.insetText = Customs subsidies (Customs Duty waivers) claims can take up to 24 hours to update here. This means that keeping a record of payments that you have received is advised.
+dashboard.scp08.warningText = Your ''Undertaking balance'', ''Total claimed'' and ''Customs subsidies (Customs Duty waivers)'' amounts in the first section may show temporary differences to your own records. They may take up to 24 hours to be amended here, so keeping a record of any payments you have received is advised.
 
 become-admin.title = Change of undertaking administrator
 become-admin.p1 = As the administrator for this undertaking you will be responsible for reporting all non-customs subsidy payments received by any member of the undertaking.
@@ -619,12 +621,6 @@ registrationAlreadySubmitted.h1=You have already successfully registered this EO
 registrationAlreadySubmitted.p=You can now go to your homepage to submit a report, add a business or complete other tasks.
 registrationAlreadySubmitted.homeLinkText=Go to undertaking homepage
 
-#scp08 maintenance page
-scp08.maintenance-text.title=There is a problem with the service
-scp08.maintenance-text.p1=Please be aware we are currently experiencing some technical difficulties with the Customs Duty Waiver Scheme service, causing some traders to see a miscalculation of the undertaking balance. We are working to resolve the issue and we will provide an update as soon as possible.
-scp08.maintenance-text.p2=If you think you may be impacted by this issue, and/or have any queries, please contact - <a class="govuk-link" href="mailto:customs.duty-waivers@hmrc.gov.uk">customs.duty-waivers@hmrc.gov.uk</a>
-scp08.maintenance-text.p3=Thank you for your patience whilst we resolve the issue.
-
 #Undertaking suspended page
 undertakingSuspended.title=Your undertaking has been suspended
 undertakingSuspended.p1=You are currently unable to access your undertaking as it has been suspended on this service.
@@ -633,7 +629,7 @@ undertakingSuspended.user.p2=Contact your lead undertaking administrator for mor
 
 scp08.maintenance-text.p1=Please be aware we are currently experiencing some technical difficulties with the Customs Duty Waiver Scheme service, causing some traders to see a miscalculation of the undertaking balance. We are working urgently to resolve but if you are still within balance on the system and your records you can continue to submit supplementary declarations as normal and we will rectify the online balance. We apologise for any inconvenience caused.
 scp08.maintenance-text.p2=If you are experiencing issues preventing you from submitting your supplementary declaration then please contact - <a class="govuk-link" href="mailto:customs.duty-waivers@hmrc.gov.uk">customs.duty-waivers@hmrc.gov.uk</a>
-
+scp08.maintenance-text.p3=Thank you for your patience whilst we resolve the issue.
 
 # Access denied for agents page
 accessDeniedForAgents.title=You cannot access this service

@@ -88,7 +88,7 @@
                     attributes = Map("id" -> "subsidy-list"),
                     rows = subsidies.nonHMRCSubsidyUsage.map { sub =>
                         Seq(
-                            TableRow(content = Text(sub.allocationDate.toShortDisplayFormat)),
+                            TableRow(content = Text(sub.allocationDate.toDisplayFormat)),
                             TableRow(content = Text(sub.nonHMRCSubsidyAmtEUR.toEuros)),
                             TableRow(content = sub.businessEntityIdentifier.fold[Content](HtmlContent("&nbsp;"))(Text)),
                             TableRow(content = sub.publicAuthority.fold[Content](HtmlContent("&nbsp;"))(Text)),

@@ -65,7 +65,8 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
             isCurrentTaxYear = year == 2021
           )
         },
-        undertakingBalanceEUR = SubsidyAmount.Zero
+        undertakingBalanceEUR = SubsidyAmount.Zero,
+        scp08IssuesExist = false
       )
 
       result shouldBe expected
@@ -101,7 +102,8 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
           TaxYearSummary(2020, SubsidyAmount(123.45), SubsidyAmount(543.21), isCurrentTaxYear = false),
           TaxYearSummary(2019, SubsidyAmount(123.45), SubsidyAmount(543.21), isCurrentTaxYear = false)
         ),
-        undertakingBalanceEUR = undertakingSubsidies.hmrcSubsidyTotalEUR
+        undertakingBalanceEUR = undertakingSubsidies.hmrcSubsidyTotalEUR,
+        scp08IssuesExist = false
       )
 
       result shouldBe expected
@@ -143,7 +145,8 @@ class FinancialDashboardSummarySpec extends BaseSpec with Matchers {
           TaxYearSummary(2020, SubsidyAmount(123.45), SubsidyAmount(0), isCurrentTaxYear = false),
           TaxYearSummary(2019, SubsidyAmount(123.45), SubsidyAmount(0), isCurrentTaxYear = false)
         ),
-        undertakingBalanceEUR = subsidyAmount
+        undertakingBalanceEUR = subsidyAmount,
+        scp08IssuesExist = false
       )
 
       result shouldBe expected

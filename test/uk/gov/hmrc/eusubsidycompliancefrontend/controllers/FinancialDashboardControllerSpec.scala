@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 
 import cats.implicits.catsSyntaxOptionId
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.should.Matchers
 import play.api.http.Status
@@ -31,7 +32,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.{EmailVerificationService, EscService}
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTaxYearOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertaking3, undertakingRef, undertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertaking3, undertakingBalance, undertakingRef, undertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
@@ -64,8 +65,7 @@ class FinancialDashboardControllerSpec
   override def additionalConfig = Configuration.from(
     Map(
       // Disable CSP n=once hashes in rendered output
-      "play.filters.csp.nonce.enabled" -> false,
-      "features.scp08-enabled" -> false
+      "play.filters.csp.nonce.enabled" -> false
     )
   )
 
@@ -86,6 +86,7 @@ class FinancialDashboardControllerSpec
         mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
           undertakingSubsidies.toFuture
         )
+        mockGetUndertakingBalance(eori1)(undertakingBalance.some.toFuture)
 
         val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
         val result = route(app, request).get
@@ -95,7 +96,7 @@ class FinancialDashboardControllerSpec
           .fromUndertakingSubsidies(
             undertaking = undertaking,
             subsidies = undertakingSubsidies,
-            balance = None,
+            balance = undertakingBalance.some,
             today = fakeTimeProvider.today
           )
 
@@ -104,12 +105,35 @@ class FinancialDashboardControllerSpec
 
         val data = contentAsString(result)
         val document = Jsoup.parse(data)
-        verifyScp08Banner(document)
-        document.getElementById("allowance-remaining-heading").text shouldBe "Allowance remaining"
-        document.getElementById("allowance-remaining-value").text shouldBe "€0.00"
-        document.getElementById("undertaking-balance-heading") shouldBe null
-        document.getElementById("undertaking-balance-value") shouldBe null
+        document.getElementById("undertaking-balance-heading").text shouldBe "Undertaking balance"
+        document.getElementById("undertaking-balance-value").text shouldBe "€123.45"
 
+        verifyScp08Banner(document)
+        verifyInsetText(document)
+
+      }
+
+      "return the dashboard page for a logged in user with a valid EORI - with scp08 issues" in {
+        mockAuthWithEnrolmentAndNoEmailVerification(eori1)
+        mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+        mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
+          undertakingSubsidies.toFuture
+        )
+        mockGetUndertakingBalance(eori1)(None.toFuture)
+
+        val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
+        val result = route(app, request).get
+        status(result) shouldBe Status.OK
+
+        val data = contentAsString(result)
+        val document = Jsoup.parse(data)
+        document.getElementById("undertaking-balance-heading").text shouldBe "Undertaking balance"
+        document
+          .getElementById("undertaking-balance-value")
+          .text shouldBe "€0.00"
+
+        verifyScp08Banner(document)
+        verifyScp08Warning(document)
       }
 
     }
@@ -121,6 +145,7 @@ class FinancialDashboardControllerSpec
         mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
           undertakingSubsidies.toFuture
         )
+        mockGetUndertakingBalance(eori1)(undertakingBalance.some.toFuture)
       }
 
       val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
@@ -131,7 +156,7 @@ class FinancialDashboardControllerSpec
         .fromUndertakingSubsidies(
           undertaking = undertaking3,
           subsidies = undertakingSubsidies,
-          balance = None,
+          balance = undertakingBalance.some,
           today = fakeTimeProvider.today
         )
 
@@ -140,8 +165,21 @@ class FinancialDashboardControllerSpec
       data shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
       val document = Jsoup.parse(data)
       document.getElementById("SectorCapId").text() shouldBe "Sector cap (Agriculture)"
+
+      verifyScp08Banner(document)
+      verifyInsetText(document)
     }
 
+  }
+  def verifyInsetText(document: Document): Unit = {
+    document
+      .getElementById("dashboard-inset-text")
+      .text() shouldBe "Customs subsidies (Customs Duty waivers) claims can take up to 24 hours to update here. This means that keeping a record of payments that you have received is advised."
+  }
+  def verifyScp08Warning(document: Document): Unit = {
+    document
+      .getElementById("scp08-warning")
+      .text() shouldBe "! Warning Your 'Undertaking balance', 'Total claimed' and 'Customs subsidies (Customs Duty waivers)' amounts in the first section may show temporary differences to your own records. They may take up to 24 hours to be amended here, so keeping a record of any payments you have received is advised."
   }
 
 }

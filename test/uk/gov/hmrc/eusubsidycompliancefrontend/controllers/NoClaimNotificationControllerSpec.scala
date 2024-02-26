@@ -120,6 +120,57 @@ class NoClaimNotificationControllerSpec
 
       }
 
+      "display correct content when suspended" in {
+        inSequence {
+          mockAuthWithEnrolmentAndValidEmail()
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          mockTimeProviderToday(fixedDate)
+        }
+
+        val result = controller.getNotificationConfirmation(isSuspended = true)(FakeRequest())
+        status(result) shouldBe OK
+
+        val document = Jsoup.parse(contentAsString(result))
+
+        document.title shouldBe "Report sent - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
+        document
+          .getElementById("claim-confirmation-p1")
+          .text shouldBe "It may take up to 24 hours before you can continue to claim any further Customs Duty waivers that you may be entitled to."
+        document
+          .getElementById("claim-confirmation-p2")
+          .text shouldBe "Your next report must be made by 20 April 2021. This date is 90 days after the missed deadline."
+        document.getElementById("betaFeedbackHeaderId").text shouldBe "Before you go"
+        document
+          .getElementById("betaFeedbackFirstParaId")
+          .text shouldBe "Your feedback helps us make our service better."
+        document
+          .getElementById("beta-feedback-second-para")
+          .text shouldBe "Take our survey to share your feedback on this service. It takes about 1 minute to complete."
+      }
+
+      "display correct content when NOT suspended" in {
+        inSequence {
+          mockAuthWithEnrolmentAndValidEmail()
+          mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+          mockTimeProviderToday(fixedDate)
+        }
+
+        val result = controller.getNotificationConfirmation(isSuspended = false)(FakeRequest())
+        status(result) shouldBe OK
+
+        val document = Jsoup.parse(contentAsString(result))
+
+        document.title shouldBe "Report sent - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
+        document.getElementById("claim-confirmation-p1").text shouldBe "Your next report must be made by 20 April 2021."
+        document.getElementById("betaFeedbackHeaderId").text shouldBe "Before you go"
+        document
+          .getElementById("betaFeedbackFirstParaId")
+          .text shouldBe "Your feedback helps us make our service better."
+        document
+          .getElementById("beta-feedback-second-para")
+          .text shouldBe "Take our survey to share your feedback on this service. It takes about 1 minute to complete."
+      }
+
       "redirect to the account home page" when {
         "user is not an undertaking lead" in {
           testLeadOnlyRedirect(() => performAction)

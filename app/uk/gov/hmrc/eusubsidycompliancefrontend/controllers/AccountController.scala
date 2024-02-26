@@ -96,11 +96,13 @@ class AccountController @Inject() (
 
     val result = for {
       _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(undertaking))
-      subsidies <- escService.retrieveAllSubsidies(undertaking.reference).toContext
-      result <-
-        if (appConfig.scp08Enabled)
-          escService.getUndertakingBalance(eori).flatMap(b => renderAccountPage(undertaking, subsidies, b)).toContext
-        else renderAccountPage(undertaking, subsidies, None).toContext
+      subsidies <- escService
+        .retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange)
+        .toContext
+      result <- escService
+        .getUndertakingBalance(eori)
+        .flatMap(b => renderAccountPage(undertaking, subsidies, b))
+        .toContext
     } yield result
 
     result.getOrElse {
@@ -131,9 +133,7 @@ class AccountController @Inject() (
   ) = {
     implicit val eori: EORI = r.eoriNumber
 
-    if (appConfig.scp08Enabled && balance.isEmpty)
-      Future.successful(Redirect(routes.Scp08MaintenancePageController.showPage.url))
-    else if (undertaking.isManuallySuspended && appConfig.releaseCEnabled)
+    if (undertaking.isManuallySuspended)
       Future.successful(Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori)).url))
     else {
       val today = timeProvider.today
@@ -142,7 +142,7 @@ class AccountController @Inject() (
       val isTimeToReport = ReportReminderHelpers.isTimeToReport(lastSubmitted, today)
       val dueDate = ReportReminderHelpers.dueDateToReport(lastSubmitted.getOrElse(today)).toDisplayFormat
       val isOverdue = ReportReminderHelpers.isOverdue(lastSubmitted, today)
-      val isSuspended = appConfig.releaseCEnabled && undertaking.isAutoSuspended
+      val isSuspended = undertaking.isAutoSuspended
       val startDate = today.toEarliestTaxYearStart
 
       val summary = FinancialDashboardSummary.fromUndertakingSubsidies(
@@ -155,11 +155,6 @@ class AccountController @Inject() (
       def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] =
         if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
         else n.toFuture
-
-      def getBalance = {
-        if (appConfig.scp08Enabled) summary.undertakingBalanceEUR.toEuros
-        else summary.overall.allowanceRemaining.toEuros
-      }
 
       if (undertaking.isLeadEORI(eori)) {
         logger.info("showing account page for lead")
@@ -179,10 +174,11 @@ class AccountController @Inject() (
             neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
             allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
             totalSubsidies = summary.overall.total.toEuros,
-            remainingAmount = getBalance,
+            remainingAmount = summary.undertakingBalanceEUR.toEuros,
             currentPeriodStart = startDate.toDisplayFormat,
             isOverAllowance = summary.overall.allowanceExceeded,
-            isSuspended = isSuspended
+            isSuspended = isSuspended,
+            scp08IssuesExist = summary.scp08IssuesExist
           )
         )
         result.getOrElse(handleMissingSessionData("Nil Return Journey"))
@@ -198,9 +194,10 @@ class AccountController @Inject() (
             neverSubmitted = undertakingSubsidies.hasNeverSubmitted,
             allowance = BigDecimal(summary.overall.sectorCap.toString()).toEuros,
             totalSubsidies = summary.overall.total.toEuros,
-            remainingAmount = getBalance,
+            remainingAmount = summary.undertakingBalanceEUR.toEuros,
             currentPeriodStart = startDate.toDisplayFormat,
-            isSuspended = isSuspended
+            isSuspended = isSuspended,
+            scp08IssuesExist = summary.scp08IssuesExist
           )
         ).toFuture
       }

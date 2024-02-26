@@ -48,7 +48,7 @@ class AgentNotAllowedControllerSpec
   "AgentNotAllowedController" when {
     "showPage is called" must {
       "return the access denied for agents page" in {
-        val result = controller.showPage(FakeRequest(GET, routes.Scp08MaintenancePageController.showPage.url))
+        val result = controller.showPage(FakeRequest(GET, routes.AgentNotAllowedController.showPage.url))
 
         status(result) shouldBe Status.OK
 

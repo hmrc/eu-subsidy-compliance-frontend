@@ -28,6 +28,7 @@
   layout: Layout,
   govukSummaryList: GovukSummaryList,
   govukInsetText: GovukInsetText,
+  govukWarningText: GovukWarningText,
   govukNotificationBanner : GovukNotificationBanner,
   scp08Banner: scp08Banner
 )
@@ -38,6 +39,28 @@
 
 @printDialog = {
     <div class="print-dialogue"><a class="govuk-link" href="#print-dialogue">@messages("common.print")</a></div>
+}
+
+@scp08Warning = @{
+    govukWarningText(WarningText(
+        iconFallbackText = Some(messages("common.warning")),
+        content = Text(messages("dashboard.scp08.warningText")),
+        attributes = Map("id" -> "scp08-warning")
+    ))
+}
+
+@insetText = {
+    @govukInsetText(InsetText(
+        content = Text(messages("dashboard.insetText")), id = Some("dashboard-inset-text")
+    ))
+}
+
+@insetTextOrWarning = @{
+    if(summary.scp08IssuesExist){
+        scp08Warning
+    } else {
+        insetText
+    }
 }
 
 @mainSummary = @{
@@ -77,29 +100,16 @@
             )
         )
 
-    if(appConfig.scp08Enabled){
-        Seq(
-            SummaryListRow(
-                key = Key(
-                    content = HtmlContent(s"""<span id="undertaking-balance-heading">${messages(s"$key.undertaking.balance.heading")}</span>""")
-                ),
-                value = Value(
-                    content = HtmlContent(s"""<span id="undertaking-balance-value">${summary.undertakingBalanceEUR.toEuros}</span>""")
-                )
-            )
-        ) ++ mainPart
-    } else {
-        mainPart ++ Seq(
-            SummaryListRow(
-                key = Key(
-                    content = HtmlContent(s"""<span id="allowance-remaining-heading">${messages(s"$key.allowance.remaining.heading")}</span>""")
-                ),
-                value = Value(
-                    content = HtmlContent(s"""<span id="allowance-remaining-value">${summary.undertakingBalanceEUR.toEuros}</span>""")
-                )
+    Seq(
+        SummaryListRow(
+            key = Key(
+                content = HtmlContent(s"""<span id="undertaking-balance-heading">${messages(s"$key.undertaking.balance.heading")}</span>""")
+            ),
+            value = Value(
+                content = HtmlContent(s"""<span id="undertaking-balance-value">${summary.undertakingBalanceEUR.toEuros}</span>""")
             )
         )
-    }
+    ) ++ mainPart
 
 }
 
@@ -115,11 +125,7 @@
     @P(messages(s"$key.p1"))
     @P(messages(s"$key.p2", TaxYearHelpers.taxYearStartForDate(LocalDate.now.minusYears(2)).getYear.toString))
 
-    @if(appConfig.scp08Enabled){
-        @govukInsetText(InsetText(
-            content = Text(messages("dashboard.insetText"))
-        ))
-    }
+    @insetTextOrWarning
 
     @govukSummaryList(SummaryList(
         rows = mainSummary

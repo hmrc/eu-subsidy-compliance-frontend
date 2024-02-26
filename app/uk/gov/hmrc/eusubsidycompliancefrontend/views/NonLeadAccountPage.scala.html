@@ -40,13 +40,20 @@
     totalSubsidies: String,
     remainingAmount: String,
     currentPeriodStart: String,
-    isSuspended: Boolean
+    isSuspended: Boolean,
+    scp08IssuesExist: Boolean
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"non-lead-account-homepage"}
 
 @balanceHeading = @{
-    if(appConfig.scp08Enabled) messages(s"$key.h2.undertakingBalance")
-    else messages(s"$key.h2-2")
+    messages(s"$key.h2.undertakingBalance")
+}
+@possibleMiscalculationContent = {
+    @if(scp08IssuesExist){
+        @govukInsetText(InsetText(
+            content = Text(messages("account-homepage.scp08Issues.text")), id = Some("scp08Issues-text")
+        ))
+    }
 }
 
 @layout(
@@ -76,6 +83,7 @@
 
 
   @H2(balanceHeading, id = Some("undertaking-balance-section-heading"))
+  @possibleMiscalculationContent
   @P(messages(s"$key.p2", remainingAmount, allowance), id = Some("undertaking-balance-section-content"))
   
   <ul class="govuk-list govuk-list--spaced">
