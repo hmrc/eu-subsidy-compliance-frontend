@@ -62,9 +62,9 @@
 
         @H1(title, id = Some("noClaimNotification-h1"))
         @P(messages(s"$key.p1"), id = Some("noClaimNotification-p1"))
-        <p class="govuk-body govuk-!-font-weight-bold" id="noClaimNotification-p2">@Html(messages(s"$key.p2"))</p>
+        <h2 class="govuk-heading-m" id="noClaimNotification-p2">@Html(messages(s"$key.p2"))</h2>
         @P(messages(s"$key.p3"), id = Some("noClaimNotification-p3"))
-        <p class="govuk-body govuk-!-font-weight-bold" id="noClaimNotification-p4">@Html(messages(s"$key.p4"))</p>
+        <h2 class="govuk-heading-m" id="noClaimNotification-p4">@Html(messages(s"$key.p4"))</h2>
         @P(messages(s"$key.p5"), id = Some("noClaimNotification-p5"))
 
         @govukCheckboxes(Checkboxes(
