@@ -67,7 +67,7 @@ class EligibilityController @Inject() (
     store
       .get[EligibilityJourney]
       .toContext
-      .map(_.firstEmpty.getOrElse(Redirect(routes.UndertakingController.firstEmptyPage)))
+      .map(_.firstEmpty.getOrElse(Redirect(routes.AboutUndertakingController.firstEmptyPage)))
       .getOrElse {
         logger.info(
           "EligibilityController.firstEmptyPage redirecting to EligibilityController.getEoriCheck as nothing in journey store"
@@ -202,7 +202,7 @@ class EligibilityController @Inject() (
           store
             .update[EligibilityJourney](_.setEoriCheck(form.value.toBoolean))
             .flatMap { _ =>
-              if (form.value.toBoolean) Redirect(routes.UndertakingController.getAboutUndertaking.url).toFuture
+              if (form.value.toBoolean) Redirect(routes.AboutUndertakingController.getAboutUndertaking.url).toFuture
               else Redirect(routes.EligibilityController.getIncorrectEori.url).toFuture
             }
       )

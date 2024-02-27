@@ -45,7 +45,7 @@
 
 
 
-        @formHelper(action = routes.UndertakingController.postCheckAnswers) {
+        @formHelper(action = routes.UndertakingCheckYourAnswersController.postCheckAnswers) {
             <input type=hidden name=cya value=true>
 
             @H1(messages(s"$key.title"))
@@ -71,7 +71,7 @@
                         actions = Some(Actions(
                             items = Seq(
                                 ActionItem(
-                                    href = routes.UndertakingController.getSector.toString,
+                                    href = routes.UndertakingSectorController.getSector.toString,
                                     content = Text(messages("common.cya.change")),
                                     visuallyHiddenText = Some(messages(s"$key.change.hidden.industry-sector"))
                                 )
@@ -88,7 +88,7 @@
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = routes.UndertakingController.getAddEmailForVerification(EmailStatus.CYA).url,
+                                href = routes.UndertakingEmailController.getAddEmailForVerification(EmailStatus.CYA).url,
                                 content = Text(messages("common.cya.change")),
                                 visuallyHiddenText = Some(messages(s"$key.change.hidden.verified-email"))
                             )
@@ -105,7 +105,7 @@
                     actions = Some(Actions(
                         items = Seq(
                             ActionItem(
-                                href = routes.UndertakingController.getAddBusiness.toString,
+                                href = routes.UndertakingAddBusinessController.getAddBusiness.toString,
                                 content = Text(messages("common.cya.change")),
                                 visuallyHiddenText = Some(messages(s"$key.change.hidden.other-business"))
                             )

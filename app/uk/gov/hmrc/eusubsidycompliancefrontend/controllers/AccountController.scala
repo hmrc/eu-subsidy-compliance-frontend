@@ -79,7 +79,7 @@ class AccountController @Inject() (
         logger.info(
           "Eligibility journey is not complete but and undertakingJourney is not empty so redirecting to Undertaking first empty page"
         )
-        Redirect(routes.UndertakingController.firstEmptyPage)
+        Redirect(routes.AboutUndertakingController.firstEmptyPage)
       case _ =>
         logger.info(
           "Eligibility journey is complete so redirecting to BusinessEntity getAddBusinessEntity"

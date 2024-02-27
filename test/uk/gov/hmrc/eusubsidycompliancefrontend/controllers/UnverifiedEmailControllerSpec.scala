@@ -65,7 +65,7 @@ class UnverifiedEmailControllerSpec
             .getElementById("unverifiedEmail-p1")
             .text shouldBe "To complete tasks in your undertaking, re-enter the email address you would like to use so that we can verify it."
           document.getElementById("unverifiedEmail-link").text shouldBe "Re-enter your email address"
-          document.getElementById("unverifiedEmail-link").attr("href") shouldBe routes.UndertakingController
+          document.getElementById("unverifiedEmail-link").attr("href") shouldBe routes.UndertakingEmailController
             .getAddEmailForVerification(Unverified)
             .url
 

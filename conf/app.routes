@@ -8,7 +8,7 @@ GET        /home                                      uk.gov.hmrc.eusubsidycompl
 GET        /assets/*file                              controllers.Assets.versioned(path = "/public", file: Asset)
 
 GET        /first-login-journey-eligibility-first-empty                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.firstEmptyPage
-GET        /first-login-journey-undertaking-first-empty                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.firstEmptyPage
+GET        /first-login-journey-undertaking-first-empty                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AboutUndertakingController.firstEmptyPage
 
 GET        /first-login-journey-do-you-claim-customs-duty-waivers                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getDoYouClaim
 POST       /first-login-journey-do-you-claim-customs-duty-waivers                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postDoYouClaim
@@ -25,43 +25,43 @@ POST       /first-login-journey-check-eori                                      
 
 GET        /first-login-journey-incorrect-eori                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getIncorrectEori
 
-GET        /first-login-journey-about-undertaking                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAboutUndertaking
-POST       /first-login-journey-about-undertaking                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAboutUndertaking
+GET        /first-login-journey-about-undertaking                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AboutUndertakingController.getAboutUndertaking
+POST       /first-login-journey-about-undertaking                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AboutUndertakingController.postAboutUndertaking
 
-GET        /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSector
-POST       /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postSector
+GET        /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingSectorController.getSector
+POST       /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingSectorController.postSector
 
-GET        /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSectorForUpdate
-POST       /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.updateIndustrySector
+GET        /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingSectorController.getSectorForUpdate
+POST       /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingSectorController.updateIndustrySector
 
-GET        /add-email-for-verification/:status                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAddEmailForVerification(status: EmailStatus)
-POST       /add-email-for-verification/:status                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAddEmailForVerification(status: EmailStatus)
+GET        /add-email-for-verification/:status                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingEmailController.getAddEmailForVerification(status: EmailStatus)
+POST       /add-email-for-verification/:status                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingEmailController.postAddEmailForVerification(status: EmailStatus)
 
-GET        /first-login-confirm-email                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmEmail
-POST       /first-login-confirm-email                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmEmail
+GET        /first-login-confirm-email                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingEmailController.getConfirmEmail
+POST       /first-login-confirm-email                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingEmailController.postConfirmEmail
 
-GET        /first-login-add-business                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAddBusiness
-POST       /first-login-add-business                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAddBusiness
+GET        /first-login-add-business                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingAddBusinessController.getAddBusiness
+POST       /first-login-add-business                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingAddBusinessController.postAddBusiness
 
-GET        /verify-email/:pendingVerificationId                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getVerifyEmail(pendingVerificationId: String, status: Option[EmailStatus] ?= None)
+GET        /verify-email/:pendingVerificationId                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingEmailController.getVerifyEmail(pendingVerificationId: String, status: Option[EmailStatus] ?= None)
 
-GET        /first-login-journey-check-your-answers                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getCheckAnswers
-POST       /first-login-journey-check-your-answers                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postCheckAnswers
+GET        /first-login-journey-check-your-answers                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingCheckYourAnswersController.getCheckAnswers
+POST       /first-login-journey-check-your-answers                                      uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingCheckYourAnswersController.postCheckAnswers
 
-GET        /first-login-journey-check-your-answers/back                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.backFromCheckYourAnswers
+GET        /first-login-journey-check-your-answers/back                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingCheckYourAnswersController.backFromCheckYourAnswers
 
-GET        /first-login-journey-registered-undertaking/:undertakingRef/name             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getConfirmation(undertakingRef)
-POST       /first-login-journey-registered-undertaking                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postConfirmation
+GET        /first-login-journey-registered-undertaking/:undertakingRef/name             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingConfirmationController.getConfirmation(undertakingRef)
+POST       /first-login-journey-registered-undertaking                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingConfirmationController.postConfirmation
 
-GET        /lead-undertaking-amend-undertaking                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAmendUndertakingDetails
-POST       /lead-undertaking-amend-undertaking                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAmendUndertaking
+GET        /lead-undertaking-amend-undertaking                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingAmendDetailsController.getAmendUndertakingDetails
+POST       /lead-undertaking-amend-undertaking                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingAmendDetailsController.postAmendUndertaking
 
-GET        /lead-undertaking-disable-warning                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getDisableUndertakingWarning
+GET        /lead-undertaking-disable-warning                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingDisableWarningController.getDisableUndertakingWarning
 
-GET        /lead-undertaking-disable-confirm                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getDisableUndertakingConfirm
-POST       /lead-undertaking-disable-confirm                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postDisableUndertakingConfirm
+GET        /lead-undertaking-disable-confirm                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingDisableConfirmController.getDisableUndertakingConfirm
+POST       /lead-undertaking-disable-confirm                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingDisableConfirmController.postDisableUndertakingConfirm
 
-GET        /lead-undertaking-disabled                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getUndertakingDisabled
+GET        /lead-undertaking-disabled                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingDisabledController.getUndertakingDisabled
 
 GET        /lead-undertaking-add-business/start                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AddBusinessEntityController.startJourney(businessAdded: Option[Boolean] ?= None, businessRemoved: Option[Boolean] ?= None, newlyAddedEoriOpt: Option[String] ?= None, removedAddedEoriOpt: Option[String] ?= None)
 GET        /lead-undertaking-add-business                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AddBusinessEntityController.getAddBusinessEntity(businessAdded: Option[Boolean] ?= None, businessRemoved: Option[Boolean] ?= None, newlyAddedEoriOpt: Option[String] ?= None, removedAddedEoriOpt:Option[String] ?= None)

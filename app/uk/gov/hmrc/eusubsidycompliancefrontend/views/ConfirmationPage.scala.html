@@ -36,7 +36,7 @@
     backLink = None
 ) {
 
-    @formHelper(action = controllers.routes.UndertakingController.postConfirmation) {
+    @formHelper(action = controllers.routes.UndertakingConfirmationController.postConfirmation) {
         <input type=hidden name=confirm value=true>
 
         @govukPanel(Panel(

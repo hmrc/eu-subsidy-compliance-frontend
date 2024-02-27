@@ -97,7 +97,7 @@ class EligibilityControllerSpec
         }
 
         "eligibility journey is complete" in {
-          redirect(eligibilityJourney.some, routes.UndertakingController.firstEmptyPage.url)
+          redirect(eligibilityJourney.some, routes.AboutUndertakingController.firstEmptyPage.url)
         }
 
       }
@@ -412,7 +412,7 @@ class EligibilityControllerSpec
           }
 
         "yes is selected" in {
-          testRedirection(input = true, routes.UndertakingController.getAboutUndertaking.url)
+          testRedirection(input = true, routes.AboutUndertakingController.getAboutUndertaking.url)
         }
 
         "no is selected" in {
