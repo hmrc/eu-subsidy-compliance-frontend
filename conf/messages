@@ -573,9 +573,9 @@ becomeAdmin.error.required = Select yes if you want to become administrator for 
 
 become-admin-responsibilities.title = Become the administrator for this undertaking
 become-admin.legend = Do you want to become the administrator for this undertaking?
-become-admin-responsibilities.p1 = By taking on the role of undertaking administrator it is your role to:
-become-admin-responsibilities.li1 = report all non-customs subsidy payments received by any member of the undertaking. You must do this every 90 days
-become-admin-responsibilities.li2 = report if the undertaking has not received any non-customs subsidy payments. You must do this every 90 days
+become-admin-responsibilities.p1 = By taking on the role of undertaking administrator it is your responsibility to:
+become-admin-responsibilities.li1 = report all non-customs subsidy payments received by any member of the undertaking - you must do this every 90 days
+become-admin-responsibilities.li2 = report if the undertaking has not received any non-customs subsidy payments - you must do this every 90 days
 become-admin-responsibilities.li3 = check you do not go over the combined customs and non-customs subsidy allowance for your sector
 become-admin-responsibilities.li4 = inform us about any changes to the businesses in your undertaking
 become-admin-responsibilities.li5 = keep your undertaking details up-to-date
