@@ -38,7 +38,7 @@
     hasErrors = form.hasErrors
 ) {
 
-    @formHelper(action = controllers.routes.EligibilityController.postEoriCheck) {
+    @formHelper(action = controllers.routes.EligibilityEoriCheckController.postEoriCheck) {
         @form.errors.map { err =>
             @govukErrorSummary(ErrorSummary(
                 errorList = Seq(

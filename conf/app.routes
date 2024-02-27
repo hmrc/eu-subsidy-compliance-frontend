@@ -7,23 +7,21 @@ GET        /home                                      uk.gov.hmrc.eusubsidycompl
 
 GET        /assets/*file                              controllers.Assets.versioned(path = "/public", file: Asset)
 
-GET        /first-login-journey-eligibility-first-empty                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.firstEmptyPage
+GET        /first-login-journey-eligibility-first-empty                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityFirstEmptyPageController.firstEmptyPage
 GET        /first-login-journey-undertaking-first-empty                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.firstEmptyPage
 
-GET        /first-login-journey-do-you-claim-customs-duty-waivers                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getDoYouClaim
-POST       /first-login-journey-do-you-claim-customs-duty-waivers                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postDoYouClaim
+GET        /first-login-journey-do-you-claim-customs-duty-waivers                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityDoYouClaimController.getDoYouClaim
+POST       /first-login-journey-do-you-claim-customs-duty-waivers                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityDoYouClaimController.postDoYouClaim
 
-GET        /first-login-journey-will-you-claim-customs-duty-waivers                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getWillYouClaim
-POST       /first-login-journey-will-you-claim-customs-duty-waivers                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postWillYouClaim
+GET        /first-login-journey-will-you-claim-customs-duty-waivers                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityWillYouClaimController.getWillYouClaim
+POST       /first-login-journey-will-you-claim-customs-duty-waivers                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityWillYouClaimController.postWillYouClaim
+GET        /first-login-journey-not-eligible                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityWillYouClaimController.getNotEligible
 
-GET        /first-login-journey-not-eligible                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getNotEligible
+GET        /first-login-journey-register-eori                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityStartUndertakingJourneyController.startUndertakingJourney
 
-GET        /first-login-journey-register-eori                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.startUndertakingJourney
-
-GET        /first-login-journey-check-eori                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getEoriCheck
-POST       /first-login-journey-check-eori                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.postEoriCheck
-
-GET        /first-login-journey-incorrect-eori                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityController.getIncorrectEori
+GET        /first-login-journey-check-eori                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityEoriCheckController.getEoriCheck
+POST       /first-login-journey-check-eori                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityEoriCheckController.postEoriCheck
+GET        /first-login-journey-incorrect-eori                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityEoriCheckController.getIncorrectEori
 
 GET        /first-login-journey-about-undertaking                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getAboutUndertaking
 POST       /first-login-journey-about-undertaking                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postAboutUndertaking
