@@ -74,7 +74,7 @@ class AccountController @Inject() (
         logger.info(
           "Eligibility journey is not complete but and undertakingJourney is empty so redirecting to Eligibility first empty page"
         )
-        Redirect(routes.EligibilityController.firstEmptyPage)
+        Redirect(routes.EligibilityFirstEmptyPageController.firstEmptyPage)
       case (_, undertakingJourney) if !undertakingJourney.isComplete =>
         logger.info(
           "Eligibility journey is not complete but and undertakingJourney is not empty so redirecting to Undertaking first empty page"

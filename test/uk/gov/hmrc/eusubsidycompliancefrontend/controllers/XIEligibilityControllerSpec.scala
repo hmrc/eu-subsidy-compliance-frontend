@@ -51,7 +51,7 @@ class XIEligibilityControllerSpec
     )
   )
 
-  private val controller = instanceOf[EligibilityController]
+  private val controller = instanceOf[EligibilityEoriCheckController]
 
   "XIEligibilityControllerSpec" when {
 
@@ -93,7 +93,7 @@ class XIEligibilityControllerSpec
           val legend = document.getElementsByClass("govuk-fieldset__legend govuk-fieldset__legend--m")
           legend.text shouldBe s"Is the EORI number you want to register $eori1?"
           val button = document.select("form")
-          button.attr("action") shouldBe routes.EligibilityController.postEoriCheck.url
+          button.attr("action") shouldBe routes.EligibilityEoriCheckController.postEoriCheck.url
         }
       }
 

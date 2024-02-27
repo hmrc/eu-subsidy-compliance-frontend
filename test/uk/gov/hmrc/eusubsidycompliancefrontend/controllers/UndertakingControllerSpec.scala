@@ -227,7 +227,9 @@ class UndertakingControllerSpec
             performAction(),
             messageFromMessageKey("undertakingName.title"),
             { doc =>
-              doc.select(".govuk-back-link").attr("href") shouldBe routes.EligibilityController.getEoriCheck.url
+              doc
+                .select(".govuk-back-link")
+                .attr("href") shouldBe routes.EligibilityEoriCheckController.getEoriCheck.url
               val input = doc.select(".govuk-input").attr("value")
               input shouldBe ""
 
@@ -242,7 +244,7 @@ class UndertakingControllerSpec
         }
 
         "undertaking journey is there in store and user hasn't  answered any questions" in {
-          testDisplay(UndertakingJourney(), routes.EligibilityController.getEoriCheck.url)
+          testDisplay(UndertakingJourney(), routes.EligibilityEoriCheckController.getEoriCheck.url)
         }
 
         "undertaking journey is there in store and user has answered the question but journey is not complete" in {
@@ -250,7 +252,7 @@ class UndertakingControllerSpec
             UndertakingJourney(
               about = AboutUndertakingFormPage("TestUndertaking".some)
             ),
-            routes.EligibilityController.getEoriCheck.url
+            routes.EligibilityEoriCheckController.getEoriCheck.url
           )
         }
 

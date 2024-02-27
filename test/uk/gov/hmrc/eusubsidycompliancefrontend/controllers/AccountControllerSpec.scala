@@ -419,7 +419,7 @@ class AccountControllerSpec
               mockGetOrCreate[EligibilityJourney](eori1)(Right(EligibilityJourney()))
               mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             }
-            checkIsRedirect(performAction(), routes.EligibilityController.firstEmptyPage.url)
+            checkIsRedirect(performAction(), routes.EligibilityFirstEmptyPageController.firstEmptyPage.url)
           }
 
         }
@@ -433,7 +433,7 @@ class AccountControllerSpec
               mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
               mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             }
-            checkIsRedirect(performAction(), routes.EligibilityController.firstEmptyPage)
+            checkIsRedirect(performAction(), routes.EligibilityFirstEmptyPageController.firstEmptyPage)
           }
 
           "eligibility Journey  is complete and undertaking Journey is not complete" in {
