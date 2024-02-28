@@ -307,7 +307,7 @@ class AccountControllerSpec
           doc.title() shouldBe "Your undertaking - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
           doc
             .getElementById("warning-text")
-            .text shouldBe "! Warning Your undertaking's deadline to submit a report passed on 20 April 2021."
+            .text shouldBe "! Warning Your undertaking's deadline to submit a report passed on 18 April 2021."
 
           verifyScp08Banner(doc)
         }
@@ -478,7 +478,7 @@ class AccountControllerSpec
   private def verifyAutoSuspendContentForLead(doc: Document) = {
     doc
       .getElementById("warning-text")
-      .text shouldBe "! Warning Your deadline to submit a report passed on 20 April 2021."
+      .text shouldBe "! Warning Your deadline to submit a report passed on 18 April 2021."
     doc
       .getElementById("lead-account-homepage-p1")
       .text shouldBe "This date was 90 days after you either:"
