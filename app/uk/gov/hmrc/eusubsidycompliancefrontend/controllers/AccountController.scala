@@ -138,7 +138,7 @@ class AccountController @Inject() (
     else {
       val today = timeProvider.today
 
-      val lastSubmitted = undertakingSubsidies.lastSubmitted.orElse(undertaking.lastSubsidyUsageUpdt)
+      val lastSubmitted = undertaking.lastSubsidyUsageUpdt.orElse(undertakingSubsidies.lastSubmitted)
       val isTimeToReport = ReportReminderHelpers.isTimeToReport(lastSubmitted, today)
       val dueDate = ReportReminderHelpers.dueDateToReport(lastSubmitted.getOrElse(today)).toDisplayFormat
       val isOverdue = ReportReminderHelpers.isOverdue(lastSubmitted, today)
