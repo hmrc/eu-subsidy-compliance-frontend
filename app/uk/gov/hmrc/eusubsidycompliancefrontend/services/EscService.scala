@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.services
 
-import cats.data.EitherT
 import cats.implicits.{catsSyntaxEq, catsSyntaxOptionId}
 import com.google.inject.{Inject, Singleton}
 import play.api.Logging
@@ -161,15 +160,11 @@ class EscService @Inject() (
           sys.error(s"Error parsing EORI:$eori Undertaking from ESC")
         }
 
-    EitherT(escConnector.retrieveUndertaking(eori))
-      .flatMapF { httpResponse: HttpResponse =>
-        parseResponse(httpResponse).toFuture
-      }
-      .recover { case err @ ConnectorError(_, WithStatusCode(NOT_FOUND)) =>
-        logger.error(s"retrieveUndertakingAndHandleErrors EORI:$eori not found", err)
-        None
-      }
-      .value
+    escConnector.retrieveUndertaking(eori).map {
+      case Right(response) => parseResponse(response)
+      case Left(ConnectorError(_, WithStatusCode(NOT_FOUND))) => Right(None)
+      case Left(err) => Left(err)
+    }
   }
 
   def getUndertakingBalance(eori: EORI)(implicit hc: HeaderCarrier): Future[Option[UndertakingBalance]] = {
