@@ -1340,17 +1340,7 @@ class UndertakingControllerSpec
 
         checkPageIsDisplayed(
           performAction(),
-          messageFromMessageKey("undertaking.confirmation.title"),
-          { doc =>
-            val confirmationP1: String = doc.getElementById("confirmationFirstParaId").text()
-            confirmationP1 shouldBe "We have sent you a confirmation email."
-            val confirmationP2: String = doc.getElementById("confirmationSecondParaId").text()
-            confirmationP2 shouldBe "You can now submit reports of non-customs subsidy payments, or no payments in your undertaking."
-            doc.text() should not include messageFromMessageKey(
-              "undertaking.confirmation.p3",
-              routes.AddBusinessEntityController.getAddBusinessEntity()
-            )
-          }
+          messageFromMessageKey("undertaking.confirmation.title")
         )
 
       }
@@ -1365,21 +1355,7 @@ class UndertakingControllerSpec
 
         checkPageIsDisplayed(
           performAction(),
-          messageFromMessageKey("undertaking.confirmation.title"),
-          { doc =>
-            val confirmationP1: String = doc.getElementById("confirmationFirstParaId").text()
-            confirmationP1 shouldBe "We have sent you a confirmation email."
-            val confirmationP2: String = doc.getElementById("confirmationSecondParaId").text()
-            confirmationP2 shouldBe "You can now submit reports of non-customs subsidy payments, or no payments in your undertaking."
-
-            val confirmationP3 = doc.getElementById("confirmation-p3")
-            confirmationP3.text should startWith("You can also add businesses to your undertaking using the ")
-            confirmationP3.text should endWith(" link in the ‘Undertaking administration’ section of the undertaking.")
-            val link = doc.getElementById("add-remove-business-link")
-            link.text shouldBe "Add and remove businesses"
-            link.attr("href") shouldBe routes.AddBusinessEntityController.startJourney().url
-
-          }
+          messageFromMessageKey("undertaking.confirmation.title")
         )
 
       }

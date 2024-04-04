@@ -7,8 +7,18 @@
         </encoder>
     </appender>
 
-    <!-- DO NOT suppress log output to stdout during test runs as it makes CI much less interesting when things fail. Tests
-     are about failure not success as they should point to how to fix things. Good luck fixing indeterminate failures without this on-->
+    <logger name="org.apache.pekko.event.slf4j.Slf4jLogger" level="WARN"/>
+    <logger name="play.api.http.HttpErrorHandlerExceptions" level="WARN"/>
+    <logger name="uk.gov.hmrc.eusubsidycompliancefrontend.persistence" level="WARN"/>
+
+    <logger name="org.mongodb.driver.client" level="ERROR"/>
+    <logger name="org.mongodb.driver.cluster" level="ERROR"/>
+    <logger name="uk.gov.hmrc.mongo.play.PlayMongoComponent" level="ERROR"/>
+
+    <logger name="uk.gov.hmrc.play.bootstrap.audit.DisabledDatastreamMetricsProvider" level="OFF"/>
+    <logger name="uk.gov.hmrc.play.bootstrap.graphite.DisabledGraphiteReporting" level="OFF"/>
+    <logger name="uk.gov.hmrc.play.bootstrap.filters.CacheControlFilter" level="OFF"/>
+    <logger name="org.apache.pekko.actor.CoordinatedShutdown" level="OFF"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>

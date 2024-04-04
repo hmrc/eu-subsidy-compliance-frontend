@@ -637,3 +637,8 @@ accessDeniedForAgents.p1=You will not be able to use this service because you’
 accessDeniedForAgents.p2=If your client needs to register an undertaking to report non-customs subsidy payments or no payments, they must do it themselves using their own Government Gateway account.
 accessDeniedForAgents.p3=If they do not have a Government Gateway user ID, they can create one when they start to register.
 accessDeniedForAgents.linkText=Find out more about using this service
+
+exitSurvey.heading = Before you go
+exitSurvey.p1 = Your feedback helps us make our service better.
+exitSurvey.link = Take a short survey
+exitSurvey.p2 = to share your feedback on this service.
