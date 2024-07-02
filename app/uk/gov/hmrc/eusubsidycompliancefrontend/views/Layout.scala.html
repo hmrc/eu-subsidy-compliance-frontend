@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
+@import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import views.html.helper.CSPNonce
 
 @this(
@@ -30,8 +31,10 @@
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
         beforeContentBlock: components.BeforeContent,
         scripts: components.Scripts,
-        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
+        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+        standardBetaBanner: StandardBetaBanner
 )
+
 @(pageTitle: Option[String] = None,
         backLinkEnabled: Boolean = false,
         backLink: Option[String] = None,
@@ -86,8 +89,9 @@
     headBlock = Some(hmrcHead(headBlock = Some(head))),
     headerBlock = Some(hmrcStandardHeader(
         serviceUrl  = Some(routes.AccountController.getAccountPage.url),
-        signOutUrl = if(showSignOutLink) Some(appConfig.signOutUrl(continueUrl = Some(appConfig.exitSurveyUrl))) else None)
-    ),
+        signOutUrl = if(showSignOutLink) Some(appConfig.signOutUrl(continueUrl = Some(appConfig.exitSurveyUrl))) else None,
+        phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUrlNoAuth))
+    )),
     scriptsBlock = Some(hmrcScripts(scriptsBlock = Some(scripts))),
     footerBlock = Some(hmrcStandardFooter()),
     beforeContentBlock = Some(beforeContentWrapper),
