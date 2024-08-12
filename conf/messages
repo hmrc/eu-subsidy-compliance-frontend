@@ -627,10 +627,6 @@ undertakingSuspended.p1=You are currently unable to access your undertaking as i
 undertakingSuspended.admin.p2=You will have received a letter in the post about this decision. Contact the decision maker for more information.
 undertakingSuspended.user.p2=Contact your lead undertaking administrator for more information.
 
-scp08.maintenance-text.p1=Please be aware we are currently experiencing some technical difficulties with the Customs Duty Waiver Scheme service, causing some traders to see a miscalculation of the undertaking balance. We are working urgently to resolve but if you are still within balance on the system and your records you can continue to submit supplementary declarations as normal and we will rectify the online balance. We apologise for any inconvenience caused.
-scp08.maintenance-text.p2=If you are experiencing issues preventing you from submitting your supplementary declaration then please contact - <a class="govuk-link" href="mailto:customs.duty-waivers@hmrc.gov.uk">customs.duty-waivers@hmrc.gov.uk</a>
-scp08.maintenance-text.p3=Thank you for your patience whilst we resolve the issue.
-
 # Access denied for agents page
 accessDeniedForAgents.title=You cannot access this service
 accessDeniedForAgents.p1=You will not be able to use this service because you’re logged in with an agent services account Government Gateway user ID.

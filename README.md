@@ -63,10 +63,6 @@ After making and merging changes, restart the application in that environment to
 The standard subsidy journey allows users to submit payments in either pounds or euros. When the user chooses pounds, the ESC service displays the euro equivalent of the amount entered in pounds. To do this, the ESC service uses the Europa API (a public API) to get the latest exchange rates. We have no control over Europa API's service availability, so if/when the service is down for a considerable amount of time, we have a 'euro only' journey, allowing users (most users submit euros) to still be able to submit subsidies.
 Set this value to true to enable the euro only journey.
 
-### scp08Banner-enabled
-There were some synchronization issues between the backend service (ETMP and SAM) causing some data discrepancies. The ESC service displays a banner on the homepage as well as the financial dashboard page to explain this to users.
-Set this flags to true to enable the banner.
-
 ## Testing the service
 
 This service uses [sbt-scoverage](https://github.com/scoverage/sbt-scoverage) to
