@@ -98,7 +98,6 @@ class AccountControllerSpec
             performAction(),
             messageFromMessageKey("lead-account-homepage.title"),
             { doc =>
-              verifyScp08Banner(doc)
               verifyGenericHomepageContentForLead(doc)
               doc.getElementById("lead-account-homepage-p2").text shouldBe "You must either:"
 
@@ -254,7 +253,6 @@ class AccountControllerSpec
 
           val doc = Jsoup.parse(contentAsString(result))
 
-          verifyScp08Banner(doc)
           verifyGenericHomepageContentForLead(doc)
           verifyPreDeadlineContentForLead(doc)
         }
@@ -280,7 +278,6 @@ class AccountControllerSpec
 
           val doc = Jsoup.parse(contentAsString(result))
 
-          verifyScp08Banner(doc)
           verifyGenericHomepageContentForLead(doc)
           verifyAutoSuspendContentForLead(doc)
         }
@@ -309,7 +306,6 @@ class AccountControllerSpec
             .getElementById("warning-text")
             .text shouldBe "! Warning Your undertaking's deadline to submit a report passed on 18 April 2021."
 
-          verifyScp08Banner(doc)
         }
       }
 

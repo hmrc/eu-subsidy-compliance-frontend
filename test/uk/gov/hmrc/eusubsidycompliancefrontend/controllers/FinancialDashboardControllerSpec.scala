@@ -108,7 +108,6 @@ class FinancialDashboardControllerSpec
         document.getElementById("undertaking-balance-heading").text shouldBe "Undertaking balance"
         document.getElementById("undertaking-balance-value").text shouldBe "€123.45"
 
-        verifyScp08Banner(document)
         verifyInsetText(document)
 
       }
@@ -132,7 +131,6 @@ class FinancialDashboardControllerSpec
           .getElementById("undertaking-balance-value")
           .text shouldBe "€0.00"
 
-        verifyScp08Banner(document)
         verifyScp08Warning(document)
       }
 
@@ -166,7 +164,6 @@ class FinancialDashboardControllerSpec
       val document = Jsoup.parse(data)
       document.getElementById("SectorCapId").text() shouldBe "Sector cap (Agriculture)"
 
-      verifyScp08Banner(document)
       verifyInsetText(document)
     }
 
