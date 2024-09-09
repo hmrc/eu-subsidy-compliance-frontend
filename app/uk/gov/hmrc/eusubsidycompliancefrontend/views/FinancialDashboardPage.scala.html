@@ -37,7 +37,9 @@
 @title = @{messages(s"$key.title")}
 
 @printDialog = {
-    <div class="print-dialogue"><a class="govuk-link" href="#print-dialogue">@messages("common.print")</a></div>
+        <aside aria-label="Print-page" class="print-dialogue">
+            <a class="govuk-link" href="#print-dialogue">@messages("common.print")</a>
+        </aside>
 }
 
 @scp08Warning = @{
