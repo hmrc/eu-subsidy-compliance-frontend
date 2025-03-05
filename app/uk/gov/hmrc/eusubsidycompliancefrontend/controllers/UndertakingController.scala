@@ -419,12 +419,11 @@ class UndertakingController @Inject() (
         )
         _ = auditService.sendEvent[CreateUndertaking](auditEventCreateUndertaking)
       } yield Redirect(routes.UndertakingController.getConfirmation(ref))
-    ).recover { case error: NotFoundException =>
+    ).recoverWith { case error: NotFoundException =>
       logger.error(s"Error creating undertaking: $error")
-
-      InternalServerError(
-        errorHandler.internalServerErrorTemplate
-      )
+      errorHandler.internalServerErrorTemplate(request).map { html =>
+        InternalServerError(html)
+      }
     }
 
   def getConfirmation(ref: String): Action[AnyContent] = verifiedEori.async { implicit request =>

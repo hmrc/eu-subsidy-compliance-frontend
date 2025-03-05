@@ -26,7 +26,10 @@ trait EscActionBuilder {
 
   def handleFailure(request: Request[_], appConfig: AppConfig): PartialFunction[Throwable, Result] = {
     case _: NoActiveSession =>
-      Redirect(appConfig.ggSignInUrl, Map("continue" -> Seq(request.toRedirectTarget), "origin" -> Seq(appConfig.appName)))
+      Redirect(
+        appConfig.ggSignInUrl,
+        Map("continue" -> Seq(request.toRedirectTarget), "origin" -> Seq(appConfig.appName))
+      )
   }
 
 }
