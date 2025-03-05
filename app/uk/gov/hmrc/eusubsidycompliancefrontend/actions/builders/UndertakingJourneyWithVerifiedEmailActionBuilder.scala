@@ -28,7 +28,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
-import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
 import javax.inject.Inject
@@ -53,8 +52,6 @@ import scala.concurrent.{ExecutionContext, Future}
   * @param executionContext
   */
 class UndertakingJourneyWithVerifiedEmailActionBuilder @Inject() (
-  override val config: Configuration,
-  override val env: Environment,
   override val authConnector: AuthConnector,
   emailService: EmailService,
   enrolledActionBuilder: EnrolledActionBuilder,
@@ -65,7 +62,6 @@ class UndertakingJourneyWithVerifiedEmailActionBuilder @Inject() (
     extends ActionBuilder[AuthenticatedEnrolledRequest, AnyContent]
     with FrontendHeaderCarrierProvider
     with Results
-    with AuthRedirects
     with AuthorisedFunctions
     with I18nSupport
     with Logging {

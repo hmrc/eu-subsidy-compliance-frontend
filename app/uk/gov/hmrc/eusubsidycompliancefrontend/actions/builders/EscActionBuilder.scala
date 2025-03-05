@@ -21,13 +21,12 @@ import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.auth.core.NoActiveSession
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.RequestSyntax.RequestOps
-import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 
-trait EscActionBuilder extends AuthRedirects {
+trait EscActionBuilder {
 
   def handleFailure(request: Request[_], appConfig: AppConfig): PartialFunction[Throwable, Result] = {
     case _: NoActiveSession =>
-      Redirect(appConfig.ggSignInUrl, Map("continue" -> Seq(request.toRedirectTarget), "origin" -> Seq(origin)))
+      Redirect(appConfig.ggSignInUrl, Map("continue" -> Seq(request.toRedirectTarget), "origin" -> Seq(appConfig.appName)))
   }
 
 }

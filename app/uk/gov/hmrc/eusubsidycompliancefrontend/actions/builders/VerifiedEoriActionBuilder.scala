@@ -24,7 +24,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnr
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.services.EmailService
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.OptionTSyntax.FutureOptionToOptionTOps
-import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
 import javax.inject.Inject
@@ -49,8 +48,6 @@ import scala.concurrent.{ExecutionContext, Future}
   * @param executionContext
   */
 class VerifiedEoriActionBuilder @Inject() (
-  override val config: Configuration,
-  override val env: Environment,
   override val authConnector: AuthConnector,
   emailService: EmailService,
   enrolledActionBuilder: EnrolledActionBuilder,
@@ -59,7 +56,6 @@ class VerifiedEoriActionBuilder @Inject() (
     extends ActionBuilder[AuthenticatedEnrolledRequest, AnyContent]
     with FrontendHeaderCarrierProvider
     with Results
-    with AuthRedirects
     with AuthorisedFunctions
     with I18nSupport {
 
