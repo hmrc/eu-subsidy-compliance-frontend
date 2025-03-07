@@ -17,34 +17,37 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.config
 
 import play.api.i18n.{Lang, MessagesApi}
-import play.api.mvc.Request
+import play.api.mvc.RequestHeader
 import play.twirl.api.Html
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ErrorTemplate
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ErrorHandler @Inject() (
   errorTemplate: ErrorTemplate,
   val messagesApi: MessagesApi
 )(implicit
-  val appConfig: AppConfig
+  val appConfig: AppConfig,
+  protected val ec: ExecutionContext
 ) extends FrontendErrorHandler {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit
-    request: Request[_]
-  ): Html =
-    errorTemplate(pageTitle, heading, message)
+    request: RequestHeader
+  ): Future[Html] =
+    Future.successful(errorTemplate(pageTitle, heading, message))
 
-  override def internalServerErrorTemplate(implicit request: Request[_]): Html = {
+  override def internalServerErrorTemplate(implicit request: RequestHeader): Future[Html] = {
     implicit val lang: Lang = Lang("en")
 
-    errorTemplate(
-      messagesApi("service.name"),
-      messagesApi("service.unavailable.heading"),
-      messagesApi("service.unavailable.body")
+    Future.successful(
+      errorTemplate(
+        messagesApi("service.name"),
+        messagesApi("service.unavailable.heading"),
+        messagesApi("service.unavailable.body")
+      )
     )
   }
-
 }

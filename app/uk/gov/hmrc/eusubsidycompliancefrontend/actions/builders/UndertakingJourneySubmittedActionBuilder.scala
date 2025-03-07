@@ -18,7 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders
 
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import play.api.{Configuration, Environment, Logging}
+import play.api.Logging
 import uk.gov.hmrc.auth.core.{AuthConnector, AuthorisedFunctions}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnrolledRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.ErrorHandler
@@ -26,7 +26,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
-import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
 import javax.inject.Inject
@@ -47,8 +46,6 @@ import scala.concurrent.{ExecutionContext, Future}
   * @param executionContext
   */
 class UndertakingJourneySubmittedActionBuilder @Inject() (
-  override val config: Configuration,
-  override val env: Environment,
   override val authConnector: AuthConnector,
   enrolledActionBuilder: EnrolledActionBuilder,
   store: Store,
@@ -58,7 +55,6 @@ class UndertakingJourneySubmittedActionBuilder @Inject() (
     extends ActionBuilder[AuthenticatedEnrolledRequest, AnyContent]
     with FrontendHeaderCarrierProvider
     with Results
-    with AuthRedirects
     with AuthorisedFunctions
     with I18nSupport
     with Logging {
@@ -80,11 +76,9 @@ class UndertakingJourneySubmittedActionBuilder @Inject() (
             else f(enrolledRequest)
           case None =>
             logger.error(s"No UndertakingJourney session data for EORI:$eori")
-            Future.successful(
-              InternalServerError(
-                errorHandler.internalServerErrorTemplate(enrolledRequest)
-              )
-            )
+            errorHandler.internalServerErrorTemplate(enrolledRequest).map { html =>
+              InternalServerError(html)
+            }
         }
 
       }

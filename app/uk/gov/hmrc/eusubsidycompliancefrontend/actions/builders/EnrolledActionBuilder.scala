@@ -18,7 +18,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.actions.builders
 
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals
 import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
@@ -29,7 +28,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 
 import javax.inject.Inject
@@ -50,15 +48,12 @@ import scala.concurrent.{ExecutionContext, Future}
   * @param appConfig
   */
 class EnrolledActionBuilder @Inject() (
-  override val config: Configuration,
-  override val env: Environment,
   override val authConnector: AuthConnector,
   mcc: ControllerComponents
 )(implicit val executionContext: ExecutionContext, appConfig: AppConfig)
     extends ActionBuilder[AuthenticatedEnrolledRequest, AnyContent]
     with FrontendHeaderCarrierProvider
     with Results
-    with AuthRedirects
     with AuthorisedFunctions
     with I18nSupport
     with EscActionBuilder {

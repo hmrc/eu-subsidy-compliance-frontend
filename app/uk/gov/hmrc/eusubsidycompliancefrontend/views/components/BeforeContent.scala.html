@@ -20,8 +20,7 @@
     govukBackLink: GovukBackLink
 )
 
-@(backLinkEnabled: Boolean = false, backLink: Option[String] = None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
+@(backLinkEnabled: Boolean = false, backLink: Option[String] = None)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 @{
     if(backLinkEnabled) {
         Some(
