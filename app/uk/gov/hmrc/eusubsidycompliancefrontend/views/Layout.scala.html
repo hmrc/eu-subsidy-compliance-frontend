@@ -66,7 +66,7 @@
 
 @scripts = {
     @scriptsBlock.getOrElse(Html(""))
-    @Html(s"""<script src="${controllers.routes.Assets.versioned("javascript/application.js")}" ${CSPNonce.attr}></script>""")
+    @Html(s"""<script @CSPNonce.attr src="${controllers.routes.Assets.versioned("javascript/application.js")}"></script>""")
 }
 
 @beforeContentWrapper = {
