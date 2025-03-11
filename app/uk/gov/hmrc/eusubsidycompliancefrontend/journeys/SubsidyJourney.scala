@@ -18,9 +18,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.journeys
 
 import cats.implicits.catsSyntaxOptionId
 import play.api.libs.json._
-import play.api.mvc.{Request, Result}
 import play.api.mvc.Results.Redirect
-import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+import play.api.mvc.{Request, Result}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey.Form
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.SubsidyJourney.Forms._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.CurrencyCode.EUR

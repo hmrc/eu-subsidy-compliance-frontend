@@ -118,8 +118,8 @@
             @P(messages(s"$key.p"))
 
             @button("common.accept", id = Some("submit-button"))
-            <script @{CSPNonce.attr} type="text/javascript" src="@controllers.routes.Assets.versioned("javascript/disableFormButtonOnClick.js")"></script>
-            <script @{CSPNonce.attr}>disableButtonOnClick("submit-button")</script>
+            <script @CSPNonce.attr type="text/javascript" src="@controllers.routes.Assets.versioned("javascript/disableFormButtonOnClick.js")"></script>
+            <script @CSPNonce.attr>disableButtonOnClick("submit-button")</script>
         }
 
 }

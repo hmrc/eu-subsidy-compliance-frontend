@@ -60,7 +60,7 @@ class AccountControllerSpec
   override def additionalConfig: Configuration = super.additionalConfig.withFallback(
     Configuration.from(
       Map(
-        // Disable CSP n=once hashes in rendered output
+        // Disable CSP nonce hashes in rendered output
         "play.filters.csp.nonce.enabled" -> false
       )
     )

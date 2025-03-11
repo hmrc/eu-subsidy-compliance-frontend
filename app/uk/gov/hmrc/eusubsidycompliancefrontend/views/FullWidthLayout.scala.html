@@ -67,7 +67,7 @@
 
 @head = {
     @headBlock.getOrElse(Html(""))
-    @Html(s"""<link href='${controllers.routes.Assets.versioned("stylesheets/application.css")}' media="all" rel="stylesheet" type="text/css" ${CSPNonce.attr} />""")
+    @Html(s"""<link href='${controllers.routes.Assets.versioned("stylesheets/application.css")}' media="all" rel="stylesheet" type="text/css" $CSPNonce.attr />""")
 
     @if(showSignOutLink) {
         @hmrcTimeoutDialogHelper(
@@ -82,7 +82,7 @@
 
 @scripts = {
     @scriptsBlock.getOrElse(Html(""))
-    @Html(s"""<script src="${controllers.routes.Assets.versioned("javascript/application.js")}" ${CSPNonce.attr}></script>""")
+    @Html(s"""<script @CSPNonce.attr src="${controllers.routes.Assets.versioned("javascript/application.js")}"></script>""")
 }
 
 @beforeContentWrapper = {
