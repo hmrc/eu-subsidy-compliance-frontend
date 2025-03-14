@@ -25,6 +25,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EmailVerificationConne
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{EmailVerificationStatusResponse, VerificationStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
+import uk.gov.hmrc.http.StringContextOps
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -56,7 +57,7 @@ class EmailVerificationConnectorSpec
 
     "verify email" when {
       behave like connectorBehaviour(
-        mockPost(s"$baseUrl/verify-email", Seq.empty, emailVerificationRequest)(_),
+        mockPost(url"$baseUrl/verify-email", emailVerificationRequest)(_),
         () => connector.verifyEmail(emailVerificationRequest)
       )
     }
@@ -66,7 +67,7 @@ class EmailVerificationConnectorSpec
       val response = EmailVerificationStatusResponse(
         List(VerificationStatus(emailAddress = "email@dr.com", verified = true, locked = false))
       )
-      mockGet(url = s"$baseUrl/verification-status/$credId")(Some(response))
+      mockGet2(url"$baseUrl/verification-status/$credId")(Some(response))
       connector.getVerificationStatus(credId).map(_ shouldBe response)
     }
   }

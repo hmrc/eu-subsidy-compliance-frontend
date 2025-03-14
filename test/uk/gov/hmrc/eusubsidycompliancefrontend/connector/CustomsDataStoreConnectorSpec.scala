@@ -24,7 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.CustomsDataStoreConnec
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.UpdateEmailRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.{HttpResponse, StringContextOps}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.time.LocalDateTime
@@ -51,8 +51,8 @@ class CustomsDataStoreConnectorSpec
 
   private val connector = new CustomsDataStoreConnector(mockHttp, new ServicesConfig(config))
 
-  val retrieveVerifiedEmailUrl = s"$protocol://$host:$port/customs-data-store/eori/$eori1/verified-email"
-  val updateVerifiedEmailUrl = s"$protocol://$host:$port/customs-data-store/update-email"
+  val retrieveVerifiedEmailUrl = url"$protocol://$host:$port/customs-data-store/eori/$eori1/verified-email"
+  val updateVerifiedEmailUrl = url"$protocol://$host:$port/customs-data-store/update-email"
 
   "CustomsDataStoreConnector" when {
     "handling request to retrieve email address by eori" must {
@@ -66,7 +66,7 @@ class CustomsDataStoreConnectorSpec
       val email = "email@dress.com"
       val now = LocalDateTime.now()
 
-      mockPost(url = updateVerifiedEmailUrl, body = UpdateEmailRequest(eori1, email, now), headers = Seq.empty)(
+      mockPost(updateVerifiedEmailUrl, UpdateEmailRequest(eori1, email, now))(
         Some(HttpResponse(204, "{}"))
       )
       connector.updateEmailForEori(eori1, email, now).map { res =>
@@ -77,7 +77,7 @@ class CustomsDataStoreConnectorSpec
     "handling request to updateEmailForEori - failure" in {
       val email = "email@dress.com"
       val now = LocalDateTime.now()
-      mockPost(url = updateVerifiedEmailUrl, body = UpdateEmailRequest(eori1, email, now), headers = Seq.empty)(
+      mockPost(updateVerifiedEmailUrl, UpdateEmailRequest(eori1, email, now))(
         Some(HttpResponse(500, "{}"))
       )
       connector

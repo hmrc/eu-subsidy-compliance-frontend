@@ -18,40 +18,43 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import com.google.inject.{Inject, Singleton}
 import play.api.http.Status
+import play.api.libs.json.Json
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.UpdateEmailRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.time.LocalDateTime
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CustomsDataStoreConnector @Inject() (override protected val http: HttpClient, servicesConfig: ServicesConfig)(
+class CustomsDataStoreConnector @Inject() (override protected val http: HttpClientV2, servicesConfig: ServicesConfig)(
   implicit ec: ExecutionContext
 ) extends EmailConnector {
 
   lazy private val cdsURL: String = servicesConfig.baseUrl("cds")
 
-  private def getUri(eori: EORI) = s"$cdsURL/customs-data-store/eori/$eori/verified-email"
+  private def getUri(eori: EORI) = url"$cdsURL/customs-data-store/eori/$eori/verified-email"
 
   def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): ConnectorResult =
-    makeRequest(_.GET[HttpResponse](getUri(eori)))
+    makeRequest(
+      _.get(getUri(eori))
+        .execute[HttpResponse]
+    )
 
   def updateEmailForEori(eori: EORI, emailAddress: String, timestamp: LocalDateTime = LocalDateTime.now())(implicit
     hc: HeaderCarrier
   ): Future[Unit] =
     http
-      .POST[UpdateEmailRequest, HttpResponse](
-        url = s"$cdsURL/customs-data-store/update-email",
-        body = UpdateEmailRequest(eori, emailAddress, timestamp)
-      )
+      .post(url"$cdsURL/customs-data-store/update-email")
+      .withBody(Json.toJson(UpdateEmailRequest(eori, emailAddress, timestamp)))
+      .execute[HttpResponse]
       .map { res =>
         res.status match {
           case Status.NO_CONTENT => ()
           case _ => sys.error(s"Error updating email address for eori: $eori, new email address: $emailAddress")
         }
       }
-
 }

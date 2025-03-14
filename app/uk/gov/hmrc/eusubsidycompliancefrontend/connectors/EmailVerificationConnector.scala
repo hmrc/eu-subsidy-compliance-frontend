@@ -16,10 +16,12 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
+import play.api.libs.json.Json
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.EmailVerificationRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailVerificationStatusResponse
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
@@ -27,28 +29,28 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EmailVerificationConnector @Inject() (
-  override protected val http: HttpClient,
+  override protected val http: HttpClientV2,
   servicesConfig: ServicesConfig
 ) extends Connector {
 
   lazy private val emailVerificationBaseUrl: String = servicesConfig.baseUrl("email-verification")
 
-  lazy private val verifyEmailUrl = s"$emailVerificationBaseUrl/email-verification/verify-email"
-  lazy private val verificationStatusUrl = s"$emailVerificationBaseUrl/email-verification/verification-status/{credId}"
+  lazy private val verifyEmailUrl = url"$emailVerificationBaseUrl/email-verification/verify-email"
 
   def verifyEmail(
     request: EmailVerificationRequest
-  )(implicit hc: HeaderCarrier, ec: ExecutionContext): ConnectorResult =
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): ConnectorResult = {
     makeRequest(
-      _.POST[EmailVerificationRequest, HttpResponse](
-        verifyEmailUrl,
-        request
-      )
+      _.post(verifyEmailUrl)
+        .withBody(Json.toJson(request))
+        .execute[HttpResponse]
     )
+  }
 
   def getVerificationStatus(
     credId: String
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[EmailVerificationStatusResponse] =
-    http.GET[EmailVerificationStatusResponse](verificationStatusUrl.replace("{credId}", credId))
-
+    http
+      .get(url"$emailVerificationBaseUrl/email-verification/verification-status/$credId")
+      .execute[EmailVerificationStatusResponse]
 }

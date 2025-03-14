@@ -19,7 +19,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 import play.api.Logging
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.Connector.ConnectorSyntax._
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
-import uk.gov.hmrc.http.{HttpClient, HttpResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HttpResponse, UpstreamErrorResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,10 +31,10 @@ import scala.concurrent.{ExecutionContext, Future}
 trait Connector extends Logging {
   type ConnectorResult = Future[Either[ConnectorError, HttpResponse]]
 
-  protected val http: HttpClient
+  protected val http: HttpClientV2
 
   protected def makeRequest(
-    request: HttpClient => Future[HttpResponse]
+    request: HttpClientV2 => Future[HttpResponse]
   )(implicit ec: ExecutionContext): ConnectorResult =
     request(http)
       .map { response =>

@@ -23,6 +23,7 @@ import play.api.Configuration
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.SendEmailConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.emailSendRequest
+import uk.gov.hmrc.http.StringContextOps
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -45,10 +46,10 @@ class SendEmailConnectorSpec extends BaseSpec with Matchers with MockFactory wit
 
   "SendEmailConnectorSpec" when {
     "handling request to send  email address " must {
-      val expectedUrl = s"$protocol://$host:$port/hmrc/email"
+      val expectedUrl = url"$protocol://$host:$port/hmrc/email"
 
       behave like connectorBehaviour(
-        mockPost(expectedUrl, Seq.empty, emailSendRequest)(_),
+        mockPost(expectedUrl, emailSendRequest)(_),
         () => connector.sendEmail(emailSendRequest)
       )
     }

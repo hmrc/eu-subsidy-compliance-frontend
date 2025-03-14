@@ -19,13 +19,14 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 import play.api.http.Status.NOT_FOUND
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.Connector.ConnectorSyntax.ResponseStatusOps
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.ConnectorError
-import uk.gov.hmrc.http.{HttpClient, HttpResponse, UpstreamErrorResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HttpResponse, UpstreamErrorResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait EmailConnector extends Connector {
   override protected def makeRequest(
-    request: HttpClient => Future[HttpResponse]
+    request: HttpClientV2 => Future[HttpResponse]
   )(implicit ec: ExecutionContext): ConnectorResult =
     request(http) map { r: HttpResponse =>
       if (r.status.isSuccess) Right(r)
