@@ -60,7 +60,6 @@ class EscConnector @Inject() (
     )
 
   def updateUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): ConnectorResult =
-    //makeRequest(_.POST(updateUndertakingUrl, undertaking))
     makeRequest(
       _.post(updateUndertakingUrl)
         .withBody(Json.toJson(undertaking))
@@ -68,7 +67,6 @@ class EscConnector @Inject() (
     )
 
   def disableUndertaking(undertaking: Undertaking)(implicit hc: HeaderCarrier): ConnectorResult =
-    //makeRequest(_.POST(disableUpdateUndertakingUrl, undertaking))
     makeRequest(
       _.post(disableUpdateUndertakingUrl)
         .withBody(Json.toJson(undertaking))
@@ -76,7 +74,6 @@ class EscConnector @Inject() (
     )
 
   def retrieveUndertaking(eori: EORI)(implicit hc: HeaderCarrier): ConnectorResult =
-    //makeRequest(_.GET(s"$retrieveUndertakingUrl/$eori"))
     makeRequest(
       _.get(url"$retrieveUndertakingUrl/$eori")
         .execute[HttpResponse]
@@ -85,7 +82,6 @@ class EscConnector @Inject() (
   def addMember(undertakingRef: UndertakingRef, businessEntity: BusinessEntity)(implicit
     hc: HeaderCarrier
   ): ConnectorResult =
-    //makeRequest(_.POST(s"$addMemberUrl/$undertakingRef", businessEntity))
     makeRequest(
       _.post(url"$addMemberUrl/$undertakingRef")
         .withBody(Json.toJson(businessEntity))
@@ -96,7 +92,6 @@ class EscConnector @Inject() (
     undertakingRef: UndertakingRef,
     businessEntity: BusinessEntity
   )(implicit hc: HeaderCarrier): ConnectorResult =
-    //makeRequest(_.POST(s"$removeMemberUrl/$undertakingRef", businessEntity))
     makeRequest(
       _.post(url"$removeMemberUrl/$undertakingRef")
         .withBody(Json.toJson(businessEntity))
@@ -104,7 +99,6 @@ class EscConnector @Inject() (
     )
 
   def createSubsidy(subsidyUpdate: SubsidyUpdate)(implicit hc: HeaderCarrier): ConnectorResult =
-    //makeRequest(_.POST(updateSubsidyUrl, subsidyUpdate))
     makeRequest(
       _.post(updateSubsidyUrl)
         .withBody(Json.toJson(subsidyUpdate))
@@ -125,7 +119,6 @@ class EscConnector @Inject() (
   }
 
   def retrieveSubsidy(subsidyRetrieve: SubsidyRetrieve)(implicit hc: HeaderCarrier): ConnectorResult =
-    //makeRequest(_.POST(retrieveSubsidyUrl, subsidyRetrieve))
     makeRequest(
       _.post(retrieveSubsidyUrl)
         .withBody(Json.toJson(subsidyRetrieve))
