@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connector
 
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import com.typesafe.config.ConfigFactory
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.ScalaFutures
@@ -28,7 +28,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.EscConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{MonthlyExchangeRate, SubsidyUpdate}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingRef
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import java.time.LocalDate
@@ -63,56 +62,56 @@ class EscConnectorSpec
 
     "handling request to create Undertaking" must {
       behave like connectorBehaviour(
-        mockPost(s"$baseUrl/undertaking", Seq.empty, writeableUndertaking)(_),
+        mockPost(url"$baseUrl/undertaking", writeableUndertaking)(_),
         () => connector.createUndertaking(writeableUndertaking)
       )
     }
 
     "handling request to update Undertaking" must {
       behave like connectorBehaviour(
-        mockPost(s"$baseUrl/undertaking/update", Seq.empty, undertaking)(_),
+        mockPost(url"$baseUrl/undertaking/update", undertaking)(_),
         () => connector.updateUndertaking(undertaking)
       )
     }
 
     "handling request to retrieve Undertaking" must {
       behave like connectorBehaviour(
-        mockGet(s"$baseUrl/undertaking/$eori1")(_),
+        mockGet(url"$baseUrl/undertaking/$eori1")(_),
         () => connector.retrieveUndertaking(eori1)
       )
     }
 
     "handling request to add member in Business Entity Undertaking" must {
       behave like connectorBehaviour(
-        mockPost(s"$baseUrl/undertaking/member/UR123456", Seq.empty, businessEntity3)(_),
+        mockPost(url"$baseUrl/undertaking/member/UR123456", businessEntity3)(_),
         () => connector.addMember(UndertakingRef("UR123456"), businessEntity3)
       )
     }
 
     "handling request to remove member from Business Entity Undertaking" must {
       behave like connectorBehaviour(
-        mockPost(s"$baseUrl/undertaking/member/remove/UR123456", Seq.empty, businessEntity3)(_),
+        mockPost(url"$baseUrl/undertaking/member/remove/UR123456", businessEntity3)(_),
         () => connector.removeMember(UndertakingRef("UR123456"), businessEntity3)
       )
     }
 
     "handling request to create subsidy" must {
       behave like connectorBehaviour(
-        mockPost(s"$baseUrl/subsidy/update", Seq.empty, subsidyUpdate)(_),
+        mockPost(url"$baseUrl/subsidy/update", subsidyUpdate)(_),
         () => connector.createSubsidy(subsidyUpdate)
       )
     }
 
     "handling request to remove subsidy" must {
       behave like connectorBehaviour(
-        mockPost(s"$baseUrl/subsidy/update", Seq.empty, SubsidyUpdate.forDelete(undertakingRef, nonHmrcSubsidy))(_),
+        mockPost(url"$baseUrl/subsidy/update", SubsidyUpdate.forDelete(undertakingRef, nonHmrcSubsidy))(_),
         () => connector.removeSubsidy(undertakingRef, nonHmrcSubsidy)
       )
     }
 
     "handling request to retrieve subsidy" must {
       behave like connectorBehaviour(
-        mockPost(s"$baseUrl/subsidy/retrieve", Seq.empty, subsidyRetrieve)(_),
+        mockPost(url"$baseUrl/subsidy/retrieve", subsidyRetrieve)(_),
         () => connector.retrieveSubsidy(subsidyRetrieve)
       )
     }
@@ -120,7 +119,7 @@ class EscConnectorSpec
     "handling request to get undertaking balance" in {
       val response = HttpResponse(status = 200, body = Json.toJson(undertakingBalance).toString())
 
-      mockGet(s"$baseUrl/undertaking/balance/$eori1")(Some(response))
+      mockGet(url"$baseUrl/undertaking/balance/$eori1")(Some(response))
       val actual = connector.getUndertakingBalance(eori1).futureValue
       actual shouldBe Some(undertakingBalance)
     }
@@ -129,7 +128,7 @@ class EscConnectorSpec
       val dateEnd = LocalDate.now
       val rate = MonthlyExchangeRate("curr1", "curr2", 123, LocalDate.now(), dateEnd)
       val response = HttpResponse(status = 200, body = Json.toJson(rate).toString)
-      mockGet(s"$baseUrl/retrieve-exchange-rate/${dateEnd.toString}")(Some(response))
+      mockGet(url"$baseUrl/retrieve-exchange-rate/${dateEnd.toString}")(Some(response))
       val actual = connector.getExchangeRate(LocalDate.now()).futureValue
       actual shouldBe Some(rate)
     }

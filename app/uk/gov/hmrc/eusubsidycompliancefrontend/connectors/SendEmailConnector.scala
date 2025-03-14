@@ -17,24 +17,30 @@
 package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 
 import com.google.inject.{Inject, Singleton}
+import play.api.libs.json.Json
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailSendRequest
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
 class SendEmailConnector @Inject() (
-  override protected val http: HttpClient,
+  override protected val http: HttpClientV2,
   servicesConfig: ServicesConfig
 )(implicit ec: ExecutionContext)
     extends Connector {
 
   private lazy val baseUrl: String = servicesConfig.baseUrl("email-send")
-  private lazy val sendEmailUrl: String = s"$baseUrl/hmrc/email"
+  private lazy val sendEmailUrl = url"$baseUrl/hmrc/email"
 
   def sendEmail(request: EmailSendRequest)(implicit hc: HeaderCarrier): ConnectorResult =
-    makeRequest(_.POST[EmailSendRequest, HttpResponse](sendEmailUrl, request))
+    makeRequest(
+      _.post(sendEmailUrl)
+        .withBody(Json.toJson(request))
+        .execute[HttpResponse]
+    )
 
 }

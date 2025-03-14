@@ -16,67 +16,78 @@
 
 package uk.gov.hmrc.eusubsidycompliancefrontend.connector
 
-import org.scalamock.handlers.CallHandler6
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should._
 import play.api.libs.json.Writes
-import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import play.api.libs.json._
+import play.api.libs.ws.BodyWritable
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.EmailVerificationStatusResponse
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
+import uk.gov.hmrc.http.client.RequestBuilder
 
+import java.net.URL
 import scala.concurrent.{ExecutionContext, Future}
 
 trait HttpSupport { this: MockFactory with Matchers =>
 
   @SuppressWarnings(Array("org.wartremover.warts.Any"))
-  val mockHttp: HttpClient = mock[HttpClient]
+  val mockHttp: HttpClientV2 = mock[HttpClientV2]("mockHttp")
+  val mockRequestBuilder: RequestBuilder = mock[RequestBuilder]("mockRequestBuilder")
 
-  def mockGet[A](
-    url: String,
-    expectedHeaders: Seq[(String, String)] = Seq.empty
-  )(
-    response: Option[A]
-  ): CallHandler6[String, Seq[(String, String)], Seq[(String, String)], HttpReads[
-    A
-  ], HeaderCarrier, ExecutionContext, Future[A]] =
+  def mockGet(url: URL)(httpResponse: Option[HttpResponse]) = {
     (mockHttp
-      .GET(_: String, _: Seq[(String, String)], _: Seq[(String, String)])(
-        _: HttpReads[A],
-        _: HeaderCarrier,
-        _: ExecutionContext
-      ))
-      .expects(where {
-        (
-          u: String,
-          q: Seq[(String, String)],
-          r: Seq[(String, String)],
-          _: HttpReads[A],
-          h: HeaderCarrier,
-          _: ExecutionContext
-        ) =>
-          // use matchers here to get useful error messages when the following predicates
-          // are not satisfied - otherwise it is difficult to tell in the logs what went wrong
-          u shouldBe url
-          q shouldBe Seq.empty
-          r shouldBe expectedHeaders
-          h.extraHeaders shouldBe Seq.empty
-          true
-      })
-      .returning(response.fold(Future.failed[A](new Exception("Test exception message")))(_.toFuture))
+      .get(_: URL)(_: HeaderCarrier))
+      .expects(url, *)
+      .returning(mockRequestBuilder)
+    mockExecute(httpResponse)
+  }
 
-  def mockPost[A](url: String, headers: Seq[(String, String)], body: A)(
-    result: Option[HttpResponse]
-  ): Unit =
+  def mockGet2(url: URL)(httpResponse: Option[EmailVerificationStatusResponse]) = {
     (mockHttp
-      .POST(_: String, _: A, _: Seq[(String, String)])(
-        _: Writes[A],
-        _: HttpReads[HttpResponse],
-        _: HeaderCarrier,
-        _: ExecutionContext
-      ))
-      .expects(url, body, headers.toSeq, *, *, *, *)
+      .get(_: URL)(_: HeaderCarrier))
+      .expects(url, *)
+      .returning(mockRequestBuilder)
+    mockExecute2(httpResponse)
+  }
+
+  def mockPost[B : Writes](url: URL, requestBody: B)(httpResponse: Option[HttpResponse]) = {
+    (mockHttp
+      .post(_: URL)(_: HeaderCarrier))
+      .expects(url, *)
+      .returning(mockRequestBuilder)
+
+    mockWithBody(requestBody)
+    mockExecute(httpResponse)
+  }
+
+  def mockExecute(httpResponse: Option[HttpResponse]) = {
+    (mockRequestBuilder
+      .execute[HttpResponse](_: HttpReads[HttpResponse], _: ExecutionContext))
+      .expects(*, *)
       .returning(
-        result.fold[Future[HttpResponse]](
+        httpResponse.fold[Future[HttpResponse]](
           Future.failed(new Exception("Test exception message"))
-        )(_.toFuture)
+        )(Future.successful)
       )
+  }
+
+  def mockExecute2(httpResponse: Option[EmailVerificationStatusResponse]) = {
+    (mockRequestBuilder
+      .execute[EmailVerificationStatusResponse](_: HttpReads[EmailVerificationStatusResponse], _: ExecutionContext))
+      .expects(*, *)
+      .returning(
+        httpResponse.fold[Future[EmailVerificationStatusResponse]](
+          Future.failed(new Exception("Test exception message"))
+        )(Future.successful)
+      )
+  }
+
+  def mockWithBody[B : Writes](requestBody: B) = {
+    val jsonBody: JsValue = Json.toJson(requestBody)
+    (mockRequestBuilder
+      .withBody(_: JsValue)(_: BodyWritable[JsValue], _: izumi.reflect.Tag[JsValue], _: ExecutionContext))
+      .expects(jsonBody, *, *, *)
+      .returning(mockRequestBuilder)
+  }
 }
