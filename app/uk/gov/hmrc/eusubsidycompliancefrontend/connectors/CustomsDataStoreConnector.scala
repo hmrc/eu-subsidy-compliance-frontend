@@ -19,7 +19,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.connectors
 import com.google.inject.{Inject, Singleton}
 import play.api.http.Status
 import play.api.libs.json.Json
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.UpdateEmailRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{RetrieveEmail, UpdateEmailRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -36,13 +36,15 @@ class CustomsDataStoreConnector @Inject() (override protected val http: HttpClie
 
   lazy private val cdsURL: String = servicesConfig.baseUrl("cds")
 
-  private def getUri(eori: EORI) = url"$cdsURL/customs-data-store/eori/$eori/verified-email"
+  def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val url = url"$cdsURL/customs-data-store/eori/verified-email-third-party"
+    val body = Json.toJson(RetrieveEmail(eori))
 
-  def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier): ConnectorResult =
-    makeRequest(
-      _.get(getUri(eori))
-        .execute[HttpResponse]
-    )
+    http
+      .post(url)
+      .withBody(body)
+      .execute[HttpResponse]
+  }
 
   def updateEmailForEori(eori: EORI, emailAddress: String, timestamp: LocalDateTime = LocalDateTime.now())(implicit
     hc: HeaderCarrier
