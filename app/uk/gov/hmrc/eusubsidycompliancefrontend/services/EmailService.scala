@@ -96,17 +96,15 @@ class EmailService @Inject() (
   }
 
   def retrieveEmailByEORI(eori: EORI)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[RetrieveEmailResponse] =
-    customsDataStoreConnector.retrieveEmailByEORI(eori).map {
-      case Left(error) => throw error
-      case Right(value: HttpResponse) =>
-        value.status match {
-          case NOT_FOUND => RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)
-          case OK =>
-            value
-              .parseJSON[EmailAddressResponse]
-              .fold(_ => sys.error("Error in parsing Email Address"), handleEmailAddressResponse)
-          case _ => sys.error("Error in retrieving Email Address Response")
-        }
+    customsDataStoreConnector.retrieveEmailByEORI(eori).map { value =>
+      value.status match {
+        case NOT_FOUND => RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)
+        case OK =>
+          value
+            .parseJSON[EmailAddressResponse]
+            .fold(_ => sys.error("Error in parsing Email Address"), handleEmailAddressResponse)
+        case _ => sys.error("Error in retrieving Email Address Response")
+      }
     }
 
   def hasVerifiedEmail(eori: EORI)(implicit

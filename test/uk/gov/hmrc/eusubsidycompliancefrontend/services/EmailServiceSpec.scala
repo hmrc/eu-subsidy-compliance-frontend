@@ -84,8 +84,9 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockitoSugar with Sca
   private def mockSendEmail(emailSendRequest: EmailSendRequest)(result: Either[ConnectorError, HttpResponse]) =
     when(mockSendEmailConnector.sendEmail(any())(any())).thenReturn(result.toFuture)
 
-  private def mockRetrieveEmail(eori: EORI)(result: Either[ConnectorError, HttpResponse]) =
-    when(mockRetrieveEmailConnector.retrieveEmailByEORI(any())(any())).thenReturn(result.toFuture)
+  private def mockRetrieveEmail(eori: EORI)(result: Future[HttpResponse]): Unit =
+    when(mockRetrieveEmailConnector.retrieveEmailByEORI(any())(any(), any()))
+      .thenReturn(result)
 
   private def mockGetVerifiedEori(eori: EORI)(result: Future[Option[VerifiedEori]]) =
     when(mockVerifiedEoriCache.get(any())).thenReturn(result)
@@ -97,31 +98,31 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockitoSugar with Sca
       "return an error" when {
 
         "the email retrieval fails" in {
-          mockRetrieveEmail(eori1)(Left(ConnectorError(new RuntimeException())))
+          mockRetrieveEmail(eori1)(Future.failed(ConnectorError(new RuntimeException())))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
           result.failed.futureValue shouldBe a[ConnectorError]
         }
 
         "no email address is found" in {
-          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, unverifiedEmailResponseJson, emptyHeaders)))
+          mockRetrieveEmail(eori1)(Future.successful(HttpResponse(OK, unverifiedEmailResponseJson, emptyHeaders)))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
           result.futureValue shouldBe EmailNotSent
         }
 
         "the email address is undeliverable" in {
-          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, undeliverableResponseJson, emptyHeaders)))
+          mockRetrieveEmail(eori1)(Future.successful(HttpResponse(OK, undeliverableResponseJson, emptyHeaders)))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
           result.futureValue shouldBe EmailNotSent
         }
 
         "the email address response is invalid" in {
-          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, inValidEmailResponseJson, emptyHeaders)))
+          mockRetrieveEmail(eori1)(Future.successful(HttpResponse(OK, inValidEmailResponseJson, emptyHeaders)))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
           result.failed.futureValue shouldBe a[RuntimeException]
         }
 
         "there is an error sending the email" in {
-          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+          mockRetrieveEmail(eori1)(Future.successful(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockSendEmail(emailSendRequest)(Left(ConnectorError("Error")))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
           result.failed.futureValue shouldBe a[ConnectorError]
@@ -132,14 +133,14 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockitoSugar with Sca
       "return success" when {
 
         "the email is sent successfully" in {
-          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+          mockRetrieveEmail(eori1)(Future.successful(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockSendEmail(emailSendRequest)(Right(HttpResponse(ACCEPTED, "")))
           val result = service.sendEmail(eori1, CreateUndertaking, undertaking)
           result.futureValue shouldBe EmailSent
         }
 
         "the email is sent successfully with a removeEffectiveDate value" in {
-          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+          mockRetrieveEmail(eori1)(Future.successful(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockSendEmail(emailSendRequest.copy(parameters = singleEoriWithDateEmailParameters))(
             Right(HttpResponse(ACCEPTED, ""))
           )
@@ -148,7 +149,7 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockitoSugar with Sca
         }
 
         "the email is sent successfully with a second eori" in {
-          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+          mockRetrieveEmail(eori1)(Future.successful(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockSendEmail(emailSendRequest.copy(parameters = doubleEoriEmailParameters))(
             Right(HttpResponse(ACCEPTED, ""))
           )
@@ -157,7 +158,7 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockitoSugar with Sca
         }
 
         "the email is sent successfully with a second eori and a removeEffectiveDate value" in {
-          mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+          mockRetrieveEmail(eori1)(Future.successful(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
           mockSendEmail(emailSendRequest.copy(parameters = doubleEoriWithDateEmailParameters))(
             Right(HttpResponse(ACCEPTED, ""))
           )
@@ -176,19 +177,19 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockitoSugar with Sca
     "return an error" when {
 
       "the http call fails" in {
-        mockRetrieveEmail(eori1)(Left(ConnectorError("")))
+        mockRetrieveEmail(eori1)(Future.failed(ConnectorError("")))
         val result = service.retrieveEmailByEORI(eori1)
         assertThrows[RuntimeException](await(result))
       }
 
       "the http response doesn't come back with status 200(OK) or 404" in {
-        mockRetrieveEmail(eori1)(Right(HttpResponse(BAD_REQUEST, validEmailResponseJson, emptyHeaders)))
+        mockRetrieveEmail(eori1)(Future.successful(HttpResponse(BAD_REQUEST, validEmailResponseJson, emptyHeaders)))
         val result = service.retrieveEmailByEORI(eori1)
         assertThrows[RuntimeException](await(result))
       }
 
       "there is no json in the response" in {
-        mockRetrieveEmail(eori1)(Right(HttpResponse(OK, "hi")))
+        mockRetrieveEmail(eori1)(Future.successful(HttpResponse(OK, "hi")))
         val result = service.retrieveEmailByEORI(eori1)
         assertThrows[RuntimeException](await(result))
       }
@@ -196,7 +197,7 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockitoSugar with Sca
       "the json in the response can't be parsed" in {
         val json = Json.parse("""{ "a" : 1 }""")
 
-        mockRetrieveEmail(eori1)(Right(HttpResponse(OK, json, emptyHeaders)))
+        mockRetrieveEmail(eori1)(Future.successful(HttpResponse(OK, json, emptyHeaders)))
         val result = service.retrieveEmailByEORI(eori1)
         assertThrows[RuntimeException](await(result))
       }
@@ -206,25 +207,25 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockitoSugar with Sca
     "return successfully" when {
 
       "the http call returns a 200 and valid email address response" in {
-        mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+        mockRetrieveEmail(eori1)(Future.successful(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
         val result = service.retrieveEmailByEORI(eori1)
         await(result) shouldBe RetrieveEmailResponse(VerifiedEmail, validEmailAddress.some)
       }
 
       "the http call returns a 404" in {
-        mockRetrieveEmail(eori1)(Right(HttpResponse(NOT_FOUND, " ")))
+        mockRetrieveEmail(eori1)(Future.successful(HttpResponse(NOT_FOUND, " ")))
         val result = service.retrieveEmailByEORI(eori1)
         await(result) shouldBe RetrieveEmailResponse(EmailType.UnVerifiedEmail, None)
       }
 
       "the http call returns a 200 but the email is Undeliverable" in {
-        mockRetrieveEmail(eori1)(Right(HttpResponse(OK, undeliverableResponseJson, emptyHeaders)))
+        mockRetrieveEmail(eori1)(Future.successful(HttpResponse(OK, undeliverableResponseJson, emptyHeaders)))
         val result = service.retrieveEmailByEORI(eori1)
         await(result) shouldBe RetrieveEmailResponse(EmailType.UnDeliverableEmail, undeliverableEmailAddress.some)
       }
 
       "the http call returns a 200 but the email is invalid" in {
-        mockRetrieveEmail(eori1)(Right(HttpResponse(OK, unverifiedEmailResponseJson, emptyHeaders)))
+        mockRetrieveEmail(eori1)(Future.successful(HttpResponse(OK, unverifiedEmailResponseJson, emptyHeaders)))
         val result = service.retrieveEmailByEORI(eori1)
         await(result) shouldBe RetrieveEmailResponse(EmailType.UnVerifiedEmail, validEmailAddress.some)
       }
@@ -237,7 +238,7 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockitoSugar with Sca
 
       "no verified eori in the cache and NO verified email found when retrieving email by eori number" in {
         mockGetVerifiedEori(eori1)(Future.successful(None))
-        mockRetrieveEmail(eori1)(Right(HttpResponse(OK, unverifiedEmailResponseJson, emptyHeaders)))
+        mockRetrieveEmail(eori1)(Future.successful(HttpResponse(OK, unverifiedEmailResponseJson, emptyHeaders)))
         val result = service.hasVerifiedEmail(eori1)
         await(result) shouldBe None
       }
@@ -254,7 +255,7 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockitoSugar with Sca
 
       "no verified email exists in cache but verified email IS found when retrieving email by eori number " in {
         mockGetVerifiedEori(eori1)(Future.successful(None))
-        mockRetrieveEmail(eori1)(Right(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
+        mockRetrieveEmail(eori1)(Future.successful(HttpResponse(OK, validEmailResponseJson, emptyHeaders)))
         when(mockVerifiedEoriCache.put(any())).thenReturn(Future.successful(()))
 
         val result = service.hasVerifiedEmail(eori1)
@@ -262,5 +263,4 @@ class EmailServiceSpec extends BaseSpec with Matchers with MockitoSugar with Sca
       }
     }
   }
-
 }

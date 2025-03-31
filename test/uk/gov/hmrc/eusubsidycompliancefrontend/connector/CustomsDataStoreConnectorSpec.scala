@@ -20,8 +20,10 @@ import com.typesafe.config.ConfigFactory
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.matchers.should.Matchers
 import play.api.Configuration
+import play.api.http.Status.OK
+import play.api.libs.json.Json
 import uk.gov.hmrc.eusubsidycompliancefrontend.connectors.CustomsDataStoreConnector
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.UpdateEmailRequest
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.email.{RetrieveEmail, UpdateEmailRequest}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.BaseSpec
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.eori1
 import uk.gov.hmrc.http.{HttpResponse, StringContextOps}
@@ -51,15 +53,24 @@ class CustomsDataStoreConnectorSpec
 
   private val connector = new CustomsDataStoreConnector(mockHttp, new ServicesConfig(config))
 
-  val retrieveVerifiedEmailUrl = url"$protocol://$host:$port/customs-data-store/eori/$eori1/verified-email"
+  val retrieveVerifiedEmailUrl = url"$protocol://$host:$port/customs-data-store/eori/verified-email-third-party"
   val updateVerifiedEmailUrl = url"$protocol://$host:$port/customs-data-store/update-email"
 
   "CustomsDataStoreConnector" when {
-    "handling request to retrieve email address by eori" must {
-      behave like connectorBehaviourForRetrieveEmail(
-        mockGet(retrieveVerifiedEmailUrl)(_),
-        () => connector.retrieveEmailByEORI(eori1)
+    "handling request to retrieve email address by eori - success" in {
+      val eori = eori1
+      val responseJson = Json.obj(
+        "address" -> "test@email.com",
+        "timestamp" -> "2024-03-26T12:00:00Z"
       )
+      val expectedResponse = HttpResponse(OK, json = responseJson, headers = Map.empty)
+
+      mockPost(retrieveVerifiedEmailUrl, RetrieveEmail(eori))(Some(expectedResponse))
+
+      connector.retrieveEmailByEORI(eori).map { result =>
+        result.status shouldBe OK
+        (result.json \ "address").as[String] shouldBe "test@email.com"
+      }
     }
 
     "handling request to updateEmailForEori - success" in {
