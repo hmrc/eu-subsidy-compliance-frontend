@@ -22,14 +22,11 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 
 @Singleton
 class SignOutController @Inject() (
   mcc: MessagesControllerComponents,
-  actionBuilders: ActionBuilders,
-  timedOutPage: TimedOut,
-  signOutPage: SignOutPage
+  actionBuilders: ActionBuilders
 )(implicit val appConfig: AppConfig)
     extends BaseController(mcc)
     with I18nSupport {
@@ -37,10 +34,10 @@ class SignOutController @Inject() (
   import actionBuilders._
 
   val signOutFromTimeout: Action[AnyContent] = Action { implicit request =>
-    Ok(timedOutPage()).withNewSession
+    Redirect(appConfig.signOutUrl(Some(appConfig.exitSurveyUrl)))
   }
 
   val signOut: Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(signOutPage()).withNewSession.toFuture
+    Redirect(appConfig.signOutUrl(Some(appConfig.exitSurveyUrl))).toFuture
   }
 }
