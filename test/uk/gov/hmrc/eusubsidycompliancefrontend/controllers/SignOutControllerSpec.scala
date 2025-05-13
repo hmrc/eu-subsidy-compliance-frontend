@@ -21,7 +21,7 @@ import play.api.Configuration
 import play.api.inject.bind
 import play.api.inject.guice.GuiceableModule
 import play.api.test.FakeRequest
-import play.api.test.Helpers.GET
+import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData._
@@ -46,8 +46,8 @@ class SignOutControllerSpec
   override def additionalConfig: Configuration = super.additionalConfig.withFallback(
     Configuration(
       ConfigFactory.parseString("""
-      |"urls.timeOutContinue" = "http://host:123/continue"
-      |""".stripMargin)
+                                  |"urls.timeOutContinue" = "http://host:123/continue"
+                                  |""".stripMargin)
     )
   )
 
@@ -57,17 +57,12 @@ class SignOutControllerSpec
 
       def performAction() = controller.signOutFromTimeout(FakeRequest())
 
-      "display the page" in {
+      "redirect to the signout URL" in {
 
-        checkPageIsDisplayed(
-          performAction(),
-          messageFromMessageKey("timedOut.title"),
-          { doc =>
-            val body = doc.select(".govuk-body").text()
-            body should include regex messageFromMessageKey("timedOut.p1")
-            body should include regex messageFromMessageKey("timedOut.signIn", appConfig.timeOutContinue)
-          }
-        )
+        val result = performAction()
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some(appConfig.signOutUrl(Some(appConfig.exitSurveyUrl)))
 
       }
     }
@@ -78,34 +73,21 @@ class SignOutControllerSpec
         FakeRequest(GET, routes.SignOutController.signOut().url)
       )
 
-      "display the page" when {
+      "redirect to the signout URL" when {
 
-        def testDisplay(): Unit = {
+        def testRedirect(): Unit = {
           inSequence {
             mockAuthWithEnrolment(eori4)
           }
 
-          checkPageIsDisplayed(
-            performAction(),
-            messageFromMessageKey("signOut.title"),
-            { doc =>
-              doc
-                .getElementById("signOutParaOne")
-                .text shouldBe "A confirmation email has been sent to you, and to the administrator of the undertaking you have left."
-              doc.getElementById("signOutParaTwo").text shouldBe "You have been signed out."
-              doc.getElementById("signOutFeedbackHeader").text shouldBe "Before you go"
-              doc
-                .getElementById("signOutParaThree")
-                .text shouldBe "Your feedback helps us make our service better."
-              doc
-                .getElementById("signOutParaFour")
-                .text shouldBe "Take our survey to share your feedback on this service. It takes about 1 minute to complete."
-            }
-          )
+          val result = performAction()
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(appConfig.signOutUrl(Some(appConfig.exitSurveyUrl)))
         }
 
         "for a valid request" in {
-          testDisplay()
+          testRedirect()
         }
 
       }
