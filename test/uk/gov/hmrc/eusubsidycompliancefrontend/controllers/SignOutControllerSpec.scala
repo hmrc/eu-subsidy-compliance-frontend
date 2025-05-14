@@ -46,53 +46,60 @@ class SignOutControllerSpec
   override def additionalConfig: Configuration = super.additionalConfig.withFallback(
     Configuration(
       ConfigFactory.parseString("""
-                                  |"urls.timeOutContinue" = "http://host:123/continue"
-                                  |""".stripMargin)
+          |"urls.timeOutContinue" = "http://host:123/continue"
+          |""".stripMargin)
     )
   )
 
   "SignOutController" when {
 
     "handling request to signOut From Timeout" must {
+      "handling request to signOut From Timeout" must {
 
-      def performAction() = controller.signOutFromTimeout(FakeRequest())
+        def performAction() = controller.signOutFromTimeout(FakeRequest())
 
-      "redirect to the signout URL" in {
+        "display the page" in {
 
-        val result = performAction()
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("timedOut.title"),
+            { doc =>
+              val body = doc.select(".govuk-body").text()
+              body should include regex messageFromMessageKey("timedOut.p1")
+              body should include regex messageFromMessageKey("timedOut.signIn", appConfig.timeOutContinue)
+            }
+          )
 
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result) shouldBe Some(appConfig.signOutUrl(Some(appConfig.exitSurveyUrl)))
-
+        }
       }
-    }
 
-    "handling request to get sign out" must {
+      "handling request to get sign out" must {
 
-      def performAction() = controller.signOut(
-        FakeRequest(GET, routes.SignOutController.signOut().url)
-      )
+        def performAction() = controller.signOut(
+          FakeRequest(GET, routes.SignOutController.signOut().url)
+        )
 
-      "redirect to the signout URL" when {
+        "redirect to the signout URL" when {
 
-        def testRedirect(): Unit = {
-          inSequence {
-            mockAuthWithEnrolment(eori4)
+          def testRedirect(): Unit = {
+            inSequence {
+              mockAuthWithEnrolment(eori4)
+            }
+
+            val result = performAction()
+
+            status(result) shouldBe SEE_OTHER
+            redirectLocation(result) shouldBe Some(appConfig.signOutUrl(Some(appConfig.exitSurveyUrl)))
           }
 
-          val result = performAction()
+          "for a valid request" in {
+            testRedirect()
+          }
 
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result) shouldBe Some(appConfig.signOutUrl(Some(appConfig.exitSurveyUrl)))
-        }
-
-        "for a valid request" in {
-          testRedirect()
         }
 
       }
 
     }
-
   }
 }
