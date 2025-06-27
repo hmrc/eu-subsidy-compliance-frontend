@@ -25,7 +25,6 @@ lazy val microservice = Project(appName, file("."))
     scalacOptions += "-Wconf:src=target/.*:s"
   )
   .settings(routesSettings: _*)
-  .settings(resolvers += Resolver.jcenterRepo)
   .settings(
     TwirlKeys.templateImports ++= Seq(
       "uk.gov.hmrc.govukfrontend.views.html.components._",
