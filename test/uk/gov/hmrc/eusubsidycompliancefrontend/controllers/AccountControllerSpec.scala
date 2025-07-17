@@ -221,7 +221,6 @@ class AccountControllerSpec
                 htmlBody should include regex routes.BecomeLeadController.getAcceptResponsibilities().url
                 htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard.url
                 htmlBody should include regex routes.RemoveYourselfBusinessEntityController.getRemoveYourselfBusinessEntity.url
-                println("Doc --->" + doc)
                 verifyUndertakingBalance(doc)
               }
             )
