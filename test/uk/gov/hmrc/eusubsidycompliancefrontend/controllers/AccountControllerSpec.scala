@@ -221,7 +221,7 @@ class AccountControllerSpec
                 htmlBody should include regex routes.BecomeLeadController.getAcceptResponsibilities().url
                 htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard.url
                 htmlBody should include regex routes.RemoveYourselfBusinessEntityController.getRemoveYourselfBusinessEntity.url
-
+                println("Doc --->" + doc)
                 verifyUndertakingBalance(doc)
               }
             )
@@ -468,7 +468,7 @@ class AccountControllerSpec
     doc.getElementById("undertaking-balance-section-heading").text shouldBe "Undertaking balance"
     doc
       .getElementById("undertaking-balance-section-content")
-      .text shouldBe "Your undertaking currently has a remaining balance of €123.45, from your sector allowance of €12.34."
+      .text shouldBe "Your balance may be incorrect. To work out your balance, review changes to your allowance."
   }
 
   private def verifyAutoSuspendContentForLead(doc: Document) = {

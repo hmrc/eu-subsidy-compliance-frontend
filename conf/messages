@@ -240,7 +240,9 @@ undertaking.confirmation.title = Undertaking registered
 undertaking.confirmation.p1 = We have sent you a confirmation email.
 undertaking.confirmation.p2 = You can now submit reports of non-customs subsidy payments, or no payments in your undertaking.
 undertaking.confirmation.p3 = You can also add businesses to your undertaking using the <a id="add-remove-business-link" href="{0}" class="govuk-link">Add and remove businesses</a> link in the ‘Undertaking administration’ section of the undertaking.
-
+lead-account-homepage.important = Important
+lead-account-homepage.banner = Your balance may be incorrect.
+lead-account-homepage.banner.link = Review changes to your allowance and what you need to do.
 lead-account-homepage.title = Manage your undertaking
 lead-account-homepage.p1.is-overdue = Your report was due by {0}.
 lead-account-homepage.ul1-li1 = report a non-customs subsidy payment
@@ -281,16 +283,17 @@ lead-account-homepage.postDeadline.h2.p3 = If you have received none, you must s
 
 lead-account-homepage.details.title = If you have previously submitted, or have never submitted a report
 lead-account-homepage.details.hasSubmitted.h3 = If you have previously submitted a report
-lead-account-homepage.details.hasSubmitted.h3.p1 = If you have submitted a non-customs subsidy payment or no payments report before, these will be any payments received within your latest 90-day reporting period.
+lead-account-homepage.details.hasSubmitted.h3.p1 = You must report any payments received within your latest 90-day reporting period.
 lead-account-homepage.details.neverSubmitted.h3 = If you have never submitted a report
-lead-account-homepage.details.neverSubmitted.h3.p1 = If you have not submitted a non-customs subsidy payment or no payments report before, these will be any payments received for the current tax year and the previous 2 tax years.
+lead-account-homepage.details.neverSubmitted.h3.p1 = You must report any payments received over a rolling 3-year period, counting back from your latest declaration.
 
 lead-account-homepage.h2-3 = Report history
 lead-account-homepage.ul2-li1 = View reported non-customs subsidy payments
 
 lead-account-homepage.h2-4 = Remaining allowance
 lead-account-homepage.h2.undertakingBalance = Undertaking balance
-lead-account-homepage.p3 = Your undertaking currently has a remaining balance of {0}, from your sector allowance of {1}.
+lead-account-homepage.p3 = Your balance may be incorrect. To work out your balance,
+lead-account-homepage.p3.link = review changes to your allowance.
 lead-account-homepage.ul3-li1 = View summary of your allowance (customs and non-customs subsidies)
 
 lead-account-homepage.h2-5 = Undertaking administration
@@ -307,10 +310,13 @@ account-homepage.scp08Issues.text=Your undertaking balance may show a temporary 
 non-lead-account-homepage.title = Your undertaking
 non-lead-account-homepage.p1 = Your undertaking’s next report is due by <strong>{0}</strong>.
 non-lead-account-homepage.p1.is-overdue = Your undertaking’s report was due by {0}.
-
+non-lead-account-homepage.important = Important
+non-lead-account-homepage.banner = Your balance may be incorrect.
+non-lead-account-homepage.banner.link = Review changes to your allowance and what you need to do.
 non-lead-account-homepage.h2-2 = Remaining allowance
 non-lead-account-homepage.h2.undertakingBalance = Undertaking balance
-non-lead-account-homepage.p2 = Your undertaking currently has a remaining balance of <strong>{0}</strong>, from your sector allowance of {1}.
+non-lead-account-homepage.p2 = Your balance may be incorrect. To work out your balance,
+non-lead-account-homepage.p2.link = review changes to your allowance.
 
 non-lead-account-homepage.ul1-li1 = View summary of your allowance (customs and non-customs subsidies)
 
