@@ -489,6 +489,19 @@ subsidy.remove.p1 = If you remove this payment then your remaining allowance wil
 subsidy.remove.yesno.legend = Are you sure you want to remove this payment?
 subsidy.remove.error.required = Select yes if you want to remove this reported payment
 
+#Regulatory Change Notification
+
+regulatoryChangeNotification.title = Before you continue
+regulatoryChangeNotification.h1 = Before you continue
+regulatoryChangeNotification.p1 = Your undertaking is affected by a change in regulations. This means your balance may be incorrect.
+regulatoryChangeNotification.p2 = Subsidy awards for the 'agricultural' and 'other' sectors are now calculated over a rolling 3-year basis, instead of 3 tax years.
+regulatoryChangeNotification.p3 = This online service still shows calculations based on tax years. We are working to update the calculations as soon as we can.
+regulatoryChangeNotification.h2 = What you need to do now
+regulatoryChangeNotification.p4 = You need to keep your own records to make sure you stay within your allowance.
+regulatoryChangeNotification.p5 = You can still manage your undertaking online.
+regulatoryChangeNotification.button = Manage your undertaking
+regulatoryChangeNotification.link = More about the change
+
 #Amend Undertaking
 undertaking.amendUndertaking.title = Undertaking details
 undertaking.amendUndertaking.summary-list.name.key = Name of undertaking
