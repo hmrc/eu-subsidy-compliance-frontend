@@ -41,7 +41,7 @@
     currentPeriodStart: String,
     isSuspended: Boolean,
     scp08IssuesExist: Boolean,
-    agriFlag: Boolean
+agriOtherFlag: Boolean
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"non-lead-account-homepage"}
 
@@ -61,7 +61,7 @@
   backLinkEnabled = false,
   backLink = None
 ) {
-@if(agriFlag) {
+@if(agriOtherFlag) {
 <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
     <div class="govuk-notification-banner__header">
         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
@@ -97,7 +97,7 @@
 
   @H2(balanceHeading, id = Some("undertaking-balance-section-heading"))
   @possibleMiscalculationContent
-@if(agriFlag) {
+@if(agriOtherFlag) {
 <div class="govuk-warning-text">
     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
     <strong class="govuk-warning-text__text">

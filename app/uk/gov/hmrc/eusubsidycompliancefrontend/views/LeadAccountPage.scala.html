@@ -47,7 +47,7 @@
     isOverAllowance: Boolean,
     isSuspended: Boolean,
     scp08IssuesExist: Boolean,
-    agriFlag: Boolean
+agriOtherFlag: Boolean
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"lead-account-homepage"}
 
@@ -59,14 +59,14 @@
 
 @detailsContent = {
     <h3 id="hasSubmitted-h3" class="govuk-heading-s">@messages("lead-account-homepage.details.hasSubmitted.h3")</h3>
-@if(agriFlag) {
-    @P(messages("lead-account-homepage.details.hasSubmitted.h3.p1.agri"), id = Some("lead-account-homepage-details-hasSubmitted-h3-p1-agri"))
+@if(agriOtherFlag) {
+    @P(messages("lead-account-homepage.details.hasSubmitted.h3.p1.agri"), id = Some("lead-account-homepage-details-hasSubmitted-h3-p1-agri-other"))
 } else {
 @P(messages("lead-account-homepage.details.hasSubmitted.h3.p1"), id = Some("lead-account-homepage-details-hasSubmitted-h3-p1"))
 }
     <h3 id="neverSubmitted-h3" class="govuk-heading-s">@messages("lead-account-homepage.details.neverSubmitted.h3")</h3>
-@if(agriFlag) {
-    @P(messages("lead-account-homepage.details.neverSubmitted.h3.p1.agri"), id = Some("lead-account-homepage-details-neverSubmitted-h3-p1-agri"))
+@if(agriOtherFlag) {
+    @P(messages("lead-account-homepage.details.neverSubmitted.h3.p1.agri"), id = Some("lead-account-homepage-details-neverSubmitted-h3-p1-agri-other"))
 } else {
 @P(messages("lead-account-homepage.details.neverSubmitted.h3.p1"), id = Some("lead-account-homepage-details-neverSubmitted-h3-p1"))
 }
@@ -86,7 +86,7 @@
   backLinkEnabled = false,
   backLink = None
 ) {
-@if(agriFlag) {
+@if(agriOtherFlag) {
 <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
     <div class="govuk-notification-banner__header">
         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
@@ -96,7 +96,7 @@
     <div class="govuk-notification-banner__content">
         <p class="govuk-notification-banner__heading">
             @messages("lead-account-homepage.banner")
-            <a class="govuk-notification-banner__link" href="@routes.FinancialDashboardController.getFinancialDashboard">@messages("lead-account-homepage.banner.link")</a>.
+            <a class="govuk-notification-banner__link" href="@routes.FinancialDashboardController.getFinancialDashboard">@messages("lead-account-homepage.banner.link")</a>
         </p>
     </div>
 </div>
@@ -158,14 +158,14 @@
 
     @H2(balanceHeading, Some("govuk-heading-m govuk-!-margin-top-4"), id = Some("undertaking-balance-section-heading"))
     @possibleMiscalculationContent
-@if(agriFlag) {
+@if(agriOtherFlag) {
 <div class="govuk-warning-text">
     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
     <strong class="govuk-warning-text__text">
         <span class="govuk-visually-hidden">Warning</span>
         @P(
         s"${messages(s"$key.p3.agri")} <a class='govuk-link' href='${routes.FinancialDashboardController.getFinancialDashboard.url}'>${messages("lead-account-homepage.p3.link")}</a>",
-        id = Some("undertaking-balance-section-content-agri")
+        id = Some("undertaking-balance-section-content-agri-other")
         )
     </strong>
 </div>

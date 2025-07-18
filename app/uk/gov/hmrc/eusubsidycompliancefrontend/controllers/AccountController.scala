@@ -155,9 +155,9 @@ class AccountController @Inject() (
         if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
         else n.toFuture
       }
-      var agriFlag: Boolean = false
-      if (undertaking.industrySector.equals(Sector.agriculture)) {
-        agriFlag = true
+      var agriOtherFlag: Boolean = false
+      if (undertaking.industrySector.equals(Sector.agriculture) || undertaking.industrySector.equals(Sector.other)) {
+        agriOtherFlag = true
       }
       if (undertaking.isLeadEORI(eori)) {
         logger.info("showing account page for lead")
@@ -182,7 +182,7 @@ class AccountController @Inject() (
             isOverAllowance = summary.overall.allowanceExceeded,
             isSuspended = isSuspended,
             scp08IssuesExist = summary.scp08IssuesExist,
-            agriFlag = agriFlag
+            agriOtherFlag = agriOtherFlag
           )
         )
         result.getOrElse(handleMissingSessionData("Nil Return Journey"))
@@ -202,7 +202,7 @@ class AccountController @Inject() (
             currentPeriodStart = startDate.toDisplayFormat,
             isSuspended = isSuspended,
             scp08IssuesExist = summary.scp08IssuesExist,
-            agriFlag = agriFlag
+            agriOtherFlag = agriOtherFlag
           )
         ).toFuture
       }
