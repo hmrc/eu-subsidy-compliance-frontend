@@ -40,7 +40,8 @@
     remainingAmount: String,
     currentPeriodStart: String,
     isSuspended: Boolean,
-    scp08IssuesExist: Boolean
+    scp08IssuesExist: Boolean,
+    agriFlag: Boolean
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"non-lead-account-homepage"}
 
@@ -60,6 +61,7 @@
   backLinkEnabled = false,
   backLink = None
 ) {
+@if(agriFlag) {
 <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
     <div class="govuk-notification-banner__header">
         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
@@ -73,6 +75,7 @@
         </p>
     </div>
 </div>
+}
   @H1(messages(s"$key.title"), Some("govuk-heading-xl govuk-!-margin-bottom-0"))
 
   <p class="govuk-hint govuk-!-font-size-24 govuk-!-margin-top-1 govuk-!-margin-bottom-8">@eori</p>
@@ -94,16 +97,20 @@
 
   @H2(balanceHeading, id = Some("undertaking-balance-section-heading"))
   @possibleMiscalculationContent
+@if(agriFlag) {
 <div class="govuk-warning-text">
     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
     <strong class="govuk-warning-text__text">
         <span class="govuk-visually-hidden">Warning</span>
         @P(
-        s"${messages(s"$key.p2")} <a class='govuk-link' href='${routes.FinancialDashboardController.getFinancialDashboard.url}'>${messages("non-lead-account-homepage.p2.link")}</a>",
+        s"${messages(s"$key.p2.agri")} <a class='govuk-link' href='${routes.FinancialDashboardController.getFinancialDashboard.url}'>${messages("non-lead-account-homepage.p2.link")}</a>",
         id = Some("undertaking-balance-section-content")
         )
     </strong>
 </div>
+} else{
+@P(messages(s"$key.p2", remainingAmount, allowance), id = Some("undertaking-balance-section-content"))
+}
   <ul class="govuk-list govuk-list--spaced">
     <li><a href="@routes.FinancialDashboardController.getFinancialDashboard" class="govuk-link">@messages(s"$key.ul1-li1")</a></li>
   </ul>

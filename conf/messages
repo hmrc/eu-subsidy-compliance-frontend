@@ -283,16 +283,19 @@ lead-account-homepage.postDeadline.h2.p3 = If you have received none, you must s
 
 lead-account-homepage.details.title = If you have previously submitted, or have never submitted a report
 lead-account-homepage.details.hasSubmitted.h3 = If you have previously submitted a report
-lead-account-homepage.details.hasSubmitted.h3.p1 = You must report any payments received within your latest 90-day reporting period.
+lead-account-homepage.details.hasSubmitted.h3.p1 = If you have submitted a non-customs subsidy payment or no payments report before, these will be any payments received within your latest 90-day reporting period.
+lead-account-homepage.details.hasSubmitted.h3.p1.agri = You must report any payments received within your latest 90-day reporting period.
 lead-account-homepage.details.neverSubmitted.h3 = If you have never submitted a report
-lead-account-homepage.details.neverSubmitted.h3.p1 = You must report any payments received over a rolling 3-year period, counting back from your latest declaration.
+lead-account-homepage.details.neverSubmitted.h3.p1 = If you have not submitted a non-customs subsidy payment or no payments report before, these will be any payments received for the current tax year and the previous 2 tax years.
+lead-account-homepage.details.neverSubmitted.h3.p1.agri = You must report any payments received over a rolling 3-year period, counting back from your latest declaration.
 
 lead-account-homepage.h2-3 = Report history
 lead-account-homepage.ul2-li1 = View reported non-customs subsidy payments
 
 lead-account-homepage.h2-4 = Remaining allowance
 lead-account-homepage.h2.undertakingBalance = Undertaking balance
-lead-account-homepage.p3 = Your balance may be incorrect. To work out your balance,
+lead-account-homepage.p3 = Your undertaking currently has a remaining balance of {0}, from your sector allowance of {1}.
+lead-account-homepage.p3.agri = Your balance may be incorrect. To work out your balance,
 lead-account-homepage.p3.link = review changes to your allowance.
 lead-account-homepage.ul3-li1 = View summary of your allowance (customs and non-customs subsidies)
 
@@ -315,7 +318,8 @@ non-lead-account-homepage.banner = Your balance may be incorrect.
 non-lead-account-homepage.banner.link = Review changes to your allowance and what you need to do.
 non-lead-account-homepage.h2-2 = Remaining allowance
 non-lead-account-homepage.h2.undertakingBalance = Undertaking balance
-non-lead-account-homepage.p2 = Your balance may be incorrect. To work out your balance,
+non-lead-account-homepage.p2 = Your undertaking currently has a remaining balance of <strong>{0}</strong>, from your sector allowance of {1}.
+non-lead-account-homepage.p2.agri = Your balance may be incorrect. To work out your balance,
 non-lead-account-homepage.p2.link = review changes to your allowance.
 
 non-lead-account-homepage.ul1-li1 = View summary of your allowance (customs and non-customs subsidies)

@@ -24,8 +24,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnr
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney.Forms.DoYouClaimFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingBalance, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingBalance, UndertakingSubsidies, types}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -151,11 +151,14 @@ class AccountController @Inject() (
         balance,
         today
       )
-
-      def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] =
+      def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] = {
         if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
         else n.toFuture
-
+      }
+      var agriFlag: Boolean = false
+      if (undertaking.industrySector.equals(Sector.agriculture)) {
+        agriFlag = true
+      }
       if (undertaking.isLeadEORI(eori)) {
         logger.info("showing account page for lead")
         val result = for {
@@ -178,7 +181,8 @@ class AccountController @Inject() (
             currentPeriodStart = startDate.toDisplayFormat,
             isOverAllowance = summary.overall.allowanceExceeded,
             isSuspended = isSuspended,
-            scp08IssuesExist = summary.scp08IssuesExist
+            scp08IssuesExist = summary.scp08IssuesExist,
+            agriFlag = agriFlag
           )
         )
         result.getOrElse(handleMissingSessionData("Nil Return Journey"))
@@ -197,7 +201,8 @@ class AccountController @Inject() (
             remainingAmount = summary.undertakingBalanceEUR.toEuros,
             currentPeriodStart = startDate.toDisplayFormat,
             isSuspended = isSuspended,
-            scp08IssuesExist = summary.scp08IssuesExist
+            scp08IssuesExist = summary.scp08IssuesExist,
+            agriFlag = agriFlag
           )
         ).toFuture
       }

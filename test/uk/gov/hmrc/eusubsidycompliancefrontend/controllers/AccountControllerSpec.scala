@@ -195,6 +195,47 @@ class AccountControllerSpec
 
       }
 
+      "display the agriculture sector elements" must {
+
+        "display the page correctly for an undertaking with agriculture sector" in {
+          def test(undertaking: Undertaking): Unit = {
+            val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
+            inSequence {
+              mockAuthWithEnrolmentAndNoEmailVerification()
+              mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+              mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+              mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1))
+              mockTimeProviderToday(fixedDate)
+              mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
+                undertakingSubsidies.toFuture
+              )
+              mockGetUndertakingBalance(eori1)(Future.successful(Some(undertakingBalance)))
+              mockTimeProviderToday(fixedDate)
+              mockGetOrCreate(eori1)(Right(nilJourneyCreate))
+            }
+            checkPageIsDisplayed(
+              performAction(),
+              messageFromMessageKey("lead-account-homepage.title"),
+              { doc =>
+                verifyGenericHomepageContentForLead(doc)
+                doc.getElementById("govuk-notification-banner-title").text should not be null
+                doc.getElementById("govuk-notification-banner-title").text shouldBe "Important"
+                doc
+                  .getElementById("lead-account-homepage-details-hasSubmitted-h3-p1-agri")
+                  .text shouldBe "You must report any payments received within your latest 90-day reporting period."
+                doc
+                  .getElementById("lead-account-homepage-details-neverSubmitted-h3-p1-agri")
+                  .text shouldBe "You must report any payments received over a rolling 3-year period, counting back from your latest declaration."
+
+                verifyUndertakingBalanceAgri(doc)
+              }
+            )
+          }
+
+          test(undertaking3)
+        }
+      }
+
       "display the non-lead account home page" when {
 
         "valid request for non-lead user is made" when {
@@ -448,6 +489,7 @@ class AccountControllerSpec
               mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
               mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1))
             }
+            println("undertakingJourneyComplete1------------->" + undertakingJourneyComplete1)
             checkIsRedirect(performAction(), routes.AddBusinessEntityController.getAddBusinessEntity())
           }
         }
@@ -467,6 +509,13 @@ class AccountControllerSpec
     doc.getElementById("undertaking-balance-section-heading").text shouldBe "Undertaking balance"
     doc
       .getElementById("undertaking-balance-section-content")
+      .text shouldBe "Your undertaking currently has a remaining balance of €123.45, from your sector allowance of €12.34."
+  }
+
+  private def verifyUndertakingBalanceAgri(doc: Document): Unit = {
+    doc.getElementById("undertaking-balance-section-heading").text shouldBe "Undertaking balance"
+    doc
+      .getElementById("undertaking-balance-section-content-agri")
       .text shouldBe "Your balance may be incorrect. To work out your balance, review changes to your allowance."
   }
 
