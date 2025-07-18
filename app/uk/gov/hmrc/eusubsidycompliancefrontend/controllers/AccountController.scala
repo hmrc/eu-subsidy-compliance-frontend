@@ -24,7 +24,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnr
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney.Forms.DoYouClaimFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingBalance, UndertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -94,20 +94,24 @@ class AccountController @Inject() (
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
     logger.info("handleExistingUndertaking")
 
-    val result = for {
-      _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(undertaking))
-      subsidies <- escService
-        .retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange)
-        .toContext
-      result <- escService
-        .getUndertakingBalance(eori)
-        .flatMap(b => renderAccountPage(undertaking, subsidies, b))
-        .toContext
-    } yield result
+    if (undertaking.industrySector == Sector.agriculture || undertaking.industrySector == Sector.other) {
+      Future.successful(Redirect(routes.RegulatoryChangeNotificationController.showPage))
+    } else {
+      val result = for {
+        _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(undertaking))
+        subsidies <- escService
+          .retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange)
+          .toContext
+        result <- escService
+          .getUndertakingBalance(eori)
+          .flatMap(b => renderAccountPage(undertaking, subsidies, b))
+          .toContext
+      } yield result
 
-    result.getOrElse {
-      logger.info(s"handling missing session data for $undertaking")
-      handleMissingSessionData("Account Home - Existing Undertaking -")
+      result.getOrElse {
+        logger.info(s"handling missing session data for $undertaking")
+        handleMissingSessionData("Account Home - Existing Undertaking -")
+      }
     }
   }
 
