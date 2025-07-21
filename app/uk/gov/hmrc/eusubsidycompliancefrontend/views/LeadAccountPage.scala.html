@@ -96,7 +96,7 @@ agriOtherFlag: Boolean
     <div class="govuk-notification-banner__content">
         <p class="govuk-notification-banner__heading">
             @messages("lead-account-homepage.banner")
-            <a class="govuk-notification-banner__link" href="@routes.FinancialDashboardController.getFinancialDashboard">@messages("lead-account-homepage.banner.link")</a>
+            <a class="govuk-notification-banner__link" href="@routes.FinancialDashboardController.getFinancialDashboard">@messages("lead-account-homepage.banner.link")</a>.
         </p>
     </div>
 </div>
@@ -164,7 +164,7 @@ agriOtherFlag: Boolean
     <strong class="govuk-warning-text__text">
         <span class="govuk-visually-hidden">Warning</span>
         @P(
-        s"${messages(s"$key.p3.agri")} <a class='govuk-link' href='${routes.FinancialDashboardController.getFinancialDashboard.url}'>${messages("lead-account-homepage.p3.link")}</a>",
+        s"${messages(s"$key.p3.agri")} <a class='govuk-link' href='${routes.FinancialDashboardController.getFinancialDashboard.url}'>${messages("lead-account-homepage.p3.link")}</a>.",
         id = Some("undertaking-balance-section-content-agri-other")
         )
     </strong>
