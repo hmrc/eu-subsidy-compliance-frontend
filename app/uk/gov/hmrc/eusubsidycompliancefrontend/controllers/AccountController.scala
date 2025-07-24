@@ -94,20 +94,24 @@ class AccountController @Inject() (
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
     logger.info("handleExistingUndertaking")
 
-    val result = for {
-      _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(undertaking))
-      subsidies <- escService
-        .retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange)
-        .toContext
-      result <- escService
-        .getUndertakingBalance(eori)
-        .flatMap(b => renderAccountPage(undertaking, subsidies, b))
-        .toContext
-    } yield result
+    if (undertaking.industrySector == Sector.agriculture || undertaking.industrySector == Sector.other) {
+      Future.successful(Redirect(routes.RegulatoryChangeNotificationController.showPage))
+    } else {
+      val result = for {
+        _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(undertaking))
+        subsidies <- escService
+          .retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange)
+          .toContext
+        result <- escService
+          .getUndertakingBalance(eori)
+          .flatMap(b => renderAccountPage(undertaking, subsidies, b))
+          .toContext
+      } yield result
 
-    result.getOrElse {
-      logger.info(s"handling missing session data for $undertaking")
-      handleMissingSessionData("Account Home - Existing Undertaking -")
+      result.getOrElse {
+        logger.info(s"handling missing session data for $undertaking")
+        handleMissingSessionData("Account Home - Existing Undertaking -")
+      }
     }
   }
 
