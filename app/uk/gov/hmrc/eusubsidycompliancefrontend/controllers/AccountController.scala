@@ -24,8 +24,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.actions.requests.AuthenticatedEnr
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney.Forms.DoYouClaimFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingBalance, UndertakingSubsidies}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingBalance, UndertakingSubsidies, types}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -94,20 +94,24 @@ class AccountController @Inject() (
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
     logger.info("handleExistingUndertaking")
 
-    val result = for {
-      _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(undertaking))
-      subsidies <- escService
-        .retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange)
-        .toContext
-      result <- escService
-        .getUndertakingBalance(eori)
-        .flatMap(b => renderAccountPage(undertaking, subsidies, b))
-        .toContext
-    } yield result
+    if (undertaking.industrySector == Sector.agriculture || undertaking.industrySector == Sector.other) {
+      Future.successful(Redirect(routes.RegulatoryChangeNotificationController.showPage))
+    } else {
+      val result = for {
+        _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(undertaking))
+        subsidies <- escService
+          .retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange)
+          .toContext
+        result <- escService
+          .getUndertakingBalance(eori)
+          .flatMap(b => renderAccountPage(undertaking, subsidies, b))
+          .toContext
+      } yield result
 
-    result.getOrElse {
-      logger.info(s"handling missing session data for $undertaking")
-      handleMissingSessionData("Account Home - Existing Undertaking -")
+      result.getOrElse {
+        logger.info(s"handling missing session data for $undertaking")
+        handleMissingSessionData("Account Home - Existing Undertaking -")
+      }
     }
   }
 
@@ -151,11 +155,14 @@ class AccountController @Inject() (
         balance,
         today
       )
-
-      def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] =
+      def updateNilReturnJourney(n: NilReturnJourney): Future[NilReturnJourney] = {
         if (n.displayNotification) store.update[NilReturnJourney](e => e.copy(displayNotification = false))
         else n.toFuture
-
+      }
+      var agriOtherFlag: Boolean = false
+      if (undertaking.industrySector.equals(Sector.agriculture) || undertaking.industrySector.equals(Sector.other)) {
+        agriOtherFlag = true
+      }
       if (undertaking.isLeadEORI(eori)) {
         logger.info("showing account page for lead")
         val result = for {
@@ -178,7 +185,8 @@ class AccountController @Inject() (
             currentPeriodStart = startDate.toDisplayFormat,
             isOverAllowance = summary.overall.allowanceExceeded,
             isSuspended = isSuspended,
-            scp08IssuesExist = summary.scp08IssuesExist
+            scp08IssuesExist = summary.scp08IssuesExist,
+            agriOtherFlag = agriOtherFlag
           )
         )
         result.getOrElse(handleMissingSessionData("Nil Return Journey"))
@@ -197,7 +205,8 @@ class AccountController @Inject() (
             remainingAmount = summary.undertakingBalanceEUR.toEuros,
             currentPeriodStart = startDate.toDisplayFormat,
             isSuspended = isSuspended,
-            scp08IssuesExist = summary.scp08IssuesExist
+            scp08IssuesExist = summary.scp08IssuesExist,
+            agriOtherFlag = agriOtherFlag
           )
         ).toFuture
       }

@@ -27,7 +27,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NilReturnJourney.Forms.NilReturnFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NonHmrcSubsidy, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -195,6 +195,151 @@ class AccountControllerSpec
 
       }
 
+      "redirect to regulatory change notification" when {
+
+        "user has undertaking with agriculture sector" in {
+          val agricultureUndertaking = undertaking.copy(industrySector = Sector.agriculture)
+
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+            mockRetrieveUndertaking(eori1)(agricultureUndertaking.some.toFuture)
+          }
+
+          checkIsRedirect(
+            performAction(),
+            routes.RegulatoryChangeNotificationController.showPage
+          )
+        }
+
+        "user has undertaking with other sector" in {
+          val otherUndertaking = undertaking.copy(industrySector = Sector.other)
+
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+            mockRetrieveUndertaking(eori1)(otherUndertaking.some.toFuture)
+          }
+
+          checkIsRedirect(
+            performAction(),
+            routes.RegulatoryChangeNotificationController.showPage
+          )
+        }
+
+      }
+
+      "not redirect to regulatory change notification" when {
+
+        "user has undertaking with fishery sector" in {
+          val fisheryUndertaking = undertaking.copy(industrySector = Sector.aquaculture)
+
+          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+            mockRetrieveUndertaking(eori1)(fisheryUndertaking.some.toFuture)
+            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+            mockTimeProviderToday(fixedDate)
+            mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
+              undertakingSubsidies.toFuture
+            )
+            mockGetUndertakingBalance(eori1)(Future.successful(Some(undertakingBalance)))
+            mockTimeProviderToday(fixedDate)
+            mockGetOrCreate(eori1)(Right(nilJourneyCreate))
+          }
+
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("lead-account-homepage.title"),
+            { doc =>
+              verifyGenericHomepageContentForLead(doc)
+              doc.getElementById("lead-account-homepage-p2").text shouldBe "You must either:"
+            }
+          )
+        }
+
+      "display the agriculture sector elements" must {
+
+        "display the page correctly for an undertaking with agriculture sector" in {
+          def test(undertaking: Undertaking): Unit = {
+            val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
+            inSequence {
+              mockAuthWithEnrolmentAndNoEmailVerification()
+              mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+              mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+              mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1))
+              mockTimeProviderToday(fixedDate)
+              mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
+                undertakingSubsidies.toFuture
+              )
+              mockGetUndertakingBalance(eori1)(Future.successful(Some(undertakingBalance)))
+              mockTimeProviderToday(fixedDate)
+              mockGetOrCreate(eori1)(Right(nilJourneyCreate))
+            }
+            checkPageIsDisplayed(
+              performAction(),
+              messageFromMessageKey("lead-account-homepage.title"),
+              { doc =>
+                verifyGenericHomepageContentForLead(doc)
+                doc.getElementById("govuk-notification-banner-title").text should not be null
+                doc.getElementById("govuk-notification-banner-title").text shouldBe "Important"
+                doc
+                  .getElementById("lead-account-homepage-details-hasSubmitted-h3-p1-agri-other")
+                  .text shouldBe "You must report any payments received within your latest 90-day reporting period."
+                doc
+                  .getElementById("lead-account-homepage-details-neverSubmitted-h3-p1-agri-other")
+                  .text shouldBe "You must report any payments received over a rolling 3-year period, counting back from your latest declaration."
+
+                verifyUndertakingBalanceAgriOther(doc)
+              }
+            )
+          }
+
+          test(undertaking3)
+        }
+      }
+
+      "display the other sector elements" must {
+
+        "display the page correctly for an undertaking with other sector" in {
+          def test(undertaking: Undertaking): Unit = {
+            val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
+            inSequence {
+              mockAuthWithEnrolmentAndNoEmailVerification()
+              mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+              mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+              mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete2))
+              mockTimeProviderToday(fixedDate)
+              mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
+                undertakingSubsidies.toFuture
+              )
+              mockGetUndertakingBalance(eori1)(Future.successful(Some(undertakingBalance)))
+              mockTimeProviderToday(fixedDate)
+              mockGetOrCreate(eori1)(Right(nilJourneyCreate))
+            }
+            checkPageIsDisplayed(
+              performAction(),
+              messageFromMessageKey("lead-account-homepage.title"),
+              { doc =>
+                verifyGenericHomepageContentForLead(doc)
+                doc.getElementById("govuk-notification-banner-title").text should not be null
+                doc.getElementById("govuk-notification-banner-title").text shouldBe "Important"
+                doc
+                  .getElementById("lead-account-homepage-details-hasSubmitted-h3-p1-agri-other")
+                  .text shouldBe "You must report any payments received within your latest 90-day reporting period."
+                doc
+                  .getElementById("lead-account-homepage-details-neverSubmitted-h3-p1-agri-other")
+                  .text shouldBe "You must report any payments received over a rolling 3-year period, counting back from your latest declaration."
+
+                verifyUndertakingBalanceAgriOther(doc)
+              }
+            )
+          }
+
+          test(undertaking3)
+        }
+
+      }
+
       "display the non-lead account home page" when {
 
         "valid request for non-lead user is made" when {
@@ -221,7 +366,6 @@ class AccountControllerSpec
                 htmlBody should include regex routes.BecomeLeadController.getAcceptResponsibilities().url
                 htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard.url
                 htmlBody should include regex routes.RemoveYourselfBusinessEntityController.getRemoveYourselfBusinessEntity.url
-
                 verifyUndertakingBalance(doc)
               }
             )
@@ -471,6 +615,13 @@ class AccountControllerSpec
       .text shouldBe "Your undertaking currently has a remaining balance of €123.45, from your sector allowance of €12.34."
   }
 
+  private def verifyUndertakingBalanceAgriOther(doc: Document): Unit = {
+    doc.getElementById("undertaking-balance-section-heading").text shouldBe "Undertaking balance"
+    doc
+      .getElementById("undertaking-balance-section-content-agri-other")
+      .text shouldBe "Your balance may be incorrect. To work out your balance, review changes to your allowance."
+  }
+
   private def verifyAutoSuspendContentForLead(doc: Document) = {
     doc
       .getElementById("warning-text")
@@ -517,4 +668,5 @@ class AccountControllerSpec
       .getElementById("lead-account-homepage-h2-p3")
       .text shouldBe "If you do not submit a report, your undertaking may no longer be able to claim Customs Duty waivers."
   }
+
 }
