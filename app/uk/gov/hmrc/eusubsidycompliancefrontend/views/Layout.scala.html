@@ -49,11 +49,6 @@
         displayUserResearchBanner: Boolean = false
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
-@additionalResearchBanners = @{
-    if (displayUserResearchBanner && messages.lang.code == "en") Some(IndustrySectorResearchBanner())
-    else None
-}
-
 @serviceNameAndHeading = @{pageTitle.fold(messages("service.name"))(t => s"""$t - ${messages("service.name")}""")}
 @govTitle = @{serviceNameAndHeading + " - " + messages("gov.uk")}
 @documentTitle = @{if(hasErrors) { messages("generic.errorPrefix") + " " + govTitle } else { govTitle }}
@@ -100,7 +95,7 @@
         serviceUrl  = Some(routes.AccountController.getAccountPage.url),
         signOutUrl = if(showSignOutLink) Some(appConfig.signOutUrl(continueUrl = Some(appConfig.exitSurveyUrl))) else None,
         phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUrlNoAuth)),
-        additionalBannersBlock = additionalResearchBanners
+        additionalBannersBlock = Some(userResearchBanner())
     )),
     scriptsBlock = Some(hmrcScripts(scriptsBlock = Some(scripts))),
     footerBlock = Some(hmrcStandardFooter()),

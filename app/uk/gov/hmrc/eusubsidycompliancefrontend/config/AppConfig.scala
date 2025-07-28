@@ -68,6 +68,4 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
 
   def sectorCap(sector: String): String = config.get[String](s"sectorCap.$sector")
 
-  val industrySectorUserResearchBannerLink: String = config.get[String]("user-research-banners.industry-sector")
-
 }
