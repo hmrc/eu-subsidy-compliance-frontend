@@ -19,6 +19,8 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import views.html.helper.CSPNonce
+import views.html.components.IndustrySectorResearchBanner
+@import uk.gov.hmrc.hmrcfrontend.views.Aliases.Header
 
 @this(
         appConfig: AppConfig,
@@ -32,7 +34,8 @@
         beforeContentBlock: components.BeforeContent,
         scripts: components.Scripts,
         hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-        standardBetaBanner: StandardBetaBanner
+        standardBetaBanner: StandardBetaBanner,
+        userResearchBanner: HmrcUserResearchBanner
 )
 
 @(pageTitle: Option[String] = None,
@@ -44,6 +47,11 @@
         scriptsBlock: Option[Html] = None,
         printDialog: Option[Html] = None
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
+
+@additionalResearchBanners = @{
+    if (displayUserResearchBanner && messages.lang.code == "en") Some(IndustrySectorResearchBanner())
+    else None
+}
 
 @serviceNameAndHeading = @{pageTitle.fold(messages("service.name"))(t => s"""$t - ${messages("service.name")}""")}
 @govTitle = @{serviceNameAndHeading + " - " + messages("gov.uk")}
@@ -90,7 +98,8 @@
     headerBlock = Some(hmrcStandardHeader(
         serviceUrl  = Some(routes.AccountController.getAccountPage.url),
         signOutUrl = if(showSignOutLink) Some(appConfig.signOutUrl(continueUrl = Some(appConfig.exitSurveyUrl))) else None,
-        phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUrlNoAuth))
+        phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUrlNoAuth)),
+        additionalBannersBlock = additionalResearchBanners
     )),
     scriptsBlock = Some(hmrcScripts(scriptsBlock = Some(scripts))),
     footerBlock = Some(hmrcStandardFooter()),
