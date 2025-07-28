@@ -46,7 +46,6 @@
         showSignOutLink: Boolean = true,
         scriptsBlock: Option[Html] = None,
         printDialog: Option[Html] = None,
-        displayUserResearchBanner: Boolean = false
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @serviceNameAndHeading = @{pageTitle.fold(messages("service.name"))(t => s"""$t - ${messages("service.name")}""")}
