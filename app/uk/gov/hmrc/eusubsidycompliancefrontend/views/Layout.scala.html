@@ -19,7 +19,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import views.html.helper.CSPNonce
-import views.html.components.IndustrySectorResearchBanner
+@import views.html.components.IndustrySectorResearchBanner
 @import uk.gov.hmrc.hmrcfrontend.views.Aliases.Header
 
 @this(
@@ -45,7 +45,8 @@ import views.html.components.IndustrySectorResearchBanner
         hasErrors: Boolean = false,
         showSignOutLink: Boolean = true,
         scriptsBlock: Option[Html] = None,
-        printDialog: Option[Html] = None
+        printDialog: Option[Html] = None,
+        displayUserResearchBanner: Boolean = false
 )(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @additionalResearchBanners = @{
