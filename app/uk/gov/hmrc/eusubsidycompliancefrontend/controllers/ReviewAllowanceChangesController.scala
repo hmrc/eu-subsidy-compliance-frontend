@@ -31,40 +31,36 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ReviewAllowanceChangesController @Inject()(
+class ReviewAllowanceChangesController @Inject() (
   mcc: MessagesControllerComponents,
   reviewAllowanceChangesPage: ReviewAllowanceChangesPage,
-    actionBuilders: ActionBuilders,
+  actionBuilders: ActionBuilders,
   escService: EscService,
   financialDashboardPage: FinancialDashboardPage,
   timeProvider: TimeProvider
-)(implicit val appConfig: AppConfig, ec: ExecutionContext
-) extends BaseController(mcc) {
+)(implicit val appConfig: AppConfig, ec: ExecutionContext)
+    extends BaseController(mcc) {
 
-    import actionBuilders._
+  import actionBuilders._
 
-    def showPage: Action[AnyContent] = enrolled.async { implicit request =>
-      implicit val eori: EORI = request.eoriNumber
+  def showPage: Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
 
-      val today = timeProvider.today
+    val today = timeProvider.today
 
-      for {
-        undertakingOpt <- escService.retrieveUndertaking(eori)
-        undertaking = undertakingOpt match {
-          case Some(u) => u
-          case None => throw new IllegalStateException(s"Undertaking for EORI: $eori not found")
-        }
-        subsidies <- escService.retrieveSubsidiesForDateRange(undertaking.reference, today.toSearchRange)
-        balanceOpt: Option[UndertakingBalance] <- escService.getUndertakingBalance(eori)
-        summary = FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, subsidies, balanceOpt, today)
-      } yield
-        if (undertaking.isManuallySuspended)
-          Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori)).url)
-        else Ok(reviewAllowanceChangesPage(summary))
-    }
-
-
-
-
+    for {
+      undertakingOpt <- escService.retrieveUndertaking(eori)
+      undertaking = undertakingOpt match {
+        case Some(u) => u
+        case None => throw new IllegalStateException(s"Undertaking for EORI: $eori not found")
+      }
+      subsidies <- escService.retrieveSubsidiesForDateRange(undertaking.reference, today.toSearchRange)
+      balanceOpt: Option[UndertakingBalance] <- escService.getUndertakingBalance(eori)
+      summary = FinancialDashboardSummary.fromUndertakingSubsidies(undertaking, subsidies, balanceOpt, today)
+    } yield
+      if (undertaking.isManuallySuspended)
+        Redirect(routes.UndertakingSuspendedPageController.showPage(undertaking.isLeadEORI(eori)).url)
+      else Ok(reviewAllowanceChangesPage(summary))
+  }
 
 }

@@ -95,23 +95,34 @@ class AccountController @Inject() (
     logger.info("handleExistingUndertaking")
 
     if (undertaking.industrySector == Sector.agriculture || undertaking.industrySector == Sector.other) {
-      Future.successful(Redirect(routes.RegulatoryChangeNotificationController.showPage))
-    } else {
-      val result = for {
-        _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(undertaking))
-        subsidies <- escService
-          .retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange)
-          .toContext
-        result <- escService
-          .getUndertakingBalance(eori)
-          .flatMap(b => renderAccountPage(undertaking, subsidies, b))
-          .toContext
-      } yield result
-
-      result.getOrElse {
-        logger.info(s"handling missing session data for $undertaking")
-        handleMissingSessionData("Account Home - Existing Undertaking -")
+      val hasSeenNotification = r.session.get("regulatoryChangeNotificationSeen").contains("true")
+      if (!hasSeenNotification) {
+        Future.successful(Redirect(routes.RegulatoryChangeNotificationController.showPage))
+      } else {
+        proceedToAccountPage(undertaking)
       }
+    } else {
+      proceedToAccountPage(undertaking)
+    }
+  }
+
+  private def proceedToAccountPage(
+    undertaking: Undertaking
+  )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
+    val result = for {
+      _ <- getOrCreateJourneys(UndertakingJourney.fromUndertaking(undertaking))
+      subsidies <- escService
+        .retrieveSubsidiesForDateRange(undertaking.reference, timeProvider.today.toSearchRange)
+        .toContext
+      result <- escService
+        .getUndertakingBalance(eori)
+        .flatMap(b => renderAccountPage(undertaking, subsidies, b))
+        .toContext
+    } yield result
+
+    result.getOrElse {
+      logger.info(s"handling missing session data for $undertaking")
+      handleMissingSessionData("Account Home - Existing Undertaking -")
     }
   }
 

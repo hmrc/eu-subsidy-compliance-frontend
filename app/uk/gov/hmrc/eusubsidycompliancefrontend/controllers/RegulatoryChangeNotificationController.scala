@@ -39,7 +39,11 @@ class RegulatoryChangeNotificationController @Inject() (
   }
 
   def continue: Action[AnyContent] = enrolled.async { implicit request =>
-    Future.successful(Redirect(routes.AccountController.getAccountPage))
+    val updatedSession = request.session + ("regulatoryChangeNotificationSeen" -> "true")
+    Future.successful(
+      Redirect(routes.AccountController.getAccountPage)
+        .withSession(updatedSession)
+    )
   }
 
 }
