@@ -638,3 +638,7 @@ exitSurvey.heading = Before you go
 exitSurvey.p1 = Your feedback helps us make our service better.
 exitSurvey.link = Take a short survey
 exitSurvey.p2 = to share your feedback on this service.
+
+# User Research Banner - Industry Sector
+industrySectorResearchBanner.h2 = Help make GOV.UK better
+industrySectorResearchBanner.link.text = Sign up to take part in research (opens in new tab)
