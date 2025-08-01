@@ -36,7 +36,6 @@ class AppConfig @Inject() (config: Configuration, contactFrontendConfig: Contact
   lazy val ggSignInUrl: String = config.get[String](s"urls.ggSignInUrl")
   lazy val ggSignOutUrl: String = config.get[String](s"urls.ggSignOutUrl")
   lazy val eccEscSubscribeUrl: String = config.get[String](s"urls.eccEscSubscribeUrl")
-  lazy val userResearchUrl: String = config.get[String](s"urls.userResearchUrl")
   lazy val exitSurveyUrl: String = config.get[String]("urls.feedback-survey")
 
   private lazy val contactFrontendUrl: String =
