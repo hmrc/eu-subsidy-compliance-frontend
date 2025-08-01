@@ -60,7 +60,7 @@ class RegulatoryChangeNotificationControllerSpec
         document.select(".interrupt-card").hasText shouldBe true
         document.select("h1").text() should include("Before you continue")
         document.select(".govuk-button").text() should include("Manage your undertaking")
-        document.select("a[href='#']").text() should include("More about the change")
+        document.select("#more-about-change-link").text() should include("More about the change")
       }
 
     }

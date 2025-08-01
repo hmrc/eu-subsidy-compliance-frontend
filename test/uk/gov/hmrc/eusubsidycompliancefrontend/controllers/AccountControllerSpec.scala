@@ -257,10 +257,13 @@ class AccountControllerSpec
           )
         }
 
-        "display the agriculture sector elements" must {
+        "display account page after seeing notification" when {
 
           "display the page correctly for an undertaking with agriculture sector" in {
             def test(undertaking: Undertaking): Unit = {
+              val requestWithSession = FakeRequest().withSession("regulatoryChangeNotificationSeen" -> "true")
+              def performActionWithSession() = controller.getAccountPage(requestWithSession)
+
               val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
               inSequence {
                 mockAuthWithEnrolmentAndNoEmailVerification()
@@ -276,7 +279,7 @@ class AccountControllerSpec
                 mockGetOrCreate(eori1)(Right(nilJourneyCreate))
               }
               checkPageIsDisplayed(
-                performAction(),
+                performActionWithSession(),
                 messageFromMessageKey("lead-account-homepage.title"),
                 { doc =>
                   verifyGenericHomepageContentForLead(doc)
@@ -296,12 +299,12 @@ class AccountControllerSpec
 
             test(undertaking3)
           }
-        }
-
-        "display the other sector elements" must {
 
           "display the page correctly for an undertaking with other sector" in {
             def test(undertaking: Undertaking): Unit = {
+              val requestWithSession = FakeRequest().withSession("regulatoryChangeNotificationSeen" -> "true")
+              def performActionWithSession() = controller.getAccountPage(requestWithSession)
+
               val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
               inSequence {
                 mockAuthWithEnrolmentAndNoEmailVerification()
@@ -317,7 +320,7 @@ class AccountControllerSpec
                 mockGetOrCreate(eori1)(Right(nilJourneyCreate))
               }
               checkPageIsDisplayed(
-                performAction(),
+                performActionWithSession(),
                 messageFromMessageKey("lead-account-homepage.title"),
                 { doc =>
                   verifyGenericHomepageContentForLead(doc)

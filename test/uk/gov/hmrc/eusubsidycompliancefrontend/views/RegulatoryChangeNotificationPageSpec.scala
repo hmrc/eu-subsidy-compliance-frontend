@@ -46,7 +46,7 @@ class RegulatoryChangeNotificationPageSpec extends PlaySupport {
     }
 
     "have the More about the change link" in {
-      document.select("a[href='#']").text() shouldBe "More about the change"
+      document.select("#more-about-change-link").text() shouldBe "More about the change"
     }
 
   }

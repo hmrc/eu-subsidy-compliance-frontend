@@ -73,7 +73,6 @@ class FinancialDashboardControllerSpec
     new GuiceApplicationBuilder()
       .configure(additionalConfig)
       .overrides(overrideBindings: _*)
-      .overrides(bind[MessagesApi].toProvider[TestMessagesApiProvider])
       .build()
 
   "FinancialDashboardController" when {
@@ -164,15 +163,24 @@ class FinancialDashboardControllerSpec
       val document = Jsoup.parse(data)
       document.getElementById("SectorCapId").text() shouldBe "Sector cap (Agriculture)"
 
-      verifyInsetText(document)
+      verifyAgricultureInsetText(document)
     }
 
   }
+
   def verifyInsetText(document: Document): Unit = {
     document
       .getElementById("dashboard-inset-text")
       .text() shouldBe "Customs subsidies (Customs Duty waivers) claims can take up to 24 hours to update here. This means that keeping a record of payments that you have received is advised."
   }
+
+  def verifyAgricultureInsetText(document: Document): Unit = {
+    document.getElementById("govuk-notification-banner-title").text shouldBe "Important"
+    document
+      .getElementById("dashboard-inset-text")
+      .text() shouldBe "Customs subsidies (Customs Duty waivers) claims can take up to 24 hours to update here. This means that keeping a record of payments that you have received is advised."
+  }
+
   def verifyScp08Warning(document: Document): Unit = {
     document
       .getElementById("scp08-warning")
