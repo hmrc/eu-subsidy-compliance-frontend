@@ -1,0 +1,41 @@
+@*
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.hmrcfrontend.views.html.components._
+
+@this(
+    appConfig: AppConfig,
+)
+
+@()(implicit messages: Messages)
+
+<div class="hmrc-user-research-banner" data-module="hmrc-user-research-banner">
+  <div class="hmrc-user-research-banner__container govuk-width-container">
+    <div class="hmrc-user-research-banner__text">
+      <h2 class="govuk-heading-s hmrc-user-research-banner__title">
+          @messages("industrySectorResearchBanner.h2")
+      </h2>
+      <a class="govuk-link hmrc-user-research-banner__link" rel="noopener noreferrer" href="@appConfig.userResearchUrl" target="_blank">
+          @messages("industrySectorResearchBanner.link.text")
+      </a>
+    </div>
+    <button class="govuk-button govuk-button--secondary hmrc-user-research-banner__close">
+      <span aria-hidden="true">@messages("industrySectorResearchBanner.hide.button")</span>
+      <span class="govuk-visually-hidden">@messages("industrySectorResearchBanner.visually.hidden")</span>
+    </button>
+  </div>
+</div>
