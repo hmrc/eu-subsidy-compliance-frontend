@@ -33,7 +33,7 @@ messages("reviewAllowanceChanges.300000")
 }}
 
 @layout(  backLinkEnabled = true,
-    Some(previous),
+    backLink = Some(routes.AccountController.getAccountPage.url),
     pageTitle = Some(messages("reviewAllowanceChanges.title"))) {
     @H1(messages("reviewAllowanceChanges.title"), id = Some("reviewAllowanceChanges-h1"))
     @P(messages("reviewAllowanceChanges.p1"), id = Some("reviewAllowanceChanges-p1"))
