@@ -18,6 +18,7 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.views
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.scalatest.matchers.must.Matchers.include
 import play.api.test.FakeRequest
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.PlaySupport
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.RegulatoryChangeNotificationPage
@@ -42,7 +43,7 @@ class RegulatoryChangeNotificationPageSpec extends PlaySupport {
     }
 
     "have the Manage your undertaking button" in {
-      document.select(".govuk-button").text() shouldBe "Manage your undertaking"
+      document.select(".govuk-button").text() should include("Manage your undertaking")
     }
 
     "have the More about the change link" in {

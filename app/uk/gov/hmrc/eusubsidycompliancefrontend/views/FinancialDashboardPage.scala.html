@@ -38,7 +38,7 @@
 
 
 @result = @{ if((messages(s"$key.sector.name." + summary.overall.sector)) == "Agriculture" || (messages(s"$key.sector.name." + summary.overall.sector)) == "Other" ){
-    messages(s"dashboardAlt.undertaking.balance.heading") +" "+ (TaxYearHelpers.taxYearStartForDate(LocalDate.now.minusYears(1)).getYear.toString) +" "+ messages(s"dashboardAlt.undertaking.balance.headingCont") +" "+ (TaxYearHelpers.taxYearStartForDate(LocalDate.now.minusYears(-1)).getYear.toString)
+    messages(s"dashboardAlt.undertaking.balance.heading") +" "+ (TaxYearHelpers.taxYearStartForDate(LocalDate.now.minusYears(2)).getYear.toString) +" "+ messages(s"dashboardAlt.undertaking.balance.headingCont") +" "+ (TaxYearHelpers.taxYearStartForDate(LocalDate.now.plusYears(1)).getYear.toString)
 }else{
     messages(s"$key.undertaking.balance.heading")
 }}

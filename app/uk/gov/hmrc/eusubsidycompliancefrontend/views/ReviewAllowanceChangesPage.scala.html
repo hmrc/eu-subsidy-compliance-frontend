@@ -23,6 +23,7 @@
 
 @this(layout: Layout)
 
+
 @(summary: FinancialDashboardSummary)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @key = @{ if((messages(s"dashboard.sector.name." + summary.overall.sector)) == "Agriculture"){
@@ -31,11 +32,13 @@ messages("reviewAllowanceChanges.50000")
 messages("reviewAllowanceChanges.300000")
 }}
 
-@layout(  backLinkEnabled = true, pageTitle = Some(messages("reviewAllowanceChanges.title"))) {
+@layout(  backLinkEnabled = true,
+backLink = Some(routes.AccountController.getAccountPage.url),
+pageTitle = Some(messages("reviewAllowanceChanges.title"))) {
     @H1(messages("reviewAllowanceChanges.title"), id = Some("reviewAllowanceChanges-h1"))
     @P(messages("reviewAllowanceChanges.p1"), id = Some("reviewAllowanceChanges-p1"))
 
-    @P(messages("reviewAllowanceChanges.p2") +" "+ (s"$key")+ " " + messages("reviewAllowanceChanges.p2Cont"), id = Some("reviewAllowanceChanges-p2"))
+    @P(messages("reviewAllowanceChanges.p2") +" "+ (s"$key") + messages("reviewAllowanceChanges.p2Cont"), id = Some("reviewAllowanceChanges-p2"))
 
     @P(messages("reviewAllowanceChanges.p3"), id = Some("reviewAllowanceChanges-p3"))
     @P(messages("reviewAllowanceChanges.p4"), id = Some("reviewAllowanceChanges-p4"))

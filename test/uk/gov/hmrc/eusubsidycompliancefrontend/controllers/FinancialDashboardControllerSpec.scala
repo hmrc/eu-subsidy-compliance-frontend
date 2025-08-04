@@ -39,7 +39,6 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
-
 class FinancialDashboardControllerSpec
     extends ControllerSpec
     with AuthSupport
