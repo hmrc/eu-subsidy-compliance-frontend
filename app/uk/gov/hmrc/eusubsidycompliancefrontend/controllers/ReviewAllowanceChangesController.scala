@@ -36,7 +36,6 @@ class ReviewAllowanceChangesController @Inject() (
   reviewAllowanceChangesPage: ReviewAllowanceChangesPage,
   actionBuilders: ActionBuilders,
   escService: EscService,
-  financialDashboardPage: FinancialDashboardPage,
   timeProvider: TimeProvider
 )(implicit val appConfig: AppConfig, ec: ExecutionContext)
     extends BaseController(mcc) {
