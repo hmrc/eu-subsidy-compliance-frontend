@@ -638,8 +638,8 @@ exitSurvey.heading = Before you go
 exitSurvey.p1 = Your feedback helps us make our service better.
 exitSurvey.link = Take a short survey
 exitSurvey.p2 = to share your feedback on this service.
-exitSurveyBeforeYouGo.link = Take part in research
-exitSurveyBeforeYouGo.p2 = to help improve this service.
+exitSurveyBeforeYouGo.p2 = We’re making some changes to this service –
+exitSurveyBeforeYouGo.link = join our research and help improve it.
 
 # User Research Banner - Industry Sector
 industrySectorResearchBanner.h2 = Changes are coming to this service
