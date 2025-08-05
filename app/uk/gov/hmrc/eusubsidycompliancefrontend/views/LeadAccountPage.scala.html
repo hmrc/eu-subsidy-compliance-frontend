@@ -160,8 +160,8 @@ agriOtherFlag: Boolean
     @possibleMiscalculationContent
     @if(agriOtherFlag) {
     <div class="govuk-warning-text">
-        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-        <strong class="govuk-warning-text__text">
+        <span class="govuk-warning-text__icon" aria-hidden="true" >!</span>
+        <strong class="govuk-warning-text__text" id = "undertaking-balance-section-content-agri-other">
             <span class="govuk-visually-hidden">Warning</span>
             @messages(s"$key.p3.agri")
             <a class="govuk-link" href="@routes.ReviewAllowanceChangesController.showPage.url">@messages("lead-account-homepage.p3.link")</a>.

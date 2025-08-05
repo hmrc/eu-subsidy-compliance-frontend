@@ -623,7 +623,7 @@ class AccountControllerSpec
     doc.getElementById("undertaking-balance-section-heading").text shouldBe "Undertaking balance"
     doc
       .getElementById("undertaking-balance-section-content-agri-other")
-      .text shouldBe "Your balance may be incorrect. To work out your balance, review changes to your allowance."
+      .text shouldBe "Warning Your balance may be incorrect. To work out your balance, review changes to your allowance."
   }
 
   private def verifyAutoSuspendContentForLead(doc: Document) = {

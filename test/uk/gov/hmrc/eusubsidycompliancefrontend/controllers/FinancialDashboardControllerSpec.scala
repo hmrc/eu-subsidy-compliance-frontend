@@ -176,7 +176,7 @@ class FinancialDashboardControllerSpec
     document.getElementById("govuk-notification-banner-title").text shouldBe "Important"
     document
       .getElementById("dashboard-inset-text")
-      .text() shouldBe "Customs subsidies (Customs Duty waivers) claims can take up to 24 hours to update here. This means that keeping a record of payments that you have received is advised."
+      .text() shouldBe "Customs subsidies (Customs Duty waivers) claims can take up to 24 hours to update here."
   }
 
   def verifyScp08Warning(document: Document): Unit = {
