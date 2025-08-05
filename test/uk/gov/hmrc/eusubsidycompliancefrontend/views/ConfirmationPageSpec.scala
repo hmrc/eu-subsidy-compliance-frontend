@@ -73,13 +73,13 @@ class ConfirmationPageSpec extends PlaySupport {
             "Your feedback helps us make our service better."
         }
 
-        "has the correct second paragraph" in {
-          document.select("#exit-survey > p:nth-of-type(2)").text() shouldBe
+        "has the correct third paragraph" in {
+          document.select("#exit-survey > p:nth-of-type(3)").text() shouldBe
             "Take a short survey to share your feedback on this service."
         }
 
         "has the correct link" in {
-          document.select("#exit-survey > p > a").attr("href") shouldBe appConfig.exitSurveyUrl
+          document.select("#exit-survey > p:nth-of-type(3) > a").attr("href") shouldBe appConfig.exitSurveyUrl
         }
       }
     }
