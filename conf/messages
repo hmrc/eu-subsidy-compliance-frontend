@@ -638,9 +638,13 @@ exitSurvey.heading = Before you go
 exitSurvey.p1 = Your feedback helps us make our service better.
 exitSurvey.link = Take a short survey
 exitSurvey.p2 = to share your feedback on this service.
+exitSurveyBeforeYouGo.link = Take part in research
+exitSurveyBeforeYouGo.p2 = to help improve this service.
 
 # User Research Banner - Industry Sector
 industrySectorResearchBanner.h2 = Changes are coming to this service
 industrySectorResearchBanner.link.text = Get involved – help us make it work for you (opens in new tab)
 industrySectorResearchBanner.hide.button = Hide message
 industrySectorResearchBanner.visually.hidden = Hide message. I do not want to take part in research
+
+
