@@ -240,7 +240,9 @@ undertaking.confirmation.title = Undertaking registered
 undertaking.confirmation.p1 = We have sent you a confirmation email.
 undertaking.confirmation.p2 = You can now submit reports of non-customs subsidy payments, or no payments in your undertaking.
 undertaking.confirmation.p3 = You can also add businesses to your undertaking using the <a id="add-remove-business-link" href="{0}" class="govuk-link">Add and remove businesses</a> link in the ‘Undertaking administration’ section of the undertaking.
-
+lead-account-homepage.important = Important
+lead-account-homepage.banner = Your balance may be incorrect.
+lead-account-homepage.banner.link = Review changes to your allowance and what you need to do
 lead-account-homepage.title = Manage your undertaking
 lead-account-homepage.p1.is-overdue = Your report was due by {0}.
 lead-account-homepage.ul1-li1 = report a non-customs subsidy payment
@@ -282,8 +284,10 @@ lead-account-homepage.postDeadline.h2.p3 = If you have received none, you must s
 lead-account-homepage.details.title = If you have previously submitted, or have never submitted a report
 lead-account-homepage.details.hasSubmitted.h3 = If you have previously submitted a report
 lead-account-homepage.details.hasSubmitted.h3.p1 = If you have submitted a non-customs subsidy payment or no payments report before, these will be any payments received within your latest 90-day reporting period.
+lead-account-homepage.details.hasSubmitted.h3.p1.agri = You must report any payments received within your latest 90-day reporting period.
 lead-account-homepage.details.neverSubmitted.h3 = If you have never submitted a report
 lead-account-homepage.details.neverSubmitted.h3.p1 = If you have not submitted a non-customs subsidy payment or no payments report before, these will be any payments received for the current tax year and the previous 2 tax years.
+lead-account-homepage.details.neverSubmitted.h3.p1.agri = You must report any payments received over a rolling 3-year period, counting back from your latest declaration.
 
 lead-account-homepage.h2-3 = Report history
 lead-account-homepage.ul2-li1 = View reported non-customs subsidy payments
@@ -291,6 +295,8 @@ lead-account-homepage.ul2-li1 = View reported non-customs subsidy payments
 lead-account-homepage.h2-4 = Remaining allowance
 lead-account-homepage.h2.undertakingBalance = Undertaking balance
 lead-account-homepage.p3 = Your undertaking currently has a remaining balance of {0}, from your sector allowance of {1}.
+lead-account-homepage.p3.agri = Your balance may be incorrect. To work out your balance,
+lead-account-homepage.p3.link = review changes to your allowance
 lead-account-homepage.ul3-li1 = View summary of your allowance (customs and non-customs subsidies)
 
 lead-account-homepage.h2-5 = Undertaking administration
@@ -307,10 +313,14 @@ account-homepage.scp08Issues.text=Your undertaking balance may show a temporary 
 non-lead-account-homepage.title = Your undertaking
 non-lead-account-homepage.p1 = Your undertaking’s next report is due by <strong>{0}</strong>.
 non-lead-account-homepage.p1.is-overdue = Your undertaking’s report was due by {0}.
-
+non-lead-account-homepage.important = Important
+non-lead-account-homepage.banner = Your balance may be incorrect.
+non-lead-account-homepage.banner.link = Review changes to your allowance and what you need to do
 non-lead-account-homepage.h2-2 = Remaining allowance
 non-lead-account-homepage.h2.undertakingBalance = Undertaking balance
 non-lead-account-homepage.p2 = Your undertaking currently has a remaining balance of <strong>{0}</strong>, from your sector allowance of {1}.
+non-lead-account-homepage.p2.agri = Your balance may be incorrect. To work out your balance,
+non-lead-account-homepage.p2.link = review changes to your allowance
 
 non-lead-account-homepage.ul1-li1 = View summary of your allowance (customs and non-customs subsidies)
 
@@ -489,6 +499,19 @@ subsidy.remove.p1 = If you remove this payment then your remaining allowance wil
 subsidy.remove.yesno.legend = Are you sure you want to remove this payment?
 subsidy.remove.error.required = Select yes if you want to remove this reported payment
 
+#Regulatory Change Notification
+
+regulatoryChangeNotification.title = Before you continue
+regulatoryChangeNotification.h1 = Before you continue
+regulatoryChangeNotification.p1 = Your undertaking is affected by a change in regulations. This means your balance may be incorrect.
+regulatoryChangeNotification.p2 = Subsidy awards for the ‘agricultural’ and ‘other’ sectors are now calculated over a rolling 3-year basis, instead of 3 tax years.
+regulatoryChangeNotification.p3 = This online service still shows calculations based on tax years. We are working to update the calculations as soon as we can.
+regulatoryChangeNotification.h2 = What you need to do now
+regulatoryChangeNotification.p4 = You need to keep your own records to make sure you stay within your allowance.
+regulatoryChangeNotification.p5 = You can still manage your undertaking online.
+regulatoryChangeNotification.button = Manage your undertaking
+regulatoryChangeNotification.link = More about the change
+
 #Amend Undertaking
 undertaking.amendUndertaking.title = Undertaking details
 undertaking.amendUndertaking.summary-list.name.key = Name of undertaking
@@ -552,6 +575,11 @@ noBusinessPresent.title = There are no other businesses added to your undertakin
 dashboard.title = Summary of your allowance
 dashboard.p1 = This report summarises all customs subsidies (Customs Duty waivers) and non-customs subsidy payments recorded against your undertaking. These payments are referred to as ‘de minimis aid’.
 dashboard.p2 = The report includes all payments recorded against your undertaking since 6 April {0}.
+dashboardAlt.p1 = This page lists all payments recorded against your undertaking for the current tax year and the previous 2 tax years.
+dashboardAlt.p2 = The balance may be incorrect, as your allowance must now be calculated over a rolling 3-year period.
+dashboardAlt.p3 = You need to keep your own records to make sure you stay within your allowance.
+dashboardAlt.important = Your balance may be incorrect.
+dashboardAlt.importantURL = Review changes to your allowance and what you need to do
 dashboard.current-tax-year.heading = Current tax year
 dashboard.year.summary.heading = Tax year {0} to {1}
 dashboard.customs.duty.heading = Customs subsidies (Customs Duty waivers)
@@ -563,8 +591,31 @@ dashboard.sector.name.1 = Transport
 dashboard.sector.name.2 = Agriculture
 dashboard.sector.name.3 = Aquaculture
 dashboard.undertaking.balance.heading = Undertaking balance
+dashboardAlt.undertaking.balance.heading = Undertaking balance for 6 April
+dashboardAlt.undertaking.balance.headingCont = to 5 April
 dashboard.insetText = Customs subsidies (Customs Duty waivers) claims can take up to 24 hours to update here. This means that keeping a record of payments that you have received is advised.
+dashboardAlt.insetText = Customs subsidies (Customs Duty waivers) claims can take up to 24 hours to update here.
 dashboard.scp08.warningText = Your ''Undertaking balance'', ''Total claimed'' and ''Customs subsidies (Customs Duty waivers)'' amounts in the first section may show temporary differences to your own records. They may take up to 24 hours to be amended here, so keeping a record of any payments you have received is advised.
+
+reviewAllowanceChanges.title = Review changes to your allowance
+reviewAllowanceChanges.p1 =The EU has changed its regulations on customs and non-customs state aid (de minimis aid). This affects all undertakings in the ‘agricultural’ and ‘other’ sectors.
+reviewAllowanceChanges.p2 =Your allowance is still
+reviewAllowanceChanges.50000 = 50,000 euros
+reviewAllowanceChanges.300000 = 300,000 euros
+reviewAllowanceChanges.p2Cont =, but it is now calculated over a rolling 3-year period, instead of 3 tax years.
+reviewAllowanceChanges.p3 = This online service still works out your balance using tax years. We will update the calculations as soon as we can. Meanwhile, the balance shown may be incorrect.
+reviewAllowanceChanges.p4 = This does not apply to the ‘fisheries and aquaculture’ sector. For this sector, de minimis aid is still calculated on a 3-tax-year basis.
+reviewAllowanceChanges.h2 =What you need to do
+reviewAllowanceChanges.p5 = You need to:
+reviewAllowanceChanges.ul1 = Keep your own records to make sure you stay within the limit, until further notice
+reviewAllowanceChanges.ul2 =include both customs state aid (Customs Duty waivers) and non-customs state aid in your calculations
+reviewAllowanceChanges.h3 =Calculate your balance
+reviewAllowanceChanges.p6 =To work out your rolling 3-year period, count back 3 years from the date you last made a declaration.
+reviewAllowanceChanges.p7 =For example, if you submit a declaration on 14 February 2025, your total claims between 15 February 2022 and 14 February 2025 must add up to
+reviewAllowanceChanges.p7Cont = or less.
+reviewAllowanceChanges.p8 = You can:
+reviewAllowanceChanges.url1 = read the full guidance on claiming waivers (opens in new tab)
+reviewAllowanceChanges.url2 = go to your undertaking homepage
 
 become-admin.title = Change of undertaking administrator
 become-admin.p1 = As the administrator for this undertaking you will be responsible for reporting all non-customs subsidy payments received by any member of the undertaking.
@@ -640,6 +691,7 @@ exitSurvey.link = Take a short survey
 exitSurvey.p2 = to share your feedback on this service.
 exitSurveyBeforeYouGo.p2 = We’re making some changes to this service –
 exitSurveyBeforeYouGo.link = join our research and help improve it
+
 
 # User Research Banner - Industry Sector
 industrySectorResearchBanner.h2 = Changes are coming to this service

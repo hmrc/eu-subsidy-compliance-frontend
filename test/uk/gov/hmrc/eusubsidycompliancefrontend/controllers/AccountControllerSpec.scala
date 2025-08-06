@@ -27,7 +27,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.NilReturnJourney.Forms.NilReturnFormPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
-import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{Sector, UndertakingStatus}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{ConnectorError, NonHmrcSubsidy, Undertaking}
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
@@ -195,14 +195,245 @@ class AccountControllerSpec
 
       }
 
-      "display the non-lead account home page" when {
+      "redirect to regulatory change notification" when {
 
-        "valid request for non-lead user is made" when {
+        "user has undertaking with agriculture sector" in {
+          val agricultureUndertaking = undertaking.copy(industrySector = Sector.agriculture)
 
-          "Only ECC enrolment is present" in {
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+            mockRetrieveUndertaking(eori1)(agricultureUndertaking.some.toFuture)
+          }
+
+          checkIsRedirect(
+            performAction(),
+            routes.RegulatoryChangeNotificationController.showPage
+          )
+        }
+
+        "user has undertaking with other sector" in {
+          val otherUndertaking = undertaking.copy(industrySector = Sector.other)
+
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+            mockRetrieveUndertaking(eori1)(otherUndertaking.some.toFuture)
+          }
+
+          checkIsRedirect(
+            performAction(),
+            routes.RegulatoryChangeNotificationController.showPage
+          )
+        }
+
+      }
+
+      "not redirect to regulatory change notification" when {
+
+        "user has undertaking with fishery sector" in {
+          val fisheryUndertaking = undertaking.copy(industrySector = Sector.aquaculture)
+
+          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
+          inSequence {
+            mockAuthWithEnrolmentAndNoEmailVerification()
+            mockRetrieveUndertaking(eori1)(fisheryUndertaking.some.toFuture)
+            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+            mockTimeProviderToday(fixedDate)
+            mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
+              undertakingSubsidies.toFuture
+            )
+            mockGetUndertakingBalance(eori1)(Future.successful(Some(undertakingBalance)))
+            mockTimeProviderToday(fixedDate)
+            mockGetOrCreate(eori1)(Right(nilJourneyCreate))
+          }
+
+          checkPageIsDisplayed(
+            performAction(),
+            messageFromMessageKey("lead-account-homepage.title"),
+            { doc =>
+              verifyGenericHomepageContentForLead(doc)
+              doc.getElementById("lead-account-homepage-p2").text shouldBe "You must either:"
+            }
+          )
+        }
+
+        "display account page after seeing notification" when {
+
+          "display the page correctly for an undertaking with agriculture sector" in {
+            def test(undertaking: Undertaking): Unit = {
+              val requestWithSession = FakeRequest().withSession("regulatoryChangeNotificationSeen" -> "true")
+              def performActionWithSession() = controller.getAccountPage(requestWithSession)
+
+              val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
+              inSequence {
+                mockAuthWithEnrolmentAndNoEmailVerification()
+                mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+                mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+                mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1))
+                mockTimeProviderToday(fixedDate)
+                mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
+                  undertakingSubsidies.toFuture
+                )
+                mockGetUndertakingBalance(eori1)(Future.successful(Some(undertakingBalance)))
+                mockTimeProviderToday(fixedDate)
+                mockGetOrCreate(eori1)(Right(nilJourneyCreate))
+              }
+              checkPageIsDisplayed(
+                performActionWithSession(),
+                messageFromMessageKey("lead-account-homepage.title"),
+                { doc =>
+                  verifyGenericHomepageContentForLead(doc)
+                  doc.getElementById("govuk-notification-banner-title").text should not be null
+                  doc.getElementById("govuk-notification-banner-title").text shouldBe "Important"
+                  doc
+                    .getElementById("lead-account-homepage-details-hasSubmitted-h3-p1-agri-other")
+                    .text shouldBe "You must report any payments received within your latest 90-day reporting period."
+                  doc
+                    .getElementById("lead-account-homepage-details-neverSubmitted-h3-p1-agri-other")
+                    .text shouldBe "You must report any payments received over a rolling 3-year period, counting back from your latest declaration."
+
+                  verifyUndertakingBalanceAgriOther(doc)
+                }
+              )
+            }
+
+            test(undertaking3)
+          }
+
+          "display the page correctly for an undertaking with other sector" in {
+            def test(undertaking: Undertaking): Unit = {
+              val requestWithSession = FakeRequest().withSession("regulatoryChangeNotificationSeen" -> "true")
+              def performActionWithSession() = controller.getAccountPage(requestWithSession)
+
+              val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
+              inSequence {
+                mockAuthWithEnrolmentAndNoEmailVerification()
+                mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+                mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+                mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete2))
+                mockTimeProviderToday(fixedDate)
+                mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
+                  undertakingSubsidies.toFuture
+                )
+                mockGetUndertakingBalance(eori1)(Future.successful(Some(undertakingBalance)))
+                mockTimeProviderToday(fixedDate)
+                mockGetOrCreate(eori1)(Right(nilJourneyCreate))
+              }
+              checkPageIsDisplayed(
+                performActionWithSession(),
+                messageFromMessageKey("lead-account-homepage.title"),
+                { doc =>
+                  verifyGenericHomepageContentForLead(doc)
+                  doc.getElementById("govuk-notification-banner-title").text should not be null
+                  doc.getElementById("govuk-notification-banner-title").text shouldBe "Important"
+                  doc
+                    .getElementById("lead-account-homepage-details-hasSubmitted-h3-p1-agri-other")
+                    .text shouldBe "You must report any payments received within your latest 90-day reporting period."
+                  doc
+                    .getElementById("lead-account-homepage-details-neverSubmitted-h3-p1-agri-other")
+                    .text shouldBe "You must report any payments received over a rolling 3-year period, counting back from your latest declaration."
+
+                  verifyUndertakingBalanceAgriOther(doc)
+                }
+              )
+            }
+
+            test(undertaking3)
+          }
+
+        }
+
+        "display the non-lead account home page" when {
+
+          "valid request for non-lead user is made" when {
+
+            "Only ECC enrolment is present" in {
+              inSequence {
+                mockAuthWithEnrolmentAndNoEmailVerification(eori4)
+                mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+                mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
+                mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
+                mockTimeProviderToday(fixedDate)
+                mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
+                  undertakingSubsidies.toFuture
+                )
+                mockGetUndertakingBalance(eori4)(Future.successful(Some(undertakingBalance)))
+                mockTimeProviderToday(fixedDate)
+              }
+
+              checkPageIsDisplayed(
+                performAction(),
+                messageFromMessageKey("non-lead-account-homepage.title"),
+                { doc =>
+                  val htmlBody = doc.select(".govuk-list").html
+                  htmlBody should include regex routes.BecomeLeadController.getAcceptResponsibilities().url
+                  htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard.url
+                  htmlBody should include regex routes.RemoveYourselfBusinessEntityController.getRemoveYourselfBusinessEntity.url
+                  verifyUndertakingBalance(doc)
+                }
+              )
+            }
+
+          }
+        }
+
+        "display the account home page with warning when undertaking is auto suspended" when {
+          "admin page loads home - 'undertakingStatus == active'" in {
+            val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
+            inSequence {
+              mockAuthWithEnrolmentAndNoEmailVerification()
+              mockRetrieveUndertaking(eori1)(
+                undertaking.copy(undertakingStatus = Some(UndertakingStatus.active)).some.toFuture
+              )
+              mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+              mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+              mockTimeProviderToday(fixedDate)
+              mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
+                undertakingSubsidies.toFuture
+              )
+              mockGetUndertakingBalance(eori1)(Future.successful(Some(undertakingBalance)))
+              mockTimeProviderToday(fixedDate)
+              mockGetOrCreate(eori1)(Right(nilJourneyCreate))
+            }
+
+            val result = performAction()
+
+            val doc = Jsoup.parse(contentAsString(result))
+
+            verifyGenericHomepageContentForLead(doc)
+            verifyPreDeadlineContentForLead(doc)
+          }
+          "admin page loads home - 'undertakingStatus == suspendedAutomated'" in {
+            val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
+            inSequence {
+              mockAuthWithEnrolmentAndNoEmailVerification()
+              mockRetrieveUndertaking(eori1)(
+                undertaking.copy(undertakingStatus = Some(UndertakingStatus.suspendedAutomated)).some.toFuture
+              )
+              mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+              mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+              mockTimeProviderToday(fixedDate)
+              mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
+                undertakingSubsidies.toFuture
+              )
+              mockGetUndertakingBalance(eori1)(Future.successful(Some(undertakingBalance)))
+              mockTimeProviderToday(fixedDate)
+              mockGetOrCreate(eori1)(Right(nilJourneyCreate))
+            }
+
+            val result = performAction()
+
+            val doc = Jsoup.parse(contentAsString(result))
+
+            verifyGenericHomepageContentForLead(doc)
+            verifyAutoSuspendContentForLead(doc)
+          }
+          "member page loads home" in {
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification(eori4)
-              mockRetrieveUndertaking(eori4)(undertaking1.some.toFuture)
+              mockRetrieveUndertaking(eori4)(
+                undertaking1.copy(undertakingStatus = Some(UndertakingStatus.suspendedAutomated)).some.toFuture
+              )
               mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
               mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
               mockTimeProviderToday(fixedDate)
@@ -213,248 +444,165 @@ class AccountControllerSpec
               mockTimeProviderToday(fixedDate)
             }
 
-            checkPageIsDisplayed(
-              performAction(),
-              messageFromMessageKey("non-lead-account-homepage.title"),
-              { doc =>
-                val htmlBody = doc.select(".govuk-list").html
-                htmlBody should include regex routes.BecomeLeadController.getAcceptResponsibilities().url
-                htmlBody should include regex routes.FinancialDashboardController.getFinancialDashboard.url
-                htmlBody should include regex routes.RemoveYourselfBusinessEntityController.getRemoveYourselfBusinessEntity.url
+            val result = performAction()
 
-                verifyUndertakingBalance(doc)
-              }
-            )
+            val doc = Jsoup.parse(contentAsString(result))
+
+            doc.title() shouldBe "Your undertaking - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
+            doc
+              .getElementById("warning-text")
+              .text shouldBe "! Warning Your undertaking's deadline to submit a report passed on 18 April 2021."
+
           }
-
-        }
-      }
-
-      "display the account home page with warning when undertaking is auto suspended" when {
-        "admin page loads home - 'undertakingStatus == active'" in {
-          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
-          inSequence {
-            mockAuthWithEnrolmentAndNoEmailVerification()
-            mockRetrieveUndertaking(eori1)(
-              undertaking.copy(undertakingStatus = Some(UndertakingStatus.active)).some.toFuture
-            )
-            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
-            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-            mockTimeProviderToday(fixedDate)
-            mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
-              undertakingSubsidies.toFuture
-            )
-            mockGetUndertakingBalance(eori1)(Future.successful(Some(undertakingBalance)))
-            mockTimeProviderToday(fixedDate)
-            mockGetOrCreate(eori1)(Right(nilJourneyCreate))
-          }
-
-          val result = performAction()
-
-          val doc = Jsoup.parse(contentAsString(result))
-
-          verifyGenericHomepageContentForLead(doc)
-          verifyPreDeadlineContentForLead(doc)
-        }
-        "admin page loads home - 'undertakingStatus == suspendedAutomated'" in {
-          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
-          inSequence {
-            mockAuthWithEnrolmentAndNoEmailVerification()
-            mockRetrieveUndertaking(eori1)(
-              undertaking.copy(undertakingStatus = Some(UndertakingStatus.suspendedAutomated)).some.toFuture
-            )
-            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
-            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-            mockTimeProviderToday(fixedDate)
-            mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
-              undertakingSubsidies.toFuture
-            )
-            mockGetUndertakingBalance(eori1)(Future.successful(Some(undertakingBalance)))
-            mockTimeProviderToday(fixedDate)
-            mockGetOrCreate(eori1)(Right(nilJourneyCreate))
-          }
-
-          val result = performAction()
-
-          val doc = Jsoup.parse(contentAsString(result))
-
-          verifyGenericHomepageContentForLead(doc)
-          verifyAutoSuspendContentForLead(doc)
-        }
-        "member page loads home" in {
-          inSequence {
-            mockAuthWithEnrolmentAndNoEmailVerification(eori4)
-            mockRetrieveUndertaking(eori4)(
-              undertaking1.copy(undertakingStatus = Some(UndertakingStatus.suspendedAutomated)).some.toFuture
-            )
-            mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
-            mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
-            mockTimeProviderToday(fixedDate)
-            mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
-              undertakingSubsidies.toFuture
-            )
-            mockGetUndertakingBalance(eori4)(Future.successful(Some(undertakingBalance)))
-            mockTimeProviderToday(fixedDate)
-          }
-
-          val result = performAction()
-
-          val doc = Jsoup.parse(contentAsString(result))
-
-          doc.title() shouldBe "Your undertaking - Report and manage your allowance for Customs Duty waiver claims - GOV.UK"
-          doc
-            .getElementById("warning-text")
-            .text shouldBe "! Warning Your undertaking's deadline to submit a report passed on 18 April 2021."
-
-        }
-      }
-
-      "display the account home page with message about scp08 issues" when {
-        "admin page loads home" in {
-          val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
-          inSequence {
-            mockAuthWithEnrolmentAndNoEmailVerification()
-            mockRetrieveUndertaking(eori1)(
-              undertaking.some.toFuture
-            )
-            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
-            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-            mockTimeProviderToday(fixedDate)
-            mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
-              undertakingSubsidies.toFuture
-            )
-            mockGetUndertakingBalance(eori1)(Future.successful(None))
-            mockTimeProviderToday(fixedDate)
-            mockGetOrCreate(eori1)(Right(nilJourneyCreate))
-          }
-
-          val result = performAction()
-
-          val doc = Jsoup.parse(contentAsString(result))
-
-          verifyScp08IssuesMessage(doc)
-        }
-        "member page loads home" in {
-          inSequence {
-            mockAuthWithEnrolmentAndNoEmailVerification(eori4)
-            mockRetrieveUndertaking(eori4)(
-              undertaking1.some.toFuture
-            )
-            mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
-            mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
-            mockTimeProviderToday(fixedDate)
-            mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
-              undertakingSubsidies.toFuture
-            )
-            mockGetUndertakingBalance(eori4)(Future.successful(None))
-            mockTimeProviderToday(fixedDate)
-          }
-
-          val result = performAction()
-
-          val doc = Jsoup.parse(contentAsString(result))
-
-          verifyScp08IssuesMessage(doc)
-        }
-      }
-
-      "throw technical error" when {
-        val exception = new Exception("oh no")
-
-        "there is error in retrieving the undertaking" in {
-          inSequence {
-            mockAuthWithEnrolmentAndNoEmailVerification()
-            mockRetrieveUndertaking(eori1)(Future.failed(exception))
-          }
-          assertThrows[Exception](await(performAction()))
-
         }
 
-        "there is an error in fetching eligibility journey data" in {
-          inSequence {
-            mockAuthWithEnrolmentAndNoEmailVerification()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
-        "there is an error in retrieving undertaking journey data" in {
-          inSequence {
-            mockAuthWithEnrolmentAndNoEmailVerification()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
-            mockGetOrCreate[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
-        "there is an error in fetching Business entity journey data" in {
-          inSequence {
-            mockAuthWithEnrolmentAndNoEmailVerification()
-            mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-            mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
-            mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-          }
-          assertThrows[Exception](await(performAction()))
-
-        }
-
-      }
-
-      "redirect to next page" when {
-
-        "Only ECC enrolment" when {
-
-          "retrieve undertaking journey is not there" in {
-            inSequence {
-              mockAuthWithEnrolmentAndNoEmailVerification(eori1)
-              mockRetrieveUndertaking(eori1)(None.toFuture)
-              mockGetOrCreate[EligibilityJourney](eori1)(Right(EligibilityJourney()))
-              mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
-            }
-            checkIsRedirect(performAction(), routes.EligibilityFirstEmptyPageController.firstEmptyPage.url)
-          }
-
-        }
-
-        "Both CDS nd ECC enrolment present and there is no existing retrieve undertaking" when {
-
-          "eligibility Journey is not complete and undertaking Journey is blank" in {
+        "display the account home page with message about scp08 issues" when {
+          "admin page loads home" in {
+            val nilJourneyCreate = NilReturnJourney(NilReturnFormPage(None))
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification()
-              mockRetrieveUndertaking(eori1)(None.toFuture)
+              mockRetrieveUndertaking(eori1)(
+                undertaking.some.toFuture
+              )
+              mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+              mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+              mockTimeProviderToday(fixedDate)
+              mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
+                undertakingSubsidies.toFuture
+              )
+              mockGetUndertakingBalance(eori1)(Future.successful(None))
+              mockTimeProviderToday(fixedDate)
+              mockGetOrCreate(eori1)(Right(nilJourneyCreate))
+            }
+
+            val result = performAction()
+
+            val doc = Jsoup.parse(contentAsString(result))
+
+            verifyScp08IssuesMessage(doc)
+          }
+          "member page loads home" in {
+            inSequence {
+              mockAuthWithEnrolmentAndNoEmailVerification(eori4)
+              mockRetrieveUndertaking(eori4)(
+                undertaking1.some.toFuture
+              )
+              mockGetOrCreate[EligibilityJourney](eori4)(Right(eligibilityJourneyComplete))
+              mockGetOrCreate[UndertakingJourney](eori4)(Right(UndertakingJourney()))
+              mockTimeProviderToday(fixedDate)
+              mockRetrieveSubsidiesForDateRange(undertakingRef, fixedDate.toSearchRange)(
+                undertakingSubsidies.toFuture
+              )
+              mockGetUndertakingBalance(eori4)(Future.successful(None))
+              mockTimeProviderToday(fixedDate)
+            }
+
+            val result = performAction()
+
+            val doc = Jsoup.parse(contentAsString(result))
+
+            verifyScp08IssuesMessage(doc)
+          }
+        }
+
+        "throw technical error" when {
+          val exception = new Exception("oh no")
+
+          "there is error in retrieving the undertaking" in {
+            inSequence {
+              mockAuthWithEnrolmentAndNoEmailVerification()
+              mockRetrieveUndertaking(eori1)(Future.failed(exception))
+            }
+            assertThrows[Exception](await(performAction()))
+
+          }
+
+          "there is an error in fetching eligibility journey data" in {
+            inSequence {
+              mockAuthWithEnrolmentAndNoEmailVerification()
+              mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
+              mockGetOrCreate[EligibilityJourney](eori1)(Left(ConnectorError(exception)))
+            }
+            assertThrows[Exception](await(performAction()))
+
+          }
+
+          "there is an error in retrieving undertaking journey data" in {
+            inSequence {
+              mockAuthWithEnrolmentAndNoEmailVerification()
+              mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
               mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
-              mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+              mockGetOrCreate[UndertakingJourney](eori1)(Left(ConnectorError(exception)))
             }
-            checkIsRedirect(performAction(), routes.EligibilityFirstEmptyPageController.firstEmptyPage)
+            assertThrows[Exception](await(performAction()))
+
           }
 
-          "eligibility Journey  is complete and undertaking Journey is not complete" in {
+          "there is an error in fetching Business entity journey data" in {
             inSequence {
               mockAuthWithEnrolmentAndNoEmailVerification()
-              mockRetrieveUndertaking(eori1)(None.toFuture)
+              mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
               mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
               mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
             }
-            checkIsRedirect(performAction(), routes.UndertakingController.firstEmptyPage)
+            assertThrows[Exception](await(performAction()))
+
           }
 
-          "eligibility Journey  and undertaking Journey are  complete" in {
-            inSequence {
-              mockAuthWithEnrolmentAndNoEmailVerification()
-              mockRetrieveUndertaking(eori1)(None.toFuture)
-              mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
-              mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1))
+        }
+
+        "redirect to next page" when {
+
+          "Only ECC enrolment" when {
+
+            "retrieve undertaking journey is not there" in {
+              inSequence {
+                mockAuthWithEnrolmentAndNoEmailVerification(eori1)
+                mockRetrieveUndertaking(eori1)(None.toFuture)
+                mockGetOrCreate[EligibilityJourney](eori1)(Right(EligibilityJourney()))
+                mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+              }
+              checkIsRedirect(performAction(), routes.EligibilityFirstEmptyPageController.firstEmptyPage.url)
             }
-            checkIsRedirect(performAction(), routes.AddBusinessEntityController.getAddBusinessEntity())
+
           }
+
+          "Both CDS nd ECC enrolment present and there is no existing retrieve undertaking" when {
+
+            "eligibility Journey is not complete and undertaking Journey is blank" in {
+              inSequence {
+                mockAuthWithEnrolmentAndNoEmailVerification()
+                mockRetrieveUndertaking(eori1)(None.toFuture)
+                mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyNotComplete))
+                mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+              }
+              checkIsRedirect(performAction(), routes.EligibilityFirstEmptyPageController.firstEmptyPage)
+            }
+
+            "eligibility Journey  is complete and undertaking Journey is not complete" in {
+              inSequence {
+                mockAuthWithEnrolmentAndNoEmailVerification()
+                mockRetrieveUndertaking(eori1)(None.toFuture)
+                mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+                mockGetOrCreate[UndertakingJourney](eori1)(Right(UndertakingJourney()))
+              }
+              checkIsRedirect(performAction(), routes.UndertakingController.firstEmptyPage)
+            }
+
+            "eligibility Journey  and undertaking Journey are  complete" in {
+              inSequence {
+                mockAuthWithEnrolmentAndNoEmailVerification()
+                mockRetrieveUndertaking(eori1)(None.toFuture)
+                mockGetOrCreate[EligibilityJourney](eori1)(Right(eligibilityJourneyComplete))
+                mockGetOrCreate[UndertakingJourney](eori1)(Right(undertakingJourneyComplete1))
+              }
+              checkIsRedirect(performAction(), routes.AddBusinessEntityController.getAddBusinessEntity())
+            }
+          }
+
         }
 
       }
-
     }
   }
 
@@ -469,6 +617,13 @@ class AccountControllerSpec
     doc
       .getElementById("undertaking-balance-section-content")
       .text shouldBe "Your undertaking currently has a remaining balance of €123.45, from your sector allowance of €12.34."
+  }
+
+  private def verifyUndertakingBalanceAgriOther(doc: Document): Unit = {
+    doc.getElementById("undertaking-balance-section-heading").text shouldBe "Undertaking balance"
+    doc
+      .getElementById("undertaking-balance-section-content-agri-other")
+      .text shouldBe "Warning Your balance may be incorrect. To work out your balance, review changes to your allowance."
   }
 
   private def verifyAutoSuspendContentForLead(doc: Document) = {
