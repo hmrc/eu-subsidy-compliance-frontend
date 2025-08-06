@@ -35,8 +35,14 @@
 
 @H2(messages("beta-feedback.header"), id = Some("undertakingDisabledFeedbackHeader"))
 @P(messages("beta-feedback.p1"), id = Some("undertakingDisabledParaThree"))
+
+<p class="govuk-body" id="researchLinkText">
+    @Html(messages("exitSurveyBeforeYouGo.p2"))
+    <a class="govuk-link" id="research-link" href="@appConfig.userResearchUrl">@Html(messages("exitSurveyBeforeYouGo.link"))</a>.
+</p>
 <p class="govuk-body" id="undertakingDisabledParaFour">
     <a class="govuk-link" id="survey-beta-feedback" href="@appConfig.exitSurveyUrl">@Html(messages("beta-feedback.linkText"))</a>
     @Html(messages("beta-feedback.p2"))
 </p>
+
 }
