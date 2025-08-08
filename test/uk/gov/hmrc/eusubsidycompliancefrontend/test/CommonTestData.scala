@@ -319,7 +319,7 @@ object CommonTestData {
     None
   )
 
-  val industrySectorLimit = IndustrySectorLimit(20000)
+  val industrySectorLimit = IndustrySectorLimit(50000)
 
   val undertakingBalance = UndertakingBalance(
     undertakingIdentifier = UndertakingRef("some-ref"),
