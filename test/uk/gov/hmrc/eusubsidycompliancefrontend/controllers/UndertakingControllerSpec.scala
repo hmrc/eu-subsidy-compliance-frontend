@@ -381,7 +381,7 @@ class UndertakingControllerSpec
           SectorRadioOption(
             "agriculture",
             "Primary production of agricultural products",
-            "An ‘agricultural product’ can be products such as: live animals, meat and edible meat offal, dairy produce, birds’ eggs, natural honey. The cap for this sector is €20,000."
+            "An ‘agricultural product’ can be products such as: live animals, meat and edible meat offal, dairy produce, birds’ eggs, natural honey. The cap for this sector is €50,000."
           ),
           SectorRadioOption(
             "aquaculture",
