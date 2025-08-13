@@ -34,6 +34,16 @@
 
 @(summary: FinancialDashboardSummary)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"dashboard"}
+
+
+
+@result = @{ if((messages(s"$key.sector.name." + summary.overall.sector)) == "Agriculture" || (messages(s"$key.sector.name." + summary.overall.sector)) == "Other" ){
+    messages(s"dashboardAlt.undertaking.balance.heading") +" "+ (TaxYearHelpers.taxYearStartForDate(LocalDate.now.minusYears(2)).getYear.toString) +" "+ messages(s"dashboardAlt.undertaking.balance.headingCont") +" "+ (TaxYearHelpers.taxYearStartForDate(LocalDate.now.plusYears(1)).getYear.toString)
+}else{
+    messages(s"$key.undertaking.balance.heading")
+}}
+
+
 @title = @{messages(s"$key.title")}
 
 @printDialog = {
@@ -51,9 +61,11 @@
 }
 
 @insetText = {
-    @govukInsetText(InsetText(
-        content = Text(messages("dashboard.insetText")), id = Some("dashboard-inset-text")
-    ))
+    @if((messages(s"$key.sector.name." + summary.overall.sector)) == "Agriculture" || (messages(s"$key.sector.name." + summary.overall.sector)) == "Other" ){
+    @govukInsetText(InsetText(content = Text(messages("dashboardAlt.insetText")), id = Some("dashboard-inset-text")))
+    } else {
+    @govukInsetText(InsetText(  content = Text(messages("dashboard.insetText")), id = Some("dashboard-inset-text")))
+}
 }
 
 @insetTextOrWarning = @{
@@ -104,7 +116,7 @@
     Seq(
         SummaryListRow(
             key = Key(
-                content = HtmlContent(s"""<span id="undertaking-balance-heading">${messages(s"$key.undertaking.balance.heading")}</span>""")
+                content = HtmlContent(s"""<span id="undertaking-balance-heading">${messages(s"$result")}</span>""")
             ),
             value = Value(
                 content = HtmlContent(s"""<span id="undertaking-balance-value">${summary.undertakingBalanceEUR.toEuros}</span>""")
@@ -121,9 +133,30 @@
     printDialog = Some(printDialog)
 ) {
 
+@if((messages(s"$key.sector.name." + summary.overall.sector)) == "Agriculture" || (messages(s"$key.sector.name." + summary.overall.sector)) == "Other" ){
+<div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+    <div class="govuk-notification-banner__header"><h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Important</h2></div>
+    <div class="govuk-notification-banner__content">
+        <p class="govuk-notification-banner__heading">@messages("dashboardAlt.important") <a class="govuk-notification-banner__link" href="@routes.ReviewAllowanceChangesController.showPage">@messages("dashboardAlt.importantURL")</a>.</p>
+    </div>
+</div>
+}
+
     @H1(title)
+
+ @if((messages(s"$key.sector.name." + summary.overall.sector)) == "Agriculture" || (messages(s"$key.sector.name." + summary.overall.sector)) == "Other" ){
+    @P(messages("dashboardAlt.p1"))
+} else {
     @P(messages(s"$key.p1"))
-    @P(messages(s"$key.p2", TaxYearHelpers.taxYearStartForDate(LocalDate.now.minusYears(2)).getYear.toString))
+}
+
+@if((messages(s"$key.sector.name." + summary.overall.sector)) == "Agriculture" || (messages(s"$key.sector.name." + summary.overall.sector)) == "Other" ){
+    @P(messages("dashboardAlt.p2"))
+    @P(messages("dashboardAlt.p3"))
+} else {
+@P(messages(s"$key.p2", TaxYearHelpers.taxYearStartForDate(LocalDate.now.minusYears(2)).getYear.toString))
+}
+
 
     @insetTextOrWarning
 

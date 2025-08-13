@@ -233,6 +233,14 @@ object CommonTestData {
     isAmend = true
   )
 
+  val undertakingJourneyComplete2 = UndertakingJourney(
+    about = AboutUndertakingFormPage("TestUndertaking1".some),
+    sector = UndertakingSectorFormPage(Sector(0).some),
+    cya = UndertakingCyaFormPage(true.some),
+    confirmation = UndertakingConfirmationFormPage(true.some),
+    isAmend = true
+  )
+
   val businessEntityJourney = BusinessEntityJourney(
     addBusiness = AddBusinessFormPage(true.some),
     eori = AddEoriFormPage(eori1.some)
@@ -311,7 +319,7 @@ object CommonTestData {
     None
   )
 
-  val industrySectorLimit = IndustrySectorLimit(20000)
+  val industrySectorLimit = IndustrySectorLimit(50000)
 
   val undertakingBalance = UndertakingBalance(
     undertakingIdentifier = UndertakingRef("some-ref"),

@@ -7,6 +7,9 @@ GET        /home                                      uk.gov.hmrc.eusubsidycompl
 
 GET        /assets/*file                              controllers.Assets.versioned(path = "/public", file: Asset)
 
+GET        /before-you-continue                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.RegulatoryChangeNotificationController.showPage
+POST       /before-you-continue                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.RegulatoryChangeNotificationController.continue
+
 GET        /first-login-journey-eligibility-first-empty                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityFirstEmptyPageController.firstEmptyPage
 GET        /first-login-journey-undertaking-first-empty                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.firstEmptyPage
 
@@ -58,6 +61,8 @@ GET        /lead-undertaking-disable-warning                                    
 
 GET        /lead-undertaking-disable-confirm                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getDisableUndertakingConfirm
 POST       /lead-undertaking-disable-confirm                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postDisableUndertakingConfirm
+
+GET        /review-changes-to-allowance                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ReviewAllowanceChangesController.showPage
 
 GET        /lead-undertaking-disabled                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getUndertakingDisabled
 

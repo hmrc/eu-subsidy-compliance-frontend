@@ -35,11 +35,11 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.TaxYearSyntax.LocalDateTax
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.CommonTestData.{eori1, undertaking, undertaking3, undertakingBalance, undertakingRef, undertakingSubsidies}
 import uk.gov.hmrc.eusubsidycompliancefrontend.test.util.FakeTimeProvider
 import uk.gov.hmrc.eusubsidycompliancefrontend.util.TimeProvider
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.FinancialDashboardPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.ReviewAllowanceChangesPage
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.models.FinancialDashboardSummary
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
-class FinancialDashboardControllerSpec
+class ReviewAllowanceChangesControllerSpec
     extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
@@ -77,7 +77,7 @@ class FinancialDashboardControllerSpec
 
     "getFinancialDashboard is called" must {
 
-      "return the dashboard page for a logged in user with a valid EORI" in {
+      "return the Review Allowance Changes Page for a logged in user with a valid EORI" in {
         mockAuthWithEnrolmentAndNoEmailVerification(eori1)
         mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
         mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
@@ -85,9 +85,9 @@ class FinancialDashboardControllerSpec
         )
         mockGetUndertakingBalance(eori1)(undertakingBalance.some.toFuture)
 
-        val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
+        val request = FakeRequest(GET, routes.ReviewAllowanceChangesController.showPage.url)
         val result = route(app, request).get
-        val page = instanceOf[FinancialDashboardPage]
+        val page = instanceOf[ReviewAllowanceChangesPage]
 
         val summaryData = FinancialDashboardSummary
           .fromUndertakingSubsidies(
@@ -102,38 +102,14 @@ class FinancialDashboardControllerSpec
 
         val data = contentAsString(result)
         val document = Jsoup.parse(data)
-        document.getElementById("undertaking-balance-heading").text shouldBe "Undertaking balance"
-        document.getElementById("undertaking-balance-value").text shouldBe "€123.45"
 
         verifyInsetText(document)
 
       }
 
-      "return the dashboard page for a logged in user with a valid EORI - with scp08 issues" in {
-        mockAuthWithEnrolmentAndNoEmailVerification(eori1)
-        mockRetrieveUndertaking(eori1)(undertaking.some.toFuture)
-        mockRetrieveSubsidiesForDateRange(undertakingRef, fakeTimeProvider.today.toSearchRange)(
-          undertakingSubsidies.toFuture
-        )
-        mockGetUndertakingBalance(eori1)(None.toFuture)
-
-        val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
-        val result = route(app, request).get
-        status(result) shouldBe Status.OK
-
-        val data = contentAsString(result)
-        val document = Jsoup.parse(data)
-        document.getElementById("undertaking-balance-heading").text shouldBe "Undertaking balance"
-        document
-          .getElementById("undertaking-balance-value")
-          .text shouldBe "€0.00"
-
-        verifyScp08Warning(document)
-      }
-
     }
 
-    "display sector cap as agriculture on financial Dashboard Page" in {
+    "display sector cap as agriculture on Review Allowance Changes Page" in {
       inSequence {
         mockAuthWithEnrolmentAndNoEmailVerification(eori1)
         mockRetrieveUndertaking(eori1)(undertaking3.some.toFuture)
@@ -143,9 +119,9 @@ class FinancialDashboardControllerSpec
         mockGetUndertakingBalance(eori1)(undertakingBalance.some.toFuture)
       }
 
-      val request = FakeRequest(GET, routes.FinancialDashboardController.getFinancialDashboard.url)
+      val request = FakeRequest(GET, routes.ReviewAllowanceChangesController.showPage.url)
       val result = route(app, request).get
-      val page = instanceOf[FinancialDashboardPage]
+      val page = instanceOf[ReviewAllowanceChangesPage]
 
       val summaryData = FinancialDashboardSummary
         .fromUndertakingSubsidies(
@@ -159,7 +135,6 @@ class FinancialDashboardControllerSpec
       val data = contentAsString(result)
       data shouldBe page(summaryData)(request, messages, instanceOf[AppConfig]).toString()
       val document = Jsoup.parse(data)
-      document.getElementById("SectorCapId").text() shouldBe "Sector cap (Agriculture)"
 
       verifyAgricultureInsetText(document)
     }
@@ -168,21 +143,14 @@ class FinancialDashboardControllerSpec
 
   def verifyInsetText(document: Document): Unit = {
     document
-      .getElementById("dashboard-inset-text")
-      .text() shouldBe "Customs subsidies (Customs Duty waivers) claims can take up to 24 hours to update here. This means that keeping a record of payments that you have received is advised."
+      .getElementById("reviewAllowanceChanges-p2")
+      .text() shouldBe "Your allowance is still 300,000 euros, but it is now calculated over a rolling 3-year period, instead of 3 tax years."
   }
 
   def verifyAgricultureInsetText(document: Document): Unit = {
-    document.getElementById("govuk-notification-banner-title").text shouldBe "Important"
     document
-      .getElementById("dashboard-inset-text")
-      .text() shouldBe "Customs subsidies (Customs Duty waivers) claims can take up to 24 hours to update here."
-  }
-
-  def verifyScp08Warning(document: Document): Unit = {
-    document
-      .getElementById("scp08-warning")
-      .text() shouldBe "! Warning Your 'Undertaking balance', 'Total claimed' and 'Customs subsidies (Customs Duty waivers)' amounts in the first section may show temporary differences to your own records. They may take up to 24 hours to be amended here, so keeping a record of any payments you have received is advised."
+      .getElementById("reviewAllowanceChanges-p2")
+      .text() shouldBe "Your allowance is still 50,000 euros, but it is now calculated over a rolling 3-year period, instead of 3 tax years."
   }
 
 }
