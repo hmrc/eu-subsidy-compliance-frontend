@@ -34,13 +34,13 @@
 @fieldName = @{"undertakingSector"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-else controllers.routes.UndertakingController.postSector
+    if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
+    else controllers.routes.UndertakingController.postSector
 }
 
 
 @radioText(id: String, content: String) = {
-<span id="@id">@content</span>
+    <span id="@id">@content</span>
 }
 
 @radioOptions = @{
