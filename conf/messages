@@ -727,8 +727,8 @@ NACE.Lvl1.Households = Households employing workers or producing goods and servi
 NACE.Lvl1.ActivitiesExtraterritorial = Activities of extraterritorial organisations and bodies
 
 #Agriculture NACE Sector2,3,4
-NACE.Agriculture.Lvl2 = Crop and animal production, hunting and related services
-NACE.Agriculture.Lvl3.GrowingNonPerennialCrops = Growing non-perennial crops
+NACE.Agriculture.Lvl2 = Crop and animal production, hunting and related services // Does this not need another bit after Lvl2
+#### NACE.Agriculture.Lvl3.GrowingNonPerennialCrops = Growing non-perennial crops
 NACE.Agriculture.Lvl4.Cereals =	Cereals (except rice), leguminous crops and oil seeds
 NACE.Agriculture.Lvl4.Fibre = Fibre crops
 NACE.Agriculture.Lvl4.Rice = Rice
@@ -759,9 +759,73 @@ NACE.Agriculture.Lvl4.Swine = Swine and pigs
 NACE.Agriculture.Lvl4.OtherAnimals =  Other animals
 #### NACE.Agriculture.Lvl3.MixedFarming = Mixed farming
 NACE.Agriculture.Lvl4.MixedFarming = Mixed farming
-NACE.Agriculture.Lvl3.SupportActivities = Support activities to agriculture and post-harvest crop activities
+####  NACE.Agriculture.Lvl3.SupportActivities = Support activities to agriculture and post-harvest crop activities
 NACE.Agriculture.Lvl4.PostHarvestCropActivities = Post-harvest crop activities and seed processing for propagation
 NACE.Agriculture.Lvl4.SupportActivitiesAnimal = Support activities for animal production
 NACE.Agriculture.Lvl4.SupportActivitiesCrop = Support activities for crop production
 #### NACE.Agriculture.Lvl3.HuntingTrapping=	Hunting, trapping and related service activities
-NACE.Agriculture.Lvl4.HuntingTrapping=	Hunting, trapping and related service activities
+NACE.Agriculture.Lvl4.HuntingTrapping =	Hunting, trapping and related service activities
+
+NACE.Agriculture.Lvl2.ForestryLogging = Forestry and logging
+#### NACE.Agriculture.Lvl3.SilvicultureActivities = Silviculture and other forestry activities
+NACE.Agriculture.Lvl4.SilvicultureActivities = Silviculture and other forestry activities
+#### NACE.Agriculture.Lvl3.Logging = Logging
+NACE.Agriculture.Lvl4.Logging = Logging
+#### NACE.Agriculture.Lvl3.GatheringNonWoodProducts = Gathering of wild growing non-wood products
+NACE.Agriculture.Lvl4.GatheringNonWoodProducts = Gathering of wild growing non-wood products
+#### NACE.Agriculture.Lvl3.SupportServicesForestry = Support services to forestry
+NACE.Agriculture.Lvl4.SupportServicesForestry = Support services to forestry
+
+NACE.Agriculture.Lvl2.FishingAquaculture = Fishing and aquaculture
+#### NACE.Agriculture.Lvl3.Fishing = Fishing
+NACE.Agriculture.Lvl4.MarineFishing = Marine fishing
+NACE.Agriculture.Lvl4.FreshwaterFishing = Freshwater Fishing
+#### NACE.Agriculture.Lvl3.Aquaculture = Aquaculture
+NACE.Agriculture.Lvl4.MarineAquaculture = Freshwater aquaculture
+NACE.Agriculture.Lvl4.FreshwaterAquaculture = Freshwater aquaculture
+#### NACE.Agriculture.Lvl3.FishingAquacultureSupportActivities = Support activities for fishing and aquaculture
+NACE.Agriculture.Lvl4.FishingAquacultureSupportActivities = Support activities for fishing and aquaculture
+
+NACE.MiningQuarrying.Lvl2.MiningCoalLignite = Mining of coal and lignite
+#### NACE.MiningQuarrying.Lvl3.MiningHardCoal = Mining of hard coal
+NACE.MiningQuarrying.Lvl4.MiningHardCoal = Mining of hard coal
+#### NACE.MiningQuarrying.Lvl3.MiningLignite = Mining of lignite
+NACE.MiningQuarrying.Lvl4.MiningLignite = Mining of lignite
+
+NACE.MiningQuarrying.Lvl2.PetroleumNaturalGasExtraction = Extraction of crude petroleum and natural gas
+#### NACE.MiningQuarrying.Lvl3.CrudePetroleum = Extraction of crude petroleum
+NACE.MiningQuarrying.Lvl4.CrudePetroleum = Extraction of crude petroleum
+#### NACE.MiningQuarrying.Lvl3.NaturalGas = Extraction of natural gas
+NACE.MiningQuarrying.Lvl4.NaturalGas = Extraction of natural gas
+
+NACE.MiningQuarrying.Lvl2.MiningMetalOres = Mining of metal ores
+#### NACE.MiningQuarrying.Lvl3.MiningIronOres = Mining of iron ores
+NACE.MiningQuarrying.Lvl4.MiningIronOres = Mining of iron ores
+#### NACE.MiningQuarrying.Lvl3.MiningNonFerrousOres = Mining of non-ferrous metal ores
+NACE.MiningQuarrying.Lvl4.MiningUraniumAndThoriumOres = Mining of uranium and thorium ores
+NACE.MiningQuarrying.Lvl4.MiningOtherNonFerrousOres = Mining of other non-ferrous metal ores
+
+NACE.MiningQuarrying.Lvl2.OtherMiningAndQuarrying = Other Mining and quarrying
+#### NACE.MiningQuarrying.Lvl3.QuarryingStoneSandClay = Quarrying of stone, sand and clay
+NACE.MiningQuarrying.Lvl4.QuarryingStones = Quarrying of ornamental stone, limestone, gypsum, slate and other stone
+NACE.MiningQuarrying.Lvl4.OperationsOfPitsMining = Operation of gravel and sand pits and mining of clay and kaolin
+#### NACE.MiningQuarrying.Lvl3.MiningAndQuarryingNEC = Mining and quarrying of n.e.c.
+NACE.MiningQuarrying.Lvl4.MiningChemicalAndFertiliser = Mining of chemical and fertiliser minerals
+NACE.MiningQuarrying.Lvl4.ExtractionOfPeat = Extraction of peat
+NACE.MiningQuarrying.Lvl4.ExtractionOfSalt = Extraction of salt
+NACE.MiningQuarrying.Lvl4.OtherNEC = Other mining and quarrying n.e.c.
+
+NACE.MiningQuarrying.Lvl2.MiningSupportServiceActivities = Mining support service activities
+#### NACE.MiningQuarrying.Lvl3.PetroleumNaturalGasSupportActivities = Support activities for petroleum and natural gas extraction
+NACE.MiningQuarrying.Lvl4.PetroleumNaturalGasSupportActivities = Support activities for petroleum and natural gas extraction
+#### NACE.MiningQuarrying.Lvl3.OtherMiningAndQuarryingSupport = Support activities for other mining and quarrying
+NACE.MiningQuarrying.Lvl4 = Support activities for other mining and quarrying
+
+NACE.Manufacturing.Lvl2.ManufactureFoodProducts = Manufacture of food products
+#### NACE.Manufacturing.Lvl3.ProcessingPreservingMeatProducts = Processing and preserving of meat and production of meat products
+NACE.Manufacturing.Lvl4.ProcessingPreservingMeat = Processing and preserving of meat, except of poultry meat
+NACE.Manufacturing.Lvl4.ProcessingPreservingPoultry = Processing and preserving of poultry meat
+NACE.Manufacturing.Lvl4.ProcessingPreservingMeatPoultry = Production of meat and poultry meat products
+#### NACE.Manufacturing.Lvl3.ProcessingPreservingFish = Processing and preserving of fish, crustaceans and molluscs
+NACE.Manufacturing.Lvl4.ProcessingPreservingFish = Processing and preserving of fish, crustaceans and molluscs
+#### 
