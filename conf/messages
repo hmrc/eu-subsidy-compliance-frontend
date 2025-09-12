@@ -1495,6 +1495,7 @@ NACE.PublishingBroadcastingContentDistribution.Lvl4.SoundRecordingPublishing = S
 NACE.PublishingBroadcastingContentDistribution.Lvl2.ProgrammingBroadcasting = Programming, broadcasting, news agency and other content distribution activities
 #### NACE.PublishingBroadcastingContentDistribution.Lvl3.RadioBroadcasting = Radio broadcasting and audio distribution activities
 NACE.PublishingBroadcastingContentDistribution.Lvl4.RadioBroadcasting = Radio broadcasting and audio distribution activities
+
 #### NACE.PublishingBroadcastingContentDistribution.Lvl3.TelevisionBroadcasting = Television programming, broadcasting and video distribution activities
 NACE.PublishingBroadcastingContentDistribution.Lvl4.TelevisionBroadcasting = Television programming, broadcasting and video distribution activities
 #### NACE.PublishingBroadcastingContentDistribution.Lvl3.NewsAgency = News agency and other content distribution activities
@@ -1858,6 +1859,6 @@ NACE.Households.Lvl4.UndifferentiatedGoods = Undifferentiated goods-producing ac
 NACE.Households.Lvl4.UndifferentiatedServices = Undifferentiated service-producing activities of private households for own use
 
 #ActivitiesExtraterritorial NACE Sector2,3,4
-NACE.ActivitiesExtraterritorial.Lvl2.OrganisationsBodies = Activities of extraterritorial organisations and bodies
+NACE.ActivitiesExtraterritorial.Lvl2.CYAOnly.OrganisationsBodies = Activities of extraterritorial organisations and bodies
 #### NACE.ActivitiesExtraterritorial.Lvl3.OrganisationsBodies = Activities of extraterritorial organisations and bodies
 NACE.ActivitiesExtraterritorial.Lvl4.OrganisationsBodies = Activities of extraterritorial organisations and bodies
