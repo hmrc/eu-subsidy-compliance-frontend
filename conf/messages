@@ -700,6 +700,7 @@ industrySectorResearchBanner.hide.button = Hide message
 industrySectorResearchBanner.visually.hidden = Hide message. I do not want to take part in research
 
 ############################################## NACE #################################################################################################################
+ NACE.general.Lvl3.hint = Select one option that best describes your undertaking’s main business activity
 
 #NACESector01
 NACE.Lvl1.AgricultureForestryFishing = Agriculture, forestry and fishing
@@ -765,7 +766,7 @@ NACE.AgricultureForestryFishing.Lvl4.PostHarvestCropActivities = Post-harvest cr
 #### NACE.AgricultureForestryFishing.Lvl3.HuntingTrapping = Hunting, trapping and related service activities
 NACE.AgricultureForestryFishing.Lvl4.HuntingTrapping = Hunting, trapping and related service activities
 
-NACE.forestry.title = What is your undertaking’s main business activity in forestry?
+NACE.forestry.Lvl2.title = What is your undertaking’s main business activity in forestry?
 NACE.forestry.Lvl2.forestry = Forestry and logging
  NACE.forestry.Lvl3.silviculture = Silviculture and other forestry activities
 NACE.forestry.Lvl4.silviculture = Silviculture and other forestry activities
@@ -777,13 +778,16 @@ NACE.forestry.Lvl4.gatheringOfWildGrowth = Gathering of wild growing non-wood pr
 NACE.forestry.Lvl4.forestrySupportServices = Support services to forestry
 
 NACE.fishing.Lvl2.fishingAquaculture = Fishing and aquaculture
-#### NACE.fishing.Lvl3.fishing = Fishing
+NACE.fishing.Lvl2.title = What is your undertaking’s main business activity in fishery and aquaculture?
+NACE.fishing.Lvl3.fishing = Fishing
+NACE.fishing.Lvl3.fishing.title =  What type of fishing does your undertaking do?
 NACE.fishing.Lvl4.marineFishing = Marine fishing
 NACE.fishing.Lvl4.freshwaterFishing = Freshwater fishing
-#### NACE.fishing.Lvl3.aquaculture3 = Aquaculture
+NACE.fishing.Lvl3.aquaculture = Aquaculture
+NACE.fishing.Lvl3.aquaculture.title = What is your undertaking’s main business activity in aquaculture?
 NACE.fishing.Lvl4.marineAquaculture = Marine aquaculture
 NACE.fishing.Lvl4.freshwaterAquaculture = Freshwater aquaculture
-#### NACE.fishing.Lvl3.aquacultureSupportActivities = Support activities for fishing and aquaculture
+NACE.fishing.Lvl3.aquacultureSupportActivities = Support activities for fishing and aquaculture
 NACE.fishing.Lvl4.aquacultureSupportActivities = Support activities for fishing and aquaculture
 
 #MiningQuarrying NACE Sector2,3,4
