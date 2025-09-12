@@ -1,0 +1,106 @@
+@*
+* Copyright 2025 HM Revenue & Customs
+*@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+
+@this(
+layout: Layout,
+formHelper: FormWithCSRF,
+button: components.Button,
+govukErrorSummary: GovukErrorSummary,
+govukRadios : GovukRadios
+)
+
+
+@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@fieldName = @{"undertakingSector"}
+
+@actionUrl = @{
+if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
+else controllers.routes.UndertakingController.postSector
+}
+
+
+@radioText(id: String, content: String) = {
+<span id="@id">@content</span>
+}
+
+@radioOptions = @{
+Seq(
+RadioItem(
+content = HtmlContent(radioText("sector-label-coalAndLigniteMining", messages("NACE.mining.Lvl2.coalAndLigniteMining"))),
+value = Some(Sector.coalAndLigniteMining.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.coalAndLigniteMining.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-petroleumNaturalGasExtraction", messages("NACE.mining.Lvl2.petroleumNaturalGasExtraction"))),
+value = Some(Sector.petroleumNaturalGasExtraction.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.petroleumNaturalGasExtraction.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-metalOresMining", messages("NACE.mining.Lvl2.metalOresMining"))),
+value = Some(Sector.metalOresMining.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.metalOresMining.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-otherMiningQuarrying", messages("NACE.mining.Lvl2.otherMiningQuarrying"))),
+value = Some(Sector.otherMiningQuarrying.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMiningQuarrying.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-miningSupportServices", messages("NACE.mining.Lvl2.miningSupportServices"))),
+value = Some(Sector.miningSupportServices.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningSupportServices.toString)
+)
+)
+}
+
+
+@layout(
+pageTitle = Some(messages("NACE.mining.Lvl1.mining.title")),
+backLinkEnabled = true,
+backLink = Some(previous),
+hasErrors = form.hasErrors
+) {
+
+@formHelper(action = actionUrl) {
+@form.errors.map { err =>
+@govukErrorSummary(ErrorSummary(
+errorList = Seq(
+ErrorLink(
+href = Some(s"#${err.key}"),
+content = Text(s"${messages(err.key++"." ++err.message)}")
+)
+),
+title = Text(messages("common.error.summary.title", undertakingName))
+))
+}
+
+
+
+@govukRadios(Radios(
+errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+content = Text(messages("undertakingSector.error.required"))
+))} else None,
+fieldset = Some(Fieldset(
+legend = Some(Legend(
+content = Text(messages("NACE.mining.Lvl1.mining.title")),
+classes = "govuk-fieldset__legend--xl",
+isPageHeading = true
+))
+)),
+idPrefix = Some(fieldName),
+name = fieldName,
+items = radioOptions
+))
+
+@button("continue.button")
+}
+}
