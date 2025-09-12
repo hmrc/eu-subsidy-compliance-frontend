@@ -46,31 +46,41 @@ else controllers.routes.UndertakingController.postSector
 
 @radioOptions = @{
 Seq(
-RadioItem(
-content = HtmlContent(radioText("sector-label-agriculture", messages("sector.label.2"))),
-hint = Some(Hint(
-content = HtmlContent(radioText("sector-hint-agriculture", messages("sector.hint.2", appConfig.sectorCap("agriculture"))))
-)),
-value = Some(Sector.agriculture.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.agriculture.toString)
-),
-RadioItem(
-content = HtmlContent(radioText("sector-label-aquaculture", messages("sector.label.3"))),
-hint = Some(Hint(
-content = HtmlContent(radioText("sector-hint-aquaculture", messages("sector.hint.3", appConfig.sectorCap("aquaculture"))))
-)),
-value = Some(Sector.aquaculture.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.aquaculture.toString)
-),
-RadioItem(
-content = HtmlContent(radioText("sector-label-other", "General Trade")),
-hint = Some(Hint(
-id = Some("sector-hint-other"),
-content = HtmlContent(radioText("sector-hint-other", messages("sector.hint.0", appConfig.sectorCap("other"))))
-)),
-value = Some(Sector.other.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.other.toString)
-)
+    RadioItem(
+    content = HtmlContent(radioText("sector-label-agriculture", messages("NACE.AgricultureForestryFishing.Lvl4.CerealsLeguminousCrops"))),
+    value = Some(Sector.CerealsLeguminousCrops.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.CerealsLeguminousCrops.toString)
+    ),
+    RadioItem(
+    content = HtmlContent(radioText("sector-label-agriculture", "messages(NACE.AgricultureForestryFishing.Lvl4.FibreCrops")),
+    value = Some(Sector.FibreCrops.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.FibreCrops.toString)
+    ),
+    RadioItem(
+    content = HtmlContent(radioText("sector-label-agriculture", messages("NACE.AgricultureForestryFishing.Lvl4.Rice"))),
+    value = Some(Sector.Rice.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.Rice.toString)
+    ),
+    RadioItem(
+    content = HtmlContent(radioText("sector-label-agriculture", messages("NACE.AgricultureForestryFishing.Lvl4.SugarCane"))),
+    value = Some(Sector.SugarCane.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.SugarCane.toString)
+    ),
+    RadioItem(
+    content = HtmlContent(radioText("sector-label-agriculture", messages("NACE.AgricultureForestryFishing.Lvl4.Tobacco"))),
+    value = Some(Sector.Tobacco.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.Tobacco.toString)
+    ),
+    RadioItem(
+    content = HtmlContent(radioText("sector-label-agriculture", messages("NACE.AgricultureForestryFishing.Lvl4.Vegetables"))),
+    value = Some(Sector.Vegetables.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.Vegetables.toString)
+    ),
+    RadioItem(
+    content = HtmlContent(radioText("sector-label-agriculture", messages("NACE.AgricultureForestryFishing.Lvl4.OtherNonPerennialCrops"))),
+    value = Some(Sector.OtherNonPerennialCrops.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherNonPerennialCrops.toString)
+    )
 )
 }
 
