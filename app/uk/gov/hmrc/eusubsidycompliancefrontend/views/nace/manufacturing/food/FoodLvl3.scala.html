@@ -63,6 +63,62 @@
             )),
             value = Some(Sector.Fish),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Fish.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-fruit-veg", messages("NACE.Manufacturing.Lvl3.FruitVegetables"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-fruit-veg", "hint text placeholder"))))
+            )),
+            value = Some(Sector.FruitAndVegetables),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FruitAndVegetables.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-oils", messages("NACE.Manufacturing.Lvl3.VegetableAnimalOils"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-oils", "hint text placeholder"))))
+            )),
+            value = Some(Sector.Oils),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Oils.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-dairy", messages("NACE.Manufacturing.Lvl3.DairyProducts"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-dairy", "hint text placeholder"))))
+            )),
+            value = Some(Sector.DairyProducts),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.DairyProducts.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-grain", messages("NACE.Manufacturing.Lvl3.GrainMillProducts"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-grain", "hint text placeholder"))))
+            )),
+            value = Some(Sector.GrainAndStarchProducts),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.GrainAndStarchProducts.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-bakery", messages("NACE.Manufacturing.Lvl3.BakeryProducts"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-bakery", "hint text placeholder"))))
+            )),
+            value = Some(Sector.BakeryProducts),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.BakeryProducts.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl3.OtherFoodProducts"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-other", "hint text placeholder"))))
+            )),
+            value = Some(Sector.OtherFoodProducts),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherFoodProducts.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-animalfeeds", messages("NACE.Manufacturing.Lvl3.PreparedAnimalFeeds"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-animalfeeds", "hint text placeholder"))))
+            )),
+            value = Some(Sector.PreparedAnimalFeeds),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PreparedAnimalFeeds.toString)
         )
     )
 }

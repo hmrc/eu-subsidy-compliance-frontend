@@ -49,28 +49,28 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-meat-processing", messages("NACE.Manufacturing.Lvl4.MeatExceptPoultry"))),
+            content = HtmlContent(radioText("sector-label-fruitveg-juice", messages("NACE.Manufacturing.Lvl4.FruitVegetableJuice"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-meat-processing", "hint place hoder text"))
+                content = HtmlContent(radioText("sector-hint-fruitveg-juice", "hint place holder text"))
             )),
-            value = Some(Sector.meatProcessing),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.meatProcessing.toString)
+            value = Some(Sector.FruitAndVegetableJuiceManufacture),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FruitAndVegetableJuiceManufacture.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-poultry-processing", messages("NACE.Manufacturing.Lvl4.PoultryMeat"))),
+            content = HtmlContent(radioText("sector-label-fruitveg-potatoes", messages("NACE.Manufacturing.Lvl4.Potatoes"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-poultry-processing", "hint place hoder text"))
+                content = HtmlContent(radioText("sector-hint-fruitveg-potatoes", "hint place holder text"))
             )),
-            value = Some(Sector.poultryProcessing),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.poultryProcessing.toString)
+            value = Some(Sector.FruitAndVegetableProcessing),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FruitAndVegetableProcessing.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-meat-products", messages("NACE.Manufacturing.Lvl4.MeatPoultryProducts"))),
+            content = HtmlContent(radioText("sector-label-fruitveg-other", messages("NACE.Manufacturing.Lvl4.OtherFruitVegetables"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-meat-products", "hint place hoder text"))
+                content = HtmlContent(radioText("sector-hint-fruitveg-other", "hint place holder text"))
             )),
-            value = Some(Sector.meatProductsProduction),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.meatProductsProduction.toString)
+            value = Some(Sector.OtherFruitAndVegetableProcessing),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherFruitAndVegetableProcessing.toString)
         )
     )
 }
