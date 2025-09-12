@@ -106,6 +106,7 @@ package object types extends SimpleJson {
     val agriculture: types.Sector.Value = Value("2")
     val aquaculture: types.Sector.Value = Value("3")
 
+    val agricultureForestryFishing: types.Sector.Value = Value("A")
     val GrowingNonPerennialCrops: types.Sector.Value = Value("01")
     val	CerealsLeguminousCrops: types.Sector.Value = Value("01.1")
     val	FibreCrops: types.Sector.Value = Value("01.11")
@@ -164,6 +165,8 @@ package object types extends SimpleJson {
       val aquacultureSupportActivities: types.Sector.Value = Value("03.3")
         val aquacultureSupportActivities4: types.Sector.Value = Value("03.30")
 
+
+   val MiningQuarrying : types.Sector.Value = Value("B")
    val CoalAndLigniteMining : types.Sector.Value = Value("05")
    val Hardcoal: types.Sector.Value = Value("05.1")
    val HardcoalMining: types.Sector.Value = Value("05.10")
@@ -199,6 +202,8 @@ package object types extends SimpleJson {
    val OtherMiningSupport : types.Sector.Value = Value("09.9")
    val OtherMiningSupport4: types.Sector.Value = Value("09.90")
 
+
+    val Manufacturing: types.Sector.Value = Value("C")
     val Food: types.Sector.Value = Value("10")
     val Meat: types.Sector.Value = Value("10.1")
     val meatProcessing: types.Sector.Value = Value("10.11")
@@ -570,24 +575,27 @@ package object types extends SimpleJson {
     val industrialMachineryInstallation: types.Sector.Value = Value("33.2")
     val industrialMachineryInstallation4: types.Sector.Value = Value("33.20")
 
-    val ElectricityGasAirConditioningSupply: types.Sector.Value = Value("35")
-    val 	ElectricPowerGenerationAndDistribution	: types.Sector.Value = Value("35.1")
-    val 		electricityDistribution  : types.Sector.Value = Value("35.14")
-    val 		nonRenewableElectricityProduction  : types.Sector.Value = Value("35.11")
-    val 		renewableElectricityProduction: types.Sector.Value = Value("35.12")
-    val 		electricityStorage : types.Sector.Value = Value("35.16")
-    val 		electricityTrade: types.Sector.Value = Value("35.15")
-    val 		electricityTransmission : types.Sector.Value = Value("35.13")
-    val 	gaseousFuelsManufacture: types.Sector.Value = Value("35.2")
-    val 		gaseousFuelDistribution : types.Sector.Value = Value("35.22")
-    val 		gaseousFuelManufacture : types.Sector.Value = Value("35.21")
-    val 		gaseousFuelStorage : types.Sector.Value = Value("35.24")
-    val 		gaseousFuelTrade : types.Sector.Value = Value("35.23")
-    val 	SteamAndAirConditioningSupply	: types.Sector.Value = Value("35.3")
-    val 		SteamAndAirConditioningSupply4: types.Sector.Value = Value("35.30")
-    val 	electricPowerAndGasBrokers: types.Sector.Value = Value("35.4")
-    val 		electricPowerAndGasBrokers4: types.Sector.Value = Value("35.40")
 
+    val ElectricityGasSteamAirConditioningSupply: types.Sector.Value = Value("D")
+    val ElectricityGasAirConditioningSupply: types.Sector.Value = Value("35")
+    val ElectricPowerGenerationAndDistribution	: types.Sector.Value = Value("35.1")
+    val electricityDistribution  : types.Sector.Value = Value("35.14")
+    val nonRenewableElectricityProduction  : types.Sector.Value = Value("35.11")
+    val renewableElectricityProduction: types.Sector.Value = Value("35.12")
+    val electricityStorage : types.Sector.Value = Value("35.16")
+    val electricityTrade: types.Sector.Value = Value("35.15")
+    val electricityTransmission : types.Sector.Value = Value("35.13")
+    val gaseousFuelsManufacture: types.Sector.Value = Value("35.2")
+    val gaseousFuelDistribution : types.Sector.Value = Value("35.22")
+    val gaseousFuelManufacture : types.Sector.Value = Value("35.21")
+    val gaseousFuelStorage : types.Sector.Value = Value("35.24")
+    val gaseousFuelTrade : types.Sector.Value = Value("35.23")
+    val SteamAndAirConditioningSupply	: types.Sector.Value = Value("35.3")
+    val SteamAndAirConditioningSupply4: types.Sector.Value = Value("35.30")
+    val electricPowerAndGasBrokers: types.Sector.Value = Value("35.4")
+    val electricPowerAndGasBrokers4: types.Sector.Value = Value("35.40")
+
+    val WaterSupplySewereageWasteManagementAndRemediationActivities: types.Sector.Value = Value("E")
     val WaterTreatment: types.Sector.Value = Value("36")
     val WaterTreatment3: types.Sector.Value = Value("36.0")
     val WaterTreatment4: types.Sector.Value = Value("36.00")
@@ -610,6 +618,7 @@ package object types extends SimpleJson {
     val WasteManagementRemediation3: types.Sector.Value = Value("39.0")
     val WasteManagementRemediation4: types.Sector.Value = Value("39.00")
 
+    val Construction: types.Sector.Value = Value("F")
     val buildingsConstruction: types.Sector.Value = Value("41")
     val buildingsConstruction3: types.Sector.Value = Value("41.0")
     val buildingsConstruction4: types.Sector.Value = Value("41.00")
@@ -653,6 +662,7 @@ package object types extends SimpleJson {
         val MasonryAndBricklaying: types.Sector.Value = Value("43.91")
         val OtherSpecialisedConstructionActivities: types.Sector.Value = Value("43.99")
 
+    val WholesaleAndRetailTrade: types.Sector.Value = Value("G")
     val Wholesale: types.Sector.Value = Value("46")
     val 	WholesaleContractBasis: types.Sector.Value = Value("46.1")
     val 		AgriculturalWholesaleContractBasis : types.Sector.Value = Value("46.11")
@@ -758,6 +768,8 @@ package object types extends SimpleJson {
     val NonSpecialisedRetailIntermediation: types.Sector.Value = Value("47.91")
     val SpecialisedRetailIntermediation: types.Sector.Value = Value("47.92")
 
+
+    val TransportationAndStorage : types.Sector.Value = Value("H")
     val LandTransport : types.Sector.Value = Value("49")
     val PassengerRailTransport	: types.Sector.Value = Value("49.1")
     val PassengerHeavyRailTransport: types.Sector.Value = Value("49.11")
@@ -815,6 +827,7 @@ package object types extends SimpleJson {
     val PostalIntermediationActivities	: types.Sector.Value = Value("53.3")
     val PostalIntermediationActivities4: types.Sector.Value = Value("53.30")
 
+    val AccommodationAndFoodServiceActivities: types.Sector.Value = Value("I")
     val Accommodation: types.Sector.Value = Value("55")
       val Hotels: types.Sector.Value = Value("55.1")
         val Hotels4: types.Sector.Value = Value("55.10")
@@ -839,6 +852,7 @@ package object types extends SimpleJson {
     val FoodBeverageServiceIntermediationActivities	: types.Sector.Value = Value("56.4")
     val FoodBeverageServiceIntermediationActivities4: types.Sector.Value = Value("56.40")
 
+    val PublishingBroadcastingAndContentProductionAndDistributionActivities: types.Sector.Value = Value("J")
     val Publishing: types.Sector.Value = Value("58")
     val booksNewspapersPublishing: types.Sector.Value = Value("58.1")
     val BooksPublishing: types.Sector.Value = Value("58.11")
@@ -867,6 +881,7 @@ package object types extends SimpleJson {
     val NewsAgencyActivities: types.Sector.Value = Value("60.31")
     val OtherContentDistributionActivities: types.Sector.Value = Value("60.39")
 
+    val TelecommunicationComputerProgrammingConsultingComputingInfrastructureAndOtherInformationSericeActivities: types.Sector.Value = Value("K")
     val Telecommunication: types.Sector.Value = Value("61")
     val telecommunicationActivities: types.Sector.Value = Value("61.1")
     val telecommunicationActivities4: types.Sector.Value = Value("61.10")
@@ -890,6 +905,7 @@ package object types extends SimpleJson {
     val WebSearchActivities3: types.Sector.Value = Value("63.91")
     val WebSearchActivities4: types.Sector.Value = Value("63.92")
 
+    val FinancialAndInsuranceActivities: types.Sector.Value = Value("L")
     val FinancialServices: types.Sector.Value = Value("64")
     val MonetaryIntermediation: types.Sector.Value = Value("64.1")
     val CentralBanking: types.Sector.Value = Value("64.11")
@@ -926,6 +942,7 @@ package object types extends SimpleJson {
     val FundManagement	: types.Sector.Value = Value("66.3")
     val FundManagementActivities: types.Sector.Value = Value("66.30")
 
+    val RealEstate: types.Sector.Value = Value("M")
     val RealEstateActivities: types.Sector.Value = Value("68")
     val RealEstateActivitiesOwnProperty: types.Sector.Value = Value("68.1")
     val BuyingSellingRealEstateActivitiesOwnProperty: types.Sector.Value = Value("68.11")
@@ -936,6 +953,7 @@ package object types extends SimpleJson {
     val realEstateIntermediationActivities: types.Sector.Value = Value("68.31")
     val OtherRealEstateActivities: types.Sector.Value = Value("68.32")
 
+    val ProfessionalScientificAndTechnicalActivities: types.Sector.Value = Value("N")
     val LegalAndAccounting: types.Sector.Value = Value("69")
     val LegalActivities	: types.Sector.Value = Value("69.1")
     val LegalActivities4: types.Sector.Value = Value("69.10")
@@ -988,6 +1006,7 @@ package object types extends SimpleJson {
     val VeterinaryActivities3: types.Sector.Value = Value("75.0")
     val VeterinaryActivities4: types.Sector.Value = Value("75.00")
 
+    val AdministrativeAndSupportServiceActivities: types.Sector.Value = Value("O")
     val RentalAndLeasing: types.Sector.Value = Value("77")
     val MotorVehiclesRental: types.Sector.Value = Value("77.1")
     val CarRental: types.Sector.Value = Value("77.11")
@@ -1050,6 +1069,7 @@ package object types extends SimpleJson {
     val PackagingActivities: types.Sector.Value = Value("82.92")
     val OtherBusinessSupport: types.Sector.Value = Value("82.99")
 
+    val PublicAdministrationAndDefenceCompulsorySocialSecurity: types.Sector.Value = Value("P")
     val PublicAdministrationSocialSecurity: types.Sector.Value = Value("84")
     val StateAndCommunityAdministration: types.Sector.Value = Value("84.1")
     val GeneralPublicAdministration: types.Sector.Value = Value("84.11")
@@ -1064,7 +1084,8 @@ package object types extends SimpleJson {
     val CompulsorySocialSecurityActivities	: types.Sector.Value = Value("84.3")
     val CompulsorySocialSecurityActivities4: types.Sector.Value = Value("84.30")
 
-    val Education: types.Sector.Value = Value("85")
+    val Education: types.Sector.Value = Value("Q")
+    val education: types.Sector.Value = Value("85")
     val PrePrimaryEducation	: types.Sector.Value = Value("85.1")
     val PrePrimaryEducation4: types.Sector.Value = Value("85.10")
     val PrimaryEducation: types.Sector.Value = Value("85.2")
@@ -1084,6 +1105,7 @@ package object types extends SimpleJson {
     val EducationalSupportIntermediation : types.Sector.Value = Value("85.61")
     val OtherEducationalSupport: types.Sector.Value = Value("85.69")
 
+    val HumanHealthAndSocialWorkActivities: types.Sector.Value = Value("R")
     val HumanHealthActivities: types.Sector.Value = Value("86")
     val Hospital : types.Sector.Value = Value("86.1")
     val HospitalActivities: types.Sector.Value = Value("86.10")
@@ -1119,6 +1141,7 @@ package object types extends SimpleJson {
         val Childcare: types.Sector.Value = Value("88.91")
         val otherSocialWork4: types.Sector.Value = Value("88.99")
 
+    val ArtsSportsAndRecreation: types.Sector.Value = Value("S")
     val ArtsCreation: types.Sector.Value = Value("90")
     val ArtCreation: types.Sector.Value = Value("90.1")
     val LiteraryCreation: types.Sector.Value = Value("90.11")
@@ -1157,6 +1180,7 @@ package object types extends SimpleJson {
     val AmusementParks: types.Sector.Value = Value("93.21")
     val OtherRecreationActivities: types.Sector.Value = Value("93.29")
 
+    val OtherServiceActivities: types.Sector.Value = Value("T")
     val membershipOrganisationActivities: types.Sector.Value = Value("94")
     val BusinessProfessionalMembershipOrganisations: types.Sector.Value = Value("94.1")
     val BusinessMembershipOrganisations: types.Sector.Value = Value("94.11")
@@ -1199,6 +1223,7 @@ package object types extends SimpleJson {
     val DomesticPersonalServices: types.Sector.Value = Value("96.91")
     val AnyOtherPersonalServiceActivities: types.Sector.Value = Value("96.99")
 
+   val ActivitiesOfHouseholdsAsEmployers: types.Sector.Value = Value("U")
    val householdsActivitiesOfDomesticPersonnel: types.Sector.Value = Value("97")
    val householdsActivitiesOfDomesticPersonnel3: types.Sector.Value = Value("97.0")
    val householdsActivitiesOfDomesticPersonnel4: types.Sector.Value = Value("97.00")
@@ -1209,6 +1234,7 @@ package object types extends SimpleJson {
    val UndifferentiatedServiceActivities: types.Sector.Value = Value("98.2")
    val UndifferentiatedServiceActivities4: types.Sector.Value = Value("98.20")
 
+   val ActivitiesOfExtraterritorialOrganisationsAndBodies: types.Sector.Value = Value("V")
    val extraterritorialOrganisationsActivities: types.Sector.Value = Value("99")
    val extraterritorialOrganisationsActivities3: types.Sector.Value = Value("99.0")
    val extraterritorialOrganisationsActivities4: types.Sector.Value = Value("99.00")

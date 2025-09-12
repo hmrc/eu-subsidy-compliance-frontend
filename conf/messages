@@ -1859,6 +1859,6 @@ NACE.Households.Lvl4.UndifferentiatedGoods = Undifferentiated goods-producing ac
 NACE.Households.Lvl4.UndifferentiatedServices = Undifferentiated service-producing activities of private households for own use
 
 #ActivitiesExtraterritorial NACE Sector2,3,4
-NACE.ActivitiesExtraterritorial.Lvl2.OrganisationsBodies = Activities of extraterritorial organisations and bodies
+NACE.ActivitiesExtraterritorial.Lvl2.CYAOnly.OrganisationsBodies = Activities of extraterritorial organisations and bodies
 #### NACE.ActivitiesExtraterritorial.Lvl3.OrganisationsBodies = Activities of extraterritorial organisations and bodies
 NACE.ActivitiesExtraterritorial.Lvl4.OrganisationsBodies = Activities of extraterritorial organisations and bodies
