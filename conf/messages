@@ -767,24 +767,24 @@ NACE.AgricultureForestryFishing.Lvl4.HuntingTrapping = Hunting, trapping and rel
 
 NACE.forestry.title = What is your undertaking’s main business activity in forestry?
 NACE.forestry.Lvl2.forestry = Forestry and logging
-#### NACE.forestry.Lvl3.silviculture = Silviculture and other forestry activities
+ NACE.forestry.Lvl3.silviculture = Silviculture and other forestry activities
 NACE.forestry.Lvl4.silviculture = Silviculture and other forestry activities
-#### NACE.forestry.Lvl3.logging = Logging
+ NACE.forestry.Lvl3.logging = Logging
 NACE.forestry.Lvl4.logging = Logging
-#### NACE.forestry.Lvl3.gatheringOfWildGrowth = Gathering of wild growing non-wood products
+ NACE.forestry.Lvl3.gatheringOfWildGrowth = Gathering of wild growing non-wood products
 NACE.forestry.Lvl4.gatheringOfWildGrowth = Gathering of wild growing non-wood products
-#### NACE.forestry.Lvl3.forestrySupportServices = Support services to forestry
+ NACE.forestry.Lvl3.forestrySupportServices = Support services to forestry
 NACE.forestry.Lvl4.forestrySupportServices = Support services to forestry
 
-NACE.AgricultureForestryFishing.Lvl2.FishingAquaculture = Fishing and aquaculture
-#### NACE.AgricultureForestryFishing.Lvl3.Fishing = Fishing
-NACE.AgricultureForestryFishing.Lvl4.MarineFishing = Marine fishing
-NACE.AgricultureForestryFishing.Lvl4.FreshwaterFishing = Freshwater fishing
-#### NACE.AgricultureForestryFishing.Lvl3.Aquaculture = Aquaculture
-NACE.AgricultureForestryFishing.Lvl4.MarineAquaculture = Marine aquaculture
-NACE.AgricultureForestryFishing.Lvl4.FreshwaterAquaculture = Freshwater aquaculture
-#### NACE.AgricultureForestryFishing.Lvl3.FishingAquacultureSupportActivities = Support activities for fishing and aquaculture
-NACE.AgricultureForestryFishing.Lvl4.FishingAquacultureSupportActivities = Support activities for fishing and aquaculture
+NACE.fishing.Lvl2.fishingAquaculture = Fishing and aquaculture
+#### NACE.fishing.Lvl3.fishing = Fishing
+NACE.fishing.Lvl4.marineFishing = Marine fishing
+NACE.fishing.Lvl4.freshwaterFishing = Freshwater fishing
+#### NACE.fishing.Lvl3.aquaculture3 = Aquaculture
+NACE.fishing.Lvl4.marineAquaculture = Marine aquaculture
+NACE.fishing.Lvl4.freshwaterAquaculture = Freshwater aquaculture
+#### NACE.fishing.Lvl3.aquacultureSupportActivities = Support activities for fishing and aquaculture
+NACE.fishing.Lvl4.aquacultureSupportActivities = Support activities for fishing and aquaculture
 
 #MiningQuarrying NACE Sector2,3,4
 NACE.MiningQuarrying.Lvl2.MiningCoalLignite = Mining of coal and lignite
