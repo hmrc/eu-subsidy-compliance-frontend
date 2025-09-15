@@ -1,7 +1,7 @@
 @*
- * Copyright 2025 HM Revenue & Customs
- *
- *@
+* Copyright 2025 HM Revenue & Customs
+*
+*@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
@@ -36,26 +36,21 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-fishing", messages("NACE.fishing.Lvl3.fishing"))),
-value = Some(Sector.fishing.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.fishing.toString)
+content = HtmlContent(radioText("sector-label-freshwaterAquaculture", messages("NACE.fishing.Lvl4.freshwaterAquaculture"))),
+value = Some(Sector.freshwaterAquaculture.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.freshwaterAquaculture.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-aquaculture3", messages("NACE.fishing.Lvl3.aquaculture3"))),
-value = Some(Sector.aquaculture3.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.aquaculture3.toString)
-),
-RadioItem(
-content = HtmlContent(radioText("sector-label-aquacultureSupportActivities", messages("NACE.fishing.Lvl3.aquacultureSupportActivities"))),
-value = Some(Sector.aquacultureSupportActivities.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.aquacultureSupportActivities.toString)
+content = HtmlContent(radioText("sector-label-marineAquaculture", messages("NACE.fishing.Lvl4.marineAquaculture"))),
+value = Some(Sector.marineAquaculture.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.marineAquaculture.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.fishing.Lvl2.title")),
+pageTitle = Some(messages("NACE.fishing.Lvl3.aquaculture.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -82,10 +77,13 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.fishing.Lvl2.title")),
+content = Text(messages("NACE.fishing.Lvl3.aquaculture.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
+)),
+hint = Some(Hint(
+content = Text(messages("NACE.general.Lvl3.hint"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,

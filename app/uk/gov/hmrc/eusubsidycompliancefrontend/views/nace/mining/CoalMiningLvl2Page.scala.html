@@ -1,7 +1,6 @@
 @*
- * Copyright 2025 HM Revenue & Customs
- *
- *@
+* Copyright 2025 HM Revenue & Customs
+*@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
@@ -36,26 +35,21 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-fishing", messages("NACE.fishing.Lvl3.fishing"))),
-value = Some(Sector.fishing.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.fishing.toString)
+content = HtmlContent(radioText("sector-label-hardcoalMining", messages("NACE.mining.Lvl3.hardcoalMining"))),
+value = Some(Sector.hardcoalMining.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.hardcoalMining.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-aquaculture3", messages("NACE.fishing.Lvl3.aquaculture3"))),
-value = Some(Sector.aquaculture3.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.aquaculture3.toString)
-),
-RadioItem(
-content = HtmlContent(radioText("sector-label-aquacultureSupportActivities", messages("NACE.fishing.Lvl3.aquacultureSupportActivities"))),
-value = Some(Sector.aquacultureSupportActivities.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.aquacultureSupportActivities.toString)
+content = HtmlContent(radioText("sector-label-ligniteMining", messages("NACE.mining.Lvl3.ligniteMining"))),
+value = Some(Sector.ligniteMining.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.ligniteMining.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.fishing.Lvl2.title")),
+pageTitle = Some(messages("NACE.mining.Lvl2.coalAndLigniteMining.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -82,7 +76,7 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.fishing.Lvl2.title")),
+content = Text(messages("NACE.mining.Lvl2.coalAndLigniteMining.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))

@@ -1,7 +1,7 @@
 @*
- * Copyright 2025 HM Revenue & Customs
- *
- *@
+* Copyright 2025 HM Revenue & Customs
+*
+*@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
@@ -36,26 +36,31 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-fishing", messages("NACE.fishing.Lvl3.fishing"))),
-value = Some(Sector.fishing.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.fishing.toString)
+content = HtmlContent(radioText("sector-label-other", messages("NACE.forestry.Lvl4.silviculture"))),
+value = Some(Sector.silviculture4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.silviculture4.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-aquaculture3", messages("NACE.fishing.Lvl3.aquaculture3"))),
-value = Some(Sector.aquaculture3.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.aquaculture3.toString)
+content = HtmlContent(radioText("sector-label-other", "messages(NACE.forestry.Lvl4.logging")),
+value = Some(Sector.logging4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.logging4.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-aquacultureSupportActivities", messages("NACE.fishing.Lvl3.aquacultureSupportActivities"))),
-value = Some(Sector.aquacultureSupportActivities.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.aquacultureSupportActivities.toString)
+content = HtmlContent(radioText("sector-label-other", messages("NACE.forestry.Lvl4.gatheringOfWildGrowth"))),
+value = Some(Sector.gatheringOfWildGrowth4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.gatheringOfWildGrowth4.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-other", messages("NACE.forestry.Lvl4.forestrySupportServices"))),
+value = Some(Sector.forestrySupportServices4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.forestrySupportServices4.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.fishing.Lvl2.title")),
+pageTitle = Some(messages("NACE.forestry.Lvl2.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -82,7 +87,7 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.fishing.Lvl2.title")),
+content = Text(messages("NACE.forestry.Lvl2.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))

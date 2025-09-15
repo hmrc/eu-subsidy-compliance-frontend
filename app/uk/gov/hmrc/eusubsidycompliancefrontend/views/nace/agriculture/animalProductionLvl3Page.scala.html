@@ -1,0 +1,133 @@
+@*
+* Copyright 2023 HM Revenue & Customs
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+
+@this(
+layout: Layout,
+formHelper: FormWithCSRF,
+button: components.Button,
+govukErrorSummary: GovukErrorSummary,
+govukRadios : GovukRadios
+)
+
+
+@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@fieldName = @{"undertakingSector"}
+
+@actionUrl = @{
+if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
+else controllers.routes.UndertakingController.postSector
+}
+
+
+@radioText(id: String, content: String) = {
+<span id="@id">@content</span>
+}
+
+@radioOptions = @{
+Seq(
+RadioItem(
+content = HtmlContent(radioText("sector-label-dairyCattle", messages("NACE.agriculture.Lvl4.dairyCattle"))),
+value = Some(Sector.dairyCattle.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.dairyCattle.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-otherCattle", "messages(NACE.agriculture.Lvl4.otherCattle")),
+value = Some(Sector.otherCattle.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherCattle.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-camels", messages("NACE.agriculture.Lvl4.camels"))),
+value = Some(Sector.camels.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.camels.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-horses", messages("NACE.agriculture.Lvl4.horses"))),
+value = Some(Sector.horses.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.horses.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-poultry", messages("NACE.agriculture.Lvl4.poultry"))),
+value = Some(Sector.poultry.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.poultry.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-sheep", messages("NACE.agriculture.Lvl4.sheep"))),
+value = Some(Sector.sheep.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.sheep.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-swine", messages("NACE.agriculture.Lvl4.swine"))),
+value = Some(Sector.swine.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.swine.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-otherAnimals", messages("NACE.agriculture.Lvl4.otherAnimals"))),
+value = Some(Sector.otherAnimals.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherAnimals.toString)
+)
+)
+}
+
+
+@layout(
+pageTitle = Some(messages("NACE.agriculture.Lvl3.animalProduction.title")),
+backLinkEnabled = true,
+backLink = Some(previous),
+hasErrors = form.hasErrors
+) {
+
+@formHelper(action = actionUrl) {
+@form.errors.map { err =>
+@govukErrorSummary(ErrorSummary(
+errorList = Seq(
+ErrorLink(
+href = Some(s"#${err.key}"),
+content = Text(s"${messages(err.key++"." ++err.message)}")
+)
+),
+title = Text(messages("common.error.summary.title", undertakingName))
+))
+}
+
+
+
+@govukRadios(Radios(
+errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+content = Text(messages("undertakingSector.error.required"))
+))} else None,
+fieldset = Some(Fieldset(
+legend = Some(Legend(
+content = Text(messages("NACE.agriculture.Lvl3.animalProduction.title")),
+classes = "govuk-fieldset__legend--xl",
+isPageHeading = true
+))
+)),
+idPrefix = Some(fieldName),
+name = fieldName,
+items = radioOptions
+))
+
+@button("continue.button")
+}
+}
