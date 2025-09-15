@@ -700,7 +700,7 @@ industrySectorResearchBanner.hide.button = Hide message
 industrySectorResearchBanner.visually.hidden = Hide message. I do not want to take part in research
 
 ############################################## NACE #################################################################################################################
- NACE.general.Lvl3.hint = Select one option that best describes your undertaking’s main business activity
+NACE.general.hint = Select one option that best describes your undertaking’s main business activity.
 
 #NACESector01
 NACE.Lvl1.AgricultureForestryFishing = Agriculture, forestry and fishing
@@ -905,14 +905,14 @@ NACE.Manufacturing.Lvl4.OtherTextiles = Manufacture of other textiles n.e.c.
 
 #Clothing
 NACE.Manufacturing.Lvl2.Clothing = Clothing
-NACE.Manufacturing.Lvl3.KnittedCrochetedClothing = knitted and crocheted clothing
+NACE.Manufacturing.Lvl3.KnittedCrochetedClothing = Knitted and crocheted clothing
 NACE.Manufacturing.Lvl4.KnittedCrochetedApparel = Manufacture of knitted and crocheted apparel
 NACE.Manufacturing.Lvl3.OtherClothing = Other clothing and accessories
-NACE.Manufacturing.Lvl4.Outerwear = Manufacture of outerwear
-NACE.Manufacturing.Lvl4.Underwear = Manufacture of underwear
-NACE.Manufacturing.Lvl4.Workwear = Manufacture of workwear
-NACE.Manufacturing.Lvl4.LeatherClothesFur = Leather and fur clothing
-NACE.Manufacturing.Lvl4.OtherApparelAccessories = Manufacture of other wearing apparel and accessories n.e.c.
+NACE.Manufacturing.Lvl4.Outerwear = Outerwear
+NACE.Manufacturing.Lvl4.Underwear = Underwear
+NACE.Manufacturing.Lvl4.Workwear = Workwear
+NACE.Manufacturing.Lvl4.LeatherAndFurClothing = Leather and fur clothing
+NACE.Manufacturing.Lvl4.OtherClothingAccessories = Other clothing and accessories
 
 NACE.Manufacturing.Lvl2.LeatherProducts = Manufacture of leather and related products of other materials
 #### NACE.Manufacturing.Lvl3.TanningLeather = Tanning, dyeing, dressing of leather and fur; manufacture of luggage, handbags, saddlery and harness

@@ -266,7 +266,7 @@ package object types extends SimpleJson {
     val otherTextile: types.Sector.Value = Value("13.99")
 
     val Clothing: types.Sector.Value = Value("14")
-    val KnittedClothing	: types.Sector.Value = Value("14.1")
+    val KnittedCrotchetedClothing	: types.Sector.Value = Value("14.1")
     val KnittedClothingManufacture : types.Sector.Value = Value("14.10")
     val OtherClothing: types.Sector.Value = Value("14.2")
     val LeatherAndFurClothing: types.Sector.Value = Value("14.24")
