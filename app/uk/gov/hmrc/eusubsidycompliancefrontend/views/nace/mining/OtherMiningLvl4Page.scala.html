@@ -35,21 +35,31 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-stoneQuarrying", messages("NACE.mining.Lvl3.stoneQuarrying"))),
-value = Some(Sector.stoneQuarrying.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.stoneQuarrying.toString)
+content = HtmlContent(radioText("sector-label-peatExtraction", messages("NACE.mining.Lvl4.peatExtraction"))),
+value = Some(Sector.peatExtraction.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.peatExtraction.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-miningAndQuarryingNEC", messages("NACE.mining.Lvl3.miningAndQuarryingNEC"))),
-value = Some(Sector.miningAndQuarryingNEC.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningAndQuarryingNEC.toString)
+content = HtmlContent(radioText("sector-label-saltExtraction", messages("NACE.mining.Lvl4.saltExtraction"))),
+value = Some(Sector.saltExtraction.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.saltExtraction.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-chemicalMineralsMining", messages("NACE.mining.Lvl4.chemicalMineralsMining"))),
+value = Some(Sector.chemicalMineralsMining.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.chemicalMineralsMining.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-otherNEC", messages("NACE.mining.Lvl4.otherNEC"))),
+value = Some(Sector.otherNEC.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherNEC.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.mining.Lvl2.otherMiningQuarrying.title")),
+pageTitle = Some(messages("NACE.mining.Lvl3.miningAndQuarryingNEC.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -76,7 +86,7 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.mining.Lvl2.otherMiningQuarrying.title")),
+content = Text(messages("NACE.mining.Lvl3.miningAndQuarryingNEC.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
