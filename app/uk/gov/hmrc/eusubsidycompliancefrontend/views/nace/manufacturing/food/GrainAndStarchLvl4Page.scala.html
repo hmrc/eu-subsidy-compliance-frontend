@@ -49,27 +49,27 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-farm-feed", messages("NACE.Manufacturing.Lvl4.FarmAnimalFeeds"))),
+            content = HtmlContent(radioText("sector-label-grain", messages("NACE.Manufacturing.Lvl4.GrainMillProducts"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-farm-feed", "hint place holder text"))
+                content = HtmlContent(radioText("sector-hint-grain", "hint place holder text"))
             )),
-            value = Some(Sector.farmAnimalsFood),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.farmAnimalsFood.toString)
+            value = Some(Sector.GrainProducts4),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.GrainProducts4.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-pet-feed", messages("NACE.Manufacturing.Lvl4.PetFoods"))),
+            content = HtmlContent(radioText("sector-label-starch", messages("NACE.Manufacturing.Lvl4.Starches"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-pet-feed", "hint place holder text"))
+                content = HtmlContent(radioText("sector-hint-starch", "hint place holder text"))
             )),
-            value = Some(Sector.PetFood),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PetFood.toString)
+            value = Some(Sector.starchProducts),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.starchProducts.toString)
         )
     )
 }
 
 
 @layout(
-  pageTitle = Some(messages("undertakingSector.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.GrainMillProducts.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -100,7 +100,7 @@
         ))
     )),
         hint = Some(Hint(
-        content = Text(messages("undertakingSector.p1"))
+        content = Text(messages("NACE.general.hint"))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,

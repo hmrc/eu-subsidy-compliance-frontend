@@ -49,27 +49,19 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-dairy", messages("NACE.Manufacturing.Lvl4.DairyProducts"))),
+            content = HtmlContent(radioText("sector-label-food", messages("NACE.Manufacturing.Lvl2.FoodProducts"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-dairy", "hint place holder text"))
+                content = HtmlContent(radioText("sector-hint-food", messages("sector.hint.2", appConfig.sectorCap("Other"))))
             )),
-            value = Some(Sector.DairyProducts4),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.DairyProducts4.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-icecream", messages("NACE.Manufacturing.Lvl4.NACE.Manufacturing.Lvl4.IceCream"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-icecream", "hint place holder text"))
-            )),
-            value = Some(Sector.IceCream),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.IceCream.toString)
+            value = Some(Sector.Food),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
         )
     )
 }
 
 
 @layout(
-  pageTitle = Some(messages("undertakingSector.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -100,7 +92,7 @@
         ))
     )),
         hint = Some(Hint(
-        content = Text(messages("undertakingSector.p1"))
+        content = Text(messages("NACE.general.hint"))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,
