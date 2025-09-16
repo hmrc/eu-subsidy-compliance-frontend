@@ -49,19 +49,27 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-food", messages("NACE.Manufacturing.Lvl2.FoodProducts"))),
+            content = HtmlContent(radioText("sector-label-paper", messages("NACE.Manufacturing.Lvl2.2.Paper"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-food", messages("sector.hint.2", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-paper", messages("NACE.Manufacturing.Lvl2.2.Paper.hint", appConfig.sectorCap("Other"))))
             )),
-            value = Some(Sector.Food),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
+            value = Some(Sector.PaperRelated),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PaperRelated.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-printed", messages("NACE.Manufacturing.Lvl2.2.Printed"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-printed", messages("NACE.Manufacturing.Lvl2.2.Printed.hint", appConfig.sectorCap("Other"))))
+            )),
+            value = Some(Sector.PrintedProducts),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PrintedProducts.toString)
         )
     )
 }
 
 
 @layout(
-  pageTitle = Some(messages("NACE.Manufacturing.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.Lvl2.2.Paper.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -86,7 +94,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("undertakingSector.title")),
+        content = Text(messages("NACE.Manufacturing.Lvl2.2.Paper.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))
