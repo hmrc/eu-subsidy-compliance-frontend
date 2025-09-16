@@ -1002,6 +1002,7 @@ NACE.Manufacturing.Lvl4.KnittedCrochetedApparel = Manufacture of knitted and cro
 
 NACE.Manufacturing.OtherClothing.title = What type of clothing or accessories does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.OtherClothing = Other clothing and accessories
+NACE.Manufacturing.Lvl3.OtherClothing.hint = Includes leather and fur clothing, outerwear, underwear, workwear and all other clothes and accessories.
 NACE.Manufacturing.Lvl4.Outerwear = Outerwear
 NACE.Manufacturing.Lvl4.Underwear = Underwear
 NACE.Manufacturing.Lvl4.Workwear = Workwear

@@ -50,65 +50,41 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-carpets-rugs", messages("NACE.Manufacturing.Lvl4.CarpetsRugs"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-carpets-rugs", "hint place holder text"))
-            )),
             value = Some(Sector.Carpets),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Carpets.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-corgage", messages("NACE.Manufacturing.Lvl4.CordageRopeTwineNetting"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-cordage", "hint place holder text"))
-            )),
             value = Some(Sector.Cordage),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Cordage.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-pet-feed", messages("NACE.Manufacturing.Lvl3.FinishingTextiles"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-pet-feed", "hint place holder text"))
-            )),
             value = Some(Sector.textilesFinishing),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesFinishing.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-household", messages("NACE.Manufacturing.Lvl4.HouseholdFurnishingTextiles"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-household", "hint place holder text"))
-            )),
             value = Some(Sector.householdTextiles),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.householdTextiles.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-knitted", messages("NACE.Manufacturing.Lvl4.KnittedCrochetedFabrics"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-knitted", "hint place holder text"))
-            )),
             value = Some(Sector.KnittedFabrics),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.KnittedFabrics.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-nonwoven", messages("NACE.Manufacturing.Lvl4.NonWovens"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-nonwoven", "hint place holder text"))
-            )),
             value = Some(Sector.NonWoven),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.NonWoven.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-industrial", messages("NACE.Manufacturing.Lvl4.TechnicalIndustrialTextiles"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-industrial", "hint place holder text"))
-            )),
             value = Some(Sector.OtherTechnicalTextiles),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherTechnicalTextiles.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherTextiles"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-other", "hint place holder text"))
-            )),
             value = Some(Sector.otherTextile),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherTextile.toString)
         )
