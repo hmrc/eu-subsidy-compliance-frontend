@@ -1873,25 +1873,27 @@ NACE.PublicAdministration.Lvl4.FireService = Fire service activities
 NACE.PublicAdministration.Lvl4.CompulsorySocialSecurity = Compulsory social security activities
 
 #Education NACE Sector2,3,4
-NACE.Education.Lvl2.Education = Education
-#### NACE.Education.Lvl3.PrePrimary = Pre-primary education
-NACE.Education.Lvl4.PrePrimary = Pre-primary education
-#### NACE.Education.Lvl3.Primary = Primary education
-NACE.Education.Lvl4.Primary = Primary education
-#### NACE.Education.Lvl3.SecondaryNonTertiary = Secondary and post-secondary non-tertiary education
-NACE.Education.Lvl4.GeneralSecondary = General secondary education
-NACE.Education.Lvl4.VocationalSecondary = Vocational secondary education
-NACE.Education.Lvl4.PostSecondaryNonTertiary = Post-secondary non-tertiary education
-#### NACE.Education.Lvl3.Tertiary = Tertiary education
-NACE.Education.Lvl4.Tertiary = Tertiary education
-#### NACE.Education.Lvl3.OtherEducation = Other education
-NACE.Education.Lvl4.SportsRecreationEducation = Sports and recreation education
-NACE.Education.Lvl4.CulturalEducation = Cultural education
-NACE.Education.Lvl4.DrivingSchool = Driving school activities
-NACE.Education.Lvl4.OtherEducationNEC = Other education n.e.c.
-#### NACE.Education.Lvl3.EducationalSupport = Educational support activities
-NACE.Education.Lvl4.CourseTutors = Intermediation service activities for courses and tutors
-NACE.Education.Lvl4.SupportNEC = Educational support activities n.e.c.
+NACE.education.Lvl2.education = Education
+NACE.education.Lvl2.education.title = What is your undertaking’s main business activity in education?
+NACE.education.Lvl3.prePrimary = Pre-primary education
+NACE.education.Lvl4.prePrimary = Pre-primary education
+NACE.education.Lvl3.primary = Primary education
+NACE.education.Lvl4.primary = Primary education
+NACE.education.Lvl3.secondaryNonTertiary = Secondary and post-secondary non-tertiary education
+NACE.education.Lvl4.generalSecondary = General secondary education
+NACE.education.Lvl4.vocationalSecondary = Vocational secondary education
+NACE.education.Lvl4.postSecondaryNonTertiary = Post-secondary non-tertiary education
+NACE.education.Lvl3.tertiary = Tertiary education
+NACE.education.Lvl4.tertiary = Tertiary education
+NACE.education.Lvl3.otherEducation = Other education
+NACE.education.Lvl4.sportsRecreationEducation = Sports and recreation education
+NACE.education.Lvl4.culturalEducation = Cultural education
+NACE.education.Lvl4.drivingSchool = Driving school activities
+NACE.education.Lvl4.otherEducationNEC = Other education n.e.c.
+NACE.education.Lvl3.educationalSupport = Educational support activities
+NACE.education.Lvl3.educationalSupport.title = What type of educational support does your undertaking provide?
+NACE.education.Lvl4.courseTutors = Intermediation service activities for courses and tutors
+NACE.education.Lvl4.supportNEC = Educational support activities n.e.c.
 
 #HumanHealthSocialWork NACE Sector2,3,4
 NACE.HumanHealthSocialWork.Lvl2.HumanHealth = Human health activities
@@ -2013,15 +2015,17 @@ NACE.OtherService.Lvl4.DomesticPersonalServices = Provision of domestic personal
 NACE.OtherService.Lvl4.OtherPersonalServices = Other personal service activities n.e.c.
 
 #Households NACE Sector2,3,4
-NACE.Households.Lvl2.DomesticPersonnel = Activities of households as employers of domestic personnel
-#### NACE.Households.Lvl3.DomesticPersonnel = Activities of households as employers of domestic personnel
-NACE.Households.Lvl4.DomesticPersonnel = Activities of households as employers of domestic personnel
 
-NACE.Households.Lvl2.UndifferentiatedProduction = Undifferentiated goods- and service-producing activities of private households for own use
-#### NACE.Households.Lvl3.UndifferentiatedGoods = Undifferentiated goods-producing activities of private households for own use
-NACE.Households.Lvl4.UndifferentiatedGoods = Undifferentiated goods-producing activities of private households for own use
-#### NACE.Households.Lvl3.UndifferentiatedServices = Undifferentiated service-producing activities of private households for own use
-NACE.Households.Lvl4.UndifferentiatedServices = Undifferentiated service-producing activities of private households for own use
+NACE.households.Lvl1.title = What is your undertaking’s main business activity in households as employers or as producers of goods or services?
+NACE.households.Lvl2.domesticPersonnel = Activities of households as employers of domestic personnel
+NACE.households.Lvl3.domesticPersonnel = Activities of households as employers of domestic personnel
+NACE.households.Lvl4.domesticPersonnel = Activities of households as employers of domestic personnel
+NACE.households.Lvl2.undifferentiatedProduction = Undifferentiated goods- and service-producing activities of private households for own use
+NACE.households.Lvl2.undifferentiatedProduction.title = What type of private household activities does your undertaking carry out?
+NACE.households.Lvl3.undifferentiatedGoods = Undifferentiated goods-producing activities of private households for own use
+NACE.households.Lvl4.undifferentiatedGoods = Undifferentiated goods-producing activities of private households for own use
+NACE.households.Lvl3.undifferentiatedServices = Undifferentiated service-producing activities of private households for own use
+NACE.households.Lvl4.undifferentiatedServices = Undifferentiated service-producing activities of private households for own use
 
 #ActivitiesExtraterritorial NACE Sector2,3,4
 NACE.ActivitiesExtraterritorial.Lvl2.CYAOnly.OrganisationsBodies = Activities of extraterritorial organisations and bodies
