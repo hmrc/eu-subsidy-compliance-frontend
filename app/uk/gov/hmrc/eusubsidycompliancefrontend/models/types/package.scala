@@ -315,6 +315,7 @@ package object types extends SimpleJson {
     val OtherPrinting: types.Sector.Value = Value("18.12")
     val recordedMediaReproduction: types.Sector.Value = Value("18.2")
     val recordedMediaReproduction4: types.Sector.Value = Value("18.20")
+
     val CokeProducts: types.Sector.Value = Value("19")
     val ovenCokeProducts : types.Sector.Value = Value("19.1")
     val CokeProductsManufacture: types.Sector.Value = Value("19.10")

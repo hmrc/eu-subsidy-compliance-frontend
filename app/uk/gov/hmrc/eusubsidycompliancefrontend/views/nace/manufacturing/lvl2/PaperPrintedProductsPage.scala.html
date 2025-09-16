@@ -49,35 +49,27 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-rusks", messages("NACE.Manufacturing.Lvl4.RusksBiscuits"))),
+            content = HtmlContent(radioText("sector-label-paper", messages("NACE.Manufacturing.Lvl2.2.Paper"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-rusks", "hint place holder text"))
+                content = HtmlContent(radioText("sector-hint-paper", messages("NACE.Manufacturing.Lvl2.2.Paper.hint", appConfig.sectorCap("Other"))))
             )),
-            value = Some(Sector.BiscuitsAndPreservedCakes),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.BiscuitsAndPreservedCakes.toString)
+            value = Some(Sector.PaperRelated),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PaperRelated.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-bread-pastry", messages("NACE.Manufacturing.Lvl4.BreadPastry"))),
+            content = HtmlContent(radioText("sector-label-printed", messages("NACE.Manufacturing.Lvl2.2.Printed"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-bread-pastry", "hint place holder text"))
+                content = HtmlContent(radioText("sector-hint-printed", messages("NACE.Manufacturing.Lvl2.2.Printed.hint", appConfig.sectorCap("Other"))))
             )),
-            value = Some(Sector.BreadAndFreshPastry),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.BreadAndFreshPastry.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-farinaceous", messages("NACE.Manufacturing.Lvl4.FarinaceousProducts"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-farinaceous", "hint place holder text"))
-            )),
-            value = Some(Sector.FarinaceousProducts),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FarinaceousProducts.toString)
+            value = Some(Sector.PrintedProducts),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PrintedProducts.toString)
         )
     )
 }
 
 
 @layout(
-  pageTitle = Some(messages("undertakingSector.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.Lvl2.2.Paper.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -102,13 +94,13 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("undertakingSector.title")),
+        content = Text(messages("NACE.Manufacturing.Lvl2.2.Paper.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))
     )),
         hint = Some(Hint(
-        content = Text(messages("undertakingSector.p1"))
+        content = Text(messages("NACE.general.hint"))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,

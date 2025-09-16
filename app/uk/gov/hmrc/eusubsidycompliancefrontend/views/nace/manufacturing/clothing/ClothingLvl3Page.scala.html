@@ -49,28 +49,17 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-meat-processing", messages("NACE.Manufacturing.Lvl4.MeatExceptPoultry"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-meat-processing", "hint place hoder text"))
-            )),
-            value = Some(Sector.meatProcessing),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.meatProcessing.toString)
+            content = HtmlContent(radioText("sector-label-knitted-crocheted", messages("NACE.Manufacturing.Lvl3.KnittedCrochetedClothing"))),
+            value = Some(Sector.KnittedCrotchetedClothing),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.KnittedCrotchetedClothing.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-poultry-processing", messages("NACE.Manufacturing.Lvl4.PoultryMeat"))),
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl3.OtherClothing"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-poultry-processing", "hint place hoder text"))
+                content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl3.OtherClothing.hint", appConfig.sectorCap("Other"))))
             )),
-            value = Some(Sector.poultryProcessing),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.poultryProcessing.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-meat-products", messages("NACE.Manufacturing.Lvl4.MeatPoultryProducts"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-meat-products", "hint place hoder text"))
-            )),
-            value = Some(Sector.meatProductsProduction),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.meatProductsProduction.toString)
+            value = Some(Sector.OtherClothing),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherClothing.toString)
         )
     )
 }
@@ -108,7 +97,7 @@
         ))
     )),
         hint = Some(Hint(
-        content = Text(messages("undertakingSector.p1"))
+        content = Text(messages("NACE.general.hint"))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,

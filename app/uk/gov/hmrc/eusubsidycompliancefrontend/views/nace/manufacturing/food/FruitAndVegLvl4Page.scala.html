@@ -49,19 +49,35 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-food", messages("NACE.Manufacturing.Lvl2.FoodProducts"))),
+            content = HtmlContent(radioText("sector-label-fruitveg-juice", messages("NACE.Manufacturing.Lvl4.FruitVegetableJuice"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-food", messages("sector.hint.2", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-fruitveg-juice", "hint place holder text"))
             )),
-            value = Some(Sector.Food),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
+            value = Some(Sector.FruitAndVegetableJuiceManufacture),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FruitAndVegetableJuiceManufacture.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-fruitveg-potatoes", messages("NACE.Manufacturing.Lvl4.Potatoes"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-fruitveg-potatoes", "hint place holder text"))
+            )),
+            value = Some(Sector.FruitAndVegetableProcessing),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FruitAndVegetableProcessing.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-fruitveg-other", messages("NACE.Manufacturing.Lvl4.OtherFruitVegetables"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-fruitveg-other", "hint place holder text"))
+            )),
+            value = Some(Sector.OtherFruitAndVegetableProcessing),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherFruitAndVegetableProcessing.toString)
         )
     )
 }
 
 
 @layout(
-  pageTitle = Some(messages("undertakingSector.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.Food.FruitAndVeg.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -92,7 +108,7 @@
         ))
     )),
         hint = Some(Hint(
-        content = Text(messages("undertakingSector.p1"))
+        content = Text(messages("NACE.general.hint"))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,

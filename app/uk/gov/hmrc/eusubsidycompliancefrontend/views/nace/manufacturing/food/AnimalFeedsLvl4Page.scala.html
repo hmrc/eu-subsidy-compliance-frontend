@@ -49,31 +49,27 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-finishing", messages("NACE.Manufacturing.Lvl3.FinishingTextiles"))),
-            value = Some(Sector.textilesFinishing),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesFinishing.toString)
+            content = HtmlContent(radioText("sector-label-farm-feed", messages("NACE.Manufacturing.Lvl4.FarmAnimalFeeds"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-farm-feed", "hint place holder text"))
+            )),
+            value = Some(Sector.farmAnimalsFood),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.farmAnimalsFood.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl3.OtherTextiles"))),
-            value = Some(Sector.textilesManufacture),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesManufacture.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-fibre-spinning", messages("NACE.Manufacturing.Lvl3.TextileFibreSpinning"))),
-            value = Some(Sector.textilesPreparation),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesPreparation.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-weaving", messages("NACE.Manufacturing.Lvl3.Weaving"))),
-            value = Some(Sector.textilesWeaving),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesWeaving.toString)
+            content = HtmlContent(radioText("sector-label-pet-feed", messages("NACE.Manufacturing.Lvl4.PetFoods"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-pet-feed", "hint place holder text"))
+            )),
+            value = Some(Sector.PetFood),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PetFood.toString)
         )
     )
 }
 
 
 @layout(
-  pageTitle = Some(messages("NACE.Manufacturing.Textiles.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.PreparedAnimalFeeds.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -98,13 +94,13 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("NACE.Manufacturing.Textiles.title")),
+        content = Text(messages("NACE.Manufacturing.PreparedAnimalFeeds.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))
     )),
         hint = Some(Hint(
-        content = Text(messages("NACE.general.title"))
+        content = Text(messages("NACE.general.hint"))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,

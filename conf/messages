@@ -836,32 +836,117 @@ NACE.mining.Lvl4.miningSupportPetroleumExtraction = Support activities for petro
 NACE.mining.Lvl3.otherMiningSupport = Support activities for other mining and quarrying
 NACE.mining.Lvl4.otherMiningSupport = Support activities for other mining and quarrying
 
-#Manufacturing NACE Sector2,3,4
-NACE.Manufacturing.Lvl2.FoodProducts = Manufacture of food products
-#### NACE.Manufacturing.Lvl3.MeatProducts = Processing and preserving of meat and production of meat products
+### Manufacturing NACE Sector2,3,4 ###
+NACE.Manufacturing.title = What type of product does your undertaking manufacture?
+
+### lvl2.1 screens ###
+NACE.Manufacturing.Lvl2.1.Metals = Metals, chemicals and materials
+NACE.Manufacturing.Lvl2.1.Metals.hint = Includes basic metals, fabricated metal products, chemicals, fuel products, mineral products, plastic, rubber and wood.
+NACE.Manufacturing.Lvl2.1.Food = Food, beverages and tobacco
+NACE.Manufacturing.Lvl2.1.Computers = Computers, electronics and machinery
+NACE.Manufacturing.Lvl2.1.Computers.hint = Includes communications equipment, consumer electronics, electrical equipment (like batteries, motors and wiring), optical instruments and other machinery and equipment.
+NACE.Manufacturing.Lvl2.1.Clothes = Clothes, textiles and homeware
+NACE.Manufacturing.Lvl2.1.Clothes.hint = Includes clothes, bags and footwear, furniture and textiles, and leather.
+NACE.Manufacturing.Lvl2.1.Paper = Paper and printed products
+NACE.Manufacturing.Lvl2.1.Paper.hint = Includes reproduction of recorded media.
+NACE.Manufacturing.Lvl2.1.Vehicles = Vehicles and transport
+NACE.Manufacturing.Lvl2.1.Vehicles.hint = Includes motor vehicles and parts, bicycles and motorcycles, aircraft, boats, locomotives and trailers.
+NACE.Manufacturing.Lvl2.1.Pharmaceuticals = Pharmaceuticals
+NACE.Manufacturing.Lvl2.1.OtherManufacturing = Other manufacturing
+NACE.Manufacturing.Lvl2.1.OtherManufacturing.hint = Includes brooms and brushes, games and toys, jewellery, medical and dental instruments and supplies, musical instruments, sports goods and all other products.
+NACE.Manufacturing.Lvl2.1.Machinery = My undertaking repairs, maintains or installs machinery and equipment
+
+### Lvl2.2 screens ###
+NACE.Manufacturing.Lvl2.2.Metals.title = What type of metals, chemicals or materials does your undertaking manufacture?
+NACE.Manufacturing.Lvl2.2.Metals.FabricatedMetal = Fabricated metal products (except machinery and equipment)
+NACE.Manufacturing.Lvl2.2.Metals.Wood = Wood, cork and straw products (except furniture)
+NACE.Manufacturing.Lvl2.2.Metals.Rubber = Rubber and plastic products
+NACE.Manufacturing.Lvl2.2.Metals.Chemicals = Chemicals and chemical products
+NACE.Manufacturing.Lvl2.2.Metals.Chemicals.hint = Includes basic chemicals, fertilisers, liquid biofuels, manmade fibres, paints and varnishes, pesticides, plastics and synthetic rubber in primary forms, and washing, cleaning and polishing preparations.
+NACE.Manufacturing.Lvl2.2.Metals.BasicMetal = Basic metals
+NACE.Manufacturing.Lvl2.2.Metals.BasicMetal.hint = Includes iron, steel, precious and other non-ferrous metals, and casting of metals.
+NACE.Manufacturing.Lvl2.2.Metals.Coke = Coke and refined petroleum products
+NACE.Manufacturing.Lvl2.2.Metals.NonMetallic = Other non-metallic mineral products
+NACE.Manufacturing.Lvl2.2.Metals.NonMetallic.hint = Includes cement, clay building materials, concrete, glass, porcelain and ceramics, and cutting, finishing and shaping of stone.
+
+NACE.Manufacturing.Lvl2.2.Food.title = What type of food, beverages or tobacco does your undertaking manufacture?
+NACE.Manufacturing.Lvl2.2.Food = Food
+NACE.Manufacturing.Lvl2.2.Food.hint = Includes processing and preserving of food.
+NACE.Manufacturing.Lvl2.2.Food.Beverages = Beverages
+NACE.Manufacturing.Lvl2.2.Food.Beverages.hint = Includes alcohol and soft drinks.
+NACE.Manufacturing.Lvl2.2.Food.Tobacco = Tobacco products
+
+NACE.Manufacturing.Lvl2.2.Computers.title = What type of computers, electronics or machinery does your undertaking manufacture?
+NACE.Manufacturing.Lvl2.2.Computers = Computers, electronics and optical products
+NACE.Manufacturing.Lvl2.2.Computers.hint = Includes communications equipment, consumer electronics, electronic components and optical instruments.
+NACE.Manufacturing.Lvl2.2.Computers.Electrical = Electrical equipment
+NACE.Manufacturing.Lvl2.2.Computers.Electrical.hint = Includes batteries, domestic appliances, generators, lighting equipment and wiring.
+NACE.Manufacturing.Lvl2.2.Computers.Other = Other machinery and equipment
+NACE.Manufacturing.Lvl2.2.Computers.Other.hint = Includes general-purpose and special-purpose machinery and machine tools.
+
+NACE.Manufacturing.Lvl2.2.Clothes.title = What type of clothes, textiles or homeware does your undertaking manufacture?
+NACE.Manufacturing.Lvl2.2.Clothes.Furniture = Furniture
+NACE.Manufacturing.Lvl2.2.Clothes.Clothing = Clothing
+NACE.Manufacturing.Lvl2.2.Clothes.Textiles = Textiles
+NACE.Manufacturing.Lvl2.2.Clothes.Textiles.hint = Includes preparation, spinning, weaving and finishing of textiles.
+NACE.Manufacturing.Lvl2.2.Clothes.Leather = Leather and related products
+NACE.Manufacturing.Lvl2.2.Clothes.Leather.hint = Includes bags, footwear and fur.
+
+NACE.Manufacturing.Lvl2.2.Paper.title = What type of paper or printed products does your undertaking manufacture?
+NACE.Manufacturing.Lvl2.2.Paper = Paper and paper products
+NACE.Manufacturing.Lvl2.2.Paper.hint = Includes pulp, paperboard, stationery and wallpaper.
+NACE.Manufacturing.Lvl2.2.Printed = Printed products
+NACE.Manufacturing.Lvl2.2.Printed.hint = Includes newspapers, printing services and reproduction of recorded media.
+
+NACE.Manufacturing.Lvl2.2.Vehicles.title = What type of vehicles or transport does your undertaking manufacture?
+NACE.Manufacturing.Lvl2.2.Vehicles.Motor = Motor vehicles, trailers and parts
+NACE.Manufacturing.Lvl2.2.Vehicles.Other = Other transport equipment
+NACE.Manufacturing.Lvl2.2.Vehicles.Other.hint = Includes aircraft, bicycles, boats, locomotives and motorcycles, and related parts.
+
+### Food ###
+NACE.Manufacturing.Food.title = What type of food, does your undertaking manufacture?
+
+NACE.Manufacturing.Lvl3.MeatProducts = Meat
+NACE.Manufacturing.Food.Meat.title = What type of meat production or processing does your undertaking do?
 NACE.Manufacturing.Lvl4.MeatExceptPoultry = Processing and preserving of meat, except of poultry meat
 NACE.Manufacturing.Lvl4.PoultryMeat = Processing and preserving of poultry meat
 NACE.Manufacturing.Lvl4.MeatPoultryProducts = Production of meat and poultry meat products
-#### NACE.Manufacturing.Lvl3.FishProducts = Processing and preserving of fish, crustaceans and molluscs
+
+NACE.Manufacturing.Lvl3.FishProducts = Fish, crustaceans and molluscs
 NACE.Manufacturing.Lvl4.FishProducts = Processing and preserving of fish, crustaceans and molluscs
-#### NACE.Manufacturing.Lvl3.FruitVegetables = Processing and preserving of fruit and vegetables
+
+NACE.Manufacturing.Food.FruitAndVeg.title = What type of fruit and vegetable production or processing does your undertaking do?
+NACE.Manufacturing.Lvl3.FruitVegetables = Fruit and vegetables
 NACE.Manufacturing.Lvl4.Potatoes = Processing and preserving of potatoes
 NACE.Manufacturing.Lvl4.FruitVegetableJuice = Manufacture of fruit and vegetable juice
 NACE.Manufacturing.Lvl4.OtherFruitVegetables = Other processing and preserving of fruit and vegetables
-#### NACE.Manufacturing.Lvl3.VegetableAnimalOils = Manufacture of vegetable and animal oils and fats
-NACE.Manufacturing.Lvl4.OilsFats = Manufacture of oils and fats
-NACE.Manufacturing.Lvl4.Margarine = Manufacture of margarine and similar edible fats
-#### NACE.Manufacturing.Lvl3.DairyProducts = Manufacture of dairy products and edible ice
-NACE.Manufacturing.Lvl4.DairyProducts = Manufacture of dairy products
-NACE.Manufacturing.Lvl4.IceCream = Manufacture of ice cream and other edible ice
-#### NACE.Manufacturing.Lvl3.GrainMillProducts = Manufacture of grain mill products, starches and starch products
-NACE.Manufacturing.Lvl4.GrainMillProducts = Manufacture of grain mill products
-NACE.Manufacturing.Lvl4.Starches = Manufacture of starches and starch products
-#### NACE.Manufacturing.Lvl3.BakeryProducts = Manufacture of bakery and farinaceous products
-NACE.Manufacturing.Lvl4.BreadPastry = Manufacture of bread; manufacture of fresh pastry goods and cakes
-NACE.Manufacturing.Lvl4.RusksBiscuits = Manufacture of rusks, biscuits, preserved pastries and cakes
-NACE.Manufacturing.Lvl4.FarinaceousProducts = Manufacture of farinaceous products
-#### NACE.Manufacturing.Lvl3.OtherFoodProducts = Manufacture of other food products
+
+NACE.Manufacturing.Food.OilsAndFats.title = What type of oils and fats does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.OilsFats = Oils and fats
+NACE.Manufacturing.Lvl4.OilsFats = Other oils and fats
+NACE.Manufacturing.Lvl4.Margarine = Margarine and similar edible fats
+
+NACE.Manufacturing.DairyProducts.title = What type of dairy products or ice does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.DairyProducts = Dairy products and ice
+NACE.Manufacturing.Lvl4.DairyProducts = Dairy products
+NACE.Manufacturing.Lvl4.IceCream = Ice cream and other edible ice
+
+NACE.Manufacturing.GrainMillProducts.title = What type of grain mill products or starch does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.GrainMillProducts = Grain mill products and starch
+NACE.Manufacturing.Lvl3.GrainMillProducts.hint = Includes cereals and flour.
+NACE.Manufacturing.Lvl4.GrainMillProducts = Grain mill products
+NACE.Manufacturing.Lvl4.Starches = Starches and starch products
+
+NACE.Manufacturing.BakeryProducts.title = What type of bakery and farinaceous products does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.BakeryProducts = Bakery and farinaceous products
+NACE.Manufacturing.Lvl3.BakeryProducts.hint = For example bread, biscuits, cakes, pastries and pasta.
+NACE.Manufacturing.Lvl4.BreadPastry = Bread, cakes and fresh pastry goods
+NACE.Manufacturing.Lvl4.RusksBiscuits = Biscuits, rusks and preserved pastries and cakes
+NACE.Manufacturing.Lvl4.FarinaceousProducts = Farinaceous products
+
+NACE.Manufacturing.OtherFoodProducts.title = What type of other food products does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.OtherFoodProducts = Manufacture of other food products
+NACE.Manufacturing.Lvl3.OtherFoodProducts.hint = Includes cocoa, chocolate and confectionery, condiments and seasonings, food preparations (like baby food) and prepared meals, sugar, tea and coffee, and all other food products.
 NACE.Manufacturing.Lvl4.Sugar = Manufacture of sugar
 NACE.Manufacturing.Lvl4.CocoaChocolateConfectionery = Manufacture of cocoa, chocolate and sugar confectionery
 NACE.Manufacturing.Lvl4.TeaCoffee = Processing of tea and coffee
@@ -869,63 +954,75 @@ NACE.Manufacturing.Lvl4.CondimentsSeasonings = Manufacture of condiments and sea
 NACE.Manufacturing.Lvl4.PreparedMeals = Manufacture of prepared meals and dishes
 NACE.Manufacturing.Lvl4.HomogenisedFood = Manufacture of homogenised food preparations and dietetic food
 NACE.Manufacturing.Lvl4.OtherFoodProducts = Manufacture of other food products n.e.c.
-#### NACE.Manufacturing.Lvl3.PreparedAnimalFeeds = Manufacture of prepared animal feeds
+
+NACE.Manufacturing.PreparedAnimalFeeds.title = What type of prepared animal feeds does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.PreparedAnimalFeeds = Manufacture of prepared animal feeds
 NACE.Manufacturing.Lvl4.FarmAnimalFeeds = Manufacture of prepared feeds for farm animals
 NACE.Manufacturing.Lvl4.PetFoods = Manufacture of prepared pet foods
 
-NACE.Manufacturing.Beverages = Manufacture of beverages
-#### NACE.Manufacturing.Lvl3.Beverages = Manufacture of beverages
-NACE.Manufacturing.Lvl4.Spirits = Distilling, rectifying and blending of spirits
-NACE.Manufacturing.Lvl4.Wine = Manufacture of wine from grape
-NACE.Manufacturing.Lvl4.Cider = Manufacture of cider and other fruit fermented beverages
-NACE.Manufacturing.Lvl4.OtherFermentedBeverages = Manufacture of other non-distilled fermented beverages
-NACE.Manufacturing.Lvl4.Beer = Manufacture of beer
-NACE.Manufacturing.Lvl4.Malt = Manufacture of malt
-NACE.Manufacturing.Lvl4.SoftDrinks = Manufacture of soft drinks and bottled waters
+### Beverages ###
+NACE.Manufacturing.Beverages.title = What type of beverages does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.Beverages = Manufacture of beverages
+NACE.Manufacturing.Lvl4.Spirits = Spirits (distilled, rectified or blended)
+NACE.Manufacturing.Lvl4.Wine = Wine from grape
+NACE.Manufacturing.Lvl4.Cider = Cider and other fruit fermented beverages
+NACE.Manufacturing.Lvl4.OtherFermentedBeverages = Other non-distilled fermented beverages
+NACE.Manufacturing.Lvl4.Beer = Beer
+NACE.Manufacturing.Lvl4.Malt = Malt
+NACE.Manufacturing.Lvl4.SoftDrinks = Soft drinks and bottled waters
 
-NACE.Manufacturing.Lvl2.TobaccoProducts = Manufacture of tobacco products
-#### NACE.Manufacturing.Lvl3.TobaccoProducts = Manufacture of tobacco products
+### Tobacco ###
+NACE.Manufacturing.Lvl3.TobaccoProducts = Manufacture of tobacco products
 NACE.Manufacturing.Lvl4.TobaccoProducts = Manufacture of tobacco products
 
-NACE.Manufacturing.Lvl2.Textiles = Manufacture of textiles
-#### NACE.Manufacturing.Lvl3.TextileFibreSpinning = Preparation and spinning of textile fibres
+### Textiles ###
+NACE.Manufacturing.Textiles.title = What type of textile manufacturing does your undertaking do?
+NACE.Manufacturing.Lvl3.TextileFibreSpinning = Preparation and spinning of textile fibres
 NACE.Manufacturing.Lvl4.TextileFibreSpinning = Preparation and spinning of textile fibres
-#### NACE.Manufacturing.Lvl3.Weaving = Weaving of textiles
-NACE.Manufacturing.Lvl4.Weaving = Weaving of textiles
-#### NACE.Manufacturing.Lvl3.FinishingTextiles = Finishing of textiles
-NACE.Manufacturing.Lvl4.FinishingTextiles = Finishing of textiles
-#### NACE.Manufacturing.Lvl3.OtherTextiles = Manufacture of other textiles
-NACE.Manufacturing.Lvl4.KnittedCrochetedFabrics = Manufacture of knitted and crocheted fabrics
-NACE.Manufacturing.Lvl4.HouseholdFurnishingTextiles = Manufacture of household textiles and made-up furnishing articles
-NACE.Manufacturing.Lvl4.CarpetsRugs = Manufacture of carpets and rugs
-NACE.Manufacturing.Lvl4.CordageRopeTwineNetting = Manufacture of cordage, rope, twine and netting
-NACE.Manufacturing.Lvl4.NonWovens = Manufacture of non-wovens and non-woven articles
-NACE.Manufacturing.Lvl4.TechnicalIndustrialTextiles = Manufacture of other technical and industrial textiles
-NACE.Manufacturing.Lvl4.OtherTextiles = Manufacture of other textiles n.e.c.
 
-#Clothing
-NACE.Manufacturing.Lvl2.Clothing = Clothing
+NACE.Manufacturing.Lvl3.Weaving = Weaving of textiles
+NACE.Manufacturing.Lvl4.Weaving = Weaving of textiles
+
+NACE.Manufacturing.Lvl3.FinishingTextiles = Finishing of textiles
+NACE.Manufacturing.Lvl4.FinishingTextiles = Finishing of textiles
+
+NACE.Manufacturing.OtherTextiles.title = What type of textiles does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.OtherTextiles = Manufacture of textiles (except clothes)
+NACE.Manufacturing.Lvl4.KnittedCrochetedFabrics = Knitted and crocheted fabrics
+NACE.Manufacturing.Lvl4.HouseholdFurnishingTextiles = Household textiles and made-up furnishing articles
+NACE.Manufacturing.Lvl4.CarpetsRugs = Carpets and rugs
+NACE.Manufacturing.Lvl4.CordageRopeTwineNetting = Cordage, rope, twine and netting
+NACE.Manufacturing.Lvl4.NonWovens = Non-wovens and non-woven articles
+NACE.Manufacturing.Lvl4.TechnicalIndustrialTextiles = Other technical and industrial textiles
+NACE.Manufacturing.Lvl4.OtherTextiles = Another type of textile
+
+### Clothing ###
 NACE.Manufacturing.Lvl3.KnittedCrochetedClothing = Knitted and crocheted clothing
 NACE.Manufacturing.Lvl4.KnittedCrochetedApparel = Manufacture of knitted and crocheted apparel
+
+NACE.Manufacturing.OtherClothing.title = What type of clothing or accessories does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.OtherClothing = Other clothing and accessories
+NACE.Manufacturing.Lvl3.OtherClothing.hint = Includes leather and fur clothing, outerwear, underwear, workwear and all other clothes and accessories.
 NACE.Manufacturing.Lvl4.Outerwear = Outerwear
 NACE.Manufacturing.Lvl4.Underwear = Underwear
 NACE.Manufacturing.Lvl4.Workwear = Workwear
 NACE.Manufacturing.Lvl4.LeatherAndFurClothing = Leather and fur clothing
 NACE.Manufacturing.Lvl4.OtherClothingAccessories = Other clothing and accessories
 
-NACE.Manufacturing.Lvl2.LeatherProducts = Manufacture of leather and related products of other materials
-#### NACE.Manufacturing.Lvl3.TanningLeather = Tanning, dyeing, dressing of leather and fur; manufacture of luggage, handbags, saddlery and harness
+### Leather ###
+NACE.Manufacturing.Lvl3.TanningLeather = Tanning, dyeing, dressing of leather and fur; manufacture of luggage, handbags, saddlery and harness
 NACE.Manufacturing.Lvl4.TanningLeatherFur = Tanning, dressing, dyeing of leather and fur
 NACE.Manufacturing.Lvl4.LuggageHandbagsSaddlery = Manufacture of luggage, handbags, saddlery and harness of any material
-#### NACE.Manufacturing.Lvl3.Footwear = Manufacture of footwear
+
+NACE.Manufacturing.Lvl3.Footwear = Manufacture of footwear
 NACE.Manufacturing.Lvl4.Footwear = Manufacture of footwear
 
-NACE.Manufacturing.Lvl2.WoodCorkStrawProducts = Manufacture of wood and of products of wood and cork, except furniture; manufacture of articles of straw and plaiting materials
-#### NACE.Manufacturing.Lvl3.SawmillingWood = Sawmilling and planing of wood; processing and finishing of wood
+### Wood cork and straw ###
+NACE.Manufacturing.Lvl3.SawmillingWood = Sawmilling, planing, processing or finishing of wood
 NACE.Manufacturing.Lvl4.SawmillingWood = Sawmilling and planing of wood
 NACE.Manufacturing.Lvl4.ProcessingFinishingWood = Processing and finishing of wood
-#### NACE.Manufacturing.Lvl3.WoodCorkStrawArticles = Manufacture of products of wood, cork, straw and plaiting materials
+
+NACE.Manufacturing.Lvl3.WoodCorkStrawArticles = Manufacture of products of wood, cork, straw and plaiting materials
 NACE.Manufacturing.Lvl4.VeneerSheetsPanels = Manufacture of veneer sheets and wood-based panels
 NACE.Manufacturing.Lvl4.ParquetFloors = Manufacture of assembled parquet floors
 NACE.Manufacturing.Lvl4.BuildersCarpentryJoinery = Manufacture of other builders' carpentry and joinery
@@ -935,34 +1032,36 @@ NACE.Manufacturing.Lvl4.SolidFuelsBiomass = Manufacture of solid fuels from vege
 NACE.Manufacturing.Lvl4.FinishingWoodenProducts = Finishing of wooden products
 NACE.Manufacturing.Lvl4.OtherWoodCorkStrawArticles = Manufacture of other products of wood and articles of cork, straw and plaiting materials
 
-NACE.Manufacturing.Lvl2.PaperProducts = Manufacture of paper and paper products
-#### NACE.Manufacturing.Lvl3.PulpPaperPaperboard = Manufacture of pulp, paper and paperboard
+### Paper products ###
+NACE.Manufacturing.Lvl3.PulpPaperPaperboard = Pulp, paper and paperboard
 NACE.Manufacturing.Lvl4.Pulp = Manufacture of pulp
 NACE.Manufacturing.Lvl4.PaperPaperboard = Manufacture of paper and paperboard
-#### NACE.Manufacturing.Lvl3.ArticlesPaperPaperboard = Manufacture of articles of paper and paperboard
+
+NACE.Manufacturing.Lvl3.ArticlesPaperPaperboard = Articles of paper and paperboard
 NACE.Manufacturing.Lvl4.CorrugatedPaper = Manufacture of corrugated paper, paperboard and containers of paper and paperboard
 NACE.Manufacturing.Lvl4.HouseholdSanitaryGoods = Manufacture of household and sanitary goods and of toilet requisites
 NACE.Manufacturing.Lvl4.PaperStationery = Manufacture of paper stationery
 NACE.Manufacturing.Lvl4.Wallpaper = Manufacture of wallpaper
 NACE.Manufacturing.Lvl4.OtherPaperArticles = Manufacture of other articles of paper and paperboard
 
-NACE.Manufacturing.Lvl2.PrintingRecordedMedia = Printing and reproduction of recorded media
-#### NACE.Manufacturing.Lvl3.PrintingServices = Printing and service activities related to printing
+### Printed products ###
+NACE.Manufacturing.Lvl3.PrintingServices = Printing and service activities related to printing
 NACE.Manufacturing.Lvl4.Newspapers = Printing of newspapers
 NACE.Manufacturing.Lvl4.OtherPrinting = Other printing
 NACE.Manufacturing.Lvl4.PrePressMedia = Pre-press and pre-media services
 NACE.Manufacturing.Lvl4.Binding = Binding and related services
-#### NACE.Manufacturing.Lvl3.ReproductionRecordedMedia = Reproduction of recorded media
+
+NACE.Manufacturing.Lvl3.ReproductionRecordedMedia = Reproduction of recorded media
 NACE.Manufacturing.Lvl4.ReproductionRecordedMedia = Reproduction of recorded media
 
-NACE.Manufacturing.Lvl2.CokePetroleumProducts = Manufacture of coke and refined petroleum products
-#### NACE.Manufacturing.Lvl3.CokeOvenProducts = Manufacture of coke oven products
+### Coke and petroleum ###
+NACE.Manufacturing.Lvl3.CokeOvenProducts = Coke oven products
 NACE.Manufacturing.Lvl4.CokeOvenProducts = Manufacture of coke oven products
-#### NACE.Manufacturing.Lvl3.RefinedPetroleumProducts = Manufacture of refined petroleum products and fossil fuel products
+NACE.Manufacturing.Lvl3.RefinedPetroleumProducts = Refined petroleum and fossil fuel products
 NACE.Manufacturing.Lvl4.RefinedPetroleumProducts = Manufacture of refined petroleum products and fossil fuel products
 
-NACE.Manufacturing.Lvl2.Chemicals = Manufacture of chemicals and chemical products
-#### NACE.Manufacturing.Lvl3.BasicChemicals = Manufacture of basic chemicals, fertilisers and nitrogen compounds, plastics and synthetic rubber in primary forms
+### Chemicals ###
+NACE.Manufacturing.Lvl3.BasicChemicals = Basic chemicals, fertilisers and nitrogen compounds, plastics and synthetic rubber in primary forms
 NACE.Manufacturing.Lvl4.IndustrialGases = Manufacture of industrial gases
 NACE.Manufacturing.Lvl4.DyesPigments = Manufacture of dyes and pigments
 NACE.Manufacturing.Lvl4.OtherInorganicChemicals = Manufacture of other inorganic basic chemicals
@@ -970,31 +1069,37 @@ NACE.Manufacturing.Lvl4.OtherOrganicChemicals = Manufacture of other organic bas
 NACE.Manufacturing.Lvl4.FertilisersNitrogen = Manufacture of fertilisers and nitrogen compounds
 NACE.Manufacturing.Lvl4.PlasticsPrimaryForms = Manufacture of plastics in primary forms
 NACE.Manufacturing.Lvl4.SyntheticRubber = Manufacture of synthetic rubber in primary forms
-#### NACE.Manufacturing.Lvl3.PesticidesAgrochemicals = Manufacture of pesticides, disinfectants and other agrochemical products
+
+NACE.Manufacturing.Lvl3.PesticidesAgrochemicals = Pesticides, disinfectants and other agrochemical products
 NACE.Manufacturing.Lvl4.PesticidesAgrochemicals = Manufacture of pesticides, disinfectants and other agrochemical products
-#### NACE.Manufacturing.Lvl3.PaintsVarnishes = Manufacture of paints, varnishes and similar coatings, printing ink and mastics
+
+NACE.Manufacturing.Lvl3.PaintsVarnishes = Paints, varnishes and similar coatings, printing ink and mastics
 NACE.Manufacturing.Lvl4.PaintsVarnishes = Manufacture of paints, varnishes and similar coatings, printing ink and mastics
-#### NACE.Manufacturing.Lvl3.WashingCleaning = Manufacture of washing, cleaning and polishing preparations
+
+NACE.Manufacturing.Lvl3.WashingCleaning = Manufacture of washing, cleaning and polishing preparations
 NACE.Manufacturing.Lvl4.SoapDetergents = Manufacture of soap and detergents, cleaning and polishing preparations
 NACE.Manufacturing.Lvl4.PerfumesToiletPreparations = Manufacture of perfumes and toilet preparations
 
-#### NACE.Manufacturing.Lvl3.OtherChemicals = Manufacture of other chemical products
+NACE.Manufacturing.Lvl3.OtherChemicals = Other chemical products
 NACE.Manufacturing.Lvl4.LiquidBiofuels = Manufacture of liquid biofuels
 NACE.Manufacturing.Lvl4.OtherChemicals = Manufacture of other chemical products n.e.c.
-#### NACE.Manufacturing.Lvl3.ManMadeFibres = Manufacture of man-made fibres
+
+NACE.Manufacturing.Lvl3.ManMadeFibres = Man-made fibres
 NACE.Manufacturing.Lvl4.ManMadeFibres = Manufacture of man-made fibres
 
-NACE.Manufacturing.Lvl2.Pharmaceuticals = Manufacture of basic pharmaceutical products and pharmaceutical preparations
-#### NACE.Manufacturing.Lvl3.BasicPharmaceuticals = Manufacture of basic pharmaceutical products
+### Pharmaceuticals ###
+NACE.Manufacturing.Lvl3.BasicPharmaceuticals = Basic pharmaceutical products
 NACE.Manufacturing.Lvl4.BasicPharmaceuticals = Manufacture of basic pharmaceutical products
-#### NACE.Manufacturing.Lvl3.PharmaceuticalPreparations = Manufacture of pharmaceutical preparations
+
+NACE.Manufacturing.Lvl3.PharmaceuticalPreparations = Pharmaceutical preparations
 NACE.Manufacturing.Lvl4.PharmaceuticalPreparations = Manufacture of pharmaceutical preparations
 
-NACE.Manufacturing.Lvl2.RubberPlastics = Manufacture of rubber and plastic products
-#### NACE.Manufacturing.Lvl3.RubberProducts = Manufacture of rubber products
+### Rubber and plastic ###
+NACE.Manufacturing.Lvl3.RubberProducts = Rubber products
 NACE.Manufacturing.Lvl4.RubberTyresTubes = Manufacture, retreading and rebuilding of rubber tyres and manufacture of tubes
 NACE.Manufacturing.Lvl4.OtherRubberProducts = Manufacture of other rubber products
-#### NACE.Manufacturing.Lvl3.PlasticProducts = Manufacture of plastic products
+
+NACE.Manufacturing.Lvl3.PlasticProducts = Plastic products
 NACE.Manufacturing.Lvl4.PlasticPlatesSheets = Manufacture of plastic plates, sheets, tubes and profiles
 NACE.Manufacturing.Lvl4.PlasticPackingGoods = Manufacture of plastic packing goods
 NACE.Manufacturing.Lvl4.PlasticDoorsWindows = Manufacture of doors and windows of plastic
@@ -1002,145 +1107,177 @@ NACE.Manufacturing.Lvl4.BuildersWarePlastic = Manufacture of builders' ware of p
 NACE.Manufacturing.Lvl4.FinishingPlasticProducts = Processing and finishing of plastic products
 NACE.Manufacturing.Lvl4.OtherPlasticProducts = Manufacture of other plastic products
 
-NACE.Manufacturing.Lvl2.OtherNonMetallicMinerals = Manufacture of other non-metallic mineral products
-#### NACE.Manufacturing.Lvl3.GlassProducts = Manufacture of glass and glass products
+### Non metallic mineral products ###
+NACE.Manufacturing.Lvl3.GlassProducts = Glass and glass products
 NACE.Manufacturing.Lvl4.FlatGlass = Manufacture of flat glass
 NACE.Manufacturing.Lvl4.ShapedFlatGlass = Shaping and processing of flat glass
 NACE.Manufacturing.Lvl4.HollowGlass = Manufacture of hollow glass
 NACE.Manufacturing.Lvl4.GlassFibres = Manufacture of glass fibres
 NACE.Manufacturing.Lvl4.OtherGlass = Manufacture and processing of other glass, including technical glassware
-#### NACE.Manufacturing.Lvl3.RefractoryProducts = Manufacture of refractory products
+
+NACE.Manufacturing.Lvl3.RefractoryProducts = Refractory products
 NACE.Manufacturing.Lvl4.RefractoryProducts = Manufacture of refractory products
-#### NACE.Manufacturing.Lvl3.ClayBuildingMaterials = Manufacture of clay building materials
+
+NACE.Manufacturing.Lvl3.ClayBuildingMaterials = Clay building materials
 NACE.Manufacturing.Lvl4.CeramicTilesFlags = Manufacture of ceramic tiles and flags
 NACE.Manufacturing.Lvl4.BricksTilesClay = Manufacture of bricks, tiles and construction products, in baked clay
-#### NACE.Manufacturing.Lvl3.PorcelainCeramicProducts = Manufacture of other porcelain and ceramic products
+
+NACE.Manufacturing.Lvl3.PorcelainCeramicProducts = Other porcelain and ceramic products
 NACE.Manufacturing.Lvl4.CeramicHouseholdOrnamental = Manufacture of ceramic household and ornamental articles
 NACE.Manufacturing.Lvl4.CeramicSanitaryFixtures = Manufacture of ceramic sanitary fixtures
 NACE.Manufacturing.Lvl4.CeramicInsulators = Manufacture of ceramic insulators and insulating fittings
 NACE.Manufacturing.Lvl4.OtherTechnicalCeramics = Manufacture of other technical ceramic products
 NACE.Manufacturing.Lvl4.OtherCeramicProducts = Manufacture of other ceramic products
-#### NACE.Manufacturing.Lvl3.CementLimePlaster = Manufacture of cement, lime and plaster
+
+NACE.Manufacturing.Lvl3.CementLimePlaster = Cement, lime and plaster
 NACE.Manufacturing.Lvl4.Cement = Manufacture of cement
 NACE.Manufacturing.Lvl4.LimePlaster = Manufacture of lime and plaster
-#### NACE.Manufacturing.Lvl3.ConcreteCementPlasterArticles = Manufacture of articles of concrete, cement and plaster
+
+NACE.Manufacturing.Lvl3.ConcreteCementPlasterArticles = Articles of concrete, cement and plaster
 NACE.Manufacturing.Lvl4.ConcreteProducts = Manufacture of concrete products for construction purposes
 NACE.Manufacturing.Lvl4.PlasterProducts = Manufacture of plaster products for construction purposes
 NACE.Manufacturing.Lvl4.ReadyMixedConcrete = Manufacture of ready-mixed concrete
 NACE.Manufacturing.Lvl4.Mortars = Manufacture of mortars
 NACE.Manufacturing.Lvl4.FibreCement = Manufacture of fibre cement
 NACE.Manufacturing.Lvl4.OtherConcretePlasterArticles = Manufacture of other articles of concrete, cement and plaster
-#### NACE.Manufacturing.Lvl3.CuttingStone = Cutting, shaping and finishing of stone
+
+NACE.Manufacturing.Lvl3.CuttingStone = Cutting, shaping and finishing of stone
 NACE.Manufacturing.Lvl4.CuttingStone = Cutting, shaping and finishing of stone
-#### NACE.Manufacturing.Lvl3.AbrasiveProducts = Manufacture of abrasive products and non-metallic mineral products n.e.c.
+
+NACE.Manufacturing.Lvl3.AbrasiveProducts = Another type of abrasive and non-metallic mineral product.
 NACE.Manufacturing.Lvl4.AbrasiveProducts = Manufacture of abrasive products
 NACE.Manufacturing.Lvl4.OtherNonMetallicMinerals = Manufacture of other non-metallic mineral products n.e.c.
 
-NACE.Manufacturing.Lvl2.BasicMetals = Manufacture of basic metals
-#### NACE.Manufacturing.Lvl3.BasicIronSteel = Manufacture of basic iron and steel and of ferro-alloys
+### Basic Metals ###
+NACE.Manufacturing.Lvl3.BasicIronSteel = Basic iron, steel and ferro-alloys
 NACE.Manufacturing.Lvl4.IronSteelFerroAlloys = Manufacture of basic iron and steel and of ferro-alloys
-#### NACE.Manufacturing.Lvl3.TubesPipesSteel = Manufacture of tubes, pipes, hollow profiles and related fittings, of steel
+
+NACE.Manufacturing.Lvl3.TubesPipesSteel = Steel tubes, pipes, hollow profiles and related fittings
 NACE.Manufacturing.Lvl4.TubesPipesSteel = Manufacture of tubes, pipes, hollow profiles and related fittings, of steel
-#### NACE.Manufacturing.Lvl3.OtherSteelProducts = Manufacture of other products of first processing of steel
+
+NACE.Manufacturing.Lvl3.OtherSteelProducts = Other products of first processing of steel
 NACE.Manufacturing.Lvl4.ColdDrawingBars = Cold drawing of bars
 NACE.Manufacturing.Lvl4.ColdRollingStrip = Cold rolling of narrow strip
 NACE.Manufacturing.Lvl4.ColdFormingFolding = Cold forming or folding
 NACE.Manufacturing.Lvl4.ColdDrawingWire = Cold drawing of wire
-#### NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals = Manufacture of basic precious and other non-ferrous metals
+
+NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals = Basic precious and other non-ferrous metals
 NACE.Manufacturing.Lvl4.PreciousMetals = Precious metals production
 NACE.Manufacturing.Lvl4.Aluminium = Aluminium production
 NACE.Manufacturing.Lvl4.LeadZincTin = Lead, zinc and tin production
 NACE.Manufacturing.Lvl4.Copper = Copper production
 NACE.Manufacturing.Lvl4.OtherNonFerrous = Other non-ferrous metal production
 NACE.Manufacturing.Lvl4.NuclearFuelProcessing = Processing of nuclear fuel
-#### NACE.Manufacturing.Lvl3.CastingMetals = Casting of metals
+
+NACE.Manufacturing.Lvl3.CastingMetals = My undertaking carries out casting of metals
 NACE.Manufacturing.Lvl4.CastingIron = Casting of iron
 NACE.Manufacturing.Lvl4.CastingSteel = Casting of steel
 NACE.Manufacturing.Lvl4.CastingLightMetals = Casting of light metals
 NACE.Manufacturing.Lvl4.CastingOtherNonFerrous = Casting of other non-ferrous metals
 
-NACE.Manufacturing.Lvl2.FabricatedMetalProducts = Manufacture of fabricated metal products, except machinery and equipment
-#### NACE.Manufacturing.Lvl3.StructuralMetalProducts = Manufacture of structural metal products
+### Fabricated metal products ###
+NACE.Manufacturing.Lvl3.StructuralMetalProducts = Manufacture of structural metal products
 NACE.Manufacturing.Lvl4.MetalStructures = Manufacture of metal structures and parts of structures
 NACE.Manufacturing.Lvl4.MetalDoorsWindows = Manufacture of doors and windows of metal
-#### NACE.Manufacturing.Lvl3.TanksReservoirs = Manufacture of tanks, reservoirs and containers of metal
+
+NACE.Manufacturing.Lvl3.TanksReservoirs = Manufacture of tanks, reservoirs and containers of metal
 NACE.Manufacturing.Lvl4.CentralHeatingBoilers = Manufacture of central heating radiators, steam generators and boilers
 NACE.Manufacturing.Lvl4.OtherTanksReservoirs = Manufacture of other tanks, reservoirs and containers of metal
-#### NACE.Manufacturing.Lvl3.WeaponsAmmunition = Manufacture of weapons and ammunition
+
+NACE.Manufacturing.Lvl3.WeaponsAmmunition = Manufacture of weapons and ammunition
 NACE.Manufacturing.Lvl4.WeaponsAmmunition = Manufacture of weapons and ammunition
-#### NACE.Manufacturing.Lvl3.ForgingShaping = Forging and shaping metal and powder metallurgy
+
+NACE.Manufacturing.Lvl3.ForgingShaping = Forging and shaping metal and powder metallurgy
 NACE.Manufacturing.Lvl4.ForgingShaping = Forging and shaping metal and powder metallurgy
-#### NACE.Manufacturing.Lvl3.TreatmentCoatingMachining = Treatment and coating of metals; machining
+
+NACE.Manufacturing.Lvl3.TreatmentCoatingMachining = Treatment and coating of metals; machining
 NACE.Manufacturing.Lvl4.CoatingMetals = Coating of metals
 NACE.Manufacturing.Lvl4.HeatTreatment = Heat treatment of metals
 NACE.Manufacturing.Lvl4.Machining = Machining of metals
-#### NACE.Manufacturing.Lvl3.CutleryToolsHardware = Manufacture of cutlery, tools and general hardware
+
+NACE.Manufacturing.Lvl3.CutleryToolsHardware = Manufacture of cutlery, tools and general hardware
 NACE.Manufacturing.Lvl4.Cutlery = Manufacture of cutlery
 NACE.Manufacturing.Lvl4.LocksHinges = Manufacture of locks and hinges
 NACE.Manufacturing.Lvl4.Tools = Manufacture of tools
-#### NACE.Manufacturing.Lvl3.OtherFabricatedMetalProducts = Manufacture of other fabricated metal products
+
+NACE.Manufacturing.Lvl3.OtherFabricatedMetalProducts = Manufacture of other fabricated metal products
 NACE.Manufacturing.Lvl4.SteelDrumsContainers = Manufacture of steel drums and similar containers
 NACE.Manufacturing.Lvl4.LightMetalPackaging = Manufacture of light metal packaging
 NACE.Manufacturing.Lvl4.WireProductsSprings = Manufacture of wire products, chain and springs
 NACE.Manufacturing.Lvl4.Fasteners = Manufacture of fasteners and screw machine products
 NACE.Manufacturing.Lvl4.OtherFabricatedMetalProducts = Manufacture of other fabricated metal products n.e.c.
 
-NACE.Manufacturing.Lvl2.ComputerElectronicsOptical = Manufacture of computer, electronic and optical products
-#### NACE.Manufacturing.Lvl3.ElectronicComponentsBoards = Manufacture of electronic components and boards
+### Computers electronics ###
+NACE.Manufacturing.Lvl3.ElectronicComponentsBoards = Electronic components and boards
 NACE.Manufacturing.Lvl4.ElectronicComponents = Manufacture of electronic components
 NACE.Manufacturing.Lvl4.LoadedElectronicBoards = Manufacture of loaded electronic boards
-#### NACE.Manufacturing.Lvl3.ComputersPeripherals = Manufacture of computers and peripheral equipment
+
+NACE.Manufacturing.Lvl3.ComputersPeripherals = Computers and peripheral equipment
 NACE.Manufacturing.Lvl4.ComputersPeripherals = Manufacture of computers and peripheral equipment
-#### NACE.Manufacturing.Lvl3.CommunicationEquipment = Manufacture of communication equipment
+
+NACE.Manufacturing.Lvl3.CommunicationEquipment = Communication equipment
 NACE.Manufacturing.Lvl4.CommunicationEquipment = Manufacture of communication equipment
-#### NACE.Manufacturing.Lvl3.ConsumerElectronics = Manufacture of consumer electronics
+
+NACE.Manufacturing.Lvl3.ConsumerElectronics = Consumer electronics
 NACE.Manufacturing.Lvl4.ConsumerElectronics = Manufacture of consumer electronics
-#### NACE.Manufacturing.Lvl3.MeasuringTestingInstruments = Manufacture of measuring testing instruments, clocks and watches
+
+NACE.Manufacturing.Lvl3.MeasuringTestingInstruments = Measuring testing instruments, clocks and watches
 NACE.Manufacturing.Lvl4.MeasuringTestingNavigation = Manufacture of instruments and appliances for measuring, testing and navigation
 NACE.Manufacturing.Lvl4.WatchesClocks = Manufacture of watches and clocks
-#### NACE.Manufacturing.Lvl3.IrradiationElectromedical = Manufacture of irradiation, electromedical and electrotherapeutic equipment
+
+NACE.Manufacturing.Lvl3.IrradiationElectromedical = Irradiation, electromedical and electrotherapeutic equipment
 NACE.Manufacturing.Lvl4.IrradiationElectromedical = Manufacture of irradiation, electromedical and electrotherapeutic equipment
-#### NACE.Manufacturing.Lvl3.OpticalInstruments = Manufacture of optical instruments, magnetic and optical media and photographic equipment
+
+NACE.Manufacturing.Lvl3.OpticalInstruments = Optical instruments, magnetic and optical media and photographic equipment
 NACE.Manufacturing.Lvl4.OpticalInstruments = Manufacture of optical instruments, magnetic and optical media and photographic equipment
 
-NACE.Manufacturing.Lvl2.ElectricalEquipment = Manufacture of electrical equipment
-#### NACE.Manufacturing.Lvl3.ElectricMotorsGenerators = Manufacture of electric motors, generators, transformers and electricity distribution and control apparatus
+### Electrical equipment ###
+NACE.Manufacturing.Lvl3.ElectricMotorsGenerators = Electric motors, generators, transformers and electricity distribution and control apparatus
 NACE.Manufacturing.Lvl4.ElectricMotorsGenerators = Manufacture of electric motors, generators and transformers
 NACE.Manufacturing.Lvl4.ElectricityDistributionControl = Manufacture of electricity distribution and control apparatus
-#### NACE.Manufacturing.Lvl3.BatteriesAccumulators = Manufacture of batteries and accumulators
+
+NACE.Manufacturing.Lvl3.BatteriesAccumulators = Batteries and accumulators
 NACE.Manufacturing.Lvl4.BatteriesAccumulators = Manufacture of batteries and accumulators
-#### NACE.Manufacturing.Lvl3.WiringDevices = Manufacture of wiring and wiring devices
+
+NACE.Manufacturing.Lvl3.WiringDevices = Wiring and wiring devices
 NACE.Manufacturing.Lvl4.FibreOpticCables = Manufacture of fibre optic cables
 NACE.Manufacturing.Lvl4.OtherWiresCables = Manufacture of other electronic and electric wires and cables
 NACE.Manufacturing.Lvl4.WiringDevices = Manufacture of wiring devices
-#### NACE.Manufacturing.Lvl3.LightingEquipment = Manufacture of lighting equipment
+
+NACE.Manufacturing.Lvl3.LightingEquipment = Lighting equipment
 NACE.Manufacturing.Lvl4.LightingEquipment = Manufacture of lighting equipment
-#### NACE.Manufacturing.Lvl3.DomesticAppliances = Manufacture of domestic appliances
+
+NACE.Manufacturing.Lvl3.DomesticAppliances = Domestic appliances
 NACE.Manufacturing.Lvl4.ElectricDomesticAppliances = Manufacture of electric domestic appliances
 NACE.Manufacturing.Lvl4.NonElectricDomesticAppliances = Manufacture of non-electric domestic appliances
-#### NACE.Manufacturing.Lvl3.OtherElectricalEquipment = Manufacture of other electrical equipment
+
+NACE.Manufacturing.Lvl3.OtherElectricalEquipment = Other electrical equipment
 NACE.Manufacturing.Lvl4.OtherElectricalEquipment = Manufacture of other electrical equipment
 
-NACE.Manufacturing.Lvl2.MachineryEquipmentNEC = Manufacture of machinery and equipment n.e.c.
-#### NACE.Manufacturing.Lvl3.GeneralPurposeMachinery = Manufacture of general-purpose machinery
+### Other machinery and equipment ###
+NACE.Manufacturing.Lvl3.GeneralPurposeMachinery = General-purpose machinery
 NACE.Manufacturing.Lvl4.EnginesTurbines = Manufacture of engines and turbines, except aircraft, vehicle and cycle engines
 NACE.Manufacturing.Lvl4.FluidPowerEquipment = Manufacture of fluid power equipment
 NACE.Manufacturing.Lvl4.PumpsCompressors = Manufacture of other pumps and compressors
 NACE.Manufacturing.Lvl4.TapsValves = Manufacture of other taps and valves
 NACE.Manufacturing.Lvl4.BearingsGears = Manufacture of bearings, gears, gearing and driving elements
-#### NACE.Manufacturing.Lvl3.OtherGeneralPurposeMachinery = Manufacture of other general-purpose machinery
+
+NACE.Manufacturing.Lvl3.OtherGeneralPurposeMachinery = Other general-purpose machinery
 NACE.Manufacturing.Lvl4.OvensFurnacesHeating = Manufacture of ovens, furnaces and permanent household heating equipment
 NACE.Manufacturing.Lvl4.LiftingHandlingEquipment = Manufacture of lifting and handling equipment
 NACE.Manufacturing.Lvl4.OfficeMachinery = Manufacture of office machinery and equipment, except computers and peripheral equipment
 NACE.Manufacturing.Lvl4.PowerDrivenHandTools = Manufacture of power-driven hand tools
 NACE.Manufacturing.Lvl4.AirConditioning = Manufacture of non-domestic air conditioning equipment
 NACE.Manufacturing.Lvl4.OtherGeneralPurposeMachinery = Manufacture of other general-purpose machinery n.e.c.
-#### NACE.Manufacturing.Lvl3.AgriculturalForestryMachinery = Manufacture of agricultural and forestry machinery
+
+NACE.Manufacturing.Lvl3.AgriculturalForestryMachinery = Agricultural and forestry machinery
 NACE.Manufacturing.Lvl4.AgriculturalForestryMachinery = Manufacture of agricultural and forestry machinery
-#### NACE.Manufacturing.Lvl3.MetalFormingMachinery = Manufacture of metal forming machinery and machine tools
+
+NACE.Manufacturing.Lvl3.MetalFormingMachinery = Metal forming machinery and machine tools
 NACE.Manufacturing.Lvl4.MetalFormingMachinery = Manufacture of metal forming machinery and machine tools for metal work
 NACE.Manufacturing.Lvl4.OtherMachineTools = Manufacture of other machine tools
-#### NACE.Manufacturing.Lvl3.OtherSpecialPurposeMachinery = Manufacture of other special-purpose machinery
+
+NACE.Manufacturing.Lvl3.OtherSpecialPurposeMachinery = Other special-purpose machinery
 NACE.Manufacturing.Lvl4.MachineryMetallurgy = Manufacture of machinery for metallurgy
 NACE.Manufacturing.Lvl4.MachineryMiningConstruction = Manufacture of machinery for mining, quarrying and construction
 NACE.Manufacturing.Lvl4.MachineryFoodBeverageTobacco = Manufacture of machinery for food, beverage and tobacco processing
@@ -1150,55 +1287,66 @@ NACE.Manufacturing.Lvl4.MachineryPlasticsRubber = Manufacture of plastics and ru
 NACE.Manufacturing.Lvl4.AdditiveManufacturingMachinery = Manufacture of additive manufacturing machinery
 NACE.Manufacturing.Lvl4.OtherSpecialPurposeMachinery = Manufacture of other special-purpose machinery n.e.c.
 
-NACE.Manufacturing.Lvl2.MotorVehiclesTrailers = Manufacture of motor vehicles, trailers and semi-trailers
-#### NACE.Manufacturing.Lvl3.MotorVehicles = Manufacture of motor vehicles
+### Motor vehicles, trailers and parts ###
+NACE.Manufacturing.Lvl3.MotorVehicles = Motor vehicles
 NACE.Manufacturing.Lvl4.MotorVehicles = Manufacture of motor vehicles
-#### NACE.Manufacturing.Lvl3.BodiesTrailers = Manufacture of bodies and coachwork for motor vehicles; manufacture of trailers and semi-trailers
+
+NACE.Manufacturing.Lvl3.BodiesTrailers = Bodies and coachwork for motor vehicles; trailers and semi-trailers
 NACE.Manufacturing.Lvl4.BodiesTrailers = Manufacture of bodies and coachwork for motor vehicles; manufacture of trailers and semi-trailers
-#### NACE.Manufacturing.Lvl3.MotorVehiclePartsAccessories = Manufacture of motor vehicle parts and accessories
+
+NACE.Manufacturing.Lvl3.MotorVehiclePartsAccessories = Motor vehicle parts and accessories
 NACE.Manufacturing.Lvl4.ElectricalElectronicEquipmentVehicles = Manufacture of electrical and electronic equipment for motor vehicles
 NACE.Manufacturing.Lvl4.OtherPartsAccessoriesVehicles = Manufacture of other parts and accessories for motor vehicles
 
-NACE.Manufacturing.Lvl2.OtherTransportEquipment = Manufacture of other transport equipment
-#### NACE.Manufacturing.Lvl3.ShipsBoats = Building of ships and boats
+### Other transport equipment ###
+NACE.Manufacturing.Lvl3.ShipsBoats = Ships and boats
 NACE.Manufacturing.Lvl4.CivilianShips = Building of civilian ships and floating structures
 NACE.Manufacturing.Lvl4.PleasureSportingBoats = Building of pleasure and sporting boats
 NACE.Manufacturing.Lvl4.MilitaryShips = Building of military ships and vessels
-#### NACE.Manufacturing.Lvl3.RailwayLocomotives = Manufacture of railway locomotives and rolling stock
+
+NACE.Manufacturing.Lvl3.RailwayLocomotives = Railway locomotives and rolling stock
 NACE.Manufacturing.Lvl4.RailwayLocomotives = Manufacture of railway locomotives and rolling stock
-#### NACE.Manufacturing.Lvl3.AirSpacecraft = Manufacture of air and spacecraft and related machinery
+
+NACE.Manufacturing.Lvl3.AirSpacecraft = Aircraft and spacecraft and related machinery
 NACE.Manufacturing.Lvl4.CivilianAirSpacecraft = Manufacture of civilian air and spacecraft and related machinery
 NACE.Manufacturing.Lvl4.MilitaryAirSpacecraft = Manufacture of military air and spacecraft and related machinery
-#### NACE.Manufacturing.Lvl3.MilitaryVehicles = Manufacture of military fighting vehicles
+
+NACE.Manufacturing.Lvl3.MilitaryVehicles = Military fighting vehicles
 NACE.Manufacturing.Lvl4.MilitaryVehicles = Manufacture of military fighting vehicles
-#### NACE.Manufacturing.Lvl3.OtherTransportEquipment = Manufacture of transport equipment n.e.c.
+
+NACE.Manufacturing.Lvl3.OtherTransportEquipment = Other transport equipment
 NACE.Manufacturing.Lvl4.Motorcycles = Manufacture of motorcycles
 NACE.Manufacturing.Lvl4.BicyclesInvalidCarriages = Manufacture of bicycles and invalid carriages
 NACE.Manufacturing.Lvl4.OtherTransportNEC = Manufacture of other transport equipment n.e.c.
 
-NACE.Manufacturing.Lvl2.Furniture = Manufacture of furniture
-#### NACE.Manufacturing.Lvl3.Furniture = Manufacture of furniture
+### Furniture ###
+NACE.Manufacturing.Lvl3.Furniture = Manufacture of furniture
 NACE.Manufacturing.Lvl4.Furniture = Manufacture of furniture
 
-NACE.Manufacturing.Lvl2.OtherManufacturing = Other manufacturing
-#### NACE.Manufacturing.Lvl3.JewelleryBijouterie = Manufacture of jewellery, bijouterie and related articles
+### Other manufacturing ###
+NACE.Manufacturing.Lvl3.JewelleryCoins = Jewellery, coins and related articles
 NACE.Manufacturing.Lvl4.StrikingCoins = Striking of coins
 NACE.Manufacturing.Lvl4.JewelleryArticles = Manufacture of jewellery and related articles
 NACE.Manufacturing.Lvl4.ImitationJewellery = Manufacture of imitation jewellery and related articles
-#### NACE.Manufacturing.Lvl3.MusicalInstruments = Manufacture of musical instruments
+
+NACE.Manufacturing.Lvl3.MusicalInstruments = Musical instruments
 NACE.Manufacturing.Lvl4.MusicalInstruments = Manufacture of musical instruments
-#### NACE.Manufacturing.Lvl3.SportsGoods = Manufacture of sports goods
+
+NACE.Manufacturing.Lvl3.SportsGoods = Sports goods
 NACE.Manufacturing.Lvl4.SportsGoods = Manufacture of sports goods
-#### NACE.Manufacturing.Lvl3.GamesToys = Manufacture of games and toys
+
+NACE.Manufacturing.Lvl3.GamesToys = Games and toys
 NACE.Manufacturing.Lvl4.GamesToys = Manufacture of games and toys
-#### NACE.Manufacturing.Lvl3.MedicalDentalInstruments = Manufacture of medical and dental instruments and supplies
+
+NACE.Manufacturing.Lvl3.MedicalDentalInstruments = Medical and dental instruments and supplies
 NACE.Manufacturing.Lvl4.MedicalDentalInstruments = Manufacture of medical and dental instruments and supplies
 NACE.Manufacturing.Lvl4.ManufacturingNEC = Manufacturing n.e.c.
 NACE.Manufacturing.Lvl4.BroomsBrushes = Manufacture of brooms and brushes
-NACE.Manufacturing.Lvl4.OtherManufacturingNEC = Other manufacturing n.e.c.
 
-NACE.Manufacturing.Lvl2.RepairMaintenanceInstallation = Repair, maintenance and installation of machinery and equipment
-#### NACE.Manufacturing.Lvl3.RepairMaintenanceFabricatedMetal = Repair and maintenance of fabricated metal products, machinery and equipment
+NACE.Manufacturing.Lvl3.OtherManufacturingNEC = Other products
+
+### repairs and maintains ###
+NACE.Manufacturing.Lvl3.RepairMaintenanceFabricatedMetal = Repair and maintenance of fabricated metal products, machinery and equipment
 NACE.Manufacturing.Lvl4.RepairFabricatedMetalProducts = Repair and maintenance of fabricated metal products
 NACE.Manufacturing.Lvl4.RepairMachinery = Repair and maintenance of machinery
 NACE.Manufacturing.Lvl4.RepairElectronicOptical = Repair and maintenance of electronic and optical equipment
@@ -1208,7 +1356,8 @@ NACE.Manufacturing.Lvl4.RepairCivilianAirSpacecraft = Repair and maintenance of 
 NACE.Manufacturing.Lvl4.RepairOtherTransport = Repair and maintenance of other civilian transport equipment
 NACE.Manufacturing.Lvl4.RepairMilitaryVehicles = Repair and maintenance of military fighting vehicles, ships, boats, air and spacecraft
 NACE.Manufacturing.Lvl4.RepairOtherEquipment = Repair and maintenance of other equipment
-#### NACE.Manufacturing.Lvl3.InstallationIndustrialMachinery = Installation of industrial machinery and equipment
+
+NACE.Manufacturing.Lvl3.InstallationIndustrialMachinery = Installation of industrial machinery and equipment
 NACE.Manufacturing.Lvl4.InstallationIndustrialMachinery = Installation of industrial machinery and equipment
 
 #ElectricityGasSteamAir NACE Sector2,3,4
