@@ -922,7 +922,7 @@ NACE.Manufacturing.Lvl4.FruitVegetableJuice = Manufacture of fruit and vegetable
 NACE.Manufacturing.Lvl4.OtherFruitVegetables = Other processing and preserving of fruit and vegetables
 
 NACE.Manufacturing.Food.OilsAndFats.title = What type of oils and fats does your undertaking manufacture?
-NACE.Manufacturing.Lvl3.VegetableAnimalOils = Oils and fats
+NACE.Manufacturing.Lvl3.OilsFats = Oils and fats
 NACE.Manufacturing.Lvl4.OilsFats = Other oils and fats
 NACE.Manufacturing.Lvl4.Margarine = Margarine and similar edible fats
 
@@ -933,17 +933,20 @@ NACE.Manufacturing.Lvl4.IceCream = Ice cream and other edible ice
 
 NACE.Manufacturing.GrainMillProducts.title = What type of grain mill products or starch does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.GrainMillProducts = Grain mill products and starch
+NACE.Manufacturing.Lvl3.GrainMillProducts.hint = Includes cereals and flour.
 NACE.Manufacturing.Lvl4.GrainMillProducts = Grain mill products
 NACE.Manufacturing.Lvl4.Starches = Starches and starch products
 
 NACE.Manufacturing.BakeryProducts.title = What type of bakery and farinaceous products does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.BakeryProducts = Bakery and farinaceous products
+NACE.Manufacturing.Lvl3.BakeryProducts.hint = For example bread, biscuits, cakes, pastries and pasta.
 NACE.Manufacturing.Lvl4.BreadPastry = Bread, cakes and fresh pastry goods
 NACE.Manufacturing.Lvl4.RusksBiscuits = Biscuits, rusks and preserved pastries and cakes
 NACE.Manufacturing.Lvl4.FarinaceousProducts = Farinaceous products
 
 NACE.Manufacturing.OtherFoodProducts.title = What type of other food products does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.OtherFoodProducts = Manufacture of other food products
+NACE.Manufacturing.Lvl3.OtherFoodProducts.hint = Includes cocoa, chocolate and confectionery, condiments and seasonings, food preparations (like baby food) and prepared meals, sugar, tea and coffee, and all other food products.
 NACE.Manufacturing.Lvl4.Sugar = Manufacture of sugar
 NACE.Manufacturing.Lvl4.CocoaChocolateConfectionery = Manufacture of cocoa, chocolate and sugar confectionery
 NACE.Manufacturing.Lvl4.TeaCoffee = Processing of tea and coffee
