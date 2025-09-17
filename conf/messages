@@ -1054,7 +1054,10 @@ NACE.Manufacturing.Lvl4.Wallpaper = Wallpaper
 NACE.Manufacturing.Lvl4.OtherPaperArticles = Other articles of paper and paperboard
 
 ### Printed products ###
+NACE.Manufacturing.Printing.title = What is your undertaking’s main business activity in printing?
 NACE.Manufacturing.Lvl3.PrintingServices = Printing and service activities related to printing
+NACE.Manufacturing.Lvl3.PrintingServices.hint = Includes binding, pre-press and pre-media services, other printing and related services.
+NACE.Manufacturing.PrintingServices.title = What type of printing or service activity does your undertaking do?
 NACE.Manufacturing.Lvl4.Newspapers = Printing of newspapers
 NACE.Manufacturing.Lvl4.OtherPrinting = Other printing
 NACE.Manufacturing.Lvl4.PrePressMedia = Pre-press and pre-media services
@@ -1064,20 +1067,24 @@ NACE.Manufacturing.Lvl3.ReproductionRecordedMedia = Reproduction of recorded med
 NACE.Manufacturing.Lvl4.ReproductionRecordedMedia = Reproduction of recorded media
 
 ### Coke and petroleum ###
+NACE.Manufacturing.CokePetroleum.title = What type of fuel products does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.CokeOvenProducts = Coke oven products
 NACE.Manufacturing.Lvl4.CokeOvenProducts = Manufacture of coke oven products
 NACE.Manufacturing.Lvl3.RefinedPetroleumProducts = Refined petroleum and fossil fuel products
 NACE.Manufacturing.Lvl4.RefinedPetroleumProducts = Manufacture of refined petroleum products and fossil fuel products
 
 ### Chemicals ###
+NACE.Manufacturing.Chemicals.title = What type of chemical or chemical product does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.BasicChemicals = Basic chemicals, fertilisers and nitrogen compounds, plastics and synthetic rubber in primary forms
-NACE.Manufacturing.Lvl4.IndustrialGases = Manufacture of industrial gases
-NACE.Manufacturing.Lvl4.DyesPigments = Manufacture of dyes and pigments
-NACE.Manufacturing.Lvl4.OtherInorganicChemicals = Manufacture of other inorganic basic chemicals
-NACE.Manufacturing.Lvl4.OtherOrganicChemicals = Manufacture of other organic basic chemicals
-NACE.Manufacturing.Lvl4.FertilisersNitrogen = Manufacture of fertilisers and nitrogen compounds
-NACE.Manufacturing.Lvl4.PlasticsPrimaryForms = Manufacture of plastics in primary forms
-NACE.Manufacturing.Lvl4.SyntheticRubber = Manufacture of synthetic rubber in primary forms
+NACE.Manufacturing.Lvl3.BasicChemicals.hint = Includes dyes and pigments and other inorganic and organic basic chemicals.
+NACE.Manufacturing.BasicChemicals.title = What type of basic chemicals or polymer-based materials does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.IndustrialGases = Industrial gases
+NACE.Manufacturing.Lvl4.DyesPigments = Dyes and pigments
+NACE.Manufacturing.Lvl4.OtherInorganicChemicals = Other inorganic basic chemicals
+NACE.Manufacturing.Lvl4.OtherOrganicChemicals = Other organic basic chemicals
+NACE.Manufacturing.Lvl4.FertilisersNitrogen = Fertilisers and nitrogen compounds
+NACE.Manufacturing.Lvl4.PlasticsPrimaryForms = Plastics in primary forms
+NACE.Manufacturing.Lvl4.SyntheticRubber = Synthetic rubber in primary forms
 
 NACE.Manufacturing.Lvl3.PesticidesAgrochemicals = Pesticides, disinfectants and other agrochemical products
 NACE.Manufacturing.Lvl4.PesticidesAgrochemicals = Manufacture of pesticides, disinfectants and other agrochemical products
@@ -1086,17 +1093,22 @@ NACE.Manufacturing.Lvl3.PaintsVarnishes = Paints, varnishes and similar coatings
 NACE.Manufacturing.Lvl4.PaintsVarnishes = Manufacture of paints, varnishes and similar coatings, printing ink and mastics
 
 NACE.Manufacturing.Lvl3.WashingCleaning = Manufacture of washing, cleaning and polishing preparations
-NACE.Manufacturing.Lvl4.SoapDetergents = Manufacture of soap and detergents, cleaning and polishing preparations
-NACE.Manufacturing.Lvl4.PerfumesToiletPreparations = Manufacture of perfumes and toilet preparations
+NACE.Manufacturing.Lvl3.WashingCleaning.hint = Includes detergents, perfume and soap.
+NACE.Manufacturing.WashingChemicals.title = What type of washing, cleaning and polishing preparations does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.SoapDetergents = Soap and detergents, cleaning and polishing preparations
+NACE.Manufacturing.Lvl4.PerfumesToiletPreparations = Perfumes and toilet preparations
 
 NACE.Manufacturing.Lvl3.OtherChemicals = Other chemical products
-NACE.Manufacturing.Lvl4.LiquidBiofuels = Manufacture of liquid biofuels
-NACE.Manufacturing.Lvl4.OtherChemicals = Manufacture of other chemical products n.e.c.
+NACE.Manufacturing.Lvl3.OtherChemicals.hint = Includes liquid biofuels.
+NACE.Manufacturing.OtherChemicals.title = What type of other chemical products does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.LiquidBiofuels = Liquid biofuels
+NACE.Manufacturing.Lvl4.OtherChemicals = Another type of chemical product
 
 NACE.Manufacturing.Lvl3.ManMadeFibres = Man-made fibres
 NACE.Manufacturing.Lvl4.ManMadeFibres = Manufacture of man-made fibres
 
 ### Pharmaceuticals ###
+NACE.Manufacturing.Pharmaceuticals.title = What type of pharmaceuticals does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.BasicPharmaceuticals = Basic pharmaceutical products
 NACE.Manufacturing.Lvl4.BasicPharmaceuticals = Manufacture of basic pharmaceutical products
 
