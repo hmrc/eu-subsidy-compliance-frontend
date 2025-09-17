@@ -32,7 +32,7 @@
 
     @H1(messages("nace.suspended.h1"), Some("govuk-heading-xl"))
 
-    @if(statusCode == UndertakingStatus.suspendedInvalidSector.id.toString) {
+    @if(statusCode == UndertakingStatus.suspendedUndertaking.id.toString) {
         @P(messages("nace.suspended.invalidSector.p1"))
         @P(messages("nace.suspended.invalidSector.p2"))
         @P(messages("nace.suspended.invalidSector.p3"))
