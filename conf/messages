@@ -1010,6 +1010,7 @@ NACE.Manufacturing.Lvl4.LeatherAndFurClothing = Leather and fur clothing
 NACE.Manufacturing.Lvl4.OtherClothingAccessories = Other clothing and accessories
 
 ### Leather ###
+NACE.Manufacturing.TanningLeather.title = What type of manufacturing or related activity does your undertaking do?
 NACE.Manufacturing.Lvl3.TanningLeather = Tanning, dyeing, dressing of leather and fur; manufacture of luggage, handbags, saddlery and harness
 NACE.Manufacturing.Lvl4.TanningLeatherFur = Tanning, dressing, dyeing of leather and fur
 NACE.Manufacturing.Lvl4.LuggageHandbagsSaddlery = Manufacture of luggage, handbags, saddlery and harness of any material
@@ -1018,31 +1019,39 @@ NACE.Manufacturing.Lvl3.Footwear = Manufacture of footwear
 NACE.Manufacturing.Lvl4.Footwear = Manufacture of footwear
 
 ### Wood cork and straw ###
+NACE.Manufacturing.WoodCorkStraw.title = What is your undertaking’s main business activity in wood, cork or straw products?
 NACE.Manufacturing.Lvl3.SawmillingWood = Sawmilling, planing, processing or finishing of wood
+NACE.Manufacturing.SawmillingWood.Lvl4.title = How does your undertaking manufacture or process wood?
 NACE.Manufacturing.Lvl4.SawmillingWood = Sawmilling and planing of wood
 NACE.Manufacturing.Lvl4.ProcessingFinishingWood = Processing and finishing of wood
 
-NACE.Manufacturing.Lvl3.WoodCorkStrawArticles = Manufacture of products of wood, cork, straw and plaiting materials
-NACE.Manufacturing.Lvl4.VeneerSheetsPanels = Manufacture of veneer sheets and wood-based panels
-NACE.Manufacturing.Lvl4.ParquetFloors = Manufacture of assembled parquet floors
-NACE.Manufacturing.Lvl4.BuildersCarpentryJoinery = Manufacture of other builders' carpentry and joinery
-NACE.Manufacturing.Lvl4.WoodenContainers = Manufacture of wooden containers
-NACE.Manufacturing.Lvl4.DoorsWindowsWood = Manufacture of doors and windows of wood
-NACE.Manufacturing.Lvl4.SolidFuelsBiomass = Manufacture of solid fuels from vegetable biomass
-NACE.Manufacturing.Lvl4.FinishingWoodenProducts = Finishing of wooden products
-NACE.Manufacturing.Lvl4.OtherWoodCorkStrawArticles = Manufacture of other products of wood and articles of cork, straw and plaiting materials
+NACE.Manufacturing.Lvl3.WoodCorkStrawPlaiting = Manufacture of products of wood, cork, straw and plaiting materials
+NACE.Manufacturing.Lvl3.WoodCorkStrawPlaiting.hint = Includes finishing of wood products.
+NACE.Manufacturing.WoodCorkStrawPlaiting.Lvl4.title = What type of wood, cork, straw or plaited product does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.VeneerSheetsPanels = Veneer sheets and wood-based panels
+NACE.Manufacturing.Lvl4.ParquetFloors = Assembled parquet floors
+NACE.Manufacturing.Lvl4.BuildersCarpentryJoinery = Other builders' carpentry and joinery
+NACE.Manufacturing.Lvl4.WoodenContainers = Wooden containers
+NACE.Manufacturing.Lvl4.DoorsWindowsWood = Wooden windows and doors
+NACE.Manufacturing.Lvl4.SolidFuelsBiomass = Solid fuels from vegetable biomass
+NACE.Manufacturing.Lvl4.FinishingWoodenProducts = My undertaking carries out finishing of wooden products
+NACE.Manufacturing.Lvl4.OtherWoodCorkStrawPlaiting = Other products of wood, cork, straw and plaiting materials
 
 ### Paper products ###
+NACE.Manufacturing.PaperProducts.title = What type of paper products does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.PulpPaperPaperboard = Pulp, paper and paperboard
-NACE.Manufacturing.Lvl4.Pulp = Manufacture of pulp
-NACE.Manufacturing.Lvl4.PaperPaperboard = Manufacture of paper and paperboard
+NACE.Manufacturing.PulpPaperPaperboard.title = What type of pulp, paper or paperboard does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.Pulp = Pulp
+NACE.Manufacturing.Lvl4.PaperPaperboard = Paper and paperboard
 
+NACE.Manufacturing.ArticlesPaperPaperboard.title = What type of paper or paperboard products does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.ArticlesPaperPaperboard = Articles of paper and paperboard
-NACE.Manufacturing.Lvl4.CorrugatedPaper = Manufacture of corrugated paper, paperboard and containers of paper and paperboard
-NACE.Manufacturing.Lvl4.HouseholdSanitaryGoods = Manufacture of household and sanitary goods and of toilet requisites
-NACE.Manufacturing.Lvl4.PaperStationery = Manufacture of paper stationery
-NACE.Manufacturing.Lvl4.Wallpaper = Manufacture of wallpaper
-NACE.Manufacturing.Lvl4.OtherPaperArticles = Manufacture of other articles of paper and paperboard
+NACE.Manufacturing.Lvl3.ArticlesPaperPaperboard.hint = Includes corrugated paper, household and sanitary goods, stationery and wallpaper.
+NACE.Manufacturing.Lvl4.CorrugatedPaper = Corrugated paper, paperboard and containers of paper and paperboard
+NACE.Manufacturing.Lvl4.HouseholdSanitaryGoods = Household and sanitary goods and of toilet requisites
+NACE.Manufacturing.Lvl4.PaperStationery = Paper stationery
+NACE.Manufacturing.Lvl4.Wallpaper = Wallpaper
+NACE.Manufacturing.Lvl4.OtherPaperArticles = Other articles of paper and paperboard
 
 ### Printed products ###
 NACE.Manufacturing.Lvl3.PrintingServices = Printing and service activities related to printing
