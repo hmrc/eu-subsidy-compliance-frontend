@@ -96,20 +96,16 @@ class AccountController @Inject() (
     logger.info("handleExistingUndertaking")
 
     undertaking.undertakingStatus match {
-      case Some(status) if status == UndertakingStatus.suspendedAutomated || status == UndertakingStatus.suspendedInvalidSector =>
+      case Some(status)
+          if status == UndertakingStatus.suspendedAutomated || status == UndertakingStatus.suspendedInvalidSector =>
         Future.successful(
-          Redirect(routes.UndertakingInvalidSectorSuspendedPageController.showPage)
+          Redirect(routes.NaceUndertakingCategoryIntroController.showPage)
             .addingToSession("suspensionCode" -> status.id.toString)
         )
 
       case _ =>
         if (undertaking.industrySector == Sector.agriculture || undertaking.industrySector == Sector.other) {
-          val hasSeenNace = r.session.get("naceCategoriesSeen").contains("true")
-          if (!hasSeenNace) {
-            Future.successful(Redirect(routes.NewUndertakingCategoryIntroController.showPage))
-          } else {
-            proceedToAccountPage(undertaking)
-          }
+          Future.successful(Redirect(routes.NaceUndertakingCategoryIntroController.showPage))
         } else {
           proceedToAccountPage(undertaking)
         }

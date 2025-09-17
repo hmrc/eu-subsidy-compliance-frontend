@@ -17,9 +17,12 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+
 
 @this(
       layout: Layout,
+      formHelper: FormWithCSRF,
       button: components.Button
       )
 
@@ -48,7 +51,7 @@
     @P(messages("nace.suspended.auto.p4"))
     }
 
-    @formHelper(action = controllers.routes.NewUndertakingCategoryIntroController.showPage) {
+    @formHelper(action = controllers.routes.NaceUndertakingCategoryIntroController.showPage) {
         @button("common.continue.only")
     }
 

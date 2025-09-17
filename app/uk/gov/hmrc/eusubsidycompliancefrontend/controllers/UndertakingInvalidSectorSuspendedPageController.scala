@@ -22,12 +22,12 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.UndertakingInvalidSectorSuspendedPage
 import javax.inject.Inject
 
-class UndertakingInvalidSectorSuspendedPageController @Inject()(
-                                                                 mcc: MessagesControllerComponents,
-                                                                 actionBuilders: ActionBuilders,
-                                                                 undertakingSuspendedPage: UndertakingInvalidSectorSuspendedPage
-                                                               )(implicit val appConfig: AppConfig)
-  extends BaseController(mcc) {
+class UndertakingInvalidSectorSuspendedPageController @Inject() (
+  mcc: MessagesControllerComponents,
+  actionBuilders: ActionBuilders,
+  undertakingSuspendedPage: UndertakingInvalidSectorSuspendedPage
+)(implicit val appConfig: AppConfig)
+    extends BaseController(mcc) {
 
   import actionBuilders._
 

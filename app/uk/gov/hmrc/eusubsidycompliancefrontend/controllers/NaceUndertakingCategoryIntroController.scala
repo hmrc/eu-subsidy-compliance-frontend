@@ -19,15 +19,15 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.NewUndertakingCategoryIntroPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.NaceUndertakingCategoryIntroPage
 
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class NewUndertakingCategoryIntroController @Inject()(
+class NaceUndertakingCategoryIntroController @Inject() (
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  newUndertakingCategoryIntroPage: NewUndertakingCategoryIntroPage
+  NaceUndertakingCategoryIntroPage: NaceUndertakingCategoryIntroPage
 )(implicit
   val appConfig: AppConfig
 ) extends BaseController(mcc) {
@@ -36,12 +36,13 @@ class NewUndertakingCategoryIntroController @Inject()(
 
   def showPage: Action[AnyContent] = enrolled.async { implicit request =>
     val eori = request.eoriNumber
-    Future.successful(Ok(newUndertakingCategoryIntroPage(eori)))
+    Future.successful(Ok(NaceUndertakingCategoryIntroPage(eori)))
   }
 
   def continue: Action[AnyContent] = enrolled.async { implicit request =>
     val updatedSession = request.session + ("naceCategoriesSeen" -> "true")
     Future.successful(
+      // Needs updating to take user to /undertaking-industry-sector
       Redirect(routes.AccountController.getAccountPage)
         .withSession(updatedSession)
     )

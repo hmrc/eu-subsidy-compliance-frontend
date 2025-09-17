@@ -7,8 +7,8 @@ GET        /home                                      uk.gov.hmrc.eusubsidycompl
 
 GET        /assets/*file                              controllers.Assets.versioned(path = "/public", file: Asset)
 
-GET        /select-new-undertaking-category                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NewUndertakingCategoryIntroController.showPage
-POST       /select-new-undertaking-category                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NewUndertakingCategoryIntroController.continue
+GET        /select-new-undertaking-category                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NaceUndertakingCategoryIntroController.showPage
+POST       /select-new-undertaking-category                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NaceUndertakingCategoryIntroController.continue
 
 GET        /first-login-journey-eligibility-first-empty                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityFirstEmptyPageController.firstEmptyPage
 GET        /first-login-journey-undertaking-first-empty                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.firstEmptyPage

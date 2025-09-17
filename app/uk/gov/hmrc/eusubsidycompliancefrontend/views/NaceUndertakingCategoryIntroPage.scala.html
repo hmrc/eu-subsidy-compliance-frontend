@@ -49,7 +49,7 @@
 
     <p class="govuk-body">
         You can browse the
-        <a class="govuk-link"
+        <a id="nace-link" class="govuk-link"
            href="https://showvoc.op.europa.eu/#/datasets/ESTAT_Statistical_Classification_of_Economic_Activities_in_the_European_Community_Rev._2.1._%28NACE_2.1%29/data?resId=http:%2F%2Fdata.europa.eu%2Fux2%2Fnace2.1%2Fsections"
            target="_blank"
            rel="noopener noreferrer">
@@ -61,8 +61,7 @@
 
     <br/>
 
-    @formHelper(action = controllers.routes.SubsidyController.postConfirmClaimAmount) {
+    @formHelper(action = controllers.routes.NaceUndertakingCategoryIntroController.continue) {
         @button("common.start")
     }
-
 }
