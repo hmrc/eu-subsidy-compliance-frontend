@@ -26,7 +26,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, POST, contentAsString, defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.auth.core.AuthConnector
 
-class RegulatoryChangeNotificationControllerSpec
+class NaceUndertakingCategoryIntroControllerSpec
     extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
@@ -39,30 +39,41 @@ class RegulatoryChangeNotificationControllerSpec
     inject.bind[AuthConnector].toInstance(mockAuthConnector)
   )
 
-  private val controller = instanceOf[RegulatoryChangeNotificationController]
+  private val controller = instanceOf[NaceUndertakingCategoryIntroController]
 
-  "RegulatoryChangeNotificationController" when {
+  "NewUndertakingCategoryIntroController" when {
 
     "showPage is called" must {
 
-      "return the regulatory change notification page" in {
+      "render the NACE interrupt page" in {
         inSequence {
           mockAuthWithEnrolment()
         }
 
         def performAction() =
-          controller.showPage(FakeRequest(GET, routes.RegulatoryChangeNotificationController.showPage.url))
+          controller.showPage(FakeRequest(GET, routes.NaceUndertakingCategoryIntroController.showPage.url))
 
         val result = performAction()
         status(result) shouldBe OK
 
-        val document = Jsoup.parse(contentAsString(result))
-        document.select(".interrupt-card").hasText shouldBe true
-        document.select("h1").text() should include("Before you continue")
-        document.select(".govuk-button").text() should include("Manage your undertaking")
-        document.select("#more-about-change-link").text() should include("More about the change")
-      }
+        val html = contentAsString(result)
+        val document = Jsoup.parse(html)
 
+        document.select("h1").text() should include("Select a new undertaking category to continue")
+
+        document.select("p.govuk-hint").size() should be > 0
+
+        val link = document.select("#nace-link").first()
+        link.text() should include("full list of NACE categories from the EU (opens in new tab).")
+        link.attr("target") shouldBe "_blank"
+        link.attr("rel") should include("noopener")
+        link.attr("rel") should include("noreferrer")
+        link.attr("href") should startWith(
+          "https://showvoc.op.europa.eu/#/datasets/ESTAT_Statistical_Classification_of_Economic_Activities_in_the_European_Community_Rev._2.1"
+        )
+
+        document.select(".govuk-button").text() should include("Start")
+      }
     }
 
     "continue is called" must {
@@ -73,15 +84,12 @@ class RegulatoryChangeNotificationControllerSpec
         }
 
         def performAction() =
-          controller.continue(FakeRequest(POST, routes.RegulatoryChangeNotificationController.continue.url))
+          controller.continue(FakeRequest(POST, routes.NaceUndertakingCategoryIntroController.continue.url))
 
         val result = performAction()
         status(result) shouldBe SEE_OTHER
         redirectLocation(result) shouldBe Some(routes.AccountController.getAccountPage.url)
       }
-
     }
-
   }
-
 }
