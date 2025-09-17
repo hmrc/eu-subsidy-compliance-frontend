@@ -1,0 +1,152 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+
+@this(
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: components.Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios : GovukRadios
+)
+
+
+@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@fieldName = @{"undertakingSector"}
+
+@actionUrl = @{
+    if(isUpdate)
+        controllers.routes.UndertakingController.updateIndustrySector
+    else
+        controllers.routes.UndertakingController.postSector
+}
+
+
+@radioText(id: String, content: String) = {
+<span id="@id">@content</span>
+}
+
+@radioOptions = @{
+    Seq(
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-confectionary", messages("NACE.Manufacturing.Lvl4.CocoaChocolateConfectionery"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-confectionary", "hint place holder text"))
+            )),
+            value = Some(Sector.confectionery),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.confectionery.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-condiments", messages("NACE.Manufacturing.Lvl4.CondimentsSeasonings"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-condiments", "hint place holder text"))
+            )),
+            value = Some(Sector.Condiments),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Condiments.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-homogenised", messages("NACE.Manufacturing.Lvl4.HomogenisedFood"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-homogenised", "hint place holder text"))
+            )),
+            value = Some(Sector.HomogenisedFoodPreparations),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.HomogenisedFoodPreparations.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-prepared-meals", messages("NACE.Manufacturing.Lvl4.PreparedMeals"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-prepared-meals", "hint place holder text"))
+            )),
+            value = Some(Sector.PreparedMeals),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PreparedMeals.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-sugar", messages("NACE.Manufacturing.Lvl4.Sugar"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-sugar", "hint place holder text"))
+            )),
+            value = Some(Sector.Sugar),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Sugar.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-tea-coffee", messages("NACE.Manufacturing.Lvl4.TeaCoffee"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-tea-coffee", "hint place holder text"))
+            )),
+            value = Some(Sector.TeaAndCoffee),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TeaAndCoffee.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherFoodProducts"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-other", "hint place holder text"))
+            )),
+            value = Some(Sector.otherFoodProduct),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherFoodProduct.toString)
+        )
+    )
+}
+
+
+@layout(
+  pageTitle = Some(messages("NACE.Manufacturing.OtherFoodProducts.title")),
+  backLinkEnabled = true,
+  backLink = Some(previous),
+  hasErrors = form.hasErrors
+) {
+
+  @formHelper(action = actionUrl) {
+    @form.errors.map { err =>
+      @govukErrorSummary(ErrorSummary(
+        errorList = Seq(
+          ErrorLink(
+            href = Some(s"#${err.key}"),
+            content = Text(s"${messages(err.key++"." ++err.message)}")
+          )
+        ),
+        title = Text(messages("common.error.summary.title", undertakingName))
+      ))
+    }
+
+    @govukRadios(Radios(
+      errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+        content = Text(messages("undertakingSector.error.required"))
+      ))} else None,
+      fieldset = Some(Fieldset(
+        legend = Some(Legend(
+        content = Text(messages("NACE.Manufacturing.OtherFoodProducts.title")),
+        classes = "govuk-fieldset__legend--xl",
+        isPageHeading = true
+        ))
+    )),
+        hint = Some(Hint(
+        content = Text(messages("NACE.general.hint"))
+      )),
+      idPrefix = Some(fieldName),
+      name = fieldName,
+      items = radioOptions
+    ))
+
+    @button("continue.button")
+  }
+}

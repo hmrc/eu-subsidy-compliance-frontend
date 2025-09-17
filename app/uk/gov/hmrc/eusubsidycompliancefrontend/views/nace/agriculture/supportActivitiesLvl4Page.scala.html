@@ -1,0 +1,96 @@
+@*
+* Copyright 2025 HM Revenue & Customs
+*@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+
+@this(
+layout: Layout,
+formHelper: FormWithCSRF,
+button: components.Button,
+govukErrorSummary: GovukErrorSummary,
+govukRadios : GovukRadios
+)
+
+
+@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@fieldName = @{"undertakingSector"}
+
+@actionUrl = @{
+if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
+else controllers.routes.UndertakingController.postSector
+}
+
+
+@radioText(id: String, content: String) = {
+<span id="@id">@content</span>
+}
+
+@radioOptions = @{
+Seq(
+RadioItem(
+content = HtmlContent(radioText("sector-label-postHarvestActivities", messages("NACE.agriculture.Lvl4.postHarvestActivities"))),
+value = Some(Sector.postHarvestActivities.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.postHarvestActivities.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-supportActivitiesAnimal", "messages(NACE.agriculture.Lvl4.supportActivitiesAnimal")),
+value = Some(Sector.supportActivitiesAnimal.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.supportActivitiesAnimal.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-supportActivitiesCrop", messages("NACE.agriculture.Lvl4.supportActivitiesCrop"))),
+value = Some(Sector.supportActivitiesCrop.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.supportActivitiesCrop.toString)
+)
+)
+}
+
+
+@layout(
+pageTitle = Some(messages("NACE.agriculture.Lvl3.supportActivities.title")),
+backLinkEnabled = true,
+backLink = Some(previous),
+hasErrors = form.hasErrors
+) {
+
+@formHelper(action = actionUrl) {
+@form.errors.map { err =>
+@govukErrorSummary(ErrorSummary(
+errorList = Seq(
+ErrorLink(
+href = Some(s"#${err.key}"),
+content = Text(s"${messages(err.key++"." ++err.message)}")
+)
+),
+title = Text(messages("common.error.summary.title", undertakingName))
+))
+}
+
+
+
+@govukRadios(Radios(
+errorMessage = if(form.hasErrors) {Some(ErrorMessage(
+content = Text(messages("undertakingSector.error.required"))
+))} else None,
+fieldset = Some(Fieldset(
+legend = Some(Legend(
+content = Text(messages("NACE.agriculture.Lvl3.supportActivities.title")),
+classes = "govuk-fieldset__legend--xl",
+isPageHeading = true
+))
+)),
+idPrefix = Some(fieldName),
+name = fieldName,
+items = radioOptions
+))
+
+@button("continue.button")
+}
+}

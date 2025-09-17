@@ -700,28 +700,1384 @@ industrySectorResearchBanner.link.text = Get involved – help us make it work f
 industrySectorResearchBanner.hide.button = Hide message
 industrySectorResearchBanner.visually.hidden = Hide message. I do not want to take part in research
 
-nace.interrupt.title = Select a new undertaking category to continue
-nace.interrupt.heading1 = Select a new undertaking category to continue
-nace.interrupt.heading2 = What you need to do
-nace.interrupt.heading3 = Why we are making this change
-nace.interrupt.p1 = You must answer some questions before 1 January 2026 to keep using this service.
-nace.interrupt.p2 = If you do not, your undertaking will be suspended. This means you can still trade and claim state aid, but you cannot use state aid to waive customs duty.
-nace.interrupt.p3 = Answer the questions to choose a new category for your undertaking. You will be able to review and confirm your choice before submitting.
-nace.interrupt.p4 = The statistical classification of economic activities in the European community (abbreviated as NACE) is a classification system used in the European Union. EU rules require us to record the correct NACE category for your undertaking.
-nace.interrupt.link.html = You can browse the {0}full list of NACE categories from the EU (opens in new tab){1}.
-nace.interrupt.p5 = This will not affect your subsidy allowance.
 
-nace.suspended.title = Your undertaking has been suspended
-nace.suspended.h1 = Your undertaking has been suspended
-nace.suspended.invalidSector.p1 = You cannot access your undertaking as it has been suspended on this service.
-nace.suspended.invalidSector.p2 = You can still trade and claim state aid, but you cannot use state aid to waive customs duty.
-nace.suspended.invalidSector.p3 = To start using this service again, you need to answer some questions about your undertaking. Once you have done this, your suspension will be removed and you can use the service as normal
-nace.suspended.auto.p1 = You cannot access your undertaking as it has been suspended on this service.
-nace.suspended.auto.p2 = Your deadline to submit a report passed on 1 January 2026
-nace.suspended.auto.p3 = To start using this service again, you need to:
-nace.suspended.auto.p4 = Once you have done this, your suspension will be removed and you can use the service as normal
-nace.suspended.auto.bullet1 = answer some questions about your undertaking
-nace.suspended.auto.bullet2 = submit a report
+############################################## NACE #################################################################################################################
 
+NACE.interrupt.title = Select a new undertaking category to continue
+NACE.interrupt.heading1 = Select a new undertaking category to continue
+NACE.interrupt.heading2 = What you need to do
+NACE.interrupt.heading3 = Why we are making this change
+NACE.interrupt.p1 = You must answer some questions before 1 January 2026 to keep using this service.
+NACE.interrupt.p2 = If you do not, your undertaking will be suspended. This means you can still trade and claim state aid, but you cannot use state aid to waive customs duty.
+NACE.interrupt.p3 = Answer the questions to choose a new category for your undertaking. You will be able to review and confirm your choice before submitting.
+NACE.interrupt.p4 = The statistical classification of economic activities in the European community (abbreviated as NACE) is a classification system used in the European Union. EU rules require us to record the correct NACE category for your undertaking.
+NACE.interrupt.link.html = You can browse the {0}full list of NACE categories from the EU (opens in new tab){1}.
+NACE.interrupt.p5 = This will not affect your subsidy allowance.
 
+NACE.suspended.title = Your undertaking has been suspended
+NACE.suspended.h1 = Your undertaking has been suspended
+NACE.suspended.invalidSector.p1 = You cannot access your undertaking as it has been suspended on this service.
+NACE.suspended.invalidSector.p2 = You can still trade and claim state aid, but you cannot use state aid to waive customs duty.
+NACE.suspended.invalidSector.p3 = To start using this service again, you need to answer some questions about your undertaking. Once you have done this, your suspension will be removed and you can use the service as normal
+NACE.suspended.auto.p1 = You cannot access your undertaking as it has been suspended on this service.
+NACE.suspended.auto.p2 = Your deadline to submit a report passed on 1 January 2026
+NACE.suspended.auto.p3 = To start using this service again, you need to:
+NACE.suspended.auto.p4 = Once you have done this, your suspension will be removed and you can use the service as normal
+NACE.suspended.auto.bullet1 = answer some questions about your undertaking
+NACE.suspended.auto.bullet2 = submit a report
 
+NACE.general.hint = Select one option that best describes your undertaking’s main business activity.
+
+#NACESector01
+NACE.Lvl1.AgricultureForestryFishing = Agriculture, forestry and fishing
+NACE.Lvl1.mining = Mining and quarrying
+NACE.Lvl1.Manufacturing = Manufacturing
+NACE.Lvl1.ElectricityGasSteamAir = Electricity, gas, steam and air conditioning supply
+NACE.Lvl1.WaterSewerageWasteRemediation = Water supply; Sewerage, waste management and remediation activities
+NACE.Lvl1.Construction = Construction
+NACE.Lvl1.WholesaleRetailTrade = Wholesale and retail trade
+NACE.Lvl1.TransportationAndStorage = Transportation and storage
+NACE.Lvl1.AccommodationAndFoodService = Accommodation and food service activities
+NACE.Lvl1.PublishingBroadcastingContentDistribution = Publishing, broadcasting, and content production and distribution activities
+NACE.Lvl1.TelecommunicationProgrammingInformationService = Telecommunication, computer programming, consulting, computer infrastructure and other information service activities
+NACE.Lvl1.FinancialInsuranceActivities = Financial and insurance activities
+NACE.Lvl1.RealEstateActivities = Real estate activities
+NACE.Lvl1.ProfessionalScientificTechnicalActivities = Professional, scientific and technical activities
+NACE.Lvl1.AdministrativeSupportServiceActivities = Administrative and support service activities
+NACE.Lvl1.PublicAdministrationCompulsorySecurity = Public administration and defence; Compulsory social security
+NACE.Lvl1.Education = Education
+NACE.Lvl1.HumanHealthSocialWorkActivities = Human health and social work activities
+NACE.Lvl1.ArtsSportRecreation = Arts, sports and recreation
+NACE.Lvl1.OtherServiceActivities = Other service activities
+NACE.Lvl1.Households = Activities of households as employers and undifferentiated goods - and service-producing activities of households for own use
+NACE.Lvl1.ActivitiesExtraterritorial = Activities of extraterritorial organisations and bodies
+
+#AgricultureForestryFishing NACE Sector2,3,4
+
+NACE.agriculture.Lvl2.cropAnimalProduction = Crop and animal production, hunting and related service activities
+NACE.agriculture.Lvl2.title = What is your undertaking’s main business activity in agriculture?
+NACE.agriculture.Lvl3.growingCrops.title = What type of crop does your undertaking grow?
+NACE.agriculture.Lvl3.growingNonPerennialCrops = Growing of non-perennial crops
+NACE.agriculture.Lvl4.cerealsLeguminousCrops = Growing of cereals, other than rice, leguminous crops and oil seeds
+NACE.agriculture.Lvl4.rice = Growing of rice
+NACE.agriculture.Lvl4.vegetables = Growing of vegetables and melons, roots and tubers
+NACE.agriculture.Lvl4.sugarCane = Growing of sugar cane
+NACE.agriculture.Lvl4.tobacco = Growing of tobacco
+NACE.agriculture.Lvl4.fibreCrops = Growing of fibre crops
+NACE.agriculture.Lvl4.otherNonPerennialCrops = Growing of other non-perennial crops
+NACE.agriculture.Lvl3.growingPerennialCrops = Growing of perennial crops
+NACE.agriculture.Lvl4.grapes = Growing of grapes
+NACE.agriculture.Lvl4.tropicalFruits = Growing of tropical and subtropical fruits
+NACE.agriculture.Lvl4.citrusFruits = Growing of citrus fruits
+NACE.agriculture.Lvl4.stoneFruits = Growing of pome fruits and stone fruits
+NACE.agriculture.Lvl4.otherTree = Growing of other tree and bush fruits and nuts
+NACE.agriculture.Lvl4.oleaginousFruits = Growing of oleaginous fruits
+NACE.agriculture.Lvl4.beverageCrops = Growing of beverage crops
+NACE.agriculture.Lvl4.spicesPharmaceuticalCrops = Growing of spices, aromatic, drug and pharmaceutical crops
+NACE.agriculture.Lvl4.otherPerennialCrops = Growing of other perennial crops
+NACE.agriculture.Lvl3.plantPropagation = Plant propagation
+NACE.agriculture.Lvl4.plantPropagation = Plant propagation
+NACE.agriculture.Lvl3.animalProduction = Animal production
+NACE.agriculture.Lvl3.animalProduction.title = What type of animal does your undertaking raise?
+NACE.agriculture.Lvl4.dairyCattle = Raising of dairy cattle
+NACE.agriculture.Lvl4.otherCattle = Raising of other cattle and buffaloes
+NACE.agriculture.Lvl4.horses = Raising of horses and other equines
+NACE.agriculture.Lvl4.camels = Raising of camels and camelids
+NACE.agriculture.Lvl4.sheep = Raising of sheep and goats
+NACE.agriculture.Lvl4.swine = Raising of swine and pigs
+NACE.agriculture.Lvl4.poultry = Raising of poultry
+NACE.agriculture.Lvl4.otherAnimals = Raising of other animals
+NACE.agriculture.Lvl3.mixedFarming = Mixed farming
+NACE.agriculture.Lvl4.mixedFarming = Mixed farming
+NACE.agriculture.Lvl3.supportActivities = Support activities to agriculture and post-harvest crop activities
+NACE.agriculture.Lvl3.supportActivities.title = What type of support activity does your undertaking do?
+NACE.agriculture.Lvl4.supportActivitiesCrop = Support activities for crop production
+NACE.agriculture.Lvl4.supportActivitiesAnimal = Support activities for animal production
+NACE.agriculture.Lvl4.postHarvestActivities = Post-harvest crop activities and seed processing for propagation
+NACE.agriculture.Lvl3.huntingTrapping = Hunting, trapping and related service activities
+NACE.agriculture.Lvl4.huntingTrapping = Hunting, trapping and related service activities
+
+NACE.forestry.Lvl2.title = What is your undertaking’s main business activity in forestry?
+NACE.forestry.Lvl2.forestry = Forestry and logging
+NACE.forestry.Lvl3.silviculture = Silviculture and other forestry activities
+NACE.forestry.Lvl4.silviculture = Silviculture and other forestry activities
+NACE.forestry.Lvl3.logging = Logging
+NACE.forestry.Lvl4.logging = Logging
+NACE.forestry.Lvl3.gatheringOfWildGrowth = Gathering of wild growing non-wood products
+NACE.forestry.Lvl4.gatheringOfWildGrowth = Gathering of wild growing non-wood products
+NACE.forestry.Lvl3.forestrySupportServices = Support services to forestry
+NACE.forestry.Lvl4.forestrySupportServices = Support services to forestry
+
+NACE.fishing.Lvl2.fishingAquaculture = Fishing and aquaculture
+NACE.fishing.Lvl2.title = What is your undertaking’s main business activity in fishery and aquaculture?
+NACE.fishing.Lvl3.fishing = Fishing
+NACE.fishing.Lvl3.fishing.title =  What type of fishing does your undertaking do?
+NACE.fishing.Lvl4.marineFishing = Marine fishing
+NACE.fishing.Lvl4.freshwaterFishing = Freshwater fishing
+NACE.fishing.Lvl3.aquaculture = Aquaculture
+NACE.fishing.Lvl3.aquaculture.title = What is your undertaking’s main business activity in aquaculture?
+NACE.fishing.Lvl4.marineAquaculture = Marine aquaculture
+NACE.fishing.Lvl4.freshwaterAquaculture = Freshwater aquaculture
+NACE.fishing.Lvl3.aquacultureSupportActivities = Support activities for fishing and aquaculture
+NACE.fishing.Lvl4.aquacultureSupportActivities = Support activities for fishing and aquaculture
+
+#MiningQuarrying NACE Sector2,3,4
+NACE.Lvl1.mining.title = What is your undertaking’s main business activity in mining and quarrying?
+NACE.mining.Lvl2.coalAndLigniteMining = Mining of coal and lignite
+NACE.mining.Lvl2.coalAndLigniteMining.title = What type of coal does your undertaking mine?
+NACE.mining.Lvl3.hardcoal = Mining of hard coal
+NACE.mining.Lvl4.hardcoalMining = Mining of hard coal
+NACE.mining.Lvl3.lignite = Mining of lignite
+NACE.mining.Lvl4.ligniteMining = Mining of lignite
+NACE.mining.Lvl2.petroleumNaturalGasExtraction = Extraction of crude petroleum and natural gas
+NACE.mining.Lvl2.petroleumNaturalGasExtraction.title = What type of fuel does your undertaking extract?
+NACE.mining.Lvl3.crudePetroleum = Extraction of crude petroleum
+NACE.mining.Lvl4.crudePetroleumExtraction = Extraction of crude petroleum
+NACE.mining.Lvl3.naturalGas = Extraction of natural gas
+NACE.mining.Lvl4.naturalGasExtraction = Extraction of natural gas
+NACE.mining.Lvl2.metalOresMining = Mining of metal ores
+NACE.mining.Lvl2.metalOresMining.title = What type of metal ores does your undertaking mine?
+NACE.mining.Lvl3.ironOre = Mining of iron ores
+NACE.mining.Lvl4.ironOresMining = Mining of iron ores
+NACE.mining.Lvl3.nonFerrousOres = Mining of non-ferrous metal ores
+NACE.mining.Lvl3.nonFerrousOres.title = What type of non-ferrous metal ores does your undertaking mine?
+NACE.mining.Lvl4.uraniumThoriumOres = Mining of uranium and thorium ores
+NACE.mining.Lvl4.otherNonFerrousOres = Mining of other non-ferrous metal ores
+NACE.mining.Lvl2.otherMiningQuarrying = Other mining and quarrying
+NACE.mining.Lvl2.otherMiningQuarrying.title = What type of mining or quarrying does your undertaking do?
+NACE.mining.Lvl3.stoneQuarrying = Quarrying of stone, sand and clay
+NACE.mining.Lvl3.stoneQuarrying.title= What type of sand, stone and clay quarrying does your undertaking do?
+NACE.mining.Lvl4.ornamentalQuarrying = Quarrying of ornamental stone, limestone, gypsum, slate and other stone
+NACE.mining.Lvl4.gravelPitsOperation = Operation of gravel and sand pits and mining of clay and kaolin
+NACE.mining.Lvl3.miningAndQuarryingNEC = Mining and quarrying of n.e.c.
+NACE.mining.Lvl3.miningAndQuarryingNEC.title = What type of mining or quarrying activity does your undertaking do?
+NACE.mining.Lvl4.chemicalMineralsMining = Mining of chemical and fertiliser minerals
+NACE.mining.Lvl4.peatExtraction = Extraction of peat
+NACE.mining.Lvl4.saltExtraction = Extraction of salt
+NACE.mining.Lvl4.otherNEC = Other mining and quarrying n.e.c.
+NACE.mining.Lvl2.miningSupportServices = Mining support service activities
+NACE.mining.Lvl2.miningSupportServices.title = What type of mining or quarrying does your undertaking support?
+NACE.mining.Lvl3.miningSupportPetroleumExtraction = Support activities for petroleum and natural gas extraction
+NACE.mining.Lvl4.miningSupportPetroleumExtraction = Support activities for petroleum and natural gas extraction
+NACE.mining.Lvl3.otherMiningSupport = Support activities for other mining and quarrying
+NACE.mining.Lvl4.otherMiningSupport = Support activities for other mining and quarrying
+
+### Manufacturing NACE Sector2,3,4 ###
+NACE.Manufacturing.title = What type of product does your undertaking manufacture?
+
+### lvl2.1 screens ###
+NACE.Manufacturing.Lvl2.1.Metals = Metals, chemicals and materials
+NACE.Manufacturing.Lvl2.1.Metals.hint = Includes basic metals, fabricated metal products, chemicals, fuel products, mineral products, plastic, rubber and wood.
+NACE.Manufacturing.Lvl2.1.Food = Food, beverages and tobacco
+NACE.Manufacturing.Lvl2.1.Computers = Computers, electronics and machinery
+NACE.Manufacturing.Lvl2.1.Computers.hint = Includes communications equipment, consumer electronics, electrical equipment (like batteries, motors and wiring), optical instruments and other machinery and equipment.
+NACE.Manufacturing.Lvl2.1.Clothes = Clothes, textiles and homeware
+NACE.Manufacturing.Lvl2.1.Clothes.hint = Includes clothes, bags and footwear, furniture and textiles, and leather.
+NACE.Manufacturing.Lvl2.1.Paper = Paper and printed products
+NACE.Manufacturing.Lvl2.1.Paper.hint = Includes reproduction of recorded media.
+NACE.Manufacturing.Lvl2.1.Vehicles = Vehicles and transport
+NACE.Manufacturing.Lvl2.1.Vehicles.hint = Includes motor vehicles and parts, bicycles and motorcycles, aircraft, boats, locomotives and trailers.
+NACE.Manufacturing.Lvl2.1.Pharmaceuticals = Pharmaceuticals
+NACE.Manufacturing.Lvl2.1.OtherManufacturing = Other manufacturing
+NACE.Manufacturing.Lvl2.1.OtherManufacturing.hint = Includes brooms and brushes, games and toys, jewellery, medical and dental instruments and supplies, musical instruments, sports goods and all other products.
+NACE.Manufacturing.Lvl2.1.Machinery = My undertaking repairs, maintains or installs machinery and equipment
+
+### Lvl2.2 screens ###
+NACE.Manufacturing.Lvl2.2.Metals.title = What type of metals, chemicals or materials does your undertaking manufacture?
+NACE.Manufacturing.Lvl2.2.Metals.FabricatedMetal = Fabricated metal products (except machinery and equipment)
+NACE.Manufacturing.Lvl2.2.Metals.Wood = Wood, cork and straw products (except furniture)
+NACE.Manufacturing.Lvl2.2.Metals.Rubber = Rubber and plastic products
+NACE.Manufacturing.Lvl2.2.Metals.Chemicals = Chemicals and chemical products
+NACE.Manufacturing.Lvl2.2.Metals.Chemicals.hint = Includes basic chemicals, fertilisers, liquid biofuels, manmade fibres, paints and varnishes, pesticides, plastics and synthetic rubber in primary forms, and washing, cleaning and polishing preparations.
+NACE.Manufacturing.Lvl2.2.Metals.BasicMetal = Basic metals
+NACE.Manufacturing.Lvl2.2.Metals.BasicMetal.hint = Includes iron, steel, precious and other non-ferrous metals, and casting of metals.
+NACE.Manufacturing.Lvl2.2.Metals.Coke = Coke and refined petroleum products
+NACE.Manufacturing.Lvl2.2.Metals.NonMetallic = Other non-metallic mineral products
+NACE.Manufacturing.Lvl2.2.Metals.NonMetallic.hint = Includes cement, clay building materials, concrete, glass, porcelain and ceramics, and cutting, finishing and shaping of stone.
+
+NACE.Manufacturing.Lvl2.2.Food.title = What type of food, beverages or tobacco does your undertaking manufacture?
+NACE.Manufacturing.Lvl2.2.Food = Food
+NACE.Manufacturing.Lvl2.2.Food.hint = Includes processing and preserving of food.
+NACE.Manufacturing.Lvl2.2.Food.Beverages = Beverages
+NACE.Manufacturing.Lvl2.2.Food.Beverages.hint = Includes alcohol and soft drinks.
+NACE.Manufacturing.Lvl2.2.Food.Tobacco = Tobacco products
+
+NACE.Manufacturing.Lvl2.2.Computers.title = What type of computers, electronics or machinery does your undertaking manufacture?
+NACE.Manufacturing.Lvl2.2.Computers = Computers, electronics and optical products
+NACE.Manufacturing.Lvl2.2.Computers.hint = Includes communications equipment, consumer electronics, electronic components and optical instruments.
+NACE.Manufacturing.Lvl2.2.Computers.Electrical = Electrical equipment
+NACE.Manufacturing.Lvl2.2.Computers.Electrical.hint = Includes batteries, domestic appliances, generators, lighting equipment and wiring.
+NACE.Manufacturing.Lvl2.2.Computers.Other = Other machinery and equipment
+NACE.Manufacturing.Lvl2.2.Computers.Other.hint = Includes general-purpose and special-purpose machinery and machine tools.
+
+NACE.Manufacturing.Lvl2.2.Clothes.title = What type of clothes, textiles or homeware does your undertaking manufacture?
+NACE.Manufacturing.Lvl2.2.Clothes.Furniture = Furniture
+NACE.Manufacturing.Lvl2.2.Clothes.Clothing = Clothing
+NACE.Manufacturing.Lvl2.2.Clothes.Textiles = Textiles
+NACE.Manufacturing.Lvl2.2.Clothes.Textiles.hint = Includes preparation, spinning, weaving and finishing of textiles.
+NACE.Manufacturing.Lvl2.2.Clothes.Leather = Leather and related products
+NACE.Manufacturing.Lvl2.2.Clothes.Leather.hint = Includes bags, footwear and fur.
+
+NACE.Manufacturing.Lvl2.2.Paper.title = What type of paper or printed products does your undertaking manufacture?
+NACE.Manufacturing.Lvl2.2.Paper = Paper and paper products
+NACE.Manufacturing.Lvl2.2.Paper.hint = Includes pulp, paperboard, stationery and wallpaper.
+NACE.Manufacturing.Lvl2.2.Printed = Printed products
+NACE.Manufacturing.Lvl2.2.Printed.hint = Includes newspapers, printing services and reproduction of recorded media.
+
+NACE.Manufacturing.Lvl2.2.Vehicles.title = What type of vehicles or transport does your undertaking manufacture?
+NACE.Manufacturing.Lvl2.2.Vehicles.Motor = Motor vehicles, trailers and parts
+NACE.Manufacturing.Lvl2.2.Vehicles.Other = Other transport equipment
+NACE.Manufacturing.Lvl2.2.Vehicles.Other.hint = Includes aircraft, bicycles, boats, locomotives and motorcycles, and related parts.
+
+### Food ###
+NACE.Manufacturing.Food.title = What type of food, does your undertaking manufacture?
+
+NACE.Manufacturing.Lvl3.MeatProducts = Meat
+NACE.Manufacturing.Food.Meat.title = What type of meat production or processing does your undertaking do?
+NACE.Manufacturing.Lvl4.MeatExceptPoultry = Processing and preserving of meat, except of poultry meat
+NACE.Manufacturing.Lvl4.PoultryMeat = Processing and preserving of poultry meat
+NACE.Manufacturing.Lvl4.MeatPoultryProducts = Production of meat and poultry meat products
+
+NACE.Manufacturing.Lvl3.FishProducts = Fish, crustaceans and molluscs
+NACE.Manufacturing.Lvl4.FishProducts = Processing and preserving of fish, crustaceans and molluscs
+
+NACE.Manufacturing.Food.FruitAndVeg.title = What type of fruit and vegetable production or processing does your undertaking do?
+NACE.Manufacturing.Lvl3.FruitVegetables = Fruit and vegetables
+NACE.Manufacturing.Lvl4.Potatoes = Processing and preserving of potatoes
+NACE.Manufacturing.Lvl4.FruitVegetableJuice = Manufacture of fruit and vegetable juice
+NACE.Manufacturing.Lvl4.OtherFruitVegetables = Other processing and preserving of fruit and vegetables
+
+NACE.Manufacturing.Food.OilsAndFats.title = What type of oils and fats does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.OilsFats = Oils and fats
+NACE.Manufacturing.Lvl4.OilsFats = Other oils and fats
+NACE.Manufacturing.Lvl4.Margarine = Margarine and similar edible fats
+
+NACE.Manufacturing.DairyProducts.title = What type of dairy products or ice does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.DairyProducts = Dairy products and ice
+NACE.Manufacturing.Lvl4.DairyProducts = Dairy products
+NACE.Manufacturing.Lvl4.IceCream = Ice cream and other edible ice
+
+NACE.Manufacturing.GrainMillProducts.title = What type of grain mill products or starch does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.GrainMillProducts = Grain mill products and starch
+NACE.Manufacturing.Lvl3.GrainMillProducts.hint = Includes cereals and flour.
+NACE.Manufacturing.Lvl4.GrainMillProducts = Grain mill products
+NACE.Manufacturing.Lvl4.Starches = Starches and starch products
+
+NACE.Manufacturing.BakeryProducts.title = What type of bakery and farinaceous products does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.BakeryProducts = Bakery and farinaceous products
+NACE.Manufacturing.Lvl3.BakeryProducts.hint = For example bread, biscuits, cakes, pastries and pasta.
+NACE.Manufacturing.Lvl4.BreadPastry = Bread, cakes and fresh pastry goods
+NACE.Manufacturing.Lvl4.RusksBiscuits = Biscuits, rusks and preserved pastries and cakes
+NACE.Manufacturing.Lvl4.FarinaceousProducts = Farinaceous products
+
+NACE.Manufacturing.OtherFoodProducts.title = What type of other food products does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.OtherFoodProducts = Manufacture of other food products
+NACE.Manufacturing.Lvl3.OtherFoodProducts.hint = Includes cocoa, chocolate and confectionery, condiments and seasonings, food preparations (like baby food) and prepared meals, sugar, tea and coffee, and all other food products.
+NACE.Manufacturing.Lvl4.Sugar = Manufacture of sugar
+NACE.Manufacturing.Lvl4.CocoaChocolateConfectionery = Manufacture of cocoa, chocolate and sugar confectionery
+NACE.Manufacturing.Lvl4.TeaCoffee = Processing of tea and coffee
+NACE.Manufacturing.Lvl4.CondimentsSeasonings = Manufacture of condiments and seasonings
+NACE.Manufacturing.Lvl4.PreparedMeals = Manufacture of prepared meals and dishes
+NACE.Manufacturing.Lvl4.HomogenisedFood = Manufacture of homogenised food preparations and dietetic food
+NACE.Manufacturing.Lvl4.OtherFoodProducts = Manufacture of other food products n.e.c.
+
+NACE.Manufacturing.PreparedAnimalFeeds.title = What type of prepared animal feeds does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.PreparedAnimalFeeds = Manufacture of prepared animal feeds
+NACE.Manufacturing.Lvl4.FarmAnimalFeeds = Manufacture of prepared feeds for farm animals
+NACE.Manufacturing.Lvl4.PetFoods = Manufacture of prepared pet foods
+
+### Beverages ###
+NACE.Manufacturing.Beverages.title = What type of beverages does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.Beverages = Manufacture of beverages
+NACE.Manufacturing.Lvl4.Spirits = Spirits (distilled, rectified or blended)
+NACE.Manufacturing.Lvl4.Wine = Wine from grape
+NACE.Manufacturing.Lvl4.Cider = Cider and other fruit fermented beverages
+NACE.Manufacturing.Lvl4.OtherFermentedBeverages = Other non-distilled fermented beverages
+NACE.Manufacturing.Lvl4.Beer = Beer
+NACE.Manufacturing.Lvl4.Malt = Malt
+NACE.Manufacturing.Lvl4.SoftDrinks = Soft drinks and bottled waters
+
+### Tobacco ###
+NACE.Manufacturing.Lvl3.TobaccoProducts = Manufacture of tobacco products
+NACE.Manufacturing.Lvl4.TobaccoProducts = Manufacture of tobacco products
+
+### Textiles ###
+NACE.Manufacturing.Textiles.title = What type of textile manufacturing does your undertaking do?
+NACE.Manufacturing.Lvl3.TextileFibreSpinning = Preparation and spinning of textile fibres
+NACE.Manufacturing.Lvl4.TextileFibreSpinning = Preparation and spinning of textile fibres
+
+NACE.Manufacturing.Lvl3.Weaving = Weaving of textiles
+NACE.Manufacturing.Lvl4.Weaving = Weaving of textiles
+
+NACE.Manufacturing.Lvl3.FinishingTextiles = Finishing of textiles
+NACE.Manufacturing.Lvl4.FinishingTextiles = Finishing of textiles
+
+NACE.Manufacturing.OtherTextiles.title = What type of textiles does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.OtherTextiles = Manufacture of textiles (except clothes)
+NACE.Manufacturing.Lvl4.KnittedCrochetedFabrics = Knitted and crocheted fabrics
+NACE.Manufacturing.Lvl4.HouseholdFurnishingTextiles = Household textiles and made-up furnishing articles
+NACE.Manufacturing.Lvl4.CarpetsRugs = Carpets and rugs
+NACE.Manufacturing.Lvl4.CordageRopeTwineNetting = Cordage, rope, twine and netting
+NACE.Manufacturing.Lvl4.NonWovens = Non-wovens and non-woven articles
+NACE.Manufacturing.Lvl4.TechnicalIndustrialTextiles = Other technical and industrial textiles
+NACE.Manufacturing.Lvl4.OtherTextiles = Another type of textile
+
+### Clothing ###
+NACE.Manufacturing.Lvl3.KnittedCrochetedClothing = Knitted and crocheted clothing
+NACE.Manufacturing.Lvl4.KnittedCrochetedApparel = Manufacture of knitted and crocheted apparel
+
+NACE.Manufacturing.OtherClothing.title = What type of clothing or accessories does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.OtherClothing = Other clothing and accessories
+NACE.Manufacturing.Lvl3.OtherClothing.hint = Includes leather and fur clothing, outerwear, underwear, workwear and all other clothes and accessories.
+NACE.Manufacturing.Lvl4.Outerwear = Outerwear
+NACE.Manufacturing.Lvl4.Underwear = Underwear
+NACE.Manufacturing.Lvl4.Workwear = Workwear
+NACE.Manufacturing.Lvl4.LeatherAndFurClothing = Leather and fur clothing
+NACE.Manufacturing.Lvl4.OtherClothingAccessories = Other clothing and accessories
+
+### Leather ###
+NACE.Manufacturing.TanningLeather.title = What type of manufacturing or related activity does your undertaking do?
+NACE.Manufacturing.Lvl3.TanningLeather = Tanning, dyeing, dressing of leather and fur; manufacture of luggage, handbags, saddlery and harness
+NACE.Manufacturing.Lvl4.TanningLeatherFur = Tanning, dressing, dyeing of leather and fur
+NACE.Manufacturing.Lvl4.LuggageHandbagsSaddlery = Manufacture of luggage, handbags, saddlery and harness of any material
+
+NACE.Manufacturing.Lvl3.Footwear = Manufacture of footwear
+NACE.Manufacturing.Lvl4.Footwear = Manufacture of footwear
+
+### Wood cork and straw ###
+NACE.Manufacturing.WoodCorkStraw.title = What is your undertaking’s main business activity in wood, cork or straw products?
+NACE.Manufacturing.Lvl3.SawmillingWood = Sawmilling, planing, processing or finishing of wood
+NACE.Manufacturing.SawmillingWood.Lvl4.title = How does your undertaking manufacture or process wood?
+NACE.Manufacturing.Lvl4.SawmillingWood = Sawmilling and planing of wood
+NACE.Manufacturing.Lvl4.ProcessingFinishingWood = Processing and finishing of wood
+
+NACE.Manufacturing.Lvl3.WoodCorkStrawPlaiting = Manufacture of products of wood, cork, straw and plaiting materials
+NACE.Manufacturing.Lvl3.WoodCorkStrawPlaiting.hint = Includes finishing of wood products.
+NACE.Manufacturing.WoodCorkStrawPlaiting.Lvl4.title = What type of wood, cork, straw or plaited product does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.VeneerSheetsPanels = Veneer sheets and wood-based panels
+NACE.Manufacturing.Lvl4.ParquetFloors = Assembled parquet floors
+NACE.Manufacturing.Lvl4.BuildersCarpentryJoinery = Other builders' carpentry and joinery
+NACE.Manufacturing.Lvl4.WoodenContainers = Wooden containers
+NACE.Manufacturing.Lvl4.DoorsWindowsWood = Wooden windows and doors
+NACE.Manufacturing.Lvl4.SolidFuelsBiomass = Solid fuels from vegetable biomass
+NACE.Manufacturing.Lvl4.FinishingWoodenProducts = My undertaking carries out finishing of wooden products
+NACE.Manufacturing.Lvl4.OtherWoodCorkStrawPlaiting = Other products of wood, cork, straw and plaiting materials
+
+### Paper products ###
+NACE.Manufacturing.PaperProducts.title = What type of paper products does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.PulpPaperPaperboard = Pulp, paper and paperboard
+NACE.Manufacturing.PulpPaperPaperboard.title = What type of pulp, paper or paperboard does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.Pulp = Pulp
+NACE.Manufacturing.Lvl4.PaperPaperboard = Paper and paperboard
+
+NACE.Manufacturing.ArticlesPaperPaperboard.title = What type of paper or paperboard products does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.ArticlesPaperPaperboard = Articles of paper and paperboard
+NACE.Manufacturing.Lvl3.ArticlesPaperPaperboard.hint = Includes corrugated paper, household and sanitary goods, stationery and wallpaper.
+NACE.Manufacturing.Lvl4.CorrugatedPaper = Corrugated paper, paperboard and containers of paper and paperboard
+NACE.Manufacturing.Lvl4.HouseholdSanitaryGoods = Household and sanitary goods and of toilet requisites
+NACE.Manufacturing.Lvl4.PaperStationery = Paper stationery
+NACE.Manufacturing.Lvl4.Wallpaper = Wallpaper
+NACE.Manufacturing.Lvl4.OtherPaperArticles = Other articles of paper and paperboard
+
+### Printed products ###
+NACE.Manufacturing.Printing.title = What is your undertaking’s main business activity in printing?
+NACE.Manufacturing.Lvl3.PrintingServices = Printing and service activities related to printing
+NACE.Manufacturing.Lvl3.PrintingServices.hint = Includes binding, pre-press and pre-media services, other printing and related services.
+NACE.Manufacturing.PrintingServices.title = What type of printing or service activity does your undertaking do?
+NACE.Manufacturing.Lvl4.Newspapers = Printing of newspapers
+NACE.Manufacturing.Lvl4.OtherPrinting = Other printing
+NACE.Manufacturing.Lvl4.PrePressMedia = Pre-press and pre-media services
+NACE.Manufacturing.Lvl4.Binding = Binding and related services
+
+NACE.Manufacturing.Lvl3.ReproductionRecordedMedia = Reproduction of recorded media
+NACE.Manufacturing.Lvl4.ReproductionRecordedMedia = Reproduction of recorded media
+
+### Coke and petroleum ###
+NACE.Manufacturing.CokePetroleum.title = What type of fuel products does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.CokeOvenProducts = Coke oven products
+NACE.Manufacturing.Lvl4.CokeOvenProducts = Manufacture of coke oven products
+NACE.Manufacturing.Lvl3.RefinedPetroleumProducts = Refined petroleum and fossil fuel products
+NACE.Manufacturing.Lvl4.RefinedPetroleumProducts = Manufacture of refined petroleum products and fossil fuel products
+
+### Chemicals ###
+NACE.Manufacturing.Chemicals.title = What type of chemical or chemical product does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.BasicChemicals = Basic chemicals, fertilisers and nitrogen compounds, plastics and synthetic rubber in primary forms
+NACE.Manufacturing.Lvl3.BasicChemicals.hint = Includes dyes and pigments and other inorganic and organic basic chemicals.
+NACE.Manufacturing.BasicChemicals.title = What type of basic chemicals or polymer-based materials does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.IndustrialGases = Industrial gases
+NACE.Manufacturing.Lvl4.DyesPigments = Dyes and pigments
+NACE.Manufacturing.Lvl4.OtherInorganicChemicals = Other inorganic basic chemicals
+NACE.Manufacturing.Lvl4.OtherOrganicChemicals = Other organic basic chemicals
+NACE.Manufacturing.Lvl4.FertilisersNitrogen = Fertilisers and nitrogen compounds
+NACE.Manufacturing.Lvl4.PlasticsPrimaryForms = Plastics in primary forms
+NACE.Manufacturing.Lvl4.SyntheticRubber = Synthetic rubber in primary forms
+
+NACE.Manufacturing.Lvl3.PesticidesAgrochemicals = Pesticides, disinfectants and other agrochemical products
+NACE.Manufacturing.Lvl4.PesticidesAgrochemicals = Manufacture of pesticides, disinfectants and other agrochemical products
+
+NACE.Manufacturing.Lvl3.PaintsVarnishes = Paints, varnishes and similar coatings, printing ink and mastics
+NACE.Manufacturing.Lvl4.PaintsVarnishes = Manufacture of paints, varnishes and similar coatings, printing ink and mastics
+
+NACE.Manufacturing.Lvl3.WashingCleaning = Manufacture of washing, cleaning and polishing preparations
+NACE.Manufacturing.Lvl3.WashingCleaning.hint = Includes detergents, perfume and soap.
+NACE.Manufacturing.WashingChemicals.title = What type of washing, cleaning and polishing preparations does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.SoapDetergents = Soap and detergents, cleaning and polishing preparations
+NACE.Manufacturing.Lvl4.PerfumesToiletPreparations = Perfumes and toilet preparations
+
+NACE.Manufacturing.Lvl3.OtherChemicals = Other chemical products
+NACE.Manufacturing.Lvl3.OtherChemicals.hint = Includes liquid biofuels.
+NACE.Manufacturing.OtherChemicals.title = What type of other chemical products does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.LiquidBiofuels = Liquid biofuels
+NACE.Manufacturing.Lvl4.OtherChemicals = Another type of chemical product
+
+NACE.Manufacturing.Lvl3.ManMadeFibres = Man-made fibres
+NACE.Manufacturing.Lvl4.ManMadeFibres = Manufacture of man-made fibres
+
+### Pharmaceuticals ###
+NACE.Manufacturing.Pharmaceuticals.title = What type of pharmaceuticals does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.BasicPharmaceuticals = Basic pharmaceutical products
+NACE.Manufacturing.Lvl4.BasicPharmaceuticals = Manufacture of basic pharmaceutical products
+
+NACE.Manufacturing.Lvl3.PharmaceuticalPreparations = Pharmaceutical preparations
+NACE.Manufacturing.Lvl4.PharmaceuticalPreparations = Manufacture of pharmaceutical preparations
+
+### Rubber and plastic ###
+NACE.Manufacturing.Lvl3.RubberProducts = Rubber products
+NACE.Manufacturing.Lvl4.RubberTyresTubes = Manufacture, retreading and rebuilding of rubber tyres and manufacture of tubes
+NACE.Manufacturing.Lvl4.OtherRubberProducts = Manufacture of other rubber products
+
+NACE.Manufacturing.Lvl3.PlasticProducts = Plastic products
+NACE.Manufacturing.Lvl4.PlasticPlatesSheets = Manufacture of plastic plates, sheets, tubes and profiles
+NACE.Manufacturing.Lvl4.PlasticPackingGoods = Manufacture of plastic packing goods
+NACE.Manufacturing.Lvl4.PlasticDoorsWindows = Manufacture of doors and windows of plastic
+NACE.Manufacturing.Lvl4.BuildersWarePlastic = Manufacture of builders' ware of plastic
+NACE.Manufacturing.Lvl4.FinishingPlasticProducts = Processing and finishing of plastic products
+NACE.Manufacturing.Lvl4.OtherPlasticProducts = Manufacture of other plastic products
+
+### Non metallic mineral products ###
+NACE.Manufacturing.Lvl3.GlassProducts = Glass and glass products
+NACE.Manufacturing.Lvl4.FlatGlass = Manufacture of flat glass
+NACE.Manufacturing.Lvl4.ShapedFlatGlass = Shaping and processing of flat glass
+NACE.Manufacturing.Lvl4.HollowGlass = Manufacture of hollow glass
+NACE.Manufacturing.Lvl4.GlassFibres = Manufacture of glass fibres
+NACE.Manufacturing.Lvl4.OtherGlass = Manufacture and processing of other glass, including technical glassware
+
+NACE.Manufacturing.Lvl3.RefractoryProducts = Refractory products
+NACE.Manufacturing.Lvl4.RefractoryProducts = Manufacture of refractory products
+
+NACE.Manufacturing.Lvl3.ClayBuildingMaterials = Clay building materials
+NACE.Manufacturing.Lvl4.CeramicTilesFlags = Manufacture of ceramic tiles and flags
+NACE.Manufacturing.Lvl4.BricksTilesClay = Manufacture of bricks, tiles and construction products, in baked clay
+
+NACE.Manufacturing.Lvl3.PorcelainCeramicProducts = Other porcelain and ceramic products
+NACE.Manufacturing.Lvl4.CeramicHouseholdOrnamental = Manufacture of ceramic household and ornamental articles
+NACE.Manufacturing.Lvl4.CeramicSanitaryFixtures = Manufacture of ceramic sanitary fixtures
+NACE.Manufacturing.Lvl4.CeramicInsulators = Manufacture of ceramic insulators and insulating fittings
+NACE.Manufacturing.Lvl4.OtherTechnicalCeramics = Manufacture of other technical ceramic products
+NACE.Manufacturing.Lvl4.OtherCeramicProducts = Manufacture of other ceramic products
+
+NACE.Manufacturing.Lvl3.CementLimePlaster = Cement, lime and plaster
+NACE.Manufacturing.Lvl4.Cement = Manufacture of cement
+NACE.Manufacturing.Lvl4.LimePlaster = Manufacture of lime and plaster
+
+NACE.Manufacturing.Lvl3.ConcreteCementPlasterArticles = Articles of concrete, cement and plaster
+NACE.Manufacturing.Lvl4.ConcreteProducts = Manufacture of concrete products for construction purposes
+NACE.Manufacturing.Lvl4.PlasterProducts = Manufacture of plaster products for construction purposes
+NACE.Manufacturing.Lvl4.ReadyMixedConcrete = Manufacture of ready-mixed concrete
+NACE.Manufacturing.Lvl4.Mortars = Manufacture of mortars
+NACE.Manufacturing.Lvl4.FibreCement = Manufacture of fibre cement
+NACE.Manufacturing.Lvl4.OtherConcretePlasterArticles = Manufacture of other articles of concrete, cement and plaster
+
+NACE.Manufacturing.Lvl3.CuttingStone = Cutting, shaping and finishing of stone
+NACE.Manufacturing.Lvl4.CuttingStone = Cutting, shaping and finishing of stone
+
+NACE.Manufacturing.Lvl3.AbrasiveProducts = Another type of abrasive and non-metallic mineral product.
+NACE.Manufacturing.Lvl4.AbrasiveProducts = Manufacture of abrasive products
+NACE.Manufacturing.Lvl4.OtherNonMetallicMinerals = Manufacture of other non-metallic mineral products n.e.c.
+
+### Basic Metals ###
+NACE.Manufacturing.Lvl3.BasicIronSteel = Basic iron, steel and ferro-alloys
+NACE.Manufacturing.Lvl4.IronSteelFerroAlloys = Manufacture of basic iron and steel and of ferro-alloys
+
+NACE.Manufacturing.Lvl3.TubesPipesSteel = Steel tubes, pipes, hollow profiles and related fittings
+NACE.Manufacturing.Lvl4.TubesPipesSteel = Manufacture of tubes, pipes, hollow profiles and related fittings, of steel
+
+NACE.Manufacturing.Lvl3.OtherSteelProducts = Other products of first processing of steel
+NACE.Manufacturing.Lvl4.ColdDrawingBars = Cold drawing of bars
+NACE.Manufacturing.Lvl4.ColdRollingStrip = Cold rolling of narrow strip
+NACE.Manufacturing.Lvl4.ColdFormingFolding = Cold forming or folding
+NACE.Manufacturing.Lvl4.ColdDrawingWire = Cold drawing of wire
+
+NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals = Basic precious and other non-ferrous metals
+NACE.Manufacturing.Lvl4.PreciousMetals = Precious metals production
+NACE.Manufacturing.Lvl4.Aluminium = Aluminium production
+NACE.Manufacturing.Lvl4.LeadZincTin = Lead, zinc and tin production
+NACE.Manufacturing.Lvl4.Copper = Copper production
+NACE.Manufacturing.Lvl4.OtherNonFerrous = Other non-ferrous metal production
+NACE.Manufacturing.Lvl4.NuclearFuelProcessing = Processing of nuclear fuel
+
+NACE.Manufacturing.Lvl3.CastingMetals = My undertaking carries out casting of metals
+NACE.Manufacturing.Lvl4.CastingIron = Casting of iron
+NACE.Manufacturing.Lvl4.CastingSteel = Casting of steel
+NACE.Manufacturing.Lvl4.CastingLightMetals = Casting of light metals
+NACE.Manufacturing.Lvl4.CastingOtherNonFerrous = Casting of other non-ferrous metals
+
+### Fabricated metal products ###
+NACE.Manufacturing.Lvl3.StructuralMetalProducts = Manufacture of structural metal products
+NACE.Manufacturing.Lvl4.MetalStructures = Manufacture of metal structures and parts of structures
+NACE.Manufacturing.Lvl4.MetalDoorsWindows = Manufacture of doors and windows of metal
+
+NACE.Manufacturing.Lvl3.TanksReservoirs = Manufacture of tanks, reservoirs and containers of metal
+NACE.Manufacturing.Lvl4.CentralHeatingBoilers = Manufacture of central heating radiators, steam generators and boilers
+NACE.Manufacturing.Lvl4.OtherTanksReservoirs = Manufacture of other tanks, reservoirs and containers of metal
+
+NACE.Manufacturing.Lvl3.WeaponsAmmunition = Manufacture of weapons and ammunition
+NACE.Manufacturing.Lvl4.WeaponsAmmunition = Manufacture of weapons and ammunition
+
+NACE.Manufacturing.Lvl3.ForgingShaping = Forging and shaping metal and powder metallurgy
+NACE.Manufacturing.Lvl4.ForgingShaping = Forging and shaping metal and powder metallurgy
+
+NACE.Manufacturing.Lvl3.TreatmentCoatingMachining = Treatment and coating of metals; machining
+NACE.Manufacturing.Lvl4.CoatingMetals = Coating of metals
+NACE.Manufacturing.Lvl4.HeatTreatment = Heat treatment of metals
+NACE.Manufacturing.Lvl4.Machining = Machining of metals
+
+NACE.Manufacturing.Lvl3.CutleryToolsHardware = Manufacture of cutlery, tools and general hardware
+NACE.Manufacturing.Lvl4.Cutlery = Manufacture of cutlery
+NACE.Manufacturing.Lvl4.LocksHinges = Manufacture of locks and hinges
+NACE.Manufacturing.Lvl4.Tools = Manufacture of tools
+
+NACE.Manufacturing.Lvl3.OtherFabricatedMetalProducts = Manufacture of other fabricated metal products
+NACE.Manufacturing.Lvl4.SteelDrumsContainers = Manufacture of steel drums and similar containers
+NACE.Manufacturing.Lvl4.LightMetalPackaging = Manufacture of light metal packaging
+NACE.Manufacturing.Lvl4.WireProductsSprings = Manufacture of wire products, chain and springs
+NACE.Manufacturing.Lvl4.Fasteners = Manufacture of fasteners and screw machine products
+NACE.Manufacturing.Lvl4.OtherFabricatedMetalProducts = Manufacture of other fabricated metal products n.e.c.
+
+### Computers electronics ###
+NACE.Manufacturing.Lvl3.ElectronicComponentsBoards = Electronic components and boards
+NACE.Manufacturing.Lvl4.ElectronicComponents = Manufacture of electronic components
+NACE.Manufacturing.Lvl4.LoadedElectronicBoards = Manufacture of loaded electronic boards
+
+NACE.Manufacturing.Lvl3.ComputersPeripherals = Computers and peripheral equipment
+NACE.Manufacturing.Lvl4.ComputersPeripherals = Manufacture of computers and peripheral equipment
+
+NACE.Manufacturing.Lvl3.CommunicationEquipment = Communication equipment
+NACE.Manufacturing.Lvl4.CommunicationEquipment = Manufacture of communication equipment
+
+NACE.Manufacturing.Lvl3.ConsumerElectronics = Consumer electronics
+NACE.Manufacturing.Lvl4.ConsumerElectronics = Manufacture of consumer electronics
+
+NACE.Manufacturing.Lvl3.MeasuringTestingInstruments = Measuring testing instruments, clocks and watches
+NACE.Manufacturing.Lvl4.MeasuringTestingNavigation = Manufacture of instruments and appliances for measuring, testing and navigation
+NACE.Manufacturing.Lvl4.WatchesClocks = Manufacture of watches and clocks
+
+NACE.Manufacturing.Lvl3.IrradiationElectromedical = Irradiation, electromedical and electrotherapeutic equipment
+NACE.Manufacturing.Lvl4.IrradiationElectromedical = Manufacture of irradiation, electromedical and electrotherapeutic equipment
+
+NACE.Manufacturing.Lvl3.OpticalInstruments = Optical instruments, magnetic and optical media and photographic equipment
+NACE.Manufacturing.Lvl4.OpticalInstruments = Manufacture of optical instruments, magnetic and optical media and photographic equipment
+
+### Electrical equipment ###
+NACE.Manufacturing.Lvl3.ElectricMotorsGenerators = Electric motors, generators, transformers and electricity distribution and control apparatus
+NACE.Manufacturing.Lvl4.ElectricMotorsGenerators = Manufacture of electric motors, generators and transformers
+NACE.Manufacturing.Lvl4.ElectricityDistributionControl = Manufacture of electricity distribution and control apparatus
+
+NACE.Manufacturing.Lvl3.BatteriesAccumulators = Batteries and accumulators
+NACE.Manufacturing.Lvl4.BatteriesAccumulators = Manufacture of batteries and accumulators
+
+NACE.Manufacturing.Lvl3.WiringDevices = Wiring and wiring devices
+NACE.Manufacturing.Lvl4.FibreOpticCables = Manufacture of fibre optic cables
+NACE.Manufacturing.Lvl4.OtherWiresCables = Manufacture of other electronic and electric wires and cables
+NACE.Manufacturing.Lvl4.WiringDevices = Manufacture of wiring devices
+
+NACE.Manufacturing.Lvl3.LightingEquipment = Lighting equipment
+NACE.Manufacturing.Lvl4.LightingEquipment = Manufacture of lighting equipment
+
+NACE.Manufacturing.Lvl3.DomesticAppliances = Domestic appliances
+NACE.Manufacturing.Lvl4.ElectricDomesticAppliances = Manufacture of electric domestic appliances
+NACE.Manufacturing.Lvl4.NonElectricDomesticAppliances = Manufacture of non-electric domestic appliances
+
+NACE.Manufacturing.Lvl3.OtherElectricalEquipment = Other electrical equipment
+NACE.Manufacturing.Lvl4.OtherElectricalEquipment = Manufacture of other electrical equipment
+
+### Other machinery and equipment ###
+NACE.Manufacturing.Lvl3.GeneralPurposeMachinery = General-purpose machinery
+NACE.Manufacturing.Lvl4.EnginesTurbines = Manufacture of engines and turbines, except aircraft, vehicle and cycle engines
+NACE.Manufacturing.Lvl4.FluidPowerEquipment = Manufacture of fluid power equipment
+NACE.Manufacturing.Lvl4.PumpsCompressors = Manufacture of other pumps and compressors
+NACE.Manufacturing.Lvl4.TapsValves = Manufacture of other taps and valves
+NACE.Manufacturing.Lvl4.BearingsGears = Manufacture of bearings, gears, gearing and driving elements
+
+NACE.Manufacturing.Lvl3.OtherGeneralPurposeMachinery = Other general-purpose machinery
+NACE.Manufacturing.Lvl4.OvensFurnacesHeating = Manufacture of ovens, furnaces and permanent household heating equipment
+NACE.Manufacturing.Lvl4.LiftingHandlingEquipment = Manufacture of lifting and handling equipment
+NACE.Manufacturing.Lvl4.OfficeMachinery = Manufacture of office machinery and equipment, except computers and peripheral equipment
+NACE.Manufacturing.Lvl4.PowerDrivenHandTools = Manufacture of power-driven hand tools
+NACE.Manufacturing.Lvl4.AirConditioning = Manufacture of non-domestic air conditioning equipment
+NACE.Manufacturing.Lvl4.OtherGeneralPurposeMachinery = Manufacture of other general-purpose machinery n.e.c.
+
+NACE.Manufacturing.Lvl3.AgriculturalForestryMachinery = Agricultural and forestry machinery
+NACE.Manufacturing.Lvl4.AgriculturalForestryMachinery = Manufacture of agricultural and forestry machinery
+
+NACE.Manufacturing.Lvl3.MetalFormingMachinery = Metal forming machinery and machine tools
+NACE.Manufacturing.Lvl4.MetalFormingMachinery = Manufacture of metal forming machinery and machine tools for metal work
+NACE.Manufacturing.Lvl4.OtherMachineTools = Manufacture of other machine tools
+
+NACE.Manufacturing.Lvl3.OtherSpecialPurposeMachinery = Other special-purpose machinery
+NACE.Manufacturing.Lvl4.MachineryMetallurgy = Manufacture of machinery for metallurgy
+NACE.Manufacturing.Lvl4.MachineryMiningConstruction = Manufacture of machinery for mining, quarrying and construction
+NACE.Manufacturing.Lvl4.MachineryFoodBeverageTobacco = Manufacture of machinery for food, beverage and tobacco processing
+NACE.Manufacturing.Lvl4.MachineryTextileApparelLeather = Manufacture of machinery for textile, apparel and leather production
+NACE.Manufacturing.Lvl4.MachineryPaperProduction = Manufacture of machinery for paper and paperboard production
+NACE.Manufacturing.Lvl4.MachineryPlasticsRubber = Manufacture of plastics and rubber machinery
+NACE.Manufacturing.Lvl4.AdditiveManufacturingMachinery = Manufacture of additive manufacturing machinery
+NACE.Manufacturing.Lvl4.OtherSpecialPurposeMachinery = Manufacture of other special-purpose machinery n.e.c.
+
+### Motor vehicles, trailers and parts ###
+NACE.Manufacturing.Lvl3.MotorVehicles = Motor vehicles
+NACE.Manufacturing.Lvl4.MotorVehicles = Manufacture of motor vehicles
+
+NACE.Manufacturing.Lvl3.BodiesTrailers = Bodies and coachwork for motor vehicles; trailers and semi-trailers
+NACE.Manufacturing.Lvl4.BodiesTrailers = Manufacture of bodies and coachwork for motor vehicles; manufacture of trailers and semi-trailers
+
+NACE.Manufacturing.Lvl3.MotorVehiclePartsAccessories = Motor vehicle parts and accessories
+NACE.Manufacturing.Lvl4.ElectricalElectronicEquipmentVehicles = Manufacture of electrical and electronic equipment for motor vehicles
+NACE.Manufacturing.Lvl4.OtherPartsAccessoriesVehicles = Manufacture of other parts and accessories for motor vehicles
+
+### Other transport equipment ###
+NACE.Manufacturing.Lvl3.ShipsBoats = Ships and boats
+NACE.Manufacturing.Lvl4.CivilianShips = Building of civilian ships and floating structures
+NACE.Manufacturing.Lvl4.PleasureSportingBoats = Building of pleasure and sporting boats
+NACE.Manufacturing.Lvl4.MilitaryShips = Building of military ships and vessels
+
+NACE.Manufacturing.Lvl3.RailwayLocomotives = Railway locomotives and rolling stock
+NACE.Manufacturing.Lvl4.RailwayLocomotives = Manufacture of railway locomotives and rolling stock
+
+NACE.Manufacturing.Lvl3.AirSpacecraft = Aircraft and spacecraft and related machinery
+NACE.Manufacturing.Lvl4.CivilianAirSpacecraft = Manufacture of civilian air and spacecraft and related machinery
+NACE.Manufacturing.Lvl4.MilitaryAirSpacecraft = Manufacture of military air and spacecraft and related machinery
+
+NACE.Manufacturing.Lvl3.MilitaryVehicles = Military fighting vehicles
+NACE.Manufacturing.Lvl4.MilitaryVehicles = Manufacture of military fighting vehicles
+
+NACE.Manufacturing.Lvl3.OtherTransportEquipment = Other transport equipment
+NACE.Manufacturing.Lvl4.Motorcycles = Manufacture of motorcycles
+NACE.Manufacturing.Lvl4.BicyclesInvalidCarriages = Manufacture of bicycles and invalid carriages
+NACE.Manufacturing.Lvl4.OtherTransportNEC = Manufacture of other transport equipment n.e.c.
+
+### Furniture ###
+NACE.Manufacturing.Lvl3.Furniture = Manufacture of furniture
+NACE.Manufacturing.Lvl4.Furniture = Manufacture of furniture
+
+### Other manufacturing ###
+NACE.Manufacturing.Lvl3.JewelleryCoins = Jewellery, coins and related articles
+NACE.Manufacturing.Lvl4.StrikingCoins = Striking of coins
+NACE.Manufacturing.Lvl4.JewelleryArticles = Manufacture of jewellery and related articles
+NACE.Manufacturing.Lvl4.ImitationJewellery = Manufacture of imitation jewellery and related articles
+
+NACE.Manufacturing.Lvl3.MusicalInstruments = Musical instruments
+NACE.Manufacturing.Lvl4.MusicalInstruments = Manufacture of musical instruments
+
+NACE.Manufacturing.Lvl3.SportsGoods = Sports goods
+NACE.Manufacturing.Lvl4.SportsGoods = Manufacture of sports goods
+
+NACE.Manufacturing.Lvl3.GamesToys = Games and toys
+NACE.Manufacturing.Lvl4.GamesToys = Manufacture of games and toys
+
+NACE.Manufacturing.Lvl3.MedicalDentalInstruments = Medical and dental instruments and supplies
+NACE.Manufacturing.Lvl4.MedicalDentalInstruments = Manufacture of medical and dental instruments and supplies
+NACE.Manufacturing.Lvl4.ManufacturingNEC = Manufacturing n.e.c.
+NACE.Manufacturing.Lvl4.BroomsBrushes = Manufacture of brooms and brushes
+
+NACE.Manufacturing.Lvl3.OtherManufacturingNEC = Other products
+
+### repairs and maintains ###
+NACE.Manufacturing.Lvl3.RepairMaintenanceFabricatedMetal = Repair and maintenance of fabricated metal products, machinery and equipment
+NACE.Manufacturing.Lvl4.RepairFabricatedMetalProducts = Repair and maintenance of fabricated metal products
+NACE.Manufacturing.Lvl4.RepairMachinery = Repair and maintenance of machinery
+NACE.Manufacturing.Lvl4.RepairElectronicOptical = Repair and maintenance of electronic and optical equipment
+NACE.Manufacturing.Lvl4.RepairElectrical = Repair and maintenance of electrical equipment
+NACE.Manufacturing.Lvl4.RepairCivilianShipsBoats = Repair and maintenance of civilian ships and boats
+NACE.Manufacturing.Lvl4.RepairCivilianAirSpacecraft = Repair and maintenance of civilian air and spacecraft
+NACE.Manufacturing.Lvl4.RepairOtherTransport = Repair and maintenance of other civilian transport equipment
+NACE.Manufacturing.Lvl4.RepairMilitaryVehicles = Repair and maintenance of military fighting vehicles, ships, boats, air and spacecraft
+NACE.Manufacturing.Lvl4.RepairOtherEquipment = Repair and maintenance of other equipment
+
+NACE.Manufacturing.Lvl3.InstallationIndustrialMachinery = Installation of industrial machinery and equipment
+NACE.Manufacturing.Lvl4.InstallationIndustrialMachinery = Installation of industrial machinery and equipment
+
+#ElectricityGasSteamAir NACE Sector2,3,4
+NACE.ElectricityGasSteamAir.Lvl2.Supply = Electricity, gas, steam and air conditioning supply
+#### NACE.ElectricityGasSteamAir.Lvl3.ElectricPower = Electric power generation, transmission and distribution
+NACE.ElectricityGasSteamAir.Lvl4.ElectricityNonRenewable = Production of electricity from non-renewable sources
+NACE.ElectricityGasSteamAir.Lvl4.ElectricityRenewable = Production of electricity from renewable sources
+NACE.ElectricityGasSteamAir.Lvl4.TransmissionElectricity = Transmission of electricity
+NACE.ElectricityGasSteamAir.Lvl4.DistributionElectricity = Distribution of electricity
+NACE.ElectricityGasSteamAir.Lvl4.TradeElectricity = Trade of electricity
+NACE.ElectricityGasSteamAir.Lvl4.StorageElectricity = Storage of electricity
+#### NACE.ElectricityGasSteamAir.Lvl3.GasDistribution = Manufacture of gas, and distribution of gaseous fuels through mains
+NACE.ElectricityGasSteamAir.Lvl4.ManufactureGas = Manufacture of gas
+NACE.ElectricityGasSteamAir.Lvl4.DistributionGas = Distribution of gaseous fuels through mains
+NACE.ElectricityGasSteamAir.Lvl4.TradeGas = Trade of gas through mains
+NACE.ElectricityGasSteamAir.Lvl4.StorageGas = Storage of gas as part of network supply services
+#### NACE.ElectricityGasSteamAir.Lvl3.SteamAirConditioning = Steam and air conditioning supply
+NACE.ElectricityGasSteamAir.Lvl4.SteamAirConditioning = Steam and air conditioning supply
+#### NACE.ElectricityGasSteamAir.Lvl3.BrokersAgentsPowerGas = Activities of brokers and agents for electric power and natural gas
+NACE.ElectricityGasSteamAir.Lvl4.BrokersAgentsPowerGas = Activities of brokers and agents for electric power and natural gas
+
+#WaterSewerageWasteRemediation NACE Sector2,3,4
+NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply = Water collection, treatment and supply
+#### NACE.WaterSewerageWasteRemediation.Lvl3.WaterCollectionSupply = Water collection, treatment and supply
+NACE.WaterSewerageWasteRemediation.Lvl4.WaterCollectionSupply = Water collection, treatment and supply
+
+NACE.WaterSewerageWasteRemediation.Lvl2.Sewerage = Sewerage
+#### NACE.WaterSewerageWasteRemediation.Lvl3.Sewerage = Sewerage
+NACE.WaterSewerageWasteRemediation.Lvl4.Sewerage = Sewerage
+
+NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities = Waste collection, recovery and disposal activities
+#### NACE.WaterSewerageWasteRemediation.Lvl3.WasteCollection = Waste collection
+NACE.WaterSewerageWasteRemediation.Lvl4.NonHazardousWaste = Collection of non-hazardous waste
+NACE.WaterSewerageWasteRemediation.Lvl4.HazardousWaste = Collection of hazardous waste
+#### NACE.WaterSewerageWasteRemediation.Lvl3.WasteRecovery = Waste recovery
+NACE.WaterSewerageWasteRemediation.Lvl4.MaterialsRecovery = Materials recovery
+NACE.WaterSewerageWasteRemediation.Lvl4.EnergyRecovery = Energy recovery
+NACE.WaterSewerageWasteRemediation.Lvl4.OtherWasteRecovery = Other waste recovery
+#### NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery = Waste disposal without recovery
+NACE.WaterSewerageWasteRemediation.Lvl4.IncinerationWithoutEnergy = Incineration without energy recovery
+NACE.WaterSewerageWasteRemediation.Lvl4.Landfilling = Landfilling or permanent storage
+NACE.WaterSewerageWasteRemediation.Lvl4.OtherWasteDisposal = Other waste disposal
+
+NACE.WaterSewerageWasteRemediation.Lvl2.Remediation = Remediation activities and other waste management service activities
+#### NACE.WaterSewerageWasteRemediation.Lvl3.Remediation = Remediation activities and other waste management service activities
+NACE.WaterSewerageWasteRemediation.Lvl4.Remediation = Remediation activities and other waste management service activities
+
+#Construction NACE Sector2,3,4
+NACE.Construction.Lvl2.ResidentialNonResidential = Construction of residential and non-residential buildings
+#### NACE.Construction.Lvl3.ResidentialNonResidential = Construction of residential and non-residential buildings
+NACE.Construction.Lvl4.ResidentialNonResidential = Construction of residential and non-residential buildings
+
+NACE.Construction.Lvl2.CivilEngineering = Civil engineering
+#### NACE.Construction.Lvl3.RoadsRailways = Construction of roads and railways
+NACE.Construction.Lvl4.RoadsMotorways = Construction of roads and motorways
+NACE.Construction.Lvl4.RailwaysUnderground = Construction of railways and underground railways
+NACE.Construction.Lvl4.BridgesTunnels = Construction of bridges and tunnels
+#### NACE.Construction.Lvl3.UtilityProjects = Construction of utility projects
+NACE.Construction.Lvl4.UtilityFluids = Construction of utility projects for fluids
+NACE.Construction.Lvl4.UtilityElectricityTelecom = Construction of utility projects for electricity and telecommunications
+#### NACE.Construction.Lvl3.OtherCivilEngineering = Construction of other civil engineering projects
+NACE.Construction.Lvl4.WaterProjects = Construction of water projects
+NACE.Construction.Lvl4.OtherCivilEngineeringNEC = Construction of other civil engineering projects n.e.c.
+
+NACE.Construction.Lvl2.SpecialisedConstruction = Specialised construction activities
+#### NACE.Construction.Lvl3.DemolitionSitePrep = Demolition and site preparation
+NACE.Construction.Lvl4.Demolition = Demolition
+NACE.Construction.Lvl4.SitePreparation = Site preparation
+NACE.Construction.Lvl4.TestDrillingBoring = Test drilling and boring
+#### NACE.Construction.Lvl3.ElectricalPlumbingInstallation = Electrical, plumbing and other construction installation activities
+NACE.Construction.Lvl4.ElectricalInstallation = Electrical installation
+NACE.Construction.Lvl4.PlumbingHeatingAC = Plumbing, heat and air-conditioning installation
+NACE.Construction.Lvl4.InsulationInstallation = Installation of insulation
+NACE.Construction.Lvl4.OtherConstructionInstallation = Other construction installation
+#### NACE.Construction.Lvl3.BuildingCompletionFinishing = Building completion and finishing
+NACE.Construction.Lvl4.Plastering = Plastering
+NACE.Construction.Lvl4.Joinery = Joinery installation
+NACE.Construction.Lvl4.FloorWallCovering = Floor and wall covering
+NACE.Construction.Lvl4.PaintingGlazing = Painting and glazing
+NACE.Construction.Lvl4.OtherCompletionFinishing = Other building completion and finishing
+#### NACE.Construction.Lvl3.SpecialisedBuildingActivities = Specialised construction activities in construction of buildings
+NACE.Construction.Lvl4.Roofing = Roofing activities
+NACE.Construction.Lvl4.OtherSpecialisedBuildingActivities = Other specialised construction activities in construction of buildings
+#### NACE.Construction.Lvl3.SpecialisedCivilEngineering = Specialised construction activities in civil engineering
+NACE.Construction.Lvl4.SpecialisedCivilEngineering = Specialised construction activities in civil engineering
+#### NACE.Construction.Lvl3.IntermediationConstructionServices = Intermediation service activities for specialised construction services
+NACE.Construction.Lvl4.IntermediationConstructionServices = Intermediation service activities for specialised construction services
+#### NACE.Construction.Lvl3.OtherSpecialisedConstruction = Other specialised construction activities
+NACE.Construction.Lvl4.MasonryBricklaying = Masonry and bricklaying activities
+NACE.Construction.Lvl4.OtherSpecialisedConstructionNEC = Other specialised construction activities n.e.c.
+
+#WholesaleRetailTrade NACE Sector2,3,4
+NACE.WholesaleRetailTrade.Lvl2.WholesaleTrade = Wholesale trade
+#### NACE.WholesaleRetailTrade.Lvl3.WholesaleFeeContract = Wholesale on a fee or contract basis
+NACE.WholesaleRetailTrade.Lvl4.AgentsAgriculturalRawMaterials = Activities of agents involved in the wholesale of agricultural raw materials, live animals, textile raw materials and semi-finished goods
+NACE.WholesaleRetailTrade.Lvl4.AgentsFuelsChemicals = Activities of agents involved in the wholesale of fuels, ores, metals and industrial chemicals
+NACE.WholesaleRetailTrade.Lvl4.AgentsTimberBuildingMaterials = Activities of agents involved in the wholesale of timber and building materials
+NACE.WholesaleRetailTrade.Lvl4.AgentsMachineryIndustrialEquipment = Activities of agents involved in the wholesale of machinery, industrial equipment, ships and aircraft
+NACE.WholesaleRetailTrade.Lvl4.AgentsFurnitureHouseholdGoods = Activities of agents involved in the wholesale of furniture, household goods, hardware and ironmongery
+NACE.WholesaleRetailTrade.Lvl4.AgentsTextilesClothing = Activities of agents involved in the wholesale of textiles, clothing, fur, footwear and leather goods
+NACE.WholesaleRetailTrade.Lvl4.AgentsFoodBeveragesTobacco = Activities of agents involved in the wholesale of food, beverages and tobacco
+NACE.WholesaleRetailTrade.Lvl4.AgentsOtherProducts = Activities of agents involved in the wholesale of other particular products
+NACE.WholesaleRetailTrade.Lvl4.AgentsNonSpecialised = Activities of agents involved in non-specialised wholesale
+#### NACE.WholesaleRetailTrade.Lvl3.AgriculturalRawMaterialsAnimals = Wholesale of agricultural raw materials and live animals
+NACE.WholesaleRetailTrade.Lvl4.GrainTobaccoSeedsFeeds = Wholesale of grain, unmanufactured tobacco, seeds and animal feeds
+NACE.WholesaleRetailTrade.Lvl4.FlowersPlants = Wholesale of flowers and plants
+NACE.WholesaleRetailTrade.Lvl4.LiveAnimals = Wholesale of live animals
+NACE.WholesaleRetailTrade.Lvl4.HidesSkinsLeather = Wholesale of hides, skins and leather
+#### NACE.WholesaleRetailTrade.Lvl3.FoodBeveragesTobacco = Wholesale of food, beverages and tobacco
+NACE.WholesaleRetailTrade.Lvl4.FruitVegetables = Wholesale of fruit and vegetables
+NACE.WholesaleRetailTrade.Lvl4.MeatFishProducts = Wholesale of meat, meat products, fish and fish products
+NACE.WholesaleRetailTrade.Lvl4.DairyEggsOilsFats = Wholesale of dairy products, eggs and edible oils and fats
+NACE.WholesaleRetailTrade.Lvl4.Beverages = Wholesale of beverages
+NACE.WholesaleRetailTrade.Lvl4.TobaccoProducts = Wholesale of tobacco products
+NACE.WholesaleRetailTrade.Lvl4.SugarConfectionery = Wholesale of sugar, chocolate and sugar confectionery
+NACE.WholesaleRetailTrade.Lvl4.CoffeeTeaCocoaSpices = Wholesale of coffee, tea, cocoa and spices
+NACE.WholesaleRetailTrade.Lvl4.OtherFood = Wholesale of other food
+NACE.WholesaleRetailTrade.Lvl4.NonSpecialisedFoodBeverages = Non-specialised wholesale of food, beverages and tobacco
+#### NACE.WholesaleRetailTrade.Lvl3.HouseholdGoods = Wholesale of household goods
+NACE.WholesaleRetailTrade.Lvl4.Textiles = Wholesale of textiles
+NACE.WholesaleRetailTrade.Lvl4.ClothingFootwear = Wholesale of clothing and footwear
+NACE.WholesaleRetailTrade.Lvl4.ElectricalHouseholdAppliances = Wholesale of electrical household appliances
+NACE.WholesaleRetailTrade.Lvl4.ChinaGlasswareCleaning = Wholesale of china and glassware and cleaning materials
+NACE.WholesaleRetailTrade.Lvl4.PerfumeCosmetics = Wholesale of perfume and cosmetics
+NACE.WholesaleRetailTrade.Lvl4.PharmaceuticalMedical = Wholesale of pharmaceutical and medical goods
+NACE.WholesaleRetailTrade.Lvl4.HouseholdOfficeShopFurniture = Wholesale of household, office and shop furniture, carpets and lighting equipment
+NACE.WholesaleRetailTrade.Lvl4.WatchesJewellery = Wholesale of watches and jewellery
+NACE.WholesaleRetailTrade.Lvl4.OtherHouseholdGoods = Wholesale of other household goods
+#### NACE.WholesaleRetailTrade.Lvl3.InformationCommunicationEquipment = Wholesale of information and communication equipment
+NACE.WholesaleRetailTrade.Lvl4.InfoCommunicationEquipment = Wholesale of information and communication equipment
+#### NACE.WholesaleRetailTrade.Lvl3.OtherMachineryEquipmentSupplies = Wholesale of other machinery, equipment and supplies
+NACE.WholesaleRetailTrade.Lvl4.AgriculturalMachinery = Wholesale of agricultural machinery, equipment and supplies
+NACE.WholesaleRetailTrade.Lvl4.MachineTools = Wholesale of machine tools
+NACE.WholesaleRetailTrade.Lvl4.MiningConstructionMachinery = Wholesale of mining, construction and civil engineering machinery
+NACE.WholesaleRetailTrade.Lvl4.OtherMachineryEquipment = Wholesale of other machinery and equipment
+#### NACE.WholesaleRetailTrade.Lvl3.MotorVehiclesMotorcycles = Wholesale of motor vehicles, motorcycles and related parts and accessories
+NACE.WholesaleRetailTrade.Lvl4.MotorVehicles = Wholesale of motor vehicles
+NACE.WholesaleRetailTrade.Lvl4.MotorVehiclePartsAccessories = Wholesale of motor vehicle parts and accessories
+NACE.WholesaleRetailTrade.Lvl4.MotorcyclesPartsAccessories = Wholesale of motorcycles, motorcycle parts and accessories
+#### NACE.WholesaleRetailTrade.Lvl3.OtherSpecialisedWholesale = Other specialised wholesale
+NACE.WholesaleRetailTrade.Lvl4.SolidLiquidGaseousFuels = Wholesale of solid, liquid and gaseous fuels and related products
+NACE.WholesaleRetailTrade.Lvl4.MetalsOres = Wholesale of metals and metal ores
+NACE.WholesaleRetailTrade.Lvl4.WoodConstructionMaterials = Wholesale of wood, construction materials and sanitary equipment
+NACE.WholesaleRetailTrade.Lvl4.HardwarePlumbingHeating = Wholesale of hardware, plumbing and heating equipment and supplies
+NACE.WholesaleRetailTrade.Lvl4.ChemicalProducts = Wholesale of chemical products
+NACE.WholesaleRetailTrade.Lvl4.OtherIntermediateProducts = Wholesale of other intermediate products
+NACE.WholesaleRetailTrade.Lvl4.WasteScrap = Wholesale of waste and scrap
+NACE.WholesaleRetailTrade.Lvl4.OtherSpecialisedWholesaleNEC = Other specialised wholesale n.e.c.
+#### NACE.WholesaleRetailTrade.Lvl3.NonSpecialisedWholesale = Non-specialised wholesale trade
+NACE.WholesaleRetailTrade.Lvl4.NonSpecialisedWholesale = Non-specialised wholesale trade
+
+NACE.WholesaleRetailTrade.Lvl2.RetailTrade = Retail trade
+#### NACE.WholesaleRetailTrade.Lvl3.NonSpecialisedRetail = Non-specialised retail sale
+NACE.WholesaleRetailTrade.Lvl4.NonSpecialisedFoodBeveragesTobacco = Non-specialised retail sale of predominately food, beverages or tobacco
+NACE.WholesaleRetailTrade.Lvl4.OtherNonSpecialisedRetail = Other non-specialised retail sale
+#### NACE.WholesaleRetailTrade.Lvl3.RetailFoodBeveragesTobacco = Retail sale of food, beverages and tobacco
+NACE.WholesaleRetailTrade.Lvl4.FruitVegetables = Retail sale of fruit and vegetables
+NACE.WholesaleRetailTrade.Lvl4.MeatProducts = Retail sale of meat and meat products
+NACE.WholesaleRetailTrade.Lvl4.FishCrustaceansMolluscs = Retail sale of fish, crustaceans and molluscs
+NACE.WholesaleRetailTrade.Lvl4.BreadCakeConfectionery = Retail sale of bread, cake and confectionery
+NACE.WholesaleRetailTrade.Lvl4.Beverages = Retail sale of beverages
+NACE.WholesaleRetailTrade.Lvl4.TobaccoProducts = Retail sale of tobacco products
+NACE.WholesaleRetailTrade.Lvl4.OtherFood = Retail sale of other food
+#### NACE.WholesaleRetailTrade.Lvl3.RetailAutomotiveFuel = Retail sale of automotive fuel
+NACE.WholesaleRetailTrade.Lvl4.AutomotiveFuel = Retail sale of automotive fuel
+#### NACE.WholesaleRetailTrade.Lvl3.RetailInformationCommunicationEquipment = Retail sale of information and communication equipment
+NACE.WholesaleRetailTrade.Lvl4.InformationCommunicationEquipment = Retail sale of information and communication equipment
+#### NACE.WholesaleRetailTrade.Lvl3.RetailOtherHouseholdEquipment = Retail sale of other household equipment
+NACE.WholesaleRetailTrade.Lvl4.Textiles = Retail sale of textiles
+NACE.WholesaleRetailTrade.Lvl4.HardwarePaintsGlass = Retail sale of hardware, building materials, paints and glass
+NACE.WholesaleRetailTrade.Lvl4.FloorCoverings = Retail sale of carpets, rugs, wall and floor coverings
+NACE.WholesaleRetailTrade.Lvl4.ElectricalAppliances = Retail sale of electrical household appliances
+NACE.WholesaleRetailTrade.Lvl4.FurnitureLightingHouseholdGoods = Retail sale of furniture, lighting equipment, tableware and other household goods
+#### NACE.WholesaleRetailTrade.Lvl3.RetailCulturalRecreationalGoods = Retail sale of cultural and recreational goods
+NACE.WholesaleRetailTrade.Lvl4.Books = Retail sale of books
+NACE.WholesaleRetailTrade.Lvl4.NewspapersPeriodicalsStationery = Retail sale of newspapers, and other periodical publications and stationery
+NACE.WholesaleRetailTrade.Lvl4.SportingEquipment = Retail sale of sporting equipment
+NACE.WholesaleRetailTrade.Lvl4.GamesToys = Retail sale of games and toys
+NACE.WholesaleRetailTrade.Lvl4.CulturalRecreationalNEC = Retail sale of cultural and recreational goods n.e.c.
+#### NACE.WholesaleRetailTrade.Lvl3.RetailOtherGoods = Retail sale of other goods, except motor vehicles and motorcycles
+NACE.WholesaleRetailTrade.Lvl4.Clothing = Retail sale of clothing
+NACE.WholesaleRetailTrade.Lvl4.FootwearLeatherGoods = Retail sale of footwear and leather goods
+NACE.WholesaleRetailTrade.Lvl4.PharmaceuticalProducts = Retail sale of pharmaceutical products
+NACE.WholesaleRetailTrade.Lvl4.MedicalOrthopaedicGoods = Retail sale of medical and orthopaedic goods
+NACE.WholesaleRetailTrade.Lvl4.CosmeticToiletArticles = Retail sale of cosmetic and toilet articles
+NACE.WholesaleRetailTrade.Lvl4.FlowersPlantsPetFood = Retail sale of flowers, plants, fertilisers, pets and pet food
+NACE.WholesaleRetailTrade.Lvl4.WatchesJewellery = Retail sale of watches and jewellery
+NACE.WholesaleRetailTrade.Lvl4.OtherNewGoods = Retail sale of other new goods
+NACE.WholesaleRetailTrade.Lvl4.SecondHandGoods = Retail sale of second-hand goods
+#### NACE.WholesaleRetailTrade.Lvl3.RetailMotorVehiclesMotorcycles = Retail sale of motor vehicles, motorcycles and related parts and accessories
+NACE.WholesaleRetailTrade.Lvl4.MotorVehicles = Retail sale of motor vehicles
+NACE.WholesaleRetailTrade.Lvl4.MotorVehiclePartsAccessories = Retail sale of motor vehicle parts and accessories
+NACE.WholesaleRetailTrade.Lvl4.MotorcyclesPartsAccessories = Retail sale of motorcycles, motorcycle parts and accessories
+#### NACE.WholesaleRetailTrade.Lvl3.IntermediationRetail = Intermediation service activities for retail sale
+NACE.WholesaleRetailTrade.Lvl4.IntermediationNonSpecialised = Intermediation service activities for non-specialised retail sale
+NACE.WholesaleRetailTrade.Lvl4.IntermediationSpecialised = Intermediation service activities for specialised retail sale
+
+#TransportationAndStorage NACE Sector2,3,4
+NACE.TransportationAndStorage.Lvl2.LandPipelineTransport = Land transport and transport via pipelines
+#### NACE.TransportationAndStorage.Lvl3.PassengerRail = Passenger rail transport
+NACE.TransportationAndStorage.Lvl4.PassengerHeavyRail = Passenger heavy rail transport
+NACE.TransportationAndStorage.Lvl4.OtherPassengerRail = Other passenger rail transport
+#### NACE.TransportationAndStorage.Lvl3.FreightRail = Freight rail transport
+NACE.TransportationAndStorage.Lvl4.FreightRail = Freight rail transport
+#### NACE.TransportationAndStorage.Lvl3.OtherPassengerLand = Other passenger land transport
+NACE.TransportationAndStorage.Lvl4.ScheduledPassengerRoad = Scheduled passenger transport by road
+NACE.TransportationAndStorage.Lvl4.NonScheduledPassengerRoad = Non-scheduled passenger transport by road
+NACE.TransportationAndStorage.Lvl4.OnDemandPassenger = On-demand passenger transport service activities by vehicle with driver
+NACE.TransportationAndStorage.Lvl4.CablewaysSkiLifts = Passenger transport by cableways and ski lifts
+NACE.TransportationAndStorage.Lvl4.OtherPassengerLandNEC = Other passenger land transport n.e.c.
+#### NACE.TransportationAndStorage.Lvl3.FreightRoadRemoval = Freight transport by road and removal services
+NACE.TransportationAndStorage.Lvl4.FreightRoad = Freight transport by road
+NACE.TransportationAndStorage.Lvl4.RemovalServices = Removal services
+#### NACE.TransportationAndStorage.Lvl3.PipelineTransport = Transport via pipeline
+NACE.TransportationAndStorage.Lvl4.PipelineTransport = Transport via pipeline
+
+NACE.TransportationAndStorage.Lvl2.WaterTransport = Water transport
+#### NACE.TransportationAndStorage.Lvl3.SeaCoastalPassenger = Sea and coastal passenger water transport
+NACE.TransportationAndStorage.Lvl4.SeaCoastalPassenger = Sea and coastal passenger water transport
+#### NACE.TransportationAndStorage.Lvl3.SeaCoastalFreight = Sea and coastal freight water transport
+NACE.TransportationAndStorage.Lvl4.SeaCoastalFreight = Sea and coastal freight water transport
+#### NACE.TransportationAndStorage.Lvl3.InlandPassenger = Inland passenger water transport
+NACE.TransportationAndStorage.Lvl4.InlandPassenger = Inland passenger water transport
+#### NACE.TransportationAndStorage.Lvl3.InlandFreight = Inland freight water transport
+NACE.TransportationAndStorage.Lvl4.InlandFreight = Inland freight water transport
+
+NACE.TransportationAndStorage.Lvl2.AirTransport = Air transport
+#### NACE.TransportationAndStorage.Lvl3.PassengerAir = Passenger air transport
+NACE.TransportationAndStorage.Lvl4.PassengerAir = Passenger air transport
+#### NACE.TransportationAndStorage.Lvl3.FreightAirSpace = Freight air transport and space transport
+NACE.TransportationAndStorage.Lvl4.FreightAir = Freight air transport
+NACE.TransportationAndStorage.Lvl4.SpaceTransport = Space transport
+
+NACE.TransportationAndStorage.Lvl2.WarehousingSupport = Warehousing, storage and support activities for transportation
+#### NACE.TransportationAndStorage.Lvl3.WarehousingStorage = Warehousing and storage
+NACE.TransportationAndStorage.Lvl4.WarehousingStorage = Warehousing and storage
+#### NACE.TransportationAndStorage.Lvl3.SupportTransport = Support activities for transportation
+NACE.TransportationAndStorage.Lvl4.LandTransportSupport = Service activities incidental to land transportation
+NACE.TransportationAndStorage.Lvl4.WaterTransportSupport = Service activities incidental to water transportation
+NACE.TransportationAndStorage.Lvl4.AirTransportSupport = Service activities incidental to air transportation
+NACE.TransportationAndStorage.Lvl4.CargoHandling = Cargo handling
+NACE.TransportationAndStorage.Lvl4.LogisticsServices = Logistics service activities
+NACE.TransportationAndStorage.Lvl4.OtherTransportSupport = Other support activities for transportation
+#### NACE.TransportationAndStorage.Lvl3.IntermediationTransport = Intermediation service activities for transportation
+NACE.TransportationAndStorage.Lvl4.FreightIntermediation = Intermediation service activities for freight transportation
+NACE.TransportationAndStorage.Lvl4.PassengerIntermediation = Intermediation service activities for passenger transportation
+
+NACE.TransportationAndStorage.Lvl2.PostalCourier = Postal and courier activities
+#### NACE.TransportationAndStorage.Lvl3.PostalUniversalService = Postal activities under universal service obligation
+NACE.TransportationAndStorage.Lvl4.PostalUniversalService = Postal activities under universal service obligation
+#### NACE.TransportationAndStorage.Lvl3.OtherPostalCourier = Other postal and courier activities
+NACE.TransportationAndStorage.Lvl4.OtherPostalCourier = Other postal and courier activities
+#### NACE.TransportationAndStorage.Lvl3.IntermediationPostalCourier = Intermediation service activities for postal and courier activities
+NACE.TransportationAndStorage.Lvl4.IntermediationPostalCourier = Intermediation service activities for postal and courier activities
+
+#AccommodationAndFoodService NACE Sector2,3,4
+NACE.AccommodationAndFoodService.Lvl2.Accommodation = Accommodation
+#### NACE.AccommodationAndFoodService.Lvl3.HotelsAccommodation = Hotels and similar accommodation
+NACE.AccommodationAndFoodService.Lvl4.HotelsAccommodation = Hotels and similar accommodation
+#### NACE.AccommodationAndFoodService.Lvl3.HolidayShortStay = Holiday and other short-stay accommodation
+NACE.AccommodationAndFoodService.Lvl4.HolidayShortStay = Holiday and other short-stay accommodation
+#### NACE.AccommodationAndFoodService.Lvl3.Camping = Camping grounds and recreational vehicle parks
+NACE.AccommodationAndFoodService.Lvl4.Camping = Camping grounds and recreational vehicle parks
+#### NACE.AccommodationAndFoodService.Lvl3.IntermediationAccommodation = Intermediation service activities for accommodation
+NACE.AccommodationAndFoodService.Lvl4.IntermediationAccommodation = Intermediation service activities for accommodation
+#### NACE.AccommodationAndFoodService.Lvl3.OtherAccommodation = Other accommodation
+
+NACE.AccommodationAndFoodService.Lvl2.FoodBeverage = Food and beverage service activities
+#### NACE.AccommodationAndFoodService.Lvl3.RestaurantsMobile = Restaurants and mobile food service activities
+NACE.AccommodationAndFoodService.Lvl4.Restaurants = Restaurant activities
+NACE.AccommodationAndFoodService.Lvl4.MobileFood = Mobile food service activities
+#### NACE.AccommodationAndFoodService.Lvl3.Catering = Event catering, contract catering service activities and other food service activities
+NACE.AccommodationAndFoodService.Lvl4.EventCatering = Event catering activities
+NACE.AccommodationAndFoodService.Lvl4.ContractCatering = Contract catering service activities and other food service activities
+#### NACE.AccommodationAndFoodService.Lvl3.Beverage = Beverage serving activities
+NACE.AccommodationAndFoodService.Lvl4.BeverageServing = Beverage serving activities
+#### NACE.AccommodationAndFoodService.Lvl3.IntermediationFoodBeverage = Intermediation service activities for food and beverage services
+NACE.AccommodationAndFoodService.Lvl4.IntermediationFoodBeverage = Intermediation service activities for food and beverage services
+
+#PublishingBroadcastingContentDist NACE Sector2,3,4
+NACE.PublishingBroadcastingContentDist.Lvl2.Publishing = Publishing activities
+#### NACE.PublishingBroadcastingContentDist.Lvl3.PublishingBooksNewspapers = Publishing of books, newspapers and other publishing activities, except software publishing
+NACE.PublishingBroadcastingContentDist.Lvl4.PublishingBooks = Publishing of books
+NACE.PublishingBroadcastingContentDist.Lvl4.PublishingNewspapers = Publishing of newspapers
+NACE.PublishingBroadcastingContentDist.Lvl4.PublishingJournalsPeriodicals = Publishing of journals and periodicals
+NACE.PublishingBroadcastingContentDistribution.Lvl4.OtherPublishing = Other publishing activities, except software publishing
+#### NACE.PublishingBroadcastingContentDistribution.Lvl3.SoftwarePublishing = Software publishing
+NACE.PublishingBroadcastingContentDistribution.Lvl4.VideoGames = Publishing of video games
+NACE.PublishingBroadcastingContentDistribution.Lvl4.OtherSoftwarePublishing = Other software publishing
+
+NACE.PublishingBroadcastingContentDistribution.Lvl2.MotionPicture = Motion picture, video and television programme production, sound recording and music publishing activities
+#### NACE.PublishingBroadcastingContentDistribution.Lvl3.MotionPictureVideo = Motion picture, video and television programme activities
+NACE.PublishingBroadcastingContentDistribution.Lvl4.Production = Motion picture, video and television programme production activities
+NACE.PublishingBroadcastingContentDistribution.Lvl4.PostProduction = Motion picture, video and television programme post-production activities
+NACE.PublishingBroadcastingContentDistribution.Lvl4.Distribution = Motion picture and video distribution activities
+NACE.PublishingBroadcastingContentDistribution.Lvl4.Projection = Motion picture projection activities
+#### NACE.PublishingBroadcastingContentDistribution.Lvl3.SoundRecording = Sound recording and music publishing activities
+NACE.PublishingBroadcastingContentDistribution.Lvl4.SoundRecordingPublishing = Sound recording and music publishing activities
+
+NACE.PublishingBroadcastingContentDistribution.Lvl2.ProgrammingBroadcasting = Programming, broadcasting, news agency and other content distribution activities
+#### NACE.PublishingBroadcastingContentDistribution.Lvl3.RadioBroadcasting = Radio broadcasting and audio distribution activities
+NACE.PublishingBroadcastingContentDistribution.Lvl4.RadioBroadcasting = Radio broadcasting and audio distribution activities
+
+#### NACE.PublishingBroadcastingContentDistribution.Lvl3.TelevisionBroadcasting = Television programming, broadcasting and video distribution activities
+NACE.PublishingBroadcastingContentDistribution.Lvl4.TelevisionBroadcasting = Television programming, broadcasting and video distribution activities
+#### NACE.PublishingBroadcastingContentDistribution.Lvl3.NewsAgency = News agency and other content distribution activities
+NACE.PublishingBroadcastingContentDistribution.Lvl4.NewsAgency = News agency activities
+NACE.PublishingBroadcastingContentDistribution.Lvl4.OtherContentDistribution = Other content distribution activities
+
+#Telecommunications NACE Sector2,3,4
+NACE.Telecommunications.Lvl2.Telecommunication = Telecommunication
+#### NACE.Telecommunications.Lvl3.WiredTelecom = Wired, wireless, and satellite telecommunication activities
+NACE.Telecommunications.Lvl4.WiredWirelessSatellite = Wired, wireless, and satellite telecommunication activities
+#### NACE.Telecommunications.Lvl3.ResellingTelecom = Telecommunication reselling activities and intermediation service activities for telecommunication
+NACE.Telecommunications.Lvl4.ResellingTelecom = Telecommunication reselling activities and intermediation service activities for telecommunication
+#### NACE.Telecommunications.Lvl3.OtherTelecom = Other telecommunication activities
+NACE.Telecommunications.Lvl4.OtherTelecom = Other telecommunication activities
+
+NACE.Telecommunications.Lvl2.ComputerProgrammingConsultancy = Computer programming, consultancy and related activities
+#### NACE.Telecommunications.Lvl3.Programming = Computer programming activities
+NACE.Telecommunications.Lvl4.Programming = Computer programming activities
+#### NACE.Telecommunications.Lvl3.Consultancy = Computer consultancy and computer facilities management activities
+NACE.Telecommunications.Lvl4.Consultancy = Computer consultancy and computer facilities management activities
+#### NACE.Telecommunications.Lvl3.OtherITServices = Other information technology and computer service activities
+NACE.Telecommunications.Lvl4.OtherITServices = Other information technology and computer service activities
+
+NACE.Telecommunications.Lvl2.ComputingInfrastructure = Computing infrastructure, data processing, hosting and other information service activities
+#### NACE.Telecommunications.Lvl3.ComputingInfrastructure = Computing infrastructure, data processing, hosting and related activities
+NACE.Telecommunications.Lvl4.InfrastructureHosting = Computing infrastructure, data processing, hosting and related activities
+#### NACE.Telecommunications.Lvl3.WebSearch = Web search portal activities and other information service activities
+NACE.Telecommunications.Lvl4.WebSearchPortals = Web search portal activities
+NACE.Telecommunications.Lvl4.OtherInformationServices = Other information service activities
+
+#FinancialServicesInsurance NACE Sector2,3,4
+NACE.FinancialServicesInsurance.Lvl2.FinancialServiceActivities = Financial service activities, except insurance and pension funding
+#### NACE.FinancialServicesInsurance.Lvl3.MonetaryIntermediation = Monetary intermediation
+NACE.FinancialServicesInsurance.Lvl4.CentralBanking = Central banking
+NACE.FinancialServicesInsurance.Lvl4.OtherMonetaryIntermediation = Other monetary intermediation
+#### NACE.FinancialServicesInsurance.Lvl3.HoldingCompaniesConduits = Activities of holding companies and financing conduits
+NACE.FinancialServicesInsurance.Lvl4.HoldingCompanies = Activities of holding companies
+NACE.FinancialServicesInsurance.Lvl4.FinancingConduits = Activities of financing conduits
+#### NACE.FinancialServicesInsurance.Lvl3.TrustsFunds = Activities of trusts, funds and similar financial entities
+NACE.FinancialServicesInsurance.Lvl4.InvestmentFunds = Activities of money market and non-money market investment funds
+NACE.FinancialServicesInsurance.Lvl4.TrustEstateAgencyAccounts = Activities of trust, estate and agency accounts
+#### NACE.FinancialServicesInsurance.Lvl3.OtherFinancialServiceActivities = Other financial service activities, except insurance and pension funding
+NACE.FinancialServicesInsurance.Lvl4.FinancialLeasing = Financial leasing
+NACE.FinancialServicesInsurance.Lvl4.OtherCreditGranting = Other credit granting
+NACE.FinancialServicesInsurance.Lvl4.OtherFinancialServiceNEC = Other financial service activities, except insurance and pension funding n.e.c.
+
+NACE.FinancialServicesInsurance.Lvl2.InsuranceReinsurancePensionFunding = Insurance, reinsurance and pension funding, except compulsory social security
+#### NACE.FinancialServicesInsurance.Lvl3.Insurance = Insurance
+NACE.FinancialServicesInsurance.Lvl4.LifeInsurance = Life insurance
+NACE.FinancialServicesInsurance.Lvl4.NonLifeInsurance = Non-life insurance
+#### NACE.FinancialServicesInsurance.Lvl3.Reinsurance = Reinsurance
+NACE.FinancialServicesInsurance.Lvl4.Reinsurance = Reinsurance
+#### NACE.FinancialServicesInsurance.Lvl3.PensionFunding = Pension funding
+NACE.FinancialServicesInsurance.Lvl4.PensionFunding = Pension funding
+
+NACE.FinancialServicesInsurance.Lvl2.AuxiliaryFinancialInsurance = Activities auxiliary to financial services and insurance activities
+#### NACE.FinancialServicesInsurance.Lvl3.AuxiliaryFinancialExceptInsurance = Activities auxiliary to financial services, except insurance and pension funding
+NACE.FinancialServicesInsurance.Lvl4.AuxiliaryFinancialInsurance = Activities auxiliary to financial services, except insurance and pension funding
+NACE.FinancialServicesInsurance.Lvl4.AdministrationFinancialMarkets = Administration of financial markets
+NACE.FinancialServicesInsurance.Lvl4.SecurityCommodityBrokerage = Security and commodity contracts brokerage
+NACE.FinancialServicesInsurance.Lvl4.OtherAuxiliaryFinancialInsurance = Other activities auxiliary to financial services, except insurance and pension funding
+#### NACE.FinancialServicesInsurance.Lvl3.AuxiliaryInsurancePensionFunding = Activities auxiliary to insurance and pension funding
+NACE.FinancialServicesInsurance.Lvl4.RiskDamageEvaluation = Risk and damage evaluation
+NACE.FinancialServicesInsurance.Lvl4.InsuranceAgentsBrokers = Activities of insurance agents and brokers
+NACE.FinancialServicesInsurance.Lvl4.OtherAuxiliaryInsurancePensionFundingNEC = Activities auxiliary to insurance and pension funding n.e.c.
+#### NACE.FinancialServicesInsurance.Lvl3.FundManagement = Fund management activities
+NACE.FinancialServicesInsurance.Lvl4.FundManagement = Fund management activities
+
+#RealEstate NACE Sector2,3,4
+NACE.RealEstate.Lvl2.RealEstateActivities = Real estate activities
+#### NACE.RealEstate.Lvl3.RealEstateWithOwnPropertyDevelopment = Real estate activities with own property and development of building projects
+NACE.RealEstate.Lvl4.BuyingSellingOwnRealEstate = Buying and selling of own real estate
+NACE.RealEstate.Lvl4.DevelopmentBuildingProjects = Development of building projects
+#### NACE.RealEstate.Lvl3.RentalOperatingOwnLeased = Rental and operating of own or leased real estate
+NACE.RealEstate.Lvl4.RentalOperatingOwnLeased = Rental and operating of own or leased real estate
+#### NACE.RealEstate.Lvl3.RealEstateOnFeeContract = Real estate activities on a fee or contract basis
+NACE.RealEstate.Lvl4.IntermediationRealEstate = Intermediation service activities for real estate activities
+NACE.RealEstate.Lvl4.OtherRealEstateFeeContract = Other real estate activities on a fee or contract basis
+
+#ProfessionalScientificTechnicalServices NACE Sector2,3,4
+NACE.ProfessionalScientificTechnicalServices.Lvl2.LegalAccounting = Legal and accounting activities
+#### NACE.ProfessionalScientificTechnicalServices.Lvl3.Legal = Legal activities
+NACE.ProfessionalScientificTechnicalServices.Lvl4.Legal = Legal activities
+#### NACE.ProfessionalScientificTechnicalServices.Lvl3.Accounting = Accounting, bookkeeping and auditing activities; tax consultancy
+NACE.ProfessionalScientificTechnicalServices.Lvl4.Accounting = Accounting, bookkeeping and auditing activities; tax consultancy
+
+NACE.ProfessionalScientificTechnicalServices.Lvl2.HeadOfficeManagement = Activities of head offices and management consultancy
+#### NACE.ProfessionalScientificTechnicalServices.Lvl3.HeadOffice = Activities of head offices
+NACE.ProfessionalScientificTechnicalServices.Lvl4.HeadOffice = Activities of head offices
+#### NACE.ProfessionalScientificTechnicalServices.Lvl3.ManagementConsultancy = Business and other management consultancy activities
+NACE.ProfessionalScientificTechnicalServices.Lvl4.ManagementConsultancy = Business and other management consultancy activities
+
+NACE.ProfessionalScientificTechnicalServices.Lvl2.ArchitecturalEngineeringTesting = Architectural and engineering activities; technical testing and analysis
+#### NACE.ProfessionalScientificTechnicalServices.Lvl3.ArchitecturalEngineering = Architectural and engineering activities and related technical consultancy
+NACE.ProfessionalScientificTechnicalServices.Lvl4.Architectural = Architectural activities
+NACE.ProfessionalScientificTechnicalServices.Lvl4.EngineeringConsultancy = Engineering activities and related technical consultancy
+#### NACE.ProfessionalScientificTechnicalServices.Lvl3.TechnicalTesting = Technical testing and analysis
+NACE.ProfessionalScientificTechnicalServices.Lvl4.TechnicalTesting = Technical testing and analysis
+
+NACE.ProfessionalScientificTechnicalServices.Lvl2.ScientificResearchDevelopment = Scientific research and development
+#### NACE.ProfessionalScientificTechnicalServices.Lvl3.NaturalScienceEngineeringResearch = Research and experimental development on natural sciences and engineering
+NACE.ProfessionalScientificTechnicalServices.Lvl4.NaturalScienceEngineeringResearch = Research and experimental development on natural sciences and engineering
+#### NACE.ProfessionalScientificTechnicalServices.Lvl3.SocialScienceHumanitiesResearch = Research and experimental development on social sciences and humanities
+NACE.ProfessionalScientificTechnicalServices.Lvl4.SocialScienceHumanitiesResearch = Research and experimental development on social sciences and humanities
+
+NACE.ProfessionalScientificTechnicalServices.Lvl2.AdvertisingMarketResearchPR = Activities of advertising, market research and public relations
+#### NACE.ProfessionalScientificTechnicalServices.Lvl3.Advertising = Advertising
+NACE.ProfessionalScientificTechnicalServices.Lvl4.AdvertisingAgencies = Activities of advertising agencies
+NACE.ProfessionalScientificTechnicalServices.Lvl4.MediaRepresentation = Media representation
+#### NACE.ProfessionalScientificTechnicalServices.Lvl3.MarketResearchPolling = Market research and public opinion polling
+NACE.ProfessionalScientificTechnicalServices.Lvl4.MarketResearchPolling = Market research and public opinion polling
+#### NACE.ProfessionalScientificTechnicalServices.Lvl3.PublicRelations = Public relations and communication activities
+NACE.ProfessionalScientificTechnicalServices.Lvl4.PublicRelations = Public relations and communication activities
+
+NACE.ProfessionalScientificTechnicalServices.Lvl2.OtherProfessionalScientificTechnical = Other professional, scientific and technical activities
+#### NACE.ProfessionalScientificTechnicalServices.Lvl3.SpecialisedDesign = Specialised design activities
+NACE.ProfessionalScientificTechnicalServices.Lvl4.IndustrialFashionDesign = Industrial product and fashion design activities
+NACE.ProfessionalScientificTechnicalServices.Lvl4.GraphicDesign = Graphic design and visual communication activities
+NACE.ProfessionalScientificTechnicalServices.Lvl4.InteriorDesign = Interior design activities
+NACE.ProfessionalScientificTechnicalServices.Lvl4.OtherDesign = Other specialised design activities
+#### NACE.ProfessionalScientificTechnicalServices.Lvl3.Photographic = Photographic activities
+NACE.ProfessionalScientificTechnicalServices.Lvl4.Photographic = Photographic activities
+#### NACE.ProfessionalScientificTechnicalServices.Lvl3.TranslationInterpretation = Translation and interpretation activities
+NACE.ProfessionalScientificTechnicalServices.Lvl4.TranslationInterpretation = Translation and interpretation activities
+#### NACE.ProfessionalScientificTechnicalServices.Lvl3.OtherProfessionalActivities = Other professional, scientific and technical activities n.e.c.
+NACE.ProfessionalScientificTechnicalServices.Lvl4.PatentBrokering = Patent brokering and marketing service activities
+NACE.ProfessionalScientificTechnicalServices.Lvl4.OtherProfessionalNEC = All other professional, scientific and technical activities n.e.c.
+
+NACE.ProfessionalScientificTechnicalServices.Lvl2.Veterinary = Veterinary activities
+#### NACE.ProfessionalScientificTechnicalServices.Lvl3.Veterinary = Veterinary activities
+NACE.ProfessionalScientificTechnicalServices.Lvl4.Veterinary = Veterinary activities
+
+#Administration NACE Sector2,3,4
+NACE.Administration.Lvl2.RentalLeasing = Rental and leasing activities
+#### NACE.Administration.Lvl3.MotorVehicleRental = Rental and leasing of motor vehicles
+NACE.Administration.Lvl4.CarsLightVehiclesRental = Rental and leasing of cars and light motor vehicles
+NACE.Administration.Lvl4.TruckRental = Rental and leasing of trucks
+#### NACE.Administration.Lvl3.PersonalHouseholdGoodsRental = Rental and leasing of personal and household goods
+NACE.Administration.Lvl4.SportsRecreationalGoodsRental = Rental and leasing of recreational and sports goods
+NACE.Administration.Lvl4.OtherHouseholdGoodsRental = Rental and leasing of other personal and household goods
+#### NACE.Administration.Lvl3.OtherMachineryEquipmentRental = Rental and leasing of other machinery, equipment and tangible goods
+NACE.Administration.Lvl4.AgriculturalMachineryRental = Rental and leasing of agricultural machinery and equipment
+NACE.Administration.Lvl4.ConstructionCivilEngineeringRental = Rental and leasing of construction and civil engineering machinery and equipment
+NACE.Administration.Lvl4.OfficeMachineryRental = Rental and leasing of office machinery, equipment and computers
+NACE.Administration.Lvl4.WaterTransportRental = Rental and leasing of water transport equipment
+NACE.Administration.Lvl4.AirTransportRental = Rental and leasing of air transport equipment
+NACE.Administration.Lvl4.OtherMachineryRental = Rental and leasing of other machinery, equipment and tangible goods n.e.c.
+#### NACE.Administration.Lvl3.IntellectualPropertyLeasing = Leasing of intellectual property and similar products, except copyrighted works
+NACE.Administration.Lvl4.IntellectualPropertyLeasing = Leasing of intellectual property and similar products, except copyrighted works
+#### NACE.Administration.Lvl3.IntermediationRentalLeasing = Intermediation service activities for rental and leasing of tangible goods and non-financial intangible assets
+NACE.Administration.Lvl4.CarTrailerLeasingIntermediation = Intermediation service activities for rental and leasing of cars, motorhomes and trailers
+NACE.Administration.Lvl4.OtherGoodsLeasingIntermediation = Intermediation service activities for rental and leasing of other tangible goods and non-financial intangible assets
+
+#### NACE.Administration.Lvl2.Employment = Employment activities
+#### NACE.Administration.Lvl3.EmploymentPlacement = Activities of employment placement agencies
+NACE.Administration.Lvl4.EmploymentPlacement = Activities of employment placement agencies
+#### NACE.Administration.Lvl3.TemporaryEmployment = Temporary employment agency activities and other human resource provisions
+NACE.Administration.Lvl4.TemporaryEmployment = Temporary employment agency activities and other human resource provisions
+
+NACE.Administration.Lvl2.TravelTourReservation = Travel agency, tour operator and other reservation service and related activities
+#### NACE.Administration.Lvl3.TravelAgencyTourOperator = Travel agency and tour operator activities
+NACE.Administration.Lvl4.TravelAgency = Travel agency activities
+NACE.Administration.Lvl4.TourOperator = Tour operator activities
+#### NACE.Administration.Lvl3.OtherReservation = Other reservation service and related activities
+NACE.Administration.Lvl4.OtherReservation = Other reservation service and related activities
+
+NACE.Administration.Lvl2.SecurityInvestigation = Investigation and security activities
+#### NACE.Administration.Lvl3.SecurityInvestigation = Investigation and security activities
+NACE.Administration.Lvl4.InvestigationPrivateSecurity = Investigation and private security activities
+NACE.Administration.Lvl4.SecurityNEC = Security activities n.e.c.
+
+NACE.Administration.Lvl2.BuildingLandscapeServices = Services to buildings and landscape activities
+#### NACE.Administration.Lvl3.CombinedFacilities = Combined facilities support activities
+NACE.Administration.Lvl4.CombinedFacilities = Combined facilities support activities
+#### NACE.Administration.Lvl3.Cleaning = Cleaning activities
+NACE.Administration.Lvl4.GeneralCleaningBuildings = General cleaning of buildings
+#### NACE.Administration.Lvl3.OtherCleaning = Other building and industrial cleaning activities
+NACE.Administration.Lvl4.OtherCleaning = Other cleaning activities
+#### NACE.Administration.Lvl3.Landscape = Landscape service activities
+NACE.Administration.Lvl4.Landscape = Landscape service activities
+
+NACE.Administration.Lvl2.OfficeSupport = Office administrative, office support and other business support activities
+#### NACE.Administration.Lvl3.OfficeAdmin = Office administrative and support activities
+NACE.Administration.Lvl4.OfficeAdminSupport = Office administrative and support activities
+#### NACE.Administration.Lvl3.CallCentres = Activities of call centres
+NACE.Administration.Lvl4.CallCentres = Activities of call centres
+#### NACE.Administration.Lvl3.ConventionsTradeShows = Organisation of conventions and trade shows
+NACE.Administration.Lvl4.ConventionsTradeShows = Organisation of conventions and trade shows
+#### NACE.Administration.Lvl3.BusinessSupportNEC = Intermediation service activities for business support service activities n.e.c.
+NACE.Administration.Lvl4.BusinessSupportNEC = Intermediation service activities for business support service activities n.e.c.
+#### NACE.Administration.Lvl3.CollectionCredit = Activities of collection agencies and credit bureaus
+NACE.Administration.Lvl4.CollectionCredit = Activities of collection agencies and credit bureaus
+#### NACE.Administration.Lvl3.Packaging = Packaging activities
+NACE.Administration.Lvl4.Packaging = Packaging activities
+#### NACE.Administration.Lvl3.OtherBusinessSupport = Other business support service activities n.e.c.
+NACE.Administration.Lvl4.OtherBusinessSupport = Other business support service activities n.e.c.
+
+#PublicAdministration NACE Sector2,3,4
+NACE.publicAdministration.Lvl2.publicAdministrationDefence = Public administration and defence; compulsory social security
+NACE.publicAdministration.Lvl2.publicAdministrationDefence.title = What is your undertaking’s main business activity in public administration, defence and compulsory social security?
+NACE.publicAdministration.Lvl3.administrationGeneral = Administration of the State and the economic, social and environmental policies of the community
+NACE.publicAdministration.Lvl3.administrationGeneral.title = What is your undertaking’s main business activity in public administration?
+NACE.publicAdministration.Lvl4.generalPublicAdmin = General public administration activities
+NACE.publicAdministration.Lvl4.healthEducationRegulation = Regulation of health care, education, cultural services and other social services
+NACE.publicAdministration.Lvl4.businessRegulation = Regulation of and contribution to more efficient operation of businesses
+NACE.publicAdministration.Lvl3.communityServices = Provision of services to the community as a whole
+NACE.publicAdministration.Lvl3.communityServices.title = What is your undertaking’s main business activity in provision of services to the community?
+NACE.publicAdministration.Lvl4.foreignAffairs = Foreign affairs
+NACE.publicAdministration.Lvl4.defence = Defence activities
+NACE.publicAdministration.Lvl4.justiceJudicial = Justice and judicial activities
+NACE.publicAdministration.Lvl4.publicOrderSafety = Public order and safety activities
+NACE.publicAdministration.Lvl4.fireService = Fire service activities
+NACE.publicAdministration.Lvl4.compulsorySocialSecurity = Compulsory social security activities
+
+#Education NACE Sector2,3,4
+NACE.education.Lvl2.education = Education
+NACE.education.Lvl2.education.title = What is your undertaking’s main business activity in education?
+NACE.education.Lvl3.prePrimary = Pre-primary education
+NACE.education.Lvl4.prePrimary = Pre-primary education
+NACE.education.Lvl3.primary = Primary education
+NACE.education.Lvl4.primary = Primary education
+NACE.education.Lvl3.secondaryNonTertiary = Secondary and post-secondary non-tertiary education
+NACE.education.Lvl4.generalSecondary = General secondary education
+NACE.education.Lvl4.vocationalSecondary = Vocational secondary education
+NACE.education.Lvl4.postSecondaryNonTertiary = Post-secondary non-tertiary education
+NACE.education.Lvl3.tertiary = Tertiary education
+NACE.education.Lvl4.tertiary = Tertiary education
+NACE.education.Lvl3.otherEducation = Other education
+NACE.education.Lvl4.sportsRecreationEducation = Sports and recreation education
+NACE.education.Lvl4.culturalEducation = Cultural education
+NACE.education.Lvl4.drivingSchool = Driving school activities
+NACE.education.Lvl4.otherEducationNEC = Other education n.e.c.
+NACE.education.Lvl3.educationalSupport = Educational support activities
+NACE.education.Lvl3.educationalSupport.title = What type of educational support does your undertaking provide?
+NACE.education.Lvl4.courseTutors = Intermediation service activities for courses and tutors
+NACE.education.Lvl4.supportNEC = Educational support activities n.e.c.
+
+#HumanHealthSocialWork NACE Sector2,3,4
+NACE.HumanHealthSocialWork.Lvl2.HumanHealth = Human health activities
+#### NACE.HumanHealthSocialWork.Lvl3.Hospital = Hospital activities
+NACE.HumanHealthSocialWork.Lvl4.Hospital = Hospital activities
+#### NACE.HumanHealthSocialWork.Lvl3.MedicalDental = Medical and dental practice activities
+NACE.HumanHealthSocialWork.Lvl4.GeneralPractice = General medical practice activities
+NACE.HumanHealthSocialWork.Lvl4.Specialists = Medical specialists activities
+NACE.HumanHealthSocialWork.Lvl4.Dental = Dental practice care activities
+#### NACE.HumanHealthSocialWork.Lvl3.OtherHumanHealth = Other human health activities
+NACE.HumanHealthSocialWork.Lvl4.DiagnosticImaging = Diagnostic imaging services and medical laboratory activities
+NACE.HumanHealthSocialWork.Lvl4.Ambulance = Patient transportation by ambulance
+NACE.HumanHealthSocialWork.Lvl4.Psychologists = Activities of psychologists and psychotherapists, except medical doctors
+NACE.HumanHealthSocialWork.Lvl4.NursingMidwifery = Nursing and midwifery activities
+NACE.HumanHealthSocialWork.Lvl4.Physiotherapy = Physiotherapy activities
+NACE.HumanHealthSocialWork.Lvl4.TraditionalMedicine = Traditional, complementary and alternative medicine activities
+NACE.HumanHealthSocialWork.Lvl4.IntermediationServices = Intermediation service activities for medical, dental and other human health services
+NACE.HumanHealthSocialWork.Lvl4.OtherHumanHealthNEC = Other human health activities n.e.c.
+
+NACE.HumanHealthSocialWork.Lvl2.ResidentialCare = Residential care activities
+#### NACE.HumanHealthSocialWork.Lvl3.ResidentialNursing = Residential nursing care activities
+NACE.HumanHealthSocialWork.Lvl4.ResidentialNursing = Residential nursing care activities
+#### NACE.HumanHealthSocialWork.Lvl3.MentalIllnessSubstanceAbuseCare = Residential care activities for persons living with or having a diagnosis of a mental illness or substance abuse
+NACE.HumanHealthSocialWork.Lvl4.MentalIllnessSubstanceAbuseCare = Residential care activities for persons living with or having a diagnosis of a mental illness or substance abuse
+#### NACE.HumanHealthSocialWork.Lvl3.OlderPersonsDisabilitiesCare = Residential care activities for older persons or persons with physical disabilities
+NACE.HumanHealthSocialWork.Lvl4.OlderPersonsDisabilitiesCare = Residential care activities for older persons or persons with physical disabilities
+#### NACE.HumanHealthSocialWork.Lvl3.OtherResidentialCare = Other residential care activities
+NACE.HumanHealthSocialWork.Lvl4.OtherResidentialCare = Other residential care activities
+NACE.HumanHealthSocialWork.Lvl4.IntermediationResidentialCare = Intermediation service activities for residential care activities
+NACE.HumanHealthSocialWork.Lvl4.OtherResidentialCareNEC = Other residential care activities n.e.c.
+
+NACE.HumanHealthSocialWork.Lvl2.SocialWorkWithoutAccommodation = Social work activities without accommodation
+#### NACE.HumanHealthSocialWork.Lvl3.SocialWorkDisabilities = Social work activities without accommodation for older persons or persons with disabilities
+NACE.HumanHealthSocialWork.Lvl4.SocialWorkDisabilities = Social work activities without accommodation for older persons or persons with disabilities
+#### NACE.HumanHealthSocialWork.Lvl3.OtherSocialWorkWithoutAccommodation = Other social work activities without accommodation
+NACE.HumanHealthSocialWork.Lvl4.ChildDayCare = Child day-care activities
+NACE.HumanHealthSocialWork.Lvl4.OtherSocialWorkNEC = Other social work activities without accommodation n.e.c.
+
+#ArtsSportsRecreation NACE Sector2,3,4
+NACE.ArtsSportsRecreation.Lvl2.ArtsCreationPerforming = Arts creation and performing arts activities
+#### NACE.ArtsSportsRecreation.Lvl3.ArtsCreation = Arts creation activities
+NACE.ArtsSportsRecreation.Lvl4.LiteraryMusical = Literary creation and musical composition activities
+NACE.ArtsSportsRecreation.Lvl4.VisualArts = Visual arts creation activities
+NACE.ArtsSportsRecreation.Lvl4.OtherArtsCreation = Other arts creation activities
+#### NACE.ArtsSportsRecreation.Lvl3.PerformingArts = Activities of performing arts
+NACE.ArtsSportsRecreation.Lvl4.PerformingArts = Activities of performing arts
+#### NACE.ArtsSportsRecreation.Lvl3.SupportPerformingArts = Support activities to arts creation and performing arts
+NACE.ArtsSportsRecreation.Lvl4.ArtsFacilitiesOperation = Operation of arts facilities and sites
+NACE.ArtsSportsRecreation.Lvl4.OtherSupportArts = Other support activities to arts and performing arts
+
+NACE.ArtsSportsRecreation.Lvl2.LibrariesArchivesMuseums = Libraries, archives, museums and other cultural activities
+#### NACE.ArtsSportsRecreation.Lvl3.LibraryArchiveActivities = Library and archive activities
+NACE.ArtsSportsRecreation.Lvl4.LibraryActivities = Library activities
+NACE.ArtsSportsRecreation.Lvl4.ArchiveActivities = Archive activities
+#### NACE.ArtsSportsRecreation.Lvl3.MuseumMonumentActivities = Museum, collection, historical site and monument activities
+NACE.ArtsSportsRecreation.Lvl4.MuseumCollectionActivities = Museum and collection activities
+NACE.ArtsSportsRecreation.Lvl4.HistoricalSiteMonumentActivities = Historical site and monument activities
+#### NACE.ArtsSportsRecreation.Lvl3.CulturalHeritageConservation = Conservation, restoration and other support activities for cultural heritage
+NACE.ArtsSportsRecreation.Lvl4.CulturalHeritageConservation = Conservation, restoration and other support activities for cultural heritage
+#### NACE.ArtsSportsRecreation.Lvl3.BotanicalZoologicalNatureReserves = Botanical and zoological garden and nature reserve activities
+NACE.ArtsSportsRecreation.Lvl4.BotanicalZoologicalActivities = Botanical and zoological garden activities
+NACE.ArtsSportsRecreation.Lvl4.NatureReserveActivities = Nature reserve activities
+
+NACE.ArtsSportsRecreation.Lvl2.GamblingBettingActivities = Gambling and betting activities
+#### NACE.ArtsSportsRecreation.Lvl3.GamblingBettingActivities = Gambling and betting activities
+NACE.ArtsSportsRecreation.Lvl4.GamblingBettingActivities = Gambling and betting activities
+
+#### NACE.ArtsSportsRecreation.Lvl2.SportRecreationActivities = Sport activities and amusement and reaction activities
+#### NACE.ArtsSportsRecreation.Lvl3.SportsActivities = Sports activities
+NACE.ArtsSportsRecreation.Lvl4.SportsFacilitiesOperation = Operation of sports facilities
+NACE.ArtsSportsRecreation.Lvl4.SportsClubsActivities = Activities of sports clubs
+NACE.ArtsSportsRecreation.Lvl4.FitnessCentresActivities = Activities of fitness centres
+NACE.ArtsSportsRecreation.Lvl4.OtherSportsActivities = Sports activities n.e.c.
+#### NACE.ArtsSportsRecreation.Lvl3.AmusementRecreation = Amusement and recreation activities
+NACE.ArtsSportsRecreation.Lvl4.AmusementParks = Activities of amusement parks and theme parks
+NACE.ArtsSportsRecreation.Lvl4.OtherAmusementRecreation = Amusement and recreation activities n.e.c.
+
+#OtherService NACE Sector2,3,4
+NACE.OtherService.Lvl2.MembershipOrganisations = Activities of membership organisations
+#### NACE.OtherService.Lvl3.BusinessEmployersProfessional = Activities of business, employers and professional membership organisations
+NACE.OtherService.Lvl4.BusinessEmployersMembership = Activities of business and employers membership organisations
+NACE.OtherService.Lvl4.ProfessionalMembership = Activities of professional membership organisations
+#### NACE.OtherService.Lvl3.TradeUnions = Activities of trade unions
+NACE.OtherService.Lvl4.TradeUnions = Activities of trade unions
+#### NACE.OtherService.Lvl3.OtherMembership = Activities of other membership organisations
+NACE.OtherService.Lvl4.ReligiousOrganisations = Activities of religious organisations
+NACE.OtherService.Lvl4.PoliticalOrganisations = Activities of political organisations
+NACE.OtherService.Lvl4.OtherMembershipOrganisations = Activities of other membership organisations n.e.c.
+
+NACE.OtherService.Lvl2.RepairMaintenance = Repair and maintenance of computers, personal and household goods, and motor vehicles and motorcycles
+#### NACE.OtherService.Lvl3.RepairComputersCommunication = Repair and maintenance of computers and communication equipment
+NACE.OtherService.Lvl4.RepairComputersCommunication = Repair and maintenance of computers and communication equipment
+#### NACE.OtherService.Lvl3.RepairHouseholdGoods = Repair and maintenance of personal and household goods
+NACE.OtherService.Lvl4.RepairConsumerElectronics = Repair and maintenance of consumer electronics
+NACE.OtherService.Lvl4.RepairHouseholdAppliances = Repair and maintenance of household appliances and home and garden equipment
+NACE.OtherService.Lvl4.RepairFootwearLeather = Repair and maintenance of footwear and leather goods
+NACE.OtherService.Lvl4.RepairFurnitureHome = Repair and maintenance of furniture and home furnishings
+NACE.OtherService.Lvl4.RepairWatchesClocksJewellery = Repair and maintenance of watches, clocks and jewellery
+NACE.OtherService.Lvl4.RepairOtherPersonalHouseholdGoods = Repair and maintenance of personal and household goods n.e.c.
+#### NACE.OtherService.Lvl3.RepairMotorVehiclesMotorcycles = Repair and maintenance of motor vehicles and motorcycles
+NACE.OtherService.Lvl4.RepairMotorVehicles = Repair and maintenance of motor vehicles
+NACE.OtherService.Lvl4.RepairMotorcycles = Repair and maintenance of motorcycles
+#### NACE.OtherService.Lvl3.IntermediationRepairMaintenance = Intermediation service activities for repair and maintenance of computers, personal and household goods, and motor vehicles and motorcycles
+NACE.OtherService.Lvl4.IntermediationRepairMaintenance = Intermediation service activities for repair and maintenance of computers, personal and household goods, and motor vehicles and motorcycles
+
+NACE.OtherService.Lvl2.PersonalServiceActivities = Personal service activities
+#### NACE.OtherService.Lvl3.TextileFurCleaning = Washing and cleaning of textile and fur products
+NACE.OtherService.Lvl4.TextileFurCleaning = Washing and cleaning of textile and fur products
+#### NACE.OtherService.Lvl3.HairdressingBeautySpa = Hairdressing, beauty treatment, day spa and similar activities
+NACE.OtherService.Lvl4.HairdressingBarber = Hairdressing and barber activities
+NACE.OtherService.Lvl4.BeautyCare = Beauty care and other beauty treatment activities
+NACE.OtherService.Lvl4.DaySpaSaunaBath = Day spa, sauna and steam bath activities
+#### NACE.OtherService.Lvl3.FuneralActivities = Funeral and related activities
+NACE.OtherService.Lvl4.FuneralActivities = Funeral and related activities
+#### NACE.OtherService.Lvl3.IntermediationPersonalServices = Intermediation service activities for personal services
+NACE.OtherService.Lvl4.IntermediationPersonalServices = Intermediation service activities for personal services
+#### NACE.OtherService.Lvl3.OtherPersonalServices = Other personal service activities
+NACE.OtherService.Lvl4.DomesticPersonalServices = Provision of domestic personal service activities
+NACE.OtherService.Lvl4.OtherPersonalServices = Other personal service activities n.e.c.
+
+#Households NACE Sector2,3,4
+
+NACE.households.Lvl1.title = What is your undertaking’s main business activity in households as employers or as producers of goods or services?
+NACE.households.Lvl2.domesticPersonnel = Activities of households as employers of domestic personnel
+NACE.households.Lvl3.domesticPersonnel = Activities of households as employers of domestic personnel
+NACE.households.Lvl4.domesticPersonnel = Activities of households as employers of domestic personnel
+NACE.households.Lvl2.undifferentiatedProduction = Undifferentiated goods- and service-producing activities of private households for own use
+NACE.households.Lvl2.undifferentiatedProduction.title = What type of private household activities does your undertaking carry out?
+NACE.households.Lvl3.undifferentiatedGoods = Undifferentiated goods-producing activities of private households for own use
+NACE.households.Lvl4.undifferentiatedGoods = Undifferentiated goods-producing activities of private households for own use
+NACE.households.Lvl3.undifferentiatedServices = Undifferentiated service-producing activities of private households for own use
+NACE.households.Lvl4.undifferentiatedServices = Undifferentiated service-producing activities of private households for own use
+
+#ActivitiesExtraterritorial NACE Sector2,3,4
+NACE.ActivitiesExtraterritorial.Lvl2.CYAOnly.OrganisationsBodies = Activities of extraterritorial organisations and bodies
+#### NACE.ActivitiesExtraterritorial.Lvl3.OrganisationsBodies = Activities of extraterritorial organisations and bodies
+NACE.ActivitiesExtraterritorial.Lvl4.OrganisationsBodies = Activities of extraterritorial organisations and bodies

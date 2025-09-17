@@ -18,14 +18,15 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 
 @this(
-  layout: Layout,
-  formHelper: FormWithCSRF,
-  button: components.Button,
-  govukErrorSummary: GovukErrorSummary,
-  govukRadios : GovukRadios
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: components.Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios : GovukRadios
 )
 
 
@@ -34,8 +35,10 @@
 @fieldName = @{"undertakingSector"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-else controllers.routes.UndertakingController.postSector
+    if(isUpdate)
+        controllers.routes.UndertakingController.updateIndustrySector
+    else
+        controllers.routes.UndertakingController.postSector
 }
 
 
@@ -46,44 +49,35 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
     Seq(
         RadioItem(
-          content = HtmlContent(radioText("sector-label-agriculture", messages("sector.label.2"))),
-          hint = Some(Hint(
-            content = HtmlContent(radioText("sector-hint-agriculture", messages("sector.hint.2", appConfig.sectorCap("agriculture"))))
-          )),
-          value = Some(Sector.agriculture.toString),
-          checked = form.data.get(fieldName).fold(false)(x => x == Sector.agriculture.toString)
+            content = HtmlContent(radioText("sector-label-meat-processing", messages("NACE.Manufacturing.Lvl4.MeatExceptPoultry"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-meat-processing", "hint place hoder text"))
+            )),
+            value = Some(Sector.meatProcessing),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.meatProcessing.toString)
         ),
         RadioItem(
-          content = HtmlContent(radioText("sector-label-aquaculture", messages("sector.label.3"))),
-          hint = Some(Hint(
-            content = HtmlContent(radioText("sector-hint-aquaculture", messages("sector.hint.3", appConfig.sectorCap("aquaculture"))))
-          )),
-          value = Some(Sector.aquaculture.toString),
-          checked = form.data.get(fieldName).fold(false)(x => x == Sector.aquaculture.toString)
+            content = HtmlContent(radioText("sector-label-poultry-processing", messages("NACE.Manufacturing.Lvl4.PoultryMeat"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-poultry-processing", "hint place hoder text"))
+            )),
+            value = Some(Sector.poultryProcessing),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.poultryProcessing.toString)
         ),
         RadioItem(
-          content = HtmlContent(radioText("sector-label-transport", messages("sector.label.1"))),
-          hint = Some(Hint(
-            content = HtmlContent(radioText("sector-hint-transport", messages("sector.hint.1", appConfig.sectorCap("transport"))))
-          )),
-          value = Some(Sector.transport.toString),
-          checked = form.data.get(fieldName).fold(false)(x => x == Sector.transport.toString)
-        ),
-        RadioItem(
-          content = HtmlContent(radioText("sector-label-other", messages("sector.label.0"))),
-          hint = Some(Hint(
-            id = Some("sector-hint-other"),
-            content = HtmlContent(radioText("sector-hint-other", messages("sector.hint.0", appConfig.sectorCap("other"))))
-          )),
-          value = Some(Sector.other.toString),
-          checked = form.data.get(fieldName).fold(false)(x => x == Sector.other.toString)
+            content = HtmlContent(radioText("sector-label-meat-products", messages("NACE.Manufacturing.Lvl4.MeatPoultryProducts"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-meat-products", "hint place hoder text"))
+            )),
+            value = Some(Sector.meatProductsProduction),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.meatProductsProduction.toString)
         )
     )
 }
 
 
 @layout(
-  pageTitle = Some(messages("undertakingSector.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.Food.Meat.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -102,8 +96,6 @@ else controllers.routes.UndertakingController.postSector
       ))
     }
 
-
-
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("undertakingSector.error.required"))
@@ -116,7 +108,7 @@ else controllers.routes.UndertakingController.postSector
         ))
     )),
         hint = Some(Hint(
-        content = Text(messages("undertakingSector.p1"))
+        content = Text(messages("NACE.general.hint"))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,
