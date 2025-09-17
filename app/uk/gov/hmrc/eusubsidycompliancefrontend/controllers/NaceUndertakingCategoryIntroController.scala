@@ -40,11 +40,9 @@ class NaceUndertakingCategoryIntroController @Inject() (
   }
 
   def continue: Action[AnyContent] = enrolled.async { implicit request =>
-    val updatedSession = request.session + ("naceCategoriesSeen" -> "true")
     Future.successful(
       // Needs updating to take user to /undertaking-industry-sector
       Redirect(routes.AccountController.getAccountPage)
-        .withSession(updatedSession)
     )
   }
 

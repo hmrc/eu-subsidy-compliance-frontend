@@ -99,7 +99,7 @@ class AccountController @Inject() (
       case Some(status)
           if status == UndertakingStatus.suspendedAutomated || status == UndertakingStatus.suspendedInvalidSector =>
         Future.successful(
-          Redirect(routes.NaceUndertakingCategoryIntroController.showPage)
+          Redirect(routes.UndertakingInvalidSectorSuspendedPageController.showPage)
             .addingToSession("suspensionCode" -> status.id.toString)
         )
 
