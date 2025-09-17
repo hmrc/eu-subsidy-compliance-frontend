@@ -1,0 +1,68 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, H2, P}
+@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+
+@this(
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: components.Button,
+    govukHint: GovukHint
+)
+
+@(eori: uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(
+    pageTitle = Some(messages("nace.interrupt.title")),
+    backLinkEnabled = true,
+) {
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-1">
+        @messages("nace.interrupt.heading1")
+    </h1>
+    <p class="govuk-hint">@eori</p>
+
+    @P(messages("nace.interrupt.p1"))
+    @P(messages("nace.interrupt.p2"))
+    @H2(messages("nace.interrupt.heading2"))
+    @P(messages("nace.interrupt.p3"))
+    @H2(messages("nace.interrupt.heading3"))
+    @P(messages("nace.interrupt.p4"))
+
+    <p class="govuk-body">
+        You can browse the
+        <a class="govuk-link"
+           href="https://showvoc.op.europa.eu/#/datasets/ESTAT_Statistical_Classification_of_Economic_Activities_in_the_European_Community_Rev._2.1._%28NACE_2.1%29/data?resId=http:%2F%2Fdata.europa.eu%2Fux2%2Fnace2.1%2Fsections"
+           target="_blank"
+           rel="noopener noreferrer">
+            full list of NACE categories from the EU (opens in new tab).
+        </a>
+    </p>
+
+    @P(messages("nace.interrupt.p5"))
+
+    <br/>
+
+    @formHelper(action = controllers.routes.SubsidyController.postConfirmClaimAmount) {
+        @button("common.start")
+    }
+
+}

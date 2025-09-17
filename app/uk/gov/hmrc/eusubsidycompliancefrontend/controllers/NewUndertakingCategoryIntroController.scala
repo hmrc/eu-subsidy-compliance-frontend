@@ -19,15 +19,15 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.RegulatoryChangeNotificationPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.NewUndertakingCategoryIntroPage
 
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class RegulatoryChangeNotificationController @Inject() (
+class NewUndertakingCategoryIntroController @Inject()(
   mcc: MessagesControllerComponents,
   actionBuilders: ActionBuilders,
-  regulatoryChangeNotificationPage: RegulatoryChangeNotificationPage
+  newUndertakingCategoryIntroPage: NewUndertakingCategoryIntroPage
 )(implicit
   val appConfig: AppConfig
 ) extends BaseController(mcc) {
@@ -35,11 +35,12 @@ class RegulatoryChangeNotificationController @Inject() (
   import actionBuilders._
 
   def showPage: Action[AnyContent] = enrolled.async { implicit request =>
-    Future.successful(Ok(regulatoryChangeNotificationPage()))
+    val eori = request.eoriNumber
+    Future.successful(Ok(newUndertakingCategoryIntroPage(eori)))
   }
 
   def continue: Action[AnyContent] = enrolled.async { implicit request =>
-    val updatedSession = request.session + ("regulatoryChangeNotificationSeen" -> "true")
+    val updatedSession = request.session + ("naceCategoriesSeen" -> "true")
     Future.successful(
       Redirect(routes.AccountController.getAccountPage)
         .withSession(updatedSession)

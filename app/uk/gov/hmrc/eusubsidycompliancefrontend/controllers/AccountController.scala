@@ -26,6 +26,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.EligibilityJourney.Forms
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.{EligibilityJourney, NilReturnJourney, UndertakingJourney}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.{EORI, Sector}
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.{Undertaking, UndertakingBalance, UndertakingSubsidies, types}
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.UndertakingStatus
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.services._
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
@@ -94,15 +95,24 @@ class AccountController @Inject() (
   )(implicit r: AuthenticatedEnrolledRequest[AnyContent], eori: EORI): Future[Result] = {
     logger.info("handleExistingUndertaking")
 
-    if (undertaking.industrySector == Sector.agriculture || undertaking.industrySector == Sector.other) {
-      val hasSeenNotification = r.session.get("regulatoryChangeNotificationSeen").contains("true")
-      if (!hasSeenNotification) {
-        Future.successful(Redirect(routes.RegulatoryChangeNotificationController.showPage))
-      } else {
-        proceedToAccountPage(undertaking)
-      }
-    } else {
-      proceedToAccountPage(undertaking)
+    undertaking.undertakingStatus match {
+      case Some(status) if status == UndertakingStatus.suspendedAutomated || status == UndertakingStatus.suspendedInvalidSector =>
+        Future.successful(
+          Redirect(routes.UndertakingInvalidSectorSuspendedPageController.showPage)
+            .addingToSession("suspensionCode" -> status.id.toString)
+        )
+
+      case _ =>
+        if (undertaking.industrySector == Sector.agriculture || undertaking.industrySector == Sector.other) {
+          val hasSeenNace = r.session.get("naceCategoriesSeen").contains("true")
+          if (!hasSeenNace) {
+            Future.successful(Redirect(routes.NewUndertakingCategoryIntroController.showPage))
+          } else {
+            proceedToAccountPage(undertaking)
+          }
+        } else {
+          proceedToAccountPage(undertaking)
+        }
     }
   }
 

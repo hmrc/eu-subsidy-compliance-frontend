@@ -26,7 +26,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, POST, contentAsString, defaultAwaitTimeout, redirectLocation, status}
 import uk.gov.hmrc.auth.core.AuthConnector
 
-class RegulatoryChangeNotificationControllerSpec
+class NewUndertakingCategoryIntroControllerSpec
     extends ControllerSpec
     with AuthSupport
     with JourneyStoreSupport
@@ -39,7 +39,7 @@ class RegulatoryChangeNotificationControllerSpec
     inject.bind[AuthConnector].toInstance(mockAuthConnector)
   )
 
-  private val controller = instanceOf[RegulatoryChangeNotificationController]
+  private val controller = instanceOf[NewUndertakingCategoryIntroController]
 
   "RegulatoryChangeNotificationController" when {
 

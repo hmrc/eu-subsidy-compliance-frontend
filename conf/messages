@@ -13,6 +13,7 @@ common.submit = Submit
 common.continue=Save and continue
 common.accept-continue=Accept and continue
 common.continue.only=Continue
+common.start = Start now
 common.submit-report=Submit a report
 common.accept=Accept and send
 common.cya.change = Change
@@ -698,5 +699,29 @@ industrySectorResearchBanner.h2 = Changes are coming to this service
 industrySectorResearchBanner.link.text = Get involved – help us make it work for you (opens in new tab)
 industrySectorResearchBanner.hide.button = Hide message
 industrySectorResearchBanner.visually.hidden = Hide message. I do not want to take part in research
+
+nace.interrupt.title = Select a new undertaking category to continue
+nace.interrupt.heading1 = Select a new undertaking category to continue
+nace.interrupt.heading2 = What you need to do
+nace.interrupt.heading3 = Why we are making this change
+nace.interrupt.p1 = You must answer some questions before 1 January 2026 to keep using this service.
+nace.interrupt.p2 = If you do not, your undertaking will be suspended. This means you can still trade and claim state aid, but you cannot use state aid to waive customs duty.
+nace.interrupt.p3 = Answer the questions to choose a new category for your undertaking. You will be able to review and confirm your choice before submitting.
+nace.interrupt.p4 = The statistical classification of economic activities in the European community (abbreviated as NACE) is a classification system used in the European Union. EU rules require us to record the correct NACE category for your undertaking.
+nace.interrupt.link.html = You can browse the {0}full list of NACE categories from the EU (opens in new tab){1}.
+nace.interrupt.p5 = This will not affect your subsidy allowance.
+
+nace.suspended.title = Your undertaking has been suspended
+nace.suspended.h1 = Your undertaking has been suspended
+nace.suspended.invalidSector.p1 = You cannot access your undertaking as it has been suspended on this service.
+nace.suspended.invalidSector.p2 = You can still trade and claim state aid, but you cannot use state aid to waive customs duty.
+nace.suspended.invalidSector.p3 = To start using this service again, you need to answer some questions about your undertaking. Once you have done this, your suspension will be removed and you can use the service as normal
+nace.suspended.auto.p1 = You cannot access your undertaking as it has been suspended on this service.
+nace.suspended.auto.p2 = Your deadline to submit a report passed on 1 January 2026
+nace.suspended.auto.p3 = To start using this service again, you need to:
+nace.suspended.auto.p4 = Once you have done this, your suspension will be removed and you can use the service as normal
+nace.suspended.auto.bullet1 = answer some questions about your undertaking
+nace.suspended.auto.bullet2 = submit a report
+
 
 
