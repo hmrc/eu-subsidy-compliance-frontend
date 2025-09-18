@@ -35,21 +35,21 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-stoneQuarrying", messages("NACE.mining.Lvl3.stoneQuarrying"))),
-value = Some(Sector.stoneQuarrying.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.stoneQuarrying.toString)
+content = HtmlContent(radioText("sector-label-socialWorkDisabilities", messages("NACE.humanHealth.Lvl3.socialWorkDisabilities"))),
+value = Some(Sector.socialWorkDisabilities.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.socialWorkDisabilities.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-miningAndQuarryingNEC", messages("NACE.mining.Lvl3.miningAndQuarryingNEC"))),
-value = Some(Sector.miningAndQuarryingNEC.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningAndQuarryingNEC.toString)
+content = HtmlContent(radioText("sector-label-otherSocialWorkWithoutAccommodation", messages("NACE.humanHealth.Lvl3.otherSocialWorkWithoutAccommodation"))),
+value = Some(Sector.otherSocialWorkWithoutAccommodation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSocialWorkWithoutAccommodation.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.mining.Lvl2.otherMiningQuarrying.title")),
+pageTitle = Some(messages("NACE.humanHealth.Lvl2.socialWorkWithoutAccommodation.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -76,7 +76,7 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.mining.Lvl2.otherMiningQuarrying.title")),
+content = Text(messages("NNACE.humanHealth.Lvl2.socialWorkWithoutAccommodation.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))

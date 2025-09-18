@@ -32,24 +32,27 @@ else controllers.routes.UndertakingController.postSector
 <span id="@id">@content</span>
 }
 
+NACE.humanHealth.Lvl4.childDayCare = Child day-care activities
+NACE.humanHealth.Lvl4.otherSocialWorkNEC = Other social work activities without accommodation n.e.c.
+
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-UndifferentiatedGoodsActivities", messages("NACE.households.Lvl4.undifferentiatedGoods"))),
-value = Some(Sector.UndifferentiatedGoodsActivities.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.UndifferentiatedGoodsActivities.toString)
+content = HtmlContent(radioText("sector-label-childDayCare", messages("NACE.humanHealth.Lvl4.childDayCare"))),
+value = Some(Sector.childDayCare.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.childDayCare.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-UndifferentiatedServiceActivities", messages("NACE.households.Lvl4.undifferentiatedServices"))),
-value = Some(Sector.UndifferentiatedServiceActivities.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.UndifferentiatedServiceActivities.toString)
+content = HtmlContent(radioText("sector-label-otherSocialWorkNEC", messages("NACE.humanHealth.Lvl4.otherSocialWorkNEC"))),
+value = Some(Sector.otherSocialWorkNEC.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSocialWorkNEC.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.households.Lvl2.undifferentiatedProduction.title")),
+pageTitle = Some(messages("NACE.humanHealth.Lvl3.otherSocialWorkWithoutAccommodation.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -76,7 +79,7 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.households.Lvl2.undifferentiatedProduction.title")),
+content = Text(messages("NACE.humanHealth.Lvl3.otherSocialWorkWithoutAccommodation.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))

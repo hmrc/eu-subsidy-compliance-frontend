@@ -35,21 +35,51 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-UndifferentiatedGoodsActivities", messages("NACE.households.Lvl4.undifferentiatedGoods"))),
-value = Some(Sector.UndifferentiatedGoodsActivities.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.UndifferentiatedGoodsActivities.toString)
+content = HtmlContent(radioText("sector-label-psychologists", messages("NACE.humanHealth.Lvl4.psychologists"))),
+value = Some(Sector.psychologists.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.psychologists.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-UndifferentiatedServiceActivities", messages("NACE.households.Lvl4.undifferentiatedServices"))),
-value = Some(Sector.UndifferentiatedServiceActivities.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.UndifferentiatedServiceActivities.toString)
+content = HtmlContent(radioText("sector-label-diagnosticImaging", messages("NACE.humanHealth.Lvl4.diagnosticImaging"))),
+value = Some(Sector.diagnosticImaging.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.diagnosticImaging.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-nursingMidwifery", messages("NACE.humanHealth.Lvl4.nursingMidwifery"))),
+value = Some(Sector.nursingMidwifery.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.nursingMidwifery.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-ambulance", messages("NACE.humanHealth.Lvl4.ambulance"))),
+value = Some(Sector.ambulance.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.ambulance.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-physiotherapy", messages("NACE.humanHealth.Lvl4.physiotherapy"))),
+value = Some(Sector.physiotherapy.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.physiotherapy.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-traditionalMedicine", messages("NACE.humanHealth.Lvl4.traditionalMedicine"))),
+value = Some(Sector.traditionalMedicine.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.traditionalMedicine.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-intermediationServices", messages("NACE.humanHealth.Lvl4.intermediationServices"))),
+value = Some(Sector.intermediationServices.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.intermediationServices.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-otherHumanHealthNEC", messages("NACE.humanHealth.Lvl4.otherHumanHealthNEC"))),
+value = Some(Sector.otherHumanHealthNEC.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherHumanHealthNEC.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.households.Lvl2.undifferentiatedProduction.title")),
+pageTitle = Some(messages("NACE.humanHealth.Lvl3.otherHumanHealth.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -76,7 +106,7 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.households.Lvl2.undifferentiatedProduction.title")),
+content = Text(messages("NACE.humanHealth.Lvl3.otherHumanHealth.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))

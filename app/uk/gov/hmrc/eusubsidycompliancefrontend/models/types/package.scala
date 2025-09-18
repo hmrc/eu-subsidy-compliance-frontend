@@ -1133,9 +1133,9 @@ package object types extends SimpleJson {
     val otherSocialWork: types.Sector.Value = Value("88")
       val DisabledSocialWork: types.Sector.Value = Value("88.1")
         val DisabledSocialWork4: types.Sector.Value = Value("88.10")
-      val otherSocialWork3: types.Sector.Value = Value("88.9")
-        val Childcare: types.Sector.Value = Value("88.91")
-        val otherSocialWork4: types.Sector.Value = Value("88.99")
+      val OtherSocialWork3: types.Sector.Value = Value("88.9")
+        val ChildDayCare: types.Sector.Value = Value("88.91")
+        val OtherSocialWorkNEC: types.Sector.Value = Value("88.99")
 
     val ArtsSportsAndRecreation: types.Sector.Value = Value("S")
     val ArtsCreation: types.Sector.Value = Value("90")
