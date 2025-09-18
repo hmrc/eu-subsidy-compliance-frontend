@@ -48,41 +48,41 @@ else controllers.routes.UndertakingController.postSector
 
 @radioOptions = @{
 Seq(
-    RadioItem(
-    content = HtmlContent(radioText("sector-label-cerealsLeguminousCrops", messages("NACE.agriculture.Lvl4.cerealsLeguminousCrops"))),
-    value = Some(Sector.cerealsLeguminousCrops.toString),
-    checked = form.data.get(fieldName).fold(false)(x => x == Sector.cerealsLeguminousCrops.toString)
-    ),
-    RadioItem(
-    content = HtmlContent(radioText("sector-label-fibreCrops", "messages(NACE.agriculture.Lvl4.fibreCrops")),
-    value = Some(Sector.fibreCrops.toString),
-    checked = form.data.get(fieldName).fold(false)(x => x == Sector.fibreCrops.toString)
-    ),
-    RadioItem(
-    content = HtmlContent(radioText("sector-label-rice", messages("NACE.agriculture.Lvl4.rice"))),
-    value = Some(Sector.rice.toString),
-    checked = form.data.get(fieldName).fold(false)(x => x == Sector.rice.toString)
-    ),
-    RadioItem(
-    content = HtmlContent(radioText("sector-label-sugarCane", messages("NACE.agriculture.Lvl4.sugarCane"))),
-    value = Some(Sector.sugarCane.toString),
-    checked = form.data.get(fieldName).fold(false)(x => x == Sector.sugarCane.toString)
-    ),
-    RadioItem(
-    content = HtmlContent(radioText("sector-label-tobacco", messages("NACE.agriculture.Lvl4.tobacco"))),
-    value = Some(Sector.tobacco.toString),
-    checked = form.data.get(fieldName).fold(false)(x => x == Sector.tobacco.toString)
-    ),
-    RadioItem(
-    content = HtmlContent(radioText("sector-label-vegetables", messages("NACE.agriculture.Lvl4.vegetables"))),
-    value = Some(Sector.vegetables.toString),
-    checked = form.data.get(fieldName).fold(false)(x => x == Sector.vegetables.toString)
-    ),
-    RadioItem(
-    content = HtmlContent(radioText("sector-label-otherNonPerennialCrops", messages("NACE.agriculture.Lvl4.otherNonPerennialCrops"))),
-    value = Some(Sector.otherNonPerennialCrops.toString),
-    checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherNonPerennialCrops.toString)
-    )
+RadioItem(
+content = HtmlContent(radioText("sector-label-cerealsLeguminousCrops", messages("NACE.agriculture.Lvl4.cerealsLeguminousCrops"))),
+value = Some(Sector.cerealsLeguminousCrops.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.cerealsLeguminousCrops.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-fibreCrops", messages("NACE.agriculture.Lvl4.fibreCrops"))),
+value = Some(Sector.fibreCrops.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.fibreCrops.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-rice", messages("NACE.agriculture.Lvl4.rice"))),
+value = Some(Sector.rice.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.rice.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-sugarCane", messages("NACE.agriculture.Lvl4.sugarCane"))),
+value = Some(Sector.sugarCane.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.sugarCane.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-tobacco", messages("NACE.agriculture.Lvl4.tobacco"))),
+value = Some(Sector.tobacco.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.tobacco.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-vegetables", messages("NACE.agriculture.Lvl4.vegetables"))),
+value = Some(Sector.vegetables.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.vegetables.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-otherNonPerennialCrops", messages("NACE.agriculture.Lvl4.otherNonPerennialCrops"))),
+value = Some(Sector.otherNonPerennialCrops.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherNonPerennialCrops.toString)
+)
 )
 }
 
@@ -119,6 +119,9 @@ content = Text(messages("NACE.agriculture.Lvl3.growingCrops.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
+)),
+hint = Some(Hint(
+content = Text(messages("NACE.general.hint"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,

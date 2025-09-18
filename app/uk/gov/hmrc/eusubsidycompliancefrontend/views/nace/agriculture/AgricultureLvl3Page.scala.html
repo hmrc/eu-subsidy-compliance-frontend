@@ -58,7 +58,7 @@ value = Some(Sector.growingPerennialCrops.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.growingPerennialCrops.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-plantPropagation", messages("NACE.agriculture.Lvl3.PlantPropagation"))),
+content = HtmlContent(radioText("sector-label-plantPropagation", messages("NACE.agriculture.Lvl3.plantPropagation"))),
 value = Some(Sector.plantPropagation.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.plantPropagation.toString)
 ),
@@ -68,11 +68,11 @@ value = Some(Sector.animalProduction.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.animalProduction.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-mixedFarming", messages("NACE.agriculture.Lvl3.MixedFarming"))),
+content = HtmlContent(radioText("sector-label-mixedFarming", messages("NACE.agriculture.Lvl3.mixedFarming"))),
 value = Some(Sector.mixedFarming.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.mixedFarming.toString)
 ),RadioItem(
-content = HtmlContent(radioText("sector-label-supportActivities", messages("supportActivities"))),
+content = HtmlContent(radioText("sector-label-supportActivities", messages("NACE.agriculture.Lvl3.supportActivities"))),
 value = Some(Sector.supportActivities.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.supportActivities.toString)
 ),RadioItem(
@@ -112,7 +112,7 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("undertakingSector.title")),
+content = Text(messages("NACE.agriculture.Lvl2.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
