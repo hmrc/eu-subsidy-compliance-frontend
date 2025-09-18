@@ -20,11 +20,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
-button: components.Button,
+button: Button,
 govukErrorSummary: GovukErrorSummary,
 govukRadios : GovukRadios
 )
@@ -47,19 +49,19 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-humanHealth", messages("NACE.humanHealth.Lvl2.humanHealth"))),
-value = Some(Sector.humanHealth.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.humanHealth.toString)
+content = HtmlContent(radioText("sector-label-HumanHealthActivities", messages("NACE.humanHealth.Lvl2.humanHealth"))),
+value = Some(Sector.HumanHealthActivities.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.HumanHealthActivities.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-residentialCare", messages("NACE.humanHealth.Lvl2.residentialCare"))),
-value = Some(Sector.residentialCare.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.residentialCare.toString)
+content = HtmlContent(radioText("sector-label-ResidentialCareActivities", messages("NACE.humanHealth.Lvl2.residentialCare"))),
+value = Some(Sector.ResidentialCareActivities.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.ResidentialCareActivities.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-socialWorkWithoutAccommodation", messages("NACE.humanHealth.Lvl2.socialWorkWithoutAccommodation"))),
-value = Some(Sector.socialWorkWithoutAccommodation.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.socialWorkWithoutAccommodation.toString)
+content = HtmlContent(radioText("sector-label-otherSocialWorkWithoutAccommodation", messages("NACE.humanHealth.Lvl2.socialWorkWithoutAccommodation"))),
+value = Some(Sector.otherSocialWorkWithoutAccommodation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSocialWorkWithoutAccommodation.toString)
 )
 )
 }

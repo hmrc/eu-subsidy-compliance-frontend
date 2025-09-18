@@ -51,24 +51,31 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-motor", messages("NACE.Manufacturing.Lvl2.2.Vehicles.Motor"))),
-            value = Some(Sector.MotorVehicles.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MotorVehicles.toString)
+            content = HtmlContent(radioText("sector-label-bars", messages("NACE.Manufacturing.Lvl4.ColdDrawingBars"))),
+            value = Some(Sector.BarsColdDrawing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.BarsColdDrawing.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl2.2.Vehicles.Other "))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl2.2.Vehicles.Other.hint", appConfig.sectorCap("Other"))))
-            )),
-            value = Some(Sector.OtherTransportEquipment.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherTransportEquipment.toString)
+            content = HtmlContent(radioText("sector-label-wire", messages("NACE.Manufacturing.Lvl4.ColdDrawingWire"))),
+            value = Some(Sector.WireColdDrawing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.WireColdDrawing.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-forming", messages("NACE.Manufacturing.Lvl4.ColdFormingFolding"))),
+            value = Some(Sector.FoldingColdDrawing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FoldingColdDrawing.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-narrow-strip", messages("NACE.Manufacturing.Lvl4.ColdRollingStrip"))),
+            value = Some(Sector.NarrowStripColdDrawing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.NarrowStripColdDrawing.toString)
         )
     )
 }
 
 
 @layout(
-  pageTitle = Some(messages("NACE.Manufacturing.Lvl2.2.Vehicles.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.OtherSteelProducts.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -93,7 +100,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("NACE.Manufacturing.Lvl2.2.Vehicles.title")),
+        content = Text(messages("NACE.Manufacturing.OtherSteelProducts.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))

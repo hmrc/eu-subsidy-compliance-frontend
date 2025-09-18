@@ -20,11 +20,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios
 )
@@ -53,12 +55,12 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-wood-cork-straw", messages("NACE.Manufacturing.Lvl3.WoodCorkStrawPlaiting.hint", appConfig.sectorCap("Other"))))
             )),
-            value = Some(Sector.WoodProductsManufacture),
+            value = Some(Sector.WoodProductsManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.WoodProductsManufacture.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-dairy", messages("NACE.Manufacturing.Lvl3.SawmillingWood"))),
-            value = Some(Sector.WoodProductsProcessing),
+            value = Some(Sector.WoodProductsProcessing.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.WoodProductsProcessing.toString)
         )
     )

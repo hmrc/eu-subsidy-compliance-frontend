@@ -20,11 +20,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
-button: components.Button,
+button: Button,
 govukErrorSummary: GovukErrorSummary,
 govukRadios : GovukRadios
 )
@@ -77,14 +79,14 @@ value = Some(Sector.traditionalMedicine.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.traditionalMedicine.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-intermediationServices", messages("NACE.humanHealth.Lvl4.intermediationServices"))),
-value = Some(Sector.intermediationServices.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.intermediationServices.toString)
+content = HtmlContent(radioText("sector-label-humanHealthActivitiesIntermediationServices", messages("NACE.humanHealth.Lvl4.intermediationServices"))),
+value = Some(Sector.humanHealthActivitiesIntermediationServices.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.humanHealthActivitiesIntermediationServices.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherHumanHealthNEC", messages("NACE.humanHealth.Lvl4.otherHumanHealthNEC"))),
-value = Some(Sector.otherHumanHealthNEC.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherHumanHealthNEC.toString)
+content = HtmlContent(radioText("sector-label-OtherHumanHealthActivities4", messages("NACE.humanHealth.Lvl4.otherHumanHealthNEC"))),
+value = Some(Sector.OtherHumanHealthActivities4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherHumanHealthActivities4.toString)
 )
 )
 }

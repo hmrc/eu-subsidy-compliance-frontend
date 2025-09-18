@@ -20,11 +20,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios
 )
@@ -50,22 +52,22 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-cement-plaster", messages("NACE.Manufacturing.Lvl3.ConcreteCementPlasterArticles"))),
-            value = Some(Sector.CementPlasterArticles),
+            value = Some(Sector.CementPlasterArticles.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.CementPlasterArticles.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-cement-lime", messages("NACE.Manufacturing.Lvl3.CementLimePlaster"))),
-            value = Some(Sector.CementLimePlaster),
+            value = Some(Sector.CementLimePlaster.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.CementLimePlaster.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-clay", messages("NACE.Manufacturing.Lvl3.ClayBuildingMaterials"))),
-            value = Some(Sector.ClayBuildingMaterials),
+            value = Some(Sector.ClayBuildingMaterials.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.ClayBuildingMaterials.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-stone", messages("NACE.Manufacturing.Lvl3.CuttingStone"))),
-            value = Some(Sector.StoneCuttingFinishing),
+            value = Some(Sector.StoneCuttingFinishing.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.StoneCuttingFinishing.toString)
         ),
         RadioItem(
@@ -73,22 +75,22 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-glass", messages("NACE.Manufacturing.Lvl3.GlassProducts.hint", appConfig.sectorCap("Other"))))
             )),
-            value = Some(Sector.GlassProducts),
+            value = Some(Sector.GlassProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.GlassProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-refractory", messages("NACE.Manufacturing.Lvl3.RefractoryProducts"))),
-            value = Some(Sector.RefractoryProducts),
+            value = Some(Sector.RefractoryProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.RefractoryProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-porcelain", messages("NACE.Manufacturing.Lvl3.PorcelainCeramicProducts"))),
-            value = Some(Sector.OtherCeramicProducts),
+            value = Some(Sector.OtherCeramicProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherCeramicProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-abrasive", messages("NACE.Manufacturing.Lvl3.AbrasiveProducts"))),
-            value = Some(Sector.OtherAbrasiveProducts),
+            value = Some(Sector.OtherAbrasiveProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherAbrasiveProducts.toString)
         )
     )

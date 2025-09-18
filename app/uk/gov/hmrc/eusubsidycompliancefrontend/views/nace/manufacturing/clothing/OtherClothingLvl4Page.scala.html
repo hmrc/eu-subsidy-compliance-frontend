@@ -20,11 +20,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios
 )
@@ -53,7 +55,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-leather-fur", "hint place holder text"))
             )),
-            value = Some(Sector.LeatherAndFurClothing),
+            value = Some(Sector.LeatherAndFurClothing.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.LeatherAndFurClothing.toString)
         ),
         RadioItem(
@@ -61,7 +63,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-outerwear", "hint place holder text"))
             )),
-            value = Some(Sector.Outerwear),
+            value = Some(Sector.Outerwear.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Outerwear.toString)
         ),
         RadioItem(
@@ -69,7 +71,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-underwear", "hint place holder text"))
             )),
-            value = Some(Sector.Underwear),
+            value = Some(Sector.Underwear.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Underwear.toString)
         ),
         RadioItem(
@@ -77,7 +79,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-workwear", "hint place holder text"))
             )),
-            value = Some(Sector.Workwear),
+            value = Some(Sector.Workwear.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Workwear.toString)
         ),
         RadioItem(
@@ -85,7 +87,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-other", "hint place holder text"))
             )),
-            value = Some(Sector.OtherClothing4),
+            value = Some(Sector.OtherClothing4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherClothing4.toString)
         )
     )

@@ -51,24 +51,41 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-motor", messages("NACE.Manufacturing.Lvl2.2.Vehicles.Motor"))),
-            value = Some(Sector.MotorVehicles.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MotorVehicles.toString)
+            content = HtmlContent(radioText("sector-label-nuclear-fuel", messages("NACE.Manufacturing.Lvl4.NuclearFuelProcessing"))),
+            value = Some(Sector.NuclearFuelProcessing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.NuclearFuelProcessing.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl2.2.Vehicles.Other "))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl2.2.Vehicles.Other.hint", appConfig.sectorCap("Other"))))
-            )),
-            value = Some(Sector.OtherTransportEquipment.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherTransportEquipment.toString)
+            content = HtmlContent(radioText("sector-label-aluminium", messages("NACE.Manufacturing.Lvl4.Aluminium"))),
+            value = Some(Sector.AluminiumProduction.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.AluminiumProduction.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-copper", messages("NACE.Manufacturing.Lvl4.Copper"))),
+            value = Some(Sector.CopperProduction.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CopperProduction.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-lead-zinc-tin", messages("NACE.Manufacturing.Lvl4.LeadZincTin"))),
+            value = Some(Sector.LeadZincTinProduction.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.LeadZincTinProduction.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-precious", messages("NACE.Manufacturing.Lvl4.PreciousMetals"))),
+            value = Some(Sector.PreciousMetalsProduction.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PreciousMetalsProduction.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-non-ferrous", messages("NACE.Manufacturing.Lvl4.OtherNonFerrous"))),
+            value = Some(Sector.MonFerrousMetalsProduction.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MonFerrousMetalsProduction.toString)
         )
     )
 }
 
 
 @layout(
-  pageTitle = Some(messages("NACE.Manufacturing.Lvl2.2.Vehicles.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -93,7 +110,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("NACE.Manufacturing.Lvl2.2.Vehicles.title")),
+        content = Text(messages("NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))
