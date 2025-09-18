@@ -20,11 +20,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios
 )
@@ -53,22 +55,22 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-bakery", messages("NACE.Manufacturing.Lvl3.BakeryProducts.hint", appConfig.sectorCap("Other"))))
             )),
-            value = Some(Sector.BakeryProducts),
+            value = Some(Sector.BakeryProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.BakeryProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-dairy", messages("NACE.Manufacturing.Lvl3.DairyProducts"))),
-            value = Some(Sector.DairyProducts),
+            value = Some(Sector.DairyProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.DairyProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-fish", messages("NACE.Manufacturing.Lvl3.FishProducts"))),
-            value = Some(Sector.Fish),
+            value = Some(Sector.Fish.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Fish.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-fruit-veg", messages("NACE.Manufacturing.Lvl3.FruitVegetables"))),
-            value = Some(Sector.FruitAndVegetables),
+            value = Some(Sector.FruitAndVegetables.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.FruitAndVegetables.toString)
         ),
         RadioItem(
@@ -76,22 +78,22 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-grain", messages("NACE.Manufacturing.Lvl3.GrainMillProducts.hint", appConfig.sectorCap("Other"))))
             )),
-            value = Some(Sector.GrainAndStarchProducts),
+            value = Some(Sector.GrainAndStarchProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.GrainAndStarchProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-meat", messages("NACE.Manufacturing.Lvl3.MeatProducts"))),
-            value = Some(Sector.Meat),
+            value = Some(Sector.Meat.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Meat.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-oils", messages("NACE.Manufacturing.Lvl3.OilsFats"))),
-            value = Some(Sector.Oils),
+            value = Some(Sector.Oils.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Oils.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-animalfeeds", messages("NACE.Manufacturing.Lvl3.PreparedAnimalFeeds"))),
-            value = Some(Sector.PreparedAnimalFeeds),
+            value = Some(Sector.PreparedAnimalFeeds.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.PreparedAnimalFeeds.toString)
         ),
         RadioItem(
@@ -99,7 +101,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-bakery", messages("NACE.Manufacturing.Lvl3.OtherFoodProducts.hint", appConfig.sectorCap("Other"))))
             )),
-            value = Some(Sector.OtherFoodProducts),
+            value = Some(Sector.OtherFoodProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherFoodProducts.toString)
         )
     )

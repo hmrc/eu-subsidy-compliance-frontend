@@ -20,11 +20,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios
 )
@@ -53,7 +55,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-confectionary", "hint place holder text"))
             )),
-            value = Some(Sector.confectionery),
+            value = Some(Sector.confectionery.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.confectionery.toString)
         ),
         RadioItem(
@@ -61,7 +63,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-condiments", "hint place holder text"))
             )),
-            value = Some(Sector.Condiments),
+            value = Some(Sector.Condiments.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Condiments.toString)
         ),
         RadioItem(
@@ -69,7 +71,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-homogenised", "hint place holder text"))
             )),
-            value = Some(Sector.HomogenisedFoodPreparations),
+            value = Some(Sector.HomogenisedFoodPreparations.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.HomogenisedFoodPreparations.toString)
         ),
         RadioItem(
@@ -77,7 +79,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-prepared-meals", "hint place holder text"))
             )),
-            value = Some(Sector.PreparedMeals),
+            value = Some(Sector.PreparedMeals.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.PreparedMeals.toString)
         ),
         RadioItem(
@@ -85,7 +87,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-sugar", "hint place holder text"))
             )),
-            value = Some(Sector.Sugar),
+            value = Some(Sector.Sugar.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Sugar.toString)
         ),
         RadioItem(
@@ -93,7 +95,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-tea-coffee", "hint place holder text"))
             )),
-            value = Some(Sector.TeaAndCoffee),
+            value = Some(Sector.TeaAndCoffee.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.TeaAndCoffee.toString)
         ),
         RadioItem(
@@ -101,7 +103,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-other", "hint place holder text"))
             )),
-            value = Some(Sector.otherFoodProduct),
+            value = Some(Sector.otherFoodProduct.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherFoodProduct.toString)
         )
     )

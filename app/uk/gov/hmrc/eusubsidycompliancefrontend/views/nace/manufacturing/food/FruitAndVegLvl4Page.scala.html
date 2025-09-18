@@ -20,11 +20,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios
 )
@@ -53,7 +55,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-fruitveg-juice", "hint place holder text"))
             )),
-            value = Some(Sector.FruitAndVegetableJuiceManufacture),
+            value = Some(Sector.FruitAndVegetableJuiceManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.FruitAndVegetableJuiceManufacture.toString)
         ),
         RadioItem(
@@ -61,7 +63,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-fruitveg-potatoes", "hint place holder text"))
             )),
-            value = Some(Sector.FruitAndVegetableProcessing),
+            value = Some(Sector.FruitAndVegetableProcessing.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.FruitAndVegetableProcessing.toString)
         ),
         RadioItem(
@@ -69,7 +71,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-fruitveg-other", "hint place holder text"))
             )),
-            value = Some(Sector.OtherFruitAndVegetableProcessing),
+            value = Some(Sector.OtherFruitAndVegetableProcessing.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherFruitAndVegetableProcessing.toString)
         )
     )

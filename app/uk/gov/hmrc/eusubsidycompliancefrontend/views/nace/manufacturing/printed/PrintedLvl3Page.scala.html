@@ -20,11 +20,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios
 )
@@ -49,16 +51,16 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-printing", messages("NACE.Manufacturing.Lvl3.PrintingServices))),
+            content = HtmlContent(radioText("sector-label-printing", messages("NACE.Manufacturing.Lvl3.PrintingServices"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-printing", messages("NACE.Manufacturing.Lvl3.PrintingServices.hint", appConfig.sectorCap("Other"))))
             )),
-            value = Some(Sector.PrintingService),
+            value = Some(Sector.PrintingService.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.PrintingService.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-media", messages("NACE.Manufacturing.Lvl3.ReproductionRecordedMedia"))),
-            value = Some(Sector.RecordedMediaReproduction),
+            value = Some(Sector.RecordedMediaReproduction.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.RecordedMediaReproduction.toString)
         )
     )
