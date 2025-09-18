@@ -51,7 +51,7 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-basic-iron", messages("NACE.Manufacturing.Lvl3.BasicIronSteel))),
+            content = HtmlContent(radioText("sector-label-basic-iron", messages("NACE.Manufacturing.Lvl3.BasicIronSteel"))),
             value = Some(Sector.BasicIronSteel.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.BasicIronSteel.toString)
         ),
@@ -80,7 +80,7 @@
             content = HtmlContent(radioText("sector-label-casting", messages("NACE.Manufacturing.Lvl3.CastingMetals"))),
             value = Some(Sector.MetalsCasting.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.MetalsCasting.toString)
-        ),
+        )
     )
 }
 

@@ -20,11 +20,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios
 )
@@ -50,27 +52,27 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-flatglass", messages("NACE.Manufacturing.Lvl4.FlatGlass"))),
-            value = Some(Sector.FlatGlass),
+            value = Some(Sector.FlatGlass.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.FlatGlass.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-glassfibres", messages("NACE.Manufacturing.Lvl4.GlassFibres"))),
-            value = Some(Sector.GlassFibres),
+            value = Some(Sector.GlassFibres.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.GlassFibres.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-hollow", messages("NACE.Manufacturing.Lvl4.HollowGlass"))),
-            value = Some(Sector.HollowGlass),
+            value = Some(Sector.HollowGlass.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.HollowGlass.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherGlass"))),
-            value = Some(Sector.OtherGlassProducts),
+            value = Some(Sector.OtherGlassProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherGlassProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-shaping", messages("NACE.Manufacturing.Lvl4.ShapedFlatGlass"))),
-            value = Some(Sector.ShapingFlatGlass),
+            value = Some(Sector.ShapingFlatGlass.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.ShapingFlatGlass.toString)
         )
     )

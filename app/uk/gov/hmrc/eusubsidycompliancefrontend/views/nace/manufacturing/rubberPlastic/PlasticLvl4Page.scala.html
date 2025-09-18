@@ -20,11 +20,14 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
+
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios
 )
@@ -50,32 +53,32 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-builders-ware", messages("NACE.Manufacturing.Lvl4.BuildersWarePlastic"))),
-            value = Some(Sector.BuildersWare),
+            value = Some(Sector.BuildersWare.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.BuildersWare.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-doors-windows", messages("NACE.Manufacturing.Lvl4.PlasticDoorsWindows"))),
-            value = Some(Sector.DoorsAndWindows),
+            value = Some(Sector.DoorsAndWindows.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.DoorsAndWindows.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-packing", messages("NACE.Manufacturing.Lvl4.PlasticPackingGoods"))),
-            value = Some(Sector.PackingGoods),
+            value = Some(Sector.PackingGoods.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.PackingGoods.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-plates-sheets", messages("NACE.Manufacturing.Lvl4.PlasticPlatesSheets"))),
-            value = Some(Sector.PlasticPlatesSheetsTubes),
+            value = Some(Sector.PlasticPlatesSheetsTubes.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.PlasticPlatesSheetsTubes.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other-plastic", messages("NACE.Manufacturing.Lvl4.OtherPlasticProducts"))),
-            value = Some(Sector.OtherPlasticProduct),
+            value = Some(Sector.OtherPlasticProduct.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherPlasticProduct.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-finishing", messages("NACE.Manufacturing.Lvl4.FinishingPlasticProducts"))),
-            value = Some(Sector.FinishingPlasticProducts),
+            value = Some(Sector.FinishingPlasticProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.FinishingPlasticProducts.toString)
         )
     )

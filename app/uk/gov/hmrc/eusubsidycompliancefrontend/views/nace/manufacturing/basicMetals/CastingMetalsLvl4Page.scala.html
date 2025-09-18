@@ -51,7 +51,7 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-iron", messages("NACE.Manufacturing.Lvl4.CastingIron))),
+            content = HtmlContent(radioText("sector-label-iron", messages("NACE.Manufacturing.Lvl4.CastingIron"))),
             value = Some(Sector.Iron.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Iron.toString)
         ),
