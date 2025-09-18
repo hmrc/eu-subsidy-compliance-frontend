@@ -31,13 +31,6 @@ govukErrorSummary: GovukErrorSummary,
 govukRadios : GovukRadios
 )
 
-
-
-NACE.humanHealth.Lvl3.residentialNursing = Residential nursing care activities
-NACE.humanHealth.Lvl3.mentalIllnessSubstanceAbuseCare = Residential care activities for persons living with or having a diagnosis of a mental illness or substance abuse
-NACE.humanHealth.Lvl3.olderPersonsDisabilitiesCare = Residential care activities for older persons or persons with physical disabilities
-NACE.humanHealth.Lvl3.otherResidentialCare = Other residential care activities
-
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"undertakingSector"}
