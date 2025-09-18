@@ -49,21 +49,21 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-undifferentiatedGoods4", messages("NACE.households.Lvl4.undifferentiatedGoods"))),
-value = Some(Sector.undifferentiatedGoods4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.undifferentiatedGoods4.toString)
+content = HtmlContent(radioText("sector-label-intermediationResidentialCare", messages("NACE.humanHealth.Lvl4.intermediationResidentialCare"))),
+value = Some(Sector.intermediationResidentialCare.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.intermediationResidentialCare.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-undifferentiatedServices4", messages("NACE.households.Lvl4.undifferentiatedServices"))),
-value = Some(Sector.undifferentiatedServices4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.undifferentiatedServices4.toString)
+content = HtmlContent(radioText("sector-label-otherResidentialCare", messages("NACE.humanHealth.Lvl4.otherResidentialCare"))),
+value = Some(Sector.otherResidentialCare.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherResidentialCare.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.households.Lvl2.undifferentiatedProduction.title")),
+pageTitle = Some(messages("NACE.humanHealth.Lvl3.otherResidentialCare.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -90,7 +90,7 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.households.Lvl2.undifferentiatedProduction.title")),
+content = Text(messages("NACE.humanHealth.Lvl3.otherResidentialCare.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
