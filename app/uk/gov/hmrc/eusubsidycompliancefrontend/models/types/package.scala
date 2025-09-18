@@ -763,8 +763,6 @@ package object types extends SimpleJson {
     val RetailIntermediationServices: types.Sector.Value = Value("47.9")
     val NonSpecialisedRetailIntermediation: types.Sector.Value = Value("47.91")
     val SpecialisedRetailIntermediation: types.Sector.Value = Value("47.92")
-
-
     val TransportationAndStorage : types.Sector.Value = Value("H")
     val LandTransport : types.Sector.Value = Value("49")
     val PassengerRailTransport	: types.Sector.Value = Value("49.1")
@@ -783,7 +781,6 @@ package object types extends SimpleJson {
     val RemovalServices: types.Sector.Value = Value("49.42")
     val pipelineTransport: types.Sector.Value = Value("49.5")
     val pipelineTransport4 : types.Sector.Value = Value("49.50")
-
     val  WaterTransport: types.Sector.Value = Value("50")
     val  coastalPassengerWaterTransport: types.Sector.Value = Value("50.1")
     val  coastalPassengerWaterTransport4: types.Sector.Value = Value("50.10")
@@ -800,7 +797,6 @@ package object types extends SimpleJson {
     val  FreightAndSpaceAirTransport: types.Sector.Value = Value("51.2")
     val  FreightAirTransport: types.Sector.Value = Value("51.21")
     val  SpaceTransport: types.Sector.Value = Value("51.22")
-
     val  WarehousingStorageTransportSupportActivities: types.Sector.Value = Value("52")
     val  	WarehousingStorage	: types.Sector.Value = Value("52.1")
     val  		WarehousingStorage4: types.Sector.Value = Value("52.10")
@@ -814,7 +810,6 @@ package object types extends SimpleJson {
     val  	transportIntermediationServiceActivities	: types.Sector.Value = Value("52.3")
     val  	freightTransportIntermediationServiceActivities: types.Sector.Value = Value("52.31")
     val  	passengerTransportIntermediationServiceActivities: types.Sector.Value = Value("52.32")
-
     val PostalAndCourierActivities: types.Sector.Value = Value("53")
     val PostalActivities: types.Sector.Value = Value("53.1")
     val PostalActivities4: types.Sector.Value = Value("53.10")
@@ -825,16 +820,16 @@ package object types extends SimpleJson {
 
     val AccommodationAndFoodServiceActivities: types.Sector.Value = Value("I")
     val Accommodation: types.Sector.Value = Value("55")
-      val Hotels: types.Sector.Value = Value("55.1")
-        val Hotels4: types.Sector.Value = Value("55.10")
-      val HolidayAccommodation: types.Sector.Value = Value("55.2")
-        val HolidayAccommodation4: types.Sector.Value = Value("55.20")
-      val CampingGrounds: types.Sector.Value = Value("55.3")
-        val CampingGrounds4: types.Sector.Value = Value("55.30")
-      val AccommodationIntermediationServiceActivities: types.Sector.Value = Value("55.4")
-        val AccommodationIntermediationServiceActivities4: types.Sector.Value = Value("55.40")
-      val OtherAccommodation	: types.Sector.Value = Value("55.9")
-        val OtherAccommodation4: types.Sector.Value = Value("55.90")
+    val Hotels: types.Sector.Value = Value("55.1")
+    val Hotels4: types.Sector.Value = Value("55.10")
+    val HolidayAccommodation: types.Sector.Value = Value("55.2")
+    val HolidayAccommodation4: types.Sector.Value = Value("55.20")
+    val CampingGrounds: types.Sector.Value = Value("55.3")
+    val CampingGrounds4: types.Sector.Value = Value("55.30")
+    val AccommodationIntermediationServiceActivities: types.Sector.Value = Value("55.4")
+    val AccommodationIntermediationServiceActivities4: types.Sector.Value = Value("55.40")
+    val OtherAccommodation	: types.Sector.Value = Value("55.9")
+    val OtherAccommodation4: types.Sector.Value = Value("55.90")
 
     val FoodBeverageServiceActivities: types.Sector.Value = Value("56")
     val Restaurants: types.Sector.Value = Value("56.1")

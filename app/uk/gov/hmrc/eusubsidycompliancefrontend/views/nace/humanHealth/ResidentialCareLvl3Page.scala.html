@@ -48,14 +48,24 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-stoneQuarrying", messages("NACE.mining.Lvl3.stoneQuarrying"))),
-value = Some(Sector.stoneQuarrying.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.stoneQuarrying.toString)
+content = HtmlContent(radioText("sector-label-ResidentialNursing", messages("NACE.humanHealth.Lvl3.residentialNursing"))),
+value = Some(Sector.ResidentialNursing.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.ResidentialNursing.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-miningAndQuarryingNEC", messages("NACE.mining.Lvl3.miningAndQuarryingNEC"))),
-value = Some(Sector.miningAndQuarryingNEC.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningAndQuarryingNEC.toString)
+content = HtmlContent(radioText("sector-label-ResidentialCareActivitiesMentalIllness", messages("NACE.humanHealth.Lvl3.mentalIllnessSubstanceAbuseCare"))),
+value = Some(Sector.ResidentialCareActivitiesMentalIllness.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.ResidentialCareActivitiesMentalIllness.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-DisabledResidentialCareActivitiesMentalIllness", messages("NACE.humanHealth.Lvl3.olderPersonsDisabilitiesCare"))),
+value = Some(Sector.DisabledResidentialCareActivitiesMentalIllness.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.DisabledResidentialCareActivitiesMentalIllness.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-OtherResidentialCare", messages("NACE.humanHealth.Lvl4.otherResidentialCareNEC"))),
+value = Some(Sector.OtherResidentialCare.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherResidentialCare.toString)
 )
 )
 }

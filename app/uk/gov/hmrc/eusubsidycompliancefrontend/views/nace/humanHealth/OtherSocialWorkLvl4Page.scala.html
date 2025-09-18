@@ -31,7 +31,6 @@ govukErrorSummary: GovukErrorSummary,
 govukRadios : GovukRadios
 )
 
-
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"undertakingSector"}
@@ -45,9 +44,6 @@ else controllers.routes.UndertakingController.postSector
 @radioText(id: String, content: String) = {
 <span id="@id">@content</span>
 }
-
-NACE.humanHealth.Lvl4.childDayCare = Child day-care activities
-NACE.humanHealth.Lvl4.otherSocialWorkNEC = Other social work activities without accommodation n.e.c.
 
 @radioOptions = @{
 Seq(
