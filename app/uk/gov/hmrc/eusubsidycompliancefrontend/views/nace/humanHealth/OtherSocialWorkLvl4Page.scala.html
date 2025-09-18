@@ -47,16 +47,16 @@ else controllers.routes.UndertakingController.postSector
 
 @radioOptions = @{
 Seq(
-RadioItem(
-content = HtmlContent(radioText("sector-label-childDayCare", messages("NACE.humanHealth.Lvl4.childDayCare"))),
-value = Some(Sector.childDayCare.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.childDayCare.toString)
-),
-RadioItem(
-content = HtmlContent(radioText("sector-label-otherSocialWorkNEC", messages("NACE.humanHealth.Lvl4.otherSocialWorkNEC"))),
-value = Some(Sector.otherSocialWorkNEC.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSocialWorkNEC.toString)
-)
+    RadioItem(
+    content = HtmlContent(radioText("sector-label-childDayCare", messages("NACE.humanHealth.Lvl4.childDayCare"))),
+    value = Some(Sector.childDayCare.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.childDayCare.toString)
+    ),
+    RadioItem(
+    content = HtmlContent(radioText("sector-label-otherSocialWorkNEC", messages("NACE.humanHealth.Lvl4.otherSocialWorkNEC"))),
+    value = Some(Sector.otherSocialWorkNEC.toString),
+    checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSocialWorkNEC.toString)
+    )
 )
 }
 
