@@ -20,15 +20,15 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.components.Button
 
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
-button: components.Button,
+button: Button,
 govukErrorSummary: GovukErrorSummary,
 govukRadios : GovukRadios
 )
-
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -47,21 +47,26 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-freshwaterFishing", messages("NACE.fishing.Lvl4.freshwaterFishing"))),
-value = Some(Sector.freshwaterFishing.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.freshwaterFishing.toString)
+content = HtmlContent(radioText("sector-label-postHarvestActivities", messages("NACE.agriculture.Lvl4.postHarvestActivities"))),
+value = Some(Sector.postHarvestActivities.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.postHarvestActivities.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-marineFishing", messages("NACE.fishing.Lvl4.marineFishing"))),
-value = Some(Sector.marineFishing.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.marineFishing.toString)
+content = HtmlContent(radioText("sector-label-supportActivitiesAnimal", "messages(NACE.agriculture.Lvl4.supportActivitiesAnimal")),
+value = Some(Sector.supportActivitiesAnimal.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.supportActivitiesAnimal.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-supportActivitiesCrop", messages("NACE.agriculture.Lvl4.supportActivitiesCrop"))),
+value = Some(Sector.supportActivitiesCrop.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.supportActivitiesCrop.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.fishing.Lvl3.fishing.title")),
+pageTitle = Some(messages("NACE.agriculture.Lvl3.supportActivities.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -88,13 +93,10 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.fishing.Lvl3.fishing.title")),
+content = Text(messages("NACE.agriculture.Lvl3.supportActivities.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
-)),
-hint = Some(Hint(
-content = Text(messages(" NACE.general.Lvl3.hint"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,

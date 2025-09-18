@@ -1,6 +1,18 @@
 @*
-* Copyright 2025 HM Revenue & Customs
-*@
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
@@ -17,12 +29,6 @@ govukErrorSummary: GovukErrorSummary,
 govukRadios : GovukRadios
 )
 
-
-
-NACE.humanHealth.Lvl3.residentialNursing = Residential nursing care activities
-NACE.humanHealth.Lvl3.mentalIllnessSubstanceAbuseCare = Residential care activities for persons living with or having a diagnosis of a mental illness or substance abuse
-NACE.humanHealth.Lvl3.olderPersonsDisabilitiesCare = Residential care activities for older persons or persons with physical disabilities
-NACE.humanHealth.Lvl3.otherResidentialCare = Other residential care activities
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
