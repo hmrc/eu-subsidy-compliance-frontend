@@ -20,11 +20,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios
 )
@@ -50,22 +52,22 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-finishing", messages("NACE.Manufacturing.Lvl3.FinishingTextiles"))),
-            value = Some(Sector.textilesFinishing),
+            value = Some(Sector.textilesFinishing.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesFinishing.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl3.OtherTextiles"))),
-            value = Some(Sector.textilesManufacture),
+            value = Some(Sector.textilesManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesManufacture.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-fibre-spinning", messages("NACE.Manufacturing.Lvl3.TextileFibreSpinning"))),
-            value = Some(Sector.textilesPreparation),
+            value = Some(Sector.textilesPreparation.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesPreparation.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-weaving", messages("NACE.Manufacturing.Lvl3.Weaving"))),
-            value = Some(Sector.textilesWeaving),
+            value = Some(Sector.textilesWeaving.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesWeaving.toString)
         )
     )
