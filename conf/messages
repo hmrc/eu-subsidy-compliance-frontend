@@ -1208,6 +1208,7 @@ NACE.Manufacturing.Lvl4.AbrasiveProducts = Abrasive products
 NACE.Manufacturing.Lvl4.OtherNonMetallicMinerals = Other non-metallic mineral products
 
 ### Basic Metals ###
+NACE.Manufacturing.BasicMetals.title = What type of basic metals does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.BasicIronSteel = Basic iron, steel and ferro-alloys
 NACE.Manufacturing.Lvl4.IronSteelFerroAlloys = Manufacture of basic iron and steel and of ferro-alloys
 
@@ -1215,24 +1216,29 @@ NACE.Manufacturing.Lvl3.TubesPipesSteel = Steel tubes, pipes, hollow profiles an
 NACE.Manufacturing.Lvl4.TubesPipesSteel = Manufacture of tubes, pipes, hollow profiles and related fittings, of steel
 
 NACE.Manufacturing.Lvl3.OtherSteelProducts = Other products of first processing of steel
+NACE.Manufacturing.OtherSteelProducts.title = What type of steel processing does your undertaking do?
+NACE.Manufacturing.Lvl3.OtherSteelProducts.hint = Includes cold drawing of bars and wire, cold forming or folding, and cold rolling of narrow strip.
 NACE.Manufacturing.Lvl4.ColdDrawingBars = Cold drawing of bars
 NACE.Manufacturing.Lvl4.ColdRollingStrip = Cold rolling of narrow strip
 NACE.Manufacturing.Lvl4.ColdFormingFolding = Cold forming or folding
 NACE.Manufacturing.Lvl4.ColdDrawingWire = Cold drawing of wire
 
 NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals = Basic precious and other non-ferrous metals
-NACE.Manufacturing.Lvl4.PreciousMetals = Precious metals production
-NACE.Manufacturing.Lvl4.Aluminium = Aluminium production
-NACE.Manufacturing.Lvl4.LeadZincTin = Lead, zinc and tin production
-NACE.Manufacturing.Lvl4.Copper = Copper production
-NACE.Manufacturing.Lvl4.OtherNonFerrous = Other non-ferrous metal production
+NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals.hint = Includes production of aluminium, copper, lead, tin, zinc, other non-ferrous metals and precious metals, and processing of nuclear fuel.
+NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals.title = What type of metal production or processing does your undertaking do?
+NACE.Manufacturing.Lvl4.PreciousMetals = Production of precious metals
+NACE.Manufacturing.Lvl4.Aluminium = Production of aluminium
+NACE.Manufacturing.Lvl4.LeadZincTin = Production of lead, zinc and tin
+NACE.Manufacturing.Lvl4.Copper = Production of copper
+NACE.Manufacturing.Lvl4.OtherNonFerrous = Production of other non-ferrous metals
 NACE.Manufacturing.Lvl4.NuclearFuelProcessing = Processing of nuclear fuel
 
 NACE.Manufacturing.Lvl3.CastingMetals = My undertaking carries out casting of metals
-NACE.Manufacturing.Lvl4.CastingIron = Casting of iron
-NACE.Manufacturing.Lvl4.CastingSteel = Casting of steel
-NACE.Manufacturing.Lvl4.CastingLightMetals = Casting of light metals
-NACE.Manufacturing.Lvl4.CastingOtherNonFerrous = Casting of other non-ferrous metals
+NACE.Manufacturing.Lvl3.CastingMetals.title = What type of metals does your undertaking cast?
+NACE.Manufacturing.Lvl4.CastingIron = Iron
+NACE.Manufacturing.Lvl4.CastingSteel = Steel
+NACE.Manufacturing.Lvl4.CastingLightMetals = Light metals
+NACE.Manufacturing.Lvl4.CastingOtherNonFerrous = Other non-ferrous metals
 
 ### Fabricated metal products ###
 NACE.Manufacturing.Lvl3.StructuralMetalProducts = Manufacture of structural metal products
