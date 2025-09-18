@@ -195,7 +195,7 @@ class AccountControllerSpec
 
       }
 
-      "redirect to regulatory change notification" when {
+      "redirect to NACE Undertaking Category Intro page" when {
 
         "user has undertaking with agriculture sector" in {
           val agricultureUndertaking = undertaking.copy(industrySector = Sector.agriculture)
@@ -207,7 +207,7 @@ class AccountControllerSpec
 
           checkIsRedirect(
             performAction(),
-            routes.RegulatoryChangeNotificationController.showPage
+            routes.NaceUndertakingCategoryIntroController.showPage
           )
         }
 
@@ -221,10 +221,9 @@ class AccountControllerSpec
 
           checkIsRedirect(
             performAction(),
-            routes.RegulatoryChangeNotificationController.showPage
+            routes.NaceUndertakingCategoryIntroController.showPage
           )
         }
-
       }
 
       "not redirect to regulatory change notification" when {

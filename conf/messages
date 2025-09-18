@@ -13,6 +13,7 @@ common.submit = Submit
 common.continue=Save and continue
 common.accept-continue=Accept and continue
 common.continue.only=Continue
+common.start = Start now
 common.submit-report=Submit a report
 common.accept=Accept and send
 common.cya.change = Change
@@ -699,7 +700,32 @@ industrySectorResearchBanner.link.text = Get involved – help us make it work f
 industrySectorResearchBanner.hide.button = Hide message
 industrySectorResearchBanner.visually.hidden = Hide message. I do not want to take part in research
 
+
 ############################################## NACE #################################################################################################################
+
+NACE.interrupt.title = Select a new undertaking category to continue
+NACE.interrupt.heading1 = Select a new undertaking category to continue
+NACE.interrupt.heading2 = What you need to do
+NACE.interrupt.heading3 = Why we are making this change
+NACE.interrupt.p1 = You must answer some questions before 1 January 2026 to keep using this service.
+NACE.interrupt.p2 = If you do not, your undertaking will be suspended. This means you can still trade and claim state aid, but you cannot use state aid to waive customs duty.
+NACE.interrupt.p3 = Answer the questions to choose a new category for your undertaking. You will be able to review and confirm your choice before submitting.
+NACE.interrupt.p4 = The statistical classification of economic activities in the European community (abbreviated as NACE) is a classification system used in the European Union. EU rules require us to record the correct NACE category for your undertaking.
+NACE.interrupt.link.html = You can browse the {0}full list of NACE categories from the EU (opens in new tab){1}.
+NACE.interrupt.p5 = This will not affect your subsidy allowance.
+
+NACE.suspended.title = Your undertaking has been suspended
+NACE.suspended.h1 = Your undertaking has been suspended
+NACE.suspended.invalidSector.p1 = You cannot access your undertaking as it has been suspended on this service.
+NACE.suspended.invalidSector.p2 = You can still trade and claim state aid, but you cannot use state aid to waive customs duty.
+NACE.suspended.invalidSector.p3 = To start using this service again, you need to answer some questions about your undertaking. Once you have done this, your suspension will be removed and you can use the service as normal
+NACE.suspended.auto.p1 = You cannot access your undertaking as it has been suspended on this service.
+NACE.suspended.auto.p2 = Your deadline to submit a report passed on 1 January 2026
+NACE.suspended.auto.p3 = To start using this service again, you need to:
+NACE.suspended.auto.p4 = Once you have done this, your suspension will be removed and you can use the service as normal
+NACE.suspended.auto.bullet1 = answer some questions about your undertaking
+NACE.suspended.auto.bullet2 = submit a report
+
 NACE.general.hint = Select one option that best describes your undertaking’s main business activity.
 
 #NACESector01
@@ -1054,7 +1080,10 @@ NACE.Manufacturing.Lvl4.Wallpaper = Wallpaper
 NACE.Manufacturing.Lvl4.OtherPaperArticles = Other articles of paper and paperboard
 
 ### Printed products ###
+NACE.Manufacturing.Printing.title = What is your undertaking’s main business activity in printing?
 NACE.Manufacturing.Lvl3.PrintingServices = Printing and service activities related to printing
+NACE.Manufacturing.Lvl3.PrintingServices.hint = Includes binding, pre-press and pre-media services, other printing and related services.
+NACE.Manufacturing.PrintingServices.title = What type of printing or service activity does your undertaking do?
 NACE.Manufacturing.Lvl4.Newspapers = Printing of newspapers
 NACE.Manufacturing.Lvl4.OtherPrinting = Other printing
 NACE.Manufacturing.Lvl4.PrePressMedia = Pre-press and pre-media services
@@ -1064,20 +1093,24 @@ NACE.Manufacturing.Lvl3.ReproductionRecordedMedia = Reproduction of recorded med
 NACE.Manufacturing.Lvl4.ReproductionRecordedMedia = Reproduction of recorded media
 
 ### Coke and petroleum ###
+NACE.Manufacturing.CokePetroleum.title = What type of fuel products does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.CokeOvenProducts = Coke oven products
 NACE.Manufacturing.Lvl4.CokeOvenProducts = Manufacture of coke oven products
 NACE.Manufacturing.Lvl3.RefinedPetroleumProducts = Refined petroleum and fossil fuel products
 NACE.Manufacturing.Lvl4.RefinedPetroleumProducts = Manufacture of refined petroleum products and fossil fuel products
 
 ### Chemicals ###
+NACE.Manufacturing.Chemicals.title = What type of chemical or chemical product does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.BasicChemicals = Basic chemicals, fertilisers and nitrogen compounds, plastics and synthetic rubber in primary forms
-NACE.Manufacturing.Lvl4.IndustrialGases = Manufacture of industrial gases
-NACE.Manufacturing.Lvl4.DyesPigments = Manufacture of dyes and pigments
-NACE.Manufacturing.Lvl4.OtherInorganicChemicals = Manufacture of other inorganic basic chemicals
-NACE.Manufacturing.Lvl4.OtherOrganicChemicals = Manufacture of other organic basic chemicals
-NACE.Manufacturing.Lvl4.FertilisersNitrogen = Manufacture of fertilisers and nitrogen compounds
-NACE.Manufacturing.Lvl4.PlasticsPrimaryForms = Manufacture of plastics in primary forms
-NACE.Manufacturing.Lvl4.SyntheticRubber = Manufacture of synthetic rubber in primary forms
+NACE.Manufacturing.Lvl3.BasicChemicals.hint = Includes dyes and pigments and other inorganic and organic basic chemicals.
+NACE.Manufacturing.BasicChemicals.title = What type of basic chemicals or polymer-based materials does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.IndustrialGases = Industrial gases
+NACE.Manufacturing.Lvl4.DyesPigments = Dyes and pigments
+NACE.Manufacturing.Lvl4.OtherInorganicChemicals = Other inorganic basic chemicals
+NACE.Manufacturing.Lvl4.OtherOrganicChemicals = Other organic basic chemicals
+NACE.Manufacturing.Lvl4.FertilisersNitrogen = Fertilisers and nitrogen compounds
+NACE.Manufacturing.Lvl4.PlasticsPrimaryForms = Plastics in primary forms
+NACE.Manufacturing.Lvl4.SyntheticRubber = Synthetic rubber in primary forms
 
 NACE.Manufacturing.Lvl3.PesticidesAgrochemicals = Pesticides, disinfectants and other agrochemical products
 NACE.Manufacturing.Lvl4.PesticidesAgrochemicals = Manufacture of pesticides, disinfectants and other agrochemical products
@@ -1086,17 +1119,22 @@ NACE.Manufacturing.Lvl3.PaintsVarnishes = Paints, varnishes and similar coatings
 NACE.Manufacturing.Lvl4.PaintsVarnishes = Manufacture of paints, varnishes and similar coatings, printing ink and mastics
 
 NACE.Manufacturing.Lvl3.WashingCleaning = Manufacture of washing, cleaning and polishing preparations
-NACE.Manufacturing.Lvl4.SoapDetergents = Manufacture of soap and detergents, cleaning and polishing preparations
-NACE.Manufacturing.Lvl4.PerfumesToiletPreparations = Manufacture of perfumes and toilet preparations
+NACE.Manufacturing.Lvl3.WashingCleaning.hint = Includes detergents, perfume and soap.
+NACE.Manufacturing.WashingChemicals.title = What type of washing, cleaning and polishing preparations does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.SoapDetergents = Soap and detergents, cleaning and polishing preparations
+NACE.Manufacturing.Lvl4.PerfumesToiletPreparations = Perfumes and toilet preparations
 
 NACE.Manufacturing.Lvl3.OtherChemicals = Other chemical products
-NACE.Manufacturing.Lvl4.LiquidBiofuels = Manufacture of liquid biofuels
-NACE.Manufacturing.Lvl4.OtherChemicals = Manufacture of other chemical products n.e.c.
+NACE.Manufacturing.Lvl3.OtherChemicals.hint = Includes liquid biofuels.
+NACE.Manufacturing.OtherChemicals.title = What type of other chemical products does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.LiquidBiofuels = Liquid biofuels
+NACE.Manufacturing.Lvl4.OtherChemicals = Another type of chemical product
 
 NACE.Manufacturing.Lvl3.ManMadeFibres = Man-made fibres
 NACE.Manufacturing.Lvl4.ManMadeFibres = Manufacture of man-made fibres
 
 ### Pharmaceuticals ###
+NACE.Manufacturing.Pharmaceuticals.title = What type of pharmaceuticals does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.BasicPharmaceuticals = Basic pharmaceutical products
 NACE.Manufacturing.Lvl4.BasicPharmaceuticals = Manufacture of basic pharmaceutical products
 
@@ -1104,58 +1142,70 @@ NACE.Manufacturing.Lvl3.PharmaceuticalPreparations = Pharmaceutical preparations
 NACE.Manufacturing.Lvl4.PharmaceuticalPreparations = Manufacture of pharmaceutical preparations
 
 ### Rubber and plastic ###
+NACE.Manufacturing.RubberPlastic.title = What type of rubber or plastic products does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.RubberProducts = Rubber products
-NACE.Manufacturing.Lvl4.RubberTyresTubes = Manufacture, retreading and rebuilding of rubber tyres and manufacture of tubes
-NACE.Manufacturing.Lvl4.OtherRubberProducts = Manufacture of other rubber products
+NACE.Manufacturing.Rubber.title = What type of rubber products does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.RubberTyresTubes = Rubber tyres and tubes
+NACE.Manufacturing.Lvl4.OtherRubberProducts = Another type of rubber products
 
 NACE.Manufacturing.Lvl3.PlasticProducts = Plastic products
-NACE.Manufacturing.Lvl4.PlasticPlatesSheets = Manufacture of plastic plates, sheets, tubes and profiles
-NACE.Manufacturing.Lvl4.PlasticPackingGoods = Manufacture of plastic packing goods
-NACE.Manufacturing.Lvl4.PlasticDoorsWindows = Manufacture of doors and windows of plastic
-NACE.Manufacturing.Lvl4.BuildersWarePlastic = Manufacture of builders' ware of plastic
-NACE.Manufacturing.Lvl4.FinishingPlasticProducts = Processing and finishing of plastic products
-NACE.Manufacturing.Lvl4.OtherPlasticProducts = Manufacture of other plastic products
+NACE.Manufacturing.Lvl3.PlasticProducts.hint = Includes processing and finishing of plastic products.
+NACE.Manufacturing.plastic.title = What type of plastic products does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.PlasticPlatesSheets = Plates, sheets, tubes and profiles
+NACE.Manufacturing.Lvl4.PlasticPackingGoods = Packing goods
+NACE.Manufacturing.Lvl4.PlasticDoorsWindows = Doors and windows
+NACE.Manufacturing.Lvl4.BuildersWarePlastic = Builders' ware
+NACE.Manufacturing.Lvl4.FinishingPlasticProducts = My undertaking carries out processing and finishing of plastic products
+NACE.Manufacturing.Lvl4.OtherPlasticProducts = Another type of plastic products
 
 ### Non metallic mineral products ###
+NACE.Manufacturing.nonMetallicMineral.title = What type of non-metallic mineral products does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.GlassProducts = Glass and glass products
-NACE.Manufacturing.Lvl4.FlatGlass = Manufacture of flat glass
-NACE.Manufacturing.Lvl4.ShapedFlatGlass = Shaping and processing of flat glass
-NACE.Manufacturing.Lvl4.HollowGlass = Manufacture of hollow glass
-NACE.Manufacturing.Lvl4.GlassFibres = Manufacture of glass fibres
-NACE.Manufacturing.Lvl4.OtherGlass = Manufacture and processing of other glass, including technical glassware
+NACE.Manufacturing.Lvl3.GlassProducts.hint = Includes shaping and processing of flat glass.
+NACE.Manufacturing.GlassProducts.title = What type of glass or glass products does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.FlatGlass = Flat glass
+NACE.Manufacturing.Lvl4.ShapedFlatGlass = My undertaking carries out shaping and processing of flat glass
+NACE.Manufacturing.Lvl4.HollowGlass = Hollow glass
+NACE.Manufacturing.Lvl4.GlassFibres = Glass fibres
+NACE.Manufacturing.Lvl4.OtherGlass = Another type of glass product
 
 NACE.Manufacturing.Lvl3.RefractoryProducts = Refractory products
 NACE.Manufacturing.Lvl4.RefractoryProducts = Manufacture of refractory products
 
 NACE.Manufacturing.Lvl3.ClayBuildingMaterials = Clay building materials
-NACE.Manufacturing.Lvl4.CeramicTilesFlags = Manufacture of ceramic tiles and flags
-NACE.Manufacturing.Lvl4.BricksTilesClay = Manufacture of bricks, tiles and construction products, in baked clay
+NACE.Manufacturing.ClayBuildingMaterials.title = What type of clay building materials does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.CeramicTilesFlags = Ceramic tiles and flags
+NACE.Manufacturing.Lvl4.BricksTilesClay = Bricks, tiles and construction products, in baked clay
 
 NACE.Manufacturing.Lvl3.PorcelainCeramicProducts = Other porcelain and ceramic products
-NACE.Manufacturing.Lvl4.CeramicHouseholdOrnamental = Manufacture of ceramic household and ornamental articles
-NACE.Manufacturing.Lvl4.CeramicSanitaryFixtures = Manufacture of ceramic sanitary fixtures
-NACE.Manufacturing.Lvl4.CeramicInsulators = Manufacture of ceramic insulators and insulating fittings
-NACE.Manufacturing.Lvl4.OtherTechnicalCeramics = Manufacture of other technical ceramic products
-NACE.Manufacturing.Lvl4.OtherCeramicProducts = Manufacture of other ceramic products
+NACE.Manufacturing.PorcelainCeramic.title = What type of porcelain or ceramic products does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.CeramicHouseholdOrnamental = Ceramic household and ornamental articles
+NACE.Manufacturing.Lvl4.CeramicSanitaryFixtures = Ceramic sanitary fixtures
+NACE.Manufacturing.Lvl4.CeramicInsulators = Ceramic insulators and insulating fittings
+NACE.Manufacturing.Lvl4.OtherTechnicalCeramics = Other technical ceramic products
+NACE.Manufacturing.Lvl4.OtherCeramicProducts = Another type of ceramic products
 
 NACE.Manufacturing.Lvl3.CementLimePlaster = Cement, lime and plaster
-NACE.Manufacturing.Lvl4.Cement = Manufacture of cement
-NACE.Manufacturing.Lvl4.LimePlaster = Manufacture of lime and plaster
+NACE.Manufacturing.CementLimePlaster.title = What type of materials does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.Cement = Cement
+NACE.Manufacturing.Lvl4.LimePlaster = Lime and plaster
 
 NACE.Manufacturing.Lvl3.ConcreteCementPlasterArticles = Articles of concrete, cement and plaster
-NACE.Manufacturing.Lvl4.ConcreteProducts = Manufacture of concrete products for construction purposes
-NACE.Manufacturing.Lvl4.PlasterProducts = Manufacture of plaster products for construction purposes
-NACE.Manufacturing.Lvl4.ReadyMixedConcrete = Manufacture of ready-mixed concrete
-NACE.Manufacturing.Lvl4.Mortars = Manufacture of mortars
-NACE.Manufacturing.Lvl4.FibreCement = Manufacture of fibre cement
-NACE.Manufacturing.Lvl4.OtherConcretePlasterArticles = Manufacture of other articles of concrete, cement and plaster
+NACE.Manufacturing.ConcreteCementPlasterArticles.title = What type of concrete, cement or plaster articles does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.ConcreteProducts = Concrete products for construction purposes
+NACE.Manufacturing.Lvl4.PlasterProducts = Plaster products for construction purposes
+NACE.Manufacturing.Lvl4.ReadyMixedConcrete = Ready-mixed concrete
+NACE.Manufacturing.Lvl4.Mortars = Mortars
+NACE.Manufacturing.Lvl4.FibreCement = Fibre cement
+NACE.Manufacturing.Lvl4.OtherConcretePlasterArticles = Other articles of concrete, cement and plaster
 
 NACE.Manufacturing.Lvl3.CuttingStone = Cutting, shaping and finishing of stone
 NACE.Manufacturing.Lvl4.CuttingStone = Cutting, shaping and finishing of stone
 
 NACE.Manufacturing.Lvl3.AbrasiveProducts = Another type of abrasive and non-metallic mineral product.
-NACE.Manufacturing.Lvl4.AbrasiveProducts = Manufacture of abrasive products
-NACE.Manufacturing.Lvl4.OtherNonMetallicMinerals = Manufacture of other non-metallic mineral products n.e.c.
+NACE.Manufacturing.AnotherType.title = What type of abrasive or non-metallic mineral products does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.AbrasiveProducts = Abrasive products
+NACE.Manufacturing.Lvl4.OtherNonMetallicMinerals = Other non-metallic mineral products
 
 ### Basic Metals ###
 NACE.Manufacturing.Lvl3.BasicIronSteel = Basic iron, steel and ferro-alloys

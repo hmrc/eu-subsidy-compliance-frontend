@@ -7,8 +7,8 @@ GET        /home                                      uk.gov.hmrc.eusubsidycompl
 
 GET        /assets/*file                              controllers.Assets.versioned(path = "/public", file: Asset)
 
-GET        /before-you-continue                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.RegulatoryChangeNotificationController.showPage
-POST       /before-you-continue                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.RegulatoryChangeNotificationController.continue
+GET        /select-new-undertaking-category                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NaceUndertakingCategoryIntroController.showPage
+POST       /select-new-undertaking-category                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NaceUndertakingCategoryIntroController.continue
 
 GET        /first-login-journey-eligibility-first-empty                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.EligibilityFirstEmptyPageController.firstEmptyPage
 GET        /first-login-journey-undertaking-first-empty                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.firstEmptyPage
@@ -148,6 +148,8 @@ GET        /financial-dashboard                                                 
 GET        /unverified-email                                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UnverifiedEmailController.unverifiedEmail
 
 GET        /undertaking-suspended                                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingSuspendedPageController.showPage(isLead: Boolean ?= false)
+
+GET        /undertaking-suspended-invalid-sector                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingInvalidSectorSuspendedPageController.showPage
 
 GET        /payment-already-submitted                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PaymentSubmittedController.paymentAlreadySubmitted
 
