@@ -20,11 +20,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios
 )
@@ -50,42 +52,42 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-carpets-rugs", messages("NACE.Manufacturing.Lvl4.CarpetsRugs"))),
-            value = Some(Sector.Carpets),
+            value = Some(Sector.Carpets.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Carpets.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-corgage", messages("NACE.Manufacturing.Lvl4.CordageRopeTwineNetting"))),
-            value = Some(Sector.Cordage),
+            value = Some(Sector.Cordage.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Cordage.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-pet-feed", messages("NACE.Manufacturing.Lvl3.FinishingTextiles"))),
-            value = Some(Sector.textilesFinishing),
+            value = Some(Sector.textilesFinishing.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesFinishing.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-household", messages("NACE.Manufacturing.Lvl4.HouseholdFurnishingTextiles"))),
-            value = Some(Sector.householdTextiles),
+            value = Some(Sector.householdTextiles.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.householdTextiles.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-knitted", messages("NACE.Manufacturing.Lvl4.KnittedCrochetedFabrics"))),
-            value = Some(Sector.KnittedFabrics),
+            value = Some(Sector.KnittedFabrics.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.KnittedFabrics.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-nonwoven", messages("NACE.Manufacturing.Lvl4.NonWovens"))),
-            value = Some(Sector.NonWoven),
+            value = Some(Sector.NonWoven.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.NonWoven.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-industrial", messages("NACE.Manufacturing.Lvl4.TechnicalIndustrialTextiles"))),
-            value = Some(Sector.OtherTechnicalTextiles),
+            value = Some(Sector.OtherTechnicalTextiles.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherTechnicalTextiles.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherTextiles"))),
-            value = Some(Sector.otherTextile),
+            value = Some(Sector.otherTextile.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherTextile.toString)
         )
     )

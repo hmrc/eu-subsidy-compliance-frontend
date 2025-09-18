@@ -20,11 +20,14 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
+
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios
 )
@@ -50,17 +53,17 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-fabricated", messages("NACE.Manufacturing.Lvl2.2.Metals.FabricatedMetal"))),
-            value = Some(Sector.FabricatedMetalProducts),
+            value = Some(Sector.FabricatedMetalProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.FabricatedMetalProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-wood", messages("NACE.Manufacturing.Lvl2.2.Metals.Wood"))),
-            value = Some(Sector.WoodProducts),
+            value = Some(Sector.WoodProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.WoodProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-rubber", messages("NACE.Manufacturing.Lvl2.2.Metals.Rubber"))),
-            value = Some(Sector.RubberPlasticProducts),
+            value = Some(Sector.RubberPlasticProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.RubberPlasticProducts.toString)
         ),
         RadioItem(
@@ -68,7 +71,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-chemicals", messages("NACE.Manufacturing.Lvl2.2.Metals.Chemicals.hint", appConfig.sectorCap("Other"))))
             )),
-            value = Some(Sector.ChemicalProducts),
+            value = Some(Sector.ChemicalProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.ChemicalProducts.toString)
         ),
         RadioItem(
@@ -76,12 +79,12 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-basic", messages("NACE.Manufacturing.Lvl2.2.Metals.BasicMetal.hint", appConfig.sectorCap("Other"))))
             )),
-            value = Some(Sector.BasicMetals),
+            value = Some(Sector.BasicMetals.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.BasicMetals.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-coke", messages("NACE.Manufacturing.Lvl2.2.Metals.Coke"))),
-            value = Some(Sector.CokeProducts),
+            value = Some(Sector.CokeProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.CokeProducts.toString)
         ),
         RadioItem(
@@ -89,7 +92,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-nonmetallic", messages("NACE.Manufacturing.Lvl2.2.Metals.NonMetallic.hint", appConfig.sectorCap("Other"))))
             )),
-            value = Some(Sector.OtherNonMetallicProducts),
+            value = Some(Sector.OtherNonMetallicProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherNonMetallicProducts.toString)
         )
     )

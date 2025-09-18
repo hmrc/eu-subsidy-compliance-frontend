@@ -20,11 +20,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios
 )
@@ -50,12 +52,12 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-furniture", messages("NACE.Manufacturing.Lvl2.2.Clothes.Furniture"))),
-            value = Some(Sector.FurnitureManufacture),
+            value = Some(Sector.FurnitureManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.FurnitureManufacture.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-clothing", messages("NACE.Manufacturing.Lvl2.2.Clothes.Clothing"))),
-            value = Some(Sector.Clothing),
+            value = Some(Sector.Clothing.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Clothing.toString)
         ),
         RadioItem(
@@ -63,7 +65,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-textiles", messages("NACE.Manufacturing.Lvl2.2.Clothes.Textiles.hint", appConfig.sectorCap("Other"))))
             )),
-            value = Some(Sector.Textiles),
+            value = Some(Sector.Textiles.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Textiles.toString)
         ),
         RadioItem(
@@ -71,7 +73,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-leather", messages("NACE.Manufacturing.Lvl2.2.Clothes.Leather.hint", appConfig.sectorCap("Other"))))
             )),
-            value = Some(Sector.LeatherProducts),
+            value = Some(Sector.LeatherProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.LeatherProducts.toString)
         )
     )

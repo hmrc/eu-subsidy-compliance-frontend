@@ -1,6 +1,18 @@
 @*
-* Copyright 2025 HM Revenue & Customs
-*@
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
@@ -8,11 +20,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
-button: components.Button,
+button: Button,
 govukErrorSummary: GovukErrorSummary,
 govukRadios : GovukRadios
 )
@@ -35,36 +49,26 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-coalAndLigniteMining", messages("NACE.mining.Lvl2.coalAndLigniteMining"))),
-value = Some(Sector.coalAndLigniteMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.coalAndLigniteMining.toString)
+content = HtmlContent(radioText("sector-label-humanHealth", messages("NACE.humanHealth.Lvl2.humanHealth"))),
+value = Some(Sector.humanHealth.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.humanHealth.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-petroleumNaturalGasExtraction", messages("NACE.mining.Lvl2.petroleumNaturalGasExtraction"))),
-value = Some(Sector.petroleumNaturalGasExtraction.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.petroleumNaturalGasExtraction.toString)
+content = HtmlContent(radioText("sector-label-residentialCare", messages("NACE.humanHealth.Lvl2.residentialCare"))),
+value = Some(Sector.residentialCare.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.residentialCare.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-metalOresMining", messages("NACE.mining.Lvl2.metalOresMining"))),
-value = Some(Sector.metalOresMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.metalOresMining.toString)
-),
-RadioItem(
-content = HtmlContent(radioText("sector-label-otherMiningQuarrying", messages("NACE.mining.Lvl2.otherMiningQuarrying"))),
-value = Some(Sector.otherMiningQuarrying.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMiningQuarrying.toString)
-),
-RadioItem(
-content = HtmlContent(radioText("sector-label-miningSupportServices", messages("NACE.mining.Lvl2.miningSupportServices"))),
-value = Some(Sector.miningSupportServices.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningSupportServices.toString)
+content = HtmlContent(radioText("sector-label-socialWorkWithoutAccommodation", messages("NACE.humanHealth.Lvl2.socialWorkWithoutAccommodation"))),
+value = Some(Sector.socialWorkWithoutAccommodation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.socialWorkWithoutAccommodation.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.mining.Lvl1.mining.title")),
+pageTitle = Some(messages("NACE.humanHealth.Lvl1.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -91,7 +95,7 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.mining.Lvl1.mining.title")),
+content = Text(messages("NACE.humanHealth.Lvl1.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))

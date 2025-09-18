@@ -1,6 +1,18 @@
 @*
-* Copyright 2025 HM Revenue & Customs
-*@
+ * Copyright 2025 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
@@ -8,11 +20,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
-button: components.Button,
+button: Button,
 govukErrorSummary: GovukErrorSummary,
 govukRadios : GovukRadios
 )
@@ -35,14 +49,14 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-UndifferentiatedGoodsActivities", messages("NACE.households.Lvl4.undifferentiatedGoods"))),
-value = Some(Sector.UndifferentiatedGoodsActivities.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.UndifferentiatedGoodsActivities.toString)
+content = HtmlContent(radioText("sector-label-undifferentiatedGoods4", messages("NACE.households.Lvl4.undifferentiatedGoods"))),
+value = Some(Sector.undifferentiatedGoods4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.undifferentiatedGoods4.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-UndifferentiatedServiceActivities", messages("NACE.households.Lvl4.undifferentiatedServices"))),
-value = Some(Sector.UndifferentiatedServiceActivities.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.UndifferentiatedServiceActivities.toString)
+content = HtmlContent(radioText("sector-label-undifferentiatedServices4", messages("NACE.households.Lvl4.undifferentiatedServices"))),
+value = Some(Sector.undifferentiatedServices4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.undifferentiatedServices4.toString)
 )
 )
 }
