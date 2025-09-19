@@ -51,22 +51,22 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-footwear", messages("NACE.publishingBroadcasting.Lvl4.books"))),
+            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl4.books"))),
             value = Some(Sector.Books.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Books.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-tanning", messages("NACE.publishingBroadcasting.Lvl4.journalsPeriodicals"))),
+            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl4.journalsPeriodicals"))),
             value = Some(Sector.JournalsPeriodicals.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.JournalsPeriodicals.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-tanning", messages("NACE.publishingBroadcasting.Lvl4.newspapers"))),
+            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl4.newspapers"))),
             value = Some(Sector.Newspapers.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Newspapers.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-tanning", messages("NACE.publishingBroadcasting.Lvl4.otherPublishing"))),
+            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl4.otherPublishing"))),
             value = Some(Sector.OtherPublishing.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherPublishing.toString)
         )
