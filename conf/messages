@@ -134,6 +134,7 @@ undertakingName.p2 = This may include more than one business. This group of busi
 undertakingName.p3 = These businesses must not report payments they receive separately. You are responsible for reporting received payments on their behalf.
 
 undertakingSector.error.required = Select the industry sector of your undertaking
+undertakingSector.error.required.nace = Select your undertaking’s main business activity in
 undertakingSector.title=What is the industry sector of your undertaking?
 undertakingSector.p1=Your undertaking may have businesses working in different sectors. For your whole undertaking the lowest subsidy allowance will apply.
 
@@ -758,7 +759,7 @@ NACE.agriculture.Lvl2.cropAnimalProduction = Crop and animal production, hunting
 NACE.agriculture.Lvl2.title = What is your undertaking’s main business activity in agriculture?
 NACE.agriculture.Lvl3.growingCrops.title = What type of crop does your undertaking grow?
 NACE.agriculture.Lvl3.growingNonPerennialCrops = Non-perennial crops
-NACE.agriculture.Lvl4.cerealsLeguminousCrops = Cereals, other than rice, leguminous crops and oil seeds
+NACE.agriculture.Lvl4.cerealsLeguminousCrops = Cereals (except rice), leguminous crops and oil seeds
 NACE.agriculture.Lvl4.rice = Rice
 NACE.agriculture.Lvl4.vegetables = Vegetables and melons, roots and tubers
 NACE.agriculture.Lvl4.sugarCane = Sugar cane
@@ -768,10 +769,13 @@ NACE.agriculture.Lvl4.otherNonPerennialCrops = Other non-perennial crops
 NACE.agriculture.Lvl3.growingPerennialCrops = Perennial crops
 NACE.agriculture.Lvl4.grapes =  Grapes
 NACE.agriculture.Lvl4.tropicalFruits =  Tropical and subtropical fruits
+NACE.agriculture.Lvl4.tropicalFruits.hint =  For example avocados, bananas or pineapples.
 NACE.agriculture.Lvl4.citrusFruits =  Citrus fruits
 NACE.agriculture.Lvl4.stoneFruits =  Pome fruits and stone fruits
+NACE.agriculture.Lvl4.stoneFruits.hint =  For example apples, cherries or peaches.
 NACE.agriculture.Lvl4.otherTree =  Other tree and bush fruits and nuts
 NACE.agriculture.Lvl4.oleaginousFruits =  Oleaginous fruits
+NACE.agriculture.Lvl4.oleaginousFruits.hint = For example coconuts or olives.
 NACE.agriculture.Lvl4.beverageCrops =  Beverage crops
 NACE.agriculture.Lvl4.spicesPharmaceuticalCrops =  Spices, aromatic, drug and pharmaceutical crops
 NACE.agriculture.Lvl4.otherPerennialCrops =  Other perennial crops
@@ -822,7 +826,7 @@ NACE.fishing.Lvl3.aquacultureSupportActivities = Support activities for fishing 
 NACE.fishing.Lvl4.aquacultureSupportActivities = Support activities for fishing and aquaculture
 
 #MiningQuarrying NACE Sector2,3,4
-NACE.Lvl1.mining.title = What is your undertaking’s main business activity in mining and quarrying?
+NACE.mining.Lvl1.title = What is your undertaking’s main business activity in mining and quarrying?
 NACE.mining.Lvl2.coalAndLigniteMining = Mining of coal and lignite
 NACE.mining.Lvl2.coalAndLigniteMining.title = What type of coal does your undertaking mine?
 NACE.mining.Lvl3.hardcoal = Mining of hard coal

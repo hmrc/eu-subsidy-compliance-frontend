@@ -49,19 +49,19 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-other", messages("NACE.forestry.Lvl4.silviculture"))),
-value = Some(Sector.silviculture4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.silviculture4.toString)
+content = HtmlContent(radioText("sector-label-other", messages("NACE.forestry.Lvl4.gatheringOfWildGrowth"))),
+value = Some(Sector.gatheringOfWildGrowth4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.gatheringOfWildGrowth4.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-other", "messages(NACE.forestry.Lvl4.logging")),
+content = HtmlContent(radioText("sector-label-other", messages("NACE.forestry.Lvl4.logging"))),
 value = Some(Sector.logging4.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.logging4.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-other", messages("NACE.forestry.Lvl4.gatheringOfWildGrowth"))),
-value = Some(Sector.gatheringOfWildGrowth4.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.gatheringOfWildGrowth4.toString)
+content = HtmlContent(radioText("sector-label-other", messages("NACE.forestry.Lvl4.silviculture"))),
+value = Some(Sector.silviculture4.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.silviculture4.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-other", messages("NACE.forestry.Lvl4.forestrySupportServices"))),
@@ -85,7 +85,7 @@ hasErrors = form.hasErrors
 errorList = Seq(
 ErrorLink(
 href = Some(s"#${err.key}"),
-content = Text(s"${messages(err.key++"." ++err.message)}")
+content = Text(messages("undertakingSector.error.required.nace")+ " forestry" )
 )
 ),
 title = Text(messages("common.error.summary.title", undertakingName))
@@ -96,7 +96,7 @@ title = Text(messages("common.error.summary.title", undertakingName))
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-content = Text(messages("undertakingSector.error.required"))
+content = Text(messages("undertakingSector.error.required.nace")+ " forestry" )
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
