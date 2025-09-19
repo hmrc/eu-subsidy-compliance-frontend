@@ -740,7 +740,7 @@ NACE.Lvl1.WholesaleRetailTrade = Wholesale and retail trade
 NACE.Lvl1.TransportationAndStorage = Transportation and storage
 NACE.Lvl1.accommodationAndFoodService = Accommodation and food service activities
 NACE.Lvl1.publishingBroadcasting = Publishing and broadcasting
-NACE.Lvl1.TelecommunicationProgrammingInformationService = Telecommunication, computer programming, consulting, computer infrastructure and other information service activities
+NACE.Lvl1.telecommunicationsComputing = Telecommunications and computing
 NACE.Lvl1.FinancialInsuranceActivities = Financial and insurance activities
 NACE.Lvl1.RealEstateActivities = Real estate activities
 NACE.Lvl1.ProfessionalScientificTechnicalActivities = Professional, scientific and technical activities
@@ -1790,29 +1790,36 @@ NACE.publishingBroadcasting.Lvl3.newsAgency.title = What is your undertaking’s
 NACE.publishingBroadcasting.Lvl4.newsAgency = News agency activities
 NACE.publishingBroadcasting.Lvl4.otherContentDistributionActivities = Other content distribution activities
 
-#Telecommunications NACE Sector2,3,4
-NACE.Telecommunications.Lvl2.Telecommunication = Telecommunication
-#### NACE.Telecommunications.Lvl3.WiredTelecom = Wired, wireless, and satellite telecommunication activities
-NACE.Telecommunications.Lvl4.WiredWirelessSatellite = Wired, wireless, and satellite telecommunication activities
-#### NACE.Telecommunications.Lvl3.ResellingTelecom = Telecommunication reselling activities and intermediation service activities for telecommunication
-NACE.Telecommunications.Lvl4.ResellingTelecom = Telecommunication reselling activities and intermediation service activities for telecommunication
-#### NACE.Telecommunications.Lvl3.OtherTelecom = Other telecommunication activities
-NACE.Telecommunications.Lvl4.OtherTelecom = Other telecommunication activities
+#telecommunicationsComputing NACE Sector2,3,4
+NACE.telecommunicationsComputing.Lvl1.title = What is your undertaking’s main business activity in telecommunications and computing
+NACE.telecommunicationsComputing.Lvl2.telecommunication = Telecommunication
+NACE.telecommunicationsComputing.Lvl2.telecommunication.title = What is your undertaking’s main business activity in telecommunications?
+#### NACE.telecommunicationsComputing.Lvl3.wiredTelecommunication = Wired, wireless, and satellite telecommunication
+NACE.telecommunicationsComputing.Lvl4.wiredWirelessSatellite = Wired, wireless, and satellite telecommunication activities
+#### NACE.telecommunicationsComputing.Lvl3.resellingTelecommunication = Telecommunication reselling activities and intermediation service activities for telecommunication
+NACE.telecommunicationsComputing.Lvl4.resellingTelecom = Telecommunication reselling activities and intermediation service activities for telecommunication
+#### NACE.telecommunicationsComputing.Lvl3.otherTelecommunications = Other telecommunication activities
+NACE.Telecommunications.Lvl4.otherTelecom = Other telecommunication activities
 
-NACE.Telecommunications.Lvl2.ComputerProgrammingConsultancy = Computer programming, consultancy and related activities
-#### NACE.Telecommunications.Lvl3.Programming = Computer programming activities
-NACE.Telecommunications.Lvl4.Programming = Computer programming activities
-#### NACE.Telecommunications.Lvl3.Consultancy = Computer consultancy and computer facilities management activities
-NACE.Telecommunications.Lvl4.Consultancy = Computer consultancy and computer facilities management activities
-#### NACE.Telecommunications.Lvl3.OtherITServices = Other information technology and computer service activities
-NACE.Telecommunications.Lvl4.OtherITServices = Other information technology and computer service activities
+NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy = Computer programming, consultancy and related activities
+NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy.title = What is your undertaking’s main business activity in computer programming, consultancy and related activities
+NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy.hint = Includes computer facilities management and other information technology and computer service activities.
+#### NACE.telecommunicationsComputing.Lvl3.computerProgrammingActivities = Computer programming activities
+NACE.telecommunicationsComputing.Lvl4.computerProgrammingActivities = Computer programming activities
+#### NACE.telecommunicationsComputing.Lvl3.computerFacilitiesConsultancy = Computer facilities management and consultancy
+NACE.telecommunicationsComputing.Lvl4.consultancy = Computer consultancy and computer facilities management activities
+#### NACE.telecommunicationsComputing.Lvl3.otherComputerServiceActivities = Other information technology and computer service activities
+NACE.telecommunicationsComputing.Lvl4.otherComputerServiceActivities = Other information technology and computer service activities
 
-NACE.Telecommunications.Lvl2.ComputingInfrastructure = Computing infrastructure, data processing, hosting and other information service activities
-#### NACE.Telecommunications.Lvl3.ComputingInfrastructure = Computing infrastructure, data processing, hosting and related activities
-NACE.Telecommunications.Lvl4.InfrastructureHosting = Computing infrastructure, data processing, hosting and related activities
-#### NACE.Telecommunications.Lvl3.WebSearch = Web search portal activities and other information service activities
-NACE.Telecommunications.Lvl4.WebSearchPortals = Web search portal activities
-NACE.Telecommunications.Lvl4.OtherInformationServices = Other information service activities
+NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities = Computing infrastructure, data processing, hosting and other information service activities
+NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities.title = What is your undertaking’s main business activity in information services?
+NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities.hint = Includes web search portal activities and other information services.
+#### NACE.telecommunicationsComputing.Lvl3.computingInfrastructureActivities = Computing infrastructure, data processing, hosting and related activities
+NACE.telecommunicationsComputing.Lvl4.infrastructureHosting = Computing infrastructure, data processing, hosting and related activities
+#### NACE.telecommunicationsComputing.Lvl3.webSearchPortal = Web search portal activities and other information service activities
+NACE.telecommunicationsComputing.Lvl3.webSearchPortal.title = What is your undertaking’s main business activity in web search portal activities and other information services?
+NACE.telecommunicationsComputing.Lvl4.webSearchPortalActivities = Web search portal activities
+NACE.telecommunicationsComputing.Lvl4.otherInformationServices = Other information service activities
 
 #FinancialServicesInsurance NACE Sector2,3,4
 NACE.FinancialServicesInsurance.Lvl2.FinancialServiceActivities = Financial service activities, except insurance and pension funding
