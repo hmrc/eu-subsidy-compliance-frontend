@@ -1241,13 +1241,18 @@ NACE.Manufacturing.Lvl4.CastingLightMetals = Light metals
 NACE.Manufacturing.Lvl4.CastingOtherNonFerrous = Other non-ferrous metals
 
 ### Fabricated metal products ###
+NACE.Manufacturing.FabricatedMetal.title = What type of fabricated metal manufacturing or processing does your undertaking do?
 NACE.Manufacturing.Lvl3.StructuralMetalProducts = Manufacture of structural metal products
-NACE.Manufacturing.Lvl4.MetalStructures = Manufacture of metal structures and parts of structures
-NACE.Manufacturing.Lvl4.MetalDoorsWindows = Manufacture of doors and windows of metal
+NACE.Manufacturing.Lvl3.StructuralMetalProducts.hint = Includes doors, windows and other structures or parts of structures.
+NACE.Manufacturing.MetalStructures.title = What type of structural metal products does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.MetalStructures = Metal structures and parts of structures
+NACE.Manufacturing.Lvl4.MetalDoorsWindows = Doors and windows
 
 NACE.Manufacturing.Lvl3.TanksReservoirs = Manufacture of tanks, reservoirs and containers of metal
-NACE.Manufacturing.Lvl4.CentralHeatingBoilers = Manufacture of central heating radiators, steam generators and boilers
-NACE.Manufacturing.Lvl4.OtherTanksReservoirs = Manufacture of other tanks, reservoirs and containers of metal
+NACE.Manufacturing.Lvl3.TanksReservoirs.hint = Includes central heating radiators, steam generators and boilers.
+NACE.Manufacturing.TanksReservoirsContainers.title = What type of metal products does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.CentralHeatingBoilers = Central heating radiators, steam generators and boilers
+NACE.Manufacturing.Lvl4.OtherTanksReservoirs = Other tanks, reservoirs and containers of metal
 
 NACE.Manufacturing.Lvl3.WeaponsAmmunition = Manufacture of weapons and ammunition
 NACE.Manufacturing.Lvl4.WeaponsAmmunition = Manufacture of weapons and ammunition
@@ -1256,26 +1261,31 @@ NACE.Manufacturing.Lvl3.ForgingShaping = Forging and shaping metal and powder me
 NACE.Manufacturing.Lvl4.ForgingShaping = Forging and shaping metal and powder metallurgy
 
 NACE.Manufacturing.Lvl3.TreatmentCoatingMachining = Treatment and coating of metals; machining
-NACE.Manufacturing.Lvl4.CoatingMetals = Coating of metals
-NACE.Manufacturing.Lvl4.HeatTreatment = Heat treatment of metals
-NACE.Manufacturing.Lvl4.Machining = Machining of metals
+NACE.Manufacturing.TreatmentCoatingMachining.title = What type of metal finishing or processing does your undertaking do?
+NACE.Manufacturing.Lvl4.CoatingMetals = Coating
+NACE.Manufacturing.Lvl4.HeatTreatment = Heat treatment
+NACE.Manufacturing.Lvl4.Machining = Machining
 
 NACE.Manufacturing.Lvl3.CutleryToolsHardware = Manufacture of cutlery, tools and general hardware
-NACE.Manufacturing.Lvl4.Cutlery = Manufacture of cutlery
-NACE.Manufacturing.Lvl4.LocksHinges = Manufacture of locks and hinges
-NACE.Manufacturing.Lvl4.Tools = Manufacture of tools
+NACE.Manufacturing.CutleryToolsHardware.title = What type of cutlery or hardware does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.Cutlery = Cutlery
+NACE.Manufacturing.Lvl4.LocksHinges = Locks and hinges
+NACE.Manufacturing.Lvl4.Tools = Tools
 
 NACE.Manufacturing.Lvl3.OtherFabricatedMetalProducts = Manufacture of other fabricated metal products
-NACE.Manufacturing.Lvl4.SteelDrumsContainers = Manufacture of steel drums and similar containers
-NACE.Manufacturing.Lvl4.LightMetalPackaging = Manufacture of light metal packaging
-NACE.Manufacturing.Lvl4.WireProductsSprings = Manufacture of wire products, chain and springs
-NACE.Manufacturing.Lvl4.Fasteners = Manufacture of fasteners and screw machine products
-NACE.Manufacturing.Lvl4.OtherFabricatedMetalProducts = Manufacture of other fabricated metal products n.e.c.
+NACE.Manufacturing.OtherFabricatedMetalProducts.title = What type of fabricated metal products does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.SteelDrumsContainers = Steel drums and similar containers
+NACE.Manufacturing.Lvl4.LightMetalPackaging = Light metal packaging
+NACE.Manufacturing.Lvl4.WireProductsSprings = Wire products, chain and springs
+NACE.Manufacturing.Lvl4.Fasteners = Fasteners and screw machine products
+NACE.Manufacturing.Lvl4.OtherFabricatedMetalProducts = Another type of fabricated metal product
 
 ### Computers electronics ###
+NACE.Manufacturing.ComputersElectronics.title = What type of computers, electronics or optical products does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.ElectronicComponentsBoards = Electronic components and boards
-NACE.Manufacturing.Lvl4.ElectronicComponents = Manufacture of electronic components
-NACE.Manufacturing.Lvl4.LoadedElectronicBoards = Manufacture of loaded electronic boards
+NACE.Manufacturing.ElectronicComponentsBoards.title = What type of electronic components and boards does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.ElectronicComponents = Electronic components
+NACE.Manufacturing.Lvl4.LoadedElectronicBoards = Loaded electronic boards
 
 NACE.Manufacturing.Lvl3.ComputersPeripherals = Computers and peripheral equipment
 NACE.Manufacturing.Lvl4.ComputersPeripherals = Manufacture of computers and peripheral equipment
@@ -1287,8 +1297,9 @@ NACE.Manufacturing.Lvl3.ConsumerElectronics = Consumer electronics
 NACE.Manufacturing.Lvl4.ConsumerElectronics = Manufacture of consumer electronics
 
 NACE.Manufacturing.Lvl3.MeasuringTestingInstruments = Measuring testing instruments, clocks and watches
-NACE.Manufacturing.Lvl4.MeasuringTestingNavigation = Manufacture of instruments and appliances for measuring, testing and navigation
-NACE.Manufacturing.Lvl4.WatchesClocks = Manufacture of watches and clocks
+NACE.Manufacturing.MeasuringTestingInstruments.title = What type of instruments does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.MeasuringTestingNavigation = Instruments and appliances for measuring, testing and navigation
+NACE.Manufacturing.Lvl4.WatchesClocks = Watches and clocks
 
 NACE.Manufacturing.Lvl3.IrradiationElectromedical = Irradiation, electromedical and electrotherapeutic equipment
 NACE.Manufacturing.Lvl4.IrradiationElectromedical = Manufacture of irradiation, electromedical and electrotherapeutic equipment
@@ -1297,24 +1308,28 @@ NACE.Manufacturing.Lvl3.OpticalInstruments = Optical instruments, magnetic and o
 NACE.Manufacturing.Lvl4.OpticalInstruments = Manufacture of optical instruments, magnetic and optical media and photographic equipment
 
 ### Electrical equipment ###
+NACE.Manufacturing.ElectricalEquipment.title = What type of electrical equipment does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.ElectricMotorsGenerators = Electric motors, generators, transformers and electricity distribution and control apparatus
-NACE.Manufacturing.Lvl4.ElectricMotorsGenerators = Manufacture of electric motors, generators and transformers
-NACE.Manufacturing.Lvl4.ElectricityDistributionControl = Manufacture of electricity distribution and control apparatus
+NACE.Manufacturing.Lvl3.ElectricMotorsGenerators.title = What type of equipment for power generation, transmission or distribution does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.ElectricMotorsGenerators = Electric motors, generators and transformers
+NACE.Manufacturing.Lvl4.ElectricityDistributionControl = Electricity distribution and control apparatus
 
 NACE.Manufacturing.Lvl3.BatteriesAccumulators = Batteries and accumulators
 NACE.Manufacturing.Lvl4.BatteriesAccumulators = Manufacture of batteries and accumulators
 
 NACE.Manufacturing.Lvl3.WiringDevices = Wiring and wiring devices
-NACE.Manufacturing.Lvl4.FibreOpticCables = Manufacture of fibre optic cables
-NACE.Manufacturing.Lvl4.OtherWiresCables = Manufacture of other electronic and electric wires and cables
-NACE.Manufacturing.Lvl4.WiringDevices = Manufacture of wiring devices
+NACE.Manufacturing.WiringDevices.title = What type of wiring or wiring device does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.FibreOpticCables = Fibre optic cables
+NACE.Manufacturing.Lvl4.OtherWiresCables = Other electronic and electric wires and cables
+NACE.Manufacturing.Lvl4.WiringDevices = Wiring devices
 
 NACE.Manufacturing.Lvl3.LightingEquipment = Lighting equipment
 NACE.Manufacturing.Lvl4.LightingEquipment = Manufacture of lighting equipment
 
 NACE.Manufacturing.Lvl3.DomesticAppliances = Domestic appliances
-NACE.Manufacturing.Lvl4.ElectricDomesticAppliances = Manufacture of electric domestic appliances
-NACE.Manufacturing.Lvl4.NonElectricDomesticAppliances = Manufacture of non-electric domestic appliances
+NACE.Manufacturing.DomesticAppliances.title = What type of domestic appliances does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.ElectricDomesticAppliances = Electric domestic appliances
+NACE.Manufacturing.Lvl4.NonElectricDomesticAppliances = Non-electric domestic appliances
 
 NACE.Manufacturing.Lvl3.OtherElectricalEquipment = Other electrical equipment
 NACE.Manufacturing.Lvl4.OtherElectricalEquipment = Manufacture of other electrical equipment
