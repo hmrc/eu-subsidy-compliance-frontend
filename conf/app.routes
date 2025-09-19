@@ -156,3 +156,7 @@ GET        /payment-already-submitted                                           
 GET        /registration-already-submitted                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.RegistrationSubmittedController.registrationAlreadySubmitted
 
 GET        /access-denied-for-agents                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgentNotAllowedController.showPage
+
+# Temporary routes for testing Administrative templates
+GET     /temp/administrative                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.TempAdministrativeController.showAdministrative()
+POST    /temp/administrative                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.TempAdministrativeController.submitAdministrative()
