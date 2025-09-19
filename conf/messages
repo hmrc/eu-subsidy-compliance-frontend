@@ -738,7 +738,7 @@ NACE.Lvl1.Construction = Construction
 NACE.Lvl1.WholesaleRetailTrade = Wholesale and retail trade
 NACE.Lvl1.TransportationAndStorage = Transportation and storage
 NACE.Lvl1.AccommodationAndFoodService = Accommodation and food service activities
-NACE.Lvl1.PublishingBroadcastingContentDistribution = Publishing, broadcasting, and content production and distribution activities
+NACE.Lvl1.publishingBroadcasting = Publishing and broadcasting
 NACE.Lvl1.TelecommunicationProgrammingInformationService = Telecommunication, computer programming, consulting, computer infrastructure and other information service activities
 NACE.Lvl1.FinancialInsuranceActivities = Financial and insurance activities
 NACE.Lvl1.RealEstateActivities = Real estate activities
@@ -1717,35 +1717,45 @@ NACE.AccommodationAndFoodService.Lvl4.BeverageServing = Beverage serving activit
 #### NACE.AccommodationAndFoodService.Lvl3.IntermediationFoodBeverage = Intermediation service activities for food and beverage services
 NACE.AccommodationAndFoodService.Lvl4.IntermediationFoodBeverage = Intermediation service activities for food and beverage services
 
-#PublishingBroadcastingContentDist NACE Sector2,3,4
-NACE.PublishingBroadcastingContentDist.Lvl2.Publishing = Publishing activities
-#### NACE.PublishingBroadcastingContentDist.Lvl3.PublishingBooksNewspapers = Publishing of books, newspapers and other publishing activities, except software publishing
-NACE.PublishingBroadcastingContentDist.Lvl4.PublishingBooks = Publishing of books
-NACE.PublishingBroadcastingContentDist.Lvl4.PublishingNewspapers = Publishing of newspapers
-NACE.PublishingBroadcastingContentDist.Lvl4.PublishingJournalsPeriodicals = Publishing of journals and periodicals
-NACE.PublishingBroadcastingContentDistribution.Lvl4.OtherPublishing = Other publishing activities, except software publishing
-#### NACE.PublishingBroadcastingContentDistribution.Lvl3.SoftwarePublishing = Software publishing
-NACE.PublishingBroadcastingContentDistribution.Lvl4.VideoGames = Publishing of video games
-NACE.PublishingBroadcastingContentDistribution.Lvl4.OtherSoftwarePublishing = Other software publishing
+#publishingBroadcasting NACE Sector2,3,4
+NACE.publishingBroadcasting.Lvl1.title = What is your undertaking’s main business activity in publishing
+NACE.publishingBroadcasting.Lvl2.publishing = Publishing
+NACE.publishingBroadcasting.Lvl2.publishing.title = What is your undertaking’s main business activity in publishing?
+#### NACE.publishingBroadcasting.Lvl3.publishingBooksNewspapers = Publishing of books, newspapers and other publishing activities (except software publishing)
+NACE.publishingBroadcasting.Lvl3.publishingBooksNewspapers.title = What is your undertaking’s main business activity in medical and dental practice and related activities
+NACE.publishingBroadcasting.Lvl3.publishingBooksNewspapers.hint = Select one option that best describes your undertaking’s main business activity
+NACE.publishingBroadcasting.Lvl4.books = Books
+NACE.publishingBroadcasting.Lvl4.newspapers = Newspapers
+NACE.publishingBroadcasting.Lvl4.journalsPeriodicals = Journals and periodicals
+NACE.publishingBroadcasting.Lvl4.otherPublishing = Other publishing activities (except software publishing)
+#### NACE.publishingBroadcasting.Lvl3.softwarePublishing = Software publishing
+NACE.publishingBroadcasting.Lvl3.softwarePublishing.title = What type of software does your undertaking publish?
+NACE.publishingBroadcasting.Lvl3.softwarePublishing.hint = Select one option that best describes your undertaking’s main business activity
+NACE.publishingBroadcasting.Lvl4.videoGames = Video games
+NACE.publishingBroadcasting.Lvl4.otherSoftware = Another type of software
 
-NACE.PublishingBroadcastingContentDistribution.Lvl2.MotionPicture = Motion picture, video and television programme production, sound recording and music publishing activities
-#### NACE.PublishingBroadcastingContentDistribution.Lvl3.MotionPictureVideo = Motion picture, video and television programme activities
-NACE.PublishingBroadcastingContentDistribution.Lvl4.Production = Motion picture, video and television programme production activities
-NACE.PublishingBroadcastingContentDistribution.Lvl4.PostProduction = Motion picture, video and television programme post-production activities
-NACE.PublishingBroadcastingContentDistribution.Lvl4.Distribution = Motion picture and video distribution activities
-NACE.PublishingBroadcastingContentDistribution.Lvl4.Projection = Motion picture projection activities
-#### NACE.PublishingBroadcastingContentDistribution.Lvl3.SoundRecording = Sound recording and music publishing activities
-NACE.PublishingBroadcastingContentDistribution.Lvl4.SoundRecordingPublishing = Sound recording and music publishing activities
+NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing = Film, TV and video production, sound recording and music publishing
+NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing.title = What is your undertaking’s main business activity in film, TV and video production, sound recording and music publishing
+#### NACE.publishingBroadcasting.Lvl3.filmVideoActivities = Film, TV and video activities
+NACE.publishingBroadcasting.Lvl3.filmVideoActivities.title = What type of film, TV and video service does your undertaking provide?
+NACE.publishingBroadcasting.Lvl3.filmVideoActivities.hint = Select one option that best describes your undertaking’s main business activity
+NACE.publishingBroadcasting.Lvl4.videoProductionDistribution = Distribution
+NACE.publishingBroadcasting.Lvl4.videoPostProduction = Post-production
+NACE.publishingBroadcasting.Lvl4.videoProduction = Production
+NACE.publishingBroadcasting.Lvl4.projection = Projection
+#### NACE.publishingBroadcasting.Lvl3.soundRecordingAndMusicPublishing = Sound recording and music publishing
+NACE.publishingBroadcasting.Lvl4.SoundRecordingActivities = Sound recording and music publishing activities
 
-NACE.PublishingBroadcastingContentDistribution.Lvl2.ProgrammingBroadcasting = Programming, broadcasting, news agency and other content distribution activities
-#### NACE.PublishingBroadcastingContentDistribution.Lvl3.RadioBroadcasting = Radio broadcasting and audio distribution activities
-NACE.PublishingBroadcastingContentDistribution.Lvl4.RadioBroadcasting = Radio broadcasting and audio distribution activities
-
-#### NACE.PublishingBroadcastingContentDistribution.Lvl3.TelevisionBroadcasting = Television programming, broadcasting and video distribution activities
-NACE.PublishingBroadcastingContentDistribution.Lvl4.TelevisionBroadcasting = Television programming, broadcasting and video distribution activities
-#### NACE.PublishingBroadcastingContentDistribution.Lvl3.NewsAgency = News agency and other content distribution activities
-NACE.PublishingBroadcastingContentDistribution.Lvl4.NewsAgency = News agency activities
-NACE.PublishingBroadcastingContentDistribution.Lvl4.OtherContentDistribution = Other content distribution activities
+NACE.publishingBroadcasting.Lvl2.programmingBroadcastingNewsActivities = Programming, broadcasting, news agency and other content distribution activities
+NACE.publishingBroadcasting.Lvl2.programmingBroadcastingNewsActivities.title = What is your undertaking’s main business activity in programming, broadcasting, new agency and content distribution
+#### NACE.publishingBroadcasting.Lvl3.radioBroadcasting = Radio broadcasting and audio distribution
+NACE.publishingBroadcasting.Lvl4.radioBroadcastingActivities = Radio broadcasting and audio distribution activities
+#### NACE.publishingBroadcasting.Lvl3.programmingBroadcastingVideoDistribution = TV programming, broadcasting and video distribution
+NACE.publishingBroadcasting.Lvl4.televisionBroadcasting = Television programming, broadcasting and video distribution activities
+#### NACE.publishingBroadcasting.Lvl3.newsAgency = News agency and other content distribution activities
+NACE.publishingBroadcasting.Lvl3.newsAgency.title = What is your undertaking’s main business activity in news agency and content distribution
+NACE.publishingBroadcasting.Lvl4.newsAgency = News agency activities
+NACE.publishingBroadcasting.Lvl4.otherContentDistributionActivities = Other content distribution activities
 
 #Telecommunications NACE Sector2,3,4
 NACE.Telecommunications.Lvl2.Telecommunication = Telecommunication
