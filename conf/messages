@@ -1335,39 +1335,48 @@ NACE.Manufacturing.Lvl3.OtherElectricalEquipment = Other electrical equipment
 NACE.Manufacturing.Lvl4.OtherElectricalEquipment = Manufacture of other electrical equipment
 
 ### Other machinery and equipment ###
+NACE.Manufacturing.OtherMachinery.title = What type of general-purpose machinery does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.GeneralPurposeMachinery = General-purpose machinery
-NACE.Manufacturing.Lvl4.EnginesTurbines = Manufacture of engines and turbines, except aircraft, vehicle and cycle engines
-NACE.Manufacturing.Lvl4.FluidPowerEquipment = Manufacture of fluid power equipment
-NACE.Manufacturing.Lvl4.PumpsCompressors = Manufacture of other pumps and compressors
-NACE.Manufacturing.Lvl4.TapsValves = Manufacture of other taps and valves
-NACE.Manufacturing.Lvl4.BearingsGears = Manufacture of bearings, gears, gearing and driving elements
+NACE.Manufacturing.Lvl3.GeneralPurposeMachinery.hint = Includes bearings and gears, engines and turbines, fluid power, pumps and compressors, taps and valves.
+NACE.Manufacturing.GeneralPurposeMachinery.title = What type of general-purpose machinery does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.EnginesTurbines = Engines and turbines, except aircraft, vehicle and cycle engines
+NACE.Manufacturing.Lvl4.FluidPowerEquipment = Fluid power equipment
+NACE.Manufacturing.Lvl4.PumpsCompressors = Other pumps and compressors
+NACE.Manufacturing.Lvl4.TapsValves = Other taps and valves
+NACE.Manufacturing.Lvl4.BearingsGears = Bearings, gears, gearing and driving elements
 
 NACE.Manufacturing.Lvl3.OtherGeneralPurposeMachinery = Other general-purpose machinery
-NACE.Manufacturing.Lvl4.OvensFurnacesHeating = Manufacture of ovens, furnaces and permanent household heating equipment
-NACE.Manufacturing.Lvl4.LiftingHandlingEquipment = Manufacture of lifting and handling equipment
-NACE.Manufacturing.Lvl4.OfficeMachinery = Manufacture of office machinery and equipment, except computers and peripheral equipment
-NACE.Manufacturing.Lvl4.PowerDrivenHandTools = Manufacture of power-driven hand tools
-NACE.Manufacturing.Lvl4.AirConditioning = Manufacture of non-domestic air conditioning equipment
-NACE.Manufacturing.Lvl4.OtherGeneralPurposeMachinery = Manufacture of other general-purpose machinery n.e.c.
+NACE.Manufacturing.Lvl3.OtherGeneralPurposeMachinery.hint = Includes lifting and handling equipment, office machinery, non-domestic air conditioning, ovens, furnaces and permanent household heating, power-driven hand tools and any other general-purpose machinery.
+NACE.Manufacturing.OtherGeneralPurposeMachinery.title = What type of other general-purpose machinery does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.OvensFurnacesHeating = Ovens, furnaces and permanent household heating equipment
+NACE.Manufacturing.Lvl4.LiftingHandlingEquipment = Lifting and handling equipment
+NACE.Manufacturing.Lvl4.OfficeMachinery = Office machinery and equipment, except computers and peripheral equipment
+NACE.Manufacturing.Lvl4.PowerDrivenHandTools = Power-driven hand tools
+NACE.Manufacturing.Lvl4.AirConditioning = Non-domestic air conditioning equipment
+NACE.Manufacturing.Lvl4.OtherGeneralPurposeMachinery = Another type of general-purpose machinery
 
 NACE.Manufacturing.Lvl3.AgriculturalForestryMachinery = Agricultural and forestry machinery
 NACE.Manufacturing.Lvl4.AgriculturalForestryMachinery = Manufacture of agricultural and forestry machinery
 
 NACE.Manufacturing.Lvl3.MetalFormingMachinery = Metal forming machinery and machine tools
-NACE.Manufacturing.Lvl4.MetalFormingMachinery = Manufacture of metal forming machinery and machine tools for metal work
-NACE.Manufacturing.Lvl4.OtherMachineTools = Manufacture of other machine tools
+NACE.Manufacturing.MetalFormingMachinery.title = What type of metal-forming machinery and machine tools does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.MetalFormingMachinery = Metal forming machinery and machine tools for metal work
+NACE.Manufacturing.Lvl4.OtherMachineTools = Other machine tools
 
 NACE.Manufacturing.Lvl3.OtherSpecialPurposeMachinery = Other special-purpose machinery
-NACE.Manufacturing.Lvl4.MachineryMetallurgy = Manufacture of machinery for metallurgy
-NACE.Manufacturing.Lvl4.MachineryMiningConstruction = Manufacture of machinery for mining, quarrying and construction
-NACE.Manufacturing.Lvl4.MachineryFoodBeverageTobacco = Manufacture of machinery for food, beverage and tobacco processing
-NACE.Manufacturing.Lvl4.MachineryTextileApparelLeather = Manufacture of machinery for textile, apparel and leather production
-NACE.Manufacturing.Lvl4.MachineryPaperProduction = Manufacture of machinery for paper and paperboard production
-NACE.Manufacturing.Lvl4.MachineryPlasticsRubber = Manufacture of plastics and rubber machinery
-NACE.Manufacturing.Lvl4.AdditiveManufacturingMachinery = Manufacture of additive manufacturing machinery
-NACE.Manufacturing.Lvl4.OtherSpecialPurposeMachinery = Manufacture of other special-purpose machinery n.e.c.
+NACE.Manufacturing.Lvl3.OtherSpecialPurposeMachinery.hint = Includes machinery for: additive manufacturing; food, beverage and tobacco processing; metallurgy; mining, quarrying and construction; production of paper, paperboard, plastic and rubber, textiles and leather; and other special purposes.
+NACE.Manufacturing.OtherSpecialPurposeMachinery.title = Includes machinery for: additive manufacturing; food, beverage and tobacco processing; metallurgy; mining, quarrying and construction; production of paper, paperboard, plastic and rubber, textiles and leather; and other special purposes.
+NACE.Manufacturing.Lvl4.MachineryMetallurgy = Machinery for metallurgy
+NACE.Manufacturing.Lvl4.MachineryMiningConstruction = Machinery for mining, quarrying and construction
+NACE.Manufacturing.Lvl4.MachineryFoodBeverageTobacco = Machinery for food, beverage and tobacco processing
+NACE.Manufacturing.Lvl4.MachineryTextileApparelLeather = Machinery for textile, apparel and leather production
+NACE.Manufacturing.Lvl4.MachineryPaperProduction = Machinery for paper and paperboard production
+NACE.Manufacturing.Lvl4.MachineryPlasticsRubber = Plastics and rubber machinery
+NACE.Manufacturing.Lvl4.AdditiveManufacturingMachinery = Additive manufacturing machinery
+NACE.Manufacturing.Lvl4.OtherSpecialPurposeMachinery = Other special-purpose machinery
 
 ### Motor vehicles, trailers and parts ###
+NACE.Manufacturing.MotorVehicles.title = What type of motor vehicles, trailers or parts does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.MotorVehicles = Motor vehicles
 NACE.Manufacturing.Lvl4.MotorVehicles = Manufacture of motor vehicles
 
@@ -1375,36 +1384,44 @@ NACE.Manufacturing.Lvl3.BodiesTrailers = Bodies and coachwork for motor vehicles
 NACE.Manufacturing.Lvl4.BodiesTrailers = Manufacture of bodies and coachwork for motor vehicles; manufacture of trailers and semi-trailers
 
 NACE.Manufacturing.Lvl3.MotorVehiclePartsAccessories = Motor vehicle parts and accessories
+NACE.Manufacturing.MotorVehiclePartsAccessories.title = What type of motor vehicle parts and accessories does your undertaking manufacture?
 NACE.Manufacturing.Lvl4.ElectricalElectronicEquipmentVehicles = Manufacture of electrical and electronic equipment for motor vehicles
 NACE.Manufacturing.Lvl4.OtherPartsAccessoriesVehicles = Manufacture of other parts and accessories for motor vehicles
 
 ### Other transport equipment ###
+NACE.Manufacturing.OtherTransportEquipment.title = What type of transport equipment does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.ShipsBoats = Ships and boats
-NACE.Manufacturing.Lvl4.CivilianShips = Building of civilian ships and floating structures
-NACE.Manufacturing.Lvl4.PleasureSportingBoats = Building of pleasure and sporting boats
-NACE.Manufacturing.Lvl4.MilitaryShips = Building of military ships and vessels
+NACE.Manufacturing.ShipsBoats.title = What type of ships and boats does your undertaking build?
+NACE.Manufacturing.Lvl4.CivilianShips = Civilian ships and floating structures
+NACE.Manufacturing.Lvl4.PleasureSportingBoats = Pleasure and sporting boats
+NACE.Manufacturing.Lvl4.MilitaryShips = Military ships and vessels
 
 NACE.Manufacturing.Lvl3.RailwayLocomotives = Railway locomotives and rolling stock
 NACE.Manufacturing.Lvl4.RailwayLocomotives = Manufacture of railway locomotives and rolling stock
 
 NACE.Manufacturing.Lvl3.AirSpacecraft = Aircraft and spacecraft and related machinery
-NACE.Manufacturing.Lvl4.CivilianAirSpacecraft = Manufacture of civilian air and spacecraft and related machinery
-NACE.Manufacturing.Lvl4.MilitaryAirSpacecraft = Manufacture of military air and spacecraft and related machinery
+NACE.Manufacturing.AirSpacecraft.title = What type of aircraft, spacecraft and related machinery does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.CivilianAirSpacecraft = Civilian air and spacecraft and related machinery
+NACE.Manufacturing.Lvl4.MilitaryAirSpacecraft = Military air and spacecraft and related machinery
 
 NACE.Manufacturing.Lvl3.MilitaryVehicles = Military fighting vehicles
 NACE.Manufacturing.Lvl4.MilitaryVehicles = Manufacture of military fighting vehicles
 
 NACE.Manufacturing.Lvl3.OtherTransportEquipment = Other transport equipment
-NACE.Manufacturing.Lvl4.Motorcycles = Manufacture of motorcycles
-NACE.Manufacturing.Lvl4.BicyclesInvalidCarriages = Manufacture of bicycles and invalid carriages
-NACE.Manufacturing.Lvl4.OtherTransportNEC = Manufacture of other transport equipment n.e.c.
+NACE.Manufacturing.Lvl3.OtherTransportEquipment.hint = Includes bicycles, motorcycles and invalid carriages (like mobility scooters).
+NACE.Manufacturing.OtherTransportEquipment.title = What type of other transport equipment does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.Motorcycles = Motorcycles
+NACE.Manufacturing.Lvl4.BicyclesInvalidCarriages = Bicycles and invalid carriages
+NACE.Manufacturing.Lvl4.OtherTransport = Another type of transport equipment
 
 ### Furniture ###
 NACE.Manufacturing.Lvl3.Furniture = Manufacture of furniture
 NACE.Manufacturing.Lvl4.Furniture = Manufacture of furniture
 
 ### Other manufacturing ###
+NACE.Manufacturing.OtherManufacturing.title = What type of products does your undertaking manufacture?
 NACE.Manufacturing.Lvl3.JewelleryCoins = Jewellery, coins and related articles
+NACE.Manufacturing.JewelleryCoins.title = What type of jewellery or related manufacturing does your undertaking do?
 NACE.Manufacturing.Lvl4.StrikingCoins = Striking of coins
 NACE.Manufacturing.Lvl4.JewelleryArticles = Manufacture of jewellery and related articles
 NACE.Manufacturing.Lvl4.ImitationJewellery = Manufacture of imitation jewellery and related articles
@@ -1420,22 +1437,26 @@ NACE.Manufacturing.Lvl4.GamesToys = Manufacture of games and toys
 
 NACE.Manufacturing.Lvl3.MedicalDentalInstruments = Medical and dental instruments and supplies
 NACE.Manufacturing.Lvl4.MedicalDentalInstruments = Manufacture of medical and dental instruments and supplies
-NACE.Manufacturing.Lvl4.ManufacturingNEC = Manufacturing n.e.c.
-NACE.Manufacturing.Lvl4.BroomsBrushes = Manufacture of brooms and brushes
 
-NACE.Manufacturing.Lvl3.OtherManufacturingNEC = Other products
+NACE.Manufacturing.Lvl3.OtherManufacturing = Other products
+NACE.Manufacturing.Lvl3.OtherManufacturing.hint = Includes brooms and brushes and all other products
+NACE.Manufacturing.OtherManufacturing.title = What type of other products does your undertaking manufacture?
+NACE.Manufacturing.Lvl4.BroomsBrushes = Brooms and brushes
+NACE.Manufacturing.Lvl4.OtherManufacturing = Another type of product
 
 ### repairs and maintains ###
+NACE.Manufacturing.RepairMaintains.title = What is your undertaking’s main business activity in repair, maintenance or installation of machinery and equipment?
 NACE.Manufacturing.Lvl3.RepairMaintenanceFabricatedMetal = Repair and maintenance of fabricated metal products, machinery and equipment
-NACE.Manufacturing.Lvl4.RepairFabricatedMetalProducts = Repair and maintenance of fabricated metal products
-NACE.Manufacturing.Lvl4.RepairMachinery = Repair and maintenance of machinery
-NACE.Manufacturing.Lvl4.RepairElectronicOptical = Repair and maintenance of electronic and optical equipment
-NACE.Manufacturing.Lvl4.RepairElectrical = Repair and maintenance of electrical equipment
-NACE.Manufacturing.Lvl4.RepairCivilianShipsBoats = Repair and maintenance of civilian ships and boats
-NACE.Manufacturing.Lvl4.RepairCivilianAirSpacecraft = Repair and maintenance of civilian air and spacecraft
-NACE.Manufacturing.Lvl4.RepairOtherTransport = Repair and maintenance of other civilian transport equipment
-NACE.Manufacturing.Lvl4.RepairMilitaryVehicles = Repair and maintenance of military fighting vehicles, ships, boats, air and spacecraft
-NACE.Manufacturing.Lvl4.RepairOtherEquipment = Repair and maintenance of other equipment
+NACE.Manufacturing.RepairMaintenanceFabricatedMetal.title = What type of machinery or equipment does your undertaking repair or maintain?
+NACE.Manufacturing.Lvl4.RepairFabricatedMetalProducts = Fabricated metal products
+NACE.Manufacturing.Lvl4.RepairMachinery = Machinery
+NACE.Manufacturing.Lvl4.RepairElectronicOptical = Electronic and optical equipment
+NACE.Manufacturing.Lvl4.RepairElectrical = Electrical equipment
+NACE.Manufacturing.Lvl4.RepairCivilianShipsBoats = Civilian ships and boats
+NACE.Manufacturing.Lvl4.RepairCivilianAirSpacecraft = Civilian air and spacecraft
+NACE.Manufacturing.Lvl4.RepairOtherTransport = Other civilian transport equipment
+NACE.Manufacturing.Lvl4.RepairMilitaryVehicles = Military fighting vehicles, ships, boats, air and spacecraft
+NACE.Manufacturing.Lvl4.RepairOtherEquipment = Another type of equipment
 
 NACE.Manufacturing.Lvl3.InstallationIndustrialMachinery = Installation of industrial machinery and equipment
 NACE.Manufacturing.Lvl4.InstallationIndustrialMachinery = Installation of industrial machinery and equipment
