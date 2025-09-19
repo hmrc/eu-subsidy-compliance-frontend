@@ -49,6 +49,11 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
+content = HtmlContent(radioText("sector-label-petroleumNaturalGasExtraction", messages("NACE.mining.Lvl2.petroleumNaturalGasExtraction"))),
+value = Some(Sector.petroleumNaturalGasExtraction.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.petroleumNaturalGasExtraction.toString)
+),
+RadioItem(
 content = HtmlContent(radioText("sector-label-coalAndLigniteMining", messages("NACE.mining.Lvl2.coalAndLigniteMining"))),
 value = Some(Sector.coalAndLigniteMining.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.coalAndLigniteMining.toString)
@@ -78,7 +83,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningSupportSer
 
 
 @layout(
-pageTitle = Some(messages("NACE.mining.Lvl1.mining.title")),
+pageTitle = Some(messages("NACE.mining.Lvl1.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -90,7 +95,7 @@ hasErrors = form.hasErrors
 errorList = Seq(
 ErrorLink(
 href = Some(s"#${err.key}"),
-content = Text(s"${messages(err.key++"." ++err.message)}")
+content = Text(messages("undertakingSector.error.required.nace")+ " mining and quarrying" )
 )
 ),
 title = Text(messages("common.error.summary.title", undertakingName))
@@ -101,11 +106,11 @@ title = Text(messages("common.error.summary.title", undertakingName))
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-content = Text(messages("undertakingSector.error.required"))
+content = Text(messages("undertakingSector.error.required.nace")+ " mining and quarrying" )
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.mining.Lvl1.mining.title")),
+content = Text(messages("NACE.mining.Lvl1.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
