@@ -20,15 +20,16 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
-button: components.Button,
+button: Button,
 govukErrorSummary: GovukErrorSummary,
 govukRadios : GovukRadios
 )
-
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -38,7 +39,6 @@ govukRadios : GovukRadios
 if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
 else controllers.routes.UndertakingController.postSector
 }
-
 
 @radioText(id: String, content: String) = {
 <span id="@id">@content</span>
@@ -57,9 +57,9 @@ value = Some(Sector.growingPerennialCrops.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.growingPerennialCrops.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-plantPropagation", messages("NACE.agriculture.Lvl3.PlantPropagation"))),
-value = Some(Sector.PlantPropagation.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.PlantPropagation.toString)
+content = HtmlContent(radioText("sector-label-plantPropagation", messages("NACE.agriculture.Lvl3.plantPropagation"))),
+value = Some(Sector.plantPropagation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.plantPropagation.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-animalProduction", messages("NACE.agriculture.Lvl3.animalProduction"))),
@@ -67,21 +67,20 @@ value = Some(Sector.animalProduction.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.animalProduction.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-MixedFarming", messages("NACE.agriculture.Lvl3.MixedFarming"))),
-value = Some(Sector.MixedFarming.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.MixedFarming.toString)
+content = HtmlContent(radioText("sector-label-mixedFarming", messages("NACE.agriculture.Lvl3.mixedFarming"))),
+value = Some(Sector.mixedFarming.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.mixedFarming.toString)
 ),RadioItem(
-content = HtmlContent(radioText("sector-label-supportActivities", messages("supportActivities"))),
+content = HtmlContent(radioText("sector-label-supportActivities", messages("NACE.agriculture.Lvl3.supportActivities"))),
 value = Some(Sector.supportActivities.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.supportActivities.toString)
 ),RadioItem(
-content = HtmlContent(radioText("sector-label-huntngRelatedServiceActivities", messages("NACE.agriculture.Lvl3.huntngRelatedServiceActivities"))),
-value = Some(Sector.huntngRelatedServiceActivities.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.huntngRelatedServiceActivities.toString)
+content = HtmlContent(radioText("sector-label-huntingTrapping", messages("NACE.agriculture.Lvl3.huntingTrapping"))),
+value = Some(Sector.huntingTrapping.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.huntingTrapping.toString)
 )
 )
 }
-
 
 @layout(
 pageTitle = Some(messages("NACE.agriculture.Lvl2.title")),
@@ -102,8 +101,6 @@ content = Text(s"${messages(err.key++"." ++err.message)}")
 title = Text(messages("common.error.summary.title", undertakingName))
 ))
 }
-
-
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
