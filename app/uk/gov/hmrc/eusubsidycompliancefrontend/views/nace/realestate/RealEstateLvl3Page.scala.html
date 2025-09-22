@@ -20,15 +20,16 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios
 )
-
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -41,7 +42,6 @@
         controllers.routes.UndertakingController.postSector
 }
 
-
 @radioText(id: String, content: String) = {
 <span id="@id">@content</span>
 }
@@ -50,22 +50,21 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-property-development", messages("NACE.realEstate.Lvl3.propertyDevelopment"))),
-            value = Some(Sector.PropertyDevelopment),
+            value = Some(Sector.PropertyDevelopment.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.PropertyDevelopment.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-rental-operating", messages("NACE.realEstate.Lvl3.rentalOperating"))),
-            value = Some(Sector.RentalOperating),
+            value = Some(Sector.RentalOperating.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.RentalOperating.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-fee-contract", messages("NACE.realEstate.Lvl3.feeContract"))),
-            value = Some(Sector.FeeContract),
+            value = Some(Sector.FeeContract.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.FeeContract.toString)
         )
     )
 }
-
 
 @layout(
   pageTitle = Some(messages("NACE.realEstate.Lvl3.realEstate.title")),

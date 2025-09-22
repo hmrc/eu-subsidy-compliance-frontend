@@ -20,15 +20,16 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios
 )
-
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -41,7 +42,6 @@
         controllers.routes.UndertakingController.postSector
 }
 
-
 @radioText(id: String, content: String) = {
 <span id="@id">@content</span>
 }
@@ -53,7 +53,7 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-auxiliary-financial-services", messages("NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancialServices.hint")))
             )),
-            value = Some(Sector.AuxiliaryFinancialServices),
+            value = Some(Sector.AuxiliaryFinancialServices.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.AuxiliaryFinancialServices.toString)
         ),
         RadioItem(
@@ -61,17 +61,16 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-auxiliary-insurance", messages("NACE.auxiliaryFinancial.Lvl2.auxiliaryInsurance.hint")))
             )),
-            value = Some(Sector.AuxiliaryInsurance),
+            value = Some(Sector.AuxiliaryInsurance.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.AuxiliaryInsurance.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-fund-management", messages("NACE.auxiliaryFinancial.Lvl2.fundManagement"))),
-            value = Some(Sector.FundManagementServices),
+            value = Some(Sector.FundManagementServices.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.FundManagementServices.toString)
         )
     )
 }
-
 
 @layout(
   pageTitle = Some(messages("NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancial.title")),

@@ -1,5 +1,5 @@
 @*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,15 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
-button: Button,
+button: components.Button,
 govukErrorSummary: GovukErrorSummary,
 govukRadios : GovukRadios
 )
+
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -48,11 +47,6 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-animalProduction", messages("NACE.agriculture.Lvl3.animalProduction"))),
-value = Some(Sector.animalProduction.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.animalProduction.toString)
-),
-RadioItem(
 content = HtmlContent(radioText("sector-label-growingNonPerennialCrops", messages("NACE.agriculture.Lvl3.growingNonPerennialCrops"))),
 value = Some(Sector.growingNonPerennialCrops.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.growingNonPerennialCrops.toString)
@@ -63,24 +57,27 @@ value = Some(Sector.growingPerennialCrops.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.growingPerennialCrops.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-huntingTrapping", messages("NACE.agriculture.Lvl3.huntingTrapping"))),
-value = Some(Sector.huntingTrapping.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.huntingTrapping.toString)
+content = HtmlContent(radioText("sector-label-plantPropagation", messages("NACE.agriculture.Lvl3.PlantPropagation"))),
+value = Some(Sector.PlantPropagation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.PlantPropagation.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-mixedFarming", messages("NACE.agriculture.Lvl3.mixedFarming"))),
-value = Some(Sector.mixedFarming.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.mixedFarming.toString)
+content = HtmlContent(radioText("sector-label-animalProduction", messages("NACE.agriculture.Lvl3.animalProduction"))),
+value = Some(Sector.animalProduction.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.animalProduction.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-plantPropagation", messages("NACE.agriculture.Lvl3.plantPropagation"))),
-value = Some(Sector.plantPropagation.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.plantPropagation.toString)
-),
-RadioItem(
-content = HtmlContent(radioText("sector-label-supportActivities", messages("NACE.agriculture.Lvl3.supportActivities"))),
+content = HtmlContent(radioText("sector-label-MixedFarming", messages("NACE.agriculture.Lvl3.MixedFarming"))),
+value = Some(Sector.MixedFarming.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.MixedFarming.toString)
+),RadioItem(
+content = HtmlContent(radioText("sector-label-supportActivities", messages("supportActivities"))),
 value = Some(Sector.supportActivities.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.supportActivities.toString)
+),RadioItem(
+content = HtmlContent(radioText("sector-label-huntngRelatedServiceActivities", messages("NACE.agriculture.Lvl3.huntngRelatedServiceActivities"))),
+value = Some(Sector.huntngRelatedServiceActivities.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.huntngRelatedServiceActivities.toString)
 )
 )
 }
@@ -114,7 +111,7 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.agriculture.Lvl2.title")),
+content = Text(messages("undertakingSector.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))

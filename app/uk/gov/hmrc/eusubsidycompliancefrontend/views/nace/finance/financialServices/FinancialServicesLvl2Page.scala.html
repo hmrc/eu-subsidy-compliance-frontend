@@ -20,15 +20,16 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios
 )
-
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -41,7 +42,6 @@
         controllers.routes.UndertakingController.postSector
 }
 
-
 @radioText(id: String, content: String) = {
 <span id="@id">@content</span>
 }
@@ -50,17 +50,17 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-monetary-intermediation", messages("NACE.financialServices.Lvl2.monetaryIntermediation"))),
-            value = Some(Sector.MonetaryIntermediation),
+            value = Some(Sector.MonetaryIntermediation.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.MonetaryIntermediation.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-holding-companies", messages("NACE.financialServices.Lvl2.holdingCompanies"))),
-            value = Some(Sector.HoldingCompanies),
+            value = Some(Sector.HoldingCompanies.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.HoldingCompanies.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-trusts-funds", messages("NACE.financialServices.Lvl2.trustsFunds"))),
-            value = Some(Sector.TrustsFunds),
+            value = Some(Sector.TrustsFunds.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.TrustsFunds.toString)
         ),
         RadioItem(
@@ -68,12 +68,11 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-other-financial", messages("NACE.financialServices.Lvl2.otherFinancial.hint")))
             )),
-            value = Some(Sector.OtherFinancial),
+            value = Some(Sector.OtherFinancial.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherFinancial.toString)
         )
     )
 }
-
 
 @layout(
   pageTitle = Some(messages("NACE.financialServices.Lvl2.financialServices.title")),
@@ -81,7 +80,6 @@
   backLink = Some(previous),
   hasErrors = form.hasErrors
 ) {
-
   @formHelper(action = actionUrl) {
     @form.errors.map { err =>
       @govukErrorSummary(ErrorSummary(
@@ -94,7 +92,6 @@
         title = Text(messages("common.error.summary.title", undertakingName))
       ))
     }
-
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("undertakingSector.error.required"))
@@ -113,7 +110,6 @@
       name = fieldName,
       items = radioOptions
     ))
-
     @button("continue.button")
   }
 }

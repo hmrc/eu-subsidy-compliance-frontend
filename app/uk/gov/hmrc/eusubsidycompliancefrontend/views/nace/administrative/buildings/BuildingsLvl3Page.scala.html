@@ -16,19 +16,22 @@
 
 @import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{formWithCSRF}
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios
 )
 
-@(form: Form[_], previous: String, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"undertakingSector"}
 
@@ -50,20 +53,20 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-combined-facilities", messages("NACE.Administrative.Lvl3.CombinedFacilities.hint")))
             )),
-            value = Some(Sector.CombinedFacilities),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CombinedFacilities.toString)
+            value = Some(Sector.CombinedFacilitiesSupport.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CombinedFacilitiesSupport.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-cleaning", messages("NACE.Administrative.Lvl3.Cleaning"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-cleaning", messages("NACE.Administrative.Lvl3.Cleaning.hint")))
             )),
-            value = Some(Sector.Cleaning),
+            value = Some(Sector.Cleaning.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Cleaning.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-landscaping", messages("NACE.Administrative.Lvl3.Landscaping"))),
-            value = Some(Sector.Landscaping),
+            value = Some(Sector.Landscaping.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Landscaping.toString)
         )
     )
@@ -75,15 +78,15 @@
     backLink = Some(previous),
     hasErrors = form.hasErrors
 ) {
-    @formHelper(action = actionUrl, 'id -> "nace-buildings-lvl3-form") {
+    @formHelper(action = actionUrl) {
         @form.errors.map { err =>
             @govukErrorSummary(ErrorSummary(
                 errorList = Seq(
                     ErrorLink(
                         href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(err.key++"."++err.message)}")
+                        content = Text(s"${messages(err.key++"." ++err.message)}")
                     )
-                )),
+                ),
                 title = Text(messages("common.error.summary.title", undertakingName))
             ))
         }

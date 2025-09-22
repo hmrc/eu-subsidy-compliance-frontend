@@ -20,15 +20,16 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios : GovukRadios
 )
-
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -41,7 +42,6 @@
         controllers.routes.UndertakingController.postSector
 }
 
-
 @radioText(id: String, content: String) = {
 <span id="@id">@content</span>
 }
@@ -50,17 +50,16 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-life-insurance", messages("NACE.insurance.Lvl4.lifeInsurance"))),
-            value = Some(Sector.LifeInsurance),
+            value = Some(Sector.LifeInsurance.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.LifeInsurance.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-non-life-insurance", messages("NACE.insurance.Lvl4.nonLifeInsurance"))),
-            value = Some(Sector.NonLifeInsurance),
+            value = Some(Sector.NonLifeInsurance.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.NonLifeInsurance.toString)
         )
     )
 }
-
 
 @layout(
   pageTitle = Some(messages("NACE.insurance.Lvl4.insuranceType.title")),

@@ -20,14 +20,13 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.Layout
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.components
-@import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    button: components.Button,
+    button: Button,
     govukErrorSummary: GovukErrorSummary,
     govukRadios: GovukRadios
 )
@@ -94,13 +93,13 @@
     backLink = Some(previous),
     hasErrors = form.hasErrors
 ) {
-    @formHelper(action = actionUrl, 'id -> "nace-administrative-lvl2-form") {
+    @formHelper(action = actionUrl) {
         @form.errors.map { err =>
             @govukErrorSummary(ErrorSummary(
                 errorList = Seq(
                     ErrorLink(
                         href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(err.key++"."++err.message)}")
+                        content = Text(s"${messages(err.key++"." ++err.message)}")
                     )
                 ),
                 title = Text(messages("common.error.summary.title", undertakingName))
