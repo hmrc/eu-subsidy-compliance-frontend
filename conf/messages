@@ -1713,12 +1713,15 @@ NACE.TransportationAndStorage.Lvl4.OtherTransportSupport = Other support activit
 NACE.TransportationAndStorage.Lvl4.FreightIntermediation = Intermediation service activities for freight transportation
 NACE.TransportationAndStorage.Lvl4.PassengerIntermediation = Intermediation service activities for passenger transportation
 
+NACE.TransportationAndStorage.Lvl2.PostalCourier.title = What type of postal or courier service does your undertaking provide? Select one option that best describes your undertaking’s main business activity.
+NACE.TransportationAndStorage.Lvl3.PostalCourier.title = What type of postal or courier service does your undertaking provide? Select one option that best describes your undertaking’s main business activity.
 NACE.TransportationAndStorage.Lvl2.PostalCourier = Postal and courier activities
-#### NACE.TransportationAndStorage.Lvl3.PostalUniversalService = Postal activities under universal service obligation
-NACE.TransportationAndStorage.Lvl4.PostalUniversalService = Postal activities under universal service obligation
-#### NACE.TransportationAndStorage.Lvl3.OtherPostalCourier = Other postal and courier activities
+NACE.TransportationAndStorage.Lvl2.PostalCourier.title = What type of postal or courier service does your undertaking provide? Select one option that best describes your undertaking’s main business activity.
+NACE.TransportationAndStorage.Lvl3.PostalUniversalService = Postal activities under universal service obligation
+NACE.TransportationAndStorage.Lvl3.PostalUniversalService = Postal activities under universal service obligation
+NACE.TransportationAndStorage.Lvl3.OtherPostalCourier = Other postal and courier activities
 NACE.TransportationAndStorage.Lvl4.OtherPostalCourier = Other postal and courier activities
-#### NACE.TransportationAndStorage.Lvl3.IntermediationPostalCourier = Intermediation service activities for postal and courier activities
+NACE.TransportationAndStorage.Lvl3.IntermediationPostalCourier = Intermediation service activities for postal and courier activities
 NACE.TransportationAndStorage.Lvl4.IntermediationPostalCourier = Intermediation service activities for postal and courier activities
 
 #accommodationAndFoodService NACE Sector2,3,4
