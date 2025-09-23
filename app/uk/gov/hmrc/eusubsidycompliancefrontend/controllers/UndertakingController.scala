@@ -48,6 +48,7 @@ import play.api.mvc.Call
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms.UndertakingCyaFormPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.mining.{GasMiningLvl3Page, MetalMiningLvl3Page, MiningSupportLvl3Page}
 
 @Singleton
 class UndertakingController @Inject() (

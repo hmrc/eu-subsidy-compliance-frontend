@@ -49,12 +49,12 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-crudePetroleumExtraction", messages("NACE.mining.Lvl3.crudePetroleumExtraction"))),
+content = HtmlContent(radioText("sector-label-crudePetroleumExtraction", messages("NACE.mining.Lvl4.crudePetroleumExtraction"))),
 value = Some(Sector.crudePetroleumExtraction.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.crudePetroleumExtraction.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-naturalGasExtraction", messages("NACE.mining.Lvl3.naturalGasExtraction"))),
+content = HtmlContent(radioText("sector-label-naturalGasExtraction", messages("NACE.mining.Lvl4.naturalGasExtraction"))),
 value = Some(Sector.naturalGasExtraction.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.naturalGasExtraction.toString)
 )
@@ -63,7 +63,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.naturalGasExtrac
 
 
 @layout(
-pageTitle = Some(messages("NACE.mining.Lvl2.miningSupportServices.title")),
+pageTitle = Some(messages("NACE.mining.Lvl2.petroleumNaturalGasExtraction.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -75,7 +75,7 @@ hasErrors = form.hasErrors
 errorList = Seq(
 ErrorLink(
 href = Some(s"#${err.key}"),
-content = Text(s"${messages(err.key++"." ++err.message)}")
+content = Text(messages("undertakingSector.error.required.nace.further")+" "+ messages("NACE.mining.Lvl2.petroleumNaturalGasExtraction.error"))
 )
 ),
 title = Text(messages("common.error.summary.title", undertakingName))
@@ -86,14 +86,17 @@ title = Text(messages("common.error.summary.title", undertakingName))
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-content = Text(messages("undertakingSector.error.required"))
+content = Text(messages("undertakingSector.error.required.nace.further")+" "+ messages("NACE.mining.Lvl2.petroleumNaturalGasExtraction.error"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.mining.Lvl2.miningSupportServices.title")),
+content = Text(messages("NACE.mining.Lvl2.petroleumNaturalGasExtraction.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
+)),
+hint = Some(Hint(
+content = Text(messages("NACE.general.hint"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,
