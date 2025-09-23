@@ -135,9 +135,10 @@ undertakingName.p2 = This may include more than one business. This group of busi
 undertakingName.p3 = These businesses must not report payments they receive separately. You are responsible for reporting received payments on their behalf.
 
 undertakingSector.error.required = Select the industry sector of your undertaking
+undertakingSector.error.required.nace.further = Select the type of
 undertakingSector.error.required.nace = Select your undertaking’s main business activity in
-undertakingSector.title=What is the industry sector of your undertaking?
-undertakingSector.p1=Your undertaking may have businesses working in different sectors. For your whole undertaking the lowest subsidy allowance will apply.
+undertakingSector.title= What is your undertaking’s industry sector?
+undertakingSector.p1=If your undertaking has businesses working in different sectors, choose the sector with the lowest subsidy allowance.
 
 undertakingContact.title=What are the contact details for
 undertakingContact.title.end=?
@@ -148,15 +149,15 @@ undertakingContact.mobile.label=Mobile number
 one.or.other.mustbe.present=Enter a telephone number, like 01632 960 001, 07700 900 982 or +44 808 157 0192
 phone.regex.error = Enter a valid phone number
 
-sector.label.0=Other
-sector.label.1=Road freight transport for hire or reward
-sector.label.2=Primary production of agricultural products
-sector.label.3=Fishery and aquaculture products
+sector.label.0=General Trade
+sector.label.2=Agriculture
+sector.label.3=Fishery and aquaculture
 
-sector.hint.0=The cap for all other sectors is €{0}.
-sector.hint.1=This sector includes couriers and hauliers who get paid by someone to transport their goods by road. The cap for this sector is €{0}.
-sector.hint.2=An ‘agricultural product’ can be products such as: live animals, meat and edible meat offal, dairy produce, birds’ eggs, natural honey. The cap for this sector is €{0}.
-sector.hint.3=If any part of your business is involved in the production, processing or marketing of fishery and aquaculture products. A ‘fishery product’ means aquatic organisms resulting from any fishing activity or products derived from them. The cap for this sector is €{0}.
+sector.hint.0= Includes transport and all other activities. The subsidy allowance of this sector is {0}
+sector.hint.2=Includes crop and animal production, hunting and related services. The subsidy allowance of this sector is {0}
+sector.hint.Cont= euros over a rolling 3-year period.
+sector.hint.3=Includes freshwater and marine fishing, aquaculture and related support activities. The subsidy allowance of this sector is {0}
+sector.hint.3Cont= euros over a rolling 3 tax years.
 
 addBusinessIntent.title = Businesses in your undertaking
 addBusinessIntent.legend = Are there other businesses in your undertaking?
@@ -836,15 +837,17 @@ NACE.mining.Lvl3.lignite = Mining of lignite
 NACE.mining.Lvl4.ligniteMining = Mining of lignite
 NACE.mining.Lvl2.petroleumNaturalGasExtraction = Extraction of crude petroleum and natural gas
 NACE.mining.Lvl2.petroleumNaturalGasExtraction.title = What type of fuel does your undertaking extract?
+NACE.mining.Lvl2.petroleumNaturalGasExtraction.error = fuel your undertaking extracts
 NACE.mining.Lvl3.crudePetroleum = Extraction of crude petroleum
 NACE.mining.Lvl4.crudePetroleumExtraction = Extraction of crude petroleum
 NACE.mining.Lvl3.naturalGas = Extraction of natural gas
 NACE.mining.Lvl4.naturalGasExtraction = Extraction of natural gas
 NACE.mining.Lvl2.metalOresMining = Mining of metal ores
 NACE.mining.Lvl2.metalOresMining.title = What type of metal ores does your undertaking mine?
-NACE.mining.Lvl3.ironOre = Mining of iron ores
+NACE.mining.Lvl2.metalOresMining.error = metal ores your undertaking mines
+NACE.mining.Lvl3.ironOre = Iron ores
 NACE.mining.Lvl4.ironOresMining = Mining of iron ores
-NACE.mining.Lvl3.nonFerrousOres = Mining of non-ferrous metal ores
+NACE.mining.Lvl3.nonFerrousOres = Non-ferrous metal ores
 NACE.mining.Lvl3.nonFerrousOres.title = What type of non-ferrous metal ores does your undertaking mine?
 NACE.mining.Lvl4.uraniumThoriumOres = Mining of uranium and thorium ores
 NACE.mining.Lvl4.otherNonFerrousOres = Mining of other non-ferrous metal ores
@@ -852,6 +855,7 @@ NACE.mining.Lvl2.otherMiningQuarrying = Other mining and quarrying
 NACE.mining.Lvl2.otherMiningQuarrying.title = What type of mining or quarrying does your undertaking do?
 NACE.mining.Lvl3.stoneQuarrying = Quarrying of stone, sand and clay
 NACE.mining.Lvl3.stoneQuarrying.title= What type of sand, stone and clay quarrying does your undertaking do?
+NACE.mining.Lvl3.stoneQuarrying.error= What type of sand, stone and clay quarrying does your undertaking do?
 NACE.mining.Lvl4.ornamentalQuarrying = Quarrying of ornamental stone, limestone, gypsum, slate and other stone
 NACE.mining.Lvl4.gravelPitsOperation = Operation of gravel and sand pits and mining of clay and kaolin
 NACE.mining.Lvl3.miningAndQuarryingNEC = Mining and quarrying of n.e.c.
@@ -862,9 +866,10 @@ NACE.mining.Lvl4.saltExtraction = Extraction of salt
 NACE.mining.Lvl4.otherNEC = Other mining and quarrying n.e.c.
 NACE.mining.Lvl2.miningSupportServices = Mining support service activities
 NACE.mining.Lvl2.miningSupportServices.title = What type of mining or quarrying does your undertaking support?
-NACE.mining.Lvl3.miningSupportPetroleumExtraction = Support activities for petroleum and natural gas extraction
+NACE.mining.Lvl2.miningSupportServices.error = mining or quarrying your undertaking does
+NACE.mining.Lvl3.miningSupportPetroleumExtraction = Extraction of petroleum and natural gas
 NACE.mining.Lvl4.miningSupportPetroleumExtraction = Support activities for petroleum and natural gas extraction
-NACE.mining.Lvl3.otherMiningSupport = Support activities for other mining and quarrying
+NACE.mining.Lvl3.otherMiningSupport = Other mining and quarrying
 NACE.mining.Lvl4.otherMiningSupport = Support activities for other mining and quarrying
 
 ### Manufacturing NACE Sector2,3,4 ###

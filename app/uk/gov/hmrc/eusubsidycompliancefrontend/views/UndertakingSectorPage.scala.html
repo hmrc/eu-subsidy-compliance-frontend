@@ -1,5 +1,5 @@
 @*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,11 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
-@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
-button: Button,
+button: components.Button,
 govukErrorSummary: GovukErrorSummary,
 govukRadios : GovukRadios
 )
@@ -49,21 +47,36 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-hardcoalMining", messages("NACE.mining.Lvl4.hardcoalMining"))),
-value = Some(Sector.hardcoalMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.hardcoalMining.toString)
+content = HtmlContent(radioText("sector-label-agriculture", messages("sector.label.2"))),
+hint = Some(Hint(
+content = HtmlContent(radioText("sector-hint-agriculture", messages("sector.hint.2", appConfig.sectorCap("agriculture")) +" " + messages("sector.hint.Cont")))
+)),
+value = Some(Sector.agriculture.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.agriculture.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-ligniteMining", messages("NACE.mining.Lvl4.ligniteMining"))),
-value = Some(Sector.ligniteMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.ligniteMining.toString)
+content = HtmlContent(radioText("sector-label-aquaculture", messages("sector.label.3"))),
+hint = Some(Hint(
+content = HtmlContent(radioText("sector-hint-aquaculture", messages("sector.hint.3", appConfig.sectorCap("aquaculture")) +" " + messages("sector.hint.3Cont")))
+)),
+value = Some(Sector.aquaculture.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.aquaculture.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-other", "General Trade")),
+hint = Some(Hint(
+id = Some("sector-hint-other"),
+content = HtmlContent(radioText("sector-hint-other", messages("sector.hint.0", appConfig.sectorCap("other")+" " +  messages("sector.hint.Cont"))))
+)),
+value = Some(Sector.other.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.other.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.mining.Lvl2.coalAndLigniteMining.title")),
+pageTitle = Some(messages("undertakingSector.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -90,13 +103,13 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.mining.Lvl2.coalAndLigniteMining.title")),
+content = Text(messages("undertakingSector.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
 )),
 hint = Some(Hint(
-content = Text(messages("NACE.general.hint"))
+content = Text(messages("undertakingSector.p1"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,
