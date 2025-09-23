@@ -52,25 +52,16 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-meat-processing", messages("NACE.Manufacturing.Lvl4.MeatExceptPoultry"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-meat-processing", "hint place hoder text"))
-            )),
             value = Some(Sector.meatProcessing.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.meatProcessing.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-poultry-processing", messages("NACE.Manufacturing.Lvl4.PoultryMeat"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-poultry-processing", "hint place hoder text"))
-            )),
             value = Some(Sector.poultryProcessing.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.poultryProcessing.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-meat-products", messages("NACE.Manufacturing.Lvl4.MeatPoultryProducts"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-meat-products", "hint place hoder text"))
-            )),
             value = Some(Sector.meatProductsProduction.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.meatProductsProduction.toString)
         )
@@ -91,20 +82,20 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.Food.Meat.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("NACE.Manufacturing.Food.Meat.error"))
       ))
     }
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.Food.Meat.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("undertakingSector.title")),
+        content = Text(messages("NACE.Manufacturing.Food.Meat.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))

@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,53 +24,54 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
-    layout: Layout,
-    formHelper: FormWithCSRF,
-    button: Button,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios : GovukRadios
+  layout: Layout,
+  formHelper: FormWithCSRF,
+  button: Button,
+  govukErrorSummary: GovukErrorSummary,
+  govukRadios : GovukRadios
 )
-
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"undertakingSector"}
 
 @actionUrl = @{
-    if(isUpdate)
-        controllers.routes.UndertakingController.updateIndustrySector
-    else
-        controllers.routes.UndertakingController.postSector
+  if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
+  else controllers.routes.UndertakingController.postSector
 }
 
 
 @radioText(id: String, content: String) = {
-<span id="@id">@content</span>
+  <span id="@id">@content</span>
 }
 
 @radioOptions = @{
-    Seq(
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-rusks", messages("NACE.Manufacturing.Lvl4.RusksBiscuits"))),
-            value = Some(Sector.BiscuitsAndPreservedCakes.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.BiscuitsAndPreservedCakes.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-bread-pastry", messages("NACE.Manufacturing.Lvl4.BreadPastry"))),
-            value = Some(Sector.BreadAndFreshPastry.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.BreadAndFreshPastry.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-farinaceous", messages("NACE.Manufacturing.Lvl4.FarinaceousProducts"))),
-            value = Some(Sector.FarinaceousProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FarinaceousProducts.toString)
-        )
+  Seq(
+    RadioItem(
+      content = HtmlContent(radioText("sector-label-electric-power", messages("NACE.ElectricityGasSteamAir.Lvl3.ElectricPower"))),
+      value = Some(Sector.ElectricPowerGenerationAndDistribution.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricPowerGenerationAndDistribution.toString)
+    ),
+    RadioItem(
+      content = HtmlContent(radioText("sector-label-gas-distribution", messages("NACE.ElectricityGasSteamAir.Lvl3.GasDistribution"))),
+      value = Some(Sector.GaseousFuelsManufacture.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.GaseousFuelsManufacture.toString)
+    ),
+    RadioItem(
+      content = HtmlContent(radioText("sector-label-steam-air-conditioning", messages("NACE.ElectricityGasSteamAir.Lvl3.SteamAirConditioning"))),
+      value = Some(Sector.SteamAndAirConditioningSupply.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.SteamAndAirConditioningSupply.toString)
+    ),
+    RadioItem(
+      content = HtmlContent(radioText("sector-label-brokers-agents-power-gas", messages("NACE.ElectricityGasSteamAir.Lvl3.BrokersAgentsPowerGas"))),
+      value = Some(Sector.ElectricPowerAndGasBrokers.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricPowerAndGasBrokers.toString)
     )
+  )
 }
 
-
 @layout(
-  pageTitle = Some(messages("NACE.Manufacturing.BakeryProducts.title")),
+  pageTitle = Some(messages("NACE.ElectricityGasSteamAir.Lvl2.Supply.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -82,7 +83,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(messages("NACE.Manufacturing.BakeryProducts.error"))
+            content = Text(s"${messages(err.key++"." ++err.message)}")
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -91,17 +92,14 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("NACE.Manufacturing.BakeryProducts.error"))
+        content = Text(messages("undertakingSector.error.required"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("NACE.Manufacturing.BakeryProducts.title")),
-        classes = "govuk-fieldset__legend--xl",
-        isPageHeading = true
+          content = Text(messages("NACE.ElectricityGasSteamAir.Lvl2.Supply.title")),
+          classes = "govuk-fieldset__legend--xl",
+          isPageHeading = true
         ))
-    )),
-        hint = Some(Hint(
-        content = Text(messages("NACE.general.hint"))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,

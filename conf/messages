@@ -736,7 +736,7 @@ NACE.Lvl1.mining = Mining and quarrying
 NACE.Lvl1.Manufacturing = Manufacturing
 NACE.Lvl1.ElectricityGasSteamAir = Electricity, gas, steam and air conditioning supply
 NACE.Lvl1.WaterSewerageWasteRemediation = Water supply; Sewerage, waste management and remediation activities
-NACE.Lvl1.Construction = Construction
+NACE.Lvl1.construction = Construction
 NACE.Lvl1.WholesaleRetailTrade = Wholesale and retail trade
 NACE.Lvl1.TransportationAndStorage = Transportation and storage
 NACE.Lvl1.accommodationAndFoodService = Accommodation and food service activities
@@ -940,10 +940,12 @@ NACE.Manufacturing.Lvl2.2.Vehicles.Other.hint = Includes aircraft, bicycles, boa
 
 ### Food ###
 NACE.Manufacturing.Food.title = What type of food, does your undertaking manufacture?
+NACE.Manufacturing.Food.error = Select the type of food your undertaking manufactures
 
 NACE.Manufacturing.Lvl3.MeatProducts = Meat
 NACE.Manufacturing.Food.Meat.title = What type of meat production or processing does your undertaking do?
-NACE.Manufacturing.Lvl4.MeatExceptPoultry = Processing and preserving of meat, except of poultry meat
+NACE.Manufacturing.Food.Meat.error = Select the type of meat production or processing your undertaking does
+NACE.Manufacturing.Lvl4.MeatExceptPoultry = Processing and preserving of meat (except poultry)
 NACE.Manufacturing.Lvl4.PoultryMeat = Processing and preserving of poultry meat
 NACE.Manufacturing.Lvl4.MeatPoultryProducts = Production of meat and poultry meat products
 
@@ -951,28 +953,33 @@ NACE.Manufacturing.Lvl3.FishProducts = Fish, crustaceans and molluscs
 NACE.Manufacturing.Lvl4.FishProducts = Processing and preserving of fish, crustaceans and molluscs
 
 NACE.Manufacturing.Food.FruitAndVeg.title = What type of fruit and vegetable production or processing does your undertaking do?
+NACE.Manufacturing.Food.FruitAndVeg.error = Select the type of fruit and vegetable production or processing your undertaking does
 NACE.Manufacturing.Lvl3.FruitVegetables = Fruit and vegetables
 NACE.Manufacturing.Lvl4.Potatoes = Processing and preserving of potatoes
 NACE.Manufacturing.Lvl4.FruitVegetableJuice = Manufacture of fruit and vegetable juice
 NACE.Manufacturing.Lvl4.OtherFruitVegetables = Other processing and preserving of fruit and vegetables
 
 NACE.Manufacturing.Food.OilsAndFats.title = What type of oils and fats does your undertaking manufacture?
+NACE.Manufacturing.Food.OilsAndFats.error = Select the type of oils and fats your undertaking manufactures
 NACE.Manufacturing.Lvl3.OilsFats = Oils and fats
 NACE.Manufacturing.Lvl4.OilsFats = Other oils and fats
 NACE.Manufacturing.Lvl4.Margarine = Margarine and similar edible fats
 
 NACE.Manufacturing.DairyProducts.title = What type of dairy products or ice does your undertaking manufacture?
+NACE.Manufacturing.DairyProducts.error = Select the type of dairy products or ice your undertaking manufactures
 NACE.Manufacturing.Lvl3.DairyProducts = Dairy products and ice
 NACE.Manufacturing.Lvl4.DairyProducts = Dairy products
 NACE.Manufacturing.Lvl4.IceCream = Ice cream and other edible ice
 
 NACE.Manufacturing.GrainMillProducts.title = What type of grain mill products or starch does your undertaking manufacture?
+NACE.Manufacturing.GrainMillProducts.error = Select the type of grain mill products or starch your undertaking manufactures
 NACE.Manufacturing.Lvl3.GrainMillProducts = Grain mill products and starch
 NACE.Manufacturing.Lvl3.GrainMillProducts.hint = Includes cereals and flour.
 NACE.Manufacturing.Lvl4.GrainMillProducts = Grain mill products
 NACE.Manufacturing.Lvl4.Starches = Starches and starch products
 
 NACE.Manufacturing.BakeryProducts.title = What type of bakery and farinaceous products does your undertaking manufacture?
+NACE.Manufacturing.BakeryProducts.error = Select the type of bakery and farinaceous products your undertaking manufactures
 NACE.Manufacturing.Lvl3.BakeryProducts = Bakery and farinaceous products
 NACE.Manufacturing.Lvl3.BakeryProducts.hint = For example bread, biscuits, cakes, pastries and pasta.
 NACE.Manufacturing.Lvl4.BreadPastry = Bread, cakes and fresh pastry goods
@@ -980,20 +987,22 @@ NACE.Manufacturing.Lvl4.RusksBiscuits = Biscuits, rusks and preserved pastries a
 NACE.Manufacturing.Lvl4.FarinaceousProducts = Farinaceous products
 
 NACE.Manufacturing.OtherFoodProducts.title = What type of other food products does your undertaking manufacture?
-NACE.Manufacturing.Lvl3.OtherFoodProducts = Manufacture of other food products
+NACE.Manufacturing.OtherFoodProducts.error = Select the type of other food products your undertaking manufactures
+NACE.Manufacturing.Lvl3.OtherFoodProducts = Other food products
 NACE.Manufacturing.Lvl3.OtherFoodProducts.hint = Includes cocoa, chocolate and confectionery, condiments and seasonings, food preparations (like baby food) and prepared meals, sugar, tea and coffee, and all other food products.
-NACE.Manufacturing.Lvl4.Sugar = Manufacture of sugar
-NACE.Manufacturing.Lvl4.CocoaChocolateConfectionery = Manufacture of cocoa, chocolate and sugar confectionery
-NACE.Manufacturing.Lvl4.TeaCoffee = Processing of tea and coffee
-NACE.Manufacturing.Lvl4.CondimentsSeasonings = Manufacture of condiments and seasonings
-NACE.Manufacturing.Lvl4.PreparedMeals = Manufacture of prepared meals and dishes
-NACE.Manufacturing.Lvl4.HomogenisedFood = Manufacture of homogenised food preparations and dietetic food
-NACE.Manufacturing.Lvl4.OtherFoodProducts = Manufacture of other food products n.e.c.
+NACE.Manufacturing.Lvl4.Sugar = Sugar
+NACE.Manufacturing.Lvl4.CocoaChocolateConfectionery = Cocoa, chocolate and sugar confectionery
+NACE.Manufacturing.Lvl4.TeaCoffee = Tea and coffee
+NACE.Manufacturing.Lvl4.CondimentsSeasonings = Condiments and seasonings
+NACE.Manufacturing.Lvl4.PreparedMeals = Prepared meals and dishes
+NACE.Manufacturing.Lvl4.HomogenisedFood = Homogenised food preparations and dietetic food
+NACE.Manufacturing.Lvl4.OtherFoodProducts = Another type of food product
 
 NACE.Manufacturing.PreparedAnimalFeeds.title = What type of prepared animal feeds does your undertaking manufacture?
-NACE.Manufacturing.Lvl3.PreparedAnimalFeeds = Manufacture of prepared animal feeds
-NACE.Manufacturing.Lvl4.FarmAnimalFeeds = Manufacture of prepared feeds for farm animals
-NACE.Manufacturing.Lvl4.PetFoods = Manufacture of prepared pet foods
+NACE.Manufacturing.PreparedAnimalFeeds.error = Select the type of prepared animal feeds your undertaking manufactures
+NACE.Manufacturing.Lvl3.PreparedAnimalFeeds = Prepared animal feeds
+NACE.Manufacturing.Lvl4.FarmAnimalFeeds = Food for farm animals
+NACE.Manufacturing.Lvl4.PetFoods = Pet food
 
 ### Beverages ###
 NACE.Manufacturing.Beverages.title = What type of beverages does your undertaking manufacture?
@@ -1472,21 +1481,24 @@ NACE.Manufacturing.Lvl4.InstallationIndustrialMachinery = Installation of indust
 
 #ElectricityGasSteamAir NACE Sector2,3,4
 NACE.ElectricityGasSteamAir.Lvl2.Supply = Electricity, gas, steam and air conditioning supply
-#### NACE.ElectricityGasSteamAir.Lvl3.ElectricPower = Electric power generation, transmission and distribution
+NACE.ElectricityGasSteamAir.Lvl2.Supply.title = What is your undertaking’s main business activity in electricity, gas, steam and air conditioning supply?
+NACE.ElectricityGasSteamAir.Lvl3.ElectricPower = Electric power generation, transmission and distribution
+NACE.ElectricityGasSteamAir.Lvl3.ElectricPower.title = What is your undertaking’s main business activity in electricity?
 NACE.ElectricityGasSteamAir.Lvl4.ElectricityNonRenewable = Production of electricity from non-renewable sources
 NACE.ElectricityGasSteamAir.Lvl4.ElectricityRenewable = Production of electricity from renewable sources
 NACE.ElectricityGasSteamAir.Lvl4.TransmissionElectricity = Transmission of electricity
 NACE.ElectricityGasSteamAir.Lvl4.DistributionElectricity = Distribution of electricity
 NACE.ElectricityGasSteamAir.Lvl4.TradeElectricity = Trade of electricity
 NACE.ElectricityGasSteamAir.Lvl4.StorageElectricity = Storage of electricity
-#### NACE.ElectricityGasSteamAir.Lvl3.GasDistribution = Manufacture of gas, and distribution of gaseous fuels through mains
+NACE.ElectricityGasSteamAir.Lvl3.GasDistribution = Manufacture of gas, and distribution of gaseous fuels through mains
+NACE.ElectricityGasSteamAir.Lvl3.GasDistribution.title = What is your undertaking’s main business activity in manufacture and distribution of gas?
 NACE.ElectricityGasSteamAir.Lvl4.ManufactureGas = Manufacture of gas
 NACE.ElectricityGasSteamAir.Lvl4.DistributionGas = Distribution of gaseous fuels through mains
 NACE.ElectricityGasSteamAir.Lvl4.TradeGas = Trade of gas through mains
 NACE.ElectricityGasSteamAir.Lvl4.StorageGas = Storage of gas as part of network supply services
-#### NACE.ElectricityGasSteamAir.Lvl3.SteamAirConditioning = Steam and air conditioning supply
+NACE.ElectricityGasSteamAir.Lvl3.SteamAirConditioning = Steam and air conditioning supply
 NACE.ElectricityGasSteamAir.Lvl4.SteamAirConditioning = Steam and air conditioning supply
-#### NACE.ElectricityGasSteamAir.Lvl3.BrokersAgentsPowerGas = Activities of brokers and agents for electric power and natural gas
+NACE.ElectricityGasSteamAir.Lvl3.BrokersAgentsPowerGas = Activities of brokers and agents for electric power and natural gas
 NACE.ElectricityGasSteamAir.Lvl4.BrokersAgentsPowerGas = Activities of brokers and agents for electric power and natural gas
 
 #WaterSewerageWasteRemediation NACE Sector2,3,4
@@ -1515,49 +1527,67 @@ NACE.WaterSewerageWasteRemediation.Lvl2.Remediation = Remediation activities and
 #### NACE.WaterSewerageWasteRemediation.Lvl3.Remediation = Remediation activities and other waste management service activities
 NACE.WaterSewerageWasteRemediation.Lvl4.Remediation = Remediation activities and other waste management service activities
 
-#Construction NACE Sector2,3,4
-NACE.Construction.Lvl2.ResidentialNonResidential = Construction of residential and non-residential buildings
-#### NACE.Construction.Lvl3.ResidentialNonResidential = Construction of residential and non-residential buildings
-NACE.Construction.Lvl4.ResidentialNonResidential = Construction of residential and non-residential buildings
+#construction NACE Sector2,3,4
+NACE.construction.Lvl1.title = What is your undertaking’s main business activity in construction
+NACE.construction.Lvl2.residentialNonResidentialConstruction = Construction of residential and non-residential buildings
+#### NACE.construction.Lvl3.residentialNonResidentialConstruction = Construction of residential and non-residential buildings
+NACE.construction.Lvl4.residentialNonResidentialConstruction = Construction of residential and non-residential buildings
 
-NACE.Construction.Lvl2.CivilEngineering = Civil engineering
-#### NACE.Construction.Lvl3.RoadsRailways = Construction of roads and railways
-NACE.Construction.Lvl4.RoadsMotorways = Construction of roads and motorways
-NACE.Construction.Lvl4.RailwaysUnderground = Construction of railways and underground railways
-NACE.Construction.Lvl4.BridgesTunnels = Construction of bridges and tunnels
-#### NACE.Construction.Lvl3.UtilityProjects = Construction of utility projects
-NACE.Construction.Lvl4.UtilityFluids = Construction of utility projects for fluids
-NACE.Construction.Lvl4.UtilityElectricityTelecom = Construction of utility projects for electricity and telecommunications
-#### NACE.Construction.Lvl3.OtherCivilEngineering = Construction of other civil engineering projects
-NACE.Construction.Lvl4.WaterProjects = Construction of water projects
-NACE.Construction.Lvl4.OtherCivilEngineeringNEC = Construction of other civil engineering projects n.e.c.
+NACE.construction.Lvl2.civilEngineering = Civil engineering
+NACE.construction.Lvl2.civilEngineering.hint = Includes construction of roads and railways, utility projects and other civil engineering projects.
+#### NACE.construction.Lvl3.roadAndRailConstruction = Construction of roads and railways
+NACE.construction.Lvl3.roadAndRailConstruction.title = What type of roads or railways does your undertaking work on?
+NACE.construction.Lvl3.roadAndRailConstruction.hint = Includes bridges and tunnels.
+NACE.construction.Lvl4.roadsMotorways = Construction of roads and motorways
+NACE.construction.Lvl4.railwaysUnderground = Construction of railways and underground railways
+NACE.construction.Lvl4.bridgesTunnels = Construction of bridges and tunnels
+#### NACE.construction.Lvl3.utilityConstruction = Construction of utility projects
+NACE.construction.Lvl3.utilityConstruction.title = What type of utility projects does your undertaking work on?
+NACE.construction.Lvl4.fluidsUtilityConstruction = Utility project for fluids
+NACE.construction.Lvl4.electricityUtilityConstruction = Utility projects for electricity and telecommunications
+#### NACE.construction.Lvl3.otherUtilityConstructionProjects = Construction of other civil engineering projects
+NACE.construction.Lvl3.otherUtilityConstructionProjects.title = What type of civil engineering projects does your taking work on?
+NACE.construction.Lvl3.otherUtilityConstructionProjects.hint = Includes water projects and other civil engineering projects.
+NACE.construction.Lvl4.waterProjects = Water projects
+NACE.construction.Lvl4.otherCivilEngineering = Construction of other civil engineering projects
 
-NACE.Construction.Lvl2.SpecialisedConstruction = Specialised construction activities
-#### NACE.Construction.Lvl3.DemolitionSitePrep = Demolition and site preparation
-NACE.Construction.Lvl4.Demolition = Demolition
-NACE.Construction.Lvl4.SitePreparation = Site preparation
-NACE.Construction.Lvl4.TestDrillingBoring = Test drilling and boring
-#### NACE.Construction.Lvl3.ElectricalPlumbingInstallation = Electrical, plumbing and other construction installation activities
-NACE.Construction.Lvl4.ElectricalInstallation = Electrical installation
-NACE.Construction.Lvl4.PlumbingHeatingAC = Plumbing, heat and air-conditioning installation
-NACE.Construction.Lvl4.InsulationInstallation = Installation of insulation
-NACE.Construction.Lvl4.OtherConstructionInstallation = Other construction installation
-#### NACE.Construction.Lvl3.BuildingCompletionFinishing = Building completion and finishing
-NACE.Construction.Lvl4.Plastering = Plastering
-NACE.Construction.Lvl4.Joinery = Joinery installation
-NACE.Construction.Lvl4.FloorWallCovering = Floor and wall covering
-NACE.Construction.Lvl4.PaintingGlazing = Painting and glazing
-NACE.Construction.Lvl4.OtherCompletionFinishing = Other building completion and finishing
-#### NACE.Construction.Lvl3.SpecialisedBuildingActivities = Specialised construction activities in construction of buildings
-NACE.Construction.Lvl4.Roofing = Roofing activities
-NACE.Construction.Lvl4.OtherSpecialisedBuildingActivities = Other specialised construction activities in construction of buildings
-#### NACE.Construction.Lvl3.SpecialisedCivilEngineering = Specialised construction activities in civil engineering
-NACE.Construction.Lvl4.SpecialisedCivilEngineering = Specialised construction activities in civil engineering
-#### NACE.Construction.Lvl3.IntermediationConstructionServices = Intermediation service activities for specialised construction services
-NACE.Construction.Lvl4.IntermediationConstructionServices = Intermediation service activities for specialised construction services
-#### NACE.Construction.Lvl3.OtherSpecialisedConstruction = Other specialised construction activities
-NACE.Construction.Lvl4.MasonryBricklaying = Masonry and bricklaying activities
-NACE.Construction.Lvl4.OtherSpecialisedConstructionNEC = Other specialised construction activities n.e.c.
+NACE.construction.Lvl2.specialisedConstructionActivities = Specialised construction activities
+NACE.construction.Lvl2.specialisedConstructionActivities.hint = Includes building completion and finishing, demolition, installation, roofing, masonry and bricklaying.
+#### NACE.construction.Lvl3.demolitionAndPreparation = Demolition and site preparation
+NACE.construction.Lvl3.demolitionAndPreparation.title = What type of demolition or site preparation does your undertaking do?
+NACE.construction.Lvl3.demolitionAndPreparation.hint = Includes test drilling and boring.
+NACE.construction.Lvl4.demolition = Demolition
+NACE.construction.Lvl4.sitePreparation = Site preparation
+NACE.construction.Lvl4.testDrillingBoring = Test drilling and boring
+#### NACE.construction.Lvl3.electricalAndPlumbingInstallation = Electrical, plumbing and other construction installation
+NACE.construction.Lvl3.electricalAndPlumbingInstallation.title = What type of construction installation does your undertaking do?
+NACE.construction.Lvl3.electricalAndPlumbingInstallation.hint = Includes air conditioning, heat and insulation.
+NACE.construction.Lvl4.electricalInstallation = Electrical installation
+NACE.construction.Lvl4.plumbingHeatingAC = Plumbing, heat and air conditioning installation
+NACE.construction.Lvl4.insulationInstallation = Installation of insulation
+NACE.construction.Lvl4.otherConstructionInstallation = Other construction installation
+#### NACE.construction.Lvl3.buildingFinishing = Building completion and finishing
+NACE.construction.Lvl3.buildingFinishing.title = What type of building completion and finishing does your undertaking do?
+NACE.construction.Lvl3.buildingFinishing.hint = Includes painting, plastering, joinery installation and wall and floor covering.
+NACE.construction.Lvl4.plastering = Plastering
+NACE.construction.Lvl4.joineryInstallation = Joinery installation
+NACE.construction.Lvl4.floorAndWallCovering = Floor and wall covering
+NACE.construction.Lvl4.paintingAndGlazing = Painting and glazing
+NACE.construction.Lvl4.otherBuildingFinishing = Other building completion and finishing
+#### NACE.construction.Lvl3.specialisedBuildingActivities = Specialised construction activities in construction of buildings
+NACE.construction.Lvl3.specialisedBuildingActivities.title = What type of building construction activities does your undertaking do?
+NACE.construction.Lvl3.specialisedBuildingActivities.hint = Includes roofing.
+NACE.construction.Lvl4.roofingActivities = Roofing activities
+NACE.construction.Lvl4.otherSpecialisedBuildingActivities = Other specialised construction activities in construction of buildings
+#### NACE.construction.Lvl3.specialisedCivilEngineering = Specialised construction activities in civil engineering
+NACE.construction.Lvl4.specialisedCivilEngineering = Specialised construction activities in civil engineering
+#### NACE.construction.Lvl3.specialisedConstructionIntermediationServices = Intermediation service activities for specialised construction services
+NACE.construction.Lvl4.specialisedConstructionIntermediationServices = Intermediation service activities for specialised construction services
+#### NACE.construction.Lvl3.otherSpecialisedConstruction = Other specialised construction activities
+NACE.construction.Lvl3.otherSpecialisedConstruction.title = What type of other specialised construction activities does your undertaking do?
+NACE.construction.Lvl3.otherSpecialisedConstruction.hint = Includes bricklaying and masonry
+NACE.construction.Lvl4.masonryAndBricklaying = Masonry and bricklaying
+NACE.construction.Lvl4.otherSpecialisedConstructionActivities = Other specialised construction activities
 
 #WholesaleRetailTrade NACE Sector2,3,4
 NACE.WholesaleRetailTrade.Lvl2.WholesaleTrade = Wholesale trade

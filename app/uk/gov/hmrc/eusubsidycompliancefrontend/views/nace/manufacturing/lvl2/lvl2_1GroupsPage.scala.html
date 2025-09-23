@@ -34,7 +34,7 @@
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"lvl2_1_groups"}
 
 @actionUrl = @{
     if(isUpdate)
@@ -53,7 +53,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-metals", messages("NACE.Manufacturing.Lvl2.1.Metals"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-metals", messages("NACE.Manufacturing.Lvl2.1.Metals.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-metals", messages("NACE.Manufacturing.Lvl2.1.Metals.hint")))
             )),
             value = Some(Sector.Food.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
@@ -66,7 +66,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-computers", messages("NACE.Manufacturing.Lvl2.1.Computers"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-computers", messages("NACE.Manufacturing.Lvl2.1.Computers.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-computers", messages("NACE.Manufacturing.Lvl2.1.Computers.hint")))
             )),
             value = Some(Sector.Food.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
@@ -74,7 +74,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-clothes", messages("NACE.Manufacturing.Lvl2.1.Clothes"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-clothes", messages("NACE.Manufacturing.Lvl2.1.Clothes.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-clothes", messages("NACE.Manufacturing.Lvl2.1.Clothes.hint")))
             )),
             value = Some(Sector.Food.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
@@ -82,7 +82,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-paper", messages("NACE.Manufacturing.Lvl2.1.Paper"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-paper", messages("NACE.Manufacturing.Lvl2.1.Paper.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-paper", messages("NACE.Manufacturing.Lvl2.1.Paper.hint")))
             )),
             value = Some(Sector.Food.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
@@ -90,7 +90,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-vehicles", messages("NACE.Manufacturing.Lvl2.1.Vehicles"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-vehicles", messages("NACE.Manufacturing.Lvl2.1.Vehicles.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-vehicles", messages("NACE.Manufacturing.Lvl2.1.Vehicles.hint")))
             )),
             value = Some(Sector.Food.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
@@ -103,7 +103,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl2.1.OtherManufacturing"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl2.1.OtherManufacturing.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl2.1.OtherManufacturing.hint")))
             )),
             value = Some(Sector.Food.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)

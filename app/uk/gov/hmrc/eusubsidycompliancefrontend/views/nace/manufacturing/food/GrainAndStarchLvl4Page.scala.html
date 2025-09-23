@@ -52,17 +52,11 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-grain", messages("NACE.Manufacturing.Lvl4.GrainMillProducts"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-grain", "hint place holder text"))
-            )),
             value = Some(Sector.GrainProducts4.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.GrainProducts4.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-starch", messages("NACE.Manufacturing.Lvl4.Starches"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-starch", "hint place holder text"))
-            )),
             value = Some(Sector.starchProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.starchProducts.toString)
         )
@@ -83,7 +77,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.GrainMillProducts.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -92,11 +86,11 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.GrainMillProducts.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("undertakingSector.title")),
+        content = Text(messages("NACE.Manufacturing.GrainMillProducts.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))

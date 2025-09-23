@@ -52,59 +52,38 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-confectionary", messages("NACE.Manufacturing.Lvl4.CocoaChocolateConfectionery"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-confectionary", "hint place holder text"))
-            )),
-            value = Some(Sector.confectionery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.confectionery.toString)
+            value = Some(Sector.Confectionery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Confectionery.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-condiments", messages("NACE.Manufacturing.Lvl4.CondimentsSeasonings"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-condiments", "hint place holder text"))
-            )),
             value = Some(Sector.Condiments.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Condiments.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-homogenised", messages("NACE.Manufacturing.Lvl4.HomogenisedFood"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-homogenised", "hint place holder text"))
-            )),
             value = Some(Sector.HomogenisedFoodPreparations.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.HomogenisedFoodPreparations.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-prepared-meals", messages("NACE.Manufacturing.Lvl4.PreparedMeals"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-prepared-meals", "hint place holder text"))
-            )),
             value = Some(Sector.PreparedMeals.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.PreparedMeals.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-sugar", messages("NACE.Manufacturing.Lvl4.Sugar"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-sugar", "hint place holder text"))
-            )),
             value = Some(Sector.Sugar.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Sugar.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-tea-coffee", messages("NACE.Manufacturing.Lvl4.TeaCoffee"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-tea-coffee", "hint place holder text"))
-            )),
             value = Some(Sector.TeaAndCoffee.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.TeaAndCoffee.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherFoodProducts"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-other", "hint place holder text"))
-            )),
-            value = Some(Sector.otherFoodProduct.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherFoodProduct.toString)
+            value = Some(Sector.OtherFoodProduct.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherFoodProduct.toString)
         )
     )
 }
@@ -123,7 +102,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.OtherFoodProducts.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -132,7 +111,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.OtherFoodProducts.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
