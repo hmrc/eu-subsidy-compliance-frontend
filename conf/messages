@@ -155,8 +155,8 @@ sector.label.3=Fishery and aquaculture
 sector.hint.0= Includes transport and all other activities. The subsidy allowance of this sector is {0}
 sector.hint.2=Includes crop and animal production, hunting and related services. The subsidy allowance of this sector is {0}
 sector.hint.Cont= euros over a rolling 3-year period.
-sector.hint.3=Includes freshwater and marine fishing, aquaculture and related support activities. The subsidy allowance of this sector is {0}
-sector.hint.3Cont= euros over a rolling 3 tax years.
+sector.hint.3=Includes freshwater and marine fishing, aquaculture and related support activities. The subsidy allowance is {0}
+sector.hint.3Cont= euros over 3 tax years.
 
 addBusinessIntent.title = Businesses in your undertaking
 addBusinessIntent.legend = Are there other businesses in your undertaking?
@@ -730,32 +730,51 @@ NACE.suspended.auto.bullet2 = submit a report
 
 NACE.general.hint = Select one option that best describes your undertaking’s main business activity.
 
-#NACESector01
-NACE.Lvl1.AgricultureForestryFishing = Agriculture, forestry and fishing
-NACE.Lvl1.mining = Mining and quarrying
-NACE.Lvl1.Manufacturing = Manufacturing
-NACE.Lvl1.ElectricityGasSteamAir = Electricity, gas, steam and air conditioning supply
-NACE.Lvl1.WaterSewerageWasteRemediation = Water supply; Sewerage, waste management and remediation activities
+#NACESector01 General Trade options
+NACE.Lvl1.title= What is your undertaking’s main business activity?
+
+NACE.Lvl1.agricultureForestryFishing = Agriculture, forestry and fishing
+NACE.Lvl1.forestry = Forestry
+NACE.Lvl1.forestry.hint = Includes logging.
+NACE.Lvl1.manufacturing = Manufacturing
+NACE.Lvl1.manufacturing.hint = Includes manufacturing of products and repair or maintenance of machinery and equipment.
 NACE.Lvl1.construction = Construction
-NACE.Lvl1.WholesaleRetailTrade = Wholesale and retail trade
-NACE.Lvl1.TransportationAndStorage = Transportation and storage
-NACE.Lvl1.accommodationAndFoodService = Accommodation and food service activities
+NACE.Lvl1.wholesaleRetail = Wholesale and retail
+NACE.Lvl1.transportStorage = Transportation and storage
+NACE.Lvl1.transportStorage.hint = Includes all methods of transport, postal and courier services, warehousing and support activities for transport.
 NACE.Lvl1.publishingBroadcasting = Publishing and broadcasting
-NACE.Lvl1.telecommunicationsComputing = Telecommunications and computing
-NACE.Lvl1.FinancialInsuranceActivities = Financial and insurance activities
-NACE.Lvl1.RealEstateActivities = Real estate activities
-NACE.Lvl1.ProfessionalScientificTechnicalActivities = Professional, scientific and technical activities
-NACE.Lvl1.AdministrativeSupportServiceActivities = Administrative and support service activities
-NACE.Lvl1.PublicAdministrationCompulsorySecurity = Public administration and defence; Compulsory social security
-NACE.Lvl1.Education = Education
-NACE.Lvl1.HumanHealthSocialWorkActivities = Human health and social work activities
-NACE.Lvl1.ArtsSportRecreation = Arts, sports and recreation
-NACE.Lvl1.OtherServiceActivities = Other service activities
-NACE.Lvl1.Households = Activities of households as employers and undifferentiated goods - and service-producing activities of households for own use
-NACE.Lvl1.ActivitiesExtraterritorial = Activities of extraterritorial organisations and bodies
+NACE.Lvl1.publishingBroadcasting.hint = Includes publishing of books, newspapers and software, production of films, TV and video, programming and broadcasting, sound recording and music publishing, and news agencies and content distribution.
+NACE.Lvl1.telecommunications = Telecommunications and computing
+NACE.Lvl1.telecommunications.hint = Includes data processing, computer programming and consultancy, web hosting, and other information services.
+NACE.Lvl1.realEstate = Real estate
+NACE.Lvl1.realEstate.hint = Includes buying and selling, development, rental and operating of real estate, intermediation services and other related activities.
+NACE.Lvl1.professionalScientificTechnicalActivities = Professional, scientific and technical services
+NACE.Lvl1.professionalScientificTechnicalActivities.hint = Includes accounting, advertising and marketing, architecture and engineeting, law scientific research and development, specialised design, and veterinary activities.
+NACE.Lvl1.administration = Administrative and support services
+NACE.Lvl1.administration.hint = Includes building services, employment, investigation and security, office administration and business support, rental and leasing of goods, and travel agencies.
+NACE.Lvl1.other.hint = Includes financial services; energy supply and sewerage; mining and quarrying; accommodation and food services; arts, sports and recreation; education; healthcare; repair and maintenance of motor vehicles and household goods; and other service activities.
+
+### Other General Trade
+NACE.Lvl1.otherTitle= Which option best describes your undertaking’s main business activity?
+NACE.Lvl1.financialInsuranceActivities = Financial services and insurance
+NACE.Lvl1.waterSupply = Water supply, sewerage and waste management
+NACE.Lvl1.electricityGas = Electricity, gas, steam and air conditioning supply
+NACE.Lvl1.electricityGas.hint = Includes manufacture and generation, distribution and transmission, and energy trading and brokerage services.
+NACE.Lvl1.mining = Mining and quarrying
+NACE.Lvl1.accommodationAndFoodService = Accommodation and food services
+NACE.Lvl1.accommodationAndFoodService.hint = Includes hotels  and other short-stay accommodation, restaurants and mobile food services, catering and related intermediation services.
+NACE.Lvl1.artsSportsRecreation = Arts, sports and recreation
+NACE.Lvl1.artsSportsRecreation.hint = Includes gambling and betting, libraries, museums and other cultural attractions, performing arts, sports centres and clubs, and amusement and theme parks.
+NACE.Lvl1.education = Education
+NACE.Lvl1.humanHealthSocialWork = Human health and social work
+NACE.Lvl1.humanHealthSocialWork.hint = Includes hospitals, medical and dental practices, residential care and specialist healthcare services.
+NACE.Lvl1.publicAdministration = Public administration, defence and compulsory social security
+NACE.Lvl1.otherService = Other service activities
+NACE.Lvl1.otherService.hint = Includes membership organisations, repair and maintenance of motor vehicles and household goods, and personal services.
+NACE.Lvl1.households = Households employing workers or producing goods and services for their own use
+NACE.Lvl1.activitiesExtraterritorial = Activities of extraterritorial organisations and bodies
 
 #AgricultureForestryFishing NACE Sector2,3,4
-
 NACE.agriculture.Lvl2.cropAnimalProduction = Crop and animal production, hunting and related service activities
 NACE.agriculture.Lvl2.title = What is your undertaking’s main business activity in agriculture?
 NACE.agriculture.Lvl3.growingCrops.title = What type of crop does your undertaking grow?
