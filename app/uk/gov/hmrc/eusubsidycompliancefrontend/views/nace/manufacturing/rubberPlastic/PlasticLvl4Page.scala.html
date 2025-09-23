@@ -77,6 +77,9 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherPlasticProduct.toString)
         ),
         RadioItem(
+            divider = Some(messages("common.radioItem.or"))
+        ),
+        RadioItem(
             content = HtmlContent(radioText("sector-label-finishing", messages("NACE.Manufacturing.Lvl4.FinishingPlasticProducts"))),
             value = Some(Sector.FinishingPlasticProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.FinishingPlasticProducts.toString)
@@ -98,7 +101,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.Plastic.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -107,7 +110,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.Plastic.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
