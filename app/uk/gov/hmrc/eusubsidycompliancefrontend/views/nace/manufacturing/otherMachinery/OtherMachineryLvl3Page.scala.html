@@ -53,7 +53,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-general", messages("NACE.Manufacturing.Lvl3.GeneralPurposeMachinery"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-general", messages("NACE.Manufacturing.Lvl3.GeneralPurposeMachinery.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-general", messages("NACE.Manufacturing.Lvl3.GeneralPurposeMachinery.hint")))
             )),
             value = Some(Sector.GeneralPurposeMachinery.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.GeneralPurposeMachinery.toString)
@@ -61,7 +61,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-other-general", messages("NACE.Manufacturing.Lvl3.OtherGeneralPurposeMachinery"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-other-general", messages("NACE.Manufacturing.Lvl3.OtherGeneralPurposeMachinery.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-other-general", messages("NACE.Manufacturing.Lvl3.OtherGeneralPurposeMachinery.hint")))
             )),
             value = Some(Sector.OtherGeneralPurposeMachinery.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherGeneralPurposeMachinery.toString)
@@ -79,7 +79,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-other-special", messages("NACE.Manufacturing.Lvl3.OtherSpecialPurposeMachinery"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-other-special", messages("NACE.Manufacturing.Lvl3.OtherSpecialPurposeMachinery.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-other-special", messages("NACE.Manufacturing.Lvl3.OtherSpecialPurposeMachinery.hint")))
             )),
             value = Some(Sector.OtherSpecialPurposeMachinery.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherSpecialPurposeMachinery.toString)
@@ -101,7 +101,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.OtherMachinery.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -110,7 +110,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.OtherMachinery.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(

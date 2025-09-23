@@ -97,7 +97,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.ElectricalEquipment.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -106,7 +106,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.ElectricalEquipment.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(

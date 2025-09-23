@@ -1265,6 +1265,8 @@ NACE.Manufacturing.Lvl4.OtherNonMetallicMinerals = Other non-metallic mineral pr
 
 ### Basic Metals ###
 NACE.Manufacturing.BasicMetals.title = What type of basic metals does your undertaking manufacture?
+NACE.Manufacturing.BasicMetals.error = Select the type of basic metals your undertaking manufactures
+
 NACE.Manufacturing.Lvl3.BasicIronSteel = Basic iron, steel and ferro-alloys
 NACE.Manufacturing.Lvl4.IronSteelFerroAlloys = Manufacture of basic iron and steel and of ferro-alloys
 
@@ -1273,6 +1275,7 @@ NACE.Manufacturing.Lvl4.TubesPipesSteel = Manufacture of tubes, pipes, hollow pr
 
 NACE.Manufacturing.Lvl3.OtherSteelProducts = Other products of first processing of steel
 NACE.Manufacturing.OtherSteelProducts.title = What type of steel processing does your undertaking do?
+NACE.Manufacturing.OtherSteelProducts.error = Select the type of steel processing your undertaking does
 NACE.Manufacturing.Lvl3.OtherSteelProducts.hint = Includes cold drawing of bars and wire, cold forming or folding, and cold rolling of narrow strip.
 NACE.Manufacturing.Lvl4.ColdDrawingBars = Cold drawing of bars
 NACE.Manufacturing.Lvl4.ColdRollingStrip = Cold rolling of narrow strip
@@ -1281,7 +1284,8 @@ NACE.Manufacturing.Lvl4.ColdDrawingWire = Cold drawing of wire
 
 NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals = Basic precious and other non-ferrous metals
 NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals.hint = Includes production of aluminium, copper, lead, tin, zinc, other non-ferrous metals and precious metals, and processing of nuclear fuel.
-NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals.title = What type of metal production or processing does your undertaking do?
+NACE.Manufacturing.PreciousNonFerrousMetals.title = What type of metal production or processing does your undertaking do?
+NACE.Manufacturing.PreciousNonFerrousMetals.error = Select the type of metal production or processing your undertaking does
 NACE.Manufacturing.Lvl4.PreciousMetals = Production of precious metals
 NACE.Manufacturing.Lvl4.Aluminium = Production of aluminium
 NACE.Manufacturing.Lvl4.LeadZincTin = Production of lead, zinc and tin
@@ -1290,7 +1294,8 @@ NACE.Manufacturing.Lvl4.OtherNonFerrous = Production of other non-ferrous metals
 NACE.Manufacturing.Lvl4.NuclearFuelProcessing = Processing of nuclear fuel
 
 NACE.Manufacturing.Lvl3.CastingMetals = My undertaking carries out casting of metals
-NACE.Manufacturing.Lvl3.CastingMetals.title = What type of metals does your undertaking cast?
+NACE.Manufacturing.CastingMetals.title = What type of metals does your undertaking cast?
+NACE.Manufacturing.CastingMetals.error = Select the type of metals your undertaking casts
 NACE.Manufacturing.Lvl4.CastingIron = Iron
 NACE.Manufacturing.Lvl4.CastingSteel = Steel
 NACE.Manufacturing.Lvl4.CastingLightMetals = Light metals
@@ -1298,15 +1303,19 @@ NACE.Manufacturing.Lvl4.CastingOtherNonFerrous = Other non-ferrous metals
 
 ### Fabricated metal products ###
 NACE.Manufacturing.FabricatedMetal.title = What type of fabricated metal manufacturing or processing does your undertaking do?
+NACE.Manufacturing.FabricatedMetal.error = Select the type of fabricated metal manufacturing or processing your undertaking does
+
 NACE.Manufacturing.Lvl3.StructuralMetalProducts = Manufacture of structural metal products
 NACE.Manufacturing.Lvl3.StructuralMetalProducts.hint = Includes doors, windows and other structures or parts of structures.
 NACE.Manufacturing.MetalStructures.title = What type of structural metal products does your undertaking manufacture?
+NACE.Manufacturing.MetalStructures.error = Select the type of structural metal products your undertaking manufactures
 NACE.Manufacturing.Lvl4.MetalStructures = Metal structures and parts of structures
 NACE.Manufacturing.Lvl4.MetalDoorsWindows = Doors and windows
 
 NACE.Manufacturing.Lvl3.TanksReservoirs = Manufacture of tanks, reservoirs and containers of metal
 NACE.Manufacturing.Lvl3.TanksReservoirs.hint = Includes central heating radiators, steam generators and boilers.
 NACE.Manufacturing.TanksReservoirsContainers.title = What type of metal products does your undertaking manufacture?
+NACE.Manufacturing.TanksReservoirsContainers.error = Select the type of metal products your undertaking manufactures
 NACE.Manufacturing.Lvl4.CentralHeatingBoilers = Central heating radiators, steam generators and boilers
 NACE.Manufacturing.Lvl4.OtherTanksReservoirs = Other tanks, reservoirs and containers of metal
 
@@ -1318,18 +1327,21 @@ NACE.Manufacturing.Lvl4.ForgingShaping = Forging and shaping metal and powder me
 
 NACE.Manufacturing.Lvl3.TreatmentCoatingMachining = Treatment and coating of metals; machining
 NACE.Manufacturing.TreatmentCoatingMachining.title = What type of metal finishing or processing does your undertaking do?
+NACE.Manufacturing.TreatmentCoatingMachining.error = Select the type of metal finishing or processing your undertaking does
 NACE.Manufacturing.Lvl4.CoatingMetals = Coating
 NACE.Manufacturing.Lvl4.HeatTreatment = Heat treatment
 NACE.Manufacturing.Lvl4.Machining = Machining
 
 NACE.Manufacturing.Lvl3.CutleryToolsHardware = Manufacture of cutlery, tools and general hardware
 NACE.Manufacturing.CutleryToolsHardware.title = What type of cutlery or hardware does your undertaking manufacture?
+NACE.Manufacturing.CutleryToolsHardware.error = Select the type of cutlery or hardware your undertaking manufactures
 NACE.Manufacturing.Lvl4.Cutlery = Cutlery
 NACE.Manufacturing.Lvl4.LocksHinges = Locks and hinges
 NACE.Manufacturing.Lvl4.Tools = Tools
 
 NACE.Manufacturing.Lvl3.OtherFabricatedMetalProducts = Manufacture of other fabricated metal products
 NACE.Manufacturing.OtherFabricatedMetalProducts.title = What type of fabricated metal products does your undertaking manufacture?
+NACE.Manufacturing.OtherFabricatedMetalProducts.error = Select the type of fabricated metal products your undertaking manufactures
 NACE.Manufacturing.Lvl4.SteelDrumsContainers = Steel drums and similar containers
 NACE.Manufacturing.Lvl4.LightMetalPackaging = Light metal packaging
 NACE.Manufacturing.Lvl4.WireProductsSprings = Wire products, chain and springs
@@ -1338,8 +1350,11 @@ NACE.Manufacturing.Lvl4.OtherFabricatedMetalProducts = Another type of fabricate
 
 ### Computers electronics ###
 NACE.Manufacturing.ComputersElectronics.title = What type of computers, electronics or optical products does your undertaking manufacture?
+NACE.Manufacturing.ComputersElectronics.error = Select the type of computers, electronics or optical products your undertaking manufactures
+
 NACE.Manufacturing.Lvl3.ElectronicComponentsBoards = Electronic components and boards
 NACE.Manufacturing.ElectronicComponentsBoards.title = What type of electronic components and boards does your undertaking manufacture?
+NACE.Manufacturing.ElectronicComponentsBoards.error = Select the type of electronic components and boards your undertaking manufactures
 NACE.Manufacturing.Lvl4.ElectronicComponents = Electronic components
 NACE.Manufacturing.Lvl4.LoadedElectronicBoards = Loaded electronic boards
 
@@ -1354,6 +1369,7 @@ NACE.Manufacturing.Lvl4.ConsumerElectronics = Manufacture of consumer electronic
 
 NACE.Manufacturing.Lvl3.MeasuringTestingInstruments = Measuring testing instruments, clocks and watches
 NACE.Manufacturing.MeasuringTestingInstruments.title = What type of instruments does your undertaking manufacture?
+NACE.Manufacturing.MeasuringTestingInstruments.error = Select the type of instruments your undertaking manufactures
 NACE.Manufacturing.Lvl4.MeasuringTestingNavigation = Instruments and appliances for measuring, testing and navigation
 NACE.Manufacturing.Lvl4.WatchesClocks = Watches and clocks
 
@@ -1365,8 +1381,11 @@ NACE.Manufacturing.Lvl4.OpticalInstruments = Manufacture of optical instruments,
 
 ### Electrical equipment ###
 NACE.Manufacturing.ElectricalEquipment.title = What type of electrical equipment does your undertaking manufacture?
+NACE.Manufacturing.ElectricalEquipment.error = Select the type of electrical equipment your undertaking manufactures
+
 NACE.Manufacturing.Lvl3.ElectricMotorsGenerators = Electric motors, generators, transformers and electricity distribution and control apparatus
 NACE.Manufacturing.Lvl3.ElectricMotorsGenerators.title = What type of equipment for power generation, transmission or distribution does your undertaking manufacture?
+NACE.Manufacturing.Lvl3.ElectricMotorsGenerators.error = Select the type of equipment for power generation, transmission or distribution your undertaking manufactures
 NACE.Manufacturing.Lvl4.ElectricMotorsGenerators = Electric motors, generators and transformers
 NACE.Manufacturing.Lvl4.ElectricityDistributionControl = Electricity distribution and control apparatus
 
@@ -1375,6 +1394,7 @@ NACE.Manufacturing.Lvl4.BatteriesAccumulators = Manufacture of batteries and acc
 
 NACE.Manufacturing.Lvl3.WiringDevices = Wiring and wiring devices
 NACE.Manufacturing.WiringDevices.title = What type of wiring or wiring device does your undertaking manufacture?
+NACE.Manufacturing.WiringDevices.error = Select the type of wiring or wiring device your undertaking manufactures
 NACE.Manufacturing.Lvl4.FibreOpticCables = Fibre optic cables
 NACE.Manufacturing.Lvl4.OtherWiresCables = Other electronic and electric wires and cables
 NACE.Manufacturing.Lvl4.WiringDevices = Wiring devices
@@ -1384,6 +1404,7 @@ NACE.Manufacturing.Lvl4.LightingEquipment = Manufacture of lighting equipment
 
 NACE.Manufacturing.Lvl3.DomesticAppliances = Domestic appliances
 NACE.Manufacturing.DomesticAppliances.title = What type of domestic appliances does your undertaking manufacture?
+NACE.Manufacturing.DomesticAppliances.error = Select the type of domesic appliances your undertaking manufactures
 NACE.Manufacturing.Lvl4.ElectricDomesticAppliances = Electric domestic appliances
 NACE.Manufacturing.Lvl4.NonElectricDomesticAppliances = Non-electric domestic appliances
 
@@ -1392,9 +1413,12 @@ NACE.Manufacturing.Lvl4.OtherElectricalEquipment = Manufacture of other electric
 
 ### Other machinery and equipment ###
 NACE.Manufacturing.OtherMachinery.title = What type of general-purpose machinery does your undertaking manufacture?
+NACE.Manufacturing.OtherMachinery.error = Select the type of other machinery and equipment your undertaking manufactures
+
 NACE.Manufacturing.Lvl3.GeneralPurposeMachinery = General-purpose machinery
 NACE.Manufacturing.Lvl3.GeneralPurposeMachinery.hint = Includes bearings and gears, engines and turbines, fluid power, pumps and compressors, taps and valves.
 NACE.Manufacturing.GeneralPurposeMachinery.title = What type of general-purpose machinery does your undertaking manufacture?
+NACE.Manufacturing.GeneralPurposeMachinery.error = Select the type of general-purpose machinery your undertaking manufactures
 NACE.Manufacturing.Lvl4.EnginesTurbines = Engines and turbines, except aircraft, vehicle and cycle engines
 NACE.Manufacturing.Lvl4.FluidPowerEquipment = Fluid power equipment
 NACE.Manufacturing.Lvl4.PumpsCompressors = Other pumps and compressors
@@ -1404,6 +1428,7 @@ NACE.Manufacturing.Lvl4.BearingsGears = Bearings, gears, gearing and driving ele
 NACE.Manufacturing.Lvl3.OtherGeneralPurposeMachinery = Other general-purpose machinery
 NACE.Manufacturing.Lvl3.OtherGeneralPurposeMachinery.hint = Includes lifting and handling equipment, office machinery, non-domestic air conditioning, ovens, furnaces and permanent household heating, power-driven hand tools and any other general-purpose machinery.
 NACE.Manufacturing.OtherGeneralPurposeMachinery.title = What type of other general-purpose machinery does your undertaking manufacture?
+NACE.Manufacturing.OtherGeneralPurposeMachinery.error = Select the type of other general-purpose machinery your undertaking manufactures
 NACE.Manufacturing.Lvl4.OvensFurnacesHeating = Ovens, furnaces and permanent household heating equipment
 NACE.Manufacturing.Lvl4.LiftingHandlingEquipment = Lifting and handling equipment
 NACE.Manufacturing.Lvl4.OfficeMachinery = Office machinery and equipment, except computers and peripheral equipment
@@ -1416,12 +1441,14 @@ NACE.Manufacturing.Lvl4.AgriculturalForestryMachinery = Manufacture of agricultu
 
 NACE.Manufacturing.Lvl3.MetalFormingMachinery = Metal forming machinery and machine tools
 NACE.Manufacturing.MetalFormingMachinery.title = What type of metal-forming machinery and machine tools does your undertaking manufacture?
+NACE.Manufacturing.MetalFormingMachinery.error = Select the type of metal-forming machinery and machine tools your undertaking manufactures
 NACE.Manufacturing.Lvl4.MetalFormingMachinery = Metal forming machinery and machine tools for metal work
 NACE.Manufacturing.Lvl4.OtherMachineTools = Other machine tools
 
 NACE.Manufacturing.Lvl3.OtherSpecialPurposeMachinery = Other special-purpose machinery
 NACE.Manufacturing.Lvl3.OtherSpecialPurposeMachinery.hint = Includes machinery for: additive manufacturing; food, beverage and tobacco processing; metallurgy; mining, quarrying and construction; production of paper, paperboard, plastic and rubber, textiles and leather; and other special purposes.
-NACE.Manufacturing.OtherSpecialPurposeMachinery.title = Includes machinery for: additive manufacturing; food, beverage and tobacco processing; metallurgy; mining, quarrying and construction; production of paper, paperboard, plastic and rubber, textiles and leather; and other special purposes.
+NACE.Manufacturing.OtherSpecialPurposeMachinery.title = What type of other special-purpose machinery does your undertaking manufacture?
+NACE.Manufacturing.OtherSpecialPurposeMachinery.error = Select the type of other special-purpose machinery your undertaking manufactures
 NACE.Manufacturing.Lvl4.MachineryMetallurgy = Machinery for metallurgy
 NACE.Manufacturing.Lvl4.MachineryMiningConstruction = Machinery for mining, quarrying and construction
 NACE.Manufacturing.Lvl4.MachineryFoodBeverageTobacco = Machinery for food, beverage and tobacco processing
@@ -1433,6 +1460,7 @@ NACE.Manufacturing.Lvl4.OtherSpecialPurposeMachinery = Other special-purpose mac
 
 ### Motor vehicles, trailers and parts ###
 NACE.Manufacturing.MotorVehicles.title = What type of motor vehicles, trailers or parts does your undertaking manufacture?
+NACE.Manufacturing.MotorVehicles.error = Select the type of motor vehicles, trailers or parts your undertaking manufactures
 NACE.Manufacturing.Lvl3.MotorVehicles = Motor vehicles
 NACE.Manufacturing.Lvl4.MotorVehicles = Manufacture of motor vehicles
 
@@ -1441,13 +1469,17 @@ NACE.Manufacturing.Lvl4.BodiesTrailers = Manufacture of bodies and coachwork for
 
 NACE.Manufacturing.Lvl3.MotorVehiclePartsAccessories = Motor vehicle parts and accessories
 NACE.Manufacturing.MotorVehiclePartsAccessories.title = What type of motor vehicle parts and accessories does your undertaking manufacture?
+NACE.Manufacturing.MotorVehiclePartsAccessories.error = Select the type of motor vehicle parts and accessories your undertaking manufactures
 NACE.Manufacturing.Lvl4.ElectricalElectronicEquipmentVehicles = Manufacture of electrical and electronic equipment for motor vehicles
 NACE.Manufacturing.Lvl4.OtherPartsAccessoriesVehicles = Manufacture of other parts and accessories for motor vehicles
 
 ### Other transport equipment ###
 NACE.Manufacturing.OtherTransportEquipment.title = What type of transport equipment does your undertaking manufacture?
+NACE.Manufacturing.OtherTransportEquipment.error = Select the type of transport equipment your undertaking manufactures
+
 NACE.Manufacturing.Lvl3.ShipsBoats = Ships and boats
 NACE.Manufacturing.ShipsBoats.title = What type of ships and boats does your undertaking build?
+NACE.Manufacturing.ShipsBoats.error = Select the type of ships and boats your undertaking builds
 NACE.Manufacturing.Lvl4.CivilianShips = Civilian ships and floating structures
 NACE.Manufacturing.Lvl4.PleasureSportingBoats = Pleasure and sporting boats
 NACE.Manufacturing.Lvl4.MilitaryShips = Military ships and vessels
@@ -1457,6 +1489,7 @@ NACE.Manufacturing.Lvl4.RailwayLocomotives = Manufacture of railway locomotives 
 
 NACE.Manufacturing.Lvl3.AirSpacecraft = Aircraft and spacecraft and related machinery
 NACE.Manufacturing.AirSpacecraft.title = What type of aircraft, spacecraft and related machinery does your undertaking manufacture?
+NACE.Manufacturing.AirSpacecraft.error = Select the type of aircraft, spacecraft and related machinery your undertaking manufactures
 NACE.Manufacturing.Lvl4.CivilianAirSpacecraft = Civilian air and spacecraft and related machinery
 NACE.Manufacturing.Lvl4.MilitaryAirSpacecraft = Military air and spacecraft and related machinery
 
@@ -1465,7 +1498,8 @@ NACE.Manufacturing.Lvl4.MilitaryVehicles = Manufacture of military fighting vehi
 
 NACE.Manufacturing.Lvl3.OtherTransportEquipment = Other transport equipment
 NACE.Manufacturing.Lvl3.OtherTransportEquipment.hint = Includes bicycles, motorcycles and invalid carriages (like mobility scooters).
-NACE.Manufacturing.OtherTransportEquipment.title = What type of other transport equipment does your undertaking manufacture?
+NACE.Manufacturing.OtherTransportEquipment.2.title = What type of other transport equipment does your undertaking manufacture?
+NACE.Manufacturing.OtherTransportEquipment.2.error = Select the type of other transport equipment your undertaking manufactures
 NACE.Manufacturing.Lvl4.Motorcycles = Motorcycles
 NACE.Manufacturing.Lvl4.BicyclesInvalidCarriages = Bicycles and invalid carriages
 NACE.Manufacturing.Lvl4.OtherTransport = Another type of transport equipment
@@ -1476,8 +1510,11 @@ NACE.Manufacturing.Lvl4.Furniture = Manufacture of furniture
 
 ### Other manufacturing ###
 NACE.Manufacturing.OtherManufacturing.title = What type of products does your undertaking manufacture?
+NACE.Manufacturing.OtherManufacturing.error = Select the type of products your undertaking manufactures
+
 NACE.Manufacturing.Lvl3.JewelleryCoins = Jewellery, coins and related articles
 NACE.Manufacturing.JewelleryCoins.title = What type of jewellery or related manufacturing does your undertaking do?
+NACE.Manufacturing.JewelleryCoins.error = Select the type of jewellery or related manufacturing your undertaking does
 NACE.Manufacturing.Lvl4.StrikingCoins = Striking of coins
 NACE.Manufacturing.Lvl4.JewelleryArticles = Manufacture of jewellery and related articles
 NACE.Manufacturing.Lvl4.ImitationJewellery = Manufacture of imitation jewellery and related articles
@@ -1496,14 +1533,18 @@ NACE.Manufacturing.Lvl4.MedicalDentalInstruments = Manufacture of medical and de
 
 NACE.Manufacturing.Lvl3.OtherManufacturing = Other products
 NACE.Manufacturing.Lvl3.OtherManufacturing.hint = Includes brooms and brushes and all other products
-NACE.Manufacturing.OtherManufacturing.title = What type of other products does your undertaking manufacture?
+NACE.Manufacturing.OtherManufacturing.2.title = What type of other products does your undertaking manufacture?
+NACE.Manufacturing.OtherManufacturing.2.error = Select the type of other products your undertaking manufactures
 NACE.Manufacturing.Lvl4.BroomsBrushes = Brooms and brushes
 NACE.Manufacturing.Lvl4.OtherManufacturing = Another type of product
 
 ### repairs and maintains ###
 NACE.Manufacturing.RepairMaintains.title = What is your undertaking’s main business activity in repair, maintenance or installation of machinery and equipment?
+NACE.Manufacturing.RepairMaintains.error = Select your undertaking’s main business activity in repair, maintenance or installation of machinery and equipment
+
 NACE.Manufacturing.Lvl3.RepairMaintenanceFabricatedMetal = Repair and maintenance of fabricated metal products, machinery and equipment
 NACE.Manufacturing.RepairMaintenanceFabricatedMetal.title = What type of machinery or equipment does your undertaking repair or maintain?
+NACE.Manufacturing.RepairMaintenanceFabricatedMetal.error = Select the type of machinery or equipment your undertaking repairs or maintains
 NACE.Manufacturing.Lvl4.RepairFabricatedMetalProducts = Fabricated metal products
 NACE.Manufacturing.Lvl4.RepairMachinery = Machinery
 NACE.Manufacturing.Lvl4.RepairElectronicOptical = Electronic and optical equipment
