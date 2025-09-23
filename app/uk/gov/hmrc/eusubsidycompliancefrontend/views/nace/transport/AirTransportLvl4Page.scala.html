@@ -49,12 +49,12 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-electricity-nonrenewable", messages("NACE.TransportationAndStorage.Lvl4.FreightAir"))),
+      content = HtmlContent(radioText("sector-label-freight-air", messages("NACE.TransportationAndStorage.Lvl4.FreightAir"))),
       value = Some(Sector.FreightAirTransport.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.FreightAirTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-other-postal-courier", messages("NACE.TransportationAndStorage.Lvl4.SpaceTransport"))),
+      content = HtmlContent(radioText("sector-label-space-transport", messages("NACE.TransportationAndStorage.Lvl4.SpaceTransport"))),
       value = Some(Sector.SpaceTransport.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.SpaceTransport.toString)
     )

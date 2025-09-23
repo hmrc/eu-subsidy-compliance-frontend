@@ -49,7 +49,7 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-electricity-nonrenewable", messages("NACE.TransportationAndStorage.Lvl4.PostalUniversalService"))),
+      content = HtmlContent(radioText("sector-label-postal-universal-service", messages("NACE.TransportationAndStorage.Lvl4.PostalUniversalService"))),
       value = Some(Sector.PostalActivities4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.PostalActivities4.toString)
     ),

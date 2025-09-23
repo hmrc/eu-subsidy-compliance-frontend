@@ -48,30 +48,25 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-electric-power", messages("NACE.ElectricityGasSteamAir.Lvl3.ElectricPower"))),
-      value = Some(Sector.ElectricPowerGenerationAndDistribution.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricPowerGenerationAndDistribution.toString)
+      content = HtmlContent(radioText("sector-label-postal-universal-service", messages("NACE.TransportationAndStorage.Lvl4.PostalUniversalService"))),
+      value = Some(Sector.PostalActivities4.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.PostalActivities4.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-gas-distribution", messages("NACE.ElectricityGasSteamAir.Lvl3.GasDistribution"))),
-      value = Some(Sector.GaseousFuelsManufacture.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.GaseousFuelsManufacture.toString)
+      content = HtmlContent(radioText("sector-label-other-postal-courier", messages("NACE.TransportationAndStorage.Lvl4.OtherPostalCourier"))),
+      value = Some(Sector.OtherPostalActivities4.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherPostalActivities4.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-steam-air-conditioning", messages("NACE.ElectricityGasSteamAir.Lvl3.SteamAirConditioning"))),
-      value = Some(Sector.SteamAndAirConditioningSupply.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.SteamAndAirConditioningSupply.toString)
-    ),
-    RadioItem(
-      content = HtmlContent(radioText("sector-label-brokers-agents-power-gas", messages("NACE.ElectricityGasSteamAir.Lvl3.BrokersAgentsPowerGas"))),
-      value = Some(Sector.ElectricPowerAndGasBrokers.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricPowerAndGasBrokers.toString)
+      content = HtmlContent(radioText("sector-label-intermediation-postal-courier", messages("NACE.TransportationAndStorage.Lvl4.IntermediationPostalCourier"))),
+      value = Some(Sector.PostalIntermediationActivities4.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.PostalIntermediationActivities4.toString)
     )
   )
 }
 
 @layout(
-  pageTitle = Some(messages("NACE.ElectricityGasSteamAir.Lvl2.Supply.title")),
+  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl3.PostalCourier.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -96,7 +91,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.ElectricityGasSteamAir.Lvl2.Supply.title")),
+          content = Text(messages("NACE.TransportationAndStorage.Lvl3.PostalCourier.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))
