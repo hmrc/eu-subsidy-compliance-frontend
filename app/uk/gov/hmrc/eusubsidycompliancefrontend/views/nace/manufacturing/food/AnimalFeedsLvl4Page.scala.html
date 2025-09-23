@@ -52,17 +52,11 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-farm-feed", messages("NACE.Manufacturing.Lvl4.FarmAnimalFeeds"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-farm-feed", "hint place holder text"))
-            )),
-            value = Some(Sector.farmAnimalsFood.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.farmAnimalsFood.toString)
+            value = Some(Sector.FarmAnimalsFood.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FarmAnimalsFood.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-pet-feed", messages("NACE.Manufacturing.Lvl4.PetFoods"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-pet-feed", "hint place holder text"))
-            )),
             value = Some(Sector.PetFood.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.PetFood.toString)
         )
@@ -83,7 +77,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.PreparedAnimalFeeds.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -92,7 +86,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.PreparedAnimalFeeds.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(

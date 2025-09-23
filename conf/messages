@@ -935,10 +935,12 @@ NACE.Manufacturing.Lvl2.2.Vehicles.Other.hint = Includes aircraft, bicycles, boa
 
 ### Food ###
 NACE.Manufacturing.Food.title = What type of food, does your undertaking manufacture?
+NACE.Manufacturing.Food.error = Select the type of food your undertaking manufactures
 
 NACE.Manufacturing.Lvl3.MeatProducts = Meat
 NACE.Manufacturing.Food.Meat.title = What type of meat production or processing does your undertaking do?
-NACE.Manufacturing.Lvl4.MeatExceptPoultry = Processing and preserving of meat, except of poultry meat
+NACE.Manufacturing.Food.Meat.error = Select the type of meat production or processing your undertaking does
+NACE.Manufacturing.Lvl4.MeatExceptPoultry = Processing and preserving of meat (except poultry)
 NACE.Manufacturing.Lvl4.PoultryMeat = Processing and preserving of poultry meat
 NACE.Manufacturing.Lvl4.MeatPoultryProducts = Production of meat and poultry meat products
 
@@ -946,28 +948,33 @@ NACE.Manufacturing.Lvl3.FishProducts = Fish, crustaceans and molluscs
 NACE.Manufacturing.Lvl4.FishProducts = Processing and preserving of fish, crustaceans and molluscs
 
 NACE.Manufacturing.Food.FruitAndVeg.title = What type of fruit and vegetable production or processing does your undertaking do?
+NACE.Manufacturing.Food.FruitAndVeg.error = Select the type of fruit and vegetable production or processing your undertaking does
 NACE.Manufacturing.Lvl3.FruitVegetables = Fruit and vegetables
 NACE.Manufacturing.Lvl4.Potatoes = Processing and preserving of potatoes
 NACE.Manufacturing.Lvl4.FruitVegetableJuice = Manufacture of fruit and vegetable juice
 NACE.Manufacturing.Lvl4.OtherFruitVegetables = Other processing and preserving of fruit and vegetables
 
 NACE.Manufacturing.Food.OilsAndFats.title = What type of oils and fats does your undertaking manufacture?
+NACE.Manufacturing.Food.OilsAndFats.error = Select the type of oils and fats your undertaking manufactures
 NACE.Manufacturing.Lvl3.OilsFats = Oils and fats
 NACE.Manufacturing.Lvl4.OilsFats = Other oils and fats
 NACE.Manufacturing.Lvl4.Margarine = Margarine and similar edible fats
 
 NACE.Manufacturing.DairyProducts.title = What type of dairy products or ice does your undertaking manufacture?
+NACE.Manufacturing.DairyProducts.error = Select the type of dairy products or ice your undertaking manufactures
 NACE.Manufacturing.Lvl3.DairyProducts = Dairy products and ice
 NACE.Manufacturing.Lvl4.DairyProducts = Dairy products
 NACE.Manufacturing.Lvl4.IceCream = Ice cream and other edible ice
 
 NACE.Manufacturing.GrainMillProducts.title = What type of grain mill products or starch does your undertaking manufacture?
+NACE.Manufacturing.GrainMillProducts.error = Select the type of grain mill products or starch your undertaking manufactures
 NACE.Manufacturing.Lvl3.GrainMillProducts = Grain mill products and starch
 NACE.Manufacturing.Lvl3.GrainMillProducts.hint = Includes cereals and flour.
 NACE.Manufacturing.Lvl4.GrainMillProducts = Grain mill products
 NACE.Manufacturing.Lvl4.Starches = Starches and starch products
 
 NACE.Manufacturing.BakeryProducts.title = What type of bakery and farinaceous products does your undertaking manufacture?
+NACE.Manufacturing.BakeryProducts.error = Select the type of bakery and farinaceous products your undertaking manufactures
 NACE.Manufacturing.Lvl3.BakeryProducts = Bakery and farinaceous products
 NACE.Manufacturing.Lvl3.BakeryProducts.hint = For example bread, biscuits, cakes, pastries and pasta.
 NACE.Manufacturing.Lvl4.BreadPastry = Bread, cakes and fresh pastry goods
@@ -975,20 +982,22 @@ NACE.Manufacturing.Lvl4.RusksBiscuits = Biscuits, rusks and preserved pastries a
 NACE.Manufacturing.Lvl4.FarinaceousProducts = Farinaceous products
 
 NACE.Manufacturing.OtherFoodProducts.title = What type of other food products does your undertaking manufacture?
-NACE.Manufacturing.Lvl3.OtherFoodProducts = Manufacture of other food products
+NACE.Manufacturing.OtherFoodProducts.error = Select the type of other food products your undertaking manufactures
+NACE.Manufacturing.Lvl3.OtherFoodProducts = Other food products
 NACE.Manufacturing.Lvl3.OtherFoodProducts.hint = Includes cocoa, chocolate and confectionery, condiments and seasonings, food preparations (like baby food) and prepared meals, sugar, tea and coffee, and all other food products.
-NACE.Manufacturing.Lvl4.Sugar = Manufacture of sugar
-NACE.Manufacturing.Lvl4.CocoaChocolateConfectionery = Manufacture of cocoa, chocolate and sugar confectionery
-NACE.Manufacturing.Lvl4.TeaCoffee = Processing of tea and coffee
-NACE.Manufacturing.Lvl4.CondimentsSeasonings = Manufacture of condiments and seasonings
-NACE.Manufacturing.Lvl4.PreparedMeals = Manufacture of prepared meals and dishes
-NACE.Manufacturing.Lvl4.HomogenisedFood = Manufacture of homogenised food preparations and dietetic food
-NACE.Manufacturing.Lvl4.OtherFoodProducts = Manufacture of other food products n.e.c.
+NACE.Manufacturing.Lvl4.Sugar = Sugar
+NACE.Manufacturing.Lvl4.CocoaChocolateConfectionery = Cocoa, chocolate and sugar confectionery
+NACE.Manufacturing.Lvl4.TeaCoffee = Tea and coffee
+NACE.Manufacturing.Lvl4.CondimentsSeasonings = Condiments and seasonings
+NACE.Manufacturing.Lvl4.PreparedMeals = Prepared meals and dishes
+NACE.Manufacturing.Lvl4.HomogenisedFood = Homogenised food preparations and dietetic food
+NACE.Manufacturing.Lvl4.OtherFoodProducts = Another type of food product
 
 NACE.Manufacturing.PreparedAnimalFeeds.title = What type of prepared animal feeds does your undertaking manufacture?
-NACE.Manufacturing.Lvl3.PreparedAnimalFeeds = Manufacture of prepared animal feeds
-NACE.Manufacturing.Lvl4.FarmAnimalFeeds = Manufacture of prepared feeds for farm animals
-NACE.Manufacturing.Lvl4.PetFoods = Manufacture of prepared pet foods
+NACE.Manufacturing.PreparedAnimalFeeds.error = Select the type of prepared animal feeds your undertaking manufactures
+NACE.Manufacturing.Lvl3.PreparedAnimalFeeds = Prepared animal feeds
+NACE.Manufacturing.Lvl4.FarmAnimalFeeds = Food for farm animals
+NACE.Manufacturing.Lvl4.PetFoods = Pet food
 
 ### Beverages ###
 NACE.Manufacturing.Beverages.title = What type of beverages does your undertaking manufacture?

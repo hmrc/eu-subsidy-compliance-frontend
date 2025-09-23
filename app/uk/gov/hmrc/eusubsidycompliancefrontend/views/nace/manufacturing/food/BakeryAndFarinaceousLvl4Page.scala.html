@@ -52,25 +52,16 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-rusks", messages("NACE.Manufacturing.Lvl4.RusksBiscuits"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-rusks", "hint place holder text"))
-            )),
             value = Some(Sector.BiscuitsAndPreservedCakes.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.BiscuitsAndPreservedCakes.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-bread-pastry", messages("NACE.Manufacturing.Lvl4.BreadPastry"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-bread-pastry", "hint place holder text"))
-            )),
             value = Some(Sector.BreadAndFreshPastry.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.BreadAndFreshPastry.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-farinaceous", messages("NACE.Manufacturing.Lvl4.FarinaceousProducts"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-farinaceous", "hint place holder text"))
-            )),
             value = Some(Sector.FarinaceousProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.FarinaceousProducts.toString)
         )
@@ -91,7 +82,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.BakeryProducts.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -100,7 +91,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.BakeryProducts.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(

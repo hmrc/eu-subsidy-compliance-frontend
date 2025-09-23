@@ -63,7 +63,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl3.OtherSteelProducts"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl3.BasicChemicals.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl3.BasicChemicals.hint")))
             )),
             value = Some(Sector.OtherSteelProductsProcessing.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherSteelProductsProcessing.toString)
@@ -71,7 +71,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-precious", messages("NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-precious", messages("NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-precious", messages("NACE.Manufacturing.Lvl3.PreciousNonFerrousMetals.hint")))
             )),
             value = Some(Sector.BasicPreciousAndNonFerrousMetals.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.BasicPreciousAndNonFerrousMetals.toString)
