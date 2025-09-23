@@ -105,7 +105,8 @@
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("undertakingSector.error.required"))
-fieldset = Some(Fieldset(
+      ))} else None,
+      fieldset = Some(Fieldset(
         legend = Some(Legend(
           content = Text(messages("NACE.TransportationAndStorage.Lvl3.SupportTransport.title")),
           classes = "govuk-fieldset__legend--xl",
