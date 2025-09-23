@@ -34,7 +34,7 @@
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"construction"}
 
 @actionUrl = @{
     if(isUpdate)
@@ -51,31 +51,20 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-finishing", messages("NACE.Manufacturing.Lvl3.FinishingTextiles"))),
-            value = Some(Sector.textilesFinishing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesFinishing.toString)
+                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.amusementParks"))),
+                value = Some(Sector.AmusementParks.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.AmusementParks.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl3.OtherTextiles"))),
-            value = Some(Sector.textilesManufacture.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesManufacture.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-fibre-spinning", messages("NACE.Manufacturing.Lvl3.TextileFibreSpinning"))),
-            value = Some(Sector.textilesPreparation.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesPreparation.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-weaving", messages("NACE.Manufacturing.Lvl3.Weaving"))),
-            value = Some(Sector.textilesWeaving.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesWeaving.toString)
+                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.otherRecreationActivities"))),
+                value = Some(Sector.OtherRecreationActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherRecreationActivities.toString)
         )
     )
 }
 
-
 @layout(
-  pageTitle = Some(messages("NACE.Manufacturing.Textiles.title")),
+  pageTitle = Some(messages("NACE.artsSportsRecreation.Lvl3.amusementRecreation.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -100,13 +89,10 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("NACE.Manufacturing.Textiles.title")),
+        content = Text(messages("NACE.artsSportsRecreation.Lvl3.amusementRecreation.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))
-    )),
-        hint = Some(Hint(
-        content = Text(messages("NACE.general.title"))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,

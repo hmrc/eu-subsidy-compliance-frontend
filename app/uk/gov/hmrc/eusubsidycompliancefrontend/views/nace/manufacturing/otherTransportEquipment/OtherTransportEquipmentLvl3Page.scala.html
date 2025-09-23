@@ -73,7 +73,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-parts-other", messages("NACE.Manufacturing.Lvl3.OtherTransportEquipment"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl3.OtherTransportEquipment.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl3.OtherTransportEquipment.hint")))
             )),
             value = Some(Sector.OtherTransportEquipment3.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherTransportEquipment3.toString)
@@ -95,7 +95,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.OtherTransportEquipment.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -104,7 +104,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.OtherTransportEquipment.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(

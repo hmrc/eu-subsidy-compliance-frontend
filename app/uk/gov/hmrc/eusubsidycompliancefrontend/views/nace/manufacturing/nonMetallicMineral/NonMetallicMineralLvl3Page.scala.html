@@ -73,7 +73,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-glass", messages("NACE.Manufacturing.Lvl3.GlassProducts"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-glass", messages("NACE.Manufacturing.Lvl3.GlassProducts.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-glass", messages("NACE.Manufacturing.Lvl3.GlassProducts.hint")))
             )),
             value = Some(Sector.GlassProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.GlassProducts.toString)
@@ -110,7 +110,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.nonMetallicMineral.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -119,7 +119,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.nonMetallicMineral.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(

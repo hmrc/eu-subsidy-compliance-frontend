@@ -65,7 +65,7 @@
 
 
 @layout(
-  pageTitle = Some(messages("NACE.Manufacturing.OtherManufacturing.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.OtherManufacturing.2.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -77,7 +77,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.OtherManufacturing.2.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -86,11 +86,11 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.OtherManufacturing.2.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("NACE.Manufacturing.OtherManufacturing.title")),
+        content = Text(messages("NACE.Manufacturing.OtherManufacturing.2.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))

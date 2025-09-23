@@ -58,7 +58,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl3.OtherClothing"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl3.OtherClothing.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl3.OtherClothing.hint")))
             )),
             value = Some(Sector.OtherClothing.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherClothing.toString)
@@ -68,7 +68,7 @@
 
 
 @layout(
-  pageTitle = Some(messages("undertakingSector.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.Clothing.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -80,7 +80,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.Clothing.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -89,11 +89,11 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.Clothing.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("undertakingSector.title")),
+        content = Text(messages("NACE.Manufacturing.Clothing.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))

@@ -56,9 +56,9 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.CentralHeating.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherMetalTanks"))),
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherTanksReservoirs"))),
             value = Some(Sector.OtherMetalTanks.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MetalStructures.toString)
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherMetalTanks.toString)
         )
     )
 }
@@ -77,7 +77,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.TanksReservoirsContainers.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -86,7 +86,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.TanksReservoirsContainers.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(

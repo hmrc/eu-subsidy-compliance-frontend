@@ -68,7 +68,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-structural", messages("NACE.Manufacturing.Lvl3.StructuralMetalProducts"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-structural", messages("NACE.Manufacturing.Lvl3.StructuralMetalProducts.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-structural", messages("NACE.Manufacturing.Lvl3.StructuralMetalProducts.hint")))
             )),
             value = Some(Sector.FabricatedStructuralMetalProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.FabricatedStructuralMetalProducts.toString)
@@ -76,7 +76,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-tanks", messages("NACE.Manufacturing.Lvl3.TanksReservoirs"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-tanks", messages("NACE.Manufacturing.Lvl3.TanksReservoirs.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-tanks", messages("NACE.Manufacturing.Lvl3.TanksReservoirs.hint")))
             )),
             value = Some(Sector.MetalTanksManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.MetalTanksManufacture.toString)
@@ -108,7 +108,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.FabricatedMetal.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -117,7 +117,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.FabricatedMetal.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
