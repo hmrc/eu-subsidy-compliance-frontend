@@ -1695,7 +1695,8 @@ NACE.TransportationAndStorage.Lvl4.InlandFreight = Inland freight water transpor
 NACE.TransportationAndStorage.Lvl2.AirTransport = Air transport
 #### NACE.TransportationAndStorage.Lvl3.PassengerAir = Passenger air transport
 NACE.TransportationAndStorage.Lvl4.PassengerAir = Passenger air transport
-#### NACE.TransportationAndStorage.Lvl3.FreightAirSpace = Freight air transport and space transport
+NACE.TransportationAndStorage.Lvl3.FreightAirSpace = Freight air transport and space transport
+NACE.TransportationAndStorage.Lvl3.FreightAirSpace.title = What type of freight air transport or space transport does your undertaking provide? Select one option that best describes your undertaking’s main business activity."
 NACE.TransportationAndStorage.Lvl4.FreightAir = Freight air transport
 NACE.TransportationAndStorage.Lvl4.SpaceTransport = Space transport
 
