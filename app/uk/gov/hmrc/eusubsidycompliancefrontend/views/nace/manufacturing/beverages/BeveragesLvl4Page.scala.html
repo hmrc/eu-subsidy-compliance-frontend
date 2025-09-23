@@ -52,36 +52,36 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-beer", messages("NACE.manufacturing.lvl4.beer"))),
-            value = Some(Sector.beer.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.beer.toString)
+            value = Some(Sector.Beer.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Beer.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-cider", messages("NACE.manufacturing.lvl4.cider"))),
-            value = Some(Sector.ciders.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ciders.toString)
+            content = HtmlContent(radioText("sector-label-cider", messages("NACE.Manufacturing.Lvl4.cider"))),
+            value = Some(Sector.Ciders.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Ciders.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-malt", messages("NACE.manufacturing.lvl4.malt"))),
-            value = Some(Sector.malt.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.malt.toString)
+            value = Some(Sector.Malt.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Malt.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-softdrinks", messages("NACE.Manufacturing.Lvl4.SoftDrinks"))),
+            content = HtmlContent(radioText("sector-label-softdrinks", messages("NACE.Manufacturing.Lvl4.softDrinks"))),
             value = Some(Sector.SoftDrinks.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.SoftDrinks.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-spirits", messages("NACE.Manufacturing.Lvl4.Spirits"))),
+            content = HtmlContent(radioText("sector-label-spirits", messages("NACE.Manufacturing.Lvl4.spirits"))),
             value = Some(Sector.Spirits.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Spirits.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-wine", messages("NACE.Manufacturing.Lvl4.Wine"))),
+            content = HtmlContent(radioText("sector-label-wine", messages("NACE.Manufacturing.Lvl4.wine"))),
             value = Some(Sector.Wine.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Wine.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-fermented", messages("NACE.Manufacturing.Lvl4.OtherFermentedBeverages"))),
+            content = HtmlContent(radioText("sector-label-other-fermented", messages("NACE.Manufacturing.Lvl4.otherFermentedBeverages"))),
             value = Some(Sector.OtherFermentedBeverages.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherFermentedBeverages.toString)
         )
@@ -102,7 +102,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.Beverages.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -111,7 +111,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.Beverages.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(

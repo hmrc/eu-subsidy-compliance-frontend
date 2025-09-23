@@ -61,14 +61,9 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Cordage.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-pet-feed", messages("NACE.Manufacturing.Lvl3.FinishingTextiles"))),
-            value = Some(Sector.textilesFinishing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesFinishing.toString)
-        ),
-        RadioItem(
             content = HtmlContent(radioText("sector-label-household", messages("NACE.Manufacturing.Lvl4.HouseholdFurnishingTextiles"))),
-            value = Some(Sector.householdTextiles.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.householdTextiles.toString)
+            value = Some(Sector.HouseholdTextiles.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.HouseholdTextiles.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-knitted", messages("NACE.Manufacturing.Lvl4.KnittedCrochetedFabrics"))),
@@ -87,8 +82,8 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherTextiles"))),
-            value = Some(Sector.otherTextile.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherTextile.toString)
+            value = Some(Sector.OtherTextile.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherTextile.toString)
         )
     )
 }
@@ -107,7 +102,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.OtherTextiles.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -116,7 +111,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.OtherTextiles.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(

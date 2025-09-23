@@ -19,6 +19,7 @@ common.accept=Accept and send
 common.cya.change = Change
 common.print = Print this page
 common.go-undertaking-home = Go to undertaking homepage
+common.radioItem.or = or
 
 continue.button=Save and continue
 button.addBusiness = Add a business to this undertaking
@@ -1001,14 +1002,15 @@ NACE.Manufacturing.Lvl4.PetFoods = Pet food
 
 ### Beverages ###
 NACE.Manufacturing.Beverages.title = What type of beverages does your undertaking manufacture?
-NACE.Manufacturing.Lvl3.Beverages = Manufacture of beverages
-NACE.Manufacturing.Lvl4.Spirits = Spirits (distilled, rectified or blended)
-NACE.Manufacturing.Lvl4.Wine = Wine from grape
-NACE.Manufacturing.Lvl4.Cider = Cider and other fruit fermented beverages
-NACE.Manufacturing.Lvl4.OtherFermentedBeverages = Other non-distilled fermented beverages
+NACE.Manufacturing.Beverages.error = Select the type of beverages your undertaking manufactures
+NACE.Manufacturing.Lvl3.beverages = Manufacture of beverages
+NACE.Manufacturing.Lvl4.spirits = Spirits (distilled, rectified or blended)
+NACE.Manufacturing.Lvl4.wine = Wine from grapes
+NACE.Manufacturing.Lvl4.cider = Cider and other fruit fermented beverages
+NACE.Manufacturing.Lvl4.otherFermentedBeverages = Other non-distilled fermented beverages
 NACE.manufacturing.lvl4.beer = Beer
 NACE.manufacturing.lvl4.malt = Malt
-NACE.Manufacturing.Lvl4.SoftDrinks = Soft drinks and bottled waters
+NACE.Manufacturing.Lvl4.softDrinks = Soft drinks and bottled waters
 
 ### Tobacco ###
 NACE.Manufacturing.Lvl3.TobaccoProducts = Manufacture of tobacco products
@@ -1016,6 +1018,7 @@ NACE.Manufacturing.Lvl4.TobaccoProducts = Manufacture of tobacco products
 
 ### Textiles ###
 NACE.Manufacturing.Textiles.title = What type of textile manufacturing does your undertaking do?
+NACE.Manufacturing.Textiles.error = Select the type of textile manufacturing your undertaking does
 NACE.Manufacturing.Lvl3.TextileFibreSpinning = Preparation and spinning of textile fibres
 NACE.Manufacturing.Lvl4.TextileFibreSpinning = Preparation and spinning of textile fibres
 
@@ -1026,6 +1029,7 @@ NACE.Manufacturing.Lvl3.FinishingTextiles = Finishing of textiles
 NACE.Manufacturing.Lvl4.FinishingTextiles = Finishing of textiles
 
 NACE.Manufacturing.OtherTextiles.title = What type of textiles does your undertaking manufacture?
+NACE.Manufacturing.OtherTextiles.error = Select the type of textiles your undertaking manufactures
 NACE.Manufacturing.Lvl3.OtherTextiles = Manufacture of textiles (except clothes)
 NACE.Manufacturing.Lvl4.KnittedCrochetedFabrics = Knitted and crocheted fabrics
 NACE.Manufacturing.Lvl4.HouseholdFurnishingTextiles = Household textiles and made-up furnishing articles
@@ -1036,10 +1040,13 @@ NACE.Manufacturing.Lvl4.TechnicalIndustrialTextiles = Other technical and indust
 NACE.Manufacturing.Lvl4.OtherTextiles = Another type of textile
 
 ### Clothing ###
+NACE.Manufacturing.Clothing.title = What type of clothing does your undertaking manufacture?
+NACE.Manufacturing.Clothing.error = Select the type of clothing your undertaking manufactures
 NACE.Manufacturing.Lvl3.KnittedCrochetedClothing = Knitted and crocheted clothing
 NACE.Manufacturing.Lvl4.KnittedCrochetedApparel = Manufacture of knitted and crocheted apparel
 
 NACE.Manufacturing.OtherClothing.title = What type of clothing or accessories does your undertaking manufacture?
+NACE.Manufacturing.OtherClothing.error = Select the type of clothing or accessories your undertaking manufactures
 NACE.Manufacturing.Lvl3.OtherClothing = Other clothing and accessories
 NACE.Manufacturing.Lvl3.OtherClothing.hint = Includes leather and fur clothing, outerwear, underwear, workwear and all other clothes and accessories.
 NACE.Manufacturing.Lvl4.Outerwear = Outerwear
@@ -1049,7 +1056,11 @@ NACE.Manufacturing.Lvl4.LeatherAndFurClothing = Leather and fur clothing
 NACE.Manufacturing.Lvl4.OtherClothingAccessories = Other clothing and accessories
 
 ### Leather ###
+NACE.manufacturing.Leather.title = What is your undertaking’s main business activity in leather or related products?
+NACE.manufacturing.Leather.error = Select your undertaking’s main business activity in leather or related products
+
 NACE.Manufacturing.TanningLeather.title = What type of manufacturing or related activity does your undertaking do?
+NACE.Manufacturing.TanningLeather.error = Select the type of manufacturing or related activity your undertaking does
 NACE.Manufacturing.Lvl3.TanningLeather = Tanning, dyeing, dressing of leather and fur; manufacture of luggage, handbags, saddlery and harness
 NACE.Manufacturing.Lvl4.TanningLeatherFur = Tanning, dressing, dyeing of leather and fur
 NACE.Manufacturing.Lvl4.LuggageHandbagsSaddlery = Manufacture of luggage, handbags, saddlery and harness of any material
@@ -1059,14 +1070,18 @@ NACE.Manufacturing.Lvl4.Footwear = Manufacture of footwear
 
 ### Wood cork and straw ###
 NACE.Manufacturing.WoodCorkStraw.title = What is your undertaking’s main business activity in wood, cork or straw products?
+NACE.Manufacturing.WoodCorkStraw.error = Select your undertaking’s main business activity in wood, cork or straw products
+
 NACE.Manufacturing.Lvl3.SawmillingWood = Sawmilling, planing, processing or finishing of wood
+NACE.Manufacturing.SawmillingWood.Lvl4.error = Select how your undertaking manufactures or process wood
 NACE.Manufacturing.SawmillingWood.Lvl4.title = How does your undertaking manufacture or process wood?
-NACE.Manufacturing.Lvl4.SawmillingWood = Sawmilling and planing of wood
-NACE.Manufacturing.Lvl4.ProcessingFinishingWood = Processing and finishing of wood
+NACE.Manufacturing.Lvl4.SawmillingWood = Sawmilling and planing
+NACE.Manufacturing.Lvl4.ProcessingFinishingWood = Processing and finishing
 
 NACE.Manufacturing.Lvl3.WoodCorkStrawPlaiting = Manufacture of products of wood, cork, straw and plaiting materials
 NACE.Manufacturing.Lvl3.WoodCorkStrawPlaiting.hint = Includes finishing of wood products.
 NACE.Manufacturing.WoodCorkStrawPlaiting.Lvl4.title = What type of wood, cork, straw or plaited product does your undertaking manufacture?
+NACE.Manufacturing.WoodCorkStrawPlaiting.Lvl4.error = Select the type of wood, cork, straw or plaited product your undertaking manufactures
 NACE.Manufacturing.Lvl4.VeneerSheetsPanels = Veneer sheets and wood-based panels
 NACE.Manufacturing.Lvl4.ParquetFloors = Assembled parquet floors
 NACE.Manufacturing.Lvl4.BuildersCarpentryJoinery = Other builders' carpentry and joinery

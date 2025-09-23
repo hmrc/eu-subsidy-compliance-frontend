@@ -51,12 +51,12 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-footwear", messages("NACE.manufacturing.Lvl3.Footwear"))),
+            content = HtmlContent(radioText("sector-label-footwear", messages("NACE.Manufacturing.Lvl3.Footwear"))),
             value = Some(Sector.footwearManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.footwearManufacture.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-tanning", messages("NACE.manufacturing.Lvl3.TanningLeather"))),
+            content = HtmlContent(radioText("sector-label-tanning", messages("NACE.Manufacturing.Lvl3.TanningLeather"))),
             value = Some(Sector.LeatherManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.LeatherManufacture.toString)
         )
@@ -77,7 +77,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.manufacturing.Leather.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -86,7 +86,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.manufacturing.Leather.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
