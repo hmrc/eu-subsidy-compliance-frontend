@@ -31,7 +31,6 @@
   govukRadios : GovukRadios
 )
 
-
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"undertakingSector"}
@@ -49,41 +48,30 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-electricity-nonrenewable", messages("NACE.TransportationAndStorage.Lvl4.CargoHandling"))),
-      value = Some(Sector.CargoHandling.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.CargoHandling.toString)
+      content = HtmlContent(radioText("sector-label-electric-power", messages("NACE.ElectricityGasSteamAir.Lvl3.ElectricPower"))),
+      value = Some(Sector.ElectricPowerGenerationAndDistribution.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricPowerGenerationAndDistribution.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-other-postal-courier", messages("NACE.TransportationAndStorage.Lvl4.LogisticsServices"))),
-      value = Some(Sector.LogisticsServiceActivities.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.LogisticsServiceActivities.toString)
+      content = HtmlContent(radioText("sector-label-gas-distribution", messages("NACE.ElectricityGasSteamAir.Lvl3.GasDistribution"))),
+      value = Some(Sector.GaseousFuelsManufacture.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.GaseousFuelsManufacture.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-intermediation-postal-courier", messages("NACE.TransportationAndStorage.Lvl4.AirTransportSupport"))),
-      value = Some(Sector.AirTransportServiceActivities.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.AirTransportServiceActivities.toString)
+      content = HtmlContent(radioText("sector-label-steam-air-conditioning", messages("NACE.ElectricityGasSteamAir.Lvl3.SteamAirConditioning"))),
+      value = Some(Sector.SteamAndAirConditioningSupply.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.SteamAndAirConditioningSupply.toString)
     ),
     RadioItem(
-        content = HtmlContent(radioText("sector-label-electricity-nonrenewable", messages("NACE.TransportationAndStorage.Lvl4.LandTransportSupport"))),
-        value = Some(Sector.LandTransportServiceActivities.toString),
-        checked = form.data.get(fieldName).fold(false)(x => x == Sector.LandTransportServiceActivities.toString)
-    ),
-    RadioItem(
-        content = HtmlContent(radioText("sector-label-other-postal-courier", messages("NACE.TransportationAndStorage.Lvl4.WaterTransportSupport"))),
-        value = Some(Sector.WaterTransportServiceActivities.toString),
-        checked = form.data.get(fieldName).fold(false)(x => x == Sector.WaterTransportServiceActivities.toString)
-    ),
-    RadioItem(
-        content = HtmlContent(radioText("sector-label-intermediation-postal-courier", messages("NACE.TransportationAndStorage.Lvl4.OtherTransportSupport"))),
-        value = Some(Sector.OtherTransportSupportActivities.toString),
-        checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherTransportSupportActivities.toString)
+      content = HtmlContent(radioText("sector-label-brokers-agents-power-gas", messages("NACE.ElectricityGasSteamAir.Lvl3.BrokersAgentsPowerGas"))),
+      value = Some(Sector.ElectricPowerAndGasBrokers.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricPowerAndGasBrokers.toString)
     )
   )
 }
 
-
 @layout(
-  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl3.SupportTransport.title")),
+  pageTitle = Some(messages("NACE.ElectricityGasSteamAir.Lvl2.Supply.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -105,9 +93,10 @@
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("undertakingSector.error.required"))
-fieldset = Some(Fieldset(
+      ))} else None,
+      fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.TransportationAndStorage.Lvl3.SupportTransport.title")),
+          content = Text(messages("NACE.ElectricityGasSteamAir.Lvl2.Supply.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))

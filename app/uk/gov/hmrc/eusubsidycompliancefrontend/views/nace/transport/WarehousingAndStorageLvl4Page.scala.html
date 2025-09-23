@@ -49,41 +49,16 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-electricity-nonrenewable", messages("NACE.TransportationAndStorage.Lvl4.CargoHandling"))),
-      value = Some(Sector.CargoHandling.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.CargoHandling.toString)
-    ),
-    RadioItem(
-      content = HtmlContent(radioText("sector-label-other-postal-courier", messages("NACE.TransportationAndStorage.Lvl4.LogisticsServices"))),
-      value = Some(Sector.LogisticsServiceActivities.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.LogisticsServiceActivities.toString)
-    ),
-    RadioItem(
-      content = HtmlContent(radioText("sector-label-intermediation-postal-courier", messages("NACE.TransportationAndStorage.Lvl4.AirTransportSupport"))),
-      value = Some(Sector.AirTransportServiceActivities.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.AirTransportServiceActivities.toString)
-    ),
-    RadioItem(
-        content = HtmlContent(radioText("sector-label-electricity-nonrenewable", messages("NACE.TransportationAndStorage.Lvl4.LandTransportSupport"))),
-        value = Some(Sector.LandTransportServiceActivities.toString),
-        checked = form.data.get(fieldName).fold(false)(x => x == Sector.LandTransportServiceActivities.toString)
-    ),
-    RadioItem(
-        content = HtmlContent(radioText("sector-label-other-postal-courier", messages("NACE.TransportationAndStorage.Lvl4.WaterTransportSupport"))),
-        value = Some(Sector.WaterTransportServiceActivities.toString),
-        checked = form.data.get(fieldName).fold(false)(x => x == Sector.WaterTransportServiceActivities.toString)
-    ),
-    RadioItem(
-        content = HtmlContent(radioText("sector-label-intermediation-postal-courier", messages("NACE.TransportationAndStorage.Lvl4.OtherTransportSupport"))),
-        value = Some(Sector.OtherTransportSupportActivities.toString),
-        checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherTransportSupportActivities.toString)
+      content = HtmlContent(radioText("sector-label-freight-intermediation", messages("NACE.TransportationAndStorage.Lvl4.WarehousingStorage"))),
+      value = Some(Sector.WarehousingStorage4.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.WarehousingStorage4.toString)
     )
   )
 }
 
 
 @layout(
-  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl3.SupportTransport.title")),
+  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl2.WarehousingSupport.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -105,9 +80,10 @@
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
         content = Text(messages("undertakingSector.error.required"))
-fieldset = Some(Fieldset(
+      ))} else None,
+      fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.TransportationAndStorage.Lvl3.SupportTransport.title")),
+          content = Text(messages("ACE.TransportationAndStorage.Lvl2.WarehousingSupport.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))
