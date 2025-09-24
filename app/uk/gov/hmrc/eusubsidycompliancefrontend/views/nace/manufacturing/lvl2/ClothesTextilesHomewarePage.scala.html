@@ -63,7 +63,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-textiles", messages("NACE.Manufacturing.Lvl2.2.Clothes.Textiles"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-textiles", messages("NACE.Manufacturing.Lvl2.2.Clothes.Textiles.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-textiles", messages("NACE.Manufacturing.Lvl2.2.Clothes.Textiles.hint")))
             )),
             value = Some(Sector.Textiles.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Textiles.toString)
@@ -71,7 +71,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-leather", messages("NACE.Manufacturing.Lvl2.2.Clothes.Leather"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-leather", messages("NACE.Manufacturing.Lvl2.2.Clothes.Leather.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-leather", messages("NACE.Manufacturing.Lvl2.2.Clothes.Leather.hint")))
             )),
             value = Some(Sector.LeatherProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.LeatherProducts.toString)
@@ -93,7 +93,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.Lvl2.2.Clothes.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -102,7 +102,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.Lvl2.2.Clothes.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(

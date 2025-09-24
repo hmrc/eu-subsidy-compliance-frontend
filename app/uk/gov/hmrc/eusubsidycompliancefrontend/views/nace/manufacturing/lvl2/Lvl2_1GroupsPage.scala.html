@@ -34,7 +34,7 @@
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"lvl2_1_groups"}
+@fieldName = @{"undertakingSector"}
 
 @actionUrl = @{
     if(isUpdate)
@@ -109,7 +109,10 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-machinery", messages("NACE.Manufacturing.Lvl2.NACE.Manufacturing.Lvl2.1.Machinery"))),
+            divider = Some(messages("common.radioItem.or"))
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-machinery", messages("NACE.Manufacturing.Lvl2.1.Machinery"))),
             value = Some(Sector.Food.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
         )
@@ -130,7 +133,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.Lvl2.1.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -139,7 +142,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.Lvl2.1.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
