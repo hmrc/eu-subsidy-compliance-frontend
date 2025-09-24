@@ -69,15 +69,15 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-chemicals", messages("NACE.Manufacturing.Lvl2.2.Metals.Chemicals"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-chemicals", messages("NACE.Manufacturing.Lvl2.2.Metals.Chemicals.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-chemicals", messages("NACE.Manufacturing.Lvl2.2.Metals.Chemicals.hint")))
             )),
             value = Some(Sector.ChemicalProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.ChemicalProducts.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-basic", messages("NNACE.Manufacturing.Lvl2.2.Metals.BasicMetal"))),
+            content = HtmlContent(radioText("sector-label-basic", messages("NACE.Manufacturing.Lvl2.2.Metals.BasicMetal"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-basic", messages("NACE.Manufacturing.Lvl2.2.Metals.BasicMetal.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-basic", messages("NACE.Manufacturing.Lvl2.2.Metals.BasicMetal.hint")))
             )),
             value = Some(Sector.BasicMetals.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.BasicMetals.toString)
@@ -90,7 +90,7 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-nonmetallic", messages("NACE.Manufacturing.Lvl2.2.Metals.NonMetallic"))),
             hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-nonmetallic", messages("NACE.Manufacturing.Lvl2.2.Metals.NonMetallic.hint", appConfig.sectorCap("Other"))))
+                content = HtmlContent(radioText("sector-hint-nonmetallic", messages("NACE.Manufacturing.Lvl2.2.Metals.NonMetallic.hint")))
             )),
             value = Some(Sector.OtherNonMetallicProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherNonMetallicProducts.toString)
@@ -112,7 +112,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.Manufacturing.Lvl2.2.Metals.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -121,7 +121,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.Manufacturing.Lvl2.2.Metals.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
