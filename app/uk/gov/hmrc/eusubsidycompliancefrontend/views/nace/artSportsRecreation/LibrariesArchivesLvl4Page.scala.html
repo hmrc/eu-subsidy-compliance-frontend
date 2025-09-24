@@ -34,7 +34,7 @@
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"construction"}
+@fieldName = @{"undertakingSector"}
 
 @actionUrl = @{
     if(isUpdate)
@@ -51,7 +51,7 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.archives."))),
+                content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.archives"))),
                 value = Some(Sector.Archives.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.Archives.toString)
         ),
@@ -76,7 +76,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.artsSportsRecreation.Lvl3.libraryArchives.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -85,7 +85,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.artsSportsRecreation.Lvl3.libraryArchives.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(

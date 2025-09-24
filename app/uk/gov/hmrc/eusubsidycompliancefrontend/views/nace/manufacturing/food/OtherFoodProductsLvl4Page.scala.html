@@ -62,6 +62,9 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-homogenised", messages("NACE.Manufacturing.Lvl4.HomogenisedFood"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-homogenised", messages("NACE.Manufacturing.Lvl4.HomogenisedFood.hint")))
+            )),
             value = Some(Sector.HomogenisedFoodPreparations.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.HomogenisedFoodPreparations.toString)
         ),
