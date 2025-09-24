@@ -31,7 +31,6 @@
   govukRadios : GovukRadios
 )
 
-
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"undertakingSector"}
@@ -49,26 +48,15 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-postal-universal-service", messages("NACE.TransportationAndStorage.Lvl4.PostalUniversalService"))),
-      value = Some(Sector.PostalActivities4.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.PostalActivities4.toString)
-    ),
-    RadioItem(
-      content = HtmlContent(radioText("sector-label-other-postal-courier", messages("NACE.TransportationAndStorage.Lvl4.OtherPostalCourier"))),
-      value = Some(Sector.OtherPostalActivities4.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherPostalActivities4.toString)
-    ),
-    RadioItem(
-      content = HtmlContent(radioText("sector-label-intermediation-postal-courier", messages("NACE.TransportationAndStorage.Lvl4.IntermediationPostalCourier"))),
-      value = Some(Sector.PostalIntermediationActivities4.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.PostalIntermediationActivities4.toString)
+      content = HtmlContent(radioText("sector-label-sea-coastal-freight", messages("NACE.TransportationAndStorage.Lvl4.SeaCoastalFreight"))),
+      value = Some(Sector.CoastalFreightWaterTransport4.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.CoastalFreightWaterTransport4.toString)
     )
   )
 }
 
-
 @layout(
-  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl3.PostalCourier.title")),
+  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl2.WaterTransport.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -93,7 +81,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.TransportationAndStorage.Lvl3.PostalCourier.title")),
+          content = Text(messages("NACE.TransportationAndStorage.Lvl2.WaterTransport.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))
