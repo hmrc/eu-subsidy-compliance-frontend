@@ -1068,10 +1068,10 @@ package object types extends SimpleJson {
     val businessRegulation: types.Sector.Value = Value("84.13")
     val communityServices: types.Sector.Value = Value("84.2")
     val defence: types.Sector.Value = Value("84.22")
-    val fireServiceActivities: types.Sector.Value = Value("84.25")
+    val fireService: types.Sector.Value = Value("84.25")
     val foreignAffairs: types.Sector.Value = Value("84.21")
-    val judicialActivities: types.Sector.Value = Value("84.23")
-    val publicSafety: types.Sector.Value = Value("84.24")
+    val justiceJudicial: types.Sector.Value = Value("84.23")
+    val publicOrderSafety: types.Sector.Value = Value("84.24")
     val compulsorySocialSecurity	: types.Sector.Value = Value("84.3")
     val compulsorySocialSecurity4: types.Sector.Value = Value("84.30")
 

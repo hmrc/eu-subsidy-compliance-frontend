@@ -48,6 +48,7 @@ import play.api.mvc.Call
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney.Forms.UndertakingCyaFormPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.publicAdmin.{publicAdminDefenceLvl3Page, publicAdminLvl4Page, serviceProvisionLvl4Page}
 
 @Singleton
 class UndertakingController @Inject() (
@@ -61,7 +62,7 @@ class UndertakingController @Inject() (
   timeProvider: TimeProvider,
   auditService: AuditService,
   aboutUndertakingPage: AboutUndertakingPage,
-  undertakingSectorPage: UndertakingSectorPage,
+  undertakingSectorPage: serviceProvisionLvl4Page,
   undertakingAddBusinessPage: UndertakingAddBusinessPage,
   override val confirmEmailPage: ConfirmEmailPage,
   override val inputEmailPage: InputEmailPage,

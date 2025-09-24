@@ -2135,16 +2135,17 @@ NACE.publicAdministration.Lvl2.publicAdministrationDefence = Public administrati
 NACE.publicAdministration.Lvl2.publicAdministrationDefence.title = What is your undertaking’s main business activity in public administration, defence and compulsory social security?
 NACE.publicAdministration.Lvl3.administrationGeneral = Administration of the State and the economic, social and environmental policies of the community
 NACE.publicAdministration.Lvl3.administrationGeneral.title = What is your undertaking’s main business activity in public administration?
-NACE.publicAdministration.Lvl4.generalPublicAdmin = General public administration activities
+NACE.publicAdministration.Lvl4.generalPublicAdmin = General public administration
 NACE.publicAdministration.Lvl4.healthEducationRegulation = Regulation of health care, education, cultural services and other social services
 NACE.publicAdministration.Lvl4.businessRegulation = Regulation of and contribution to more efficient operation of businesses
 NACE.publicAdministration.Lvl3.communityServices = Provision of services to the community as a whole
 NACE.publicAdministration.Lvl3.communityServices.title = What is your undertaking’s main business activity in provision of services to the community?
 NACE.publicAdministration.Lvl4.foreignAffairs = Foreign affairs
-NACE.publicAdministration.Lvl4.defence = Defence activities
+NACE.publicAdministration.Lvl4.defence = Defence
 NACE.publicAdministration.Lvl4.justiceJudicial = Justice and judicial activities
-NACE.publicAdministration.Lvl4.publicOrderSafety = Public order and safety activities
+NACE.publicAdministration.Lvl4.publicOrderSafety = Public order and safety
 NACE.publicAdministration.Lvl4.fireService = Fire service activities
+NACE.publicAdministration.Lvl3.compulsorySocialSecurity = Compulsory social security activities
 NACE.publicAdministration.Lvl4.compulsorySocialSecurity = Compulsory social security activities
 
 #Education NACE Sector2,3,4

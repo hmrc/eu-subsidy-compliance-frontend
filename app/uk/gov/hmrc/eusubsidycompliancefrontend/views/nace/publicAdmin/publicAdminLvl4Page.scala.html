@@ -50,17 +50,17 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-generalPublicAdmin", messages("NACE.publicAdministration.Lvl4.generalPublicAdmin "))),
+content = HtmlContent(radioText("sector-label-generalPublicAdmin", messages("NACE.publicAdministration.Lvl4.generalPublicAdmin"))),
 value = Some(Sector.generalPublicAdmin.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.generalPublicAdmin.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-healthEducationRegulation", messages("NACE.publicAdministration.Lvl4.healthEducationRegulation "))),
+content = HtmlContent(radioText("sector-label-healthEducationRegulation", messages("NACE.publicAdministration.Lvl4.healthEducationRegulation"))),
 value = Some(Sector.healthEducationRegulation.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.healthEducationRegulation.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-businessRegulation", messages("NACE.publicAdministration.Lvl4.businessRegulation "))),
+content = HtmlContent(radioText("sector-label-businessRegulation", messages("NACE.publicAdministration.Lvl4.businessRegulation"))),
 value = Some(Sector.businessRegulation.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.businessRegulation.toString)
 )
@@ -69,7 +69,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.businessRegulati
 
 
 @layout(
-pageTitle = Some(messages("NACE.publicAdministration.Lvl3.administrationGeneral.title ")),
+pageTitle = Some(messages("NACE.publicAdministration.Lvl3.administrationGeneral.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -96,13 +96,10 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.publicAdministration.Lvl3.administrationGeneral.title ")),
+content = Text(messages("NACE.publicAdministration.Lvl3.administrationGeneral.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
-)),
-hint = Some(Hint(
-content = Text(messages("NACE.general.Lvl3.hint"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,
