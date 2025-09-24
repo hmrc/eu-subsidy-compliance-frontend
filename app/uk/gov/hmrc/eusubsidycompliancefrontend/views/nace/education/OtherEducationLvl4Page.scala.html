@@ -73,7 +73,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherEducationNE
 
 
 @layout(
-pageTitle = Some(messages("NACE.households.Lvl2.undifferentiatedProduction.title")),
+pageTitle = Some(messages("NACE.education.Lvl3.otherEducation.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -100,7 +100,7 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.households.Lvl2.undifferentiatedProduction.title")),
+content = Text(messages("NACE.education.Lvl3.otherEducation.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))

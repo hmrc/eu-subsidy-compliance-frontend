@@ -50,31 +50,26 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-peatExtraction", messages("NACE.mining.Lvl4.peatExtraction"))),
-value = Some(Sector.peatExtraction.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.peatExtraction.toString)
+content = HtmlContent(radioText("sector-label-advertising", messages("NACE.professional.Lvl3.advertising"))),
+value = Some(Sector.advertising.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.advertising.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-saltExtraction", messages("NACE.mining.Lvl4.saltExtraction"))),
-value = Some(Sector.saltExtraction.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.saltExtraction.toString)
+content = HtmlContent(radioText("sector-label-marketResearch", messages("NACE.professional.Lvl3.marketResearchPolling"))),
+value = Some(Sector.marketResearch.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.marketResearch.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-chemicalMineralsMining", messages("NACE.mining.Lvl4.chemicalMineralsMining"))),
-value = Some(Sector.chemicalMineralsMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.chemicalMineralsMining.toString)
-),
-RadioItem(
-content = HtmlContent(radioText("sector-label-otherNEC", messages("NACE.mining.Lvl4.otherNEC"))),
-value = Some(Sector.otherNEC.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherNEC.toString)
+content = HtmlContent(radioText("sector-label-publicRelations", messages("NACE.professional.Lvl3.publicRelations"))),
+value = Some(Sector.publicRelations.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.publicRelations.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.mining.Lvl3.miningAndQuarryingNEC.title")),
+pageTitle = Some(messages("NACE.professional.Lvl2.advertisingMarketResearchPR.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -101,7 +96,7 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.mining.Lvl3.miningAndQuarryingNEC.title")),
+content = Text(messages("NACE.professional.Lvl2.advertisingMarketResearchPR.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
