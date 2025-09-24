@@ -34,7 +34,7 @@
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"construction"}
+@fieldName = @{"undertakingSector"}
 
 @actionUrl = @{
     if(isUpdate)
@@ -51,13 +51,13 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.RoadAndRailConstruction"))),
+                content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.roadAndRailConstruction"))),
                 value = Some(Sector.RoadAndRailConstruction.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.RoadAndRailConstruction.toString),
                 hint = Some(Hint(content = Text(messages("NACE.construction.Lvl3.roadAndRailConstruction.hint"))))
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.UtilityConstruction"))),
+                content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl3.utilityConstruction"))),
                 value = Some(Sector.UtilityConstruction.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.UtilityConstruction.toString)
         ),
@@ -83,7 +83,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.construction.Lvl2.civilEngineering.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -92,7 +92,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.construction.Lvl2.civilEngineering.error"))
       )) else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
