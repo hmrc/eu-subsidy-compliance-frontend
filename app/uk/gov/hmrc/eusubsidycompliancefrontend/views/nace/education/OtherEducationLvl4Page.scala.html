@@ -49,11 +49,6 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-sportsRecreationEducation", messages("NACE.education.Lvl4.sportsRecreationEducation"))),
-value = Some(Sector.sportsRecreationEducation.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.sportsRecreationEducation.toString)
-),
-RadioItem(
 content = HtmlContent(radioText("sector-label-culturalEducation", messages("NACE.education.Lvl4.culturalEducation"))),
 value = Some(Sector.culturalEducation.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.culturalEducation.toString)
@@ -62,6 +57,11 @@ RadioItem(
 content = HtmlContent(radioText("sector-label-drivingSchool", messages("NACE.education.Lvl4.drivingSchool"))),
 value = Some(Sector.drivingSchool.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.drivingSchool.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-sportsRecreationEducation", messages("NACE.education.Lvl4.sportsEducation"))),
+value = Some(Sector.sportsRecreationEducation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.sportsRecreationEducation.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherEducationNEC", messages("NACE.education.Lvl4.otherEducationNEC"))),
@@ -104,6 +104,9 @@ content = Text(messages("NACE.households.Lvl2.undifferentiatedProduction.title")
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
+)),
+hint = Some(Hint(
+content = Text(messages("NACE.general.hint"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,

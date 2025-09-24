@@ -49,21 +49,36 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-freshwaterFishing", messages("NACE.fishing.Lvl4.freshwaterFishing"))),
-value = Some(Sector.freshwaterFishing.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.freshwaterFishing.toString)
+content = HtmlContent(radioText("sector-label-defence", messages("NACE.publicAdministration.Lvl4.defence"))),
+value = Some(Sector.defence.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.defence.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-marineFishing", messages("NACE.fishing.Lvl4.marineFishing"))),
-value = Some(Sector.marineFishing.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.marineFishing.toString)
+content = HtmlContent(radioText("sector-label-fireService", messages("NACE.publicAdministration.Lvl4.fireService"))),
+value = Some(Sector.fireService.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.fireService.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-foreignAffairs", messages("NACE.publicAdministration.Lvl4.foreignAffairs"))),
+value = Some(Sector.foreignAffairs.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.foreignAffairs.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-justiceJudicial", messages("NACE.publicAdministration.Lvl4.justiceJudicial"))),
+value = Some(Sector.justiceJudicial.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.justiceJudicial.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-publicOrderSafety", messages("NACE.publicAdministration.Lvl4.publicOrderSafety"))),
+value = Some(Sector.publicOrderSafety.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.publicOrderSafety.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.fishing.Lvl3.fishing.title")),
+pageTitle = Some(messages("NACE.publicAdministration.Lvl3.communityServices.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -90,13 +105,10 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.fishing.Lvl3.fishing.title")),
+content = Text(messages("NACE.publicAdministration.Lvl3.communityServices.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
-)),
-hint = Some(Hint(
-content = Text(messages(" NACE.general.Lvl3.hint"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,

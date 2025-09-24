@@ -50,19 +50,19 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-administrationGeneral", messages("NACE.publicAdministration.Lvl3.administrationGeneral "))),
+content = HtmlContent(radioText("sector-label-administrationGeneral", messages("NACE.publicAdministration.Lvl3.administrationGeneral"))),
 value = Some(Sector.administrationGeneral.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.administrationGeneral.toString)
-),
-RadioItem(
-content = HtmlContent(radioText("sector-label-communityServices", messages("NACE.publicAdministration.Lvl3.communityServices "))),
-value = Some(Sector.communityServices.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.communityServices.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-compulsorySocialSecurity", messages("NACE.publicAdministration.Lvl3.compulsorySocialSecurity"))),
 value = Some(Sector.compulsorySocialSecurity.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.compulsorySocialSecurity.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-communityServices", messages("NACE.publicAdministration.Lvl3.communityServices"))),
+value = Some(Sector.communityServices.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.communityServices.toString)
 )
 )
 }
