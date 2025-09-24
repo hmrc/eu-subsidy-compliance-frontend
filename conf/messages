@@ -966,7 +966,7 @@ NACE.Manufacturing.Lvl2.2.Vehicles.Other = Other transport equipment
 NACE.Manufacturing.Lvl2.2.Vehicles.Other.hint = Includes aircraft, bicycles, boats, locomotives and motorcycles, and related parts.
 
 ### Food ###
-NACE.Manufacturing.Food.title = What type of food, does your undertaking manufacture?
+NACE.Manufacturing.Food.title = What type of food does your undertaking manufacture?
 NACE.Manufacturing.Food.error = Select the type of food your undertaking manufactures
 
 NACE.Manufacturing.Lvl3.MeatProducts = Meat
@@ -1012,17 +1012,19 @@ NACE.Manufacturing.Lvl3.BakeryProducts.hint = For example bread, biscuits, cakes
 NACE.Manufacturing.Lvl4.BreadPastry = Bread, cakes and fresh pastry goods
 NACE.Manufacturing.Lvl4.RusksBiscuits = Biscuits, rusks and preserved pastries and cakes
 NACE.Manufacturing.Lvl4.FarinaceousProducts = Farinaceous products
+NACE.Manufacturing.Lvl4.FarinaceousProducts.hint = For example pasta and couscous.
 
 NACE.Manufacturing.OtherFoodProducts.title = What type of other food products does your undertaking manufacture?
 NACE.Manufacturing.OtherFoodProducts.error = Select the type of other food products your undertaking manufactures
 NACE.Manufacturing.Lvl3.OtherFoodProducts = Other food products
 NACE.Manufacturing.Lvl3.OtherFoodProducts.hint = Includes cocoa, chocolate and confectionery, condiments and seasonings, food preparations (like baby food) and prepared meals, sugar, tea and coffee, and all other food products.
 NACE.Manufacturing.Lvl4.Sugar = Sugar
-NACE.Manufacturing.Lvl4.CocoaChocolateConfectionery = Cocoa, chocolate and sugar confectionery
+NACE.Manufacturing.Lvl4.CocoaChocolateConfectionery = Cocoa, chocolate and confectionery
 NACE.Manufacturing.Lvl4.TeaCoffee = Tea and coffee
 NACE.Manufacturing.Lvl4.CondimentsSeasonings = Condiments and seasonings
-NACE.Manufacturing.Lvl4.PreparedMeals = Prepared meals and dishes
+NACE.Manufacturing.Lvl4.PreparedMeals = Prepared meals
 NACE.Manufacturing.Lvl4.HomogenisedFood = Homogenised food preparations and dietetic food
+NACE.Manufacturing.Lvl4.HomogenisedFood.hint = Includes baby food.
 NACE.Manufacturing.Lvl4.OtherFoodProducts = Another type of food product
 
 NACE.Manufacturing.PreparedAnimalFeeds.title = What type of prepared animal feeds does your undertaking manufacture?

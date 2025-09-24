@@ -62,6 +62,9 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-farinaceous", messages("NACE.Manufacturing.Lvl4.FarinaceousProducts"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-farinaceous", messages("NACE.Manufacturing.Lvl4.FarinaceousProducts.hint")))
+            )),
             value = Some(Sector.FarinaceousProducts.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.FarinaceousProducts.toString)
         )
