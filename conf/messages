@@ -2156,6 +2156,7 @@ NACE.education.Lvl4.prePrimary = Pre-primary education
 NACE.education.Lvl3.primary = Primary education
 NACE.education.Lvl4.primary = Primary education
 NACE.education.Lvl3.secondaryNonTertiary = Secondary and post-secondary non-tertiary education
+NACE.education.Lvl3.secondaryNonTertiary.title = What type of secondary or post-secondary education does your undertaking provide?
 NACE.education.Lvl4.generalSecondary = General secondary education
 NACE.education.Lvl4.vocationalSecondary = Vocational secondary education
 NACE.education.Lvl4.postSecondaryNonTertiary = Post-secondary non-tertiary education
@@ -2164,12 +2165,12 @@ NACE.education.Lvl4.tertiary = Tertiary education
 NACE.education.Lvl3.otherEducation = Other education
 NACE.education.Lvl4.sportsEducation = Sports and recreation education
 NACE.education.Lvl4.culturalEducation = Cultural education
-NACE.education.Lvl4.drivingSchool = Driving school activities
-NACE.education.Lvl4.otherEducationNEC = Other education n.e.c.
+NACE.education.Lvl4.drivingSchool = Driving school
+NACE.education.Lvl4.otherEducationNEC = Another type of education
 NACE.education.Lvl3.educationalSupport = Educational support activities
 NACE.education.Lvl3.educationalSupport.title = What type of educational support does your undertaking provide?
 NACE.education.Lvl4.courseTutors = Intermediation service activities for courses and tutors
-NACE.education.Lvl4.supportNEC = Educational support activities n.e.c.
+NACE.education.Lvl4.supportNEC = Other education support
 
 #HumanHealthSocialWork NACE Sector2,3,4
 NACE.humanHealth.Lvl1.title = What is your undertaking’s main business activity in human health and social work?
