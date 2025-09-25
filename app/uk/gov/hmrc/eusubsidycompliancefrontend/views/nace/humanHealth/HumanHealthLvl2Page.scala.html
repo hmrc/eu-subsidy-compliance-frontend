@@ -50,6 +50,9 @@ Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-HumanHealthActivities", messages("NACE.humanHealth.Lvl2.humanHealth"))),
 value = Some(Sector.HumanHealthActivities.toString),
+hint = Some(Hint(
+content = Text(messages("NACE.humanHealth.Lvl2.humanHealth.hint"))
+)),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.HumanHealthActivities.toString)
 ),
 RadioItem(

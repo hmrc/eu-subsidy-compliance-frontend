@@ -50,31 +50,33 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-peatExtraction", messages("NACE.mining.Lvl4.peatExtraction"))),
-value = Some(Sector.peatExtraction.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.peatExtraction.toString)
+content = HtmlContent(radioText("sector-label-photography", messages("NACE.professional.Lvl3.photographic"))),
+value = Some(Sector.photography.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.photography.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-saltExtraction", messages("NACE.mining.Lvl4.saltExtraction"))),
-value = Some(Sector.saltExtraction.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.saltExtraction.toString)
+content = HtmlContent(radioText("sector-label-specialisedDesign", messages("NACE.professional.Lvl3.specialisedDesign"))),
+value = Some(Sector.specialisedDesign.toString),
+hint = Some(Hint(content = Text(messages("NACE.professional.Lvl3.specialisedDesign.hint")))),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.specialisedDesign.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-chemicalMineralsMining", messages("NACE.mining.Lvl4.chemicalMineralsMining"))),
-value = Some(Sector.chemicalMineralsMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.chemicalMineralsMining.toString)
+content = HtmlContent(radioText("sector-label-translationInterpretation", messages("NACE.professional.Lvl3.translationInterpretation"))),
+value = Some(Sector.translationInterpretation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.translationInterpretation.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherNEC", messages("NACE.mining.Lvl4.otherNEC"))),
-value = Some(Sector.otherNEC.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherNEC.toString)
+content = HtmlContent(radioText("sector-label-otherProfessionalScientificActivities", messages("NACE.professional.Lvl3.otherProfessionalActivities"))),
+value = Some(Sector.otherProfessionalScientificActivities.toString),
+hint = Some(Hint(content = Text(messages("NACE.professional.Lvl3.otherProfessionalActivities.hint")))),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherProfessionalScientificActivities.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.mining.Lvl3.miningAndQuarryingNEC.title")),
+pageTitle = Some(messages("NACE.professional.Lvl2.otherProfessionalScientificTechnical.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -101,10 +103,13 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.mining.Lvl3.miningAndQuarryingNEC.title")),
+content = Text(messages("NACE.professional.Lvl2.otherProfessionalScientificTechnical.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
+)),
+hint = Some(Hint(
+content = Text(messages("NACE.general.hint"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,

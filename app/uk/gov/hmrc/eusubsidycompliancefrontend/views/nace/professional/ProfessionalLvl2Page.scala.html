@@ -50,31 +50,49 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-peatExtraction", messages("NACE.mining.Lvl4.peatExtraction"))),
-value = Some(Sector.peatExtraction.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.peatExtraction.toString)
+content = HtmlContent(radioText("sector-label-advertisingMarketResearch", messages("NACE.professional.Lvl2.advertisingMarketResearchPR"))),
+value = Some(Sector.advertisingMarketResearch.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.advertisingMarketResearch.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-saltExtraction", messages("NACE.mining.Lvl4.saltExtraction"))),
-value = Some(Sector.saltExtraction.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.saltExtraction.toString)
+content = HtmlContent(radioText("sector-label-architecturalAndTechnical", messages("NACE.professional.Lvl2.architecturalEngineeringTesting"))),
+value = Some(Sector.architecturalAndTechnical.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.architecturalAndTechnical.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-chemicalMineralsMining", messages("NACE.mining.Lvl4.chemicalMineralsMining"))),
-value = Some(Sector.chemicalMineralsMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.chemicalMineralsMining.toString)
+content = HtmlContent(radioText("sector-label-headOfficesAndManagementConsultancy", messages("NACE.professional.Lvl2.headOfficeManagement"))),
+value = Some(Sector.headOfficesAndManagementConsultancy.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.headOfficesAndManagementConsultancy.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherNEC", messages("NACE.mining.Lvl4.otherNEC"))),
-value = Some(Sector.otherNEC.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherNEC.toString)
+content = HtmlContent(radioText("sector-label-legalAndAccounting", messages("NACE.professional.Lvl2.legalAccounting"))),
+value = Some(Sector.legalAndAccounting.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.legalAndAccounting.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-ScientificResearchAndDevelopment", messages("NACE.professional.Lvl2.scientificResearchDevelopment"))),
+value = Some(Sector.ScientificResearchAndDevelopment.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.ScientificResearchAndDevelopment.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-otherProfessionalScientific", messages("NACE.professional.Lvl2.otherProfessionalScientificTechnical"))),
+value = Some(Sector.otherProfessionalScientific.toString),
+hint = Some(Hint(
+content = Text(messages("NACE.professional.Lvl2.otherProfessionalScientificTechnical.hint"))
+)),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherProfessionalScientific.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-veterinary", messages("NACE.professional.Lvl2.veterinary"))),
+value = Some(Sector.veterinary.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.veterinary.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.mining.Lvl3.miningAndQuarryingNEC.title")),
+pageTitle = Some(messages("NACE.professional.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -101,10 +119,13 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.mining.Lvl3.miningAndQuarryingNEC.title")),
+content = Text(messages("NACE.professional.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
+)),
+hint = Some(Hint(
+content = Text(messages("NACE.general.hint"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,

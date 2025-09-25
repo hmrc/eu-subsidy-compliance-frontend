@@ -56,6 +56,9 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.socialWorkDisabi
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherSocialWorkWithoutAccommodation", messages("NACE.humanHealth.Lvl3.otherSocialWorkWithoutAccommodation"))),
 value = Some(Sector.otherSocialWorkWithoutAccommodation.toString),
+hint = Some(Hint(
+content = Text(messages("NACE.humanHealth.Lvl3.otherSocialWorkWithoutAccommodation.hint"))
+)),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSocialWorkWithoutAccommodation.toString)
 )
 )
@@ -90,10 +93,13 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NNACE.humanHealth.Lvl2.socialWorkWithoutAccommodation.title")),
+content = Text(messages("NACE.humanHealth.Lvl2.socialWorkWithoutAccommodation.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
+)),
+hint = Some(Hint(
+content = Text(messages("NACE.general.hint"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,
