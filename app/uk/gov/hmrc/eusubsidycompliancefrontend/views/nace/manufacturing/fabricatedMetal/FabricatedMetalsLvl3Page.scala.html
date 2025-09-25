@@ -61,11 +61,6 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.CutleryToolsManufacture.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl3.OtherFabricatedMetalProducts"))),
-            value = Some(Sector.OtherFabricatedMetalProductsManufacture.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherFabricatedMetalProductsManufacture.toString)
-        ),
-        RadioItem(
             content = HtmlContent(radioText("sector-label-structural", messages("NACE.Manufacturing.Lvl3.StructuralMetalProducts"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-structural", messages("NACE.Manufacturing.Lvl3.StructuralMetalProducts.hint")))
@@ -85,6 +80,11 @@
             content = HtmlContent(radioText("sector-label-weapons", messages("NACE.Manufacturing.Lvl3.WeaponsAmmunition"))),
             value = Some(Sector.WeaponsManufacture.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.WeaponsManufacture.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl3.OtherFabricatedMetalProducts"))),
+            value = Some(Sector.OtherFabricatedMetalProductsManufacture.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherFabricatedMetalProductsManufacture.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-coating", messages("NACE.Manufacturing.Lvl3.TreatmentCoatingMachining"))),
