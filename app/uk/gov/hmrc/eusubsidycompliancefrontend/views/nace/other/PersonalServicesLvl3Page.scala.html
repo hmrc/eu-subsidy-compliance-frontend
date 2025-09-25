@@ -50,21 +50,36 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-hardcoalMining", messages("NACE.mining.Lvl3.hardcoalMining"))),
-value = Some(Sector.hardcoalMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.hardcoalMining.toString)
+content = HtmlContent(radioText("sector-label-funeralActivities", messages("NACE.otherService.Lvl3.funeralActivities"))),
+value = Some(Sector.funeralActivities.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.funeralActivities.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-ligniteMining", messages("NACE.mining.Lvl3.ligniteMining"))),
-value = Some(Sector.ligniteMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.ligniteMining.toString)
+content = HtmlContent(radioText("sector-label-beautyTreatment", messages("NACE.otherService.Lvl3.hairdressingBeautySpa"))),
+value = Some(Sector.beautyTreatment.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.beautyTreatment.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-textileFurCleaning", messages("NACE.otherService.Lvl3.textileFurCleaning"))),
+value = Some(Sector.textileFurCleaning.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.textileFurCleaning.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-personalServicesIntermediation", messages("NACE.otherService.Lvl3.intermediationPersonalServices"))),
+value = Some(Sector.personalServicesIntermediation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.personalServicesIntermediation.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-otherPersonalServices", messages("NACE.otherService.Lvl3.otherPersonalServices"))),
+value = Some(Sector.otherPersonalServices.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPersonalServices.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.mining.Lvl2.coalAndLigniteMining.title")),
+pageTitle = Some(messages("NACE.otherService.Lvl2.personalServiceActivities.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -76,7 +91,7 @@ hasErrors = form.hasErrors
 errorList = Seq(
 ErrorLink(
 href = Some(s"#${err.key}"),
-content = Text(s"${messages(err.key++"." ++err.message)}")
+content = Text(s"${messages("NACE.otherService.Lvl2.personalServiceActivities.error")}")
 )
 ),
 title = Text(messages("common.error.summary.title", undertakingName))
@@ -87,14 +102,17 @@ title = Text(messages("common.error.summary.title", undertakingName))
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-content = Text(messages("undertakingSector.error.required"))
+content = Text(messages("NACE.otherService.Lvl2.personalServiceActivities.error"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.mining.Lvl2.coalAndLigniteMining.title")),
+content = Text(messages("NACE.otherService.Lvl2.personalServiceActivities.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
+)),
+hint = Some(Hint(
+content = Text(messages("NACE.general.hint"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,

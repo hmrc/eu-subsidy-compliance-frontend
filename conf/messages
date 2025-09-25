@@ -2299,49 +2299,71 @@ NACE.artsSportsRecreation.Lvl4.otherRecreationActivities = Other amusement and r
 
 #OtherService NACE Sector2,3,4
 NACE.otherService.Lvl1.title = What type of services does your undertaking provide?
+NACE.otherService.Lvl1.error = Select the type of services your undertaking provides
 NACE.otherService.Lvl2.membershipOrganisations = Activities of membership organisations
 NACE.otherService.Lvl2.membershipOrganisations.title = What type of membership organisation does your undertaking operate?
+NACE.otherService.Lvl2.membershipOrganisations.error = Select the type of membership organisation your undertaking operates
 NACE.otherService.Lvl3.businessEmployersProfessional = Business, employers and professional membership organisations
 NACE.otherService.Lvl3.businessEmployersProfessional.title = What type of business membership organisation does your undertaking operate?
+NACE.otherService.Lvl3.businessEmployersProfessional.error = Select the type of business membership organisation your undertaking operates
 NACE.otherService.Lvl4.businessEmployersMembership = Business and employers membership organisations
-NACE.otherService.Lvl4.professionalMembership = Activities of professional membership organisations
-NACE.otherService.Lvl3.tradeUnions = Activities of trade unions
+NACE.otherService.Lvl4.professionalMembership = Professional membership organisations
+NACE.otherService.Lvl3.tradeUnions = Trade unions
 NACE.otherService.Lvl4.tradeUnions = Activities of trade unions
-NACE.otherService.Lvl3.otherMembership = Activities of other membership organisations
-NACE.otherService.Lvl4.religiousOrganisations = Activities of religious organisations
-NACE.otherService.Lvl4.politicalOrganisations = Activities of political organisations
-NACE.otherService.Lvl4.otherMembershipOrganisations = Activities of other membership organisations n.e.c.
+NACE.otherService.Lvl3.otherMembership = Other membership organisations
+NACE.otherService.Lvl3.otherMembership.title = What type of other membership organisation does your undertaking operate?
+NACE.otherService.Lvl3.otherMembership.error = Select the type of other membership organisation your undertaking operates
+NACE.otherService.Lvl4.religiousOrganisations =  Religious organisations
+NACE.otherService.Lvl4.politicalOrganisations = Political organisations
+NACE.otherService.Lvl4.otherMembershipOrganisations = Another type of other membership organisation
 
-NACE.otherService.Lvl2.repairMaintenance = Repair and maintenance of computers, personal and household goods, and motor vehicles and motorcycles
-NACE.otherService.Lvl3.repairComputersCommunication = Repair and maintenance of computers and communication equipment
+NACE.otherService.Lvl2.repairMaintenance = Repair and maintenance of computers, personal and household goods, motor vehicles and motorcycles
+NACE.otherService.Lvl2.repairMaintenance.title =  What type of goods does your undertaking repair or maintain?
+NACE.otherService.Lvl2.repairMaintenance.error = Select the type of goods your undertaking repairs or maintains
+NACE.otherService.Lvl3.repairComputersCommunication = Computers and communication equipment
 NACE.otherService.Lvl4.repairComputersCommunication = Repair and maintenance of computers and communication equipment
-NACE.otherService.Lvl3.repairHouseholdGoods = Repair and maintenance of personal and household goods
-NACE.otherService.Lvl4.repairConsumerElectronics = Repair and maintenance of consumer electronics
-NACE.otherService.Lvl4.repairHouseholdAppliances = Repair and maintenance of household appliances and home and garden equipment
-NACE.otherService.Lvl4.repairFootwearLeather = Repair and maintenance of footwear and leather goods
-NACE.otherService.Lvl4.repairFurnitureHome = Repair and maintenance of furniture and home furnishings
-NACE.otherService.Lvl4.repairWatchesClocksJewellery = Repair and maintenance of watches, clocks and jewellery
-NACE.otherService.Lvl4.repairOtherPersonalHouseholdGoods = Repair and maintenance of personal and household goods n.e.c.
-NACE.otherService.Lvl3.repairMotorVehiclesMotorcycles = Repair and maintenance of motor vehicles and motorcycles
-NACE.otherService.Lvl4.repairMotorVehicles = Repair and maintenance of motor vehicles
-NACE.otherService.Lvl4.repairMotorcycles = Repair and maintenance of motorcycles
-NACE.otherService.Lvl3.intermediationRepairMaintenance = Intermediation service activities for repair and maintenance of computers, personal and household goods, and motor vehicles and motorcycles
-NACE.otherService.Lvl4.intermediationRepairMaintenance = Intermediation service activities for repair and maintenance of computers, personal and household goods, and motor vehicles and motorcycles
 
-NACE.otherService.Lvl2.personalServiceActivities = Personal service activities
+NACE.otherService.Lvl3.repairHouseholdGoods = Personal and household goods
+NACE.otherService.Lvl3.repairHouseholdGoods.title = What type of personal or household goods does your undertaking repair or maintain?
+NACE.otherService.Lvl3.repairHouseholdGoods.error = Select the type of personal or household goods your undertaking repairs or maintains
+NACE.otherService.Lvl4.repairConsumerElectronics = Consumer electronics
+NACE.otherService.Lvl4.repairHouseholdAppliances = Household appliances and home and garden equipment
+NACE.otherService.Lvl4.repairFootwearLeather = Footwear and leather goods
+NACE.otherService.Lvl4.repairFurnitureHome = Furniture and home furnishings
+NACE.otherService.Lvl4.repairWatchesClocksJewellery = Watches, clocks and jewellery
+NACE.otherService.Lvl4.repairOtherPersonalHouseholdGoods = Another type of personal and household goods
+
+NACE.otherService.Lvl3.repairMotorVehiclesMotorcycles = Motor vehicles and motorcycles
+NACE.otherService.Lvl3.repairMotorVehiclesMotorcycles.title = What type of vehicles does your undertaking repair or maintain?
+NACE.otherService.Lvl3.repairMotorVehiclesMotorcycles.error = Select the type of vehicles your undertaking repairs or maintains
+NACE.otherService.Lvl4.repairMotorVehicles = Motor vehicles
+NACE.otherService.Lvl4.repairMotorcycles = Motorcycles
+
+NACE.otherService.Lvl3.intermediationRepairMaintenance =  My undertaking provides Intermediation service activities for repair and maintenance of computers, personal and household goods, and motor vehicles and motorcycles
+NACE.otherService.Lvl4.intermediationRepairMaintenance = My undertaking provides Intermediation service activities for repair and maintenance of computers, personal and household goods, and motor vehicles and motorcycles
+
+NACE.otherService.Lvl2.personalServiceActivities = Personal services
+NACE.otherService.Lvl2.personalServiceActivities.title = What type of personal services does your undertaking provide?
+NACE.otherService.Lvl2.personalServiceActivities.error = Select the type of personal services your undertaking provides
 NACE.otherService.Lvl3.textileFurCleaning = Washing and cleaning of textile and fur products
 NACE.otherService.Lvl4.textileFurCleaning = Washing and cleaning of textile and fur products
+
 NACE.otherService.Lvl3.hairdressingBeautySpa = Hairdressing, beauty treatment, day spa and similar activities
-NACE.otherService.Lvl4.hairdressingBarber = Hairdressing and barber activities
-NACE.otherService.Lvl4.beautyCare = Beauty care and other beauty treatment activities
+NACE.otherService.Lvl3.hairdressingBeautySpa.title = What type of beauty treatments or similar services does your undertaking provide?
+NACE.otherService.Lvl3.hairdressingBeautySpa.error = Select the type of beauty treatments or similar services your undertaking provides
+NACE.otherService.Lvl4.hairdressingBarber = Hairdressing and barbering
+NACE.otherService.Lvl4.beautyCare = Beauty care and other beauty treatments
 NACE.otherService.Lvl4.daySpaSaunaBath = Day spa, sauna and steam bath activities
+
 NACE.otherService.Lvl3.funeralActivities = Funeral and related activities
 NACE.otherService.Lvl4.funeralActivities = Funeral and related activities
-NACE.otherService.Lvl3.intermediationPersonalServices = Intermediation service activities for personal services
+NACE.otherService.Lvl3.intermediationPersonalServices = Intermediation service for personal services
 NACE.otherService.Lvl4.intermediationPersonalServices = Intermediation service activities for personal services
-NACE.otherService.Lvl3.otherPersonalServices = Other personal service activities
-NACE.otherService.Lvl4.domesticPersonalServices = Provision of domestic personal service activities
-NACE.otherService.Lvl4.otherPersonalServices = Other personal service activities n.e.c.
+NACE.otherService.Lvl3.otherPersonalServices = Other personal services
+NACE.otherService.Lvl3.otherPersonalServices.title = What type of other personal services does your undertaking provide?
+NACE.otherService.Lvl3.otherPersonalServices.error = Select the type of other personal services your undertaking provides
+NACE.otherService.Lvl4.domesticPersonalServices = Domestic personal services
+NACE.otherService.Lvl4.otherPersonalServices = Any other personal service activities
 
 #Households NACE Sector2,3,4
 NACE.households.Lvl1.title = What is your undertaking’s main business activity in households as employers or as producers of goods or services?

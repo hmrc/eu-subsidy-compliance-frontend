@@ -50,31 +50,41 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-peatExtraction", messages("NACE.mining.Lvl4.peatExtraction"))),
-value = Some(Sector.peatExtraction.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.peatExtraction.toString)
+content = HtmlContent(radioText("sector-label-repairConsumerElectronics", messages("NACE.otherService.Lvl4.repairConsumerElectronics"))),
+value = Some(Sector.repairConsumerElectronics.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairConsumerElectronics.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-saltExtraction", messages("NACE.mining.Lvl4.saltExtraction"))),
-value = Some(Sector.saltExtraction.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.saltExtraction.toString)
+content = HtmlContent(radioText("sector-label-repairFootwearLeather", messages("NACE.otherService.Lvl4.repairFootwearLeather"))),
+value = Some(Sector.repairFootwearLeather.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairFootwearLeather.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-chemicalMineralsMining", messages("NACE.mining.Lvl4.chemicalMineralsMining"))),
-value = Some(Sector.chemicalMineralsMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.chemicalMineralsMining.toString)
+content = HtmlContent(radioText("sector-label-repairFurnitureHome", messages("NACE.otherService.Lvl4.repairFurnitureHome"))),
+value = Some(Sector.repairFurnitureHome.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairFurnitureHome.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherNEC", messages("NACE.mining.Lvl4.otherNEC"))),
-value = Some(Sector.otherNEC.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherNEC.toString)
+content = HtmlContent(radioText("sector-label-repairHouseholdAppliances", messages("NACE.otherService.Lvl4.repairHouseholdAppliances"))),
+value = Some(Sector.repairHouseholdAppliances.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairHouseholdAppliances.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-WatchesAndJewellery", messages("NACE.otherService.Lvl4.repairWatchesClocksJewellery"))),
+value = Some(Sector.WatchesAndJewellery.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.WatchesAndJewellery.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-otherHouseholdGoods", messages("NACE.otherService.Lvl4.repairOtherPersonalHouseholdGoods"))),
+value = Some(Sector.otherHouseholdGoods.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherHouseholdGoods.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.mining.Lvl3.miningAndQuarryingNEC.title")),
+pageTitle = Some(messages("NACE.otherService.Lvl3.repairHouseholdGoods.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -86,7 +96,7 @@ hasErrors = form.hasErrors
 errorList = Seq(
 ErrorLink(
 href = Some(s"#${err.key}"),
-content = Text(s"${messages(err.key++"." ++err.message)}")
+content = Text(s"${messages("NACE.otherService.Lvl3.repairHouseholdGoods.error")}")
 )
 ),
 title = Text(messages("common.error.summary.title", undertakingName))
@@ -97,14 +107,17 @@ title = Text(messages("common.error.summary.title", undertakingName))
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-content = Text(messages("undertakingSector.error.required"))
+content = Text(messages("NACE.otherService.Lvl3.repairHouseholdGoods.error"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.mining.Lvl3.miningAndQuarryingNEC.title")),
+content = Text(messages("NACE.otherService.Lvl3.repairHouseholdGoods.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
+)),
+hint = Some(Hint(
+content = Text(messages("NACE.general.hint"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,

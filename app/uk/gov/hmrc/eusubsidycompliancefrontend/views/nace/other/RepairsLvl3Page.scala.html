@@ -50,12 +50,23 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-hardcoalMining", messages("NACE.mining.Lvl3.hardcoalMining"))),
+content = HtmlContent(radioText("sector-label-hardcoalMining", messages("NACE.otherService.Lvl3.repairComputersCommunication"))),
 value = Some(Sector.hardcoalMining.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.hardcoalMining.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-ligniteMining", messages("NACE.mining.Lvl3.ligniteMining"))),
+content = HtmlContent(radioText("sector-label-hardcoalMining", messages("NACE.otherService.Lvl3.repairMotorVehiclesMotorcycles"))),
+value = Some(Sector.hardcoalMining.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.hardcoalMining.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-hardcoalMining", messages("NACE.otherService.Lvl3.repairHouseholdGoods"))),
+value = Some(Sector.hardcoalMining.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.hardcoalMining.toString)
+),
+RadioItem( divider = Some("or")),
+RadioItem(
+content = HtmlContent(radioText("sector-label-ligniteMining", messages("NACE.otherService.Lvl3.intermediationRepairMaintenance"))),
 value = Some(Sector.ligniteMining.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.ligniteMining.toString)
 )
@@ -64,7 +75,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.ligniteMining.to
 
 
 @layout(
-pageTitle = Some(messages("NACE.mining.Lvl2.coalAndLigniteMining.title")),
+pageTitle = Some(messages("NACE.otherService.Lvl2.repairMaintenance.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -76,7 +87,7 @@ hasErrors = form.hasErrors
 errorList = Seq(
 ErrorLink(
 href = Some(s"#${err.key}"),
-content = Text(s"${messages(err.key++"." ++err.message)}")
+content = Text(s"${messages("NACE.otherService.Lvl2.repairMaintenance.error")}")
 )
 ),
 title = Text(messages("common.error.summary.title", undertakingName))
@@ -87,14 +98,17 @@ title = Text(messages("common.error.summary.title", undertakingName))
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-content = Text(messages("undertakingSector.error.required"))
+content = Text(messages("NACE.otherService.Lvl2.repairMaintenance.error"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.mining.Lvl2.coalAndLigniteMining.title")),
+content = Text(messages("NACE.otherService.Lvl2.repairMaintenance.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
+)),
+hint = Some(Hint(
+content = Text(messages("NACE.general.hint"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,

@@ -51,36 +51,26 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-coalAndLigniteMining", messages("NACE.mining.Lvl2.coalAndLigniteMining"))),
+content = HtmlContent(radioText("sector-label-coalAndLigniteMining", messages("NACE.otherService.Lvl2.membershipOrganisations"))),
 value = Some(Sector.coalAndLigniteMining.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.coalAndLigniteMining.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-petroleumNaturalGasExtraction", messages("NACE.mining.Lvl2.petroleumNaturalGasExtraction"))),
-value = Some(Sector.petroleumNaturalGasExtraction.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.petroleumNaturalGasExtraction.toString)
-),
-RadioItem(
-content = HtmlContent(radioText("sector-label-metalOresMining", messages("NACE.mining.Lvl2.metalOresMining"))),
-value = Some(Sector.metalOresMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.metalOresMining.toString)
-),
-RadioItem(
-content = HtmlContent(radioText("sector-label-otherMiningQuarrying", messages("NACE.mining.Lvl2.otherMiningQuarrying"))),
-value = Some(Sector.otherMiningQuarrying.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMiningQuarrying.toString)
-),
-RadioItem(
-content = HtmlContent(radioText("sector-label-miningSupportServices", messages("NACE.mining.Lvl2.miningSupportServices"))),
+content = HtmlContent(radioText("sector-label-miningSupportServices", messages("NACE.otherService.Lvl2.personalServiceActivities"))),
 value = Some(Sector.miningSupportServices.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningSupportServices.toString)
+),
+RadioItem(
+content = HtmlContent(radioText("sector-label-petroleumNaturalGasExtraction", messages("NACE.otherService.Lvl2.repairMaintenance"))),
+value = Some(Sector.petroleumNaturalGasExtraction.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.petroleumNaturalGasExtraction.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.mining.Lvl1.mining.title")),
+pageTitle = Some(messages("NACE.otherService.Lvl1.title")),
 backLinkEnabled = true,
 backLink = Some(previous),
 hasErrors = form.hasErrors
@@ -92,7 +82,7 @@ hasErrors = form.hasErrors
 errorList = Seq(
 ErrorLink(
 href = Some(s"#${err.key}"),
-content = Text(s"${messages(err.key++"." ++err.message)}")
+content = Text(s"${messages("NACE.otherService.Lvl1.error")}")
 )
 ),
 title = Text(messages("common.error.summary.title", undertakingName))
@@ -103,14 +93,17 @@ title = Text(messages("common.error.summary.title", undertakingName))
 
 @govukRadios(Radios(
 errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-content = Text(messages("undertakingSector.error.required"))
+content = Text(messages("NACE.otherService.Lvl1.error"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.mining.Lvl1.mining.title")),
+content = Text(messages("NACE.otherService.Lvl1.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))
+)),
+hint = Some(Hint(
+content = Text(messages("NACE.general.hint"))
 )),
 idPrefix = Some(fieldName),
 name = fieldName,
