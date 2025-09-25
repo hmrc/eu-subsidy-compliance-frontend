@@ -1864,34 +1864,39 @@ NACE.TransportationAndStorage.Lvl4.IntermediationPostalCourier = Intermediation 
 
 #accommodationAndFoodService NACE Sector2,3,4
 NACE.accommodationAndFoodService.Lvl1.title = What is your undertaking’s main business activity in accommodation and food services?
+NACE.accommodationAndFoodService.Lvl1.error = Select your undertaking’s main business activity in accommodation and food services
 NACE.accommodationAndFoodService.Lvl2.accommodation = Accommodation
 NACE.accommodationAndFoodService.Lvl2.accommodation.title = What is your undertaking’s main business activity in accommodation?
 NACE.accommodationAndFoodService.Lvl2.accommodation.hint = Includes hotels and other short-stay accommodation, camping grounds and related intermediation services.
-#### NACE.accommodationAndFoodService.Lvl3.hotelsAccommodation = Hotels and similar accommodation
+NACE.accommodationAndFoodService.Lvl2.accommodation.error = Select your undertaking’s main business activity in accommodation
+NACE.accommodationAndFoodService.Lvl3.hotelsAccommodation = Hotels and similar accommodation
 NACE.accommodationAndFoodService.Lvl4.hotelsAccommodation = Hotels and similar accommodation
-#### NACE.accommodationAndFoodService.Lvl3.holidayShortStay = Holiday and other short-stay accommodation
+NACE.accommodationAndFoodService.Lvl3.holidayShortStay = Holiday and other short-stay accommodation
 NACE.accommodationAndFoodService.Lvl4.holidayShortStay = Holiday and other short-stay accommodation
-#### NACE.accommodationAndFoodService.Lvl3.campingGrounds = Camping grounds and recreational vehicle parks
+NACE.accommodationAndFoodService.Lvl3.campingGrounds = Camping grounds and recreational vehicle parks
 NACE.accommodationAndFoodService.Lvl4.campingGrounds = Camping grounds and recreational vehicle parks
-#### NACE.accommodationAndFoodService.Lvl3.intermediationAccommodation = Intermediation service activities for accommodation
+NACE.accommodationAndFoodService.Lvl3.intermediationAccommodation = Intermediation service activities for accommodation
 NACE.accommodationAndFoodService.Lvl4.intermediationAccommodation = Intermediation service activities for accommodation
-#### NACE.accommodationAndFoodService.Lvl3.otherAccommodation = Other accommodation
+NACE.accommodationAndFoodService.Lvl3.otherAccommodation = Other accommodation
 NACE.accommodationAndFoodService.Lvl4.otherAccommodation = Other accommodation
 
 NACE.accommodationAndFoodService.Lvl2.foodBeverageServiceActivities = Food and beverage service activities
-NACE.accommodationAndFoodService.Lvl2.foodBeverageServiceActivities.title = WHat is your undertaking’s main business activity in food and beverage services?
+NACE.accommodationAndFoodService.Lvl2.foodBeverageServiceActivities.title = What is your undertaking’s main business activity in food and beverage services?
 NACE.accommodationAndFoodService.Lvl2.foodBeverageServiceActivities.hint = Includes restaurants and mobile food services, catering, beverage serving and related intermediation services.
-#### NACE.accommodationAndFoodService.Lvl3.restaurantsMobile = Restaurants and mobile food service activities
+NACE.accommodationAndFoodService.Lvl2.foodBeverageServiceActivities.error = Select your undertaking’s main business activity in food and beverage services
+NACE.accommodationAndFoodService.Lvl3.restaurantsMobile = Restaurants and mobile food service
 NACE.accommodationAndFoodService.Lvl3.restaurantsMobile.title = What is your undertaking’s main business activity in restaurants and mobile food services?
-NACE.accommodationAndFoodService.Lvl4.restaurants = Restaurant activities
-NACE.accommodationAndFoodService.Lvl4.mobileFood = Mobile food service activities
-#### NACE.accommodationAndFoodService.Lvl3.eventAndContractCatering = Event catering, contract catering service activities and other food service activities
-NACE.accommodationAndFoodService.Lvl3.eventAndContractCatering.title = WHat is your undertaking’s main business activity in catering and other food service activities
-NACE.accommodationAndFoodService.Lvl4.eventCatering = Event catering activities
-NACE.accommodationAndFoodService.Lvl4.contractCatering = Contract catering service activities and other food service activities
-#### NACE.accommodationAndFoodService.Lvl3.beverageServing = Beverage serving activities
+NACE.accommodationAndFoodService.Lvl3.restaurantsMobile.error = Select your undertaking’s main business activity in restaurants and mobile food services
+NACE.accommodationAndFoodService.Lvl4.restaurants = Restaurants
+NACE.accommodationAndFoodService.Lvl4.mobileFood = Mobile food services
+NACE.accommodationAndFoodService.Lvl3.eventAndContractCatering = Event catering, contract catering and other food service activities
+NACE.accommodationAndFoodService.Lvl3.eventAndContractCatering.title = What is your undertaking’s main business activity in catering and other food service activities?
+NACE.accommodationAndFoodService.Lvl3.eventAndContractCatering.error = Select your undertaking’s main business activity in catering and other food service activities
+NACE.accommodationAndFoodService.Lvl4.eventCatering = Event catering
+NACE.accommodationAndFoodService.Lvl4.contractCatering = Contract catering and other food service activities
+NACE.accommodationAndFoodService.Lvl3.beverageServing = Beverage serving activities
 NACE.accommodationAndFoodService.Lvl4.beverageServing = Beverage serving activities
-#### NACE.accommodationAndFoodService.Lvl3.foodBeverageServiceIntermediationActivities = Intermediation service activities for food and beverage services
+NACE.accommodationAndFoodService.Lvl3.foodBeverageServiceIntermediationActivities = Intermediation services for food and beverage service activities
 NACE.accommodationAndFoodService.Lvl4.foodBeverageServiceIntermediationActivities = Intermediation service activities for food and beverage services
 
 #publishingBroadcasting NACE Sector2,3,4
@@ -1935,33 +1940,38 @@ NACE.publishingBroadcasting.Lvl4.newsAgency = News agency activities
 NACE.publishingBroadcasting.Lvl4.otherContentDistributionActivities = Other content distribution activities
 
 #telecommunicationsComputing NACE Sector2,3,4
-NACE.telecommunicationsComputing.Lvl1.title = What is your undertaking’s main business activity in telecommunications and computing
+NACE.telecommunicationsComputing.Lvl1.title = What is your undertaking’s main business activity in telecommunications and computing?
+NACE.telecommunicationsComputing.Lvl1.error = Select your undertaking’s main business activity in telecommunications and computing
 NACE.telecommunicationsComputing.Lvl2.telecommunication = Telecommunication
 NACE.telecommunicationsComputing.Lvl2.telecommunication.title = What is your undertaking’s main business activity in telecommunications?
-#### NACE.telecommunicationsComputing.Lvl3.wiredTelecommunication = Wired, wireless, and satellite telecommunication
+NACE.telecommunicationsComputing.Lvl2.telecommunication.error = Select your undertaking’s main business activity in telecommunications
+NACE.telecommunicationsComputing.Lvl3.wiredTelecommunication = Wired, wireless, and satellite telecommunication
 NACE.telecommunicationsComputing.Lvl4.wiredWirelessSatellite = Wired, wireless, and satellite telecommunication activities
-#### NACE.telecommunicationsComputing.Lvl3.resellingTelecommunication = Telecommunication reselling activities and intermediation service activities for telecommunication
+NACE.telecommunicationsComputing.Lvl3.resellingTelecommunication = Telecommunication reselling and intermediation services for telecommunication
 NACE.telecommunicationsComputing.Lvl4.resellingTelecom = Telecommunication reselling activities and intermediation service activities for telecommunication
-#### NACE.telecommunicationsComputing.Lvl3.otherTelecommunications = Other telecommunication activities
+NACE.telecommunicationsComputing.Lvl3.otherTelecommunications = Other telecommunication activities
 NACE.Telecommunications.Lvl4.otherTelecom = Other telecommunication activities
 
 NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy = Computer programming, consultancy and related activities
 NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy.title = What is your undertaking’s main business activity in computer programming, consultancy and related activities
 NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy.hint = Includes computer facilities management and other information technology and computer service activities.
-#### NACE.telecommunicationsComputing.Lvl3.computerProgrammingActivities = Computer programming activities
+NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy.error = Select your undertaking’s main business activity in computer programming, consultancy and related activities
+NACE.telecommunicationsComputing.Lvl3.computerProgrammingActivities = Computer programming
 NACE.telecommunicationsComputing.Lvl4.computerProgrammingActivities = Computer programming activities
-#### NACE.telecommunicationsComputing.Lvl3.computerFacilitiesConsultancy = Computer facilities management and consultancy
+NACE.telecommunicationsComputing.Lvl3.computerFacilitiesConsultancy = Computer facilities management and consultancy
 NACE.telecommunicationsComputing.Lvl4.consultancy = Computer consultancy and computer facilities management activities
-#### NACE.telecommunicationsComputing.Lvl3.otherComputerServiceActivities = Other information technology and computer service activities
+NACE.telecommunicationsComputing.Lvl3.otherComputerServiceActivities = Other information technology and computer service activities
 NACE.telecommunicationsComputing.Lvl4.otherComputerServiceActivities = Other information technology and computer service activities
 
 NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities = Computing infrastructure, data processing, hosting and other information service activities
 NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities.title = What is your undertaking’s main business activity in information services?
 NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities.hint = Includes web search portal activities and other information services.
-#### NACE.telecommunicationsComputing.Lvl3.computingInfrastructureActivities = Computing infrastructure, data processing, hosting and related activities
+NACE.telecommunicationsComputing.Lvl2.computingInfrastructureActivities.error = Select your undertaking’s main business activity in formation services
+NACE.telecommunicationsComputing.Lvl3.computingInfrastructureActivities = Computing infrastructure, data processing, hosting and related activities
 NACE.telecommunicationsComputing.Lvl4.infrastructureHosting = Computing infrastructure, data processing, hosting and related activities
-#### NACE.telecommunicationsComputing.Lvl3.webSearchPortal = Web search portal activities and other information service activities
+NACE.telecommunicationsComputing.Lvl3.webSearchPortal = Web search portal activities and other information services
 NACE.telecommunicationsComputing.Lvl3.webSearchPortal.title = What is your undertaking’s main business activity in web search portal activities and other information services?
+NACE.telecommunicationsComputing.Lvl3.webSearchPortal.error = Select your undertaking’s main business activity in web search portal activities and other information services
 NACE.telecommunicationsComputing.Lvl4.webSearchPortalActivities = Web search portal activities
 NACE.telecommunicationsComputing.Lvl4.otherInformationServices = Other information service activities
 
