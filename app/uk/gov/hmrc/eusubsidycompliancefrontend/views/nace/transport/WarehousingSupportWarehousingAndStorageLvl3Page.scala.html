@@ -49,8 +49,8 @@
   Seq(
     RadioItem(
       content = HtmlContent(radioText("sector-label-electric-power", messages("NACE.TransportationAndStorage.Lvl3.WarehousingStorage"))),
-      value = Some(Sector.WarehousingStorage.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.WarehousingStorage.toString)
+      value = Some(Sector.WarehousingStorage4.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.WarehousingStorage4.toString)
     )
   )
 }

@@ -1706,6 +1706,7 @@ NACE.TransportationAndStorage.Lvl4.SpaceTransport = Space transport
 
 NACE.TransportationAndStorage.Lvl2.WarehousingSupport = Warehousing, storage and support activities for transportation
 NACE.TransportationAndStorage.Lvl2.WarehousingSupport.title = What type of warehousing, storage or support activity does your undertaking do? Select one option that best describes your undertaking’s main business activity.
+NACE.TransportationAndStorage.Lvl2.WarehousingSupport.hint = Includes cargo handling, logistics and intermediation services for transport.
 NACE.TransportationAndStorage.Lvl3.WarehousingStorage = Warehousing and storage
 NACE.TransportationAndStorage.Lvl4.WarehousingStorage = Warehousing and storage
 NACE.TransportationAndStorage.Lvl3.SupportTransport = Support activities for transportation

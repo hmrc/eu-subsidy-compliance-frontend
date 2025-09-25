@@ -48,15 +48,15 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-warehousing-storage", messages("NACE.TransportationAndStorage.Lvl3.WarehousingStorage"))),
-      value = Some(Sector.WarehousingStorage.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.WarehousingStorage.toString)
+      content = HtmlContent(radioText("sector-label-passenger-air", messages("NACE.TransportationAndStorage.Lvl3.PassengerAir"))),
+      value = Some(Sector.PassengerAirTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.PassengerAirTransport.toString)
     )
   )
 }
 
 @layout(
-  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl2.WarehousingSupport.title")),
+  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl2.AirTransport.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -81,7 +81,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.TransportationAndStorage.Lvl2.WarehousingSupport.title")),
+          content = Text(messages("NACE.TransportationAndStorage.Lvl2.AirTransport.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))
