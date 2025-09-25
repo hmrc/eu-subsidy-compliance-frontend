@@ -1612,6 +1612,7 @@ NACE.ElectricityGasSteamAir.Lvl4.BrokersAgentsPowerGas = Activities of brokers a
 
 #WaterSewerageWasteRemediation NACE Sector2,3,4
 NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply = Water collection, treatment and supply
+NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply.title = What is your undertaking’s main business activity in water supply, sewerage and waste management?
 #### NACE.WaterSewerageWasteRemediation.Lvl3.WaterCollectionSupply = Water collection, treatment and supply
 NACE.WaterSewerageWasteRemediation.Lvl4.WaterCollectionSupply = Water collection, treatment and supply
 
