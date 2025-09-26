@@ -81,7 +81,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -90,7 +90,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy.error"))
       )) else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
@@ -98,9 +98,6 @@
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))
-      )),
-      hint = Some(Hint(
-        content = Text(messages("NACE.telecommunicationsComputing.Lvl2.computerProgrammingConsultancy.hint"))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,

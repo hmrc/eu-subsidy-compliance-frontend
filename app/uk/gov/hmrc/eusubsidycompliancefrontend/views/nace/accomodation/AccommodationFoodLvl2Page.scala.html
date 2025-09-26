@@ -53,12 +53,14 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl2.accommodation"))),
             value = Some(Sector.Accommodation.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Accommodation.toString)
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Accommodation.toString),
+            hint = Some(Hint(content = Text(messages("NACE.accommodationAndFoodService.Lvl2.accommodation.hint"))))
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl2.foodBeverageServiceActivities"))),
                 value = Some(Sector.FoodBeverageServiceActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.FoodBeverageServiceActivities.toString)
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.FoodBeverageServiceActivities.toString),
+                hint = Some(Hint(content = Text(messages("NACE.accommodationAndFoodService.Lvl2.foodBeverageServiceActivities.hint"))))
         )
     )
 }
@@ -76,7 +78,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.accommodationAndFoodService.Lvl1.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -85,7 +87,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.accommodationAndFoodService.Lvl1.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
