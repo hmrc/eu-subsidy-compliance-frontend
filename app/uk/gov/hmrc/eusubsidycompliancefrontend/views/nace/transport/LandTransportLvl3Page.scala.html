@@ -53,14 +53,14 @@
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.PassengerRailTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-freight-rail", messages("NACE.TransportationAndStorage.Lvl3.FreightRail"))),
-      value = Some(Sector.FreightRailTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.FreightRailTransport.toString)
-    ),
-    RadioItem(
       content = HtmlContent(radioText("sector-label-other-passenger-land", messages("NACE.TransportationAndStorage.Lvl3.OtherPassengerLand"))),
       value = Some(Sector.OtherPassengerLandTransport.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherPassengerLandTransport.toString)
+    ),
+    RadioItem(
+      content = HtmlContent(radioText("sector-label-freight-rail", messages("NACE.TransportationAndStorage.Lvl3.FreightRail"))),
+      value = Some(Sector.FreightRailTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.FreightRailTransport.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-freight-road-removal", messages("NACE.TransportationAndStorage.Lvl3.FreightRoadRemoval"))),

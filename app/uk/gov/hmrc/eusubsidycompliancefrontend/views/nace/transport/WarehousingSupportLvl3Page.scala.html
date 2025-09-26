@@ -48,9 +48,9 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-warehousing-storage", messages("NACE.TransportationAndStorage.Lvl3.WarehousingStorage"))),
-      value = Some(Sector.WarehousingStorage.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.WarehousingStorage.toString)
+      content = HtmlContent(radioText("sector-label-steam-air-conditioning", messages("NACE.TransportationAndStorage.Lvl3.IntermediationTransport"))),
+      value = Some(Sector.TransportIntermediationServiceActivities.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.TransportIntermediationServiceActivities.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-support-transport", messages("NACE.TransportationAndStorage.Lvl3.SupportTransport"))),
@@ -58,9 +58,9 @@
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.TransportSupportActivities.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-steam-air-conditioning", messages("NACE.TransportationAndStorage.Lvl3.IntermediationTransport"))),
-      value = Some(Sector.TransportIntermediationServiceActivities.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.TransportIntermediationServiceActivities.toString)
+      content = HtmlContent(radioText("sector-label-warehousing-storage", messages("NACE.TransportationAndStorage.Lvl3.WarehousingStorage"))),
+      value = Some(Sector.WarehousingStorage.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.WarehousingStorage.toString)
     )
   )
 }

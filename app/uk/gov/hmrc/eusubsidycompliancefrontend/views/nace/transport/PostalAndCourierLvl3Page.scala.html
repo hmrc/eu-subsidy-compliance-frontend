@@ -48,19 +48,19 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-postal-universal-service", messages("NACE.TransportationAndStorage.Lvl4.PostalUniversalService"))),
-      value = Some(Sector.PostalActivities4.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.PostalActivities4.toString)
+      content = HtmlContent(radioText("sector-label-postal-universal-service", messages("NACE.TransportationAndStorage.Lvl3.PostalUniversalService"))),
+      value = Some(Sector.PostalActivities.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.PostalActivities.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-other-postal-courier", messages("NACE.TransportationAndStorage.Lvl4.OtherPostalCourier"))),
-      value = Some(Sector.OtherPostalActivities4.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherPostalActivities4.toString)
+      content = HtmlContent(radioText("sector-label-other-postal-courier", messages("NACE.TransportationAndStorage.Lvl3.OtherPostalCourier"))),
+      value = Some(Sector.OtherPostalActivities.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherPostalActivities.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-intermediation-postal-courier", messages("NACE.TransportationAndStorage.Lvl4.IntermediationPostalCourier"))),
-      value = Some(Sector.PostalIntermediationActivities4.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.PostalIntermediationActivities4.toString)
+      content = HtmlContent(radioText("sector-label-intermediation-postal-courier", messages("NACE.TransportationAndStorage.Lvl3.IntermediationPostalCourier"))),
+      value = Some(Sector.PostalIntermediationActivities.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.PostalIntermediationActivities.toString)
     )
   )
 }

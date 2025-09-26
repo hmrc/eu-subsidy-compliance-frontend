@@ -48,14 +48,9 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-sea-coastal-passenger", messages("NACE.TransportationAndStorage.Lvl3.SeaCoastalPassenger"))),
-      value = Some(Sector.CoastalPassengerWaterTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.CoastalPassengerWaterTransport.toString)
-    ),
-    RadioItem(
-      content = HtmlContent(radioText("sector-label-sea-coastal-freight", messages("NACE.TransportationAndStorage.Lvl3.SeaCoastalFreight"))),
-      value = Some(Sector.CoastalFreightWaterTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.CoastalFreightWaterTransport.toString)
+      content = HtmlContent(radioText("sector-label-inland-freight", messages("NACE.TransportationAndStorage.Lvl3.InlandFreight"))),
+      value = Some(Sector.InlandFreightWaterTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.InlandFreightWaterTransport.toString)
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-inland-passenger", messages("NACE.TransportationAndStorage.Lvl3.InlandPassenger"))),
@@ -63,9 +58,14 @@
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.InlandPassengerWaterTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-inland-freight", messages("NACE.TransportationAndStorage.Lvl3.InlandFreight"))),
-      value = Some(Sector.InlandFreightWaterTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.InlandFreightWaterTransport.toString)
+      content = HtmlContent(radioText("sector-label-sea-coastal-freight", messages("NACE.TransportationAndStorage.Lvl3.SeaCoastalFreight"))),
+      value = Some(Sector.CoastalFreightWaterTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.CoastalFreightWaterTransport.toString)
+    ),
+    RadioItem(
+      content = HtmlContent(radioText("sector-label-sea-coastal-passenger", messages("NACE.TransportationAndStorage.Lvl3.SeaCoastalPassenger"))),
+      value = Some(Sector.CoastalPassengerWaterTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.CoastalPassengerWaterTransport.toString)
     )
   )
 }

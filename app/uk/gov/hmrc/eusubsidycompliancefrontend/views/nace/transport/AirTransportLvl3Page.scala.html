@@ -48,14 +48,14 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-passenger-air", messages("NACE.TransportationAndStorage.Lvl3.PassengerAir"))),
-      value = Some(Sector.PassengerAirTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.PassengerAirTransport.toString)
-    ),
-    RadioItem(
       content = HtmlContent(radioText("sector-label-freight-air-space", messages("NACE.TransportationAndStorage.Lvl3.FreightAirSpace"))),
       value = Some(Sector.FreightAndSpaceAirTransport.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.FreightAndSpaceAirTransport.toString)
+    ),
+    RadioItem(
+      content = HtmlContent(radioText("sector-label-passenger-air", messages("NACE.TransportationAndStorage.Lvl3.PassengerAir"))),
+      value = Some(Sector.PassengerAirTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.PassengerAirTransport.toString)
     )
   )
 }
