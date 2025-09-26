@@ -1895,11 +1895,12 @@ NACE.accommodationAndFoodService.Lvl4.beverageServing = Beverage serving activit
 NACE.accommodationAndFoodService.Lvl4.foodBeverageServiceIntermediationActivities = Intermediation service activities for food and beverage services
 
 #publishingBroadcasting NACE Sector2,3,4
-NACE.publishingBroadcasting.Lvl1.title = What is your undertaking’s main business activity in publishing?
+NACE.publishingBroadcasting.Lvl1.title = What is your undertaking’s main business activity in publishing and broadcasting?
 NACE.publishingBroadcasting.Lvl1.error = Select your undertaking’s main business activity in publishing and broadcasting
 NACE.publishingBroadcasting.Lvl2.publishing = Publishing
 NACE.publishingBroadcasting.Lvl2.publishing.title = What is your undertaking’s main business activity in publishing?
 NACE.publishingBroadcasting.Lvl2.publishing.error = Select your undertaking’s main business activity in publishing
+NACE.publishingBroadcasting.Lvl2.publishing.hint = Includes publishing of books, journals and periodicals, newspapers and software.
 NACE.publishingBroadcasting.Lvl3.publishingBooksNewspapers = Publishing of books, newspapers and other publishing (except software publishing)
 NACE.publishingBroadcasting.Lvl3.publishingBooksNewspapers.title = What type of material does your undertaking publish?
 NACE.publishingBroadcasting.Lvl3.publishingBooksNewspapers.error = Select the type of material your undertaking publishes
@@ -1914,7 +1915,7 @@ NACE.publishingBroadcasting.Lvl4.videoGames = Video games
 NACE.publishingBroadcasting.Lvl4.otherSoftware = Another type of software
 
 NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing = Film, TV and video production, sound recording and music publishing
-NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing.title = What is your undertaking’s main business activity in film, TV and video production, sound recording and music publishing
+NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing.title = What is your undertaking’s main business activity in film, TV and video production, sound recording and music publishing?
 NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing.error = Select your undertaking’s main business activity in film, TV and video production, sound recording and music publishing
 NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing.hint = For example distribution, production, post-production and projection.
 NACE.publishingBroadcasting.Lvl3.filmVideoActivities = Film, TV and video activities
@@ -1928,7 +1929,7 @@ NACE.publishingBroadcasting.Lvl3.soundRecordingAndMusicPublishing = Sound record
 NACE.publishingBroadcasting.Lvl4.SoundRecordingActivities = Sound recording and music publishing activities
 
 NACE.publishingBroadcasting.Lvl2.programmingBroadcastingNewsActivities = Programming, broadcasting, news agency and other content distribution activities
-NACE.publishingBroadcasting.Lvl2.programmingBroadcastingNewsActivities.title = What is your undertaking’s main business activity in programming, broadcasting, new agency and content distribution?
+NACE.publishingBroadcasting.Lvl2.programmingBroadcastingNewsActivities.title = What is your undertaking’s main business activity in programming, broadcasting, news agency and content distribution?
 NACE.publishingBroadcasting.Lvl2.programmingBroadcastingNewsActivities.error = Select your undertaking’s main business activity in programming, broadcasting, news agency and content distribution
 NACE.publishingBroadcasting.Lvl3.radioBroadcasting = Radio broadcasting and audio distribution
 NACE.publishingBroadcasting.Lvl4.radioBroadcastingActivities = Radio broadcasting and audio distribution activities

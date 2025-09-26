@@ -63,7 +63,8 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl2.publishing"))),
             value = Some(Sector.Publishing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Publishing.toString)
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Publishing.toString),
+            hint = Some(Hint(content = Text(messages("NACE.publishingBroadcasting.Lvl2.publishing.hint"))))
         )
     )
 }
