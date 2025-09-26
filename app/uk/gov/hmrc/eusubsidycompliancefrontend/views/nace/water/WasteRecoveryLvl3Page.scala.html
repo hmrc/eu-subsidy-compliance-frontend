@@ -31,7 +31,6 @@
   govukRadios : GovukRadios
 )
 
-
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @fieldName = @{"undertakingSector"}
@@ -49,21 +48,15 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-electricity-nonrenewable", messages("NACE.WaterSewerageWasteRemediation.Lvl4.HazardousWaste"))),
-      value = Some(Sector.HazardousWaste.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.HazardousWaste.toString)
-    ),
-    RadioItem(
-      content = HtmlContent(radioText("sector-label-electricity-renewable", messages("NACE.WaterSewerageWasteRemediation.Lvl4.NonHazardousWaste"))),
-      value = Some(Sector.NonHazardousWaste.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.NonHazardousWaste.toString)
+      content = HtmlContent(radioText("NACE.WaterSewerageWasteRemediation.Lvl3.WasteRecovery"))),
+      value = Some(Sector.WasteRecovery.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.WasteRecovery.toString)
     )
   )
 }
 
-
 @layout(
-  pageTitle = Some(messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteActivities.title")),
+  pageTitle = Some(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -88,7 +81,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteActivities.title")),
+          content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))

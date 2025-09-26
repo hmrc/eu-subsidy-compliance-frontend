@@ -1,5 +1,5 @@
 @*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,11 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
 
 @this(
-  layout: Layout,
-  formHelper: FormWithCSRF,
-  button: Button,
-  govukErrorSummary: GovukErrorSummary,
-  govukRadios : GovukRadios
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios : GovukRadios
 )
 
 
@@ -37,33 +37,29 @@
 @fieldName = @{"undertakingSector"}
 
 @actionUrl = @{
-  if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-  else controllers.routes.UndertakingController.postSector
+    if(isUpdate)
+        controllers.routes.UndertakingController.updateIndustrySector
+    else
+        controllers.routes.UndertakingController.postSector
 }
 
 
 @radioText(id: String, content: String) = {
-  <span id="@id">@content</span>
+<span id="@id">@content</span>
 }
 
 @radioOptions = @{
-  Seq(
-    RadioItem(
-      content = HtmlContent(radioText("sector-electricity-nonrenewable", messages("NACE.WaterSewerageWasteRemediation.Lvl4.HazardousWaste"))),
-      value = Some(Sector.HazardousWaste.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.HazardousWaste.toString)
-    ),
-    RadioItem(
-      content = HtmlContent(radioText("sector-label-electricity-renewable", messages("NACE.WaterSewerageWasteRemediation.Lvl4.NonHazardousWaste"))),
-      value = Some(Sector.NonHazardousWaste.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.NonHazardousWaste.toString)
+    Seq(
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities"))),
+            value = Some(Sector.WasteManagement.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.WasteManagement.toString)
+        )
     )
-  )
 }
 
-
 @layout(
-  pageTitle = Some(messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteActivities.title")),
+  pageTitle = Some(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -88,11 +84,11 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteActivities.title")),
-          classes = "govuk-fieldset__legend--xl",
-          isPageHeading = true
-        ))
-      )),
+        content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply.title")),
+        classes = "govuk-fieldset__legend--xl",
+        isPageHeading = true
+        )),
+    )),
       idPrefix = Some(fieldName),
       name = fieldName,
       items = radioOptions
