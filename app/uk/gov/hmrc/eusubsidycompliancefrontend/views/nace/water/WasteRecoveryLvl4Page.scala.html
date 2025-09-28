@@ -49,17 +49,17 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-electricity-nonrenewable", messages("NACE.WaterSewerageWasteRemediation.Lvl4.EnergyRecovery"))),
+      content = HtmlContent(radioText("sector-label-energy-recovery", messages("NACE.WaterSewerageWasteRemediation.Lvl4.EnergyRecovery"))),
       value = Some(Sector.EnergyRecovery.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.EnergyRecovery.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-electricity-renewable", messages("NACE.WaterSewerageWasteRemediation.Lvl4.MaterialsRecovery"))),
+      content = HtmlContent(radioText("sector-label-materials-recovery", messages("NACE.WaterSewerageWasteRemediation.Lvl4.MaterialsRecovery"))),
       value = Some(Sector.MaterialsRecovery.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.MaterialsRecovery.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-electricity-renewable", messages("NACE.WaterSewerageWasteRemediation.Lvl4.OtherWasteRecovery"))),
+      content = HtmlContent(radioText("sector-label-other-waste-recovery", messages("NACE.WaterSewerageWasteRemediation.Lvl4.OtherWasteRecovery"))),
       value = Some(Sector.OtherWasteRecovery.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherWasteRecovery.toString)
     )

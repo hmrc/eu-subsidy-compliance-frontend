@@ -61,7 +61,7 @@ class UndertakingController @Inject() (
   timeProvider: TimeProvider,
   auditService: AuditService,
   aboutUndertakingPage: AboutUndertakingPage,
-  undertakingSectorPage: undertakingSectorPage,
+  undertakingSectorPage: UndertakingSectorPage,
   undertakingAddBusinessPage: UndertakingAddBusinessPage,
   override val confirmEmailPage: ConfirmEmailPage,
   override val inputEmailPage: InputEmailPage,
