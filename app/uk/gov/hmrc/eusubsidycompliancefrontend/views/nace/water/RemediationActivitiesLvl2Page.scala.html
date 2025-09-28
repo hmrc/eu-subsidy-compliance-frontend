@@ -51,15 +51,15 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl2.accommodation"))),
-            value = Some(Sector.Accommodation.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Accommodation.toString)
+            content = HtmlContent(radioText("sector-label-remediation", messages("NACE.WaterSewerageWasteRemediation.Lvl2.Remediation"))),
+            value = Some(Sector.WasteManagementRemediation.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.WasteManagementRemediation.toString)
         )
     )
 }
 
 @layout(
-  pageTitle = Some(messages("NACE.accommodationAndFoodService.Lvl1.title")),
+  pageTitle = Some(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -84,7 +84,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("NACE.accommodationAndFoodService.Lvl1.title")),
+        content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         )),

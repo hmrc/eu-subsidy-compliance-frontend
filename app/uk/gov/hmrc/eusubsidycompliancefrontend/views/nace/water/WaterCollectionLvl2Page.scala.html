@@ -51,9 +51,9 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-waste-activities", messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities"))),
-            value = Some(Sector.WasteManagement.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.WasteManagement.toString)
+            content = HtmlContent(radioText("sector-label-water-collection-supply", messages("NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply"))),
+            value = Some(Sector.WaterTreatment.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.WaterTreatment.toString)
         )
     )
 }

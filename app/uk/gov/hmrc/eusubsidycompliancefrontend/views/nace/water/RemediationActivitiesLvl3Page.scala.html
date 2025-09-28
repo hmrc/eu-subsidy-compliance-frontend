@@ -48,20 +48,15 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-electric-power", messages("NACE.ElectricityGasSteamAir.Lvl3.ElectricPower"))),
-      value = Some(Sector.WasteManagementRemediation4.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.WasteManagementRemediation4.toString)
-    ),
-    RadioItem(
-      content = HtmlContent(radioText("sector-label-electric-power", messages("NACE.ElectricityGasSteamAir.Lvl3.ElectricPower"))),
-      value = Some(Sector.WasteManagementRemediation4.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.WasteManagementRemediation4.toString)
+      content = HtmlContent(radioText("sector-label-remediation3", messages("NACE.WaterSewerageWasteRemediation.Lvl3.Remediation"))),
+      value = Some(Sector.WasteManagementRemediation3.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.WasteManagementRemediation3.toString)
     )
   )
 }
 
 @layout(
-  pageTitle = Some(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply.title")),
+  pageTitle = Some(messages("NACE.WaterSewerageWasteRemediation.Lvl2.Remediation.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -86,7 +81,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply.title")),
+          content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl2.Remediation.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))

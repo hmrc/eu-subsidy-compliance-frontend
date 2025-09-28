@@ -48,30 +48,15 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-electric-power", messages("NACE.ElectricityGasSteamAir.Lvl3.ElectricPower"))),
-      value = Some(Sector.ElectricPowerGenerationAndDistribution.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricPowerGenerationAndDistribution.toString)
-    ),
-    RadioItem(
-      content = HtmlContent(radioText("sector-label-gas-distribution", messages("NACE.ElectricityGasSteamAir.Lvl3.GasDistribution"))),
-      value = Some(Sector.GaseousFuelsManufacture.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.GaseousFuelsManufacture.toString)
-    ),
-    RadioItem(
-      content = HtmlContent(radioText("sector-label-steam-air-conditioning", messages("NACE.ElectricityGasSteamAir.Lvl3.SteamAirConditioning"))),
-      value = Some(Sector.SteamAndAirConditioningSupply.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.SteamAndAirConditioningSupply.toString)
-    ),
-    RadioItem(
-      content = HtmlContent(radioText("sector-label-brokers-agents-power-gas", messages("NACE.ElectricityGasSteamAir.Lvl3.BrokersAgentsPowerGas"))),
-      value = Some(Sector.ElectricPowerAndGasBrokers.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricPowerAndGasBrokers.toString)
+      content = HtmlContent(radioText("sector-label-waste-disposal-without-recovery", messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery"))),
+      value = Some(Sector.WasteDisposal.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.WasteDisposal.toString)
     )
   )
 }
 
 @layout(
-  pageTitle = Some(messages("NACE.ElectricityGasSteamAir.Lvl2.Supply.title")),
+  pageTitle = Some(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -96,7 +81,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.ElectricityGasSteamAir.Lvl2.Supply.title")),
+          content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))
