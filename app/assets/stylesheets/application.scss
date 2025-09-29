@@ -110,6 +110,16 @@ only screen and (max-width: 760px),
   }
 }
 
+.tight-paragraph {
+    margin-bottom: 0px;
+}
+
+.tight-bullet-list {
+    margin-top: 0;
+    padding-left: 24px;
+    padding-left: 40px;
+}
+
 .govuk-panel--warning {
   color: #fff;
   background: #B10D1E;

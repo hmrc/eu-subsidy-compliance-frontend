@@ -242,7 +242,9 @@ removeBusiness.error.required = Select yes if you want to remove a business from
 
 undertaking.confirmation.title = Undertaking registered
 undertaking.confirmation.p1 = We have sent you a confirmation email.
-undertaking.confirmation.p2 = You can now submit reports of non-customs subsidy payments, or no payments in your undertaking.
+undertaking.confirmation.p2 = You can now:
+undertaking.confirmation.ul1 = submit reports
+undertaking.confirmation.ul2 = add businesses to your undertaking
 undertaking.confirmation.p3 = You can also add businesses to your undertaking using the <a id="add-remove-business-link" href="{0}" class="govuk-link">Add and remove businesses</a> link in the ‘Undertaking administration’ section of the undertaking.
 lead-account-homepage.important = Important
 lead-account-homepage.banner = Your balance may be incorrect.
@@ -513,8 +515,8 @@ regulatoryChangeNotification.p3 = This online service still shows calculations b
 regulatoryChangeNotification.h2 = What you need to do now
 regulatoryChangeNotification.p4 = You need to keep your own records to make sure you stay within your allowance.
 regulatoryChangeNotification.p5 = You can still manage your undertaking online.
-regulatoryChangeNotification.button = Manage your undertaking
 regulatoryChangeNotification.link = More about the change
+ManageYourUndertaking.button = Manage your undertaking
 
 #Amend Undertaking
 undertaking.amendUndertaking.title = Undertaking details
