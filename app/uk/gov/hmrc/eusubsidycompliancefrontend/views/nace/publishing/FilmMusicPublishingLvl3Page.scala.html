@@ -53,7 +53,8 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl3.filmVideoActivities"))),
             value = Some(Sector.FilmVideoActivities.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FilmVideoActivities.toString)
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FilmVideoActivities.toString),
+            hint = Some(Hint(content = Text(messages("NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing.hint"))))
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl3.soundRecordingAndMusicPublishing"))),
@@ -76,7 +77,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -85,7 +86,7 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(

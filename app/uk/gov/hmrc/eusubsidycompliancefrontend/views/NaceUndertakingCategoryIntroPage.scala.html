@@ -32,20 +32,20 @@
 @(eori: uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-    pageTitle = Some(messages("nace.interrupt.title")),
+    pageTitle = Some(messages("NACE.interrupt.title")),
     backLinkEnabled = true,
 ) {
     <h1 class="govuk-heading-xl govuk-!-margin-bottom-1">
-        @messages("nace.interrupt.heading1")
+        @messages("NACE.interrupt.heading1")
     </h1>
     <p class="govuk-hint">@eori</p>
 
-    @P(messages("nace.interrupt.p1"))
-    @P(messages("nace.interrupt.p2"))
-    @H2(messages("nace.interrupt.heading2"))
-    @P(messages("nace.interrupt.p3"))
-    @H2(messages("nace.interrupt.heading3"))
-    @P(messages("nace.interrupt.p4"))
+    @P(messages("NACE.interrupt.p1"))
+    @P(messages("NACE.interrupt.p2"))
+    @H2(messages("NACE.interrupt.heading2"))
+    @P(messages("NACE.interrupt.p3"))
+    @H2(messages("NACE.interrupt.heading3"))
+    @P(messages("NACE.interrupt.p4"))
 
     <p class="govuk-body">
         You can browse the
@@ -57,7 +57,7 @@
         </a>
     </p>
 
-    @P(messages("nace.interrupt.p5"))
+    @P(messages("NACE.interrupt.p5"))
 
     <br/>
 

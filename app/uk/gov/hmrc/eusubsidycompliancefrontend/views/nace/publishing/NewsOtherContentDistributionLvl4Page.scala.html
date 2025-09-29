@@ -64,7 +64,7 @@
 }
 
 @layout(
-  pageTitle = Some(messages("NACE.publishingBroadcasting.Lvl3.publishingBooksNewspapers.title")),
+  pageTitle = Some(messages("NACE.publishingBroadcasting.Lvl3.newsAgency.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -76,7 +76,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(s"${messages(err.key++"." ++err.message)}")
+            content = Text(messages("NACE.publishingBroadcasting.Lvl3.newsAgency.error"))
           )
         ),
         title = Text(messages("common.error.summary.title", undertakingName))
@@ -86,7 +86,7 @@
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {
         Some(ErrorMessage(
-          content = Text(messages("undertakingSector.error.required"))
+content = Text(messages("NACE.publishingBroadcasting.Lvl3.newsAgency.error"))
         ))
       } else None,
       fieldset = Some(Fieldset(
@@ -95,9 +95,6 @@
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))
-      )),
-      hint = Some(Hint(
-        content = Text(messages("NACE.publishingBroadcasting.Lvl3.newsAgency.title"))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,
