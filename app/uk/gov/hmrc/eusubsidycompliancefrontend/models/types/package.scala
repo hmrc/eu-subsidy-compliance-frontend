@@ -572,7 +572,7 @@ package object types extends SimpleJson {
     val industrialMachineryInstallation4: types.Sector.Value = Value("33.20")
 
 
-    val electricityGasSteamAirConditioningSupply: types.Sector.Value = Value("D")
+    val electricityGas: types.Sector.Value = Value("D")
     val electricityGasAirConditioningSupply: types.Sector.Value = Value("35")
     val electricPowerGenerationAndDistribution	: types.Sector.Value = Value("35.1")
     val electricityDistribution  : types.Sector.Value = Value("35.14")
@@ -591,7 +591,7 @@ package object types extends SimpleJson {
     val electricPowerAndGasBrokers: types.Sector.Value = Value("35.4")
     val electricPowerAndGasBrokers4: types.Sector.Value = Value("35.40")
 
-    val waterSupplySewereageWasteManagementAndRemediationActivities: types.Sector.Value = Value("E")
+    val waterSupply: types.Sector.Value = Value("E")
     val waterTreatment: types.Sector.Value = Value("36")
     val waterTreatment3: types.Sector.Value = Value("36.0")
     val waterTreatment4: types.Sector.Value = Value("36.00")
@@ -763,7 +763,7 @@ package object types extends SimpleJson {
     val retailIntermediationServices: types.Sector.Value = Value("47.9")
     val nonSpecialisedRetailIntermediation: types.Sector.Value = Value("47.91")
     val specialisedRetailIntermediation: types.Sector.Value = Value("47.92")
-    val transportationAndStorage : types.Sector.Value = Value("H")
+    val transportStorage : types.Sector.Value = Value("H")
     val landTransport : types.Sector.Value = Value("49")
     val passengerRailTransport	: types.Sector.Value = Value("49.1")
     val passengerHeavyRailTransport: types.Sector.Value = Value("49.11")
@@ -818,7 +818,7 @@ package object types extends SimpleJson {
     val postalIntermediationActivities	: types.Sector.Value = Value("53.3")
     val postalIntermediationActivities4: types.Sector.Value = Value("53.30")
 
-    val accommodationAndFoodServiceActivities: types.Sector.Value = Value("I")
+    val accommodationAndFoodService: types.Sector.Value = Value("I")
     val accommodation: types.Sector.Value = Value("55")
     val hotelsAccommodation: types.Sector.Value = Value("55.1")
     val hotelsAccommodation4: types.Sector.Value = Value("55.10")
@@ -843,7 +843,7 @@ package object types extends SimpleJson {
     val foodBeverageServiceIntermediationActivities	: types.Sector.Value = Value("56.4")
     val foodBeverageServiceIntermediationActivities4: types.Sector.Value = Value("56.40")
 
-    val publishingBroadcastingAndContentProductionAndDistributionActivities: types.Sector.Value = Value("J")
+    val publishingBroadcasting: types.Sector.Value = Value("J")
     val publishing: types.Sector.Value = Value("58")
     val publishingBooksNewspapers: types.Sector.Value = Value("58.1")
     val books: types.Sector.Value = Value("58.11")
@@ -872,7 +872,7 @@ package object types extends SimpleJson {
     val newsAgencyActivities: types.Sector.Value = Value("60.31")
     val otherContentDistributionActivities: types.Sector.Value = Value("60.39")
 
-    val telecommunicationComputerProgrammingConsultingComputingInfrastructureAndOtherInformationSericeActivities: types.Sector.Value = Value("K")
+    val telecommunications: types.Sector.Value = Value("K")
     val telecommunication: types.Sector.Value = Value("61")
     val wiredTelecommunication: types.Sector.Value = Value("61.1")
     val wiredTelecommunication4: types.Sector.Value = Value("61.10")
@@ -896,7 +896,7 @@ package object types extends SimpleJson {
     val webSearchPortalActivities: types.Sector.Value = Value("63.91")
     val otherInformationServices: types.Sector.Value = Value("63.92")
 
-    val financialAndInsuranceActivities: types.Sector.Value = Value("L")
+    val financialInsuranceActivities: types.Sector.Value = Value("L")
     val financialServices: types.Sector.Value = Value("64")
     val monetaryIntermediation: types.Sector.Value = Value("64.1")
     val centralBanking: types.Sector.Value = Value("64.11")
@@ -997,7 +997,7 @@ package object types extends SimpleJson {
     val veterinaryActivities3: types.Sector.Value = Value("75.0")
     val veterinaryActivities4: types.Sector.Value = Value("75.00")
 
-    val administrativeAndSupportServiceActivities: types.Sector.Value = Value("O")
+    val administration: types.Sector.Value = Value("O")
     val rentalAndLeasing: types.Sector.Value = Value("77")
     val motorVehiclesRental: types.Sector.Value = Value("77.1")
     val carRental: types.Sector.Value = Value("77.11")
@@ -1060,7 +1060,7 @@ package object types extends SimpleJson {
     val packagingActivities: types.Sector.Value = Value("82.92")
     val otherBusinessSupport: types.Sector.Value = Value("82.99")
 
-    val publicAdministrationAndDefenceCompulsorySocialSecurity: types.Sector.Value = Value("P")
+    val publicAdministration: types.Sector.Value = Value("P")
     val publicAdministrationSocialSecurity: types.Sector.Value = Value("84")
     val administrationGeneral: types.Sector.Value = Value("84.1")
     val generalPublicAdmin: types.Sector.Value = Value("84.11")
@@ -1096,7 +1096,7 @@ package object types extends SimpleJson {
     val educationalSupportIntermediation : types.Sector.Value = Value("85.61")
     val otherEducationalSupport: types.Sector.Value = Value("85.69")
 
-    val humanHealthAndSocialWorkActivities: types.Sector.Value = Value("R")
+    val humanHealthSocialWork: types.Sector.Value = Value("R")
     val humanHealthActivities: types.Sector.Value = Value("86")
     val hospital : types.Sector.Value = Value("86.1")
     val hospitalActivities: types.Sector.Value = Value("86.10")
@@ -1132,7 +1132,7 @@ package object types extends SimpleJson {
     val childDayCare: types.Sector.Value = Value("88.91")
     val otherSocialWorkNEC: types.Sector.Value = Value("88.99")
 
-    val artsSportsAndRecreation: types.Sector.Value = Value("S")
+    val artsSportsRecreation: types.Sector.Value = Value("S")
     val artsCreationPerforming: types.Sector.Value = Value("90")
     val artsCreation: types.Sector.Value = Value("90.1")
     val literaryMusical: types.Sector.Value = Value("90.11")
@@ -1171,7 +1171,7 @@ package object types extends SimpleJson {
     val amusementParks: types.Sector.Value = Value("93.21")
     val otherRecreationActivities: types.Sector.Value = Value("93.29")
 
-    val otherServiceActivities: types.Sector.Value = Value("T")
+    val otherService: types.Sector.Value = Value("T")
     val membershipOrganisationActivities: types.Sector.Value = Value("94")
     val businessProfessionalMembershipOrganisations: types.Sector.Value = Value("94.1")
     val businessEmployersMembership: types.Sector.Value = Value("94.11")
@@ -1214,17 +1214,17 @@ package object types extends SimpleJson {
     val domesticPersonalServices: types.Sector.Value = Value("96.91")
     val otherPersonalServices4: types.Sector.Value = Value("96.99")
 
-   val activitiesOfHouseholdsAsEmployers: types.Sector.Value = Value("U")
+   val households: types.Sector.Value = Value("U")
    val householdsActivitiesOfDomesticPersonnel: types.Sector.Value = Value("97")
    val householdsActivitiesOfDomesticPersonnel3: types.Sector.Value = Value("97.0")
-   val householdsActivitiesOfDomesticPersonnel4: types.Sector.Value = Value("97.00")
+   val domesticPersonnel: types.Sector.Value = Value("97.00")
    val undifferentiatedGoodsAndServiceActivities: types.Sector.Value = Value("98")
    val undifferentiatedGoods: types.Sector.Value = Value("98.1")
    val undifferentiatedGoods4: types.Sector.Value = Value("98.10")
    val undifferentiatedServices: types.Sector.Value = Value("98.2")
-   val undifferentiatedServices4: types.Sector.Value = Value("98.20")
+   val undifferentiatedProduction: types.Sector.Value = Value("98.20")
 
-   val activitiesOfExtraterritorialOrganisationsAndBodies: types.Sector.Value = Value("V")
+   val activitiesExtraterritorial: types.Sector.Value = Value("V")
    val extraterritorialOrganisationsActivities: types.Sector.Value = Value("99")
    val extraterritorialOrganisationsActivities3: types.Sector.Value = Value("99.0")
    val extraterritorialOrganisationsActivities4: types.Sector.Value = Value("99.00")

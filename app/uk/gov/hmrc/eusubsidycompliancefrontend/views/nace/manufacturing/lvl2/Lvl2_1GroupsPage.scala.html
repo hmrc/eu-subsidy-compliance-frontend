@@ -68,16 +68,16 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-computers", messages("NACE.Manufacturing.Lvl2.1.Computers.hint")))
             )),
-            value = Some(Sector.computers.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.computers.toString)
+            value = Some(Sector.computersProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.computersProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-clothes", messages("NACE.Manufacturing.Lvl2.1.Clothes"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-clothes", messages("NACE.Manufacturing.Lvl2.1.Clothes.hint")))
             )),
-            value = Some(Sector.clothes.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.clothes.toString)
+            value = Some(Sector.clothing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.clothing.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-paper", messages("NACE.Manufacturing.Lvl2.1.Paper"))),
@@ -92,8 +92,8 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-vehicles", messages("NACE.Manufacturing.Lvl2.1.Vehicles.hint")))
             )),
-            value = Some(Sector.vehicles.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.vehicles.toString)
+            value = Some(Sector.motorVehicles.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.motorVehicles.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-pharmaceuticals", messages("NACE.Manufacturing.Lvl2.1.Pharmaceuticals"))),
@@ -113,8 +113,8 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-machinery", messages("NACE.Manufacturing.Lvl2.1.Machinery"))),
-            value = Some(Sector.machinery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.machinery.toString)
+            value = Some(Sector.otherMachineryAndEquipment.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMachineryAndEquipment.toString)
         )
     )
 }

@@ -52,8 +52,8 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-parquet", messages("NACE.Manufacturing.Lvl4.ParquetFloors"))),
-            value = Some(Sector.qssembledParquetFloors.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.qssembledParquetFloors.toString)
+            value = Some(Sector.assembledParquetFloors.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.assembledParquetFloors.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-solid-fuels", messages("NACE.Manufacturing.Lvl4.SolidFuelsBiomass"))),

@@ -51,7 +51,7 @@ else controllers.routes.UndertakingController.postSector
 Seq(
 RadioItem(
 content = HtmlContent(radioText("sector-label-wholesaleRetail", messages("NACE.Lvl1.wholesaleRetail"))),
-value = Some(Sector.wholesaleRetail.toString)
+value = Some(Sector.wholesaleAndRetailTrade.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-manufacturing", messages("NACE.Lvl1.manufacturing"))),
