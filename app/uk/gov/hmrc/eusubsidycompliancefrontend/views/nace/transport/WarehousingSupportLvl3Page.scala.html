@@ -54,7 +54,8 @@
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-support-transport", messages("NACE.TransportationAndStorage.Lvl3.SupportTransport"))),
-      value = Some(Sector.TransportSupportActivities.toString),
+      hint = Some(Hint(content = Text(messages("NACE.TransportationAndStorage.Lvl2.WarehousingSupport.hint")))),
+       value = Some(Sector.TransportSupportActivities.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.TransportSupportActivities.toString)
     ),
     RadioItem(
