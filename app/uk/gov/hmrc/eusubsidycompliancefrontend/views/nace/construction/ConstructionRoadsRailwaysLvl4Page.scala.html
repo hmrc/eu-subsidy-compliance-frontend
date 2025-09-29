@@ -52,18 +52,18 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.bridgesTunnels"))),
-                value = Some(Sector.BridgesTunnels.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.BridgesTunnels.toString)
+                value = Some(Sector.bridgesTunnels.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.bridgesTunnels.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.railwaysUnderground"))),
-                value = Some(Sector.RailwaysUnderground.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.RailwaysUnderground.toString)
+                value = Some(Sector.railwaysUnderground.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.railwaysUnderground.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.roadsMotorways"))),
-                value = Some(Sector.RoadsMotorways.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.RoadsMotorways.toString)
+                value = Some(Sector.roadsMotorways.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.roadsMotorways.toString)
         )
     )
 }

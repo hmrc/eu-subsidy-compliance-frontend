@@ -51,24 +51,24 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-                content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl3.beverageServing"))),
-                value = Some(Sector.BeverageServing.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.BeverageServing.toString)
+                content = HtmlContent(radioText("sector-label-beverageServing", messages("NACE.accommodationAndFoodService.Lvl3.beverageServing"))),
+                value = Some(Sector.beverageServing.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.beverageServing.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl3.eventAndContractCatering"))),
-                value = Some(Sector.EventAndContractCatering.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.EventAndContractCatering.toString)
+                value = Some(Sector.eventAndContractCatering.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.eventAndContractCatering.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl3.foodBeverageServiceIntermediationActivities"))),
-                value = Some(Sector.FoodBeverageServiceIntermediationActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.FoodBeverageServiceIntermediationActivities.toString)
+                content = HtmlContent(radioText("sector-label-foodBeverageServiceIntermediationActivities", messages("NACE.accommodationAndFoodService.Lvl3.foodBeverageServiceIntermediationActivities"))),
+                value = Some(Sector.foodBeverageServiceIntermediationActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.foodBeverageServiceIntermediationActivities.toString)
         ),
        RadioItem(
             content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl3.restaurantsMobile"))),
-            value = Some(Sector.RestaurantsMobile.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.RestaurantsMobile.toString)
+            value = Some(Sector.restaurantsMobile.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.restaurantsMobile.toString)
         )
     )
 }

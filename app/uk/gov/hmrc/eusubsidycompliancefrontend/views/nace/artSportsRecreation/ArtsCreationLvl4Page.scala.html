@@ -52,13 +52,13 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.literaryMusical"))),
-                value = Some(Sector.LiteraryMusical.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.LiteraryMusical.toString)
+                value = Some(Sector.literaryMusical.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.literaryMusical.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.visualArtsCreation"))),
-                value = Some(Sector.VisualArtsCreation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.VisualArtsCreation.toString)
+                value = Some(Sector.visualArtsCreation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.visualArtsCreation.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.otherArtsCreation"))),

@@ -52,23 +52,23 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.electricalInstallation"))),
-                value = Some(Sector.ElectricalInstallation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricalInstallation.toString)
+                value = Some(Sector.electricalInstallation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricalInstallation.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.insulationInstallation"))),
-                value = Some(Sector.InsulationInstallation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.InsulationInstallation.toString)
+                value = Some(Sector.insulationInstallation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.insulationInstallation.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.plumbingHeatingAC"))),
-                value = Some(Sector.PlumbingHeatingAC.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.PlumbingHeatingAC.toString)
+                value = Some(Sector.plumbingHeatingAC.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.plumbingHeatingAC.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.otherConstructionInstallation"))),
-                value = Some(Sector.OtherConstructionInstallation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherConstructionInstallation.toString)
+                value = Some(Sector.otherConstructionInstallation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherConstructionInstallation.toString)
         )
     )
 }

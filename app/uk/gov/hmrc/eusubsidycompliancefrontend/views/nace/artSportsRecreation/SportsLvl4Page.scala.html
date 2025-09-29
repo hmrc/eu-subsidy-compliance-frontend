@@ -52,23 +52,23 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.fitnessCentresActivities"))),
-                value = Some(Sector.FitnessCentresActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.FitnessCentresActivities.toString)
+                value = Some(Sector.fitnessCentresActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.fitnessCentresActivities.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.sportsClubsActivities"))),
-                value = Some(Sector.SportsClubsActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.SportsClubsActivities.toString)
+                value = Some(Sector.sportsClubsActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.sportsClubsActivities.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.sportsFacilitiesOperation"))),
-                value = Some(Sector.SportsFacilitiesOperation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.SportsFacilitiesOperation.toString)
+                value = Some(Sector.sportsFacilitiesOperation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.sportsFacilitiesOperation.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-artsSportsRecreation", messages("NACE.artsSportsRecreation.Lvl4.otherSportsActivities"))),
-                value = Some(Sector.OtherSportsActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherSportsActivities.toString)
+                value = Some(Sector.otherSportsActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSportsActivities.toString)
         )
     )
 }

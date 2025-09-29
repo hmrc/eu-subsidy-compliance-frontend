@@ -49,14 +49,14 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-stoneQuarrying", messages("NACE.households.Lvl2.domesticPersonnel"))),
-value = Some(Sector.stoneQuarrying.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.stoneQuarrying.toString)
+content = HtmlContent(radioText("sector-label-domesticPersonnel", messages("NACE.households.Lvl2.domesticPersonnel"))),
+value = Some(Sector.domesticPersonnel.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.domesticPersonnel.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-miningAndQuarryingNEC", messages("NACE.households.Lvl2.undifferentiatedProduction"))),
-value = Some(Sector.miningAndQuarryingNEC.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningAndQuarryingNEC.toString)
+content = HtmlContent(radioText("sector-label-undifferentiatedProduction", messages("NACE.households.Lvl2.undifferentiatedProduction"))),
+value = Some(Sector.undifferentiatedProduction.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.undifferentiatedProduction.toString)
 )
 )
 }

@@ -52,28 +52,28 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.floorAndWallCovering"))),
-                value = Some(Sector.FloorAndWallCovering.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.FloorAndWallCovering.toString)
+                value = Some(Sector.floorAndWallCovering.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.floorAndWallCovering.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.joineryInstallation"))),
-                value = Some(Sector.JoineryInstallation.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.JoineryInstallation.toString)
+                value = Some(Sector.joineryInstallation.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.joineryInstallation.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.paintingAndGlazing"))),
-                value = Some(Sector.PaintingAndGlazing.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.PaintingAndGlazing.toString)
+                value = Some(Sector.paintingAndGlazing.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.paintingAndGlazing.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.plastering"))),
-                value = Some(Sector.Plastering.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.Plastering.toString)
+                value = Some(Sector.plastering.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.plastering.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl4.otherBuildingFinishing"))),
-                value = Some(Sector.OtherBuildingFinishing.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherBuildingFinishing.toString)
+                value = Some(Sector.otherBuildingFinishing.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherBuildingFinishing.toString)
         )
     )
 }

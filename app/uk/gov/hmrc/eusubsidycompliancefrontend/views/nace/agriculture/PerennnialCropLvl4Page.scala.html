@@ -73,9 +73,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.oleaginousFruits
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-stoneFruits", messages("NACE.agriculture.Lvl4.stoneFruits"))),
-hint = Some(Hint(
-content = HtmlContent(radioText("sector-label-stoneFruits-hint", messages("NACE.agriculture.Lvl4.stoneFruits.hint")))
-)),
+hint = Some(Hint(content = HtmlContent(radioText("sector-label-stoneFruits-hint", messages("NACE.agriculture.Lvl4.stoneFruits.hint"))))),
 value = Some(Sector.stoneFruits.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.stoneFruits.toString)
 ),

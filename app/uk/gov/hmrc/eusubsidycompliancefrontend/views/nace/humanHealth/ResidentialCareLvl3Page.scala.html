@@ -48,25 +48,25 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-DisabledResidentialCareActivitiesMentalIllness", messages("NACE.humanHealth.Lvl3.olderPersonsDisabilitiesCare"))),
-value = Some(Sector.DisabledResidentialCareActivitiesMentalIllness.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.DisabledResidentialCareActivitiesMentalIllness.toString)
+content = HtmlContent(radioText("sector-label-disabledResidentialCareActivitiesMentalIllness", messages("NACE.humanHealth.Lvl3.olderPersonsDisabilitiesCare"))),
+value = Some(Sector.disabledResidentialCareActivitiesMentalIllness.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.disabledResidentialCareActivitiesMentalIllness.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-ResidentialCareActivitiesMentalIllness", messages("NACE.humanHealth.Lvl3.mentalIllnessSubstanceAbuseCare"))),
-value = Some(Sector.ResidentialCareActivitiesMentalIllness.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.ResidentialCareActivitiesMentalIllness.toString)
+content = HtmlContent(radioText("sector-label-residentialCareActivitiesMentalIllness", messages("NACE.humanHealth.Lvl3.mentalIllnessSubstanceAbuseCare"))),
+value = Some(Sector.residentialCareActivitiesMentalIllness.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.residentialCareActivitiesMentalIllness.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-ResidentialNursing", messages("NACE.humanHealth.Lvl3.residentialNursing"))),
-value = Some(Sector.ResidentialNursing.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.ResidentialNursing.toString)
+content = HtmlContent(radioText("sector-label-residentialNursing", messages("NACE.humanHealth.Lvl3.residentialNursing"))),
+value = Some(Sector.residentialNursing.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.residentialNursing.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-OtherResidentialCare", messages("NACE.humanHealth.Lvl3.otherResidentialCare"))),
-value = Some(Sector.OtherResidentialCare.toString),
+content = HtmlContent(radioText("sector-label-otherResidentialCare", messages("NACE.humanHealth.Lvl3.otherResidentialCare"))),
+value = Some(Sector.otherResidentialCare.toString),
 hint = Some(Hint(content = Text(messages("NACE.humanHealth.Lvl3.otherResidentialCare.hint")))),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherResidentialCare.toString)
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherResidentialCare.toString)
 )
 )
 }

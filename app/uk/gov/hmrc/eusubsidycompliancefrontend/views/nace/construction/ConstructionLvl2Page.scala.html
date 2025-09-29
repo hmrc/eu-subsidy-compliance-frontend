@@ -52,19 +52,19 @@
     Seq(
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl2.civilEngineering"))),
-                value = Some(Sector.CivilEngineering.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.CivilEngineering.toString),
+                value = Some(Sector.civilEngineering.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.civilEngineering.toString),
                 hint = Some(Hint(content = Text(messages("NACE.construction.Lvl2.civilEngineering.hint"))))
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl2.residentialNonResidentialConstruction"))),
-                value = Some(Sector.ResidentialNonResidentialConstruction.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.ResidentialNonResidentialConstruction.toString)
+                value = Some(Sector.residentialNonResidentialConstruction.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.residentialNonResidentialConstruction.toString)
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-construction", messages("NACE.construction.Lvl2.specialisedConstructionActivities"))),
-                value = Some(Sector.SpecialisedConstructionActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.SpecialisedConstructionActivities.toString),
+                value = Some(Sector.specialisedConstructionActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.specialisedConstructionActivities.toString),
                 hint = Some(Hint(content = Text(messages("NACE.construction.Lvl2.specialisedConstructionActivities.hint"))))
         )
     )

@@ -52,14 +52,14 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl2.accommodation"))),
-            value = Some(Sector.Accommodation.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Accommodation.toString),
+            value = Some(Sector.accommodation.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.accommodation.toString),
             hint = Some(Hint(content = Text(messages("NACE.accommodationAndFoodService.Lvl2.accommodation.hint"))))
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-accommodationAndFoodService", messages("NACE.accommodationAndFoodService.Lvl2.foodBeverageServiceActivities"))),
-                value = Some(Sector.FoodBeverageServiceActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.FoodBeverageServiceActivities.toString),
+                value = Some(Sector.foodBeverageServiceActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.foodBeverageServiceActivities.toString),
                 hint = Some(Hint(content = Text(messages("NACE.accommodationAndFoodService.Lvl2.foodBeverageServiceActivities.hint"))))
         )
     )
