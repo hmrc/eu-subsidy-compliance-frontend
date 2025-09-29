@@ -55,13 +55,13 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-wood-cork-straw", messages("NACE.Manufacturing.Lvl3.WoodCorkStrawPlaiting.hint")))
             )),
-            value = Some(Sector.WoodProductsManufacture.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.WoodProductsManufacture.toString)
+            value = Some(Sector.woodProductsManufacture.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.woodProductsManufacture.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-dairy", messages("NACE.Manufacturing.Lvl3.SawmillingWood"))),
-            value = Some(Sector.WoodProductsProcessing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.WoodProductsProcessing.toString)
+            value = Some(Sector.woodProductsProcessing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.woodProductsProcessing.toString)
         )
     )
 }

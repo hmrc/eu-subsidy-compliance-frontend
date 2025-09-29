@@ -52,38 +52,38 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-parquet", messages("NACE.Manufacturing.Lvl4.ParquetFloors"))),
-            value = Some(Sector.AssembledParquetFloors.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.AssembledParquetFloors.toString)
+            value = Some(Sector.qssembledParquetFloors.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.qssembledParquetFloors.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-solid-fuels", messages("NACE.Manufacturing.Lvl4.SolidFuelsBiomass"))),
-            value = Some(Sector.SolidFuelsVegetableBiomass.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.SolidFuelsVegetableBiomass.toString)
+            value = Some(Sector.solidFuelsVegetableBiomass.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.solidFuelsVegetableBiomass.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-veneer-sheets", messages("NACE.Manufacturing.Lvl4.VeneerSheetsPanels"))),
-            value = Some(Sector.VeneerSheetsPanels.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.VeneerSheetsPanels.toString)
+            value = Some(Sector.veneerSheetsPanels.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.veneerSheetsPanels.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-wooden-containers", messages("NACE.Manufacturing.Lvl4.WoodenContainers"))),
-            value = Some(Sector.WoodenContainers.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.WoodenContainers.toString)
+            value = Some(Sector.woodenContainers.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.woodenContainers.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-doors-windows", messages("NACE.Manufacturing.Lvl4.DoorsWindowsWood"))),
-            value = Some(Sector.WoodenWindowsDoors.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.WoodenWindowsDoors.toString)
+            value = Some(Sector.woodenWindowsDoors.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.woodenWindowsDoors.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-builders", messages("NACE.Manufacturing.Lvl4.BuildersCarpentryJoinery"))),
-            value = Some(Sector.OtherBuildersCarpentryJoinery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherBuildersCarpentryJoinery.toString)
+            value = Some(Sector.otherBuildersCarpentryJoinery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherBuildersCarpentryJoinery.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other-wood", messages("NACE.Manufacturing.Lvl4.OtherWoodCorkStrawPlaiting"))),
-            value = Some(Sector.OtherWoodProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherWoodProducts.toString)
+            value = Some(Sector.otherWoodProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherWoodProducts.toString)
         ),
         RadioItem(
             divider = Some(messages("common.radioItem.or"))

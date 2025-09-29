@@ -53,13 +53,13 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-dairy", messages("NACE.Manufacturing.Lvl4.DairyProducts"))),
 
-            value = Some(Sector.DairyProducts4.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.DairyProducts4.toString)
+            value = Some(Sector.dairyProducts4.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.dairyProducts4.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-icecream", messages("NACE.Manufacturing.Lvl4.IceCream"))),
-            value = Some(Sector.IceCream.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.IceCream.toString)
+            value = Some(Sector.iceCream.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.iceCream.toString)
         )
     )
 }

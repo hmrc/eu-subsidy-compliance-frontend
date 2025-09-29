@@ -56,16 +56,16 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-paper", messages("NACE.Manufacturing.Lvl2.2.Paper.hint")))
             )),
-            value = Some(Sector.PaperRelated.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PaperRelated.toString)
+            value = Some(Sector.paperRelated.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.paperRelated.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-printed", messages("NACE.Manufacturing.Lvl2.2.Printed"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-printed", messages("NACE.Manufacturing.Lvl2.2.Printed.hint")))
             )),
-            value = Some(Sector.PrintedProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PrintedProducts.toString)
+            value = Some(Sector.printedProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.printedProducts.toString)
         )
     )
 }

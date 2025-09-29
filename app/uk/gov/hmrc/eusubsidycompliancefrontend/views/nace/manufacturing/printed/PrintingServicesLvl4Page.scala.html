@@ -52,23 +52,23 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-binding", messages("NACE.Manufacturing.Lvl4.Binding"))),
-            value = Some(Sector.BindingServices.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.BindingServices.toString)
+            value = Some(Sector.bindingServices.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.bindingServices.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-pre-press", messages("NACE.Manufacturing.Lvl4.PrePressMedia"))),
-            value = Some(Sector.PreMediaServices.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PreMediaServices.toString)
+            value = Some(Sector.preMediaServices.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.preMediaServices.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-newspapers", messages("NACE.Manufacturing.Lvl4.Newspapers"))),
-            value = Some(Sector.NewspapersPrinting.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.NewspapersPrinting.toString)
+            value = Some(Sector.newspapersPrinting.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.newspapersPrinting.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-media", messages("NACE.Manufacturing.Lvl4.OtherPrinting"))),
-            value = Some(Sector.OtherPrinting.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherPrinting.toString)
+            value = Some(Sector.otherPrinting.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPrinting.toString)
         )
     )
 }

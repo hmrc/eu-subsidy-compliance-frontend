@@ -52,13 +52,13 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-biofuels", messages("NACE.Manufacturing.Lvl4.LiquidBiofuels"))),
-            value = Some(Sector.LiquidBiofuels.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.LiquidBiofuels.toString)
+            value = Some(Sector.liquidBiofuels.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.liquidBiofuels.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-detergents.", messages("NACE.Manufacturing.Lvl4.OtherChemicals"))),
-            value = Some(Sector.OtherChemicalProducts4.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherChemicalProducts4.toString)
+            value = Some(Sector.otherChemicalProducts4.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherChemicalProducts4.toString)
         )
     )
 }

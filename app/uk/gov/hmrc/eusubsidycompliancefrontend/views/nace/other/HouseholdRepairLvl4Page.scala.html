@@ -71,8 +71,8 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.repairHouseholdA
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-WatchesAndJewellery", messages("NACE.otherService.Lvl4.repairWatchesClocksJewellery"))),
-value = Some(Sector.WatchesAndJewellery.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.WatchesAndJewellery.toString)
+value = Some(Sector.watchesAndJewellery.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.watchesAndJewellery.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherHouseholdGoods", messages("NACE.otherService.Lvl4.repairOtherPersonalHouseholdGoods"))),

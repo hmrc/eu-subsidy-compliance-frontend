@@ -51,15 +51,15 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl3.filmVideoActivities"))),
-            value = Some(Sector.FilmVideoActivities.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FilmVideoActivities.toString),
+            content = HtmlContent(radioText("sector-label-filmVideoActivities", messages("NACE.publishingBroadcasting.Lvl3.filmVideoActivities"))),
+            value = Some(Sector.filmVideoActivities.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.filmVideoActivities.toString),
             hint = Some(Hint(content = Text(messages("NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing.hint"))))
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl3.soundRecordingAndMusicPublishing"))),
-            value = Some(Sector.SoundRecordingAndMusicPublishing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.SoundRecordingAndMusicPublishing.toString)
+            content = HtmlContent(radioText("sector-label-soundRecordingAndMusicPublishing", messages("NACE.publishingBroadcasting.Lvl3.soundRecordingAndMusicPublishing"))),
+            value = Some(Sector.soundRecordingAndMusicPublishing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.soundRecordingAndMusicPublishing.toString)
         )
     )
 }

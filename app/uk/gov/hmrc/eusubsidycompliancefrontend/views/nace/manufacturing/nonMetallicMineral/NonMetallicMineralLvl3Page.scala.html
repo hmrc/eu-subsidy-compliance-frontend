@@ -52,46 +52,46 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-cement-plaster", messages("NACE.Manufacturing.Lvl3.ConcreteCementPlasterArticles"))),
-            value = Some(Sector.CementPlasterArticles.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CementPlasterArticles.toString)
+            value = Some(Sector.cementPlasterArticles.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.cementPlasterArticles.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-cement-lime", messages("NACE.Manufacturing.Lvl3.CementLimePlaster"))),
-            value = Some(Sector.CementLimePlaster.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CementLimePlaster.toString)
+            value = Some(Sector.cementLimePlaster.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.cementLimePlaster.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-clay", messages("NACE.Manufacturing.Lvl3.ClayBuildingMaterials"))),
-            value = Some(Sector.ClayBuildingMaterials.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ClayBuildingMaterials.toString)
+            value = Some(Sector.clayBuildingMaterials.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.clayBuildingMaterials.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-stone", messages("NACE.Manufacturing.Lvl3.CuttingStone"))),
-            value = Some(Sector.StoneCuttingFinishing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.StoneCuttingFinishing.toString)
+            value = Some(Sector.stoneCuttingFinishing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.stoneCuttingFinishing.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-glass", messages("NACE.Manufacturing.Lvl3.GlassProducts"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-glass", messages("NACE.Manufacturing.Lvl3.GlassProducts.hint")))
             )),
-            value = Some(Sector.GlassProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.GlassProducts.toString)
+            value = Some(Sector.glassProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.glassProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-refractory", messages("NACE.Manufacturing.Lvl3.RefractoryProducts"))),
-            value = Some(Sector.RefractoryProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.RefractoryProducts.toString)
+            value = Some(Sector.refractoryProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.refractoryProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-porcelain", messages("NACE.Manufacturing.Lvl3.PorcelainCeramicProducts"))),
-            value = Some(Sector.OtherCeramicProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherCeramicProducts.toString)
+            value = Some(Sector.otherCeramicProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherCeramicProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-abrasive", messages("NACE.Manufacturing.Lvl3.AbrasiveProducts"))),
-            value = Some(Sector.OtherAbrasiveProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherAbrasiveProducts.toString)
+            value = Some(Sector.otherAbrasiveProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherAbrasiveProducts.toString)
         )
     )
 }

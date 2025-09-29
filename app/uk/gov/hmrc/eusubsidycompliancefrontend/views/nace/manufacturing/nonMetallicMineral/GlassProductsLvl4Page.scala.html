@@ -52,31 +52,31 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-flatglass", messages("NACE.Manufacturing.Lvl4.FlatGlass"))),
-            value = Some(Sector.FlatGlass.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FlatGlass.toString)
+            value = Some(Sector.flatGlass.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.flatGlass.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-glassfibres", messages("NACE.Manufacturing.Lvl4.GlassFibres"))),
-            value = Some(Sector.GlassFibres.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.GlassFibres.toString)
+            value = Some(Sector.glassFibres.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.glassFibres.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-hollow", messages("NACE.Manufacturing.Lvl4.HollowGlass"))),
-            value = Some(Sector.HollowGlass.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.HollowGlass.toString)
+            value = Some(Sector.hollowGlass.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.hollowGlass.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherGlass"))),
-            value = Some(Sector.OtherGlassProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherGlassProducts.toString)
+            value = Some(Sector.otherGlassProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherGlassProducts.toString)
         ),
         RadioItem(
             divider = Some(messages("common.radioItem.or"))
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-shaping", messages("NACE.Manufacturing.Lvl4.ShapedFlatGlass"))),
-            value = Some(Sector.ShapingFlatGlass.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ShapingFlatGlass.toString)
+            value = Some(Sector.shapingFlatGlass.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.shapingFlatGlass.toString)
         )
     )
 }

@@ -52,18 +52,18 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-civilians", messages("NACE.Manufacturing.Lvl4.CivilianShips"))),
-            value = Some(Sector.CivilianShips.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CivilianShips.toString)
+            value = Some(Sector.civilianShips.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.civilianShips.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-military", messages("NACE.Manufacturing.Lvl4.MilitaryShips"))),
-            value = Some(Sector.MilitaryShips.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MilitaryShips.toString)
+            value = Some(Sector.militaryShips.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.militaryShips.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-pleasure", messages("NACE.Manufacturing.Lvl4.PleasureSportingBoats"))),
-            value = Some(Sector.PleasureShips.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PleasureShips.toString)
+            value = Some(Sector.pleasureShips.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.pleasureShips.toString)
         )
     )
 }

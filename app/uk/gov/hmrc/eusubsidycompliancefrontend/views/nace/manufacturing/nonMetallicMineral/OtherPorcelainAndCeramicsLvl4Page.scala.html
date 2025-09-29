@@ -52,28 +52,28 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-household", messages("NACE.Manufacturing.Lvl4.CeramicHouseholdOrnamental"))),
-            value = Some(Sector.CeramicHousehold.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CeramicHousehold.toString)
+            value = Some(Sector.ceramicHousehold.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ceramicHousehold.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-insulators", messages("NACE.Manufacturing.Lvl4.CeramicInsulators"))),
-            value = Some(Sector.CeramicInsulating.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CeramicInsulating.toString)
+            value = Some(Sector.ceramicInsulating.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ceramicInsulating.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-sanitary", messages("NACE.Manufacturing.Lvl4.CeramicSanitaryFixtures"))),
-            value = Some(Sector.CeramicSanitary.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CeramicSanitary.toString)
+            value = Some(Sector.ceramicSanitary.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ceramicSanitary.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-technical", messages("NACE.Manufacturing.Lvl4.OtherTechnicalCeramics"))),
-            value = Some(Sector.OtherTechnicalCeramicProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherTechnicalCeramicProducts.toString)
+            value = Some(Sector.otherTechnicalCeramicProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherTechnicalCeramicProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-ceramic-tiles", messages("NACE.Manufacturing.Lvl4.OtherCeramicProducts"))),
-            value = Some(Sector.OtherCeramicProducts4.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherCeramicProducts4.toString)
+            value = Some(Sector.otherCeramicProducts4.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherCeramicProducts4.toString)
         )
     )
 }

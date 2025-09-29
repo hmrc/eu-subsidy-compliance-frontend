@@ -55,13 +55,13 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-plastic", messages("NACE.Manufacturing.Lvl3.PlasticProducts.hint")))
             )),
-            value = Some(Sector.PlasticProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PlasticProducts.toString)
+            value = Some(Sector.plasticProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.plasticProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-rubber", messages("NACE.Manufacturing.Lvl3.RubberProducts"))),
-            value = Some(Sector.RubberProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.RubberProducts.toString)
+            value = Some(Sector.rubberProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.rubberProducts.toString)
         )
     )
 }

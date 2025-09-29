@@ -51,14 +51,14 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-telecommunicationsComputing", messages("NACE.telecommunicationsComputing.Lvl3.computingInfrastructureActivities"))),
-            value = Some(Sector.ComputingInfrastructureActivities3.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ComputingInfrastructureActivities3.toString)
+            content = HtmlContent(radioText("sector-label-computingInfrastructureActivities3", messages("NACE.telecommunicationsComputing.Lvl3.computingInfrastructureActivities"))),
+            value = Some(Sector.computingInfrastructureActivities3.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.computingInfrastructureActivities3.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-telecommunicationsComputing", messages("NACE.telecommunicationsComputing.Lvl3.webSearchPortal"))),
-                value = Some(Sector.WebSearchPortal.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.WebSearchPortal.toString)
+                content = HtmlContent(radioText("sector-label-webSearchPortal", messages("NACE.telecommunicationsComputing.Lvl3.webSearchPortal"))),
+                value = Some(Sector.webSearchPortal.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.webSearchPortal.toString)
         )
     )
 }

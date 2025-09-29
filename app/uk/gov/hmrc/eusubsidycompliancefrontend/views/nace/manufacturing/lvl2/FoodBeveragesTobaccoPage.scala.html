@@ -57,20 +57,20 @@
                 content = HtmlContent(radioText("sector-hint-food", messages("NACE.Manufacturing.Lvl2.2.Food.hint")))
             )),
             value = Some(Sector.food.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Food.toString)
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.food.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-beverages", messages("NACE.Manufacturing.Lvl2.2.Food.Beverages"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-beverages", messages("NACE.Manufacturing.Lvl2.2.Food.Beverages.hint")))
             )),
-            value = Some(Sector.Beverages.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Beverages.toString)
+            value = Some(Sector.beverages.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.beverages.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-tobacco", messages("NACE.Manufacturing.Lvl2.2.Food.Tobacco"))),
-            value = Some(Sector.TobaccoProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TobaccoProducts.toString)
+            value = Some(Sector.tobaccoProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.tobaccoProducts.toString)
         )
     )
 }

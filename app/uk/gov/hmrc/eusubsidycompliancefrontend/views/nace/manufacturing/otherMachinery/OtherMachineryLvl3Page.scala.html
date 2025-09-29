@@ -55,34 +55,34 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-general", messages("NACE.Manufacturing.Lvl3.GeneralPurposeMachinery.hint")))
             )),
-            value = Some(Sector.GeneralPurposeMachinery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.GeneralPurposeMachinery.toString)
+            value = Some(Sector.generalPurposeMachinery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.generalPurposeMachinery.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other-general", messages("NACE.Manufacturing.Lvl3.OtherGeneralPurposeMachinery"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-other-general", messages("NACE.Manufacturing.Lvl3.OtherGeneralPurposeMachinery.hint")))
             )),
-            value = Some(Sector.OtherGeneralPurposeMachinery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherGeneralPurposeMachinery.toString)
+            value = Some(Sector.otherGeneralPurposeMachinery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherGeneralPurposeMachinery.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-agricultural", messages("NACE.Manufacturing.Lvl3.AgriculturalForestryMachinery"))),
-            value = Some(Sector.AgriculturalMachinery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.AgriculturalMachinery.toString)
+            value = Some(Sector.agriculturalMachinery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.agriculturalMachinery.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-metal-forming", messages("NACE.Manufacturing.Lvl3.MetalFormingMachinery"))),
-            value = Some(Sector.MetalFormingMachinery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MetalFormingMachinery.toString)
+            value = Some(Sector.metalFormingMachinery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.metalFormingMachinery.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other-special", messages("NACE.Manufacturing.Lvl3.OtherSpecialPurposeMachinery"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-other-special", messages("NACE.Manufacturing.Lvl3.OtherSpecialPurposeMachinery.hint")))
             )),
-            value = Some(Sector.OtherSpecialPurposeMachinery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherSpecialPurposeMachinery.toString)
+            value = Some(Sector.otherSpecialPurposeMachinery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSpecialPurposeMachinery.toString)
         )
     )
 }

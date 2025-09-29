@@ -52,43 +52,43 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-additive", messages("NACE.Manufacturing.Lvl4.AdditiveManufacturingMachinery"))),
-            value = Some(Sector.AdditiveManufacturingMachinery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.AdditiveManufacturingMachinery.toString)
+            value = Some(Sector.additiveManufacturingMachinery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.additiveManufacturingMachinery.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-food", messages("NACE.Manufacturing.Lvl4.MachineryFoodBeverageTobacco"))),
-            value = Some(Sector.FoodMachinery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FoodMachinery.toString)
+            value = Some(Sector.foodMachinery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.foodMachinery.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-metallurgy", messages("NACE.Manufacturing.Lvl4.MachineryMetallurgy"))),
-            value = Some(Sector.MetallurgyMachinery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MetallurgyMachinery.toString)
+            value = Some(Sector.metallurgyMachinery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.metallurgyMachinery.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-mining", messages("NACE.Manufacturing.Lvl4.MachineryMiningConstruction"))),
-            value = Some(Sector.MiningMachinery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MiningMachinery.toString)
+            value = Some(Sector.miningMachinery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.miningMachinery.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-paper", messages("NACE.Manufacturing.Lvl4.MachineryPaperProduction"))),
-            value = Some(Sector.PaperMachinery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PaperMachinery.toString)
+            value = Some(Sector.paperMachinery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.paperMachinery.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-textile", messages("NACE.Manufacturing.Lvl4.MachineryTextileApparelLeather"))),
-            value = Some(Sector.TextileMachinery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TextileMachinery.toString)
+            value = Some(Sector.textileMachinery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.textileMachinery.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-plastics", messages("NACE.Manufacturing.Lvl4.MachineryPlasticsRubber"))),
-            value = Some(Sector.PlasticsMachinery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PlasticsMachinery.toString)
+            value = Some(Sector.plasticsMachinery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.plasticsMachinery.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherSpecialPurposeMachinery"))),
-            value = Some(Sector.OtherSpecialPurposeMachinery4.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherSpecialPurposeMachinery4.toString)
+            value = Some(Sector.otherSpecialPurposeMachinery4.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherSpecialPurposeMachinery4.toString)
         )
     )
 }

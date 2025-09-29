@@ -52,18 +52,18 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-jewellery-articles", messages("NACE.Manufacturing.Lvl4.JewelleryArticles"))),
-            value = Some(Sector.JewelleryManufacture.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.JewelleryManufacture.toString)
+            value = Some(Sector.jewelleryManufacture.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.jewelleryManufacture.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-imitation-jewellery", messages("NACE.Manufacturing.Lvl4.ImitationJewellery"))),
-            value = Some(Sector.ImitationJewelleryManufacture.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ImitationJewelleryManufacture.toString)
+            value = Some(Sector.imitationJewelleryManufacture.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.imitationJewelleryManufacture.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-coins", messages("NACE.Manufacturing.Lvl4.StrikingCoins"))),
-            value = Some(Sector.CoinStriking.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CoinStriking.toString)
+            value = Some(Sector.coinStriking.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.coinStriking.toString)
         )
     )
 }

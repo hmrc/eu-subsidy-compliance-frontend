@@ -51,17 +51,17 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-                content = HtmlContent(radioText("sector-label-telecommunicationsComputing", messages("NACE.telecommunicationsComputing.Lvl3.resellingTelecommunication"))),
-                value = Some(Sector.ResellingTelecommunication.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.ResellingTelecommunication.toString)
+                content = HtmlContent(radioText("sector-label-resellingTelecommunication", messages("NACE.telecommunicationsComputing.Lvl3.resellingTelecommunication"))),
+                value = Some(Sector.resellingTelecommunication.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.resellingTelecommunication.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-telecommunicationsComputing", messages("NACE.telecommunicationsComputing.Lvl3.wiredTelecommunication"))),
-                value = Some(Sector.WiredTelecommunication.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.WiredTelecommunication.toString)
+                content = HtmlContent(radioText("sector-label-wiredTelecommunication", messages("NACE.telecommunicationsComputing.Lvl3.wiredTelecommunication"))),
+                value = Some(Sector.wiredTelecommunication.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.wiredTelecommunication.toString)
         ),
        RadioItem(
-                content = HtmlContent(radioText("sector-label-telecommunicationsComputing", messages("NACE.telecommunicationsComputing.Lvl3.otherTelecommunications"))),
+                content = HtmlContent(radioText("sector-label-otherTelecommunications", messages("NACE.telecommunicationsComputing.Lvl3.otherTelecommunications"))),
                 value = Some(Sector.otherTelecommunications.toString),
                 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherTelecommunications.toString)
         )

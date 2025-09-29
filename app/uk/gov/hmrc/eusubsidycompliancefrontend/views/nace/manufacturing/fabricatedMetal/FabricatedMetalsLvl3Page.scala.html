@@ -52,13 +52,13 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-forging", messages("NACE.Manufacturing.Lvl3.ForgingShaping"))),
-            value = Some(Sector.MetalForging.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MetalForging.toString)
+            value = Some(Sector.metalForging.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.metalForging.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-cutlery", messages("NACE.Manufacturing.Lvl3.CutleryToolsHardware"))),
-            value = Some(Sector.CutleryToolsManufacture.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CutleryToolsManufacture.toString)
+            value = Some(Sector.cutleryToolsManufacture.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.cutleryToolsManufacture.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-structural", messages("NACE.Manufacturing.Lvl3.StructuralMetalProducts"))),

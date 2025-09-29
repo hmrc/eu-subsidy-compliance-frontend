@@ -52,13 +52,13 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-motors", messages("NACE.Manufacturing.Lvl4.ElectricMotorsGenerators"))),
-            value = Some(Sector.ElectricMotors.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricMotors.toString)
+            value = Some(Sector.electricMotors.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricMotors.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-electricity", messages("NACE.Manufacturing.Lvl4.ElectricityDistributionControl"))),
-            value = Some(Sector.ElectricityDistributionAndControl.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricityDistributionAndControl.toString)
+            value = Some(Sector.electricityDistributionAndControl.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricityDistributionAndControl.toString)
         )
     )
 }

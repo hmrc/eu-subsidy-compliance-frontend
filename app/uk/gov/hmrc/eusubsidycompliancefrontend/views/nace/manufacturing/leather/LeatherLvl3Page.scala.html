@@ -57,8 +57,8 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-tanning", messages("NACE.Manufacturing.Lvl3.TanningLeather"))),
-            value = Some(Sector.LeatherManufacture.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.LeatherManufacture.toString)
+            value = Some(Sector.leatherManufacture.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.leatherManufacture.toString)
         )
     )
 }

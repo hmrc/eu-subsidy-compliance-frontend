@@ -52,18 +52,18 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-fibre-optic", messages("NACE.Manufacturing.Lvl4.FibreOpticCables"))),
-            value = Some(Sector.FibreOpticCables.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FibreOpticCables.toString)
+            value = Some(Sector.fibreOpticCables.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.fibreOpticCables.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other-wiring", messages("NACE.Manufacturing.Lvl4.OtherWiresCables"))),
-            value = Some(Sector.OtherElectronicWires.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherElectronicWires.toString)
+            value = Some(Sector.otherElectronicWires.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherElectronicWires.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-devices", messages("NACE.Manufacturing.Lvl4.WiringDevices"))),
-            value = Some(Sector.WiringDevices.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.WiringDevices.toString)
+            value = Some(Sector.wiringDevices.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.wiringDevices.toString)
         )
     )
 }

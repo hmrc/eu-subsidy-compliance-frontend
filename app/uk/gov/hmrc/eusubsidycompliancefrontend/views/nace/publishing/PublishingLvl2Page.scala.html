@@ -52,18 +52,18 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl2.filmVideoSoundPublishing"))),
-            value = Some(Sector.FilmVideoSoundPublishing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FilmVideoSoundPublishing.toString),
+            value = Some(Sector.filmVideoSoundPublishing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.filmVideoSoundPublishing.toString),
         ),
         RadioItem(
                 content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl2.programmingBroadcastingNewsActivities"))),
-                value = Some(Sector.ProgrammingBroadcastingNewsActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.ProgrammingBroadcastingNewsActivities.toString)
+                value = Some(Sector.programmingBroadcastingNewsActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.programmingBroadcastingNewsActivities.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl2.publishing"))),
-            value = Some(Sector.Publishing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Publishing.toString),
+            value = Some(Sector.publishing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.publishing.toString),
             hint = Some(Hint(content = Text(messages("NACE.publishingBroadcasting.Lvl2.publishing.hint"))))
         )
     )

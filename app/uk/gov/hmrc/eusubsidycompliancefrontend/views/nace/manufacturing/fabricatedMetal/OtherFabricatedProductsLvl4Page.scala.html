@@ -52,28 +52,28 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-fasteners", messages("NACE.Manufacturing.Lvl4.Fasteners"))),
-            value = Some(Sector.FastenerProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FastenerProducts.toString)
+            value = Some(Sector.fastenerProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.fastenerProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-light-packaging", messages("NACE.Manufacturing.Lvl4.LightMetalPackaging"))),
-            value = Some(Sector.LightMetalPackaging.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.LightMetalPackaging.toString)
+            value = Some(Sector.lightMetalPackaging.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.lightMetalPackaging.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-steel-drums", messages("NACE.Manufacturing.Lvl4.SteelDrumsContainers"))),
-            value = Some(Sector.SteelDrums.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.SteelDrums.toString)
+            value = Some(Sector.steelDrums.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.steelDrums.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-wire-springs", messages("NACE.Manufacturing.Lvl4.WireProductsSprings"))),
-            value = Some(Sector.WireProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.WireProducts.toString)
+            value = Some(Sector.wireProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.wireProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherFabricatedMetalProducts"))),
-            value = Some(Sector.OtherFabricatedMetalProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherFabricatedMetalProducts.toString)
+            value = Some(Sector.otherFabricatedMetalProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherFabricatedMetalProducts.toString)
         )
     )
 }

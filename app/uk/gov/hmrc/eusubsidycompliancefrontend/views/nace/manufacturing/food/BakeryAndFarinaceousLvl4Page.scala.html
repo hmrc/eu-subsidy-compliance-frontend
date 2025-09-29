@@ -52,21 +52,21 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-rusks", messages("NACE.Manufacturing.Lvl4.RusksBiscuits"))),
-            value = Some(Sector.BiscuitsAndPreservedCakes.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.BiscuitsAndPreservedCakes.toString)
+            value = Some(Sector.biscuitsAndPreservedCakes.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.biscuitsAndPreservedCakes.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-bread-pastry", messages("NACE.Manufacturing.Lvl4.BreadPastry"))),
-            value = Some(Sector.BreadAndFreshPastry.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.BreadAndFreshPastry.toString)
+            value = Some(Sector.breadAndFreshPastry.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.breadAndFreshPastry.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-farinaceous", messages("NACE.Manufacturing.Lvl4.FarinaceousProducts"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-farinaceous", messages("NACE.Manufacturing.Lvl4.FarinaceousProducts.hint")))
             )),
-            value = Some(Sector.FarinaceousProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FarinaceousProducts.toString)
+            value = Some(Sector.farinaceousProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.farinaceousProducts.toString)
         )
     )
 }

@@ -52,33 +52,33 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-concrete", messages("NACE.Manufacturing.Lvl4.ConcreteProducts"))),
-            value = Some(Sector.ConcreteProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ConcreteProducts.toString)
+            value = Some(Sector.concreteProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.concreteProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-fibre-cement", messages("NACE.Manufacturing.Lvl4.FibreCement"))),
-            value = Some(Sector.FibreCement.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FibreCement.toString)
+            value = Some(Sector.fibreCement.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.fibreCement.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-mortars", messages("NACE.Manufacturing.Lvl4.Mortars"))),
-            value = Some(Sector.Mortars.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Mortars.toString)
+            value = Some(Sector.mortars.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.mortars.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-plaster-products", messages("NACE.Manufacturing.Lvl4.PlasterProducts"))),
-            value = Some(Sector.PlasterProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PlasterProducts.toString)
+            value = Some(Sector.plasterProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.plasterProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-readymix", messages("NACE.Manufacturing.Lvl4.ReadyMixedConcrete"))),
-            value = Some(Sector.ReadyMixedConcrete.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ReadyMixedConcrete.toString)
+            value = Some(Sector.readyMixedConcrete.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.readyMixedConcrete.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherConcretePlasterArticles"))),
-            value = Some(Sector.OtherConcreteProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherConcreteProducts.toString)
+            value = Some(Sector.otherConcreteProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherConcreteProducts.toString)
         )
     )
 }

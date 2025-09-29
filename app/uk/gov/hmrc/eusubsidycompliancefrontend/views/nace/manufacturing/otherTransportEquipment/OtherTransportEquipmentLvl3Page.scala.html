@@ -52,31 +52,31 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-other-aircraft", messages("NACE.Manufacturing.Lvl3.AirSpacecraft"))),
-            value = Some(Sector.Aircraft.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Aircraft.toString)
+            value = Some(Sector.aircraft.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.aircraft.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-military", messages("NACE.Manufacturing.Lvl3.MilitaryVehicles"))),
-            value = Some(Sector.MilitaryFightingVehicles.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MilitaryFightingVehicles.toString)
+            value = Some(Sector.militaryFightingVehicles.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.militaryFightingVehicles.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-railway", messages("NACE.Manufacturing.Lvl3.RailwayLocomotives"))),
-            value = Some(Sector.Railway.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Railway.toString)
+            value = Some(Sector.railway.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.railway.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-ships", messages("NACE.Manufacturing.Lvl3.ShipsBoats"))),
-            value = Some(Sector.Ships.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Ships.toString)
+            value = Some(Sector.ships.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ships.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-parts-other", messages("NACE.Manufacturing.Lvl3.OtherTransportEquipment"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl3.OtherTransportEquipment.hint")))
             )),
-            value = Some(Sector.OtherTransportEquipment3.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherTransportEquipment3.toString)
+            value = Some(Sector.otherTransportEquipment3.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherTransportEquipment3.toString)
         )
     )
 }

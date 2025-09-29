@@ -51,19 +51,19 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-                content = HtmlContent(radioText("sector-label-telecommunicationsComputing", messages("NACE.telecommunicationsComputing.Lvl3.computerFacilitiesConsultancy"))),
-                value = Some(Sector.ComputerFacilitiesConsultancy.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.ComputerFacilitiesConsultancy.toString)
+                content = HtmlContent(radioText("sector-label-computerFacilitiesConsultancy", messages("NACE.telecommunicationsComputing.Lvl3.computerFacilitiesConsultancy"))),
+                value = Some(Sector.computerFacilitiesConsultancy.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.computerFacilitiesConsultancy.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-telecommunicationsComputing", messages("NACE.telecommunicationsComputing.Lvl3.computerProgrammingActivities"))),
-                value = Some(Sector.ComputerProgrammingActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.ComputerProgrammingActivities.toString)
+                content = HtmlContent(radioText("sector-label-computerProgrammingActivities", messages("NACE.telecommunicationsComputing.Lvl3.computerProgrammingActivities"))),
+                value = Some(Sector.computerProgrammingActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.computerProgrammingActivities.toString)
         ),
         RadioItem(
-                content = HtmlContent(radioText("sector-label-telecommunicationsComputing", messages("NACE.telecommunicationsComputing.Lvl3.otherComputerServiceActivities"))),
-                value = Some(Sector.OtherComputerServiceActivities.toString),
-                checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherComputerServiceActivities.toString)
+                content = HtmlContent(radioText("sector-label-otherComputerServiceActivities", messages("NACE.telecommunicationsComputing.Lvl3.otherComputerServiceActivities"))),
+                value = Some(Sector.otherComputerServiceActivities.toString),
+                checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherComputerServiceActivities.toString)
         )
     )
 }

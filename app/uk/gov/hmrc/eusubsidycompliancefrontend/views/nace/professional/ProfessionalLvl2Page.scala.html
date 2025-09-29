@@ -71,8 +71,8 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.legalAndAccounti
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-ScientificResearchAndDevelopment", messages("NACE.professional.Lvl2.scientificResearchDevelopment"))),
-value = Some(Sector.ScientificResearchAndDevelopment.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.ScientificResearchAndDevelopment.toString)
+value = Some(Sector.scientificResearchAndDevelopment.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.scientificResearchAndDevelopment.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-otherProfessionalScientific", messages("NACE.professional.Lvl2.otherProfessionalScientificTechnical"))),

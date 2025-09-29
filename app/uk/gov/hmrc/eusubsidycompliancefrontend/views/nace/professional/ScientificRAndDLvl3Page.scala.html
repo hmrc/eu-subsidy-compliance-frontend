@@ -50,14 +50,14 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-NaturalScientificResearchAndDevelopment", messages("NACE.professional.Lvl3.naturalScienceEngineeringResearch"))),
-value = Some(Sector.NaturalScientificResearchAndDevelopment.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.NaturalScientificResearchAndDevelopment.toString)
+content = HtmlContent(radioText("sector-label-naturalScientificResearchAndDevelopment", messages("NACE.professional.Lvl3.naturalScienceEngineeringResearch"))),
+value = Some(Sector.naturalScientificResearchAndDevelopment.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.naturalScientificResearchAndDevelopment.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-SocialScientificResearchAndDevelopment", messages("NACE.professional.Lvl3.socialScienceHumanitiesResearch"))),
-value = Some(Sector.SocialScientificResearchAndDevelopment.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.SocialScientificResearchAndDevelopment.toString)
+content = HtmlContent(radioText("sector-label-socialScientificResearchAndDevelopment", messages("NACE.professional.Lvl3.socialScienceHumanitiesResearch"))),
+value = Some(Sector.socialScientificResearchAndDevelopment.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.socialScientificResearchAndDevelopment.toString)
 )
 )
 }

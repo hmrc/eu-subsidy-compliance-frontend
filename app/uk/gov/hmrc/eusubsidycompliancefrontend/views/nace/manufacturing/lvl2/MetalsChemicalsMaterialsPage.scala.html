@@ -53,47 +53,47 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-fabricated", messages("NACE.Manufacturing.Lvl2.2.Metals.FabricatedMetal"))),
-            value = Some(Sector.FabricatedMetalProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FabricatedMetalProducts.toString)
+            value = Some(Sector.fabricatedMetalProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.fabricatedMetalProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-wood", messages("NACE.Manufacturing.Lvl2.2.Metals.Wood"))),
-            value = Some(Sector.WoodProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.WoodProducts.toString)
+            value = Some(Sector.woodProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.woodProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-rubber", messages("NACE.Manufacturing.Lvl2.2.Metals.Rubber"))),
-            value = Some(Sector.RubberPlasticProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.RubberPlasticProducts.toString)
+            value = Some(Sector.rubberPlasticProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.rubberPlasticProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-chemicals", messages("NACE.Manufacturing.Lvl2.2.Metals.Chemicals"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-chemicals", messages("NACE.Manufacturing.Lvl2.2.Metals.Chemicals.hint")))
             )),
-            value = Some(Sector.ChemicalProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ChemicalProducts.toString)
+            value = Some(Sector.chemicalProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.chemicalProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-basic", messages("NACE.Manufacturing.Lvl2.2.Metals.BasicMetal"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-basic", messages("NACE.Manufacturing.Lvl2.2.Metals.BasicMetal.hint")))
             )),
-            value = Some(Sector.BasicMetals.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.BasicMetals.toString)
+            value = Some(Sector.basicMetals.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.basicMetals.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-coke", messages("NACE.Manufacturing.Lvl2.2.Metals.Coke"))),
-            value = Some(Sector.CokeProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CokeProducts.toString)
+            value = Some(Sector.cokeProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.cokeProducts.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-nonmetallic", messages("NACE.Manufacturing.Lvl2.2.Metals.NonMetallic"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-nonmetallic", messages("NACE.Manufacturing.Lvl2.2.Metals.NonMetallic.hint")))
             )),
-            value = Some(Sector.OtherNonMetallicProducts.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherNonMetallicProducts.toString)
+            value = Some(Sector.otherNonMetallicProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherNonMetallicProducts.toString)
         )
     )
 }

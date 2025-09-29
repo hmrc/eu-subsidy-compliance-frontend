@@ -52,23 +52,23 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-finishing", messages("NACE.Manufacturing.Lvl3.FinishingTextiles"))),
-            value = Some(Sector.TextilesFinishing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TextilesFinishing.toString)
+            value = Some(Sector.textilesFinishing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesFinishing.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl3.OtherTextiles"))),
-            value = Some(Sector.TextilesManufacture.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TextilesManufacture.toString)
+            value = Some(Sector.textilesManufacture.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesManufacture.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-fibre-spinning", messages("NACE.Manufacturing.Lvl3.TextileFibreSpinning"))),
-            value = Some(Sector.TextilesPreparation.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TextilesPreparation.toString)
+            value = Some(Sector.textilesPreparation.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesPreparation.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-weaving", messages("NACE.Manufacturing.Lvl3.Weaving"))),
-            value = Some(Sector.TextilesWeaving.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TextilesWeaving.toString)
+            value = Some(Sector.textilesWeaving.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.textilesWeaving.toString)
         )
     )
 }

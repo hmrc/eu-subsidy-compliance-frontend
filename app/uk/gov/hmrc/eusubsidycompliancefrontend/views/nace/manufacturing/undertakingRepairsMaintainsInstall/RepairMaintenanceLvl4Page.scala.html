@@ -52,48 +52,48 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-civ-aircraft", messages("NACE.Manufacturing.Lvl4.RepairCivilianAirSpacecraft"))),
-            value = Some(Sector.CivilianAirRepair.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CivilianAirRepair.toString)
+            value = Some(Sector.civilianAirRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.civilianAirRepair.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-civ-ships", messages("NACE.Manufacturing.Lvl4.RepairCivilianShipsBoats"))),
-            value = Some(Sector.CivilianShipsRepair.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CivilianShipsRepair.toString)
+            value = Some(Sector.civilianShipsRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.civilianShipsRepair.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-civ-other-transport", messages("NACE.Manufacturing.Lvl4.RepairOtherTransport"))),
-            value = Some(Sector.OtherCivilianTransportEquipmentRepair.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherCivilianTransportEquipmentRepair.toString)
+            value = Some(Sector.otherCivilianTransportEquipmentRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherCivilianTransportEquipmentRepair.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-electrical", messages("NACE.Manufacturing.Lvl4.RepairElectrical"))),
-            value = Some(Sector.ElectricalEquipmentRepair.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricalEquipmentRepair.toString)
+            value = Some(Sector.electricalEquipmentRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.electricalEquipmentRepair.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-electronic", messages("NACE.Manufacturing.Lvl4.RepairElectronicOptical"))),
-            value = Some(Sector.ElectronicEquipmentRepair.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectronicEquipmentRepair.toString)
+            value = Some(Sector.electronicEquipmentRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.electronicEquipmentRepair.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-fab-metals", messages("NACE.Manufacturing.Lvl4.RepairFabricatedMetalProducts"))),
-            value = Some(Sector.FabricatedMetalProducts4.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FabricatedMetalProducts4.toString)
+            value = Some(Sector.fabricatedMetalProducts4.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.fabricatedMetalProducts4.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-repair-machinery", messages("NACE.Manufacturing.Lvl4.RepairMachinery"))),
-            value = Some(Sector.MachineryRepair.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MachineryRepair.toString)
+            value = Some(Sector.machineryRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.machineryRepair.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-military-vehicles", messages("NACE.Manufacturing.Lvl4.RepairMilitaryVehicles"))),
-            value = Some(Sector.MilitaryVehiclesRepair.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MilitaryVehiclesRepair.toString)
+            value = Some(Sector.militaryVehiclesRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.militaryVehiclesRepair.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-repair-other", messages("NACE.Manufacturing.Lvl4.RepairOtherEquipment"))),
-            value = Some(Sector.OtherEquipmentRepair.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherEquipmentRepair.toString)
+            value = Some(Sector.otherEquipmentRepair.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherEquipmentRepair.toString)
         )
     )
 }

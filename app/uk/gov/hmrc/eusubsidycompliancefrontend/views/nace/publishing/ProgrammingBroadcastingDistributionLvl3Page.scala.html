@@ -51,19 +51,19 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl3.radioBroadcasting"))),
-            value = Some(Sector.RadioBroadcasting.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.RadioBroadcasting.toString)
+            content = HtmlContent(radioText("sector-label-radioBroadcasting", messages("NACE.publishingBroadcasting.Lvl3.radioBroadcasting"))),
+            value = Some(Sector.radioBroadcasting.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.radioBroadcasting.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl3.programmingBroadcastingVideoDistribution"))),
-            value = Some(Sector.ProgrammingBroadcastingVideoDistribution.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ProgrammingBroadcastingVideoDistribution.toString)
+            content = HtmlContent(radioText("sector-label-programmingBroadcastingVideoDistribution", messages("NACE.publishingBroadcasting.Lvl3.programmingBroadcastingVideoDistribution"))),
+            value = Some(Sector.programmingBroadcastingVideoDistribution.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.programmingBroadcastingVideoDistribution.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.publishingBroadcasting.Lvl3.newsAgency"))),
-            value = Some(Sector.NewsAgency.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.NewsAgency.toString)
+            content = HtmlContent(radioText("sector-label-newsAgency", messages("NACE.publishingBroadcasting.Lvl3.newsAgency"))),
+            value = Some(Sector.newsAgency.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.newsAgency.toString)
         )
     )
 }

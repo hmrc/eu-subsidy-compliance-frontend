@@ -52,23 +52,23 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-iron", messages("NACE.Manufacturing.Lvl4.CastingIron"))),
-            value = Some(Sector.Iron.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Iron.toString)
+            value = Some(Sector.iron.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.iron.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-light-metals", messages("NACE.Manufacturing.Lvl4.CastingLightMetals"))),
-            value = Some(Sector.LightMetals.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.LightMetals.toString)
+            value = Some(Sector.lightMetals.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.lightMetals.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-steel", messages("NACE.Manufacturing.Lvl4.CastingSteel"))),
-            value = Some(Sector.Steel.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Steel.toString)
+            value = Some(Sector.steel.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.steel.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-non-ferrous", messages("NACE.Manufacturing.Lvl4.CastingOtherNonFerrous"))),
-            value = Some(Sector.OtherMetals.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherMetals.toString)
+            value = Some(Sector.otherMetals.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMetals.toString)
         )
     )
 }

@@ -53,15 +53,15 @@
         RadioItem(
             content = HtmlContent(radioText("sector-label-knitted-crocheted", messages("NACE.Manufacturing.Lvl3.KnittedCrochetedClothing"))),
             value = Some(Sector.KnittedCrotchetedClothing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.KnittedCrotchetedClothing.toString)
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.knittedCrotchetedClothing.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl3.OtherClothing"))),
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-other", messages("NACE.Manufacturing.Lvl3.OtherClothing.hint")))
             )),
-            value = Some(Sector.OtherClothing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherClothing.toString)
+            value = Some(Sector.otherClothing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherClothing.toString)
         )
     )
 }

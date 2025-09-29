@@ -412,7 +412,7 @@ package object types extends SimpleJson {
     val copperProduction : types.Sector.Value = Value("24.44")
     val leadZincTinProduction: types.Sector.Value = Value("24.43")
     val preciousMetalsProduction : types.Sector.Value = Value("24.41")
-    val monFerrousMetalsProduction: types.Sector.Value = Value("24.45")
+    val nonFerrousMetalsProduction: types.Sector.Value = Value("24.45")
     val metalsCasting: types.Sector.Value = Value("24.5")
     val iron: types.Sector.Value = Value("24.51")
     val lightMetals: types.Sector.Value = Value("24.53")

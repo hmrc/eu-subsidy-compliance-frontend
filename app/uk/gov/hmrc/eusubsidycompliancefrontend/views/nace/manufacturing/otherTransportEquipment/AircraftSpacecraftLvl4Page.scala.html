@@ -52,13 +52,13 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-civilians", messages("NACE.Manufacturing.Lvl4.CivilianAirSpacecraft"))),
-            value = Some(Sector.CivilianAircraftMachinery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CivilianAircraftMachinery.toString)
+            value = Some(Sector.civilianAircraftMachinery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.civilianAircraftMachinery.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-military", messages("NACE.Manufacturing.Lvl4.MilitaryAirSpacecraft"))),
-            value = Some(Sector.MilitaryAircraftMachinery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MilitaryAircraftMachinery.toString)
+            value = Some(Sector.militaryAircraftMachinery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.militaryAircraftMachinery.toString)
         )
     )
 }
