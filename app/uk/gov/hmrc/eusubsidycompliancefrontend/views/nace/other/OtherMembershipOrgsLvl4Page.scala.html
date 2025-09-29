@@ -50,19 +50,19 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-peatExtraction", messages("NACE.otherService.Lvl4.politicalOrganisations"))),
-value = Some(Sector.peatExtraction.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.peatExtraction.toString)
+content = HtmlContent(radioText("sector-label-politicalOrganisations", messages("NACE.otherService.Lvl4.politicalOrganisations"))),
+value = Some(Sector.politicalOrganisations.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.politicalOrganisations.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-saltExtraction", messages("NACE.otherService.Lvl4.religiousOrganisations"))),
-value = Some(Sector.saltExtraction.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.saltExtraction.toString)
+content = HtmlContent(radioText("sector-label-religiousOrganisations", messages("NACE.otherService.Lvl4.religiousOrganisations"))),
+value = Some(Sector.religiousOrganisations.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.religiousOrganisations.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-otherNEC", messages("NACE.otherService.Lvl4.otherMembershipOrganisations"))),
-value = Some(Sector.otherNEC.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherNEC.toString)
+content = HtmlContent(radioText("sector-label-otherMembershipOrganisations", messages("NACE.otherService.Lvl4.otherMembershipOrganisations"))),
+value = Some(Sector.otherMembershipOrganisations.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMembershipOrganisations.toString)
 )
 )
 }

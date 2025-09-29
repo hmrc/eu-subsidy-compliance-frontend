@@ -50,19 +50,19 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-hardcoalMining", messages("NACE.otherService.Lvl3.businessEmployersProfessional"))),
-value = Some(Sector.hardcoalMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.hardcoalMining.toString)
+content = HtmlContent(radioText("sector-label-businessEmployersProfessional", messages("NACE.otherService.Lvl3.businessEmployersProfessional"))),
+value = Some(Sector.businessEmployersProfessional.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.businessEmployersProfessional.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-hardcoalMining", messages("NACE.otherService.Lvl3.tradeUnions"))),
-value = Some(Sector.hardcoalMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.hardcoalMining.toString)
+content = HtmlContent(radioText("sector-label-tradeUnions", messages("NACE.otherService.Lvl3.tradeUnions"))),
+value = Some(Sector.tradeUnions.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.tradeUnions.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-ligniteMining", messages("NACE.otherService.Lvl3.otherMembership"))),
-value = Some(Sector.ligniteMining.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.ligniteMining.toString)
+content = HtmlContent(radioText("sector-label-otherMembership", messages("NACE.otherService.Lvl3.otherMembership"))),
+value = Some(Sector.otherMembership.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMembership.toString)
 )
 )
 }

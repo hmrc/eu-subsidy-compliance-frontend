@@ -75,17 +75,17 @@ value = Some(Sector.scientificResearchAndDevelopment.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.scientificResearchAndDevelopment.toString)
 ),
 RadioItem(
+content = HtmlContent(radioText("sector-label-veterinary", messages("NACE.professional.Lvl2.veterinary"))),
+value = Some(Sector.veterinary.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.veterinary.toString)
+),
+RadioItem(
 content = HtmlContent(radioText("sector-label-otherProfessionalScientific", messages("NACE.professional.Lvl2.otherProfessionalScientificTechnical"))),
 value = Some(Sector.otherProfessionalScientific.toString),
 hint = Some(Hint(
 content = Text(messages("NACE.professional.Lvl2.otherProfessionalScientificTechnical.hint"))
 )),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherProfessionalScientific.toString)
-),
-RadioItem(
-content = HtmlContent(radioText("sector-label-veterinary", messages("NACE.professional.Lvl2.veterinary"))),
-value = Some(Sector.veterinary.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.veterinary.toString)
 )
 )
 }

@@ -2397,7 +2397,7 @@ NACE.otherService.Lvl4.domesticPersonalServices = Domestic personal services
 NACE.otherService.Lvl4.otherPersonalServices = Any other personal service activities
 
 #Households NACE Sector2,3,4
-NACE.households.Lvl1.title = What is your undertaking’s main business activity in households as employers or as producers of goods or services?
+NACE.households.Lvl1.title =What is your undertaking’s main business activity in households as employers or producers of goods or services?
 NACE.households.Lvl2.domesticPersonnel = Activities of households as employers of domestic personnel
 NACE.households.Lvl3.domesticPersonnel = Activities of households as employers of domestic personnel
 NACE.households.Lvl4.domesticPersonnel = Activities of households as employers of domestic personnel
