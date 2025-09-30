@@ -44,6 +44,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.views.formatters.DateFormatter
 import uk.gov.hmrc.eusubsidycompliancefrontend.views.html._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpVerbs, NotFoundException}
 import play.api.mvc.Call
+import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -71,7 +72,8 @@ class UndertakingController @Inject() (
   disableUndertakingWarningPage: DisableUndertakingWarningPage,
   disableUndertakingConfirmPage: DisableUndertakingConfirmPage,
   undertakingDisabledPage: UndertakingDisabledPage,
-  undertakingCache: UndertakingCache
+  undertakingCache: UndertakingCache,
+  navigator: Navigator
 )(implicit
   val appConfig: AppConfig,
   override val executionContext: ExecutionContext
@@ -192,11 +194,10 @@ class UndertakingController @Inject() (
         .fold(
           errors =>
             BadRequest(undertakingSectorPage(errors, journey.previous, journey.about.value.get, isUpdate)).toContext,
-          form =>
-            store
-              .update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-              .flatMap(_.next)
-              .toContext
+          form =>{
+            store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+            Redirect(navigator.nextPage(form.value, false)).toContext
+          }
         )
     }
   }
