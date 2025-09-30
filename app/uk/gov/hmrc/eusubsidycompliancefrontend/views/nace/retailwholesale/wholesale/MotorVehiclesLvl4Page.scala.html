@@ -18,10 +18,10 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
     layout: Layout,
@@ -49,20 +49,25 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-investigation", messages("NACE.Administrative.Lvl4.InvestigationPrivateSecurity"))),
-            value = Some(Sector.InvestigationAndSecurity.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.InvestigationAndSecurity.toString)
+            content = HtmlContent(radioText("sector-label-motor-vehicles", messages("NACE.Wholesale.MotorVehicles.Lvl4.Vehicles"))),
+            value = Some(Sector.MotorVehicleWholesale.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MotorVehicleWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-security", messages("NACE.Administrative.Lvl4.OtherSecurityActivities"))),
-            value = Some(Sector.InvestigationAndSecurity.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.InvestigationAndSecurity.toString)
+            content = HtmlContent(radioText("sector-label-vehicle-parts", messages("NACE.Wholesale.MotorVehicles.Lvl4.Parts"))),
+            value = Some(Sector.MotorVehiclePartsWholesale.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MotorVehiclePartsWholesale.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-motorcycles", messages("NACE.Wholesale.MotorVehicles.Lvl4.Motorcycles"))),
+            value = Some(Sector.MotorcyclePartsWholesale.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MotorcyclePartsWholesale.toString)
         )
     )
 }
 
 @layout(
-    pageTitle = Some(messages("NACE.Administrative.Investigation.title")),
+    pageTitle = Some(messages("NACE.Wholesale.MotorVehicles.title")),
     backLinkEnabled = true,
     backLink = Some(previous),
     hasErrors = form.hasErrors
@@ -73,7 +78,7 @@
                 errorList = Seq(
                     ErrorLink(
                         href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(err.key++"."++err.message)}")
+                        content = Text(s"${messages(err.key++"." ++err.message)}")
                     )
                 ),
                 title = Text(messages("common.error.summary.title", undertakingName))
@@ -82,14 +87,17 @@
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("NACE.Administrative.Investigation.error"))
+                content = Text(messages("undertakingSector.error.required"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("NACE.Administrative.Investigation.title")),
-                    classes = "govuk-fieldset__legend--l",
+                    content = Text(messages("NACE.Wholesale.MotorVehicles.title")),
+                    classes = "govuk-fieldset__legend--xl",
                     isPageHeading = true
                 ))
+            )),
+            hint = Some(Hint(
+                content = Text(messages("NACE.general.hint"))
             )),
             idPrefix = Some(fieldName),
             name = fieldName,

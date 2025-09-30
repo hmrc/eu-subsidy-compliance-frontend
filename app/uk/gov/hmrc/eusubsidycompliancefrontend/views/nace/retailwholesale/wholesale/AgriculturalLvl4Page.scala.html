@@ -18,10 +18,10 @@
 @import uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 @import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
 @import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.NACESector01
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
 @import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
-@import uk.gov.hmrc.govukfrontend.views.html.components._
 
 @this(
     layout: Layout,
@@ -49,20 +49,30 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-investigation", messages("NACE.Administrative.Lvl4.InvestigationPrivateSecurity"))),
-            value = Some(Sector.InvestigationAndSecurity.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.InvestigationAndSecurity.toString)
+            content = HtmlContent(radioText("sector-label-flowers", messages("NACE.Wholesale.Agricultural.Lvl4.Flowers"))),
+            value = Some(Sector.FlowersAndPlants.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FlowersAndPlants.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-security", messages("NACE.Administrative.Lvl4.OtherSecurityActivities"))),
-            value = Some(Sector.InvestigationAndSecurity.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.InvestigationAndSecurity.toString)
+            content = HtmlContent(radioText("sector-label-grain", messages("NACE.Wholesale.Agricultural.Lvl4.Grain"))),
+            value = Some(Sector.Grain.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Grain.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-hides", messages("NACE.Wholesale.Agricultural.Lvl4.Hides"))),
+            value = Some(Sector.leatherWholesale.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.leatherWholesale.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-live-animals", messages("NACE.Wholesale.Agricultural.Lvl4.LiveAnimals"))),
+            value = Some(Sector.LiveAnimals.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.LiveAnimals.toString)
         )
     )
 }
 
 @layout(
-    pageTitle = Some(messages("NACE.Administrative.Investigation.title")),
+    pageTitle = Some(messages("NACE.Wholesale.Agricultural.title")),
     backLinkEnabled = true,
     backLink = Some(previous),
     hasErrors = form.hasErrors
@@ -73,7 +83,7 @@
                 errorList = Seq(
                     ErrorLink(
                         href = Some(s"#${err.key}"),
-                        content = Text(s"${messages(err.key++"."++err.message)}")
+                        content = Text(s"${messages(err.key++"." ++err.message)}")
                     )
                 ),
                 title = Text(messages("common.error.summary.title", undertakingName))
@@ -82,14 +92,17 @@
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("NACE.Administrative.Investigation.error"))
+                content = Text(messages("undertakingSector.error.required"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("NACE.Administrative.Investigation.title")),
-                    classes = "govuk-fieldset__legend--l",
+                    content = Text(messages("NACE.Wholesale.Agricultural.title")),
+                    classes = "govuk-fieldset__legend--xl",
                     isPageHeading = true
                 ))
+            )),
+            hint = Some(Hint(
+                content = Text(messages("NACE.general.hint"))
             )),
             idPrefix = Some(fieldName),
             name = fieldName,

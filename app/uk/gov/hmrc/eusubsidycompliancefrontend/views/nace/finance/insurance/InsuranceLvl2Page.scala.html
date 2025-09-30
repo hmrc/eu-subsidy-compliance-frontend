@@ -54,14 +54,14 @@
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.InsuranceServices.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-reinsurance", messages("NACE.insurance.Lvl2.reinsurance"))),
-            value = Some(Sector.ReinsuranceServices.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ReinsuranceServices.toString)
-        ),
-        RadioItem(
             content = HtmlContent(radioText("sector-label-pension-funding", messages("NACE.insurance.Lvl2.pensionFunding"))),
             value = Some(Sector.PensionFundingServices.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.PensionFundingServices.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-reinsurance", messages("NACE.insurance.Lvl2.reinsurance"))),
+            value = Some(Sector.ReinsuranceServices.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ReinsuranceServices.toString)
         )
     )
 }
@@ -97,9 +97,6 @@
         isPageHeading = true
         ))
     )),
-        hint = Some(Hint(
-        content = Text(messages("NACE.general.hint"))
-      )),
       idPrefix = Some(fieldName),
       name = fieldName,
       items = radioOptions

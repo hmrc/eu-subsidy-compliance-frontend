@@ -49,14 +49,14 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-travel-agency", messages("NACE.Administrative.Lvl4.TravelAgencyActivities"))),
-            value = Some(Sector.TravelAgencyActivities.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TravelAgencyActivities.toString)
-        ),
-        RadioItem(
             content = HtmlContent(radioText("sector-label-tour-operator", messages("NACE.Administrative.Lvl4.TourOperatorActivities"))),
             value = Some(Sector.TourOperator.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.TourOperator.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-travel-agency", messages("NACE.Administrative.Lvl4.TravelAgencyActivities"))),
+            value = Some(Sector.TravelAgencyActivities.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TravelAgencyActivities.toString)
         )
     )
 }
@@ -92,7 +92,7 @@
                 ))
             )),
             hint = Some(Hint(
-                content = Text(messages("NACE.Administrative.TravelAgency.hint"))
+                content = Text(messages("NACE.general.hint"))
             )),
             idPrefix = Some(fieldName),
             name = fieldName,

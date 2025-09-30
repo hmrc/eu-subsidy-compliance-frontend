@@ -50,25 +50,16 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-collection-agencies", messages("NACE.Administrative.Lvl4.CollectionAgencies"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-collection-agencies", messages("NACE.Administrative.Lvl4.CollectionAgencies.hint")))
-            )),
             value = Some(Sector.CollectionAgencies.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.CollectionAgencies.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-packaging", messages("NACE.Administrative.Lvl4.PackagingActivities"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-packaging", messages("NACE.Administrative.Lvl4.PackagingActivities.hint")))
-            )),
             value = Some(Sector.PackagingActivities.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.PackagingActivities.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-business", messages("NACE.Administrative.Lvl4.OtherBusinessSupportActivities"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-other-business", messages("NACE.Administrative.Lvl4.OtherBusinessSupportActivities.hint")))
-            )),
+            content = HtmlContent(radioText("sector-label-other-business-activities", messages("NACE.Administrative.Lvl4.OtherBusinessSupportActivities"))),
             value = Some(Sector.OtherBusinessSupport.toString),
             checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherBusinessSupport.toString)
         )

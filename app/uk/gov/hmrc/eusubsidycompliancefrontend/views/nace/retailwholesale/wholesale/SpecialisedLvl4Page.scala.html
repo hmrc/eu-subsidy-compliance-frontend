@@ -49,46 +49,50 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-employment", messages("NACE.Administrative.Lvl2.Employment"))),
-            value = Some(Sector.Employment.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Employment.toString)
+            content = HtmlContent(radioText("sector-label-chemical-products", messages("NACE.Wholesale.Specialised.Lvl4.Chemical"))),
+            value = Some(Sector.ChemicalProductsWholesale.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ChemicalProductsWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-investigation", messages("NACE.Administrative.Lvl2.InvestigationSecurity"))),
-            value = Some(Sector.InvestigationAndSecurity.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.InvestigationAndSecurity.toString)
+            content = HtmlContent(radioText("sector-label-hardware-equipment", messages("NACE.Wholesale.Specialised.Lvl4.Hardware"))),
+            value = Some(Sector.HardwareEquipment.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.HardwareEquipment.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-office", messages("NACE.Administrative.Lvl2.OfficeSupport"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-office", messages("NACE.Administrative.Lvl2.OfficeSupport.hint")))
-            )),
-            value = Some(Sector.OfficeAdministrativeSupport.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OfficeAdministrativeSupport.toString)
+            content = HtmlContent(radioText("sector-label-metals", messages("NACE.Wholesale.Specialised.Lvl4.Metals"))),
+            value = Some(Sector.Metals.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Metals.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-rental", messages("NACE.Administrative.Lvl2.RentalLeasing"))),
-            value = Some(Sector.RentalAndLeasing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.RentalAndLeasing.toString)
+            content = HtmlContent(radioText("sector-label-fuels", messages("NACE.Wholesale.Specialised.Lvl4.Fuels"))),
+            value = Some(Sector.fuels.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.fuels.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-buildings", messages("NACE.Administrative.Lvl2.BuildingsLandscaping"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-buildings", messages("NACE.Administrative.Lvl2.BuildingsLandscaping.hint")))
-            )),
-            value = Some(Sector.buildingsAndLandscapingServices.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.buildingsAndLandscapingServices.toString)
+            content = HtmlContent(radioText("sector-label-waste", messages("NACE.Wholesale.Specialised.Lvl4.Waste"))),
+            value = Some(Sector.Waste.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Waste.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-travel", messages("NACE.Administrative.Lvl2.TravelTourReservation"))),
-            value = Some(Sector.TravelAgencyAndReservation.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TravelAgencyAndReservation.toString)
+            content = HtmlContent(radioText("sector-label-wood", messages("NACE.Wholesale.Specialised.Lvl4.Wood"))),
+            value = Some(Sector.Wood.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Wood.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-other-intermediate", messages("NACE.Wholesale.Specialised.Lvl4.OtherIntermediate"))),
+            value = Some(Sector.OtherIntermediateProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherIntermediateProducts.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-other-specialised", messages("NACE.Wholesale.Specialised.Lvl4.OtherSpecialised"))),
+            value = Some(Sector.OtherSpecialisedWholesale4.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherSpecialisedWholesale4.toString)
         )
     )
 }
 
 @layout(
-    pageTitle = Some(messages("NACE.Administrative.title")),
+    pageTitle = Some(messages("NACE.Wholesale.Specialised.title")),
     backLinkEnabled = true,
     backLink = Some(previous),
     hasErrors = form.hasErrors
@@ -108,12 +112,12 @@
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("NACE.Administrative.error"))
+                content = Text(messages("undertakingSector.error.required"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("NACE.Administrative.title")),
-                    classes = "govuk-fieldset__legend--l",
+                    content = Text(messages("NACE.Wholesale.Specialised.title")),
+                    classes = "govuk-fieldset__legend--xl",
                     isPageHeading = true
                 ))
             )),

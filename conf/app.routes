@@ -156,4 +156,3 @@ GET        /payment-already-submitted                                           
 GET        /registration-already-submitted                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.RegistrationSubmittedController.registrationAlreadySubmitted
 
 GET        /access-denied-for-agents                                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgentNotAllowedController.showPage
-
