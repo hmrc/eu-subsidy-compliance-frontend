@@ -1615,35 +1615,42 @@ NACE.ElectricityGasSteamAir.Lvl4.BrokersAgentsPowerGas = Activities of brokers a
 
 #WaterSewerageWasteRemediation NACE Sector2,3,4
 NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply = Water collection, treatment and supply
-#### NACE.WaterSewerageWasteRemediation.Lvl3.WaterCollectionSupply = Water collection, treatment and supply
+NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply.title = What is your undertaking’s main business activity in water supply, sewerage and waste management?
+NACE.WaterSewerageWasteRemediation.Lvl3.WaterCollectionSupply = Water collection, treatment and supply
 NACE.WaterSewerageWasteRemediation.Lvl4.WaterCollectionSupply = Water collection, treatment and supply
 
 NACE.WaterSewerageWasteRemediation.Lvl2.Sewerage = Sewerage
-#### NACE.WaterSewerageWasteRemediation.Lvl3.Sewerage = Sewerage
+NACE.WaterSewerageWasteRemediation.Lvl3.Sewerage = Sewerage
 NACE.WaterSewerageWasteRemediation.Lvl4.Sewerage = Sewerage
 
-NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities = Waste collection, recovery and disposal activities
-#### NACE.WaterSewerageWasteRemediation.Lvl3.WasteCollection = Waste collection
+NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities = Waste collection, recovery and disposal
+NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities.title =  What is your undertaking’s main business activity in waste collection, recovery and disposal?
+NACE.WaterSewerageWasteRemediation.Lvl3.WasteActivities.title = What type of waste does your undertaking collect? Select one option that best describes your undertaking’s main business activity.
+NACE.WaterSewerageWasteRemediation.Lvl3.WasteCollection = Waste collection
 NACE.WaterSewerageWasteRemediation.Lvl4.NonHazardousWaste = Collection of non-hazardous waste
 NACE.WaterSewerageWasteRemediation.Lvl4.HazardousWaste = Collection of hazardous waste
-#### NACE.WaterSewerageWasteRemediation.Lvl3.WasteRecovery = Waste recovery
+NACE.WaterSewerageWasteRemediation.Lvl3.WasteRecovery = Waste recovery
+NACE.WaterSewerageWasteRemediation.Lvl3.WasteRecovery.title = What type of waste recovery does your undertaking do? Select one option that best describes your undertaking’s main business activity.
 NACE.WaterSewerageWasteRemediation.Lvl4.MaterialsRecovery = Materials recovery
 NACE.WaterSewerageWasteRemediation.Lvl4.EnergyRecovery = Energy recovery
 NACE.WaterSewerageWasteRemediation.Lvl4.OtherWasteRecovery = Other waste recovery
-#### NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery = Waste disposal without recovery
+NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery = Waste disposal without recovery
+NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery.title = What type of waste disposal does your undertaking do? Select one option that best describes your undertaking’s main business activity.
+NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery.hint = Includes incineration, landfill and permanent storage.
 NACE.WaterSewerageWasteRemediation.Lvl4.IncinerationWithoutEnergy = Incineration without energy recovery
 NACE.WaterSewerageWasteRemediation.Lvl4.Landfilling = Landfilling or permanent storage
 NACE.WaterSewerageWasteRemediation.Lvl4.OtherWasteDisposal = Other waste disposal
 
 NACE.WaterSewerageWasteRemediation.Lvl2.Remediation = Remediation activities and other waste management service activities
-#### NACE.WaterSewerageWasteRemediation.Lvl3.Remediation = Remediation activities and other waste management service activities
+NACE.WaterSewerageWasteRemediation.Lvl2.Remediation.title = Remediation activities and other waste management services
+NACE.WaterSewerageWasteRemediation.Lvl3.Remediation = Remediation activities and other waste management service activities
 NACE.WaterSewerageWasteRemediation.Lvl4.Remediation = Remediation activities and other waste management service activities
 
 #construction NACE Sector2,3,4
 NACE.construction.Lvl1.title = What is your undertaking’s main business activity in construction?
 NACE.construction.Lvl1.error = Select your undertaking’s main business activity in construction
 NACE.construction.Lvl2.residentialNonResidentialConstruction = Construction of residential and non-residential buildings
-#### NACE.construction.Lvl3.residentialNonResidentialConstruction = Construction of residential and non-residential buildings
+NACE.construction.Lvl3.residentialNonResidentialConstruction = Construction of residential and non-residential buildings
 NACE.construction.Lvl4.residentialNonResidentialConstruction = Construction of residential and non-residential buildings
 
 NACE.construction.Lvl2.civilEngineering = Civil engineering
