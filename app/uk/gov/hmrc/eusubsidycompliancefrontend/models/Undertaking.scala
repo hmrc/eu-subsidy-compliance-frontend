@@ -57,7 +57,6 @@ case class Undertaking(
     }
   }
 
-
   def hasEORI(eori: EORI): Boolean =
     undertakingBusinessEntity
       .exists(_.businessEntityIdentifier == eori)
