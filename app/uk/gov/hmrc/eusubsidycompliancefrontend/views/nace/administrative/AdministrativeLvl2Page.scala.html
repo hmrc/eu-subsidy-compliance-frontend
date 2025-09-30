@@ -76,8 +76,8 @@
             hint = Some(Hint(
                 content = HtmlContent(radioText("sector-hint-buildings", messages("NACE.Administrative.Lvl2.BuildingsLandscaping.hint")))
             )),
-            value = Some(Sector.buildingsAndLandscapingServices.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.buildingsAndLandscapingServices.toString)
+            value = Some(Sector.BuildingsAndLandscapingServices.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.BuildingsAndLandscapingServices.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-travel", messages("NACE.Administrative.Lvl2.TravelTourReservation"))),
