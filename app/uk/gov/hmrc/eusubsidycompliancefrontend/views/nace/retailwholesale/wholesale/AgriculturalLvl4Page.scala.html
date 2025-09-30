@@ -60,8 +60,8 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-hides", messages("NACE.Wholesale.Agricultural.Lvl4.Hides"))),
-            value = Some(Sector.leatherWholesale.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.leatherWholesale.toString)
+            value = Some(Sector.LeatherWholesale.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.LeatherWholesale.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-live-animals", messages("NACE.Wholesale.Agricultural.Lvl4.LiveAnimals"))),

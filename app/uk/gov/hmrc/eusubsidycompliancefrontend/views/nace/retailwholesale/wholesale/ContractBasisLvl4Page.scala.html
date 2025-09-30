@@ -93,8 +93,8 @@
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-non-specialised-contract", messages("NACE.Wholesale.ContractBasis.Lvl4.NonSpecialised"))),
-            value = Some(Sector.nonSpecialisedWholesaleContractBasis.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.nonSpecialisedWholesaleContractBasis.toString)
+            value = Some(Sector.NonSpecialisedWholesaleContractBasis.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.NonSpecialisedWholesaleContractBasis.toString)
         )
     )
 }
