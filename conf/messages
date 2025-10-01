@@ -2420,3 +2420,350 @@ NACE.households.Lvl4.undifferentiatedServices = Undifferentiated service-produci
 NACE.ActivitiesExtraterritorial.Lvl2.CYAOnly.OrganisationsBodies = Activities of extraterritorial organisations and bodies
 NACE.ActivitiesExtraterritorial.Lvl3.OrganisationsBodies = Activities of extraterritorial organisations and bodies
 NACE.ActivitiesExtraterritorial.Lvl4.OrganisationsBodies = Activities of extraterritorial organisations and bodies
+
+#Wholesale / Retail
+
+NACE.RetailWholesale.title = What is your undertaking''s main business activity in retail and wholesale?
+NACE.RetailWholesale.Lvl2.Wholesale = Wholesale
+NACE.RetailWholesale.Lvl2.Retail = Retail
+
+NACE.Retail.AutomotiveFuel.title = Retail sale of automotive fuel
+NACE.Retail.AutomotiveFuel.Lvl3.automotiveFuel = Retail sale of automotive fuel
+
+# Retail Level 3 Messages
+NACE.Retail.title = What type of products does your undertaking retail?
+NACE.Retail.Lvl3.NonSpecialised = Non-specialised retail
+NACE.Retail.Lvl3.Food = Food, beverages and tobacco
+NACE.Retail.Lvl3.AutomotiveFuel = Automotive fuel
+NACE.Retail.Lvl3.InformationCommunication = Information and communication equipment
+NACE.Retail.Lvl3.OtherHouseholdEquipment = Other household equipment
+NACE.Retail.Lvl3.OtherHouseholdEquipment.hint = Includes carpets and rugs, electrical household appliances, furniture, hardware and building materials, textiles, wall and floor coverings, and all other household goods.
+NACE.Retail.Lvl3.CulturalRecreational = Cultural and recreational goods
+NACE.Retail.Lvl3.CulturalRecreational.hint = Includes books, games and toys, newspapers and stationery, and sports equipment.
+NACE.Retail.Lvl3.AnotherTypeGoods = Another type of goods
+NACE.Retail.Lvl3.AnotherTypeGoods.hint = Includes clothing, cosmetics, flowers and plants, footwear, leather goods, medical and orthopaedic goods, pets and pet food, pharmaceuticals, watches and jewellery, all other new goods, and second-hand goods.
+NACE.Retail.Lvl3.MotorVehicles = Motor vehicles, motorcycles and related parts and accessories
+NACE.Retail.Lvl3.IntermediationServices = My undertaking provides intermediation services for retail sale
+
+NACE.Retail.Household.title = What type of other household equipment does your undertaking retail?
+NACE.Retail.Household.Lvl4.Carpets = Carpets, rugs, wall and floor coverings
+NACE.Retail.Household.Lvl4.Electrical = Electrical household appliances
+NACE.Retail.Household.Lvl4.Hardware = Hardware, building materials, paints and glass
+NACE.Retail.Household.Lvl4.Textiles = Textiles
+NACE.Retail.Household.Lvl4.Furniture = Furniture, lighting equipment, tableware and other household goods
+
+NACE.Retail.Cultural.title = What type of cultural or recreational goods does your undertaking retail?
+NACE.Retail.Cultural.Lvl4.Books = Books
+NACE.Retail.Cultural.Lvl4.Games = Games and toys
+NACE.Retail.Cultural.Lvl4.Newspapers = Newspapers, other periodical publications and stationery
+NACE.Retail.Cultural.Lvl4.Sporting = Sporting equipment
+NACE.Retail.Cultural.Lvl4.OtherCultural = Other cultural and recreational goods
+
+NACE.Retail.OtherGoods.title = What type of goods does your undertaking retail?
+NACE.Retail.OtherGoods.Lvl4.Clothing = Clothing
+NACE.Retail.OtherGoods.Lvl4.Cosmetic = Cosmetic and toilet articles
+NACE.Retail.OtherGoods.Lvl4.Flowers = Flowers, plants, fertilisers, pets and pet food
+NACE.Retail.OtherGoods.Lvl4.Footwear = Footwear and leather goods
+NACE.Retail.OtherGoods.Lvl4.Medical = Medical and orthopaedic goods
+NACE.Retail.OtherGoods.Lvl4.Pharmaceutical = Pharmaceutical products
+NACE.Retail.OtherGoods.Lvl4.Watches = Watches and jewellery
+NACE.Retail.OtherGoods.Lvl4.OtherNewGoods = Other new goods
+NACE.Retail.OtherGoods.Lvl4.SecondHand = Second-hand goods
+
+NACE.Retail.MotorVehicles.title = What type of motor vehicles, motorcycles or parts and accessories does your undertaking retail?
+NACE.Retail.MotorVehicles.Lvl4.Vehicles = Motor vehicles
+NACE.Retail.MotorVehicles.Lvl4.Parts = Motor vehicle parts and accessories
+NACE.Retail.MotorVehicles.Lvl4.Motorcycles = Motorcycles, motorcycle parts and accessories
+
+NACE.Retail.Intermediation.title = What type of retail does your undertaking provide intermediation services for?
+NACE.Retail.Intermediation.Lvl4.NonSpecialised = Non-specialised retail
+NACE.Retail.Intermediation.Lvl4.Specialised = Specialised retail
+
+NACE.Wholesale.title = What type of wholesale does your undertaking do?
+NACE.Wholesale.Lvl3.ContractBasis = Wholesale on a fee or contract basis
+NACE.Wholesale.Lvl3.Agricultural = Wholesale of agricultural raw materials and live animals
+NACE.Wholesale.Lvl3.Food = Wholesale of food, beverages and tobacco
+NACE.Wholesale.Lvl3.Household = Wholesale of household goods
+NACE.Wholesale.Lvl3.Information = Wholesale of information and communication equipment
+NACE.Wholesale.Lvl3.Machinery = Wholesale of other machinery, equipment and supplies
+NACE.Wholesale.Lvl3.MotorVehicles = Wholesale of motor vehicles, motorcycles and parts and accessories
+NACE.Wholesale.Lvl3.OtherSpecialised = Other specialised wholesale
+NACE.Wholesale.Lvl3.OtherSpecialised.hint = Includes chemical products, fuels, hardware, metals and metal ores, waste and scrap, wood and construction materials, other intermediate products and all other specialised wholesale.
+NACE.Wholesale.Lvl3.NonSpecialised = Non-specialised wholesale
+# Food Retail Level 4 Messages
+NACE.Retail.Food.title = What type of food, beverages or tobacco does your undertaking retail?
+NACE.Retail.Food.Lvl4.Beverages = Beverages
+NACE.Retail.Food.Lvl4.Bread = Bread, cake and confectionery
+NACE.Retail.Food.Lvl4.Fish = Fish, crustaceans and molluscs
+NACE.Retail.Food.Lvl4.Fruit = Fruit and vegetables
+NACE.Retail.Food.Lvl4.Meat = Meat and meat products
+NACE.Retail.Food.Lvl4.Tobacco = Tobacco products
+NACE.Retail.Food.Lvl4.OtherFood = Other food
+
+NACE.Retail.NonSpecialised.title = What type of non-specialised retail does your undertaking do?
+NACE.Retail.NonSpecialised.Lvl4.Food = Non-specialised retail sale of predominately food, beverages or tobacco
+NACE.Retail.NonSpecialised.Lvl4.Other = Other non-specialised retail sale
+
+NACE.Wholesale.ContractBasis.title = What type of products does your undertaking wholesale on a fee or contract basis?
+NACE.Wholesale.ContractBasis.Lvl4.Agricultural = Agricultural raw materials, live animals, textile raw materials and semi-finished goods
+NACE.Wholesale.ContractBasis.Lvl4.Food = Food, beverages and tobacco
+NACE.Wholesale.ContractBasis.Lvl4.Fuels = Fuels, ores, metals and industrial chemicals
+NACE.Wholesale.ContractBasis.Lvl4.Furniture = Furniture, household goods, hardware and ironmongery
+NACE.Wholesale.ContractBasis.Lvl4.Machinery = Machinery, industrial equipment, ships and aircraft
+NACE.Wholesale.ContractBasis.Lvl4.Textiles = Textiles, clothing, fur, footwear and leather goods
+NACE.Wholesale.ContractBasis.Lvl4.Timber = Timber and building materials
+NACE.Wholesale.ContractBasis.Lvl4.Other = Other particular products
+NACE.Wholesale.ContractBasis.Lvl4.NonSpecialised = My undertaking carries out non-specialised wholesale
+
+NACE.Wholesale.Agricultural.title = What type of agricultural products does your undertaking wholesale?
+NACE.Wholesale.Agricultural.Lvl4.Flowers = Flowers and plants
+NACE.Wholesale.Agricultural.Lvl4.Grain = Grain, unmanufactured tobacco, seeds and animal feeds
+NACE.Wholesale.Agricultural.Lvl4.Hides = Hides, skins and leather
+NACE.Wholesale.Agricultural.Lvl4.LiveAnimals = Live animals
+
+NACE.wholesale.Lvl4.foodWholesale.title = What type of food, beverages or tobacco does your undertaking wholesale?
+NACE.wholesale.Lvl4.BeveragesWholesale = Beverages
+NACE.wholesale.Lvl4.BeveragesWholesale.hint = For example, wholesale of alcoholic and non-alcoholic beverages
+NACE.wholesale.Lvl4.CoffeeAndSpicesWholesale = Coffee, tea, cocoa and spices
+NACE.wholesale.Lvl4.DairyProductsWholesale = Dairy products, eggs and edible oils and fats
+NACE.wholesale.Lvl4.FruitWholesale = Fruit and vegetables
+NACE.wholesale.Lvl4.MeatWholesale = Meat, meat products, fish and fish products
+NACE.wholesale.Lvl4.SugarWholesale = Sugar, chocolate and confectionery
+NACE.wholesale.Lvl4.TobaccoProductsWholesale = Tobacco products
+NACE.wholesale.Lvl4.OtherFoodWholesale = Other food
+NACE.wholesale.Lvl4.NonSpecialisedFoodWholesale = Non-specialised wholesale of food, beverages and tobacco
+NACE.wholesale.Lvl4.foodWholesale.error.required = Select the type of food, beverages or tobacco your undertaking wholesales
+
+NACE.wholesale.Lvl4.householdWholesale.title = What type of household goods does your undertaking wholesale?
+NACE.wholesale.Lvl4.TextilesClothingWholesale = Textiles, clothing and footwear
+NACE.wholesale.Lvl4.TextilesClothingWholesale.hint = For example, wholesale of textiles, clothing, fur or footwear
+NACE.wholesale.Lvl4.FurnitureWholesale = Furniture, carpets and lighting equipment
+NACE.wholesale.Lvl4.ElectricalAppliancesWholesale = Electrical household appliances
+NACE.wholesale.Lvl4.ChinaGlasswareWholesale = China, glassware, wallpaper and cleaning materials
+NACE.wholesale.Lvl4.PerfumeCosmeticsWholesale = Perfume and cosmetics
+NACE.wholesale.Lvl4.PharmaceuticalWholesale = Pharmaceutical goods
+NACE.wholesale.Lvl4.WatchesJewelleryWholesale = Watches, clocks and jewellery
+NACE.wholesale.Lvl4.OtherHouseholdWholesale = Other household goods
+NACE.wholesale.Lvl4.householdWholesale.error.required = Select the type of household goods your undertaking wholesales
+
+NACE.Wholesale.Household.title = What type of household goods does your undertaking wholesale?
+NACE.Wholesale.Household.Lvl4.China = China, glassware and cleaning materials
+NACE.Wholesale.Household.Lvl4.Clothing = Clothing and footwear
+NACE.Wholesale.Household.Lvl4.Electrical = Electrical household appliances
+NACE.Wholesale.Household.Lvl4.Household = Household, office and shop furniture, carpets and lighting equipment
+NACE.Wholesale.Household.Lvl4.Perfume = Perfume and cosmetics
+NACE.Wholesale.Household.Lvl4.Pharmaceutical = Pharmaceutical and medical goods
+NACE.Wholesale.Household.Lvl4.Textiles = Textiles
+NACE.Wholesale.Household.Lvl4.Watches = Watches and jewellery
+NACE.Wholesale.Household.Lvl4.Other = Other household goods
+
+NACE.Wholesale.Machinery.title = What type of machinery, equipment or supplies does your undertaking wholesale?
+NACE.Wholesale.Machinery.Lvl4.Agricultural = Agricultural machinery, equipment and supplies
+NACE.Wholesale.Machinery.Lvl4.MachineTools = Machine tools
+NACE.Wholesale.Machinery.Lvl4.Mining = Mining, construction and civil engineering machinery
+NACE.Wholesale.Machinery.Lvl4.Other = Other machinery and equipment
+
+NACE.Wholesale.MotorVehicles.title = What type of motor vehicles, motorcycles or parts and accessories does your undertaking wholesale?
+NACE.Wholesale.MotorVehicles.Lvl4.Vehicles = Motor vehicles
+NACE.Wholesale.MotorVehicles.Lvl4.Parts = Motor vehicle parts and accessories
+NACE.Wholesale.MotorVehicles.Lvl4.Motorcycles = Motorcycles, motorcycle parts and accessories
+
+NACE.Wholesale.Specialised.title = What type of other products does your undertaking wholesale?
+NACE.Wholesale.Specialised.Lvl4.Chemical = Chemical products
+NACE.Wholesale.Specialised.Lvl4.Hardware = Hardware, plumbing and heating equipment and supplies
+NACE.Wholesale.Specialised.Lvl4.Metals = Metals and metal ores
+NACE.Wholesale.Specialised.Lvl4.Fuels = Solid, liquid and gaseous fuels and related products
+NACE.Wholesale.Specialised.Lvl4.Waste = Waste and scrap
+NACE.Wholesale.Specialised.Lvl4.Wood = Wood, construction materials and sanitary equipment
+NACE.Wholesale.Specialised.Lvl4.OtherIntermediate = Other intermediate products
+NACE.Wholesale.Specialised.Lvl4.OtherSpecialised = Other specialised wholesale
+
+
+# Financial services
+
+NACE.Financial.title = What is your undertaking''s main business activity in financial services and insurance?
+NACE.Financial.Lvl2.FinancialServices = Financial services (except insurance and pension funding)
+NACE.Financial.Lvl2.FinancialServices.hint = Includes financial leasing, holding companies and financial conduits, monetary intermediation, trusts and funds, and other financial service activities.
+NACE.Financial.Lvl2.Insurance = Insurance, reinsurance and pension funding
+NACE.Financial.Lvl2.Auxiliary = Activities auxiliary to financial services and insurance activities
+NACE.Financial.Lvl2.Auxiliary.hint = Includes administration of financial markets, fund management, risk and damage evaluation, security and commodity contracts brokerage, and other auxiliary activities.
+
+# Level 3: Financial Services categories
+NACE.financialServices.title = What is your undertaking''s main business activity in financial services?
+NACE.financialServices.hint = Includes financial leasing, holding companies and financial conduits, monetary intermediation, trusts and funds, and other financial service activities.
+NACE.financialServices.Lvl3.monetaryIntermediation = Monetary intermediation
+NACE.financialServices.Lvl3.monetaryIntermediation.hint = Includes central banking.
+NACE.financialServices.Lvl3.holdingCompanies = Holding companies and financing conduits
+NACE.financialServices.Lvl3.trustsFunds = Trusts, funds and similar financial entities
+NACE.financialServices.Lvl3.otherFinancial = Other financial services (except insurance and pension funding)
+NACE.financialServices.Lvl3.otherFinancial.hint = Includes financial leasing and other credit granting.
+NACE.financialServices.error.required = Select your undertaking''s main business activity in financial services
+
+
+# Level 4: Holding Companies and Financing Conduits
+NACE.financialServices.Lvl4.holdingCompanies.title = What is your undertaking’s main business activity in holding companies and financing conduits?
+NACE.financialServices.Lvl4.financingConduits = Financing conduits
+NACE.financialServices.Lvl4.holdingCompaniesFinal = Holding companies
+NACE.financialServices.Lvl4.holdingCompanies.hint = Select one option that best describes your undertaking’s main business activity.
+NACE.financialServices.Lvl4.holdingCompanies.error.required = Select your undertaking’s main business activity in holding companies and financing conduits
+
+# Level 4: Monetary Intermediation
+NACE.financialServices.Lvl4.monetaryIntermediation.title = What type of monetary intermediation service does your undertaking provide?
+NACE.financialServices.Lvl4.centralBanking = Central banking
+NACE.financialServices.Lvl4.otherMonetary = Other monetary intermediation
+NACE.financialServices.Lvl4.monetaryIntermediation.hint = Select one option that best describes your undertaking’s main business activity.
+NACE.financialServices.Lvl4.monetaryIntermediation.error.required = Select the type of monetary intermediation service your undertaking provides
+
+# Level 4: Other Financial Services
+NACE.financialServices.Lvl4.otherFinancial.title = What is your undertaking’s main business activity in other financial services?
+NACE.financialServices.Lvl4.financialLeasing = Financial leasing
+NACE.financialServices.Lvl4.otherCredit = Other credit granting
+NACE.financialServices.Lvl4.otherFinancialServices = Other financial service activities (except insurance and pension funding)
+NACE.financialServices.Lvl4.otherFinancial.hint = Select one option that best describes your undertaking’s main business activity.
+NACE.financialServices.Lvl4.otherFinancial.error.required = Select your undertaking’s main business activity in other financial services
+
+# Level 4: Trusts, Funds, and Similar Financial Entities
+NACE.financialServices.Lvl4.trustsFunds.title = What is your undertaking’s main business activity in trusts, funds and similar financial entities?
+NACE.financialServices.Lvl4.investmentFunds = Money market and non-money market investment funds
+NACE.financialServices.Lvl4.trustEstate = Trust, estate and agency accounts
+NACE.financialServices.Lvl4.trustsFunds.hint = Select one option that best describes your undertaking’s main business activity.
+NACE.financialServices.Lvl4.trustsFunds.error.required = Select your undertaking’s main business activity in trusts, funds and similar financial entities
+
+NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancial.title = What is your undertaking’s main business activity in auxiliary financial activities?
+NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancial.hint = Includes administration of financial markets, fund management, risk and damage evaluation, security and commodity contracts brokerage, and other auxiliary activities.
+NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancialServices = Activities auxiliary to financial services (except insurance and pension funding)
+NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancialServices.hint = Includes administration of financial markets and security and commodity contracts brokerage.
+NACE.auxiliaryFinancial.Lvl2.auxiliaryInsurance = Activities auxiliary to insurance and pension funding
+NACE.auxiliaryFinancial.Lvl2.auxiliaryInsurance.hint = Includes risk and damage evaluation and activities of insurance agents and brokers.
+NACE.auxiliaryFinancial.Lvl2.fundManagement = Fund management
+
+NACE.auxiliaryFinancial.Lvl4.auxiliaryInsurance.title = What type of auxiliary insurance and pension funding activity does your undertaking do?
+NACE.auxiliaryFinancial.Lvl4.auxiliaryInsurance.hint = Select one option that best describes your undertaking’s main business activity.
+NACE.auxiliaryFinancial.Lvl4.insuranceAgents = Activities of insurance agents and brokers
+NACE.auxiliaryFinancial.Lvl4.riskEvaluation = Risk and damage evaluation
+NACE.auxiliaryFinancial.Lvl4.otherAuxiliaryInsurance = Other activities auxiliary to insurance and pension funding
+
+NACE.auxiliaryFinancial.Lvl4.auxiliaryNonInsurance.title = What type of auxiliary financial services activity does your undertaking do?
+NACE.auxiliaryFinancial.Lvl4.auxiliaryNonInsurance.hint = Select one option that best describes your undertaking’s main business activity.
+NACE.auxiliaryFinancial.Lvl4.financialMarkets = Administration of financial markets
+NACE.auxiliaryFinancial.Lvl4.securityBrokerage = Security and commodity contracts brokerage
+NACE.auxiliaryFinancial.Lvl4.otherAuxiliaryFinancial = Other activities auxiliary to financial services (except insurance and pension funding)
+
+#RealEstate NACE Sector2,3,4
+
+NACE.realEstate.Lvl4.feeContract.title = What type of real estate activities does your undertaking do on a fee or contract basis?
+NACE.realEstate.Lvl4.feeContract.hint = Select the type of real estate activities your undertaking does on a fee or contract basis
+NACE.realEstate.Lvl4.intermediation = Intermediation service activities for real estate
+NACE.realEstate.Lvl4.otherFeeContract = Other real estate activities on a fee or contract basis
+NACE.realEstate.Lvl4.propertyDevelopment.title = What is your undertaking''s main business activity in property and development?
+NACE.realEstate.Lvl4.buyingSelling = Buying and selling of own real estate
+NACE.realEstate.Lvl4.developmentProjects = Development of building projects
+NACE.realEstate.Lvl3.title = What is your undertaking''s main business activity in real estate?
+NACE.realEstate.Lvl3.propertyDevelopment = Real estate activities with own property and development of building projects
+NACE.realEstate.Lvl3.rentalOperating = Rental and operating of own or leased real estate
+NACE.realEstate.Lvl3.feeContract = Real estate activities on a fee or contract basis
+NACE.realEstate.Lvl3.realEstate.title = What is your undertaking''s main business activity in real estate?
+
+#Admin
+
+NACE.Administrative.Buildings.title = What type of building or landscape service does your undertaking provide?
+NACE.Administrative.Buildings.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.Buildings.error = Select the type of building or landscape service your undertaking provides
+NACE.Administrative.Lvl3.CombinedFacilities = Combined facilities support
+NACE.Administrative.Lvl3.CombinedFacilities.hint =
+NACE.Administrative.Lvl3.Cleaning = Cleaning
+NACE.Administrative.Lvl3.Cleaning.hint =
+NACE.Administrative.Lvl3.Landscaping = Landscaping
+
+NACE.Administrative.Cleaning.title = What type of cleaning does your undertaking do?
+NACE.Administrative.Cleaning.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.Lvl4.GeneralCleaning = General cleaning of buildings
+NACE.Administrative.Lvl4.IndustrialCleaning = Other building and industrial cleaning activities
+NACE.Administrative.Lvl4.OtherCleaning = Other cleaning activities
+
+NACE.Administrative.Employment.title = What is your undertaking'''s main business activity in employment services?
+NACE.Administrative.Lvl3.EmploymentPlacement = Activities of employment placement agencies
+NACE.Administrative.Lvl3.TemporaryEmployment = Temporary employment agency activities and other human resource provisions
+
+NACE.Administrative.Investigation.title = What is your undertaking''s main business activity in investigation and security?
+NACE.Administrative.Investigation.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.Lvl4.InvestigationPrivateSecurity = Investigation and private security activities
+NACE.Administrative.Lvl4.OtherSecurityActivities = Another type of security activities
+
+NACE.Administrative.Office.title = What type of office or business support does your undertaking provide?
+NACE.Administrative.Office.hint = Includes call centres, collection agencies and credit bureaus, organisation of conventions and trade shows, and other business support services.
+NACE.Administrative.Lvl3.OfficeAdministrative = Office administrative and support activities
+NACE.Administrative.Lvl3.OfficeAdministrative.hint =
+NACE.Administrative.Lvl3.CallCentres = Call centres
+NACE.Administrative.Lvl3.CallCentres.hint =
+NACE.Administrative.Lvl3.ConventionsTradeShows = Organisation of conventions and trade shows
+NACE.Administrative.Lvl3.ConventionsTradeShows.hint =
+NACE.Administrative.Lvl3.OtherBusinessSupport = Other business support service activities
+NACE.Administrative.Lvl3.OtherBusinessSupport.hint = Includes collection agencies and credit bureaus, packaging activities and other business support.
+NACE.Administrative.Lvl3.IntermediationServices = Intermediation services for business support
+
+NACE.Administrative.OtherBusinessSupport.title = What type of other business support services does your undertaking provide?
+NACE.Administrative.OtherBusinessSupport.hint = Select one option that best describes your undertaking''s main business activity.
+NACE.Administrative.OtherBusinessSupport.error = Select the type of other business support services your undertaking provides
+NACE.Administrative.Lvl4.CollectionAgencies = Collection agencies and credit bureaus
+NACE.Administrative.Lvl4.PackagingActivities = Packaging activities
+NACE.Administrative.Lvl4.OtherBusinessSupportActivities = Other business support service activities
+
+NACE.Administrative.IntermediationServices.title = For what type of goods does your undertaking provide intermediation services for rental and leasing?
+NACE.Administrative.Lvl4.CarsMotorhomesTrailers = Cars, motorhomes and trailers
+NACE.Administrative.Lvl4.OtherTangibleGoods = Other tangible goods and non-financial intangible assets
+NACE.Administrative.IntermediationServices.hint = Select one option that best describes your undertaking's main business activity.
+
+NACE.Administrative.MachineryEquipment.title = What type of other machinery, equipment and tangible goods does your undertaking rent or lease?
+NACE.Administrative.MachineryEquipment.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.Lvl4.AgriculturalMachinery = Agricultural machinery and equipment
+NACE.Administrative.Lvl4.ConstructionMachinery = Construction and civil engineering machinery and equipment
+NACE.Administrative.Lvl4.OfficeMachinery = Office machinery, equipment and computers
+NACE.Administrative.Lvl4.WaterTransportEquipment = Water transport equipment
+NACE.Administrative.Lvl4.AirTransportEquipment = Air transport equipment
+NACE.Administrative.Lvl4.OtherMachinery = Other machinery, equipment and tangible goods
+
+NACE.Administrative.PersonalHousehold.title = What type of personal or household goods does your undertaking rent or lease?
+NACE.Administrative.PersonalHousehold.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.Lvl4.RecreationalSportsGoods = Recreational and sports goods
+NACE.Administrative.Lvl4.OtherPersonalHouseholdGoods = Other personal and household goods
+
+NACE.Administrative.Rental.title = What type of goods does your undertaking rent or lease?
+NACE.Administrative.Rental.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.Lvl3.MotorVehiclesRental = Motor vehicles
+NACE.Administrative.Lvl3.PersonalRental = Personal and household goods
+NACE.Administrative.Lvl3.OtherMachineryRental = Other machinery, equipment and tangible goods
+NACE.Administrative.Lvl3.IntellectualProperty = Intellectual property and similar products (except copyrighted works)
+NACE.Administrative.Lvl3.TangibleGoodsRentalIntermediation = My undertaking provides intermediation services for rental and leasing of tangible goods and non-financial intangible assets
+
+NACE.Administrative.TravelAgency.title = What is your undertaking''s main business activity in travel agency and tour operator activities?
+NACE.Administrative.TravelAgency.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.Lvl4.TravelAgencyActivities = Travel agency activities
+NACE.Administrative.Lvl4.TourOperatorActivities = Tour operator activities
+
+NACE.Administrative.Travel.title = What is your undertaking''s main business activity in travel and other reservation services?
+NACE.Administrative.Travel.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.Lvl3.TravelAgencyTourOperator = Travel agency and tour operator activities
+NACE.Administrative.Lvl3.OtherReservationServices = Other reservation services and related activities
+
+NACE.Administrative.title = What type of administrative and support services does your undertaking provide?
+NACE.Administrative.hint = Select one option that best describes your undertaking's main business activity.
+NACE.Administrative.Lvl2.RentalLeasing = Rental and leasing
+NACE.Administrative.Lvl2.Employment = Employment
+NACE.Administrative.Lvl2.TravelTourReservation = Travel agency, tour operator and other reservation services
+NACE.Administrative.Lvl2.InvestigationSecurity = Investigation and security
+NACE.Administrative.Lvl2.BuildingsLandscaping = Services to buildings and landscaping
+NACE.Administrative.Lvl2.BuildingsLandscaping.hint = Includes cleaning and combined facilities support.
+NACE.Administrative.Lvl2.OfficeSupport = Office administrative, office support and other business support
+NACE.Administrative.Lvl2.OfficeSupport.hint = Includes call centres, collection agencies and credit bureaus, organisation of conventions and trade shows, and other business support services.
+
+#Insurance
+
+NACE.insurance.Lvl2.insurance.title = What is your undertaking''s main business activity in insurance, reinsurance and pension funding?
+NACE.insurance.Lvl2.insurance = Insurance
+NACE.insurance.Lvl2.reinsurance = Reinsurance
+NACE.insurance.Lvl2.pensionFunding = Pension funding
+
+NACE.insurance.Lvl4.insuranceType.title = What type of insurance does your undertaking provide?
+NACE.insurance.Lvl4.lifeInsurance = Life insurance
+NACE.insurance.Lvl4.nonLifeInsurance = Non-life insurance
