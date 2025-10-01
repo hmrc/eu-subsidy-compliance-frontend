@@ -33,6 +33,7 @@ import scala.concurrent.Future
 case class UndertakingJourney(
   about: AboutUndertakingFormPage = AboutUndertakingFormPage(),
   sector: UndertakingSectorFormPage = UndertakingSectorFormPage(),
+  naceLvlOne: NACELevelOneFormPage = NACELevelOneFormPage(),
   hasVerifiedEmail: Option[UndertakingConfirmEmailFormPage] = Some(UndertakingConfirmEmailFormPage()),
   addBusiness: UndertakingAddBusinessFormPage = UndertakingAddBusinessFormPage(),
   cya: UndertakingCyaFormPage = UndertakingCyaFormPage(),
@@ -112,7 +113,9 @@ object UndertakingJourney {
     case class UndertakingSectorFormPage(value: Form[Sector] = None) extends FormPage[Sector] {
       def uri = controller.getSector.url
     }
-
+    case class NACELevelOneFormPage(value: Form[Sector] = None) extends FormPage[Sector] {
+      def uri = routes.ConstructionController.loadPage(isUpdate = false,"").url
+    }
     case class UndertakingConfirmEmailFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getConfirmEmail.url
     }
@@ -126,11 +129,15 @@ object UndertakingJourney {
       def uri = controller.postConfirmation.url
     }
 
+
     object AboutUndertakingFormPage {
       implicit val undertakingNameFormPage: OFormat[AboutUndertakingFormPage] = Json.format
     }
     object UndertakingSectorFormPage {
       implicit val undertakingSectorFormPage: OFormat[UndertakingSectorFormPage] = Json.format
+    }
+    object NACELevelOneFormPage {
+      implicit val naceLevelOneFormPage: OFormat[NACELevelOneFormPage] = Json.format
     }
     object UndertakingConfirmEmailFormPage {
       implicit val confirmEmailFormPageFormat: OFormat[UndertakingConfirmEmailFormPage] = Json.format
