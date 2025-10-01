@@ -35,7 +35,6 @@ class Navigator @Inject(){
   }
 
   private val normalRoutes: String => Call = {
-    case "" => routes.NACELvlOneController.loadPage(false, "")
-    case _  => routes.NACELvlOneController.loadPage(false, "")
+    case _  => routes.ConstructionController.loadPage(false, "42")
   }
 }

@@ -32,7 +32,7 @@ POST       /first-login-journey-about-undertaking                               
 GET        /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSector
 POST       /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postSector
 
-GET        /nace-level-one                                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.NACELvlOneController.loadPage(isUpdate: Boolean, viewName : String)
+GET        /nace-level-one                                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.loadPage(isUpdate: Boolean, viewName : String)
 
 GET        /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSectorForUpdate
 POST       /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.updateIndustrySector

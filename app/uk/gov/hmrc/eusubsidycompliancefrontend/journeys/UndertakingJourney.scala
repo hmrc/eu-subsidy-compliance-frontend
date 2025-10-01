@@ -105,7 +105,6 @@ object UndertakingJourney {
   object Forms {
 
     private val controller = routes.UndertakingController
-    private val NACELvlOneController = routes.NACELvlOneController
 
     case class AboutUndertakingFormPage(value: Form[String] = None) extends FormPage[String] {
       def uri = controller.getAboutUndertaking.url
@@ -114,7 +113,7 @@ object UndertakingJourney {
       def uri = controller.getSector.url
     }
     case class NACELevelOneFormPage(value: Form[Sector] = None) extends FormPage[Sector] {
-      def uri = NACELvlOneController.loadPage(isUpdate = false,"").url
+      def uri = routes.ConstructionController.loadPage(isUpdate = false,"").url
     }
     case class UndertakingConfirmEmailFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getConfirmEmail.url

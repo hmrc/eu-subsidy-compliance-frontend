@@ -19,21 +19,20 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import sun.jvm.hotspot.debugger.Page
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.lvl1.GeneralTradeUndertakingPage
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.construction.CivilEngineeringLvl3Page
 
 import scala.concurrent.{ExecutionContext, Future}
 import javax.inject.Inject
 
-class NACELvlOneController @Inject() (
+class ConstructionController @Inject() (
                                              mcc: MessagesControllerComponents,
                                              actionBuilders: ActionBuilders,
-                                             generalTradeUndertakingPage: GeneralTradeUndertakingPage
+                                             civilEngineeringLvl3Page: CivilEngineeringLvl3Page
                                            )(implicit
                                              val appConfig: AppConfig
                                            ) extends BaseController(mcc){
@@ -41,9 +40,14 @@ class NACELvlOneController @Inject() (
   import actionBuilders._
   override val messagesApi: MessagesApi = mcc.messagesApi
 
-  private val undertakingSectorForm: Form[FormValues] = formWithSingleMandatoryField("naceLvl1")
+  private val undertakingSectorForm: Form[FormValues] = formWithSingleMandatoryField("construction")
 
-  def loadPage(isUpdate : Boolean = false, viewName : String) : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(generalTradeUndertakingPage(undertakingSectorForm, isUpdate)).toFuture
+  def loadPage(isUpdate : Boolean = false, userAnswer : String) : Action[AnyContent] = enrolled.async { implicit request =>
+    userAnswer match {
+      case "42" => Ok(civilEngineeringLvl3Page(undertakingSectorForm, isUpdate)).toFuture
+    }
   }
+
+  //submitPage()
+
 }
