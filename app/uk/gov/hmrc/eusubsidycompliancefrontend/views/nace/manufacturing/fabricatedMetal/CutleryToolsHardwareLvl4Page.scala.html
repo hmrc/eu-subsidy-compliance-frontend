@@ -32,9 +32,9 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"cutlery"}
 
 @actionUrl = @{
     if(isUpdate)
@@ -71,8 +71,7 @@
 
 @layout(
   pageTitle = Some(messages("NACE.Manufacturing.CutleryToolsHardware.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -85,7 +84,7 @@
             content = Text(messages("NACE.Manufacturing.CutleryToolsHardware.error"))
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

@@ -31,9 +31,9 @@
     govukRadios : GovukRadios
 )
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"holding4"}
 
 @actionUrl = @{
     if(isUpdate)
@@ -49,22 +49,21 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-life-insurance", messages("NACE.insurance.Lvl4.lifeInsurance"))),
-            value = Some(Sector.LifeInsurance.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.LifeInsurance.toString)
+            content = HtmlContent(radioText("sector-label-financing-conduits", messages("NACE.financialServices.Lvl4.financingConduits"))),
+            value = Some(Sector.FinancingConduits.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FinancingConduits.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-non-life-insurance", messages("NACE.insurance.Lvl4.nonLifeInsurance"))),
-            value = Some(Sector.NonLifeInsurance.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.NonLifeInsurance.toString)
+            content = HtmlContent(radioText("sector-label-holding-companies-final", messages("NACE.financialServices.Lvl4.holdingCompaniesFinal"))),
+            value = Some(Sector.HoldingCompaniesFinal.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.HoldingCompaniesFinal.toString)
         )
     )
 }
 
 @layout(
-  pageTitle = Some(messages("NACE.insurance.Lvl4.insuranceType.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  pageTitle = Some(messages("NACE.financialServices.Lvl4.holdingCompanies.title")),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -77,7 +76,7 @@
             content = Text(s"${messages(err.key++"." ++err.message)}")
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 
@@ -87,14 +86,11 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("NACE.insurance.Lvl4.insuranceType.title")),
+        content = Text(messages("NACE.financialServices.Lvl4.holdingCompanies.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))
     )),
-        hint = Some(Hint(
-        content = Text(messages("NACE.general.hint"))
-      )),
       idPrefix = Some(fieldName),
       name = fieldName,
       items = radioOptions

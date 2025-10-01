@@ -31,9 +31,9 @@
     govukRadios : GovukRadios
 )
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"auxFinance2"}
 
 @actionUrl = @{
     if(isUpdate)
@@ -49,27 +49,32 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-financial-leasing", messages("NACE.financialServices.Lvl4.financialLeasing"))),
-            value = Some(Sector.FinancialLeasing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FinancialLeasing.toString)
+            content = HtmlContent(radioText("sector-label-auxiliary-financial-services", messages("NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancialServices"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-auxiliary-financial-services", messages("NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancialServices.hint")))
+            )),
+            value = Some(Sector.AuxiliaryFinancialServices.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.AuxiliaryFinancialServices.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-credit", messages("NACE.financialServices.Lvl4.otherCredit"))),
-            value = Some(Sector.OtherCredit.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherCredit.toString)
+            content = HtmlContent(radioText("sector-label-auxiliary-insurance", messages("NACE.auxiliaryFinancial.Lvl2.auxiliaryInsurance"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-auxiliary-insurance", messages("NACE.auxiliaryFinancial.Lvl2.auxiliaryInsurance.hint")))
+            )),
+            value = Some(Sector.AuxiliaryInsurance.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.AuxiliaryInsurance.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-financial-services", messages("NACE.financialServices.Lvl4.otherFinancialServices"))),
-            value = Some(Sector.OtherFinancialServices.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherFinancialServices.toString)
+            content = HtmlContent(radioText("sector-label-fund-management", messages("NACE.auxiliaryFinancial.Lvl2.fundManagement"))),
+            value = Some(Sector.FundManagementServices.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FundManagementServices.toString)
         )
     )
 }
 
 @layout(
-  pageTitle = Some(messages("NACE.financialServices.Lvl4.otherFinancial.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  pageTitle = Some(messages("NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancial.title")),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -82,7 +87,7 @@
             content = Text(s"${messages(err.key++"." ++err.message)}")
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 
@@ -92,7 +97,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("NACE.financialServices.Lvl4.otherFinancial.title")),
+        content = Text(messages("NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancial.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))

@@ -32,9 +32,9 @@
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"water2"}
 
 @actionUrl = @{
     if(isUpdate)
@@ -75,8 +75,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.sewerage.toStrin
 
 @layout(
   pageTitle = Some(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -89,7 +88,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.sewerage.toStrin
             content = Text(s"${messages(err.key++"." ++err.message)}")
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

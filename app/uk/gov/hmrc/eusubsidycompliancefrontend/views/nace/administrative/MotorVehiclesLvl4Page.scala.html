@@ -63,8 +63,7 @@
 
 @layout(
     pageTitle = Some(messages("NACE.Administrative.MotorVehicles.title")),
-    backLinkEnabled = true,
-    backLink = Some(previous),
+    backLinkEnabled = false,
     hasErrors = form.hasErrors
 ) {
     @formHelper(action = actionUrl) {

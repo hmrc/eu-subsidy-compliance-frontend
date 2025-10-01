@@ -31,9 +31,9 @@
   govukRadios : GovukRadios
 )
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_],  isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"wasteCollection3"}
 
 @actionUrl = @{
   if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
@@ -68,8 +68,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.wasteDisposal.to
 
 @layout(
   pageTitle = Some(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteActivities.title")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -82,7 +81,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.wasteDisposal.to
             content = Text(s"${messages(err.key++"." ++err.message)}")
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 

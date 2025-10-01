@@ -33,9 +33,9 @@ govukRadios : GovukRadios
 
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"repairs3"}
 
 @actionUrl = @{
 if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
@@ -76,8 +76,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.intermediationRe
 
 @layout(
 pageTitle = Some(messages("NACE.otherService.Lvl2.repairMaintenance.title")),
-backLinkEnabled = true,
-backLink = Some(previous),
+backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
 
