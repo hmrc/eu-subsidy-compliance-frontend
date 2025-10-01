@@ -31,9 +31,9 @@
     govukRadios: GovukRadios
 )
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"travelAgency4"}
 
 @actionUrl = @{
     if(isUpdate)
@@ -49,37 +49,21 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-motor-vehicles", messages("NACE.Administrative.Lvl3.MotorVehiclesRental"))),
-            value = Some(Sector.MotorVehiclesRental.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MotorVehiclesRental.toString)
+            content = HtmlContent(radioText("sector-label-tour-operator", messages("NACE.Administrative.Lvl4.TourOperatorActivities"))),
+            value = Some(Sector.TourOperator.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TourOperator.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-personal-household", messages("NACE.Administrative.Lvl3.PersonalRental"))),
-            value = Some(Sector.PersonalRental.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PersonalRental.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-machinery-equipment", messages("NACE.Administrative.Lvl3.OtherMachineryRental"))),
-            value = Some(Sector.OtherMachineryRental.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherMachineryRental.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-intellectual-property", messages("NACE.Administrative.Lvl3.IntellectualProperty"))),
-            value = Some(Sector.IntellectualProperty.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.IntellectualProperty.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-intermediation", messages("NACE.Administrative.Lvl3.TangibleGoodsRentalIntermediation"))),
-            value = Some(Sector.TangibleGoodsRentalIntermediation.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TangibleGoodsRentalIntermediation.toString)
+            content = HtmlContent(radioText("sector-label-travel-agency", messages("NACE.Administrative.Lvl4.TravelAgencyActivities"))),
+            value = Some(Sector.TravelAgencyActivities.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TravelAgencyActivities.toString)
         )
     )
 }
 
 @layout(
-    pageTitle = Some(messages("NACE.Administrative.Rental.title")),
-    backLinkEnabled = true,
-    backLink = Some(previous),
+    pageTitle = Some(messages("NACE.Administrative.TravelAgency.title")),
+    backLinkEnabled = false,
     hasErrors = form.hasErrors
 ) {
     @formHelper(action = actionUrl) {
@@ -91,17 +75,17 @@
                         content = Text(s"${messages(err.key++"."++err.message)}")
                     )
                 ),
-                title = Text(messages("common.error.summary.title", undertakingName))
+                title = Text(messages("common.error.summary.title"))
             ))
         }
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("NACE.Administrative.Rental.error"))
+                content = Text(messages("NACE.Administrative.TravelAgency.error"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("NACE.Administrative.Rental.title")),
+                    content = Text(messages("NACE.Administrative.TravelAgency.title")),
                     classes = "govuk-fieldset__legend--l",
                     isPageHeading = true
                 ))

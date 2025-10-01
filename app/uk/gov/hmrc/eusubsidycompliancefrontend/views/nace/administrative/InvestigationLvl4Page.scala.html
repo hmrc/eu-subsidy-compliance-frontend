@@ -31,9 +31,9 @@
     govukRadios: GovukRadios
 )
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"investigation4"}
 
 @actionUrl = @{
     if(isUpdate)
@@ -49,22 +49,21 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-tour-operator", messages("NACE.Administrative.Lvl4.TourOperatorActivities"))),
-            value = Some(Sector.TourOperator.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TourOperator.toString)
+            content = HtmlContent(radioText("sector-label-investigation", messages("NACE.Administrative.Lvl4.InvestigationPrivateSecurity"))),
+            value = Some(Sector.InvestigationAndSecurity.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.InvestigationAndSecurity.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-travel-agency", messages("NACE.Administrative.Lvl4.TravelAgencyActivities"))),
-            value = Some(Sector.TravelAgencyActivities.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TravelAgencyActivities.toString)
+            content = HtmlContent(radioText("sector-label-other-security", messages("NACE.Administrative.Lvl4.OtherSecurityActivities"))),
+            value = Some(Sector.InvestigationAndSecurity.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.InvestigationAndSecurity.toString)
         )
     )
 }
 
 @layout(
-    pageTitle = Some(messages("NACE.Administrative.TravelAgency.title")),
-    backLinkEnabled = true,
-    backLink = Some(previous),
+    pageTitle = Some(messages("NACE.Administrative.Investigation.title")),
+    backLinkEnabled = false,
     hasErrors = form.hasErrors
 ) {
     @formHelper(action = actionUrl) {
@@ -76,23 +75,20 @@
                         content = Text(s"${messages(err.key++"."++err.message)}")
                     )
                 ),
-                title = Text(messages("common.error.summary.title", undertakingName))
+                title = Text(messages("common.error.summary.title"))
             ))
         }
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("NACE.Administrative.TravelAgency.error"))
+                content = Text(messages("NACE.Administrative.Investigation.error"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("NACE.Administrative.TravelAgency.title")),
+                    content = Text(messages("NACE.Administrative.Investigation.title")),
                     classes = "govuk-fieldset__legend--l",
                     isPageHeading = true
                 ))
-            )),
-            hint = Some(Hint(
-                content = Text(messages("NACE.general.hint"))
             )),
             idPrefix = Some(fieldName),
             name = fieldName,

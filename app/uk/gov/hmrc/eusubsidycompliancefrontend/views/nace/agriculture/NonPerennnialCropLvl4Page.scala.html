@@ -32,9 +32,9 @@ govukRadios : GovukRadios
 )
 
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"nonPCrops4"}
 
 @actionUrl = @{
 if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
@@ -89,8 +89,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherNonPerennia
 
 @layout(
 pageTitle = Some(messages("NACE.agriculture.Lvl3.growingCrops.title")),
-backLinkEnabled = true,
-backLink = Some(previous),
+backLinkEnabled = false
 hasErrors = form.hasErrors
 ) {
 
@@ -103,7 +102,7 @@ href = Some(s"#${err.key}"),
 content = Text(s"${messages(err.key++"." ++err.message)}")
 )
 ),
-title = Text(messages("common.error.summary.title", undertakingName))
+title = Text(messages("common.error.summary.title"))
 ))
 }
 

@@ -31,9 +31,9 @@
     govukRadios: GovukRadios
 )
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"rental3"}
 
 @actionUrl = @{
     if(isUpdate)
@@ -49,40 +49,36 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-call-centres", messages("NACE.Administrative.Lvl3.CallCentres"))),
-            value = Some(Sector.CallCentres.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CallCentres.toString)
+            content = HtmlContent(radioText("sector-label-motor-vehicles", messages("NACE.Administrative.Lvl3.MotorVehiclesRental"))),
+            value = Some(Sector.MotorVehiclesRental.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MotorVehiclesRental.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-intermediation", messages("NACE.Administrative.Lvl3.IntermediationServices"))),
-            value = Some(Sector.businessSupportIntermediation.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.businessSupportIntermediation.toString)
+            content = HtmlContent(radioText("sector-label-personal-household", messages("NACE.Administrative.Lvl3.PersonalRental"))),
+            value = Some(Sector.PersonalRental.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PersonalRental.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-office-admin", messages("NACE.Administrative.Lvl3.OfficeAdministrative"))),
-            value = Some(Sector.OfficeAdministrative.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OfficeAdministrative.toString)
+            content = HtmlContent(radioText("sector-label-machinery-equipment", messages("NACE.Administrative.Lvl3.OtherMachineryRental"))),
+            value = Some(Sector.OtherMachineryRental.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherMachineryRental.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-conventions", messages("NACE.Administrative.Lvl3.ConventionsTradeShows"))),
-            value = Some(Sector.conventionsOrganisation.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.conventionsOrganisation.toString)
+            content = HtmlContent(radioText("sector-label-intellectual-property", messages("NACE.Administrative.Lvl3.IntellectualProperty"))),
+            value = Some(Sector.IntellectualProperty.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.IntellectualProperty.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-business", messages("NACE.Administrative.Lvl3.OtherBusinessSupport"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-other-business", messages("NACE.Administrative.Lvl3.OtherBusinessSupport.hint")))
-            )),
-            value = Some(Sector.OtherBusinessSupport.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherBusinessSupport.toString)
+            content = HtmlContent(radioText("sector-label-intermediation", messages("NACE.Administrative.Lvl3.TangibleGoodsRentalIntermediation"))),
+            value = Some(Sector.TangibleGoodsRentalIntermediation.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TangibleGoodsRentalIntermediation.toString)
         )
     )
 }
 
 @layout(
-    pageTitle = Some(messages("NACE.Administrative.Office.title")),
-    backLinkEnabled = true,
-    backLink = Some(previous),
+    pageTitle = Some(messages("NACE.Administrative.Rental.title")),
+    backLinkEnabled = false,
     hasErrors = form.hasErrors
 ) {
     @formHelper(action = actionUrl) {
@@ -94,17 +90,17 @@
                         content = Text(s"${messages(err.key++"."++err.message)}")
                     )
                 ),
-                title = Text(messages("common.error.summary.title", undertakingName))
+                title = Text(messages("common.error.summary.title"))
             ))
         }
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("NACE.Administrative.Office.error"))
+                content = Text(messages("NACE.Administrative.Rental.error"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("NACE.Administrative.Office.title")),
+                    content = Text(messages("NACE.Administrative.Rental.title")),
                     classes = "govuk-fieldset__legend--l",
                     isPageHeading = true
                 ))

@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@
     govukRadios: GovukRadios
 )
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"employment3"}
 
 @actionUrl = @{
     if(isUpdate)
@@ -49,27 +49,21 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-general-cleaning", messages("NACE.Administrative.Lvl4.GeneralCleaning"))),
-            value = Some(Sector.GeneralCleaning.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.GeneralCleaning.toString)
+            content = HtmlContent(radioText("sector-label-employment-placement", messages("NACE.Administrative.Lvl3.EmploymentPlacement"))),
+            value = Some(Sector.Employment.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Employment.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-industrial-cleaning", messages("NACE.Administrative.Lvl4.IndustrialCleaning"))),
-            value = Some(Sector.IndustrialCleaning.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.IndustrialCleaning.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-other-cleaning", messages("NACE.Administrative.Lvl4.OtherCleaning"))),
-            value = Some(Sector.OtherCleaning.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherCleaning.toString)
+            content = HtmlContent(radioText("sector-label-temporary-employment", messages("NACE.Administrative.Lvl3.TemporaryEmployment"))),
+            value = Some(Sector.Employment.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Employment.toString)
         )
     )
 }
 
 @layout(
-    pageTitle = Some(messages("NACE.Administrative.Cleaning.title")),
-    backLinkEnabled = true,
-    backLink = Some(previous),
+    pageTitle = Some(messages("NACE.Administrative.Employment.title")),
+    backLinkEnabled = false,
     hasErrors = form.hasErrors
 ) {
     @formHelper(action = actionUrl) {
@@ -81,23 +75,20 @@
                         content = Text(s"${messages(err.key++"."++err.message)}")
                     )
                 ),
-                title = Text(messages("common.error.summary.title", undertakingName))
+                title = Text(messages("common.error.summary.title"))
             ))
         }
 
         @govukRadios(Radios(
             errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-                content = Text(messages("NACE.Administrative.Cleaning.error"))
+                content = Text(messages("NACE.Administrative.Employment.error"))
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("NACE.Administrative.Cleaning.title")),
+                    content = Text(messages("NACE.Administrative.Employment.title")),
                     classes = "govuk-fieldset__legend--l",
                     isPageHeading = true
                 ))
-            )),
-            hint = Some(Hint(
-                content = Text(messages("NACE.general.hint"))
             )),
             idPrefix = Some(fieldName),
             name = fieldName,
