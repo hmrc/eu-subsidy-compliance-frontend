@@ -53,7 +53,6 @@ case class UndertakingJourney(
   private lazy val previousMap: Map[String, Uri] = Map(
     routes.UndertakingController.getAboutUndertaking.url -> routes.EligibilityEoriCheckController.getEoriCheck.url,
     routes.UndertakingController.getSector.url -> routes.UndertakingController.getAboutUndertaking.url,
-    routes.UndertakingController.getLvl1.url -> routes.UndertakingController.getSector.url
   )
 
   override def previous(implicit r: Request[_]): Uri =
@@ -114,7 +113,7 @@ object UndertakingJourney {
       def uri = controller.getSector.url
     }
     case class NACELevelOneFormPage(value: Form[Sector] = None) extends FormPage[Sector] {
-      def uri = routes.ConstructionController.loadPage(isUpdate = false,"").url
+      def uri = routes.ConstructionController.loadConstructionLvl2Page().url
     }
     case class UndertakingConfirmEmailFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getConfirmEmail.url

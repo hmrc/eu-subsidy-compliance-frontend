@@ -19,7 +19,6 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.navigation
 
 import play.api.mvc.Call
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.agriculture.AgricultureLvl3Page
 
 import javax.inject.{Inject, Singleton}
 
@@ -35,6 +34,8 @@ class Navigator @Inject(){
   }
 
   private val normalRoutes: String => Call = {
-    case _  => routes.ConstructionController.loadPage(false, "42")
+    case "F"  => routes.ConstructionController.loadConstructionLvl2Page()
+    case "43" => routes.ConstructionController.loadCivilEngineeringLvl3Page()
+    case _  => routes.ConstructionController.loadConstructionLvl2Page()
   }
 }

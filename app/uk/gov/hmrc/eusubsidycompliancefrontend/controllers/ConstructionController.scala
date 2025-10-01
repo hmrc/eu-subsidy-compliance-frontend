@@ -19,12 +19,17 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.controllers
 import play.api.data.Form
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.twirl.api.Html
 import uk.gov.hmrc.eusubsidycompliancefrontend.actions.ActionBuilders
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
 import uk.gov.hmrc.eusubsidycompliancefrontend.forms.FormHelpers.formWithSingleMandatoryField
+import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.UndertakingJourney
 import uk.gov.hmrc.eusubsidycompliancefrontend.models.FormValues
+import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
+import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
+import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.construction.CivilEngineeringLvl3Page
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.construction.{BuildingCompletionLvl4Page, CivilEngineeringLvl3Page, ConstructionLvl2Page, ConstructionRoadsRailwaysLvl4Page, ConstructionUtilityProjectsLvl4Page, DemolitionSitePreparationLvl4Page, ElectricalPlumbingConstructionLvl4Page, OtherCivilEngineeringProjectsLvl4Page, OtherSpecialisedConstructionLvl4Page, SpecialisedConstructionActivitiesLvl4Page, SpecialisedConstructionLvl3Page}
 
 import scala.concurrent.{ExecutionContext, Future}
 import javax.inject.Inject
@@ -32,7 +37,19 @@ import javax.inject.Inject
 class ConstructionController @Inject() (
                                              mcc: MessagesControllerComponents,
                                              actionBuilders: ActionBuilders,
-                                             civilEngineeringLvl3Page: CivilEngineeringLvl3Page
+                                             val store: Store,
+                                             navigator: Navigator,
+                                             buildingCompletionLvl4Page: BuildingCompletionLvl4Page,
+                                             civilEngineeringLvl3Page: CivilEngineeringLvl3Page,
+                                             constructionLvl2Page: ConstructionLvl2Page,
+                                             constructionRoadsRailwaysLvl4Page: ConstructionRoadsRailwaysLvl4Page,
+                                             constructionUtilityProjectsLvl4Page: ConstructionUtilityProjectsLvl4Page,
+                                             demolitionSitePreparationLvl4Page: DemolitionSitePreparationLvl4Page,
+                                             electricalPlumbingConstructionLvl4Page: ElectricalPlumbingConstructionLvl4Page,
+                                             otherCivilEngineeringProjectsLvl4Page: OtherCivilEngineeringProjectsLvl4Page,
+                                             otherSpecialisedConstructionLvl4Page: OtherSpecialisedConstructionLvl4Page,
+                                             specialisedConstructionActivitiesLvl4Page: SpecialisedConstructionActivitiesLvl4Page,
+                                             specialisedConstructionLvl3Page: SpecialisedConstructionLvl3Page
                                            )(implicit
                                              val appConfig: AppConfig
                                            ) extends BaseController(mcc){
@@ -40,14 +57,43 @@ class ConstructionController @Inject() (
   import actionBuilders._
   override val messagesApi: MessagesApi = mcc.messagesApi
 
-  private val undertakingSectorForm: Form[FormValues] = formWithSingleMandatoryField("construction")
+  private val constructionLvl2Form: Form[FormValues] = formWithSingleMandatoryField("constructionLvl2")
+  private val civilEngineeringLvl3Form: Form[FormValues] = formWithSingleMandatoryField("civilEngineeringLvl3")
+  private val specialisedConstructionLvl3Form: Form[FormValues] = formWithSingleMandatoryField("specialisedConstructionLvl3")
 
-  def loadPage(isUpdate : Boolean = false, userAnswer : String) : Action[AnyContent] = enrolled.async { implicit request =>
-    userAnswer match {
-      case "42" => Ok(civilEngineeringLvl3Page(undertakingSectorForm, isUpdate)).toFuture
-    }
+  def loadConstructionLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(constructionLvl2Page(constructionLvl2Form)).toFuture
   }
 
   //submitPage()
+  def submitConstructionLvl2Page() : Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    constructionLvl2Form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => BadRequest(constructionLvl2Page(formWithErrors)).toFuture,
+        form =>{
+          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
+        }
+      )
+  }
 
+  def loadCivilEngineeringLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(civilEngineeringLvl3Page(civilEngineeringLvl3Form)).toFuture
+  }
+
+  //submitPage()
+  def submitCivilEngineeringLvl3Page() : Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    civilEngineeringLvl3Form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => BadRequest(civilEngineeringLvl3Page(formWithErrors)).toFuture,
+        form =>{
+          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
+        }
+      )
+  }
 }
