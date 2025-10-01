@@ -51,7 +51,8 @@ case class UndertakingJourney(
   )
   private lazy val previousMap: Map[String, Uri] = Map(
     routes.UndertakingController.getAboutUndertaking.url -> routes.EligibilityEoriCheckController.getEoriCheck.url,
-    routes.UndertakingController.getSector.url -> routes.UndertakingController.getAboutUndertaking.url
+    routes.UndertakingController.getSector.url -> routes.UndertakingController.getAboutUndertaking.url,
+    routes.UndertakingController.getLvl1.url -> routes.UndertakingController.getSector.url
   )
 
   override def previous(implicit r: Request[_]): Uri =

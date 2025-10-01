@@ -33,7 +33,7 @@
     govukSummaryList : GovukSummaryList
 )
 
-@(eori: EORI, sector: Sector, lvl1: Sector, lvl2: Sector, lvl3: Sector, lvl4: Sector, verifiedEmail: String, addBusiness: String, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(eori: EORI, sector: Sector, verifiedEmail: String, addBusiness: String, previous: Journey.Uri)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 @key = @{"undertaking.cya"}
 @businessCyaVal = @{if(addBusiness == "true") messages("undertaking.cya.summary-list.other-businessYes") else messages("undertaking.cya.summary-list.other-businessNo")}
 
@@ -62,19 +62,15 @@
                     ),
                     SummaryListRow(
                         key = Key(content = Text(messages(s"$key.summary-list.lvl.key")+" 1")),
-                        value = Value(content = Text(messages(s"sector.label.NACElvl1")))
                     ),
                     SummaryListRow(
                         key = Key(content = Text(messages(s"$key.summary-list.lvl.key")+" 2")),
-                        value = Value(content = Text(messages(s"sector.label.NACElvl2")))
                     ),
                     SummaryListRow(
                         key = Key(content = Text(messages(s"$key.summary-list.lvl.key")+" 3")),
-                        value = Value(content = Text(messages(s"sector.label.NACElvl3")))
                     ),
                     SummaryListRow(
                         key = Key(content = Text(messages(s"$key.summary-list.lvl.key")+" 4")),
-                        value = Value(content = Text(messages(s"sector.label.NACElvl4")))
                     ),
                     SummaryListRow(
                         key = Key(content = Text(messages(s"$key.summary-list.verified-email"))),
