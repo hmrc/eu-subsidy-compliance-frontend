@@ -1655,6 +1655,7 @@ NACE.construction.Lvl4.residentialNonResidentialConstruction = Construction of r
 
 NACE.construction.Lvl2.civilEngineering = Civil engineering
 NACE.construction.Lvl2.civilEngineering.title = What is your undertaking’s main business activity in civil engineering?
+NACE.construction.Lvl2.civilEngineering.hint = Includes construction of roads and railways, utility projects and other civil engineering projects.
 NACE.construction.Lvl2.civilEngineering.error = Select your undertaking’s main business activity in civil engineering
 NACE.construction.Lvl3.roadAndRailConstruction = Construction of roads and railways
 NACE.construction.Lvl3.roadAndRailConstruction.title = What type of roads or railways does your undertaking work on?
