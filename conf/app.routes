@@ -47,6 +47,18 @@ POST       /nace-level-four/perennial                                           
 GET        /nace-level-four/agriculture-support                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.loadSupportActivitiesLvl4Page()
 POST       /nace-level-four/agriculture-support                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.submitSupportActivitiesLvl4Page()
 
+GET        /nace-level-four/forestry                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.loadForestryLvl3Page()
+POST       /nace-level-four/forestry                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.submitForestryLvl3Page()
+
+GET        /nace-level-four/aquaculture                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.loadAquacultureLvl4Page()
+POST       /nace-level-four/aquaculture                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.submitAquacultureLvl4Page()
+
+GET        /nace-level-four/fishing                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.loadFishingLvl4Page()
+POST       /nace-level-four/fishing                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.submitFishingLvl4Page()
+
+GET        /nace-level-four/fishing-aquaculture                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.loadFishingAndAquacultureLvl3Page()
+POST       /nace-level-four/fishing-aquaculture                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.submitFishingAndAquacultureLvl3Page()
+
 GET        /nace-level-one/general-trade                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage
 POST       /nace-level-one/general-trade                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.GeneralTradeGroupsController.submitGeneralTradeUndertakingPage
 

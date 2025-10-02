@@ -39,6 +39,12 @@ class Navigator @Inject(){
     case "01.2" => routes.AgricultureController.loadPerennialCropLvl4Page()
     case "01.1" => routes.AgricultureController.loadNonPerennialCropLvl4Page()
     case "01.6" => routes.AgricultureController.loadSupportActivitiesLvl4Page()
+
+    case "02" => routes.AgricultureController.loadForestryLvl3Page()
+    case "3" => routes.AgricultureController.loadFishingAndAquacultureLvl3Page()
+    case "03.1" => routes.AgricultureController.loadFishingLvl4Page()
+    case "03.2" => routes.AgricultureController.loadAquacultureLvl4Page()
+
     case "0"     => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage
     case "INT00" => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage
     case "INT01" => routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage
