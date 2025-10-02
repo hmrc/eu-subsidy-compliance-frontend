@@ -89,7 +89,7 @@ checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherNonPerennia
 
 @layout(
 pageTitle = Some(messages("NACE.agriculture.Lvl3.growingCrops.title")),
-backLinkEnabled = false
+backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
 
