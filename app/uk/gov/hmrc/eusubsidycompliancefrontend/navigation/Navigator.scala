@@ -35,15 +35,24 @@ class Navigator @Inject(){
 
   private val normalRoutes: String => Call = {
     case "2" => routes.AgricultureController.loadAgricultureLvl3Page()
-    case "01.4" => routes.AgricultureController.loadAnimalProductionLvl4Page()
-    case "01.2" => routes.AgricultureController.loadPerennialCropLvl4Page()
     case "01.1" => routes.AgricultureController.loadNonPerennialCropLvl4Page()
+    case "01.2" => routes.AgricultureController.loadPerennialCropLvl4Page()
+    case "01.4" => routes.AgricultureController.loadAnimalProductionLvl4Page()
     case "01.6" => routes.AgricultureController.loadSupportActivitiesLvl4Page()
-
     case "02" => routes.AgricultureController.loadForestryLvl3Page()
     case "3" => routes.AgricultureController.loadFishingAndAquacultureLvl3Page()
     case "03.1" => routes.AgricultureController.loadFishingLvl4Page()
     case "03.2" => routes.AgricultureController.loadAquacultureLvl4Page()
+
+     case "B" => routes.MiningController.loadMiningLvl2Page()
+     case "05" => routes.MiningController.loadCoalMiningLvl3Page()
+     case "06" => routes.MiningController.loadGasMiningLvl3Page()
+     case "07" => routes.MiningController.loadMetalMiningLvl3Page()
+     case "07.2" => routes.MiningController.loadNonFeMetalMiningLvl4Page()
+     case "08" => routes.MiningController.loadOtherMiningLvl3Page()
+     case "08.1" => routes.MiningController.loadQuarryingLvl4Page()
+     case "08.9" => routes.MiningController.loadOtherMiningLvl4Page()
+     case "09" => routes.MiningController.loadMiningSupportLvl3Page()
 
     case "0"     => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage
     case "INT00" => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage

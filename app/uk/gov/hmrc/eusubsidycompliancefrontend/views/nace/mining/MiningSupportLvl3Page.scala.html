@@ -34,11 +34,11 @@ govukRadios : GovukRadios
 
 @(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"miningSpport3"}
+@fieldName = @{"miningSupport3"}
 
 @actionUrl = @{
 if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-else controllers.routes.UndertakingController.postSector
+else controllers.routes.MiningController.submitMiningSupportLvl3Page()
 }
 
 

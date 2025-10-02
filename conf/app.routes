@@ -59,6 +59,33 @@ POST       /nace-level-four/fishing                                             
 GET        /nace-level-four/fishing-aquaculture                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.loadFishingAndAquacultureLvl3Page()
 POST       /nace-level-four/fishing-aquaculture                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.submitFishingAndAquacultureLvl3Page()
 
+GET        /nace-level-two/mining                                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.loadMiningLvl2Page()
+POST       /nace-level-two/mining                                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.submitMiningLvl2Page()
+
+GET        /nace-level-three/mining-coal                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.loadCoalMiningLvl3Page()
+POST       /nace-level-three/mining-coal                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.submitCoalMiningLvl3Page()
+
+GET        /nace-level-three/mining-gas                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.loadGasMiningLvl3Page()
+POST       /nace-level-three/mining-gas                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.submitGasMiningLvl3Page()
+
+GET        /nace-level-three/mining-metal                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.loadMetalMiningLvl3Page()
+POST       /nace-level-three/mining-metal                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.submitMetalMiningLvl3Page()
+
+GET        /nace-level-three/mining-support                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.loadMiningSupportLvl3Page()
+POST       /nace-level-three/mining-support                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.submitMiningSupportLvl3Page()
+
+GET        /nace-level-three/mining-other                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.loadOtherMiningLvl3Page()
+POST       /nace-level-three/mining-other                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.submitOtherMiningLvl3Page()
+
+GET        /nace-level-four/mining-other                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.loadOtherMiningLvl4Page()
+POST       /nace-level-four/mining-other                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.submitOtherMiningLvl4Page()
+
+GET        /nace-level-four/mining-non-fe                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.loadNonFeMetalMiningLvl4Page()
+POST       /nace-level-four/mining-non-fe                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.submitNonFeMetalMiningLvl4Page()
+
+GET        /nace-level-four/quarrying                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.loadQuarryingLvl4Page()
+POST       /nace-level-four/quarrying                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MiningController.submitQuarryingLvl4Page()
+
 GET        /nace-level-one/general-trade                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage
 POST       /nace-level-one/general-trade                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.GeneralTradeGroupsController.submitGeneralTradeUndertakingPage
 
