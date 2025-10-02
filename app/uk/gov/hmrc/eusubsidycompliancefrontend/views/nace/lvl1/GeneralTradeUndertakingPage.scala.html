@@ -93,7 +93,6 @@ value = Some(Sector.transportStorage.toString)
 RadioItem(
 content = HtmlContent(radioText("sector-label-forestry", messages("NACE.Lvl1.forestry"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.forestry.hint")))),
-
 value = Some(Sector.forestry.toString)
 ),
 RadioItem(
@@ -106,7 +105,8 @@ divider = Some("or")
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-other", messages("Other"))),
-hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.other.hint"))))
+hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.other.hint")))),
+value = Some(Sector.otherGeneralTrade.toString)
 )
 )
 }
