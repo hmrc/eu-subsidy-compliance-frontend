@@ -36,8 +36,10 @@ govukRadios : GovukRadios
 @fieldName = @{"agriculture3"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-else controllers.routes.UndertakingController.postSector
+if(isUpdate)
+    controllers.routes.UndertakingController.updateIndustrySector
+else
+    controllers.routes.AgricultureController.submitAgricultureLvl3Page
 }
 
 @radioText(id: String, content: String) = {
