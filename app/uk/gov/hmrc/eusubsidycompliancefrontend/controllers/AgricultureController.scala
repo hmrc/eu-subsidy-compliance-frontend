@@ -41,8 +41,8 @@ class AgricultureController @Inject()(
                                              navigator: Navigator,
                                              AgricultureLvl3Page: AgricultureLvl3Page,
                                              AnimalProductionLvl4Page: AnimalProductionLvl4Page,
-                                             NonPerennnialCropLvl4Page: NonPerennnialCropLvl4Page,
-                                             PerennnialCropLvl4Page: PerennnialCropLvl4Page,
+                                             NonPerennialCropLvl4Page: NonPerennialCropLvl4Page,
+                                             perennialCropLvl4Page: PerennialCropLvl4Page,
                                              SupportActivitiesLvl4Page: SupportActivitiesLvl4Page
                                            )(implicit
                                              val appConfig: AppConfig
@@ -52,8 +52,8 @@ class AgricultureController @Inject()(
   override val messagesApi: MessagesApi = mcc.messagesApi
 
   private val SupportActivitiesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("agriSupport4")
-  private val PerennnialCropLvl4Form: Form[FormValues] = formWithSingleMandatoryField("pCrops4")
-  private val NonPerennnialCropLvl4Form: Form[FormValues] = formWithSingleMandatoryField("nonPCrops4")
+  private val PerennialCropLvl4Form: Form[FormValues] = formWithSingleMandatoryField("pCrops4")
+  private val NonPerennialCropLvl4Form: Form[FormValues] = formWithSingleMandatoryField("nonPCrops4")
   private val AnimalProductionLvl4Form: Form[FormValues] = formWithSingleMandatoryField("animal4")
   private val AgricultureLvl3Form: Form[FormValues] = formWithSingleMandatoryField("agriculture3")
 
@@ -107,16 +107,16 @@ class AgricultureController @Inject()(
       )
   }
 
-  def loadPerennnialCropLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PerennnialCropLvl4Page(PerennnialCropLvl4Form)).toFuture
+  def loadPerennialCropLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(perennialCropLvl4Page(PerennialCropLvl4Form)).toFuture
   }
 
-  def submitPerennnialCropLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitPerennialCropLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    PerennnialCropLvl4Form
+    PerennialCropLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PerennnialCropLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(perennialCropLvl4Page(formWithErrors)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -124,16 +124,16 @@ class AgricultureController @Inject()(
       )
   }
 
-  def loadNonPerennnialCropLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(NonPerennnialCropLvl4Page(NonPerennnialCropLvl4Form)).toFuture
+  def loadNonPerennialCropLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(NonPerennialCropLvl4Page(NonPerennialCropLvl4Form)).toFuture
   }
 
-  def submitNonPerennnialCropLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+  def submitNonPerennialCropLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    NonPerennnialCropLvl4Form
+    NonPerennialCropLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(NonPerennnialCropLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(NonPerennialCropLvl4Page(formWithErrors)).toFuture,
         form =>{
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture

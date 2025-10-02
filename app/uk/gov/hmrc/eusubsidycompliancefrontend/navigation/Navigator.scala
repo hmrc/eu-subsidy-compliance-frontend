@@ -34,6 +34,11 @@ class Navigator @Inject(){
   }
 
   private val normalRoutes: String => Call = {
+    case "2" => routes.AgricultureController.loadAgricultureLvl3Page()
+    case "01.4" => routes.AgricultureController.loadAnimalProductionLvl4Page()
+    case "01.2" => routes.AgricultureController.loadPerennialCropLvl4Page()
+    case "01.1" => routes.AgricultureController.loadNonPerennialCropLvl4Page()
+    case "01.6" => routes.AgricultureController.loadSupportActivitiesLvl4Page()
     case "F"    => routes.ConstructionController.loadConstructionLvl2Page()
     case "42"   => routes.ConstructionController.loadCivilEngineeringLvl3Page()
     case "42.1" => routes.ConstructionController.loadConstructionRoadsRailwaysLvl4Page()

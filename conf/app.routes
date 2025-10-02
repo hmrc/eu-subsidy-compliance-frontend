@@ -32,6 +32,21 @@ POST       /first-login-journey-about-undertaking                               
 GET        /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSector
 POST       /first-login-journey-what-sector                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.postSector
 
+GET        /nace-level-three/agriculture                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.loadAgricultureLvl3Page()
+POST       /nace-level-three/agriculture                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.submitAgricultureLvl3Page()
+
+GET        /nace-level-four/animal-production                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.loadAnimalProductionLvl4Page()
+POST       /nace-level-four/animal-production                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.submitAnimalProductionLvl4Page()
+
+GET        /nace-level-four/crops                                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.loadNonPerennialCropLvl4Page()
+POST       /nace-level-four/crops                                                       uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.submitNonPerennialCropLvl4Page()
+
+GET        /nace-level-four/perennial                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.loadPerennialCropLvl4Page()
+POST       /nace-level-four/perennial                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.submitPerennialCropLvl4Page()
+
+GET        /nace-level-four/agriculture-support                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.loadSupportActivitiesLvl4Page()
+POST       /nace-level-four/agriculture-support                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AgricultureController.submitSupportActivitiesLvl4Page()
+
 GET        /nace-level-two/construction                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.loadConstructionLvl2Page()
 POST       /nace-level-two/construction                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.submitConstructionLvl2Page()
 
