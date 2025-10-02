@@ -113,7 +113,7 @@ object UndertakingJourney {
       def uri = controller.getSector.url
     }
     case class NACELevelOneFormPage(value: Form[Sector] = None) extends FormPage[Sector] {
-      def uri = routes.ConstructionController.loadConstructionLvl2Page().url
+      def uri = routes.ConstructionController.loadConstructionLvl2Page.url
     }
     case class UndertakingConfirmEmailFormPage(value: Form[Boolean] = None) extends FormPage[Boolean] {
       def uri = controller.getConfirmEmail.url

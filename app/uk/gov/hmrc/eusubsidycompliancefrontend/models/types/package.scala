@@ -106,6 +106,15 @@ package object types extends SimpleJson {
     val agriculture: types.Sector.Value = Value("2")
     val aquaculture: types.Sector.Value = Value("3")
 
+    val otherGeneralTrade: types.Sector.Value = Value("INT00")
+    val manuGroup1: types.Sector.Value = Value("INT01")
+    val manuGroup2: types.Sector.Value = Value("INT02")
+    val manuGroup3: types.Sector.Value = Value("INT03")
+    val manuGroup4: types.Sector.Value = Value("INT04")
+    val manuGroup5: types.Sector.Value = Value("INT05")
+    val manuGroup6: types.Sector.Value = Value("INT06")
+    val manuGroup7: types.Sector.Value = Value("INT07")
+
     val agricultureForestryFishing: types.Sector.Value = Value("A")
     val cropAnimalProduction: types.Sector.Value = Value("01")
     val growingNonPerennialCrops: types.Sector.Value = Value("01.1")

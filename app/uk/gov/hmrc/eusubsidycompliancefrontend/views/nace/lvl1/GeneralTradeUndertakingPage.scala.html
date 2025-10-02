@@ -35,11 +35,13 @@ govukRadios : GovukRadios
 
 @(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"gt"}
 
 @actionUrl = @{
-if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-else controllers.routes.UndertakingController.postSector
+    if(isUpdate)
+        controllers.routes.UndertakingController.updateIndustrySector
+    else
+        controllers.routes.GeneralTradeGroupsController.submitGeneralTradeUndertakingPage
 }
 
 
@@ -56,7 +58,7 @@ value = Some(Sector.wholesaleAndRetailTrade.toString)
 RadioItem(
 content = HtmlContent(radioText("sector-label-manufacturing", messages("NACE.Lvl1.manufacturing"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.manufacturing.hint")))),
-value = Some(Sector.manufacturing.toString)
+value = Some(Sector.manuGroup1.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-professionalScientificTechnicalActivities", messages("NACE.Lvl1.professionalScientificTechnicalActivities"))),
@@ -91,7 +93,6 @@ value = Some(Sector.transportStorage.toString)
 RadioItem(
 content = HtmlContent(radioText("sector-label-forestry", messages("NACE.Lvl1.forestry"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.forestry.hint")))),
-
 value = Some(Sector.forestry.toString)
 ),
 RadioItem(
@@ -104,7 +105,8 @@ divider = Some("or")
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-other", messages("Other"))),
-hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.other.hint"))))
+hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.other.hint")))),
+value = Some(Sector.otherGeneralTrade.toString)
 )
 )
 }
