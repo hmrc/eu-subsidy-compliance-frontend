@@ -34,8 +34,17 @@ class Navigator @Inject(){
   }
 
   private val normalRoutes: String => Call = {
-    case "F"  => routes.ConstructionController.loadConstructionLvl2Page()
-    case "43" => routes.ConstructionController.loadCivilEngineeringLvl3Page()
-    case _  => routes.ConstructionController.loadConstructionLvl2Page()
+    case "F"    => routes.ConstructionController.loadConstructionLvl2Page()
+    case "42"   => routes.ConstructionController.loadCivilEngineeringLvl3Page()
+    case "42.1" => routes.ConstructionController.loadConstructionRoadsRailwaysLvl4Page()
+    case "42.2" => routes.ConstructionController.loadConstructionUtilityProjectsLvl4Page()
+    case "42.9" => routes.ConstructionController.loadOtherCivilEngineeringProjectsLvl4Page()
+    case "43"   => routes.ConstructionController.loadSpecialisedConstructionLvl3Page()
+    case "43.1" => routes.ConstructionController.loadDemolitionSitePreparationLvl4Page()
+    case "43.2" => routes.ConstructionController.loadElectricalPlumbingConstructionLvl4Page()
+    case "43.3" => routes.ConstructionController.loadBuildingCompletionLvl4Page()
+    case "43.4" => routes.ConstructionController.loadSpecialisedConstructionActivitiesLvl4Page()
+    case "43.9" => routes.ConstructionController.loadOtherSpecialisedConstructionLvl4Page()
+    case _      => routes.UndertakingController.getSector
   }
 }

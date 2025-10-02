@@ -38,7 +38,32 @@ POST       /nace-level-two/construction                                         
 GET        /nace-level-three/civil-engineering                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.loadCivilEngineeringLvl3Page()
 POST       /nace-level-three/civil-engineering                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.submitCivilEngineeringLvl3Page()
 
+GET        /nace-level-three/specialised-construction                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.loadSpecialisedConstructionLvl3Page()
+POST       /nace-level-three/specialised-construction                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.submitSpecialisedConstructionLvl3Page()
 
+GET        /nace-level-four/building-completion                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.loadBuildingCompletionLvl4Page()
+POST       /nace-level-four/building-completion                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.submitBuildingCompletionLvl4Page()
+
+GET        /nace-level-four/roads-railways                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.loadConstructionRoadsRailwaysLvl4Page()
+POST       /nace-level-four/roads-railways                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.submitConstructionRoadsRailwaysLvl4Page()
+
+GET        /nace-level-four/utility-projects                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.loadConstructionUtilityProjectsLvl4Page()
+POST       /nace-level-four/utility-projects                                            uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.submitConstructionUtilityProjectsLvl4Page()
+
+GET        /nace-level-four/demolition-site-prep                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.loadDemolitionSitePreparationLvl4Page()
+POST       /nace-level-four/demolition-site-prep                                        uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.submitDemolitionSitePreparationLvl4Page()
+
+GET        /nace-level-four/electrical-plumbing                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.loadElectricalPlumbingConstructionLvl4Page()
+POST       /nace-level-four/electrical-plumbing                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.submitElectricalPlumbingConstructionLvl4Page()
+
+GET        /nace-level-four/other-civil-engineering                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.loadOtherCivilEngineeringProjectsLvl4Page()
+POST       /nace-level-four/other-civil-engineering                                     uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.submitOtherCivilEngineeringProjectsLvl4Page()
+
+GET        /nace-level-four/other-specialised-construction                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.loadOtherSpecialisedConstructionLvl4Page()
+POST       /nace-level-four/other-specialised-construction                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.submitOtherSpecialisedConstructionLvl4Page()
+
+GET        /nace-level-four/specialised-construction-activities                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.loadSpecialisedConstructionActivitiesLvl4Page()
+POST       /nace-level-four/specialised-construction-activities                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.submitSpecialisedConstructionActivitiesLvl4Page()
 
 GET        /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSectorForUpdate
 POST       /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.updateIndustrySector
