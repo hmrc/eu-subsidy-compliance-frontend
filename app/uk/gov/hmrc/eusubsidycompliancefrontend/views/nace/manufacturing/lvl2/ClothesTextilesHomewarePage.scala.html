@@ -34,13 +34,13 @@
 
 @(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"clothing2"}
+@fieldName = @{"manu-g2"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.GeneralTradeGroupsController.submitClothesTextilesHomewarePage
 }
 
 

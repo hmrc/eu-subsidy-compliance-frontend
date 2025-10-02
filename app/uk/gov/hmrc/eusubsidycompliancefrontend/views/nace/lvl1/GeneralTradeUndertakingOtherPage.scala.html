@@ -31,9 +31,9 @@
   govukRadios : GovukRadios
 )
 
-@(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_],isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"gt-other"}
 
 @actionUrl = @{
     if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
@@ -106,8 +106,7 @@ value = Some(Sector.activitiesExtraterritorial.toString)
 
 @layout(
   pageTitle = Some(messages("NACE.Lvl1.otherTitle")),
-  backLinkEnabled = true,
-  backLink = Some(previous),
+  backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
 
@@ -120,7 +119,7 @@ value = Some(Sector.activitiesExtraterritorial.toString)
             content = Text(s"${messages(err.key++"." ++err.message)}")
           )
         ),
-        title = Text(messages("common.error.summary.title", undertakingName))
+        title = Text(messages("common.error.summary.title"))
       ))
     }
 
