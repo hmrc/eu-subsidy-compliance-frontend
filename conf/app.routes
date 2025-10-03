@@ -272,6 +272,47 @@ POST       /nace-level-four/other-social-work                                   
 GET        /nace-level-four/undifferentiated                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.loadUndifferentiatedProducingActivitiesLvl4Page()
 POST       /nace-level-four/undifferentiated                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.submitUndifferentiatedProducingActivitiesLvl4Page()
 
+GET        /nace-level-two/finance                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.loadFinanceInsuranceLvl2Page()
+POST       /nace-level-two/finance                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.submitFinanceInsuranceLvl2Page()
+
+GET        /nace-level-three/auxiliary-financial                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.loadAuxiliaryFinancialLvl3Page()
+POST       /nace-level-three/auxiliary-financial                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.submitAuxiliaryFinancialLvl3Page()
+
+GET        /nace-level-three/financial-services                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.loadFinancialServicesLvl3Page()
+POST       /nace-level-three/financial-services                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.submitFinancialServicesLvl3Page()
+
+GET        /nace-level-three/insurance                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.loadInsuranceLvl3Page()
+POST       /nace-level-three/insurance                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.submitInsuranceLvl3Page()
+
+GET        /nace-level-three/real-estate                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.loadRealEstateLvl3Page()
+POST       /nace-level-three/real-estate                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.submitRealEstateLvl3Page()
+
+GET        /nace-level-four/property-development                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.loadPropertyDevelopmentLvl4Page()
+POST       /nace-level-four/property-development                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.submitPropertyDevelopmentLvl4Page()
+
+GET        /nace-level-four/fee-contract                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.loadFeeContractLvl4Page()
+POST       /nace-level-four/fee-contract                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.submitFeeContractLvl4Page()
+
+GET        /nace-level-four/trusts-funds                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.loadTrustsFundsLvl4Page()
+POST       /nace-level-four/trusts-funds                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.submitTrustsFundsLvl4Page()
+
+GET        /nace-level-four/other-financial                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.loadOtherFinancialLvl4Page()
+POST       /nace-level-four/other-financial                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.submitOtherFinancialLvl4Page()
+
+GET        /nace-level-four/monetary-intermediation                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.loadMonetaryIntermediationLvl4Page()
+POST       /nace-level-four/monetary-intermediation                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.submitMonetaryIntermediationLvl4Page()
+
+GET        /nace-level-four/insurance-type                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.loadInsuranceTypeLvl4Page()
+POST       /nace-level-four/insurance-type                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.submitInsuranceTypeLvl4Page()
+
+GET        /nace-level-four/holding-companies                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.loadHoldingCompaniesLvl4Page()
+POST       /nace-level-four/holding-companies                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.submitHoldingCompaniesLvl4Page()
+
+GET        /nace-level-four/auxiliary-non-insurance                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.loadAuxiliaryNonInsuranceLvl4Page()
+POST       /nace-level-four/auxiliary-non-insurance                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.submitAuxiliaryNonInsuranceLvl4Page()
+
+GET        /nace-level-four/auxiliary-insurance                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.loadAuxiliaryInsuranceLvl4Page()
+POST       /nace-level-four/auxiliary-insurance                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.submitAuxiliaryInsuranceLvl4Page()
 
 GET        /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSectorForUpdate
 POST       /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.updateIndustrySector

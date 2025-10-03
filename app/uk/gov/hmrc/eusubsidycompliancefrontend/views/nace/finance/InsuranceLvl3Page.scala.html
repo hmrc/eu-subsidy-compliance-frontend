@@ -33,13 +33,13 @@
 
 @(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"auxFinance2"}
+@fieldName = @{"insurance3"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.FinanceRealEstateController.submitInsuranceLvl3Page()
 }
 
 @radioText(id: String, content: String) = {
@@ -49,31 +49,25 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-auxiliary-financial-services", messages("NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancialServices"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-auxiliary-financial-services", messages("NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancialServices.hint")))
-            )),
-            value = Some(Sector.AuxiliaryFinancialServices.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.AuxiliaryFinancialServices.toString)
+            content = HtmlContent(radioText("sector-label-insurance", messages("NACE.insurance.Lvl2.insurance"))),
+            value = Some(Sector.InsuranceServices.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.InsuranceServices.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-auxiliary-insurance", messages("NACE.auxiliaryFinancial.Lvl2.auxiliaryInsurance"))),
-            hint = Some(Hint(
-                content = HtmlContent(radioText("sector-hint-auxiliary-insurance", messages("NACE.auxiliaryFinancial.Lvl2.auxiliaryInsurance.hint")))
-            )),
-            value = Some(Sector.AuxiliaryInsurance.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.AuxiliaryInsurance.toString)
+            content = HtmlContent(radioText("sector-label-pension-funding", messages("NACE.insurance.Lvl2.pensionFunding"))),
+            value = Some(Sector.PensionFundingServices.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PensionFundingServices.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-fund-management", messages("NACE.auxiliaryFinancial.Lvl2.fundManagement"))),
-            value = Some(Sector.FundManagementServices.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FundManagementServices.toString)
+            content = HtmlContent(radioText("sector-label-reinsurance", messages("NACE.insurance.Lvl2.reinsurance"))),
+            value = Some(Sector.ReinsuranceServices.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ReinsuranceServices.toString)
         )
     )
 }
 
 @layout(
-  pageTitle = Some(messages("NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancial.title")),
+  pageTitle = Some(messages("NACE.insurance.Lvl2.insurance.title")),
   backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
@@ -97,7 +91,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("NACE.auxiliaryFinancial.Lvl2.auxiliaryFinancial.title")),
+        content = Text(messages("NACE.insurance.Lvl2.insurance.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))

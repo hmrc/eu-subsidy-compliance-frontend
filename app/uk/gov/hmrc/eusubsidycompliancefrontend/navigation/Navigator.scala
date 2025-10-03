@@ -79,6 +79,22 @@ class Navigator @Inject(){
     case "43.4"  => routes.ConstructionController.loadSpecialisedConstructionActivitiesLvl4Page
     case "43.9"  => routes.ConstructionController.loadOtherSpecialisedConstructionLvl4Page
 
+    case "L" => routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page()
+    case "64" => routes.FinanceRealEstateController.loadFinancialServicesLvl3Page()
+    case "64.1" => routes.FinanceRealEstateController.loadMonetaryIntermediationLvl4Page()
+    case "64.2" => routes.FinanceRealEstateController.loadHoldingCompaniesLvl4Page()
+    case "64.3" => routes.FinanceRealEstateController.loadTrustsFundsLvl4Page()
+    case "64.9" => routes.FinanceRealEstateController.loadOtherFinancialLvl4Page()
+    case "65" => routes.FinanceRealEstateController.loadInsuranceLvl3Page()
+    case "65.1" => routes.FinanceRealEstateController.loadInsuranceTypeLvl4Page()
+    case "66" => routes.FinanceRealEstateController.loadAuxiliaryFinancialLvl3Page()
+    case "66.1" => routes.FinanceRealEstateController.loadAuxiliaryNonInsuranceLvl4Page()
+    case "66.2" => routes.FinanceRealEstateController.loadAuxiliaryInsuranceLvl4Page()
+
+    case "M" => routes.FinanceRealEstateController.loadRealEstateLvl3Page()
+    case "68.1" => routes.FinanceRealEstateController.loadPropertyDevelopmentLvl4Page()
+    case "68.3" => routes.FinanceRealEstateController.loadFeeContractLvl4Page()
+
     case "N" => routes.ProfAndPAdminController.loadProfessionalLvl2Page()
     case "69" => routes.ProfAndPAdminController.loadLegalAndAccountingLvl3Page()
     case "70" => routes.ProfAndPAdminController.loadHeadOfficesLvl3Page()
