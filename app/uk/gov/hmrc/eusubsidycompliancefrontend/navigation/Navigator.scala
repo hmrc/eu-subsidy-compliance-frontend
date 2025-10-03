@@ -63,6 +63,7 @@ class Navigator @Inject(){
     case "INT05" => routes.GeneralTradeGroupsController.loadMetalsChemicalsMaterialsPage
     case "INT06" => routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage
     case "INT07" => routes.GeneralTradeGroupsController.loadVehiclesTransportPage
+
     case "F"     => routes.ConstructionController.loadConstructionLvl2Page
     case "42"    => routes.ConstructionController.loadCivilEngineeringLvl3Page
     case "42.1"  => routes.ConstructionController.loadConstructionRoadsRailwaysLvl4Page
@@ -74,6 +75,22 @@ class Navigator @Inject(){
     case "43.3"  => routes.ConstructionController.loadBuildingCompletionLvl4Page
     case "43.4"  => routes.ConstructionController.loadSpecialisedConstructionActivitiesLvl4Page
     case "43.9"  => routes.ConstructionController.loadOtherSpecialisedConstructionLvl4Page
+
+    case "O" => routes.AdminController.loadAdministrativeLvl2Page()
+    case "77" => routes.AdminController.loadRentalLvl3Page()
+    case "77.1" => routes.AdminController.loadMotorVehiclesLvl4Page()
+    case "77.2" => routes.AdminController.loadPersonalHouseholdLvl4Page()
+    case "77.3" => routes.AdminController.loadMachineryEquipmentLvl4Page()
+    case "77.5" => routes.AdminController.loadIntermediationServicesLvl4Page()
+    case "78" => routes.AdminController.loadEmploymentLvl3Page()
+    case "79" => routes.AdminController.loadTravelLvl3Page()
+    case "79.1" => routes.AdminController.loadTravelAgencyLvl4Page()
+    case "80" => routes.AdminController.loadInvestigationLvl4Page()
+    case "81" => routes.AdminController.loadBuildingsLvl3Page()
+    case "81.2" => routes.AdminController.loadCleaningLvl4Page()
+    case "82" => routes.AdminController.loadOfficeLvl3Page()
+    case "82.9" => routes.AdminController.loadOtherBusinessSupportLvl4Page()
+
     case _       => routes.UndertakingController.getSector
   }
 }

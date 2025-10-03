@@ -146,6 +146,48 @@ POST       /nace-level-four/other-specialised-construction                      
 GET        /nace-level-four/specialised-construction-activities                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.loadSpecialisedConstructionActivitiesLvl4Page
 POST       /nace-level-four/specialised-construction-activities                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ConstructionController.submitSpecialisedConstructionActivitiesLvl4Page
 
+GET        /nace-level-two/administrative                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.loadAdministrativeLvl2Page()
+POST       /nace-level-two/administrative                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.submitAdministrativeLvl2Page()
+
+GET        /nace-level-three/rental                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.loadRentalLvl3Page()
+POST       /nace-level-three/rental                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.submitRentalLvl3Page()
+
+GET        /nace-level-three/employment                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.loadEmploymentLvl3Page()
+POST       /nace-level-three/employment                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.submitEmploymentLvl3Page()
+
+GET        /nace-level-three/travel                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.loadTravelLvl3Page()
+POST       /nace-level-three/travel                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.submitTravelLvl3Page()
+
+GET        /nace-level-three/buildings                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.loadBuildingsLvl3Page()
+POST       /nace-level-three/buildings                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.submitBuildingsLvl3Page()
+
+GET        /nace-level-three/office                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.loadOfficeLvl3Page()
+POST       /nace-level-three/office                                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.submitOfficeLvl3Page()
+
+GET        /nace-level-four/vehicles-admin                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.loadMotorVehiclesLvl4Page()
+POST       /nace-level-four/vehicles-admin                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.submitMotorVehiclesLvl4Page()
+
+GET        /nace-level-four/household-admin                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.loadPersonalHouseholdLvl4Page()
+POST       /nace-level-four/household-admin                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.submitPersonalHouseholdLvl4Page()
+
+GET        /nace-level-four/equipment-admin                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.loadMachineryEquipmentLvl4Page()
+POST       /nace-level-four/equipment-admin                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.submitMachineryEquipmentLvl4Page()
+
+GET        /nace-level-four/intermediation-admin                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.loadIntermediationServicesLvl4Page()
+POST       /nace-level-four/intermediation-admin                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.submitIntermediationServicesLvl4Page()
+
+GET        /nace-level-four/travel-agency                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.loadTravelAgencyLvl4Page()
+POST       /nace-level-four/travel-agency                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.submitTravelAgencyLvl4Page()
+
+GET        /nace-level-four/investigation                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.loadInvestigationLvl4Page()
+POST       /nace-level-four/investigation                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.submitInvestigationLvl4Page()
+
+GET        /nace-level-four/cleaning                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.loadCleaningLvl4Page()
+POST       /nace-level-four/cleaning                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.submitCleaningLvl4Page()
+
+GET        /nace-level-four/other-admin-support                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.loadOtherBusinessSupportLvl4Page()
+POST       /nace-level-four/other-admin-support                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.submitOtherBusinessSupportLvl4Page()
+
 GET        /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSectorForUpdate
 POST       /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.updateIndustrySector
 
