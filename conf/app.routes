@@ -230,6 +230,49 @@ POST       /nace-level-four/public-admin                                        
 GET        /nace-level-four/service-provision                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.loadServiceProvisionLvl4Page()
 POST       /nace-level-four/service-provision                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.submitServiceProvisionLvl4Page()
 
+GET        /nace-level-two/households                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.loadHouseholdsLvl2Page()
+POST       /nace-level-two/households                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.submitHouseholdsLvl2Page()
+
+GET        /nace-level-two/human-health                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.loadHumanHealthLvl2Page()
+POST       /nace-level-two/human-health                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.submitHumanHealthLvl2Page()
+
+GET        /nace-level-three/human-health                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.loadHumanHealthLvl3Page()
+POST       /nace-level-three/human-health                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.submitHumanHealthLvl3Page()
+
+GET        /nace-level-three/residential-care                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.loadResidentialCareLvl3Page()
+POST       /nace-level-three/residential-care                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.submitResidentialCareLvl3Page()
+
+GET        /nace-level-three/Social-work                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.loadSocialWorkLvl3Page()
+POST       /nace-level-three/Social-work                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.submitSocialWorkLvl3Page()
+
+GET        /nace-level-three/education                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.loadEducationLvl3Page()
+POST       /nace-level-three/education                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.submitEducationLvl3Page()
+
+GET        /nace-level-four/education-secondary                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.loadSecondaryEducationLvl4Page()
+POST       /nace-level-four/education-secondary                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.submitSecondaryEducationLvl4Page()
+
+GET        /nace-level-four/education-other                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.loadOtherEducationLvl4Page()
+POST       /nace-level-four/education-other                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.submitOtherEducationLvl4Page()
+
+GET        /nace-level-four/education-support                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.loadEducationalSupportLvl4Page()
+POST       /nace-level-four/education-support                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.submitEducationalSupportLvl4Page()
+
+GET        /nace-level-four/medical-dental                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.loadMedicalDentalLvl4Page()
+POST       /nace-level-four/medical-dental                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.submitMedicalDentalLvl4Page()
+
+GET        /nace-level-four/other-human-health                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.loadOtherHumanHealthLvl4Page()
+POST       /nace-level-four/other-human-health                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.submitOtherHumanHealthLvl4Page()
+
+GET        /nace-level-four/other-residential-care                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.loadOtherResidentialCareLvl4Page()
+POST       /nace-level-four/other-residential-care                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.submitOtherResidentialCareLvl4Page()
+
+GET        /nace-level-four/other-social-work                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.loadOtherSocialWorkLvl4Page()
+POST       /nace-level-four/other-social-work                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.submitOtherSocialWorkLvl4Page()
+
+GET        /nace-level-four/undifferentiated                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.loadUndifferentiatedProducingActivitiesLvl4Page()
+POST       /nace-level-four/undifferentiated                                                uk.gov.hmrc.eusubsidycompliancefrontend.controllers.HouseHealthEducationController.submitUndifferentiatedProducingActivitiesLvl4Page()
+
+
 GET        /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSectorForUpdate
 POST       /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.updateIndustrySector
 

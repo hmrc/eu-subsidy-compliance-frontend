@@ -63,25 +63,28 @@ value = Some(Sector.manuGroup1.toString)
 RadioItem(
 content = HtmlContent(radioText("sector-label-professionalScientificTechnicalActivities", messages("NACE.Lvl1.professionalScientificTechnicalActivities"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.professionalScientificTechnicalActivities.hint")))),
+value = Some(Sector.professionalScientificAndTechnicalActivities.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.professionalScientificAndTechnicalActivities.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-construction", messages("NACE.Lvl1.construction"))),
-value = Some(Sector.construction.toString)
+value = Some(Sector.construction.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.construction.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-telecommunications", messages("NACE.Lvl1.telecommunications"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.telecommunications.hint")))),
-value = Some(Sector.telecommunications.toString)
+value = Some(Sector.telecommunications.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.telecommunications.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-publishingBroadcasting", messages("NACE.Lvl1.publishingBroadcasting"))),
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.publishingBroadcasting.hint")))),
-
-value = Some(Sector.publishingBroadcasting.toString)
+value = Some(Sector.publishingBroadcasting.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.publishingBroadcasting.toString)
 ),
 RadioItem(
 content = HtmlContent(radioText("sector-label-administration", messages("NACE.Lvl1.administration"))),
-
 hint = Some(Hint(content = HtmlContent(messages("NACE.Lvl1.administration.hint")))),
 value = Some(Sector.administration.toString)
 ),

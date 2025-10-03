@@ -60,20 +60,20 @@ class ProfAndPAdminController @Inject()(
 
   override val messagesApi: MessagesApi = mcc.messagesApi
 
-  private val   PublicAdminDefenceLvl3Form: Form[FormValues] = formWithSingleMandatoryField("admin2")
-  private val   PublicAdminLvl4Form: Form[FormValues] = formWithSingleMandatoryField("building3")
-  private val   ServiceProvisionLvl4Form: Form[FormValues] = formWithSingleMandatoryField("cleaning3")
-  private val   AdvertisingLvl3Form: Form[FormValues] = formWithSingleMandatoryField("employment3")
-  private val   AdvertisingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("intermediation4")
-  private val   ArchitecturalLvl3Form: Form[FormValues] = formWithSingleMandatoryField("investigation4")
-  private val   ArchitecturalLvl4Form: Form[FormValues] = formWithSingleMandatoryField("equipment4")
-  private val   HeadOfficesLvl3Form: Form[FormValues] = formWithSingleMandatoryField("vehicles4")
-  private val   LegalAndAccountingLvl3Form: Form[FormValues] = formWithSingleMandatoryField("office3")
-  private val   OtherProfessionalLvl3Form: Form[FormValues] = formWithSingleMandatoryField("otherBusSupport4")
-  private val   OtherProfessionalLvl4Form: Form[FormValues] = formWithSingleMandatoryField("personalHouse4")
-  private val   ProfessionalLvl2Form: Form[FormValues] = formWithSingleMandatoryField("rental3")
-  private val   ScientificRAndDLvl3Form: Form[FormValues] = formWithSingleMandatoryField("travelAgency4")
-  private val   SpecialisedDesignLvl4Form: Form[FormValues] = formWithSingleMandatoryField("travel3")
+  private val   PublicAdminDefenceLvl3Form: Form[FormValues] = formWithSingleMandatoryField("publicAdmin3")
+  private val   PublicAdminLvl4Form: Form[FormValues] = formWithSingleMandatoryField("publicAdmin4")
+  private val   ServiceProvisionLvl4Form: Form[FormValues] = formWithSingleMandatoryField("serviceProvision4")
+  private val   AdvertisingLvl3Form: Form[FormValues] = formWithSingleMandatoryField("advertising3")
+  private val   AdvertisingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("advertising4")
+  private val   ArchitecturalLvl3Form: Form[FormValues] = formWithSingleMandatoryField("architecture3")
+  private val   ArchitecturalLvl4Form: Form[FormValues] = formWithSingleMandatoryField("architecture4")
+  private val   HeadOfficesLvl3Form: Form[FormValues] = formWithSingleMandatoryField("headOffice3")
+  private val   LegalAndAccountingLvl3Form: Form[FormValues] = formWithSingleMandatoryField("legal3")
+  private val   OtherProfessionalLvl3Form: Form[FormValues] = formWithSingleMandatoryField("otherProf3")
+  private val   OtherProfessionalLvl4Form: Form[FormValues] = formWithSingleMandatoryField("otherProf4")
+  private val   ProfessionalLvl2Form: Form[FormValues] = formWithSingleMandatoryField("prof2")
+  private val   ScientificRAndDLvl3Form: Form[FormValues] = formWithSingleMandatoryField("rAndD3")
+  private val   SpecialisedDesignLvl4Form: Form[FormValues] = formWithSingleMandatoryField("specialDesign4")
 
   def loadPublicAdminDefenceLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     Ok(PublicAdminDefenceLvl3Page(PublicAdminDefenceLvl3Form)).toFuture

@@ -19,6 +19,8 @@ package uk.gov.hmrc.eusubsidycompliancefrontend.navigation
 
 import play.api.mvc.Call
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.households.HouseholdsLvl2Page
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.humanHealth.{SocialWorkLvl3Page => HouseholdsLvl2Page}
 
 import javax.inject.{Inject, Singleton}
 import scala.language.postfixOps
@@ -107,6 +109,23 @@ class Navigator @Inject(){
     case "84" => routes.ProfAndPAdminController.loadPublicAdminDefenceLvl3Page()
     case "84.1" => routes.ProfAndPAdminController.loadPublicAdminLvl4Page()
     case "84.2" => routes.ProfAndPAdminController.loadServiceProvisionLvl4Page()
+
+    case "85"  => routes.HouseHealthEducationController.loadEducationLvl3Page()
+    case "85.3"  => routes.HouseHealthEducationController.loadSecondaryEducationLvl4Page()
+    case "85.5"  => routes.HouseHealthEducationController.loadOtherEducationLvl4Page()
+    case "85.6"  => routes.HouseHealthEducationController.loadEducationalSupportLvl4Page()
+
+    case "R"  => routes.HouseHealthEducationController.loadHumanHealthLvl2Page()
+    case "86"  => routes.HouseHealthEducationController.loadHumanHealthLvl3Page()
+    case "86.2"  => routes.HouseHealthEducationController.loadMedicalDentalLvl4Page()
+    case "86.9"  => routes.HouseHealthEducationController.loadOtherHumanHealthLvl4Page()
+    case "87"  => routes.HouseHealthEducationController.loadResidentialCareLvl3Page()
+    case "87.9"  => routes.HouseHealthEducationController.loadOtherResidentialCareLvl4Page()
+    case "88"  => routes.HouseHealthEducationController.loadSocialWorkLvl3Page()
+    case "88.9"  => routes.HouseHealthEducationController.loadOtherSocialWorkLvl4Page()
+
+    case "U"  => routes.HouseHealthEducationController.loadHouseholdsLvl2Page()
+    case "98"  => routes.HouseHealthEducationController.loadUndifferentiatedProducingActivitiesLvl4Page()
 
     case _       => routes.UndertakingController.getSector
   }

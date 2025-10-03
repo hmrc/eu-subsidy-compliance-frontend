@@ -50,13 +50,13 @@
     Seq(
         RadioItem(
             content = HtmlContent(radioText("sector-label-employment-placement", messages("NACE.Administrative.Lvl3.EmploymentPlacement"))),
-            value = Some(Sector.Employment.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Employment.toString)
+            value = Some(Sector.employmentPlacementActivities.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.employmentPlacementActivities.toString)
         ),
         RadioItem(
             content = HtmlContent(radioText("sector-label-temporary-employment", messages("NACE.Administrative.Lvl3.TemporaryEmployment"))),
-            value = Some(Sector.Employment.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.Employment.toString)
+            value = Some(Sector.tempEmploymentPlacementActivities.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.tempEmploymentPlacementActivities.toString)
         )
     )
 }
