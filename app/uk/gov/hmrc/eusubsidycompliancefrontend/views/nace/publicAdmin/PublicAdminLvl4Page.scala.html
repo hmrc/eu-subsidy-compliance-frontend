@@ -32,13 +32,13 @@ govukRadios : GovukRadios
 )
 
 
-@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"publicAdmin3"}
+@fieldName = @{"publicAdmin4"}
 
 @actionUrl = @{
 if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-else controllers.routes.UndertakingController.postSector
+else controllers.routes.ProfAndPAdminController.submitPublicAdminLvl4Page()
 }
 
 
@@ -50,26 +50,26 @@ else controllers.routes.UndertakingController.postSector
 @radioOptions = @{
 Seq(
 RadioItem(
-content = HtmlContent(radioText("sector-label-administrationGeneral", messages("NACE.publicAdministration.Lvl3.administrationGeneral"))),
-value = Some(Sector.administrationGeneral.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.administrationGeneral.toString)
+content = HtmlContent(radioText("sector-label-generalPublicAdmin", messages("NACE.publicAdministration.Lvl4.generalPublicAdmin"))),
+value = Some(Sector.generalPublicAdmin.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.generalPublicAdmin.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-compulsorySocialSecurity", messages("NACE.publicAdministration.Lvl3.compulsorySocialSecurity"))),
-value = Some(Sector.compulsorySocialSecurity.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.compulsorySocialSecurity.toString)
+content = HtmlContent(radioText("sector-label-healthEducationRegulation", messages("NACE.publicAdministration.Lvl4.healthEducationRegulation"))),
+value = Some(Sector.healthEducationRegulation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.healthEducationRegulation.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-communityServices", messages("NACE.publicAdministration.Lvl3.communityServices"))),
-value = Some(Sector.communityServices.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.communityServices.toString)
+content = HtmlContent(radioText("sector-label-businessRegulation", messages("NACE.publicAdministration.Lvl4.businessRegulation"))),
+value = Some(Sector.businessRegulation.toString),
+checked = form.data.get(fieldName).fold(false)(x => x == Sector.businessRegulation.toString)
 )
 )
 }
 
 
 @layout(
-pageTitle = Some(messages("NACE.publicAdministration.Lvl2.publicAdministrationDefence.title")),
+pageTitle = Some(messages("NACE.publicAdministration.Lvl3.administrationGeneral.title")),
 backLinkEnabled = false,
 hasErrors = form.hasErrors
 ) {
@@ -95,7 +95,7 @@ content = Text(messages("undertakingSector.error.required"))
 ))} else None,
 fieldset = Some(Fieldset(
 legend = Some(Legend(
-content = Text(messages("NACE.publicAdministration.Lvl2.publicAdministrationDefence.title")),
+content = Text(messages("NACE.publicAdministration.Lvl3.administrationGeneral.title")),
 classes = "govuk-fieldset__legend--xl",
 isPageHeading = true
 ))

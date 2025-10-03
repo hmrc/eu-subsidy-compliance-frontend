@@ -21,6 +21,7 @@ import play.api.mvc.Call
 import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
 
 import javax.inject.{Inject, Singleton}
+import scala.language.postfixOps
 
 @Singleton
 class Navigator @Inject(){
@@ -76,6 +77,18 @@ class Navigator @Inject(){
     case "43.4"  => routes.ConstructionController.loadSpecialisedConstructionActivitiesLvl4Page
     case "43.9"  => routes.ConstructionController.loadOtherSpecialisedConstructionLvl4Page
 
+    case "N" => routes.ProfAndPAdminController.loadProfessionalLvl2Page()
+    case "69" => routes.ProfAndPAdminController.loadLegalAndAccountingLvl3Page()
+    case "70" => routes.ProfAndPAdminController.loadHeadOfficesLvl3Page()
+    case "71" => routes.ProfAndPAdminController.loadArchitecturalLvl3Page()
+    case "71.1" => routes.ProfAndPAdminController.loadArchitecturalLvl4Page()
+    case "72" => routes.ProfAndPAdminController.loadScientificRAndDLvl3Page()
+    case "73" => routes.ProfAndPAdminController.loadAdvertisingLvl3Page()
+    case "73.1" => routes.ProfAndPAdminController.loadAdvertisingLvl4Page()
+    case "74" => routes.ProfAndPAdminController.loadOtherProfessionalLvl3Page()
+    case "74.1" => routes.ProfAndPAdminController.loadSpecialisedDesignLvl4Page()
+    case "74.9" => routes.ProfAndPAdminController.loadOtherProfessionalLvl4Page()
+
     case "O" => routes.AdminController.loadAdministrativeLvl2Page()
     case "77" => routes.AdminController.loadRentalLvl3Page()
     case "77.1" => routes.AdminController.loadMotorVehiclesLvl4Page()
@@ -90,6 +103,10 @@ class Navigator @Inject(){
     case "81.2" => routes.AdminController.loadCleaningLvl4Page()
     case "82" => routes.AdminController.loadOfficeLvl3Page()
     case "82.9" => routes.AdminController.loadOtherBusinessSupportLvl4Page()
+
+    case "84" => routes.ProfAndPAdminController.loadPublicAdminDefenceLvl3Page()
+    case "84.1" => routes.ProfAndPAdminController.loadPublicAdminLvl4Page()
+    case "84.2" => routes.ProfAndPAdminController.loadServiceProvisionLvl4Page()
 
     case _       => routes.UndertakingController.getSector
   }

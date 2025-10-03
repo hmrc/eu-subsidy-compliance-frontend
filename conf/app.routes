@@ -188,6 +188,48 @@ POST       /nace-level-four/cleaning                                            
 GET        /nace-level-four/other-admin-support                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.loadOtherBusinessSupportLvl4Page()
 POST       /nace-level-four/other-admin-support                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AdminController.submitOtherBusinessSupportLvl4Page()
 
+GET        /nace-level-two/professional                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.loadProfessionalLvl2Page()
+POST       /nace-level-two/professional                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.submitProfessionalLvl2Page()
+
+GET        /nace-level-three/legal-accounting                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.loadLegalAndAccountingLvl3Page()
+POST       /nace-level-three/legal-accounting                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.submitLegalAndAccountingLvl3Page()
+
+GET        /nace-level-three/head-offices                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.loadHeadOfficesLvl3Page()
+POST       /nace-level-three/head-offices                                           uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.submitHeadOfficesLvl3Page()
+
+GET        /nace-level-three/architectural                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.loadArchitecturalLvl3Page()
+POST       /nace-level-three/architectural                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.submitArchitecturalLvl3Page()
+
+GET        /nace-level-three/scientific                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.loadScientificRAndDLvl3Page()
+POST       /nace-level-three/scientific                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.submitScientificRAndDLvl3Page()
+
+GET        /nace-level-three/advertising                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.loadAdvertisingLvl3Page()
+POST       /nace-level-three/advertising                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.submitAdvertisingLvl3Page()
+
+GET        /nace-level-three/other-professional                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.loadOtherProfessionalLvl3Page()
+POST       /nace-level-three/other-professional                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.submitOtherProfessionalLvl3Page()
+
+GET        /nace-level-four/architectural                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.loadArchitecturalLvl4Page()
+POST       /nace-level-four/architectural                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.submitArchitecturalLvl4Page()
+
+GET        /nace-level-four/specialised-design                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.loadSpecialisedDesignLvl4Page()
+POST       /nace-level-four/specialised-design                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.submitSpecialisedDesignLvl4Page()
+
+GET        /nace-level-four/advertising                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.loadAdvertisingLvl4Page()
+POST       /nace-level-four/advertising                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.submitAdvertisingLvl4Page()
+
+GET        /nace-level-four/other-professional                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.loadOtherProfessionalLvl4Page()
+POST       /nace-level-four/other-professional                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.submitOtherProfessionalLvl4Page()
+
+GET        /nace-level-three/public-admin                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.loadPublicAdminDefenceLvl3Page()
+POST       /nace-level-three/public-admin                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.submitPublicAdminDefenceLvl3Page()
+
+GET        /nace-level-four/public-admin                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.loadPublicAdminLvl4Page()
+POST       /nace-level-four/public-admin                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.submitPublicAdminLvl4Page()
+
+GET        /nace-level-four/service-provision                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.loadServiceProvisionLvl4Page()
+POST       /nace-level-four/service-provision                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ProfAndPAdminController.submitServiceProvisionLvl4Page()
+
 GET        /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSectorForUpdate
 POST       /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.updateIndustrySector
 
