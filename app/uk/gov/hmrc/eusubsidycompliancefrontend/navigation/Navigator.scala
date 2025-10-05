@@ -79,6 +79,21 @@ class Navigator @Inject(){
     case "43.4"  => routes.ConstructionController.loadSpecialisedConstructionActivitiesLvl4Page
     case "43.9"  => routes.ConstructionController.loadOtherSpecialisedConstructionLvl4Page
 
+    case "58.1"  => routes.PublishingTelecomsController.loadBookPublishingLvl4Page()
+    case "59"  => routes.PublishingTelecomsController.loadFilmMusicPublishingLvl3Page()
+    case "59.1"  => routes.PublishingTelecomsController.loadFilmVideoActivitiesLvl4Page()
+    case "60.3"  => routes.PublishingTelecomsController.loadNewsOtherContentDistributionLvl4Page()
+    case "60"  => routes.PublishingTelecomsController.loadProgrammingBroadcastingDistributionLvl3Page()
+    case "J"  => routes.PublishingTelecomsController.loadPublishingLvl2Page()
+    case "58"  => routes.PublishingTelecomsController.loadPublishingLvl3Page()
+    case "58.2"  => routes.PublishingTelecomsController.loadSoftwarePublishingLvl4Page()
+
+    case "63"  => routes.PublishingTelecomsController.loadComputerInfrastructureDataHostingLvl3Page()
+    case "62"  => routes.PublishingTelecomsController.loadComputerProgrammingConsultancyLvl3Page()
+    case "K"  => routes.PublishingTelecomsController.loadTelecommunicationLvl2Page()
+    case "61"  => routes.PublishingTelecomsController.loadTelecommunicationLvl3Page()
+    case "63.9"  => routes.PublishingTelecomsController.loadWebSearchPortalLvl4Page()
+
     case "L" => routes.FinanceRealEstateController.loadFinanceInsuranceLvl2Page()
     case "64" => routes.FinanceRealEstateController.loadFinancialServicesLvl3Page()
     case "64.1" => routes.FinanceRealEstateController.loadMonetaryIntermediationLvl4Page()

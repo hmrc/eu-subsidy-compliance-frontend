@@ -314,6 +314,46 @@ POST       /nace-level-four/auxiliary-non-insurance                             
 GET        /nace-level-four/auxiliary-insurance                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.loadAuxiliaryInsuranceLvl4Page()
 POST       /nace-level-four/auxiliary-insurance                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FinanceRealEstateController.submitAuxiliaryInsuranceLvl4Page()
 
+GET        /nace-level-two/publishing                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.loadPublishingLvl2Page()
+POST       /nace-level-two/publishing                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.submitPublishingLvl2Page()
+
+GET        /nace-level-two/telecommunication                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.loadTelecommunicationLvl2Page()
+POST       /nace-level-two/telecommunication                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.submitTelecommunicationLvl2Page()
+
+GET        /nace-level-three/telecommunication                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.loadTelecommunicationLvl3Page()
+POST       /nace-level-three/telecommunication                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.submitTelecommunicationLvl3Page()
+
+GET        /nace-level-three/publishing                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.loadPublishingLvl3Page()
+POST       /nace-level-three/publishing                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.submitPublishingLvl3Page()
+
+GET        /nace-level-three/film-music-publishing                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.loadFilmMusicPublishingLvl3Page()
+POST       /nace-level-three/film-music-publishing                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.submitFilmMusicPublishingLvl3Page()
+
+GET        /nace-level-three/programming-broadcasting-distribution                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.loadProgrammingBroadcastingDistributionLvl3Page()
+POST       /nace-level-three/programming-broadcasting-distribution                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.submitProgrammingBroadcastingDistributionLvl3Page()
+
+GET        /nace-level-three/computer-infrastructured-data-hosting                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.loadComputerInfrastructureDataHostingLvl3Page()
+POST       /nace-level-three/computer-infrastructured-data-hosting                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.submitComputerInfrastructureDataHostingLvl3Page()
+
+GET        /nace-level-three/computer-programming-consultancy                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.loadComputerProgrammingConsultancyLvl3Page()
+POST       /nace-level-three/computer-programming-consultancy                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.submitComputerProgrammingConsultancyLvl3Page()
+
+GET        /nace-level-four/web-search                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.loadWebSearchPortalLvl4Page()
+POST       /nace-level-four/web-search                                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.submitWebSearchPortalLvl4Page()
+
+GET        /nace-level-four/software                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.loadSoftwarePublishingLvl4Page()
+POST       /nace-level-four/software                                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.submitSoftwarePublishingLvl4Page()
+
+GET        /nace-level-four/news-other                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.loadNewsOtherContentDistributionLvl4Page()
+POST       /nace-level-four/news-other                                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.submitNewsOtherContentDistributionLvl4Page()
+
+GET        /nace-level-four/film-video                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.loadFilmVideoActivitiesLvl4Page()
+POST       /nace-level-four/film-video                                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.submitFilmVideoActivitiesLvl4Page()
+
+GET        /nace-level-four/book-publishing                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.loadBookPublishingLvl4Page()
+POST       /nace-level-four/book-publishing                                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.submitBookPublishingLvl4Page()
+
+
 GET        /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSectorForUpdate
 POST       /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.updateIndustrySector
 

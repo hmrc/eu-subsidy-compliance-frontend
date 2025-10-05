@@ -28,8 +28,8 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.finance._
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.realestate._
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.publishing._
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.telecoms._
 
 import javax.inject.Inject
 
@@ -38,7 +38,19 @@ class PublishingTelecomsController @Inject()(
                                               actionBuilders: ActionBuilders,
                                               val store: Store,
                                               navigator: Navigator,
-                                              FeeContractLvl4Page: FeeContractLvl4Page,
+                                              ComputerInfrastructureDataHostingLvl3Page: ComputerInfrastructureDataHostingLvl3Page,
+                                              ComputerProgrammingConsultancyLvl3Page: ComputerProgrammingConsultancyLvl3Page,
+                                              TelecommunicationLvl2Page: TelecommunicationLvl2Page,
+                                              TelecommunicationLvl3Page: TelecommunicationLvl3Page,
+                                              WebSearchPortalLvl4Page: WebSearchPortalLvl4Page,
+                                              BookPublishingLvl4Page: BookPublishingLvl4Page,
+                                              FilmMusicPublishingLvl3Page: FilmMusicPublishingLvl3Page,
+                                              FilmVideoActivitiesLvl4Page: FilmVideoActivitiesLvl4Page,
+                                              NewsOtherContentDistributionLvl4Page: NewsOtherContentDistributionLvl4Page,
+                                              ProgrammingBroadcastingDistributionLvl3Page: ProgrammingBroadcastingDistributionLvl3Page,
+                                              PublishingLvl2Page: PublishingLvl2Page,
+                                              PublishingLvl3Page: PublishingLvl3Page,
+                                              SoftwarePublishingLvl4Page: SoftwarePublishingLvl4Page,
 
 
                                             )(implicit
@@ -49,31 +61,30 @@ class PublishingTelecomsController @Inject()(
 
   override val messagesApi: MessagesApi = mcc.messagesApi
 
-  private val FeeContractLvl4Form: Form[FormValues] = formWithSingleMandatoryField("feeContract4")
-  private val PropertyDevelopmentLvl4Form: Form[FormValues] = formWithSingleMandatoryField("propertyDev4")
-  private val RealEstateLvl3Form: Form[FormValues] = formWithSingleMandatoryField("realEstate3")
-  private val AuxiliaryFinancialLvl3Form: Form[FormValues] = formWithSingleMandatoryField("auxFinance3")
-  private val AuxiliaryInsuranceLvl4Form: Form[FormValues] = formWithSingleMandatoryField("auxInsurance4")
-  private val AuxiliaryNonInsuranceLvl4Form: Form[FormValues] = formWithSingleMandatoryField("auxNonInsurance4")
-  private val FinanceInsuranceLvl2Form: Form[FormValues] = formWithSingleMandatoryField("finance2")
-  private val FinancialServicesLvl3Form: Form[FormValues] = formWithSingleMandatoryField("financial3")
-  private val HoldingCompaniesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("holding4")
-  private val InsuranceLvl3Form: Form[FormValues] = formWithSingleMandatoryField("insurance3")
-  private val InsuranceTypeLvl4Form: Form[FormValues] = formWithSingleMandatoryField("insurance4")
-  private val MonetaryIntermediationLvl4Form: Form[FormValues] = formWithSingleMandatoryField("monetary4")
-  private val OtherFinancialLvl4Form: Form[FormValues] = formWithSingleMandatoryField("otherFinance4")
-  private val TrustsFundsLvl4Form: Form[FormValues] = formWithSingleMandatoryField("trusts4")
+  private val ComputerInfrastructureDataHostingLvl3Form: Form[FormValues] = formWithSingleMandatoryField("infra3")
+  private val ComputerProgrammingConsultancyLvl3Form: Form[FormValues] = formWithSingleMandatoryField("programming3")
+  private val TelecommunicationLvl2Form: Form[FormValues] = formWithSingleMandatoryField("telecommunication2")
+  private val TelecommunicationLvl3Form: Form[FormValues] = formWithSingleMandatoryField("telecommunication3")
+  private val WebSearchPortalLvl4Form: Form[FormValues] = formWithSingleMandatoryField("webSearch4")
+  private val BookPublishingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("book4")
+  private val FilmMusicPublishingLvl3Form: Form[FormValues] = formWithSingleMandatoryField("filmPublishing3")
+  private val FilmVideoActivitiesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("film4")
+  private val NewsOtherContentDistributionLvl4Form: Form[FormValues] = formWithSingleMandatoryField("news4")
+  private val ProgrammingBroadcastingDistributionLvl3Form: Form[FormValues] = formWithSingleMandatoryField("broadcasting3")
+  private val PublishingLvl2Form: Form[FormValues] = formWithSingleMandatoryField("publishing2")
+  private val PublishingLvl3Form: Form[FormValues] = formWithSingleMandatoryField("publishing3")
+  private val SoftwarePublishingLvl4Form: Form[FormValues] = formWithSingleMandatoryField("softwarePublishing4")
 
-  def loadFeeContractLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(FeeContractLvl4Page(FeeContractLvl4Form)).toFuture
+  def loadComputerInfrastructureDataHostingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(ComputerInfrastructureDataHostingLvl3Page(ComputerInfrastructureDataHostingLvl3Form)).toFuture
   }
 
-  def submitFeeContractLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+  def submitComputerInfrastructureDataHostingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    FeeContractLvl4Form
+    ComputerInfrastructureDataHostingLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FeeContractLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ComputerInfrastructureDataHostingLvl3Page(formWithErrors)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -81,16 +92,16 @@ class PublishingTelecomsController @Inject()(
       )
   }
 
-  def loadPropertyDevelopmentLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(PropertyDevelopmentLvl4Page(PropertyDevelopmentLvl4Form)).toFuture
+  def loadComputerProgrammingConsultancyLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(ComputerProgrammingConsultancyLvl3Page(ComputerProgrammingConsultancyLvl3Form)).toFuture
   }
 
-  def submitPropertyDevelopmentLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+  def submitComputerProgrammingConsultancyLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    PropertyDevelopmentLvl4Form
+    ComputerProgrammingConsultancyLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(PropertyDevelopmentLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ComputerProgrammingConsultancyLvl3Page(formWithErrors)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -98,16 +109,16 @@ class PublishingTelecomsController @Inject()(
       )
   }
 
-  def loadRealEstateLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(RealEstateLvl3Page(RealEstateLvl3Form)).toFuture
+  def loadTelecommunicationLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(TelecommunicationLvl2Page(TelecommunicationLvl2Form)).toFuture
   }
 
-  def submitRealEstateLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
+  def submitTelecommunicationLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    RealEstateLvl3Form
+    TelecommunicationLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(RealEstateLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(TelecommunicationLvl2Page(formWithErrors)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -115,16 +126,16 @@ class PublishingTelecomsController @Inject()(
       )
   }
 
-  def loadAuxiliaryFinancialLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AuxiliaryFinancialLvl3Page(AuxiliaryFinancialLvl3Form)).toFuture
+  def loadTelecommunicationLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(TelecommunicationLvl3Page(TelecommunicationLvl3Form)).toFuture
   }
 
-  def submitAuxiliaryFinancialLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
+  def submitTelecommunicationLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    AuxiliaryFinancialLvl3Form
+    TelecommunicationLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AuxiliaryFinancialLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(TelecommunicationLvl3Page(formWithErrors)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -132,16 +143,16 @@ class PublishingTelecomsController @Inject()(
       )
   }
 
-  def loadAuxiliaryInsuranceLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AuxiliaryInsuranceLvl4Page(AuxiliaryInsuranceLvl4Form)).toFuture
+  def loadWebSearchPortalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(WebSearchPortalLvl4Page(WebSearchPortalLvl4Form)).toFuture
   }
 
-  def submitAuxiliaryInsuranceLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+  def submitWebSearchPortalLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    AuxiliaryInsuranceLvl4Form
+    WebSearchPortalLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AuxiliaryInsuranceLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(WebSearchPortalLvl4Page(formWithErrors)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -149,16 +160,16 @@ class PublishingTelecomsController @Inject()(
       )
   }
 
-  def loadAuxiliaryNonInsuranceLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(AuxiliaryNonInsuranceLvl4Page(AuxiliaryNonInsuranceLvl4Form)).toFuture
+  def loadBookPublishingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(BookPublishingLvl4Page(BookPublishingLvl4Form)).toFuture
   }
 
-  def submitAuxiliaryNonInsuranceLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+  def submitBookPublishingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    AuxiliaryNonInsuranceLvl4Form
+    BookPublishingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(AuxiliaryNonInsuranceLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(BookPublishingLvl4Page(formWithErrors)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -166,16 +177,16 @@ class PublishingTelecomsController @Inject()(
       )
   }
 
-  def loadFinanceInsuranceLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(FinanceInsuranceLvl2Page(FinanceInsuranceLvl2Form)).toFuture
+  def loadFilmMusicPublishingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(FilmMusicPublishingLvl3Page(FilmMusicPublishingLvl3Form)).toFuture
   }
 
-  def submitFinanceInsuranceLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
+  def submitFilmMusicPublishingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    FinanceInsuranceLvl2Form
+    FilmMusicPublishingLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FinanceInsuranceLvl2Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(FilmMusicPublishingLvl3Page(formWithErrors)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -183,16 +194,16 @@ class PublishingTelecomsController @Inject()(
       )
   }
 
-  def loadFinancialServicesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(FinancialServicesLvl3Page(FinancialServicesLvl3Form)).toFuture
+  def loadFilmVideoActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(FilmVideoActivitiesLvl4Page(FilmVideoActivitiesLvl4Form)).toFuture
   }
 
-  def submitFinancialServicesLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
+  def submitFilmVideoActivitiesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    FinancialServicesLvl3Form
+    FilmVideoActivitiesLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(FinancialServicesLvl3Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(FilmVideoActivitiesLvl4Page(formWithErrors)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -200,16 +211,16 @@ class PublishingTelecomsController @Inject()(
       )
   }
 
-  def loadHoldingCompaniesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(HoldingCompaniesLvl4Page(HoldingCompaniesLvl4Form)).toFuture
+  def loadNewsOtherContentDistributionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(NewsOtherContentDistributionLvl4Page(NewsOtherContentDistributionLvl4Form)).toFuture
   }
 
-  def submitHoldingCompaniesLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+  def submitNewsOtherContentDistributionLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    HoldingCompaniesLvl4Form
+    NewsOtherContentDistributionLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(HoldingCompaniesLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(NewsOtherContentDistributionLvl4Page(formWithErrors)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -217,16 +228,16 @@ class PublishingTelecomsController @Inject()(
       )
   }
 
-  def loadTrustsFundsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(TrustsFundsLvl4Page(TrustsFundsLvl4Form)).toFuture
+  def loadProgrammingBroadcastingDistributionLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(ProgrammingBroadcastingDistributionLvl3Page(ProgrammingBroadcastingDistributionLvl3Form)).toFuture
   }
 
-  def submitTrustsFundsLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+  def submitProgrammingBroadcastingDistributionLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    TrustsFundsLvl4Form
+    ProgrammingBroadcastingDistributionLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(TrustsFundsLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(ProgrammingBroadcastingDistributionLvl3Page(formWithErrors)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -234,16 +245,16 @@ class PublishingTelecomsController @Inject()(
       )
   }
 
-  def loadOtherFinancialLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(OtherFinancialLvl4Page(OtherFinancialLvl4Form)).toFuture
+  def loadPublishingLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(PublishingLvl2Page(PublishingLvl2Form)).toFuture
   }
 
-  def submitOtherFinancialLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+  def submitPublishingLvl2Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    OtherFinancialLvl4Form
+    PublishingLvl2Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(OtherFinancialLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(PublishingLvl2Page(formWithErrors)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -251,16 +262,16 @@ class PublishingTelecomsController @Inject()(
       )
   }
 
-  def loadMonetaryIntermediationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(MonetaryIntermediationLvl4Page(MonetaryIntermediationLvl4Form)).toFuture
+  def loadPublishingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(PublishingLvl3Page(PublishingLvl3Form)).toFuture
   }
 
-  def submitMonetaryIntermediationLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+  def submitPublishingLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    MonetaryIntermediationLvl4Form
+    PublishingLvl3Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(MonetaryIntermediationLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(PublishingLvl3Page(formWithErrors)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -268,16 +279,16 @@ class PublishingTelecomsController @Inject()(
       )
   }
 
-  def loadInsuranceTypeLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(InsuranceTypeLvl4Page(InsuranceTypeLvl4Form)).toFuture
+  def loadSoftwarePublishingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(SoftwarePublishingLvl4Page(SoftwarePublishingLvl4Form)).toFuture
   }
 
-  def submitInsuranceTypeLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
+  def submitSoftwarePublishingLvl4Page(): Action[AnyContent] = enrolled.async { implicit request =>
     implicit val eori: EORI = request.eoriNumber
-    InsuranceTypeLvl4Form
+    SoftwarePublishingLvl4Form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(InsuranceTypeLvl4Page(formWithErrors)).toFuture,
+        formWithErrors => BadRequest(SoftwarePublishingLvl4Page(formWithErrors)).toFuture,
         form => {
           store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
           Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
@@ -285,21 +296,5 @@ class PublishingTelecomsController @Inject()(
       )
   }
 
-  def loadInsuranceLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    Ok(InsuranceLvl3Page(InsuranceLvl3Form)).toFuture
-  }
-
-  def submitInsuranceLvl3Page(): Action[AnyContent] = enrolled.async { implicit request =>
-    implicit val eori: EORI = request.eoriNumber
-    InsuranceLvl3Form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => BadRequest(InsuranceLvl3Page(formWithErrors)).toFuture,
-        form => {
-          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
-          Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
-        }
-      )
-  }
 
 }
