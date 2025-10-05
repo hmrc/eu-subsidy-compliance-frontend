@@ -353,6 +353,44 @@ POST       /nace-level-four/film-video                                          
 GET        /nace-level-four/book-publishing                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.loadBookPublishingLvl4Page()
 POST       /nace-level-four/book-publishing                                                          uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PublishingTelecomsController.submitBookPublishingLvl4Page()
 
+GET        /nace-level-two/water                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.loadWaterLvl2Page()
+POST       /nace-level-two/water                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.submitWaterLvl2Page()
+
+GET        /nace-level-two/accommodation                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.loadAccommodationFoodLvl2Page()
+POST       /nace-level-two/accommodation                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.submitAccommodationFoodLvl2Page()
+
+GET        /nace-level-three/accommodation                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.loadAccommodationLvl3Page()
+POST       /nace-level-three/accommodation                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.submitAccommodationLvl3Page()
+
+GET        /nace-level-three/food-beverage-activities                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.loadFoodBeverageActivitiesLvl3Page()
+POST       /nace-level-three/food-beverage-activities                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.submitFoodBeverageActivitiesLvl3Page()
+
+GET        /nace-level-three/waste-collection-recovery                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.loadWasteCollectionRecoveryLvl3Page()
+POST       /nace-level-three/waste-collection-recovery                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.submitWasteCollectionRecoveryLvl3Page()
+
+GET        /nace-level-three/electricity                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.loadElectricityLvl3Page()
+POST       /nace-level-three/electricity                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.submitElectricityLvl3Page()
+
+GET        /nace-level-four/electricity                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.loadElectricityLvl4Page()
+POST       /nace-level-four/electricity                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.submitElectricityLvl4Page()
+
+GET        /nace-level-four/gas-manufacture                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.loadGasManufactureLvl4Page()
+POST       /nace-level-four/gas-manufacture                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.submitGasManufactureLvl4Page()
+
+GET        /nace-level-four/waste-collection                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.loadWasteCollectionLvl4Page()
+POST       /nace-level-four/waste-collection                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.submitWasteCollectionLvl4Page()
+
+GET        /nace-level-four/waste-disposal                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.loadWasteDisposalLvl4Page()
+POST       /nace-level-four/waste-disposal                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.submitWasteDisposalLvl4Page()
+
+GET        /nace-level-four/waste-recovery                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.loadWasteRecoveryLvl4Page()
+POST       /nace-level-four/waste-recovery                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.submitWasteRecoveryLvl4Page()
+
+GET        /nace-level-four/event-catering-other                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.loadEventCateringOtherFoodActivitiesLvl4Page()
+POST       /nace-level-four/event-catering-other                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.submitEventCateringOtherFoodActivitiesLvl4Page()
+
+GET        /nace-level-four/restaurant-food-services                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.loadRestaurantFoodServicesLvl4Page()
+POST       /nace-level-four/restaurant-food-services                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.submitRestaurantFoodServicesLvl4Page()
 
 GET        /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSectorForUpdate
 POST       /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.updateIndustrySector

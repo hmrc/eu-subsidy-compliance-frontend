@@ -67,6 +67,22 @@ class Navigator @Inject(){
     case "INT06" => routes.GeneralTradeGroupsController.loadPaperPrintedProductsPage
     case "INT07" => routes.GeneralTradeGroupsController.loadVehiclesTransportPage
 
+    case "35"  => routes.AccomodationUtilitiesController.loadElectricityLvl3Page()
+    case "35.1"  => routes.AccomodationUtilitiesController.loadElectricityLvl4Page()
+    case "35.2"  => routes.AccomodationUtilitiesController.loadGasManufactureLvl4Page()
+
+    case "38.1"  => routes.AccomodationUtilitiesController.loadWasteCollectionLvl4Page()
+    case "38"  => routes.AccomodationUtilitiesController.loadWasteCollectionRecoveryLvl3Page()
+    case "38.3"  => routes.AccomodationUtilitiesController.loadWasteDisposalLvl4Page()
+    case "38.2"  => routes.AccomodationUtilitiesController.loadWasteRecoveryLvl4Page()
+    case "E"  => routes.AccomodationUtilitiesController.loadWaterLvl2Page()
+
+    case "I"  => routes.AccomodationUtilitiesController.loadAccommodationFoodLvl2Page()
+    case "55"  => routes.AccomodationUtilitiesController.loadAccommodationLvl3Page()
+    case "56.2"  => routes.AccomodationUtilitiesController.loadEventCateringOtherFoodActivitiesLvl4Page()
+    case "56"  => routes.AccomodationUtilitiesController.loadFoodBeverageActivitiesLvl3Page()
+    case "56.1"  => routes.AccomodationUtilitiesController.loadRestaurantFoodServicesLvl4Page()
+
     case "F"     => routes.ConstructionController.loadConstructionLvl2Page
     case "42"    => routes.ConstructionController.loadCivilEngineeringLvl3Page
     case "42.1"  => routes.ConstructionController.loadConstructionRoadsRailwaysLvl4Page
