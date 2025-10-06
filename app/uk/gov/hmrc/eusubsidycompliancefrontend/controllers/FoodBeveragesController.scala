@@ -27,8 +27,7 @@ import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.EORI
 import uk.gov.hmrc.eusubsidycompliancefrontend.navigation.Navigator
 import uk.gov.hmrc.eusubsidycompliancefrontend.persistence.Store
 import uk.gov.hmrc.eusubsidycompliancefrontend.syntax.FutureSyntax.FutureOps
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.manufacturing.food.{AnimalFeedsLvl4Page, BakeryAndFarinaceousLvl4Page, DairyProductsLvl4Page, FoodLvl3Page, FruitAndVegLvl4Page, GrainAndStarchLvl4Page, MeatLvl4Page, OilsAndFatsLvl4Page, OtherFoodProductsLvl4Page}
-
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.manufacturing.foodBeverages._
 import javax.inject.Inject
 
 class FoodBeveragesController @Inject()(

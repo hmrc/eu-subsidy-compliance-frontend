@@ -39,7 +39,7 @@ govukRadios : GovukRadios
 if(isUpdate)
     controllers.routes.UndertakingController.updateIndustrySector
 else
-    controllers.routes.AgricultureController.submitAgricultureLvl3Page
+    controllers.routes.AgricultureController.submitAgricultureLvl3Page()
 }
 
 @radioText(id: String, content: String) = {
