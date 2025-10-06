@@ -799,7 +799,7 @@ package object types extends SimpleJson {
     val inlandFreightWaterTransport: types.Sector.Value = Value("50.4")
     val inlandFreightWaterTransport4: types.Sector.Value = Value("50.40")
 
-    val AirTransport: types.Sector.Value = Value("51")
+    val airTransport: types.Sector.Value = Value("51")
     val passengerAirTransport: types.Sector.Value = Value("51.1")
     val passengerAirTransport4: types.Sector.Value = Value("51.10")
     val freightAndSpaceAirTransport: types.Sector.Value = Value("51.2")

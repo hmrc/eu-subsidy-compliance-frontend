@@ -43,7 +43,8 @@ class FoodBeveragesController @Inject()(
                                              grainAndStarchLvl4Page: GrainAndStarchLvl4Page,
                                              meatLvl4Page: MeatLvl4Page,
                                              oilsAndFatsLvl4Page: OilsAndFatsLvl4Page,
-                                             otherFoodProductsLvl4Page: OtherFoodProductsLvl4Page
+                                             otherFoodProductsLvl4Page: OtherFoodProductsLvl4Page,
+                                             beveragesLvl4Page: BeveragesLvl4Page
                                            )(implicit
                                              val appConfig: AppConfig
                                            ) extends BaseController(mcc){
@@ -59,6 +60,7 @@ class FoodBeveragesController @Inject()(
   private val meatLvl4Form: Form[FormValues] = formWithSingleMandatoryField("meat4")
   private val oilsAndFatsLvl4Form: Form[FormValues] = formWithSingleMandatoryField("oils4")
   private val otherFoodProductsLvl4Form: Form[FormValues] = formWithSingleMandatoryField("otherFood4")
+  private val beveragesLvl4Form: Form[FormValues] = formWithSingleMandatoryField("beverages4")
 
 
   //FoodLvl3Page
@@ -187,10 +189,57 @@ class FoodBeveragesController @Inject()(
       )
   }
 
-  //OilsAndFatsLvl4Page
+  def loadOilsAndFatsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(oilsAndFatsLvl4Page(oilsAndFatsLvl4Form)).toFuture
+  }
 
+  def submitOilsAndFatsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    oilsAndFatsLvl4Form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => BadRequest(oilsAndFatsLvl4Page(formWithErrors)).toFuture,
+        form =>{
+          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
+        }
+      )
+  }
 
   //OtherFoodProductsLvl4Page
+  def loadOtherFoodProductsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(otherFoodProductsLvl4Page(otherFoodProductsLvl4Form)).toFuture
+  }
 
+  def submitOtherFoodProductsLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    otherFoodProductsLvl4Form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => BadRequest(otherFoodProductsLvl4Page(formWithErrors)).toFuture,
+        form =>{
+          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
+        }
+      )
+  }
+
+
+  def loadBeveragesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+    Ok(beveragesLvl4Page(beveragesLvl4Form)).toFuture
+  }
+
+  def submitBeveragesLvl4Page() : Action[AnyContent] = enrolled.async { implicit request =>
+    implicit val eori: EORI = request.eoriNumber
+    beveragesLvl4Form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => BadRequest(beveragesLvl4Page(formWithErrors)).toFuture,
+        form =>{
+          store.update[UndertakingJourney](_.setUndertakingSector(form.value.toInt))
+          Redirect(navigator.nextPage(form.value, isUpdate = false)).toFuture
+        }
+      )
+  }
 
 }

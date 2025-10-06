@@ -95,6 +95,19 @@ class Navigator @Inject(){
     case "43.4"  => routes.ConstructionController.loadSpecialisedConstructionActivitiesLvl4Page
     case "43.9"  => routes.ConstructionController.loadOtherSpecialisedConstructionLvl4Page
 
+    case "51.2"  => routes.TransportController.loadAirTransportFreightAirLvl4Page()
+    case "51"  => routes.TransportController.loadAirTransportLvl3Page()
+    case "49.4"  => routes.TransportController.loadLandTransportFreightTransportLvl4Page()
+    case "49"  => routes.TransportController.loadLandTransportLvl3Page()
+    case "49.3"  => routes.TransportController.loadLandTransportOtherPassengerLvl4Page()
+    case "49.1"  => routes.TransportController.loadLandTransportPassengerRailLvl4Page()
+    case "53"  => routes.TransportController.loadPostalAndCourierLvl3Page()
+    case "H"  => routes.TransportController.loadTransportLvl2Page()
+    case "52.2"  => routes.TransportController.loadWarehousingSupportActivitiesTransportLvl4Page()
+    case "52.3"  => routes.TransportController.loadWarehousingIntermediationLvl4Page()
+    case "52"  => routes.TransportController.loadWarehousingSupportLvl3Page()
+    case "50"  => routes.TransportController.loadWaterTransportLvl3Page()
+
     case "58.1"  => routes.PublishingTelecomsController.loadBookPublishingLvl4Page()
     case "59"  => routes.PublishingTelecomsController.loadFilmMusicPublishingLvl3Page()
     case "59.1"  => routes.PublishingTelecomsController.loadFilmVideoActivitiesLvl4Page()
