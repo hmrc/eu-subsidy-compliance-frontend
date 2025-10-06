@@ -1,0 +1,170 @@
+@*
+ * Copyright 2023 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
+@import uk.gov.hmrc.eusubsidycompliancefrontend.controllers.routes
+@import uk.gov.hmrc.eusubsidycompliancefrontend.journeys.Journey
+@import uk.gov.hmrc.eusubsidycompliancefrontend.models.types.Sector.Sector
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.helpers.{H1, P}
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.Layout
+@import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.components.Button
+@import views.html.helper.CSPNonce
+
+@this(
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    button: Button,
+    govukErrorSummary: GovukErrorSummary,
+    govukRadios: GovukRadios,
+    govukSummaryList: GovukSummaryList,
+    govukInsetText: GovukInsetText
+)
+
+@(
+    sector: Sector,
+    naceLevel1: String,
+    naceLevel2: String,
+    naceLevel3: String,
+    naceLevel4: String,
+    previous: Journey.Uri
+)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@key = @{"nace.cya"}
+
+@layout(
+    pageTitle = Some(messages(s"$key.title")),
+    backLinkEnabled = true,
+    backLink = Some(previous)
+) {
+
+    @H1(messages(s"$key.title"))
+
+    <h2 class="govuk-heading-m">@messages(s"$key.your-answers")</h2>
+
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(content = Text(messages(s"$key.summary-list.sector.key"))),
+                value = Value(content = Text(messages(s"sector.label.$sector"))),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = routes.UndertakingController.getSector.url,
+                            content = Text(messages("common.cya.change")),
+                            visuallyHiddenText = Some(messages(s"$key.change.hidden.sector"))
+                        )
+                    )
+                ))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 1")),
+                value = Value(content = Text(naceLevel1))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 2")),
+                value = Value(content = Text(naceLevel2))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 3")),
+                value = Value(content = Text(naceLevel3))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages(s"$key.summary-list.lvl.key") + " 4")),
+                value = Value(content = Text(naceLevel4)),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = routes.NACECheckDetailsController.getCheckDetails.url,
+                            content = Text(messages("common.cya.change")),
+                            visuallyHiddenText = Some(messages(s"$key.change.hidden.nace"))
+                        )
+                    )
+                ))
+            )
+        )
+    ))
+
+    <h2 class="govuk-heading-m">@messages(s"$key.nace-categories")</h2>
+
+    <p class="govuk-body">@messages(s"$key.nace-p1")</p>
+
+    <p class="govuk-body">@messages(s"$key.nace-p2")</p>
+
+    @govukInsetText(InsetText(
+        content = Text(messages(s"$key.inset-text"))
+    ))
+
+    @govukSummaryList(SummaryList(
+        rows = Seq(
+            SummaryListRow(
+                key = Key(content = Text(messages(s"$key.nace-level-1"))),
+                value = Value(content = Text(messages(s"$key.x-nace-l1-category")))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages(s"$key.nace-level-2"))),
+                value = Value(content = Text(messages(s"$key.nace-l2-category")))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages(s"$key.nace-level-3"))),
+                value = Value(content = Text(messages(s"$key.nace-l3-category")))
+            ),
+            SummaryListRow(
+                key = Key(content = Text(messages(s"$key.nace-level-4"))),
+                value = Value(content = Text(messages(s"$key.nace-l4-category"))),
+                actions = Some(Actions(
+                    items = Seq(
+                        ActionItem(
+                            href = "#",
+                            content = Text(messages("common.cya.change")),
+                            visuallyHiddenText = Some(messages(s"$key.change.hidden.nace-l4"))
+                        )
+                    )
+                ))
+            )
+        ),
+        classes = "govuk-!-margin-bottom-9"
+    ))
+
+    <h2 class="govuk-heading-m">@messages(s"$key.confirm-details")</h2>
+
+    @formHelper(action = routes.NACEController.postCheckAnswers) {
+        @govukRadios(Radios(
+            fieldset = Some(Fieldset(
+                legend = Some(Legend(
+                    content = Text(messages(s"$key.radio-legend")),
+                    classes = "govuk-fieldset__legend--s"
+                ))
+            )),
+            items = Seq(
+                RadioItem(
+                    content = Text(messages(s"$key.radio-yes")),
+                    value = Some("true"),
+                    id = Some("confirm-yes")
+                ),
+                RadioItem(
+                    content = Text(messages(s"$key.radio-no")),
+                    value = Some("false"),
+                    id = Some("confirm-no")
+                )
+            ),
+            name = "confirmDetails"
+        ))
+
+        @button("common.continue", id = Some("submit-button"))
+        <script @CSPNonce.attr type="text/javascript" src="@controllers.routes.Assets.versioned("javascript/disableFormButtonOnClick.js")"></script>
+        <script @CSPNonce.attr>disableButtonOnClick("submit-button")</script>
+    }
+}
