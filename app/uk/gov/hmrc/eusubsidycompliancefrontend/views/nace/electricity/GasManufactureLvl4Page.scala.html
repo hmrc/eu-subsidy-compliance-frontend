@@ -49,22 +49,22 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-manufacture-gas", messages("NACE.electricityGasSteamAir.Lvl4.manufactureGas"))),
+      content = HtmlContent(radioText("sector-label-manufacture-gas", messages("NACE.ElectricityGasSteamAir.Lvl4.ManufactureGas"))),
       value = Some(Sector.gaseousFuelManufacture.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.gaseousFuelManufacture.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-distribution-gas", messages("NACE.electricityGasSteamAir.Lvl4.distributionGas"))),
+      content = HtmlContent(radioText("sector-label-distribution-gas", messages("NACE.ElectricityGasSteamAir.Lvl4.DistributionGas"))),
       value = Some(Sector.gaseousFuelDistribution.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.gaseousFuelDistribution.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-trade-gas", messages("NACE.electricityGasSteamAir.Lvl4.tradeGas"))),
+      content = HtmlContent(radioText("sector-label-trade-gas", messages("NACE.ElectricityGasSteamAir.Lvl4.TradeGas"))),
       value = Some(Sector.gaseousFuelTrade.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.gaseousFuelTrade.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-storage-gas", messages("NACE.electricityGasSteamAir.Lvl4.storageGas"))),
+      content = HtmlContent(radioText("sector-label-storage-gas", messages("NACE.ElectricityGasSteamAir.Lvl4.StorageGas"))),
       value = Some(Sector.gaseousFuelStorage.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.gaseousFuelStorage.toString)
     )
@@ -73,7 +73,7 @@
 
 
 @layout(
-  pageTitle = Some(messages("NACE.electricityGasSteamAir.Lvl3.gasDistribution.title")),
+  pageTitle = Some(messages("NACE.ElectricityGasSteamAir.Lvl3.GasDistribution.title")),
   backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
@@ -97,7 +97,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.electricityGasSteamAir.Lvl3.gasDistribution.title")),
+          content = Text(messages("NACE.ElectricityGasSteamAir.Lvl3.GasDistribution.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))

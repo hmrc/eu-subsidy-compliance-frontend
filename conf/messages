@@ -1633,6 +1633,11 @@ NACE.ElectricityGasSteamAir.Lvl4.SteamAirConditioning = Steam and air conditioni
 NACE.ElectricityGasSteamAir.Lvl3.BrokersAgentsPowerGas = Activities of brokers and agents for electric power and natural gas
 NACE.ElectricityGasSteamAir.Lvl4.BrokersAgentsPowerGas = Activities of brokers and agents for electric power and natural gas
 
+#elecriticity, gas, steam error messages =
+electricity3.error.required = Select your undertaking’s main business activity in electricity, gas, steam and air conditioning supply
+electricity4.error.required = Select your undertaking’s main business activity in electricity
+gas4.error.required = Select your undertaking’s main business activity in manufacture and distribution of gas
+
 #WaterSewerageWasteRemediation NACE Sector2,3,4
 NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply = Water collection, treatment and supply
 NACE.WaterSewerageWasteRemediation.Lvl2.WaterCollectionSupply.title = What is your undertaking’s main business activity in water supply, sewerage and waste management?
