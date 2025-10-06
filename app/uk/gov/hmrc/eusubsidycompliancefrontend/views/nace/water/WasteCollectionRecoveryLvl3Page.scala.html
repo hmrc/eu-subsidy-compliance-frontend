@@ -52,17 +52,19 @@
       value = Some(Sector.wasteCollection.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.wasteCollection.toString)
     ),
-RadioItem(
-content = HtmlContent(radioText("sector-label-waste-recovery", messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteRecovery"))),
-value = Some(Sector.wasteRecovery.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.wasteRecovery.toString)
-),
-RadioItem(
-content = HtmlContent(radioText("sector-label-waste-disposal-without-recovery", messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery"))),
-value = Some(Sector.wasteDisposal.toString),
-checked = form.data.get(fieldName).fold(false)(x => x == Sector.wasteDisposal.toString)
-)
-
+    RadioItem(
+        content = HtmlContent(radioText("sector-label-waste-recovery", messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteRecovery"))),
+        value = Some(Sector.wasteRecovery.toString),
+        checked = form.data.get(fieldName).fold(false)(x => x == Sector.wasteRecovery.toString)
+    ),
+    RadioItem(
+        content = HtmlContent(radioText("sector-label-waste-disposal-without-recovery", messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteDisposalWithoutRecovery"))),
+        value = Some(Sector.wasteDisposal.toString),
+        checked = form.data.get(fieldName).fold(false)(x => x == Sector.wasteDisposal.toString),
+        hint = Some(Hint(
+            content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl2.WasteDisposalWithoutRecovery.hint"))
+        )),
+    )
   )
 }
 
