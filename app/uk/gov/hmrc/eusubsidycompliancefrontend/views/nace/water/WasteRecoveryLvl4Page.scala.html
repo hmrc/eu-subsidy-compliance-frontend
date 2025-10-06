@@ -99,7 +99,10 @@
       )),
       idPrefix = Some(fieldName),
       name = fieldName,
-      items = radioOptions
+      items = radioOptions,
+       hint = Some(Hint(
+        content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteRecovery.hint"))
+      )),
     ))
 
     @button("continue.button")

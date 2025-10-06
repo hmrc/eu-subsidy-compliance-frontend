@@ -90,11 +90,14 @@
           content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteActivities.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
-        ))
+        )),
       )),
       idPrefix = Some(fieldName),
       name = fieldName,
-      items = radioOptions
+      items = radioOptions,
+        hint = Some(Hint(
+            content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteActivities.hint"))
+        )),
     ))
 
     @button("continue.button")
