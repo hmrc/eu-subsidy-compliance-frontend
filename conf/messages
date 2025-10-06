@@ -908,6 +908,14 @@ NACE.mining.Lvl4.miningSupportPetroleumExtraction = Support activities for petro
 NACE.mining.Lvl3.otherMiningSupport = Other mining and quarrying
 NACE.mining.Lvl4.otherMiningSupport = Support activities for other mining and quarrying
 
+#mining error messages
+coal3.error.required = Select the type of coal your undertaking mines
+miningSupport3.error.required = Select the type of mining or quarrying your undertaking does
+otherMining3.error.required = Select the type of mining or quarrying activity your undertaking does
+otherMining4.error.required = Select the type of mining or quarrying activity your undertaking does
+nonIron4.error.required = Select the type of non-ferrous metal ores your undertaking mines
+quarrying4.error.required = Select the type of sand, stone and clay quarrying your undertaking does
+
 ### Manufacturing NACE Sector2,3,4 ###
 NACE.Manufacturing.title = What type of product does your undertaking manufacture?
 
