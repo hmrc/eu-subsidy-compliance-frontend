@@ -34,13 +34,13 @@
 
 @(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"treatment4"}
+@fieldName = @{"otherFab4"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.MetalsChemicalsController.submitOtherFabricatedProductsLvl4Page
 }
 
 
@@ -51,26 +51,36 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-coating", messages("NACE.Manufacturing.Lvl4.CoatingMetals"))),
-            value = Some(Sector.coating.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.coating.toString)
+            content = HtmlContent(radioText("sector-label-fasteners", messages("NACE.Manufacturing.Lvl4.Fasteners"))),
+            value = Some(Sector.fastenerProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.fastenerProducts.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-heat-treatment", messages("NACE.Manufacturing.Lvl4.HeatTreatment"))),
-            value = Some(Sector.heatTreatment.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.heatTreatment.toString)
+            content = HtmlContent(radioText("sector-label-light-packaging", messages("NACE.Manufacturing.Lvl4.LightMetalPackaging"))),
+            value = Some(Sector.lightMetalPackaging.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.lightMetalPackaging.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-machining", messages("NACE.Manufacturing.Lvl4.Machining"))),
-            value = Some(Sector.machining.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.machining.toString)
+            content = HtmlContent(radioText("sector-label-steel-drums", messages("NACE.Manufacturing.Lvl4.SteelDrumsContainers"))),
+            value = Some(Sector.steelDrums.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.steelDrums.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-wire-springs", messages("NACE.Manufacturing.Lvl4.WireProductsSprings"))),
+            value = Some(Sector.wireProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.wireProducts.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-other", messages("NACE.Manufacturing.Lvl4.OtherFabricatedMetalProducts"))),
+            value = Some(Sector.otherFabricatedMetalProducts.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherFabricatedMetalProducts.toString)
         )
     )
 }
 
 
 @layout(
-  pageTitle = Some(messages("NACE.Manufacturing.TreatmentCoatingMachining.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.OtherFabricatedMetalProducts.title")),
   backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
@@ -81,7 +91,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(messages("NACE.Manufacturing.TreatmentCoatingMachining.error"))
+            content = Text(messages("NACE.Manufacturing.OtherFabricatedMetalProducts.error"))
           )
         ),
         title = Text(messages("common.error.summary.title"))
@@ -90,11 +100,11 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("NACE.Manufacturing.TreatmentCoatingMachining.error"))
+        content = Text(messages("NACE.Manufacturing.OtherFabricatedMetalProducts.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("NACE.Manufacturing.TreatmentCoatingMachining.title")),
+        content = Text(messages("NACE.Manufacturing.OtherFabricatedMetalProducts.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))

@@ -461,6 +461,99 @@ POST       /nace-level-four/freight-passenger                                   
 GET        /nace-level-four/air-transport                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.TransportController.loadAirTransportFreightAirLvl4Page()
 POST       /nace-level-four/air-transport                                                   uk.gov.hmrc.eusubsidycompliancefrontend.controllers.TransportController.submitAirTransportFreightAirLvl4Page()
 
+GET        /nace-level-three/food                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.loadFoodLvl3Page
+POST       /nace-level-three/food                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.submitFoodLvl3Page
+
+GET        /nace-level-four/animal-feed                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.loadAnimalFeedsLvl4Page
+POST       /nace-level-four/animal-feed                                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.submitAnimalFeedsLvl4Page
+
+GET        /nace-level-four/bakery                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.loadBakeryAndFarinaceousLvl4Page
+POST       /nace-level-four/bakery                                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.submitBakeryAndFarinaceousLvl4Page
+
+GET        /nace-level-four/dairy                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.loadDairyProductsLvl4Page
+POST       /nace-level-four/dairy                                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.submitDairyProductsLvl4Page
+
+GET        /nace-level-four/fruit-veg                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.loadFruitAndVegLvl4Page
+POST       /nace-level-four/fruit-veg                                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.submitFruitAndVegLvl4Page
+
+GET        /nace-level-four/grain-starch                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.loadGrainAndStarchLvl4Page
+POST       /nace-level-four/grain-starch                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.submitGrainAndStarchLvl4Page
+
+GET        /nace-level-four/meat                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.loadMeatLvl4Page
+POST       /nace-level-four/meat                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.submitMeatLvl4Page
+
+GET        /nace-level-four/fats                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.loadOilsAndFatsLvl4Page
+POST       /nace-level-four/fats                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.submitOilsAndFatsLvl4Page
+
+GET        /nace-level-four/other-food                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.loadOtherFoodProductsLvl4Page
+POST       /nace-level-four/other-food                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.submitOtherFoodProductsLvl4Page
+
+GET        /nace-level-four/beverages                                  uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.loadBeveragesLvl4Page
+POST       /nace-level-four/beverages                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.FoodBeveragesController.submitBeveragesLvl4Page
+
+GET        /nace-level-three/basic-metal                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.loadBasicMetalsLvl3Page
+POST       /nace-level-three/basic-metal                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.submitBasicMetalsLvl3Page
+
+GET        /nace-level-three/chemical                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.loadChemicalsProductsLvl3Page
+POST       /nace-level-three/chemical                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.submitChemicalsProductsLvl3Page
+
+GET        /nace-level-three/petroleum                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.loadCokePetroleumLvl3Page
+POST       /nace-level-three/petroleum                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.submitCokePetroleumLvl3Page
+
+GET        /nace-level-three/fabricated-metals                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.loadFabricatedMetalsLvl3Page
+POST       /nace-level-three/fabricated-metals                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.submitFabricatedMetalsLvl3Page
+
+GET        /nace-level-three/pharmaceuticals                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.loadPharmaceuticalsLvl3Page
+POST       /nace-level-three/pharmaceuticals                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.submitPharmaceuticalsLvl3Page
+
+GET        /nace-level-four/basic-chemicals                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.loadBasicLvl4Page
+POST       /nace-level-four/basic-chemicals                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.submitBasicLvl4Page
+
+GET        /nace-level-four/casting-metals                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.loadCastingMetalsLvl4Page
+POST       /nace-level-four/casting-metals                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.submitCastingMetalsLvl4Page
+
+GET        /nace-level-four/cutlery                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.loadCutleryToolsHardwareLvl4Page
+POST       /nace-level-four/cutlery                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.submitCutleryToolsHardwareLvl4Page
+
+GET        /nace-level-four/first-processing-steel                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.loadFirstProcessingSteelLvl4Page
+POST       /nace-level-four/first-processing-steel                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.submitFirstProcessingSteelLvl4Page
+
+GET        /nace-level-four/other-fabricated                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.loadOtherFabricatedProductsLvl4Page
+POST       /nace-level-four/other-fabricated                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.submitOtherFabricatedProductsLvl4Page
+
+GET        /nace-level-four/other-chemical                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.loadOtherProductsLvl4Page
+POST       /nace-level-four/other-chemical                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.submitOtherProductsLvl4Page
+
+GET        /nace-level-four/precious-non-fe                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.loadPreciousNonFerrousLvl4Page
+POST       /nace-level-four/precious-non-fe                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.submitPreciousNonFerrousLvl4Page
+
+GET        /nace-level-four/structural-metal                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.loadStructuralMetalLvl4Page
+POST       /nace-level-four/structural-metal                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.submitStructuralMetalLvl4Page
+
+GET        /nace-level-four/tanks                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.loadTanksReservoirsContainersLvl4Page
+POST       /nace-level-four/tanks                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.submitTanksReservoirsContainersLvl4Page
+
+GET        /nace-level-four/treatment-coating                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.loadTreatmentCoatingMachiningLvl4Page
+POST       /nace-level-four/treatment-coating                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.submitTreatmentCoatingMachiningLvl4Page
+
+GET        /nace-level-four/washing                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.loadWashingLvl4Page
+POST       /nace-level-four/washing                                                 uk.gov.hmrc.eusubsidycompliancefrontend.controllers.MetalsChemicalsController.submitWashingLvl4Page
+
+GET        /nace-level-three/paper                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PaperPrintedController.loadPaperLvl3Page
+POST       /nace-level-three/paper                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PaperPrintedController.submitPaperLvl3Page
+
+GET        /nace-level-three/printed                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PaperPrintedController.loadPrintedLvl3Page
+POST       /nace-level-three/printed                                              uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PaperPrintedController.submitPrintedLvl3Page
+
+GET        /nace-level-three/printing                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PaperPrintedController.loadPrintingServicesLvl4Page
+POST       /nace-level-three/printing                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PaperPrintedController.submitPrintingServicesLvl4Page
+
+GET        /nace-level-three/pulp                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PaperPrintedController.loadPulpPaperPaperboardLvl4Page
+POST       /nace-level-three/pulp                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PaperPrintedController.submitPulpPaperPaperboardLvl4Page
+
+GET        /nace-level-three/articles-paper                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PaperPrintedController.loadArticlesPaperPaperboardLvl4Page
+POST       /nace-level-three/articles-paper                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.PaperPrintedController.submitArticlesPaperPaperboardLvl4Page
+
 GET        /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSectorForUpdate
 POST       /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.updateIndustrySector
 

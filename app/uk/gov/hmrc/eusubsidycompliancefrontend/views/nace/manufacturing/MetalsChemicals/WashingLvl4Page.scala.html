@@ -34,13 +34,13 @@
 
 @(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"pharm3"}
+@fieldName = @{"washing4"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.MetalsChemicalsController.submitWashingLvl4Page
 }
 
 
@@ -51,21 +51,21 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-basic", messages("NACE.Manufacturing.Lvl3.BasicPharmaceuticals"))),
-            value = Some(Sector.basicPharmaceuticals.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.basicPharmaceuticals.toString)
+            content = HtmlContent(radioText("sector-label-perfume", messages("NACE.Manufacturing.Lvl4.PerfumesToiletPreparations"))),
+            value = Some(Sector.perfumesToiletPreparations.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.perfumesToiletPreparations.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-preparations", messages("NACE.Manufacturing.Lvl3.PharmaceuticalPreparations"))),
-            value = Some(Sector.pharmaceuticalPreparations.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.pharmaceuticalPreparations.toString)
+            content = HtmlContent(radioText("sector-label-detergents", messages("NACE.Manufacturing.Lvl4.SoapDetergents"))),
+            value = Some(Sector.soap.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.soap.toString)
         )
     )
 }
 
 
 @layout(
-  pageTitle = Some(messages("NACE.Manufacturing.Pharmaceuticals.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.WashingChemicals.title")),
   backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
@@ -76,7 +76,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(messages("NACE.Manufacturing.Pharmaceuticals.error"))
+            content = Text(messages("NACE.Manufacturing.WashingChemicals.error"))
           )
         ),
         title = Text(messages("common.error.summary.title"))
@@ -85,11 +85,11 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("NACE.Manufacturing.Pharmaceuticals.error"))
+        content = Text(messages("NACE.Manufacturing.WashingChemicals.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("NACE.Manufacturing.Pharmaceuticals.title")),
+        content = Text(messages("NACE.Manufacturing.WashingChemicals.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))

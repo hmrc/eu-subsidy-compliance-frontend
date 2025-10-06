@@ -34,13 +34,13 @@
 
 @(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"castingMetals4"}
+@fieldName = @{"basicChem4"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.MetalsChemicalsController.submitBasicLvl4Page
 }
 
 
@@ -51,31 +51,46 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-iron", messages("NACE.Manufacturing.Lvl4.CastingIron"))),
-            value = Some(Sector.iron.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.iron.toString)
+            content = HtmlContent(radioText("sector-label-dyes", messages("NACE.Manufacturing.Lvl4.DyesPigments"))),
+            value = Some(Sector.dyes.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.dyes.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-light-metals", messages("NACE.Manufacturing.Lvl4.CastingLightMetals"))),
-            value = Some(Sector.lightMetals.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.lightMetals.toString)
+            content = HtmlContent(radioText("sector-label-fertilisers", messages("NACE.Manufacturing.Lvl4.FertilisersNitrogen"))),
+            value = Some(Sector.fertilisers.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.fertilisers.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-steel", messages("NACE.Manufacturing.Lvl4.CastingSteel"))),
-            value = Some(Sector.steel.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.steel.toString)
+            content = HtmlContent(radioText("sector-label-industrial-gases", messages("NACE.Manufacturing.Lvl4.IndustrialGases"))),
+            value = Some(Sector.industrialGases.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.industrialGases.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-non-ferrous", messages("NACE.Manufacturing.Lvl4.CastingOtherNonFerrous"))),
-            value = Some(Sector.otherMetals.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherMetals.toString)
+            content = HtmlContent(radioText("sector-label-plastics", messages("NACE.Manufacturing.Lvl4.PlasticsPrimaryForms"))),
+            value = Some(Sector.primaryFormsPlastics.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.primaryFormsPlastics.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-rubber", messages("NACE.Manufacturing.Lvl4.SyntheticRubber"))),
+            value = Some(Sector.syntheticRubber.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.syntheticRubber.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-inorganic", messages("NACE.Manufacturing.Lvl4.OtherInorganicChemicals"))),
+            value = Some(Sector.otherInorganicChemicals.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherInorganicChemicals.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-organic", messages("NACE.Manufacturing.Lvl4.OtherOrganicChemicals"))),
+            value = Some(Sector.otherOrganicChemicals.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherOrganicChemicals.toString)
         )
     )
 }
 
 
 @layout(
-  pageTitle = Some(messages("NACE.Manufacturing.CastingMetals.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.BasicChemicals.title")),
   backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
@@ -86,7 +101,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(messages("NACE.Manufacturing.CastingMetals.error"))
+            content = Text(messages("NACE.Manufacturing.BasicChemicals.error"))
           )
         ),
         title = Text(messages("common.error.summary.title"))
@@ -95,11 +110,11 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("NACE.Manufacturing.CastingMetals.error"))
+        content = Text(messages("NACE.Manufacturing.BasicChemicals.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("NACE.Manufacturing.CastingMetals.title")),
+        content = Text(messages("NACE.Manufacturing.BasicChemicals.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))

@@ -32,15 +32,15 @@
 )
 
 
-@(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"preciousNonIron4"}
+@fieldName = @{"cutlery4"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.MetalsChemicalsController.submitCutleryToolsHardwareLvl4Page
 }
 
 
@@ -51,41 +51,26 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-nuclear-fuel", messages("NACE.Manufacturing.Lvl4.NuclearFuelProcessing"))),
-            value = Some(Sector.nuclearFuelProcessing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.nuclearFuelProcessing.toString)
+            content = HtmlContent(radioText("sector-label-cutlery", messages("NACE.Manufacturing.Lvl4.Cutlery"))),
+            value = Some(Sector.cutlery.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.cutlery.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-aluminium", messages("NACE.Manufacturing.Lvl4.Aluminium"))),
-            value = Some(Sector.aluminiumProduction.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.aluminiumProduction.toString)
+            content = HtmlContent(radioText("sector-label-locks", messages("NACE.Manufacturing.Lvl4.LocksHinges"))),
+            value = Some(Sector.locks.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.locks.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-copper", messages("NACE.Manufacturing.Lvl4.Copper"))),
-            value = Some(Sector.copperProduction.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.copperProduction.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-lead-zinc-tin", messages("NACE.Manufacturing.Lvl4.LeadZincTin"))),
-            value = Some(Sector.leadZincTinProduction.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.leadZincTinProduction.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-precious", messages("NACE.Manufacturing.Lvl4.PreciousMetals"))),
-            value = Some(Sector.preciousMetalsProduction.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.preciousMetalsProduction.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-non-ferrous", messages("NACE.Manufacturing.Lvl4.OtherNonFerrous"))),
-            value = Some(Sector.nonFerrousMetalsProduction.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.nonFerrousMetalsProduction.toString)
+            content = HtmlContent(radioText("sector-label-Tools", messages("NACE.Manufacturing.Lvl4.Tools"))),
+            value = Some(Sector.tools.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.tools.toString)
         )
     )
 }
 
 
 @layout(
-  pageTitle = Some(messages("NACE.Manufacturing.PreciousNonFerrousMetals.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.CutleryToolsHardware.title")),
   backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
@@ -96,7 +81,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(messages("NACE.Manufacturing.PreciousNonFerrousMetals.error"))
+            content = Text(messages("NACE.Manufacturing.CutleryToolsHardware.error"))
           )
         ),
         title = Text(messages("common.error.summary.title"))
@@ -105,11 +90,11 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("NACE.Manufacturing.PreciousNonFerrousMetals.error"))
+        content = Text(messages("NACE.Manufacturing.CutleryToolsHardware.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("NACE.Manufacturing.PreciousNonFerrousMetals.title")),
+        content = Text(messages("NACE.Manufacturing.CutleryToolsHardware.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))
