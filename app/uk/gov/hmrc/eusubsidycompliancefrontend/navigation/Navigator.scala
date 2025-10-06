@@ -171,6 +171,18 @@ class Navigator @Inject(){
     case "88"  => routes.HouseHealthEducationController.loadSocialWorkLvl3Page()
     case "88.9"  => routes.HouseHealthEducationController.loadOtherSocialWorkLvl4Page()
 
+    case "93.2"  => routes.ArtsController.loadAmusementAndRecreationLvl4Page()
+    case "90.1"  => routes.ArtsController.loadArtsCreationLvl4Page()
+    case "90"  => routes.ArtsController.loadArtsCreationPerformingLvl3Page()
+    case "90.3"  => routes.ArtsController.loadArtsPerformingSupportActivitiesLvl4Page()
+    case "S"  => routes.ArtsController.loadArtsSportsRecreationLvl2Page()
+    case "91.4"  => routes.ArtsController.loadBotanicalZoologicalReservesLvl4Page()
+    case "91"  => routes.ArtsController.loadLibrariesArchivesCulturalLvl3Page()
+    case "91.1"  => routes.ArtsController.loadLibrariesArchivesLvl4Page()
+    case "91.2"  => routes.ArtsController.loadMuseumsCollectionsMomumentsLvl4Page()
+    case "93"  => routes.ArtsController.loadSportsAmusementRecreationLvl3Page()
+    case "93.1"  => routes.ArtsController.loadSportsLvl4Page()
+
     case "U"  => routes.HouseHealthEducationController.loadHouseholdsLvl2Page()
     case "98"  => routes.HouseHealthEducationController.loadUndifferentiatedProducingActivitiesLvl4Page()
 

@@ -392,6 +392,39 @@ POST       /nace-level-four/event-catering-other                                
 GET        /nace-level-four/restaurant-food-services                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.loadRestaurantFoodServicesLvl4Page()
 POST       /nace-level-four/restaurant-food-services                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.AccomodationUtilitiesController.submitRestaurantFoodServicesLvl4Page()
 
+GET        /nace-level-two/arts                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.loadArtsSportsRecreationLvl2Page()
+POST       /nace-level-two/arts                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitArtsSportsRecreationLvl2Page()
+
+GET        /nace-level-three/arts                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.loadArtsCreationPerformingLvl3Page()
+POST       /nace-level-three/arts                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitArtsCreationPerformingLvl3Page()
+
+GET        /nace-level-three/cultural                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.loadLibrariesArchivesCulturalLvl3Page()
+POST       /nace-level-three/cultural                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitLibrariesArchivesCulturalLvl3Page()
+
+GET        /nace-level-three/sports                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.loadSportsAmusementRecreationLvl3Page()
+POST       /nace-level-three/sports                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitSportsAmusementRecreationLvl3Page()
+
+GET        /nace-level-four/sports                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.loadSportsLvl4Page()
+POST       /nace-level-four/sports                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitSportsLvl4Page()
+
+GET        /nace-level-four/museums                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.loadMuseumsCollectionsMomumentsLvl4Page()
+POST       /nace-level-four/museums                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitMuseumsCollectionsMomumentsLvl4Page()
+
+GET        /nace-level-four/libraries                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.loadLibrariesArchivesLvl4Page()
+POST       /nace-level-four/libraries                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitLibrariesArchivesLvl4Page()
+
+GET        /nace-level-four/zoo                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.loadBotanicalZoologicalReservesLvl4Page()
+POST       /nace-level-four/zoo                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitBotanicalZoologicalReservesLvl4Page()
+
+GET        /nace-level-four/arts-support                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.loadArtsPerformingSupportActivitiesLvl4Page()
+POST       /nace-level-four/arts-support                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitArtsPerformingSupportActivitiesLvl4Page()
+
+GET        /nace-level-four/arts-creation                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.loadArtsCreationLvl4Page()
+POST       /nace-level-four/arts-creation                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitArtsCreationLvl4Page()
+
+GET        /nace-level-four/amusement-recreation                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.loadAmusementAndRecreationLvl4Page()
+POST       /nace-level-four/amusement-recreation                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitAmusementAndRecreationPage()
+
 GET        /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSectorForUpdate
 POST       /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.updateIndustrySector
 
