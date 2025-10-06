@@ -34,7 +34,7 @@
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"airTransp4"}
 
 @actionUrl = @{
   if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
@@ -49,21 +49,21 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-cargo-handling", messages("NACE.TransportationAndStorage.Lvl4.FreightIntermediation"))),
-      value = Some(Sector.freightTransportIntermediationServiceActivities.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.freightTransportIntermediationServiceActivities.toString)
+      content = HtmlContent(radioText("sector-label-freight-air", messages("NACE.TransportationAndStorage.Lvl4.FreightAir"))),
+      value = Some(Sector.freightAirTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.freightAirTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-logistics-services", messages("NACE.TransportationAndStorage.Lvl4.PassengerIntermediation"))),
-      value = Some(Sector.passengerTransportIntermediationServiceActivities.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.passengerTransportIntermediationServiceActivities.toString)
+      content = HtmlContent(radioText("sector-label-space-transport", messages("NACE.TransportationAndStorage.Lvl4.SpaceTransport"))),
+      value = Some(Sector.spaceTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.spaceTransport.toString)
     )
   )
 }
 
 
 @layout(
-  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl3.IntermediationTransport.title")),
+  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl3.FreightAirSpace.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -88,7 +88,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.TransportationAndStorage.Lvl3.IntermediationTransport.title")),
+          content = Text(messages("NACE.TransportationAndStorage.Lvl3.FreightAirSpace.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))

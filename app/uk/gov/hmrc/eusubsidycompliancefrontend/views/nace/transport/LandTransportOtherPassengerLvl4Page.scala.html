@@ -31,9 +31,10 @@
   govukRadios : GovukRadios
 )
 
+
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"landOther4"}
 
 @actionUrl = @{
   if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
@@ -48,30 +49,36 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-inland-freight", messages("NACE.TransportationAndStorage.Lvl3.InlandFreight"))),
-      value = Some(Sector.inlandFreightWaterTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.inlandFreightWaterTransport.toString)
+      content = HtmlContent(radioText("sector-label-non-scheduled-passenger", messages("NACE.TransportationAndStorage.Lvl4.NonScheduledPassengerRoad"))),
+      value = Some(Sector.nonScheduledPassengerRoadTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.nonScheduledPassengerRoadTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-inland-passenger", messages("NACE.TransportationAndStorage.Lvl3.InlandPassenger"))),
-      value = Some(Sector.inlandPassengerWaterTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.inlandPassengerWaterTransport.toString)
+      content = HtmlContent(radioText("sector-label-on-demand-passenger", messages("NACE.TransportationAndStorage.Lvl4.OnDemandPassenger"))),
+      value = Some(Sector.onDemandPassengerRoadTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.onDemandPassengerRoadTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-sea-coastal-freight", messages("NACE.TransportationAndStorage.Lvl3.SeaCoastalFreight"))),
-      value = Some(Sector.coastalFreightWaterTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.coastalFreightWaterTransport.toString)
+      content = HtmlContent(radioText("sector-label-cableways-ski-lifts", messages("NACE.TransportationAndStorage.Lvl4.CablewaysSkiLifts"))),
+      value = Some(Sector.cablewaysPassengerTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.cablewaysPassengerTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-sea-coastal-passenger", messages("NACE.TransportationAndStorage.Lvl3.SeaCoastalPassenger"))),
-      value = Some(Sector.coastalPassengerWaterTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.coastalPassengerWaterTransport.toString)
+      content = HtmlContent(radioText("sector-label-scheduled-passenger-road", messages("NACE.TransportationAndStorage.Lvl4.ScheduledPassengerRoad"))),
+      value = Some(Sector.scheduledPassengerRoadTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.scheduledPassengerRoadTransport.toString)
+    ),
+    RadioItem(
+      content = HtmlContent(radioText("sector-label-other-land-transport", messages("NACE.TransportationAndStorage.Lvl4.OtherLandTransport"))),
+      value = Some(Sector.otherLandTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherLandTransport.toString)
     )
   )
 }
 
+
 @layout(
-  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl2.WaterTransport.title")),
+  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -96,7 +103,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.TransportationAndStorage.Lvl2.WaterTransport.title")),
+          content = Text(messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))

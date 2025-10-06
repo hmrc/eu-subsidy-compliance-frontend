@@ -34,7 +34,7 @@
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"landTransp4"}
 
 @actionUrl = @{
   if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
@@ -49,6 +49,46 @@
 @radioOptions = @{
   Seq(
     RadioItem(
+      content = HtmlContent(radioText("sector-label-passenger-heavy-rail", messages("NACE.TransportationAndStorage.Lvl4.PassengerHeavyRail"))),
+      value = Some(Sector.passengerHeavyRailTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.passengerHeavyRailTransport.toString)
+    ),
+    RadioItem(
+      content = HtmlContent(radioText("sector-label-other-passenger-rail", messages("NACE.TransportationAndStorage.Lvl4.OtherPassengerRail"))),
+      value = Some(Sector.otherPassengerRailTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPassengerRailTransport.toString)
+    ),
+    RadioItem(
+      content = HtmlContent(radioText("sector-label-freight-rail", messages("NACE.TransportationAndStorage.Lvl4.FreightRail"))),
+      value = Some(Sector.freightRailTransport4.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.freightRailTransport4.toString)
+    ),
+    RadioItem(
+      content = HtmlContent(radioText("sector-label-non-scheduled-passenger", messages("NACE.TransportationAndStorage.Lvl4.NonScheduledPassengerRoad"))),
+      value = Some(Sector.nonScheduledPassengerRoadTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.nonScheduledPassengerRoadTransport.toString)
+    ),
+    RadioItem(
+      content = HtmlContent(radioText("sector-label-on-demand-passenger", messages("NACE.TransportationAndStorage.Lvl4.OnDemandPassenger"))),
+      value = Some(Sector.onDemandPassengerRoadTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.onDemandPassengerRoadTransport.toString)
+    ),
+    RadioItem(
+      content = HtmlContent(radioText("sector-label-cableways-ski-lifts", messages("NACE.TransportationAndStorage.Lvl4.CablewaysSkiLifts"))),
+      value = Some(Sector.cablewaysPassengerTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.cablewaysPassengerTransport.toString)
+    ),
+    RadioItem(
+      content = HtmlContent(radioText("sector-label-scheduled-passenger-road", messages("NACE.TransportationAndStorage.Lvl4.ScheduledPassengerRoad"))),
+      value = Some(Sector.scheduledPassengerRoadTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.scheduledPassengerRoadTransport.toString)
+    ),
+    RadioItem(
+      content = HtmlContent(radioText("sector-label-other-land-transport", messages("NACE.TransportationAndStorage.Lvl4.OtherLandTransport"))),
+      value = Some(Sector.otherLandTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherLandTransport.toString)
+    ),
+    RadioItem(
       content = HtmlContent(radioText("sector-label-freight-road", messages("NACE.TransportationAndStorage.Lvl4.FreightRoad"))),
       value = Some(Sector.freightRoadTransport4.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.freightRoadTransport4.toString)
@@ -57,6 +97,11 @@
       content = HtmlContent(radioText("sector-label-removal-services", messages("NACE.TransportationAndStorage.Lvl4.RemovalServices"))),
       value = Some(Sector.removalServices.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.removalServices.toString)
+    ),
+    RadioItem(
+      content = HtmlContent(radioText("sector-label-pipeline-transport", messages("NACE.TransportationAndStorage.Lvl4.PipelineTransport"))),
+      value = Some(Sector.pipelineTransport4.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.pipelineTransport4.toString)
     )
   )
 }
