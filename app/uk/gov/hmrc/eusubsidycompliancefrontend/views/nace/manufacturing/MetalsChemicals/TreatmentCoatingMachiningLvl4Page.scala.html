@@ -34,13 +34,13 @@
 
 @(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"cutlery"}
+@fieldName = @{"treatment4"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.MetalsChemicalsController.submitTreatmentCoatingMachiningLvl4Page
 }
 
 
@@ -51,26 +51,26 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-cutlery", messages("NACE.Manufacturing.Lvl4.Cutlery"))),
-            value = Some(Sector.cutlery.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.cutlery.toString)
+            content = HtmlContent(radioText("sector-label-coating", messages("NACE.Manufacturing.Lvl4.CoatingMetals"))),
+            value = Some(Sector.coating.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.coating.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-locks", messages("NACE.Manufacturing.Lvl4.LocksHinges"))),
-            value = Some(Sector.locks.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.locks.toString)
+            content = HtmlContent(radioText("sector-label-heat-treatment", messages("NACE.Manufacturing.Lvl4.HeatTreatment"))),
+            value = Some(Sector.heatTreatment.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.heatTreatment.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-Tools", messages("NACE.Manufacturing.Lvl4.Tools"))),
-            value = Some(Sector.tools.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.tools.toString)
+            content = HtmlContent(radioText("sector-label-machining", messages("NACE.Manufacturing.Lvl4.Machining"))),
+            value = Some(Sector.machining.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.machining.toString)
         )
     )
 }
 
 
 @layout(
-  pageTitle = Some(messages("NACE.Manufacturing.CutleryToolsHardware.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.TreatmentCoatingMachining.title")),
   backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
@@ -81,7 +81,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(messages("NACE.Manufacturing.CutleryToolsHardware.error"))
+            content = Text(messages("NACE.Manufacturing.TreatmentCoatingMachining.error"))
           )
         ),
         title = Text(messages("common.error.summary.title"))
@@ -90,11 +90,11 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("NACE.Manufacturing.CutleryToolsHardware.error"))
+        content = Text(messages("NACE.Manufacturing.TreatmentCoatingMachining.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("NACE.Manufacturing.CutleryToolsHardware.title")),
+        content = Text(messages("NACE.Manufacturing.TreatmentCoatingMachining.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))

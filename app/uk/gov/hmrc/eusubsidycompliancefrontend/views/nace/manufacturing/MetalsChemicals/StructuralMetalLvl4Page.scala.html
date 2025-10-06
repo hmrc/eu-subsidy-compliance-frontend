@@ -32,15 +32,15 @@
 )
 
 
-@(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"steel4"}
+@fieldName = @{"structuralMetal4"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.MetalsChemicalsController.submitStructuralMetalLvl4Page
 }
 
 
@@ -51,31 +51,21 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-bars", messages("NACE.Manufacturing.Lvl4.ColdDrawingBars"))),
-            value = Some(Sector.barsColdDrawing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.barsColdDrawing.toString)
+            content = HtmlContent(radioText("sector-label-doors-windows", messages("NACE.Manufacturing.Lvl4.MetalDoorsWindows"))),
+            value = Some(Sector.metalDoors.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.metalDoors.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-wire", messages("NACE.Manufacturing.Lvl4.ColdDrawingWire"))),
-            value = Some(Sector.wireColdDrawing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.wireColdDrawing.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-forming", messages("NACE.Manufacturing.Lvl4.ColdFormingFolding"))),
-            value = Some(Sector.foldingColdDrawing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.foldingColdDrawing.toString)
-        ),
-        RadioItem(
-            content = HtmlContent(radioText("sector-label-narrow-strip", messages("NACE.Manufacturing.Lvl4.ColdRollingStrip"))),
-            value = Some(Sector.narrowStripColdDrawing.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.narrowStripColdDrawing.toString)
+            content = HtmlContent(radioText("sector-label-cutlery", messages("NACE.Manufacturing.Lvl4.MetalStructures"))),
+            value = Some(Sector.metalStructures.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.metalStructures.toString)
         )
     )
 }
 
 
 @layout(
-  pageTitle = Some(messages("NACE.Manufacturing.OtherSteelProducts.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.MetalStructures.title")),
   backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
@@ -86,7 +76,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(messages("NACE.Manufacturing.OtherSteelProducts.error"))
+            content = Text(messages("NACE.Manufacturing.MetalStructures.error"))
           )
         ),
         title = Text(messages("common.error.summary.title"))
@@ -95,11 +85,11 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("NACE.Manufacturing.OtherSteelProducts.error"))
+        content = Text(messages("NACE.Manufacturing.MetalStructures.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("NACE.Manufacturing.OtherSteelProducts.title")),
+        content = Text(messages("NACE.Manufacturing.MetalStructures.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))

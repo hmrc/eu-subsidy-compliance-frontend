@@ -34,13 +34,13 @@
 
 @(form:  Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"otherProducts4"}
+@fieldName = @{"steel4"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.MetalsChemicalsController.submitFirstProcessingSteelLvl4Page
 }
 
 
@@ -51,21 +51,31 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-biofuels", messages("NACE.Manufacturing.Lvl4.LiquidBiofuels"))),
-            value = Some(Sector.liquidBiofuels.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.liquidBiofuels.toString)
+            content = HtmlContent(radioText("sector-label-bars", messages("NACE.Manufacturing.Lvl4.ColdDrawingBars"))),
+            value = Some(Sector.barsColdDrawing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.barsColdDrawing.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-detergents.", messages("NACE.Manufacturing.Lvl4.OtherChemicals"))),
-            value = Some(Sector.otherChemicalProducts4.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherChemicalProducts4.toString)
+            content = HtmlContent(radioText("sector-label-wire", messages("NACE.Manufacturing.Lvl4.ColdDrawingWire"))),
+            value = Some(Sector.wireColdDrawing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.wireColdDrawing.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-forming", messages("NACE.Manufacturing.Lvl4.ColdFormingFolding"))),
+            value = Some(Sector.foldingColdDrawing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.foldingColdDrawing.toString)
+        ),
+        RadioItem(
+            content = HtmlContent(radioText("sector-label-narrow-strip", messages("NACE.Manufacturing.Lvl4.ColdRollingStrip"))),
+            value = Some(Sector.narrowStripColdDrawing.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.narrowStripColdDrawing.toString)
         )
     )
 }
 
 
 @layout(
-  pageTitle = Some(messages("NACE.Manufacturing.OtherChemicals.title")),
+  pageTitle = Some(messages("NACE.Manufacturing.OtherSteelProducts.title")),
   backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
@@ -76,7 +86,7 @@
         errorList = Seq(
           ErrorLink(
             href = Some(s"#${err.key}"),
-            content = Text(messages("NACE.Manufacturing.OtherChemicals.error"))
+            content = Text(messages("NACE.Manufacturing.OtherSteelProducts.error"))
           )
         ),
         title = Text(messages("common.error.summary.title"))
@@ -85,11 +95,11 @@
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("NACE.Manufacturing.OtherChemicals.error"))
+        content = Text(messages("NACE.Manufacturing.OtherSteelProducts.error"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-        content = Text(messages("NACE.Manufacturing.OtherChemicals.title")),
+        content = Text(messages("NACE.Manufacturing.OtherSteelProducts.title")),
         classes = "govuk-fieldset__legend--xl",
         isPageHeading = true
         ))

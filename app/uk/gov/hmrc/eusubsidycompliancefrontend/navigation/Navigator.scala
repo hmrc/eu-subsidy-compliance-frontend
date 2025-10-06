@@ -57,6 +57,40 @@ class Navigator @Inject(){
      case "08.9" => routes.MiningController.loadOtherMiningLvl4Page()
      case "09" => routes.MiningController.loadMiningSupportLvl3Page()
 
+    case "10" => routes.FoodBeveragesController.loadFoodLvl3Page
+    case "10.9" => routes.FoodBeveragesController.loadAnimalFeedsLvl4Page
+    case "10.7" => routes.FoodBeveragesController.loadBakeryAndFarinaceousLvl4Page
+    case "10.5" => routes.FoodBeveragesController.loadDairyProductsLvl4Page
+    case "10.3" => routes.FoodBeveragesController.loadFruitAndVegLvl4Page
+    case "10.6" => routes.FoodBeveragesController.loadGrainAndStarchLvl4Page
+    case "10.1" => routes.FoodBeveragesController.loadMeatLvl4Page
+    case "10.4" => routes.FoodBeveragesController.loadOilsAndFatsLvl4Page
+    case "10.8" => routes.FoodBeveragesController.loadOtherFoodProductsLvl4Page
+    case "11" => routes.FoodBeveragesController.loadBeveragesLvl4Page
+
+    case "20.1" => routes.MetalsChemicalsController.loadBasicLvl4Page
+    case "24" => routes.MetalsChemicalsController.loadBasicMetalsLvl3Page
+    case "24.5" => routes.MetalsChemicalsController.loadCastingMetalsLvl4Page
+    case "20" => routes.MetalsChemicalsController.loadChemicalsProductsLvl3Page
+    case "19" => routes.MetalsChemicalsController.loadCokePetroleumLvl3Page
+    case "25.6" => routes.MetalsChemicalsController.loadCutleryToolsHardwareLvl4Page
+    case "25" => routes.MetalsChemicalsController.loadFabricatedMetalsLvl3Page
+    case "24.3" => routes.MetalsChemicalsController.loadFirstProcessingSteelLvl4Page
+    case "25.9" => routes.MetalsChemicalsController.loadOtherFabricatedProductsLvl4Page
+    case "20.5" => routes.MetalsChemicalsController.loadOtherProductsLvl4Page
+    case "21" => routes.MetalsChemicalsController.loadPharmaceuticalsLvl3Page
+    case "24.4" => routes.MetalsChemicalsController.loadPreciousNonFerrousLvl4Page
+    case "25.1" => routes.MetalsChemicalsController.loadStructuralMetalLvl4Page
+    case "25.2" => routes.MetalsChemicalsController.loadTanksReservoirsContainersLvl4Page
+    case "25.5" => routes.MetalsChemicalsController.loadTreatmentCoatingMachiningLvl4Page
+    case "20.4" => routes.MetalsChemicalsController.loadWashingLvl4Page
+
+     case "17.2" => routes.PaperPrintedController.loadArticlesPaperPaperboardLvl4Page
+     case "17" => routes.PaperPrintedController.loadPaperLvl3Page
+     case "18" => routes.PaperPrintedController.loadPrintedLvl3Page
+     case "18.1" => routes.PaperPrintedController.loadPrintingServicesLvl4Page
+     case "17.1" => routes.PaperPrintedController.loadPulpPaperPaperboardLvl4Page
+
     case "0"     => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage
     case "INT00" => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage
     case "INT01" => routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage
