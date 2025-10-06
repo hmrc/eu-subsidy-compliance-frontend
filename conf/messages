@@ -825,6 +825,13 @@ NACE.agriculture.Lvl4.postHarvestActivities = Post-harvest crop activities and s
 NACE.agriculture.Lvl3.huntingTrapping = Hunting, trapping and related service activities
 NACE.agriculture.Lvl4.huntingTrapping = Hunting, trapping and related service activities
 
+#agriculture error messages
+agriculture3.error.required = Select your undertaking’s main business activity in agriculture
+animal4.error.required = Select the type of animal your undertaking raises
+nonPCrops4.error.required = Select the type of crop your undertaking grows
+pCrops4.error.required = Select the type of crop your undertaking grows
+agriSupport4.error.required = Select the type of support activity your undertaking does
+
 NACE.forestry.Lvl2.title = What is your undertaking’s main business activity in forestry?
 NACE.forestry.Lvl2.forestry = Forestry and logging
 NACE.forestry.Lvl3.silviculture = Silviculture and other forestry activities
@@ -848,6 +855,11 @@ NACE.fishing.Lvl4.marineAquaculture = Marine aquaculture
 NACE.fishing.Lvl4.freshwaterAquaculture = Freshwater aquaculture
 NACE.fishing.Lvl3.aquacultureSupportActivities = Support activities for fishing and aquaculture
 NACE.fishing.Lvl4.aquacultureSupportActivities = Support activities for fishing and aquaculture
+
+#fishing error messages
+fishing3.error.required = Select your undertaking’s main business activity in fishery and aquaculture
+aquaculture4.error.required = Select your undertaking’s main business activity in aquaculture
+fishing4.error.required = Select the type of fishing your undertaking does
 
 #MiningQuarrying NACE Sector2,3,4
 NACE.mining.Lvl1.title = What is your undertaking’s main business activity in mining and quarrying?
