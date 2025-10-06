@@ -31,9 +31,10 @@
   govukRadios : GovukRadios
 )
 
+
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"landPassenger4"}
 
 @actionUrl = @{
   if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
@@ -48,26 +49,21 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-steam-air-conditioning", messages("NACE.TransportationAndStorage.Lvl3.IntermediationTransport"))),
-      value = Some(Sector.transportIntermediationServiceActivities.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.transportIntermediationServiceActivities.toString)
+      content = HtmlContent(radioText("sector-label-passenger-heavy-rail", messages("NACE.TransportationAndStorage.Lvl4.PassengerHeavyRail"))),
+      value = Some(Sector.passengerHeavyRailTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.passengerHeavyRailTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-support-transport", messages("NACE.TransportationAndStorage.Lvl3.SupportTransport"))),
-      hint = Some(Hint(content = Text(messages("NACE.TransportationAndStorage.Lvl2.WarehousingSupport.hint")))),
-       value = Some(Sector.transportSupportActivities.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.transportSupportActivities.toString)
-    ),
-    RadioItem(
-      content = HtmlContent(radioText("sector-label-warehousing-storage", messages("NACE.TransportationAndStorage.Lvl3.WarehousingStorage"))),
-      value = Some(Sector.warehousingStorage.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.warehousingStorage.toString)
+      content = HtmlContent(radioText("sector-label-other-passenger-rail", messages("NACE.TransportationAndStorage.Lvl4.OtherPassengerRail"))),
+      value = Some(Sector.otherPassengerRailTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPassengerRailTransport.toString)
     )
   )
 }
 
+
 @layout(
-  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl2.WarehousingSupport.title")),
+  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -92,7 +88,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.TransportationAndStorage.Lvl2.WarehousingSupport.title")),
+          content = Text(messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))

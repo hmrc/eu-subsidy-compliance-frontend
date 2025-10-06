@@ -33,7 +33,7 @@
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"waterTransp3"}
 
 @actionUrl = @{
   if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
@@ -48,35 +48,30 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-passenger-rail", messages("NACE.TransportationAndStorage.Lvl3.PassengerRail"))),
-      value = Some(Sector.passengerRailTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.passengerRailTransport.toString)
+      content = HtmlContent(radioText("sector-label-inland-freight", messages("NACE.TransportationAndStorage.Lvl3.InlandFreight"))),
+      value = Some(Sector.inlandFreightWaterTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.inlandFreightWaterTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-other-passenger-land", messages("NACE.TransportationAndStorage.Lvl3.OtherPassengerLand"))),
-      value = Some(Sector.otherPassengerLandTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPassengerLandTransport.toString)
+      content = HtmlContent(radioText("sector-label-inland-passenger", messages("NACE.TransportationAndStorage.Lvl3.InlandPassenger"))),
+      value = Some(Sector.inlandPassengerWaterTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.inlandPassengerWaterTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-freight-rail", messages("NACE.TransportationAndStorage.Lvl3.FreightRail"))),
-      value = Some(Sector.freightRailTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.freightRailTransport.toString)
+      content = HtmlContent(radioText("sector-label-sea-coastal-freight", messages("NACE.TransportationAndStorage.Lvl3.SeaCoastalFreight"))),
+      value = Some(Sector.coastalFreightWaterTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.coastalFreightWaterTransport.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-freight-road-removal", messages("NACE.TransportationAndStorage.Lvl3.FreightRoadRemoval"))),
-      value = Some(Sector.freightRoadTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.freightRoadTransport.toString)
-    ),
-    RadioItem(
-      content = HtmlContent(radioText("sector-label-freight-road-removal", messages("NACE.TransportationAndStorage.Lvl3.PipelineTransport"))),
-      value = Some(Sector.pipelineTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.pipelineTransport.toString)
+      content = HtmlContent(radioText("sector-label-sea-coastal-passenger", messages("NACE.TransportationAndStorage.Lvl3.SeaCoastalPassenger"))),
+      value = Some(Sector.coastalPassengerWaterTransport.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.coastalPassengerWaterTransport.toString)
     )
   )
 }
 
 @layout(
-  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport.title")),
+  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl2.WaterTransport.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -101,7 +96,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport.title")),
+          content = Text(messages("NACE.TransportationAndStorage.Lvl2.WaterTransport.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))

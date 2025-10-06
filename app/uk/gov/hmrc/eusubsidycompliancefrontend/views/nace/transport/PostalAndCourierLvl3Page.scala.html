@@ -33,7 +33,7 @@
 
 @(form: Form[_], previous: Journey.Uri, undertakingName: String, isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"undertakingSector"}
+@fieldName = @{"postal3"}
 
 @actionUrl = @{
   if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
@@ -48,20 +48,25 @@
 @radioOptions = @{
   Seq(
     RadioItem(
-      content = HtmlContent(radioText("sector-label-freight-air-space", messages("NACE.TransportationAndStorage.Lvl3.FreightAirSpace"))),
-      value = Some(Sector.freightAndSpaceAirTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.freightAndSpaceAirTransport.toString)
+      content = HtmlContent(radioText("sector-label-postal-universal-service", messages("NACE.TransportationAndStorage.Lvl3.PostalUniversalService"))),
+      value = Some(Sector.postalActivities.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.postalActivities.toString)
     ),
     RadioItem(
-      content = HtmlContent(radioText("sector-label-passenger-air", messages("NACE.TransportationAndStorage.Lvl3.PassengerAir"))),
-      value = Some(Sector.passengerAirTransport.toString),
-      checked = form.data.get(fieldName).fold(false)(x => x == Sector.passengerAirTransport.toString)
+      content = HtmlContent(radioText("sector-label-other-postal-courier", messages("NACE.TransportationAndStorage.Lvl3.OtherPostalCourier"))),
+      value = Some(Sector.otherPostalActivities.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.otherPostalActivities.toString)
+    ),
+    RadioItem(
+      content = HtmlContent(radioText("sector-label-intermediation-postal-courier", messages("NACE.TransportationAndStorage.Lvl3.IntermediationPostalCourier"))),
+      value = Some(Sector.postalIntermediationActivities.toString),
+      checked = form.data.get(fieldName).fold(false)(x => x == Sector.postalIntermediationActivities.toString)
     )
   )
 }
 
 @layout(
-  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl2.AirTransport.title")),
+  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl3.PostalCourier.title")),
   backLinkEnabled = true,
   backLink = Some(previous),
   hasErrors = form.hasErrors
@@ -86,7 +91,7 @@
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.TransportationAndStorage.Lvl2.AirTransport.title")),
+          content = Text(messages("NACE.TransportationAndStorage.Lvl3.PostalCourier.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))
