@@ -423,7 +423,7 @@ GET        /nace-level-four/arts-creation                                       
 POST       /nace-level-four/arts-creation                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitArtsCreationLvl4Page()
 
 GET        /nace-level-four/amusement-recreation                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.loadAmusementAndRecreationLvl4Page()
-POST       /nace-level-four/amusement-recreation                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitAmusementAndRecreationPage()
+POST       /nace-level-four/amusement-recreation                                                         uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ArtsController.submitAmusementAndRecreationLvl4Page()
 
 GET        /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSectorForUpdate
 POST       /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.updateIndustrySector
