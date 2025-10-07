@@ -63,7 +63,7 @@ value = Some(Sector.aquaculture.toString),
 checked = form.data.get(fieldName).fold(false)(x => x == Sector.aquaculture.toString)
 ),
 RadioItem(
-content = HtmlContent(radioText("sector-label-other", "General Trade")),
+content = HtmlContent(radioText("sector-label-other", messages("sector.label.0"))),
 hint = Some(Hint(
 id = Some("sector-hint-other"),
 content = HtmlContent(radioText("sector-hint-other", messages("sector.hint.0", appConfig.sectorCap("other")+" " +  messages("sector.hint.Cont"))))
