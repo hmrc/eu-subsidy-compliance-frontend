@@ -93,13 +93,16 @@
 <nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
     <ol class="govuk-breadcrumbs__list">
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getAboutUndertaking.toString>Home</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getAboutUndertaking.toString>@messages("common.home")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>General Trade</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
         </li>
         <li class="govuk-breadcrumbs__list-item">
-            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ConstructionController.loadConstructionLvl2Page.toString>Civil Engineering</a>
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("NACE.Lvl1.construction")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ConstructionController.loadConstructionLvl2Page.toString>@messages("NACE.construction.Lvl2.civilEngineering")</a>
         </li>
     </ol>
 </nav>
