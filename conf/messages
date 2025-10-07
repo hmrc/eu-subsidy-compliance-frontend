@@ -2435,6 +2435,7 @@ NACE.01.13.b8 = growing of roots and tubers, e.g.: potatoes; sweet potatoes; cas
 NACE.01.13.b9 = growing of sweetcorn
 
 NACE.01.14.heading = 01.14 Growing of sugar cane
+NACE.01.14.intro = This class excludes growing of sugar beet, see 01.13 (Growing of vegetables and melons, roots and tubers)
 
 NACE.01.15.heading = 01.15 Growing of tobacco
 NACE.01.15.intro = This class includes: growing of unmanufactured tobacco
