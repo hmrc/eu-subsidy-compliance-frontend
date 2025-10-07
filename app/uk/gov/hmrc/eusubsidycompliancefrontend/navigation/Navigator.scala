@@ -114,6 +114,19 @@ class Navigator @Inject(){
     case "33" => routes.ComputersElectronicsController.loadRepairsMaintainInstallLvl3Page
     case "27.3" => routes.ComputersElectronicsController.loadWiringAndDevicesLvl4Page
 
+      case "30.3" => routes.VehiclesManuTransportController.loadAircraftSpacecraftLvl4Page
+      case "29" => routes.VehiclesManuTransportController.loadMotorVehiclesLvl3Page
+      case "30" => routes.VehiclesManuTransportController.loadOtherTransportEquipmentLvl3Page
+      case "30.9" => routes.VehiclesManuTransportController.loadOtherTransportEquipmentLvl4Page
+      case "29.3" => routes.VehiclesManuTransportController.loadPartsAccessoriesLvl4Page
+      case "30.1" => routes.VehiclesManuTransportController.loadShipsBoatsLvl4Page
+
+     case "17.2" => routes.PaperPrintedController.loadArticlesPaperPaperboardLvl4Page
+     case "17" => routes.PaperPrintedController.loadPaperLvl3Page
+     case "18" => routes.PaperPrintedController.loadPrintedLvl3Page
+     case "18.1" => routes.PaperPrintedController.loadPrintingServicesLvl4Page
+     case "17.1" => routes.PaperPrintedController.loadPulpPaperPaperboardLvl4Page
+
     case "0"     => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage
     case "INT00" => routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingOtherPage
     case "INT01" => routes.GeneralTradeGroupsController.loadLvl2_1GroupsPage
