@@ -33,13 +33,13 @@
 
 @(form: Form[_], isUpdate: Boolean = false)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@fieldName = @{"householdWholesale4"}
+@fieldName = @{"foodWholesale4"}
 
 @actionUrl = @{
     if(isUpdate)
         controllers.routes.UndertakingController.updateIndustrySector
     else
-        controllers.routes.UndertakingController.postSector
+        controllers.routes.RetailWholesaleController.submitFoodWholesaleLvl4Page
 }
 
 @radioText(id: String, content: String) = {
@@ -49,55 +49,58 @@
 @radioOptions = @{
     Seq(
         RadioItem(
-            content = HtmlContent(radioText("sector-label-china", messages("NACE.Wholesale.Household.Lvl4.China"))),
-            value = Some(Sector.ChinaWholesale.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ChinaWholesale.toString)
+            content = HtmlContent(radioText("sector-label-beverages", messages("NACE.wholesale.Lvl4.BeveragesWholesale"))),
+            hint = Some(Hint(
+                content = HtmlContent(radioText("sector-hint-beverages", messages("NACE.wholesale.Lvl4.BeveragesWholesale.hint")))
+            )),
+            value = Some(Sector.BeveragesWholesale.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.BeveragesWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-clothing", messages("NACE.Wholesale.Household.Lvl4.Clothing"))),
-            value = Some(Sector.ClothingWholesale.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ClothingWholesale.toString)
+            content = HtmlContent(radioText("sector-label-coffee-spices", messages("NACE.wholesale.Lvl4.CoffeeAndSpicesWholesale"))),
+            value = Some(Sector.CoffeeAndSpicesWholesale.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.CoffeeAndSpicesWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-electrical", messages("NACE.Wholesale.Household.Lvl4.Electrical"))),
-            value = Some(Sector.ElectricalHouseholdWholesale.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.ElectricalHouseholdWholesale.toString)
+            content = HtmlContent(radioText("sector-label-dairy", messages("NACE.wholesale.Lvl4.DairyProductsWholesale"))),
+            value = Some(Sector.DairyProductsWholesale.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.DairyProductsWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-household", messages("NACE.Wholesale.Household.Lvl4.Household"))),
-            value = Some(Sector.HouseholdWholesale.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.HouseholdWholesale.toString)
+            content = HtmlContent(radioText("sector-label-fruit", messages("NACE.wholesale.Lvl4.FruitWholesale"))),
+            value = Some(Sector.FruitWholesale.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.FruitWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-perfume", messages("NACE.Wholesale.Household.Lvl4.Perfume"))),
-            value = Some(Sector.PerfumeWholesale.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PerfumeWholesale.toString)
+            content = HtmlContent(radioText("sector-label-meat", messages("NACE.wholesale.Lvl4.MeatWholesale"))),
+            value = Some(Sector.MeatWholesale.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.MeatWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-pharmaceutical", messages("NACE.Wholesale.Household.Lvl4.Pharmaceutical"))),
-            value = Some(Sector.PharmaceuticalWholesale.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.PharmaceuticalWholesale.toString)
+            content = HtmlContent(radioText("sector-label-sugar", messages("NACE.wholesale.Lvl4.SugarWholesale"))),
+            value = Some(Sector.SugarWholesale.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.SugarWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-textiles", messages("NACE.Wholesale.Household.Lvl4.Textiles"))),
-            value = Some(Sector.TextilesWholesale.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TextilesWholesale.toString)
+            content = HtmlContent(radioText("sector-label-tobacco", messages("NACE.wholesale.Lvl4.TobaccoProductsWholesale"))),
+            value = Some(Sector.TobaccoProductsWholesale.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.TobaccoProductsWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-watches", messages("NACE.Wholesale.Household.Lvl4.Watches"))),
-            value = Some(Sector.WatchesWholesale.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.WatchesWholesale.toString)
+            content = HtmlContent(radioText("sector-label-other-food", messages("NACE.wholesale.Lvl4.OtherFoodWholesale"))),
+            value = Some(Sector.OtherFoodWholesale.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherFoodWholesale.toString)
         ),
         RadioItem(
-            content = HtmlContent(radioText("sector-label-other-household", messages("NACE.Wholesale.Household.Lvl4.Other"))),
-            value = Some(Sector.OtherHouseholdGoodsWholesale.toString),
-            checked = form.data.get(fieldName).fold(false)(x => x == Sector.OtherHouseholdGoodsWholesale.toString)
+            content = HtmlContent(radioText("sector-label-non-specialised", messages("NACE.wholesale.Lvl4.NonSpecialisedFoodWholesale"))),
+            value = Some(Sector.NonSpecialisedFoodWholesale.toString),
+            checked = form.data.get(fieldName).fold(false)(x => x == Sector.NonSpecialisedFoodWholesale.toString)
         )
     )
 }
 
 @layout(
-    pageTitle = Some(messages("NACE.Wholesale.Household.title")),
+    pageTitle = Some(messages("NACE.wholesale.Lvl4.foodWholesale.title")),
     backLinkEnabled = false,
     hasErrors = form.hasErrors
 ) {
@@ -120,7 +123,7 @@
             ))} else None,
             fieldset = Some(Fieldset(
                 legend = Some(Legend(
-                    content = Text(messages("NACE.Wholesale.Household.title")),
+                    content = Text(messages("NACE.wholesale.Lvl4.foodWholesale.title")),
                     classes = "govuk-fieldset__legend--xl",
                     isPageHeading = true
                 ))
