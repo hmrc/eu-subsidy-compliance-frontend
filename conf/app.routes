@@ -727,6 +727,42 @@ GET        /nace-level-four/ships-boats                                         
 POST       /nace-level-four/ships-boats                                             uk.gov.hmrc.eusubsidycompliancefrontend.controllers.VehiclesManuTransportController.submitShipsBoatsLvl4Page
 
 
+## ClothesTextilesHomeware routes
+GET        /nace-level-three/clothing                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.loadClothingLvl3Page
+POST       /nace-level-three/clothing                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.submitClothingLvl3Page
+
+GET        /nace-level-three/leather                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.loadLeatherLvl3Page
+POST       /nace-level-three/leather                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.submitLeatherLvl3Page
+
+GET        /nace-level-three/rubber-plastic                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.loadRubberPlasticLvl3Page
+POST       /nace-level-three/rubber-plastic                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.submitRubberPlasticLvl3Page
+
+GET        /nace-level-three/textiles                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.loadTextilesLvl3Page
+POST       /nace-level-three/textiles                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.submitTextilesLvl3Page
+
+GET        /nace-level-three/wood-cork-straw                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.loadWoodCorkStrawLvl3Page
+POST       /nace-level-three/wood-cork-straw                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.submitWoodCorkStrawLvl3Page
+
+GET        /nace-level-four/manufacture-textiles                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.loadManufactureOfTextilesLvl4Page
+POST       /nace-level-four/manufacture-textiles                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.submitManufactureOfTextilesLvl4Page
+
+GET        /nace-level-four/other-clothing                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.loadOtherClothingLvl4Page
+POST       /nace-level-four/other-clothing                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.submitOtherClothingLvl4Page
+
+GET        /nace-level-four/plastic                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.loadPlasticLvl4Page
+POST       /nace-level-four/plastic                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.submitPlasticLvl4Page
+
+GET        /nace-level-four/rubber                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.loadRubberLvl4Page
+POST       /nace-level-four/rubber                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.submitRubberLvl4Page
+
+GET        /nace-level-four/sawmilling-wood                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.loadSawmillingWoodworkLvl4Page
+POST       /nace-level-four/sawmilling-wood                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.submitSawmillingWoodworkLvl4Page
+
+GET        /nace-level-four/tanning-dyeing                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.loadTanningDressingDyeingLvl4Page
+POST       /nace-level-four/tanning-dyeing                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.submitTanningDressingDyeingLvl4Page
+
+GET        /nace-level-four/wood-cork-plaiting                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.loadWoodCorkStrawPlaitingLvl4Page
+POST       /nace-level-four/wood-cork-plaiting                                    uk.gov.hmrc.eusubsidycompliancefrontend.controllers.ClothesTextilesHomewareController.submitWoodCorkStrawPlaitingLvl4Page
 
 GET        /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.getSectorForUpdate
 POST       /update-sector                                                               uk.gov.hmrc.eusubsidycompliancefrontend.controllers.UndertakingController.updateIndustrySector

@@ -39,7 +39,7 @@ govukRadios : GovukRadios
 
 @actionUrl = @{
 if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-else controllers.routes.ProfAndPAdminController.loadLegalAndAccountingLvl3Page()
+else controllers.routes.ProfAndPAdminController.submitLegalAndAccountingLvl3Page()
 }
 
 
@@ -82,6 +82,22 @@ title = Text(messages("common.error.summary.title"))
 ))
 }
 
+<nav class="govuk-breadcrumbs" aria-label="Breadcrumb">
+    <ol class="govuk-breadcrumbs__list">
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getAboutUndertaking.toString>@messages("common.home")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.UndertakingController.getSector.toString>@messages("sector.label.0")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.GeneralTradeGroupsController.loadGeneralTradeUndertakingPage.toString>@messages("NACE.Lvl1.professionalScientificTechnicalActivities")</a>
+        </li>
+        <li class="govuk-breadcrumbs__list-item">
+            <a class="govuk-breadcrumbs__link" href=@controllers.routes.ProfAndPAdminController.loadProfessionalLvl2Page.toString>@messages("NACE.professional.Lvl2.legalAccounting")</a>
+        </li>
+    </ol>
+</nav>
 
 
 @govukRadios(Radios(
