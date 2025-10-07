@@ -47,7 +47,12 @@ object NaceLevel4Catalogue {
       val desc   = msgOpt(s"$base.desc")
       val intro  = msgOpt(s"$base.intro")
       val outro  = msgOpt(s"$base.outro")
-
+      val bullets: List[String] =
+        Iterator.from(1)
+          .map(i => s"$base.b$i")
+          .takeWhile(messages.isDefinedAt)
+          .map(key => messages(key))
+          .toList
 
 
       Some(NaceLevel4(code, heading, NaceNotes(desc, intro, bullets, outro)))
