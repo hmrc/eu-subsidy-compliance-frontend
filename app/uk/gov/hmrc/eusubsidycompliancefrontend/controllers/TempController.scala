@@ -20,7 +20,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.mvc._
 import uk.gov.hmrc.eusubsidycompliancefrontend.config.AppConfig
-import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.realestate.RealEstateLvl3Page
+import uk.gov.hmrc.eusubsidycompliancefrontend.views.html.nace.realestate.FeeContractLvl4Page
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -28,7 +28,7 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class TempController @Inject()(
                                 mcc: MessagesControllerComponents,
-                                realEstateLvl3Page: RealEstateLvl3Page
+                                realEstateLvl3Page: FeeContractLvl4Page
                               )(implicit val appConfig: AppConfig, ec: ExecutionContext) extends MessagesBaseController {
 
   override def controllerComponents: MessagesControllerComponents = mcc
