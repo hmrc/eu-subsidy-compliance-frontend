@@ -20,7 +20,6 @@ common.cya.change = Change
 common.print = Print this page
 common.go-undertaking-home = Go to undertaking homepage
 common.radioItem.or = or
-common.home = Home
 
 continue.button=Save and continue
 button.addBusiness = Add a business to this undertaking
@@ -1227,7 +1226,6 @@ NACE.Manufacturing.Lvl3.RubberProducts = Rubber products
 NACE.Manufacturing.Rubber.title = What type of rubber products does your undertaking manufacture?
 NACE.Manufacturing.Rubber.error = Select the type of rubber products your undertaking manufactures
 NACE.Manufacturing.Lvl4.RubberTyresTubes = Rubber tyres and tubes
-NACE.Manufacturing.Lvl4.RubberTyresTubes.hint = Includes retreading and rebuilding of tyres.
 NACE.Manufacturing.Lvl4.OtherRubberProducts = Another type of rubber products
 
 NACE.Manufacturing.Lvl3.PlasticProducts = Plastic products
@@ -1254,7 +1252,6 @@ NACE.Manufacturing.Lvl4.ShapedFlatGlass = My undertaking carries out shaping and
 NACE.Manufacturing.Lvl4.HollowGlass = Hollow glass
 NACE.Manufacturing.Lvl4.GlassFibres = Glass fibres
 NACE.Manufacturing.Lvl4.OtherGlass = Another type of glass product
-NACE.Manufacturing.Lvl4.OtherGlass.hint = Includes technical glassware and processing of glass (except of flat glass).
 
 NACE.Manufacturing.Lvl3.RefractoryProducts = Refractory products
 NACE.Manufacturing.Lvl4.RefractoryProducts = Manufacture of refractory products
@@ -7701,3 +7698,38 @@ NACE.99.00.intro = This class includes:
 NACE.99.00.b1 = activities of international organisations under international treaties between states, e.g.: the United Nations (UN) and the specialised agencies of the United Nations system, regional bodies; the International Monetary Fund (IMF), the World Bank; the World Customs Organization (WCO), the Organisation for Economic Co-operation and Development (OECD); the Organization of the Petroleum Exporting Countries (OPEC), the European Free Trade Association (EFTA)
 NACE.99.00.b2 = activities of institutions and bodies of the European Union (EU)
 NACE.99.00.b3 = activities of general government agencies of other countries (e.g. embassies, consulates, military bases, scientific bases)
+
+
+# NACE Check Details Page
+NACE.check-details.title = Confirm the details of your undertaking
+NACE.check-details.your-answers = Your answers
+NACE.check-details.summary-list.sector.key = What is your undertaking's industry sector?
+NACE.check-details.summary-list.lvl.key = H1 heading of L
+NACE.check-details.change.hidden.sector = industry sector
+NACE.check-details.change.hidden.NACE = NACE categories
+
+NACE.check-details.NACE-categories = Your undertaking's NACE categories
+NACE.check-details.NACE-p1 = Based on your answers, we have selected NACE categories for your undertaking.
+NACE.check-details.NACE-p2 = Check the details carefully and make sure they are right for your undertaking. If your undertaking operates in more than one undertaking area, your Level 4 (Class) category should be your main area of business activity.
+NACE.check-details.NACE-p3-prefix = NACE is a classification system used in the European Union. You can browse the
+NACE.check-details.NACE-link-text = full list of NACE categories from the EU (opens in new tab)
+NACE.check-details.NACE-link-url = https://showvoc.op.europa.eu/#/datasets/ESTAT_Statistical_Classification_of_Economic_Activities_in_the_European_Community_Rev._2.1._%28NACE_2.1%29/data?resId=http:%2F%2Fdata.europa.eu%2Fux2%2Fnace2.1%2Fsections
+
+NACE.check-details.NACE-level-1 = NACE Level 1 (Section)
+NACE.check-details.NACE-level-2 = NACE Level 2 (Division)
+NACE.check-details.NACE-level-3 = NACE Level 3 (Group)
+NACE.check-details.NACE-level-4 = NACE Level 4 (Class)
+
+NACE.check-details.radio-legend = Are these the correct details for your undertaking?
+NACE.check-details.radio-yes = Yes, I want to confirm and submit these details
+NACE.check-details.radio-no = No, I want to start again
+NACE.check-details.radio-no-hint = Your answers will be deleted.
+
+NACE.check-details.error = Select yes if these are the correct details for your undertaking
+
+NACE.check-details.change.hidden.lvl1 = NACE Level 1
+NACE.check-details.change.hidden.lvl2 = NACE Level 2
+NACE.check-details.change.hidden.lvl3 = NACE Level 3
+NACE.check-details.change.hidden.lvl4 = NACE Level 4
+
+error.confirmDetails.required = Select yes if these are the correct details for your undertaking
