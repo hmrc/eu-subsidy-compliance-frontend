@@ -286,6 +286,19 @@ class Navigator @Inject(){
 
     case "G"  => routes.RetailWholesaleController.loadRetailWholesaleLvl2Page()
 
+    case "14"  => routes.ClothesTextilesHomewareController.loadClothingLvl3Page
+    case "15"  => routes.ClothesTextilesHomewareController.loadLeatherLvl3Page
+    case "22"  => routes.ClothesTextilesHomewareController.loadRubberPlasticLvl3Page
+    case "13"  => routes.ClothesTextilesHomewareController.loadTextilesLvl3Page
+    case "16"  => routes.ClothesTextilesHomewareController.loadWoodCorkStrawLvl3Page
+    case "13.9"  => routes.ClothesTextilesHomewareController.loadManufactureOfTextilesLvl4Page
+    case "14.2"  => routes.ClothesTextilesHomewareController.loadOtherClothingLvl4Page
+    case "22.2"  => routes.ClothesTextilesHomewareController.loadPlasticLvl4Page
+    case "22.1"  => routes.ClothesTextilesHomewareController.loadRubberLvl4Page
+    case "16.1"  => routes.ClothesTextilesHomewareController.loadSawmillingWoodworkLvl4Page
+    case "15.1"  => routes.ClothesTextilesHomewareController.loadTanningDressingDyeingLvl4Page
+    case "16.2"  => routes.ClothesTextilesHomewareController.loadWoodCorkStrawPlaitingLvl4Page
+
     case _       => routes.UndertakingController.getSector
   }
 }
