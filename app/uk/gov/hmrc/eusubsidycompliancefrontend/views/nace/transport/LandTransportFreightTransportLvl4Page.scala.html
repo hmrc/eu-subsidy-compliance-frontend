@@ -38,7 +38,7 @@
 
 @actionUrl = @{
   if(isUpdate) controllers.routes.UndertakingController.updateIndustrySector
-  else controllers.routes.TransportController.submitAirTransportLvl3Page()
+  else controllers.routes.TransportController.submitLandTransportFreightTransportLvl4Page()
 }
 
 
@@ -63,7 +63,7 @@
 
 
 @layout(
-  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport.title")),
+  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl4.FreightRoadRemoval.title")),
 backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
@@ -83,18 +83,21 @@ backLinkEnabled = false,
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("freight4.error.required"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport.title")),
+          content = Text(messages("NACE.TransportationAndStorage.Lvl4.FreightRoadRemoval.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,
-      items = radioOptions
+      items = radioOptions,
+        hint = Some(Hint(
+            content = Text(messages("NACE.WaterSewerageWasteRemediation.Lvl3.WasteActivities.hint"))
+        )),
     ))
 
     @button("continue.button")

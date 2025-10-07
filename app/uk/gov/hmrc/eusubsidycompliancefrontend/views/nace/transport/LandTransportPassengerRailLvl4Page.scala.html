@@ -63,7 +63,7 @@
 
 
 @layout(
-  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport.title")),
+  pageTitle = Some(messages("NACE.TransportationAndStorage.Lvl4.LandPipelineTransport.title")),
 backLinkEnabled = false,
   hasErrors = form.hasErrors
 ) {
@@ -83,20 +83,23 @@ backLinkEnabled = false,
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("landPassenger4.error.required"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport.title")),
+          content = Text(messages("NACE.TransportationAndStorage.Lvl4.PassengerRail.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,
-      items = radioOptions
+      items = radioOptions,
+        hint = Some(Hint(
+            content = Text(messages("NACE.TransportationAndStorage.Lvl4.PassengerRail.hint"))
+        )),
     ))
 
-    @button("continue.button")
+@button("continue.button")
   }
 }

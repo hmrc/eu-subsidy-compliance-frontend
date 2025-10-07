@@ -1865,8 +1865,11 @@ NACE.WholesaleRetailTrade.Lvl4.IntermediationSpecialised = Intermediation servic
 
 #TransportationAndStorage NACE Sector2,3,4
 NACE.TransportationAndStorage.Lvl2.LandPipelineTransport = Land transport and transport via pipelines
-NACE.TransportationAndStorage.Lvl2.LandPipelineTransport.title = What type of land transport or transport via pipeline does your undertaking provide? Select one option that best describes your undertaking’s main business activity.
+NACE.TransportationAndStorage.Lvl2.LandPipelineTransport.title = What type of land transport or transport via pipeline does your undertaking provide?
+NACE.TransportationAndStorage.Lvl2.LandPipelineTransport.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.TransportationAndStorage.Lvl3.PassengerRail = Passenger rail transport
+NACE.TransportationAndStorage.Lvl4.PassengerRail.title = What type of passenger rail transport does your undertaking provide?
+NACE.TransportationAndStorage.Lvl4.PassengerRail.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.TransportationAndStorage.Lvl4.PassengerHeavyRail = Passenger heavy rail transport
 NACE.TransportationAndStorage.Lvl4.OtherPassengerRail = Other passenger rail transport
 NACE.TransportationAndStorage.Lvl3.FreightRail = Freight rail transport
@@ -1879,13 +1882,18 @@ NACE.TransportationAndStorage.Lvl4.OnDemandPassenger = On-demand passenger trans
 NACE.TransportationAndStorage.Lvl4.CablewaysSkiLifts = Passenger transport by cableways and ski lifts
 NACE.TransportationAndStorage.Lvl4.OtherPassengerLandNEC = Other passenger land transport n.e.c.
 NACE.TransportationAndStorage.Lvl3.FreightRoadRemoval = Freight transport by road and removal services
+NACE.TransportationAndStorage.Lvl4.FreightRoadRemoval.title = What type of freight transport or service does your undertaking provide?
+NACE.TransportationAndStorage.Lvl4.FreightRoadRemoval.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.TransportationAndStorage.Lvl4.FreightRoad = Freight transport by road
 NACE.TransportationAndStorage.Lvl4.RemovalServices = Removal services
 NACE.TransportationAndStorage.Lvl3.PipelineTransport = Transport via pipeline
 NACE.TransportationAndStorage.Lvl4.PipelineTransport = Transport via pipeline
+NACE.TransportationAndStorage.Lvl4.OtherPassengerLand.title = What type of passenger land transport does your undertaking provide?
+NACE.TransportationAndStorage.Lvl4.OtherPassengerLand.hint = Select one option that best describes your undertaking’s main business activity.
 
 NACE.TransportationAndStorage.Lvl2.WaterTransport = Water transport
-NACE.TransportationAndStorage.Lvl2.WaterTransport.title = What type of water transport does your undertaking provide? Select one option that best describes your undertaking’s main business activity.
+NACE.TransportationAndStorage.Lvl2.WaterTransport.title = What type of water transport does your undertaking provide?
+NACE.TransportationAndStorage.Lvl2.WaterTransport.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.TransportationAndStorage.Lvl3.SeaCoastalPassenger = Sea and coastal passenger water transport
 NACE.TransportationAndStorage.Lvl4.SeaCoastalPassenger = Sea and coastal passenger water transport
 NACE.TransportationAndStorage.Lvl3.SeaCoastalFreight = Sea and coastal freight water transport
@@ -1896,19 +1904,25 @@ NACE.TransportationAndStorage.Lvl3.InlandFreight = Inland freight water transpor
 NACE.TransportationAndStorage.Lvl4.InlandFreight = Inland freight water transport
 
 NACE.TransportationAndStorage.Lvl2.AirTransport = Air transport
-NACE.TransportationAndStorage.Lvl2.AirTransport.title = What type of air transport does your undertaking provide? Select one option that best describes your undertaking’s main business activity.
+NACE.TransportationAndStorage.Lvl2.AirTransport.title = What type of air transport does your undertaking provide?
+NACE.TransportationAndStorage.Lvl2.AirTransport.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.TransportationAndStorage.Lvl3.PassengerAir = Passenger air transport
 NACE.TransportationAndStorage.Lvl4.PassengerAir = Passenger air transport
 NACE.TransportationAndStorage.Lvl3.FreightAirSpace = Freight air transport and space transport
+NACE.TransportationAndStorage.Lvl4.FreightAirSpace.title = What type of freight air transport or space transport does your undertaking provide?
+NACE.TransportationAndStorage.Lvl4.FreightAirSpace.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.TransportationAndStorage.Lvl4.FreightAir = Freight air transport
 NACE.TransportationAndStorage.Lvl4.SpaceTransport = Space transport
 
 NACE.TransportationAndStorage.Lvl2.WarehousingSupport = Warehousing, storage and support activities for transportation
-NACE.TransportationAndStorage.Lvl2.WarehousingSupport.title = What type of warehousing, storage or support activity does your undertaking do? Select one option that best describes your undertaking’s main business activity.
+NACE.TransportationAndStorage.Lvl2.WarehousingSupport.title = What type of warehousing, storage or support activity does your undertaking do?
+NACE.TransportationAndStorage.Lvl2.WarehousingSupport.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.TransportationAndStorage.Lvl3.WarehousingStorage = Warehousing and storage
 NACE.TransportationAndStorage.Lvl4.WarehousingStorage = Warehousing and storage
 NACE.TransportationAndStorage.Lvl3.SupportTransport = Support activities for transportation
-NACE.TransportationAndStorage.Lvl3.SupportTransport.title = What type of transport support activities does your undertaking do? Select one option that best describes your undertaking’s main business activity.
+NACE.TransportationAndStorage.Lvl3.SupportTransport.title = What type of transport support activities does your undertaking do?
+NACE.TransportationAndStorage.Lvl3.SupportTransport.undertaking.hint = Select one option that best describes your undertaking’s main business activity
+NACE.TransportationAndStorage.Lvl3.SupportTransport.hint = Includes cargo handling, logistics, service activities incidental to transport, and other support activities.
 NACE.TransportationAndStorage.Lvl4.LandTransportSupport = Service activities incidental to land transportation
 NACE.TransportationAndStorage.Lvl4.LandTransportSupport = Service activities incidental to land transportation
 NACE.TransportationAndStorage.Lvl4.WaterTransportSupport = Service activities incidental to water transportation
@@ -1917,12 +1931,14 @@ NACE.TransportationAndStorage.Lvl4.CargoHandling = Cargo handling
 NACE.TransportationAndStorage.Lvl4.LogisticsServices = Logistics service activities
 NACE.TransportationAndStorage.Lvl4.OtherTransportSupport = Other support activities for transportation
 NACE.TransportationAndStorage.Lvl3.IntermediationTransport = Intermediation service activities for transportation
-NACE.TransportationAndStorage.Lvl3.IntermediationTransport.title = What type of transport intermediation service does your undertaking provide? Select one option that best describes your undertaking’s main business activity.
+NACE.TransportationAndStorage.Lvl3.IntermediationTransport.title = What type of transport intermediation service does your undertaking provide?
+NACE.TransportationAndStorage.Lvl3.IntermediationTransport.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.TransportationAndStorage.Lvl4.FreightIntermediation = Intermediation service activities for freight transportation
 NACE.TransportationAndStorage.Lvl4.PassengerIntermediation = Intermediation service activities for passenger transportation
 
 NACE.TransportationAndStorage.Lvl2.PostalCourier.title = What type of postal or courier service does your undertaking provide? Select one option that best describes your undertaking’s main business activity.
-NACE.TransportationAndStorage.Lvl3.PostalCourier.title = What type of postal or courier service does your undertaking provide? Select one option that best describes your undertaking’s main business activity.
+NACE.TransportationAndStorage.Lvl3.PostalCourier.title = What type of postal or courier service does your undertaking provide?
+NACE.TransportationAndStorage.Lvl3.PostalCourier.hint = Select one option that best describes your undertaking’s main business activity.
 NACE.TransportationAndStorage.Lvl2.PostalCourier = Postal and courier activities
 NACE.TransportationAndStorage.Lvl2.PostalCourier.title = What type of postal or courier service does your undertaking provide? Select one option that best describes your undertaking’s main business activity.
 NACE.TransportationAndStorage.Lvl3.PostalUniversalService = Postal activities under universal service obligation
@@ -1931,6 +1947,20 @@ NACE.TransportationAndStorage.Lvl3.OtherPostalCourier = Other postal and courier
 NACE.TransportationAndStorage.Lvl4.OtherPostalCourier = Other postal and courier activities
 NACE.TransportationAndStorage.Lvl3.IntermediationPostalCourier = Intermediation service activities for postal and courier activities
 NACE.TransportationAndStorage.Lvl4.IntermediationPostalCourier = Intermediation service activities for postal and courier activities
+
+#transport error messages
+transport2.error.required = Select the type of transport and storage your undertaking provides
+airTransp3.error.required = Select the type of air transport your undertaking provides
+landTransp3.error.required = Select the type of land transport or transport via pipeline your undertaking provides
+waterTransp3.error.required = Select the type of water transport your undertaking provides
+wHouse3.error.required = Select the type of warehousing, storage or support activity your undertaking does
+postal3.error.required = Select the type of postal or courier service your undertaking provides
+wHouseSupport4.error.required = Select the type of transport intermediation service your undertaking provides
+wHouseInt4.error.required = Select the type of transport support activities your undertaking does
+landPassenger4.error.required = Select the type of passenger rail transport your undertaking provides
+landOther4.error.required = Select the type of passenger land transport your undertaking provides
+airTransp4.error.required = Select the type of freight air transport or space transport your undertaking provides
+freight4.error.required = Select the type of freight transport or service your undertaking provides
 
 #accommodationAndFoodService NACE Sector2,3,4
 NACE.accommodationAndFoodService.Lvl1.title = What is your undertaking’s main business activity in accommodation and food services?

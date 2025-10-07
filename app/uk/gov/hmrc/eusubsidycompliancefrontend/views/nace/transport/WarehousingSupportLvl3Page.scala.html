@@ -54,7 +54,7 @@
     ),
     RadioItem(
       content = HtmlContent(radioText("sector-label-support-transport", messages("NACE.TransportationAndStorage.Lvl3.SupportTransport"))),
-      hint = Some(Hint(content = Text(messages("NACE.TransportationAndStorage.Lvl2.WarehousingSupport.hint")))),
+      hint = Some(Hint(content = Text(messages("NACE.TransportationAndStorage.Lvl3.SupportTransport.hint")))),
        value = Some(Sector.transportSupportActivities.toString),
       checked = form.data.get(fieldName).fold(false)(x => x == Sector.transportSupportActivities.toString)
     ),
@@ -87,7 +87,7 @@ backLinkEnabled = false,
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("wHouse3.error.required"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
@@ -98,7 +98,10 @@ backLinkEnabled = false,
       )),
       idPrefix = Some(fieldName),
       name = fieldName,
-      items = radioOptions
+      items = radioOptions,
+        hint = Some(Hint(
+        content = Text(messages("NACE.TransportationAndStorage.Lvl2.WarehousingSupport.hint"))
+        )),
     ))
 
     @button("continue.button")

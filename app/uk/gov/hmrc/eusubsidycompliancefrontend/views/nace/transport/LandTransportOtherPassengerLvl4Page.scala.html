@@ -98,18 +98,21 @@ backLinkEnabled = false,
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("landOther4.error.required"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
-          content = Text(messages("NACE.TransportationAndStorage.Lvl2.LandPipelineTransport.title")),
+          content = Text(messages("NACE.TransportationAndStorage.Lvl4.OtherPassengerLand.title")),
           classes = "govuk-fieldset__legend--xl",
           isPageHeading = true
         ))
       )),
       idPrefix = Some(fieldName),
       name = fieldName,
-      items = radioOptions
+      items = radioOptions,
+        hint = Some(Hint(
+            content = Text(messages("NACE.TransportationAndStorage.Lvl4.OtherPassengerLand.hint"))
+        ))
     ))
 
     @button("continue.button")

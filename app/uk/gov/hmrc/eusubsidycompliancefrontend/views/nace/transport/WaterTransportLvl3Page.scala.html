@@ -91,7 +91,7 @@ backLinkEnabled = false,
 
     @govukRadios(Radios(
       errorMessage = if(form.hasErrors) {Some(ErrorMessage(
-        content = Text(messages("undertakingSector.error.required"))
+        content = Text(messages("waterTransp3.error.required"))
       ))} else None,
       fieldset = Some(Fieldset(
         legend = Some(Legend(
@@ -102,7 +102,10 @@ backLinkEnabled = false,
       )),
       idPrefix = Some(fieldName),
       name = fieldName,
-      items = radioOptions
+      items = radioOptions,
+        hint = Some(Hint(
+            content = Text(messages("NACE.TransportationAndStorage.Lvl2.WaterTransport.hint"))
+        )),
     ))
 
     @button("continue.button")
