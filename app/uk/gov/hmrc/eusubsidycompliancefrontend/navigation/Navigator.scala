@@ -85,6 +85,21 @@ class Navigator @Inject(){
     case "25.5" => routes.MetalsChemicalsController.loadTreatmentCoatingMachiningLvl4Page
     case "20.4" => routes.MetalsChemicalsController.loadWashingLvl4Page
 
+      case "26.1" => routes.ComputersElectronicsController.loadComponentsBoardsLvl4Page
+      case "26" => routes.ComputersElectronicsController.loadComputersElectronicsOpticalLvl3Page
+      case "27.5" => routes.ComputersElectronicsController.loadDomesticAppliancesLvl4Page
+      case "27" => routes.ComputersElectronicsController.loadElectricalEquipmentLvl3Page
+      case "28.1" => routes.ComputersElectronicsController.loadGeneralPurposeLvl4Page
+      case "26.5" => routes.ComputersElectronicsController.loadMeasuringTestingInstrumentsLvl4Page
+      case "28.4" => routes.ComputersElectronicsController.loadMetalFormingLvl4Page
+      case "27.1" => routes.ComputersElectronicsController.loadMotorsGeneratorsLvl4Page
+      case "28.2" => routes.ComputersElectronicsController.loadOtherGeneralPurposeLvl4Page
+      case "28" => routes.ComputersElectronicsController.loadOtherMachineryLvl3Page
+      case "28.9" => routes.ComputersElectronicsController.loadOtherSpecialPurposeLvl4Page
+      case "33.1" => routes.ComputersElectronicsController.loadRepairMaintenanceLvl4Page
+      case "33" => routes.ComputersElectronicsController.loadRepairsMaintainInstallLvl3Page
+      case "27.3" => routes.ComputersElectronicsController.loadWiringAndDevicesLvl4Page
+
      case "17.2" => routes.PaperPrintedController.loadArticlesPaperPaperboardLvl4Page
      case "17" => routes.PaperPrintedController.loadPaperLvl3Page
      case "18" => routes.PaperPrintedController.loadPrintedLvl3Page
